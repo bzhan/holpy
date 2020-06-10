@@ -1,0 +1,614 @@
+{
+    "content": [
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_pi_2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "pi / 2 - (x + pi / 2) = -x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ pi / 2 - (x + pi / 2) = -x"
+                },
+                {
+                    "args": "sin_neg, sin (-x) = -(sin x)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin (-x) = -(sin x)"
+                },
+                {
+                    "args": "sin (pi / 2 - (x + pi / 2)) = -(sin x)",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ sin (pi / 2 - (x + pi / 2)) = -(sin x)"
+                },
+                {
+                    "args": "cos_sin, cos (x + pi / 2) = -(sin x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ cos (x + pi / 2) = -(sin x)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ cos (x + pi / 2) = -(sin x)"
+                }
+            ],
+            "prop": "cos (x + pi / 2) = -(sin x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "cos_sin"
+                },
+                {
+                    "goal": "pi / 2 - (x + pi / 2) = -x",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_neg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "cos_derivatives",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_derivative_cos_compose, {f: λx1. x1 + of_nat n * pi / 2, x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable (λx1. x1 + of_nat n * pi / 2) (atreal x) ⟶ real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) x = -(sin (x + of_nat n * pi / 2)) * real_derivative (λx1. x1 + of_nat n * pi / 2) x"
+                },
+                {
+                    "args": "real_differentiable_id, {net: atreal x}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable (λx1. x1) (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_const, {c: of_nat n * pi / 2, net: atreal x}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable (λx1. of_nat n * pi / 2) (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_add",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_differentiable (λx1. x1 + of_nat n * pi / 2) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) x = -(sin (x + of_nat n * pi / 2)) * real_derivative (λx1. x1 + of_nat n * pi / 2) x"
+                },
+                {
+                    "args": "real_derivative_add",
+                    "id": "5",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_derivative (λx1. x1 + of_nat n * pi / 2) x = real_derivative (λx1. x1) x + real_derivative (λx1. of_nat n * pi / 2) x"
+                },
+                {
+                    "args": "real_derivative_id",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ real_derivative (λx1. x1 + of_nat n * pi / 2) x = 1 + real_derivative (λx1. of_nat n * pi / 2) x"
+                },
+                {
+                    "args": "real_derivative_const",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ real_derivative (λx1. x1 + of_nat n * pi / 2) x = 1 + 0"
+                },
+                {
+                    "args": "real_add_rid",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ real_derivative (λx1. x1 + of_nat n * pi / 2) x = 1"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "⊢ real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) x = -(sin (x + of_nat n * pi / 2)) * 1"
+                },
+                {
+                    "args": "real_mul_rid",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) x = -(sin (x + of_nat n * pi / 2))"
+                },
+                {
+                    "args": "cos_pi_2, cos (x + of_nat n * pi / 2 + pi / 2) = -(sin (x + of_nat n * pi / 2))",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (x + of_nat n * pi / 2 + pi / 2) = -(sin (x + of_nat n * pi / 2))"
+                },
+                {
+                    "args": "real_add_assoc, cos (x + (of_nat n * pi / 2 + pi / 2)) = -(sin (x + of_nat n * pi / 2))",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (x + (of_nat n * pi / 2 + pi / 2)) = -(sin (x + of_nat n * pi / 2))"
+                },
+                {
+                    "args": "real_divide_def, cos (x + (of_nat n * pi * real_inverse 2 + pi * real_inverse 2)) = -(sin (x + of_nat n * pi * real_inverse 2))",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ cos (x + (of_nat n * pi * real_inverse 2 + pi * real_inverse 2)) = -(sin (x + of_nat n * pi * real_inverse 2))"
+                },
+                {
+                    "args": "real_add_rdistrib, cos (x + (of_nat n * pi + pi) * real_inverse 2) = -(sin (x + of_nat n * pi * real_inverse 2))",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (x + (of_nat n * pi + pi) * real_inverse 2) = -(sin (x + of_nat n * pi * real_inverse 2))"
+                },
+                {
+                    "args": "real_divide_def, cos (x + (of_nat n * pi + pi) / 2) = -(sin (x + of_nat n * pi / 2))",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (x + (of_nat n * pi + pi) / 2) = -(sin (x + of_nat n * pi / 2))"
+                },
+                {
+                    "args": "real_mul_lid, cos (x + (of_nat n * pi + 1 * pi) / 2) = -(sin (x + of_nat n * pi / 2))",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (x + (of_nat n * pi + 1 * pi) / 2) = -(sin (x + of_nat n * pi / 2))"
+                },
+                {
+                    "args": "real_add_rdistrib, cos (x + (of_nat n + 1) * pi / 2) = -(sin (x + of_nat n * pi / 2))",
+                    "id": "17",
+                    "prevs": [
+                        "16"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (x + (of_nat n + 1) * pi / 2) = -(sin (x + of_nat n * pi / 2))"
+                },
+                {
+                    "args": "real_one_def, cos (x + (of_nat n + of_nat 1) * pi / 2) = -(sin (x + of_nat n * pi / 2))",
+                    "id": "18",
+                    "prevs": [
+                        "17"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ cos (x + (of_nat n + of_nat 1) * pi / 2) = -(sin (x + of_nat n * pi / 2))"
+                },
+                {
+                    "args": "real_of_nat_add, cos (x + of_nat (n + 1) * pi / 2) = -(sin (x + of_nat n * pi / 2))",
+                    "id": "19",
+                    "prevs": [
+                        "18"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ cos (x + of_nat (n + 1) * pi / 2) = -(sin (x + of_nat n * pi / 2))"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "20",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ -(sin (x + of_nat n * pi / 2)) = real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) x"
+                },
+                {
+                    "args": "has_real_derivative_differentiable, {f: λx1. cos (x1 + of_nat n * pi / 2), x: x}",
+                    "id": "21",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) (real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) x) (atreal x) ⟷ real_differentiable (λx1. cos (x1 + of_nat n * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_compose_atreal, {g: cos}",
+                    "id": "22",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable cos (atreal (x + of_nat n * pi / 2)) ⟶ real_differentiable (cos ∘ (λx1. x1 + of_nat n * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "comp_fun_def",
+                    "id": "23",
+                    "prevs": [
+                        "22"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ real_differentiable cos (atreal (x + of_nat n * pi / 2)) ⟶ real_differentiable (λx1. cos (x1 + of_nat n * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_at_cos, {x: x + of_nat n * pi / 2}",
+                    "id": "24",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable cos (atreal (x + of_nat n * pi / 2))"
+                },
+                {
+                    "args": "",
+                    "id": "25",
+                    "prevs": [
+                        "23",
+                        "24"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ real_differentiable (λx1. cos (x1 + of_nat n * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) (real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) x) (atreal x)",
+                    "id": "26",
+                    "prevs": [
+                        "21",
+                        "25"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ has_real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) (real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) x) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) (-(sin (x + of_nat n * pi / 2))) (atreal x)",
+                    "id": "27",
+                    "prevs": [
+                        "20",
+                        "26"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ has_real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) (-(sin (x + of_nat n * pi / 2))) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) (cos (x + of_nat (n + 1) * pi / 2)) (atreal x)",
+                    "id": "28",
+                    "prevs": [
+                        "19",
+                        "27"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ has_real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) (cos (x + of_nat (n + 1) * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "29",
+                    "prevs": [
+                        "28"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) (cos (x + of_nat (n + 1) * pi / 2)) (atreal x)"
+                }
+            ],
+            "prop": [
+                "has_real_derivative (λx1. cos (x1 + of_nat n * pi / 2)) ",
+                "  (cos (x + of_nat (n + 1) * pi / 2)) ",
+                "  (atreal x)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λx1. x1 + of_nat n * pi / 2)",
+                    "param_x": "x",
+                    "theorem": "real_derivative_cos_compose"
+                },
+                {
+                    "goal": "real_differentiable (λx1. x1 + of_nat n * pi / 2) (atreal x)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_add"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_id"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_const"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_derivative_add"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_derivative_id"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_derivative_const"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_add_rid"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "4"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "goal": "cos (x + of_nat (n + 1) * pi / 2) = -(sin (x + of_nat n * pi / 2))",
+                    "goal_id": "11",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_of_nat_add"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rdistrib"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rdistrib"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_assoc"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_pi_2"
+                },
+                {
+                    "fact_ids": [
+                        "19"
+                    ],
+                    "goal_id": "20",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "20",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "20"
+                    ],
+                    "goal_id": "21",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "21",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λx1. cos (x1 + of_nat n * pi / 2))",
+                    "param_x": "x",
+                    "theorem": "has_real_derivative_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "21"
+                    ],
+                    "goal_id": "22",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "22",
+                    "method_name": "apply_forward_step",
+                    "param_g": "cos",
+                    "theorem": "real_differentiable_compose_atreal"
+                },
+                {
+                    "fact_ids": [
+                        "22"
+                    ],
+                    "goal_id": "23",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "comp_fun_def"
+                },
+                {
+                    "fact_ids": [
+                        "23"
+                    ],
+                    "goal_id": "24",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "24",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_cos"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "taylor_cos_raw",
+            "prop": [
+                "abs ",
+                "  (cos x - ",
+                "   sum ({0..n}) ",
+                "     (λk. if even k then -1 ^ (k DIV 2) * x ^ k / of_nat (fact k) else 0)) ≤ ",
+                "abs x ^ (n + 1) / of_nat (fact (n + 1))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        }
+    ],
+    "description": "Formal inequalities for trig.",
+    "imports": [
+        "realgamma"
+    ],
+    "name": "trig_sin_cos"
+}
