@@ -20058,6 +20058,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "cos_zero",
             "num_gaps": 0,
             "proof": [

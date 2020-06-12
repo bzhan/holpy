@@ -18998,6 +18998,742 @@
             "attributes": [
                 "hint_backward"
             ],
+            "name": "real_pow_eq_odd_eq",
+            "prop": "odd n ⟶ x ^ n = y ^ n ⟷ x = y",
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_pow_eq_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 0 ⟶ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "trueI",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "even_def_1, even 0",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ even 0"
+                },
+                {
+                    "args": "even n",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0 ⊢ even n"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n = 0 ⊢ x ^ n = y ^ n ⟶ n = 0 ∨ abs x = abs y"
+                },
+                {
+                    "args": "x ^ n = y ^ n",
+                    "id": "0.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ^ n = y ^ n ⊢ x ^ n = y ^ n"
+                },
+                {
+                    "args": "disjI1, {A: n = 0, B: abs x = abs y}",
+                    "id": "0.4.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0, x ^ n = y ^ n ⊢ n = 0 ∨ abs x = abs y"
+                },
+                {
+                    "args": "",
+                    "id": "0.4.2",
+                    "prevs": [
+                        "0.4.0",
+                        "0.4.1"
+                    ],
+                    "rule": "intros",
+                    "th": "n = 0 ⊢ x ^ n = y ^ n ⟶ n = 0 ∨ abs x = abs y"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n = 0 ⊢ n = 0 ∨ abs x = abs y ⟶ x ^ n = y ^ n"
+                },
+                {
+                    "args": "n = 0 ∨ abs x = abs y",
+                    "id": "0.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ∨ abs x = abs y ⊢ n = 0 ∨ abs x = abs y"
+                },
+                {
+                    "args": "real_nat_power_def_1, x ^ (0::nat) = y ^ (0::nat)",
+                    "id": "0.5.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ (0::nat) = y ^ (0::nat)"
+                },
+                {
+                    "args": "x ^ n = y ^ n",
+                    "id": "0.5.2",
+                    "prevs": [
+                        "0.0",
+                        "0.5.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0, n = 0 ∨ abs x = abs y ⊢ x ^ n = y ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "0.5.3",
+                    "prevs": [
+                        "0.5.0",
+                        "0.5.2"
+                    ],
+                    "rule": "intros",
+                    "th": "n = 0 ⊢ n = 0 ∨ abs x = abs y ⟶ x ^ n = y ^ n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.4",
+                        "0.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n = 0 ⊢ x ^ n = y ^ n ⟷ n = 0 ∨ abs x = abs y"
+                },
+                {
+                    "args": "if_P, x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.6",
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.0",
+                        "0.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 0 ⟶ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0) ⊢ even n ⟶ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "even n",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even n ⊢ even n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even n, ¬(n = 0) ⊢ x ^ n = y ^ n ⟶ n = 0 ∨ abs x = abs y"
+                },
+                {
+                    "args": "x ^ n = y ^ n",
+                    "id": "1.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ^ n = y ^ n ⊢ x ^ n = y ^ n"
+                },
+                {
+                    "args": "real_pow_eq_abs",
+                    "id": "1.1.1.1",
+                    "prevs": [
+                        "1.0",
+                        "1.1.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even n, ¬(n = 0), x ^ n = y ^ n ⊢ abs x = abs y"
+                },
+                {
+                    "args": "disjI2, {A: n = 0, B: abs x = abs y}",
+                    "id": "1.1.1.2",
+                    "prevs": [
+                        "1.1.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "even n, ¬(n = 0), x ^ n = y ^ n ⊢ n = 0 ∨ abs x = abs y"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.3",
+                    "prevs": [
+                        "1.1.1.0",
+                        "1.1.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "even n, ¬(n = 0) ⊢ x ^ n = y ^ n ⟶ n = 0 ∨ abs x = abs y"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even n, ¬(n = 0) ⊢ n = 0 ∨ abs x = abs y ⟶ x ^ n = y ^ n"
+                },
+                {
+                    "args": "n = 0 ∨ abs x = abs y",
+                    "id": "1.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ∨ abs x = abs y ⊢ n = 0 ∨ abs x = abs y"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even n, ¬(n = 0), n = 0 ∨ abs x = abs y ⊢ n = 0 ⟶ x ^ n = y ^ n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "1.1.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "negE_gen, {A: n = 0, C: x ^ n = y ^ n}",
+                    "id": "1.1.2.1.1",
+                    "prevs": [
+                        "1.0",
+                        "1.1.2.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0, ¬(n = 0) ⊢ x ^ n = y ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.1.2",
+                    "prevs": [
+                        "1.1.2.1.0",
+                        "1.1.2.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "even n, ¬(n = 0), n = 0 ∨ abs x = abs y ⊢ n = 0 ⟶ x ^ n = y ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even n, ¬(n = 0), n = 0 ∨ abs x = abs y ⊢ abs x = abs y ⟶ x ^ n = y ^ n"
+                },
+                {
+                    "args": "abs x = abs y",
+                    "id": "1.1.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x = abs y ⊢ abs x = abs y"
+                },
+                {
+                    "args": "real_eq_square_abs",
+                    "id": "1.1.2.2.1",
+                    "prevs": [
+                        "1.1.2.2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x = abs y ⊢ x ^ (2::nat) = y ^ (2::nat)"
+                },
+                {
+                    "args": "even_exists",
+                    "id": "1.1.2.2.2",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "even n ⊢ ∃m. n = 2 * m"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "1.1.2.2.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "n = 2 * m",
+                    "id": "1.1.2.2.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 2 * m ⊢ n = 2 * m"
+                },
+                {
+                    "args": "x ^ (2::nat) ^ m = y ^ (2::nat) ^ m",
+                    "id": "1.1.2.2.5",
+                    "prevs": [
+                        "1.1.2.2.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "abs x = abs y ⊢ x ^ (2::nat) ^ m = y ^ (2::nat) ^ m"
+                },
+                {
+                    "args": "real_pow_pow, x ^ (2 * m) = y ^ (2 * m)",
+                    "id": "1.1.2.2.6",
+                    "prevs": [
+                        "1.1.2.2.5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "even n, ¬(n = 0), abs x = abs y, n = 2 * m, n = 0 ∨ abs x = abs y ⊢ x ^ (2 * m) = y ^ (2 * m)"
+                },
+                {
+                    "args": "x ^ n = y ^ n",
+                    "id": "1.1.2.2.7",
+                    "prevs": [
+                        "1.1.2.2.4",
+                        "1.1.2.2.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even n, ¬(n = 0), abs x = abs y, n = 2 * m, n = 0 ∨ abs x = abs y ⊢ x ^ n = y ^ n"
+                },
+                {
+                    "args": "∃m. n = 2 * m",
+                    "id": "1.1.2.2.8",
+                    "prevs": [
+                        "1.1.2.2.0",
+                        "1.1.2.2.2",
+                        "1.1.2.2.3",
+                        "1.1.2.2.4",
+                        "1.1.2.2.7"
+                    ],
+                    "rule": "intros",
+                    "th": "even n, ¬(n = 0), n = 0 ∨ abs x = abs y ⊢ abs x = abs y ⟶ x ^ n = y ^ n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.1.2.3",
+                    "prevs": [
+                        "1.1.2.0",
+                        "1.1.2.1",
+                        "1.1.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even n, ¬(n = 0), n = 0 ∨ abs x = abs y ⊢ x ^ n = y ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.4",
+                    "prevs": [
+                        "1.1.2.0",
+                        "1.1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "even n, ¬(n = 0) ⊢ n = 0 ∨ abs x = abs y ⟶ x ^ n = y ^ n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.1",
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even n, ¬(n = 0) ⊢ x ^ n = y ^ n ⟷ n = 0 ∨ abs x = abs y"
+                },
+                {
+                    "args": "if_P, x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3",
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, ¬(n = 0) ⊢ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ even n ⟶ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0) ⊢ ¬(even n) ⟶ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "¬(even n)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(even n) ⊢ ¬(even n)"
+                },
+                {
+                    "args": "not_even, odd n",
+                    "id": "1.2.1",
+                    "prevs": [
+                        "1.2.0"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(even n), ¬(n = 0) ⊢ odd n"
+                },
+                {
+                    "args": "real_pow_eq_odd_eq, {n: n, x: x, y: y}",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(even n), ¬(n = 0) ⊢ x ^ n = y ^ n ⟷ x = y"
+                },
+                {
+                    "args": "if_not_P, x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.2",
+                        "1.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(even n), ¬(n = 0) ⊢ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ ¬(even n) ⟶ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)"
+                }
+            ],
+            "prop": "x ^ n = y ^ n ⟷ (if even n then n = 0 ∨ abs x = abs y else x = y)",
+            "steps": [
+                {
+                    "case": "n=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "even n",
+                    "goal_id": "0.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_1"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.5.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.5.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "even n",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "param_n": "n",
+                    "theorem": "real_pow_eq_abs"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.0"
+                    ],
+                    "goal_id": "1.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.1.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0",
+                        "1.1.2.1.0"
+                    ],
+                    "goal_id": "1.1.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "1.1.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.2.0"
+                    ],
+                    "goal_id": "1.1.2.2.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_eq_square_abs"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.2.2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "even_exists"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.2.2"
+                    ],
+                    "goal_id": "1.1.2.2.3",
+                    "method_name": "exists_elim",
+                    "names": "m"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.2.4"
+                    ],
+                    "goal_id": "1.1.2.2.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.2.2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_pow_pow"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.2.1"
+                    ],
+                    "goal_id": "1.1.2.2.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pow_eq_odd_eq"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "not_even"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_arch_simple",
             "prop": "∃n. x ≤ of_nat n",
             "ty": "thm",

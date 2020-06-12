@@ -592,12 +592,1979 @@
                 "hint_backward"
             ],
             "name": "taylor_cos_raw",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_taylor, {B: (1::real), f: λi. λx. cos (x + of_nat i * pi / 2), n: n, s: (univ::real set)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ is_realinterval univ ⟶ (∀i. ∀x. x ∈ univ ⟶ i ≤ n ⟶ has_real_derivative (λx1. cos (x1 + of_nat i * pi / 2)) (cos (x + of_nat (i + 1) * pi / 2)) (within (atreal x) univ)) ⟶ (∀x. x ∈ univ ⟶ abs (cos (x + of_nat (n + 1) * pi / 2)) ≤ 1) ⟶ (∀w. ∀z. w ∈ univ ⟶ z ∈ univ ⟶ abs (cos (z + of_nat 0 * pi / 2) - sum ({0..n}) (λi. cos (w + of_nat i * pi / 2) * (z - w) ^ i / of_nat (fact i))) ≤ 1 * abs (z - w) ^ (n + 1) / of_nat (fact (n + 1)))"
+                },
+                {
+                    "args": "is_realinterval_univ",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ is_realinterval univ"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ (∀i. ∀x. x ∈ univ ⟶ i ≤ n ⟶ has_real_derivative (λx1. cos (x1 + of_nat i * pi / 2)) (cos (x + of_nat (i + 1) * pi / 2)) (within (atreal x) univ)) ⟶ (∀x. x ∈ univ ⟶ abs (cos (x + of_nat (n + 1) * pi / 2)) ≤ 1) ⟶ (∀w. ∀z. w ∈ univ ⟶ z ∈ univ ⟶ abs (cos (z + of_nat 0 * pi / 2) - sum ({0..n}) (λi. cos (w + of_nat i * pi / 2) * (z - w) ^ i / of_nat (fact i))) ≤ 1 * abs (z - w) ^ (n + 1) / of_nat (fact (n + 1)))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀i. ∀x. x ∈ univ ⟶ i ≤ n ⟶ has_real_derivative (λx1. cos (x1 + of_nat i * pi / 2)) (cos (x + of_nat (i + 1) * pi / 2)) (within (atreal x) univ)"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "y, real",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "y ∈ univ",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ univ ⊢ y ∈ univ"
+                },
+                {
+                    "args": "i ≤ n",
+                    "id": "3.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "i ≤ n ⊢ i ≤ n"
+                },
+                {
+                    "args": "cos_derivatives, {n: i, x: y}",
+                    "id": "3.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. cos (x1 + of_nat i * pi / 2)) (cos (y + of_nat (i + 1) * pi / 2)) (atreal y)"
+                },
+                {
+                    "args": "withinreal_univ, has_real_derivative (λx1. cos (x1 + of_nat i * pi / 2)) (cos (y + of_nat (i + 1) * pi / 2)) (within (atreal y) univ)",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "i ≤ n, y ∈ univ ⊢ has_real_derivative (λx1. cos (x1 + of_nat i * pi / 2)) (cos (y + of_nat (i + 1) * pi / 2)) (within (atreal y) univ)"
+                },
+                {
+                    "args": "",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.2",
+                        "3.3",
+                        "3.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀i. ∀y. y ∈ univ ⟶ i ≤ n ⟶ has_real_derivative (λx1. cos (x1 + of_nat i * pi / 2)) (cos (y + of_nat (i + 1) * pi / 2)) (within (atreal y) univ)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ (∀x. x ∈ univ ⟶ abs (cos (x + of_nat (n + 1) * pi / 2)) ≤ 1) ⟶ (∀w. ∀z. w ∈ univ ⟶ z ∈ univ ⟶ abs (cos (z + of_nat 0 * pi / 2) - sum ({0..n}) (λi. cos (w + of_nat i * pi / 2) * (z - w) ^ i / of_nat (fact i))) ≤ 1 * abs (z - w) ^ (n + 1) / of_nat (fact (n + 1)))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ univ ⟶ abs (cos (x + of_nat (n + 1) * pi / 2)) ≤ 1"
+                },
+                {
+                    "args": "y, real",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "y ∈ univ",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ univ ⊢ y ∈ univ"
+                },
+                {
+                    "args": "cos_bound, {x: y + of_nat (n + 1) * pi / 2}",
+                    "id": "5.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (cos (y + of_nat (n + 1) * pi / 2)) ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀y. y ∈ univ ⟶ abs (cos (y + of_nat (n + 1) * pi / 2)) ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ ∀w. ∀z. w ∈ univ ⟶ z ∈ univ ⟶ abs (cos (z + of_nat 0 * pi / 2) - sum ({0..n}) (λi. cos (w + of_nat i * pi / 2) * (z - w) ^ i / of_nat (fact i))) ≤ 1 * abs (z - w) ^ (n + 1) / of_nat (fact (n + 1))"
+                },
+                {
+                    "args": "(0::real)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "⊢ ∀z. (0::real) ∈ univ ⟶ z ∈ univ ⟶ abs (cos (z + of_nat 0 * pi / 2) - sum ({0..n}) (λi. cos (0 + of_nat i * pi / 2) * (z - 0) ^ i / of_nat (fact i))) ≤ 1 * abs (z - 0) ^ (n + 1) / of_nat (fact (n + 1))"
+                },
+                {
+                    "args": "x",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "⊢ (0::real) ∈ univ ⟶ x ∈ univ ⟶ abs (cos (x + of_nat 0 * pi / 2) - sum ({0..n}) (λi. cos (0 + of_nat i * pi / 2) * (x - 0) ^ i / of_nat (fact i))) ≤ 1 * abs (x - 0) ^ (n + 1) / of_nat (fact (n + 1))"
+                },
+                {
+                    "args": "member_univ, {x: (0::real)}",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ∈ univ"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "8",
+                        "9"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ x ∈ univ ⟶ abs (cos (x + of_nat 0 * pi / 2) - sum ({0..n}) (λi. cos (0 + of_nat i * pi / 2) * (x - 0) ^ i / of_nat (fact i))) ≤ 1 * abs (x - 0) ^ (n + 1) / of_nat (fact (n + 1))"
+                },
+                {
+                    "args": "member_univ, {x: x}",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x ∈ univ"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [
+                        "10",
+                        "11"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ abs (cos (x + of_nat 0 * pi / 2) - sum ({0..n}) (λi. cos (0 + of_nat i * pi / 2) * (x - 0) ^ i / of_nat (fact i))) ≤ 1 * abs (x - 0) ^ (n + 1) / of_nat (fact (n + 1))"
+                },
+                {
+                    "args": "real_sub_rzero",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ abs (cos (x + of_nat 0 * pi / 2) - sum ({0..n}) (λi. cos (0 + of_nat i * pi / 2) * x ^ i / of_nat (fact i))) ≤ 1 * abs x ^ (n + 1) / of_nat (fact (n + 1))"
+                },
+                {
+                    "args": "real_add_lid",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ abs (cos (x + of_nat 0 * pi / 2) - sum ({0..n}) (λi. cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i))) ≤ 1 * abs x ^ (n + 1) / of_nat (fact (n + 1))"
+                },
+                {
+                    "args": "real_zero_def",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "⊢ abs (cos (x + 0 * pi / 2) - sum ({0..n}) (λi. cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i))) ≤ 1 * abs x ^ (n + 1) / of_nat (fact (n + 1))"
+                },
+                {
+                    "args": "x + 0 * pi / 2 = x",
+                    "id": "16",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ x + 0 * pi / 2 = x"
+                },
+                {
+                    "args": "",
+                    "id": "17",
+                    "prevs": [
+                        "16",
+                        "15"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "⊢ abs (cos x - sum ({0..n}) (λi. cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i))) ≤ 1 * abs x ^ (n + 1) / of_nat (fact (n + 1))"
+                },
+                {
+                    "args": "",
+                    "id": "18",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀i. cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = (if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "18.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "",
+                    "id": "18.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ even i ⟶ cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = (if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)"
+                },
+                {
+                    "args": "even i",
+                    "id": "18.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even i ⊢ even i"
+                },
+                {
+                    "args": "even_exists",
+                    "id": "18.1.1",
+                    "prevs": [
+                        "18.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "even i ⊢ ∃m. i = 2 * m"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "18.1.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "i = 2 * m",
+                    "id": "18.1.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "i = 2 * m ⊢ i = 2 * m"
+                },
+                {
+                    "args": "¬((2::nat) = 0)",
+                    "id": "18.1.4",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((2::nat) = 0)"
+                },
+                {
+                    "args": "div_mult, {m: (2::nat), n: m}",
+                    "id": "18.1.5",
+                    "prevs": [
+                        "18.1.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "even i, i = 2 * m ⊢ 2 * m DIV 2 = m"
+                },
+                {
+                    "args": "of_nat (2 * m) * pi / 2 = of_nat m * pi",
+                    "id": "18.1.6",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ of_nat (2 * m) * pi / 2 = of_nat m * pi"
+                },
+                {
+                    "args": "cos_npi, cos (of_nat m * pi) * x ^ (2 * m) / of_nat (fact (2 * m)) = -1 ^ m * x ^ (2 * m) / of_nat (fact (2 * m))",
+                    "id": "18.1.7",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (of_nat m * pi) * x ^ (2 * m) / of_nat (fact (2 * m)) = -1 ^ m * x ^ (2 * m) / of_nat (fact (2 * m))"
+                },
+                {
+                    "args": "cos (of_nat (2 * m) * pi / 2) * x ^ (2 * m) / of_nat (fact (2 * m)) = -1 ^ m * x ^ (2 * m) / of_nat (fact (2 * m))",
+                    "id": "18.1.8",
+                    "prevs": [
+                        "18.1.6",
+                        "18.1.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even i, i = 2 * m ⊢ cos (of_nat (2 * m) * pi / 2) * x ^ (2 * m) / of_nat (fact (2 * m)) = -1 ^ m * x ^ (2 * m) / of_nat (fact (2 * m))"
+                },
+                {
+                    "args": "cos (of_nat (2 * m) * pi / 2) * x ^ (2 * m) / of_nat (fact (2 * m)) = -1 ^ (2 * m DIV 2) * x ^ (2 * m) / of_nat (fact (2 * m))",
+                    "id": "18.1.9",
+                    "prevs": [
+                        "18.1.5",
+                        "18.1.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even i, i = 2 * m ⊢ cos (of_nat (2 * m) * pi / 2) * x ^ (2 * m) / of_nat (fact (2 * m)) = -1 ^ (2 * m DIV 2) * x ^ (2 * m) / of_nat (fact (2 * m))"
+                },
+                {
+                    "args": "cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = -1 ^ (i DIV 2) * x ^ i / of_nat (fact i)",
+                    "id": "18.1.10",
+                    "prevs": [
+                        "18.1.3",
+                        "18.1.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even i, i = 2 * m ⊢ cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = -1 ^ (i DIV 2) * x ^ i / of_nat (fact i)"
+                },
+                {
+                    "args": "if_P, cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = (if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)",
+                    "id": "18.1.11",
+                    "prevs": [
+                        "18.1.10",
+                        "18.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even i, i = 2 * m ⊢ cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = (if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)"
+                },
+                {
+                    "args": "∃m. i = 2 * m",
+                    "id": "18.1.12",
+                    "prevs": [
+                        "18.1.0",
+                        "18.1.1",
+                        "18.1.2",
+                        "18.1.3",
+                        "18.1.11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even i ⟶ cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = (if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "18.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(even i) ⟶ cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = (if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)"
+                },
+                {
+                    "args": "¬(even i)",
+                    "id": "18.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(even i) ⊢ ¬(even i)"
+                },
+                {
+                    "args": "of_nat i * pi / 2 = of_nat i * (pi / 2)",
+                    "id": "18.2.1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ of_nat i * pi / 2 = of_nat i * (pi / 2)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "18.2.2",
+                    "prevs": [
+                        "18.2.0",
+                        "18.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(even i) ⊢ ¬(even i) ∧ of_nat i * pi / 2 = of_nat i * (pi / 2)"
+                },
+                {
+                    "args": "exI, {P: λn. ¬(even n) ∧ of_nat i * pi / 2 = of_nat n * (pi / 2), a: i}",
+                    "id": "18.2.3",
+                    "prevs": [
+                        "18.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(even i) ⊢ ∃a1. ¬(even a1) ∧ of_nat i * pi / 2 = of_nat a1 * (pi / 2)"
+                },
+                {
+                    "args": "disjI1, {A: ∃n. ¬(even n) ∧ of_nat i * pi / 2 = of_nat n * (pi / 2), B: ∃n. ¬(even n) ∧ of_nat i * pi / 2 = -(of_nat n * (pi / 2))}",
+                    "id": "18.2.4",
+                    "prevs": [
+                        "18.2.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(even i) ⊢ (∃n. ¬(even n) ∧ of_nat i * pi / 2 = of_nat n * (pi / 2)) ∨ (∃n. ¬(even n) ∧ of_nat i * pi / 2 = -(of_nat n * (pi / 2)))"
+                },
+                {
+                    "args": "cos_zero, cos (of_nat i * pi / 2) = 0",
+                    "id": "18.2.5",
+                    "prevs": [
+                        "18.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(even i) ⊢ cos (of_nat i * pi / 2) = 0"
+                },
+                {
+                    "args": "eq_refl, {x: (0::real)}",
+                    "id": "18.2.6",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) = 0"
+                },
+                {
+                    "args": "disjI1, {A: (0::real) = 0, B: of_nat (fact i) = (0::real)}",
+                    "id": "18.2.7",
+                    "prevs": [
+                        "18.2.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(even i) ⊢ (0::real) = 0 ∨ of_nat (fact i) = (0::real)"
+                },
+                {
+                    "args": "real_div_eq_0, 0 / of_nat (fact i) = 0",
+                    "id": "18.2.8",
+                    "prevs": [
+                        "18.2.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(even i) ⊢ 0 / of_nat (fact i) = 0"
+                },
+                {
+                    "args": "real_mul_lzero, 0 * x ^ i / of_nat (fact i) = 0",
+                    "id": "18.2.9",
+                    "prevs": [
+                        "18.2.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(even i) ⊢ 0 * x ^ i / of_nat (fact i) = 0"
+                },
+                {
+                    "args": "cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = 0",
+                    "id": "18.2.10",
+                    "prevs": [
+                        "18.2.5",
+                        "18.2.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(even i) ⊢ cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = 0"
+                },
+                {
+                    "args": "if_not_P, cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = (if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)",
+                    "id": "18.2.11",
+                    "prevs": [
+                        "18.2.10",
+                        "18.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(even i) ⊢ cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = (if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "18.2.12",
+                    "prevs": [
+                        "18.2.0",
+                        "18.2.11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(even i) ⟶ cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = (if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "18.3",
+                    "prevs": [
+                        "18.1",
+                        "18.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = (if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "18.4",
+                    "prevs": [
+                        "18.0",
+                        "18.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀i. cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = (if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "19",
+                    "prevs": [
+                        "18",
+                        "17"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "⊢ abs (cos x - sum ({0..n}) (λi. if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)) ≤ 1 * abs x ^ (n + 1) / of_nat (fact (n + 1))"
+                },
+                {
+                    "args": "real_mul_lid",
+                    "id": "20",
+                    "prevs": [
+                        "19"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ abs (cos x - sum ({0..n}) (λi. if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0)) ≤ abs x ^ (n + 1) / of_nat (fact (n + 1))"
+                },
+                {
+                    "args": "",
+                    "id": "21",
+                    "prevs": [
+                        "20"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs (cos x - sum ({0..n}) (λk. if even k then -1 ^ (k DIV 2) * x ^ k / of_nat (fact k) else 0)) ≤ abs x ^ (n + 1) / of_nat (fact (n + 1))"
+                }
+            ],
             "prop": [
                 "abs ",
                 "  (cos x - ",
                 "   sum ({0..n}) ",
                 "     (λk. if even k then -1 ^ (k DIV 2) * x ^ k / of_nat (fact k) else 0)) ≤ ",
                 "abs x ^ (n + 1) / of_nat (fact (n + 1))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_B": "(1::real)",
+                    "param_f": "(%i. %x. cos (x + (of_nat i) * pi / 2))",
+                    "param_n": "n",
+                    "param_s": "(univ::real set)",
+                    "theorem": "real_taylor"
+                },
+                {
+                    "goal": "is_realinterval univ",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "is_realinterval_univ"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "(∀i. ∀x. x ∈ univ ⟶ i ≤ n ⟶ has_real_derivative (λx1. cos (x1 + of_nat i * pi / 2)) (cos (x + of_nat (i + 1) * pi / 2)) (within (atreal x) univ))",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "i,y"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "withinreal_univ"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_derivatives"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "(∀x. x ∈ univ ⟶ abs (cos (x + of_nat (n + 1) * pi / 2)) ≤ 1)",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "y"
+                },
+                {
+                    "goal_id": "5.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_bound"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "forall_elim",
+                    "s": "(0::real)"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "goal": "(0::real) ∈ univ",
+                    "goal_id": "9",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_univ"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "x ∈ univ",
+                    "goal_id": "11",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_univ"
+                },
+                {
+                    "fact_ids": [
+                        "10",
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "12"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sub_rzero"
+                },
+                {
+                    "fact_ids": [
+                        "13"
+                    ],
+                    "goal_id": "14",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_add_lid"
+                },
+                {
+                    "fact_ids": [
+                        "14"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal": "x + 0 * pi / 2 = x",
+                    "goal_id": "16",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "16",
+                        "15"
+                    ],
+                    "goal_id": "17",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "!i. cos (of_nat i * pi / 2) * x ^ i / of_nat (fact i) = if even i then -1 ^ (i DIV 2) * x ^ i / of_nat (fact i) else 0",
+                    "goal_id": "18",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "18",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "case": "even i",
+                    "goal_id": "18.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "18.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "18.1.0"
+                    ],
+                    "goal_id": "18.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "18.1.0"
+                    ],
+                    "goal_id": "18.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "even_exists"
+                },
+                {
+                    "fact_ids": [
+                        "18.1.1"
+                    ],
+                    "goal_id": "18.1.2",
+                    "method_name": "exists_elim",
+                    "names": "m"
+                },
+                {
+                    "fact_ids": [
+                        "18.1.3"
+                    ],
+                    "goal_id": "18.1.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "2 * m DIV 2 = m",
+                    "goal_id": "18.1.4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "18.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "div_mult"
+                },
+                {
+                    "goal_id": "18.1.4",
+                    "method_name": "nat_const_ineq"
+                },
+                {
+                    "fact_ids": [
+                        "18.1.5"
+                    ],
+                    "goal_id": "18.1.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "of_nat (2 * m) * pi / 2 = of_nat (m) * pi",
+                    "goal_id": "18.1.6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "18.1.6",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "18.1.6"
+                    ],
+                    "goal_id": "18.1.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "18.1.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_npi"
+                },
+                {
+                    "goal_id": "18.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "18.2.0"
+                    ],
+                    "goal_id": "18.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal": "cos (of_nat i * pi / 2) = 0",
+                    "goal_id": "18.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "18.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_zero"
+                },
+                {
+                    "goal_id": "18.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "18.2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "i"
+                },
+                {
+                    "goal_id": "18.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "18.2.1",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "18.2.5"
+                    ],
+                    "goal_id": "18.2.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "18.2.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "18.2.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_div_eq_0"
+                },
+                {
+                    "goal_id": "18.2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "18.2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "18",
+                        "17"
+                    ],
+                    "goal_id": "19",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "19"
+                    ],
+                    "goal_id": "20",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sum_pair_from_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "sum_pair, {f: f, m: (0::nat), n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ sum ({2 * 0..2 * n + 1}) f = sum ({0..n}) (λi. f (2 * i) + f (2 * i + 1))"
+                },
+                {
+                    "args": "mult_0_right",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ sum ({0..2 * n + 1}) f = sum ({0..n}) (λi. f (2 * i) + f (2 * i + 1))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sum ({0..2 * n + 1}) f = sum ({0..n}) (λi. f (2 * i) + f (2 * i + 1))"
+                }
+            ],
+            "prop": "sum ({0..2 * n + 1}) f = sum ({0..n}) (λi. f (2 * i) + f (2 * i + 1))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_m": "(0::nat)",
+                    "param_n": "n",
+                    "theorem": "sum_pair"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "taylor_cos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "taylor_cos_raw, {n: 2 * n + 1, x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (cos x - sum ({0..2 * n + 1}) (λk. if even k then -1 ^ (k DIV 2) * x ^ k / of_nat (fact k) else 0)) ≤ abs x ^ (2 * n + 1 + 1) / of_nat (fact (2 * n + 1 + 1))"
+                },
+                {
+                    "args": "sum_pair_from_0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ abs (cos x - sum ({0..n}) (λi. (if even (2 * i) then -1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) else 0) + (if even (2 * i + 1) then -1 ^ ((2 * i + 1) DIV 2) * x ^ (2 * i + 1) / of_nat (fact (2 * i + 1)) else 0))) ≤ abs x ^ (2 * n + 1 + 1) / of_nat (fact (2 * n + 1 + 1))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀i. (if even (2 * i) then -1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) else 0) + (if even (2 * i + 1) then -1 ^ ((2 * i + 1) DIV 2) * x ^ (2 * i + 1) / of_nat (fact (2 * i + 1)) else 0) = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "even_double, {n: i}",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even (2 * i)"
+                },
+                {
+                    "args": "double_neg, ¬¬(even (2 * i))",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬¬(even (2 * i))"
+                },
+                {
+                    "args": "even_def_2, ¬(even (Suc (2 * i)))",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even (Suc (2 * i)))"
+                },
+                {
+                    "args": "add_1_right, ¬(even (2 * i + 1))",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even (2 * i + 1))"
+                },
+                {
+                    "args": "¬((2::nat) = 0)",
+                    "id": "2.5",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((2::nat) = 0)"
+                },
+                {
+                    "args": "div_mult, {m: (2::nat), n: i}",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 2 * i DIV 2 = i"
+                },
+                {
+                    "args": "-1 ^ i * x ^ (2 * i) * real_inverse (of_nat (fact (2 * i))) = -1 ^ i * real_inverse (of_nat (fact (2 * i))) * x ^ (2 * i)",
+                    "id": "2.7",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ -1 ^ i * x ^ (2 * i) * real_inverse (of_nat (fact (2 * i))) = -1 ^ i * real_inverse (of_nat (fact (2 * i))) * x ^ (2 * i)"
+                },
+                {
+                    "args": "real_divide_def, -1 ^ i * x ^ (2 * i) / of_nat (fact (2 * i)) = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -1 ^ i * x ^ (2 * i) / of_nat (fact (2 * i)) = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)"
+                },
+                {
+                    "args": "-1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)",
+                    "id": "2.9",
+                    "prevs": [
+                        "2.6",
+                        "2.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ -1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)"
+                },
+                {
+                    "args": "real_add_rid, -1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) + 0 = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)",
+                    "id": "2.10",
+                    "prevs": [
+                        "2.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) + 0 = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)"
+                },
+                {
+                    "args": "if_not_P, -1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) + (if even (2 * i + 1) then -1 ^ ((2 * i + 1) DIV 2) * x ^ (2 * i + 1) / of_nat (fact (2 * i + 1)) else 0) = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)",
+                    "id": "2.11",
+                    "prevs": [
+                        "2.10",
+                        "2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) + (if even (2 * i + 1) then -1 ^ ((2 * i + 1) DIV 2) * x ^ (2 * i + 1) / of_nat (fact (2 * i + 1)) else 0) = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)"
+                },
+                {
+                    "args": "if_P, (if even (2 * i) then -1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) else 0) + (if even (2 * i + 1) then -1 ^ ((2 * i + 1) DIV 2) * x ^ (2 * i + 1) / of_nat (fact (2 * i + 1)) else 0) = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)",
+                    "id": "2.12",
+                    "prevs": [
+                        "2.11",
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if even (2 * i) then -1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) else 0) + (if even (2 * i + 1) then -1 ^ ((2 * i + 1) DIV 2) * x ^ (2 * i + 1) / of_nat (fact (2 * i + 1)) else 0) = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)"
+                },
+                {
+                    "args": "",
+                    "id": "2.13",
+                    "prevs": [
+                        "2.0",
+                        "2.12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀i. (if even (2 * i) then -1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) else 0) + (if even (2 * i + 1) then -1 ^ ((2 * i + 1) DIV 2) * x ^ (2 * i + 1) / of_nat (fact (2 * i + 1)) else 0) = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "⊢ abs (cos x - sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))) ≤ abs x ^ (2 * n + 1 + 1) / of_nat (fact (2 * n + 1 + 1))"
+                },
+                {
+                    "args": "2 * n + 1 + 1 = 2 * n + 2",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ 2 * n + 1 + 1 = 2 * n + 2"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "⊢ abs (cos x - sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))) ≤ abs x ^ (2 * n + 2) / of_nat (fact (2 * n + 2))"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs (cos x - sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))) ≤ abs x ^ (2 * n + 2) / of_nat (fact (2 * n + 2))"
+                }
+            ],
+            "prop": [
+                "abs (cos x - sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))) ≤ ",
+                "abs x ^ (2 * n + 2) / of_nat (fact (2 * n + 2))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_n": "2 * n + 1",
+                    "param_x": "x",
+                    "theorem": "taylor_cos_raw"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "sum_pair_from_0"
+                },
+                {
+                    "goal": "!i. (if even (2 * i) then -1 ^ (2 * i DIV 2) * x ^ (2 * i) / of_nat (fact (2 * i)) else 0) + (if even (2 * i + 1) then -1 ^ ((2 * i + 1) DIV 2) * x ^ (2 * i + 1) / of_nat (fact (2 * i + 1)) else 0) = -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "goal": "even (2 * i)",
+                    "goal_id": "2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "even_double"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal": "~even (2 * i + 1)",
+                    "goal_id": "2.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_2"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "fact_ids": [
+                        "2.4"
+                    ],
+                    "goal_id": "2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rid"
+                },
+                {
+                    "goal": "2 * i DIV 2 = i",
+                    "goal_id": "2.5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "div_mult"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "nat_const_ineq"
+                },
+                {
+                    "fact_ids": [
+                        "2.6"
+                    ],
+                    "goal_id": "2.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal": "2 * n + 1 + 1 = 2 * n + 2",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "3"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "cos_poly_upper_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "even n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even n ⊢ even n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even n ⊢ n = 0 ⟶ cos x ≤ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "cos_ubound, {x: x}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ cos x ≤ 1"
+                },
+                {
+                    "args": "real_div_1, cos x ≤ 1 / 1",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, n = 0 ⊢ cos x ≤ 1 / 1"
+                },
+                {
+                    "args": "real_one_def, cos x ≤ 1 / of_nat 1",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "even n, n = 0 ⊢ cos x ≤ 1 / of_nat 1"
+                },
+                {
+                    "args": "real_mul_rid, cos x ≤ 1 / of_nat 1 * 1",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, n = 0 ⊢ cos x ≤ 1 / of_nat 1 * 1"
+                },
+                {
+                    "args": "fact_def_1, cos x ≤ 1 / of_nat (fact 0) * 1",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, n = 0 ⊢ cos x ≤ 1 / of_nat (fact 0) * 1"
+                },
+                {
+                    "args": "real_nat_power_def_1, cos x ≤ -1 ^ (0::nat) / of_nat (fact 0) * x ^ (0::nat)",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, n = 0 ⊢ cos x ≤ -1 ^ (0::nat) / of_nat (fact 0) * x ^ (0::nat)"
+                },
+                {
+                    "args": "mult_0_right, cos x ≤ -1 ^ (0::nat) / of_nat (fact (2 * 0)) * x ^ ((2::nat) * 0)",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, n = 0 ⊢ cos x ≤ -1 ^ (0::nat) / of_nat (fact (2 * 0)) * x ^ ((2::nat) * 0)"
+                },
+                {
+                    "args": "sum_sing_natseg, cos x ≤ sum ({0..0}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, n = 0 ⊢ cos x ≤ sum ({0..0}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))"
+                },
+                {
+                    "args": "cos x ≤ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.0",
+                        "1.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even n, n = 0 ⊢ cos x ≤ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))"
+                },
+                {
+                    "args": "",
+                    "id": "1.10",
+                    "prevs": [
+                        "1.0",
+                        "1.9"
+                    ],
+                    "rule": "intros",
+                    "th": "even n ⊢ n = 0 ⟶ cos x ≤ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even n ⊢ ¬(n = 0) ⟶ cos x ≤ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "le_1_1",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ 0 < n"
+                },
+                {
+                    "args": "lt_imp_le",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "sum_clauses_right",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ ∀f. sum ({0..n}) f = sum ({0..n - 1}) f + f n"
+                },
+                {
+                    "args": "taylor_cos, {n: n - 1, x: x}",
+                    "id": "2.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (cos x - sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))) ≤ abs x ^ (2 * (n - 1) + 2) / of_nat (fact (2 * (n - 1) + 2))"
+                },
+                {
+                    "args": "real_pow_one, (1::real) ^ n = 1",
+                    "id": "2.5",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (1::real) ^ n = 1"
+                },
+                {
+                    "args": "if_P, (if even n then (1::real) ^ n else -(1 ^ n)) = 1",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.5",
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, ¬(n = 0) ⊢ (if even n then (1::real) ^ n else -(1 ^ n)) = 1"
+                },
+                {
+                    "args": "real_pow_neg, -(1::real) ^ n = 1",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, ¬(n = 0) ⊢ -(1::real) ^ n = 1"
+                },
+                {
+                    "args": "",
+                    "id": "2.8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even n, ¬(n = 0) ⊢ ∀a. ∀b. 1 / a * b = b / a"
+                },
+                {
+                    "args": "a, real",
+                    "id": "2.8.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, real",
+                    "id": "2.8.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "1 * real_inverse a * b = b * real_inverse a",
+                    "id": "2.8.2",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ 1 * real_inverse a * b = b * real_inverse a"
+                },
+                {
+                    "args": "real_divide_def, 1 / a * b = b / a",
+                    "id": "2.8.3",
+                    "prevs": [
+                        "2.8.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, ¬(n = 0) ⊢ 1 / a * b = b / a"
+                },
+                {
+                    "args": "",
+                    "id": "2.8.4",
+                    "prevs": [
+                        "2.8.0",
+                        "2.8.1",
+                        "2.8.3"
+                    ],
+                    "rule": "intros",
+                    "th": "even n, ¬(n = 0) ⊢ ∀a. ∀b. 1 / a * b = b / a"
+                },
+                {
+                    "args": "2 * (n - 1) + 2 = 2 * n",
+                    "id": "2.9",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(n = 0) ⊢ 2 * (n - 1) + 2 = 2 * n"
+                },
+                {
+                    "args": "",
+                    "id": "2.10",
+                    "prevs": [
+                        "2.9",
+                        "2.4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "¬(n = 0) ⊢ abs (cos x - sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))) ≤ abs x ^ (2 * n) / of_nat (fact (2 * n))"
+                },
+                {
+                    "args": "even_double, {n: n}",
+                    "id": "2.11",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even (2 * n)"
+                },
+                {
+                    "args": "real_abs_abs, abs (abs x) = abs x",
+                    "id": "2.12",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (abs x) = abs x"
+                },
+                {
+                    "args": "disjI2, {A: 2 * n = 0, B: abs (abs x) = abs x}",
+                    "id": "2.13",
+                    "prevs": [
+                        "2.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "even n, ¬(n = 0) ⊢ 2 * n = 0 ∨ abs (abs x) = abs x"
+                },
+                {
+                    "args": "if_P, if even (2 * n) then 2 * n = 0 ∨ abs (abs x) = abs x else abs x = x",
+                    "id": "2.14",
+                    "prevs": [
+                        "2.13",
+                        "2.11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, ¬(n = 0) ⊢ if even (2 * n) then 2 * n = 0 ∨ abs (abs x) = abs x else abs x = x"
+                },
+                {
+                    "args": "real_pow_eq_eq, abs x ^ (2 * n) = x ^ (2 * n)",
+                    "id": "2.15",
+                    "prevs": [
+                        "2.14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even n, ¬(n = 0) ⊢ abs x ^ (2 * n) = x ^ (2 * n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.16",
+                    "prevs": [
+                        "2.15",
+                        "2.10"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "even n, ¬(n = 0) ⊢ abs (cos x - sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))) ≤ x ^ (2 * n) / of_nat (fact (2 * n))"
+                },
+                {
+                    "args": "∀x::real. ∀y. ∀z. abs (x - y) ≤ z ⟶ x ≤ y + z",
+                    "id": "2.17",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::real. ∀y. ∀z. abs (x - y) ≤ z ⟶ x ≤ y + z"
+                },
+                {
+                    "args": "cos x, sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)), x ^ (2 * n) / of_nat (fact (2 * n))",
+                    "id": "2.18",
+                    "prevs": [
+                        "2.17",
+                        "2.16"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "even n, ¬(n = 0) ⊢ cos x ≤ sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) + x ^ (2 * n) / of_nat (fact (2 * n))"
+                },
+                {
+                    "args": "cos x ≤ sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) + 1 / of_nat (fact (2 * n)) * x ^ (2 * n)",
+                    "id": "2.19",
+                    "prevs": [
+                        "2.8",
+                        "2.18"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even n, ¬(n = 0) ⊢ cos x ≤ sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) + 1 / of_nat (fact (2 * n)) * x ^ (2 * n)"
+                },
+                {
+                    "args": "cos x ≤ sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) + -1 ^ n / of_nat (fact (2 * n)) * x ^ (2 * n)",
+                    "id": "2.20",
+                    "prevs": [
+                        "2.7",
+                        "2.19"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even n, ¬(n = 0) ⊢ cos x ≤ sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) + -1 ^ n / of_nat (fact (2 * n)) * x ^ (2 * n)"
+                },
+                {
+                    "args": "cos x ≤ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))",
+                    "id": "2.21",
+                    "prevs": [
+                        "2.3",
+                        "2.20"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even n, ¬(n = 0) ⊢ cos x ≤ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))"
+                },
+                {
+                    "args": "",
+                    "id": "2.22",
+                    "prevs": [
+                        "2.0",
+                        "2.21"
+                    ],
+                    "rule": "intros",
+                    "th": "even n ⊢ ¬(n = 0) ⟶ cos x ≤ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even n ⊢ cos x ≤ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even n ⟶ cos x ≤ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))"
+                }
+            ],
+            "prop": "even n ⟶ cos x ≤ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))",
+            "steps": [
+                {
+                    "case": "n=0",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_sing_natseg"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_1"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "fact_def_1"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_div_1"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_ubound"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "le_1_1"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_forward_step",
+                    "param_f": "",
+                    "theorem": "sum_clauses_right"
+                },
+                {
+                    "fact_ids": [
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n-1",
+                    "param_x": "x",
+                    "theorem": "taylor_cos"
+                },
+                {
+                    "goal": "-1 ^ n = (1::real)",
+                    "goal_id": "2.5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_neg"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_one"
+                },
+                {
+                    "fact_ids": [
+                        "2.7"
+                    ],
+                    "goal_id": "2.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "!a::real. !b. 1/a * b = b /a",
+                    "goal_id": "2.8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.8",
+                    "method_name": "introduction",
+                    "names": "a,b"
+                },
+                {
+                    "goal_id": "2.8.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "2.8.2",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "2.8"
+                    ],
+                    "goal_id": "2.9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.4"
+                    ],
+                    "goal": "(2 * (n - 1) + 2) = 2 * n",
+                    "goal_id": "2.9",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.9",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.9",
+                        "2.4"
+                    ],
+                    "goal_id": "2.10",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "abs x ^ (2 * n) = x ^ (2 * n)",
+                    "goal_id": "2.11",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_eq_eq"
+                },
+                {
+                    "goal": "even (2 * n)",
+                    "goal_id": "2.11",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "even_double"
+                },
+                {
+                    "fact_ids": [
+                        "2.11"
+                    ],
+                    "goal_id": "2.12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "2.12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "2.12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_abs"
+                },
+                {
+                    "fact_ids": [
+                        "2.15",
+                        "2.10"
+                    ],
+                    "goal_id": "2.16",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "!x::real. !y. !z. abs (x-y) <= z --> x <= y + z",
+                    "goal_id": "2.17",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.17",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.17"
+                    ],
+                    "goal_id": "2.18",
+                    "method_name": "apply_prev"
+                }
             ],
             "ty": "thm",
             "vars": {
