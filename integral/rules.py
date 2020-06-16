@@ -160,6 +160,10 @@ class CommonIntegral(Rule):
                                 c == expr.Const(1):
                             #Integral of 1 / x ^ 2 + 1 is arctan(x)
                             return EvalAt(e.var, e.lower, e.upper, expr.arctan(Var(e.var)))
+                        elif b.op == "+" and c.ty == expr.OP and c.op == "^" and \
+                                c.args[0] == Var(e.var) and c.args[1] == Const(2) and \
+                                d == expr.Const(1):
+                            return EvalAt(e.var, e.lower, e.upper, expr.arctan(Var(e.var)))
                         else:
                             return e
                     else:
@@ -243,7 +247,7 @@ class Substitution1(Rule):
         var_name = parser.parse_expr(self.var_name)
         var_subst = self.var_subst
         dfx = expr.deriv(e.var, var_subst)
-        body =holpy_style(sympy_style(e.body/dfx).simplify())
+        body =holpy_style(sympy_style(e.body/dfx)).normalize()
         body = body.normalize().replace_trig(var_subst.normalize(), var_name)
         lower = var_subst.subst(e.var, e.lower).normalize()
         upper = var_subst.subst(e.var, e.upper).normalize()
@@ -254,6 +258,8 @@ class Substitution1(Rule):
                 return Integral(self.var_name, upper, lower, Op("-", body).normalize()), body
         else:
             gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
+            if gu == []: # sympy can't solve the equation
+                return e, 
             gu = gu[-1] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
             var_subst_1 = copy.deepcopy(var_subst)
@@ -340,15 +346,21 @@ class IntegrationByParts(Rule):
             raise NotImplementedError
 
 class PolynomialDivision(Rule):
-    """Simplify the representation of polynomial divided by polinomial.
+    """Simplify the representation of polynomial divided by polynomial.
     """
     def __init__(self):
         self.name = "Fraction Division"
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
             return e
-        result = apart(expr.sympy_style(e.body))
-        return expr.Integral(e.var, e.lower, e.upper, parser.parse_expr(str(result).replace("**","^")))
+        else:
+            body = e.body
+            if e.body.ty == OP and e.body.op != "/" and not (e.body.ty == OP and e.body.op == "*" and e.body.args[1].ty == OP and e.body.args[1].op == "^"\
+                and (e.body.args[1].args[1].ty == OP and len(e.body.args[1].args[1]) == 1 or e.body.args[1].args[1].ty == CONST and e.body.args[1].args[1].val < 0)):
+                return e
+                
+            result = apart(expr.sympy_style(e.body))
+            return expr.Integral(e.var, e.lower, e.upper, parser.parse_expr(str(result).replace("**","^")))
 
 class ElimAbs(Rule):
     """Eliminate abstract value."""
@@ -408,9 +420,9 @@ class ElimAbs(Rule):
                 for a in abs_expr:
                     s = solveset(sympy_style(a.args[0]) > 0, expr.sympy_style(e.var), Interval.open(sympy_style(e.lower), sympy_style(e.upper)))
                     if not s.is_empty:
-                        body.replace_trig(a, a.args[0])
+                        body = body.replace_trig(a, a.args[0])
                     else:
-                        body.replace_trig(a, -a.args[0])
+                        body = body.replace_trig(a, -a.args[0])
                 return expr.Integral(e.var, e.lower, e.upper, body)
             else:
                 zero_point += [sympy_style(e.upper), sympy_style(e.lower)]
@@ -424,7 +436,7 @@ class ElimAbs(Rule):
                         if g:
                             integer.body = integer.body.replace_trig(a, a.args[0])
                         if l:
-                            integer.body = body.replace_trig(a, Op("-",a.args[0]))
+                            integer.body = integer.body.replace_trig(a, Op("-",a.args[0]))
                     new_integral.append(integer)
                         #if Interval(sympy_style(zero_point[i]), sympy_style(zero_point[i + 1]))
                 return sum(new_integral[1:], new_integral[0])

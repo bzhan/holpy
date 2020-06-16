@@ -587,31 +587,27 @@ class Expr:
             """Note: The old trig must exist in self.
             """
             if self.ty == OP:
-                self.args = list(self.args)
                 if len(self.args) == 1:
-                    self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
-                    #self.args = tuple(self.args)
-                    return Op(self.op, self.args[0])
+                    new_arg = self.args[0].replace_trig(trig_old, trig_new)
+                    return Op(self.op, new_arg)
                 elif len(self.args) == 2:
                     if self.op == "^" and trig_old.ty == OP and trig_old.op == "^" \
                       and self.args[0] == trig_old.args[0]:
                         # expr : x ^ 4 trig_old x ^ 2 trig_new u => u ^ 2
-                        return Op(self.op, trig_new, self.args[1] / trig_old.args[1])
-                    self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
-                    self.args[1] = self.args[1].replace_trig(trig_old, trig_new)
-                    #self.args = tuple(self.args)
-                    return Op(self.op, self.args[0], self.args[1])
+                        return Op(self.op, trig_new, (self.args[1] / trig_old.args[1]).normalize())
+                    new_arg1 = self.args[0].replace_trig(trig_old, trig_new)
+                    new_arg2 = self.args[1].replace_trig(trig_old, trig_new)
+                    return Op(self.op, new_arg1, new_arg2)
                 else:
-                    return Op(self.op, self.args)
+                    return Op(self.op, [copy.deepcopy(arg) for arg in self.args])
             elif self.ty == FUN:
                 if len(self.args) > 0:
-                    self.args = list(self.args)
-                    self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
-                    return Fun(self.func_name, self.args[0])
+                    new_arg = self.args[0].replace_trig(trig_old, trig_new)
+                    return Fun(self.func_name, new_arg)
                 else:
-                    return self
+                    return Fun(self.func_name, *[copy.deepcopy(arg) for arg in  self.args])
             else:
-                return self
+                return copy.deepcopy(self)
 
     def identity_trig_expr(self, trigs, var, rule_list=None):
         """Input: A list contains the trigs expected to transform in trig_identity.
@@ -665,6 +661,8 @@ class Expr:
             if expr.ty in (VAR, CONST):
                 return 0
             elif expr.ty in (OP, FUN):
+                if len(expr.args) == 0:#pi
+                    return 1
                 return 1 + max([d(expr.args[i]) for i in range(len(expr.args))])
             elif expr.ty in (EVAL_AT, INTEGRAL, DERIV):
                 return d(expr.body)
@@ -747,7 +745,7 @@ class Expr:
         a = Symbol('a', [CONST])
         b = Symbol('b', [CONST])
         x = Symbol('x', [VAR])
-        patterns = [a * x, a*x +b, x]
+        patterns = [a * x, a*x +b, a*x - b, x, b + a*x, a + x, x + a]
         def traverse(exp):
             table = [match(exp, p) for p in patterns]
             is_linear = functools.reduce(lambda x, y: x or y, table)
@@ -854,6 +852,9 @@ def match(exp, pattern):
     return rec(exp, pattern)  
 
 def find_pattern1(expr, pat):
+    """
+    
+    """
     c = []
     def rec(e, pat):
         if match(e, pat):

@@ -1,6 +1,6 @@
 import random, string
 import collections
-
+import functools
 from integral.expr import *
 from integral.parser import parse_expr
 from integral import rules
@@ -9,9 +9,15 @@ a = Symbol('a', [CONST])
 b = Symbol('b', [CONST])
 x = Symbol('x', [VAR])
 e = Symbol('e', [OP])
+pat0 = b + a*x
 pat1 = a * x + b
 pat2 = a * x
 pat3 = e ^ a
+pat4 = a + x
+pat5 = x + a
+
+linear_pat = [pat0, pat1, pat2, pat4, pat5]
+
 
 def gen_rand_letter(ex):
     return random.choices(string.ascii_lowercase.replace(ex, ''))[0]
@@ -31,7 +37,10 @@ def linear_substitution(integral):
         return linearize(substitution(integral, func_body[0]).normalize())
     elif len(func_body) == 0:
         power_body = collect_spec_expr(integral.body, pat3)
-        if len(power_body) == 1 and (match(power_body[0], pat1) or match(power_body[0], pat2)): 
+        if len(power_body) == 0:
+            return integral
+        is_linear = functools.reduce(lambda x,y:x or y, [match(power_body[0], pat) for pat in linear_pat])
+        if len(power_body) == 1 and is_linear: 
             return linearize(substitution(integral, power_body[0]))
         else:
             return integral
@@ -87,11 +96,60 @@ class DividePolynomial(AlgorithmRule):
     """
     def eval(self, e):
         try:
-            return rules.Linearity().eval(rules.PolynomialDivision().eval(e))
+            return Linearity().eval(rules.PolynomialDivision().eval(e))
         except NotImplementedError:
             return e
 
+class Linearity(AlgorithmRule):
+    """Algorithm rule (a),(b),(c) in Slagle's thesis.
+
+    (a) Factor constant. ∫cg(v)dv = c∫g(v)dv  
+    (b) Negate. ∫-g(v)dv = -∫g(v)dv
+    (c) Decompose. ∫∑g(v)dv = ∑∫g(v)dv 
+    
+    """
+    def eval(self, e):
+        if not isinstance(e, Integral) or e.body.ty != OP:
+            return e
+
+        if e.body.op == "*":
+            if e.body.args[0].is_constant() and e.body.args[1].is_constant():
+                return e.body * Linearity().eval(Integral(e.var, e.lower, e.upper, Const(1)))
+            elif e.body.args[0].is_constant():
+                return e.body.args[0] * Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[1]))
+            elif e.body.args[1].is_constant():
+                return e.body.args[1] * Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0]))
+            else:
+                return e
+        elif e.body.op == "+":
+            return Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0])) + Integral(e.var, e.lower, e.upper, e.body.args[1])
+        
+        elif e.body.op == "-": 
+            if len(e.body.args) == 2:
+                return Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0])) - Integral(e.var, e.lower, e.upper, e.body.args[1])
+            else:
+                return Op("-", Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0]))) 
+        else:
+            return e
+
+class LinearSubstitution(AlgorithmRule):
+    """Algorithm rule (d) in Slagle's thesis.
+
+    Find linear expression in integral's sub functions. 
+    If there is only one function and its body is linear,
+    try to substitute the original variable by the function 
+    linear body.
+    """
+    def eval(self, e):
+        integrals = e.separate_integral()
+        for i, _ in integrals:
+            e = e.replace_trig(i, linear_substitution(i))
+        return e
+
+
 algorithm_rules = [
+    Linearity,
+    LinearSubstitution,
     CommonIntegral,
     DividePolynomial
 ]
@@ -126,16 +184,17 @@ class HeuristicSubstitution(HeuristicRule):
     def eval(self, e):
         res = []
 
-        all_subterms = e.body.nonlinear_subexpr()
+        all_subterms = e.body.normalize().nonlinear_subexpr()
 
-        if len(all_subterms) != 1:
+        depth = 0
+        try:
+            for subexpr in all_subterms:
+                r = rules.Substitution1(gen_rand_letter(e.var), subexpr).eval(e)
+                res.append(r[0])
+
+            return [sorted(res, key=lambda x:x.depth)[0]] if res else []
+        except:
             return []
-
-        for subexpr in all_subterms:
-            r = rules.Substitution1('y', subexpr).eval(e)
-            res.append(r[0])
-
-        return res
 
 heuristic_rules = [
     TrigFunction,
@@ -211,6 +270,13 @@ class OrNode(GoalNode):
         if self.resolved and self.parent is not None:
             self.parent.compute_resolved()
 
+    def compute_value(self):
+        if not self.resolved or len(self.children) == 0:
+            return self.root
+        else:
+            for c in self.children:
+                if c.resolved:
+                    return c.compute_value()
 
 class AndNode(GoalNode):
     """AND relationship in Slagle's thesis.
@@ -247,6 +313,17 @@ class AndNode(GoalNode):
         self.resolved = all(c.resolved for c in self.children)
         if self.resolved and self.parent is not None:
             self.parent.compute_resolved()
+
+    def compute_value(self):
+        if not self.resolved:
+            return self.root
+        if len(self.children) == 0:
+            return self.root.normalize()
+        else:
+            for c in self.children:
+                self.root = self.root.replace_trig(c.root, c.compute_value())
+                
+            return self.root.normalize()
 
 
 def bfs(node):

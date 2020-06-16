@@ -205,8 +205,9 @@ class RulesTest(unittest.TestCase):
 
     def testPolynomialDivision(self):
         test_data = [
-            ("INT x:[4, exp(1) + 3].(x^3 - 12 * x^2 - 42) / (x-3)", "INT x:[4, exp(1) + 3].x ^ 2 - 9 * x - 27 - 123 / (x -3)"),
-            ("INT x:[-1, 0].(3*x^4+3*x^2+1)/(x^2 + 1)", "INT x:[-1, 0].3 * x ^ 2 + 1 / (x ^ 2 + 1)")
+            # ("INT x:[4, exp(1) + 3].(x^3 - 12 * x^2 - 42) / (x-3)", "INT x:[4, exp(1) + 3].x ^ 2 - 9 * x - 27 - 123 / (x -3)"),
+            # ("INT x:[-1, 0].(3*x^4+3*x^2+1)/(x^2 + 1)", "INT x:[-1, 0].3 * x ^ 2 + 1 / (x ^ 2 + 1)")
+            ("INT x:[0,1]. (2*x+5)*(x^2+5*x)^7", "INT x:[0,1]. (2*x+5)*(x^2+5*x)^7")
         ]
 
         rule = rules.PolynomialDivision()
