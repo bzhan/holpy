@@ -11,6 +11,7 @@ from sympy import expand_multinomial
 import copy
 
 import integral
+from integral import slagle
 from app.app import app
 
 
@@ -603,4 +604,17 @@ def integral_save_file():
 
     return jsonify({
         'status': 'success'
+    })
+
+@app.route("/api/integral-slagle", methods=['POST'])
+def integral_slagle():
+    print(3)
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = data['problem']
+    
+    new_problem = slagle.bfs(slagle.OrNode(problem)).compute_value()
+    return jsonify({
+        'text': str(new_problem),
+        'latex': integral.latex.convert_expr(new_problem),
+        'reason': "By Slagle algorithm"
     })
