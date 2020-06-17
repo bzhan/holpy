@@ -150,9 +150,9 @@ class RulesTest(unittest.TestCase):
 
     def testUnfoldPower(self):
         test_data = [
-            ("INT x:[1, 2].(x + y) ^ 3", "INT x:[1,2]. x ^ 3 + 3 * x ^ 2 * y + 3 * x * y ^ 2 + y ^ 3"),
+            ("INT x:[1, 2].(x + y) ^ 3", "INT x:[1,2]. 3 * x * y ^ 2 + 3 * x ^ 2 * y + x ^ 3 + y ^ 3"),
             ("INT x:[1, 2].(x + y) ^ (1/2)", "INT x:[1,2]. (x + y) ^ (1/2)"),
-            ("INT x:[1, 2].(1 + cos(2*x)) ^ 2", "INT x:[1,2]. cos(2 * x) ^ 2 + 2 * cos(2 * x) + 1")
+            ("INT x:[1, 2].(1 + cos(2*x)) ^ 2", "INT x:[1,2]. 1 + 2 * cos(2 * x) + cos(2 * x) ^ 2")
         ]
 
         for s, s1 in test_data:

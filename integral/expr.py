@@ -545,7 +545,6 @@ class Expr:
             upper = self.body.subst(self.var, self.upper)
             lower = self.body.subst(self.var, self.lower)
             return (upper.normalize() - lower.normalize()).to_poly(0)
-            # return upper.to_poly() - lower.to_poly()
         elif self.ty == INTEGRAL:
             a = self
             if a.lower == a.upper:
@@ -556,7 +555,8 @@ class Expr:
             return poly.singleton(self)
 
     def normalize(self):
-        """Normalizes an expression."""
+        """Normalize an expression.
+        """
         return from_poly(self.to_poly(0))
 
     def little_to_poly(self):
@@ -657,6 +657,9 @@ class Expr:
 
     @property
     def depth(self):
+        """ Return the depth of expression. 
+            Help to estimate problem difficulty.
+        """
         def d(expr):
             if expr.ty in (VAR, CONST):
                 return 0
@@ -760,6 +763,29 @@ class Expr:
         subs.discard(self)
         return tuple(subs)
 
+    def expand(self):
+        """Expand the power expression.
+        
+        """
+        a = Symbol('a', [CONST])
+        c = Symbol('c', [OP])
+        pat = c ^ a
+        subexpr  = find_pattern1(self, pat)
+        expand_expr = copy.deepcopy(self)
+
+
+        for s in subexpr:
+            p = s.args[0].to_poly()
+            if isinstance(s.normalize().args[1].val, int) and s.args[1].val > 1:
+                pw = functools.reduce(operator.mul, [p]*s.args[1].val)
+                expand_expr = expand_expr.replace_trig(s, from_poly(pw))
+        
+        return expand_expr
+
+        
+
+
+
 def sympy_style(s):
         """Transform expr to sympy object.
         """
@@ -795,6 +821,11 @@ def trig_transform(trig, var, rule_list=None):
     return poss
 
 def match(exp, pattern):
+    """Match expr with given pattern. 
+    ======
+    If successful, return True.
+    """
+
     d = dict()
     def rec(exp, pattern):
         if not isinstance(pattern, Symbol) and exp.ty != pattern.ty:
@@ -852,14 +883,14 @@ def match(exp, pattern):
     return rec(exp, pattern)  
 
 def find_pattern1(expr, pat):
-    """
-    
+    """Find all subexpr can be matched with the given pattern.
+    Return the matched expr list.
     """
     c = []
     def rec(e, pat):
-        if match(e, pat):
+        if match(e.normalize(), pat):
             c.append(e)
-        elif e.ty in (OP, FUN):
+        if e.ty in (OP, FUN):
             for arg in e.args:
                 rec(arg, pat)
         elif e.ty in (INTEGRAL, DERIV, EVAL_AT):
@@ -872,6 +903,9 @@ def collect_spec_expr(expr, symb):
     return c   
 
 def decompose_expr_factor(e):
+    """Get production factors from expr.
+    
+    """
     factors = []
     def f(e):
         if e.ty == OP and e.op == '*':
@@ -1373,6 +1407,8 @@ class EvalAt(Expr):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
 
 class Symbol(Expr):
+    """Pattern expression. It can be used to find expression with the given specific structure.
+    """
     def __init__(self, name, ty):
         self.name = name
         self.ty = SYMBOL

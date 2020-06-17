@@ -291,12 +291,13 @@ class Substitution2(Rule):
 
 class unfoldPower(Rule):
     def eval(self, e):
-        assert isinstance(e, expr.Integral)
-        body = e.body
-        if body.ty != OP or not (body.op == "^" and body.args[1].ty == CONST and Fraction(body.args[1].val).denominator == 1):
-            return e
-        unfold = holpy_style(expand_multinomial(sympy_style(body)))
-        return Integral(e.var, e.lower, e.upper, unfold)
+        # assert isinstance(e, expr.Integral)
+        # body = e.body
+        # if body.ty != OP or not (body.op == "^" and body.args[1].ty == CONST and Fraction(body.args[1].val).denominator == 1):
+        #     return e
+        # unfold = holpy_style(expand_multinomial(sympy_style(body)))
+        # return Integral(e.var, e.lower, e.upper, unfold)
+        return Integral(e.var, e.lower, e.upper, e.body.expand())
 
 
 class Equation(Rule):

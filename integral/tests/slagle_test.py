@@ -63,6 +63,17 @@ class SlagleTest(unittest.TestCase):
             v = parse_expr(v)
             v_res = [parse_expr(v2) for v2 in v_res]
             self.assertEqual(slagle.HeuristicSubstitution().eval(v), v_res)
+
+    def testHeuristicElimQuadratic(self):
+        test_data = [
+            ('INT x:[0,1]. x/(sqrt(x^2+2*x+5))',
+            ['INT u:[1,2]. u * (4 + u ^ 2) ^ (-1/2) - (4 + u ^ 2) ^ (-1/2)']),
+        ]
+
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            v_res = [parse_expr(v2) for v2 in v_res]
+            self.assertEqual(slagle.HeuristicElimQuadratic().eval(v), v_res)
     
     def testBFS(self):
         test_data = [

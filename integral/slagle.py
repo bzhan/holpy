@@ -1,6 +1,7 @@
 import random, string
 import collections
 import functools
+import operator
 from integral.expr import *
 from integral.parser import parse_expr
 from integral import rules
@@ -178,7 +179,7 @@ class HeuristicSubstitution(HeuristicRule):
     """Heuristic rule (c) in Slagle's thesis.
 
     Currently we implement a naive strategy of substitution for
-    each of the subterms.
+    y subterm corresponds to lowest depth expression after substitution.  
 
     """
     def eval(self, e):
@@ -195,6 +196,136 @@ class HeuristicSubstitution(HeuristicRule):
             return [sorted(res, key=lambda x:x.depth)[0]] if res else []
         except:
             return []
+
+class HeuristicIntegrationByParts(HeuristicRule):
+    """Heuristic rule (d) in Slagle's thesis.
+    
+    Find each factor h in the integral production, try find ∫hdv = H.
+    And do integration by parts: ∫Gh dv = GH - ∫(dG/dv)H dv.
+
+    Currently we implemented a naive strategy to find h: the ∫hdv can be
+    solved by CommonIntegral rule after algorithm transformation.
+    
+    """
+    def eval(self, e):
+        if not isinstance(e, Integral):
+            return e
+
+        res = []
+        
+        factors = decompose_expr_factor(e.body.normalize())
+        
+        if len(factors) <= 1:
+            return e
+        
+        for i in range(len(factors)):
+            node = bfs(OrNode(Integral(e.var, e.lower, e.upper, factors[i])))
+            if node.resolved:
+                u = functools.reduce(operator.mul, factors[:i], Const(1)) * functools.reduce(operator.mul, factors[i+1:], Const(1))
+                v = node.compute_value()
+                res.append(rules.IntegrationByParts(u, v).eval(e))
+        
+        return res
+
+class HeuristicElimQuadratic(HeuristicRule):
+    """Heuristic rule (e) in Slagle's thesis.
+
+    For quadratic subexpressions like a + b * x + c * x ^ 2,
+    substitute x by y + b/2c, transform to a - b^2/4a + ay^2.
+    
+    The search for quadratic subexprs is not complete because of
+    the non-standard normalization.
+
+    """
+    def eval(self, e):
+        def find_abc(quad):
+            """Find the value of a, b, c in a + b * x + c * x ^ 2."""
+            quad = quad.normalize()
+            if not (quad.args[0].ty == OP and quad.args[0].op in ("+","-")): # b*x +/- a*x^2
+                if quad.args[0].ty == VAR: # x +/- a*x^2 
+                    if quad.args[1].ty == OP and quad.args[1].op == "^": # x +/- x^2
+                        return (Const(0), Const(1), Const(1)) if quad.op == "+" else (Const(0), Const(1), Const(-1))
+                    else: # x +/- a * x^2
+                        return (Const(0), Const(1), quad.args[1].args[0]) if quad.op == "+" else (Const(0), Const(1), -quad.args[1].args[0])
+                else: # b*x + a*x^2
+                    if quad.args[1].ty == OP and quad.args[1].op == "^": # b*x +/- x^2
+                        return (Const(0), quad.args[0].args[0], Const(1)) if quad.op == "+" else (Const(0), quad.args[0].args[0], Const(-1))
+                    else: # b* x +/- a * x^2
+                        return (Const(0), quad.args[0].args[0], quad.args[1].args[0]) if quad.op == "+" else (Const(0), quad.args[0].args[0], -quad.args[1].args[0])
+            else: # c +/- b*x +/- a * x ^ 2
+                if quad.args[0].args[1].ty == VAR: # c +/- x +/- x^2
+                    if quad.args[1].args[1] == Const(2): # c +/- x +/- x^2
+                        return check(quad, (quad.args[0].args[0], Const(1), Const(1)))
+                    else:# c + x + a*x^2
+                        return check(quad, (quad.args[0].args[0], Const(1), quad.args[1].args[0])) 
+                else:# c +/- b*x +/- a * x^2
+                    if quad.args[1].args[1] == Const(2): # c +/- b*x +/- x^2
+                        return check(quad, (quad.args[0].args[0], quad.args[0].args[1].args[0], Const(1))) 
+                    else:
+                        return check(quad, (quad.args[0].args[0], quad.args[0].args[1].args[0], quad.args[1].args[0]))
+
+        def check(quad, t):
+            """Input: quad is a expression in a +/- b * x +/- c * x ^ 2 form, 
+                      t is (a, b, c) tuple
+            
+               Output: the quadratic expression's coefficient.
+            """
+            symbol = [quad.op, quad.args[0].op]
+            if symbol == ["+", "+"]:
+                return (t[0], t[1], t[2])
+            elif symbol == ["-", "+"]:
+                return (t[0], t[1], Op("-",t[2]).normalize())
+            elif symbol == ["+", "-"]:
+                return (t[0], Op("-",t[1]).normalize(), t[2])
+            elif symbol == ["-", "-"]:
+                return (t[0], Op("-",t[1]).normalize(), Op("-",t[2]).normalize())
+            else:
+                raise NotImplementedError
+
+        x = Symbol('x', [VAR, FUN])
+        a = Symbol('a', [CONST])
+        b = Symbol('b', [CONST])
+        c = Symbol('c', [CONST])
+        quadratic_patterns = [
+            x + (x^Const(2)),
+            x - (x^Const(2)),
+            x + a * (x^Const(2)),
+            x - a * (x^Const(2)),
+            b * x + a * (x^Const(2)),
+            b * x - a * (x^Const(2)),
+            c + x + (x^Const(2)),
+            c + x - (x^Const(2)),
+            c - x + (x^Const(2)),
+            c - x - (x^Const(2)),
+            c + x + a * (x^Const(2)),
+            c + x - a * (x^Const(2)),
+            c - x + a * (x^Const(2)),
+            c - x - a * (x^Const(2)),
+            c + b*x + (x^Const(2)),
+            c + b*x - (x^Const(2)),
+            c - b*x + (x^Const(2)),
+            c - b*x - (x^Const(2)),
+            c + b * x + a*(x^Const(2)),
+            c + b * x - a*(x^Const(2)),
+            c - b * x + a*(x^Const(2)),
+            c - b * x - a*(x^Const(2))
+        ]
+        
+        quadratic_terms = []
+        for p in quadratic_patterns:
+            quadratic_terms.append((find_pattern1(e.body, p), p))
+
+        quadratics = [(l[0][i], l[1]) for l in quadratic_terms for i in range(len(l[0]))]
+        res = []
+
+        for quad, _ in quadratics:
+            a, b, c = find_abc(quad)
+            new_integral, _ = rules.Substitution1(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
+            new_integral.body = new_integral.body.expand().normalize()
+            res.append(new_integral)
+
+        return res
+
 
 heuristic_rules = [
     TrigFunction,

@@ -367,5 +367,18 @@ class ExprTest(unittest.TestCase):
         for r1, r2, r3 in test_data:
             self.assertEqual(match(parse_expr(r1), r2), r3)
 
+    def testExpandPower(self):
+        test_data = [
+            ("(x+y)^2", "2*x*y + x^2 + y^2"),
+            ("(x-1)^2", "(1 - 2*x) + x^2"),
+            ("1 + (exp(x) + 2*x)^2", "1 + (4 * x * exp(x) + 4 * x ^ 2 + exp(2 * x))"),
+            ("2 * u + (u - 1) ^ 2 + 3", "4 + u^2"),
+        ]
+
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            v_res = parse_expr(v_res)
+            self.assertEqual(v.expand().normalize(), v_res.normalize())
+
 if __name__ == "__main__":
     unittest.main()
