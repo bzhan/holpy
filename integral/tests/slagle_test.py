@@ -74,6 +74,18 @@ class SlagleTest(unittest.TestCase):
             v = parse_expr(v)
             v_res = [parse_expr(v2) for v2 in v_res]
             self.assertEqual(slagle.HeuristicElimQuadratic().eval(v), v_res)
+
+    def testHeuristicTrigSubstitution(self):
+        test_data = [
+            ('INT x:[-1/2,1/2]. x^4/(1-x^2)^(5/2)',
+            ['INT u:[-pi / 6,pi / 6]. (sin(u) ^ 4 / (1 - sin(u) ^ 2) ^ (5/2)) * cos(u)']),
+        ]
+
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            v_res = [parse_expr(v2) for v2 in v_res]
+            self.assertEqual(slagle.HeuristicTrigSubstitution().eval(v), v_res)
+
     
     def testBFS(self):
         test_data = [

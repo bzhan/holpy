@@ -216,7 +216,7 @@ class HeuristicIntegrationByParts(HeuristicRule):
         factors = decompose_expr_factor(e.body.normalize())
         
         if len(factors) <= 1:
-            return e
+            return []
         
         for i in range(len(factors)):
             node = bfs(OrNode(Integral(e.var, e.lower, e.upper, factors[i])))
@@ -315,6 +315,9 @@ class HeuristicElimQuadratic(HeuristicRule):
         for p in quadratic_patterns:
             quadratic_terms.append((find_pattern1(e.body, p), p))
 
+        if not quadratic_terms:
+            return []
+
         quadratics = [(l[0][i], l[1]) for l in quadratic_terms for i in range(len(l[0]))]
         res = []
 
@@ -322,6 +325,65 @@ class HeuristicElimQuadratic(HeuristicRule):
             a, b, c = find_abc(quad)
             new_integral, _ = rules.Substitution1(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
             new_integral.body = new_integral.body.expand().normalize()
+            res.append(new_integral)
+
+        return res
+
+class HeuristicTrigSubstitution(HeuristicRule):
+    """Heuristic rule (g) in Slagle's thesis.
+    
+    Find subexpressions in form: a + b * x^2.
+    There are 3 cases:
+    (1) a > 0, b > 0, substitute x by sqrt(a/b)*tan(u);
+    (2) a > 0, b < 0, substitute x by sqrt(a/-b)*sin(u);
+    (1) a < 0, b > 0, substitute x by sqrt(-a/b)*sec(u);
+
+    """
+
+    def eval(self, e):
+
+        def find_ab(p):
+            """Find a, b in a +/- b*x^2"""
+            p = p.normalize()
+            if p.args[1].args[1] == Const(2): # a +/- x ^ 2
+                return (p.args[0], Const(1)) if p.op == "+" else (p.args[0], Const(-1))
+            else:
+                return (p.args[0], p.args[1].args[0]) if p.op == "+" else (p.args[0], Op("-",p.args[1].args[0]).normalize())
+
+        a = Symbol('a', [CONST])
+        b = Symbol('a', [CONST])
+        x = Symbol('x', [VAR])
+
+        pats = [
+            a + (x ^ Const(2)),
+            a - (x ^ Const(2)),
+            a + b * (x ^ Const(2)),
+            a - b * (x ^ Const(2)),
+        ]
+
+        all_subterms = []
+        for p in pats:
+            all_subterms.append(find_pattern1(e.body, p))
+
+        if not all_subterms:
+            return []
+
+        all_subterms = [p for l in all_subterms for p in l]        
+        res = []
+
+        for s in all_subterms:
+            a, b = find_ab(s)
+            assert not a.val < 0 or not b.val < 0, "Invalid value: a=%s, b=%s" % (a.val, b.val)
+            if a.val > 0 and b.val > 0:
+                subst = sqrt(Const(Fraction(a.val, b.val))).normalize()*tan(Var("u"))
+                
+            elif a.val > 0 and b.val < 0:
+                subst = sqrt(Const(Fraction(a.val, -b.val))).normalize() * sin(Var("u"))
+            
+            elif a.val < 0 and b.val > 0:
+                subst = sqrt(Const(Fraction(-a.val, b.val))).normalize() * sec(Var("u"))
+
+            new_integral = rules.Substitution2("u", subst).eval(e)
             res.append(new_integral)
 
         return res
