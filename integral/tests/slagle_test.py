@@ -86,6 +86,27 @@ class SlagleTest(unittest.TestCase):
             v_res = [parse_expr(v2) for v2 in v_res]
             self.assertEqual(slagle.HeuristicTrigSubstitution().eval(v), v_res)
 
+    def testHeuristicExpandPower(self):
+        test_data = [
+            ('INT x:[0,1]. x*(x^(1/2) + x^(-1/2))^2',
+            ['INT x:[0,1]. x * (2 + x ^ -1 + x)']),
+        ]
+
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            v_res = [parse_expr(v2) for v2 in v_res]
+            self.assertEqual(slagle.HeuristicExpandPower().eval(v), v_res)
+
+    def testHeuristicExponentBase(self):
+        test_data = [
+            ('INT x:[0,1]. exp(6*x)/(exp(4*x)+1)',
+            ['INT u:[1,exp(2)]. u ^ 2 / (2 * (u ^ 2 + 1))']),
+        ]
+
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            v_res = [parse_expr(v2) for v2 in v_res]
+            self.assertEqual(slagle.HeuristicExponentBase().eval(v), v_res)
     
     def testBFS(self):
         test_data = [
@@ -96,7 +117,10 @@ class SlagleTest(unittest.TestCase):
             'INT x:[0, 1].exp(5*x+2)',
             'INT x:[exp(1),exp(2)].3/(x*log(x))',
             'INT x:[0,1].cos(5*x)/exp(sin(5*x))',
-            
+            'INT x:[0,1]. x * (x ^ (1/2) + x ^ (-1/2)) ^ 2',
+            # The following result in infinite loop in normalize!!!!
+            # 'INT x:[0,1]. exp(6*x)/(exp(4*x)+1)',
+
         ]
 
         for v in test_data:

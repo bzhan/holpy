@@ -5,6 +5,7 @@ import operator
 from integral.expr import *
 from integral.parser import parse_expr
 from integral import rules
+import math
 
 a = Symbol('a', [CONST])
 b = Symbol('b', [CONST])
@@ -388,10 +389,72 @@ class HeuristicTrigSubstitution(HeuristicRule):
 
         return res
 
+class HeuristicDistributionSum(HeuristicRule):
+    """Heuristic rule (f) in Slagle's thesis.
+    
+    Try transform integrand by distributing the 
+    nonconstant factor of product.
+
+    Currently implemented by normalization.
+
+    """
+    def eval(self, e):
+        return [e.normalize()]
+
+class HeuristicExpandPower(HeuristicRule):
+    """Heuristic rule (g) in Slagle's thesis.
+
+    Expansion of positive integer powers of nonconstant sums.
+    
+    """
+    def eval(self, e):
+        return [Integral(e.var, e.lower, e.upper, e.body.expand())]
+
+class HeuristicExponentBase(HeuristicRule):
+    """Heuristic rule(i) in Slgle's thesis.
+
+    If the integrand has a list of subexpression like [b^{mv}, b^{nv}, ...],
+    the base b is an exponent function, n is integer and v is var.
+    Try to find the great divisor of m, n... assume it is k.
+    Then try substitution: u = b^{kv}. 
+
+    """
+    def eval(self, e):
+        n = Symbol('n', [CONST])
+        x = Symbol('x', [VAR])
+
+        pat = exp(n*x)
+        exponents = find_pattern1(e.body, pat)
+
+        if len(exponents) <= 1:
+            return []
+
+        coeffs = []
+        for exponent in exponents:
+            if exponent.args[0].ty == CONST:
+                coeffs.append(1)
+            else:
+                coeffs.append(exponent.args[0].args[0].val)
+
+        if not any(isinstance(n, int) for n in coeffs):
+            return []
+
+
+        gcd = functools.reduce(math.gcd, coeffs)
+        new_integral, _ = rules.Substitution1("u", exp(Const(gcd)*Var(e.var))).eval(e)
+
+        return [new_integral]
+        
+
 
 heuristic_rules = [
     TrigFunction,
-    HeuristicSubstitution
+    HeuristicSubstitution,
+    HeuristicElimQuadratic,
+    HeuristicDistributionSum,
+    HeuristicExpandPower,
+    HeuristicTrigSubstitution,
+    #HeuristicExponentBase
 ]
 
 

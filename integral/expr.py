@@ -776,7 +776,7 @@ class Expr:
 
         for s in subexpr:
             p = s.args[0].to_poly()
-            if isinstance(s.normalize().args[1].val, int) and s.args[1].val > 1:
+            if isinstance(s.normalize().args[1].val, int) and s.normalize().args[1].val > 1:
                 pw = functools.reduce(operator.mul, [p]*s.args[1].val)
                 expand_expr = expand_expr.replace_trig(s, from_poly(pw))
         
@@ -907,6 +907,8 @@ def decompose_expr_factor(e):
     
     """
     factors = []
+    if e.ty == OP and e.op == "/":
+        e = e.args[0] * Op("^", e.args[1], Const(-1))
     def f(e):
         if e.ty == OP and e.op == '*':
             f(e.args[0])
