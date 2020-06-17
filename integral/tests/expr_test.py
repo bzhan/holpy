@@ -380,5 +380,29 @@ class ExprTest(unittest.TestCase):
             v_res = parse_expr(v_res)
             self.assertEqual(v.expand().normalize(), v_res.normalize())
 
+    def testNormalize1(self):
+        test_data = [
+            ('x', 'x'),
+            ("2 + 3", "5"),
+            ("x + 0", "x"),
+            ("2 * 3", "6"),
+            ("1 + 1/3", "4/3"),
+            ("2 + 3 * x + 4", "6 + 3 * x"),
+            (" 0 / (x + y)", "0"),
+            ("2 + x / y + 2 * (x / y) + 3", "5 + 3 * x * y ^ -1"),
+            ("(x + y) ^ 2", "(x + y) ^ 2"),
+            ("x^(1.5)","x ^ 1.5"),
+            ("(x + y) * (x - y)", "x ^ 2 + -1 * y ^ 2"),
+            ("[x]_x=a,b", "-1*a + b"),
+            ("[x ^ 2 * y]_x=a,b", "-1*a ^ 2 * y + b ^ 2 * y"),
+            ("[x ^ 2]_x=3,4", "7"),
+            ("-(-x)", "x"),
+        ]
+
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            v_res = parse_expr(v_res)
+            self.assertEqual(v.normalize1(), v_res)
+
 if __name__ == "__main__":
     unittest.main()

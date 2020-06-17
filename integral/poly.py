@@ -18,7 +18,10 @@ def collect_pairs(ps):
     res = {}
     for v, c in ps:
         if v in res:
-            res[v] += c
+            if isinstance(res[v], expr.Expr) and res[v].ty == expr.CONST and isinstance(c, expr.Expr) and c.ty == expr.CONST:
+                res[v] = expr.Const(res[v].val + c.val)
+            else:
+                res[v] += c
         else:
             res[v] = c
     return tuple(sorted(((k, v) for k, v in res.items())))
@@ -36,7 +39,7 @@ class Monomial:
         """
         assert isinstance(coeff, expr.Expr) and coeff.is_constant(), "Unexpected coeff: %s" % str(coeff)
         assert all(isinstance(factor, Iterable) and len(factor) == 2 and \
-            isinstance(factor[1], (int, Fraction)) for factor in factors), \
+            isinstance(factor[1], (int, Fraction, Decimal)) for factor in factors), \
             "Unexpected argument for factors: %s" % str(factors)
         self.coeff = coeff
         self.factors = tuple((i, j) for i, j in collect_pairs(factors) if j != 0)
@@ -79,6 +82,8 @@ class Monomial:
         return self <= other and self != other
 
     def __mul__(self, other):
+        if self.coeff.ty == expr.CONST and other.coeff.ty == expr.CONST:
+            return Monomial(expr.Const(self.coeff.val * other.coeff.val), self.factors + other.factors)
         return Monomial(self.coeff * other.coeff, self.factors + other.factors)
 
     def scale(self, c):

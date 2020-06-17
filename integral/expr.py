@@ -11,6 +11,7 @@ from sympy.parsing import sympy_parser
 import copy
 from sympy.simplify.fu import *
 from sympy import solveset, Interval, Eq, Union, EmptySet, apart, pexquo
+from numbers import Number
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL = range(9)
 
@@ -46,92 +47,21 @@ class Location:
 class Expr:
     """Expressions."""
     def __add__(self, other):
-        if self.ty == CONST and other.ty == CONST:
-                return Const(self.val + other.val)
-        # elif self.ty == FUN and self.func_name == "log" and other.ty == FUN and other.func_name == "log":
-        #     return Fun("log", self.args[0] * other.args[0])
-        # elif self.ty == OP and self.op == "/" and other.ty == OP and other.op == "/" and self.args[1] == other.args[1]:
-        #     return (self.args[0] + other.args[0]) / self.args[1]
-        elif other.ty == OP:
-            if other.args[0].ty == CONST and other.args[0].val < 0:
-                return self - Op(other.op, Const(-other.args[0].val), other.args[1])
-            elif other.args[0].ty == OP and len(other.args[0].args) == 1 and other.args[0].args[0].ty == CONST and other.args[0].args[0].val > 0:
-                return self - Op(other.op, Const(other.args[0].args[0].val), other.args[1])
-            elif len(other.args) == 1:
-                return self - other.args[0]
-            else:
-                return Op("+", self, other)
-        elif other.ty == OP and len(other.args) == 1:
-            return self - other.args[0]
-        else:
-            return Op("+", self, other)
+        return Op("+", self, other)
 
     def __sub__(self, other):
-        if self.ty == CONST and other.ty == CONST:
-            return Const(self.val - other.val)
-        # elif self.ty == FUN and self.func_name == "log" and other.ty == FUN and other.func_name == "log":
-        #     c = (self.args[0]) / (other.args[0])
-        #     return Fun("log", (self.args[0]) / (other.args[0]))
-        elif other.ty == OP and len(other.args) == 1:
-            return self + other.args[0]
-        else:
-            return Op("-", self, other)
+        return Op("-", self, other)
 
     def __mul__(self, other):
-        if self == Const(1):
-            return other
-        if other == Const(1):
-            return self
-        if self.ty == CONST and self.val == -1:
-            if other.ty == CONST and other.val < 0:
-                return Const(-other.val)
-            if not (other.ty == OP and len(other.args) == 1):
-                return Op("-", other)
-            else:
-                return Op("*", self, other)
-        elif other.ty == CONST and other.val == -1:
-            if self.ty == CONST and self.val < 0:
-                return Const(-self.val)
-            elif not (self.ty == OP and len(self.args) == 1):
-                return Op("-", self)
-            else:
-                return Op("*", self, other)
-        elif self.ty == CONST and other.ty == CONST:
-            return Const(self.val * other.val)
-        elif self.ty == FUN and self.func_name == "exp" and other.ty == FUN and other.func_name == "exp":
-            power = self.args[0] + other.args[0]
-            return Fun("exp", power).normalize()
-        # elif 
-        else:
-            return Op("*", self, other)
+        return Op("*", self, other)
 
     def __truediv__(self, other):
-        if other == Const(1):
-            return self
-        elif self.ty == CONST and other.ty == CONST:
-            return Const(Fraction(self.val, other.val))
-        elif self.ty == OP and self.op == "^" and other.ty == OP and other.op == "^" and self.args[1] == other.args[1]:
-            return (self.args[0] / other.args[0]) ^ self.args[1]
-        elif all(s.ty == FUN and s.func_name == "abs" for s in [self, other]):
-            x, y = self.args[0], other.args[0]
-            if x.is_constant() and y.is_constant():
-                n = sympy_style(x/y)
-                return holpy_style(n) if n > 0 else holpy_style(-n)
-
-        else:
-            return Op("/", self, other)
+        return Op("/", self, other)
 
     def __xor__(self, other):
-        if other == Const(1):
-            return self
-        elif self.ty == FUN and self.func_name == "exp":
-            return Fun("exp", (self.args[0]*other).normalize())
-        else:
-            return Op("^", self, other)
+        return Op("^", self, other)
 
     def __neg__(self):
-        if self.ty == CONST:
-            return Const(-self.val)
         return Op("-", self)
 
     def size(self):
@@ -364,6 +294,71 @@ class Expr:
         else:
             raise NotImplementedError
 
+    def to_poly1(self):
+        """Convert expression to polynomial without sympy."""
+        if self.ty == VAR:
+            return poly.singleton(self)
+        elif self.ty == CONST:
+            return poly.constant(self)
+        elif self.ty == OP and self.op == "+":
+            x, y = self.args
+            return x.to_poly1() + y.to_poly1()
+        elif self.ty == OP and self.op == "-":
+            if len(self.args) == 1: # uminus
+                return (Const(-1) * self.args[0]).to_poly1()
+            else:
+                return self.args[0].to_poly1() + (Const(-1) * self.args[1]).to_poly1()
+        elif self.ty == OP and self.op == "*":
+            return self.args[0].to_poly1() * self.args[1].to_poly1()
+        elif self.ty == OP and self.op == "/":
+            return self.args[0].to_poly1() * Op("^", self.args[1], Const(-1)).to_poly1()
+        elif self.ty == OP and self.op == "^":
+            base = self.args[0]
+            if self.args[0].is_constant() and self.args[1].is_constant():
+                return poly.constant(Const(self.args[0].val ** self.args[1].val))
+            if not (base.ty == FUN and base.func_name == 'exp'):
+                assert isinstance(self.args[1].val, Number)
+                mono = poly.Monomial(Const(1), ((base.normalize1(), self.args[1].val),))
+                return poly.Polynomial([mono])
+            else:
+                power = (base.args[0] * self.args[1]).normalize1()
+                return poly.singleton(exp(power))
+        elif self.ty == FUN and self.func_name == "exp":
+            a, = self.args
+            if a == Const(0):
+                return poly.constant(Const(1))
+            elif a.ty == FUN and a.func_name == "log":
+                return a.args[0].to_poly1()
+            else:
+                return poly.singleton(Fun("exp", self.args[0].normalize1()))
+        elif self.ty == FUN and self.func_name in ("sin", "cos", "tan", "asin", "acos", "atan", "cot", "csc", "sec"):
+            return poly.singleton(Fun(self.func_name, self.args[0].normalize1())) # Not complete
+        elif self.ty == FUN and self.func_name == "log":
+            if self.args[0] == Const(1):
+                return poly.constant(Const(0))
+            elif self.args[0].ty == FUN and self.args[0].func_name == "exp":
+                return self.args[0].to_poly1()
+            else:
+                return poly.singleton(self)
+        elif self.ty == FUN and self.func_name == "sqrt":
+            return Op("^", self.args[0], Const(Fraction(1, 2))).to_poly1()
+        elif self.ty == FUN and self.func_name == "pi":
+            return poly.constant(self)
+        elif self.ty == FUN and self.func_name == "abs":
+            return poly.singleton(Fun("abs", self.args[0].normalize1()))
+        elif self.ty == EVAL_AT:
+            upper = self.body.subst(self.var, self.upper)
+            lower = self.body.subst(self.var, self.lower)
+            return (upper.normalize1() - lower.normalize1()).to_poly1()
+        elif self.ty == INTEGRAL:
+            a = self
+            if a.lower == a.upper:
+                return poly.constant(Const(0))
+            a.body = a.body.normalize1()
+            return poly.singleton(a)
+        else:
+            return poly.singleton(self)
+
     def to_poly(self, simp = 1):
         """Convert expression to a polynomial."""
         p = self
@@ -558,6 +553,9 @@ class Expr:
         """Normalize an expression.
         """
         return from_poly(self.to_poly(0))
+    
+    def normalize1(self):
+        return from_poly(self.to_poly1())
 
     def little_to_poly(self):
         """Convert an expression to multiplication between polynomials."""
@@ -926,18 +924,6 @@ def is_divisible(f, g):
     except:
         return False
 
-def getReciprocalTrig(factor, pow):
-    dic =  {
-        "sin": "csc",
-        "cos": "sec",
-        "tan": "cot",
-        "csc": "sin",
-        "sec": "cos",
-        "cot": "tan"
-    }
-    return factor ^ Const(pow) if pow >= 0 else Fun(dic[factor.func_name], *factor.args) ^ Const(-pow)
-
-
 def from_mono(m):
     """Convert a monomial to an expression."""
     factors = []
@@ -947,8 +933,6 @@ def from_mono(m):
     for factor, pow in m.factors:
         if factor.ty == FUN and factor.func_name == "exp":
             exps.append(factor.args[0]*Const(pow))
-        elif factor.ty == FUN and factor.func_name in ("sin", "cos", "tan", "csc", "sec", "cot"):
-            factors.append(getReciprocalTrig(factor, pow))
         elif pow == 1:
             factors.append(factor)
         else:
@@ -958,7 +942,8 @@ def from_mono(m):
         k = sum(exps[1:], exps[0])
         if k.normalize() != Const(0):
             new_exp = Fun("exp", k.normalize())
-    factors.append(new_exp)
+    if new_exp !=Const(1):
+        factors.append(new_exp)
     if len(factors) == 0:
         return Const(1)
     else:
