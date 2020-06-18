@@ -82,13 +82,16 @@ class Monomial:
         return self <= other and self != other
 
     def __mul__(self, other):
-        if self.coeff.ty == expr.CONST and other.coeff.ty == expr.CONST:
-            return Monomial(expr.Const(self.coeff.val * other.coeff.val), self.factors + other.factors)
-        return Monomial(self.coeff * other.coeff, self.factors + other.factors)
+        return Monomial((self.coeff * other.coeff).normalize(), self.factors + other.factors)
 
     def scale(self, c):
+        """Test delete 
+        """
         assert isinstance(c, expr.Expr) and c.is_constant(), "Unexpected coeff: %s" % str(c)
-        return Monomial(c * self.coeff, self.factors)
+        # if c.ty == expr.CONST and self.coeff.ty == expr.CONST:
+        #     return Monomial(expr.Const(c.val * self.coeff.val), self.factors)
+        # else:
+        return Monomial((c * self.coeff).normalize(), self.factors)
 
     def __neg__(self):
         return self.scale(expr.Const(-1))
@@ -152,7 +155,7 @@ def singleton(s):
 
 def constant(c):
     """Polynomial for c (numerical constant)."""
-    assert isinstance(c, expr.Expr) and c.is_constant(), "Unexpected const: %s, type: %s" % (str(c), type(c))
+    assert isinstance(c, expr.Expr) and c.is_constant(), "Unexpected constant: %s, type: %s" % (str(c), type(c))
     return Polynomial([Monomial(c, tuple())])
 
 # A simple parser for polynomials, where all variables are characters.

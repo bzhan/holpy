@@ -56,7 +56,7 @@ class SlagleTest(unittest.TestCase):
     def testHeuristicSubstitution(self):
         test_data = [
             ('INT x:[1,2]. tan(x)^4',
-             ['INT y:[tan(2),tan(1)]. -y ^ 4 * (1 + y ^ 2) ^ -1']),
+             ['INT y:[tan(2),tan(1)]. -1*y ^ 4 * (1 + y ^ 2) ^ -1']),
         ]
 
         for v, v_res in test_data:
@@ -67,7 +67,7 @@ class SlagleTest(unittest.TestCase):
     def testHeuristicElimQuadratic(self):
         test_data = [
             ('INT x:[0,1]. x/(sqrt(x^2+2*x+5))',
-            ['INT u:[1,2]. u * (4 + u ^ 2) ^ (-1/2) - (4 + u ^ 2) ^ (-1/2)']),
+            ['INT c:[1,2]. c * (4 + c ^ 2) ^ (-1/2) + -1 * (4 + c ^ 2) ^ (-1/2)']),
         ]
 
         for v, v_res in test_data:
@@ -78,7 +78,7 @@ class SlagleTest(unittest.TestCase):
     def testHeuristicTrigSubstitution(self):
         test_data = [
             ('INT x:[-1/2,1/2]. x^4/(1-x^2)^(5/2)',
-            ['INT u:[-pi / 6,pi / 6]. (sin(u) ^ 4 / (1 - sin(u) ^ 2) ^ (5/2)) * cos(u)']),
+            ['INT u:[-pi / 6,pi / 6]. cos(u) * sin(u) ^ 4 * (1 + -1 * sin(u) ^ 2) ^ (-5/2)']),
         ]
 
         for v, v_res in test_data:

@@ -357,9 +357,9 @@ class HeuristicTrigSubstitution(HeuristicRule):
 
         pats = [
             a + (x ^ Const(2)),
-            a - (x ^ Const(2)),
+            a + Const(-1) * (x ^ Const(2)),
             a + b * (x ^ Const(2)),
-            a - b * (x ^ Const(2)),
+            a + Const(-1) * b * (x ^ Const(2)),
         ]
 
         all_subterms = []
@@ -368,7 +368,6 @@ class HeuristicTrigSubstitution(HeuristicRule):
 
         if not all_subterms:
             return []
-
         all_subterms = [p for l in all_subterms for p in l]        
         res = []
 
@@ -385,7 +384,7 @@ class HeuristicTrigSubstitution(HeuristicRule):
                 subst = sqrt(Const(Fraction(-a.val, b.val))).normalize() * sec(Var("u"))
 
             new_integral = rules.Substitution2("u", subst).eval(e)
-            res.append(new_integral)
+            res.append(new_integral.normalize())
 
         return res
 

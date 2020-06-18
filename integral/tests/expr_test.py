@@ -7,7 +7,7 @@ import copy
 
 from integral import expr
 from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt, Symbol,\
-    VAR, CONST, OP, FUN, match
+    VAR, CONST, OP, FUN, match, norm_trig_body, compute_trig_value, pi
 from integral.parser import parse_expr
 
 class ExprTest(unittest.TestCase):
@@ -78,98 +78,98 @@ class ExprTest(unittest.TestCase):
             self.assertFalse(t <= s)
             self.assertFalse(t < s)
 
-    def testNormalize(self):
-        test_data = [
-            ("2 + 3", "5"),
-            ("x + 0", "x"),
-            ("2 * 3", "6"),
-            ("1 + 1/3", "4/3"),
-            ("2 + 3 * x + 4", "6 + 3 * x"),
-            (" 0 / (x + y)", "0"),
-            ("2 + x / y + 2 * (x / y) + 3", "5 + 3 * x * y ^ -1"),
-            ("(x + y) ^ 2", "(x + y) ^ 2"),
-            ("x^(1.5)","x ^ (3/2)"),
-            ("(x + y) * (x - y)", "x ^ 2 - y ^ 2"),
-            ("[x]_x=a,b", "-a + b"),
-            ("[x ^ 2 * y]_x=a,b", "-a ^ 2 * y + b ^ 2 * y"),
-            ("[x ^ 2]_x=3,4", "7"),
-            ("cos(x ^ 2)", "cos(x ^ 2)"),
-            ("cos(pi/4)", "2 ^ (1/2) * (1/2)"),
-            ("-(-x)", "x"),
-            ("cos(0) - cos(pi/4)", "1 - 2 ^ (1/2) * (1/2)"),
-            ("cos(0) - cos(pi/2)", "1"),
-            ("([x]_x=a,b) + 2 * ([x ^ 2 / 2]_x=a,b) + [x ^ 3 / 3]_x=a,b",
-             "(-a - a ^ 2 - 1/3 * a ^ 3) + b + b ^ 2 + 1/3 * b ^ 3"),
-            ("x ^ (1/2) * x ^ (1/2) ", "x"),
-            ("2 * (1 + 3)", "8"),
-            ("atan(1)", "1/4 * pi"),
-            ("atan(sqrt(3)/3)", "1/6 * pi"),
-            ("atan(sqrt(3))", "1/3 * pi"),
-            ("sin(3/4 * pi)", "2 ^ (1/2) * (1/2)"),
-            ("pi + pi / 3", "4/3 * pi"),
-            ("1 - cos(x) ^ 2", "1 - cos(x) ^ 2"),
-            ("x^2 * 6", "6 * x ^ 2"),
-            ("(x * y)^2", "x ^ 2 * y ^ 2"),
-            ("(2*sin(x))^2", "4 * sin(x) ^ 2"),
-            ("(2^(1/2)*sin(x))^(2)", "2 * sin(x) ^ 2"),
-            ("2 * 8 ^ (1/2) * 1 * cos(t) ^ 2", "4 * 2 ^ (1/2) * cos(t) ^ 2"),
-            ("8 ^ (1/2) * cos(t) ^ 2 * 1", "2 ^ (3/2) * cos(t) ^ 2"),
-            ("1/3 * 3 ^ 3", "9"),
-            ("(-1) * (1/3 * 2 ^ 3)", "-8/3"),
-            ("5 + (1/3 * 3 ^ 3 + (-1) * (1/3 * 2 ^ 3))", "34/3"),
-            ("2 * 8 ^ (1/2) * (1/2)", "2 * 2 ^ (1/2)"),
-            ("x / sqrt(5 - 4 * x)", "x * (5 - 4 * x) ^ (-1/2)"),
-            ("1/(1+sqrt(x))", "(1 + x ^ (1/2)) ^ -1"),
-            ("log(2) - log(3)", "log(2) - log(3)"),
-            ("(3 * x + 1) ^ -2", "(1 + 3 * x) ^ -2"),
-            ("-u/2","(-1/2) * u"),
-            ("exp(-u/2)", "exp(-1/2 * u)"),
-            ("log(exp(2))", "2"),
-            ("log(x^2)", "2 * log(x)"),
-            ("sqrt(cos(x) - cos(x)^3)", "(cos(x) - cos(x) ^ 3) ^ (1/2)"),
-            ("sqrt(cos(x) * (1 - cos(x)^2))","cos(x) ^ (1/2) * (1 - cos(x) ^ 2) ^ (1/2)"),
-            ("1/2 * u ^ ((-1)) * 2 * u", "1"),
-            ("1/2 * u ^ ((-1)) * (2 * u / (1 + u ^ (2)))", "(1 + u ^ 2) ^ -1"),
-            ("[log(1 + u ^ 2)]_u=-1,1", "0"),
-            ("sqrt(x ^ 2)", "abs(x)"),
-            ("[abs(x)]_x=-2,3", "1"),
-            # ("abs(sqrt(3) / 2) / 2", "1/4 * 3 ^ (1/2)"),
-            # ("abs(sqrt(3) / 2) / abs(sqrt(2) / 2)", "6 ^ (1/2) / 2"),
-            ("([log(abs(u))]_u=1/2 * 2 ^ (1/2),1/2 * 3 ^ (1/2))", "-log(2 ^ (1/2) * (1/2)) + log(3 ^ (1/2) * (1/2))"),
-            ("exp(1)", "exp(1)"),
-            ("[exp(u) * sin(u)]_u=0,1", "sin(1) * exp(1)"),
-            ("exp(1) ^ 2", "exp(2)"),
-            ("cos(acos(u)) ^ 2 ", "u ^ 2"),
-            ("log(exp(t)) ^ (-2)", "t ^ -2"),
-            ("exp(-t) * exp(t)", "1"),
-            ("(u ^ (-2) * exp(u)) * exp(-u)", "u ^ -2"),
-            ("[u ^ 8 / 8]_u=-3,3", "0"),
-            ("(1 - exp(-x)) / (1 - exp(-x))", "1"),
-            ("sin(sqrt(x ^ 2))", "sin(abs(x))"),
-            ("sqrt((u/pi)^2)", "abs(u / pi)"),
-            ("sin(sqrt((u/pi)^2))", "sin(abs(u / pi))"),
-            ("u*pi^(-1) * (u/pi)^(-1)", "1"),
-            ("(2 * u) * pi ^ (-1) *(1/pi)^(-1)", "2 * u"),
-            ("((2 * u) * pi ^ (-1)) * (u / pi) ^ (-1)", "2"),
-            ("2 * (INT x:[1,exp(1)]. 1) - ([u * log(u)]_u=2,2 * exp(1))", "2 * log(2) + (-2) * log(2 * exp(1)) * exp(1) + 2 * (INT x:[1,exp(1)]. 1)"),
-            ("3 ^ (1/2) * 3 ^ (1/2)", "3"),
-            ("2 * ((1/2) * 3 ^ (1/2))", "3 ^ (1/2)"),
-            ("exp(5 * x) * 3 / exp(3 * x)",  "3 * exp(2 * x)"),
-            ("exp(5 * x) * exp(2 * x) / 7", "1/7 * exp(7 * x)"),
-            ("(exp(4 * x) -1) * exp(4 * x)  ", "-exp(4 * x) + exp(8 * x)"),
-            ("(-u + 1) ^ 3 * (1 - u) ^ 2 ^ (-1)", "1 - u"),
-            ("2 * (-((1/2) * -(3 ^ (1/2))) + 1)", "3 ^ (1/2) + 2"),
-            ("1/2 * (-2 * (INT t:[0,(-1)/2]. exp(t)))", "-(INT t:[0,-1/2]. exp(t))"),
-            ("(cos(x)^4 * sin(x) ^ 2) /  -(sin(x))", "-cos(x) ^ 4 * sin(x)"),
-            ("2 ^ (1/2) ^ 6 / 6", "4/3"),
-            ("sin(x) ^ 2 * csc(x) ^ 3", "csc(x)"),
-            ("sin(x) ^ 3 * csc(x) ^ 2", "sin(x)"),
-            ("1 / (2 - sqrt(3))", "(2 - 3 ^ (1/2)) ^ -1")
-        ]
+    # def testNormalize(self):
+    #     test_data = [
+    #         ("2 + 3", "5"),
+    #         ("x + 0", "x"),
+    #         ("2 * 3", "6"),
+    #         ("1 + 1/3", "4/3"),
+    #         ("2 + 3 * x + 4", "6 + 3 * x"),
+    #         (" 0 / (x + y)", "0"),
+    #         ("2 + x / y + 2 * (x / y) + 3", "5 + 3 * x * y ^ -1"),
+    #         ("(x + y) ^ 2", "(x + y) ^ 2"),
+    #         ("x^(1.5)","x ^ (3/2)"),
+    #         ("(x + y) * (x - y)", "x ^ 2 - y ^ 2"),
+    #         ("[x]_x=a,b", "-a + b"),
+    #         ("[x ^ 2 * y]_x=a,b", "-a ^ 2 * y + b ^ 2 * y"),
+    #         ("[x ^ 2]_x=3,4", "7"),
+    #         ("cos(x ^ 2)", "cos(x ^ 2)"),
+    #         ("cos(pi/4)", "2 ^ (1/2) * (1/2)"),
+    #         ("-(-x)", "x"),
+    #         ("cos(0) - cos(pi/4)", "1 - 2 ^ (1/2) * (1/2)"),
+    #         ("cos(0) - cos(pi/2)", "1"),
+    #         ("([x]_x=a,b) + 2 * ([x ^ 2 / 2]_x=a,b) + [x ^ 3 / 3]_x=a,b",
+    #          "(-a - a ^ 2 - 1/3 * a ^ 3) + b + b ^ 2 + 1/3 * b ^ 3"),
+    #         ("x ^ (1/2) * x ^ (1/2) ", "x"),
+    #         ("2 * (1 + 3)", "8"),
+    #         ("atan(1)", "1/4 * pi"),
+    #         ("atan(sqrt(3)/3)", "1/6 * pi"),
+    #         ("atan(sqrt(3))", "1/3 * pi"),
+    #         ("sin(3/4 * pi)", "2 ^ (1/2) * (1/2)"),
+    #         ("pi + pi / 3", "4/3 * pi"),
+    #         ("1 - cos(x) ^ 2", "1 - cos(x) ^ 2"),
+    #         ("x^2 * 6", "6 * x ^ 2"),
+    #         ("(x * y)^2", "x ^ 2 * y ^ 2"),
+    #         ("(2*sin(x))^2", "4 * sin(x) ^ 2"),
+    #         ("(2^(1/2)*sin(x))^(2)", "2 * sin(x) ^ 2"),
+    #         ("2 * 8 ^ (1/2) * 1 * cos(t) ^ 2", "4 * 2 ^ (1/2) * cos(t) ^ 2"),
+    #         ("8 ^ (1/2) * cos(t) ^ 2 * 1", "2 ^ (3/2) * cos(t) ^ 2"),
+    #         ("1/3 * 3 ^ 3", "9"),
+    #         ("(-1) * (1/3 * 2 ^ 3)", "-8/3"),
+    #         ("5 + (1/3 * 3 ^ 3 + (-1) * (1/3 * 2 ^ 3))", "34/3"),
+    #         ("2 * 8 ^ (1/2) * (1/2)", "2 * 2 ^ (1/2)"),
+    #         ("x / sqrt(5 - 4 * x)", "x * (5 - 4 * x) ^ (-1/2)"),
+    #         ("1/(1+sqrt(x))", "(1 + x ^ (1/2)) ^ -1"),
+    #         ("log(2) - log(3)", "log(2) - log(3)"),
+    #         ("(3 * x + 1) ^ -2", "(1 + 3 * x) ^ -2"),
+    #         ("-u/2","(-1/2) * u"),
+    #         ("exp(-u/2)", "exp(-1/2 * u)"),
+    #         ("log(exp(2))", "2"),
+    #         ("log(x^2)", "2 * log(x)"),
+    #         ("sqrt(cos(x) - cos(x)^3)", "(cos(x) - cos(x) ^ 3) ^ (1/2)"),
+    #         ("sqrt(cos(x) * (1 - cos(x)^2))","cos(x) ^ (1/2) * (1 - cos(x) ^ 2) ^ (1/2)"),
+    #         ("1/2 * u ^ ((-1)) * 2 * u", "1"),
+    #         ("1/2 * u ^ ((-1)) * (2 * u / (1 + u ^ (2)))", "(1 + u ^ 2) ^ -1"),
+    #         ("[log(1 + u ^ 2)]_u=-1,1", "0"),
+    #         ("sqrt(x ^ 2)", "abs(x)"),
+    #         ("[abs(x)]_x=-2,3", "1"),
+    #         # ("abs(sqrt(3) / 2) / 2", "1/4 * 3 ^ (1/2)"),
+    #         # ("abs(sqrt(3) / 2) / abs(sqrt(2) / 2)", "6 ^ (1/2) / 2"),
+    #         ("([log(abs(u))]_u=1/2 * 2 ^ (1/2),1/2 * 3 ^ (1/2))", "-log(2 ^ (1/2) * (1/2)) + log(3 ^ (1/2) * (1/2))"),
+    #         ("exp(1)", "exp(1)"),
+    #         ("[exp(u) * sin(u)]_u=0,1", "sin(1) * exp(1)"),
+    #         ("exp(1) ^ 2", "exp(2)"),
+    #         ("cos(acos(u)) ^ 2 ", "u ^ 2"),
+    #         ("log(exp(t)) ^ (-2)", "t ^ -2"),
+    #         ("exp(-t) * exp(t)", "1"),
+    #         ("(u ^ (-2) * exp(u)) * exp(-u)", "u ^ -2"),
+    #         ("[u ^ 8 / 8]_u=-3,3", "0"),
+    #         ("(1 - exp(-x)) / (1 - exp(-x))", "1"),
+    #         ("sin(sqrt(x ^ 2))", "sin(abs(x))"),
+    #         ("sqrt((u/pi)^2)", "abs(u / pi)"),
+    #         ("sin(sqrt((u/pi)^2))", "sin(abs(u / pi))"),
+    #         ("u*pi^(-1) * (u/pi)^(-1)", "1"),
+    #         ("(2 * u) * pi ^ (-1) *(1/pi)^(-1)", "2 * u"),
+    #         ("((2 * u) * pi ^ (-1)) * (u / pi) ^ (-1)", "2"),
+    #         ("2 * (INT x:[1,exp(1)]. 1) - ([u * log(u)]_u=2,2 * exp(1))", "2 * log(2) + (-2) * log(2 * exp(1)) * exp(1) + 2 * (INT x:[1,exp(1)]. 1)"),
+    #         ("3 ^ (1/2) * 3 ^ (1/2)", "3"),
+    #         ("2 * ((1/2) * 3 ^ (1/2))", "3 ^ (1/2)"),
+    #         ("exp(5 * x) * 3 / exp(3 * x)",  "3 * exp(2 * x)"),
+    #         ("exp(5 * x) * exp(2 * x) / 7", "1/7 * exp(7 * x)"),
+    #         ("(exp(4 * x) -1) * exp(4 * x)  ", "-exp(4 * x) + exp(8 * x)"),
+    #         ("(-u + 1) ^ 3 * (1 - u) ^ 2 ^ (-1)", "1 - u"),
+    #         ("2 * (-((1/2) * -(3 ^ (1/2))) + 1)", "3 ^ (1/2) + 2"),
+    #         ("1/2 * (-2 * (INT t:[0,(-1)/2]. exp(t)))", "-(INT t:[0,-1/2]. exp(t))"),
+    #         ("(cos(x)^4 * sin(x) ^ 2) /  -(sin(x))", "-cos(x) ^ 4 * sin(x)"),
+    #         ("2 ^ (1/2) ^ 6 / 6", "4/3"),
+    #         ("sin(x) ^ 2 * csc(x) ^ 3", "csc(x)"),
+    #         ("sin(x) ^ 3 * csc(x) ^ 2", "sin(x)"),
+    #         ("1 / (2 - sqrt(3))", "(2 - 3 ^ (1/2)) ^ -1")
+    #     ]
 
-        for s, res in test_data:
-            t = parse_expr(s)
-            self.assertEqual(str(t.normalize()), res)
+    #     for s, res in test_data:
+    #         t = parse_expr(s)
+    #         self.assertEqual(str(t.normalize()), res)
 
 
     def testGetSubExpr(self):
@@ -235,7 +235,7 @@ class ExprTest(unittest.TestCase):
             ("2 * x + pi / 3", "2"),
             ("sin(x)", "cos(x)"),
             ("sin(x^2)", "2 * x * cos(x^2)"),
-            ("cos(x)", "-sin(x)"),
+            ("cos(x)", "-1*sin(x)"),
             ("log(x)", "x ^ (-1)"),
             ("x * log(x)", "1 + log(x)"),
             ("exp(x)", "exp(x)"),
@@ -263,7 +263,7 @@ class ExprTest(unittest.TestCase):
         test_data = [
             ("1", True),
             ("x", False),
-            ("sin(pi/5)",True),
+            ("sin(pi/5)",False),
             ("sqrt(2)",True),
             ("2^(1/2)",True),
             ("1 + sqrt(3)/2",True),
@@ -362,6 +362,7 @@ class ExprTest(unittest.TestCase):
             ('(1 - 2 * sin(x) ^ 2) ^ (1/2)', (b - a * (sin(x) ^ Const(2)))^Const(Fraction(1/2)), True),
             ('sin(x) ^ 2 + cos(y)^2', (sin(x)^Const(2))+(cos(x)^Const(2)), False),
             ('sin(2*x+1)^2 + cos(2*x+1) ^ 2', (sin(y)^Const(2))+(cos(y)^Const(2)), True),
+            ('2*pi', a * pi, True),
         ]
 
         for r1, r2, r3 in test_data:
@@ -397,12 +398,60 @@ class ExprTest(unittest.TestCase):
             ("[x ^ 2 * y]_x=a,b", "-1*a ^ 2 * y + b ^ 2 * y"),
             ("[x ^ 2]_x=3,4", "7"),
             ("-(-x)", "x"),
+            ("(x*y)^2", "x^2*y^2"),
+            ("(x/y)^2", "x ^ 2 * y ^ -2"),
+            ("exp(2*x)^2", "exp(4*x)"),
+            ("exp(3*x)*exp((1/2)*x)", "exp(7/2 * x)"),
+            ("exp(2*x)^(-1)", "exp(-2 * x)"),
+            ("pi/2-pi/3", "1/6 * pi"),
+            ("(3/4)^(-1)", "(4/3)"),
+            ("3 ^ (1/2) * 2 ^ -1","3 ^ (1/2) * (1/2)"),
+            ("sin(pi/4)", "2^(-1/2)"),
+            ("sin(4/pi)", "sin(4*pi^(-1))"),
+            ("pi*pi", "pi^2"),
+            ("(1/4) * pi * (1/2)", "(1/8) * pi"),
+            ("pi/2 - pi/3", "1/6 * pi"),
+            ("(-1)*(3^(-1))", "(-1)*(1/3)")   
         ]
 
         for v, v_res in test_data:
             v = parse_expr(v)
             v_res = parse_expr(v_res)
-            self.assertEqual(v.normalize1(), v_res)
+            self.assertEqual(v.normalize(), v_res)
+
+    def testNormTrigBody(self):
+        test_data = [
+            ("0", "0"),
+            ("pi", "pi"),
+            ("-pi", "-pi"),
+            ("(2/3)*pi", "(2/3)*pi"),
+            ("(50/3)*pi", "(2/3)*pi"),
+            ("(-50/3)*pi", "(-2/3)*pi"),
+            ("(52/3)*pi", "(-2/3)*pi"),
+            ("(-52/3)*pi", "(2/3)*pi")
+        ]
+
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            v_res = parse_expr(v_res)
+            self.assertEqual(norm_trig_body(v), v_res)
+
+    def testComputeTrigValue(self):
+        test_data = [
+            ("sin(0)", "0"),
+            ("sin(pi/2)", "1"),
+            ("sin(pi/4)", "2^(-1/2)"),
+            ("sin(pi/7)", "sin(1/7*pi)"),
+            ("cos(-pi/3)", "1/2"),
+            ("sin(-pi/3)", "-1 * (3 ^ (1/2) * (1/2))"),
+            ("tan(pi/4)", "1"),
+            ("cot(-pi/4)", "-1")
+        ]
+
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            v_res = parse_expr(v_res)
+            self.assertEqual(compute_trig_value(v), v_res)
 
 if __name__ == "__main__":
     unittest.main()
