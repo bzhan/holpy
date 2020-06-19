@@ -2571,6 +2571,1147 @@
                 "n": "nat",
                 "x": "real"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "cos_poly_lower_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "odd n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "odd n ⊢ odd n"
+                },
+                {
+                    "args": "not_even",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "odd n ⊢ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "odd n ⊢ n = 0 ⟶ even n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "trueI",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "even_def_1, even 0",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "odd n, n = 0 ⊢ even 0"
+                },
+                {
+                    "args": "even n",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "odd n, n = 0 ⊢ even n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "odd n ⊢ n = 0 ⟶ even n"
+                },
+                {
+                    "args": "double_neg, ¬¬(n = 0) ⟶ ¬¬(even n)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "odd n ⊢ ¬¬(n = 0) ⟶ ¬¬(even n)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "odd n ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "le_1_1",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "odd n ⊢ 0 < n"
+                },
+                {
+                    "args": "lt_imp_le",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "odd n ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "sum_clauses_right, {f: λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)}",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "odd n ⊢ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) = sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) + -1 ^ n / of_nat (fact (2 * n)) * x ^ (2 * n)"
+                },
+                {
+                    "args": "taylor_cos, {n: n - 1, x: x}",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (cos x - sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))) ≤ abs x ^ (2 * (n - 1) + 2) / of_nat (fact (2 * (n - 1) + 2))"
+                },
+                {
+                    "args": "real_pow_one, -((1::real) ^ n) = -1",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -((1::real) ^ n) = -1"
+                },
+                {
+                    "args": "if_not_P, (if even n then (1::real) ^ n else -(1 ^ n)) = -1",
+                    "id": "10",
+                    "prevs": [
+                        "9",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "odd n ⊢ (if even n then (1::real) ^ n else -(1 ^ n)) = -1"
+                },
+                {
+                    "args": "real_pow_neg, -(1::real) ^ n = -1",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "odd n ⊢ -(1::real) ^ n = -1"
+                },
+                {
+                    "args": "2 * (n - 1) + 2 = 2 * n",
+                    "id": "12",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "z3",
+                    "th": "odd n ⊢ 2 * (n - 1) + 2 = 2 * n"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "12",
+                        "8"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "odd n ⊢ abs (cos x - sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))) ≤ abs x ^ (2 * n) / of_nat (fact (2 * n))"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "odd n ⊢ ∀a. ∀b. -1 / a * b = -(b / a)"
+                },
+                {
+                    "args": "a, real",
+                    "id": "14.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, real",
+                    "id": "14.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "-1 * real_inverse a * b = -(b * real_inverse a)",
+                    "id": "14.2",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ -1 * real_inverse a * b = -(b * real_inverse a)"
+                },
+                {
+                    "args": "real_divide_def, -1 / a * b = -(b / a)",
+                    "id": "14.3",
+                    "prevs": [
+                        "14.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "odd n ⊢ -1 / a * b = -(b / a)"
+                },
+                {
+                    "args": "",
+                    "id": "14.4",
+                    "prevs": [
+                        "14.0",
+                        "14.1",
+                        "14.3"
+                    ],
+                    "rule": "intros",
+                    "th": "odd n ⊢ ∀a. ∀b. -1 / a * b = -(b / a)"
+                },
+                {
+                    "args": "even_double, {n: n}",
+                    "id": "15",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even (2 * n)"
+                },
+                {
+                    "args": "real_abs_abs, abs (abs x) = abs x",
+                    "id": "16",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (abs x) = abs x"
+                },
+                {
+                    "args": "disjI2, {A: 2 * n = 0, B: abs (abs x) = abs x}",
+                    "id": "17",
+                    "prevs": [
+                        "16"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "odd n ⊢ 2 * n = 0 ∨ abs (abs x) = abs x"
+                },
+                {
+                    "args": "if_P, if even (2 * n) then 2 * n = 0 ∨ abs (abs x) = abs x else abs x = x",
+                    "id": "18",
+                    "prevs": [
+                        "17",
+                        "15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "odd n ⊢ if even (2 * n) then 2 * n = 0 ∨ abs (abs x) = abs x else abs x = x"
+                },
+                {
+                    "args": "real_pow_eq_eq, abs x ^ (2 * n) = x ^ (2 * n)",
+                    "id": "19",
+                    "prevs": [
+                        "18"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "odd n ⊢ abs x ^ (2 * n) = x ^ (2 * n)"
+                },
+                {
+                    "args": "",
+                    "id": "20",
+                    "prevs": [
+                        "19",
+                        "13"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "odd n ⊢ abs (cos x - sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))) ≤ x ^ (2 * n) / of_nat (fact (2 * n))"
+                },
+                {
+                    "args": "∀x::real. ∀y. ∀z. abs (x - y) ≤ z ⟶ y + -z ≤ x",
+                    "id": "21",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::real. ∀y. ∀z. abs (x - y) ≤ z ⟶ y + -z ≤ x"
+                },
+                {
+                    "args": "cos x, sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)), x ^ (2 * n) / of_nat (fact (2 * n))",
+                    "id": "22",
+                    "prevs": [
+                        "21",
+                        "20"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "odd n ⊢ sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) + -(x ^ (2 * n) / of_nat (fact (2 * n))) ≤ cos x"
+                },
+                {
+                    "args": "sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) + -1 / of_nat (fact (2 * n)) * x ^ (2 * n) ≤ cos x",
+                    "id": "23",
+                    "prevs": [
+                        "14",
+                        "22"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "odd n ⊢ sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) + -1 / of_nat (fact (2 * n)) * x ^ (2 * n) ≤ cos x"
+                },
+                {
+                    "args": "sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) + -1 ^ n / of_nat (fact (2 * n)) * x ^ (2 * n) ≤ cos x",
+                    "id": "24",
+                    "prevs": [
+                        "11",
+                        "23"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "odd n ⊢ sum ({0..n - 1}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) + -1 ^ n / of_nat (fact (2 * n)) * x ^ (2 * n) ≤ cos x"
+                },
+                {
+                    "args": "sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) ≤ cos x",
+                    "id": "25",
+                    "prevs": [
+                        "7",
+                        "24"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "odd n ⊢ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) ≤ cos x"
+                },
+                {
+                    "args": "",
+                    "id": "26",
+                    "prevs": [
+                        "0",
+                        "25"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ odd n ⟶ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) ≤ cos x"
+                }
+            ],
+            "prop": "odd n ⟶ sum ({0..n}) (λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i)) ≤ cos x",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "not_even"
+                },
+                {
+                    "goal": "~(n=0)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_1"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "le_1_1"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λi. -1 ^ i / of_nat (fact (2 * i)) * x ^ (2 * i))",
+                    "theorem": "sum_clauses_right"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n-1",
+                    "param_x": "x",
+                    "theorem": "taylor_cos"
+                },
+                {
+                    "goal": "-(1::real) ^ n = -1",
+                    "goal_id": "9",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_neg"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_one"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal": "2 * (n - 1) + 2 = 2 * n",
+                    "goal_id": "12",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "12",
+                        "8"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "∀a. ∀b. -1 / a * b = -(b / a)",
+                    "goal_id": "14",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "14",
+                    "method_name": "introduction",
+                    "names": "a,b"
+                },
+                {
+                    "goal_id": "14.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "14.2",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "14"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "abs x ^ (2 * n) = x ^ (2 * n)",
+                    "goal_id": "15",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "15",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_eq_eq"
+                },
+                {
+                    "goal": "even (2 * n)",
+                    "goal_id": "15",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "15",
+                    "method_name": "apply_backward_step",
+                    "theorem": "even_double"
+                },
+                {
+                    "fact_ids": [
+                        "15"
+                    ],
+                    "goal_id": "16",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_abs"
+                },
+                {
+                    "fact_ids": [
+                        "19",
+                        "13"
+                    ],
+                    "goal_id": "20",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "∀x::real. ∀y. ∀z. abs (x - y) ≤ z ⟶ y + -z ≤ x",
+                    "goal_id": "21",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "21",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "21"
+                    ],
+                    "goal_id": "22",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_pi_2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "pi / 2 - (x + pi / 2) = -x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ pi / 2 - (x + pi / 2) = -x"
+                },
+                {
+                    "args": "cos_neg, cos (-x) = cos x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (-x) = cos x"
+                },
+                {
+                    "args": "cos (pi / 2 - (x + pi / 2)) = cos x",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ cos (pi / 2 - (x + pi / 2)) = cos x"
+                },
+                {
+                    "args": "sin_cos, sin (x + pi / 2) = cos x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ sin (x + pi / 2) = cos x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sin (x + pi / 2) = cos x"
+                }
+            ],
+            "prop": "sin (x + pi / 2) = cos x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "sin_cos"
+                },
+                {
+                    "goal": "pi / 2 - (x + pi / 2) = -x",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_neg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sin_derivatives",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_derivative_sin_compose, {f: λx1. x1 + of_nat n * pi / 2, x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable (λx1. x1 + of_nat n * pi / 2) (atreal x) ⟶ real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) x = cos (x + of_nat n * pi / 2) * real_derivative (λx1. x1 + of_nat n * pi / 2) x"
+                },
+                {
+                    "args": "real_differentiable_id, {net: atreal x}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable (λx1. x1) (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_const, {c: of_nat n * pi / 2, net: atreal x}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable (λx1. of_nat n * pi / 2) (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_add",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_differentiable (λx1. x1 + of_nat n * pi / 2) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) x = cos (x + of_nat n * pi / 2) * real_derivative (λx1. x1 + of_nat n * pi / 2) x"
+                },
+                {
+                    "args": "has_real_derivative_id, {net: atreal x}",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. x1) 1 (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_const, {c: of_nat n * pi / 2, net: atreal x}",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. of_nat n * pi / 2) 0 (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_add",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ has_real_derivative (λx1. x1 + of_nat n * pi / 2) (1 + 0) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_derivative",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_derivative (λx1. x1 + of_nat n * pi / 2) x = 1 + 0"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "⊢ real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) x = cos (x + of_nat n * pi / 2) * (1 + 0)"
+                },
+                {
+                    "args": "real_add_rid",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) x = cos (x + of_nat n * pi / 2) * 1"
+                },
+                {
+                    "args": "real_mul_rid",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) x = cos (x + of_nat n * pi / 2)"
+                },
+                {
+                    "args": "x + (of_nat n * pi + pi) / 2 = x + of_nat n * pi / 2 + pi / 2",
+                    "id": "12",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ x + (of_nat n * pi + pi) / 2 = x + of_nat n * pi / 2 + pi / 2"
+                },
+                {
+                    "args": "sin (x + (of_nat n * pi + pi) / 2) = sin (x + of_nat n * pi / 2 + pi / 2)",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ sin (x + (of_nat n * pi + pi) / 2) = sin (x + of_nat n * pi / 2 + pi / 2)"
+                },
+                {
+                    "args": "sin_pi_2, sin (x + (of_nat n * pi + pi) / 2) = cos (x + of_nat n * pi / 2)",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ sin (x + (of_nat n * pi + pi) / 2) = cos (x + of_nat n * pi / 2)"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "15",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ cos (x + of_nat n * pi / 2) = real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) x"
+                },
+                {
+                    "args": "has_real_derivative_differentiable, {f: λx1. sin (x1 + of_nat n * pi / 2), x: x}",
+                    "id": "16",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) x) (atreal x) ⟷ real_differentiable (λx1. sin (x1 + of_nat n * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_compose_atreal, {g: sin}",
+                    "id": "17",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable sin (atreal (x + of_nat n * pi / 2)) ⟶ real_differentiable (sin ∘ (λx1. x1 + of_nat n * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "comp_fun_def",
+                    "id": "18",
+                    "prevs": [
+                        "17"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ real_differentiable sin (atreal (x + of_nat n * pi / 2)) ⟶ real_differentiable (λx1. sin (x1 + of_nat n * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_at_sin, {x: x + of_nat n * pi / 2}",
+                    "id": "19",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable sin (atreal (x + of_nat n * pi / 2))"
+                },
+                {
+                    "args": "",
+                    "id": "20",
+                    "prevs": [
+                        "18",
+                        "19"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ real_differentiable (λx1. sin (x1 + of_nat n * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) x) (atreal x)",
+                    "id": "21",
+                    "prevs": [
+                        "16",
+                        "20"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) x) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (cos (x + of_nat n * pi / 2)) (atreal x)",
+                    "id": "22",
+                    "prevs": [
+                        "15",
+                        "21"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (cos (x + of_nat n * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (sin (x + (of_nat n * pi + pi) / 2)) (atreal x)",
+                    "id": "23",
+                    "prevs": [
+                        "14",
+                        "22"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (sin (x + (of_nat n * pi + pi) / 2)) (atreal x)"
+                },
+                {
+                    "args": "real_mul_lid, has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (sin (x + (of_nat n * pi + 1 * pi) / 2)) (atreal x)",
+                    "id": "24",
+                    "prevs": [
+                        "23"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (sin (x + (of_nat n * pi + 1 * pi) / 2)) (atreal x)"
+                },
+                {
+                    "args": "real_one_def, has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (sin (x + (of_nat n * pi + of_nat 1 * pi) / 2)) (atreal x)",
+                    "id": "25",
+                    "prevs": [
+                        "24"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (sin (x + (of_nat n * pi + of_nat 1 * pi) / 2)) (atreal x)"
+                },
+                {
+                    "args": "real_add_rdistrib, has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (sin (x + (of_nat n + of_nat 1) * pi / 2)) (atreal x)",
+                    "id": "26",
+                    "prevs": [
+                        "25"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (sin (x + (of_nat n + of_nat 1) * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "real_of_nat_add, has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (sin (x + of_nat (n + 1) * pi / 2)) (atreal x)",
+                    "id": "27",
+                    "prevs": [
+                        "26"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (sin (x + of_nat (n + 1) * pi / 2)) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "28",
+                    "prevs": [
+                        "27"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) (sin (x + of_nat (n + 1) * pi / 2)) (atreal x)"
+                }
+            ],
+            "prop": [
+                "has_real_derivative (λx1. sin (x1 + of_nat n * pi / 2)) ",
+                "  (sin (x + of_nat (n + 1) * pi / 2)) ",
+                "  (atreal x)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λx1. x1 + of_nat n * pi / 2)",
+                    "param_x": "x",
+                    "theorem": "real_derivative_sin_compose"
+                },
+                {
+                    "goal": "real_differentiable (λx1. x1 + of_nat n * pi / 2) (atreal x)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_add"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_id"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_const"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "real_derivative (λx1. x1 + of_nat n * pi / 2) x = 1 + 0",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_derivative"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_add"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_id"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_const"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "4"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_add_rid"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_of_nat_add"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rdistrib"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal": "(sin (x + (of_nat n * pi + pi) / 2)) = cos (x + of_nat n * pi / 2)",
+                    "goal_id": "12",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "sin_pi_2"
+                },
+                {
+                    "goal": "x + (of_nat n * pi + pi) / 2 = x + of_nat n * pi / 2 + pi / 2",
+                    "goal_id": "12",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "12"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "14"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "15"
+                    ],
+                    "goal_id": "16",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λx1. sin (x1 + of_nat n * pi / 2))",
+                    "param_x": "x",
+                    "theorem": "has_real_derivative_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "16"
+                    ],
+                    "goal_id": "17",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "17",
+                    "method_name": "apply_forward_step",
+                    "param_g": "sin",
+                    "theorem": "real_differentiable_compose_atreal"
+                },
+                {
+                    "fact_ids": [
+                        "17"
+                    ],
+                    "goal_id": "18",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "comp_fun_def"
+                },
+                {
+                    "fact_ids": [
+                        "18"
+                    ],
+                    "goal_id": "19",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "19",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_sin"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
         }
     ],
     "description": "Formal inequalities for trig.",
