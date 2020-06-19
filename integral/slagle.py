@@ -35,8 +35,10 @@ def substitution(integral, subst):
 def linear_substitution(integral):
     assert isinstance(integral, Integral), "%s Should be an integral." % (integral)
     func_body = collect_spec_expr(integral.body, Symbol('f', [FUN]))
-    if len(func_body) == 1 and (match(func_body[0], pat1) or match(func_body[0], pat2)): 
+
+    if len(func_body) == 1 and any([match(func_body[0], p) for p in linear_pat]): 
         return linearize(substitution(integral, func_body[0]).normalize())
+
     elif len(func_body) == 0:
         power_body = collect_spec_expr(integral.body, pat3)
         if len(power_body) == 0:
@@ -46,6 +48,7 @@ def linear_substitution(integral):
             return linearize(substitution(integral, power_body[0]))
         else:
             return integral
+
     else:
         return integral
 
@@ -111,28 +114,32 @@ class Linearity(AlgorithmRule):
     
     """
     def eval(self, e):
-        if not isinstance(e, Integral) or e.body.ty != OP:
-            return e
+        # if not isinstance(e, Integral) or e.body.ty != OP:
+        #     return e
 
-        if e.body.op == "*":
-            if e.body.args[0].is_constant() and e.body.args[1].is_constant():
-                return e.body * Linearity().eval(Integral(e.var, e.lower, e.upper, Const(1)))
-            elif e.body.args[0].is_constant():
-                return e.body.args[0] * Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[1]))
-            elif e.body.args[1].is_constant():
-                return e.body.args[1] * Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0]))
-            else:
-                return e
-        elif e.body.op == "+":
-            return Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0])) + Integral(e.var, e.lower, e.upper, e.body.args[1])
+        # e = e.normalize()
+
+
+        # if e.body.op == "*":
+        #     if e.body.args[0].is_constant() and e.body.args[1].is_constant():
+        #         return e.body * Linearity().eval(Integral(e.var, e.lower, e.upper, Const(1)))
+        #     elif e.body.args[0].is_constant():
+        #         return e.body.args[0] * Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[1]))
+        #     elif e.body.args[1].is_constant():
+        #         return e.body.args[1] * Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0]))
+        #     else:
+        #         return e
+        # elif e.body.op == "+":
+        #     return Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0])) + Integral(e.var, e.lower, e.upper, e.body.args[1])
         
-        elif e.body.op == "-": 
-            if len(e.body.args) == 2:
-                return Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0])) - Integral(e.var, e.lower, e.upper, e.body.args[1])
-            else:
-                return Op("-", Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0]))) 
-        else:
-            return e
+        # elif e.body.op == "-": 
+        #     if len(e.body.args) == 2:
+        #         return Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0])) - Integral(e.var, e.lower, e.upper, e.body.args[1])
+        #     else:
+        #         return Op("-", Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0]))) 
+        # else:
+        #    return e
+        return rules.Linearity().eval(e)
 
 class LinearSubstitution(AlgorithmRule):
     """Algorithm rule (d) in Slagle's thesis.
@@ -375,13 +382,13 @@ class HeuristicTrigSubstitution(HeuristicRule):
             a, b = find_ab(s)
             assert not a.val < 0 or not b.val < 0, "Invalid value: a=%s, b=%s" % (a.val, b.val)
             if a.val > 0 and b.val > 0:
-                subst = sqrt(Const(Fraction(a.val, b.val))).normalize()*tan(Var("u"))
+                subst = Op("^", Const(Fraction(a.val, b.val)), Const(Fraction(1,2))).normalize()*tan(Var("u"))
                 
             elif a.val > 0 and b.val < 0:
-                subst = sqrt(Const(Fraction(a.val, -b.val))).normalize() * sin(Var("u"))
+                subst = Op("^", Const(Fraction(a.val, -b.val)), Const(Fraction(1,2))).normalize() * sin(Var("u"))
             
             elif a.val < 0 and b.val > 0:
-                subst = sqrt(Const(Fraction(-a.val, b.val))).normalize() * sec(Var("u"))
+                subst = Op("^", Const(Fraction(-a.val, b.val)), Const(Fraction(1,2))).normalize() * sec(Var("u"))
 
             new_integral = rules.Substitution2("u", subst).eval(e)
             res.append(new_integral.normalize())
@@ -453,7 +460,7 @@ heuristic_rules = [
     HeuristicDistributionSum,
     HeuristicExpandPower,
     HeuristicTrigSubstitution,
-    #HeuristicExponentBase
+    HeuristicExponentBase
 ]
 
 

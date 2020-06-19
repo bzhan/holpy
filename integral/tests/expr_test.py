@@ -405,13 +405,16 @@ class ExprTest(unittest.TestCase):
             ("exp(2*x)^(-1)", "exp(-2 * x)"),
             ("pi/2-pi/3", "1/6 * pi"),
             ("(3/4)^(-1)", "(4/3)"),
-            ("3 ^ (1/2) * 2 ^ -1","3 ^ (1/2) * (1/2)"),
+            ("3 ^ (1/2) * 2 ^ -1","1/2 * 3 ^ (1/2)"),
             ("sin(pi/4)", "2^(-1/2)"),
             ("sin(4/pi)", "sin(4*pi^(-1))"),
             ("pi*pi", "pi^2"),
             ("(1/4) * pi * (1/2)", "(1/8) * pi"),
             ("pi/2 - pi/3", "1/6 * pi"),
-            ("(-1)*(3^(-1))", "(-1)*(1/3)")   
+            ("(-1)*(3^(-1))", "-1/3"),
+            ("1 / (2 * (u ^ 2 + 1))", "1/2 * (1 + u ^ 2) ^ -1"), 
+            #("2 * exp(2) + -1 * exp(2)")
+            #("2 * exp(2) + exp(-1) + -1 * ([exp(x)]_x=-1,2)", "2 * exp(2) + -1 * exp(2) + 2 * exp(-1)")
         ]
 
         for v, v_res in test_data:
@@ -443,7 +446,7 @@ class ExprTest(unittest.TestCase):
             ("sin(pi/4)", "2^(-1/2)"),
             ("sin(pi/7)", "sin(1/7*pi)"),
             ("cos(-pi/3)", "1/2"),
-            ("sin(-pi/3)", "-1 * (3 ^ (1/2) * (1/2))"),
+            ("sin(-pi/3)", "-(1/2) * 3^(1/2)"),
             ("tan(pi/4)", "1"),
             ("cot(-pi/4)", "-1")
         ]
@@ -452,6 +455,27 @@ class ExprTest(unittest.TestCase):
             v = parse_expr(v)
             v_res = parse_expr(v_res)
             self.assertEqual(compute_trig_value(v), v_res)
+
+    def testUnivariatePolynomial(self):
+        test_data = [
+            ("1", True),
+            ("x - 1", True),
+            ("x*y", False),
+            ("x - y + z", False),
+            ("x^2 + 1", True),
+            ("1 + 2 * x - x ^ 2 + x ^ 4", True),
+            ("x*(x - 1) ^ (-1)", True),
+            ("(x^2+1)/(y-1)", False),
+            ("(1-sin(x)^2)/(1+sin(x))", True),
+            ("(cos(x)^2+1)/(sin(x))", False)
+        ]
+
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            self.assertEqual(v.is_univariate(), v_res)
+
+    def testSimplifyConstant(self):
+        pass
 
 if __name__ == "__main__":
     unittest.main()

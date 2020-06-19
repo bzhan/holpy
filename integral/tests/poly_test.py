@@ -100,6 +100,20 @@ class PolynomialTest(unittest.TestCase):
             p3 = parse_poly(p3)
             self.assertEqual(p1 * p2, p3)
 
+    def testUnivariatePolynomial(self):
+        test_data = [
+            ("1", True),
+            ("x + 1", True),
+            ("xy", False),
+            ("x + y + z", False),
+            ("x^2 + 1", True),
+            ("1 + 2  x + x ^ 2 + x ^ 4", True),            
+        ]
+
+        for p, p_res in test_data:
+            p = parse_poly(p)
+            self.assertEqual(p.is_univariate(), p_res)
+
 
 if __name__ == "__main__":
     unittest.main()

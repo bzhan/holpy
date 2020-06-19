@@ -253,9 +253,9 @@ class Substitution1(Rule):
         upper = var_subst.subst(e.var, e.upper).normalize()
         if parser.parse_expr(e.var) not in body.findVar():
             if sympy_style(lower) <= sympy_style(upper):
-                return Integral(self.var_name, lower, upper, body), body
+                return Integral(self.var_name, lower, upper, body).normalize(), body.normalize()
             else:
-                return Integral(self.var_name, upper, lower, Op("-", body).normalize()), body
+                return Integral(self.var_name, upper, lower, Op("-", body)).normalize(), body.normalize()
         else:
             gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
             if gu == []: # sympy can't solve the equation
@@ -268,9 +268,9 @@ class Substitution1(Rule):
             lower = holpy_style(sympy_style(var_subst_1).subs(sympy_style(e.var), sympy_style(e.lower)))
             upper = holpy_style(sympy_style(var_subst_1).subs(sympy_style(e.var), sympy_style(e.upper)))
             if sympy_style(lower) < sympy_style(upper):
-                return Integral(self.var_name, lower, upper, new_problem_body), new_problem_body
+                return Integral(self.var_name, lower, upper, new_problem_body).normalize(), new_problem_body.normalize()
             else:
-                return Integral(self.var_name, upper, lower, Op("-", new_problem_body).normalize()), new_problem_body
+                return Integral(self.var_name, upper, lower, Op("-", new_problem_body)).normalize(), new_problem_body.normalize()
 
 class Substitution2(Rule):
     """Apply substitution x = f(u)"""

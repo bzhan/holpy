@@ -82,15 +82,13 @@ class Monomial:
         return self <= other and self != other
 
     def __mul__(self, other):
+        # Contain bug.
         return Monomial((self.coeff * other.coeff).normalize(), self.factors + other.factors)
 
     def scale(self, c):
         """Test delete 
         """
         assert isinstance(c, expr.Expr) and c.is_constant(), "Unexpected coeff: %s" % str(c)
-        # if c.ty == expr.CONST and self.coeff.ty == expr.CONST:
-        #     return Monomial(expr.Const(c.val * self.coeff.val), self.factors)
-        # else:
         return Monomial((c * self.coeff).normalize(), self.factors)
 
     def __neg__(self):
@@ -104,6 +102,14 @@ class Monomial:
             return self.coeff
         else:
             raise AssertionError
+
+    @property
+    def degree(self):
+        if len(self.factors) == 0:
+            return 0
+        else:
+            return self.factors[-1][1]
+
 
 class Polynomial:
     """Represents a polynomial."""
@@ -148,6 +154,28 @@ class Polynomial:
             return self.monomials[0].get_constant()
         else:
             raise AssertionError
+
+    def is_univariate(self):
+        """Determine polynomial is whether univariate.
+        
+        If there is unique f(x) occurs in polynomial, it is univariate.
+        """
+        d = set()
+        for mono in self.monomials:
+            if len(mono.factors) > 1:
+                return False
+            if len(mono.factors) == 1:
+                d.add(mono.factors[0][0])
+        
+        return len(d) <= 1
+        
+
+    def is_multivariate(self):
+        return not self.is_univariate()
+
+    @property
+    def degree(self):
+        return self.monomials[-1].degree
 
 def singleton(s):
     """Polynomial for 1*s^1."""
