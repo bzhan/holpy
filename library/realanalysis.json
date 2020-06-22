@@ -6107,6 +6107,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_sums_infsum",
             "prop": "real_sums f (real_infsum s f) s ⟷ real_summable s f",
             "ty": "thm",
@@ -6140,6 +6143,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_infsum_unique",
             "prop": "real_sums f l s ⟶ real_infsum s f = l",
             "ty": "thm",
@@ -6316,6 +6322,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_series_lmul",
             "prop": "real_sums x x0 s ⟶ real_sums (λn. c * x n) (c * x0) s",
             "ty": "thm",
