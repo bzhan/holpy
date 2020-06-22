@@ -1,0 +1,1923 @@
+{
+    "content": [
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "abs_neg_pow",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_abs_neg, abs (-x) ^ n = abs x ^ n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (-x) ^ n = abs x ^ n"
+                },
+                {
+                    "args": "real_abs_pow, abs (-x ^ n) = abs x ^ n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (-x ^ n) = abs x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs (-x ^ n) = abs x ^ n"
+                }
+            ],
+            "prop": "abs (-x ^ n) = abs x ^ n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_pow"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_neg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "abs_neg_one_pow",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs (1::real) = 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ abs (1::real) = 1"
+                },
+                {
+                    "args": "real_pow_one, abs ((1::real) ^ n) = 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs ((1::real) ^ n) = 1"
+                },
+                {
+                    "args": "real_abs_pow, abs (1::real) ^ n = 1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ abs (1::real) ^ n = 1"
+                },
+                {
+                    "args": "abs_neg_pow, abs (-(1::real) ^ n) = 1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (-(1::real) ^ n) = 1"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs (-(1::real) ^ n) = 1"
+                }
+            ],
+            "prop": "abs (-(1::real) ^ n) = 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "abs_neg_pow"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_abs_pow"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_one"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_infsum_offset",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_summable (from m) f",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_summable (from m) f ⊢ real_summable (from m) f"
+                },
+                {
+                    "args": "m ≤ k",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ k ⊢ m ≤ k"
+                },
+                {
+                    "args": "real_summable_from_elsewhere, {n: k + 1}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_summable (from m) f ⊢ real_summable (from (k + 1)) f"
+                },
+                {
+                    "args": "real_summable_def",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_summable (from m) f ⊢ ∃l. real_sums f l (from m)"
+                },
+                {
+                    "args": "l, real",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR l"
+                },
+                {
+                    "args": "real_sums f l (from m)",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_sums f l (from m) ⊢ real_sums f l (from m)"
+                },
+                {
+                    "args": "real_sums_offset, {n: k + 1}",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_sums f l (from m) ⊢ m < k + 1 ⟶ real_sums f (l - sum ({m..k + 1 - 1}) f) (from (k + 1))"
+                },
+                {
+                    "args": "nat_plus_minus",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_sums f l (from m) ⊢ m < k + 1 ⟶ real_sums f (l - sum ({m..k}) f) (from (k + 1))"
+                },
+                {
+                    "args": "m < k + 1",
+                    "id": "8",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "m ≤ k ⊢ m < k + 1"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "7",
+                        "8"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "m ≤ k, real_sums f l (from m) ⊢ real_sums f (l - sum ({m..k}) f) (from (k + 1))"
+                },
+                {
+                    "args": "real_infsum_unique",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ k, real_sums f l (from m) ⊢ real_infsum (from (k + 1)) f = l - sum ({m..k}) f"
+                },
+                {
+                    "args": "sum ({m..k}) f + (l - sum ({m..k}) f) = l",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ sum ({m..k}) f + (l - sum ({m..k}) f) = l"
+                },
+                {
+                    "args": "real_sums f (sum ({m..k}) f + (l - sum ({m..k}) f)) (from m)",
+                    "id": "12",
+                    "prevs": [
+                        "11",
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m ≤ k, real_summable (from m) f, real_sums f l (from m) ⊢ real_sums f (sum ({m..k}) f + (l - sum ({m..k}) f)) (from m)"
+                },
+                {
+                    "args": "real_sums f (sum ({m..k}) f + real_infsum (from (k + 1)) f) (from m)",
+                    "id": "13",
+                    "prevs": [
+                        "10",
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m ≤ k, real_summable (from m) f, real_sums f l (from m) ⊢ real_sums f (sum ({m..k}) f + real_infsum (from (k + 1)) f) (from m)"
+                },
+                {
+                    "args": "real_infsum_unique",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ k, real_summable (from m) f, real_sums f l (from m) ⊢ real_infsum (from m) f = sum ({m..k}) f + real_infsum (from (k + 1)) f"
+                },
+                {
+                    "args": "∃l. real_sums f l (from m)",
+                    "id": "15",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3",
+                        "4",
+                        "5",
+                        "14"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_summable (from m) f ⟶ m ≤ k ⟶ real_infsum (from m) f = sum ({m..k}) f + real_infsum (from (k + 1)) f"
+                }
+            ],
+            "prop": [
+                "real_summable (from m) f ",
+                "⟶ m ≤ k ⟶ real_infsum (from m) f = sum ({m..k}) f + real_infsum (from (k + 1)) f"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_n": "k+1",
+                    "theorem": "real_summable_from_elsewhere"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_summable_def"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "exists_elim",
+                    "names": "l"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_infsum_unique"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "param_n": "k+1",
+                    "theorem": "real_sums_offset"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_plus_minus"
+                },
+                {
+                    "goal": "m < k + 1",
+                    "goal_id": "8",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_infsum_unique"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "sum ({m..k}) f + (l - sum ({m..k}) f) = l",
+                    "goal_id": "11",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "k": "nat",
+                "m": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_infsum_offset_alt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_summable (from m) f",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_summable (from m) f ⊢ real_summable (from m) f"
+                },
+                {
+                    "args": "m < k",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < k ⊢ m < k"
+                },
+                {
+                    "args": "m ≤ k - 1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "m < k ⊢ m ≤ k - 1"
+                },
+                {
+                    "args": "real_infsum_offset",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m < k, real_summable (from m) f ⊢ real_infsum (from m) f = sum ({m..k - 1}) f + real_infsum (from (k - 1 + 1)) f"
+                },
+                {
+                    "args": "1 ≤ k",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "m < k ⊢ 1 ≤ k"
+                },
+                {
+                    "args": "sub_add",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m < k, real_summable (from m) f ⊢ k - 1 + 1 = k"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5",
+                        "3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "m < k, real_summable (from m) f ⊢ real_infsum (from m) f = sum ({m..k - 1}) f + real_infsum (from k) f"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_summable (from m) f ⟶ m < k ⟶ real_infsum (from m) f = sum ({m..k - 1}) f + real_infsum (from k) f"
+                }
+            ],
+            "prop": [
+                "real_summable (from m) f ",
+                "⟶ m < k ⟶ real_infsum (from m) f = sum ({m..k - 1}) f + real_infsum (from k) f"
+            ],
+            "steps": [
+                {
+                    "goal": "m <= k - 1",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_infsum_offset"
+                },
+                {
+                    "goal": "k-1+1=k",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sub_add"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "3"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "k": "nat",
+                "m": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "power_series_simple_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_summable (from m) (λi. a i * x ^ i)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_summable (from m) (λi. a i * x ^ i) ⊢ real_summable (from m) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "∀i. m ≤ i ⟶ abs (a i) ≤ u",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ ∀i. m ≤ i ⟶ abs (a i) ≤ u"
+                },
+                {
+                    "args": "abs x < 1",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "real_sums_infsum, real_sums (λi. a i * x ^ i) (real_infsum (from m) (λi. a i * x ^ i)) (from m)",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ real_sums (λi. a i * x ^ i) (real_infsum (from m) (λi. a i * x ^ i)) (from m)"
+                },
+                {
+                    "args": "real_abs_abs, abs (abs x) < 1",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ abs (abs x) < 1"
+                },
+                {
+                    "args": "real_sums_gp, {n: m, x: abs x}",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ real_sums (λk. abs x ^ k) (abs x ^ m / (1 - abs x)) (from m)"
+                },
+                {
+                    "args": "real_divide_def, real_sums (λn. abs x ^ n) (abs x ^ m * real_inverse (1 - abs x)) (from m)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ real_sums (λn. abs x ^ n) (abs x ^ m * real_inverse (1 - abs x)) (from m)"
+                },
+                {
+                    "args": "real_series_lmul, {c: u, s: from m, x: λn::nat. abs x ^ n, x0: abs x ^ m * real_inverse (1 - abs x)}",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ real_sums (λn. u * abs x ^ n) (u * (abs x ^ m * real_inverse (1 - abs x))) (from m)"
+                },
+                {
+                    "args": "real_mult_assoc, real_sums (λi. u * abs x ^ i) (u * abs x ^ m * real_inverse (1 - abs x)) (from m)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ real_sums (λi. u * abs x ^ i) (u * abs x ^ m * real_inverse (1 - abs x)) (from m)"
+                },
+                {
+                    "args": "real_divide_def, real_sums (λi. u * abs x ^ i) (u * abs x ^ m / (1 - abs x)) (from m)",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ real_sums (λi. u * abs x ^ i) (u * abs x ^ m / (1 - abs x)) (from m)"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ ∀i. m ≤ i ⟶ abs (a i * x ^ i) ≤ u * abs x ^ i"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "10.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "m ≤ i",
+                    "id": "10.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ i ⊢ m ≤ i"
+                },
+                {
+                    "args": "real_abs_pos, {x: x}",
+                    "id": "10.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ abs x"
+                },
+                {
+                    "args": "real_pow_le, {n: i, x: abs x}",
+                    "id": "10.3",
+                    "prevs": [
+                        "10.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ i, abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ 0 ≤ abs x ^ i"
+                },
+                {
+                    "args": "i",
+                    "id": "10.4",
+                    "prevs": [
+                        "1",
+                        "10.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "m ≤ i, abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ abs (a i) ≤ u"
+                },
+                {
+                    "args": "real_le_lmul",
+                    "id": "10.5",
+                    "prevs": [
+                        "10.3",
+                        "10.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ i, abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ abs x ^ i * abs (a i) ≤ abs x ^ i * u"
+                },
+                {
+                    "args": "real_mult_comm, abs (a i) * abs x ^ i ≤ u * abs x ^ i",
+                    "id": "10.6",
+                    "prevs": [
+                        "10.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ i, abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ abs (a i) * abs x ^ i ≤ u * abs x ^ i"
+                },
+                {
+                    "args": "real_abs_pow, abs (a i) * abs (x ^ i) ≤ u * abs x ^ i",
+                    "id": "10.7",
+                    "prevs": [
+                        "10.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ i, abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ abs (a i) * abs (x ^ i) ≤ u * abs x ^ i"
+                },
+                {
+                    "args": "real_abs_mul, abs (a i * x ^ i) ≤ u * abs x ^ i",
+                    "id": "10.8",
+                    "prevs": [
+                        "10.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ i, abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ abs (a i * x ^ i) ≤ u * abs x ^ i"
+                },
+                {
+                    "args": "",
+                    "id": "10.9",
+                    "prevs": [
+                        "10.0",
+                        "10.1",
+                        "10.8"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ ∀i. m ≤ i ⟶ abs (a i * x ^ i) ≤ u * abs x ^ i"
+                },
+                {
+                    "args": "in_from, ∀i. i ∈ from m ⟶ abs (a i * x ^ i) ≤ u * abs x ^ i",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ ∀i. i ∈ from m ⟶ abs (a i * x ^ i) ≤ u * abs x ^ i"
+                },
+                {
+                    "args": "real_series_bound",
+                    "id": "12",
+                    "prevs": [
+                        "3",
+                        "9",
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ abs (real_infsum (from m) (λi. a i * x ^ i)) ≤ u * abs x ^ m / (1 - abs x)"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_summable (from m) (λi. a i * x ^ i) ⟶ (∀i. m ≤ i ⟶ abs (a i) ≤ u) ⟶ abs x < 1 ⟶ abs (real_infsum (from m) (λi. a i * x ^ i)) ≤ u * abs x ^ m / (1 - abs x)"
+                }
+            ],
+            "prop": [
+                "real_summable (from m) (λi. a i * x ^ i) ",
+                "⟶ (∀i. m ≤ i ⟶ abs (a i) ≤ u) ",
+                "   ⟶ abs x < 1 ",
+                "      ⟶ abs (real_infsum (from m) (λi. a i * x ^ i)) ≤ u * abs x ^ m / (1 - abs x)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(λi. a i * x ^ i)",
+                    "param_g": "(λi::nat. u * abs x ^ i)",
+                    "param_s": "from m",
+                    "theorem": "real_series_bound"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sums_infsum"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_series_lmul"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_sums_gp"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_abs"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_from"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_mul"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_pow"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_lmul"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pow_le"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_abs_pos"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "10.4",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat ⇒ real",
+                "m": "nat",
+                "u": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "power_series_simple_bound2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_summable (from m) (λi. a i * x ^ i)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_summable (from m) (λi. a i * x ^ i) ⊢ real_summable (from m) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i)"
+                },
+                {
+                    "args": "abs x < 1",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ ∀i. m ≤ i ⟶ abs (a i) ≤ abs (a m)"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ m ≤ 0 ⟶ abs (a 0) ≤ abs (a m)"
+                },
+                {
+                    "args": "m ≤ 0",
+                    "id": "3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ 0 ⊢ m ≤ 0"
+                },
+                {
+                    "args": "nat_le_zero",
+                    "id": "3.1.1",
+                    "prevs": [
+                        "3.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ 0 ⊢ m = 0"
+                },
+                {
+                    "args": "real_le_refl, {x: abs (a 0)}",
+                    "id": "3.1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (a 0) ≤ abs (a 0)"
+                },
+                {
+                    "args": "abs (a 0) ≤ abs (a m)",
+                    "id": "3.1.3",
+                    "prevs": [
+                        "3.1.1",
+                        "3.1.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m ≤ 0, abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ abs (a 0) ≤ abs (a m)"
+                },
+                {
+                    "args": "",
+                    "id": "3.1.4",
+                    "prevs": [
+                        "3.1.0",
+                        "3.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ m ≤ 0 ⟶ abs (a 0) ≤ abs (a m)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ ∀n. (m ≤ n ⟶ abs (a n) ≤ abs (a m)) ⟶ m ≤ Suc n ⟶ abs (a (Suc n)) ≤ abs (a m)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "m ≤ n ⟶ abs (a n) ≤ abs (a m)",
+                    "id": "3.2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⟶ abs (a n) ≤ abs (a m) ⊢ m ≤ n ⟶ abs (a n) ≤ abs (a m)"
+                },
+                {
+                    "args": "m ≤ Suc n",
+                    "id": "3.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ Suc n ⊢ m ≤ Suc n"
+                },
+                {
+                    "args": "nat_less_eq_def_2",
+                    "id": "3.2.3",
+                    "prevs": [
+                        "3.2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m ≤ Suc n ⊢ m = Suc n ∨ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ Suc n, abs x < 1, real_summable (from m) (λi. a i * x ^ i), m ≤ n ⟶ abs (a n) ≤ abs (a m), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ m = Suc n ⟶ abs (a (Suc n)) ≤ abs (a m)"
+                },
+                {
+                    "args": "m = Suc n",
+                    "id": "3.2.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = Suc n ⊢ m = Suc n"
+                },
+                {
+                    "args": "real_le_refl, {x: abs (a (Suc n))}",
+                    "id": "3.2.4.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (a (Suc n)) ≤ abs (a (Suc n))"
+                },
+                {
+                    "args": "abs (a (Suc n)) ≤ abs (a m)",
+                    "id": "3.2.4.2",
+                    "prevs": [
+                        "3.2.4.0",
+                        "3.2.4.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = Suc n, m ≤ Suc n, abs x < 1, real_summable (from m) (λi. a i * x ^ i), m ≤ n ⟶ abs (a n) ≤ abs (a m), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ abs (a (Suc n)) ≤ abs (a m)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4.3",
+                    "prevs": [
+                        "3.2.4.0",
+                        "3.2.4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ Suc n, abs x < 1, real_summable (from m) (λi. a i * x ^ i), m ≤ n ⟶ abs (a n) ≤ abs (a m), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ m = Suc n ⟶ abs (a (Suc n)) ≤ abs (a m)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ Suc n, abs x < 1, real_summable (from m) (λi. a i * x ^ i), m ≤ n ⟶ abs (a n) ≤ abs (a m), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ m ≤ n ⟶ abs (a (Suc n)) ≤ abs (a m)"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "3.2.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "n",
+                    "id": "3.2.5.1",
+                    "prevs": [
+                        "1",
+                        "3.2.5.0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "m ≤ n, m ≤ Suc n, abs x < 1, real_summable (from m) (λi. a i * x ^ i), m ≤ n ⟶ abs (a n) ≤ abs (a m), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ abs (a (Suc n)) ≤ abs (a n)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.2",
+                    "prevs": [
+                        "3.2.1",
+                        "3.2.5.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "m ≤ n, m ≤ Suc n, abs x < 1, real_summable (from m) (λi. a i * x ^ i), m ≤ n ⟶ abs (a n) ≤ abs (a m), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ abs (a n) ≤ abs (a m)"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "3.2.5.3",
+                    "prevs": [
+                        "3.2.5.1",
+                        "3.2.5.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, m ≤ Suc n, abs x < 1, real_summable (from m) (λi. a i * x ^ i), m ≤ n ⟶ abs (a n) ≤ abs (a m), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ abs (a (Suc n)) ≤ abs (a m)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.4",
+                    "prevs": [
+                        "3.2.5.0",
+                        "3.2.5.3"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ Suc n, abs x < 1, real_summable (from m) (λi. a i * x ^ i), m ≤ n ⟶ abs (a n) ≤ abs (a m), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ m ≤ n ⟶ abs (a (Suc n)) ≤ abs (a m)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "3.2.6",
+                    "prevs": [
+                        "3.2.3",
+                        "3.2.4",
+                        "3.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ Suc n, abs x < 1, real_summable (from m) (λi. a i * x ^ i), m ≤ n ⟶ abs (a n) ≤ abs (a m), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ abs (a (Suc n)) ≤ abs (a m)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.7",
+                    "prevs": [
+                        "3.2.0",
+                        "3.2.1",
+                        "3.2.2",
+                        "3.2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ ∀n. (m ≤ n ⟶ abs (a n) ≤ abs (a m)) ⟶ m ≤ Suc n ⟶ abs (a (Suc n)) ≤ abs (a m)"
+                },
+                {
+                    "args": "nat_induct, {P: λi. m ≤ i ⟶ abs (a i) ≤ abs (a m), x: i}",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.1",
+                        "3.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ m ≤ i ⟶ abs (a i) ≤ abs (a m)"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ ∀i. m ≤ i ⟶ abs (a i) ≤ abs (a m)"
+                },
+                {
+                    "args": "power_series_simple_bound",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1, real_summable (from m) (λi. a i * x ^ i), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ abs (real_infsum (from m) (λi. a i * x ^ i)) ≤ abs (a m) * abs x ^ m / (1 - abs x)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_summable (from m) (λi. a i * x ^ i) ⟶ (∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i)) ⟶ abs x < 1 ⟶ abs (real_infsum (from m) (λi. a i * x ^ i)) ≤ abs (a m) * abs x ^ m / (1 - abs x)"
+                }
+            ],
+            "prop": [
+                "real_summable (from m) (λi. a i * x ^ i) ",
+                "⟶ (∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i)) ",
+                "   ⟶ abs x < 1 ",
+                "      ⟶ abs (real_infsum (from m) (λi. a i * x ^ i)) ≤ ",
+                "         abs (a m) * abs x ^ m / (1 - abs x)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "power_series_simple_bound"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "i"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.1.0"
+                    ],
+                    "goal_id": "3.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "nat_le_zero"
+                },
+                {
+                    "fact_ids": [
+                        "3.1.1"
+                    ],
+                    "goal_id": "3.1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.2"
+                    ],
+                    "goal_id": "3.2.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.3"
+                    ],
+                    "goal_id": "3.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "3.2.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.4.0"
+                    ],
+                    "goal_id": "3.2.4.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.2.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "3.2.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.2.5.1",
+                    "method_name": "apply_backward_step",
+                    "param_y": "abs (a n)",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.2.5.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.1"
+                    ],
+                    "goal_id": "3.2.5.2",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat ⇒ real",
+                "m": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_sums_simple_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_sums (λi. a i * x ^ i) t (from n)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_sums (λi. a i * x ^ i) t (from n) ⊢ real_sums (λi. a i * x ^ i) t (from n)"
+                },
+                {
+                    "args": "n < m",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n < m ⊢ n < m"
+                },
+                {
+                    "args": "∀i. m ≤ i ⟶ abs (a i) ≤ u",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀i. m ≤ i ⟶ abs (a i) ≤ u ⊢ ∀i. m ≤ i ⟶ abs (a i) ≤ u"
+                },
+                {
+                    "args": "abs x < 1",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "real_sums_summable",
+                    "id": "4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_sums (λi. a i * x ^ i) t (from n) ⊢ real_summable (from n) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "real_infsum_unique",
+                    "id": "5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_sums (λi. a i * x ^ i) t (from n) ⊢ real_infsum (from n) (λi. a i * x ^ i) = t"
+                },
+                {
+                    "args": "real_infsum_offset_alt",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n < m, real_sums (λi. a i * x ^ i) t (from n) ⊢ real_infsum (from n) (λi. a i * x ^ i) = sum ({n..m - 1}) (λi. a i * x ^ i) + real_infsum (from m) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "n < m, real_sums (λi. a i * x ^ i) t (from n) ⊢ t = sum ({n..m - 1}) (λi. a i * x ^ i) + real_infsum (from m) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "∀a::real. ∀b. ∀c. a = b + c ⟶ a - b = c",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. a = b + c ⟶ a - b = c"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "7"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "n < m, real_sums (λi. a i * x ^ i) t (from n) ⊢ t - sum ({n..m - 1}) (λi. a i * x ^ i) = real_infsum (from m) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "real_summable_from_elsewhere, {n: m}",
+                    "id": "10",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_sums (λi. a i * x ^ i) t (from n) ⊢ real_summable (from m) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "power_series_simple_bound",
+                    "id": "11",
+                    "prevs": [
+                        "10",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n < m, abs x < 1, ∀i. m ≤ i ⟶ abs (a i) ≤ u, real_sums (λi. a i * x ^ i) t (from n) ⊢ abs (real_infsum (from m) (λi. a i * x ^ i)) ≤ u * abs x ^ m / (1 - abs x)"
+                },
+                {
+                    "args": "abs (t - sum ({n..m - 1}) (λi. a i * x ^ i)) ≤ u * abs x ^ m / (1 - abs x)",
+                    "id": "12",
+                    "prevs": [
+                        "9",
+                        "11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n < m, abs x < 1, ∀i. m ≤ i ⟶ abs (a i) ≤ u, real_sums (λi. a i * x ^ i) t (from n) ⊢ abs (t - sum ({n..m - 1}) (λi. a i * x ^ i)) ≤ u * abs x ^ m / (1 - abs x)"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sums (λi. a i * x ^ i) t (from n) ⟶ n < m ⟶ (∀i. m ≤ i ⟶ abs (a i) ≤ u) ⟶ abs x < 1 ⟶ abs (t - sum ({n..m - 1}) (λi. a i * x ^ i)) ≤ u * abs x ^ m / (1 - abs x)"
+                }
+            ],
+            "prop": [
+                "real_sums (λi. a i * x ^ i) t (from n) ",
+                "⟶ n < m ",
+                "   ⟶ (∀i. m ≤ i ⟶ abs (a i) ≤ u) ",
+                "      ⟶ abs x < 1 ",
+                "         ⟶ abs (t - sum ({n..m - 1}) (λi. a i * x ^ i)) ≤ u * abs x ^ m / (1 - abs x)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_sums_summable"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_infsum_unique"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "1"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_infsum_offset_alt"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "!a::real. !b. !c. a = b + c --> a - b = c",
+                    "goal_id": "8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "7"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "power_series_simple_bound"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_forward_step",
+                    "param_n": "m",
+                    "theorem": "real_summable_from_elsewhere"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat ⇒ real",
+                "m": "nat",
+                "n": "nat",
+                "t": "real",
+                "u": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_sums_simple_bound2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_sums (λi. a i * x ^ i) t (from n)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_sums (λi. a i * x ^ i) t (from n) ⊢ real_sums (λi. a i * x ^ i) t (from n)"
+                },
+                {
+                    "args": "n < m",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n < m ⊢ n < m"
+                },
+                {
+                    "args": "∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i)"
+                },
+                {
+                    "args": "abs x < 1",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "real_sums_summable",
+                    "id": "4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_sums (λi. a i * x ^ i) t (from n) ⊢ real_summable (from n) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "real_infsum_unique",
+                    "id": "5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_sums (λi. a i * x ^ i) t (from n) ⊢ real_infsum (from n) (λi. a i * x ^ i) = t"
+                },
+                {
+                    "args": "real_infsum_offset_alt",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n < m, real_sums (λi. a i * x ^ i) t (from n) ⊢ real_infsum (from n) (λi. a i * x ^ i) = sum ({n..m - 1}) (λi. a i * x ^ i) + real_infsum (from m) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "n < m, real_sums (λi. a i * x ^ i) t (from n) ⊢ t = sum ({n..m - 1}) (λi. a i * x ^ i) + real_infsum (from m) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "∀a::real. ∀b. ∀c. a = b + c ⟶ a - b = c",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. a = b + c ⟶ a - b = c"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "7"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "n < m, real_sums (λi. a i * x ^ i) t (from n) ⊢ t - sum ({n..m - 1}) (λi. a i * x ^ i) = real_infsum (from m) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "real_summable_from_elsewhere, {n: m}",
+                    "id": "10",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_sums (λi. a i * x ^ i) t (from n) ⊢ real_summable (from m) (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "power_series_simple_bound2",
+                    "id": "11",
+                    "prevs": [
+                        "10",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n < m, abs x < 1, real_sums (λi. a i * x ^ i) t (from n), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ abs (real_infsum (from m) (λi. a i * x ^ i)) ≤ abs (a m) * abs x ^ m / (1 - abs x)"
+                },
+                {
+                    "args": "abs (t - sum ({n..m - 1}) (λi. a i * x ^ i)) ≤ abs (a m) * abs x ^ m / (1 - abs x)",
+                    "id": "12",
+                    "prevs": [
+                        "9",
+                        "11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n < m, abs x < 1, real_sums (λi. a i * x ^ i) t (from n), ∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i) ⊢ abs (t - sum ({n..m - 1}) (λi. a i * x ^ i)) ≤ abs (a m) * abs x ^ m / (1 - abs x)"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sums (λi. a i * x ^ i) t (from n) ⟶ n < m ⟶ (∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i)) ⟶ abs x < 1 ⟶ abs (t - sum ({n..m - 1}) (λi. a i * x ^ i)) ≤ abs (a m) * abs x ^ m / (1 - abs x)"
+                }
+            ],
+            "prop": [
+                "real_sums (λi. a i * x ^ i) t (from n) ",
+                "⟶ n < m ",
+                "   ⟶ (∀i. m ≤ i ⟶ abs (a (Suc i)) ≤ abs (a i)) ",
+                "      ⟶ abs x < 1 ",
+                "         ⟶ abs (t - sum ({n..m - 1}) (λi. a i * x ^ i)) ≤ ",
+                "            abs (a m) * abs x ^ m / (1 - abs x)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_sums_summable"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_infsum_unique"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "1"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_infsum_offset_alt"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "∀a::real. ∀b. ∀c. a = b + c ⟶ a - b = c",
+                    "goal_id": "8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "7"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "power_series_simple_bound2"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_forward_step",
+                    "param_n": "m",
+                    "theorem": "real_summable_from_elsewhere"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat ⇒ real",
+                "m": "nat",
+                "n": "nat",
+                "t": "real",
+                "u": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "abs_sum_lemma_pos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ a * b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ a * b ⊢ 0 ≤ a * b"
+                },
+                {
+                    "args": "abs (a + b) = abs a + abs b",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "0 ≤ a * b ⊢ abs (a + b) = abs a + abs b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ a * b ⟶ abs (a + b) = abs a + abs b"
+                }
+            ],
+            "prop": "0 ≤ a * b ⟶ abs (a + b) = abs a + abs b",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "abs_sum_lemma_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "a * b ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a * b ≤ 0 ⊢ a * b ≤ 0"
+                },
+                {
+                    "args": "abs (a + b) = abs (abs a - abs b)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "a * b ≤ 0 ⊢ abs (a + b) = abs (abs a - abs b)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a * b ≤ 0 ⟶ abs (a + b) = abs (abs a - abs b)"
+                }
+            ],
+            "prop": "a * b ≤ 0 ⟶ abs (a + b) = abs (abs a - abs b)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sign_mul_lemma",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "a * b ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a * b ≤ 0 ⊢ a * b ≤ 0"
+                },
+                {
+                    "args": "0 ≤ b * c",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ b * c ⊢ 0 ≤ b * c"
+                },
+                {
+                    "args": "¬(b = 0)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(b = 0) ⊢ ¬(b = 0)"
+                },
+                {
+                    "args": "a * c ≤ 0",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(b = 0), 0 ≤ b * c, a * b ≤ 0 ⊢ a * c ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a * b ≤ 0 ⟶ 0 ≤ b * c ⟶ ¬(b = 0) ⟶ a * c ≤ 0"
+                }
+            ],
+            "prop": "a * b ≤ 0 ⟶ 0 ≤ b * c ⟶ ¬(b = 0) ⟶ a * c ≤ 0",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real"
+            }
+        }
+    ],
+    "description": "Formal inequalities for trig about series.",
+    "imports": [
+        "realanalysis"
+    ],
+    "name": "trig_series"
+}
