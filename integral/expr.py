@@ -442,7 +442,8 @@ class Expr:
                     return poly.constant(Const(Fraction(Fraction(self.args[0].val) ** p.val)))
                 elif self.args[0] == Const(1):
                     return poly.constant(Const(1))
-                elif (self.args[0].val ** p.val) % 1 == 0: # integer
+                elif not isinstance(self.args[0].val ** p.val, complex) and (self.args[0].val ** p.val) % 1 == 0: # integer
+                    # in case of complex number: (-1)^(1/2)
                     return poly.constant(Const(int(self.args[0].val ** p.val)))
                 else:
                     return poly.constant(Op("^", self.args[0], p))

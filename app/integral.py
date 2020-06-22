@@ -608,7 +608,6 @@ def integral_save_file():
 
 @app.route("/api/integral-slagle", methods=['POST'])
 def integral_slagle():
-    print(3)
     data = json.loads(request.get_data().decode('utf-8'))
     problem = data['problem']
     
