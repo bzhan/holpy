@@ -114,31 +114,6 @@ class Linearity(AlgorithmRule):
     
     """
     def eval(self, e):
-        # if not isinstance(e, Integral) or e.body.ty != OP:
-        #     return e
-
-        # e = e.normalize()
-
-
-        # if e.body.op == "*":
-        #     if e.body.args[0].is_constant() and e.body.args[1].is_constant():
-        #         return e.body * Linearity().eval(Integral(e.var, e.lower, e.upper, Const(1)))
-        #     elif e.body.args[0].is_constant():
-        #         return e.body.args[0] * Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[1]))
-        #     elif e.body.args[1].is_constant():
-        #         return e.body.args[1] * Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0]))
-        #     else:
-        #         return e
-        # elif e.body.op == "+":
-        #     return Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0])) + Integral(e.var, e.lower, e.upper, e.body.args[1])
-        
-        # elif e.body.op == "-": 
-        #     if len(e.body.args) == 2:
-        #         return Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0])) - Integral(e.var, e.lower, e.upper, e.body.args[1])
-        #     else:
-        #         return Op("-", Linearity().eval(Integral(e.var, e.lower, e.upper, e.body.args[0]))) 
-        # else:
-        #    return e
         return rules.Linearity().eval(e)
 
 class LinearSubstitution(AlgorithmRule):
@@ -172,15 +147,128 @@ class TrigFunction(HeuristicRule):
     3) Transform to cotangent and cosecant.
 
     """
+
+    def sine_cosine(self, e):
+        """1) Transform to sine and cosine.
+
+        a) tan(x) => sin(x)/cos(x)
+        b) cot(x) => cos(x)/sin(x)
+        c) sec(x) => 1/cos(x)
+        d) csc(x) => 1/sin(x)
+        
+        """
+
+        x = Symbol('x', [OP,CONST,VAR,FUN])
+        tan_pat = tan(x)
+        cot_pat = cot(x)
+        sec_pat = sec(x)
+        csc_pat = csc(x)
+
+        tan_expr = find_pattern1(e, tan_pat)
+        cot_expr = find_pattern1(e, cot_pat)
+        sec_expr = find_pattern1(e, sec_pat)
+        csc_expr = find_pattern1(e, csc_pat)
+
+        for t in tan_expr:
+            e = e.replace_trig(t, sin(t.args[0])/cos(t.args[0]))
+
+        for t in cot_expr:
+            e = e.replace_trig(t, cos(t.args[0])/sin(t.args[0]))
+
+        for t in sec_expr:
+            e = e.replace_trig(t, Const(1)/cos(t.args[0]))
+
+        for t in csc_expr:
+            e = e.replace_trig(t, Const(1)/sin(t.args[0]))
+
+        return e.normalize()
+
+    def tan_sec(self, e):
+        """1) Transform to tangent and secant.
+
+        a) sin(x) => tan(x)/sec(x)
+        b) cos(x) => 1/sec(x)
+        c) cot(x) => 1/tan(x)
+        d) csc(x) => sec(x)/tan(x)
+        
+        """
+
+        x = Symbol('x', [OP,CONST,VAR,FUN])
+        sin_pat = sin(x)
+        cos_pat = cos(x)
+        cot_pat = cot(x)
+        csc_pat = csc(x)
+
+        sin_expr = find_pattern1(e, sin_pat)
+        cos_expr = find_pattern1(e, cos_pat)
+        cot_expr = find_pattern1(e, cot_pat)
+        csc_expr = find_pattern1(e, csc_pat)
+
+        for t in sin_expr:
+            e = e.replace_trig(t, tan(t.args[0])/sec(t.args[0]))
+
+        for t in cos_expr:
+            e = e.replace_trig(t, Const(1)/sec(t.args[0]))
+
+        for t in cot_expr:
+            e = e.replace_trig(t, Const(1)/tan(t.args[0]))
+
+        for t in csc_expr:
+            e = e.replace_trig(t, sec(t.args[0])/tan(t.args[0]))
+
+        return e.normalize()
+
+    def cot_csc(self, e):
+        """3) Transform to cotangent and cosecant.
+        
+        a) sin(x) => 1/csc(x)
+        b) cos(x) => cot(x)/csc(x)
+        c) tan(x) => 1/cot(x)
+        d) sec(x) => csc(x)/cot(x)
+        """
+        
+        x = Symbol('x', [OP,CONST,VAR,FUN])
+        sin_pat = sin(x)
+        cos_pat = cos(x)
+        tan_pat = tan(x)
+        sec_pat = sec(x)
+
+        sin_expr = find_pattern1(e, sin_pat)
+        cos_expr = find_pattern1(e, cos_pat)
+        tan_expr = find_pattern1(e, tan_pat)
+        sec_expr = find_pattern1(e, sec_pat)
+
+        for t in sin_expr:
+            e = e.replace_trig(t, Const(1)/csc(t.args[0]))
+
+        for t in cos_expr:
+            e = e.replace_trig(t, cot(t.args[0])/csc(t.args[0]))
+
+        for t in tan_expr:
+            e = e.replace_trig(t, Const(1)/cot(t.args[0]))
+
+        for t in sec_expr:
+            e = e.replace_trig(t, csc(t.args[0])/cot(t.args[0]))
+
+        return e.normalize()
+
     def eval(self, e):
+        r = TrigFunction()
+        
         res = []
 
-        subst_res = rules.TrigSubstitution().eval(e, rule_list=[TR2i])
-        for expr, rule in subst_res:
+        old_e = copy.deepcopy(e)
+        e = e.body
 
-            if rule != 'Unchanged' and expr not in res:
-                res.append(expr)
+        if r.sine_cosine(e).normalize() != e.normalize():
+            res.append(Integral(old_e.var, old_e.lower, old_e.upper, r.sine_cosine(e)))
 
+        if r.tan_sec(e).normalize() != e.normalize():
+            res.append(Integral(old_e.var, old_e.lower, old_e.upper, r.tan_sec(e)))
+
+        if r.cot_csc(e).normalize() != e.normalize():
+            res.append(Integral(old_e.var, old_e.lower, old_e.upper, r.cot_csc(e)))
+ 
         return res
 
 class HeuristicSubstitution(HeuristicRule):
@@ -189,6 +277,8 @@ class HeuristicSubstitution(HeuristicRule):
     Currently we implement a naive strategy of substitution for
     y subterm corresponds to lowest depth expression after substitution.  
 
+
+    It can't return correct result when body is not monotonic in the given range.
     """
     def eval(self, e):
         res = []
@@ -200,8 +290,13 @@ class HeuristicSubstitution(HeuristicRule):
             for subexpr in all_subterms:
                 r = rules.Substitution1(gen_rand_letter(e.var), subexpr).eval(e)
                 res.append(r[0])
+            
+            if res: # res is not empty
+                res = sorted(res, key=lambda x:x.depth)
+                return [res[0]] if res[0] != Const(0) else [] # May have bug when result is 0.
 
-            return [sorted(res, key=lambda x:x.depth)[0]] if res else []
+            else:
+                return []
         except:
             return []
 
@@ -351,22 +446,20 @@ class HeuristicTrigSubstitution(HeuristicRule):
     def eval(self, e):
 
         def find_ab(p):
-            """Find a, b in a +/- b*x^2"""
+            """Find a, b in a + b*x^2"""
             p = p.normalize()
-            if p.args[1].args[1] == Const(2): # a +/- x ^ 2
-                return (p.args[0], Const(1)) if p.op == "+" else (p.args[0], Const(-1))
-            else:
-                return (p.args[0], p.args[1].args[0]) if p.op == "+" else (p.args[0], Op("-",p.args[1].args[0]).normalize())
+            if p.args[1].args[1] == Const(2): # a + x ^ 2
+                return (p.args[0], Const(1))
+            else: # a + b*x^2
+                return (p.args[0], p.args[1].args[0])
 
         a = Symbol('a', [CONST])
-        b = Symbol('a', [CONST])
+        b = Symbol('b', [CONST])
         x = Symbol('x', [VAR])
 
         pats = [
             a + (x ^ Const(2)),
-            a + Const(-1) * (x ^ Const(2)),
             a + b * (x ^ Const(2)),
-            a + Const(-1) * b * (x ^ Const(2)),
         ]
 
         all_subterms = []
@@ -496,7 +589,7 @@ class OrNode(GoalNode):
         s += ']'
         return s
 
-    def expand(self):
+    def expand(self, not_solved_integral):
         """Expand the current node.
 
         This tries all algorithm rules. If the result is itself an integral, then
@@ -504,11 +597,19 @@ class OrNode(GoalNode):
         result is a linear combination of integrals, then put a single AndNode
         as the child nodes.
 
+        If we get an new integral after transformation, we need to store them in a set, 
+        in case of repeatedly try to solve same integral(Trigonometric functions can 
+        transform to them self). 
+
         """
         cur_integral = self.root
+        old_cur_integral = cur_integral
+        
+        not_solved_integral.add(cur_integral)
         for rule in algorithm_rules:
             cur_integral = rule().eval(cur_integral)
 
+        
         if cur_integral.ty == INTEGRAL:
             # Single integral case
             for rule in heuristic_rules:
@@ -516,13 +617,14 @@ class OrNode(GoalNode):
                 for r in res:
                     if r == cur_integral:
                         continue
-                    if r.ty == INTEGRAL:
+                    if r.ty == INTEGRAL and r not in not_solved_integral:
                         self.children.append(OrNode(r, parent=self))
-                    else:
+                    elif r not in not_solved_integral:
                         self.children.append(AndNode(r, parent=self))
         
         else:
             # Linear combination of integrals
+            not_solved_integral.remove(old_cur_integral)
             self.children.append(AndNode(cur_integral, parent=self))
 
         self.compute_resolved()
@@ -590,12 +692,12 @@ class AndNode(GoalNode):
 
 def bfs(node):
     q = collections.deque()
-
+    not_solved_integral = set()
     q.append(node)
     while q and not node.resolved:
         n = q.popleft()
         if isinstance(n, OrNode):
-            n.expand()
+            n.expand(not_solved_integral)
         for c in n.children:
             q.append(c)
 

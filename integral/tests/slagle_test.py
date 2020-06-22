@@ -45,7 +45,7 @@ class SlagleTest(unittest.TestCase):
     def testTrigFunction(self):
         test_data = [
             ('INT x:[1,2]. $sin(x)^4/cos(x)^4$',
-             ['INT x:[1,2]. tan(x)^4'])
+             ['INT x:[1,2]. tan(x)^4', 'INT x:[1,2]. cot(x)^(-4)'])
         ]
 
         for v, v_res in test_data:
@@ -110,7 +110,7 @@ class SlagleTest(unittest.TestCase):
     
     def testBFS(self):
         test_data = [
-            # 'INT x:[1,2]. $sin(x)^4/cos(x)^4$',
+            'INT x:[1,2]. sin(x)^4/cos(x)^4',
             'INT x:[0, 1]. (2*x + 5)*(x^2+5*x)^7',
             'INT x:[1,2]. sqrt(7*x+9)',
             'INT x:[0, 1]. x^3/(1+x^4)^(1/4)',
