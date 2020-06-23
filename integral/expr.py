@@ -902,7 +902,7 @@ def find_pattern1(expr, pat):
     return c
 
 def collect_spec_expr(expr, symb):
-    c = [p.args[0] for p in find_pattern1(expr, symb)]
+    c = [p.args[0] for p in find_pattern1(expr, symb) if len(p.args) != 0]
     return c   
 
 def decompose_expr_factor(e):

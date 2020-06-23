@@ -292,8 +292,9 @@ class HeuristicSubstitution(HeuristicRule):
                 res.append(r[0])
             
             if res: # res is not empty
+                res = [r for r in res if r != Const(0)] # May have bug when result is 0.
                 res = sorted(res, key=lambda x:x.depth)
-                return [res[0]] if res[0] != Const(0) else [] # May have bug when result is 0.
+                return [res[0]] if res != [] else [] 
 
             else:
                 return []
