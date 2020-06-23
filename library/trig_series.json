@@ -1913,11 +1913,3613 @@
                 "b": "real",
                 "c": "real"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sum_bound_lemma",
+            "num_gaps": 3,
+            "proof": [
+                {
+                    "args": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ m = 0 ⟶ abs (if m = 0 then f 0 else 0) ≤ abs (f m) ∧ 0 ≤ (if m = 0 then f 0 else 0) * f m"
+                },
+                {
+                    "args": "m = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "real_le_refl, {x: abs (f 0)}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (f 0) ≤ abs (f 0)"
+                },
+                {
+                    "args": "real_le_square, {x: f 0}",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ f 0 * f 0"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m = 0, ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ abs (f 0) ≤ abs (f 0) ∧ 0 ≤ f 0 * f 0"
+                },
+                {
+                    "args": "abs (f 0) ≤ abs (f m) ∧ 0 ≤ f 0 * f m",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = 0, ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ abs (f 0) ≤ abs (f m) ∧ 0 ≤ f 0 * f m"
+                },
+                {
+                    "args": "if_P, abs (if m = 0 then f 0 else 0) ≤ abs (f m) ∧ 0 ≤ (if m = 0 then f 0 else 0) * f m",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m = 0, ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ abs (if m = 0 then f 0 else 0) ≤ abs (f m) ∧ 0 ≤ (if m = 0 then f 0 else 0) * f m"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ m = 0 ⟶ abs (if m = 0 then f 0 else 0) ≤ abs (f m) ∧ 0 ≤ (if m = 0 then f 0 else 0) * f m"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ ¬(m = 0) ⟶ abs (if m = 0 then f 0 else 0) ≤ abs (f m) ∧ 0 ≤ (if m = 0 then f 0 else 0) * f m"
+                },
+                {
+                    "args": "¬(m = 0)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m = 0) ⊢ ¬(m = 0)"
+                },
+                {
+                    "args": "real_abs_pos, {x: f m}",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ abs (f m)"
+                },
+                {
+                    "args": "real_abs_0, abs 0 ≤ abs (f m)",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ abs 0 ≤ abs (f m)"
+                },
+                {
+                    "args": "real_le_refl, {x: (0::real)}",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 0"
+                },
+                {
+                    "args": "real_mul_lzero, 0 ≤ 0 * f m",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ 0 ≤ 0 * f m"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.2",
+                        "2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m = 0), ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ abs 0 ≤ abs (f m) ∧ 0 ≤ 0 * f m"
+                },
+                {
+                    "args": "if_not_P, abs (if m = 0 then f 0 else 0) ≤ abs (f m) ∧ 0 ≤ (if m = 0 then f 0 else 0) * f m",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.5",
+                        "2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ abs (if m = 0 then f 0 else 0) ≤ abs (f m) ∧ 0 ≤ (if m = 0 then f 0 else 0) * f m"
+                },
+                {
+                    "args": "",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.0",
+                        "2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ ¬(m = 0) ⟶ abs (if m = 0 then f 0 else 0) ≤ abs (f m) ∧ 0 ≤ (if m = 0 then f 0 else 0) * f m"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ abs (if m = 0 then f 0 else 0) ≤ abs (f m) ∧ 0 ≤ (if m = 0 then f 0 else 0) * f m"
+                },
+                {
+                    "args": "sum_0_natseg, abs (sum ({m..0}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..0}) f * f m",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ abs (sum ({m..0}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..0}) f * f m"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ ∀n. abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⟶ abs (sum ({m..Suc n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..Suc n}) f * f m"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ abs (sum ({m..n}) f) ≤ abs (f m)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ 0 ≤ sum ({m..n}) f * f m"
+                },
+                {
+                    "args": "",
+                    "id": "5.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0, abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ m ≤ Suc n ⟶ abs (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) * f m"
+                },
+                {
+                    "args": "m ≤ Suc n",
+                    "id": "5.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ Suc n ⊢ m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "m ≤ Suc n, ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0, abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ abs (sum ({m..n}) f + f (Suc n)) ≤ abs (f m)"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "m ≤ Suc n, ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0, abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ 0 ≤ (sum ({m..n}) f + f (Suc n)) * f m"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5.4.3",
+                    "prevs": [
+                        "5.4.1",
+                        "5.4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ Suc n, ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0, abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ abs (sum ({m..n}) f + f (Suc n)) ≤ abs (f m) ∧ 0 ≤ (sum ({m..n}) f + f (Suc n)) * f m"
+                },
+                {
+                    "args": "if_P, abs (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) * f m",
+                    "id": "5.4.4",
+                    "prevs": [
+                        "5.4.3",
+                        "5.4.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ Suc n, ∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0, abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ abs (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) * f m"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.5",
+                    "prevs": [
+                        "5.4.0",
+                        "5.4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0, abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ m ≤ Suc n ⟶ abs (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) * f m"
+                },
+                {
+                    "args": "",
+                    "id": "5.5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0, abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ ¬(m ≤ Suc n) ⟶ abs (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) * f m"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "5.6",
+                    "prevs": [
+                        "5.4",
+                        "5.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0, abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ abs (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ (if m ≤ Suc n then sum ({m..n}) f + f (Suc n) else sum ({m..n}) f) * f m"
+                },
+                {
+                    "args": "sum_Suc_natseg, abs (sum ({m..Suc n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..Suc n}) f * f m",
+                    "id": "5.7",
+                    "prevs": [
+                        "5.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0, abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⊢ abs (sum ({m..Suc n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..Suc n}) f * f m"
+                },
+                {
+                    "args": "",
+                    "id": "5.8",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.7"
+                    ],
+                    "rule": "intros",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ ∀n. abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m ⟶ abs (sum ({m..Suc n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..Suc n}) f * f m"
+                },
+                {
+                    "args": "nat_induct, {P: λn. abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m, x: n}",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0 ⊢ abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀k. abs (f (k + 1)) ≤ abs (f k) ⟶ f (k + 1) * f k ≤ 0) ⟶ abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m"
+                }
+            ],
+            "prop": [
+                "(∀k. abs (f (k + 1)) ≤ abs (f k) ∧ f (k + 1) * f k ≤ 0) ",
+                "⟶ abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_0_natseg"
+                },
+                {
+                    "case": "m=0",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_square"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_0"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_abs_pos"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "5.1"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5.1"
+                    ],
+                    "goal_id": "5.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "5.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_Suc_natseg"
+                },
+                {
+                    "case": "m ≤ Suc n",
+                    "goal_id": "5.4",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "5.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.0"
+                    ],
+                    "goal_id": "5.4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "5.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "alt_sign_converges",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0"
+                },
+                {
+                    "args": "tendsto_real f 0 sequentially",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f 0 sequentially ⊢ tendsto_real f 0 sequentially"
+                },
+                {
+                    "args": "reallim_sequentially",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "tendsto_real f 0 sequentially ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (f n - 0) < e)"
+                },
+                {
+                    "args": "real_sub_rzero",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "tendsto_real f 0 sequentially ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (f n) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀e. 0 < e ⟶ (∃N. ∀m. ∀n. m ≥ N ⟶ abs (sum (from k ∩ {m..n}) f) < e)"
+                },
+                {
+                    "args": "e, real",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR e"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [
+                        "3",
+                        "4.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < e, tendsto_real f 0 sequentially ⊢ ∃N. ∀n. N ≤ n ⟶ abs (f n) < e"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "4.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀n. N ≤ n ⟶ abs (f n) < e",
+                    "id": "4.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. N ≤ n ⟶ abs (f n) < e ⊢ ∀n. N ≤ n ⟶ abs (f n) < e"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀m. ∀n. m ≥ N ⟶ abs (sum (if m < k then {k..n} else {m..n}) f) < e"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "4.5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "4.5.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "m ≥ N",
+                    "id": "4.5.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≥ N ⊢ m ≥ N"
+                },
+                {
+                    "args": "sum_bound_lemma",
+                    "id": "4.5.3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀m. ∀n. abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≥ N, 0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ m < k ⟶ abs (sum (if m < k then {k..n} else {m..n}) f) < e"
+                },
+                {
+                    "args": "m < k",
+                    "id": "4.5.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < k ⊢ m < k"
+                },
+                {
+                    "args": "k",
+                    "id": "4.5.4.1",
+                    "prevs": [
+                        "4.5.3"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. abs (sum ({k..n}) f) ≤ abs (f k) ∧ 0 ≤ sum ({k..n}) f * f k"
+                },
+                {
+                    "args": "n",
+                    "id": "4.5.4.2",
+                    "prevs": [
+                        "4.5.4.1"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum ({k..n}) f) ≤ abs (f k) ∧ 0 ≤ sum ({k..n}) f * f k"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4.5.4.3",
+                    "prevs": [
+                        "4.5.4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum ({k..n}) f) ≤ abs (f k)"
+                },
+                {
+                    "args": "N ≤ k",
+                    "id": "4.5.4.4",
+                    "prevs": [
+                        "4.5.2",
+                        "4.5.4.0"
+                    ],
+                    "rule": "z3",
+                    "th": "m ≥ N, m < k ⊢ N ≤ k"
+                },
+                {
+                    "args": "k",
+                    "id": "4.5.4.5",
+                    "prevs": [
+                        "4.4",
+                        "4.5.4.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "m ≥ N, m < k, 0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (f k) < e"
+                },
+                {
+                    "args": "real_let_trans",
+                    "id": "4.5.4.6",
+                    "prevs": [
+                        "4.5.4.3",
+                        "4.5.4.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≥ N, m < k, 0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum ({k..n}) f) < e"
+                },
+                {
+                    "args": "if_P, abs (sum (if m < k then {k..n} else {m..n}) f) < e",
+                    "id": "4.5.4.7",
+                    "prevs": [
+                        "4.5.4.6",
+                        "4.5.4.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≥ N, m < k, 0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum (if m < k then {k..n} else {m..n}) f) < e"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.4.8",
+                    "prevs": [
+                        "4.5.4.0",
+                        "4.5.4.7"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≥ N, 0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ m < k ⟶ abs (sum (if m < k then {k..n} else {m..n}) f) < e"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≥ N, 0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ¬(m < k) ⟶ abs (sum (if m < k then {k..n} else {m..n}) f) < e"
+                },
+                {
+                    "args": "¬(m < k)",
+                    "id": "4.5.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m < k) ⊢ ¬(m < k)"
+                },
+                {
+                    "args": "m",
+                    "id": "4.5.5.1",
+                    "prevs": [
+                        "4.5.3"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m"
+                },
+                {
+                    "args": "n",
+                    "id": "4.5.5.2",
+                    "prevs": [
+                        "4.5.5.1"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum ({m..n}) f) ≤ abs (f m) ∧ 0 ≤ sum ({m..n}) f * f m"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4.5.5.3",
+                    "prevs": [
+                        "4.5.5.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum ({m..n}) f) ≤ abs (f m)"
+                },
+                {
+                    "args": "greater_eq_def",
+                    "id": "4.5.5.4",
+                    "prevs": [
+                        "4.5.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m ≥ N ⊢ N ≤ m"
+                },
+                {
+                    "args": "m",
+                    "id": "4.5.5.5",
+                    "prevs": [
+                        "4.4",
+                        "4.5.5.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "m ≥ N, 0 < e, ¬(m < k), tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (f m) < e"
+                },
+                {
+                    "args": "real_let_trans",
+                    "id": "4.5.5.6",
+                    "prevs": [
+                        "4.5.5.3",
+                        "4.5.5.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≥ N, 0 < e, ¬(m < k), tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum ({m..n}) f) < e"
+                },
+                {
+                    "args": "if_not_P, abs (sum (if m < k then {k..n} else {m..n}) f) < e",
+                    "id": "4.5.5.7",
+                    "prevs": [
+                        "4.5.5.6",
+                        "4.5.5.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≥ N, 0 < e, ¬(m < k), tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum (if m < k then {k..n} else {m..n}) f) < e"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.5.8",
+                    "prevs": [
+                        "4.5.5.0",
+                        "4.5.5.7"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≥ N, 0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ¬(m < k) ⟶ abs (sum (if m < k then {k..n} else {m..n}) f) < e"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "4.5.6",
+                    "prevs": [
+                        "4.5.4",
+                        "4.5.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≥ N, 0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum (if m < k then {k..n} else {m..n}) f) < e"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.7",
+                    "prevs": [
+                        "4.5.0",
+                        "4.5.1",
+                        "4.5.2",
+                        "4.5.6"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀m. ∀n. m ≥ N ⟶ abs (sum (if m < k then {k..n} else {m..n}) f) < e"
+                },
+                {
+                    "args": "exI, {P: λN. ∀m. ∀n. m ≥ N ⟶ abs (sum (if m < k then {k..n} else {m..n}) f) < e, a: N}",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∃a1. ∀m. ∀n. m ≥ a1 ⟶ abs (sum (if m < k then {k..n} else {m..n}) f) < e"
+                },
+                {
+                    "args": "from_inter_natseg_gen, ∃N. ∀m. ∀n. m ≥ N ⟶ abs (sum (from k ∩ {m..n}) f) < e",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, tendsto_real f 0 sequentially, ∀n. N ≤ n ⟶ abs (f n) < e, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∃N. ∀m. ∀n. m ≥ N ⟶ abs (sum (from k ∩ {m..n}) f) < e"
+                },
+                {
+                    "args": "∃N. ∀n. N ≤ n ⟶ abs (f n) < e",
+                    "id": "4.8",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2",
+                        "4.3",
+                        "4.4",
+                        "4.7"
+                    ],
+                    "rule": "intros",
+                    "th": "tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀e. 0 < e ⟶ (∃N. ∀m. ∀n. m ≥ N ⟶ abs (sum (from k ∩ {m..n}) f) < e)"
+                },
+                {
+                    "args": "real_series_cauchy, ∃l. real_sums f l (from k)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∃l. real_sums f l (from k)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ⟶ tendsto_real f 0 sequentially ⟶ (∃l. real_sums f l (from k))"
+                }
+            ],
+            "prop": [
+                "(∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ",
+                "⟶ tendsto_real f 0 sequentially ⟶ (∃l. real_sums f l (from k))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "real_series_cauchy"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "reallim_sequentially"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sub_rzero"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "e"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "from_inter_natseg_gen"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.2"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "4.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "goal_id": "4.5",
+                    "method_name": "introduction",
+                    "names": "m,n"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4.5.3",
+                    "method_name": "apply_forward_step",
+                    "param_m": "",
+                    "param_n": "",
+                    "theorem": "sum_bound_lemma"
+                },
+                {
+                    "case": "m < k",
+                    "goal_id": "4.5.4",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "4.5.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.4.0"
+                    ],
+                    "goal_id": "4.5.4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.3"
+                    ],
+                    "goal_id": "4.5.4.1",
+                    "method_name": "forall_elim",
+                    "s": "k"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.4.1"
+                    ],
+                    "goal_id": "4.5.4.2",
+                    "method_name": "forall_elim",
+                    "s": "n"
+                },
+                {
+                    "goal_id": "4.5.4.3",
+                    "method_name": "apply_backward_step",
+                    "param_y": "abs (f k)",
+                    "theorem": "real_let_trans"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.4.2"
+                    ],
+                    "goal_id": "4.5.4.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.4"
+                    ],
+                    "goal_id": "4.5.4.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.2",
+                        "4.5.4.0"
+                    ],
+                    "goal_id": "4.5.4.4",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "4.5.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.5.0"
+                    ],
+                    "goal_id": "4.5.5.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.3"
+                    ],
+                    "goal_id": "4.5.5.1",
+                    "method_name": "forall_elim",
+                    "s": "m"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.5.1"
+                    ],
+                    "goal_id": "4.5.5.2",
+                    "method_name": "forall_elim",
+                    "s": "n"
+                },
+                {
+                    "goal_id": "4.5.5.3",
+                    "method_name": "apply_backward_step",
+                    "param_y": "abs (f m)",
+                    "theorem": "real_let_trans"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.5.2"
+                    ],
+                    "goal_id": "4.5.5.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.4"
+                    ],
+                    "goal_id": "4.5.5.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.2"
+                    ],
+                    "goal_id": "4.5.5.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "greater_eq_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "k": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "alt_sign_summable",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0"
+                },
+                {
+                    "args": "tendsto_real f 0 sequentially",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f 0 sequentially ⊢ tendsto_real f 0 sequentially"
+                },
+                {
+                    "args": "alt_sign_converges, {f: f, k: k}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∃l. real_sums f l (from k)"
+                },
+                {
+                    "args": "real_summable_def, real_summable (from k) f",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ real_summable (from k) f"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ⟶ tendsto_real f 0 sequentially ⟶ real_summable (from k) f"
+                }
+            ],
+            "prop": [
+                "(∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ",
+                "⟶ tendsto_real f 0 sequentially ⟶ real_summable (from k) f"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_summable_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "alt_sign_converges"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "k": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "alt_sign_converges2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0"
+                },
+                {
+                    "args": "tendsto_real f 0 sequentially",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f 0 sequentially ⊢ tendsto_real f 0 sequentially"
+                },
+                {
+                    "args": "alt_sign_converges, {k: k}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∃l. real_sums f l (from k)"
+                },
+                {
+                    "args": "l, real",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR l"
+                },
+                {
+                    "args": "real_sums f l (from k)",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_sums f l (from k) ⊢ real_sums f l (from k)"
+                },
+                {
+                    "args": "real_sums_def",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_sums f l (from k) ⊢ tendsto_real (λn. sum (from k ∩ {0..n}) f) l sequentially"
+                },
+                {
+                    "args": "from_inter_natseg",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_sums f l (from k) ⊢ tendsto_real (λn. sum ({k..n}) f) l sequentially"
+                },
+                {
+                    "args": "reallim_ubound",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_sums f l (from k) ⊢ ∀b. ¬(trivial_limit sequentially) ⟶ eventually (λx. sum ({k..x}) f ≤ b) sequentially ⟶ l ≤ b"
+                },
+                {
+                    "args": "reallim_lbound",
+                    "id": "8",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_sums f l (from k) ⊢ ∀b. ¬(trivial_limit sequentially) ⟶ eventually (λx. b ≤ sum ({k..x}) f) sequentially ⟶ b ≤ l"
+                },
+                {
+                    "args": "reallim_rmul, {c: f k}",
+                    "id": "9",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_sums f l (from k) ⊢ tendsto_real (λx. sum ({k..x}) f * f k) (l * f k) sequentially"
+                },
+                {
+                    "args": "reallim_lbound, {b: (0::real)}",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_sums f l (from k) ⊢ ¬(trivial_limit sequentially) ⟶ eventually (λx. 0 ≤ sum ({k..x}) f * f k) sequentially ⟶ 0 ≤ l * f k"
+                },
+                {
+                    "args": "trivial_limit_sequentially",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(trivial_limit sequentially)"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [
+                        "7",
+                        "11"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "real_sums f l (from k) ⊢ ∀b. eventually (λx. sum ({k..x}) f ≤ b) sequentially ⟶ l ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "8",
+                        "11"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "real_sums f l (from k) ⊢ ∀b. eventually (λx. b ≤ sum ({k..x}) f) sequentially ⟶ b ≤ l"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [
+                        "10",
+                        "11"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "real_sums f l (from k) ⊢ eventually (λx. 0 ≤ sum ({k..x}) f * f k) sequentially ⟶ 0 ≤ l * f k"
+                },
+                {
+                    "args": "abs (f k)",
+                    "id": "15",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "real_sums f l (from k) ⊢ eventually (λx. sum ({k..x}) f ≤ abs (f k)) sequentially ⟶ l ≤ abs (f k)"
+                },
+                {
+                    "args": "-(abs (f k))",
+                    "id": "16",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "real_sums f l (from k) ⊢ eventually (λx. -(abs (f k)) ≤ sum ({k..x}) f) sequentially ⟶ -(abs (f k)) ≤ l"
+                },
+                {
+                    "args": "sum_bound_lemma, {m: k}",
+                    "id": "17",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. abs (sum ({k..n}) f) ≤ abs (f k) ∧ 0 ≤ sum ({k..n}) f * f k"
+                },
+                {
+                    "args": "",
+                    "id": "18",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. 0 ≤ n ⟶ -(abs (f k)) ≤ sum ({k..n}) f"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "18.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "0 ≤ n",
+                    "id": "18.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ n ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "n",
+                    "id": "18.2",
+                    "prevs": [
+                        "17"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum ({k..n}) f) ≤ abs (f k) ∧ 0 ≤ sum ({k..n}) f * f k"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "18.3",
+                    "prevs": [
+                        "18.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum ({k..n}) f) ≤ abs (f k)"
+                },
+                {
+                    "args": "real_abs_bounds",
+                    "id": "18.4",
+                    "prevs": [
+                        "18.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ -(abs (f k)) ≤ sum ({k..n}) f ∧ sum ({k..n}) f ≤ abs (f k)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "18.5",
+                    "prevs": [
+                        "18.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ -(abs (f k)) ≤ sum ({k..n}) f"
+                },
+                {
+                    "args": "",
+                    "id": "18.6",
+                    "prevs": [
+                        "18.0",
+                        "18.1",
+                        "18.5"
+                    ],
+                    "rule": "intros",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. 0 ≤ n ⟶ -(abs (f k)) ≤ sum ({k..n}) f"
+                },
+                {
+                    "args": "exI, {P: λN. ∀n. N ≤ n ⟶ -(abs (f k)) ≤ sum ({k..n}) f, a: (0::nat)}",
+                    "id": "19",
+                    "prevs": [
+                        "18"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∃a1. ∀n. a1 ≤ n ⟶ -(abs (f k)) ≤ sum ({k..n}) f"
+                },
+                {
+                    "args": "eventually_sequentially, eventually (λx. -(abs (f k)) ≤ sum ({k..x}) f) sequentially",
+                    "id": "20",
+                    "prevs": [
+                        "19"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ eventually (λx. -(abs (f k)) ≤ sum ({k..x}) f) sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "21",
+                    "prevs": [
+                        "16",
+                        "20"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ -(abs (f k)) ≤ l"
+                },
+                {
+                    "args": "",
+                    "id": "22",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. 0 ≤ n ⟶ sum ({k..n}) f ≤ abs (f k)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "22.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "0 ≤ n",
+                    "id": "22.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ n ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "n",
+                    "id": "22.2",
+                    "prevs": [
+                        "17"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum ({k..n}) f) ≤ abs (f k) ∧ 0 ≤ sum ({k..n}) f * f k"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "22.3",
+                    "prevs": [
+                        "22.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum ({k..n}) f) ≤ abs (f k)"
+                },
+                {
+                    "args": "real_abs_bounds",
+                    "id": "22.4",
+                    "prevs": [
+                        "22.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ -(abs (f k)) ≤ sum ({k..n}) f ∧ sum ({k..n}) f ≤ abs (f k)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "22.5",
+                    "prevs": [
+                        "22.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ sum ({k..n}) f ≤ abs (f k)"
+                },
+                {
+                    "args": "",
+                    "id": "22.6",
+                    "prevs": [
+                        "22.0",
+                        "22.1",
+                        "22.5"
+                    ],
+                    "rule": "intros",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. 0 ≤ n ⟶ sum ({k..n}) f ≤ abs (f k)"
+                },
+                {
+                    "args": "exI, {P: λN. ∀n. N ≤ n ⟶ sum ({k..n}) f ≤ abs (f k), a: (0::nat)}",
+                    "id": "23",
+                    "prevs": [
+                        "22"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∃a1. ∀n. a1 ≤ n ⟶ sum ({k..n}) f ≤ abs (f k)"
+                },
+                {
+                    "args": "eventually_sequentially, eventually (λx. sum ({k..x}) f ≤ abs (f k)) sequentially",
+                    "id": "24",
+                    "prevs": [
+                        "23"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ eventually (λx. sum ({k..x}) f ≤ abs (f k)) sequentially"
+                },
+                {
+                    "args": "abs (f k)",
+                    "id": "25",
+                    "prevs": [
+                        "12",
+                        "24"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ l ≤ abs (f k)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "26",
+                    "prevs": [
+                        "21",
+                        "25"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ -(abs (f k)) ≤ l ∧ l ≤ abs (f k)"
+                },
+                {
+                    "args": "real_abs_bounds, abs l ≤ abs (f k)",
+                    "id": "27",
+                    "prevs": [
+                        "26"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs l ≤ abs (f k)"
+                },
+                {
+                    "args": "",
+                    "id": "28",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. 0 ≤ n ⟶ 0 ≤ sum ({k..n}) f * f k"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "28.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "0 ≤ n",
+                    "id": "28.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ n ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "n",
+                    "id": "28.2",
+                    "prevs": [
+                        "17"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (sum ({k..n}) f) ≤ abs (f k) ∧ 0 ≤ sum ({k..n}) f * f k"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "28.3",
+                    "prevs": [
+                        "28.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ 0 ≤ sum ({k..n}) f * f k"
+                },
+                {
+                    "args": "",
+                    "id": "28.4",
+                    "prevs": [
+                        "28.0",
+                        "28.1",
+                        "28.3"
+                    ],
+                    "rule": "intros",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. 0 ≤ n ⟶ 0 ≤ sum ({k..n}) f * f k"
+                },
+                {
+                    "args": "exI, {P: λN. ∀n. N ≤ n ⟶ 0 ≤ sum ({k..n}) f * f k, a: (0::nat)}",
+                    "id": "29",
+                    "prevs": [
+                        "28"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∃a1. ∀n. a1 ≤ n ⟶ 0 ≤ sum ({k..n}) f * f k"
+                },
+                {
+                    "args": "eventually_sequentially, eventually (λx. 0 ≤ sum ({k..x}) f * f k) sequentially",
+                    "id": "30",
+                    "prevs": [
+                        "29"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ eventually (λx. 0 ≤ sum ({k..x}) f * f k) sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "31",
+                    "prevs": [
+                        "14",
+                        "30"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ 0 ≤ l * f k"
+                },
+                {
+                    "args": "conjI",
+                    "id": "32",
+                    "prevs": [
+                        "27",
+                        "31"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs l ≤ abs (f k) ∧ 0 ≤ l * f k"
+                },
+                {
+                    "args": "conjI",
+                    "id": "33",
+                    "prevs": [
+                        "4",
+                        "32"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k"
+                },
+                {
+                    "args": "exI, {P: λl. real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k, a: l}",
+                    "id": "34",
+                    "prevs": [
+                        "33"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k), ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∃a1. real_sums f a1 (from k) ∧ abs a1 ≤ abs (f k) ∧ 0 ≤ a1 * f k"
+                },
+                {
+                    "args": "∃l. real_sums f l (from k)",
+                    "id": "35",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "34"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ⟶ tendsto_real f 0 sequentially ⟶ (∃l. real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k)"
+                }
+            ],
+            "prop": [
+                "(∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ",
+                "⟶ tendsto_real f 0 sequentially ",
+                "   ⟶ (∃l. real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_k": "k",
+                    "theorem": "alt_sign_converges"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "exists_elim",
+                    "names": "l"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "inst_exists_goal",
+                    "s": "l"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sums_def"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "from_inter_natseg"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "param_b": "",
+                    "theorem": "reallim_ubound"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "param_b": "",
+                    "theorem": "reallim_lbound"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_forward_step",
+                    "param_c": "f k",
+                    "theorem": "reallim_rmul"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_forward_step",
+                    "param_b": "(0::real)",
+                    "theorem": "reallim_lbound"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal": "¬(trivial_limit sequentially)",
+                    "goal_id": "11",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trivial_limit_sequentially"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "11"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "10",
+                        "11"
+                    ],
+                    "goal_id": "14",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "12"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "forall_elim",
+                    "s": "abs (f k)"
+                },
+                {
+                    "fact_ids": [
+                        "13"
+                    ],
+                    "goal_id": "16",
+                    "method_name": "forall_elim",
+                    "s": "-abs (f k)"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "17",
+                    "method_name": "apply_forward_step",
+                    "param_m": "k",
+                    "param_n": "",
+                    "theorem": "sum_bound_lemma"
+                },
+                {
+                    "goal_id": "18",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "18",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_bounds"
+                },
+                {
+                    "goal_id": "18",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "16"
+                    ],
+                    "goal_id": "18",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "18",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially"
+                },
+                {
+                    "goal_id": "18",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::nat)"
+                },
+                {
+                    "goal_id": "18",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "17"
+                    ],
+                    "goal_id": "18.2",
+                    "method_name": "forall_elim",
+                    "s": "n"
+                },
+                {
+                    "fact_ids": [
+                        "18.2"
+                    ],
+                    "goal_id": "18.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "18.3"
+                    ],
+                    "goal_id": "18.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_bounds"
+                },
+                {
+                    "fact_ids": [
+                        "18.4"
+                    ],
+                    "goal_id": "18.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "12"
+                    ],
+                    "goal_id": "22",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "22",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially"
+                },
+                {
+                    "goal_id": "22",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::nat)"
+                },
+                {
+                    "goal_id": "22",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "17"
+                    ],
+                    "goal_id": "22.2",
+                    "method_name": "forall_elim",
+                    "s": "n"
+                },
+                {
+                    "fact_ids": [
+                        "22.2"
+                    ],
+                    "goal_id": "22.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "22.3"
+                    ],
+                    "goal_id": "22.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_bounds"
+                },
+                {
+                    "fact_ids": [
+                        "22.4"
+                    ],
+                    "goal_id": "22.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "14"
+                    ],
+                    "goal_id": "28",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "28",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially"
+                },
+                {
+                    "goal_id": "28",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::nat)"
+                },
+                {
+                    "goal_id": "28",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "17"
+                    ],
+                    "goal_id": "28.2",
+                    "method_name": "forall_elim",
+                    "s": "n"
+                },
+                {
+                    "fact_ids": [
+                        "28.2"
+                    ],
+                    "goal_id": "28.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "k": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "alt_sign_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0"
+                },
+                {
+                    "args": "tendsto_real f 0 sequentially",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f 0 sequentially ⊢ tendsto_real f 0 sequentially"
+                },
+                {
+                    "args": "alt_sign_converges2, {k: k}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∃l. real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k"
+                },
+                {
+                    "args": "l, real",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR l"
+                },
+                {
+                    "args": "real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k ⊢ real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k ⊢ real_sums f l (from k)"
+                },
+                {
+                    "args": "real_infsum_unique",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k ⊢ real_infsum (from k) f = l"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "7",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k ⊢ abs l ≤ abs (f k) ∧ 0 ≤ l * f k"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k ⊢ abs l ≤ abs (f k)"
+                },
+                {
+                    "args": "abs (real_infsum (from k) f) ≤ abs (f k)",
+                    "id": "9",
+                    "prevs": [
+                        "6",
+                        "8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "tendsto_real f 0 sequentially, real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (real_infsum (from k) f) ≤ abs (f k)"
+                },
+                {
+                    "args": "∃l. real_sums f l (from k) ∧ abs l ≤ abs (f k) ∧ 0 ≤ l * f k",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ⟶ tendsto_real f 0 sequentially ⟶ abs (real_infsum (from k) f) ≤ abs (f k)"
+                }
+            ],
+            "prop": [
+                "(∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ",
+                "⟶ tendsto_real f 0 sequentially ⟶ abs (real_infsum (from k) f) ≤ abs (f k)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_k": "k",
+                    "theorem": "alt_sign_converges2"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "exists_elim",
+                    "names": "l"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_infsum_unique"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "k": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "alt_sign_abs_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0"
+                },
+                {
+                    "args": "tendsto_real f 0 sequentially",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f 0 sequentially ⊢ tendsto_real f 0 sequentially"
+                },
+                {
+                    "args": "m < k",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < k ⊢ m < k"
+                },
+                {
+                    "args": "alt_sign_summable, {k: m}",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ real_summable (from m) f"
+                },
+                {
+                    "args": "real_infsum_offset_alt",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m < k, tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ real_infsum (from m) f = sum ({m..k - 1}) f + real_infsum (from k) f"
+                },
+                {
+                    "args": "alt_sign_bound, {k: k}",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (real_infsum (from k) f) ≤ abs (f k)"
+                },
+                {
+                    "args": "sum ({m..k - 1}) f + real_infsum (from k) f - sum ({m..k - 1}) f = real_infsum (from k) f",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ sum ({m..k - 1}) f + real_infsum (from k) f - sum ({m..k - 1}) f = real_infsum (from k) f"
+                },
+                {
+                    "args": "real_infsum (from m) f - sum ({m..k - 1}) f = real_infsum (from k) f",
+                    "id": "7",
+                    "prevs": [
+                        "4",
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m < k, tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ real_infsum (from m) f - sum ({m..k - 1}) f = real_infsum (from k) f"
+                },
+                {
+                    "args": "abs (real_infsum (from m) f - sum ({m..k - 1}) f) ≤ abs (f k)",
+                    "id": "8",
+                    "prevs": [
+                        "7",
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m < k, tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (real_infsum (from m) f - sum ({m..k - 1}) f) ≤ abs (f k)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ⟶ tendsto_real f 0 sequentially ⟶ m < k ⟶ abs (real_infsum (from m) f - sum ({m..k - 1}) f) ≤ abs (f k)"
+                }
+            ],
+            "prop": [
+                "(∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ",
+                "⟶ tendsto_real f 0 sequentially ",
+                "   ⟶ m < k ⟶ abs (real_infsum (from m) f - sum ({m..k - 1}) f) ≤ abs (f k)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "param_k": "m",
+                    "theorem": "alt_sign_summable"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_infsum_offset_alt"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "param_k": "k",
+                    "theorem": "alt_sign_bound"
+                },
+                {
+                    "goal": "real_infsum (from m) f - sum ({m..k - 1}) f = real_infsum (from k) f",
+                    "goal_id": "6",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "k": "nat",
+                "m": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "alt_sign_upper_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0"
+                },
+                {
+                    "args": "tendsto_real f 0 sequentially",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f 0 sequentially ⊢ tendsto_real f 0 sequentially"
+                },
+                {
+                    "args": "m < k",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < k ⊢ m < k"
+                },
+                {
+                    "args": "alt_sign_abs_bound",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m < k, tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (real_infsum (from m) f - sum ({m..k - 1}) f) ≤ abs (f k)"
+                },
+                {
+                    "args": "∀a::real. ∀b. ∀c. abs (a - b) ≤ c ⟶ a ≤ b + c",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. abs (a - b) ≤ c ⟶ a ≤ b + c"
+                },
+                {
+                    "args": "real_infsum (from m) f, sum ({m..k - 1}) f, abs (f k)",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "m < k, tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ real_infsum (from m) f ≤ sum ({m..k - 1}) f + abs (f k)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ⟶ tendsto_real f 0 sequentially ⟶ m < k ⟶ real_infsum (from m) f ≤ sum ({m..k - 1}) f + abs (f k)"
+                }
+            ],
+            "prop": [
+                "(∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ",
+                "⟶ tendsto_real f 0 sequentially ",
+                "   ⟶ m < k ⟶ real_infsum (from m) f ≤ sum ({m..k - 1}) f + abs (f k)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "alt_sign_abs_bound"
+                },
+                {
+                    "goal": "!a::real. !b. !c. abs (a -b) <= c --> a <= b + c",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "k": "nat",
+                "m": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "alt_sign_lower_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0"
+                },
+                {
+                    "args": "tendsto_real f 0 sequentially",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f 0 sequentially ⊢ tendsto_real f 0 sequentially"
+                },
+                {
+                    "args": "m < k",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < k ⊢ m < k"
+                },
+                {
+                    "args": "alt_sign_abs_bound",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m < k, tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ abs (real_infsum (from m) f - sum ({m..k - 1}) f) ≤ abs (f k)"
+                },
+                {
+                    "args": "∀a::real. ∀b. ∀c. abs (a - b) ≤ c ⟶ b - c ≤ a",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. abs (a - b) ≤ c ⟶ b - c ≤ a"
+                },
+                {
+                    "args": "real_infsum (from m) f, sum ({m..k - 1}) f, abs (f k)",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "m < k, tendsto_real f 0 sequentially, ∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0 ⊢ sum ({m..k - 1}) f - abs (f k) ≤ real_infsum (from m) f"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ⟶ tendsto_real f 0 sequentially ⟶ m < k ⟶ sum ({m..k - 1}) f - abs (f k) ≤ real_infsum (from m) f"
+                }
+            ],
+            "prop": [
+                "(∀n. abs (f (n + 1)) ≤ abs (f n) ∧ f (n + 1) * f n ≤ 0) ",
+                "⟶ tendsto_real f 0 sequentially ",
+                "   ⟶ m < k ⟶ sum ({m..k - 1}) f - abs (f k) ≤ real_infsum (from m) f"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "alt_sign_abs_bound"
+                },
+                {
+                    "goal": "∀a::real. ∀b. ∀c. abs (a - b) ≤ c ⟶ b -c ≤ a",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "k": "nat",
+                "m": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite",
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "integral_uniform_limit",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e)"
+                },
+                {
+                    "args": "∀n. has_real_integral (f n) (s n) (real_closed_interval a b)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. has_real_integral (f n) (s n) (real_closed_interval a b) ⊢ ∀n. has_real_integral (f n) (s n) (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integrable_uniform_limit, {a: a, b: b, f: g}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∀e. 0 < e ⟶ (∃g1. (∀x. x ∈ real_closed_interval a b ⟶ abs (g x - g1 x) ≤ e) ∧ real_integrable_on g1 (real_closed_interval a b))) ⟶ real_integrable_on g (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∀e. 0 < e ⟶ (∃g1. (∀x. x ∈ real_closed_interval a b ⟶ abs (g x - g1 x) ≤ e) ∧ real_integrable_on g1 (real_closed_interval a b))"
+                },
+                {
+                    "args": "e, real",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR e"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "0",
+                        "3.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < e, ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "3.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e",
+                    "id": "3.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e ⊢ ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e"
+                },
+                {
+                    "args": "",
+                    "id": "3.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e, ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∀x. x ∈ real_closed_interval a b ⟶ abs (g x - f N x) ≤ e"
+                },
+                {
+                    "args": "x, real",
+                    "id": "3.5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_closed_interval a b",
+                    "id": "3.5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval a b ⊢ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "∀a::real. ∀b. abs (a - b) = abs (b - a)",
+                    "id": "3.5.2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. abs (a - b) = abs (b - a)"
+                },
+                {
+                    "args": "less_eq_refl, {n: N}",
+                    "id": "3.5.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ N ≤ N"
+                },
+                {
+                    "args": "N, x",
+                    "id": "3.5.4",
+                    "prevs": [
+                        "3.4",
+                        "3.5.3",
+                        "3.5.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 < e, x ∈ real_closed_interval a b, ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e, ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ abs (f N x - g x) < e"
+                },
+                {
+                    "args": "abs (g x - f N x) < e",
+                    "id": "3.5.5",
+                    "prevs": [
+                        "3.5.2",
+                        "3.5.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < e, x ∈ real_closed_interval a b, ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e, ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ abs (g x - f N x) < e"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "3.5.6",
+                    "prevs": [
+                        "3.5.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, x ∈ real_closed_interval a b, ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e, ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ abs (g x - f N x) ≤ e"
+                },
+                {
+                    "args": "",
+                    "id": "3.5.7",
+                    "prevs": [
+                        "3.5.0",
+                        "3.5.1",
+                        "3.5.6"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e, ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∀x. x ∈ real_closed_interval a b ⟶ abs (g x - f N x) ≤ e"
+                },
+                {
+                    "args": "N",
+                    "id": "3.6",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. has_real_integral (f n) (s n) (real_closed_interval a b) ⊢ has_real_integral (f N) (s N) (real_closed_interval a b)"
+                },
+                {
+                    "args": "exI, {P: λy. has_real_integral (f N) y (real_closed_interval a b), a: s N}",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e, ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e, ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∃a1. has_real_integral (f N) a1 (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integrable_on_def, real_integrable_on (f N) (real_closed_interval a b)",
+                    "id": "3.8",
+                    "prevs": [
+                        "3.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e, ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ real_integrable_on (f N) (real_closed_interval a b)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.9",
+                    "prevs": [
+                        "3.5",
+                        "3.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e, ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ (∀x. x ∈ real_closed_interval a b ⟶ abs (g x - f N x) ≤ e) ∧ real_integrable_on (f N) (real_closed_interval a b)"
+                },
+                {
+                    "args": "exI, {P: λg1. (∀x. x ∈ real_closed_interval a b ⟶ abs (g x - g1 x) ≤ e) ∧ real_integrable_on g1 (real_closed_interval a b), a: f N}",
+                    "id": "3.10",
+                    "prevs": [
+                        "3.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e, ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e, ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∃a1. (∀x. x ∈ real_closed_interval a b ⟶ abs (g x - a1 x) ≤ e) ∧ real_integrable_on a1 (real_closed_interval a b)"
+                },
+                {
+                    "args": "∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e",
+                    "id": "3.11",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.2",
+                        "3.3",
+                        "3.4",
+                        "3.10"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∀e. 0 < e ⟶ (∃g1. (∀x. x ∈ real_closed_interval a b ⟶ abs (g x - g1 x) ≤ e) ∧ real_integrable_on g1 (real_closed_interval a b))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ real_integrable_on g (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integrable_on_def",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∃y. has_real_integral g y (real_closed_interval a b)"
+                },
+                {
+                    "args": "r, real",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR r"
+                },
+                {
+                    "args": "has_real_integral g r (real_closed_interval a b)",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral g r (real_closed_interval a b) ⊢ has_real_integral g r (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - r) < e)"
+                },
+                {
+                    "args": "e, real",
+                    "id": "8.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR e"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "8.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "8.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ b ≤ a ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - r) < e)"
+                },
+                {
+                    "args": "b ≤ a",
+                    "id": "8.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b ≤ a ⊢ b ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "8.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, b ≤ a, has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∀n. 0 ≤ n ⟶ abs (s n - r) < e"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "8.2.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "0 ≤ n",
+                    "id": "8.2.1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ n ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "n",
+                    "id": "8.2.1.2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀n. has_real_integral (f n) (s n) (real_closed_interval a b) ⊢ has_real_integral (f n) (s n) (real_closed_interval a b)"
+                },
+                {
+                    "args": "has_real_integral_null_eq",
+                    "id": "8.2.1.3",
+                    "prevs": [
+                        "8.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b ≤ a ⊢ ∀f. ∀i. has_real_integral f i (real_closed_interval a b) ⟷ i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.2.1.4",
+                    "prevs": [
+                        "8.2.1.3",
+                        "8.2.1.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "b ≤ a, ∀n. has_real_integral (f n) (s n) (real_closed_interval a b) ⊢ s n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.2.1.5",
+                    "prevs": [
+                        "8.2.1.3",
+                        "7"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "b ≤ a, has_real_integral g r (real_closed_interval a b) ⊢ r = 0"
+                },
+                {
+                    "args": "abs (s n - r) < e",
+                    "id": "8.2.1.6",
+                    "prevs": [
+                        "8.2.1.4",
+                        "8.2.1.5",
+                        "8.1"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < e, b ≤ a, has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b) ⊢ abs (s n - r) < e"
+                },
+                {
+                    "args": "",
+                    "id": "8.2.1.7",
+                    "prevs": [
+                        "8.2.1.0",
+                        "8.2.1.1",
+                        "8.2.1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, b ≤ a, has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∀n. 0 ≤ n ⟶ abs (s n - r) < e"
+                },
+                {
+                    "args": "exI, {P: λN. ∀n. N ≤ n ⟶ abs (s n - r) < e, a: (0::nat)}",
+                    "id": "8.2.2",
+                    "prevs": [
+                        "8.2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e, b ≤ a, has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∃a1. ∀n. a1 ≤ n ⟶ abs (s n - r) < e"
+                },
+                {
+                    "args": "",
+                    "id": "8.2.3",
+                    "prevs": [
+                        "8.2.0",
+                        "8.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ b ≤ a ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - r) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "8.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ¬(b ≤ a) ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - r) < e)"
+                },
+                {
+                    "args": "¬(b ≤ a)",
+                    "id": "8.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(b ≤ a) ⊢ ¬(b ≤ a)"
+                },
+                {
+                    "args": "e / 2 / (b - a)",
+                    "id": "8.3.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ 0 < e / 2 / (b - a) ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a))"
+                },
+                {
+                    "args": "0 < e / 2 / (b - a)",
+                    "id": "8.3.2",
+                    "prevs": [
+                        "8.3.0",
+                        "8.1"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < e, ¬(b ≤ a) ⊢ 0 < e / 2 / (b - a)"
+                },
+                {
+                    "args": "",
+                    "id": "8.3.3",
+                    "prevs": [
+                        "8.3.1",
+                        "8.3.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < e, ¬(b ≤ a), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a)"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "8.3.4",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a)",
+                    "id": "8.3.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a)"
+                },
+                {
+                    "args": "",
+                    "id": "8.3.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, ¬(b ≤ a), has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ ∀n. N ≤ n ⟶ abs (s n - r) < e"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "8.3.6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "N ≤ n",
+                    "id": "8.3.6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "N ≤ n ⊢ N ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "8.3.6.2",
+                    "prevs": [
+                        "8.3.5",
+                        "8.3.6.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "N ≤ n, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ ∀x. x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a)"
+                },
+                {
+                    "args": "e / 2 = e / 2 / (b - a) * (b - a)",
+                    "id": "8.3.6.3",
+                    "prevs": [
+                        "8.3.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(b ≤ a) ⊢ e / 2 = e / 2 / (b - a) * (b - a)"
+                },
+                {
+                    "args": "0 ≤ e / 2 / (b - a)",
+                    "id": "8.3.6.4",
+                    "prevs": [
+                        "8.1",
+                        "8.3.0"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < e, ¬(b ≤ a) ⊢ 0 ≤ e / 2 / (b - a)"
+                },
+                {
+                    "args": "a ≤ b",
+                    "id": "8.3.6.5",
+                    "prevs": [
+                        "8.3.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(b ≤ a) ⊢ a ≤ b"
+                },
+                {
+                    "args": "n",
+                    "id": "8.3.6.6",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. has_real_integral (f n) (s n) (real_closed_interval a b) ⊢ has_real_integral (f n) (s n) (real_closed_interval a b)"
+                },
+                {
+                    "args": "has_real_integral_sub",
+                    "id": "8.3.6.7",
+                    "prevs": [
+                        "8.3.6.6",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, N ≤ n, ¬(b ≤ a), has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ has_real_integral (λx. f n x - g x) (s n - r) (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "8.3.6.8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, N ≤ n, ¬(b ≤ a), has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ ∀x. x ∈ real_closed_interval a b ⟶ abs (f n x - g x) ≤ e / 2 / (b - a)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "8.3.6.8.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_closed_interval a b",
+                    "id": "8.3.6.8.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval a b ⊢ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "",
+                    "id": "8.3.6.8.2",
+                    "prevs": [
+                        "8.3.6.2",
+                        "8.3.6.8.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "N ≤ n, x ∈ real_closed_interval a b, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ abs (f n x - g x) < e / 2 / (b - a)"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "8.3.6.8.3",
+                    "prevs": [
+                        "8.3.6.8.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, N ≤ n, ¬(b ≤ a), x ∈ real_closed_interval a b, has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ abs (f n x - g x) ≤ e / 2 / (b - a)"
+                },
+                {
+                    "args": "",
+                    "id": "8.3.6.8.4",
+                    "prevs": [
+                        "8.3.6.8.0",
+                        "8.3.6.8.1",
+                        "8.3.6.8.3"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, N ≤ n, ¬(b ≤ a), has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ ∀x. x ∈ real_closed_interval a b ⟶ abs (f n x - g x) ≤ e / 2 / (b - a)"
+                },
+                {
+                    "args": "has_real_integral_bound",
+                    "id": "8.3.6.9",
+                    "prevs": [
+                        "8.3.6.4",
+                        "8.3.6.5",
+                        "8.3.6.7",
+                        "8.3.6.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, N ≤ n, ¬(b ≤ a), has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ abs (s n - r) ≤ e / 2 / (b - a) * (b - a)"
+                },
+                {
+                    "args": "abs (s n - r) ≤ e / 2",
+                    "id": "8.3.6.10",
+                    "prevs": [
+                        "8.3.6.3",
+                        "8.3.6.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < e, N ≤ n, ¬(b ≤ a), has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ abs (s n - r) ≤ e / 2"
+                },
+                {
+                    "args": "e / 2 < e",
+                    "id": "8.3.6.11",
+                    "prevs": [
+                        "8.1"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < e ⊢ e / 2 < e"
+                },
+                {
+                    "args": "real_let_trans",
+                    "id": "8.3.6.12",
+                    "prevs": [
+                        "8.3.6.10",
+                        "8.3.6.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, N ≤ n, ¬(b ≤ a), has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ abs (s n - r) < e"
+                },
+                {
+                    "args": "",
+                    "id": "8.3.6.13",
+                    "prevs": [
+                        "8.3.6.0",
+                        "8.3.6.1",
+                        "8.3.6.12"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, ¬(b ≤ a), has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ ∀n. N ≤ n ⟶ abs (s n - r) < e"
+                },
+                {
+                    "args": "exI, {P: λN. ∀n. N ≤ n ⟶ abs (s n - r) < e, a: N}",
+                    "id": "8.3.7",
+                    "prevs": [
+                        "8.3.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e, ¬(b ≤ a), has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e), ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a) ⊢ ∃a1. ∀n. a1 ≤ n ⟶ abs (s n - r) < e"
+                },
+                {
+                    "args": "∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e / 2 / (b - a)",
+                    "id": "8.3.8",
+                    "prevs": [
+                        "8.3.0",
+                        "8.3.3",
+                        "8.3.4",
+                        "8.3.5",
+                        "8.3.7"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ¬(b ≤ a) ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - r) < e)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "8.4",
+                    "prevs": [
+                        "8.2",
+                        "8.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∃N. ∀n. N ≤ n ⟶ abs (s n - r) < e"
+                },
+                {
+                    "args": "",
+                    "id": "8.5",
+                    "prevs": [
+                        "8.0",
+                        "8.1",
+                        "8.4"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - r) < e)"
+                },
+                {
+                    "args": "reallim_sequentially, tendsto_real s r sequentially",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ tendsto_real s r sequentially"
+                },
+                {
+                    "args": "conjI",
+                    "id": "10",
+                    "prevs": [
+                        "7",
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ has_real_integral g r (real_closed_interval a b) ∧ tendsto_real s r sequentially"
+                },
+                {
+                    "args": "exI, {P: λr. has_real_integral g r (real_closed_interval a b) ∧ tendsto_real s r sequentially, a: r}",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_integral g r (real_closed_interval a b), ∀n. has_real_integral (f n) (s n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e) ⊢ ∃a1. has_real_integral g a1 (real_closed_interval a b) ∧ tendsto_real s a1 sequentially"
+                },
+                {
+                    "args": "∃y. has_real_integral g y (real_closed_interval a b)",
+                    "id": "12",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5",
+                        "6",
+                        "7",
+                        "11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e)) ⟶ (∀n. has_real_integral (f n) (s n) (real_closed_interval a b)) ⟶ (∃r. has_real_integral g r (real_closed_interval a b) ∧ tendsto_real s r sequentially)"
+                }
+            ],
+            "prop": [
+                "(∀e. 0 < e ",
+                "   ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (f n x - g x) < e)) ",
+                "⟶ (∀n. has_real_integral (f n) (s n) (real_closed_interval a b)) ",
+                "   ⟶ (∃r. has_real_integral g r (real_closed_interval a b) ∧ tendsto_real s r sequentially)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_a": "a",
+                    "param_b": "b",
+                    "param_f": "g",
+                    "theorem": "real_integrable_uniform_limit"
+                },
+                {
+                    "goal": "(∀e. 0 < e ⟶ (∃g1. (∀x. x ∈ real_closed_interval a b ⟶ abs (g x - g1 x) ≤ e) ∧ real_integrable_on g1 (real_closed_interval a b)))",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "e"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.2"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "3.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "f N"
+                },
+                {
+                    "goal_id": "3.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "3.5",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "3.5.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal": "!a::real. !b. abs (a - b) = abs (b - a)",
+                    "goal_id": "3.5.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.5.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3.5.2"
+                    ],
+                    "goal_id": "3.5.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.4"
+                    ],
+                    "goal_id": "3.5.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.5.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                },
+                {
+                    "goal_id": "3.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "goal_id": "3.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "s N"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.6",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "exists_elim",
+                    "names": "r"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "inst_exists_goal",
+                    "s": "r"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "reallim_sequentially"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "introduction",
+                    "names": "e"
+                },
+                {
+                    "case": "b <= a",
+                    "goal_id": "8.2",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "8.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "8.2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::nat)"
+                },
+                {
+                    "goal_id": "8.2.1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "8.2.1.2",
+                    "method_name": "forall_elim",
+                    "s": "n"
+                },
+                {
+                    "fact_ids": [
+                        "8.2.0"
+                    ],
+                    "goal_id": "8.2.1.3",
+                    "method_name": "apply_forward_step",
+                    "param_f": "",
+                    "param_i": "",
+                    "theorem": "has_real_integral_null_eq"
+                },
+                {
+                    "fact_ids": [
+                        "8.2.1.3",
+                        "8.2.1.2"
+                    ],
+                    "goal_id": "8.2.1.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "8.2.1.3",
+                        "7"
+                    ],
+                    "goal_id": "8.2.1.5",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "8.2.1.4",
+                        "8.2.1.5",
+                        "8.1"
+                    ],
+                    "goal_id": "8.2.1.6",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "8.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "8.3.1",
+                    "method_name": "forall_elim",
+                    "s": "(e/2)/(b-a)"
+                },
+                {
+                    "fact_ids": [
+                        "8.3.1"
+                    ],
+                    "goal": "0 < e / 2 / (b - a)",
+                    "goal_id": "8.3.2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "8.3.0",
+                        "8.1"
+                    ],
+                    "goal_id": "8.3.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "8.3.1",
+                        "8.3.2"
+                    ],
+                    "goal_id": "8.3.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "8.3.3"
+                    ],
+                    "goal_id": "8.3.4",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "8.3.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "goal_id": "8.3.6",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "8.3.5",
+                        "8.3.6.1"
+                    ],
+                    "goal_id": "8.3.6.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal_id": "8.3.6.3",
+                    "method_name": "apply_backward_step",
+                    "param_y": "e/2",
+                    "theorem": "real_let_trans"
+                },
+                {
+                    "goal": "e / 2 = ((e / 2) / (b - a)) * (b - a)",
+                    "goal_id": "8.3.6.3",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "8.3.0"
+                    ],
+                    "goal_id": "8.3.6.3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "8.3.6.3"
+                    ],
+                    "goal_id": "8.3.6.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "8.3.6.4",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(%x. f n x - (g x))",
+                    "theorem": "has_real_integral_bound"
+                },
+                {
+                    "fact_ids": [
+                        "8.1",
+                        "8.3.0"
+                    ],
+                    "goal_id": "8.3.6.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "8.3.0"
+                    ],
+                    "goal_id": "8.3.6.5",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "8.3.6.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_sub"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "8.3.6.6",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "8.3.6.8",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "8.3.6.2",
+                        "8.3.6.8.1"
+                    ],
+                    "goal_id": "8.3.6.8.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal_id": "8.3.6.8.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "8.1"
+                    ],
+                    "goal_id": "8.3.6.11",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "nat ⇒ real ⇒ real",
+                "g": "real ⇒ real",
+                "s": "nat ⇒ real"
+            }
         }
     ],
     "description": "Formal inequalities for trig about series.",
     "imports": [
-        "realanalysis"
+        "realgamma"
     ],
     "name": "trig_series"
 }

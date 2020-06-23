@@ -9151,6 +9151,197 @@
         },
         {
             "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "infinite_diff_finite",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "infinite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "infinite s ⊢ infinite s"
+                },
+                {
+                    "args": "finite t",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite t ⊢ finite t"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite t, infinite s ⊢ finite (diff s t) ⟶ finite s"
+                },
+                {
+                    "args": "finite (diff s t)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite (diff s t) ⊢ finite (diff s t)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.1",
+                    "prevs": [
+                        "1",
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, infinite s, finite (diff s t) ⊢ finite t ∧ finite (diff s t)"
+                },
+                {
+                    "args": "finite_union, finite (t ∪ diff s t)",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, infinite s, finite (diff s t) ⊢ finite (t ∪ diff s t)"
+                },
+                {
+                    "args": "s ⊆ t ∪ {x. x ∈ s ∧ ¬(x ∈ t)}",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ s ⊆ t ∪ {x. x ∈ s ∧ ¬(x ∈ t)}"
+                },
+                {
+                    "args": "diff_def, s ⊆ t ∪ diff s t",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, infinite s, finite (diff s t) ⊢ s ⊆ t ∪ diff s t"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.2",
+                        "2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, infinite s, finite (diff s t) ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.0",
+                        "2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "finite t, infinite s ⊢ finite (diff s t) ⟶ finite s"
+                },
+                {
+                    "args": "double_neg, ¬¬(finite (diff s t)) ⟶ ¬¬(finite s)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, infinite s ⊢ ¬¬(finite (diff s t)) ⟶ ¬¬(finite s)"
+                },
+                {
+                    "args": "infinite_def, ¬(infinite (diff s t)) ⟶ ¬(infinite s)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, infinite s ⊢ ¬(infinite (diff s t)) ⟶ ¬(infinite s)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, infinite s ⊢ infinite (diff s t)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ infinite s ⟶ finite t ⟶ infinite (diff s t)"
+                }
+            ],
+            "prop": "infinite s ⟶ finite t ⟶ infinite (diff s t)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "infinite_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "param_t": "union t (diff s t)",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "finite_union"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "diff_def"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward"
             ],
             "name": "finite_diff",

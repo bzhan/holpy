@@ -1221,7 +1221,204 @@
                 "hint_rewrite"
             ],
             "name": "from_mono",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀x. m ≤ x ⟶ n ≤ x) ⟶ n ≤ m"
+                },
+                {
+                    "args": "∀x. m ≤ x ⟶ n ≤ x",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. m ≤ x ⟶ n ≤ x ⊢ ∀x. m ≤ x ⟶ n ≤ x"
+                },
+                {
+                    "args": "less_eq_refl, {n: m}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m ≤ m"
+                },
+                {
+                    "args": "m",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. m ≤ x ⟶ n ≤ x ⊢ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. m ≤ x ⟶ n ≤ x) ⟶ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n ≤ m ⟶ (∀x. m ≤ x ⟶ n ≤ x)"
+                },
+                {
+                    "args": "n ≤ m",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n ≤ m ⊢ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n ≤ m ⊢ ∀x. m ≤ x ⟶ n ≤ x"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "m ≤ x",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ x ⊢ m ≤ x"
+                },
+                {
+                    "args": "less_eq_trans",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ x, n ≤ m ⊢ n ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1",
+                        "1.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "n ≤ m ⊢ ∀x. m ≤ x ⟶ n ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n ≤ m ⟶ (∀x. m ≤ x ⟶ n ≤ x)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∀x. m ≤ x ⟶ n ≤ x) ⟷ n ≤ m"
+                },
+                {
+                    "args": "in_from, (∀x. x ∈ from m ⟶ x ∈ from n) ⟷ n ≤ m",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∀x. x ∈ from m ⟶ x ∈ from n) ⟷ n ≤ m"
+                },
+                {
+                    "args": "subset_def, from m ⊆ from n ⟷ n ≤ m",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ from m ⊆ from n ⟷ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ from m ⊆ from n ⟷ n ≤ m"
+                }
+            ],
             "prop": "from m ⊆ from n ⟷ n ≤ m",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "subset_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_from"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "apply_backward_step",
+                    "param_m": "m",
+                    "theorem": "less_eq_trans"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -1233,7 +1430,353 @@
                 "hint_rewrite"
             ],
             "name": "from_inter_natseg_gen",
-            "prop": "from m ∩ from n = (if m < k then {k..n} else {m..n})",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m < k ⟶ from k ∩ {m..n} = (if m < k then {k..n} else {m..n})"
+                },
+                {
+                    "args": "m < k",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < k ⊢ m < k"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m < k ⊢ ∀x. x ∈ {m1. k ≤ m1} ∩ {m..n} ⟷ x ∈ {k..n}"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "k ≤ x ∧ m ≤ x ∧ x ≤ n ⟷ k ≤ x ∧ x ≤ n",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "z3",
+                    "th": "m < k ⊢ k ≤ x ∧ m ≤ x ∧ x ≤ n ⟷ k ≤ x ∧ x ≤ n"
+                },
+                {
+                    "args": "member_collect, x ∈ {m1. k ≤ m1} ∧ m ≤ x ∧ x ≤ n ⟷ k ≤ x ∧ x ≤ n",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m < k ⊢ x ∈ {m1. k ≤ m1} ∧ m ≤ x ∧ x ≤ n ⟷ k ≤ x ∧ x ≤ n"
+                },
+                {
+                    "args": "member_natseg, x ∈ {m1. k ≤ m1} ∧ x ∈ {m..n} ⟷ x ∈ {k..n}",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m < k ⊢ x ∈ {m1. k ≤ m1} ∧ x ∈ {m..n} ⟷ x ∈ {k..n}"
+                },
+                {
+                    "args": "member_inter_iff, x ∈ {m1. k ≤ m1} ∩ {m..n} ⟷ x ∈ {k..n}",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m < k ⊢ x ∈ {m1. k ≤ m1} ∩ {m..n} ⟷ x ∈ {k..n}"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "m < k ⊢ ∀x. x ∈ {m1. k ≤ m1} ∩ {m..n} ⟷ x ∈ {k..n}"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m < k ⊢ {m1. k ≤ m1} ∩ {m..n} = {k..n}"
+                },
+                {
+                    "args": "from_def, from k ∩ {m..n} = {k..n}",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m < k ⊢ from k ∩ {m..n} = {k..n}"
+                },
+                {
+                    "args": "if_P, from k ∩ {m..n} = (if m < k then {k..n} else {m..n})",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3",
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m < k ⊢ from k ∩ {m..n} = (if m < k then {k..n} else {m..n})"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m < k ⟶ from k ∩ {m..n} = (if m < k then {k..n} else {m..n})"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(m < k) ⟶ from k ∩ {m..n} = (if m < k then {k..n} else {m..n})"
+                },
+                {
+                    "args": "¬(m < k)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m < k) ⊢ ¬(m < k)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(m < k) ⊢ ∀x. x ∈ from k ∩ {m..n} ⟷ x ∈ {m..n}"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "k ≤ x ∧ m ≤ x ∧ x ≤ n ⟷ m ≤ x ∧ x ≤ n",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(m < k) ⊢ k ≤ x ∧ m ≤ x ∧ x ≤ n ⟷ m ≤ x ∧ x ≤ n"
+                },
+                {
+                    "args": "member_natseg, k ≤ x ∧ x ∈ {m..n} ⟷ x ∈ {m..n}",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m < k) ⊢ k ≤ x ∧ x ∈ {m..n} ⟷ x ∈ {m..n}"
+                },
+                {
+                    "args": "in_from, x ∈ from k ∧ x ∈ {m..n} ⟷ x ∈ {m..n}",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m < k) ⊢ x ∈ from k ∧ x ∈ {m..n} ⟷ x ∈ {m..n}"
+                },
+                {
+                    "args": "member_inter_iff, x ∈ from k ∩ {m..n} ⟷ x ∈ {m..n}",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m < k) ⊢ x ∈ from k ∩ {m..n} ⟷ x ∈ {m..n}"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(m < k) ⊢ ∀x. x ∈ from k ∩ {m..n} ⟷ x ∈ {m..n}"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m < k) ⊢ from k ∩ {m..n} = {m..n}"
+                },
+                {
+                    "args": "if_not_P, from k ∩ {m..n} = (if m < k then {k..n} else {m..n})",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m < k) ⊢ from k ∩ {m..n} = (if m < k then {k..n} else {m..n})"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(m < k) ⟶ from k ∩ {m..n} = (if m < k then {k..n} else {m..n})"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ from k ∩ {m..n} = (if m < k then {k..n} else {m..n})"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ from k ∩ {m..n} = (if m < k then {k..n} else {m..n})"
+                }
+            ],
+            "prop": "from k ∩ {m..n} = (if m < k then {k..n} else {m..n})",
+            "steps": [
+                {
+                    "case": "m < k",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "from_def"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_natseg"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_from"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_natseg"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "k": "nat",
@@ -1243,10 +1786,352 @@
         },
         {
             "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "from_inter_natseg_max",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. p ≤ x ∧ m ≤ x ∧ x ≤ n ⟷ max p m ≤ x ∧ x ≤ n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. p ≤ x ∧ m ≤ x ∧ x ≤ n ⟷ max p m ≤ x ∧ x ≤ n"
+                },
+                {
+                    "args": "member_natseg, ∀x. p ≤ x ∧ x ∈ {m..n} ⟷ x ∈ {max p m..n}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. p ≤ x ∧ x ∈ {m..n} ⟷ x ∈ {max p m..n}"
+                },
+                {
+                    "args": "in_from, ∀x. x ∈ from p ∧ x ∈ {m..n} ⟷ x ∈ {max p m..n}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. x ∈ from p ∧ x ∈ {m..n} ⟷ x ∈ {max p m..n}"
+                },
+                {
+                    "args": "member_inter_iff, ∀x. x ∈ from p ∩ {m..n} ⟷ x ∈ {max p m..n}",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. x ∈ from p ∩ {m..n} ⟷ x ∈ {max p m..n}"
+                },
+                {
+                    "args": "set_equal_iff, from p ∩ {m..n} = {max p m..n}",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ from p ∩ {m..n} = {max p m..n}"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ from p ∩ {m..n} = {max p m..n}"
+                }
+            ],
+            "prop": "from p ∩ {m..n} = {max p m..n}",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "set_equal_iff"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_from"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_natseg"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "from_inter_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "max k 0 = k",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ max k 0 = k"
+                },
+                {
+                    "args": "{max k 0..n} = {k..n}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ {max k 0..n} = {k..n}"
+                },
+                {
+                    "args": "from_inter_natseg_max, from k ∩ {0..n} = {k..n}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ from k ∩ {0..n} = {k..n}"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ from k ∩ {0..n} = {k..n}"
+                }
+            ],
+            "prop": "from k ∩ {0..n} = {k..n}",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "from_inter_natseg_max"
+                },
+                {
+                    "goal": "max k 0 = k",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "k": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "infinite_from",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. n ≤ x ⟷ x ∈ univ ∧ ¬(x < n)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. n ≤ x ⟷ x ∈ univ ∧ ¬(x < n)"
+                },
+                {
+                    "args": "member_collect, ∀x. n ≤ x ⟷ x ∈ univ ∧ ¬(x ∈ {i. i < n})",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. n ≤ x ⟷ x ∈ univ ∧ ¬(x ∈ {i. i < n})"
+                },
+                {
+                    "args": "member_collect, ∀x. n ≤ x ⟷ x ∈ {x1. x1 ∈ univ ∧ ¬(x1 ∈ {i. i < n})}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. n ≤ x ⟷ x ∈ {x1. x1 ∈ univ ∧ ¬(x1 ∈ {i. i < n})}"
+                },
+                {
+                    "args": "in_from, ∀x. x ∈ from n ⟷ x ∈ {x1. x1 ∈ univ ∧ ¬(x1 ∈ {i. i < n})}",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. x ∈ from n ⟷ x ∈ {x1. x1 ∈ univ ∧ ¬(x1 ∈ {i. i < n})}"
+                },
+                {
+                    "args": "diff_def, ∀x. x ∈ from n ⟷ x ∈ diff univ ({i. i < n})",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. x ∈ from n ⟷ x ∈ diff univ ({i. i < n})"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ from n = diff univ ({i. i < n})"
+                },
+                {
+                    "args": "nat_infinite",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ infinite (univ::nat set)"
+                },
+                {
+                    "args": "finite_natseg_lt, {n: n}",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m. m < n})"
+                },
+                {
+                    "args": "infinite_diff_finite",
+                    "id": "8",
+                    "prevs": [
+                        "6",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ infinite (diff univ ({i. i < n}))"
+                },
+                {
+                    "args": "infinite (from n)",
+                    "id": "9",
+                    "prevs": [
+                        "5",
+                        "8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ infinite (from n)"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ infinite (from n)"
+                }
+            ],
+            "prop": "infinite (from n)",
+            "steps": [
+                {
+                    "goal": "from n = diff (univ::nat set) {i. i < n}",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "diff_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_from"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "infinite_diff_finite"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nat_infinite"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg_lt"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward"
             ],
             "name": "finite_inter_natseg",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "finite_natseg, {m: m, n: n}",
@@ -1256,27 +2141,36 @@
                     "th": "⊢ finite ({m..n})"
                 },
                 {
-                    "args": "",
+                    "args": "s ∩ {p. m ≤ p ∧ p ≤ n} ⊆ {p. m ≤ p ∧ p ≤ n}",
                     "id": "1",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "z3",
+                    "th": "⊢ s ∩ {p. m ≤ p ∧ p ≤ n} ⊆ {p. m ≤ p ∧ p ≤ n}"
+                },
+                {
+                    "args": "nat_interval_def, s ∩ {m..n} ⊆ {m..n}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
                     "th": "⊢ s ∩ {m..n} ⊆ {m..n}"
                 },
                 {
                     "args": "finite_subset",
-                    "id": "2",
+                    "id": "3",
                     "prevs": [
                         "0",
-                        "1"
+                        "2"
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ finite (s ∩ {m..n})"
                 },
                 {
                     "args": "",
-                    "id": "3",
+                    "id": "4",
                     "prevs": [
-                        "2"
+                        "3"
                     ],
                     "rule": "intros",
                     "th": "⊢ finite (s ∩ {m..n})"
@@ -1294,6 +2188,16 @@
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
                     "theorem": "finite_natseg"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_interval_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
