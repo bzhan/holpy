@@ -2742,6 +2742,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_cdiv_within",
             "num_gaps": 0,
             "proof": [
@@ -2808,6 +2811,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_cdiv_atreal",
             "num_gaps": 0,
             "proof": [

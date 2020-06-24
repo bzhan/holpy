@@ -5515,6 +5515,1805 @@
                 "g": "real ⇒ real",
                 "s": "nat ⇒ real"
             }
+        },
+        {
+            "name": "integral_series",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e)"
+                },
+                {
+                    "args": "∀n. has_real_integral (f n) (r n) (real_closed_interval a b)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. has_real_integral (f n) (r n) (real_closed_interval a b) ⊢ ∀n. has_real_integral (f n) (r n) (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. has_real_integral (f n) (r n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e) ⊢ ∀n. has_real_integral (λx. sum (s ∩ {0..n}) (λi. f i x)) (sum (s ∩ {0..n}) r) (real_closed_interval a b)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "finite_inter_natseg, {m: (0::nat), n: n, s: s}",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite (s ∩ {0..n})"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. has_real_integral (f n) (r n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e) ⊢ ∀a1. a1 ∈ s ∩ {0..n} ⟶ has_real_integral (f a1) (r a1) (real_closed_interval a b)"
+                },
+                {
+                    "args": "a1, nat",
+                    "id": "2.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a1"
+                },
+                {
+                    "args": "a1 ∈ s ∩ {0..n}",
+                    "id": "2.2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a1 ∈ s ∩ {0..n} ⊢ a1 ∈ s ∩ {0..n}"
+                },
+                {
+                    "args": "a1",
+                    "id": "2.2.2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. has_real_integral (f n) (r n) (real_closed_interval a b) ⊢ has_real_integral (f a1) (r a1) (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.3",
+                    "prevs": [
+                        "2.2.0",
+                        "2.2.1",
+                        "2.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. has_real_integral (f n) (r n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e) ⊢ ∀a1. a1 ∈ s ∩ {0..n} ⟶ has_real_integral (f a1) (r a1) (real_closed_interval a b)"
+                },
+                {
+                    "args": "has_real_integral_sum",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. has_real_integral (f n) (r n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e) ⊢ has_real_integral (λx. sum (s ∩ {0..n}) (λa1. f a1 x)) (sum (s ∩ {0..n}) r) (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. has_real_integral (f n) (r n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e) ⊢ ∀n. has_real_integral (λx. sum (s ∩ {0..n}) (λi. f i x)) (sum (s ∩ {0..n}) r) (real_closed_interval a b)"
+                },
+                {
+                    "args": "integral_uniform_limit",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. has_real_integral (f n) (r n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e) ⊢ ∃r1. has_real_integral g r1 (real_closed_interval a b) ∧ tendsto_real (λn. sum (s ∩ {0..n}) r) r1 sequentially"
+                },
+                {
+                    "args": "real_sums_def, ∃v. has_real_integral g v (real_closed_interval a b) ∧ real_sums r v s",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. has_real_integral (f n) (r n) (real_closed_interval a b), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e) ⊢ ∃v. has_real_integral g v (real_closed_interval a b) ∧ real_sums r v s"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e)) ⟶ (∀n. has_real_integral (f n) (r n) (real_closed_interval a b)) ⟶ (∃v. has_real_integral g v (real_closed_interval a b) ∧ real_sums r v s)"
+                }
+            ],
+            "prop": [
+                "(∀e. 0 < e ",
+                "   ⟶ (∃N. ∀n. ∀x. N ≤ n ",
+                "             ⟶ x ∈ real_closed_interval a b ⟶ abs (sum (s ∩ {0..n}) (λi. f i x) - g x) < e)) ",
+                "⟶ (∀n. has_real_integral (f n) (r n) (real_closed_interval a b)) ",
+                "   ⟶ (∃v. has_real_integral g v (real_closed_interval a b) ∧ real_sums r v s)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sums_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(%n. %x. sum (s ∩ {0..n}) (%i. f i x))",
+                    "theorem": "integral_uniform_limit"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_sum"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_inter_natseg"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "introduction",
+                    "names": "a1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2.2.2",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "nat ⇒ real ⇒ real",
+                "g": "real ⇒ real",
+                "r": "nat ⇒ real",
+                "s": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "power_series_uniform",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "real_summable s (λi. a i * y ^ i)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_summable s (λi. a i * y ^ i) ⊢ real_summable s (λi. a i * y ^ i)"
+                },
+                {
+                    "args": "abs t < abs y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs t < abs y ⊢ abs t < abs y"
+                },
+                {
+                    "args": "0 < (abs y + abs t) / (abs y - abs t)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "abs t < abs y ⊢ 0 < (abs y + abs t) / (abs y - abs t)"
+                },
+                {
+                    "args": "(abs y + abs t) / (abs y - abs t) * (abs y - abs t) = abs y + abs t",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "abs t < abs y ⊢ (abs y + abs t) / (abs y - abs t) * (abs y - abs t) = abs y + abs t"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs t < abs y, real_summable s (λi. a i * y ^ i) ⊢ 0 < (abs y + abs t) / (abs y - abs t) ∧ (abs y + abs t) / (abs y - abs t) * (abs y - abs t) = abs y + abs t"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "abs t < abs y, real_summable s (λi. a i * y ^ i) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs t)) (abs t) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x ^ i) - real_infsum s (λi. a i * x ^ i)) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_summable s (λi. a i * y ^ i) ⟶ abs t < abs y ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs t)) (abs t) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x ^ i) - real_infsum s (λi. a i * x ^ i)) < e))"
+                }
+            ],
+            "prop": [
+                "real_summable s (λi. a i * y ^ i) ",
+                "⟶ abs t < abs y ",
+                "   ⟶ (∀e. 0 < e ",
+                "         ⟶ (∃N. ∀n. ∀x. N ≤ n ",
+                "                   ⟶ x ∈ real_closed_interval (-(abs t)) (abs t) ",
+                "                      ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x ^ i) - real_infsum s (λi. a i * x ^ i)) < e))"
+            ],
+            "steps": [
+                {
+                    "goal": "0 < (abs y + abs t) / (abs y - abs t) & (abs y + abs t) / (abs y - abs t) * (abs y - abs t) = abs y + abs t",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat ⇒ real",
+                "s": "nat set",
+                "t": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "has_real_integral_pow_pos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ a ⊢ 0 ≤ a"
+                },
+                {
+                    "args": "real_fundamental_theorem_of_calculus, {f: λx. x ^ (n + 1) / of_nat (n + 1), f1: λx::real. x ^ n}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ a ⊢ (∀x. x ∈ real_closed_interval 0 a ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval 0 a))) ⟶ has_real_integral (λx. x ^ n) (a ^ (n + 1) / of_nat (n + 1) - 0 ^ (n + 1) / of_nat (n + 1)) (real_closed_interval 0 a)"
+                },
+                {
+                    "args": "real_pow_zero",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ a ⊢ (∀x. x ∈ real_closed_interval 0 a ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval 0 a))) ⟶ has_real_integral (λx. x ^ n) (a ^ (n + 1) / of_nat (n + 1) - (if n + 1 = 0 then 1 else 0) / of_nat (n + 1)) (real_closed_interval 0 a)"
+                },
+                {
+                    "args": "¬(n + 1 = 0)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬(n + 1 = 0)"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ a ⊢ (∀x. x ∈ real_closed_interval 0 a ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval 0 a))) ⟶ has_real_integral (λx. x ^ n) (a ^ (n + 1) / of_nat (n + 1) - 0 / of_nat (n + 1)) (real_closed_interval 0 a)"
+                },
+                {
+                    "args": "eq_refl, {x: (0::real)}",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) = 0"
+                },
+                {
+                    "args": "disjI1, {A: (0::real) = 0, B: of_nat (n + 1) = (0::real)}",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ a ⊢ (0::real) = 0 ∨ of_nat (n + 1) = (0::real)"
+                },
+                {
+                    "args": "real_div_eq_0, 0 / of_nat (n + 1) = 0",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ a ⊢ 0 / of_nat (n + 1) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "7",
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "0 ≤ a ⊢ (∀x. x ∈ real_closed_interval 0 a ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval 0 a))) ⟶ has_real_integral (λx. x ^ n) (a ^ (n + 1) / of_nat (n + 1) - 0) (real_closed_interval 0 a)"
+                },
+                {
+                    "args": "real_sub_rzero",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ a ⊢ (∀x. x ∈ real_closed_interval 0 a ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval 0 a))) ⟶ has_real_integral (λx. x ^ n) (a ^ (n + 1) / of_nat (n + 1)) (real_closed_interval 0 a)"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 ≤ a ⊢ ∀x. x ∈ real_closed_interval 0 a ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval 0 a))"
+                },
+                {
+                    "args": "x, real",
+                    "id": "10.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_closed_interval 0 a",
+                    "id": "10.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval 0 a ⊢ x ∈ real_closed_interval 0 a"
+                },
+                {
+                    "args": "real_of_nat_eq, ¬((of_nat::nat ⇒ real) (n + 1) = of_nat 0)",
+                    "id": "10.2",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ ¬((of_nat::nat ⇒ real) (n + 1) = of_nat 0)"
+                },
+                {
+                    "args": "real_zero_def, ¬(of_nat (n + 1) = (0::real))",
+                    "id": "10.3",
+                    "prevs": [
+                        "10.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ ¬(of_nat (n + 1) = (0::real))"
+                },
+                {
+                    "args": "real_mul_linv",
+                    "id": "10.4",
+                    "prevs": [
+                        "10.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ real_inverse (of_nat (n + 1)) * of_nat (n + 1) = 1"
+                },
+                {
+                    "args": "real_mult_comm, of_nat (n + 1) * real_inverse (of_nat (n + 1)) = 1",
+                    "id": "10.5",
+                    "prevs": [
+                        "10.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ of_nat (n + 1) * real_inverse (of_nat (n + 1)) = 1"
+                },
+                {
+                    "args": "real_mul_rid, x ^ n = x ^ n * 1",
+                    "id": "10.6",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ n = x ^ n * 1"
+                },
+                {
+                    "args": "x ^ n = x ^ n * (of_nat (n + 1) * real_inverse (of_nat (n + 1)))",
+                    "id": "10.7",
+                    "prevs": [
+                        "10.5",
+                        "10.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ x ^ n = x ^ n * (of_nat (n + 1) * real_inverse (of_nat (n + 1)))"
+                },
+                {
+                    "args": "real_mult_assoc, x ^ n = x ^ n * of_nat (n + 1) * real_inverse (of_nat (n + 1))",
+                    "id": "10.8",
+                    "prevs": [
+                        "10.7"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ x ^ n = x ^ n * of_nat (n + 1) * real_inverse (of_nat (n + 1))"
+                },
+                {
+                    "args": "real_divide_def, x ^ n = x ^ n * of_nat (n + 1) / of_nat (n + 1)",
+                    "id": "10.9",
+                    "prevs": [
+                        "10.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ x ^ n = x ^ n * of_nat (n + 1) / of_nat (n + 1)"
+                },
+                {
+                    "args": "real_mult_comm, x ^ n = of_nat (n + 1) * x ^ n / of_nat (n + 1)",
+                    "id": "10.10",
+                    "prevs": [
+                        "10.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ x ^ n = of_nat (n + 1) * x ^ n / of_nat (n + 1)"
+                },
+                {
+                    "args": "has_real_derivative_pow_atreal, {f: λx::real. x, f1: (1::real), n: n + 1, x: x}",
+                    "id": "10.11",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. x1) 1 (atreal x) ⟶ has_real_derivative (λx1. x1 ^ (n + 1)) (of_nat (n + 1) * x ^ (n + 1 - 1) * 1) (atreal x)"
+                },
+                {
+                    "args": "real_mul_rid",
+                    "id": "10.12",
+                    "prevs": [
+                        "10.11"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ has_real_derivative (λx1. x1) 1 (atreal x) ⟶ has_real_derivative (λx1. x1 ^ (n + 1)) (of_nat (n + 1) * x ^ (n + 1 - 1)) (atreal x)"
+                },
+                {
+                    "args": "nat_plus_minus",
+                    "id": "10.13",
+                    "prevs": [
+                        "10.12"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ has_real_derivative (λx1. x1) 1 (atreal x) ⟶ has_real_derivative (λx1. x1 ^ (n + 1)) (of_nat (n + 1) * x ^ n) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_id, {net: atreal x}",
+                    "id": "10.14",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. x1) 1 (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "10.15",
+                    "prevs": [
+                        "10.13",
+                        "10.14"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ has_real_derivative (λx1. x1 ^ (n + 1)) (of_nat (n + 1) * x ^ n) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_cdiv_atreal, {c: (of_nat::nat ⇒ real) (n + 1), f: λx1::real. x1 ^ (n + 1), f1: of_nat (n + 1) * x ^ n, x: x}",
+                    "id": "10.16",
+                    "prevs": [
+                        "10.15"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (of_nat (n + 1) * x ^ n / of_nat (n + 1)) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (atreal x)",
+                    "id": "10.17",
+                    "prevs": [
+                        "10.10",
+                        "10.16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_atreal_within, {f: λx. x ^ (n + 1) / of_nat (n + 1), f1: x ^ n, s: real_closed_interval 0 a, x: x}",
+                    "id": "10.18",
+                    "prevs": [
+                        "10.17"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ a, x ∈ real_closed_interval 0 a ⊢ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval 0 a))"
+                },
+                {
+                    "args": "",
+                    "id": "10.19",
+                    "prevs": [
+                        "10.0",
+                        "10.1",
+                        "10.18"
+                    ],
+                    "rule": "intros",
+                    "th": "0 ≤ a ⊢ ∀x. x ∈ real_closed_interval 0 a ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval 0 a))"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "9",
+                        "10"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 ≤ a ⊢ has_real_integral (λx. x ^ n) (a ^ (n + 1) / of_nat (n + 1)) (real_closed_interval 0 a)"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [
+                        "0",
+                        "11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ a ⟶ has_real_integral (λx. x ^ n) (a ^ (n + 1) / of_nat (n + 1)) (real_closed_interval 0 a)"
+                }
+            ],
+            "prop": [
+                "0 ≤ a ",
+                "⟶ has_real_integral (λx. x ^ n) (a ^ (n + 1) / of_nat (n + 1)) ",
+                "     (real_closed_interval 0 a)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λx::real. x ^ (n + 1) / of_nat (n + 1))",
+                    "param_f1": "(λx::real. x ^ n)",
+                    "theorem": "real_fundamental_theorem_of_calculus"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_pow_zero"
+                },
+                {
+                    "goal": "~n + 1 = 0",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal": "0 / of_nat (n + 1) = 0",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_div_eq_0"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "4"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sub_rzero"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_atreal_within"
+                },
+                {
+                    "goal": "x ^ n = of_nat (n + 1) * x ^ n / of_nat (n + 1) ",
+                    "goal_id": "10.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "goal": "(of_nat (n + 1) * real_inverse (of_nat (n + 1))) = 1",
+                    "goal_id": "10.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_mul_linv"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_of_nat_eq"
+                },
+                {
+                    "fact_ids": [
+                        "10.5"
+                    ],
+                    "goal_id": "10.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "10.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "fact_ids": [
+                        "10.10"
+                    ],
+                    "goal_id": "10.11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "10.11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_cdiv_atreal"
+                },
+                {
+                    "goal_id": "10.11",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(%x::real. x)",
+                    "param_f1": "(1::real)",
+                    "param_n": "n+1",
+                    "param_x": "x",
+                    "theorem": "has_real_derivative_pow_atreal"
+                },
+                {
+                    "fact_ids": [
+                        "10.11"
+                    ],
+                    "goal_id": "10.12",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "fact_ids": [
+                        "10.12"
+                    ],
+                    "goal_id": "10.13",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_plus_minus"
+                },
+                {
+                    "fact_ids": [
+                        "10.13"
+                    ],
+                    "goal_id": "10.14",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "10.14",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_id"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "has_real_integral_pow_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "a ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ 0 ⊢ a ≤ 0"
+                },
+                {
+                    "args": "real_fundamental_theorem_of_calculus, {f: λx. x ^ (n + 1) / of_nat (n + 1), f1: λx::real. x ^ n}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a ≤ 0 ⊢ (∀x. x ∈ real_closed_interval a 0 ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval a 0))) ⟶ has_real_integral (λx. x ^ n) (0 ^ (n + 1) / of_nat (n + 1) - a ^ (n + 1) / of_nat (n + 1)) (real_closed_interval a 0)"
+                },
+                {
+                    "args": "eq_refl, {x: (0::real)}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) = 0"
+                },
+                {
+                    "args": "¬(n + 1 = 0)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬(n + 1 = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ 0 ⊢ (0::real) = 0 ∧ ¬(n + 1 = 0)"
+                },
+                {
+                    "args": "real_pow_eq_0, (0::real) ^ (n + 1) = 0",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ 0 ⊢ (0::real) ^ (n + 1) = 0"
+                },
+                {
+                    "args": "disjI1, {A: (0::real) ^ (n + 1) = 0, B: of_nat (n + 1) = (0::real)}",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a ≤ 0 ⊢ (0::real) ^ (n + 1) = 0 ∨ of_nat (n + 1) = (0::real)"
+                },
+                {
+                    "args": "real_div_eq_0, 0 ^ (n + 1) / of_nat (n + 1) = 0",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ 0 ⊢ 0 ^ (n + 1) / of_nat (n + 1) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "7",
+                        "1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "a ≤ 0 ⊢ (∀x. x ∈ real_closed_interval a 0 ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval a 0))) ⟶ has_real_integral (λx. x ^ n) (0 - a ^ (n + 1) / of_nat (n + 1)) (real_closed_interval a 0)"
+                },
+                {
+                    "args": "real_minus_def",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a ≤ 0 ⊢ (∀x. x ∈ real_closed_interval a 0 ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval a 0))) ⟶ has_real_integral (λx. x ^ n) (0 + -(a ^ (n + 1) / of_nat (n + 1))) (real_closed_interval a 0)"
+                },
+                {
+                    "args": "real_add_lid",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a ≤ 0 ⊢ (∀x. x ∈ real_closed_interval a 0 ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval a 0))) ⟶ has_real_integral (λx. x ^ n) (-(a ^ (n + 1) / of_nat (n + 1))) (real_closed_interval a 0)"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a ≤ 0 ⊢ ∀x. x ∈ real_closed_interval a 0 ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval a 0))"
+                },
+                {
+                    "args": "x, real",
+                    "id": "11.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_closed_interval a 0",
+                    "id": "11.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval a 0 ⊢ x ∈ real_closed_interval a 0"
+                },
+                {
+                    "args": "real_of_nat_eq, ¬((of_nat::nat ⇒ real) (n + 1) = of_nat 0)",
+                    "id": "11.2",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ ¬((of_nat::nat ⇒ real) (n + 1) = of_nat 0)"
+                },
+                {
+                    "args": "real_zero_def, ¬(of_nat (n + 1) = (0::real))",
+                    "id": "11.3",
+                    "prevs": [
+                        "11.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ ¬(of_nat (n + 1) = (0::real))"
+                },
+                {
+                    "args": "real_mul_linv",
+                    "id": "11.4",
+                    "prevs": [
+                        "11.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ real_inverse (of_nat (n + 1)) * of_nat (n + 1) = 1"
+                },
+                {
+                    "args": "real_mult_comm, of_nat (n + 1) * real_inverse (of_nat (n + 1)) = 1",
+                    "id": "11.5",
+                    "prevs": [
+                        "11.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ of_nat (n + 1) * real_inverse (of_nat (n + 1)) = 1"
+                },
+                {
+                    "args": "real_mul_rid, x ^ n = x ^ n * 1",
+                    "id": "11.6",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ n = x ^ n * 1"
+                },
+                {
+                    "args": "x ^ n = x ^ n * (of_nat (n + 1) * real_inverse (of_nat (n + 1)))",
+                    "id": "11.7",
+                    "prevs": [
+                        "11.5",
+                        "11.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ x ^ n = x ^ n * (of_nat (n + 1) * real_inverse (of_nat (n + 1)))"
+                },
+                {
+                    "args": "real_mult_assoc, x ^ n = x ^ n * of_nat (n + 1) * real_inverse (of_nat (n + 1))",
+                    "id": "11.8",
+                    "prevs": [
+                        "11.7"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ x ^ n = x ^ n * of_nat (n + 1) * real_inverse (of_nat (n + 1))"
+                },
+                {
+                    "args": "real_divide_def, x ^ n = x ^ n * of_nat (n + 1) / of_nat (n + 1)",
+                    "id": "11.9",
+                    "prevs": [
+                        "11.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ x ^ n = x ^ n * of_nat (n + 1) / of_nat (n + 1)"
+                },
+                {
+                    "args": "real_mult_comm, x ^ n = of_nat (n + 1) * x ^ n / of_nat (n + 1)",
+                    "id": "11.10",
+                    "prevs": [
+                        "11.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ x ^ n = of_nat (n + 1) * x ^ n / of_nat (n + 1)"
+                },
+                {
+                    "args": "has_real_derivative_pow_atreal, {f: λx::real. x, f1: (1::real), n: n + 1, x: x}",
+                    "id": "11.11",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. x1) 1 (atreal x) ⟶ has_real_derivative (λx1. x1 ^ (n + 1)) (of_nat (n + 1) * x ^ (n + 1 - 1) * 1) (atreal x)"
+                },
+                {
+                    "args": "nat_plus_minus",
+                    "id": "11.12",
+                    "prevs": [
+                        "11.11"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ has_real_derivative (λx1. x1) 1 (atreal x) ⟶ has_real_derivative (λx1. x1 ^ (n + 1)) (of_nat (n + 1) * x ^ n * 1) (atreal x)"
+                },
+                {
+                    "args": "real_mul_rid",
+                    "id": "11.13",
+                    "prevs": [
+                        "11.12"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ has_real_derivative (λx1. x1) 1 (atreal x) ⟶ has_real_derivative (λx1. x1 ^ (n + 1)) (of_nat (n + 1) * x ^ n) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_id, {net: atreal x}",
+                    "id": "11.14",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. x1) 1 (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "11.15",
+                    "prevs": [
+                        "11.13",
+                        "11.14"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ has_real_derivative (λx1. x1 ^ (n + 1)) (of_nat (n + 1) * x ^ n) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_cdiv_atreal, {c: (of_nat::nat ⇒ real) (n + 1), f: λx1::real. x1 ^ (n + 1), f1: of_nat (n + 1) * x ^ n, x: x}",
+                    "id": "11.16",
+                    "prevs": [
+                        "11.15"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (of_nat (n + 1) * x ^ n / of_nat (n + 1)) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (atreal x)",
+                    "id": "11.17",
+                    "prevs": [
+                        "11.10",
+                        "11.16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_atreal_within, {f: λx. x ^ (n + 1) / of_nat (n + 1), f1: x ^ n, s: real_closed_interval a 0, x: x}",
+                    "id": "11.18",
+                    "prevs": [
+                        "11.17"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a ≤ 0, x ∈ real_closed_interval a 0 ⊢ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval a 0))"
+                },
+                {
+                    "args": "",
+                    "id": "11.19",
+                    "prevs": [
+                        "11.0",
+                        "11.1",
+                        "11.18"
+                    ],
+                    "rule": "intros",
+                    "th": "a ≤ 0 ⊢ ∀x. x ∈ real_closed_interval a 0 ⟶ has_real_derivative (λx1. x1 ^ (n + 1) / of_nat (n + 1)) (x ^ n) (within (atreal x) (real_closed_interval a 0))"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [
+                        "10",
+                        "11"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "a ≤ 0 ⊢ has_real_integral (λx. x ^ n) (-(a ^ (n + 1) / of_nat (n + 1))) (real_closed_interval a 0)"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "0",
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a ≤ 0 ⟶ has_real_integral (λx. x ^ n) (-(a ^ (n + 1) / of_nat (n + 1))) (real_closed_interval a 0)"
+                }
+            ],
+            "prop": [
+                "a ≤ 0 ",
+                "⟶ has_real_integral (λx. x ^ n) (-(a ^ (n + 1) / of_nat (n + 1))) ",
+                "     (real_closed_interval a 0)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λx::real. x ^ (n + 1) / of_nat (n + 1))",
+                    "param_f1": "(λx::real. x ^ n)",
+                    "theorem": "real_fundamental_theorem_of_calculus"
+                },
+                {
+                    "goal": "0 ^ (n + 1) / of_nat (n + 1) = 0",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_div_eq_0"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_eq_0"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "1"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_add_lid"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_atreal_within"
+                },
+                {
+                    "goal": "x ^ n = of_nat (n + 1) * x ^ n / of_nat (n + 1)",
+                    "goal_id": "11.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "goal": "(of_nat (n + 1) * real_inverse (of_nat (n + 1))) = 1",
+                    "goal_id": "11.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_mul_linv"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_of_nat_eq"
+                },
+                {
+                    "fact_ids": [
+                        "11.5"
+                    ],
+                    "goal_id": "11.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "11.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "fact_ids": [
+                        "11.10"
+                    ],
+                    "goal_id": "11.11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "11.11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_cdiv_atreal"
+                },
+                {
+                    "goal_id": "11.11",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(%x::real. x)",
+                    "param_f1": "(1::real)",
+                    "param_n": "n+1",
+                    "param_x": "x",
+                    "theorem": "has_real_derivative_pow_atreal"
+                },
+                {
+                    "fact_ids": [
+                        "11.11"
+                    ],
+                    "goal_id": "11.12",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_plus_minus"
+                },
+                {
+                    "fact_ids": [
+                        "11.12"
+                    ],
+                    "goal_id": "11.13",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "fact_ids": [
+                        "11.13"
+                    ],
+                    "goal_id": "11.14",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "11.14",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_id"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "power_series_integral",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
+                },
+                {
+                    "args": "x, real",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "abs x < r",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < r ⊢ abs x < r"
+                },
+                {
+                    "args": "integral_series, {a: min x 0, b: max x 0, f: λi. λx. a i * x ^ i, g: f, r: λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1), s: s}",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (min x 0) (max x 0) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e)) ⟶ (∀n. has_real_integral (λx1. a n * x1 ^ n) (a n * (if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))) ⟶ (∃v. has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s)"
+                },
+                {
+                    "args": "power_series_uniform, {a: a, s: s, t: x, y: abs x + (r - abs x) / 2}",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_summable s (λi. a i * (abs x + (r - abs x) / 2) ^ i) ⟶ abs x < abs (abs x + (r - abs x) / 2) ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e))"
+                },
+                {
+                    "args": "abs (abs x + (r - abs x) / 2) < r",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "z3",
+                    "th": "abs x < r ⊢ abs (abs x + (r - abs x) / 2) < r"
+                },
+                {
+                    "args": "abs x + (r - abs x) / 2",
+                    "id": "1.5",
+                    "prevs": [
+                        "0",
+                        "1.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ real_sums (λi. a i * (abs x + (r - abs x) / 2) ^ i) (f (abs x + (r - abs x) / 2)) s"
+                },
+                {
+                    "args": "exI, {P: λl. real_sums (λi. a i * (abs x + (r - abs x) / 2) ^ i) l s, a: f (abs x + (r - abs x) / 2)}",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃a1. real_sums (λi. a i * (abs x + (r - abs x) / 2) ^ i) a1 s"
+                },
+                {
+                    "args": "real_summable_def, real_summable s (λi. a i * (abs x + (r - abs x) / 2) ^ i)",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ real_summable s (λi. a i * (abs x + (r - abs x) / 2) ^ i)"
+                },
+                {
+                    "args": "abs x < abs (abs x + (r - abs x) / 2)",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "z3",
+                    "th": "abs x < r ⊢ abs x < abs (abs x + (r - abs x) / 2)"
+                },
+                {
+                    "args": "",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.3",
+                        "1.7",
+                        "1.8"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "1.10",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (min x 0) (max x 0) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e)"
+                },
+                {
+                    "args": "e, real",
+                    "id": "1.10.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR e"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "1.10.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.10.2",
+                    "prevs": [
+                        "1.9",
+                        "1.10.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < e, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃N. ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "1.10.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e",
+                    "id": "1.10.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.10.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (min x 0) (max x 0) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.10.5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "x1, real",
+                    "id": "1.10.5.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "N ≤ n",
+                    "id": "1.10.5.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "N ≤ n ⊢ N ≤ n"
+                },
+                {
+                    "args": "x1 ∈ real_closed_interval (min x 0) (max x 0)",
+                    "id": "1.10.5.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 ∈ real_closed_interval (min x 0) (max x 0) ⊢ x1 ∈ real_closed_interval (min x 0) (max x 0)"
+                },
+                {
+                    "args": "-(abs x) ≤ x ∧ x ≤ abs x",
+                    "id": "1.10.5.4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ -(abs x) ≤ x ∧ x ≤ abs x"
+                },
+                {
+                    "args": "member_collect, x ∈ {p. -(abs x) ≤ p ∧ p ≤ abs x}",
+                    "id": "1.10.5.5",
+                    "prevs": [
+                        "1.10.5.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ x ∈ {p. -(abs x) ≤ p ∧ p ≤ abs x}"
+                },
+                {
+                    "args": "real_closed_interval_def, x ∈ real_closed_interval (-(abs x)) (abs x)",
+                    "id": "1.10.5.6",
+                    "prevs": [
+                        "1.10.5.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ x ∈ real_closed_interval (-(abs x)) (abs x)"
+                },
+                {
+                    "args": "",
+                    "id": "1.10.5.7",
+                    "prevs": [
+                        "1.10.4",
+                        "1.10.5.2",
+                        "1.10.5.6"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ abs (sum (s ∩ {0..n}) (λi. a i * x ^ i) - real_infsum s (λi. a i * x ^ i)) < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.10.5.8",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.10.5.9",
+                    "prevs": [
+                        "1.10.5.0",
+                        "1.10.5.1",
+                        "1.10.5.2",
+                        "1.10.5.3",
+                        "1.10.5.8"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (min x 0) (max x 0) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e"
+                },
+                {
+                    "args": "exI, {P: λN. ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (min x 0) (max x 0) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e, a: N}",
+                    "id": "1.10.6",
+                    "prevs": [
+                        "1.10.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ ∃a1. ∀n. ∀x1. a1 ≤ n ⟶ x1 ∈ real_closed_interval (min x 0) (max x 0) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e"
+                },
+                {
+                    "args": "∃N. ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e",
+                    "id": "1.10.7",
+                    "prevs": [
+                        "1.10.0",
+                        "1.10.1",
+                        "1.10.2",
+                        "1.10.3",
+                        "1.10.4",
+                        "1.10.6"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (min x 0) (max x 0) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "1.11",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
+                },
+                {
+                    "args": "",
+                    "id": "1.12",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.11"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s) ⟶ (∀x. abs x < r ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s)"
+                }
+            ],
+            "prop": [
+                "(∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s) ",
+                "⟶ (∀x. abs x < r ",
+                "      ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) ",
+                "           (if x < 0 then ",
+                "              -(real_integral (real_closed_interval x 0) f)",
+                "            else ",
+                "              real_integral (real_closed_interval 0 x) f) ",
+                "           s)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "param_a": "min x 0",
+                    "param_b": "max x 0",
+                    "param_f": "(%i. %x::real. a i * x ^ i)",
+                    "param_g": "f",
+                    "param_r": "(%i. a i * (if x < 0 then (-1) else 1) * x ^ (i + 1) / of_nat (i + 1))",
+                    "param_s": "s",
+                    "theorem": "integral_series"
+                },
+                {
+                    "goal": "(∀e. 0 < e ⟶ (∃N. ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (min x 0) (max x 0) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e))",
+                    "goal_id": "1.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "apply_forward_step",
+                    "param_a": "a",
+                    "param_s": "s",
+                    "param_t": "x",
+                    "param_y": "abs x + (r - abs x) / 2",
+                    "theorem": "power_series_uniform"
+                },
+                {
+                    "goal": "real_summable s (λi. a i * (abs x + (r - abs x) / 2) ^ i)",
+                    "goal_id": "1.4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_summable_def"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "f (abs x + (r - abs x) / 2)"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.3"
+                    ],
+                    "goal": "abs x < abs (abs x + (r - abs x) / 2)",
+                    "goal_id": "1.8",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.8",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.3",
+                        "1.7",
+                        "1.8"
+                    ],
+                    "goal_id": "1.9",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal_id": "1.10",
+                    "method_name": "introduction",
+                    "names": "e"
+                },
+                {
+                    "fact_ids": [
+                        "1.9",
+                        "1.10.1"
+                    ],
+                    "goal_id": "1.10.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1.10.2"
+                    ],
+                    "goal_id": "1.10.3",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "1.10.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "goal_id": "1.10.5",
+                    "method_name": "introduction",
+                    "names": "n,x1"
+                },
+                {
+                    "goal": "x ∈ real_closed_interval (-(abs x)) (abs x)",
+                    "goal_id": "1.10.5.4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.10.5.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "1.10.5.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "1.10.5.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.10.4",
+                        "1.10.5.2",
+                        "1.10.5.6"
+                    ],
+                    "goal_id": "1.10.5.7",
+                    "method_name": "apply_fact"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat ⇒ real",
+                "f": "real ⇒ real",
+                "r": "real",
+                "s": "nat set"
+            }
         }
     ],
     "description": "Formal inequalities for trig about series.",
