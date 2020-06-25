@@ -6861,7 +6861,7 @@
                 "hint_backward"
             ],
             "name": "power_series_integral",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s",
@@ -7043,57 +7043,109 @@
                     "th": "x1 ∈ real_closed_interval (min x 0) (max x 0) ⊢ x1 ∈ real_closed_interval (min x 0) (max x 0)"
                 },
                 {
-                    "args": "-(abs x) ≤ x ∧ x ≤ abs x",
+                    "args": "real_closed_interval_def",
                     "id": "1.10.5.4",
-                    "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ -(abs x) ≤ x ∧ x ≤ abs x"
+                    "prevs": [
+                        "1.10.5.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x1 ∈ real_closed_interval (min x 0) (max x 0) ⊢ x1 ∈ {p. min x 0 ≤ p ∧ p ≤ max x 0}"
                 },
                 {
-                    "args": "member_collect, x ∈ {p. -(abs x) ≤ p ∧ p ≤ abs x}",
+                    "args": "member_collect",
                     "id": "1.10.5.5",
                     "prevs": [
                         "1.10.5.4"
                     ],
-                    "rule": "rewrite_goal",
-                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ x ∈ {p. -(abs x) ≤ p ∧ p ≤ abs x}"
+                    "rule": "rewrite_fact",
+                    "th": "x1 ∈ real_closed_interval (min x 0) (max x 0) ⊢ min x 0 ≤ x1 ∧ x1 ≤ max x 0"
                 },
                 {
-                    "args": "real_closed_interval_def, x ∈ real_closed_interval (-(abs x)) (abs x)",
+                    "args": "-(abs x) ≤ x1 ∧ x1 ≤ abs x",
                     "id": "1.10.5.6",
                     "prevs": [
                         "1.10.5.5"
                     ],
-                    "rule": "rewrite_goal",
-                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ x ∈ real_closed_interval (-(abs x)) (abs x)"
+                    "rule": "z3",
+                    "th": "x1 ∈ real_closed_interval (min x 0) (max x 0) ⊢ -(abs x) ≤ x1 ∧ x1 ≤ abs x"
                 },
                 {
-                    "args": "",
+                    "args": "member_collect, x1 ∈ {p. -(abs x) ≤ p ∧ p ≤ abs x}",
                     "id": "1.10.5.7",
                     "prevs": [
-                        "1.10.4",
-                        "1.10.5.2",
                         "1.10.5.6"
                     ],
-                    "rule": "apply_fact",
-                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ abs (sum (s ∩ {0..n}) (λi. a i * x ^ i) - real_infsum s (λi. a i * x ^ i)) < e"
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ x1 ∈ {p. -(abs x) ≤ p ∧ p ≤ abs x}"
                 },
                 {
-                    "args": "",
+                    "args": "real_closed_interval_def, x1 ∈ real_closed_interval (-(abs x)) (abs x)",
                     "id": "1.10.5.8",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e"
+                    "prevs": [
+                        "1.10.5.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ x1 ∈ real_closed_interval (-(abs x)) (abs x)"
                 },
                 {
                     "args": "",
                     "id": "1.10.5.9",
                     "prevs": [
+                        "1.10.4",
+                        "1.10.5.2",
+                        "1.10.5.8"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e"
+                },
+                {
+                    "args": "abs x1 < r",
+                    "id": "1.10.5.10",
+                    "prevs": [
+                        "1.10.5.5",
+                        "1.1"
+                    ],
+                    "rule": "z3",
+                    "th": "abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0) ⊢ abs x1 < r"
+                },
+                {
+                    "args": "x1",
+                    "id": "1.10.5.11",
+                    "prevs": [
+                        "0",
+                        "1.10.5.10"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ real_sums (λi. a i * x1 ^ i) (f x1) s"
+                },
+                {
+                    "args": "real_infsum_unique",
+                    "id": "1.10.5.12",
+                    "prevs": [
+                        "1.10.5.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ real_infsum s (λi. a i * x1 ^ i) = f x1"
+                },
+                {
+                    "args": "",
+                    "id": "1.10.5.13",
+                    "prevs": [
+                        "1.10.5.12",
+                        "1.10.5.9"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "0 < e, N ≤ n, abs x < r, x1 ∈ real_closed_interval (min x 0) (max x 0), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.10.5.14",
+                    "prevs": [
                         "1.10.5.0",
                         "1.10.5.1",
                         "1.10.5.2",
                         "1.10.5.3",
-                        "1.10.5.8"
+                        "1.10.5.13"
                     ],
                     "rule": "intros",
                     "th": "0 < e, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (-(abs x)) (abs x) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - real_infsum s (λi. a i * x1 ^ i)) < e ⊢ ∀n. ∀x1. N ≤ n ⟶ x1 ∈ real_closed_interval (min x 0) (max x 0) ⟶ abs (sum (s ∩ {0..n}) (λi. a i * x1 ^ i) - f x1) < e"
@@ -7124,17 +7176,629 @@
                 {
                     "args": "",
                     "id": "1.11",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
+                    "prevs": [
+                        "1.2",
+                        "1.10"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ (∀n. has_real_integral (λx1. a n * x1 ^ n) (a n * (if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))) ⟶ (∃v. has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s)"
                 },
                 {
                     "args": "",
                     "id": "1.12",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀n. has_real_integral (λx1. a n * x1 ^ n) (a n * (if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.12.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "a n * (if x < 0 then -1 else 1) * x ^ (n + 1) * real_inverse (of_nat (n + 1)) = a n * ((if x < 0 then -1 else 1) * x ^ (n + 1) * real_inverse (of_nat (n + 1)))",
+                    "id": "1.12.1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ a n * (if x < 0 then -1 else 1) * x ^ (n + 1) * real_inverse (of_nat (n + 1)) = a n * ((if x < 0 then -1 else 1) * x ^ (n + 1) * real_inverse (of_nat (n + 1)))"
+                },
+                {
+                    "args": "real_divide_def, a n * (if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1) = a n * ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1))",
+                    "id": "1.12.2",
+                    "prevs": [
+                        "1.12.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ a n * (if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1) = a n * ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1))"
+                },
+                {
+                    "args": "",
+                    "id": "1.12.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ x < 0 ⟶ has_real_integral (λx1. x1 ^ n) ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "x < 0",
+                    "id": "1.12.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < 0 ⊢ x < 0"
+                },
+                {
+                    "args": "min x 0 = x",
+                    "id": "1.12.3.1",
+                    "prevs": [
+                        "1.12.3.0"
+                    ],
+                    "rule": "z3",
+                    "th": "x < 0 ⊢ min x 0 = x"
+                },
+                {
+                    "args": "max x 0 = 0",
+                    "id": "1.12.3.2",
+                    "prevs": [
+                        "1.12.3.0"
+                    ],
+                    "rule": "z3",
+                    "th": "x < 0 ⊢ max x 0 = 0"
+                },
+                {
+                    "args": "-1 * x ^ (n + 1) * real_inverse (of_nat (n + 1)) = -(x ^ (n + 1) * real_inverse (of_nat (n + 1)))",
+                    "id": "1.12.3.3",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ -1 * x ^ (n + 1) * real_inverse (of_nat (n + 1)) = -(x ^ (n + 1) * real_inverse (of_nat (n + 1)))"
+                },
+                {
+                    "args": "real_divide_def, -1 * x ^ (n + 1) / of_nat (n + 1) = -(x ^ (n + 1) / of_nat (n + 1))",
+                    "id": "1.12.3.4",
+                    "prevs": [
+                        "1.12.3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ -1 * x ^ (n + 1) / of_nat (n + 1) = -(x ^ (n + 1) / of_nat (n + 1))"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "1.12.3.5",
+                    "prevs": [
+                        "1.12.3.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < 0 ⊢ x ≤ 0"
+                },
+                {
+                    "args": "has_real_integral_pow_neg, {a: x, n: n}",
+                    "id": "1.12.3.6",
+                    "prevs": [
+                        "1.12.3.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. x1 ^ n) (-(x ^ (n + 1) / of_nat (n + 1))) (real_closed_interval x 0)"
+                },
+                {
+                    "args": "has_real_integral (λx1. x1 ^ n) (-1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval x 0)",
+                    "id": "1.12.3.7",
+                    "prevs": [
+                        "1.12.3.4",
+                        "1.12.3.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. x1 ^ n) (-1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval x 0)"
+                },
+                {
+                    "args": "has_real_integral (λx1. x1 ^ n) (-1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval x (max x 0))",
+                    "id": "1.12.3.8",
+                    "prevs": [
+                        "1.12.3.2",
+                        "1.12.3.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. x1 ^ n) (-1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval x (max x 0))"
+                },
+                {
+                    "args": "has_real_integral (λx1. x1 ^ n) (-1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))",
+                    "id": "1.12.3.9",
+                    "prevs": [
+                        "1.12.3.1",
+                        "1.12.3.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. x1 ^ n) (-1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "if_P, has_real_integral (λx1. x1 ^ n) ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))",
+                    "id": "1.12.3.10",
+                    "prevs": [
+                        "1.12.3.9",
+                        "1.12.3.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. x1 ^ n) ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "",
+                    "id": "1.12.3.11",
+                    "prevs": [
+                        "1.12.3.0",
+                        "1.12.3.10"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ x < 0 ⟶ has_real_integral (λx1. x1 ^ n) ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "",
+                    "id": "1.12.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ¬(x < 0) ⟶ has_real_integral (λx1. x1 ^ n) ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "¬(x < 0)",
+                    "id": "1.12.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x < 0) ⊢ ¬(x < 0)"
+                },
+                {
+                    "args": "min x 0 = 0",
+                    "id": "1.12.4.1",
+                    "prevs": [
+                        "1.12.4.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(x < 0) ⊢ min x 0 = 0"
+                },
+                {
+                    "args": "max x 0 = x",
+                    "id": "1.12.4.2",
+                    "prevs": [
+                        "1.12.4.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(x < 0) ⊢ max x 0 = x"
+                },
+                {
+                    "args": "real_not_lt",
+                    "id": "1.12.4.3",
+                    "prevs": [
+                        "1.12.4.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x < 0) ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "has_real_integral_pow_pos, {a: x, n: n}",
+                    "id": "1.12.4.4",
+                    "prevs": [
+                        "1.12.4.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. x1 ^ n) (x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval 0 x)"
+                },
+                {
+                    "args": "real_mul_lid, has_real_integral (λx1. x1 ^ n) (1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval 0 x)",
+                    "id": "1.12.4.5",
+                    "prevs": [
+                        "1.12.4.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. x1 ^ n) (1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval 0 x)"
+                },
+                {
+                    "args": "has_real_integral (λx1. x1 ^ n) (1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval 0 (max x 0))",
+                    "id": "1.12.4.6",
+                    "prevs": [
+                        "1.12.4.2",
+                        "1.12.4.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. x1 ^ n) (1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval 0 (max x 0))"
+                },
+                {
+                    "args": "has_real_integral (λx1. x1 ^ n) (1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))",
+                    "id": "1.12.4.7",
+                    "prevs": [
+                        "1.12.4.1",
+                        "1.12.4.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. x1 ^ n) (1 * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "if_not_P, has_real_integral (λx1. x1 ^ n) ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))",
+                    "id": "1.12.4.8",
+                    "prevs": [
+                        "1.12.4.7",
+                        "1.12.4.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. x1 ^ n) ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "",
+                    "id": "1.12.4.9",
+                    "prevs": [
+                        "1.12.4.0",
+                        "1.12.4.8"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ¬(x < 0) ⟶ has_real_integral (λx1. x1 ^ n) ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.12.5",
+                    "prevs": [
+                        "1.12.3",
+                        "1.12.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. x1 ^ n) ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "has_real_integral_lmul, {c: a n, f: λx::real. x ^ n, k: (if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1), s: real_closed_interval (min x 0) (max x 0)}",
+                    "id": "1.12.6",
+                    "prevs": [
+                        "1.12.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. a n * x1 ^ n) (a n * ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1))) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "has_real_integral (λx1. a n * x1 ^ n) (a n * (if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))",
+                    "id": "1.12.7",
+                    "prevs": [
+                        "1.12.2",
+                        "1.12.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ has_real_integral (λx1. a n * x1 ^ n) (a n * (if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "",
+                    "id": "1.12.8",
+                    "prevs": [
+                        "1.12.0",
+                        "1.12.7"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀n. has_real_integral (λx1. a n * x1 ^ n) (a n * (if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "",
+                    "id": "1.13",
+                    "prevs": [
+                        "1.11",
+                        "1.12"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃v. has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s"
+                },
+                {
+                    "args": "v, real",
+                    "id": "1.14",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR v"
+                },
+                {
+                    "args": "has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s",
+                    "id": "1.15",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.16",
+                    "prevs": [
+                        "1.15"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ has_real_integral f v (real_closed_interval (min x 0) (max x 0))"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.17",
+                    "prevs": [
+                        "1.15"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s"
+                },
+                {
+                    "args": "",
+                    "id": "1.18",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ x < 0 ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
+                },
+                {
+                    "args": "x < 0",
+                    "id": "1.18.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < 0 ⊢ x < 0"
+                },
+                {
+                    "args": "min x 0 = x",
+                    "id": "1.18.1",
+                    "prevs": [
+                        "1.18.0"
+                    ],
+                    "rule": "z3",
+                    "th": "x < 0 ⊢ min x 0 = x"
+                },
+                {
+                    "args": "max x 0 = 0",
+                    "id": "1.18.2",
+                    "prevs": [
+                        "1.18.0"
+                    ],
+                    "rule": "z3",
+                    "th": "x < 0 ⊢ max x 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.18.3",
+                    "prevs": [
+                        "1.18.1",
+                        "1.16"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "x < 0, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ has_real_integral f v (real_closed_interval x (max x 0))"
+                },
+                {
+                    "args": "",
+                    "id": "1.18.4",
+                    "prevs": [
+                        "1.18.2",
+                        "1.18.3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "x < 0, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ has_real_integral f v (real_closed_interval x 0)"
+                },
+                {
+                    "args": "real_integral_unique",
+                    "id": "1.18.5",
+                    "prevs": [
+                        "1.18.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < 0, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_integral (real_closed_interval x 0) f = v"
+                },
+                {
+                    "args": "if_P",
+                    "id": "1.18.6",
+                    "prevs": [
+                        "1.17",
+                        "1.18.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x < 0, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_sums (λi. a i * -1 * x ^ (i + 1) / of_nat (i + 1)) v s"
+                },
+                {
+                    "args": "real_series_neg",
+                    "id": "1.18.7",
+                    "prevs": [
+                        "1.18.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < 0, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_sums (λn. -(a n * -1 * x ^ (n + 1) / of_nat (n + 1))) (-v) s"
+                },
+                {
+                    "args": "",
+                    "id": "1.18.8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ ∀i. -(a i * -1 * x ^ (i + 1) * real_inverse (of_nat (i + 1))) = a i * x ^ (i + 1) * real_inverse (of_nat (i + 1))"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "1.18.8.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "-(a i * -1 * x ^ (i + 1) * real_inverse (of_nat (i + 1))) = a i * x ^ (i + 1) * real_inverse (of_nat (i + 1))",
+                    "id": "1.18.8.1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ -(a i * -1 * x ^ (i + 1) * real_inverse (of_nat (i + 1))) = a i * x ^ (i + 1) * real_inverse (of_nat (i + 1))"
+                },
+                {
+                    "args": "",
+                    "id": "1.18.8.2",
+                    "prevs": [
+                        "1.18.8.0",
+                        "1.18.8.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ ∀i. -(a i * -1 * x ^ (i + 1) * real_inverse (of_nat (i + 1))) = a i * x ^ (i + 1) * real_inverse (of_nat (i + 1))"
+                },
+                {
+                    "args": "real_divide_def, ∀i. -(a i * -1 * x ^ (i + 1) / of_nat (i + 1)) = a i * x ^ (i + 1) / of_nat (i + 1)",
+                    "id": "1.18.9",
+                    "prevs": [
+                        "1.18.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ ∀i. -(a i * -1 * x ^ (i + 1) / of_nat (i + 1)) = a i * x ^ (i + 1) / of_nat (i + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.18.10",
+                    "prevs": [
+                        "1.18.9",
+                        "1.18.7"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_sums (λn. a n * x ^ (n + 1) / of_nat (n + 1)) (-v) s"
+                },
+                {
+                    "args": "real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (-(real_integral (real_closed_interval x 0) f)) s",
+                    "id": "1.18.11",
+                    "prevs": [
+                        "1.18.5",
+                        "1.18.10"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (-(real_integral (real_closed_interval x 0) f)) s"
+                },
+                {
+                    "args": "if_P, real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s",
+                    "id": "1.18.12",
+                    "prevs": [
+                        "1.18.11",
+                        "1.18.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
+                },
+                {
+                    "args": "",
+                    "id": "1.18.13",
+                    "prevs": [
+                        "1.18.0",
+                        "1.18.12"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ x < 0 ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
+                },
+                {
+                    "args": "",
+                    "id": "1.19",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ ¬(x < 0) ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
+                },
+                {
+                    "args": "¬(x < 0)",
+                    "id": "1.19.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x < 0) ⊢ ¬(x < 0)"
+                },
+                {
+                    "args": "min x 0 = 0",
+                    "id": "1.19.1",
+                    "prevs": [
+                        "1.19.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(x < 0) ⊢ min x 0 = 0"
+                },
+                {
+                    "args": "max x 0 = x",
+                    "id": "1.19.2",
+                    "prevs": [
+                        "1.19.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(x < 0) ⊢ max x 0 = x"
+                },
+                {
+                    "args": "",
+                    "id": "1.19.3",
+                    "prevs": [
+                        "1.19.1",
+                        "1.16"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "¬(x < 0), has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ has_real_integral f v (real_closed_interval 0 (max x 0))"
+                },
+                {
+                    "args": "",
+                    "id": "1.19.4",
+                    "prevs": [
+                        "1.19.2",
+                        "1.19.3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "¬(x < 0), has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ has_real_integral f v (real_closed_interval 0 x)"
+                },
+                {
+                    "args": "real_integral_unique",
+                    "id": "1.19.5",
+                    "prevs": [
+                        "1.19.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(x < 0), has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_integral (real_closed_interval 0 x) f = v"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "1.19.6",
+                    "prevs": [
+                        "1.17",
+                        "1.19.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x < 0), has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_sums (λi. a i * 1 * x ^ (i + 1) / of_nat (i + 1)) v s"
+                },
+                {
+                    "args": "real_mul_rid",
+                    "id": "1.19.7",
+                    "prevs": [
+                        "1.19.6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x < 0), has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) v s"
+                },
+                {
+                    "args": "real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (real_integral (real_closed_interval 0 x) f) s",
+                    "id": "1.19.8",
+                    "prevs": [
+                        "1.19.5",
+                        "1.19.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (real_integral (real_closed_interval 0 x) f) s"
+                },
+                {
+                    "args": "if_not_P, real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s",
+                    "id": "1.19.9",
+                    "prevs": [
+                        "1.19.8",
+                        "1.19.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
+                },
+                {
+                    "args": "",
+                    "id": "1.19.10",
+                    "prevs": [
+                        "1.19.0",
+                        "1.19.9"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ ¬(x < 0) ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.20",
+                    "prevs": [
+                        "1.18",
+                        "1.19"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s ⊢ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
+                },
+                {
+                    "args": "∃v. has_real_integral f v (real_closed_interval (min x 0) (max x 0)) ∧ real_sums (λi. a i * (if x < 0 then -1 else 1) * x ^ (i + 1) / of_nat (i + 1)) v s",
+                    "id": "1.21",
                     "prevs": [
                         "1.0",
                         "1.1",
-                        "1.11"
+                        "1.13",
+                        "1.14",
+                        "1.15",
+                        "1.20"
                     ],
                     "rule": "intros",
                     "th": "∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f) else real_integral (real_closed_interval 0 x) f) s"
@@ -7277,34 +7941,536 @@
                     "names": "n,x1"
                 },
                 {
-                    "goal": "x ∈ real_closed_interval (-(abs x)) (abs x)",
+                    "fact_ids": [
+                        "1.10.5.3"
+                    ],
                     "goal_id": "1.10.5.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.10.5.4"
+                    ],
+                    "goal_id": "1.10.5.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal": "x1 ∈ real_closed_interval (-(abs x)) (abs x)",
+                    "goal_id": "1.10.5.6",
                     "method_name": "cut"
                 },
                 {
-                    "goal_id": "1.10.5.4",
+                    "goal_id": "1.10.5.6",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "real_closed_interval_def"
                 },
                 {
-                    "goal_id": "1.10.5.4",
+                    "goal_id": "1.10.5.6",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "member_collect"
                 },
                 {
-                    "goal_id": "1.10.5.4",
+                    "fact_ids": [
+                        "1.10.5.5"
+                    ],
+                    "goal_id": "1.10.5.6",
                     "method_name": "z3"
                 },
                 {
                     "fact_ids": [
                         "1.10.4",
                         "1.10.5.2",
-                        "1.10.5.6"
+                        "1.10.5.8"
                     ],
-                    "goal_id": "1.10.5.7",
+                    "goal_id": "1.10.5.9",
                     "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1.10.5.9"
+                    ],
+                    "goal": "real_infsum s (λi. a i * x1 ^ i) = f x1",
+                    "goal_id": "1.10.5.10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.10.5.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_infsum_unique"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.10.5.10",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.10.5.5",
+                        "1.1"
+                    ],
+                    "goal_id": "1.10.5.10",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.10.5.12",
+                        "1.10.5.9"
+                    ],
+                    "goal_id": "1.10.5.13",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.2",
+                        "1.10"
+                    ],
+                    "goal_id": "1.11",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "(∀n. has_real_integral (λx1. a n * x1 ^ n) (a n * (if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) (real_closed_interval (min x 0) (max x 0)))",
+                    "goal_id": "1.12",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.12",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal": "(a n * (if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)) = (a n * ((if x < 0 then -1 else 1) * x ^ (n + 1) / of_nat (n + 1)))",
+                    "goal_id": "1.12.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.12.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1.12.1",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.2"
+                    ],
+                    "goal_id": "1.12.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.12.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_lmul"
+                },
+                {
+                    "case": "x < 0",
+                    "goal_id": "1.12.3",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.12.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.3.0"
+                    ],
+                    "goal_id": "1.12.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal": "min x (0) = x",
+                    "goal_id": "1.12.3.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.3.0"
+                    ],
+                    "goal_id": "1.12.3.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.3.1"
+                    ],
+                    "goal_id": "1.12.3.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "max x 0 = 0",
+                    "goal_id": "1.12.3.2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.3.0"
+                    ],
+                    "goal_id": "1.12.3.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.3.2"
+                    ],
+                    "goal_id": "1.12.3.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "(-1 * x ^ (n + 1) / of_nat (n + 1)) = -(x ^ (n + 1) / of_nat (n + 1))",
+                    "goal_id": "1.12.3.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.12.3.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1.12.3.3",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.3.4"
+                    ],
+                    "goal_id": "1.12.3.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.12.3.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_pow_neg"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.3.0"
+                    ],
+                    "goal_id": "1.12.3.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "1.12.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.4.0"
+                    ],
+                    "goal_id": "1.12.4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal": "(min x 0) = 0",
+                    "goal_id": "1.12.4.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.4.0"
+                    ],
+                    "goal_id": "1.12.4.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.4.1"
+                    ],
+                    "goal_id": "1.12.4.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "(max x 0) = x",
+                    "goal_id": "1.12.4.2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.4.0"
+                    ],
+                    "goal_id": "1.12.4.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.4.2"
+                    ],
+                    "goal_id": "1.12.4.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.12.4.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "1.12.4.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_pow_pos"
+                },
+                {
+                    "fact_ids": [
+                        "1.12.4.0"
+                    ],
+                    "goal_id": "1.12.4.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_not_lt"
+                },
+                {
+                    "fact_ids": [
+                        "1.11",
+                        "1.12"
+                    ],
+                    "goal_id": "1.13",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1.13"
+                    ],
+                    "goal_id": "1.14",
+                    "method_name": "exists_elim",
+                    "names": "v"
+                },
+                {
+                    "fact_ids": [
+                        "1.15"
+                    ],
+                    "goal_id": "1.16",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.15"
+                    ],
+                    "goal_id": "1.17",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "case": "x < 0",
+                    "goal_id": "1.18",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.18",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.18.0"
+                    ],
+                    "goal_id": "1.18.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal": "min x 0 = x",
+                    "goal_id": "1.18.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.18.0"
+                    ],
+                    "goal_id": "1.18.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "max x 0 = 0",
+                    "goal_id": "1.18.2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.18.0"
+                    ],
+                    "goal_id": "1.18.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.18.1",
+                        "1.16"
+                    ],
+                    "goal_id": "1.18.3",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.18.2",
+                        "1.18.3"
+                    ],
+                    "goal_id": "1.18.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.18.4"
+                    ],
+                    "goal_id": "1.18.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_integral_unique"
+                },
+                {
+                    "fact_ids": [
+                        "1.18.5"
+                    ],
+                    "goal_id": "1.18.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.17",
+                        "1.18.0"
+                    ],
+                    "goal_id": "1.18.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.18.6"
+                    ],
+                    "goal_id": "1.18.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_series_neg"
+                },
+                {
+                    "goal": "!i. -(a i * -1 * x ^ (i + 1) / of_nat (i + 1)) = a i * x ^ (i + 1) / of_nat (i + 1)",
+                    "goal_id": "1.18.8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.18.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1.18.8",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "goal_id": "1.18.8.1",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "1.18.9",
+                        "1.18.7"
+                    ],
+                    "goal_id": "1.18.10",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "1.19",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.19.0"
+                    ],
+                    "goal_id": "1.19.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal": "min x 0 = 0",
+                    "goal_id": "1.19.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.19.0"
+                    ],
+                    "goal_id": "1.19.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "max x 0 = x",
+                    "goal_id": "1.19.2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.19.0"
+                    ],
+                    "goal_id": "1.19.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.19.1",
+                        "1.16"
+                    ],
+                    "goal_id": "1.19.3",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.19.2",
+                        "1.19.3"
+                    ],
+                    "goal_id": "1.19.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.19.4"
+                    ],
+                    "goal_id": "1.19.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_integral_unique"
+                },
+                {
+                    "fact_ids": [
+                        "1.19.5"
+                    ],
+                    "goal_id": "1.19.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.17",
+                        "1.19.0"
+                    ],
+                    "goal_id": "1.19.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.19.6"
+                    ],
+                    "goal_id": "1.19.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
                 }
             ],
             "ty": "thm",
@@ -7312,6 +8478,3341 @@
                 "a": "nat ⇒ real",
                 "f": "real ⇒ real",
                 "r": "real",
+                "s": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "power_series_integral2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x) ⊢ ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x)"
+                },
+                {
+                    "args": "∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s"
+                },
+                {
+                    "args": "power_series_integral",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (f x - f 0) s"
+                },
+                {
+                    "args": "x, real",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "abs x < r",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < r ⊢ abs x < r"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "2",
+                        "3.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) s"
+                },
+                {
+                    "args": "",
+                    "id": "3.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ x < 0 ⟶ (if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) = f x - f 0"
+                },
+                {
+                    "args": "x < 0",
+                    "id": "3.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < 0 ⊢ x < 0"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "3.3.1",
+                    "prevs": [
+                        "3.3.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < 0 ⊢ x ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ ∀x1. x1 ∈ real_closed_interval x 0 ⟶ has_real_derivative f (f1 x1) (within (atreal x1) (real_closed_interval x 0))"
+                },
+                {
+                    "args": "x1, real",
+                    "id": "3.3.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x1 ∈ real_closed_interval x 0",
+                    "id": "3.3.2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 ∈ real_closed_interval x 0 ⊢ x1 ∈ real_closed_interval x 0"
+                },
+                {
+                    "args": "real_closed_interval_def",
+                    "id": "3.3.2.2",
+                    "prevs": [
+                        "3.3.2.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x1 ∈ real_closed_interval x 0 ⊢ x1 ∈ {p. x ≤ p ∧ p ≤ 0}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "3.3.2.3",
+                    "prevs": [
+                        "3.3.2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x1 ∈ real_closed_interval x 0 ⊢ x ≤ x1 ∧ x1 ≤ 0"
+                },
+                {
+                    "args": "abs x1 < r",
+                    "id": "3.3.2.4",
+                    "prevs": [
+                        "3.3.2.3",
+                        "3.1"
+                    ],
+                    "rule": "z3",
+                    "th": "abs x < r, x1 ∈ real_closed_interval x 0 ⊢ abs x1 < r"
+                },
+                {
+                    "args": "x1",
+                    "id": "3.3.2.5",
+                    "prevs": [
+                        "0",
+                        "3.3.2.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "x < 0, abs x < r, x1 ∈ real_closed_interval x 0, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ has_real_derivative f (f1 x1) (atreal x1)"
+                },
+                {
+                    "args": "has_real_derivative_atreal_within, {f: f, f1: f1 x1, s: real_closed_interval x 0, x: x1}",
+                    "id": "3.3.2.6",
+                    "prevs": [
+                        "3.3.2.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x < 0, abs x < r, x1 ∈ real_closed_interval x 0, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ has_real_derivative f (f1 x1) (within (atreal x1) (real_closed_interval x 0))"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.2.7",
+                    "prevs": [
+                        "3.3.2.0",
+                        "3.3.2.1",
+                        "3.3.2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ ∀x1. x1 ∈ real_closed_interval x 0 ⟶ has_real_derivative f (f1 x1) (within (atreal x1) (real_closed_interval x 0))"
+                },
+                {
+                    "args": "real_fundamental_theorem_of_calculus",
+                    "id": "3.3.3",
+                    "prevs": [
+                        "3.3.1",
+                        "3.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ has_real_integral f1 (f 0 - f x) (real_closed_interval x 0)"
+                },
+                {
+                    "args": "real_integral_unique",
+                    "id": "3.3.4",
+                    "prevs": [
+                        "3.3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ real_integral (real_closed_interval x 0) f1 = f 0 - f x"
+                },
+                {
+                    "args": "real_neg_sub, -(f 0 - f x) = f x - f 0",
+                    "id": "3.3.5",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -(f 0 - f x) = f x - f 0"
+                },
+                {
+                    "args": "-(real_integral (real_closed_interval x 0) f1) = f x - f 0",
+                    "id": "3.3.6",
+                    "prevs": [
+                        "3.3.4",
+                        "3.3.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ -(real_integral (real_closed_interval x 0) f1) = f x - f 0"
+                },
+                {
+                    "args": "if_P, (if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) = f x - f 0",
+                    "id": "3.3.7",
+                    "prevs": [
+                        "3.3.6",
+                        "3.3.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < 0, abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ (if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) = f x - f 0"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.8",
+                    "prevs": [
+                        "3.3.0",
+                        "3.3.7"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ x < 0 ⟶ (if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) = f x - f 0"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ ¬(x < 0) ⟶ (if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) = f x - f 0"
+                },
+                {
+                    "args": "¬(x < 0)",
+                    "id": "3.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x < 0) ⊢ ¬(x < 0)"
+                },
+                {
+                    "args": "real_not_lt",
+                    "id": "3.4.1",
+                    "prevs": [
+                        "3.4.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x < 0) ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ ∀x1. x1 ∈ real_closed_interval 0 x ⟶ has_real_derivative f (f1 x1) (within (atreal x1) (real_closed_interval 0 x))"
+                },
+                {
+                    "args": "x1, real",
+                    "id": "3.4.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x1 ∈ real_closed_interval 0 x",
+                    "id": "3.4.2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 ∈ real_closed_interval 0 x ⊢ x1 ∈ real_closed_interval 0 x"
+                },
+                {
+                    "args": "real_closed_interval_def",
+                    "id": "3.4.2.2",
+                    "prevs": [
+                        "3.4.2.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x1 ∈ real_closed_interval 0 x ⊢ x1 ∈ {p. 0 ≤ p ∧ p ≤ x}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "3.4.2.3",
+                    "prevs": [
+                        "3.4.2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x1 ∈ real_closed_interval 0 x ⊢ 0 ≤ x1 ∧ x1 ≤ x"
+                },
+                {
+                    "args": "abs x1 < r",
+                    "id": "3.4.2.4",
+                    "prevs": [
+                        "3.4.2.3",
+                        "3.1"
+                    ],
+                    "rule": "z3",
+                    "th": "abs x < r, x1 ∈ real_closed_interval 0 x ⊢ abs x1 < r"
+                },
+                {
+                    "args": "x1",
+                    "id": "3.4.2.5",
+                    "prevs": [
+                        "0",
+                        "3.4.2.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(x < 0), abs x < r, x1 ∈ real_closed_interval 0 x, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ has_real_derivative f (f1 x1) (atreal x1)"
+                },
+                {
+                    "args": "has_real_derivative_atreal_within, {f: f, f1: f1 x1, s: real_closed_interval 0 x, x: x1}",
+                    "id": "3.4.2.6",
+                    "prevs": [
+                        "3.4.2.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(x < 0), abs x < r, x1 ∈ real_closed_interval 0 x, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ has_real_derivative f (f1 x1) (within (atreal x1) (real_closed_interval 0 x))"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.2.7",
+                    "prevs": [
+                        "3.4.2.0",
+                        "3.4.2.1",
+                        "3.4.2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ ∀x1. x1 ∈ real_closed_interval 0 x ⟶ has_real_derivative f (f1 x1) (within (atreal x1) (real_closed_interval 0 x))"
+                },
+                {
+                    "args": "real_fundamental_theorem_of_calculus",
+                    "id": "3.4.3",
+                    "prevs": [
+                        "3.4.1",
+                        "3.4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ has_real_integral f1 (f x - f 0) (real_closed_interval 0 x)"
+                },
+                {
+                    "args": "real_integral_unique",
+                    "id": "3.4.4",
+                    "prevs": [
+                        "3.4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ real_integral (real_closed_interval 0 x) f1 = f x - f 0"
+                },
+                {
+                    "args": "if_not_P, (if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) = f x - f 0",
+                    "id": "3.4.5",
+                    "prevs": [
+                        "3.4.4",
+                        "3.4.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x < 0), abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ (if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) = f x - f 0"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.6",
+                    "prevs": [
+                        "3.4.0",
+                        "3.4.5"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ ¬(x < 0) ⟶ (if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) = f x - f 0"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.3",
+                        "3.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ (if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) = f x - f 0"
+                },
+                {
+                    "args": "",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.5",
+                        "3.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "abs x < r, ∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (f x - f 0) s"
+                },
+                {
+                    "args": "",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.6"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x), ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s ⊢ ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (f x - f 0) s"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x)) ⟶ (∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s) ⟶ (∀x. abs x < r ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (f x - f 0) s)"
+                }
+            ],
+            "prop": [
+                "(∀x. abs x < r ⟶ has_real_derivative f (f1 x) (atreal x)) ",
+                "⟶ (∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f1 x) s) ",
+                "   ⟶ (∀x. abs x < r ⟶ real_sums (λi. a i * x ^ (i + 1) / of_nat (i + 1)) (f x - f 0) s)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "power_series_integral"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.2"
+                    ],
+                    "goal": "(if x < 0 then -(real_integral (real_closed_interval x 0) f1) else real_integral (real_closed_interval 0 x) f1) = f x - f 0",
+                    "goal_id": "3.3",
+                    "method_name": "cut"
+                },
+                {
+                    "case": "x < 0",
+                    "goal_id": "3.3",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.0"
+                    ],
+                    "goal_id": "3.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal": "real_integral (real_closed_interval x 0) f1 = f 0 - f x",
+                    "goal_id": "3.3.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integral_unique"
+                },
+                {
+                    "goal_id": "3.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_fundamental_theorem_of_calculus"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.0"
+                    ],
+                    "goal_id": "3.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "3.3.2",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "goal_id": "3.3.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_atreal_within"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3.3.2.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.1"
+                    ],
+                    "goal_id": "3.3.2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.2"
+                    ],
+                    "goal_id": "3.3.2.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.3",
+                        "3.1"
+                    ],
+                    "goal_id": "3.3.2.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.4"
+                    ],
+                    "goal_id": "3.3.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.3.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_neg_sub"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.0"
+                    ],
+                    "goal_id": "3.4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "3.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integral_unique"
+                },
+                {
+                    "goal_id": "3.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_fundamental_theorem_of_calculus"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.0"
+                    ],
+                    "goal_id": "3.4.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_not_lt"
+                },
+                {
+                    "goal_id": "3.4.2",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "goal_id": "3.4.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_atreal_within"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3.4.2.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.2.1"
+                    ],
+                    "goal_id": "3.4.2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.2.2"
+                    ],
+                    "goal_id": "3.4.2.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.2.3",
+                        "3.1"
+                    ],
+                    "goal_id": "3.4.2.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3.5",
+                        "3.2"
+                    ],
+                    "goal_id": "3.6",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat ⇒ real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
+                "r": "real",
+                "s": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "strict_increasing_nat_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. h n < h (n + 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. h n < h (n + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. n ≤ h n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "le_0, {n: h 0}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ h 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. n ≤ h n ⟶ n < h (Suc n)"
+                },
+                {
+                    "args": "n ≤ h n",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n ≤ h n ⊢ n ≤ h n"
+                },
+                {
+                    "args": "n",
+                    "id": "1.2.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ h n < h (n + 1)"
+                },
+                {
+                    "args": "add_1_right, h n < h (Suc n)",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "n ≤ h n, ∀n. h n < h (n + 1) ⊢ h n < h (Suc n)"
+                },
+                {
+                    "args": "let_trans",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n ≤ h n, ∀n. h n < h (n + 1) ⊢ n < h (Suc n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.0",
+                        "1.2.0",
+                        "1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. n ≤ h n ⟶ n < h (Suc n)"
+                },
+                {
+                    "args": "lesseq_Suc_less, ∀n. n ≤ h n ⟶ Suc n ≤ h (Suc n)",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. n ≤ h n ⟶ Suc n ≤ h (Suc n)"
+                },
+                {
+                    "args": "nat_induct, {P: λn. n ≤ h n, x: n}",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.1",
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ n ≤ h n"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. n ≤ h n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. h n < h (n + 1)) ⟶ (∀n. n ≤ h n)"
+                }
+            ],
+            "prop": "(∀n. h n < h (n + 1)) ⟶ (∀n. n ≤ h n)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lesseq_Suc_less"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "param_m": "h n",
+                    "theorem": "let_trans"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "h": "nat ⇒ nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "strict_increasing_nat_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. h n < h (n + 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. h n < h (n + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. n < m ⟶ h n < h m"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "(0::nat) < 0 ⟶ h 0 < h 0",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (0::nat) < 0 ⟶ h 0 < h 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. (0 < n ⟶ h 0 < h n) ⟶ 0 < Suc n ⟶ h 0 < h (Suc n)"
+                },
+                {
+                    "args": "0 < m ⟶ h 0 < h m",
+                    "id": "1.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < m ⟶ h 0 < h m ⊢ 0 < m ⟶ h 0 < h m"
+                },
+                {
+                    "args": "0 < Suc m",
+                    "id": "1.3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < Suc m ⊢ 0 < Suc m"
+                },
+                {
+                    "args": "nat_less_def_2",
+                    "id": "1.3.2",
+                    "prevs": [
+                        "1.3.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 < Suc m ⊢ 0 = m ∨ 0 < m"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < Suc m, ∀n. h n < h (n + 1), 0 < m ⟶ h 0 < h m ⊢ 0 = m ⟶ h 0 < h (m + 1)"
+                },
+                {
+                    "args": "0 = m",
+                    "id": "1.3.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 = m ⊢ 0 = m"
+                },
+                {
+                    "args": "m",
+                    "id": "1.3.3.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ h m < h (m + 1)"
+                },
+                {
+                    "args": "h 0 < h (m + 1)",
+                    "id": "1.3.3.2",
+                    "prevs": [
+                        "1.3.3.0",
+                        "1.3.3.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 = m, 0 < Suc m, ∀n. h n < h (n + 1), 0 < m ⟶ h 0 < h m ⊢ h 0 < h (m + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.3.3",
+                    "prevs": [
+                        "1.3.3.0",
+                        "1.3.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < Suc m, ∀n. h n < h (n + 1), 0 < m ⟶ h 0 < h m ⊢ 0 = m ⟶ h 0 < h (m + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < Suc m, ∀n. h n < h (n + 1), 0 < m ⟶ h 0 < h m ⊢ 0 < m ⟶ h 0 < h (m + 1)"
+                },
+                {
+                    "args": "0 < m",
+                    "id": "1.3.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < m ⊢ 0 < m"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.4.1",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.4.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < m, 0 < m ⟶ h 0 < h m ⊢ h 0 < h m"
+                },
+                {
+                    "args": "m",
+                    "id": "1.3.4.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ h m < h (m + 1)"
+                },
+                {
+                    "args": "lt_trans",
+                    "id": "1.3.4.3",
+                    "prevs": [
+                        "1.3.4.1",
+                        "1.3.4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < m, 0 < Suc m, ∀n. h n < h (n + 1), 0 < m ⟶ h 0 < h m ⊢ h 0 < h (m + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.4.4",
+                    "prevs": [
+                        "1.3.4.0",
+                        "1.3.4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < Suc m, ∀n. h n < h (n + 1), 0 < m ⟶ h 0 < h m ⊢ 0 < m ⟶ h 0 < h (m + 1)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.3.5",
+                    "prevs": [
+                        "1.3.2",
+                        "1.3.3",
+                        "1.3.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < Suc m, ∀n. h n < h (n + 1), 0 < m ⟶ h 0 < h m ⊢ h 0 < h (m + 1)"
+                },
+                {
+                    "args": "add_1_right, h 0 < h (Suc m)",
+                    "id": "1.3.6",
+                    "prevs": [
+                        "1.3.5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 < Suc m, ∀n. h n < h (n + 1), 0 < m ⟶ h 0 < h m ⊢ h 0 < h (Suc m)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.7",
+                    "prevs": [
+                        "1.1",
+                        "1.3.0",
+                        "1.3.1",
+                        "1.3.6"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀m. (0 < m ⟶ h 0 < h m) ⟶ 0 < Suc m ⟶ h 0 < h (Suc m)"
+                },
+                {
+                    "args": "nat_induct, {P: λm. 0 < m ⟶ h 0 < h m, x: m}",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.2",
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ 0 < m ⟶ h 0 < h m"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. (n < m ⟶ h n < h m) ⟶ Suc n < m ⟶ h (Suc n) < h m"
+                },
+                {
+                    "args": "n < m ⟶ h n < h m",
+                    "id": "1.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n < m ⟶ h n < h m ⊢ n < m ⟶ h n < h m"
+                },
+                {
+                    "args": "false ⟶ h (Suc n) < h 0",
+                    "id": "1.5.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ false ⟶ h (Suc n) < h 0"
+                },
+                {
+                    "args": "nat_less_def_1, Suc n < 0 ⟶ h (Suc n) < h 0",
+                    "id": "1.5.2",
+                    "prevs": [
+                        "1.5.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. h n < h (n + 1), n < m ⟶ h n < h m ⊢ Suc n < 0 ⟶ h (Suc n) < h 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.5.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1), n < m ⟶ h n < h m ⊢ ∀n1. (Suc n < n1 ⟶ h (Suc n) < h n1) ⟶ Suc n < Suc n1 ⟶ h (Suc n) < h (Suc n1)"
+                },
+                {
+                    "args": "m1, nat",
+                    "id": "1.5.3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m1"
+                },
+                {
+                    "args": "Suc n < m1 ⟶ h (Suc n) < h m1",
+                    "id": "1.5.3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc n < m1 ⟶ h (Suc n) < h m1 ⊢ Suc n < m1 ⟶ h (Suc n) < h m1"
+                },
+                {
+                    "args": "Suc n < Suc m1",
+                    "id": "1.5.3.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc n < Suc m1 ⊢ Suc n < Suc m1"
+                },
+                {
+                    "args": "nat_less_def_2",
+                    "id": "1.5.3.3",
+                    "prevs": [
+                        "1.5.3.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "Suc n < Suc m1 ⊢ Suc n = m1 ∨ Suc n < m1"
+                },
+                {
+                    "args": "",
+                    "id": "1.5.3.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Suc n < Suc m1, ∀n. h n < h (n + 1), n < m ⟶ h n < h m, Suc n < m1 ⟶ h (Suc n) < h m1 ⊢ Suc n = m1 ⟶ h (Suc n) < h (Suc m1)"
+                },
+                {
+                    "args": "Suc n = m1",
+                    "id": "1.5.3.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc n = m1 ⊢ Suc n = m1"
+                },
+                {
+                    "args": "m1",
+                    "id": "1.5.3.4.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ h m1 < h (m1 + 1)"
+                },
+                {
+                    "args": "add_1_right, h m1 < h (Suc m1)",
+                    "id": "1.5.3.4.2",
+                    "prevs": [
+                        "1.5.3.4.1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "Suc n = m1, Suc n < Suc m1, ∀n. h n < h (n + 1), n < m ⟶ h n < h m, Suc n < m1 ⟶ h (Suc n) < h m1 ⊢ h m1 < h (Suc m1)"
+                },
+                {
+                    "args": "h (Suc n) < h (Suc m1)",
+                    "id": "1.5.3.4.3",
+                    "prevs": [
+                        "1.5.3.4.0",
+                        "1.5.3.4.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "Suc n = m1, Suc n < Suc m1, ∀n. h n < h (n + 1), n < m ⟶ h n < h m, Suc n < m1 ⟶ h (Suc n) < h m1 ⊢ h (Suc n) < h (Suc m1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5.3.4.4",
+                    "prevs": [
+                        "1.5.3.4.0",
+                        "1.5.3.4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "Suc n < Suc m1, ∀n. h n < h (n + 1), n < m ⟶ h n < h m, Suc n < m1 ⟶ h (Suc n) < h m1 ⊢ Suc n = m1 ⟶ h (Suc n) < h (Suc m1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5.3.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Suc n < Suc m1, ∀n. h n < h (n + 1), n < m ⟶ h n < h m, Suc n < m1 ⟶ h (Suc n) < h m1 ⊢ Suc n < m1 ⟶ h (Suc n) < h (Suc m1)"
+                },
+                {
+                    "args": "Suc n < m1",
+                    "id": "1.5.3.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc n < m1 ⊢ Suc n < m1"
+                },
+                {
+                    "args": "",
+                    "id": "1.5.3.5.1",
+                    "prevs": [
+                        "1.5.3.1",
+                        "1.5.3.5.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "Suc n < m1, Suc n < m1 ⟶ h (Suc n) < h m1 ⊢ h (Suc n) < h m1"
+                },
+                {
+                    "args": "m1",
+                    "id": "1.5.3.5.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ h m1 < h (m1 + 1)"
+                },
+                {
+                    "args": "add_1_right, h m1 < h (Suc m1)",
+                    "id": "1.5.3.5.3",
+                    "prevs": [
+                        "1.5.3.5.2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "Suc n < m1, Suc n < Suc m1, ∀n. h n < h (n + 1), n < m ⟶ h n < h m, Suc n < m1 ⟶ h (Suc n) < h m1 ⊢ h m1 < h (Suc m1)"
+                },
+                {
+                    "args": "lt_trans",
+                    "id": "1.5.3.5.4",
+                    "prevs": [
+                        "1.5.3.5.1",
+                        "1.5.3.5.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Suc n < m1, Suc n < Suc m1, ∀n. h n < h (n + 1), n < m ⟶ h n < h m, Suc n < m1 ⟶ h (Suc n) < h m1 ⊢ h (Suc n) < h (Suc m1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5.3.5.5",
+                    "prevs": [
+                        "1.5.3.5.0",
+                        "1.5.3.5.4"
+                    ],
+                    "rule": "intros",
+                    "th": "Suc n < Suc m1, ∀n. h n < h (n + 1), n < m ⟶ h n < h m, Suc n < m1 ⟶ h (Suc n) < h m1 ⊢ Suc n < m1 ⟶ h (Suc n) < h (Suc m1)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.5.3.6",
+                    "prevs": [
+                        "1.5.3.3",
+                        "1.5.3.4",
+                        "1.5.3.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Suc n < Suc m1, ∀n. h n < h (n + 1), n < m ⟶ h n < h m, Suc n < m1 ⟶ h (Suc n) < h m1 ⊢ h (Suc n) < h (Suc m1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5.3.7",
+                    "prevs": [
+                        "1.5.3.0",
+                        "1.5.3.1",
+                        "1.5.3.2",
+                        "1.5.3.6"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1), n < m ⟶ h n < h m ⊢ ∀m1. (Suc n < m1 ⟶ h (Suc n) < h m1) ⟶ Suc n < Suc m1 ⟶ h (Suc n) < h (Suc m1)"
+                },
+                {
+                    "args": "nat_induct, {P: λm. Suc n < m ⟶ h (Suc n) < h m, x: m}",
+                    "id": "1.5.4",
+                    "prevs": [
+                        "1.5.2",
+                        "1.5.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. h n < h (n + 1), n < m ⟶ h n < h m ⊢ Suc n < m ⟶ h (Suc n) < h m"
+                },
+                {
+                    "args": "",
+                    "id": "1.5.5",
+                    "prevs": [
+                        "1.0",
+                        "1.5.0",
+                        "1.5.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. (n < m ⟶ h n < h m) ⟶ Suc n < m ⟶ h (Suc n) < h m"
+                },
+                {
+                    "args": "nat_induct, {P: λn. n < m ⟶ h n < h m, x: n}",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.4",
+                        "1.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ n < m ⟶ h n < h m"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. n < m ⟶ h n < h m"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. h n < h (n + 1)) ⟶ (∀n. ∀m. n < m ⟶ h n < h m)"
+                }
+            ],
+            "prop": "(∀n. h n < h (n + 1)) ⟶ (∀n. ∀m. n < m ⟶ h n < h m)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n,m"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "m"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "introduction",
+                    "names": "m"
+                },
+                {
+                    "goal_id": "1.3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1"
+                    ],
+                    "goal_id": "1.3.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_less_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.2"
+                    ],
+                    "goal_id": "1.3.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.3.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.3.0"
+                    ],
+                    "goal_id": "1.3.3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.3.3.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1.3.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.3.4.1",
+                    "method_name": "apply_backward_step",
+                    "param_m": "h m",
+                    "theorem": "lt_trans"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.0",
+                        "1.3.4.0"
+                    ],
+                    "goal_id": "1.3.4.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.3.4.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.1"
+                    ],
+                    "goal_id": "1.5.2",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "goal_id": "1.5.1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "m"
+                },
+                {
+                    "goal_id": "1.5.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_def_1"
+                },
+                {
+                    "goal_id": "1.5.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.5.3",
+                    "method_name": "introduction",
+                    "names": "m1"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.3.2"
+                    ],
+                    "goal_id": "1.5.3.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_less_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.3.3"
+                    ],
+                    "goal_id": "1.5.3.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.5.3.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.3.4.0"
+                    ],
+                    "goal_id": "1.5.3.4.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.5.3.4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.5.3.4.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1.5.3.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.5.3.5.1",
+                    "method_name": "apply_backward_step",
+                    "param_m": "h m1",
+                    "theorem": "lt_trans"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.3.1",
+                        "1.5.3.5.0"
+                    ],
+                    "goal_id": "1.5.3.5.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1.5.3.5.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.5.3.5.2",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "h": "nat ⇒ nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "strict_increasing_nat_inj",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. h n < h (n + 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. h n < h (n + 1)"
+                },
+                {
+                    "args": "strict_increasing_nat_lt",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. n < m ⟶ h n < h m"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. h n = h m ⟶ n = m"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "h n = h m",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "h n = h m ⊢ h n = h m"
+                },
+                {
+                    "args": "n = m ∨ n < m ∨ m < n",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ n = m ∨ n < m ∨ m < n"
+                },
+                {
+                    "args": "n = m ⟶ n = m",
+                    "id": "2.4",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ n = m ⟶ n = m"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "h n = h m, ∀n. h n < h (n + 1) ⊢ n < m ∨ m < n ⟶ n = m"
+                },
+                {
+                    "args": "n < m ∨ m < n",
+                    "id": "2.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n < m ∨ m < n ⊢ n < m ∨ m < n"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "h n = h m, n < m ∨ m < n, ∀n. h n < h (n + 1) ⊢ n < m ⟶ n = m"
+                },
+                {
+                    "args": "n < m",
+                    "id": "2.5.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n < m ⊢ n < m"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.1.1",
+                    "prevs": [
+                        "1",
+                        "2.5.1.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "n < m, ∀n. h n < h (n + 1) ⊢ h n < h m"
+                },
+                {
+                    "args": "n = m",
+                    "id": "2.5.1.2",
+                    "prevs": [
+                        "2.5.1.1",
+                        "2.2"
+                    ],
+                    "rule": "z3",
+                    "th": "n < m, h n = h m, ∀n. h n < h (n + 1) ⊢ n = m"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.1.3",
+                    "prevs": [
+                        "2.5.1.0",
+                        "2.5.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "h n = h m, n < m ∨ m < n, ∀n. h n < h (n + 1) ⊢ n < m ⟶ n = m"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "h n = h m, n < m ∨ m < n, ∀n. h n < h (n + 1) ⊢ m < n ⟶ n = m"
+                },
+                {
+                    "args": "m < n",
+                    "id": "2.5.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < n ⊢ m < n"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.2.1",
+                    "prevs": [
+                        "1",
+                        "2.5.2.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "m < n, ∀n. h n < h (n + 1) ⊢ h m < h n"
+                },
+                {
+                    "args": "n = m",
+                    "id": "2.5.2.2",
+                    "prevs": [
+                        "2.5.2.1",
+                        "2.2"
+                    ],
+                    "rule": "z3",
+                    "th": "m < n, h n = h m, ∀n. h n < h (n + 1) ⊢ n = m"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.2.3",
+                    "prevs": [
+                        "2.5.2.0",
+                        "2.5.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "h n = h m, n < m ∨ m < n, ∀n. h n < h (n + 1) ⊢ m < n ⟶ n = m"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.5.3",
+                    "prevs": [
+                        "2.5.0",
+                        "2.5.1",
+                        "2.5.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "h n = h m, n < m ∨ m < n, ∀n. h n < h (n + 1) ⊢ n = m"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.4",
+                    "prevs": [
+                        "2.5.0",
+                        "2.5.3"
+                    ],
+                    "rule": "intros",
+                    "th": "h n = h m, ∀n. h n < h (n + 1) ⊢ n < m ∨ m < n ⟶ n = m"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.3",
+                        "2.4",
+                        "2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "h n = h m, ∀n. h n < h (n + 1) ⊢ n = m"
+                },
+                {
+                    "args": "",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2",
+                        "2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. h n = h m ⟶ n = m"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. h n < h (n + 1)) ⟶ (∀n. ∀m. h n = h m ⟶ n = m)"
+                }
+            ],
+            "prop": "(∀n. h n < h (n + 1)) ⟶ (∀n. ∀m. h n = h m ⟶ n = m)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "strict_increasing_nat_lt"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "n,m"
+                },
+                {
+                    "goal": "n = m | n < m | m < n",
+                    "goal_id": "2.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.5.0"
+                    ],
+                    "goal_id": "2.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.5.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2.5.1.0"
+                    ],
+                    "goal_id": "2.5.1.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.5.1.1",
+                        "2.2"
+                    ],
+                    "goal_id": "2.5.1.2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "2.5.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2.5.2.0"
+                    ],
+                    "goal_id": "2.5.2.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.5.2.1",
+                        "2.2"
+                    ],
+                    "goal_id": "2.5.2.2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "h": "nat ⇒ nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "strict_increasing_nat_le_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. h n < h (n + 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. h n < h (n + 1)"
+                },
+                {
+                    "args": "strict_increasing_nat_lt",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. n < m ⟶ h n < h m"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. h n ≤ h m ⟷ n ≤ m"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ h n ≤ h m ⟶ n ≤ m"
+                },
+                {
+                    "args": "h n ≤ h m",
+                    "id": "2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "h n ≤ h m ⊢ h n ≤ h m"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "h n ≤ h m, ∀n. h n < h (n + 1) ⊢ ¬¬(m < n) ⟶ ¬(h n ≤ h m)"
+                },
+                {
+                    "args": "¬¬(m < n)",
+                    "id": "2.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬¬(m < n) ⊢ ¬¬(m < n)"
+                },
+                {
+                    "args": "double_neg",
+                    "id": "2.2.1.1",
+                    "prevs": [
+                        "2.2.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬¬(m < n) ⊢ m < n"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.1.2",
+                    "prevs": [
+                        "1",
+                        "2.2.1.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "¬¬(m < n), ∀n. h n < h (n + 1) ⊢ h m < h n"
+                },
+                {
+                    "args": "not_le, ¬(h n ≤ h m)",
+                    "id": "2.2.1.3",
+                    "prevs": [
+                        "2.2.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬¬(m < n), h n ≤ h m, ∀n. h n < h (n + 1) ⊢ ¬(h n ≤ h m)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.1.4",
+                    "prevs": [
+                        "2.2.1.0",
+                        "2.2.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "h n ≤ h m, ∀n. h n < h (n + 1) ⊢ ¬¬(m < n) ⟶ ¬(h n ≤ h m)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "2.2.2",
+                    "prevs": [
+                        "2.2.0",
+                        "2.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "h n ≤ h m, ∀n. h n < h (n + 1) ⊢ ¬(m < n)"
+                },
+                {
+                    "args": "not_le, ¬¬(n ≤ m)",
+                    "id": "2.2.3",
+                    "prevs": [
+                        "2.2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "h n ≤ h m, ∀n. h n < h (n + 1) ⊢ ¬¬(n ≤ m)"
+                },
+                {
+                    "args": "double_neg, n ≤ m",
+                    "id": "2.2.4",
+                    "prevs": [
+                        "2.2.3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "h n ≤ h m, ∀n. h n < h (n + 1) ⊢ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.5",
+                    "prevs": [
+                        "2.2.0",
+                        "2.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ h n ≤ h m ⟶ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ n ≤ m ⟶ h n ≤ h m"
+                },
+                {
+                    "args": "n ≤ m",
+                    "id": "2.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n ≤ m ⊢ n ≤ m"
+                },
+                {
+                    "args": "le_lt",
+                    "id": "2.3.1",
+                    "prevs": [
+                        "2.3.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "n ≤ m ⊢ n < m ∨ n = m"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n ≤ m, ∀n. h n < h (n + 1) ⊢ n < m ⟶ h n ≤ h m"
+                },
+                {
+                    "args": "n < m",
+                    "id": "2.3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n < m ⊢ n < m"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.2.1",
+                    "prevs": [
+                        "1",
+                        "2.3.2.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "n < m, ∀n. h n < h (n + 1) ⊢ h n < h m"
+                },
+                {
+                    "args": "lt_imp_le",
+                    "id": "2.3.2.2",
+                    "prevs": [
+                        "2.3.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n < m, ∀n. h n < h (n + 1) ⊢ h n ≤ h m"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.2.3",
+                    "prevs": [
+                        "2.3.2.0",
+                        "2.3.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "n ≤ m, ∀n. h n < h (n + 1) ⊢ n < m ⟶ h n ≤ h m"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n ≤ m, ∀n. h n < h (n + 1) ⊢ n = m ⟶ h n ≤ h m"
+                },
+                {
+                    "args": "n = m",
+                    "id": "2.3.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = m ⊢ n = m"
+                },
+                {
+                    "args": "less_eq_refl, {n: h m}",
+                    "id": "2.3.3.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ h m ≤ h m"
+                },
+                {
+                    "args": "h n ≤ h m",
+                    "id": "2.3.3.2",
+                    "prevs": [
+                        "2.3.3.0",
+                        "2.3.3.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = m, n ≤ m, ∀n. h n < h (n + 1) ⊢ h n ≤ h m"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.3.3",
+                    "prevs": [
+                        "2.3.3.0",
+                        "2.3.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "n ≤ m, ∀n. h n < h (n + 1) ⊢ n = m ⟶ h n ≤ h m"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.3.4",
+                    "prevs": [
+                        "2.3.1",
+                        "2.3.2",
+                        "2.3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n ≤ m, ∀n. h n < h (n + 1) ⊢ h n ≤ h m"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.5",
+                    "prevs": [
+                        "2.3.0",
+                        "2.3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ n ≤ m ⟶ h n ≤ h m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.2",
+                        "2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. h n < h (n + 1) ⊢ h n ≤ h m ⟷ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. h n ≤ h m ⟷ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. h n < h (n + 1)) ⟶ (∀n. ∀m. h n ≤ h m ⟷ n ≤ m)"
+                }
+            ],
+            "prop": "(∀n. h n < h (n + 1)) ⟶ (∀n. ∀m. h n ≤ h m ⟷ n ≤ m)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "strict_increasing_nat_lt"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "n,m"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.0"
+                    ],
+                    "goal_id": "2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.1.0"
+                    ],
+                    "goal_id": "2.2.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2.2.1.1"
+                    ],
+                    "goal_id": "2.2.1.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal_id": "2.2.1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.0"
+                    ],
+                    "goal_id": "2.3.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "le_lt"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.1"
+                    ],
+                    "goal_id": "2.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2.3.2.0"
+                    ],
+                    "goal_id": "2.3.2.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.2.1"
+                    ],
+                    "goal_id": "2.3.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "lt_imp_le"
+                },
+                {
+                    "goal_id": "2.3.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.3.0"
+                    ],
+                    "goal_id": "2.3.3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.3.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "h": "nat ⇒ nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "strict_increasing_nat_lt_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. h n < h (n + 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. h n < h (n + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. h n < h m ⟷ n < m"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "strict_increasing_nat_le_eq",
+                    "id": "1.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. h n ≤ h m ⟷ n ≤ m"
+                },
+                {
+                    "args": "¬(h m ≤ h n) ⟷ ¬(m ≤ n)",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∀n. h n < h (n + 1) ⊢ ¬(h m ≤ h n) ⟷ ¬(m ≤ n)"
+                },
+                {
+                    "args": "not_le, h n < h m ⟷ n < m",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "∀n. h n < h (n + 1) ⊢ h n < h m ⟷ n < m"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. h n < h m ⟷ n < m"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. h n < h (n + 1)) ⟶ (∀n. ∀m. h n < h m ⟷ n < m)"
+                }
+            ],
+            "prop": "(∀n. h n < h (n + 1)) ⟶ (∀n. ∀m. h n < h m ⟷ n < m)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n,m"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "not_le"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "strict_increasing_nat_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "h": "nat ⇒ nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "strict_increasing_nat_le2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. h n < h (n + 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. h n < h (n + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. h n ≤ m ⟶ n ≤ m"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "h n ≤ m",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "h n ≤ m ⊢ h n ≤ m"
+                },
+                {
+                    "args": "strict_increasing_nat_le",
+                    "id": "1.3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. n ≤ h n"
+                },
+                {
+                    "args": "n",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ n ≤ h n"
+                },
+                {
+                    "args": "less_eq_trans",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "h n ≤ m, ∀n. h n < h (n + 1) ⊢ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. h n ≤ m ⟶ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. h n < h (n + 1)) ⟶ (∀n. ∀m. h n ≤ m ⟶ n ≤ m)"
+                }
+            ],
+            "prop": "(∀n. h n < h (n + 1)) ⟶ (∀n. ∀m. h n ≤ m ⟶ n ≤ m)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n,m"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "param_m": "h n",
+                    "theorem": "less_eq_trans"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "strict_increasing_nat_le"
+                },
+                {
+                    "fact_ids": [
+                        "1.3"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "h": "nat ⇒ nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_sums_image",
+            "num_gaps": 3,
+            "proof": [
+                {
+                    "args": "∀n. h n < h (n + 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. h n < h (n + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e)) ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (s ∩ {0..n}) (f ∘ h) - l) < e))"
+                },
+                {
+                    "args": "∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1), ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (s ∩ {0..n}) (f ∘ h) - l) < e)"
+                },
+                {
+                    "args": "e, real",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR e"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "1.1.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e",
+                    "id": "1.1.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e ⊢ ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∀n. N ≤ n ⟶ abs (sum (s ∩ {0..n}) (f ∘ h) - l) < e"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.1.5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "N ≤ n",
+                    "id": "1.1.5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "N ≤ n ⊢ N ≤ n"
+                },
+                {
+                    "args": "strict_increasing_nat_le",
+                    "id": "1.1.5.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. n ≤ h n"
+                },
+                {
+                    "args": "strict_increasing_nat_le_eq",
+                    "id": "1.1.5.3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. ∀m. h n ≤ h m ⟷ n ≤ m"
+                },
+                {
+                    "args": "n",
+                    "id": "1.1.5.4",
+                    "prevs": [
+                        "1.1.5.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ n ≤ h n"
+                },
+                {
+                    "args": "less_eq_trans",
+                    "id": "1.1.5.5",
+                    "prevs": [
+                        "1.1.5.1",
+                        "1.1.5.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ N ≤ h n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∀x. x ∈ image h s ∩ {0..h n} ⟷ x ∈ image h (s ∩ {0..h n})"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "1.1.5.6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5.6.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n ⟶ (∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n)"
+                },
+                {
+                    "args": "(∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n",
+                    "id": "1.1.5.6.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n ⊢ (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1.5.6.1.1",
+                    "prevs": [
+                        "1.1.5.6.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n ⊢ ∃x1. x = h x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.1.5.6.1.2",
+                    "prevs": [
+                        "1.1.5.6.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n ⊢ x ≤ h n"
+                },
+                {
+                    "args": "x1, nat",
+                    "id": "1.1.5.6.1.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x = h x1 ∧ x1 ∈ s",
+                    "id": "1.1.5.6.1.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = h x1 ∧ x1 ∈ s ⊢ x = h x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "x1",
+                    "id": "1.1.5.6.1.5",
+                    "prevs": [
+                        "1.1.5.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ x1 ≤ h x1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1.5.6.1.6",
+                    "prevs": [
+                        "1.1.5.6.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = h x1 ∧ x1 ∈ s ⊢ x = h x1"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5.6.1.7",
+                    "prevs": [
+                        "1.1.5.6.1.6",
+                        "1.1.5.6.1.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "x = h x1 ∧ x1 ∈ s, (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n ⊢ h x1 ≤ h n"
+                },
+                {
+                    "args": "less_eq_trans",
+                    "id": "1.1.5.6.1.8",
+                    "prevs": [
+                        "1.1.5.6.1.5",
+                        "1.1.5.6.1.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, N ≤ n, x = h x1 ∧ x1 ∈ s, ∀n. h n < h (n + 1), (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n, ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ x1 ≤ h n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.5.6.1.9",
+                    "prevs": [
+                        "1.1.5.6.1.4",
+                        "1.1.5.6.1.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, N ≤ n, x = h x1 ∧ x1 ∈ s, ∀n. h n < h (n + 1), (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n, ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ (x = h x1 ∧ x1 ∈ s) ∧ x1 ≤ h n"
+                },
+                {
+                    "args": "conj_assoc, x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n",
+                    "id": "1.1.5.6.1.10",
+                    "prevs": [
+                        "1.1.5.6.1.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, N ≤ n, x = h x1 ∧ x1 ∈ s, ∀n. h n < h (n + 1), (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n, ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n"
+                },
+                {
+                    "args": "exI, {P: λx1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n, a: x1}",
+                    "id": "1.1.5.6.1.11",
+                    "prevs": [
+                        "1.1.5.6.1.10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e, N ≤ n, x = h x1 ∧ x1 ∈ s, ∀n. h n < h (n + 1), (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n, ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∃a1. x = h a1 ∧ a1 ∈ s ∧ a1 ≤ h n"
+                },
+                {
+                    "args": "∃x1. x = h x1 ∧ x1 ∈ s",
+                    "id": "1.1.5.6.1.12",
+                    "prevs": [
+                        "1.1.5.6.1.0",
+                        "1.1.5.6.1.1",
+                        "1.1.5.6.1.3",
+                        "1.1.5.6.1.4",
+                        "1.1.5.6.1.11"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n ⟶ (∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5.6.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ (∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n) ⟶ (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n"
+                },
+                {
+                    "args": "∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n",
+                    "id": "1.1.5.6.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n ⊢ ∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n"
+                },
+                {
+                    "args": "x1, nat",
+                    "id": "1.1.5.6.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n",
+                    "id": "1.1.5.6.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n ⊢ x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n"
+                },
+                {
+                    "args": "conj_assoc",
+                    "id": "1.1.5.6.2.3",
+                    "prevs": [
+                        "1.1.5.6.2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n ⊢ (x = h x1 ∧ x1 ∈ s) ∧ x1 ≤ h n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1.5.6.2.4",
+                    "prevs": [
+                        "1.1.5.6.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n ⊢ x = h x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.1.5.6.2.5",
+                    "prevs": [
+                        "1.1.5.6.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n ⊢ x1 ≤ h n"
+                },
+                {
+                    "args": "exI, {P: λx1. x = h x1 ∧ x1 ∈ s, a: x1}",
+                    "id": "1.1.5.6.2.6",
+                    "prevs": [
+                        "1.1.5.6.2.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n, ∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n, ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∃a1. x = h a1 ∧ a1 ∈ s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1.5.6.2.7",
+                    "prevs": [
+                        "1.1.5.6.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n ⊢ x = h x1"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5.6.2.8",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n, ∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n, ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ h x1 ≤ h n"
+                },
+                {
+                    "args": "x ≤ h n",
+                    "id": "1.1.5.6.2.9",
+                    "prevs": [
+                        "1.1.5.6.2.7",
+                        "1.1.5.6.2.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n, ∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n, ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ x ≤ h n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.5.6.2.10",
+                    "prevs": [
+                        "1.1.5.6.2.6",
+                        "1.1.5.6.2.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n, ∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n, ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n"
+                },
+                {
+                    "args": "∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n",
+                    "id": "1.1.5.6.2.11",
+                    "prevs": [
+                        "1.1.5.6.2.0",
+                        "1.1.5.6.2.0",
+                        "1.1.5.6.2.1",
+                        "1.1.5.6.2.2",
+                        "1.1.5.6.2.10"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ (∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n) ⟶ (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.1.5.6.3",
+                    "prevs": [
+                        "1.1.5.6.1",
+                        "1.1.5.6.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ≤ h n ⟷ (∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ≤ h n)"
+                },
+                {
+                    "args": "member_natseg_0, (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ∈ {0..h n} ⟷ (∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ∈ {0..h n})",
+                    "id": "1.1.5.6.4",
+                    "prevs": [
+                        "1.1.5.6.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ∈ {0..h n} ⟷ (∃x1. x = h x1 ∧ x1 ∈ s ∧ x1 ∈ {0..h n})"
+                },
+                {
+                    "args": "member_inter_iff, (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ∈ {0..h n} ⟷ (∃x1. x = h x1 ∧ x1 ∈ s ∩ {0..h n})",
+                    "id": "1.1.5.6.5",
+                    "prevs": [
+                        "1.1.5.6.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ (∃x1. x = h x1 ∧ x1 ∈ s) ∧ x ∈ {0..h n} ⟷ (∃x1. x = h x1 ∧ x1 ∈ s ∩ {0..h n})"
+                },
+                {
+                    "args": "in_image, x ∈ image h s ∧ x ∈ {0..h n} ⟷ x ∈ image h (s ∩ {0..h n})",
+                    "id": "1.1.5.6.6",
+                    "prevs": [
+                        "1.1.5.6.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ x ∈ image h s ∧ x ∈ {0..h n} ⟷ x ∈ image h (s ∩ {0..h n})"
+                },
+                {
+                    "args": "member_inter_iff, x ∈ image h s ∩ {0..h n} ⟷ x ∈ image h (s ∩ {0..h n})",
+                    "id": "1.1.5.6.7",
+                    "prevs": [
+                        "1.1.5.6.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ x ∈ image h s ∩ {0..h n} ⟷ x ∈ image h (s ∩ {0..h n})"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5.6.8",
+                    "prevs": [
+                        "1.1.5.6.0",
+                        "1.1.5.6.7"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∀x. x ∈ image h s ∩ {0..h n} ⟷ x ∈ image h (s ∩ {0..h n})"
+                },
+                {
+                    "args": "set_equal_iff, image h s ∩ {0..h n} = image h (s ∩ {0..h n})",
+                    "id": "1.1.5.7",
+                    "prevs": [
+                        "1.1.5.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ image h s ∩ {0..h n} = image h (s ∩ {0..h n})"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.5.8",
+                    "prevs": [
+                        "1.1.5.5",
+                        "1.1.5.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ N ≤ h n ∧ image h s ∩ {0..h n} = image h (s ∩ {0..h n})"
+                },
+                {
+                    "args": "exI, {P: λm. N ≤ m ∧ image h s ∩ {0..m} = image h (s ∩ {0..m}), a: h n}",
+                    "id": "1.1.5.9",
+                    "prevs": [
+                        "1.1.5.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∃a1. N ≤ a1 ∧ image h s ∩ {0..a1} = image h (s ∩ {0..a1})"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5.10",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "0 < e, N ≤ n, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ abs (sum (s ∩ {0..n}) (f ∘ h) - l) < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5.11",
+                    "prevs": [
+                        "1.1.5.0",
+                        "1.1.5.1",
+                        "1.1.5.10"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∀n. N ≤ n ⟶ abs (sum (s ∩ {0..n}) (f ∘ h) - l) < e"
+                },
+                {
+                    "args": "exI, {P: λN. ∀n. N ≤ n ⟶ abs (sum (s ∩ {0..n}) (f ∘ h) - l) < e, a: N}",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e, ∀n. h n < h (n + 1), ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∃a1. ∀n. a1 ≤ n ⟶ abs (sum (s ∩ {0..n}) (f ∘ h) - l) < e"
+                },
+                {
+                    "args": "∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e",
+                    "id": "1.1.7",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1",
+                        "1.1.2",
+                        "1.1.3",
+                        "1.1.4",
+                        "1.1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1), ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (s ∩ {0..n}) (f ∘ h) - l) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e)) ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (s ∩ {0..n}) (f ∘ h) - l) < e))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∀n. h n < h (n + 1) ⊢ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (s ∩ {0..n}) (f ∘ h) - l) < e)) ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e))"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. h n < h (n + 1) ⊢ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (image h s ∩ {0..n}) f - l) < e)) ⟷ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sum (s ∩ {0..n}) (f ∘ h) - l) < e))"
+                },
+                {
+                    "args": "reallim_sequentially, tendsto_real (λn. sum (image h s ∩ {0..n}) f) l sequentially ⟷ tendsto_real (λn. sum (s ∩ {0..n}) (f ∘ h)) l sequentially",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. h n < h (n + 1) ⊢ tendsto_real (λn. sum (image h s ∩ {0..n}) f) l sequentially ⟷ tendsto_real (λn. sum (s ∩ {0..n}) (f ∘ h)) l sequentially"
+                },
+                {
+                    "args": "real_sums_def, real_sums f l (image h s) ⟷ real_sums (f ∘ h) l s",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. h n < h (n + 1) ⊢ real_sums f l (image h s) ⟷ real_sums (f ∘ h) l s"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. h n < h (n + 1)) ⟶ real_sums f l (image h s) ⟷ real_sums (f ∘ h) l s"
+                }
+            ],
+            "prop": "(∀n. h n < h (n + 1)) ⟶ real_sums f l (image h s) ⟷ real_sums (f ∘ h) l s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sums_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "reallim_sequentially"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": "e"
+                },
+                {
+                    "fact_ids": [
+                        "1.0",
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2"
+                    ],
+                    "goal_id": "1.1.3",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "1.1.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "goal_id": "1.1.5",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal": "?m. N <= m & image h s ∩ {0..m} = image h (s ∩ {0..m})",
+                    "goal_id": "1.1.5.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1.5.2",
+                    "method_name": "inst_exists_goal",
+                    "s": "h n"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.1.5.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "strict_increasing_nat_le"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.1.5.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "strict_increasing_nat_le_eq"
+                },
+                {
+                    "goal_id": "1.1.5.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.5.4",
+                    "method_name": "apply_backward_step",
+                    "param_m": "n",
+                    "theorem": "less_eq_trans"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.2"
+                    ],
+                    "goal_id": "1.1.5.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1.1.5.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "set_equal_iff"
+                },
+                {
+                    "goal_id": "1.1.5.6",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.1.5.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "goal_id": "1.1.5.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "1.1.5.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "goal_id": "1.1.5.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_natseg_0"
+                },
+                {
+                    "goal_id": "1.1.5.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.1.5.6.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.6.1.0"
+                    ],
+                    "goal_id": "1.1.5.6.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.6.1.0"
+                    ],
+                    "goal_id": "1.1.5.6.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.6.1.1"
+                    ],
+                    "goal_id": "1.1.5.6.1.3",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "goal_id": "1.1.5.6.1.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "x1"
+                },
+                {
+                    "goal_id": "1.1.5.6.1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "goal_id": "1.1.5.6.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.5.6.1.5",
+                    "method_name": "apply_backward_step",
+                    "param_m": "h x1",
+                    "theorem": "less_eq_trans"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.2"
+                    ],
+                    "goal_id": "1.1.5.6.1.5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.6.1.4"
+                    ],
+                    "goal_id": "1.1.5.6.1.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.6.1.6",
+                        "1.1.5.6.1.2"
+                    ],
+                    "goal_id": "1.1.5.6.1.7",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "1.1.5.6.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.6.2.0"
+                    ],
+                    "goal_id": "1.1.5.6.2.1",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.6.2.2"
+                    ],
+                    "goal_id": "1.1.5.6.2.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.6.2.3"
+                    ],
+                    "goal_id": "1.1.5.6.2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.6.2.3"
+                    ],
+                    "goal_id": "1.1.5.6.2.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.1.5.6.2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.5.6.2.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.6.2.4"
+                    ],
+                    "goal_id": "1.1.5.6.2.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.6.2.7"
+                    ],
+                    "goal_id": "1.1.5.6.2.8",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "h": "nat ⇒ nat",
+                "l": "real",
                 "s": "nat set"
             }
         }
