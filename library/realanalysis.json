@@ -6413,6 +6413,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_series_restrict",
             "prop": "real_sums (λn. if n ∈ s then f n else 0) l univ ⟷ real_sums f l s",
             "ty": "thm",
@@ -6609,6 +6612,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_summable_0",
             "prop": "real_summable s (λn. 0)",
             "ty": "thm",
@@ -6637,6 +6643,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_summable_lmul",
             "prop": "real_summable s x ⟶ real_summable s (λn. c * x n)",
             "ty": "thm",

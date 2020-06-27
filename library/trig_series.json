@@ -12997,6 +12997,2424 @@
                 "l": "real",
                 "s": "nat set"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_summable_image",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. h n < h (n + 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀n. h n < h (n + 1)"
+                },
+                {
+                    "args": "real_sums_image, {f: f, s: s}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. h n < h (n + 1) ⊢ ∀l. real_sums f l (image h s) ⟷ real_sums (f ∘ h) l s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ (∃l. real_sums f l (image h s)) ⟶ (∃l. real_sums (f ∘ h) l s)"
+                },
+                {
+                    "args": "∃l. real_sums f l (image h s)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃l. real_sums f l (image h s) ⊢ ∃l. real_sums f l (image h s)"
+                },
+                {
+                    "args": "",
+                    "id": "2.1",
+                    "prevs": [
+                        "1",
+                        "2.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "∃l. real_sums f l (image h s), ∀n. h n < h (n + 1) ⊢ ∃l. real_sums (f ∘ h) l s"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ (∃l. real_sums f l (image h s)) ⟶ (∃l. real_sums (f ∘ h) l s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. h n < h (n + 1) ⊢ (∃l. real_sums (f ∘ h) l s) ⟶ (∃l. real_sums f l (image h s))"
+                },
+                {
+                    "args": "∃l. real_sums (f ∘ h) l s",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃l. real_sums (f ∘ h) l s ⊢ ∃l. real_sums (f ∘ h) l s"
+                },
+                {
+                    "args": "∃l. real_sums f l (image h s)",
+                    "id": "3.1",
+                    "prevs": [
+                        "1",
+                        "3.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∃l. real_sums (f ∘ h) l s, ∀n. h n < h (n + 1) ⊢ ∃l. real_sums f l (image h s)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.0",
+                        "3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. h n < h (n + 1) ⊢ (∃l. real_sums (f ∘ h) l s) ⟶ (∃l. real_sums f l (image h s))"
+                },
+                {
+                    "args": "iffI",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. h n < h (n + 1) ⊢ (∃l. real_sums f l (image h s)) ⟷ (∃l. real_sums (f ∘ h) l s)"
+                },
+                {
+                    "args": "real_summable_def, real_summable (image h s) f ⟷ real_summable s (f ∘ h)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. h n < h (n + 1) ⊢ real_summable (image h s) f ⟷ real_summable s (f ∘ h)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. h n < h (n + 1)) ⟶ real_summable (image h s) f ⟷ real_summable s (f ∘ h)"
+                }
+            ],
+            "prop": "(∀n. h n < h (n + 1)) ⟶ real_summable (image h s) f ⟷ real_summable s (f ∘ h)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_l": "",
+                    "param_s": "s",
+                    "theorem": "real_sums_image"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_summable_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "h": "nat ⇒ nat",
+                "s": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_sums_image_odd",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, {P: odd}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∀x. x ∈ collect odd ⟷ odd x"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∀x. odd x ⟷ x ∈ collect odd"
+                },
+                {
+                    "args": "∀x::nat. (∃m. x = 2 * m + 1) ⟷ (∃x1. x = 2 * x1 + 1 ∧ x1 ∈ univ)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::nat. (∃m. x = 2 * m + 1) ⟷ (∃x1. x = 2 * x1 + 1 ∧ x1 ∈ univ)"
+                },
+                {
+                    "args": "add_1_right, ∀x. (∃m. x = Suc (2 * m)) ⟷ (∃x1. x = 2 * x1 + 1 ∧ x1 ∈ univ)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ ∀x. (∃m. x = Suc (2 * m)) ⟷ (∃x1. x = 2 * x1 + 1 ∧ x1 ∈ univ)"
+                },
+                {
+                    "args": "odd_exists, ∀x. odd x ⟷ (∃x1. x = 2 * x1 + 1 ∧ x1 ∈ univ)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. odd x ⟷ (∃x1. x = 2 * x1 + 1 ∧ x1 ∈ univ)"
+                },
+                {
+                    "args": "in_image, ∀x. odd x ⟷ x ∈ image (λi. 2 * i + 1) univ",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. odd x ⟷ x ∈ image (λi. 2 * i + 1) univ"
+                },
+                {
+                    "args": "member_collect, ∀x. x ∈ collect odd ⟷ x ∈ image (λi. 2 * i + 1) univ",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. x ∈ collect odd ⟷ x ∈ image (λi. 2 * i + 1) univ"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ collect odd = image (λi. 2 * i + 1) univ"
+                },
+                {
+                    "args": "real_sums_image, {f: f, h: λi::nat. 2 * i + 1, l: l, s: (univ::nat set)}",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∀n::nat. 2 * n + 1 < 2 * (n + 1) + 1) ⟶ real_sums f l (image (λi. 2 * i + 1) univ) ⟷ real_sums (f ∘ (λi. 2 * i + 1)) l univ"
+                },
+                {
+                    "args": "comp_fun_def",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ (∀n::nat. 2 * n + 1 < 2 * (n + 1) + 1) ⟶ real_sums f l (image (λi. 2 * i + 1) univ) ⟷ real_sums (λx. f (2 * x + 1)) l univ"
+                },
+                {
+                    "args": "∀n::nat. 2 * n + 1 < 2 * (n + 1) + 1",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀n::nat. 2 * n + 1 < 2 * (n + 1) + 1"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "9",
+                        "10"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ real_sums f l (image (λi. 2 * i + 1) univ) ⟷ real_sums (λx. f (2 * x + 1)) l univ"
+                },
+                {
+                    "args": "real_sums f l (collect odd) ⟷ real_sums (λi. f (2 * i + 1)) l univ",
+                    "id": "12",
+                    "prevs": [
+                        "7",
+                        "11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ real_sums f l (collect odd) ⟷ real_sums (λi. f (2 * i + 1)) l univ"
+                },
+                {
+                    "args": "real_series_restrict, real_sums (λi. if i ∈ collect odd then f i else 0) l univ ⟷ real_sums (λi. f (2 * i + 1)) l univ",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sums (λi. if i ∈ collect odd then f i else 0) l univ ⟷ real_sums (λi. f (2 * i + 1)) l univ"
+                },
+                {
+                    "args": "real_sums (λi. if odd i then f i else 0) l univ ⟷ real_sums (λi. f (2 * i + 1)) l univ",
+                    "id": "14",
+                    "prevs": [
+                        "1",
+                        "13"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ real_sums (λi. if odd i then f i else 0) l univ ⟷ real_sums (λi. f (2 * i + 1)) l univ"
+                },
+                {
+                    "args": "",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sums (λi. if odd i then f i else 0) l univ ⟷ real_sums (λi. f (2 * i + 1)) l univ"
+                }
+            ],
+            "prop": [
+                "real_sums (λi. if odd i then f i else 0) l univ ⟷ ",
+                "real_sums (λi. f (2 * i + 1)) l univ"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_P": "odd",
+                    "param_x": "",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "real_series_restrict"
+                },
+                {
+                    "goal": "(collect odd) = image (%i. 2 * i + 1) (univ::nat set)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "odd_exists"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_h": "(λi::nat. 2 * i + 1)",
+                    "param_l": "l",
+                    "param_s": "(univ::nat set)",
+                    "theorem": "real_sums_image"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "comp_fun_def"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_sums_image_even",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, {P: even}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∀x. x ∈ collect even ⟷ even x"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∀x. even x ⟷ x ∈ collect even"
+                },
+                {
+                    "args": "∀x::nat. (∃m. x = 2 * m) ⟷ (∃x1. x = 2 * x1 ∧ x1 ∈ univ)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::nat. (∃m. x = 2 * m) ⟷ (∃x1. x = 2 * x1 ∧ x1 ∈ univ)"
+                },
+                {
+                    "args": "even_exists, ∀x. even x ⟷ (∃x1. x = 2 * x1 ∧ x1 ∈ univ)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. even x ⟷ (∃x1. x = 2 * x1 ∧ x1 ∈ univ)"
+                },
+                {
+                    "args": "in_image, ∀x. even x ⟷ x ∈ image (λi. 2 * i) univ",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. even x ⟷ x ∈ image (λi. 2 * i) univ"
+                },
+                {
+                    "args": "member_collect, ∀x. x ∈ collect even ⟷ x ∈ image (λi. 2 * i) univ",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. x ∈ collect even ⟷ x ∈ image (λi. 2 * i) univ"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ collect even = image (λi. 2 * i) univ"
+                },
+                {
+                    "args": "real_sums_image, {f: f, h: λi::nat. 2 * i, l: l, s: (univ::nat set)}",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∀n::nat. 2 * n < 2 * (n + 1)) ⟶ real_sums f l (image (λi. 2 * i) univ) ⟷ real_sums (f ∘ (λi. 2 * i)) l univ"
+                },
+                {
+                    "args": "comp_fun_def",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ (∀n::nat. 2 * n < 2 * (n + 1)) ⟶ real_sums f l (image (λi. 2 * i) univ) ⟷ real_sums (λx. f (2 * x)) l univ"
+                },
+                {
+                    "args": "∀n::nat. 2 * n < 2 * (n + 1)",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀n::nat. 2 * n < 2 * (n + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "8",
+                        "9"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ real_sums f l (image (λi. 2 * i) univ) ⟷ real_sums (λx. f (2 * x)) l univ"
+                },
+                {
+                    "args": "real_sums f l (collect even) ⟷ real_sums (λi. f (2 * i)) l univ",
+                    "id": "11",
+                    "prevs": [
+                        "6",
+                        "10"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ real_sums f l (collect even) ⟷ real_sums (λi. f (2 * i)) l univ"
+                },
+                {
+                    "args": "real_series_restrict, real_sums (λi. if i ∈ collect even then f i else 0) l univ ⟷ real_sums (λi. f (2 * i)) l univ",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sums (λi. if i ∈ collect even then f i else 0) l univ ⟷ real_sums (λi. f (2 * i)) l univ"
+                },
+                {
+                    "args": "real_sums (λi. if even i then f i else 0) l univ ⟷ real_sums (λi. f (2 * i)) l univ",
+                    "id": "13",
+                    "prevs": [
+                        "1",
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ real_sums (λi. if even i then f i else 0) l univ ⟷ real_sums (λi. f (2 * i)) l univ"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sums (λi. if even i then f i else 0) l univ ⟷ real_sums (λi. f (2 * i)) l univ"
+                }
+            ],
+            "prop": [
+                "real_sums (λi. if even i then f i else 0) l univ ⟷ ",
+                "real_sums (λi. f (2 * i)) l univ"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_P": "even",
+                    "param_x": "",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_series_restrict"
+                },
+                {
+                    "goal": "collect even = image (λi. 2 * i) (univ::nat set)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_exists"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_h": "(λi::nat. 2 * i)",
+                    "param_l": "l",
+                    "param_s": "(univ::nat set)",
+                    "theorem": "real_sums_image"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "comp_fun_def"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "n_le_pow_lemma",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "0 < e",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "real_arch_simple, {x: 2 / e ^ (2::nat) + 2}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃n. 2 / e ^ (2::nat) + 2 ≤ of_nat n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "2 / e ^ (2::nat) + 2 ≤ of_nat n",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "2 / e ^ (2::nat) + 2 ≤ of_nat n ⊢ 2 / e ^ (2::nat) + 2 ≤ of_nat n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e, 2 / e ^ (2::nat) + 2 ≤ of_nat n ⊢ ∀n1. n ≤ n1 ⟶ of_nat n1 ≤ (1 + e) ^ n1"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "n ≤ i",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n ≤ i ⊢ n ≤ i"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "0 < e, n ≤ i, 2 / e ^ (2::nat) + 2 ≤ of_nat n ⊢ of_nat i ≤ (1 + e) ^ i"
+                },
+                {
+                    "args": "",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e, 2 / e ^ (2::nat) + 2 ≤ of_nat n ⊢ ∀i. n ≤ i ⟶ of_nat i ≤ (1 + e) ^ i"
+                },
+                {
+                    "args": "exI, {P: λN. ∀n. N ≤ n ⟶ of_nat n ≤ (1 + e) ^ n, a: n}",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e, 2 / e ^ (2::nat) + 2 ≤ of_nat n ⊢ ∃a1. ∀n. a1 ≤ n ⟶ of_nat n ≤ (1 + e) ^ n"
+                },
+                {
+                    "args": "∃n. 2 / e ^ (2::nat) + 2 ≤ of_nat n",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ of_nat n ≤ (1 + e) ^ n)"
+                }
+            ],
+            "prop": "0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ of_nat n ≤ (1 + e) ^ n)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_x": "2 / e ^ (2::nat) + 2",
+                    "theorem": "real_arch_simple"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "i"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "e": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_summable_lmul_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(c = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(c = 0) ⊢ ¬(c = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(c = 0) ⊢ real_summable s (λi. c * f i) ⟶ real_summable s f"
+                },
+                {
+                    "args": "real_summable s (λi. c * f i)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_summable s (λi. c * f i) ⊢ real_summable s (λi. c * f i)"
+                },
+                {
+                    "args": "real_mul_linv",
+                    "id": "1.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(c = 0), real_summable s (λi. c * f i) ⊢ real_inverse c * c = 1"
+                },
+                {
+                    "args": "eta_conversion, f = (λi. f i)",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ f = (λi. f i)"
+                },
+                {
+                    "args": "real_mul_lid, f = (λi. 1 * f i)",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0), real_summable s (λi. c * f i) ⊢ f = (λi. 1 * f i)"
+                },
+                {
+                    "args": "f = (λi. real_inverse c * c * f i)",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.1",
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(c = 0), real_summable s (λi. c * f i) ⊢ f = (λi. real_inverse c * c * f i)"
+                },
+                {
+                    "args": "real_summable_lmul, {c: real_inverse c, s: s, x: λn. c * f n}",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(c = 0), real_summable s (λi. c * f i) ⊢ real_summable s (λn. real_inverse c * (c * f n))"
+                },
+                {
+                    "args": "real_mult_assoc, real_summable s (λi. real_inverse c * c * f i)",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(c = 0), real_summable s (λi. c * f i) ⊢ real_summable s (λi. real_inverse c * c * f i)"
+                },
+                {
+                    "args": "real_summable s f",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.4",
+                        "1.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(c = 0), real_summable s (λi. c * f i) ⊢ real_summable s f"
+                },
+                {
+                    "args": "",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.0",
+                        "1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(c = 0) ⊢ real_summable s (λi. c * f i) ⟶ real_summable s f"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(c = 0) ⊢ real_summable s f ⟶ real_summable s (λi. c * f i)"
+                },
+                {
+                    "args": "real_summable s f",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_summable s f ⊢ real_summable s f"
+                },
+                {
+                    "args": "real_summable_lmul, {c: c, s: s, x: f}",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_summable s f ⊢ real_summable s (λn. c * f n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(c = 0) ⊢ real_summable s f ⟶ real_summable s (λi. c * f i)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(c = 0) ⊢ real_summable s (λi. c * f i) ⟷ real_summable s f"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(c = 0) ⟶ real_summable s (λi. c * f i) ⟷ real_summable s f"
+                }
+            ],
+            "prop": "¬(c = 0) ⟶ real_summable s (λi. c * f i) ⟷ real_summable s f",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "f = (%i. real_inverse c * c * f i)",
+                    "goal_id": "1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal": "real_inverse c * c = 1",
+                    "goal_id": "1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_mul_linv"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eta_conversion"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_summable_lmul"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_summable_lmul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "nat ⇒ real",
+                "s": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "summable_power_series_shift",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_summable s (λi. a i * x ^ i)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_summable s (λi. a i * x ^ i) ⊢ real_summable s (λi. a i * x ^ i)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_summable s (λi. a i * x ^ i) ⊢ x = 0 ⟶ real_summable s (λi. a i * x ^ (i - k))"
+                },
+                {
+                    "args": "x = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = 0 ⊢ x = 0"
+                },
+                {
+                    "args": "real_summable_0, {s: s}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_summable s (λn. 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x = 0, real_summable s (λi. a i * x ^ i) ⊢ ∀i. i ≥ k + 2 ⟶ i ∈ s ⟶ abs (a i * 0 ^ (i - k)) ≤ 0"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "i ≥ k + 2",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "i ≥ k + 2 ⊢ i ≥ k + 2"
+                },
+                {
+                    "args": "i ∈ s",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "i ∈ s ⊢ i ∈ s"
+                },
+                {
+                    "args": "¬(i - k = 0)",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.1"
+                    ],
+                    "rule": "z3",
+                    "th": "i ≥ k + 2 ⊢ ¬(i - k = 0)"
+                },
+                {
+                    "args": "real_le_refl, {x: (0::real)}",
+                    "id": "1.2.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 0"
+                },
+                {
+                    "args": "real_abs_0, abs (0::real) ≤ 0",
+                    "id": "1.2.5",
+                    "prevs": [
+                        "1.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = 0, i ∈ s, i ≥ k + 2, real_summable s (λi. a i * x ^ i) ⊢ abs (0::real) ≤ 0"
+                },
+                {
+                    "args": "real_mul_rzero, abs (a i * 0) ≤ 0",
+                    "id": "1.2.6",
+                    "prevs": [
+                        "1.2.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = 0, i ∈ s, i ≥ k + 2, real_summable s (λi. a i * x ^ i) ⊢ abs (a i * 0) ≤ 0"
+                },
+                {
+                    "args": "if_not_P, abs (a i * (if i - k = 0 then 1 else 0)) ≤ 0",
+                    "id": "1.2.7",
+                    "prevs": [
+                        "1.2.6",
+                        "1.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = 0, i ∈ s, i ≥ k + 2, real_summable s (λi. a i * x ^ i) ⊢ abs (a i * (if i - k = 0 then 1 else 0)) ≤ 0"
+                },
+                {
+                    "args": "real_pow_zero, abs (a i * 0 ^ (i - k)) ≤ 0",
+                    "id": "1.2.8",
+                    "prevs": [
+                        "1.2.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = 0, i ∈ s, i ≥ k + 2, real_summable s (λi. a i * x ^ i) ⊢ abs (a i * 0 ^ (i - k)) ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.9",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.1",
+                        "1.2.2",
+                        "1.2.8"
+                    ],
+                    "rule": "intros",
+                    "th": "x = 0, real_summable s (λi. a i * x ^ i) ⊢ ∀i. i ≥ k + 2 ⟶ i ∈ s ⟶ abs (a i * 0 ^ (i - k)) ≤ 0"
+                },
+                {
+                    "args": "exI, {P: λN. ∀i. i ≥ N ⟶ i ∈ s ⟶ abs (a i * 0 ^ (i - k)) ≤ 0, a: k + 2}",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = 0, real_summable s (λi. a i * x ^ i) ⊢ ∃a1. ∀i. i ≥ a1 ⟶ i ∈ s ⟶ abs (a i * 0 ^ (i - k)) ≤ 0"
+                },
+                {
+                    "args": "real_summable_comparison",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.1",
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = 0, real_summable s (λi. a i * x ^ i) ⊢ real_summable s (λi. a i * 0 ^ (i - k))"
+                },
+                {
+                    "args": "real_summable s (λi. a i * x ^ (i - k))",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = 0, real_summable s (λi. a i * x ^ i) ⊢ real_summable s (λi. a i * x ^ (i - k))"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "real_summable s (λi. a i * x ^ i) ⊢ x = 0 ⟶ real_summable s (λi. a i * x ^ (i - k))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_summable s (λi. a i * x ^ i) ⊢ ¬(x = 0) ⟶ real_summable s (λi. a i * x ^ (i - k))"
+                },
+                {
+                    "args": "¬(x = 0)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = 0) ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "real_summable_lmul_eq, {c: x ^ k, f: λi. a i * x ^ (i - k), s: s}",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(x ^ k = 0) ⟶ real_summable s (λi. x ^ k * (a i * x ^ (i - k))) ⟷ real_summable s (λi. a i * x ^ (i - k))"
+                },
+                {
+                    "args": "real_pow_nz, {n: k, x: x}",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(x = 0), real_summable s (λi. a i * x ^ i) ⊢ ¬(x ^ k = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "¬(x = 0), real_summable s (λi. a i * x ^ i) ⊢ real_summable s (λi. x ^ k * (a i * x ^ (i - k))) ⟷ real_summable s (λi. a i * x ^ (i - k))"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x = 0), real_summable s (λi. a i * x ^ i) ⊢ real_summable s (λi. a i * x ^ (i - k)) ⟷ real_summable s (λi. x ^ k * (a i * x ^ (i - k)))"
+                },
+                {
+                    "args": "real_summable_iff_eventually, {f: λi. a i * x ^ i, g: λi. x ^ k * (a i * x ^ (i - k)), s: s}",
+                    "id": "2.5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∃N. ∀n. N ≤ n ∧ n ∈ s ⟶ a n * x ^ n = x ^ k * (a n * x ^ (n - k))) ⟶ real_summable s (λi. a i * x ^ i) ⟷ real_summable s (λi. x ^ k * (a i * x ^ (i - k)))"
+                },
+                {
+                    "args": "",
+                    "id": "2.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(x = 0), real_summable s (λi. a i * x ^ i) ⊢ ∀n. k ≤ n ∧ n ∈ s ⟶ a n * x ^ n = x ^ k * (a n * x ^ (n - k))"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "k ≤ n ∧ n ∈ s",
+                    "id": "2.6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ n ∧ n ∈ s ⊢ k ≤ n ∧ n ∈ s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.6.2",
+                    "prevs": [
+                        "2.6.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "k ≤ n ∧ n ∈ s ⊢ k ≤ n"
+                },
+                {
+                    "args": "k + (n - k) = n",
+                    "id": "2.6.3",
+                    "prevs": [
+                        "2.6.2"
+                    ],
+                    "rule": "z3",
+                    "th": "k ≤ n ∧ n ∈ s ⊢ k + (n - k) = n"
+                },
+                {
+                    "args": "a n * x ^ n = a n * x ^ (k + (n - k))",
+                    "id": "2.6.4",
+                    "prevs": [
+                        "2.6.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "k ≤ n ∧ n ∈ s ⊢ a n * x ^ n = a n * x ^ (k + (n - k))"
+                },
+                {
+                    "args": "a n * (x ^ k * x ^ (n - k)) = x ^ k * (a n * x ^ (n - k))",
+                    "id": "2.6.5",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ a n * (x ^ k * x ^ (n - k)) = x ^ k * (a n * x ^ (n - k))"
+                },
+                {
+                    "args": "real_pow_add, a n * x ^ (k + (n - k)) = x ^ k * (a n * x ^ (n - k))",
+                    "id": "2.6.6",
+                    "prevs": [
+                        "2.6.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = 0), k ≤ n ∧ n ∈ s, real_summable s (λi. a i * x ^ i) ⊢ a n * x ^ (k + (n - k)) = x ^ k * (a n * x ^ (n - k))"
+                },
+                {
+                    "args": "a n * x ^ n = x ^ k * (a n * x ^ (n - k))",
+                    "id": "2.6.7",
+                    "prevs": [
+                        "2.6.4",
+                        "2.6.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(x = 0), k ≤ n ∧ n ∈ s, real_summable s (λi. a i * x ^ i) ⊢ a n * x ^ n = x ^ k * (a n * x ^ (n - k))"
+                },
+                {
+                    "args": "",
+                    "id": "2.6.8",
+                    "prevs": [
+                        "2.6.0",
+                        "2.6.1",
+                        "2.6.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(x = 0), real_summable s (λi. a i * x ^ i) ⊢ ∀n. k ≤ n ∧ n ∈ s ⟶ a n * x ^ n = x ^ k * (a n * x ^ (n - k))"
+                },
+                {
+                    "args": "exI, {P: λN. ∀n. N ≤ n ∧ n ∈ s ⟶ a n * x ^ n = x ^ k * (a n * x ^ (n - k)), a: k}",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(x = 0), real_summable s (λi. a i * x ^ i) ⊢ ∃a1. ∀n. a1 ≤ n ∧ n ∈ s ⟶ a n * x ^ n = x ^ k * (a n * x ^ (n - k))"
+                },
+                {
+                    "args": "",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.5",
+                        "2.7"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "¬(x = 0), real_summable s (λi. a i * x ^ i) ⊢ real_summable s (λi. a i * x ^ i) ⟷ real_summable s (λi. x ^ k * (a i * x ^ (i - k)))"
+                },
+                {
+                    "args": "",
+                    "id": "2.9",
+                    "prevs": [
+                        "2.8",
+                        "0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "¬(x = 0), real_summable s (λi. a i * x ^ i) ⊢ real_summable s (λi. x ^ k * (a i * x ^ (i - k)))"
+                },
+                {
+                    "args": "real_summable s (λi. a i * x ^ (i - k))",
+                    "id": "2.10",
+                    "prevs": [
+                        "2.4",
+                        "2.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(x = 0), real_summable s (λi. a i * x ^ i) ⊢ real_summable s (λi. a i * x ^ (i - k))"
+                },
+                {
+                    "args": "",
+                    "id": "2.11",
+                    "prevs": [
+                        "2.0",
+                        "2.10"
+                    ],
+                    "rule": "intros",
+                    "th": "real_summable s (λi. a i * x ^ i) ⊢ ¬(x = 0) ⟶ real_summable s (λi. a i * x ^ (i - k))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_summable s (λi. a i * x ^ i) ⊢ real_summable s (λi. a i * x ^ (i - k))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_summable s (λi. a i * x ^ i) ⟶ real_summable s (λi. a i * x ^ (i - k))"
+                }
+            ],
+            "prop": "real_summable s (λi. a i * x ^ i) ⟶ real_summable s (λi. a i * x ^ (i - k))",
+            "steps": [
+                {
+                    "case": "x=0",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "param_g": "(%i::nat. (0::real))",
+                    "theorem": "real_summable_comparison"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_summable_0"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "inst_exists_goal",
+                    "s": "k+2"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "goal": "~(i-k=0)",
+                    "goal_id": "1.2.3",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1"
+                    ],
+                    "goal_id": "1.2.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_zero"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.3"
+                    ],
+                    "goal_id": "1.2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rzero"
+                },
+                {
+                    "goal_id": "1.2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_0"
+                },
+                {
+                    "goal_id": "1.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_forward_step",
+                    "param_c": "x ^ k",
+                    "param_f": "(λi. a i * x ^ (i - k))",
+                    "param_s": "s",
+                    "theorem": "real_summable_lmul_eq"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal": "¬(x ^ k = 0)",
+                    "goal_id": "2.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pow_nz"
+                },
+                {
+                    "fact_ids": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "2.4"
+                    ],
+                    "goal_id": "2.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λi. a i * x ^ i)",
+                    "param_g": "(λi. x ^ k * (a i * x ^ (i - k)))",
+                    "param_s": "s",
+                    "theorem": "real_summable_iff_eventually"
+                },
+                {
+                    "fact_ids": [
+                        "2.5"
+                    ],
+                    "goal": "(∃N. ∀n. N ≤ n ∧ n ∈ s ⟶ a n * x ^ n = x ^ k * (a n * x ^ (n - k)))",
+                    "goal_id": "2.6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "k"
+                },
+                {
+                    "goal_id": "2.6",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "2.6.1"
+                    ],
+                    "goal_id": "2.6.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal": "a n * x ^ n = a n * x ^ (k + (n-k))",
+                    "goal_id": "2.6.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal": "(k + (n - k)) = n",
+                    "goal_id": "2.6.3",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.6.2"
+                    ],
+                    "goal_id": "2.6.3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.6.3"
+                    ],
+                    "goal_id": "2.6.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.6.4"
+                    ],
+                    "goal_id": "2.6.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.6.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_add"
+                },
+                {
+                    "goal_id": "2.6.5",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "2.5",
+                        "2.7"
+                    ],
+                    "goal_id": "2.8",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.8",
+                        "0"
+                    ],
+                    "goal_id": "2.9",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat ⇒ real",
+                "k": "nat",
+                "s": "nat set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "power_sum_derivative_shift_lemma",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite_inter_natseg, {m: (0::nat), n: n, s: diff s ({0})}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite (diff s ({0}) ∩ {0..n})"
+                },
+                {
+                    "args": "∀x. (x ∈ s ∧ ¬(x ∈ {0})) ∧ x ≤ n ⟶ x ∈ s ∧ x ≤ n",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. (x ∈ s ∧ ¬(x ∈ {0})) ∧ x ≤ n ⟶ x ∈ s ∧ x ≤ n"
+                },
+                {
+                    "args": "member_natseg_0, ∀x. (x ∈ s ∧ ¬(x ∈ {0})) ∧ x ∈ {0..n} ⟶ x ∈ s ∧ x ∈ {0..n}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. (x ∈ s ∧ ¬(x ∈ {0})) ∧ x ∈ {0..n} ⟶ x ∈ s ∧ x ∈ {0..n}"
+                },
+                {
+                    "args": "member_collect, ∀x. x ∈ {x1. x1 ∈ s ∧ ¬(x1 ∈ {0})} ∧ x ∈ {0..n} ⟶ x ∈ s ∧ x ∈ {0..n}",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. x ∈ {x1. x1 ∈ s ∧ ¬(x1 ∈ {0})} ∧ x ∈ {0..n} ⟶ x ∈ s ∧ x ∈ {0..n}"
+                },
+                {
+                    "args": "diff_def, ∀x. x ∈ diff s ({0}) ∧ x ∈ {0..n} ⟶ x ∈ s ∧ x ∈ {0..n}",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. x ∈ diff s ({0}) ∧ x ∈ {0..n} ⟶ x ∈ s ∧ x ∈ {0..n}"
+                },
+                {
+                    "args": "member_inter_iff, ∀x. x ∈ diff s ({0}) ∩ {0..n} ⟶ x ∈ s ∩ {0..n}",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. x ∈ diff s ({0}) ∩ {0..n} ⟶ x ∈ s ∩ {0..n}"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ diff s ({0}) ∩ {0..n} ⊆ s ∩ {0..n}"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ diff s ({0}) ∩ {0..n} ⟶ of_nat x * a x = of_nat x * a x"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ diff s ({0}) ∩ {0..n}",
+                    "id": "7.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ diff s ({0}) ∩ {0..n} ⊢ x ∈ diff s ({0}) ∩ {0..n}"
+                },
+                {
+                    "args": "eq_refl, {x: of_nat x * a x}",
+                    "id": "7.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ of_nat x * a x = of_nat x * a x"
+                },
+                {
+                    "args": "",
+                    "id": "7.3",
+                    "prevs": [
+                        "7.0",
+                        "7.1",
+                        "7.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ diff s ({0}) ∩ {0..n} ⟶ of_nat x * a x = of_nat x * a x"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ s ∩ {0..n} ⟶ ¬(x ∈ diff s ({0}) ∩ {0..n}) ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "8.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s ∩ {0..n}",
+                    "id": "8.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∩ {0..n} ⊢ x ∈ s ∩ {0..n}"
+                },
+                {
+                    "args": "¬(x ∈ diff s ({0}) ∩ {0..n})",
+                    "id": "8.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ diff s ({0}) ∩ {0..n}) ⊢ ¬(x ∈ diff s ({0}) ∩ {0..n})"
+                },
+                {
+                    "args": "member_inter_iff",
+                    "id": "8.3",
+                    "prevs": [
+                        "8.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ s ∩ {0..n} ⊢ x ∈ s ∧ x ∈ {0..n}"
+                },
+                {
+                    "args": "member_inter_iff",
+                    "id": "8.4",
+                    "prevs": [
+                        "8.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x ∈ diff s ({0}) ∩ {0..n}) ⊢ ¬(x ∈ diff s ({0}) ∧ x ∈ {0..n})"
+                },
+                {
+                    "args": "de_morgan_thm1",
+                    "id": "8.5",
+                    "prevs": [
+                        "8.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x ∈ diff s ({0}) ∩ {0..n}) ⊢ ¬(x ∈ diff s ({0})) ∨ ¬(x ∈ {0..n})"
+                },
+                {
+                    "args": "diff_def",
+                    "id": "8.6",
+                    "prevs": [
+                        "8.5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x ∈ diff s ({0}) ∩ {0..n}) ⊢ ¬(x ∈ {x1. x1 ∈ s ∧ ¬(x1 ∈ {0})}) ∨ ¬(x ∈ {0..n})"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "8.7",
+                    "prevs": [
+                        "8.6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x ∈ diff s ({0}) ∩ {0..n}) ⊢ ¬(x ∈ s ∧ ¬(x ∈ {0})) ∨ ¬(x ∈ {0..n})"
+                },
+                {
+                    "args": "de_morgan_thm1",
+                    "id": "8.8",
+                    "prevs": [
+                        "8.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x ∈ diff s ({0}) ∩ {0..n}) ⊢ (¬(x ∈ s) ∨ ¬¬(x ∈ {0})) ∨ ¬(x ∈ {0..n})"
+                },
+                {
+                    "args": "",
+                    "id": "8.9",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}) ⊢ ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "¬(x ∈ s) ∨ ¬¬(x ∈ {0})",
+                    "id": "8.9.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ ¬(x ∈ s) ∨ ¬¬(x ∈ {0})"
+                },
+                {
+                    "args": "",
+                    "id": "8.9.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ ¬(x ∈ s) ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "¬(x ∈ s)",
+                    "id": "8.9.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s) ⊢ ¬(x ∈ s)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "8.9.1.1",
+                    "prevs": [
+                        "8.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∩ {0..n} ⊢ x ∈ s"
+                },
+                {
+                    "args": "negE_gen, {A: x ∈ s, C: of_nat x * a x = 0}",
+                    "id": "8.9.1.2",
+                    "prevs": [
+                        "8.9.1.0",
+                        "8.9.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(x ∈ s), x ∈ s ∩ {0..n} ⊢ of_nat x * a x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.9.1.3",
+                    "prevs": [
+                        "8.9.1.0",
+                        "8.9.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ ¬(x ∈ s) ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.9.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ ¬¬(x ∈ {0}) ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "¬¬(x ∈ {0})",
+                    "id": "8.9.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬¬(x ∈ {0}) ⊢ ¬¬(x ∈ {0})"
+                },
+                {
+                    "args": "double_neg",
+                    "id": "8.9.2.1",
+                    "prevs": [
+                        "8.9.2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬¬(x ∈ {0}) ⊢ x ∈ {0}"
+                },
+                {
+                    "args": "member_insert",
+                    "id": "8.9.2.2",
+                    "prevs": [
+                        "8.9.2.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬¬(x ∈ {0}) ⊢ x = 0 ∨ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "8.9.2.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬¬(x ∈ {0}), x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ x = 0 ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "x = 0",
+                    "id": "8.9.2.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = 0 ⊢ x = 0"
+                },
+                {
+                    "args": "real_mul_lzero, 0 * a 0 = 0",
+                    "id": "8.9.2.3.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 * a 0 = 0"
+                },
+                {
+                    "args": "real_zero_def, of_nat 0 * a 0 = 0",
+                    "id": "8.9.2.3.2",
+                    "prevs": [
+                        "8.9.2.3.1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "x = 0, ¬¬(x ∈ {0}), x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ of_nat 0 * a 0 = 0"
+                },
+                {
+                    "args": "of_nat x * a x = 0",
+                    "id": "8.9.2.3.3",
+                    "prevs": [
+                        "8.9.2.3.0",
+                        "8.9.2.3.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = 0, ¬¬(x ∈ {0}), x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ of_nat x * a x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.9.2.3.4",
+                    "prevs": [
+                        "8.9.2.3.0",
+                        "8.9.2.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬¬(x ∈ {0}), x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ x = 0 ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.9.2.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬¬(x ∈ {0}), x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ x ∈ ∅ ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "x ∈ ∅",
+                    "id": "8.9.2.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ ∅ ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "member_empty, of_nat x * a x = 0",
+                    "id": "8.9.2.4.1",
+                    "prevs": [
+                        "8.9.2.4.0"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "x ∈ ∅ ⊢ of_nat x * a x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.9.2.4.2",
+                    "prevs": [
+                        "8.9.2.4.0",
+                        "8.9.2.4.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬¬(x ∈ {0}), x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ x ∈ ∅ ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "8.9.2.5",
+                    "prevs": [
+                        "8.9.2.2",
+                        "8.9.2.3",
+                        "8.9.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬¬(x ∈ {0}), x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ of_nat x * a x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.9.2.6",
+                    "prevs": [
+                        "8.9.2.0",
+                        "8.9.2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ ¬¬(x ∈ {0}) ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "8.9.3",
+                    "prevs": [
+                        "8.9.0",
+                        "8.9.1",
+                        "8.9.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}), ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⊢ of_nat x * a x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.9.4",
+                    "prevs": [
+                        "8.9.0",
+                        "8.9.3"
+                    ],
+                    "rule": "intros",
+                    "th": "x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}) ⊢ ¬(x ∈ s) ∨ ¬¬(x ∈ {0}) ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.10",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}) ⊢ ¬(x ∈ {0..n}) ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "¬(x ∈ {0..n})",
+                    "id": "8.10.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ {0..n}) ⊢ ¬(x ∈ {0..n})"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "8.10.1",
+                    "prevs": [
+                        "8.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∩ {0..n} ⊢ x ∈ {0..n}"
+                },
+                {
+                    "args": "negE_gen, {A: x ∈ {0..n}, C: of_nat x * a x = 0}",
+                    "id": "8.10.2",
+                    "prevs": [
+                        "8.10.0",
+                        "8.10.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(x ∈ {0..n}), x ∈ s ∩ {0..n} ⊢ of_nat x * a x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.10.3",
+                    "prevs": [
+                        "8.10.0",
+                        "8.10.2"
+                    ],
+                    "rule": "intros",
+                    "th": "x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}) ⊢ ¬(x ∈ {0..n}) ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "8.11",
+                    "prevs": [
+                        "8.8",
+                        "8.9",
+                        "8.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∩ {0..n}, ¬(x ∈ diff s ({0}) ∩ {0..n}) ⊢ of_nat x * a x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.12",
+                    "prevs": [
+                        "8.0",
+                        "8.1",
+                        "8.2",
+                        "8.11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ s ∩ {0..n} ⟶ ¬(x ∈ diff s ({0}) ∩ {0..n}) ⟶ of_nat x * a x = 0"
+                },
+                {
+                    "args": "sum_eq_superset",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "6",
+                        "7",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ sum (s ∩ {0..n}) (λx. of_nat x * a x) = sum (diff s ({0}) ∩ {0..n}) (λx. of_nat x * a x)"
+                },
+                {
+                    "args": "eq_sym_eq, sum (diff s ({0}) ∩ {0..n}) (λi. of_nat i * a i) = sum (s ∩ {0..n}) (λi. of_nat i * a i)",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sum (diff s ({0}) ∩ {0..n}) (λi. of_nat i * a i) = sum (s ∩ {0..n}) (λi. of_nat i * a i)"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sum (diff s ({0}) ∩ {0..n}) (λi. of_nat i * a i) = sum (s ∩ {0..n}) (λi. of_nat i * a i)"
+                }
+            ],
+            "prop": [
+                "sum (diff s ({0}) ∩ {0..n}) (λi. of_nat i * a i) = ",
+                "sum (s ∩ {0..n}) (λi. of_nat i * a i)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sum_eq_superset"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_inter_natseg"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "diff_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_natseg_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "8.1"
+                    ],
+                    "goal_id": "8.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "fact_ids": [
+                        "8.2"
+                    ],
+                    "goal_id": "8.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "fact_ids": [
+                        "8.4"
+                    ],
+                    "goal_id": "8.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "fact_ids": [
+                        "8.5"
+                    ],
+                    "goal_id": "8.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "diff_def"
+                },
+                {
+                    "fact_ids": [
+                        "8.6"
+                    ],
+                    "goal_id": "8.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "8.7"
+                    ],
+                    "goal_id": "8.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "fact_ids": [
+                        "8.8"
+                    ],
+                    "goal_id": "8.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "8.9",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "8.9.0"
+                    ],
+                    "goal_id": "8.9.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "8.9.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "8.3"
+                    ],
+                    "goal_id": "8.9.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "8.9.1.0",
+                        "8.9.1.1"
+                    ],
+                    "goal_id": "8.9.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "8.9.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "8.9.2.0"
+                    ],
+                    "goal_id": "8.9.2.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "fact_ids": [
+                        "8.9.2.1"
+                    ],
+                    "goal_id": "8.9.2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "fact_ids": [
+                        "8.9.2.2"
+                    ],
+                    "goal_id": "8.9.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "8.9.2.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "8.9.2.3.0"
+                    ],
+                    "goal_id": "8.9.2.3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "8.9.2.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "8.9.2.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "8.9.2.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "8.9.2.4.0"
+                    ],
+                    "goal_id": "8.9.2.4.1",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
+                },
+                {
+                    "goal_id": "8.10",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "8.3"
+                    ],
+                    "goal_id": "8.10.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "8.10.0",
+                        "8.10.1"
+                    ],
+                    "goal_id": "8.10.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat ⇒ real",
+                "n": "nat",
+                "s": "nat set"
+            }
         }
     ],
     "description": "Formal inequalities for trig about series.",
