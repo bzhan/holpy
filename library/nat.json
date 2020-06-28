@@ -10496,6 +10496,451 @@
         },
         {
             "attributes": [
+                "hint_backward"
+            ],
+            "name": "Suc_Pre",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (0::nat) < 0 ⟶ Suc (Pre 0) = 0"
+                },
+                {
+                    "args": "(0::nat) < 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(0::nat) < 0 ⊢ (0::nat) < 0"
+                },
+                {
+                    "args": "nat_less_def_1",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "(0::nat) < 0 ⊢ false"
+                },
+                {
+                    "args": "not_false_res, Suc (Pre 0) = 0",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "(0::nat) < 0 ⊢ Suc (Pre 0) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (0::nat) < 0 ⟶ Suc (Pre 0) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. (0 < n ⟶ Suc (Pre n) = n) ⟶ 0 < Suc n ⟶ Suc (Pre (Suc n)) = Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "0 < n ⟶ Suc (Pre n) = n",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < n ⟶ Suc (Pre n) = n ⊢ 0 < n ⟶ Suc (Pre n) = n"
+                },
+                {
+                    "args": "0 < Suc n",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < Suc n ⊢ 0 < Suc n"
+                },
+                {
+                    "args": "Pre_def_2, Suc (Pre (Suc n)) = Suc n",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (Pre (Suc n)) = Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. (0 < n ⟶ Suc (Pre n) = n) ⟶ 0 < Suc n ⟶ Suc (Pre (Suc n)) = Suc n"
+                },
+                {
+                    "args": "nat_induct, {P: λn. 0 < n ⟶ Suc (Pre n) = n, x: n}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < n ⟶ Suc (Pre n) = n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < n ⟶ Suc (Pre n) = n"
+                }
+            ],
+            "prop": "0 < n ⟶ Suc (Pre n) = n",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_less_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "not_false_res"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "Pre_def_2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "le_Pre",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < n ⊢ 0 < n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < n ⊢ 0 ≤ Pre n ⟶ 0 ≤ n"
+                },
+                {
+                    "args": "0 ≤ Pre n",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ Pre n ⊢ 0 ≤ Pre n"
+                },
+                {
+                    "args": "le_0, {n: n}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < n ⊢ 0 ≤ Pre n ⟶ 0 ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < n ⊢ 0 ≤ n ⟶ 0 ≤ Pre n"
+                },
+                {
+                    "args": "0 ≤ n",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ n ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "le_0, {n: Pre n}",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ Pre n"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < n ⊢ 0 ≤ n ⟶ 0 ≤ Pre n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < n ⊢ 0 ≤ Pre n ⟷ 0 ≤ n"
+                },
+                {
+                    "args": "Pre_def_1, Pre 0 ≤ Pre n ⟷ 0 ≤ n",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < n ⊢ Pre 0 ≤ Pre n ⟷ 0 ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < n ⊢ ∀n1. Pre n1 ≤ Pre n ⟷ n1 ≤ n ⟶ Pre (Suc n1) ≤ Pre n ⟷ Suc n1 ≤ n"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "Pre m ≤ Pre n ⟷ m ≤ n",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Pre m ≤ Pre n ⟷ m ≤ n ⊢ Pre m ≤ Pre n ⟷ m ≤ n"
+                },
+                {
+                    "args": "Suc_Pre",
+                    "id": "5.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < n ⊢ Suc (Pre n) = n"
+                },
+                {
+                    "args": "le_suc, {m: m, n: Pre n}",
+                    "id": "5.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ Suc m ≤ Suc (Pre n) ⟷ m ≤ Pre n"
+                },
+                {
+                    "args": "",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.2",
+                        "5.3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "0 < n ⊢ Suc m ≤ n ⟷ m ≤ Pre n"
+                },
+                {
+                    "args": "eq_sym_eq, m ≤ Pre n ⟷ Suc m ≤ n",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < n, Pre m ≤ Pre n ⟷ m ≤ n ⊢ m ≤ Pre n ⟷ Suc m ≤ n"
+                },
+                {
+                    "args": "Pre_def_2, Pre (Suc m) ≤ Pre n ⟷ Suc m ≤ n",
+                    "id": "5.6",
+                    "prevs": [
+                        "5.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < n, Pre m ≤ Pre n ⟷ m ≤ n ⊢ Pre (Suc m) ≤ Pre n ⟷ Suc m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "5.7",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.6"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < n ⊢ ∀m. Pre m ≤ Pre n ⟷ m ≤ n ⟶ Pre (Suc m) ≤ Pre n ⟷ Suc m ≤ n"
+                },
+                {
+                    "args": "nat_induct, {P: λm. Pre m ≤ Pre n ⟷ m ≤ n, x: m}",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < n ⊢ Pre m ≤ Pre n ⟷ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < n ⟶ Pre m ≤ Pre n ⟷ m ≤ n"
+                }
+            ],
+            "prop": "0 < n ⟶ Pre m ≤ Pre n ⟷ m ≤ n",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "m"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "Pre_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "m"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "Suc_Pre"
+                },
+                {
+                    "goal_id": "5.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "Pre_def_2"
+                },
+                {
+                    "goal_id": "5.3",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "param_n": "Pre n",
+                    "theorem": "le_suc"
+                },
+                {
+                    "fact_ids": [
+                        "5.2",
+                        "5.3"
+                    ],
+                    "goal_id": "5.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "5.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "le_antisym",
@@ -11031,6 +11476,339 @@
             ],
             "name": "let_antisym",
             "prop": "¬(m ≤ n ∧ n < m)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "Pre_inj",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < m",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < m ⊢ 0 < m"
+                },
+                {
+                    "args": "0 < n",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < n ⊢ 0 < n"
+                },
+                {
+                    "args": "le_Pre, {m: n}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < m ⊢ Pre n ≤ Pre m ⟷ n ≤ m"
+                },
+                {
+                    "args": "le_Pre, {m: m}",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < n ⊢ Pre m ≤ Pre n ⟷ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < m, 0 < n ⊢ Pre m ≤ Pre n ∧ Pre n ≤ Pre m ⟶ m ≤ n ∧ n ≤ m"
+                },
+                {
+                    "args": "Pre m ≤ Pre n ∧ Pre n ≤ Pre m",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Pre m ≤ Pre n ∧ Pre n ≤ Pre m ⊢ Pre m ≤ Pre n ∧ Pre n ≤ Pre m"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4.1",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Pre m ≤ Pre n ∧ Pre n ≤ Pre m ⊢ Pre m ≤ Pre n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Pre m ≤ Pre n ∧ Pre n ≤ Pre m ⊢ Pre n ≤ Pre m"
+                },
+                {
+                    "args": "",
+                    "id": "4.3",
+                    "prevs": [
+                        "3",
+                        "4.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "0 < n, Pre m ≤ Pre n ∧ Pre n ≤ Pre m ⊢ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "4.4",
+                    "prevs": [
+                        "2",
+                        "4.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "0 < m, Pre m ≤ Pre n ∧ Pre n ≤ Pre m ⊢ n ≤ m"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.3",
+                        "4.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < m, 0 < n, Pre m ≤ Pre n ∧ Pre n ≤ Pre m ⊢ m ≤ n ∧ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.0",
+                        "4.5"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < m, 0 < n ⊢ Pre m ≤ Pre n ∧ Pre n ≤ Pre m ⟶ m ≤ n ∧ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < m, 0 < n ⊢ m ≤ n ∧ n ≤ m ⟶ Pre m ≤ Pre n ∧ Pre n ≤ Pre m"
+                },
+                {
+                    "args": "m ≤ n ∧ n ≤ m",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ∧ n ≤ m ⊢ m ≤ n ∧ n ≤ m"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5.1",
+                    "prevs": [
+                        "5.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n ∧ n ≤ m ⊢ m ≤ n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n ∧ n ≤ m ⊢ n ≤ m"
+                },
+                {
+                    "args": "Pre m ≤ Pre n",
+                    "id": "5.3",
+                    "prevs": [
+                        "3",
+                        "5.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < m, 0 < n, m ≤ n ∧ n ≤ m ⊢ Pre m ≤ Pre n"
+                },
+                {
+                    "args": "Pre n ≤ Pre m",
+                    "id": "5.4",
+                    "prevs": [
+                        "2",
+                        "5.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < m, 0 < n, m ≤ n ∧ n ≤ m ⊢ Pre n ≤ Pre m"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.3",
+                        "5.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < m, 0 < n, m ≤ n ∧ n ≤ m ⊢ Pre m ≤ Pre n ∧ Pre n ≤ Pre m"
+                },
+                {
+                    "args": "",
+                    "id": "5.6",
+                    "prevs": [
+                        "5.0",
+                        "5.5"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < m, 0 < n ⊢ m ≤ n ∧ n ≤ m ⟶ Pre m ≤ Pre n ∧ Pre n ≤ Pre m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < m, 0 < n ⊢ Pre m ≤ Pre n ∧ Pre n ≤ Pre m ⟷ m ≤ n ∧ n ≤ m"
+                },
+                {
+                    "args": "le_antisym, Pre m = Pre n ⟷ m = n",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 < m, 0 < n ⊢ Pre m = Pre n ⟷ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < m ⟶ 0 < n ⟶ Pre m = Pre n ⟷ m = n"
+                }
+            ],
+            "prop": "0 < m ⟶ 0 < n ⟶ Pre m = Pre n ⟷ m = n",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "le_antisym"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_m": "n",
+                    "theorem": "le_Pre"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "theorem": "le_Pre"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "4.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "4.1"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "4.2"
+                    ],
+                    "goal_id": "4.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.0"
+                    ],
+                    "goal_id": "5.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5.0"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "5.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "5.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "5.4",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "m": "nat",

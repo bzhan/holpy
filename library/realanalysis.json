@@ -7152,8 +7152,8 @@
             ],
             "name": "real_power_series_conv_imp_absconv",
             "prop": [
-                "real_summable s (λk. abs (a k) * z ^ k) ",
-                "⟶ abs w ≤ abs z ⟶ real_summable s (λk. abs (a k * w ^ k))"
+                "real_summable s (λk. a k * z ^ k) ",
+                "⟶ abs w < abs z ⟶ real_summable s (λk. abs (a k * w ^ k))"
             ],
             "ty": "thm",
             "vars": {
@@ -7170,8 +7170,8 @@
             ],
             "name": "power_real_series_conv_imp_absconv_weak",
             "prop": [
-                "real_summable s (λk. abs (a k) * z ^ k) ",
-                "⟶ abs w ≤ abs z ⟶ real_summable s (λk. abs (a k) * w ^ k)"
+                "real_summable s (λk. a k * z ^ k) ",
+                "⟶ abs w < abs z ⟶ real_summable s (λk. abs (a k) * w ^ k)"
             ],
             "ty": "thm",
             "vars": {

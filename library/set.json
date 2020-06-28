@@ -2533,6 +2533,61 @@
             "type": "'a set ⇒ 'a set ⇒ 'a set"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "member_diff",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, x ∈ {x1. x1 ∈ A ∧ ¬(x1 ∈ B)} ⟷ x ∈ A ∧ ¬(x ∈ B)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {x1. x1 ∈ A ∧ ¬(x1 ∈ B)} ⟷ x ∈ A ∧ ¬(x ∈ B)"
+                },
+                {
+                    "args": "diff_def, x ∈ diff A B ⟷ x ∈ A ∧ ¬(x ∈ B)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ diff A B ⟷ x ∈ A ∧ ¬(x ∈ B)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ diff A B ⟷ x ∈ A ∧ ¬(x ∈ B)"
+                }
+            ],
+            "prop": "x ∈ diff A B ⟷ x ∈ A ∧ ¬(x ∈ B)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "diff_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set",
+                "x": "'a"
+            }
+        },
+        {
             "name": "insert",
             "prop": "insert x A = {y. y = x ∨ y ∈ A}",
             "ty": "def",
@@ -2656,6 +2711,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "member_singleton",
             "num_gaps": 0,
             "proof": [

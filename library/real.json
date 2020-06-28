@@ -10841,6 +10841,108 @@
             "attributes": [
                 "hint_backward"
             ],
+            "name": "real_le_rdiv_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < z",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < z ⊢ 0 < z"
+                },
+                {
+                    "args": "x ≤ y / z ⟷ x * z ≤ y",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < z ⊢ x ≤ y / z ⟷ x * z ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < z ⟶ x ≤ y / z ⟷ x * z ≤ y"
+                }
+            ],
+            "prop": "0 < z ⟶ x ≤ y / z ⟷ x * z ≤ y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_lt_rdiv_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < z",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < z ⊢ 0 < z"
+                },
+                {
+                    "args": "x < y / z ⟷ x * z < y",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < z ⊢ x < y / z ⟷ x * z < y"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < z ⟶ x < y / z ⟷ x * z < y"
+                }
+            ],
+            "prop": "0 < z ⟶ x < y / z ⟷ x * z < y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_eq_rdiv_eq",
             "num_gaps": 0,
             "proof": [
