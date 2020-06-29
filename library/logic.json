@@ -4571,6 +4571,221 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "left_imp_forall_thm",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀A. ∀B. (A ⟷ B) ⟷ ¬A ⟷ ¬B",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀A. ∀B. (A ⟷ B) ⟷ ¬A ⟷ ¬B"
+                },
+                {
+                    "args": "(∀x. P x) ∧ ¬Q ⟷ (∀x. P x ∧ ¬Q)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (∀x. P x) ∧ ¬Q ⟷ (∀x. P x ∧ ¬Q)"
+                },
+                {
+                    "args": "not_imp, ¬((∀x. P x) ⟶ Q) ⟷ (∀x. ¬(P x ⟶ Q))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬((∀x. P x) ⟶ Q) ⟷ (∀x. ¬(P x ⟶ Q))"
+                },
+                {
+                    "args": "not_exists, ¬((∀x. P x) ⟶ Q) ⟷ ¬(∃x. P x ⟶ Q)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬((∀x. P x) ⟶ Q) ⟷ ¬(∃x. P x ⟶ Q)"
+                },
+                {
+                    "args": "((∀x. P x) ⟶ Q) ⟷ (∃x. P x ⟶ Q)",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ ((∀x. P x) ⟶ Q) ⟷ (∃x. P x ⟶ Q)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ((∀x. P x) ⟶ Q) ⟷ (∃x. P x ⟶ Q)"
+                }
+            ],
+            "prop": "((∀x. P x) ⟶ Q) ⟷ (∃x. P x ⟶ Q)",
+            "steps": [
+                {
+                    "goal": "!A. !B. (A <--> B) <--> (~A <--> ~B)",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_exists"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "left_exists_imp_thm",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "left_imp_forall_thm, (∃x. P x ⟶ Q) ⟷ ((∀x. P x) ⟶ Q)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃x. P x ⟶ Q) ⟷ ((∀x. P x) ⟶ Q)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x. P x ⟶ Q) ⟷ ((∀x. P x) ⟶ Q)"
+                }
+            ],
+            "prop": "(∃x. P x ⟶ Q) ⟷ ((∀x. P x) ⟶ Q)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "left_imp_forall_thm"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "right_imp_exists_thm",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(P ⟶ (∃x. Q x)) ⟷ (∃x. P ⟶ Q x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (P ⟶ (∃x. Q x)) ⟷ (∃x. P ⟶ Q x)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (P ⟶ (∃x. Q x)) ⟷ (∃x. P ⟶ Q x)"
+                }
+            ],
+            "prop": "(P ⟶ (∃x. Q x)) ⟷ (∃x. P ⟶ Q x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "'a ⇒ bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "right_exists_imp_thm",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "right_imp_exists_thm, (∃x. P ⟶ Q x) ⟷ (P ⟶ (∃x. Q x))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃x. P ⟶ Q x) ⟷ (P ⟶ (∃x. Q x))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x. P ⟶ Q x) ⟷ (P ⟶ (∃x. Q x))"
+                }
+            ],
+            "prop": "(∃x. P ⟶ Q x) ⟷ (P ⟶ (∃x. Q x))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "right_imp_exists_thm"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "'a ⇒ bool"
+            }
+        },
+        {
             "name": "drinker",
             "num_gaps": 0,
             "proof": [
@@ -5134,6 +5349,227 @@
             "vars": {
                 "P": "'a ⇒ bool",
                 "Q": "'a ⇒ bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "skolem_thm",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀x. ∃y. P x y) ⟶ (∃y. ∀x. P x (y x))"
+                },
+                {
+                    "args": "∀x. ∃y. P x y",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∃y. P x y ⊢ ∀x. ∃y. P x y"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. ∃y. P x y ⊢ ∀x. P x (THE y. P x y)"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀x. ∃y. P x y ⊢ ∃y. P x y"
+                },
+                {
+                    "args": "y, 'b",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "P x y",
+                    "id": "0.1.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P x y ⊢ P x y"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "P x y, ∀x. ∃y. P x y ⊢ P x (THE y. P x y)"
+                },
+                {
+                    "args": "∃y. P x y",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.2",
+                        "0.1.3",
+                        "0.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. ∃y. P x y ⊢ ∀x. P x (THE y. P x y)"
+                },
+                {
+                    "args": "exI, {P: λy. ∀x. P x (y x), a: λx. THE y. P x y}",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀x. ∃y. P x y ⊢ ∃a1. ∀x. P x (a1 x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. ∃y. P x y) ⟶ (∃y. ∀x. P x (y x))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (∃y. ∀x. P x (y x)) ⟶ (∀x. ∃y. P x y)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∀x. ∃y. P x y) ⟷ (∃y. ∀x. P x (y x))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. ∃y. P x y) ⟷ (∃y. ∀x. P x (y x))"
+                }
+            ],
+            "prop": "(∀x. ∃y. P x y) ⟷ (∃y. ∀x. P x (y x))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(%x::'a. (THE y::'b. P x y))"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1"
+                    ],
+                    "goal_id": "0.1.2",
+                    "method_name": "exists_elim",
+                    "names": "y"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ 'b ⇒ bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "skolem_thm_gen",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "skolem_thm, (∀x. ∃x1. P x ⟶ R x x1) ⟷ (∃f. ∀x. P x ⟶ R x (f x))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∀x. ∃x1. P x ⟶ R x x1) ⟷ (∃f. ∀x. P x ⟶ R x (f x))"
+                },
+                {
+                    "args": "right_imp_exists_thm, (∀x. P x ⟶ (∃y. R x y)) ⟷ (∃f. ∀x. P x ⟶ R x (f x))",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∀x. P x ⟶ (∃y. R x y)) ⟷ (∃f. ∀x. P x ⟶ R x (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. P x ⟶ (∃y. R x y)) ⟷ (∃f. ∀x. P x ⟶ R x (f x))"
+                }
+            ],
+            "prop": "(∀x. P x ⟶ (∃y. R x y)) ⟷ (∃f. ∀x. P x ⟶ R x (f x))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "right_imp_exists_thm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "skolem_thm"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "R": "'a ⇒ 'b ⇒ bool"
             }
         }
     ],
