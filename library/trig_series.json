@@ -21265,6 +21265,1403 @@
             "vars": {
                 "x": "real"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_derivative_series",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "real_sums_gp, {n: (0::nat), x: -1 * x ^ (2::nat)}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (-1 * x ^ (2::nat)) < 1 ⟶ real_sums (λk. (-1 * x ^ (2::nat)) ^ k) ((-1 * x ^ (2::nat)) ^ (0::nat) / (1 - -1 * x ^ (2::nat))) (from 0)"
+                },
+                {
+                    "args": "¬((2::nat) = 0)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((2::nat) = 0)"
+                },
+                {
+                    "args": "real_abs_pos, {x: x}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ abs x"
+                },
+                {
+                    "args": "real_pow_1_lt",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ abs x ^ (2::nat) < 1"
+                },
+                {
+                    "args": "real_pow_2, abs x * abs x < 1",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < 1 ⊢ abs x * abs x < 1"
+                },
+                {
+                    "args": "real_mul_lid, abs (1 * x) * abs x < 1",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ abs (1 * x) * abs x < 1"
+                },
+                {
+                    "args": "real_abs_mul, abs 1 * abs x * abs x < 1",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < 1 ⊢ abs 1 * abs x * abs x < 1"
+                },
+                {
+                    "args": "real_mult_assoc, abs 1 * (abs x * abs x) < 1",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ abs 1 * (abs x * abs x) < 1"
+                },
+                {
+                    "args": "real_abs_mul, abs 1 * abs (x * x) < 1",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ abs 1 * abs (x * x) < 1"
+                },
+                {
+                    "args": "real_abs_neg, abs (-1) * abs (x * x) < 1",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ abs (-1) * abs (x * x) < 1"
+                },
+                {
+                    "args": "real_abs_mul, abs (-1 * (x * x)) < 1",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ abs (-1 * (x * x)) < 1"
+                },
+                {
+                    "args": "real_pow_2, abs (-1 * x ^ (2::nat)) < 1",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ abs (-1 * x ^ (2::nat)) < 1"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "1",
+                        "12"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λk. (-1 * x ^ (2::nat)) ^ k) ((-1 * x ^ (2::nat)) ^ (0::nat) / (1 - -1 * x ^ (2::nat))) (from 0)"
+                },
+                {
+                    "args": "from_0",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λk. (-1 * x ^ (2::nat)) ^ k) ((-1 * x ^ (2::nat)) ^ (0::nat) / (1 - -1 * x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "real_mul_lneg",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λk. -(1 * x ^ (2::nat)) ^ k) (-(1 * x ^ (2::nat)) ^ (0::nat) / (1 - -(1 * x ^ (2::nat)))) univ"
+                },
+                {
+                    "args": "real_mul_lid",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λk. -(x ^ (2::nat)) ^ k) (-(x ^ (2::nat)) ^ (0::nat) / (1 - -(x ^ (2::nat)))) univ"
+                },
+                {
+                    "args": "real_minus_def",
+                    "id": "17",
+                    "prevs": [
+                        "16"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λk. -(x ^ (2::nat)) ^ k) (-(x ^ (2::nat)) ^ (0::nat) / (1 + --(x ^ (2::nat)))) univ"
+                },
+                {
+                    "args": "real_neg_neg",
+                    "id": "18",
+                    "prevs": [
+                        "17"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λk. -(x ^ (2::nat)) ^ k) (-(x ^ (2::nat)) ^ (0::nat) / (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "real_nat_power_def_1",
+                    "id": "19",
+                    "prevs": [
+                        "18"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λk. -(x ^ (2::nat)) ^ k) (1 / (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "",
+                    "id": "20",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < 1 ⊢ ∀i. 2 * i DIV 2 = i"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "20.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "div_mult, {m: (2::nat), n: i}",
+                    "id": "20.1",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1 ⊢ 2 * i DIV 2 = i"
+                },
+                {
+                    "args": "",
+                    "id": "20.2",
+                    "prevs": [
+                        "20.0",
+                        "20.1"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < 1 ⊢ ∀i. 2 * i DIV 2 = i"
+                },
+                {
+                    "args": "real_mul_lid, real_sums (λi. -(1 * x ^ (2::nat)) ^ i) (1 / (1 + x ^ (2::nat))) univ",
+                    "id": "21",
+                    "prevs": [
+                        "19"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ real_sums (λi. -(1 * x ^ (2::nat)) ^ i) (1 / (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "real_mul_lneg, real_sums (λi. (-1 * x ^ (2::nat)) ^ i) (1 / (1 + x ^ (2::nat))) univ",
+                    "id": "22",
+                    "prevs": [
+                        "21"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ real_sums (λi. (-1 * x ^ (2::nat)) ^ i) (1 / (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "real_pow_mul, real_sums (λi. -1 ^ i * x ^ (2::nat) ^ i) (1 / (1 + x ^ (2::nat))) univ",
+                    "id": "23",
+                    "prevs": [
+                        "22"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < 1 ⊢ real_sums (λi. -1 ^ i * x ^ (2::nat) ^ i) (1 / (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "real_pow_pow, real_sums (λi. -1 ^ i * x ^ (2 * i)) (1 / (1 + x ^ (2::nat))) univ",
+                    "id": "24",
+                    "prevs": [
+                        "23"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < 1 ⊢ real_sums (λi. -1 ^ i * x ^ (2 * i)) (1 / (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "real_sums (λi. -1 ^ (2 * i DIV 2) * x ^ (2 * i)) (1 / (1 + x ^ (2::nat))) univ",
+                    "id": "25",
+                    "prevs": [
+                        "20",
+                        "24"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "abs x < 1 ⊢ real_sums (λi. -1 ^ (2 * i DIV 2) * x ^ (2 * i)) (1 / (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "real_sums_image_even, real_sums (λk. if even k then -1 ^ (k DIV 2) * x ^ k else 0) (1 / (1 + x ^ (2::nat))) univ",
+                    "id": "26",
+                    "prevs": [
+                        "25"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ real_sums (λk. if even k then -1 ^ (k DIV 2) * x ^ k else 0) (1 / (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "real_mul_lzero, real_sums (λk. if even k then -1 ^ (k DIV 2) * x ^ k else 0 * x ^ k) (1 / (1 + x ^ (2::nat))) univ",
+                    "id": "27",
+                    "prevs": [
+                        "26"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ real_sums (λk. if even k then -1 ^ (k DIV 2) * x ^ k else 0 * x ^ k) (1 / (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "cond_rator, real_sums (λk. (if even k then times (-1 ^ (k DIV 2)) else times 0) (x ^ k)) (1 / (1 + x ^ (2::nat))) univ",
+                    "id": "28",
+                    "prevs": [
+                        "27"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ real_sums (λk. (if even k then times (-1 ^ (k DIV 2)) else times 0) (x ^ k)) (1 / (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "cond_rand, real_sums (λk. (if even k then -1 ^ (k DIV 2) else 0) * x ^ k) (1 / (1 + x ^ (2::nat))) univ",
+                    "id": "29",
+                    "prevs": [
+                        "28"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ real_sums (λk. (if even k then -1 ^ (k DIV 2) else 0) * x ^ k) (1 / (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "real_inverse_divide, real_sums (λk. (if even k then -1 ^ (k DIV 2) else 0) * x ^ k) (real_inverse (1 + x ^ (2::nat))) univ",
+                    "id": "30",
+                    "prevs": [
+                        "29"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ real_sums (λk. (if even k then -1 ^ (k DIV 2) else 0) * x ^ k) (real_inverse (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "",
+                    "id": "31",
+                    "prevs": [
+                        "0",
+                        "30"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ real_sums (λk. (if even k then -1 ^ (k DIV 2) else 0) * x ^ k) (real_inverse (1 + x ^ (2::nat))) univ"
+                }
+            ],
+            "prop": [
+                "abs x < 1 ",
+                "⟶ real_sums (λk. (if even k then -1 ^ (k DIV 2) else 0) * x ^ k) ",
+                "     (real_inverse (1 + x ^ (2::nat))) ",
+                "     univ"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_n": "(0::nat)",
+                    "param_x": "(-1) * x ^ (2::nat)",
+                    "theorem": "real_sums_gp"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal": "abs (-1 * x ^ (2::nat)) < 1",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_mul"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_neg"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_mul"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_abs_mul"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pow_1_lt"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "nat_const_ineq"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_abs_pos"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "12"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "13"
+                    ],
+                    "goal_id": "14",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "from_0"
+                },
+                {
+                    "fact_ids": [
+                        "14"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                },
+                {
+                    "fact_ids": [
+                        "15"
+                    ],
+                    "goal_id": "16",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "fact_ids": [
+                        "16"
+                    ],
+                    "goal_id": "17",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "fact_ids": [
+                        "17"
+                    ],
+                    "goal_id": "18",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_neg_neg"
+                },
+                {
+                    "fact_ids": [
+                        "18"
+                    ],
+                    "goal_id": "19",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_1"
+                },
+                {
+                    "goal_id": "20",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inverse_divide"
+                },
+                {
+                    "goal_id": "20",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cond_rand"
+                },
+                {
+                    "goal_id": "20",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cond_rator"
+                },
+                {
+                    "goal_id": "20",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "20",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sums_image_even"
+                },
+                {
+                    "goal": "!i. 2 * i DIV 2 = i",
+                    "goal_id": "20",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "20",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "goal_id": "20.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "div_mult"
+                },
+                {
+                    "fact_ids": [
+                        "20"
+                    ],
+                    "goal_id": "21",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "21",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_pow_pow"
+                },
+                {
+                    "goal_id": "21",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_pow_mul"
+                },
+                {
+                    "goal_id": "21",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                },
+                {
+                    "goal_id": "21",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_series",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "power_series_integral2, {a: λk. if even k then -(1::real) ^ (k DIV 2) else 0, f: atn, f1: λx. real_inverse (1 + x ^ (2::nat)), r: (1::real), s: (univ::nat set)}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∀x. abs x < 1 ⟶ has_real_derivative atn (real_inverse (1 + x ^ (2::nat))) (atreal x)) ⟶ (∀x. abs x < 1 ⟶ real_sums (λi. (if even i then -1 ^ (i DIV 2) else 0) * x ^ i) (real_inverse (1 + x ^ (2::nat))) univ) ⟶ (∀x. abs x < 1 ⟶ real_sums (λi. (if even i then -1 ^ (i DIV 2) else 0) * x ^ (i + 1) / of_nat (i + 1)) (atn x - atn 0) univ)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < 1 ⊢ ∀x. abs x < 1 ⟶ has_real_derivative atn (real_inverse (1 + x ^ (2::nat))) (atreal x)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "has_real_derivative_atn, {x: x}",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative atn (real_inverse (1 + x ^ (2::nat))) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. abs x < 1 ⟶ has_real_derivative atn (real_inverse (1 + x ^ (2::nat))) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "abs x < 1 ⊢ (∀x. abs x < 1 ⟶ real_sums (λi. (if even i then -1 ^ (i DIV 2) else 0) * x ^ i) (real_inverse (1 + x ^ (2::nat))) univ) ⟶ (∀x. abs x < 1 ⟶ real_sums (λi. (if even i then -1 ^ (i DIV 2) else 0) * x ^ (i + 1) / of_nat (i + 1)) (atn x - atn 0) univ)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < 1 ⊢ ∀x. abs x < 1 ⟶ real_sums (λi. (if even i then -1 ^ (i DIV 2) else 0) * x ^ i) (real_inverse (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "x, real",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "atn_derivative_series",
+                    "id": "4.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ real_sums (λk. (if even k then -1 ^ (k DIV 2) else 0) * x ^ k) (real_inverse (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.0",
+                        "0",
+                        "4.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. abs x < 1 ⟶ real_sums (λi. (if even i then -1 ^ (i DIV 2) else 0) * x ^ i) (real_inverse (1 + x ^ (2::nat))) univ"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "abs x < 1 ⊢ ∀x. abs x < 1 ⟶ real_sums (λi. (if even i then -1 ^ (i DIV 2) else 0) * x ^ (i + 1) / of_nat (i + 1)) (atn x - atn 0) univ"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5",
+                        "0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λi. (if even i then -1 ^ (i DIV 2) else 0) * x ^ (i + 1) / of_nat (i + 1)) (atn x - atn 0) univ"
+                },
+                {
+                    "args": "atn_0",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λi. (if even i then -1 ^ (i DIV 2) else 0) * x ^ (i + 1) / of_nat (i + 1)) (atn x - 0) univ"
+                },
+                {
+                    "args": "real_sub_rzero",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λi. (if even i then -1 ^ (i DIV 2) else 0) * x ^ (i + 1) / of_nat (i + 1)) (atn x) univ"
+                },
+                {
+                    "args": "cond_rand",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λi. (if even i then times (-1 ^ (i DIV 2)) else times 0) (x ^ (i + 1)) / of_nat (i + 1)) (atn x) univ"
+                },
+                {
+                    "args": "cond_rator",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λi. (if even i then -1 ^ (i DIV 2) * x ^ (i + 1) else 0 * x ^ (i + 1)) / of_nat (i + 1)) (atn x) univ"
+                },
+                {
+                    "args": "real_mul_lzero",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λi. (if even i then -1 ^ (i DIV 2) * x ^ (i + 1) else 0) / of_nat (i + 1)) (atn x) univ"
+                },
+                {
+                    "args": "cond_rand",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λi. (if even i then real_divide (-1 ^ (i DIV 2) * x ^ (i + 1)) else real_divide 0) (of_nat (i + 1))) (atn x) univ"
+                },
+                {
+                    "args": "cond_rator",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λi. if even i then -1 ^ (i DIV 2) * x ^ (i + 1) / of_nat (i + 1) else 0 / of_nat (i + 1)) (atn x) univ"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < 1 ⊢ ∀i::real. (0::real) = 0 ∨ i = 0"
+                },
+                {
+                    "args": "i, real",
+                    "id": "14.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "eq_refl, {x: (0::real)}",
+                    "id": "14.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) = 0"
+                },
+                {
+                    "args": "disjI1, {A: (0::real) = 0, B: i = 0}",
+                    "id": "14.2",
+                    "prevs": [
+                        "14.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1 ⊢ (0::real) = 0 ∨ i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "14.3",
+                    "prevs": [
+                        "14.0",
+                        "14.2"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < 1 ⊢ ∀i::real. (0::real) = 0 ∨ i = 0"
+                },
+                {
+                    "args": "real_div_eq_0, ∀i. 0 / i = 0",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ ∀i. 0 / i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "16",
+                    "prevs": [
+                        "15",
+                        "13"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "abs x < 1 ⊢ real_sums (λi. if even i then -1 ^ (i DIV 2) * x ^ (i + 1) / of_nat (i + 1) else 0) (atn x) univ"
+                },
+                {
+                    "args": "real_sums_image_even",
+                    "id": "17",
+                    "prevs": [
+                        "16"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < 1 ⊢ real_sums (λi. -1 ^ (2 * i DIV 2) * x ^ (2 * i + 1) / of_nat (2 * i + 1)) (atn x) univ"
+                },
+                {
+                    "args": "",
+                    "id": "18",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < 1 ⊢ ∀i. 2 * i DIV 2 = i"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "18.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "¬((2::nat) = 0)",
+                    "id": "18.1",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((2::nat) = 0)"
+                },
+                {
+                    "args": "div_mult, {m: (2::nat), n: i}",
+                    "id": "18.2",
+                    "prevs": [
+                        "18.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1 ⊢ 2 * i DIV 2 = i"
+                },
+                {
+                    "args": "",
+                    "id": "18.3",
+                    "prevs": [
+                        "18.0",
+                        "18.2"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < 1 ⊢ ∀i. 2 * i DIV 2 = i"
+                },
+                {
+                    "args": "",
+                    "id": "19",
+                    "prevs": [
+                        "18",
+                        "17"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "abs x < 1 ⊢ real_sums (λi. -1 ^ i * x ^ (2 * i + 1) / of_nat (2 * i + 1)) (atn x) univ"
+                },
+                {
+                    "args": "",
+                    "id": "20",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < 1 ⊢ ∀a. ∀b. ∀c. a / b * c = a * c / b"
+                },
+                {
+                    "args": "a, real",
+                    "id": "20.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, real",
+                    "id": "20.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "c, real",
+                    "id": "20.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR c"
+                },
+                {
+                    "args": "a * real_inverse b * c = a * c * real_inverse b",
+                    "id": "20.3",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ a * real_inverse b * c = a * c * real_inverse b"
+                },
+                {
+                    "args": "real_divide_def, a / b * c = a * c / b",
+                    "id": "20.4",
+                    "prevs": [
+                        "20.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ a / b * c = a * c / b"
+                },
+                {
+                    "args": "",
+                    "id": "20.5",
+                    "prevs": [
+                        "20.0",
+                        "20.1",
+                        "20.2",
+                        "20.4"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < 1 ⊢ ∀a. ∀b. ∀c. a / b * c = a * c / b"
+                },
+                {
+                    "args": "real_sums (λk. -1 ^ k / of_nat (2 * k + 1) * x ^ (2 * k + 1)) (atn x) univ",
+                    "id": "21",
+                    "prevs": [
+                        "20",
+                        "19"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "abs x < 1 ⊢ real_sums (λk. -1 ^ k / of_nat (2 * k + 1) * x ^ (2 * k + 1)) (atn x) univ"
+                },
+                {
+                    "args": "",
+                    "id": "22",
+                    "prevs": [
+                        "0",
+                        "21"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ real_sums (λk. -1 ^ k / of_nat (2 * k + 1) * x ^ (2 * k + 1)) (atn x) univ"
+                }
+            ],
+            "prop": [
+                "abs x < 1 ",
+                "⟶ real_sums (λk. -1 ^ k / of_nat (2 * k + 1) * x ^ (2 * k + 1)) (atn x) univ"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_a": "(%k. if even k then (-1) ^ (k DIV 2) else (0::real))",
+                    "param_f": "atn",
+                    "param_f1": "(%x. real_inverse (1 + x ^ (2::nat)))",
+                    "param_r": "(1::real)",
+                    "param_s": "(univ::nat set)",
+                    "theorem": "power_series_integral2"
+                },
+                {
+                    "goal": "(∀x. abs x < 1 ⟶ has_real_derivative atn (real_inverse (1 + x ^ (2::nat))) (atreal x))",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_atn"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "(∀x. abs x < 1 ⟶ real_sums (λi. (if even i then -1 ^ (i DIV 2) else 0) * x ^ i) (real_inverse (1 + x ^ (2::nat))) univ)",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "atn_derivative_series"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "0"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "atn_0"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sub_rzero"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "cond_rand"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "cond_rator"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "cond_rand"
+                },
+                {
+                    "fact_ids": [
+                        "12"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "cond_rator"
+                },
+                {
+                    "goal": "∀i. 0 / i = 0",
+                    "goal_id": "14",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "14",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_div_eq_0"
+                },
+                {
+                    "goal_id": "14",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "goal_id": "14.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "14.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "15",
+                        "13"
+                    ],
+                    "goal_id": "16",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "16"
+                    ],
+                    "goal_id": "17",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sums_image_even"
+                },
+                {
+                    "goal": "!i. 2 * i DIV 2 = i",
+                    "goal_id": "18",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "18",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "goal_id": "18.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "div_mult"
+                },
+                {
+                    "goal_id": "18.1",
+                    "method_name": "nat_const_ineq"
+                },
+                {
+                    "fact_ids": [
+                        "18",
+                        "17"
+                    ],
+                    "goal_id": "19",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "!a. !b. !c::real. a / b * c = a * c / b",
+                    "goal_id": "20",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "20",
+                    "method_name": "introduction",
+                    "names": "a,b,c"
+                },
+                {
+                    "goal_id": "20.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "20.3",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "20"
+                    ],
+                    "goal_id": "21",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_infsum",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "atn_series",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ real_sums (λk. -1 ^ k / of_nat (2 * k + 1) * x ^ (2 * k + 1)) (atn x) univ"
+                },
+                {
+                    "args": "from_0, real_sums (λk. -1 ^ k / of_nat (2 * k + 1) * x ^ (2 * k + 1)) (atn x) (from 0)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ real_sums (λk. -1 ^ k / of_nat (2 * k + 1) * x ^ (2 * k + 1)) (atn x) (from 0)"
+                },
+                {
+                    "args": "real_infsum_unique",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ real_infsum (from 0) (λk. -1 ^ k / of_nat (2 * k + 1) * x ^ (2 * k + 1)) = atn x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ real_infsum (from 0) (λk. -1 ^ k / of_nat (2 * k + 1) * x ^ (2 * k + 1)) = atn x"
+                }
+            ],
+            "prop": [
+                "abs x < 1 ",
+                "⟶ real_infsum (from 0) (λk. -1 ^ k / of_nat (2 * k + 1) * x ^ (2 * k + 1)) = atn x"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_infsum_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "from_0"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "atn_series"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sin_series",
+            "prop": [
+                "real_sums (λk. -1 ^ k / of_nat (fact (2 * k + 1)) * x ^ (2 * k + 1)) (sin x) ",
+                "  univ"
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_infsum",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "sin_series, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_sums (λk. -1 ^ k / of_nat (fact (2 * k + 1)) * x ^ (2 * k + 1)) (sin x) univ"
+                },
+                {
+                    "args": "from_0, real_sums (λk. -1 ^ k / of_nat (fact (2 * k + 1)) * x ^ (2 * k + 1)) (sin x) (from 0)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sums (λk. -1 ^ k / of_nat (fact (2 * k + 1)) * x ^ (2 * k + 1)) (sin x) (from 0)"
+                },
+                {
+                    "args": "real_infsum_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_infsum (from 0) (λk. -1 ^ k / of_nat (fact (2 * k + 1)) * x ^ (2 * k + 1)) = sin x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_infsum (from 0) (λk. -1 ^ k / of_nat (fact (2 * k + 1)) * x ^ (2 * k + 1)) = sin x"
+                }
+            ],
+            "prop": [
+                "real_infsum (from 0) (λk. -1 ^ k / of_nat (fact (2 * k + 1)) * x ^ (2 * k + 1)) = ",
+                "sin x"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_infsum_unique"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "from_0"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_series"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "cos_series",
+            "prop": "real_sums (λk. -1 ^ k / of_nat (fact (2 * k)) * x ^ (2 * k)) (cos x) univ",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_infsum",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "cos_series, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_sums (λk. -1 ^ k / of_nat (fact (2 * k)) * x ^ (2 * k)) (cos x) univ"
+                },
+                {
+                    "args": "from_0, real_sums (λk. -1 ^ k / of_nat (fact (2 * k)) * x ^ (2 * k)) (cos x) (from 0)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sums (λk. -1 ^ k / of_nat (fact (2 * k)) * x ^ (2 * k)) (cos x) (from 0)"
+                },
+                {
+                    "args": "real_infsum_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_infsum (from 0) (λk. -1 ^ k / of_nat (fact (2 * k)) * x ^ (2 * k)) = cos x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_infsum (from 0) (λk. -1 ^ k / of_nat (fact (2 * k)) * x ^ (2 * k)) = cos x"
+                }
+            ],
+            "prop": "real_infsum (from 0) (λk. -1 ^ k / of_nat (fact (2 * k)) * x ^ (2 * k)) = cos x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_infsum_unique"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "from_0"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_series"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
         }
     ],
     "description": "Formal inequalities for trig about series.",
