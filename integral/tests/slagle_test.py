@@ -53,6 +53,13 @@ class SlagleTest(unittest.TestCase):
             v_res = [parse_expr(v2) for v2 in v_res]
             self.assertEqual(slagle.TrigFunction().eval(v), v_res)
 
+    def testHeuristicTirgonometricSubstitution(self):
+        test_data = [
+            ('INT x:[0,1].sin(x)*cos(x)^3', 'INT s:[0,sin(1)]. s + -1 * s ^ 3'),
+            ('INT x:[0,1].sin(x)^5*cos(x)', 'INT j:[cos(1),1]. j * (1 + -1 * j ^ 2) ^ 2'),
+            ('INT x:[0,1].tan(x)', 'INT c:[0,tan(1)]. c * (1 + c ^ 2) ^ -1'),
+        ]
+
     def testHeuristicSubstitution(self):
         test_data = [
             ('INT x:[1,2]. tan(x)^4',
