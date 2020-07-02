@@ -57,7 +57,6 @@ def algo_trans(integral):
     integral = integral.normalize()
     return linear_substitution(linearize(integral))
 
-
 class AlgorithmRule:
     def eval(self, e):
         """Algorithmic transformation of e.
@@ -270,6 +269,139 @@ class TrigFunction(HeuristicRule):
             res.append(Integral(old_e.var, old_e.lower, old_e.upper, r.cot_csc(e)))
  
         return res
+
+class HeuristicTirgonometricSubstitution(HeuristicRule):
+    """Heuristic rule (b) in Slagle's thesis.(elf means "elementary function")
+
+    The substitution rules:
+    1) elf{sin(v),cos^2(v)}cos^{2n+1}(v) ==> u = sin(v);
+    2) elf{cos(v),sin^2(v)}sin^{2n+1}(v) ==> u = cos(v);
+    3) elf{tan(v),sec^2(v)}              ==> u = tan(v);
+    4) elf{cot(v),csc^2(v)}              ==> u = cot(v);
+    5) elf{sec(v),tan^2(v)}tan^{2n+1}(v) ==> u = sec(v);
+    6) elf{csc(v),cot^2(v)}              ==> u = csc(v);
+    """
+    def eval(self, e):
+
+        def is_pat1(e):
+            """elf{sin(v),cos^2(v)}cos^{2n+1}(v)"""
+            v = Symbol('v', [VAR, OP, FUN])
+            n = Symbol('n', [CONST])
+            pat1 = (cos(v)^n) * sin(v)
+            pat2 = cos(v) * sin(v)
+            pat3 = cos(v)^n
+            if match(e, pat1):
+                n_value = e.args[0].args[1].val
+                return True, e.args[1].args[0] if n_value % 2 == 1 else (False, None)
+            elif match(e, pat3):
+                n_value = e.args[1].val
+                return True, e.args[0].args[0] if n_value % 2 == 1 else (False, None)
+            elif match(e, pat2):
+                return True, e.args[0].args[0]
+            else:
+                return False, None
+
+        def is_pat2(e):
+            """elf{cos(v),sin^2(v)}sin^{2n+1}(v)"""
+            v = Symbol('v', [VAR, OP, FUN])
+            n = Symbol('n', [CONST])
+            pat1 = cos(v) * (sin(v)^n)
+            pat2 = cos(v) * sin(v)
+            pat3 = sin(v)^n
+            if match(e, pat1):
+                n_value = e.args[1].args[1].val
+                return True, e.args[0].args[0] if n_value % 2 == 1 else (False, None)
+            elif match(e, pat3):
+                n_value = e.args[1].val
+                return True, e.args[0].args[0] if n_value % 2 == 1 else (False, None)
+            elif match(e, pat2):
+                return True, e.args[0].args[0]
+            else:
+                return False, None
+
+        def is_pat3(e):
+            """elf{tan(v),sec^2(v)}"""
+            v = Symbol('v', [VAR, OP, FUN])
+            pat1 = tan(v)
+            pat2 = sec(v)^Const(2)
+            if match(e, pat1):
+                return True, e.args[0]
+            elif match(e, pat2):
+                return True, e.args[0].args[0]
+            else:
+                return False, None
+
+        def is_pat4(e):
+            """elf{cot(v),csc^2(v)}"""
+            v = Symbol('v', [VAR, OP, FUN])
+            pat1 = cot(v)
+            pat2 = csc(v)^Const(2)
+            if match(e, pat1):
+                return True, e.args[0]
+            elif match(e, pat2):
+                return True, e.args[0].args[0]
+            else:
+                return False, None
+        
+        def is_pat5(e):
+            """elf{sec(v),tan^2(v)}tan^{2n+1}(v)"""
+            v = Symbol('v', [VAR, OP, FUN])
+            n = Symbol('n', [CONST])
+            pat1 = sec(v) * (tan(v)^n)
+            pat2 = sec(v) * tan(v)
+            pat3 = tan(v)^n
+            if match(e, pat1):
+                n_value = e.args[1].args[1].val
+                return True, e.args[0].args[0] if n_value % 2 == 1 else (False, None)
+            elif match(e, pat3):
+                n_value = e.args[1].val
+                return True, e.args[0].args[0] if n_value % 2 == 1 else (False, None)
+            elif match(e, pat2):
+                return True, e.args[0].args[0]
+            else:
+                return False, None
+
+        def is_pat6(e):
+            """elf{csc(v),cot^2(v)}"""
+            v = Symbol('v', [VAR, OP, FUN])
+            pat1 = csc(v)
+            pat2 = cot(v)^Const(2)
+            if match(e, pat1):
+                return True, e.args[0]
+            elif match(e, pat2):
+                return True, e.args[0].args[0]
+            else:
+                return False, None
+
+        e_body = e.body.normalize()
+        new_var = gen_rand_letter(e.var)
+        if is_pat1(e_body)[0]:
+            """Substitute sin(v) by u."""
+            _, b = is_pat1(e_body)
+            return [rules.Substitution1(new_var, sin(b)).eval(e)[0]]
+        elif is_pat2(e_body)[0]:
+            """Substitute cos(v) by u."""
+            _, b = is_pat2(e_body)
+            print(e_body)
+            return [rules.Substitution1(new_var, cos(b)).eval(e)[0]]
+        elif is_pat3(e_body)[0]:
+            """Substitute tan(v) by u."""
+            _, b = is_pat3(e_body)
+            return [rules.Substitution1(new_var, tan(b)).eval(e)[0]]
+        elif is_pat4(e_body)[0]:
+            """Substitute cot(v) by u."""
+            _, b = is_pat4(e_body)
+            return [rules.Substitution1(new_var, cot(b)).eval(e)[0]]
+        elif is_pat5(e_body)[0]:
+            """Substitute sec(v) by u."""
+            _, b = is_pat5(e_body)
+            return [rules.Substitution1(new_var, sec(b)).eval(e)[0]]
+        elif is_pat6(e_body)[0]:
+            """Substitute csc(v) by u."""
+            _, b = is_pat6(e_body)
+            return [rules.Substitution1(new_var, csc(b)).eval(e)[0]]
+        else:
+            return [e]
 
 class HeuristicSubstitution(HeuristicRule):
     """Heuristic rule (c) in Slagle's thesis.

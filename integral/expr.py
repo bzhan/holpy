@@ -507,6 +507,8 @@ class Expr:
             return poly.singleton(self)
 
         elif self.ty == FUN and self.func_name == "abs":
+            if self.args[0].ty == CONST:
+                return poly.constant(Const(abs(self.args[0].val)))
             return poly.singleton(Fun("abs", self.args[0].normalize()))
 
         elif self.ty == EVAL_AT:
@@ -1176,9 +1178,9 @@ def deriv(var, e):
         elif e.func_name == "acos":
             x, = e.args
             return -(deriv(var, x) / sqrt(Const(1) - (x ^ Const(2)))).normalize()
-        elif e.func_name == "atan":
+        elif e.func_name == "acot":
             x, = e.args
-            return (deriv(var, x) / sqrt(Const(1) + x ^ Const(2))).normalize()
+            return (-deriv(var, x)) / (Const(1) + x ^ Const(2)).normalize()
         else:
             raise NotImplementedError
     else:
