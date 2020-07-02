@@ -1,0 +1,360 @@
+{
+    "content": [
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "interval_arith",
+            "prop": "interval_arith x lo hi ⟷ lo ≤ x ∧ x ≤ hi",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "iabs",
+            "prop": "iabs x_lo x_hi = max x_hi (-x_lo)",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "interval_not_zero",
+            "prop": "interval_not_zero lo hi ⟷ 0 < lo ∨ hi < 0",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "interval_pos",
+            "prop": "interval_pos lo hi ⟷ 0 < lo",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "interval_neg",
+            "prop": "interval_neg lo hi ⟷ hi < 0",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "interval_gt",
+            "prop": "interval_gt f lo hi ⟷ f < lo",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "const_interval",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_le_antisym, x ≤ x ∧ x ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ≤ x ∧ x ≤ x"
+                },
+                {
+                    "args": "interval_arith_def, interval_arith x x x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ interval_arith x x x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ interval_arith x x x"
+                }
+            ],
+            "prop": "interval_arith x x x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "interval_arith_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_le_antisym"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "approx_interval",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "a ≤ lo",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ lo ⊢ a ≤ lo"
+                },
+                {
+                    "args": "hi ≤ b",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "hi ≤ b ⊢ hi ≤ b"
+                },
+                {
+                    "args": "interval_arith x lo hi",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "interval_arith x lo hi ⊢ interval_arith x lo hi"
+                },
+                {
+                    "args": "interval_arith_def",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "interval_arith x lo hi ⊢ lo ≤ x ∧ x ≤ hi"
+                },
+                {
+                    "args": "a ≤ x ∧ x ≤ b",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "1",
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "a ≤ lo, hi ≤ b, interval_arith x lo hi ⊢ a ≤ x ∧ x ≤ b"
+                },
+                {
+                    "args": "interval_arith_def, interval_arith x a b",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ lo, hi ≤ b, interval_arith x lo hi ⊢ interval_arith x a b"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a ≤ lo ⟶ hi ≤ b ⟶ interval_arith x lo hi ⟶ interval_arith x a b"
+                }
+            ],
+            "prop": "a ≤ lo ⟶ hi ≤ b ⟶ interval_arith x lo hi ⟶ interval_arith x a b",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "interval_arith_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "interval_arith_def"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "1",
+                        "0"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "hi": "real",
+                "lo": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "interval_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "interval_arith x a b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "interval_arith x a b ⊢ interval_arith x a b"
+                },
+                {
+                    "args": "interval_arith_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "interval_arith x a b ⊢ a ≤ x ∧ x ≤ b"
+                },
+                {
+                    "args": "-b ≤ -x ∧ -x ≤ -a",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "interval_arith x a b ⊢ -b ≤ -x ∧ -x ≤ -a"
+                },
+                {
+                    "args": "interval_arith_def, interval_arith (-x) (-b) (-a)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "interval_arith x a b ⊢ interval_arith (-x) (-b) (-a)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ interval_arith x a b ⟶ interval_arith (-x) (-b) (-a)"
+                }
+            ],
+            "prop": "interval_arith x a b ⟶ interval_arith (-x) (-b) (-a)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "interval_arith_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "interval_arith_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "interval_neg_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-b ≤ -x ∧ -x ≤ -a ⟷ a ≤ x ∧ x ≤ b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ -b ≤ -x ∧ -x ≤ -a ⟷ a ≤ x ∧ x ≤ b"
+                },
+                {
+                    "args": "interval_arith_def, interval_arith (-x) (-b) (-a) ⟷ interval_arith x a b",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ interval_arith (-x) (-b) (-a) ⟷ interval_arith x a b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ interval_arith (-x) (-b) (-a) ⟷ interval_arith x a b"
+                }
+            ],
+            "prop": "interval_arith (-x) (-b) (-a) ⟷ interval_arith x a b",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "interval_arith_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        }
+    ],
+    "description": "Theoretical results for interval arithmetic.",
+    "imports": [
+        "realgamma"
+    ],
+    "name": "interval_arith"
+}
