@@ -41,6 +41,11 @@
             "type": "bool ⇒ 'a ⇒ 'a ⇒ 'a"
         },
         {
+            "name": "Some",
+            "ty": "def.ax",
+            "type": "('a ⇒ bool) ⇒ 'a"
+        },
+        {
             "name": "The",
             "ty": "def.ax",
             "type": "('a ⇒ bool) ⇒ 'a"
@@ -179,6 +184,14 @@
             }
         },
         {
+            "name": "eta_conversion",
+            "prop": "(λx. f x) = f",
+            "ty": "thm.ax",
+            "vars": {
+                "f": "'a ⇒ 'b"
+            }
+        },
+        {
             "name": "exE",
             "prop": "(∃a. P a) ⟶ (∀a. P a ⟶ C) ⟶ C",
             "ty": "thm.ax",
@@ -232,6 +245,18 @@
                 "P": "bool",
                 "x": "'a",
                 "y": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "some_AX",
+            "prop": "P x ⟶ P (Some P)",
+            "ty": "thm.ax",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "x": "'a"
             }
         },
         {
@@ -1095,6 +1120,398 @@
             }
         },
         {
+            "name": "exists_thm",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x::'a ⇒ bool. (exists x) ⟷ x (Some x)"
+                },
+                {
+                    "args": "P, 'a ⇒ bool",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR P"
+                },
+                {
+                    "args": "eta_conversion, (exists P) ⟷ (∃x. P x)",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (exists P) ⟷ (∃x. P x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x. P x) ⟶ P (Some P)"
+                },
+                {
+                    "args": "∃x. P x",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. P x ⊢ ∃x. P x"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "P x",
+                    "id": "0.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P x ⊢ P x"
+                },
+                {
+                    "args": "some_AX, {P: P, x: x}",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "P x ⊢ P (Some P)"
+                },
+                {
+                    "args": "∃x. P x",
+                    "id": "0.2.4",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.0",
+                        "0.2.1",
+                        "0.2.2",
+                        "0.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x. P x) ⟶ P (Some P)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ P (Some P) ⟶ (∃x. P x)"
+                },
+                {
+                    "args": "P (Some P)",
+                    "id": "0.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P (Some P) ⊢ P (Some P)"
+                },
+                {
+                    "args": "exI, {P: λx. P x, a: Some P}",
+                    "id": "0.3.1",
+                    "prevs": [
+                        "0.3.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "P (Some P) ⊢ ∃a1. P a1"
+                },
+                {
+                    "args": "",
+                    "id": "0.3.2",
+                    "prevs": [
+                        "0.3.0",
+                        "0.3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ P (Some P) ⟶ (∃x. P x)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.2",
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃x. P x) ⟷ P (Some P)"
+                },
+                {
+                    "args": "(exists P) ⟷ P (Some P)",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.1",
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ (exists P) ⟷ P (Some P)"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀P::'a ⇒ bool. (exists P) ⟷ P (Some P)"
+                },
+                {
+                    "args": "extension",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ exists = (λx::'a ⇒ bool. x (Some x))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ exists = (λP::'a ⇒ bool. P (Some P))"
+                }
+            ],
+            "prop": "exists = (λP::'a ⇒ bool. P (Some P))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "extension"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "P"
+                },
+                {
+                    "goal": "(exists P) = ?x. P x",
+                    "goal_id": "0.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "eta_conversion"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "exists_elim",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2"
+                    ],
+                    "goal_id": "0.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "some_AX"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.3.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(Some P)"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "some_refl",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "exists_thm, (SOME y. y = x) = x ⟷ (∃y. y = x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (SOME y. y = x) = x ⟷ (∃y. y = x)"
+                },
+                {
+                    "args": "eq_refl, {x: x}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "exI, {P: λy. y = x, a: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. a1 = x"
+                },
+                {
+                    "args": "(SOME y. y = x) = x",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ (SOME y. y = x) = x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (SOME y. y = x) = x"
+                }
+            ],
+            "prop": "(SOME y. y = x) = x",
+            "steps": [
+                {
+                    "goal": "(SOME y. y = x) = x <--> ?y. y = x",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "exists_thm"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "some_unique",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀y. P y ⟷ y = x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀y. P y ⟷ y = x ⊢ ∀y. P y ⟷ y = x"
+                },
+                {
+                    "args": "extension",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀y. P y ⟷ y = x ⊢ P = (λx1. x1 = x)"
+                },
+                {
+                    "args": "some_refl, (SOME x1. x1 = x) = x",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (SOME x1. x1 = x) = x"
+                },
+                {
+                    "args": "(Some P) = x",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∀y. P y ⟷ y = x ⊢ (Some P) = x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀y. P y ⟷ y = x) ⟶ (Some P) = x"
+                }
+            ],
+            "prop": "(∀y. P y ⟷ y = x) ⟶ (Some P) = x",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "extension"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "some_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "x": "'a"
+            }
+        },
+        {
             "name": "theI",
             "num_gaps": 0,
             "proof": [
@@ -1176,17 +1593,6 @@
             "ty": "thm",
             "vars": {
                 "P": "'a ⇒ bool"
-            }
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "eta_conversion",
-            "prop": "(λx. f x) = f",
-            "ty": "thm",
-            "vars": {
-                "f": "'a ⇒ 'b"
             }
         },
         {

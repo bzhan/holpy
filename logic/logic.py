@@ -57,8 +57,8 @@ def mk_some(x, body):
 
     """
     assert x.is_var(), "mk_some"
-    the_t = Const("Some", TFun(TFun(x.T, BoolType), x.T))
-    return the_t(Lambda(x, body))
+    some_t = Const("Some", TFun(TFun(x.T, BoolType), x.T))
+    return some_t(Lambda(x, body))
 
 def if_t(T):
     return Const("IF", TFun(BoolType, T, T, T))

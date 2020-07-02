@@ -260,6 +260,14 @@ class HOLTransformer(Transformer):
         the_t = Const("The", None)
         return the_t(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
 
+    def some(self, var_name, T, body):
+        some_t = Const("Some", None)
+        return some_t(Abs(str(var_name), T, body.abstract_over(Var(var_name, None))))
+
+    def some_notype(self, var_name, body):
+        some_t = Const("Some", None)
+        return some_t(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
+
     def collect_set(self, var_name, T, body):
         from data import set
         return set.collect(T)(Abs(str(var_name), T, body.abstract_over(Var(var_name, None))))
