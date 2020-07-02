@@ -47,6 +47,19 @@ def mk_the(x, body):
     the_t = Const("The", TFun(TFun(x.T, BoolType), x.T))
     return the_t(Lambda(x, body))
 
+def is_some(t):
+    """Whether t is of the form SOME x. P x."""
+    return t.is_comb('Some', 1)
+
+def mk_some(x, body):
+    """Given a variable x and a term P possibly depending on x, return
+    the term SOME x. P.
+
+    """
+    assert x.is_var(), "mk_some"
+    the_t = Const("Some", TFun(TFun(x.T, BoolType), x.T))
+    return the_t(Lambda(x, body))
+
 def if_t(T):
     return Const("IF", TFun(BoolType, T, T, T))
 

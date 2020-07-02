@@ -45,6 +45,8 @@ grammar = r"""
         | ("?!"|"∃!") CNAME ". " term         -> exists1_notype
         | "THE" CNAME "::" type ". " term -> the         // THE operator
         | "THE" CNAME ". " term -> the_notype
+        | "SOME" CNAME "::" type ". " term -> some         // SOME operator
+        | "SOME" CNAME ". " term -> some_notype
         | "[]"                     -> literal_list  // Empty list
         | "[" term ("," term)* "]" -> literal_list  // List
         | ("{}"|"∅")               -> literal_set   // Empty set
