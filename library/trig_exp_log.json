@@ -1,0 +1,617 @@
+{
+    "content": [
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "exp_pos_poly_lower_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "real_infsum_offset, {f: λk. 1 / of_nat (fact k) * x ^ k, k: n, m: (0::nat)}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_summable (from 0) (λk. 1 / of_nat (fact k) * x ^ k) ⟶ 0 ≤ n ⟶ real_infsum (from 0) (λk. 1 / of_nat (fact k) * x ^ k) = sum ({0..n}) (λk. 1 / of_nat (fact k) * x ^ k) + real_infsum (from (n + 1)) (λk. 1 / of_nat (fact k) * x ^ k)"
+                },
+                {
+                    "args": "exp_series, {x: x}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_sums (λk. 1 / of_nat (fact k) * x ^ k) (exp x) univ"
+                },
+                {
+                    "args": "from_0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "⊢ real_sums (λk. 1 / of_nat (fact k) * x ^ k) (exp x) (from 0)"
+                },
+                {
+                    "args": "exI, {P: λa1. real_sums (λk. 1 / of_nat (fact k) * x ^ k) a1 (from 0), a: exp x}",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. real_sums (λk. 1 / of_nat (fact k) * x ^ k) a1 (from 0)"
+                },
+                {
+                    "args": "real_summable_def, real_summable (from 0) (λk. 1 / of_nat (fact k) * x ^ k)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x ⊢ real_summable (from 0) (λk. 1 / of_nat (fact k) * x ^ k)"
+                },
+                {
+                    "args": "le_0, {n: n}",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "1",
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 ≤ x ⊢ real_infsum (from 0) (λk. 1 / of_nat (fact k) * x ^ k) = sum ({0..n}) (λk. 1 / of_nat (fact k) * x ^ k) + real_infsum (from (n + 1)) (λk. 1 / of_nat (fact k) * x ^ k)"
+                },
+                {
+                    "args": "∀a::real. ∀b. a ≤ a + b ⟷ 0 ≤ b",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. a ≤ a + b ⟷ 0 ≤ b"
+                },
+                {
+                    "args": "real_summable_from_elsewhere, {f: λk. 1 / of_nat (fact k) * x ^ k, m: (0::nat), n: n + 1}",
+                    "id": "9",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ x ⊢ real_summable (from (n + 1)) (λk. 1 / of_nat (fact k) * x ^ k)"
+                },
+                {
+                    "args": "real_sums_infsum, real_sums (λk. 1 / of_nat (fact k) * x ^ k) (real_infsum (from (n + 1)) (λk. 1 / of_nat (fact k) * x ^ k)) (from (n + 1))",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x ⊢ real_sums (λk. 1 / of_nat (fact k) * x ^ k) (real_infsum (from (n + 1)) (λk. 1 / of_nat (fact k) * x ^ k)) (from (n + 1))"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 ≤ x ⊢ ∀i. i ∈ from (n + 1) ⟶ 0 ≤ 1 / of_nat (fact i) * x ^ i"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "11.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "i ∈ from (n + 1)",
+                    "id": "11.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "i ∈ from (n + 1) ⊢ i ∈ from (n + 1)"
+                },
+                {
+                    "args": "fact_lt, {n: i}",
+                    "id": "11.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < fact i"
+                },
+                {
+                    "args": "real_of_nat_lt, (of_nat::nat ⇒ real) 0 < of_nat (fact i)",
+                    "id": "11.3",
+                    "prevs": [
+                        "11.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x, i ∈ from (n + 1) ⊢ (of_nat::nat ⇒ real) 0 < of_nat (fact i)"
+                },
+                {
+                    "args": "real_zero_def, (0::real) < of_nat (fact i)",
+                    "id": "11.4",
+                    "prevs": [
+                        "11.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x, i ∈ from (n + 1) ⊢ (0::real) < of_nat (fact i)"
+                },
+                {
+                    "args": "real_lt_inv",
+                    "id": "11.5",
+                    "prevs": [
+                        "11.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x, i ∈ from (n + 1) ⊢ 0 < real_inverse (of_nat (fact i))"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "11.6",
+                    "prevs": [
+                        "11.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x, i ∈ from (n + 1) ⊢ 0 ≤ real_inverse (of_nat (fact i))"
+                },
+                {
+                    "args": "real_pow_le, {n: i, x: x}",
+                    "id": "11.7",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ x, i ∈ from (n + 1) ⊢ 0 ≤ x ^ i"
+                },
+                {
+                    "args": "real_le_mul",
+                    "id": "11.8",
+                    "prevs": [
+                        "11.6",
+                        "11.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x, i ∈ from (n + 1) ⊢ 0 ≤ real_inverse (of_nat (fact i)) * x ^ i"
+                },
+                {
+                    "args": "real_inverse_divide, 0 ≤ 1 / of_nat (fact i) * x ^ i",
+                    "id": "11.9",
+                    "prevs": [
+                        "11.8"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 ≤ x, i ∈ from (n + 1) ⊢ 0 ≤ 1 / of_nat (fact i) * x ^ i"
+                },
+                {
+                    "args": "",
+                    "id": "11.10",
+                    "prevs": [
+                        "11.0",
+                        "11.1",
+                        "11.9"
+                    ],
+                    "rule": "intros",
+                    "th": "0 ≤ x ⊢ ∀i. i ∈ from (n + 1) ⟶ 0 ≤ 1 / of_nat (fact i) * x ^ i"
+                },
+                {
+                    "args": "real_series_pos",
+                    "id": "12",
+                    "prevs": [
+                        "10",
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x ⊢ 0 ≤ real_infsum (from (n + 1)) (λk. 1 / of_nat (fact k) * x ^ k)"
+                },
+                {
+                    "args": "sum ({0..n}) (λk. 1 / of_nat (fact k) * x ^ k) ≤ sum ({0..n}) (λk. 1 / of_nat (fact k) * x ^ k) + real_infsum (from (n + 1)) (λk. 1 / of_nat (fact k) * x ^ k)",
+                    "id": "13",
+                    "prevs": [
+                        "8",
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 ≤ x ⊢ sum ({0..n}) (λk. 1 / of_nat (fact k) * x ^ k) ≤ sum ({0..n}) (λk. 1 / of_nat (fact k) * x ^ k) + real_infsum (from (n + 1)) (λk. 1 / of_nat (fact k) * x ^ k)"
+                },
+                {
+                    "args": "real_inverse_divide, sum ({0..n}) (λk. real_inverse (of_nat (fact k)) * x ^ k) ≤ sum ({0..n}) (λk. 1 / of_nat (fact k) * x ^ k) + real_infsum (from (n + 1)) (λk. 1 / of_nat (fact k) * x ^ k)",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x ⊢ sum ({0..n}) (λk. real_inverse (of_nat (fact k)) * x ^ k) ≤ sum ({0..n}) (λk. 1 / of_nat (fact k) * x ^ k) + real_infsum (from (n + 1)) (λk. 1 / of_nat (fact k) * x ^ k)"
+                },
+                {
+                    "args": "sum ({0..n}) (λk. real_inverse (of_nat (fact k)) * x ^ k) ≤ real_infsum (from 0) (λk. 1 / of_nat (fact k) * x ^ k)",
+                    "id": "15",
+                    "prevs": [
+                        "7",
+                        "14"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 ≤ x ⊢ sum ({0..n}) (λk. real_inverse (of_nat (fact k)) * x ^ k) ≤ real_infsum (from 0) (λk. 1 / of_nat (fact k) * x ^ k)"
+                },
+                {
+                    "args": "exp_infsum, sum ({0..n}) (λk. real_inverse (of_nat (fact k)) * x ^ k) ≤ exp x",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 ≤ x ⊢ sum ({0..n}) (λk. real_inverse (of_nat (fact k)) * x ^ k) ≤ exp x"
+                },
+                {
+                    "args": "",
+                    "id": "17",
+                    "prevs": [
+                        "0",
+                        "16"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ sum ({0..n}) (λk. real_inverse (of_nat (fact k)) * x ^ k) ≤ exp x"
+                }
+            ],
+            "prop": "0 ≤ x ⟶ sum ({0..n}) (λk. real_inverse (of_nat (fact k)) * x ^ k) ≤ exp x",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "exp_infsum"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λk. 1 / of_nat (fact k) * x ^ k)",
+                    "param_k": "n",
+                    "param_m": "(0::nat)",
+                    "theorem": "real_infsum_offset"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal": "real_summable (from 0) (λk. 1 / of_nat (fact k) * x ^ k)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "exp_series"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "from_0"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_summable_def"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exI"
+                },
+                {
+                    "goal": "0 ≤ n",
+                    "goal_id": "6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "5",
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inverse_divide"
+                },
+                {
+                    "goal": "!a::real. !b. a <= a + b <--> 0 <= b",
+                    "goal_id": "8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(λk. 1 / of_nat (fact k) * x ^ k)",
+                    "param_s": "from (n + 1)",
+                    "theorem": "real_series_pos"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sums_infsum"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "param_m": "(0::nat)",
+                    "theorem": "real_summable_from_elsewhere"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_inverse_divide"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_mul"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_inv"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_of_nat_lt"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "fact_lt"
+                },
+                {
+                    "goal_id": "11.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pow_le"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "exp_ge1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "exp_pos_poly_lower_bound, {n: (0::nat), x: x}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ x ⟶ sum ({0..0}) (λk. real_inverse (of_nat (fact k)) * x ^ k) ≤ exp x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 ≤ x ⊢ sum ({0..0}) (λk. real_inverse (of_nat (fact k)) * x ^ k) ≤ exp x"
+                },
+                {
+                    "args": "sum_sing_natseg",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x ⊢ real_inverse (of_nat (fact 0)) * x ^ (0::nat) ≤ exp x"
+                },
+                {
+                    "args": "fact_def_1",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x ⊢ real_inverse of_nat 1 * x ^ (0::nat) ≤ exp x"
+                },
+                {
+                    "args": "real_nat_power_def_1",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x ⊢ real_inverse of_nat 1 * 1 ≤ exp x"
+                },
+                {
+                    "args": "real_one_def",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "0 ≤ x ⊢ real_inverse 1 * 1 ≤ exp x"
+                },
+                {
+                    "args": "real_mul_rid",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x ⊢ real_inverse 1 ≤ exp x"
+                },
+                {
+                    "args": "real_inv_1",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x ⊢ 1 ≤ exp x"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ 1 ≤ exp x"
+                }
+            ],
+            "prop": "0 ≤ x ⟶ 1 ≤ exp x",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_n": "(0::nat)",
+                    "param_x": "x",
+                    "theorem": "exp_pos_poly_lower_bound"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "sum_sing_natseg"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "fact_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_inv_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        }
+    ],
+    "description": "Formal inequalities for trig about exp and log series.",
+    "imports": [
+        "trig_series"
+    ],
+    "name": "trig_exp_log"
+}
