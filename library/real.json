@@ -12132,6 +12132,80 @@
         },
         {
             "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_inv_le_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "1 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 ≤ x ⊢ 1 ≤ x"
+                },
+                {
+                    "args": "(0::real) < 1",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (0::real) < 1"
+                },
+                {
+                    "args": "real_le_inv2",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 ≤ x ⊢ real_inverse x ≤ real_inverse 1"
+                },
+                {
+                    "args": "real_inv_1, real_inverse x ≤ 1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "1 ≤ x ⊢ real_inverse x ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 1 ≤ x ⟶ real_inverse x ≤ 1"
+                }
+            ],
+            "prop": "1 ≤ x ⟶ real_inverse x ≤ 1",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_inv_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_inv2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward1",
                 "hint_backward"
             ],
