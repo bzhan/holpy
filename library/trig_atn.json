@@ -1,0 +1,500 @@
+{
+    "content": [
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "halfatn",
+            "prop": "halfatn x = x / (sqrt (1 + x ^ (2::nat)) + 1)",
+            "ty": "def",
+            "type": "real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "halfatn4",
+            "prop": "halfatn4 = halfatn ∘ halfatn ∘ halfatn ∘ halfatn",
+            "ty": "def",
+            "type": "real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "abs_lemma",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < a ⊢ 0 < a"
+                },
+                {
+                    "args": "abs a = a",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < a ⊢ abs a = a"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < a ⟶ abs a = a"
+                }
+            ],
+            "prop": "0 < a ⟶ abs a = a",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "pos_lemma",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀a::real. 0 ≤ a ⟶ 0 < 1 + a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. 0 ≤ a ⟶ 0 < 1 + a"
+                },
+                {
+                    "args": "real_le_pow_2, {x: x}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ x ^ (2::nat)"
+                },
+                {
+                    "args": "x ^ (2::nat)",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ 0 < 1 + x ^ (2::nat)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < 1 + x ^ (2::nat)"
+                }
+            ],
+            "prop": "0 < 1 + x ^ (2::nat)",
+            "steps": [
+                {
+                    "goal": "∀a::real. 0 ≤ a ⟶ 0 < 1 + a ",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_pow_2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "pos_lemma2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀a::real. 0 ≤ a ⟶ 0 < a + 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. 0 ≤ a ⟶ 0 < a + 1"
+                },
+                {
+                    "args": "pos_lemma, {x: x}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < 1 + x ^ (2::nat)"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 ≤ 1 + x ^ (2::nat)"
+                },
+                {
+                    "args": "sqrt_le_0, 0 ≤ sqrt (1 + x ^ (2::nat))",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 ≤ sqrt (1 + x ^ (2::nat))"
+                },
+                {
+                    "args": "sqrt (1 + x ^ (2::nat))",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ 0 < sqrt (1 + x ^ (2::nat)) + 1"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < sqrt (1 + x ^ (2::nat)) + 1"
+                }
+            ],
+            "prop": "0 < sqrt (1 + x ^ (2::nat)) + 1",
+            "steps": [
+                {
+                    "goal": "!a::real. 0 <= a --> 0 < a + 1",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sqrt_le_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pos_lemma"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "eq_lemma",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "pos_lemma, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < 1 + x ^ (2::nat)"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 ≤ 1 + x ^ (2::nat)"
+                },
+                {
+                    "args": "sqrt_pow2, sqrt (1 + x ^ (2::nat)) ^ (2::nat) = 1 + x ^ (2::nat)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sqrt (1 + x ^ (2::nat)) ^ (2::nat) = 1 + x ^ (2::nat)"
+                },
+                {
+                    "args": "pos_lemma2, {x: x}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < sqrt (1 + x ^ (2::nat)) + 1"
+                },
+                {
+                    "args": "∀b. 0 < b + 1 ⟶ b * b = 1 + x * x ⟶ 1 - x * x / ((b + 1) * (b + 1)) = 2 / (b + 1)",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀b. 0 < b + 1 ⟶ b * b = 1 + x * x ⟶ 1 - x * x / ((b + 1) * (b + 1)) = 2 / (b + 1)"
+                },
+                {
+                    "args": "real_pow_2, ∀b. 0 < b + 1 ⟶ b ^ (2::nat) = 1 + x ^ (2::nat) ⟶ 1 - x ^ (2::nat) / (b + 1) ^ (2::nat) = 2 / (b + 1)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀b. 0 < b + 1 ⟶ b ^ (2::nat) = 1 + x ^ (2::nat) ⟶ 1 - x ^ (2::nat) / (b + 1) ^ (2::nat) = 2 / (b + 1)"
+                },
+                {
+                    "args": "sqrt (1 + x ^ (2::nat))",
+                    "id": "6",
+                    "prevs": [
+                        "5",
+                        "3",
+                        "2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ 1 - x ^ (2::nat) / (sqrt (1 + x ^ (2::nat)) + 1) ^ (2::nat) = 2 / (sqrt (1 + x ^ (2::nat)) + 1)"
+                },
+                {
+                    "args": "real_pow_div, 1 - (x / (sqrt (1 + x ^ (2::nat)) + 1)) ^ (2::nat) = 2 / (sqrt (1 + x ^ (2::nat)) + 1)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 1 - (x / (sqrt (1 + x ^ (2::nat)) + 1)) ^ (2::nat) = 2 / (sqrt (1 + x ^ (2::nat)) + 1)"
+                },
+                {
+                    "args": "halfatn_def, 1 - halfatn x ^ (2::nat) = 2 / (sqrt (1 + x ^ (2::nat)) + 1)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 1 - halfatn x ^ (2::nat) = 2 / (sqrt (1 + x ^ (2::nat)) + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 1 - halfatn x ^ (2::nat) = 2 / (sqrt (1 + x ^ (2::nat)) + 1)"
+                }
+            ],
+            "prop": "1 - halfatn x ^ (2::nat) = 2 / (sqrt (1 + x ^ (2::nat)) + 1)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "halfatn_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_div"
+                },
+                {
+                    "goal": "(sqrt (1 + x ^ (2::nat))) ^ (2::nat) = 1 + x ^ (2::nat)",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sqrt_pow2"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pos_lemma"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "pos_lemma2"
+                },
+                {
+                    "goal": "∀b. 0 < b + 1 ⟶ b ^ (2::nat) = 1 + x ^ (2::nat) ⟶ 1 - x ^ (2::nat) / (b + 1) ^ (2::nat) = 2 / (b + 1)",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "halfatn_bounds_abs",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ abs x * real_inverse (abs (sqrt (1 + x ^ (2::nat)) + 1)) < 1"
+                },
+                {
+                    "args": "real_abs_inv, abs x * abs (real_inverse (sqrt (1 + x ^ (2::nat)) + 1)) < 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs x * abs (real_inverse (sqrt (1 + x ^ (2::nat)) + 1)) < 1"
+                },
+                {
+                    "args": "real_abs_mul, abs (x * real_inverse (sqrt (1 + x ^ (2::nat)) + 1)) < 1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (x * real_inverse (sqrt (1 + x ^ (2::nat)) + 1)) < 1"
+                },
+                {
+                    "args": "real_divide_def, abs (x / (sqrt (1 + x ^ (2::nat)) + 1)) < 1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (x / (sqrt (1 + x ^ (2::nat)) + 1)) < 1"
+                },
+                {
+                    "args": "halfatn_def, abs (halfatn x) < 1",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (halfatn x) < 1"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs (halfatn x) < 1"
+                }
+            ],
+            "prop": "abs (halfatn x) < 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "halfatn_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_mul"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_inv"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        }
+    ],
+    "description": "Formal inequalities for trig about atn series.",
+    "imports": [
+        "trig_series"
+    ],
+    "name": "trig_atn"
+}
