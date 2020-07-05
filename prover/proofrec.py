@@ -17,8 +17,8 @@ from kernel import theory
 from logic import basic, context, matcher
 from logic.logic import apply_theorem, resolution
 from logic.tactic import rewrite_goal_with_prev
-from syntax.settings import settings
-settings.unicode = True
+# from syntax.settings import settings
+# settings.unicode = True
 from collections import deque
 from functools import reduce
 import operator
@@ -84,8 +84,7 @@ def lambda_to_quantifier(l, forall=True):
     """
     Give a term of abs:
     λ x1, x2, ... x_k. L
-    if forall is true: return ∀ x1, x2, ..., x_k . L
-    else: return ∃ x1, x2, ..., x_k . L
+    if forall is true: return 
     """
     def helper(l):
         if l.is_abs():
@@ -102,6 +101,16 @@ def lambda_to_quantifier(l, forall=True):
         l = Forall(v, l) if forall else Exists(v, l)
 
     return l
+
+def lambda_var(l):
+    """
+    Give a lambda expression λ x1 x2 ... xk. f
+    Return [(x1, T1), (x2, T2), ... , (xk, tk)]
+    """
+    if l.is_abs():
+        return [(l.var_name, l.var_T)] + lambda_var(l.body)
+    else:
+        return []
 
 def forall_body(t, vars):
     """
@@ -311,7 +320,7 @@ def rewrite(t):
             if t.lhs.get_type() == IntType:
                 return norm_int(t)
             else:
-                raise NotImplementedError
+                return ProofTerm.sorry(Thm([], t))
         else:
             raise NotImplementedError
     else:
@@ -396,16 +405,63 @@ def quant_intro(p, q):
     return pt3
 
 def quant_intro1(p, q):
-    basic.load_theory('logic')
-    prevs = [ProofTerm.assume(p.prop)]
-    is_forall = q.lhs.is_forall()
-    left = lambda_to_quantifier(p.prop.lhs, True) if is_forall else lambda_to_quantifier(p.prop.lhs, False) 
-    right = lambda_to_quantifier(p.prop.rhs, True) if is_forall else lambda_to_quantifier(p.prop.rhs, False)
-    args = Eq(left, right)
-    goal = Thm([p.prop], Eq(left, right))
+    basic.load_theory('int')
+    # prevs = [ProofTerm.assume(p.prop)]
+    # is_forall = q.lhs.is_forall()
+    # left = lambda_to_quantifier(p.prop.lhs, True) if is_forall else lambda_to_quantifier(p.prop.lhs, False) 
+    # right = lambda_to_quantifier(p.prop.rhs, True) if is_forall else lambda_to_quantifier(p.prop.rhs, False)
+    # args = Eq(left, right)
+    # goal = Thm([p.prop], Eq(left, right))
     # pt =  rewrite_goal_with_prev().get_proof_term(args=args,prevs=prevs,goal=goal)
     # return ProofTerm.implies_elim(pt.implies_intr(p.prop), p)
-    return ProofTerm.sorry(Thm([], q))
+    # return ProofTerm.sorry(Thm([], q))
+    # var_T = [T for _, T in lambda_var(p.prop.lhs)]
+    # T = TFun(*var_T)
+    # is_forall = q.lhs.is_forall()
+    # if is_forall:
+    #     pt_refl = ProofTerm.reflexive(forall(T))
+    # else:
+    #     pt_refl = ProofTerm.reflexive(exists(T))
+
+    # return ProofTerm.combination(pt_refl, p)
+    l, r = p.prop.lhs, p.prop.rhs
+    def helper(l):
+        if l.is_abs():
+            return [Var(l.var_name, l.var_T)] + helper(l.body)
+        else:
+            return []
+    
+    var = helper(l)
+    is_forall = q.lhs.is_forall()
+    pt = p
+    for v in var:
+        pf_refl = ProofTerm.reflexive(v)
+        pt = ProofTerm.combination(pt, pf_refl)
+        pt_l = ProofTerm.beta_conv(l(v)).symmetric()
+        pt_r = ProofTerm.beta_conv(r(v))
+        pt_l_beta_norm = pt_l.transitive(pt)
+        pt = pt_l_beta_norm.transitive(pt_r)
+        l, r = pt.prop.lhs, pt.prop.rhs
+
+    for v in reversed(var):
+        pf_quant = ProofTerm.reflexive(forall(v.get_type())) if is_forall else ProofTerm.reflexive(exists(v.get_type()))
+        pt = pt.abstraction(v)
+        pt = ProofTerm.combination(pf_quant, pt)
+
+    return pt
+
+def mp(arg1, arg2):
+    """modus ponens:
+    
+    arg1: ⊢ p
+    arg2: ⊢ p <--> q
+    then have: ⊢ q
+    """
+    try:
+        pt = ProofTerm.equal_elim(arg2, arg1)
+    except:
+        pt = ProofTerm.sorry(Thm(arg2.th.hyps + arg1.th.hyps, arg1.prop))
+    return pt
 
 def convert_method(term, *args):
     name = term.decl().name()
@@ -421,7 +477,7 @@ def convert_method(term, *args):
         return arg1.transitive(arg2)
     elif name in ('mp', 'mp~'):
         arg1, arg2, _ = args
-        return ProofTerm.equal_elim(arg2, arg1)
+        return mp(arg1, arg2)
     elif name in ('rewrite', 'commutativity'):
         arg1, = args
         return rewrite(arg1)
@@ -459,13 +515,13 @@ def proofrec(proof, bounds=deque()):
 
     for i in order:
         args = (r[j] for j in net[i])
-        print('term['+str(i)+']', term[i])
+        # print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i],bounds=bounds)
         else:
             r[i] = convert_method(term[i], *args)
             basic.load_theory('int')
-            print('r['+str(i)+']', r[i])
+            # print('r['+str(i)+']', r[i])
     return r[0]
 
     
