@@ -2,6 +2,7 @@ import unittest
 
 from z3 import IntVal, RealVal, BoolVal, Function, IntSort, BoolSort, Context, Solver, Ints, set_param, And as zAnd
 from z3 import Const as zConst, Int as zInt
+import z3
 from prover import z3wrapper, proofrec
 from kernel.type import BoolType, NatType, TFun, TVar, STVar, IntType
 from kernel.term import Var, And, Implies, Inst, NatVars, Eq, equals, SVar, Const, TFun, Nat, Int,\
@@ -88,6 +89,15 @@ class ProofrecTest(unittest.TestCase):
             proof=z3wrapper.solve_and_proof(t)    
             r = proofrec.proofrec(proof)
             self.assertEqual(str(r.th), p)
+
+    def testQuantIntro(self):
+        ctx = z3.Context()
+        u,v,w = z3.Ints('u v w',ctx=ctx)
+        f = z3.ForAll([u,v],z3.Exists(w, u - w == v))
+        s = z3.Solver(ctx=ctx)
+        s.add(z3.Not(f))
+        s.check()
+        proofrec.proofrec(s.proof())
 
 if __name__ == "__main__":
     unittest.main()

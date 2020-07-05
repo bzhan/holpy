@@ -16,6 +16,9 @@ from kernel.theory import check_proof, register_macro
 from kernel import theory
 from logic import basic, context, matcher
 from logic.logic import apply_theorem, resolution
+from logic.tactic import rewrite_goal_with_prev
+from syntax.settings import settings
+settings.unicode = True
 from collections import deque
 from functools import reduce
 import operator
@@ -77,6 +80,37 @@ def DepthFirstOrder(G):
     
     return reversePost
 
+def lambda_to_quantifier(l, forall=True):
+    """
+    Give a term of abs:
+    λ x1, x2, ... x_k. L
+    if forall is true: return ∀ x1, x2, ..., x_k . L
+    else: return ∃ x1, x2, ..., x_k . L
+    """
+    def helper(l):
+        if l.is_abs():
+            return [Var(l.var_name, l.var_T)] + helper(l.body)
+        else:
+            return []
+    
+    var = helper(l)
+
+    for v in reversed(var):
+        l = l.subst_bound(v)
+
+    for v in reversed(var):
+        l = Forall(v, l) if forall else Exists(v, l)
+
+    return l
+
+def forall_body(t, vars):
+    """
+    Give a term of comb:
+    Return a forall expression which use vars as bounded variable.
+    """
+    pass
+
+
 def translate_type(sort):
     """Translate z3 type into holpy type."""
     T = sort.kind()
@@ -91,7 +125,7 @@ def translate_type(sort):
     else:
         raise NotImplementedError
 
-def translate(term, bounds=dict()):
+def translate(term, bounds=deque()):
     """Transalte z3 term into holpy term.
        bounds represents bounded variables, key is de-Bruijn index of the var, value is the bounded variable already in holpy.
     """
@@ -104,23 +138,33 @@ def translate(term, bounds=dict()):
     elif z3.is_quantifier(term): 
         body = term.body()
         var = tuple(Var(term.var_name(i), translate_type(term.var_sort(i))) for i in range(term.num_vars()))
-        bounds = {i : var[i] for i in range(term.num_vars())}
+        for v in var:
+            bounds.appendleft(v)
         # patterns = tuple(term.patterns(i) for i in range(term.num_patterns()))
         if term.is_lambda():
             if body.decl().name() == 'refl':
                 lhs = translate(body.arg(0).arg(0), bounds)
                 return ProofTerm.reflexive(Lambda(*var, lhs))
             elif body.decl().name() in method:
-                prf = proofrec(z3.substitute_vars(body, z3.Const(term.var_name(0), term.var_sort(0))))
-                return prf.abstraction(var[0])
+                subst_var = [z3.Const(term.var_name(term.num_vars()-1-i), term.var_sort(term.num_vars()-1-i)) for i in range(term.num_vars())]
+                prf = proofrec(z3.substitute_vars(body, *subst_var), bounds=bounds)
+                bounds.clear()
+                for v in reversed(var):
+                    prf = prf.abstraction(v)
+                return prf
             else:
                 raise NotImplementedError
-            
-            return Lambda(*var, translate(body, bounds))
+            l = Lambda(*var, translate(body, bounds))
+            bounds.clear()
+            return l
         elif term.is_exists():
-            return Exists(*var, translate(body, bounds))
+            e = Exists(*var, translate(body, bounds))
+            bounds.clear()
+            return e
         elif term.is_forall():
-            return Forall(*var, translate(body, bounds))
+            f = Forall(*var, translate(body, bounds))
+            bounds.clear()
+            return f
         else:
             raise NotImplementedError
     elif z3.is_expr(term):
@@ -351,6 +395,18 @@ def quant_intro(p, q):
     pt3 = pt1.implies_elim(p)
     return pt3
 
+def quant_intro1(p, q):
+    basic.load_theory('logic')
+    prevs = [ProofTerm.assume(p.prop)]
+    is_forall = q.lhs.is_forall()
+    left = lambda_to_quantifier(p.prop.lhs, True) if is_forall else lambda_to_quantifier(p.prop.lhs, False) 
+    right = lambda_to_quantifier(p.prop.rhs, True) if is_forall else lambda_to_quantifier(p.prop.rhs, False)
+    args = Eq(left, right)
+    goal = Thm([p.prop], Eq(left, right))
+    # pt =  rewrite_goal_with_prev().get_proof_term(args=args,prevs=prevs,goal=goal)
+    # return ProofTerm.implies_elim(pt.implies_intr(p.prop), p)
+    return ProofTerm.sorry(Thm([], q))
+
 def convert_method(term, *args):
     name = term.decl().name()
     if name in ('asserted', 'hypothesis'): # {P} ⊢ {P}
@@ -383,7 +439,7 @@ def convert_method(term, *args):
         return quant_inst(arg1)
     elif name == 'quant-intro':
         arg1, arg2, = args
-        return quant_intro(arg1, arg2)
+        return quant_intro1(arg1, arg2)
     # elif name == 'lemma':
     #     return 
     elif name == 'symm':
@@ -395,7 +451,7 @@ def convert_method(term, *args):
     
 
 
-def proofrec(proof):
+def proofrec(proof, bounds=deque()):
     term = Z3Term(proof)
     net = Z3TermGraph(proof)
     order = DepthFirstOrder(net)
@@ -403,13 +459,13 @@ def proofrec(proof):
 
     for i in order:
         args = (r[j] for j in net[i])
-        # print('term['+str(i)+']', term[i])
+        print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
-            r[i] = translate(term[i])
+            r[i] = translate(term[i],bounds=bounds)
         else:
             r[i] = convert_method(term[i], *args)
-            # basic.load_theory('int')
-            # print('r['+str(i)+']', r[i])
+            basic.load_theory('int')
+            print('r['+str(i)+']', r[i])
     return r[0]
 
     
