@@ -107,6 +107,7 @@ class PrinterTest(unittest.TestCase):
             (Exists(a, Forall(b, R(a, b))), "?a. !b. R a b"),
             (logic.mk_exists1(a, P(a)), "?!a. P a"),
             (logic.mk_the(a, P(a)), "THE a. P a"),
+            (logic.mk_some(a, P(a)), "SOME a. P a"),
             (Forall(a, Exists(b, R(a, b))), "!a. ?b. R a b"),
 
             # If

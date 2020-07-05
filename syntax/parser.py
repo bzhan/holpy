@@ -45,6 +45,8 @@ grammar = r"""
         | ("?!"|"∃!") CNAME ". " term         -> exists1_notype
         | "THE" CNAME "::" type ". " term -> the         // THE operator
         | "THE" CNAME ". " term -> the_notype
+        | "SOME" CNAME "::" type ". " term -> some         // SOME operator
+        | "SOME" CNAME ". " term -> some_notype
         | "[]"                     -> literal_list  // Empty list
         | "[" term ("," term)* "]" -> literal_list  // List
         | ("{}"|"∅")               -> literal_set   // Empty set
@@ -257,6 +259,14 @@ class HOLTransformer(Transformer):
     def the_notype(self, var_name, body):
         the_t = Const("The", None)
         return the_t(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
+
+    def some(self, var_name, T, body):
+        some_t = Const("Some", None)
+        return some_t(Abs(str(var_name), T, body.abstract_over(Var(var_name, None))))
+
+    def some_notype(self, var_name, body):
+        some_t = Const("Some", None)
+        return some_t(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
 
     def collect_set(self, var_name, T, body):
         from data import set

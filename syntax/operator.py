@@ -92,6 +92,7 @@ binder_data_raw = [
     BinderData("exists", ascii_op="?", unicode_op="∃"),
     BinderData("exists1", ascii_op="?!", unicode_op="∃!"),
     BinderData("The", ascii_op="THE "),
+    BinderData("Some", ascii_op="SOME "),
 ]
 
 op_data = dict()
