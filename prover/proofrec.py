@@ -395,42 +395,13 @@ def quant_inst(p):
     return pt3
 
 def quant_intro(p, q):
-    basic.load_theory('logic')
-    f = Implies(p.prop, q)
-    is_exists = q.lhs.is_exists()
-    pat = ProofTerm.theorem('quant_intro_exists') if is_exists else ProofTerm.theorem('quant_intro_forall')
-    inst = matcher.first_order_match(pat.prop, f)
-    pt1 = apply_theorem('quant_intro_exists', inst=inst) if is_exists else apply_theorem('quant_intro_forall', inst=inst)
-    pt3 = pt1.implies_elim(p)
-    return pt3
-
-def quant_intro1(p, q):
-    basic.load_theory('int')
-    # prevs = [ProofTerm.assume(p.prop)]
-    # is_forall = q.lhs.is_forall()
-    # left = lambda_to_quantifier(p.prop.lhs, True) if is_forall else lambda_to_quantifier(p.prop.lhs, False) 
-    # right = lambda_to_quantifier(p.prop.rhs, True) if is_forall else lambda_to_quantifier(p.prop.rhs, False)
-    # args = Eq(left, right)
-    # goal = Thm([p.prop], Eq(left, right))
-    # pt =  rewrite_goal_with_prev().get_proof_term(args=args,prevs=prevs,goal=goal)
-    # return ProofTerm.implies_elim(pt.implies_intr(p.prop), p)
-    # return ProofTerm.sorry(Thm([], q))
-    # var_T = [T for _, T in lambda_var(p.prop.lhs)]
-    # T = TFun(*var_T)
-    # is_forall = q.lhs.is_forall()
-    # if is_forall:
-    #     pt_refl = ProofTerm.reflexive(forall(T))
-    # else:
-    #     pt_refl = ProofTerm.reflexive(exists(T))
-
-    # return ProofTerm.combination(pt_refl, p)
-    l, r = p.prop.lhs, p.prop.rhs
     def helper(l):
         if l.is_abs():
             return [Var(l.var_name, l.var_T)] + helper(l.body)
         else:
             return []
     
+    l, r = p.prop.lhs, p.prop.rhs
     var = helper(l)
     is_forall = q.lhs.is_forall()
     pt = p
@@ -462,6 +433,25 @@ def mp(arg1, arg2):
     except:
         pt = ProofTerm.sorry(Thm(arg2.th.hyps + arg1.th.hyps, arg1.prop))
     return pt
+
+def iff_true(arg1, arg2):
+    """
+    arg1: ⊢ p
+    return: ⊢ p <--> true
+    """
+    basic.load_theory('logic')
+    pt1 = apply_theorem('eq_true', inst=Inst(A=arg1.prop))
+    return ProofTerm.equal_elim(pt1, arg1)
+
+def iff_false(arg1, arg2):
+    """
+    arg1: ⊢ ¬p
+    return: ⊢ ¬p <--> false
+    """
+    basic.load_theory('logic')
+    pt1 = apply_theorem('eq_false', inst=Inst(A=arg1.prop.arg))
+    return ProofTerm.equal_elim(pt1, arg1)
+
 
 def convert_method(term, *args):
     name = term.decl().name()
@@ -495,7 +485,13 @@ def convert_method(term, *args):
         return quant_inst(arg1)
     elif name == 'quant-intro':
         arg1, arg2, = args
-        return quant_intro1(arg1, arg2)
+        return quant_intro(arg1, arg2)
+    elif name == 'iff-true':
+        arg1, arg2, = args
+        return iff_true(arg1, arg2)
+    elif name == 'iff-false':
+        arg1, arg2, = args
+        return iff_false(arg1, arg2)
     # elif name == 'lemma':
     #     return 
     elif name == 'symm':
