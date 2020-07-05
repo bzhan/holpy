@@ -99,5 +99,21 @@ class ProofrecTest(unittest.TestCase):
         s.check()
         proofrec.proofrec(s.proof())
 
+    """
+    Files that have reconstructed successful:
+
+    QF_UF
+    =============================================
+    QF_UF/20170829-Rodin/smt2061505268723161891.smt2
+    QF_UF/20170829-Rodin/smt2080745738819601301.smt2
+    =============================================
+
+    LIA
+    =============================================
+    LIA/tptp/NUM917=1.smt2
+    LIA/tptp/NUM918=1.smt2
+    =============================================
+    """
+
 if __name__ == "__main__":
     unittest.main()
