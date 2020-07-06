@@ -15,8 +15,9 @@ from kernel.macro import Macro
 from kernel.theory import check_proof, register_macro
 from kernel import theory
 from logic import basic, context, matcher
-from logic.logic import apply_theorem, resolution
+from logic.logic import apply_theorem, imp_disj_iff, disj_norm
 from logic.tactic import rewrite_goal_with_prev
+from logic.conv import rewr_conv, try_conv, top_conv
 # from syntax.settings import settings
 # settings.unicode = True
 from collections import deque
@@ -28,7 +29,7 @@ import json
 method = ('mp', 'mp~', 'asserted', 'trans', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
             'iff-true', 'iff-false', 'unit-resolution', 'commutativity', 'def-intro', 'apply-def',
             'def-axiom', 'iff~', 'nnf-pos', 'nnf-neg', 'sk', 'proof-bind', 'quant-inst', 'quant-intro',
-            'lemma', 'hypothesis', 'symm', 'refl')
+            'lemma', 'hypothesis', 'symm', 'refl', 'apply-def', 'intro-def')
 
 def Z3Term(proof):
     """Index all terms in z3 proof."""
@@ -191,6 +192,8 @@ def translate(term, bounds=deque()):
         elif z3.is_false(term):
             return false
         elif z3.is_const(term): # incomplete, is_const(Int(1)) == true
+            if term.decl().name() in local.keys():
+                return local[term.decl().name()]
             return Var(term.decl().name(), sort)
         elif z3.is_add(term):
             return reduce(lambda x, y: x + y, args)
@@ -248,28 +251,53 @@ def and_elim(pt, concl):
     return r[concl]
 
 def monotonicity(*pts):
-    ptl = pts[-1]
-    lhs, rhs = ptl.arg1, ptl.arg
-    assert lhs.head == rhs.head
-    pf = ProofTerm.reflexive(lhs.head)
+    """
+    
+    """
+    eq_prop = pts[-1] # f x1 x2 ... xk ~ f y1 y2 ... yk
+    eq_hyps = pts[:-1]
+    assert eq_prop.lhs.head == eq_prop.rhs.head
+    head = eq_prop.lhs.head
+    # collect xi ~ yi
+    lhs_param, rhs_param = [], []
+    eq_assms_lhs = [p.prop.lhs for p in eq_hyps]
+    eq_assms_rhs = [p.prop.rhs for p in eq_hyps]
 
-    new_pf = []
-    if len(lhs.args) == 2:
-        if lhs.arg1 == rhs.arg1:
-            new_pf = [ProofTerm.reflexive(lhs.arg1)] + [pts[0]]
-        elif lhs.arg == rhs.arg:
-            new_pf = [pts[0]] + [ProofTerm.reflexive(lhs.arg)]
+    def rec(p, param, known_eq):
+        if p in known_eq:
+            param.append(p)
+        elif p.head == head:
+            param.append(p.args[0])
+            if len(p.args) > 1:
+                rec(p.args[1], param, known_eq)
+        elif p.head != head:
+            param.append(p)
+
+    rec(eq_prop.lhs, lhs_param, eq_assms_lhs)
+    rec(eq_prop.rhs, rhs_param, eq_assms_rhs)
+
+    pt_concl = ProofTerm.reflexive(head)
+    index = 0
+    
+    eq_pts = deque()
+    
+    for l, r in zip(lhs_param, rhs_param):
+        if l != r:
+            eq_pts.appendleft(eq_hyps[index])
+            index += 1
         else:
-            new_pf = pts[:-1]
-    else:
-        new_pf = pts[:-1]
+            eq_pts.appendleft(ProofTerm.reflexive(l))
+    pt1 = eq_pts[0]
+    if len(eq_pts) == 1:
+        return pt_concl.combination(eq_pts[0])
+    for i in range(len(eq_pts) - 1):
+        pt1 = pt_concl.combination(eq_pts[i+1]).combination(pt1)
+        # print(pt1)
 
-    for pt in new_pf:
-        pf = pf.combination(pt)
+    return pt1
+    
 
-    return pf
-
-def schematic_rules(thms, lhs, rhs):
+def schematic_rules_rewr(thms, lhs, rhs):
     """Rewrite by instantiating schematic theorems."""
     context.set_context('smt')
     for thm in thms:
@@ -305,8 +333,8 @@ def rewrite(t):
     # first try use schematic theorems
     with open('library/smt.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
-    th_name = [f_data['content'][i]['name'] for i in range(len(f_data['content']))]
-    pt = schematic_rules(th_name, t.lhs, t.rhs)  # rewrite by schematic theorems 
+    th_name = [f_data['content'][i]['name'] for i in range(len(f_data['content'])) if f_data['content'][i]['name'][0]=='r']
+    pt = schematic_rules_rewr(th_name, t.lhs, t.rhs)  # rewrite by schematic theorems 
     if pt is None:
         if t.rhs == true and t.lhs.is_equals(): # prove ⊢ (x = y) ↔ true
             eq = t.lhs
@@ -452,6 +480,152 @@ def iff_false(arg1, arg2):
     pt1 = apply_theorem('eq_false', inst=Inst(A=arg1.prop.arg))
     return ProofTerm.equal_elim(pt1, arg1)
 
+def not_or_elim(arg1, arg2):
+    """
+    """
+    context.set_context('logic')
+    th = theory.get_theorem('de_morgan_thm2')
+    r = dict()
+    def rec(pt):
+        if pt.prop.is_not() and pt.prop.arg.is_disj():
+            inst = matcher.first_order_match(th.prop.lhs, pt.prop)
+            pt1 = apply_theorem('de_morgan_thm2', inst=inst)
+            pt2 = ProofTerm.equal_elim(pt1, pt)
+            pt_lhs = apply_theorem('conjD1', pt2)
+            pt_rhs = apply_theorem('conjD2', pt2)
+            rec(pt_lhs)
+            rec(pt_rhs)
+        else:
+            r[pt.prop] = pt
+    rec(arg1)
+    dict_items = [(key, value) for key, value in r.items()] # dictionary keys can't change during loop
+    for key, value in dict_items:
+        new_key = try_conv(rewr_conv('double_neg')).get_proof_term(key)
+        if new_key.prop.rhs != key:
+            r.pop(key)
+            new_key_pt = ProofTerm.equal_elim(new_key, value)
+            r[new_key.prop.rhs] = new_key_pt
+            
+    return r[arg2]
+
+def double_neg(pt):
+    """
+    If pt prop is in double neg form, try to simplify it.
+    """
+    cv = top_conv(try_conv(rewr_conv('double_neg')))
+    return pt.on_prop(cv)
+
+def nnf(pt):
+    """
+    Sometimes z3 get a proof which propositions is not in nnf-form.
+    And z3 directly use it to operate unit-resolution, so we implemented a rule here
+    to use de Morgan law when the propositions is not in nnf form.
+    """
+    cv_de_morgan_and = top_conv(try_conv(rewr_conv('de_morgan_thm1')))
+    cv_de_morgan_or = top_conv(try_conv(rewr_conv('de_morgan_thm2')))
+    
+    if pt != pt.on_prop(cv_de_morgan_and):
+        return nnf(pt.on_prop(cv_de_morgan_and))
+    elif pt != pt.on_prop(cv_de_morgan_or):
+        return nnf(pt.on_prop(cv_de_morgan_or))
+    else:
+        return pt
+
+def schematic_rules_def_axiom(axiom):
+    """Rewrite by instantiating def_axiom schematic theorems."""
+    context.set_context('smt')
+    with open('library/smt.json', 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
+    thms = [f_data['content'][i]['name'] for i in range(len(f_data['content'])) if f_data['content'][i]['name'][0]=='d']
+    for thm in thms:
+        pt = ProofTerm.theorem(thm)
+        try:
+            inst1 = matcher.first_order_match(pt.prop, axiom)
+            return pt.substitution(inst1)
+        except matcher.MatchException:
+            continue
+    return None
+    
+
+def def_axiom(arg1):
+    """
+    def-axiom rule prove propositional tautologies axioms.
+    because of this need propositional logic decision procedure,
+    currently use proofterm.sorry
+    """
+    if schematic_rules_def_axiom(arg1) != None:
+        return schematic_rules_def_axiom(arg1)
+    else:
+        return ProofTerm.sorry(Thm([], arg1))
+
+def intro_def(arg1):
+    """
+    Introduce a name for a formula/term.
+    Implement as asserted.
+    """
+    local[arg1.rhs.name] = arg1.lhs
+    return ProofTerm.assume(arg1)
+
+def apply_def(arg1):
+    return ProofTerm.reflexive(arg1.lhs)
+
+def resolution(pt1, pt2):
+    """Input proof terms are A_1 | ... | A_m and B_1 | ... | B_n, where
+    there is some i, j such that B_j = ~A_i or A_i = ~B_j."""
+    
+    # First, find the pair i, j such that B_j = ~A_i or A_i = ~B_j, the
+    # variable side records the side of the positive literal.
+    disj1 = pt1.prop.strip_disj()
+    disj2 = pt2.prop.strip_disj()
+    
+    side = None
+    for i, t1 in enumerate(disj1):
+        for j, t2 in enumerate(disj2):
+            if t2 == Not(t1):
+                side = 'left'
+                break
+            elif t1 == Not(t2):
+                side = 'right'
+                break
+        if side is not None:
+            break
+            
+    assert side is not None, "resolution: literal not found"
+    
+    # If side is wrong, just swap:
+    if side == 'right':
+        return resolution(pt2, pt1)
+    
+    # Move items i and j to the front
+    disj1 = [disj1[i]] + disj1[:i] + disj1[i+1:]
+    disj2 = [disj2[j]] + disj2[:j] + disj2[j+1:]
+    eq_pt1 = imp_disj_iff(Eq(pt1.prop, Or(*disj1)))
+    eq_pt2 = imp_disj_iff(Eq(pt2.prop, Or(*disj2)))
+    pt1 = eq_pt1.equal_elim(pt1)
+    pt2 = eq_pt2.equal_elim(pt2)
+    
+    if len(disj1) > 1 and len(disj2) > 1:
+        pt = apply_theorem('resolution', pt1, pt2)
+    elif len(disj1) > 1 and len(disj2) == 1:
+        pt = apply_theorem('resolution_left', pt1, pt2)
+    elif len(disj1) == 1 and len(disj2) > 1:
+        pt = apply_theorem('resolution_right', pt1, pt2)
+    else:
+        pt = apply_theorem('negE', pt2, pt1)
+
+    return pt.on_prop(disj_norm())
+
+def lemma(arg1, arg2):
+    """
+    arg1 is proof: Γ ∪ {L1, L2, ..., Ln} ⊢ ⟂
+    return proof: Γ ⊢ ¬L1 ∨ ... ∨ ¬Ln
+    """
+    th = theory.get_theorem('negI')
+    pt1 = arg1.implies_intr(Not(arg2))
+    inst = matcher.first_order_match(th.prop.arg1, pt1.prop)
+    pt = apply_theorem('negI', pt1, inst=inst)
+    return double_neg(pt)
+
 
 def convert_method(term, *args):
     name = term.decl().name()
@@ -460,6 +634,9 @@ def convert_method(term, *args):
     elif name == 'and-elim':
         arg1, arg2 = args
         return and_elim(arg1, arg2)
+    elif name == 'not-or-elim':
+        arg1, arg2, = args
+        return not_or_elim(arg1, arg2)
     elif name == 'monotonicity':
         return monotonicity(*args)
     elif name == 'trans':
@@ -498,26 +675,46 @@ def convert_method(term, *args):
         return args[0].symmetric()
     elif name == 'refl':
         return ProofTerm.reflexive(args[0])
+    elif name == 'def-axiom':
+        arg1, = args
+        return def_axiom(arg1)
+    elif name == 'intro-def':
+        arg1, = args
+        return intro_def(arg1)
+    elif name == 'apply-def':
+        arg1, arg2, = args
+
+        return apply_def(arg2)
+    elif name == 'lemma':
+        arg1, arg2 = args
+        return lemma(arg1, arg2)
     else:
         raise NotImplementedError
     
+local = dict()
 
-
-def proofrec(proof, bounds=deque()):
+def proofrec(proof, bounds=deque(), trace=False):
+    """
+    If trace is true, print reconstruction trace.
+    """
     term = Z3Term(proof)
     net = Z3TermGraph(proof)
     order = DepthFirstOrder(net)
     r = dict()
 
     for i in order:
+        if i == 110:
+            print("!")
         args = (r[j] for j in net[i])
-        # print('term['+str(i)+']', term[i])
+        if trace:
+            print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i],bounds=bounds)
         else:
             r[i] = convert_method(term[i], *args)
             basic.load_theory('int')
-            # print('r['+str(i)+']', r[i])
+            if trace:
+                print('r['+str(i)+']', r[i])
     return r[0]
 
     

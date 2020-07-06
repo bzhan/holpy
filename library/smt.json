@@ -852,6 +852,150 @@
                 "p": "bool",
                 "q": "bool"
             }
+        },
+        {
+            "name": "d001",
+            "prop": "¬(p ⟷ q) ∨ ¬p ∨ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d002",
+            "prop": "¬(p ⟷ q) ∨ p ∨ ¬q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d003",
+            "prop": "(p ⟷ ¬q) ∨ ¬p ∨ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d004",
+            "prop": "(¬p ⟷ q) ∨ p ∨ ¬q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d005",
+            "prop": "(p ⟷ q) ∨ ¬p ∨ ¬q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d006",
+            "prop": "(p ⟷ q) ∨ p ∨ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d007",
+            "prop": "¬(¬p ⟷ q) ∨ p ∨ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d008",
+            "prop": "¬(p ⟷ ¬q) ∨ p ∨ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d009",
+            "prop": "¬p ∨ q ∨ ¬(p ⟷ q)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d010",
+            "prop": "p ∨ ¬q ∨ ¬(p ⟷ q)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d011",
+            "prop": "p ∨ q ∨ ¬(¬p ⟷ q)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d012",
+            "prop": "p ∨ q ∨ ¬(p ⟷ ¬q)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d013",
+            "prop": "¬p ∧ ¬q ∨ p ∨ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d014",
+            "prop": "¬p ∧ q ∨ p ∨ ¬q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d015",
+            "prop": "p ∧ ¬q ∨ ¬p ∨ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "d016",
+            "prop": "p ∧ q ∨ ¬p ∨ ¬q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
         }
     ],
     "description": "Used for z3 rule rewrite, th-lemma and def-axiom.",
