@@ -4,6 +4,119 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "abs_sqare_lt_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_pow_one, x ^ (2::nat) < 1 ⟷ x ^ (2::nat) < 1 ^ (2::nat)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ (2::nat) < 1 ⟷ x ^ (2::nat) < 1 ^ (2::nat)"
+                },
+                {
+                    "args": "real_one_def, x ^ (2::nat) < of_nat 1 ⟷ x ^ (2::nat) < of_nat 1 ^ (2::nat)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ x ^ (2::nat) < of_nat 1 ⟷ x ^ (2::nat) < of_nat 1 ^ (2::nat)"
+                },
+                {
+                    "args": "real_abs_nat, x ^ (2::nat) < abs of_nat 1 ⟷ x ^ (2::nat) < of_nat 1 ^ (2::nat)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ (2::nat) < abs of_nat 1 ⟷ x ^ (2::nat) < of_nat 1 ^ (2::nat)"
+                },
+                {
+                    "args": "real_lt_square_abs, x ^ (2::nat) < abs of_nat 1 ⟷ abs x < abs of_nat 1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ (2::nat) < abs of_nat 1 ⟷ abs x < abs of_nat 1"
+                },
+                {
+                    "args": "real_abs_nat, x ^ (2::nat) < of_nat 1 ⟷ abs x < of_nat 1",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ x ^ (2::nat) < of_nat 1 ⟷ abs x < of_nat 1"
+                },
+                {
+                    "args": "real_one_def, x ^ (2::nat) < 1 ⟷ abs x < 1",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ (2::nat) < 1 ⟷ abs x < 1"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ^ (2::nat) < 1 ⟷ abs x < 1"
+                }
+            ],
+            "prop": "x ^ (2::nat) < 1 ⟷ abs x < 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_abs_nat"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_lt_square_abs"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_nat"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_one"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_lt_between",
             "num_gaps": 0,
             "proof": [
