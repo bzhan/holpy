@@ -32,39 +32,25 @@ method = ('mp', 'mp~', 'asserted', 'trans', 'monotonicity', 'rewrite', 'and-elim
             'def-axiom', 'iff~', 'nnf-pos', 'nnf-neg', 'sk', 'proof-bind', 'quant-inst', 'quant-intro',
             'lemma', 'hypothesis', 'symm', 'refl', 'apply-def', 'intro-def')
 
-def Z3Term(proof):
-    """Index all terms in z3 proof."""
+
+def index_and_relation(proof):
+    """Index all terms in z3 proof and get the relation between the terms."""
     s = dict()
     id = 0
-    def rec(term):
+    def rec(term, parent=None):
         nonlocal id
-        if term not in s.keys():
-            s[term] = id
+        if term in s.keys() and parent != None:
+            s[parent][1].append(s[term][0])
+        else:
+            s[term] = [id, []]
+            if parent is not None:
+                s[parent][1].append(id)
             id += 1
-            # with open('proof3.txt', 'a') as f:
-            #     print(time.ctime() + ' ['+str(id)+']', file=f)
-        if not z3.is_quantifier(term): # and term.decl().name() in method:
-            for child in term.children():
-                rec(child)
+            if not z3.is_quantifier(term):
+                for child in term.children():
+                    rec(child, term)
     rec(proof)
-    return {value: key for key, value in s.items()}
-
-def Z3TermGraph(proof):
-    """Relation between proof terms."""
-    r = dict()
-    c = Z3Term(proof)
-    s = {value: key for key, value in c.items()}
-    for i in range(len(s)):
-        r[i] = []
-    def rec(proof):
-        for child in proof.children():
-            if proof in s.keys():
-                r[s[proof]].append(s[child])
-            if not z3.is_quantifier(child) and child.decl().name() in method:
-                rec(child)
-
-    rec(proof)
-    return {key: list(dict.fromkeys(value).keys()) for key, value in r.items()}
+    return {value[0]: key for key, value in s.items()}, {value[0]: value[1] for key, value in s.items()}
 
 def DepthFirstOrder(G):
     """Traverse graph in reversed DFS order."""
@@ -767,7 +753,6 @@ def convert_method(term, *args):
         return intro_def(arg1)
     elif name == 'apply-def':
         arg1, arg2, = args
-
         return apply_def(arg2)
     elif name == 'lemma':
         arg1, arg2 = args
@@ -777,12 +762,12 @@ def convert_method(term, *args):
     
 local = dict()
 
+
 def proofrec(proof, bounds=deque(), trace=False):
     """
     If trace is true, print reconstruction trace.
     """
-    term = Z3Term(proof)
-    net = Z3TermGraph(proof)
+    term, net = index_and_relation(proof)
     order = DepthFirstOrder(net)
     r = dict()
 
@@ -798,5 +783,3 @@ def proofrec(proof, bounds=deque(), trace=False):
             if trace:
                 print('r['+str(i)+']', r[i])
     return r[0]
-
-    
