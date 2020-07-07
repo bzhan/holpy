@@ -9209,6 +9209,75 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "real_abs_div",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_abs_inv, abs x * abs (real_inverse y) = abs x * real_inverse (abs y)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs x * abs (real_inverse y) = abs x * real_inverse (abs y)"
+                },
+                {
+                    "args": "real_abs_mul, abs (x * real_inverse y) = abs x * real_inverse (abs y)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (x * real_inverse y) = abs x * real_inverse (abs y)"
+                },
+                {
+                    "args": "real_divide_def, abs (x / y) = abs x / abs y",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (x / y) = abs x / abs y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs (x / y) = abs x / abs y"
+                }
+            ],
+            "prop": "abs (x / y) = abs x / abs y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_mul"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_inv"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_inv_mul",
             "num_gaps": 0,
             "proof": [
@@ -28485,6 +28554,537 @@
             "ty": "thm",
             "vars": {
                 "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sqrt_pos_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "sqrt_pos_le",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ 0 ≤ sqrt x"
+                },
+                {
+                    "args": "¬(x = 0)",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < x ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "sqrt_eq_0, ¬(sqrt x = 0)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ ¬(sqrt x = 0)"
+                },
+                {
+                    "args": "eq_sym_eq, ¬(0 = sqrt x)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ ¬(0 = sqrt x)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "2",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ 0 ≤ sqrt x ∧ ¬(0 = sqrt x)"
+                },
+                {
+                    "args": "real_lt_le, 0 < sqrt x",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ 0 < sqrt x"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ 0 < sqrt x"
+                }
+            ],
+            "prop": "0 < x ⟶ 0 < sqrt x",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_lt_le"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sqrt_pos_le"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sqrt_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_le_lsqrt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ y ⊢ 0 ≤ y"
+                },
+                {
+                    "args": "x ≤ y ^ (2::nat)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ y ^ (2::nat) ⊢ x ≤ y ^ (2::nat)"
+                },
+                {
+                    "args": "sqrt_mono_le",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ y ^ (2::nat) ⊢ sqrt x ≤ sqrt (y ^ (2::nat))"
+                },
+                {
+                    "args": "pow_2_sqrt",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ y ⊢ sqrt (y ^ (2::nat)) = y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "0 ≤ y, x ≤ y ^ (2::nat) ⊢ sqrt x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ y ⟶ x ≤ y ^ (2::nat) ⟶ sqrt x ≤ y"
+                }
+            ],
+            "prop": "0 ≤ y ⟶ x ≤ y ^ (2::nat) ⟶ sqrt x ≤ y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sqrt_mono_le"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "pow_2_sqrt"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_le_rsqrt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x ^ (2::nat) ≤ y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ^ (2::nat) ≤ y ⊢ x ^ (2::nat) ≤ y"
+                },
+                {
+                    "args": "sqrt_mono_le",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ^ (2::nat) ≤ y ⊢ sqrt (x ^ (2::nat)) ≤ sqrt y"
+                },
+                {
+                    "args": "∀a::real. ∀b. abs a ≤ b ⟶ a ≤ b",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. abs a ≤ b ⟶ a ≤ b"
+                },
+                {
+                    "args": "pow_2_sqrt_abs",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ^ (2::nat) ≤ y ⊢ abs x ≤ sqrt y"
+                },
+                {
+                    "args": "x, sqrt y",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "x ^ (2::nat) ≤ y ⊢ x ≤ sqrt y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ^ (2::nat) ≤ y ⟶ x ≤ sqrt y"
+                }
+            ],
+            "prop": "x ^ (2::nat) ≤ y ⟶ x ≤ sqrt y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sqrt_mono_le"
+                },
+                {
+                    "goal": "!a::real. !b. abs a <= b --> a <= b",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "pow_2_sqrt_abs"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_lt_lsqrt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ y ⊢ 0 ≤ y"
+                },
+                {
+                    "args": "x < y ^ (2::nat)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ^ (2::nat) ⊢ x < y ^ (2::nat)"
+                },
+                {
+                    "args": "sqrt_mono_lt",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y ^ (2::nat) ⊢ sqrt x < sqrt (y ^ (2::nat))"
+                },
+                {
+                    "args": "pow_2_sqrt",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ y ⊢ sqrt (y ^ (2::nat)) = y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "0 ≤ y, x < y ^ (2::nat) ⊢ sqrt x < y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ y ⟶ x < y ^ (2::nat) ⟶ sqrt x < y"
+                }
+            ],
+            "prop": "0 ≤ y ⟶ x < y ^ (2::nat) ⟶ sqrt x < y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sqrt_mono_lt"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "pow_2_sqrt"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_lt_rsqrt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x ^ (2::nat) < y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ^ (2::nat) < y ⊢ x ^ (2::nat) < y"
+                },
+                {
+                    "args": "sqrt_mono_lt",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ^ (2::nat) < y ⊢ sqrt (x ^ (2::nat)) < sqrt y"
+                },
+                {
+                    "args": "∀x::real. ∀a. abs x < a ⟶ x < a",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::real. ∀a. abs x < a ⟶ x < a"
+                },
+                {
+                    "args": "pow_2_sqrt_abs",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ^ (2::nat) < y ⊢ abs x < sqrt y"
+                },
+                {
+                    "args": "x, sqrt y",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "x ^ (2::nat) < y ⊢ x < sqrt y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ^ (2::nat) < y ⟶ x < sqrt y"
+                }
+            ],
+            "prop": "x ^ (2::nat) < y ⟶ x < sqrt y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sqrt_mono_lt"
+                },
+                {
+                    "goal": "!x::real. !a. abs x < a --> x < a",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "pow_2_sqrt_abs"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
             }
         }
     ],
