@@ -23902,6 +23902,208 @@
         },
         {
             "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_sgn_imp_pos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "if_P, (if 0 < x then (1::real) else if x < 0 then -1 else 0) = 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ (if 0 < x then (1::real) else if x < 0 then -1 else 0) = 1"
+                },
+                {
+                    "args": "real_sgn_def, real_sgn x = 1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ real_sgn x = 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ real_sgn x = 1"
+                }
+            ],
+            "prop": "0 < x ⟶ real_sgn x = 1",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_sgn_eq_pos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_sgn a = real_sgn b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_sgn a = real_sgn b ⊢ real_sgn a = real_sgn b"
+                },
+                {
+                    "args": "real_sgn_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_sgn a = real_sgn b ⊢ (if 0 < a then (1::real) else if a < 0 then -1 else 0) = (if 0 < b then 1 else if b < 0 then -1 else 0)"
+                },
+                {
+                    "args": "0 ≤ a ⟷ 0 ≤ b",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "real_sgn a = real_sgn b ⊢ 0 ≤ a ⟷ 0 ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sgn a = real_sgn b ⟶ 0 ≤ a ⟷ 0 ≤ b"
+                }
+            ],
+            "prop": "real_sgn a = real_sgn b ⟶ 0 ≤ a ⟷ 0 ≤ b",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sgn_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_sgn_eq_pos_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_sgn a = real_sgn b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_sgn a = real_sgn b ⊢ real_sgn a = real_sgn b"
+                },
+                {
+                    "args": "real_sgn_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_sgn a = real_sgn b ⊢ (if 0 < a then (1::real) else if a < 0 then -1 else 0) = (if 0 < b then 1 else if b < 0 then -1 else 0)"
+                },
+                {
+                    "args": "0 < a ⟷ 0 < b",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "real_sgn a = real_sgn b ⊢ 0 < a ⟷ 0 < b"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sgn a = real_sgn b ⟶ 0 < a ⟷ 0 < b"
+                }
+            ],
+            "prop": "real_sgn a = real_sgn b ⟶ 0 < a ⟷ 0 < b",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sgn_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward",
                 "hint_backward1"
             ],

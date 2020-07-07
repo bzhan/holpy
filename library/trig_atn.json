@@ -1653,77 +1653,29 @@
                 "hint_rewrite"
             ],
             "name": "halfatn_pos_eq",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "halfatn_sgn, {x: x}",
+                    "args": "halfatn_sgn, real_sgn (halfatn x) = real_sgn x",
                     "id": "0",
                     "prevs": [],
-                    "rule": "apply_theorem_for",
+                    "rule": "rewrite_goal",
                     "th": "⊢ real_sgn (halfatn x) = real_sgn x"
                 },
                 {
-                    "args": "real_sgn_def",
+                    "args": "real_sgn_eq_pos",
                     "id": "1",
                     "prevs": [
                         "0"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "⊢ (if 0 < halfatn x then (1::real) else if halfatn x < 0 then -1 else 0) = (if 0 < x then 1 else if x < 0 then -1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "⊢ 0 ≤ halfatn x ⟶ 0 ≤ x"
-                },
-                {
-                    "args": "0 ≤ halfatn x",
-                    "id": "2.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "0 ≤ halfatn x ⊢ 0 ≤ halfatn x"
-                },
-                {
-                    "args": "",
-                    "id": "2.1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "0 ≤ halfatn x ⊢ 0 ≤ x"
-                },
-                {
-                    "args": "",
-                    "id": "2.2",
-                    "prevs": [
-                        "2.0",
-                        "2.1"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ 0 ≤ halfatn x ⟶ 0 ≤ x"
-                },
-                {
-                    "args": "",
-                    "id": "3",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "⊢ 0 ≤ x ⟶ 0 ≤ halfatn x"
-                },
-                {
-                    "args": "iffI",
-                    "id": "4",
-                    "prevs": [
-                        "2",
-                        "3"
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ 0 ≤ halfatn x ⟷ 0 ≤ x"
                 },
                 {
                     "args": "",
-                    "id": "5",
+                    "id": "2",
                     "prevs": [
-                        "4"
+                        "1"
                     ],
                     "rule": "intros",
                     "th": "⊢ 0 ≤ halfatn x ⟷ 0 ≤ x"
@@ -1733,27 +1685,207 @@
             "steps": [
                 {
                     "goal_id": "0",
-                    "method_name": "apply_forward_step",
-                    "param_x": "x",
-                    "theorem": "halfatn_sgn"
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_sgn_eq_pos"
                 },
                 {
-                    "fact_ids": [
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "halfatn_sgn"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "halfatn_pos_lt_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "halfatn_sgn, real_sgn (halfatn x) = real_sgn x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn (halfatn x) = real_sgn x"
+                },
+                {
+                    "args": "real_sgn_eq_pos_lt",
+                    "id": "1",
+                    "prevs": [
                         "0"
                     ],
-                    "goal_id": "1",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "real_sgn_def"
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < halfatn x ⟷ 0 < x"
                 },
                 {
-                    "goal_id": "2",
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < halfatn x ⟷ 0 < x"
+                }
+            ],
+            "prop": "0 < halfatn x ⟷ 0 < x",
+            "steps": [
+                {
+                    "goal_id": "0",
                     "method_name": "apply_backward_step",
-                    "theorem": "iffI"
+                    "theorem": "real_sgn_eq_pos_lt"
                 },
                 {
-                    "goal_id": "2",
-                    "method_name": "introduction"
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "halfatn_sgn"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "halfatn_pos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "halfatn_pos_eq, 0 ≤ halfatn x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x ⊢ 0 ≤ halfatn x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ 0 ≤ halfatn x"
+                }
+            ],
+            "prop": "0 ≤ x ⟶ 0 ≤ halfatn x",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "halfatn_pos_eq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "halfatn_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x < 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < 0 ⊢ x < 0"
+                },
+                {
+                    "args": "double_neg, ¬¬(x < 0)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < 0 ⊢ ¬¬(x < 0)"
+                },
+                {
+                    "args": "real_not_lt, ¬(0 ≤ x)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "x < 0 ⊢ ¬(0 ≤ x)"
+                },
+                {
+                    "args": "halfatn_pos_eq, ¬(0 ≤ halfatn x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < 0 ⊢ ¬(0 ≤ halfatn x)"
+                },
+                {
+                    "args": "real_less_def, halfatn x < 0",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < 0 ⊢ halfatn x < 0"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x < 0 ⟶ halfatn x < 0"
+                }
+            ],
+            "prop": "x < 0 ⟶ halfatn x < 0",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_less_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "halfatn_pos_eq"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_not_lt"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
                 }
             ],
             "ty": "thm",
