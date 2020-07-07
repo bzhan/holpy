@@ -21,9 +21,10 @@ from logic.conv import rewr_conv, try_conv, top_conv
 # from syntax.settings import settings
 # settings.unicode = True
 from collections import deque
-from functools import reduce
+import functools
 import operator
 import json
+import time
 
 # Z3 proof method name.
 method = ('mp', 'mp~', 'asserted', 'trans', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
@@ -40,7 +41,9 @@ def Z3Term(proof):
         if term not in s.keys():
             s[term] = id
             id += 1
-        if not z3.is_quantifier(term) and term.decl().name() in method:
+            # with open('proof3.txt', 'a') as f:
+            #     print(time.ctime() + ' ['+str(id)+']', file=f)
+        if not z3.is_quantifier(term): # and term.decl().name() in method:
             for child in term.children():
                 rec(child)
     rec(proof)
@@ -120,6 +123,12 @@ def forall_body(t, vars):
     """
     pass
 
+def arity(l):
+    """
+    Give a lambda term %x1 x2 ... xn. body
+    return n
+    """
+    return 1 + arity(l.body) if l.is_abs() else 0
 
 def translate_type(sort):
     """Translate z3 type into holpy type."""
@@ -196,13 +205,13 @@ def translate(term, bounds=deque()):
                 return local[term.decl().name()]
             return Var(term.decl().name(), sort)
         elif z3.is_add(term):
-            return reduce(lambda x, y: x + y, args)
+            return functools.reduce(lambda x, y: x + y, args)
         elif term.decl().kind() == Z3_OP_UMINUS:
             return uminus(sort)(*args)
         elif z3.is_sub(term):
-            return reduce(lambda x, y: x - y, args)
+            return functools.reduce(lambda x, y: x - y, args)
         elif z3.is_mul(term):
-            return reduce(lambda x, y: x * y, args)
+            return functools.reduce(lambda x, y: x * y, args)
         elif z3.is_div(term) or z3.is_idiv(term):
             return divides(sort)(*args)
         elif z3.is_eq(term):
@@ -250,51 +259,112 @@ def and_elim(pt, concl):
     rec(pt)
     return r[concl]
 
-def monotonicity(*pts):
+def monotonicity(pts, concl):
     """
-    
+    f = g, x1 = y1, x2 = y2, ..., xn = yn
+    =====================================
+        f(x1,...,xn) = g(y1,...,yn)
+
+    Note: In HOL, disj and conj are both binary right-associative operators,
+    but in z3, they are polyadic, so if f and g are disj/conj, the
+    first thing is to abstract over the bool var in them to get the real 
+    f and g. If f and g are not disj and conj, we can easily get the fun
+    by calling specific method(*.fun). 
+
+    After getting f and g, the next thing is to find x1...xn and y1...yn, although
+    z3 has provided some equality instances like above, but when xk = yk, it will 
+    ignore the equality(even when f=g), so we need to find out them. This can be done by ranging
+    over the last argument f(x1,...,xn). If f and g are disj or conj, we can easily 
+    get them by "strip_disj()/strip_conj()" method. Or else we can use "strip_comb()"
+    method to get them.
+
+    As soon as we've collected all necessary stuff, we can reconstrcut the proof by
+    recursively using combination rule.
+
+    There is a special case for conj and disj, for example: the provided equality is
+    B∨C = C∨B, and we want to prove A∨B∨C = A∨C∨B, it is inappropriate to use strip_disj(),
+    because disj is right-associate, we have no chance to get complete B∨C term. So we need
+    to implemented custom strip_disj()/strip_conj() method.
+
+    The translate process have bugs(∧,∨ are polyadic), that's why disj and conj are special.
     """
-    eq_prop = pts[-1] # f x1 x2 ... xk ~ f y1 y2 ... yk
-    eq_hyps = pts[:-1]
-    assert eq_prop.lhs.head == eq_prop.rhs.head
-    head = eq_prop.lhs.head
-    # collect xi ~ yi
-    lhs_param, rhs_param = [], []
-    eq_assms_lhs = [p.prop.lhs for p in eq_hyps]
-    eq_assms_rhs = [p.prop.rhs for p in eq_hyps]
 
-    def rec(p, param, known_eq):
-        if p in known_eq:
-            param.append(p)
-        elif p.head == head:
-            param.append(p.args[0])
-            if len(p.args) > 1:
-                rec(p.args[1], param, known_eq)
-        elif p.head != head:
-            param.append(p)
+    def get_argument(f):
+        """
+        Suppose f is f x1 x2 x3, return [x1, x2, x3]
+        """
+        _, fx = f.strip_comb()
+        return fx
 
-    rec(eq_prop.lhs, lhs_param, eq_assms_lhs)
-    rec(eq_prop.rhs, rhs_param, eq_assms_rhs)
+    # First get f, g.
+    f_expr, g_expr = concl.lhs, concl.rhs
+    if not f_expr.is_disj() and not f_expr.is_conj():
+        f, g = f_expr.head, g_expr.head
 
-    pt_concl = ProofTerm.reflexive(head)
-    index = 0
-    
-    eq_pts = deque()
-    
-    for l, r in zip(lhs_param, rhs_param):
-        if l != r:
-            eq_pts.appendleft(eq_hyps[index])
-            index += 1
+        # Next collect arguments: x1...xn/y1...yn
+        # We can't split the term in pts into subterms.
+        fx, gy = get_argument(f_expr), get_argument(g_expr)
+        # Then put all useful equalities proofterm in equalities.
+        equalities = []
+        if f == g:
+            equalities.append(ProofTerm.reflexive(f))
+            index = 0
         else:
-            eq_pts.appendleft(ProofTerm.reflexive(l))
-    pt1 = eq_pts[0]
-    if len(eq_pts) == 1:
-        return pt_concl.combination(eq_pts[0])
-    for i in range(len(eq_pts) - 1):
-        pt1 = pt_concl.combination(eq_pts[i+1]).combination(pt1)
-        # print(pt1)
+            index = 1
 
-    return pt1
+        for x, y in zip(fx, gy):
+            if x == y: # z3 not provide it
+                equalities.append(ProofTerm.reflexive(x))
+            else:
+                equalities.append(pts[index])
+                index += 1
+
+        # use combination get final proof
+        return functools.reduce(lambda f, x : f.combination(x), equalities)
+    else:
+        eq_prop = concl # f x1 x2 ... xk ~ f y1 y2 ... yk
+        eq_hyps = pts
+        assert eq_prop.lhs.head == eq_prop.rhs.head
+        head = eq_prop.lhs.head
+        head_arity = arity(head)
+        # collect xi ~ yi
+        lhs_param, rhs_param = [], []
+        eq_assms_lhs = [p.prop.lhs for p in eq_hyps]
+        eq_assms_rhs = [p.prop.rhs for p in eq_hyps]
+
+        def rec(p, param, known_eq):
+            if p in known_eq:
+                param.append(p)
+            elif p.head == head:
+                param.append(p.args[0])
+                if len(p.args) > 1:
+                    rec(p.args[1], param, known_eq)
+            elif p.head != head:
+                param.append(p)
+
+        rec(eq_prop.lhs, lhs_param, eq_assms_lhs)
+        rec(eq_prop.rhs, rhs_param, eq_assms_rhs)
+
+        pt_concl = ProofTerm.reflexive(head)
+        index = 0
+        
+        eq_pts = deque()
+        
+        for l, r in zip(lhs_param, rhs_param):
+            if l != r:
+                eq_pts.appendleft(eq_hyps[index])
+                index += 1
+            else:
+                eq_pts.appendleft(ProofTerm.reflexive(l))
+        pt1 = eq_pts[0]
+        if len(eq_pts) == 1:
+            return pt_concl.combination(eq_pts[0])
+        for i in range(len(eq_pts) - 1):
+            for j in range(head_arity - 1):
+                pt_left = pt_concl.combination()
+            pt1 = pt_concl.combination(eq_pts[i+1]).combination(pt1)
+
+        return pt1
     
 
 def schematic_rules_rewr(thms, lhs, rhs):
@@ -531,6 +601,19 @@ def nnf(pt):
     else:
         return pt
 
+def beta_norm_lambda_eq(pt):
+    """
+    Suppose pt is: ⊢ (λx. p)(x) <--> (λy. q)(y)
+    return a proofterm: ⊢ p x <--> q y
+    """
+    assert isinstance(pt, ProofTerm) and pt.prop.is_equals() and\
+        pt.prop.lhs.head.is_abs() and pt.prop.rhs.head.is_abs(), \
+        "Invalid ProofTerm: %s" % str(pt)
+    lhs, rhs = pt.prop.lhs, pt.prop.rhs
+    pt_lhs = ProofTerm.beta_conv(lhs).symmetric()
+    pt_rhs = ProofTerm.beta_conv(rhs)
+    return pt_lhs.transitive(pt).transitive(pt_rhs)
+
 def schematic_rules_def_axiom(axiom):
     """Rewrite by instantiating def_axiom schematic theorems."""
     context.set_context('smt')
@@ -638,7 +721,8 @@ def convert_method(term, *args):
         arg1, arg2, = args
         return not_or_elim(arg1, arg2)
     elif name == 'monotonicity':
-        return monotonicity(*args)
+        *equals, concl = args
+        return monotonicity(equals, concl)
     elif name == 'trans':
         arg1, arg2, _ = args
         return arg1.transitive(arg2)
@@ -703,8 +787,6 @@ def proofrec(proof, bounds=deque(), trace=False):
     r = dict()
 
     for i in order:
-        if i == 110:
-            print("!")
         args = (r[j] for j in net[i])
         if trace:
             print('term['+str(i)+']', term[i])
