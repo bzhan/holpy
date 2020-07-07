@@ -215,8 +215,8 @@ class norm_add_polynomial(Conv):
                 )
             else:
                 return pt.on_rhs(
-                    norm_add_monomial(), 
-                    norm_add_polynomial())
+                    norm_add_monomial(),) 
+                    #norm_add_polynomial())
 
 class norm_mult_poly_monomial(Conv):
     """Multiply a polynomial a_1 + ... + a_n with a monomial c."""
