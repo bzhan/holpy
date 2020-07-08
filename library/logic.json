@@ -5686,6 +5686,15 @@
                 "P": "'a ⇒ bool",
                 "R": "'a ⇒ 'b ⇒ bool"
             }
+        },
+        {
+            "name": "iff_conv_conj_disj",
+            "prop": "(A ⟷ B) ⟷ (A ∨ ¬B) ∧ (¬A ∨ B)",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
         }
     ],
     "description": "Basic results in logic",
