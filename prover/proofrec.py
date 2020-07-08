@@ -245,7 +245,9 @@ def and_elim(pt, concl):
     context.set_context('logic_base')
     r = dict()
     def rec(pt):
-        if pt.prop.is_conj():
+        if pt.prop == concl:
+            r[pt.prop] = pt
+        elif pt.prop.is_conj():
             rec(apply_theorem('conjD1', pt))
             rec(apply_theorem('conjD2', pt))
         else:
@@ -677,6 +679,7 @@ def intro_def(concl):
         e1 = concl.arg.arg.rhs
         T = th.get_type()
         ite = Const("IF", TFun(BoolType, T, T, T))(cond, th, e1)
+        redundant.append(Eq(n, ite)) # we need to delete the equalities after reconstruction.
         # First prove ⊢ (¬cond ∨ n = th)
         pt = apply_theorem('if_P', inst=Inst(P=cond, x=th, y=e1))
         pt_cond_assm = ProofTerm.assume(cond)
@@ -852,13 +855,27 @@ def convert_method(term, *args):
         raise NotImplementedError
     
 local = dict()
+redundant = []
+
+def delete_redundant(pt, redundant):
+    """
+    Because we introduce abbreviations for formula during def-intro,
+    after reconstruction complete, we can delete these formulas use 
+    theorem "(?t = ?t ⟹ False) ⟹ False"
+    """
+    new_pt = pt
+    for r in redundant:
+        pt1 = apply_theorem('eq_imp_false', inst=Inst(A=r.lhs, B=r.rhs)) # ⊢ (A = B --> false) --> false
+        pt2 = new_pt.implies_intr(r) # ⊢ A = B --> false
+        new_pt = pt1.implies_elim(pt2)
+    
+    return new_pt
 
 
 def proofrec(proof, bounds=deque(), trace=False, debug=False):
     """
     If trace is true, print reconstruction trace.
     """
-    redundant = []
     term, net = index_and_relation(proof)
     order = DepthFirstOrder(net)
     r = dict()
@@ -875,4 +892,6 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False):
                 basic.load_theory('int')
                 basic.load_theory('real')
                 print('r['+str(i)+']', r[i])
-    return r[0]
+    conclusion = delete_redundant(r[0], redundant)
+    redundant.clear()
+    return conclusion
