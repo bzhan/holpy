@@ -31,7 +31,7 @@ class ProofrecTest(unittest.TestCase):
             # (IntVal(0), '(0::int)'),
             # (IntVal(10), '(10::int)'),
             # (IntVal(-3), '(-3::int)'),
-            # (RealVal('3/5'), '((3/5)::real)'),
+            (RealVal('3/5'), '((3/5)::real)'),
             (BoolVal(True), 'true'),
             (BoolVal(False), 'false'),
             (zInt('x'), 'x'),
@@ -46,6 +46,7 @@ class ProofrecTest(unittest.TestCase):
 
         for i, k in test_data:
             context.set_context('int', vars={'x':'int', 'y':'int',  'F':'int=>int'})
+            basic.load_theory('real')
             k = parse_term(k)
             vars = ['x', 'y']
             self.assertEqual(proofrec.translate(i), k)
@@ -90,6 +91,22 @@ class ProofrecTest(unittest.TestCase):
             t = parse_term(t)
             proof=z3wrapper.solve_and_proof(t)    
             r = proofrec.proofrec(proof)
+            self.assertEqual(str(r.th), p)
+
+    def testRecRealSet(self):
+        test_data = [
+            ('max a b = (1/2) * (a + b + abs(a - b))',
+            'a + -1 * b >= 0, z3name!0 = (if a + -1 * b >= 0 then a else b), z3name!1 = (if a + -1 * b >= 0 then a + -1 * b else -1 * a + b), ~((if a >= b then a else b) = 1 / 2 * (a + b + (if a - b >= 0 then a - b else -(a - b)))) |- false')
+        ]
+
+        for t, p in test_data:
+            context.set_context('real', vars={
+            'a': 'real', 'b': 'real', 'x': 'real', 'f': 'real => real', 'S': 'real set', 'T': 'real set',
+            'n': 'nat'})
+            t = parse_term(t)
+            proof=z3wrapper.solve_and_proof(t)    
+            r = proofrec.proofrec(proof)
+            basic.load_theory('real')
             self.assertEqual(str(r.th), p)
 
     def testQuantIntro(self):

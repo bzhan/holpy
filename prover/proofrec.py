@@ -180,13 +180,17 @@ def translate(term, bounds=deque()):
         args = tuple(translate(term.arg(i), bounds) for i in range(term.num_args()))
         if z3.is_int_value(term): # int number
             return Int(term.as_long())
-        elif z3.is_algebraic_value(term): # real number
+        elif z3.is_rational_value(term): # Return `True` if term is rational value of sort Real
+            return Real(term.as_fraction())
+        elif z3.is_algebraic_value(term): # a number
             return Real(term.as_fraction())
         elif z3.is_true(term):
             return true
         elif z3.is_false(term):
             return false
-        elif z3.is_const(term): # incomplete, is_const(Int(1)) == true
+        elif z3.is_const(term): 
+            # incomplete, is_const(Int(1)) == true, but Int(1) have already been
+            # translated above
             if term.decl().name() in local.keys():
                 return local[term.decl().name()]
             return Var(term.decl().name(), sort)
@@ -211,17 +215,21 @@ def translate(term, bounds=deque()):
         elif z3.is_not(term):
             return Not(*args)
         elif z3.is_lt(term):
-            return less(sort)(*args)
+            return less(args[0].get_type())(*args)
         elif z3.is_le(term):
-            return less_eq(sort)(*args)
+            return less_eq(args[0].get_type())(*args)
         elif z3.is_gt(term):
-            return greater(sort)(*args)
+            return greater(args[0].get_type())(*args)
         elif z3.is_ge(term):
-            return greater_eq(sort)(*args)
+            return greater_eq(args[0].get_type())(*args)
         elif z3.is_distinct(term):
             ineq = [Eq(translate(args[i], bounds), translate(args[j]), bounds) for j in range(i+1, len(args)) 
                         for i in range(len(args))]
             return Not(Or(*ineq))
+        elif kind == Z3_OP_ITE:
+            cond, stat1, stat2 = translate(term.arg(0)), translate(term.arg(1)), translate(term.arg(2))
+            T = stat1.get_type() # stat1 and stat2 must have same type
+            return Const('IF', TFun(BoolType, T, T, T))(cond, stat1, stat2)
         elif kind == Z3_OP_UNINTERPRETED: # s(0)
             uf = translate(term.decl(), bounds)
             args = [translate(term.arg(i), bounds) for i in range(term.num_args())]
@@ -237,7 +245,9 @@ def and_elim(pt, concl):
     context.set_context('logic_base')
     r = dict()
     def rec(pt):
-        if pt.prop.is_conj():
+        if pt.prop == concl:
+            r[pt.prop] = pt
+        elif pt.prop.is_conj():
             rec(apply_theorem('conjD1', pt))
             rec(apply_theorem('conjD2', pt))
         else:
@@ -627,13 +637,71 @@ def def_axiom(arg1):
     else:
         return ProofTerm.sorry(Thm([], arg1))
 
-def intro_def(arg1):
+def intro_def(concl):
     """
-    Introduce a name for a formula/term.
-    Implement as asserted.
+    Introduce a name for a formula/term e.
+    There are several cases according to different type of e:
+    
+    a) e is of boolean type:
+    return n = e ⊢ (n ∨ ¬e) ∧ (¬n ∨ e)
+    b) e is of form "ite cond th e1":
+    return n = e ⊢ (¬cond ∨ n = th) ∧ (cond ∨ n = e1)
+    c) otherwise:
+    return n = e ⊢ n = e
+    
+    But z3 only provide the right hands of proofterm instead of n,
+    so we need to find n at first. After find n, we need to prove
+    n = e ⊢ concl. 
     """
-    local[arg1.rhs.name] = arg1.lhs
-    return ProofTerm.assume(arg1)
+    case = ""
+    if concl.is_conj(): # a), b) cases
+        if concl.arg1.arg.is_equals():
+            n = concl.arg1.arg.lhs
+            case = "b"
+        else:
+            n = concl.arg1.arg1
+            case = "a"
+    else:
+        n = concl.lhs
+        case = "c"
+    
+    #prove.
+    if case == "c":
+        return ProofTerm.assume(concl)
+    elif case == "a":
+        e = concl.arg.arg
+        pt = apply_theorem('iff_conv_conj_disj', inst = Inst(A=n, B=e))
+        pt_assume = ProofTerm.assume(Eq(n, e))
+        return ProofTerm.equal_elim(pt, pt_assume)
+    else: # case == "b"
+        cond = concl.arg.arg1
+        th = concl.arg1.arg.rhs
+        e1 = concl.arg.arg.rhs
+        T = th.get_type()
+        ite = Const("IF", TFun(BoolType, T, T, T))(cond, th, e1)
+        redundant.append(Eq(n, ite)) # we need to delete the equalities after reconstruction.
+        # First prove ⊢ (¬cond ∨ n = th)
+        pt = apply_theorem('if_P', inst=Inst(P=cond, x=th, y=e1))
+        pt_cond_assm = ProofTerm.assume(cond)
+        pt1 = pt.implies_elim(pt_cond_assm) # cond ⊢ ite = th
+        pt_eq = ProofTerm.assume(Eq(n, ite)) # n = ite ⊢ n = ite
+        pt2 = pt_eq.transitive(pt1) # n = ite, cond ⊢ n = th
+        pt3 = pt2.implies_intr(cond) # n = ite ⊢ cond -> n = th
+        cv = rewr_conv('disj_conv_imp', sym=True)
+        pt4 = cv.get_proof_term(pt3.prop) # ⊢ cond -> n = th <--> ¬cond ∨ n = th
+        pt5 = ProofTerm.equal_elim(pt4, pt3) # n = ite ⊢ ¬cond ∨ n = th
+        # then prove ⊢ (cond ∨ n = e1)
+        pt6 = apply_theorem('if_not_P', inst=Inst(P=cond, x=th, y=e1)) # ⊢ ¬cond --> (if cond then th else e1) = e1
+        pt_not_con_assm = ProofTerm.assume(Not(cond)) # ¬cond ⊢ ¬cond
+        pt7 = pt6.implies_elim(pt_not_con_assm) # ¬cond ⊢ (if cond then th else e1) = e1
+        pt8 = pt_eq.transitive(pt7) # n = ite, ¬cond ⊢ n = e1
+        pt9 = pt8.implies_intr(Not(cond)) # n = ite ⊢ ¬cond --> n = e1
+        pt10 = cv.get_proof_term(pt9.prop) # ⊢ ¬cond --> n = e1 <--> ¬¬cond ∨ n = e1
+        pt11 = ProofTerm.equal_elim(pt10, pt9)
+        pt12 = double_neg(pt11) # n = ite ⊢ cond ∨ n = e1
+        pt13 = apply_theorem('conjI', pt5, pt12)
+        return pt13
+
 
 def apply_def(arg1):
     return ProofTerm.reflexive(arg1.lhs)
@@ -787,6 +855,21 @@ def convert_method(term, *args):
         raise NotImplementedError
     
 local = dict()
+redundant = []
+
+def delete_redundant(pt, redundant):
+    """
+    Because we introduce abbreviations for formula during def-intro,
+    after reconstruction complete, we can delete these formulas use 
+    theorem "(?t = ?t ⟹ False) ⟹ False"
+    """
+    new_pt = pt
+    for r in redundant:
+        pt1 = apply_theorem('eq_imp_false', inst=Inst(A=r.lhs, B=r.rhs)) # ⊢ (A = B --> false) --> false
+        pt2 = new_pt.implies_intr(r) # ⊢ A = B --> false
+        new_pt = pt1.implies_elim(pt2)
+    
+    return new_pt
 
 
 def proofrec(proof, bounds=deque(), trace=False, debug=False):
@@ -801,13 +884,14 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False):
         args = (r[j] for j in net[i])
         if trace:
             print('term['+str(i)+']', term[i])
-        if i == 17:
-            i
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i],bounds=bounds)
         else:
             r[i] = convert_method(term[i], *args)
-            basic.load_theory('int')
             if trace:
+                basic.load_theory('int')
+                basic.load_theory('real')
                 print('r['+str(i)+']', r[i])
-    return r[0]
+    conclusion = delete_redundant(r[0], redundant)
+    redundant.clear()
+    return conclusion
