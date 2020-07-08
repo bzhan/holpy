@@ -78,6 +78,8 @@ class ProofrecTest(unittest.TestCase):
             ('x Mem S --> S Sub T --> x Mem T', 'S x, ~(T x), !x1. S x1 --> T x1 |- false'),
             ('m Mem univ', '~true |- false'),
             ('x Mem (diff S T) --> x Mem S', '~(S x), S x & ~(T x) |- false'),
+            ('(?x1. x = x1 & x1 Mem S) --> x Mem S', '~(S x), ?x1. x = x1 & S x1 |- false'),
+            ('(?a1. a = a1 & a1 Mem A) --> a Mem A', '~(A a), ?a1. a = a1 & A a1 |- false'),
         ]
 
 

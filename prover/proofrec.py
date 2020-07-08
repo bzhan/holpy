@@ -30,7 +30,7 @@ import time
 method = ('mp', 'mp~', 'asserted', 'trans', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
             'iff-true', 'iff-false', 'unit-resolution', 'commutativity', 'def-intro', 'apply-def',
             'def-axiom', 'iff~', 'nnf-pos', 'nnf-neg', 'sk', 'proof-bind', 'quant-inst', 'quant-intro',
-            'lemma', 'hypothesis', 'symm', 'refl', 'apply-def', 'intro-def')
+            'lemma', 'hypothesis', 'symm', 'refl', 'apply-def', 'intro-def', 'th-lemma')
 
 
 def index_and_relation(proof):
@@ -226,8 +226,8 @@ def translate(term, bounds=deque()):
             uf = translate(term.decl(), bounds)
             args = [translate(term.arg(i), bounds) for i in range(term.num_args())]
             return uf(*args)
-        elif z3.is_bool(term) and kind == Z3_OP_OEQ:
-            return Eq(translate(term.arg(0)), translate(term.arg(0)))
+        elif z3.is_bool(term) and kind == Z3_OP_OEQ: # "~"" operator in z3 is ambiguous
+            return Eq(translate(term.arg(0)), translate(term.arg(1)))
         else:
             raise NotImplementedError
     else:
@@ -695,6 +695,27 @@ def lemma(arg1, arg2):
     pt = apply_theorem('negI', pt1, inst=inst)
     return double_neg(pt)
 
+def sk(arg1):
+    """
+    Skolemization rule, currently have no idea on how to reconstruct it.
+    """
+    return ProofTerm.sorry(Thm([], Eq(arg1.lhs, arg1.rhs)))
+
+
+def th_lemma(args):
+    """
+    th-lemma: Generic proof for theory lemmas.
+    currently use proofterm.sorry.
+    args may contains several parameters, like:
+    ⊢ x ≥ 0
+    ⊢ x ≤ 0
+    --------
+    ⊢ x == 0
+    so for now, we just use the last parameter
+    as sorry.
+    """
+    pts = args[-1]  
+    return ProofTerm.sorry(Thm([], args[-1]))
 
 def convert_method(term, *args):
     name = term.decl().name()
@@ -757,13 +778,18 @@ def convert_method(term, *args):
     elif name == 'lemma':
         arg1, arg2 = args
         return lemma(arg1, arg2)
+    elif name == 'sk':
+        arg1, = args
+        return sk(arg1)
+    elif name == 'th-lemma':
+        return th_lemma(args)
     else:
         raise NotImplementedError
     
 local = dict()
 
 
-def proofrec(proof, bounds=deque(), trace=False):
+def proofrec(proof, bounds=deque(), trace=False, debug=False):
     """
     If trace is true, print reconstruction trace.
     """
@@ -775,6 +801,8 @@ def proofrec(proof, bounds=deque(), trace=False):
         args = (r[j] for j in net[i])
         if trace:
             print('term['+str(i)+']', term[i])
+        if i == 17:
+            i
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i],bounds=bounds)
         else:
