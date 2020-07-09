@@ -96,7 +96,17 @@ class ProofrecTest(unittest.TestCase):
     def testRecRealSet(self):
         test_data = [
             ('max a b = (1/2) * (a + b + abs(a - b))',
-            'a + -1 * b >= 0, z3name!0 = (if a + -1 * b >= 0 then a else b), z3name!1 = (if a + -1 * b >= 0 then a + -1 * b else -1 * a + b), ~((if a >= b then a else b) = 1 / 2 * (a + b + (if a - b >= 0 then a - b else -(a - b)))) |- false')
+            '~((if a >= b then a else b) = 1 / 2 * (a + b + (if a - b >= 0 then a - b else -(a - b)))) |- false'),
+            ('{x. (a <= x & x <= b) & ~(a < x & x < b)} Sub {a, b}',
+            '~(x = a | x = b), (a <= x & x <= b) & ~(a < x & x < b) |- false'),
+            ('(x Mem T --> 0 <= f x) --> S Sub T --> (if x Mem S then f x else 0) <= (if x Mem T then f x else 0)', 
+            '!x1. S x1 --> T x1, T x --> f x >= 0, ~((if S x then f x else 0) <= (if T x then f x else 0)) |- false'),
+            ('max (if x Mem S then (1::real) else 0) (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)', 
+            '~((if (if S x then (1::int) else 0) >= (if T x then 1 else 0) then if S x then (1::int) else 0 else if T x then 1 else 0) = (if S x | T x then 1 else 0)) |- false'),
+            ('min (if x Mem S then (1::real) else 0) (if x Mem T then 1 else 0) = (if x Mem (S Int T) then 1 else 0)',
+            '~(~(S x) | ~(T x)), ~((if (if S x then (1::int) else 0) <= (if T x then 1 else 0) then if S x then (1::int) else 0 else if T x then 1 else 0) = (if S x & T x then 1 else 0)) |- false'),
+            ('(1::real) = 0 --> real_inverse a = b', 'false |- false')
+            
         ]
 
         for t, p in test_data:
