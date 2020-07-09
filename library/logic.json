@@ -5695,6 +5695,23 @@
                 "A": "bool",
                 "B": "bool"
             }
+        },
+        {
+            "name": "eq_imp_false",
+            "prop": "(A = B ⟶ false) ⟶ false",
+            "ty": "thm",
+            "vars": {
+                "A": "'a",
+                "B": "'a"
+            }
+        },
+        {
+            "name": "disj_false",
+            "prop": "¬A ∨ false ⟷ ¬A",
+            "ty": "thm",
+            "vars": {
+                "A": "bool"
+            }
         }
     ],
     "description": "Basic results in logic",
