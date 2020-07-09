@@ -1466,6 +1466,132 @@
         },
         {
             "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_lt_add2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "w < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "w < x ⊢ w < x"
+                },
+                {
+                    "args": "y < z",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y < z ⊢ y < z"
+                },
+                {
+                    "args": "w + y < x + z",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "w < x, y < z ⊢ w + y < x + z"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ w < x ⟶ y < z ⟶ w + y < x + z"
+                }
+            ],
+            "prop": "w < x ⟶ y < z ⟶ w + y < x + z",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1",
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "w": "real",
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_le_add2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "w ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "w ≤ x ⊢ w ≤ x"
+                },
+                {
+                    "args": "y ≤ z",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ z ⊢ y ≤ z"
+                },
+                {
+                    "args": "w + y ≤ x + z",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "w ≤ x, y ≤ z ⊢ w + y ≤ x + z"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ w ≤ x ⟶ y ≤ z ⟶ w + y ≤ x + z"
+                }
+            ],
+            "prop": "w ≤ x ⟶ y ≤ z ⟶ w + y ≤ x + z",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "w": "real",
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "real_neg_add",
@@ -5717,6 +5843,132 @@
             "ty": "thm",
             "vars": {
                 "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_let_add2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "w ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "w ≤ x ⊢ w ≤ x"
+                },
+                {
+                    "args": "y < z",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y < z ⊢ y < z"
+                },
+                {
+                    "args": "w + y < x + z",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "y < z, w ≤ x ⊢ w + y < x + z"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ w ≤ x ⟶ y < z ⟶ w + y < x + z"
+                }
+            ],
+            "prop": "w ≤ x ⟶ y < z ⟶ w + y < x + z",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "w": "real",
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_lte_add2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "w < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "w < x ⊢ w < x"
+                },
+                {
+                    "args": "y ≤ z",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ z ⊢ y ≤ z"
+                },
+                {
+                    "args": "w + y < x + z",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "w < x, y ≤ z ⊢ w + y < x + z"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ w < x ⟶ y ≤ z ⟶ w + y < x + z"
+                }
+            ],
+            "prop": "w < x ⟶ y ≤ z ⟶ w + y < x + z",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "w": "real",
+                "x": "real",
+                "y": "real",
+                "z": "real"
             }
         },
         {

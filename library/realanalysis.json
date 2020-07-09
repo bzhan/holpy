@@ -6506,6 +6506,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_series_terms_tozero",
             "prop": "real_sums f l (from n) ⟶ tendsto_real f 0 sequentially",
             "ty": "thm",
