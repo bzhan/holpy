@@ -105,6 +105,8 @@ class ProofrecTest(unittest.TestCase):
             '~((if (if S x then (1::int) else 0) >= (if T x then 1 else 0) then if S x then (1::int) else 0 else if T x then 1 else 0) = (if S x | T x then 1 else 0)) |- false'),
             ('min (if x Mem S then (1::real) else 0) (if x Mem T then 1 else 0) = (if x Mem (S Int T) then 1 else 0)',
             '~(~(S x) | ~(T x)), ~((if (if S x then (1::int) else 0) <= (if T x then 1 else 0) then if S x then (1::int) else 0 else if T x then 1 else 0) = (if S x & T x then 1 else 0)) |- false'),
+            ('S Int T = empty_set --> (if x Mem S then (1::real) else 0) + (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)',
+            '!x1. ~(S x1 & T x1), ~((if S x then (1::int) else 0) + (if T x then 1 else 0) = (if S x | T x then 1 else 0)) |- false'),
             ('(1::real) = 0 --> real_inverse a = b', 'false |- false')
             
         ]

@@ -710,7 +710,7 @@ def intro_def(concl):
 def apply_def(arg1):
     return ProofTerm.reflexive(arg1.lhs)
 
-def resolution(pt1, pt2):
+def resolution(pt1, pt2, subterms):
     """Input proof terms are A_1 | ... | A_m and B_1 | ... | B_n, where
     there is some i, j such that B_j = ~A_i or A_i = ~B_j."""
     
@@ -783,7 +783,13 @@ def resolution(pt1, pt2):
     else:
         pt = apply_theorem('negE', pt2, pt1)
 
-    return pt.on_prop(disj_norm())
+    new_pt = pt.on_prop(disj_norm())
+    subterm = subterms[-1]
+    if subterm == new_pt.prop:
+        return new_pt
+    else:
+        pt_sub = ProofTerm.reflexive(subterm).on_prop(disj_norm()).reflexive()
+        return pt.on_prop(disj_norm()).transitive(pt_sub)
 
 def lemma(arg1, arg2, subterm):
     """
@@ -895,7 +901,7 @@ def convert_method(term, *args, subterms=None):
     elif name == 'unit-resolution':
         pt = args[0]
         for i in range(len(args) - 2):
-            pt = resolution(pt, args[i+1])
+            pt = resolution(pt, args[i+1], subterms)
         return pt
     elif name in ('nnf-pos', 'nnf-neg'):
         return ProofTerm.sorry(Thm([], args[-1]))
@@ -976,7 +982,7 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False):
             r[i] = translate(term[i],bounds=bounds)
         else:
             subterms = [term[j] for j in net[i]]
-            if i == 256:
+            if i == 82:
                 i
             r[i] = convert_method(term[i], *args, subterms=subterms)
             if trace:
