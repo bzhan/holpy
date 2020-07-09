@@ -17,7 +17,7 @@ from kernel import theory
 from logic import basic, context, matcher
 from logic.logic import apply_theorem, imp_disj_iff, disj_norm
 from logic.tactic import rewrite_goal_with_prev
-from logic.conv import rewr_conv, try_conv, top_conv
+from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv
 # from syntax.settings import settings
 # settings.unicode = True
 from collections import deque
@@ -27,7 +27,7 @@ import json
 import time
 
 # Z3 proof method name.
-method = ('mp', 'mp~', 'asserted', 'trans', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
+method = ('mp', 'mp~', 'asserted', 'trans', 'trans*', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
             'iff-true', 'iff-false', 'unit-resolution', 'commutativity', 'def-intro', 'apply-def',
             'def-axiom', 'iff~', 'nnf-pos', 'nnf-neg', 'sk', 'proof-bind', 'quant-inst', 'quant-intro',
             'lemma', 'hypothesis', 'symm', 'refl', 'apply-def', 'intro-def', 'th-lemma')
@@ -207,8 +207,12 @@ def translate(term, bounds=deque()):
         elif z3.is_eq(term):
             return Eq(*args)
         elif z3.is_and(term):
+            if term not in and_expr:
+                and_expr.add(term)
             return And(*args)
         elif z3.is_or(term):
+            if term not in or_expr:
+                or_expr.add(term)
             return Or(*args)
         elif z3.is_implies(term):
             return Implies(*args)
@@ -629,7 +633,7 @@ def schematic_rules_def_axiom(axiom):
 def def_axiom(arg1):
     """
     def-axiom rule prove propositional tautologies axioms.
-    because of this need propositional logic decision procedure,
+    for reason that prove need propositional logic decision procedure,
     currently use proofterm.sorry
     """
     if schematic_rules_def_axiom(arg1) != None:
@@ -712,22 +716,51 @@ def resolution(pt1, pt2):
     
     # First, find the pair i, j such that B_j = ~A_i or A_i = ~B_j, the
     # variable side records the side of the positive literal.
+
+    def find(disj1, disj2):
+        side = None
+
+        for i, t1 in enumerate(disj1):
+            for j, t2 in enumerate(disj2):
+                if t2 == Not(t1):
+                    side = 'left'
+                    break
+                elif t1 == Not(t2):
+                    side = 'right'
+                    break
+            if side is not None:
+                break
+        
+        return i, j, side
+
     disj1 = pt1.prop.strip_disj()
     disj2 = pt2.prop.strip_disj()
-    
-    side = None
-    for i, t1 in enumerate(disj1):
-        for j, t2 in enumerate(disj2):
-            if t2 == Not(t1):
-                side = 'left'
-                break
-            elif t1 == Not(t2):
-                side = 'right'
-                break
-        if side is not None:
-            break
-            
-    assert side is not None, "resolution: literal not found"
+
+    i, j, side = find(disj1, disj2)
+    flag_lhs, flag_rhs = False, False # means the whole disjunction is whether in disjx
+    if side is None:
+        if pt1.prop not in disj1 and pt1.prop.is_disj() and not pt1.prop.arg.is_disj() and not pt1.prop.arg1.is_disj():
+            disj1.append(pt1.prop)
+            flag_lhs = True
+        if pt2.prop not in disj2 and pt2.prop.is_disj() and not pt2.prop.arg.is_disj() and not pt2.prop.arg1.is_disj():
+            disj2.append(pt2.prop)
+            flag_rhs = True
+
+
+        i, j, side = find(disj1, disj2)
+        assert side is not None, "resolution: literal not found"
+        if flag_lhs: # above make no sense
+            if i == len(disj1) - 1:
+                disj1 = disj1[-1:]
+                i = 0
+            else:
+                disj1 = disj1[:-1]            
+        if flag_rhs: 
+            if j == len(disj2) - 1:
+                disj2 = disj2[-1:]
+                j = 0
+            else:
+                disj2 = disj2[:-1]
     
     # If side is wrong, just swap:
     if side == 'right':
@@ -752,16 +785,40 @@ def resolution(pt1, pt2):
 
     return pt.on_prop(disj_norm())
 
-def lemma(arg1, arg2):
+def lemma(arg1, arg2, subterm):
     """
     arg1 is proof: Γ ∪ {L1, L2, ..., Ln} ⊢ ⟂
     return proof: Γ ⊢ ¬L1 ∨ ... ∨ ¬Ln
+
+    L1,...,Ln are propositions stored in the set when use hypothesis rule. 
+
+    the implementation stategy is match arg1's hyps with the set, and use implies_intr()
+    move them to props, then
+    recursively using theorem "A->B --> ¬A ∨ B"
+
+    And because L1, L2, ..., Ln have an order, so we need the original z3 term.
     """
-    th = theory.get_theorem('negI')
-    pt1 = arg1.implies_intr(Not(arg2))
-    inst = matcher.first_order_match(th.prop.arg1, pt1.prop)
-    pt = apply_theorem('negI', pt1, inst=inst)
-    return double_neg(pt)
+    subterm = subterm[-1]
+    if z3.is_or(subterm):
+        subs = [subterm.arg(i) for i in range(subterm.num_args())]
+    else:
+        subs = [subterm]
+    literal = []
+    for s in subs:
+        if z3.is_not(s):
+            literal.append(translate(s.arg(0)))
+        else:
+            literal.append(Not(translate(s)))
+    # hyps = [p for p in arg1.th.hyps if p in hypos] # store hyps
+    pt1 = arg1
+    for h in reversed(literal):
+        pt1 = pt1.implies_intr(h)
+    # now we have Γ ⊢ L1 --> L2 --> ...--> Ln --> ⟂
+    cv1 = top_conv(rewr_conv('disj_conv_imp', sym=True))
+    cv2 = top_sweep_conv(rewr_conv('disj_false'))
+    cv3 = top_conv(rewr_conv('double_neg'))
+    return pt1.on_prop(cv1, cv2, cv3)
+
 
 def sk(arg1):
     """
@@ -775,20 +832,48 @@ def th_lemma(args):
     th-lemma: Generic proof for theory lemmas.
     currently use proofterm.sorry.
     args may contains several parameters, like:
-    ⊢ x ≥ 0
-    ⊢ x ≤ 0
+    h1 ⊢ x ≥ 0
+    h2 ⊢ x ≤ 0
     --------
-    ⊢ x == 0
+    h1, h2 ⊢ x == 0
     so for now, we just use the last parameter
     as sorry.
     """
-    pts = args[-1]  
-    return ProofTerm.sorry(Thm([], args[-1]))
+    pts = args[-1]
+    hyps = [h for a in args[:-1] for h in a.hyps]  
+    return ProofTerm.sorry(Thm(hyps, args[-1]))
 
-def convert_method(term, *args):
+def hypothesis(prop):
+    """
+    any proposition asserted by hyp rule must be explicitly discharged
+    later on in the proof using lemma rule.
+
+    In order to find them quickly when apply lemma rule, we should store them
+    in a set.
+    """
+    hypos.add(prop)
+    return ProofTerm.assume(prop)
+
+def asserted(prop):
+    """
+    asserted rule is used to get assertions refutation proof.
+    
+    There is a special case: asserted true
+    """
+    if prop == true:
+        return apply_theorem('trueI')
+    else:
+        return ProofTerm.assume(prop)
+
+
+
+
+def convert_method(term, *args, subterms=None):
     name = term.decl().name()
-    if name in ('asserted', 'hypothesis'): # {P} ⊢ {P}
-        return ProofTerm.assume(args[0])
+    if name == 'asserted': # {P} ⊢ {P}
+        return asserted(args[0])
+    elif name == 'hypothesis':
+        return hypothesis(args[0])
     elif name == 'and-elim':
         arg1, arg2 = args
         return and_elim(arg1, arg2)
@@ -798,7 +883,7 @@ def convert_method(term, *args):
     elif name == 'monotonicity':
         *equals, concl = args
         return monotonicity(equals, concl)
-    elif name == 'trans':
+    elif name in ('trans', 'trans*'):
         arg1, arg2, _ = args
         return arg1.transitive(arg2)
     elif name in ('mp', 'mp~'):
@@ -828,8 +913,6 @@ def convert_method(term, *args):
     elif name == 'iff-false':
         arg1, arg2, = args
         return iff_false(arg1, arg2)
-    # elif name == 'lemma':
-    #     return 
     elif name == 'symm':
         return args[0].symmetric()
     elif name == 'refl':
@@ -845,7 +928,7 @@ def convert_method(term, *args):
         return apply_def(arg2)
     elif name == 'lemma':
         arg1, arg2 = args
-        return lemma(arg1, arg2)
+        return lemma(arg1, arg2, subterms)
     elif name == 'sk':
         arg1, = args
         return sk(arg1)
@@ -856,6 +939,9 @@ def convert_method(term, *args):
     
 local = dict()
 redundant = []
+hypos = set()
+or_expr = set()
+and_expr = set()
 
 def delete_redundant(pt, redundant):
     """
@@ -879,15 +965,20 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False):
     term, net = index_and_relation(proof)
     order = DepthFirstOrder(net)
     r = dict()
+    or_expr.clear()
+    and_expr.clear()
 
     for i in order:
-        args = (r[j] for j in net[i])
+        args = tuple(r[j] for j in net[i])
         if trace:
             print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i],bounds=bounds)
         else:
-            r[i] = convert_method(term[i], *args)
+            subterms = [term[j] for j in net[i]]
+            if i == 256:
+                i
+            r[i] = convert_method(term[i], *args, subterms=subterms)
             if trace:
                 basic.load_theory('int')
                 basic.load_theory('real')
