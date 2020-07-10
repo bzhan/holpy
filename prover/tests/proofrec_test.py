@@ -109,6 +109,11 @@ class ProofrecTest(unittest.TestCase):
             '!x1. ~(S x1 & T x1), ~((if S x then (1::int) else 0) + (if T x then 1 else 0) = (if S x | T x then 1 else 0)) |- false'),
             ('S ∪ T = S ∩ T ∪ {x. x ∈ S & ~x ∈ T} ∪ {x. x ∈ T & ~x ∈ S}',
             '~(~(~(S x) | ~(T x)) | ~(T x | ~(S x)) | ~(S x | ~(T x))), ~(S x | T x <--> (S x & T x | S x & ~(T x)) | T x & ~(S x)) |- false'),
+            
+            ('(0::real) <= of_nat n + 1', 'rn >= 0, ~(rn + 1 >= 0) |- false'),
+            ('1 / (of_nat n + 1) < b --> 1 < (of_nat n + 1) * b', 'rn >= 0, 1 / (rn + 1) < b, ~((rn + 1) * b > 1) |- false'),
+            ('a <= of_nat n --> a < of_nat (n + 1)', 'a <= rn, ~(a < rn + 1) |- false'),
+            ('~(n = 0) --> of_nat (n - 1) + (1::real) = of_nat n', 'n >= 0, ~(n = 0), ~((if n >= 1 then rn - 1 else 0) + 1 = rn) |- false'),
             ('(1::real) = 0 --> real_inverse a = b', 'false |- false')
             
         ]
