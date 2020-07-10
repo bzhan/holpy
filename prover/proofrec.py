@@ -33,24 +33,37 @@ method = ('mp', 'mp~', 'asserted', 'trans', 'trans*', 'monotonicity', 'rewrite',
             'lemma', 'hypothesis', 'symm', 'refl', 'apply-def', 'intro-def', 'th-lemma')
 
 
+class Z3Term:
+    def __init__(self, t):
+        self.t = t
+
+    def __eq__(self, value):
+        return self.t.sort() == value.t.sort() and self.t == value.t
+
+    def __hash__(self):
+        return z3.AstRef.__hash__(self.t)
+
+    def __str__(self):
+        return str(self.t)
+
 def index_and_relation(proof):
     """Index all terms in z3 proof and get the relation between the terms."""
     s = dict()
     id = 0
     def rec(term, parent=None):
         nonlocal id
-        if term in s.keys() and parent != None:
+        if term in s.keys() and parent is not None:
             s[parent][1].append(s[term][0])
         else:
             s[term] = [id, []]
             if parent is not None:
                 s[parent][1].append(id)
             id += 1
-            if not z3.is_quantifier(term):
-                for child in term.children():
-                    rec(child, term)
-    rec(proof)
-    return {value[0]: key for key, value in s.items()}, {value[0]: value[1] for key, value in s.items()}
+            if not z3.is_quantifier(term.t):
+                for child in term.t.children():
+                    rec(Z3Term(child), term)
+    rec(Z3Term(proof))
+    return {value[0]: key.t for key, value in s.items()}, {value[0]: value[1] for key, value in s.items()}
 
 def DepthFirstOrder(G):
     """Traverse graph in reversed DFS order."""
@@ -69,45 +82,6 @@ def DepthFirstOrder(G):
             dfs(G, v)
     
     return reversePost
-
-def lambda_to_quantifier(l, forall=True):
-    """
-    Give a term of abs:
-    λ x1, x2, ... x_k. L
-    if forall is true: return 
-    """
-    def helper(l):
-        if l.is_abs():
-            return [Var(l.var_name, l.var_T)] + helper(l.body)
-        else:
-            return []
-    
-    var = helper(l)
-
-    for v in reversed(var):
-        l = l.subst_bound(v)
-
-    for v in reversed(var):
-        l = Forall(v, l) if forall else Exists(v, l)
-
-    return l
-
-def lambda_var(l):
-    """
-    Give a lambda expression λ x1 x2 ... xk. f
-    Return [(x1, T1), (x2, T2), ... , (xk, tk)]
-    """
-    if l.is_abs():
-        return [(l.var_name, l.var_T)] + lambda_var(l.body)
-    else:
-        return []
-
-def forall_body(t, vars):
-    """
-    Give a term of comb:
-    Return a forall expression which use vars as bounded variable.
-    """
-    pass
 
 def arity(l):
     """
@@ -227,8 +201,7 @@ def translate(term, bounds=deque()):
         elif z3.is_ge(term):
             return greater_eq(args[0].get_type())(*args)
         elif z3.is_distinct(term):
-            ineq = [Eq(translate(args[i], bounds), translate(args[j]), bounds) for j in range(i+1, len(args)) 
-                        for i in range(len(args))]
+            ineq = [Eq(args[i], args[j]) for i in range(len(args)) for j in range(i+1, len(args))]
             return Not(Or(*ineq))
         elif kind == Z3_OP_ITE:
             cond, stat1, stat2 = translate(term.arg(0)), translate(term.arg(1)), translate(term.arg(2))
@@ -384,9 +357,6 @@ def schematic_rules_rewr(thms, lhs, rhs):
 def rewrite(t):
     def norm_int(t):
         """Use nat norm macro to normalize nat expression."""
-        # context.set_context('int')
-        # print("t: ", t)
-        # assert t.is_equals() and t.lhs.get_type() == IntType and t.rhs.get_type() == IntType
         return int_norm_macro().get_proof_term(t, [])
 
     def equal_is_true(pt):
@@ -414,9 +384,14 @@ def rewrite(t):
             else:
                 raise NotImplementedError
         elif t.is_equals(): # Equations that can't match with schematic theorems
-            # Try nat norm macro:
+            # Try int norm macro:
+            # Note that if t is of form: if (x::real) > 1 then (0::int) else 1
+            # get_type will also return IntType, but we can't solve this by norm_int()
             if t.lhs.get_type() == IntType:
-                return norm_int(t)
+                try:
+                    return norm_int(t)
+                except AssertionError:
+                    return ProofTerm.sorry(Thm([], t))
             else:
                 return ProofTerm.sorry(Thm([], t))
         else:
