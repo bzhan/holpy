@@ -424,70 +424,33 @@ def rewrite(t):
     else:
         return pt  
 
-def norm_nnf(term):
-    # incomplete
-    def rec(pt):
-        fm = pt.prop
-        if fm.is_conj():
-            pt1 = rec(ProofTerm.assume(fm.arg1)).implies_intr(fm.arg1) 
-            pt2 = rec(ProofTerm.assume(fm.arg)).implies_intr(fm.arg)
-            pt3 = apply_theorem('conjD1', pt)
-            pt4 = apply_theorem('conjD2', pt)
-            pt5 = pt1.implies_elim(pt3)
-            pt6 = pt2.implies_elim(pt4)
-            return apply_theorem('conjI', pt5, pt6)
-        elif fm.is_disj():
-            pt1 = rec(ProofTerm.assume(fm.arg1))
-            pt2 = rec(ProofTerm.assume(fm.arg))
-            pt3 = apply_theorem('disjI1', pt1, inst=Inst(B=pt2.prop))
-            pt4 = apply_theorem('disjI2', pt2, inst=Inst(A=pt1.prop))
-            pt5 = apply_theorem('disjE', pt, pt3.implies_intr(pt3.hyps[0]), pt4.implies_intr(pt4.hyps[0]))
-            return pt5
-        elif fm.is_implies():
-            pt1 = apply_theorem('disj_conv_imp', inst=Inst(A=fm.arg1, B=fm.arg))
-            pt2 = pt1.symmetric()
-            return rec(pt2.equal_elim(pt))
-        elif fm.is_not():
-            p = fm.arg
-            if p.is_not():
-                pt1 = apply_theorem('double_neg', inst=Inst(A=p.arg))
-                return rec(pt1.equal_elim(pt))
-            elif p.is_conj():
-                pt1 = apply_theorem('de_morgan_thm1', inst=Inst(A=p.arg1, B=p.arg))
-                pt7 = pt1.equal_elim(pt)
-                pt2 = rec(ProofTerm.assume(pt7.prop.arg1))
-                pt3 = rec(ProofTerm.assume(pt7.prop.arg))
-                pt4 = apply_theorem('disjI1', pt2, inst=Inst(B=pt3.prop))
-                pt5 = apply_theorem('disjI2', pt3, inst=Inst(A=pt2.prop))
-                pt6 = apply_theorem('disjE', pt7, pt4.implies_intr(pt4.hyps[0]), pt5.implies_intr(pt5.hyps[0]))
-                return pt6
-            elif p.is_disj():
-                pt1 = apply_theorem('de_morgan_thm2', inst=Inst(A=p.arg1, B=p.arg))
-                pt7 = pt1.equal_elim(pt)
-                pt2 = rec(ProofTerm.assume(pt7.prop.arg1)).implies_intr(pt7.prop.arg1)
-                pt3 = rec(ProofTerm.assume(pt7.prop.arg)).implies_intr(pt7.prop.arg)
-                pt4 = apply_theorem('conjD1', pt7)
-                pt5 = apply_theorem('conjD2', pt7)
-                pt6 = pt2.implies_elim(pt4)
-                pt7 = pt3.implies_elim(pt5)
-                pt8 = apply_theorem('conjI', pt6, pt7)
-                return pt8
-            elif p.is_forall():
-                pt1 = apply_theorem('not_all', inst=Inst(p.arg.fun))
-                pt2 = pt1.equal_elim(pt)
-                pt3 = rec(ProofTerm.assume(pt2.prop.arg.body))
-            else:
-                return pt
-        else:
-            return pt
-    return rec(ProofTerm.assume(term))
-
 def quant_inst(p):
+    """
+    A proof of (or (not (forall (x) (P x))) (P a))
+    Note: because "a" maybe not equal to "x", so we need to
+    replace "x" by "a" when necessary.
+    """
     basic.load_theory('logic')
     pat = ProofTerm.theorem('forall_elim')
     f = Implies(p.arg1.arg, p.arg)
     inst = matcher.first_order_match(pat.prop, f)
     pt1 = apply_theorem('forall_elim', inst=inst)
+    
+    old_var = Var("x", pt1.prop.arg1.arg.var_T)
+    new_var = Var(p.arg1.arg.arg.var_name, p.arg1.arg.arg.var_T)
+
+    if old_var != new_var: 
+        # we must subsitute old_var by new var
+        # example: |- (!x. s x = 0) --> s 2 = 0) to |- (!n. s n = 0) --> s 2 = 0)
+        ptn1 = ProofTerm.assume(pt1.prop.arg1) # !x. s x = 0 |- !x. s x = 0
+        ptn2 = ptn1.forall_elim(new_var) # !x. s x = 0 |- s n = 0 
+        ptn3 = ptn2.forall_intr(new_var) # !x. s x = 0 |- !n. s n = 0
+        ptn4 = ProofTerm.assume(ptn3.prop) # !n. s n = 0 |- !n. s n = 0
+        ptn5 = ptn4.forall_elim(old_var) # !n. s n = 0 |- s x = 0
+        ptn6 = ptn5.forall_intr(old_var) # !n. s n = 0 |- !x. s x = 0
+        ptn7 = pt1.implies_elim(ptn6) # !n. s n = 0 |- s 2 = 0
+        pt1 = ptn7.implies_intr(ptn7.hyps[0]) # |- (!n. s n = 0) --> s 2 = 0
+
     pt2 = apply_theorem('disj_conv_imp', inst=Inst(A=pt1.prop.arg1, B=pt1.prop.arg)).symmetric()
     pt3 = pt2.equal_elim(pt1)
     return pt3
@@ -710,86 +673,69 @@ def intro_def(concl):
 def apply_def(arg1):
     return ProofTerm.reflexive(arg1.lhs)
 
-def resolution(pt1, pt2, subterms):
-    """Input proof terms are A_1 | ... | A_m and B_1 | ... | B_n, where
-    there is some i, j such that B_j = ~A_i or A_i = ~B_j."""
-    
-    # First, find the pair i, j such that B_j = ~A_i or A_i = ~B_j, the
-    # variable side records the side of the positive literal.
+def unit_resolution(pt1, pts, concl, z3terms):
+    """
+    T1: (or l_1 ... l_n l_1' ... l_m')
+    T2: (not l_1)
+    ...
+    T(n+1): (not l_n)
+    [unit-resolution T1 ... T(n+1)]: (or l_1' ... l_m')
 
-    def find(disj1, disj2):
+    parameters: pt1 is T1 in HOL, pts is [T2,...,Tn+1] in HOL, concl is the prop in HOL 
+    which we want to prove, z3terms are the original T1,...,Tn+1, with unit-resolution ...
+
+    a) get n, n = len(z3terms) - 2
+    b) use a set to record T1's disjunction structure, every time resolution
+    with Ti, the set delete corresponding li.
+    c) call resolution method to resolve each Ti.
+    """
+    basic.load_theory('int')
+    n = len(z3terms) - 2
+    original_disj = z3terms[0].arg(z3terms[0].num_args() - 1)
+    if z3.is_or(original_disj):
+        literals = [translate(original_disj.arg(i)) for i in range(original_disj.num_args())]
+    else:
+        literals = [translate(original_disj)]
+    resolved_literal = None
+    disj1 = literals
+    pt_resolved = pt1
+
+    for i in range(n):
+        if resolved_literal is not None:
+            disj1.remove(resolved_literal)
+
+        disj2 = [translate(z3terms[i+1].arg(z3terms[i+1].num_args() - 1))]
         side = None
-
-        for i, t1 in enumerate(disj1):
-            for j, t2 in enumerate(disj2):
-                if t2 == Not(t1):
-                    side = 'left'
-                    break
-                elif t1 == Not(t2):
-                    side = 'right'
-                    break
-            if side is not None:
+        for j, t1 in enumerate(disj1):
+            if t1 == Not(disj2[0]):
+                side = 'right'
+                break
+            elif Not(t1) == disj2[0]:
+                side = 'left'
                 break
         
-        return i, j, side
+        assert side is not None, 'literal not found'
 
-    disj1 = pt1.prop.strip_disj()
-    disj2 = pt2.prop.strip_disj()
+        resolved_literal = disj1[j]
 
-    i, j, side = find(disj1, disj2)
-    flag_lhs, flag_rhs = False, False # means the whole disjunction is whether in disjx
-    if side is None:
-        if pt1.prop not in disj1 and pt1.prop.is_disj() and not pt1.prop.arg.is_disj() and not pt1.prop.arg1.is_disj():
-            disj1.append(pt1.prop)
-            flag_lhs = True
-        if pt2.prop not in disj2 and pt2.prop.is_disj() and not pt2.prop.arg.is_disj() and not pt2.prop.arg1.is_disj():
-            disj2.append(pt2.prop)
-            flag_rhs = True
-
-
-        i, j, side = find(disj1, disj2)
-        assert side is not None, "resolution: literal not found"
-        if flag_lhs: # above make no sense
-            if i == len(disj1) - 1:
-                disj1 = disj1[-1:]
-                i = 0
+        
+        disj1 = [disj1[j]] + disj1[:j] + disj1[j+1:]
+        eq_pt1 = imp_disj_iff(Eq(pt_resolved.prop, Or(*disj1)))
+        new_pt1 = ProofTerm.equal_elim(eq_pt1, pt_resolved)
+        new_pt2 = pts[i]
+        if side == 'left': 
+            if len(disj1) > 1:
+                pt_resolved = apply_theorem('resolution_left', new_pt1, new_pt2)
+            else: # len(disj1) == 1 and len(disj2) == 1
+                pt_resolved = apply_theorem('negE', new_pt2, new_pt1)
+        else: # side == 'right'
+            if len(disj1) > 1:
+                pt_resolved = apply_theorem('resolution_right', new_pt2, new_pt1)
             else:
-                disj1 = disj1[:-1]            
-        if flag_rhs: 
-            if j == len(disj2) - 1:
-                disj2 = disj2[-1:]
-                j = 0
-            else:
-                disj2 = disj2[:-1]
-    
-    # If side is wrong, just swap:
-    if side == 'right':
-        return resolution(pt2, pt1)
-    
-    # Move items i and j to the front
-    disj1 = [disj1[i]] + disj1[:i] + disj1[i+1:]
-    disj2 = [disj2[j]] + disj2[:j] + disj2[j+1:]
-    eq_pt1 = imp_disj_iff(Eq(pt1.prop, Or(*disj1)))
-    eq_pt2 = imp_disj_iff(Eq(pt2.prop, Or(*disj2)))
-    pt1 = eq_pt1.equal_elim(pt1)
-    pt2 = eq_pt2.equal_elim(pt2)
-    
-    if len(disj1) > 1 and len(disj2) > 1:
-        pt = apply_theorem('resolution', pt1, pt2)
-    elif len(disj1) > 1 and len(disj2) == 1:
-        pt = apply_theorem('resolution_left', pt1, pt2)
-    elif len(disj1) == 1 and len(disj2) > 1:
-        pt = apply_theorem('resolution_right', pt1, pt2)
-    else:
-        pt = apply_theorem('negE', pt2, pt1)
+                pt_resolved = apply_theorem('negE', new_pt1, new_pt2)
 
-    new_pt = pt.on_prop(disj_norm())
-    subterm = subterms[-1]
-    if subterm == new_pt.prop:
-        return new_pt
-    else:
-        pt_sub = ProofTerm.reflexive(subterm).on_prop(disj_norm()).reflexive()
-        return pt.on_prop(disj_norm()).transitive(pt_sub)
+    return pt_resolved
+
 
 def lemma(arg1, arg2, subterm):
     """
@@ -899,10 +845,7 @@ def convert_method(term, *args, subterms=None):
         arg1, = args
         return rewrite(arg1)
     elif name == 'unit-resolution':
-        pt = args[0]
-        for i in range(len(args) - 2):
-            pt = resolution(pt, args[i+1], subterms)
-        return pt
+        return unit_resolution(args[0], args[1:-1], args[-1], subterms)
     elif name in ('nnf-pos', 'nnf-neg'):
         return ProofTerm.sorry(Thm([], args[-1]))
     elif name == 'proof-bind':
@@ -982,8 +925,6 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False):
             r[i] = translate(term[i],bounds=bounds)
         else:
             subterms = [term[j] for j in net[i]]
-            if i == 82:
-                i
             r[i] = convert_method(term[i], *args, subterms=subterms)
             if trace:
                 basic.load_theory('int')
