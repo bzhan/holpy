@@ -391,11 +391,6 @@ def distinct_monotonicity(pts, concl, z3terms):
         pt_conj = pt
     return pt
 
-    
-
-
-    
-
 def schematic_rules_rewr(thms, lhs, rhs):
     """Rewrite by instantiating schematic theorems."""
     context.set_context('smt')
@@ -849,6 +844,21 @@ def asserted(prop):
         return ProofTerm.assume(prop)
 
 
+def nnf_pos(pts, concl, z3terms):
+    """nnf-pos are used in following cases:
+
+    a) creating a quantifier: q = q_new ⊢ forall (x T) q = forall (x T) q_new
+    b) elimating implies: p -> q ⊢ ¬p ∨ q
+    iff: p <--> q ⊢ (¬p ∨ q) ∧ (p ∨ ¬q)
+    
+    We need to check the concl is whether a quantifier formula.
+    """
+    is_quant = concl.lhs.is_forall() or concl.lhs.is_exists()
+    if concl.lhs.is_forall():
+        pt_forall = ProofTerm.reflexive(forall(concl.lhs.arg.var_T))
+        return ProofTerm.combination(pt_forall, pts[0])
+
+
 
 
 def convert_method(term, *args, subterms=None):
@@ -879,8 +889,11 @@ def convert_method(term, *args, subterms=None):
         return rewrite(arg1)
     elif name == 'unit-resolution':
         return unit_resolution(args[0], args[1:-1], args[-1], subterms)
+    elif name == 'nnf-pos':
+        return nnf_pos(args[:-1], args[-1], subterms)
     elif name in ('nnf-pos', 'nnf-neg'):
-        return ProofTerm.sorry(Thm([], args[-1]))
+        raise NotImplementedError
+        #return ProofTerm.sorry(Thm([], args[-1]))
     elif name == 'proof-bind':
         return args[0]
     elif name == 'quant-inst':
