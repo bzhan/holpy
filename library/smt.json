@@ -996,12 +996,1201 @@
                 "p": "bool",
                 "q": "bool"
             }
+        },
+        {
+            "name": "r013",
+            "prop": "(if p then q else true) ⟷ q ∨ ¬p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r014",
+            "prop": "(if p then q else ¬q) ⟷ p ⟷ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r015",
+            "prop": "(if p then q else ¬q) ⟷ q ⟷ p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r016",
+            "prop": "(if p then ¬q else q) ⟷ p ⟷ ¬q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r017",
+            "prop": "(if p then ¬q else q) ⟷ ¬q ⟷ p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r018",
+            "prop": "(if ¬p then x else y) = (if p then y else x)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
+            "name": "r019",
+            "prop": "(if p then if q then x else y else x) = (if p ∧ ¬q then y else x)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool",
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
+            "name": "r020",
+            "prop": "(if p then if q then x else y else x) = (if ¬q ∧ p then y else x)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool",
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
+            "name": "r021",
+            "prop": "(if p then if q then x else y else y) = (if p ∧ q then x else y)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool",
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
+            "name": "r022",
+            "prop": "(if p then if q then x else y else y) = (if q ∧ p then x else y)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool",
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
+            "name": "r023",
+            "prop": "(if p then x else if p then y else z) = (if p then x else z)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool",
+                "x": "'a",
+                "y": "'a",
+                "z": "'a"
+            }
+        },
+        {
+            "name": "r024",
+            "prop": "(if p then x else if q then x else y) = (if p ∨ q then x else y)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool",
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
+            "name": "r025",
+            "prop": "(if p then x else if q then x else y) = (if q ∨ p then x else y)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool",
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
+            "name": "r026",
+            "prop": "(if p then x = y else x = z) ⟷ x = (if p then y else z)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "x": "'a",
+                "y": "'a",
+                "z": "'a"
+            }
+        },
+        {
+            "name": "r027",
+            "prop": "(if p then x = y else y = z) ⟷ y = (if p then x else z)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "x": "'a",
+                "y": "'a",
+                "z": "'a"
+            }
+        },
+        {
+            "name": "r028",
+            "prop": "(if p then x = y else z = y) ⟷ y = (if p then x else z)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "x": "'a",
+                "y": "'a",
+                "z": "'a"
+            }
+        },
+        {
+            "name": "r029",
+            "prop": "(¬p ⟶ q) ⟷ p ∨ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r030",
+            "prop": "(¬p ⟶ q) ⟷ q ∨ p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r032",
+            "prop": "(p ⟶ q) ⟷ q ∨ ¬p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r033",
+            "prop": "(true ⟶ p) ⟷ p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r034",
+            "prop": "(p ⟶ true) ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r035",
+            "prop": "(false ⟶ p) ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r036",
+            "prop": "(p ⟶ p) ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r037",
+            "prop": "(p ⟷ q ⟶ r) ⟷ r ∨ (q ⟷ ¬p)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool",
+                "r": "bool"
+            }
+        },
+        {
+            "name": "r039",
+            "prop": "¬false ⟷ true",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "r040",
+            "prop": "¬¬p ⟷ p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r042",
+            "prop": "p ∨ true ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r043",
+            "prop": "p ∨ ¬p ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r044",
+            "prop": "¬p ∨ p ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r045",
+            "prop": "true ∨ p ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r046",
+            "prop": "p ∨ false ⟷ p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r047",
+            "prop": "false ∨ p ⟷ p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r048",
+            "prop": "p ∧ q ⟷ q ∧ p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r049",
+            "prop": "p ∧ true ⟷ p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r050",
+            "prop": "true ∧ p ⟷ p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r051",
+            "prop": "p ∧ false ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r052",
+            "prop": "false ∧ p ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r053",
+            "prop": "p ∧ q ⟷ ¬(¬p ∨ ¬q)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r054",
+            "prop": "¬p ∧ q ⟷ ¬(p ∨ ¬q)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r055",
+            "prop": "p ∧ ¬q ⟷ ¬(¬p ∨ q)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r056",
+            "prop": "¬p ∧ ¬q ⟷ ¬(p ∨ q)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r057",
+            "prop": "p ∧ q ⟷ ¬(¬q ∨ ¬p)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r058",
+            "prop": "¬p ∧ q ⟷ ¬(¬q ∨ p)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r059",
+            "prop": "p ∧ ¬q ⟷ ¬(q ∨ ¬p)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r060",
+            "prop": "¬p ∧ ¬q ⟷ ¬(q ∨ p)",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r066",
+            "prop": "x = y + z ⟷ x + -1 * z = y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r067",
+            "prop": "x = y + -1 * z ⟷ x + (-1 * y + z) = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r068",
+            "prop": "x = -1 * y + z ⟷ y + (-1 * z + x) = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r069",
+            "prop": "x = y + z ⟷ x + (-1 * y + -1 * z) = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r070",
+            "prop": "x = y + z ⟷ y + (z + -1 * x) = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r071",
+            "prop": "x = y + z ⟷ y + (-1 * x + z) = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r072",
+            "prop": "x = y + z ⟷ z + -1 * x = -y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r073",
+            "prop": "x = -y + z ⟷ z + -1 * x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r074",
+            "prop": "-1 * x = -y ⟷ x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r075",
+            "prop": "-1 * x + y = z ⟷ x + -1 * y = -z",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r076",
+            "prop": "x + y = 0 ⟷ y = -x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r077",
+            "prop": "x + y = z ⟷ y + -1 * z = -x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r078",
+            "prop": "a + (-1 * x + (v * y + w * z)) = 0 ⟷ x + (-v * y + -w * z) = a",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "v": "int",
+                "w": "int",
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r079",
+            "prop": "0 + x = x",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "r080",
+            "prop": "x + 0 = x",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "r081",
+            "prop": "x + y = y + x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r082",
+            "prop": "x + x = 2 * x",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "r083",
+            "prop": "x + y + z = x + (y + z)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r084",
+            "prop": "x + y + z = x + (z + y)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r085",
+            "prop": "x + (y + z) = y + (z + x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r086",
+            "prop": "x + (y + z) = y + (x + z)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r087",
+            "prop": "x + (y + (z + u)) = y + (z + (u + x))",
+            "ty": "thm",
+            "vars": {
+                "u": "int",
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r088",
+            "prop": "x ≥ x ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "r089",
+            "prop": "x ≥ y ⟷ x + -1 * y ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r090",
+            "prop": "x ≥ y ⟷ y + -1 * x ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r091",
+            "prop": "x ≥ y + z ⟷ y + (z + -1 * x) ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r092",
+            "prop": "-1 * x ≥ 0 ⟷ x ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "r093",
+            "prop": "-1 * x ≥ -y ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r094",
+            "prop": "-1 * x + y ≥ 0 ⟷ x + -1 * y ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r095",
+            "prop": "x + -1 * y ≥ 0 ⟷ y ≤ x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r096",
+            "prop": "x > y ⟷ ¬(y ≥ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r097",
+            "prop": "x > y ⟷ ¬(x ≤ y)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r098",
+            "prop": "x > y ⟷ ¬(x + -1 * y ≤ 0)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r099",
+            "prop": "x > y ⟷ ¬(y + -1 * x ≥ 0)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r100",
+            "prop": "x > y + z ⟷ ¬(z + -1 * x ≥ -y)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r101",
+            "prop": "x ≤ x ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "r102",
+            "prop": "(0::int) ≤ 1 ⟷ true",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "r103",
+            "prop": "x ≤ y ⟷ y ≥ x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r104",
+            "prop": "0 ≤ -x + y ⟷ y ≥ x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r105",
+            "prop": "-1 * x ≤ 0 ⟷ x ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "r106",
+            "prop": "x ≤ y ⟷ x + -1 * y ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r107",
+            "prop": "x ≤ y ⟷ y + -1 * x ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r108",
+            "prop": "-1 * x + y ≤ 0 ⟷ x + -1 * y ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r109",
+            "prop": "-1 * x + y ≤ -z ⟷ x + -1 * y ≥ z",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r110",
+            "prop": "-x + y ≤ z ⟷ y + -1 * z ≤ x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r111",
+            "prop": "x + -1 * y ≤ z ⟷ x + (-1 * y + -1 * z) ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r112",
+            "prop": "x ≤ y + z ⟷ x + -1 * z ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r113",
+            "prop": "x ≤ y + z ⟷ z + -1 * x ≥ -y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r114",
+            "prop": "x ≤ y + z ⟷ x + (-1 * y + -1 * z) ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r115",
+            "prop": "x < y ⟷ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r116",
+            "prop": "x < y ⟷ ¬(x ≥ y)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r117",
+            "prop": "x < y ⟷ ¬(y + -1 * x ≤ 0)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r118",
+            "prop": "x < y ⟷ ¬(x + -1 * y ≥ 0)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r119",
+            "prop": "x < y + -1 * z ⟷ ¬(x + -1 * y + z ≥ 0)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r120",
+            "prop": "x < y + -1 * z ⟷ ¬(x + (-1 * y + z) ≥ 0)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r121",
+            "prop": "x < -y + z ⟷ ¬(z + -1 * x ≤ y)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r122",
+            "prop": "x < -y + (z + u) ⟷ ¬(z + (u + -1 * x) ≤ y)",
+            "ty": "thm",
+            "vars": {
+                "u": "int",
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r123",
+            "prop": "x < -y + (z + (u + v)) ⟷ ¬(z + (u + (v + -1 * x)) ≤ y)",
+            "ty": "thm",
+            "vars": {
+                "u": "int",
+                "v": "int",
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r124",
+            "prop": "-x + y < z ⟷ ¬(y + -1 * z ≥ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r125",
+            "prop": "x + y < z ⟷ ¬(z + -1 * y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r126",
+            "prop": "0 < -x + y ⟷ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r127",
+            "prop": "x - 0 = x",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "r128",
+            "prop": "0 - x = -x",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "r129",
+            "prop": "0 - x = -1 * x",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "r130",
+            "prop": "x - y = -y + x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r131",
+            "prop": "x - y = x + -1 * y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r132",
+            "prop": "x - y = -1 * y + x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r133",
+            "prop": "x - 1 = -1 + x",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "r134",
+            "prop": "x + y - z = x + (y + -1 * z)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r135",
+            "prop": "x + y - z = x + (-1 * z + y)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "r136",
+            "prop": "0 = -u * x ⟷ u * x = 0",
+            "ty": "thm",
+            "vars": {
+                "u": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "r137",
+            "prop": "a = -u * x ⟷ u * x = -a",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "u": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "r138",
+            "prop": "a = x + (y + z) ⟷ x + (y + (-1 * a + z)) = 0",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "r139",
+            "prop": "a = x + (y + z) ⟷ x + (y + (z + -1 * a)) = 0",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "r140",
+            "prop": "a = -u * y + v * z ⟷ u * y + (-v * z + a) = 0",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "u": "real",
+                "v": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "r141",
+            "prop": "a = -u * y + -v * z ⟷ u * y + (a + v * z) = 0",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "u": "real",
+                "v": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "r142",
+            "prop": "-a = -u * x + v * y ⟷ u * x + -v * y = a",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "u": "real",
+                "v": "real",
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "r143",
+            "prop": "a = -u * x + (-v * y + w * z) ⟷ u * x + (v * y + (-w * z + a)) = 0",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "u": "real",
+                "v": "real",
+                "w": "real",
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "r144",
+            "prop": "a = -u * x + (v * y + w * z) ⟷ u * x + (-v * y + -w * z) = -a",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "u": "real",
+                "v": "real",
+                "w": "real",
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "r145",
+            "prop": "a = -u * x + (v * y + -w * z) ⟷ u * x + (-v * y + w * z) = -a",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "u": "real",
+                "v": "real",
+                "w": "real",
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
         }
     ],
     "description": "Used for z3 rule rewrite, th-lemma and def-axiom.",
     "imports": [
         "logic_base",
-        "int"
+        "int",
+        "real"
     ],
     "name": "smt"
 }
