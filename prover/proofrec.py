@@ -15,7 +15,7 @@ from kernel.macro import Macro
 from kernel.theory import check_proof, register_macro
 from kernel import theory
 from logic import basic, context, matcher
-from logic.logic import apply_theorem, imp_disj_iff, disj_norm
+from logic.logic import apply_theorem, imp_disj_iff, disj_norm, imp_conj_macro
 from logic.tactic import rewrite_goal_with_prev
 from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv
 # from syntax.settings import settings
@@ -394,6 +394,8 @@ def distinct_monotonicity(pts, concl, z3terms):
 def schematic_rules_rewr(thms, lhs, rhs):
     """Rewrite by instantiating schematic theorems."""
     context.set_context('smt')
+    if rhs == true:
+        rhs
     for thm in thms:
         context.set_context('smt')
         pt = ProofTerm.theorem(thm)
@@ -405,7 +407,31 @@ def schematic_rules_rewr(thms, lhs, rhs):
             continue
     return None
 
-def rewrite(t):
+def rewrite(t, z3terms):
+    """
+    Multiple strategies for rewrite rule:
+    a) if we want to rewrite distinct[a,...,z] to false, we can check the args whether have
+    same term.
+    """
+
+    if z3.is_distinct(z3terms[0].arg(0)) and z3.is_false(z3terms[0].arg(1)):
+        conjs = t.lhs.strip_conj()
+        same = None
+        for i in range(len(conjs)):
+            if conjs[i].arg.is_reflexive():
+                pt1 = imp_conj_macro().get_proof_term(Implies(t.lhs, conjs[i]), None) # ⊢ ~A ∧ B --> ~A
+                pt2 = ProofTerm.reflexive(conjs[i].arg.lhs) # ⊢ A
+                pt3 = apply_theorem('double_neg', inst=Inst(A=pt2.prop)).symmetric() # ⊢ A = ~~(A)
+                pt4 = apply_theorem('negE', inst=Inst(A=Not(pt2.prop))) # ~~A --> ~A --> false
+                pt5 = pt3.equal_elim(pt2) # ⊢ ~~A
+                pt6 = pt4.implies_elim(pt5) # ⊢ ~A --> false
+                pt7 = pt1.implies_elim(ProofTerm.assume(t.lhs)) # ~A ∧ B ⊢ ~A
+                pt8 = pt6.implies_elim(pt7) # ~A ∧ B ⊢ false
+                pt9 = pt8.implies_intr(pt8.hyps[0]) # ⊢ ~A ∧ B --> false
+                pt10 = apply_theorem('falseE', inst=Inst(A=t.lhs)) # ⊢ false --> ~A ∧ B
+                return apply_theorem('iffI', pt9, pt10, inst=Inst(A=t.lhs, B=false)) # ~A ∧ B <--> false
+        
+
     def norm_int(t):
         """Use nat norm macro to normalize nat expression."""
         return int_norm_macro().get_proof_term(t, [])
@@ -886,7 +912,7 @@ def convert_method(term, *args, subterms=None):
         return mp(arg1, arg2)
     elif name in ('rewrite', 'commutativity'):
         arg1, = args
-        return rewrite(arg1)
+        return rewrite(arg1, subterms)
     elif name == 'unit-resolution':
         return unit_resolution(args[0], args[1:-1], args[-1], subterms)
     elif name == 'nnf-pos':
@@ -971,6 +997,8 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False):
             r[i] = translate(term[i],bounds=bounds)
         else:
             subterms = [term[j] for j in net[i]]
+            if i == 170:
+                i
             r[i] = convert_method(term[i], *args, subterms=subterms)
             if trace:
                 basic.load_theory('int')
