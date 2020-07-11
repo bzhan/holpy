@@ -35,6 +35,7 @@ method = ('mp', 'mp~', 'asserted', 'trans', 'trans*', 'monotonicity', 'rewrite',
 
 class Z3Term:
     def __init__(self, t):
+        assert isinstance(t, z3.AstRef), "%s is not z3 term!" % str(t)
         self.t = t
 
     def __eq__(self, value):
@@ -201,8 +202,8 @@ def translate(term, bounds=deque()):
         elif z3.is_ge(term):
             return greater_eq(args[0].get_type())(*args)
         elif z3.is_distinct(term):
-            ineq = [Eq(args[i], args[j]) for i in range(len(args)) for j in range(i+1, len(args))]
-            return Not(Or(*ineq))
+            ineq = [Not(Eq(args[i], args[j])) for i in range(len(args)) for j in range(i+1, len(args))]
+            return And(*ineq)
         elif kind == Z3_OP_ITE:
             cond, stat1, stat2 = translate(term.arg(0)), translate(term.arg(1)), translate(term.arg(2))
             T = stat1.get_type() # stat1 and stat2 must have same type
@@ -234,9 +235,9 @@ def and_elim(pt, concl):
 
 def monotonicity(pts, concl):
     """
-    f = g, x1 = y1, x2 = y2, ..., xn = yn
+    f = f, x1 = y1, x2 = y2, ..., xn = yn
     =====================================
-        f(x1,...,xn) = g(y1,...,yn)
+        f(x1,...,xn) = f(y1,...,yn)
 
     Note: In HOL, disj and conj are both binary right-associative operators,
     but in z3, they are polyadic, so if f and g are disj/conj, the
@@ -338,6 +339,61 @@ def monotonicity(pts, concl):
             pt1 = pt_concl.combination(eq_pts[i+1]).combination(pt1)
 
         return pt1
+
+def distinct_monotonicity(pts, concl, z3terms):
+    """
+    If we want to prove distinct[x, y, z] <--> distinct[a, b, c]
+    with premises: [x = a, y = b, z = c], because HOL doesn't have distinct 
+    operator, we need to implement one.
+    For example, we can use monotonicity to get 
+    "x = a, y = b ⊢ x = y <--> a = b", and use combination we can get 
+    "x = a, y = b ⊢ Not(x = y) <--> Not(a = b)". If we have n premises, we
+    can get n(n-1)/2 similarly proofterms. These proofterms are
+    enough to call a monotonicity rule, in which function is conjunction.
+    """
+
+    def equal_mono(pt1, pt2):
+        """
+        Due to bugs in monotonicity method(not use z3terms as argument indicator), 
+        we temporarily implement a little equal monotonicity rule here.
+        pt1: ⊢ a = b
+        pt2: ⊢ c = d
+        concl: a = c <--> b = d
+        """
+        eq = equals(pt1.prop.lhs.get_type())
+        eq_refl = ProofTerm.reflexive(eq)
+        pt1 = ProofTerm.combination(eq_refl, pt1)
+        pt2 = ProofTerm.combination(pt1, pt2)
+        return pt2
+
+    arg_num = z3terms[-1].arg(0).num_args()
+    lhs_arguments = [translate(z3terms[-1].arg(0).arg(i)) for i in range(arg_num)]
+    rhs_arguments = [translate(z3terms[-1].arg(1).arg(i)) for i in range(arg_num)]
+    new_equals = []
+    index = 0
+    for l, r in zip(lhs_arguments, rhs_arguments):
+        if l == r:
+            new_equals.append(ProofTerm.reflexive(l))
+        else:
+            new_equals.append(pts[index])
+            index += 1
+    new_pts = [(new_equals[i], new_equals[j], \
+        Eq(Eq(new_equals[i].prop.lhs, new_equals[j].prop.lhs), Eq(new_equals[i].prop.rhs, new_equals[j].prop.rhs))) \
+        for i in range(len(new_equals)) for j in range(i+1, len(new_equals))]
+
+    new_pts1 = [equal_mono(p[0], p[1]) for p in new_pts]
+    neg_refl = ProofTerm.reflexive(neg)
+    new_pts2 = [ProofTerm.combination(neg_refl, p) for p in new_pts1]
+    conj_refl = ProofTerm.reflexive(conj)
+    pt_conj = new_pts2[-1]
+    for i in reversed(range(len(new_pts2) - 1)):
+        pt = ProofTerm.combination(conj_refl, new_pts2[i]).combination(pt_conj)
+        pt_conj = pt
+    return pt
+
+    
+
+
     
 
 def schematic_rules_rewr(thms, lhs, rhs):
@@ -809,6 +865,8 @@ def convert_method(term, *args, subterms=None):
         return not_or_elim(arg1, arg2)
     elif name == 'monotonicity':
         *equals, concl = args
+        if subterms[-1].arg(0).decl().name() == 'distinct':
+            return distinct_monotonicity(equals, concl, subterms)
         return monotonicity(equals, concl)
     elif name in ('trans', 'trans*'):
         arg1, arg2, _ = args

@@ -191,8 +191,8 @@ class ProofrecTest(unittest.TestCase):
     UNSAT files in QF_UF/2018-Goel-hwbench/
     ==================================================
     'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_blocks.2.prop1_ab_reg_max.smt2', ✓
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_blocks.3.prop1_ab_reg_max.smt2', ×
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_bridge.1.prop1_ab_reg_max.smt2',
+    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_blocks.3.prop1_ab_reg_max.smt2', ✓
+    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_bridge.1.prop1_ab_reg_max.smt2', ✓
     'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_bridge.2.prop1_ab_reg_max.smt2',
     'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_bridge.3.prop1_ab_reg_max.smt2',
     'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp.1.prop1_ab_reg_max.smt2',
