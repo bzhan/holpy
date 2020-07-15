@@ -6,6 +6,12 @@
 #include<stdexcept>
 #include<cassert>
 #include<map>
+#include<set>
+
+class Type;
+class STVar;
+class TVar;
+class TConst;
 
 class Type {
 public:
@@ -32,6 +38,11 @@ public:
 	std::map<std::string, Type> match_incr(Type& t,
 		std::map<std::string, Type>) const;
 	std::map<std::string, Type> match(Type& t) const;
+	std::set<Type> get_stvars() const;
+	std::set<Type> get_tvars() const;
+	std::set<Type> get_tsubs() const;
+	Type convert_stvar() const;
+	bool is_numeral_type() const;
 
 private:
 	int ty=0;
@@ -60,6 +71,11 @@ public:
 STVar to_stvar(Type& t);
 TVar to_tvar(Type& t);
 TConst to_tconst(Type& t);
+Type TFun(std::vector<Type>);
 
+TConst BoolType = TConst("bool");
+TConst NatType = TConst("nat");
+TConst IntType = TConst("int");
+TConst RealType = TConst("real");
 
 #endif // !__TYPE__

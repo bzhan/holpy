@@ -1,5 +1,6 @@
 #include<iostream>
 #include<numeric>
+#include<algorithm>
 #include "type.h"
 
 std::ostream& operator << (std::ostream& os, const Type& t) {
@@ -166,16 +167,21 @@ bool Type::operator<(const Type& t) const{
 	}else if(ty == 0 || ty == 1){
 		return na < t.name();
 	}else if(ty == 2){
-		if(na > t.name()){
-			return false;
-		}
-		else if(na < t.name())
-		{
-			return true;
+		if(na != t.name()){
+			return na < t.name();
 		}
 		else
 		{
-			return this->size() < t.size(); //incorrect. 
+			int size_i = this->size();
+			int size_j = t.size();
+			std::vector<Type> args_i = this->getArgs();
+			std::vector<Type> args_j = t.getArgs();
+			for (int i = 0; i < std::min(size_i, size_j); ++i) {
+				if (args_i[i] != args_j[i]) {
+					return args_i[i] < args_j[i];
+				}
+			}
+			return size_i < size_j;  
 		}
 	}
 }
@@ -237,7 +243,85 @@ std::map<std::string, Type> Type::match(Type& t) const {
 	return m;
 }
 
+std::set<Type> Type::get_stvars() const {
+	std::set<Type> s;
+	if (this->is_stvar()) {
+		s.insert(*this);
+		return s;
+	}
+	else if (this->is_tvar()) {
+		return s;
+	}
+	else {
+		for (auto a : this->getArgs()) {
+			std::set<Type> s_arg = a.get_stvars();
+			s.insert(s_arg.begin(), s_arg.end());
+		}
+		return s;
+	}
+}
 
+std::set<Type> Type::get_tvars() const {
+	std::set<Type> s;
+	if (this->is_tvar()) {
+		s.insert(*this);
+		return s;
+	}
+	else if (this->is_stvar()) {
+		return s;
+	}
+	else {
+		for (auto a : this->getArgs()) {
+			std::set<Type> s_arg = a.get_stvars();
+			s.insert(s_arg.begin(), s_arg.end());
+		}
+		return s;
+	}
+}
+
+std::set<Type> Type::get_tsubs() const {
+	std::set<Type> s;
+	if (this->is_tvar() || this->is_stvar()) {
+		s.insert(*this);
+		return s;
+	}
+	else {
+		for (auto a : this->getArgs()) {
+			std::set<Type> s_arg = a.get_stvars();
+			s.insert(s_arg.begin(), s_arg.end());
+		}
+		return s;
+	}
+}
+
+Type Type::convert_stvar() const {
+	if (this->is_stvar()) {
+		throw std::runtime_error("convert_stvar");
+	}
+	else if (this->is_tvar()) {
+		return Type(0, na);
+	}
+	else if(this->is_tconst()) {
+		std::vector<Type> v = this->getArgs();
+		std::vector<Type> v_new;
+		for (auto& a : v) {
+			v_new.push_back(a.convert_stvar());
+		}
+		return TConst(na, v_new);
+	}
+}
+
+bool Type::is_numeral_type() const {
+	return *this == NatType || *this == IntType || *this == RealType;
+}
+
+Type TFun(std::vector<Type> v) {
+	Type res = v.back();
+	for (auto iter = v.crbegin() + 1; iter != v.crend(); ++iter) {
+		res = TConst("fun", { *iter, res });
+	}
+	return res;
+}
 
 int main() {
 	STVar st("a");
@@ -284,6 +368,14 @@ int main() {
 	{
 		std::cout << it->first << ":=" << it->second << "\n";
 	}
-	
+
+	std::set<Type> s = p.get_stvars();
+	for (auto it = s.cbegin(); it != s.cend(); ++it)
+	{
+		std::cout << *it << " ";
+	}
+	Type fun1 = TFun({ nat, nat, nat });
+	std::cout << "\n" << fun1 << "\n";
+	std::cout << nat.is_numeral_type() << "\n";
 	return 0;
 }
