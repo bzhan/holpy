@@ -633,6 +633,116 @@
         },
         {
             "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "is_real_closed_interval",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, x ∈ {p. a ≤ p ∧ p ≤ b} ⟷ a ≤ x ∧ x ≤ b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {p. a ≤ p ∧ p ≤ b} ⟷ a ≤ x ∧ x ≤ b"
+                },
+                {
+                    "args": "real_closed_interval_def, x ∈ real_closed_interval a b ⟷ a ≤ x ∧ x ≤ b",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ real_closed_interval a b ⟷ a ≤ x ∧ x ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ real_closed_interval a b ⟷ a ≤ x ∧ x ≤ b"
+                }
+            ],
+            "prop": "x ∈ real_closed_interval a b ⟷ a ≤ x ∧ x ≤ b",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "is_real_open_interval",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, x ∈ {p. a < p ∧ p < b} ⟷ a < x ∧ x < b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {p. a < p ∧ p < b} ⟷ a < x ∧ x < b"
+                },
+                {
+                    "args": "real_open_interval_def, x ∈ real_open_interval a b ⟷ a < x ∧ x < b",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ real_open_interval a b ⟷ a < x ∧ x < b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ real_open_interval a b ⟷ a < x ∧ x < b"
+                }
+            ],
+            "prop": "x ∈ real_open_interval a b ⟷ a < x ∧ x < b",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_open_interval_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward"
             ],
             "name": "real_interval_open_subset_closed",
@@ -1024,6 +1134,140 @@
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "real_less_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_open_interval",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀a1. ∀b1. ∀c. a < a1 ∧ a1 < b ⟶ a < b1 ∧ b1 < b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ a < c ∧ c < b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a1. ∀b1. ∀c. a < a1 ∧ a1 < b ⟶ a < b1 ∧ b1 < b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ a < c ∧ c < b"
+                },
+                {
+                    "args": "is_real_open_interval, ∀a1. ∀b1. ∀c. a1 ∈ real_open_interval a b ⟶ b1 ∈ real_open_interval a b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ c ∈ real_open_interval a b",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀a1. ∀b1. ∀c. a1 ∈ real_open_interval a b ⟶ b1 ∈ real_open_interval a b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ c ∈ real_open_interval a b"
+                },
+                {
+                    "args": "is_realinterval_def, is_realinterval (real_open_interval a b)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ is_realinterval (real_open_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ is_realinterval (real_open_interval a b)"
+                }
+            ],
+            "prop": "is_realinterval (real_open_interval a b)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "is_realinterval_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "is_real_open_interval"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_closed_interval",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀a1. ∀b1. ∀c. a ≤ a1 ∧ a1 ≤ b ⟶ a ≤ b1 ∧ b1 ≤ b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ a ≤ c ∧ c ≤ b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a1. ∀b1. ∀c. a ≤ a1 ∧ a1 ≤ b ⟶ a ≤ b1 ∧ b1 ≤ b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ a ≤ c ∧ c ≤ b"
+                },
+                {
+                    "args": "is_real_closed_interval, ∀a1. ∀b1. ∀c. a1 ∈ real_closed_interval a b ⟶ b1 ∈ real_closed_interval a b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ c ∈ real_closed_interval a b",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀a1. ∀b1. ∀c. a1 ∈ real_closed_interval a b ⟶ b1 ∈ real_closed_interval a b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ c ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "is_realinterval_def, is_realinterval (real_closed_interval a b)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ is_realinterval (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ is_realinterval (real_closed_interval a b)"
+                }
+            ],
+            "prop": "is_realinterval (real_closed_interval a b)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "is_realinterval_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "is_real_closed_interval"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
