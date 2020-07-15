@@ -3,7 +3,6 @@
 
 #include<vector>
 #include<string>
-#include<memory>
 #include<stdexcept>
 #include<cassert>
 #include<map>
@@ -13,28 +12,31 @@ public:
 	Type() = default;
 	Type(const int ty, const std::string& name): ty(ty), na(name) {}
 	Type(const int ty, const std::string& name,
-		const std::vector<std::shared_ptr<Type>>& args):
-		ty(ty), na(name), args(args) {}
+		const std::vector<Type>& _args) :
+		ty(ty), na(name), args(_args) {}
 
 	int type() const;
 	std::string name() const;
-	std::vector<std::shared_ptr<Type>> getArgs() const;
+	std::vector<Type> getArgs() const;
 	bool is_fun() const;
 	bool is_stvar() const;
 	bool is_tvar() const;
 	bool is_tconst() const;
-	std::shared_ptr<Type> domain_type() const;
-	std::shared_ptr<Type> range_type() const;
-	std::pair<std::vector<std::shared_ptr<Type>>, 
-		std::shared_ptr<Type>> strip_type() const;
+	Type domain_type() const;
+	Type range_type() const;
+	std::pair<std::vector<Type>, Type> strip_type() const;
 	int size() const;
 	bool operator== (const Type&) const;
 	bool operator< (const Type&) const;
+	bool operator!= (const Type&) const;
+	std::map<std::string, Type> match_incr(Type& t,
+		std::map<std::string, Type>) const;
+	std::map<std::string, Type> match(Type& t) const;
 
 private:
 	int ty=0;
 	std::string na="";
-	std::vector<std::shared_ptr<Type>> args;
+	std::vector<Type> args;
 };
 
 class STVar: public Type {
@@ -50,7 +52,7 @@ public:
 class TConst : public Type {
 public:
 	TConst(const std::string& na, 
-		const std::vector<std::shared_ptr<Type>>& args):
+		const std::vector<Type>& args):
 		Type(2, na, args) {}
 	TConst(const std::string& na): Type(2, na) {}
 };
@@ -58,5 +60,6 @@ public:
 STVar to_stvar(Type& t);
 TVar to_tvar(Type& t);
 TConst to_tconst(Type& t);
+
 
 #endif // !__TYPE__

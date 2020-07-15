@@ -10,34 +10,34 @@ std::ostream& operator << (std::ostream& os, const Type& t) {
 		return os << "'" << t.name();
 	}
 	else if (t.type() == 2) {
-		std::vector<std::shared_ptr<Type>> args = t.getArgs();
+		std::vector<Type> args = t.getArgs();
 		if (args.size() == 0) {
 			return os << t.name();
 		}
 		else if (args.size() == 1) {
-			if (args[0]->is_fun()) {
-				return os << "(" << *args[0] << ") " << t.name();
+			if (args[0].is_fun()) {
+				return os << "(" << args[0] << ") " << t.name();
 			}
 			else {
-				return os << *args[0] << " " << t.name();
+				return os << args[0] << " " << t.name();
 			}
 		}
 		else if (t.is_fun()) {
-			if (args[0]->is_fun()) {
-				return os << "(" << *args[0] << ") => " << *args[1];
+			if (args[0].is_fun()) {
+				return os << "(" << args[0] << ") => " << args[1];
 			}
 			else {
-				return  os << *args[0] << " => " << *args[1];
+				return  os << args[0] << " => " << args[1];
 			}
 		}
 		else {
 			os << "(";
 			for (auto s : args) {
 				if (s == args.back()) {
-					os << *s <<") ";
+					os << s <<") ";
 				}
 				else {
-					os << *s << ", ";
+					os << s << ", ";
 				}
 			}
 			return os << t.name();
@@ -49,7 +49,7 @@ inline std::string Type::name() const {
 	return na;
 }
 
-inline std::vector<std::shared_ptr<Type>> Type::getArgs() const {
+inline std::vector<Type> Type::getArgs() const {
 	if (ty == 2) {
 		return args;
 	}
@@ -78,35 +78,30 @@ inline bool Type::is_fun() const {
 	return ty == 2 && na == "fun";
 }
 
-inline std::shared_ptr<Type> Type::domain_type() const{
+inline Type Type::domain_type() const{
 	assert(this->is_fun());
 	return args[0];
 }
 
-inline std::shared_ptr<Type> Type::range_type() const{
+inline Type Type::range_type() const{
 	assert(this->is_fun());
 	return args[1];
 }
 
-std::pair<std::vector<std::shared_ptr<Type>>, 
-		std::shared_ptr<Type>> Type::strip_type() const{
-	
+std::pair<std::vector<Type>, Type> Type::strip_type() const{
 	if(this->is_fun()){
-		std::pair<std::vector<std::shared_ptr<Type>>, 
-			std::shared_ptr<Type>> p = this->range_type()->strip_type();
+		std::pair<std::vector<Type>, Type> p = this->range_type().strip_type();
 		
-		std::vector<std::shared_ptr<Type>> domain_ty = {this->domain_type()};
+		std::vector<Type> domain_ty = {this->domain_type()};
 
 		domain_ty.insert(domain_ty.end(), p.first.begin(), p.first.end());
 
-		std::pair<std::vector<std::shared_ptr<Type>>, 
-			std::shared_ptr<Type>> v_new = {domain_ty, p.second};
+		std::pair<std::vector<Type>, Type> v_new = {domain_ty, p.second};
 
 		return v_new;
 	}else{
-		std::vector<std::shared_ptr<Type>> v;
-		std::pair<std::vector<std::shared_ptr<Type>>, 
-			std::shared_ptr<Type>> p = {v, std::make_shared<Type>(*this)};
+		std::vector<Type> v;
+		std::pair<std::vector<Type>, Type> p = {v, *this};
 		return p;
 	}
 }
@@ -118,7 +113,7 @@ int Type::size() const {
 	else if(this->is_tconst()){
 		int n = 1;
 		for(auto a : args){
-			n += a->size();
+			n += a.size();
 		}
 		return n;
 	}
@@ -138,10 +133,10 @@ Type subst(Type& t, std::map<STVar, Type>& s) {
 	}else if(t.is_tvar()){
 		return t;
 	}else if(t.is_tconst()){
-		std::vector<std::shared_ptr<Type>> v_args;
+		std::vector<Type> v_args;
 		for(auto a : t.getArgs()){
-			Type ta = subst(*a, s);
-			v_args.push_back(std::make_shared<Type>(ta));
+			Type ta = subst(a, s);
+			v_args.push_back(ta);
 		}
 		return TConst(t.name(), v_args);
 	}
@@ -185,6 +180,10 @@ bool Type::operator<(const Type& t) const{
 	}
 }
 
+bool Type::operator!=(const Type& t) const {
+	return !(*this == t);
+}
+
 inline STVar to_stvar(Type& t){
 	assert(t.type() == 0);
 	return STVar(t.name());
@@ -200,6 +199,44 @@ inline TConst to_tconst(Type& t){
 	return TConst(t.name(), t.getArgs());
 }
 
+std::map<std::string, Type> Type::match_incr
+	(Type& t, std::map<std::string, Type> m) const {
+	if (this->is_stvar()) {
+		if (m.find(this->name()) != m.end()) {
+			if (t != m[this->name()]) {
+				throw std::runtime_error("Match error");
+			}
+		}
+		else {
+			m.insert({ this->name(), t });
+			return m;
+		}
+	}
+	else if (this->is_tvar()) {
+		if (*this != t) {
+			throw std::runtime_error("Match error");
+			return m;
+		}
+	}
+	else if (this->is_tconst()) {
+		if (!t.is_tconst() || t.name() != na) {
+			throw std::runtime_error("Match error");
+		}
+		else {
+			for (int i = 0; i < args.size(); ++i) {
+				m =args[i].match_incr(t.getArgs()[i], m);
+			}
+			return m;
+		}
+	}
+}
+
+std::map<std::string, Type> Type::match(Type& t) const {
+	std::map<std::string, Type> m;
+	m = match_incr(t, m);
+	return m;
+}
+
 
 
 int main() {
@@ -210,34 +247,43 @@ int main() {
 	TConst bo("bool");
 	TConst nat("nat");
 	std::cout << bo << std::endl;
-	auto p_bo = std::make_shared<TConst>(bo);
-	auto p_nat = std::make_shared<TConst>(nat);
-	std::vector<std::shared_ptr<Type>> v1{p_nat, p_bo};
+	std::vector<Type> v1{nat, bo};
 	TConst fun = TConst("fun", v1);
 	std::cout << fun << std::endl;
-	std::cout << *fun.domain_type() << " "<< *(fun.range_type()) << std::endl;
-	std::vector<std::shared_ptr<Type>> v2{ p_nat };
+	std::cout << fun.domain_type() << " "<< fun.range_type() << std::endl;
+	std::vector<Type> v2{ nat };
 	TConst nat_list("list", v2);
 	std::cout << nat_list << std::endl;
-	std::vector<std::shared_ptr<Type>> v3{ p_nat, std::make_shared<TConst>(fun) };
+	std::vector<Type> v3{nat, fun };
 	TConst nat_nat_bo("fun", v3);
 	std::cout << nat_nat_bo << std::endl;
-	std::cout << *nat_nat_bo.range_type() << std::endl;
+	std::cout << nat_nat_bo.range_type() << std::endl;
 	std::cout << nat_nat_bo.size() << std::endl;
-	std::cout << *(nat_nat_bo.strip_type().second) << std::endl;
+	std::cout << nat_nat_bo.strip_type().second << std::endl;
 	for (auto& s : nat_nat_bo.strip_type().first) {
-		std::cout << *s << " ";
+		std::cout << s << " ";
 	}
 	std::cout << std::endl;
+	
 	STVar b("b");
 	std::map<STVar, Type> m = { {STVar("a"), TConst("bool")}, {STVar("b"), TConst("nat")} };
-	auto p_st = std::make_shared<STVar>(st);
-	auto p_b = std::make_shared<STVar>(b);
-	std::vector<std::shared_ptr<Type>> v4{ p_st, p_b };
+	std::vector<Type> v4{ st, b };
 	TConst f4("fun", v4);
 	std::cout << f4 << std::endl;
 	std::cout << subst(f4, m) <<std::endl;
-	
+	std::map<std::string, Type> m1 = st.match(bo);
+	for (auto it = m1.cbegin(); it != m1.cend(); ++it)
+	{
+		std::cout << it->first << ":=" << it->second << "\n";
+	}
+	STVar a("a");
+	std::vector<Type> v5{ a, b };
+	TConst p("fun", v5);
+	std::map<std::string, Type> m2 = p.match(fun);
+	for (auto it = m2.cbegin(); it != m2.cend(); ++it)
+	{
+		std::cout << it->first << ":=" << it->second << "\n";
+	}
 	
 	return 0;
 }
