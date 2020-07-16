@@ -635,7 +635,7 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "is_real_closed_interval",
+            "name": "in_real_closed_interval",
             "num_gaps": 0,
             "proof": [
                 {
@@ -690,7 +690,7 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "is_real_open_interval",
+            "name": "in_real_open_interval",
             "num_gaps": 0,
             "proof": [
                 {
@@ -1157,7 +1157,7 @@
                     "th": "⊢ ∀a1. ∀b1. ∀c. a < a1 ∧ a1 < b ⟶ a < b1 ∧ b1 < b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ a < c ∧ c < b"
                 },
                 {
-                    "args": "is_real_open_interval, ∀a1. ∀b1. ∀c. a1 ∈ real_open_interval a b ⟶ b1 ∈ real_open_interval a b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ c ∈ real_open_interval a b",
+                    "args": "in_real_open_interval, ∀a1. ∀b1. ∀c. a1 ∈ real_open_interval a b ⟶ b1 ∈ real_open_interval a b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ c ∈ real_open_interval a b",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -1196,7 +1196,7 @@
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
                     "sym": "false",
-                    "theorem": "is_real_open_interval"
+                    "theorem": "in_real_open_interval"
                 },
                 {
                     "goal_id": "0",
@@ -1224,7 +1224,7 @@
                     "th": "⊢ ∀a1. ∀b1. ∀c. a ≤ a1 ∧ a1 ≤ b ⟶ a ≤ b1 ∧ b1 ≤ b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ a ≤ c ∧ c ≤ b"
                 },
                 {
-                    "args": "is_real_closed_interval, ∀a1. ∀b1. ∀c. a1 ∈ real_closed_interval a b ⟶ b1 ∈ real_closed_interval a b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ c ∈ real_closed_interval a b",
+                    "args": "in_real_closed_interval, ∀a1. ∀b1. ∀c. a1 ∈ real_closed_interval a b ⟶ b1 ∈ real_closed_interval a b ⟶ a1 ≤ c ⟶ c ≤ b1 ⟶ c ∈ real_closed_interval a b",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -1263,7 +1263,7 @@
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
                     "sym": "false",
-                    "theorem": "is_real_closed_interval"
+                    "theorem": "in_real_closed_interval"
                 },
                 {
                     "goal_id": "0",

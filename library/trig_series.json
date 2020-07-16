@@ -18764,7 +18764,7 @@
                 "hint_backward"
             ],
             "name": "power_series_has_derivative",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s",
@@ -19035,7 +19035,7 @@
                     "th": "⊢ (∀n. ∀x. x ∈ real_open_interval (-w) w ⟶ has_real_derivative (λx1. a n * x1 ^ n) (of_nat n * a n * x ^ (n - 1)) (within (atreal x) (real_open_interval (-w) w))) ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ real_open_interval (-w) w ⟶ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * x ^ (i - 1)) - real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) ≤ e)) ⟶ (∃x. ∃l. x ∈ real_open_interval (-w) w ∧ real_sums (λn. a n * x ^ n) l s) ⟶ (∃g. ∀x. x ∈ real_open_interval (-w) w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)))"
                 },
                 {
-                    "args": "is_real_open_interval",
+                    "args": "in_real_open_interval",
                     "id": "2.8",
                     "prevs": [
                         "2.7"
@@ -19283,19 +19283,345 @@
                     "th": "w < r, 0 < w ⊢ abs ((r + w) / 2) < ((r + w) / 2 + r) / 2"
                 },
                 {
-                    "args": "",
+                    "args": "summable_power_series_derivative, {a: a, s: s, y: ((r + w) / 2 + r) / 2}",
                     "id": "2.11.12",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃N. ∀n. ∀x. n ≥ N ∧ -w < x ∧ x < w ⟶ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * x ^ (i - 1)) - real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) ≤ e"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_summable s (λi. a i * (((r + w) / 2 + r) / 2) ^ i) ⟶ (∀x. abs x < ((r + w) / 2 + r) / 2 ⟶ real_summable s (λi. of_nat i * a i * x ^ (i - 1)))"
+                },
+                {
+                    "args": "((r + w) / 2 + r) / 2",
+                    "id": "2.11.13",
+                    "prevs": [
+                        "0",
+                        "2.11.8"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ real_sums (λi. a i * (((r + w) / 2 + r) / 2) ^ i) (f (((r + w) / 2 + r) / 2)) s"
+                },
+                {
+                    "args": "exI, {P: λl. real_sums (λi. a i * (((r + w) / 2 + r) / 2) ^ i) l s, a: f (((r + w) / 2 + r) / 2)}",
+                    "id": "2.11.14",
+                    "prevs": [
+                        "2.11.13"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃a1. real_sums (λi. a i * (((r + w) / 2 + r) / 2) ^ i) a1 s"
+                },
+                {
+                    "args": "real_summable_def, real_summable s (λi. a i * (((r + w) / 2 + r) / 2) ^ i)",
+                    "id": "2.11.15",
+                    "prevs": [
+                        "2.11.14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ real_summable s (λi. a i * (((r + w) / 2 + r) / 2) ^ i)"
                 },
                 {
                     "args": "",
-                    "id": "2.11.13",
+                    "id": "2.11.16",
+                    "prevs": [
+                        "2.11.12",
+                        "2.11.15"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀x. abs x < ((r + w) / 2 + r) / 2 ⟶ real_summable s (λi. of_nat i * a i * x ^ (i - 1))"
+                },
+                {
+                    "args": "power_series_uniform, {a: λi. of_nat (Suc i) * a (Suc i), s: image Pre (diff s ({0})), t: w, y: (r + w) / 2}",
+                    "id": "2.11.17",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_summable (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * ((r + w) / 2) ^ i) ⟶ abs w < abs ((r + w) / 2) ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e))"
+                },
+                {
+                    "args": "(r + w) / 2",
+                    "id": "2.11.18",
+                    "prevs": [
+                        "2.11.16",
+                        "2.11.11"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ real_summable s (λi. of_nat i * a i * ((r + w) / 2) ^ (i - 1))"
+                },
+                {
+                    "args": "real_summable_def, ∃l. real_sums (λi. of_nat i * a i * ((r + w) / 2) ^ (i - 1)) l s",
+                    "id": "2.11.19",
+                    "prevs": [
+                        "2.11.18"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃l. real_sums (λi. of_nat i * a i * ((r + w) / 2) ^ (i - 1)) l s"
+                },
+                {
+                    "args": "power_series_derivative_shift, ∃l. real_sums (λi. of_nat (Suc i) * a (Suc i) * ((r + w) / 2) ^ i) l (image Pre (diff s ({0})))",
+                    "id": "2.11.20",
+                    "prevs": [
+                        "2.11.19"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃l. real_sums (λi. of_nat (Suc i) * a (Suc i) * ((r + w) / 2) ^ i) l (image Pre (diff s ({0})))"
+                },
+                {
+                    "args": "real_summable_def, real_summable (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * ((r + w) / 2) ^ i)",
+                    "id": "2.11.21",
+                    "prevs": [
+                        "2.11.20"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ real_summable (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * ((r + w) / 2) ^ i)"
+                },
+                {
+                    "args": "",
+                    "id": "2.11.22",
+                    "prevs": [
+                        "2.11.17",
+                        "2.11.21"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ abs w < abs ((r + w) / 2) ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e))"
+                },
+                {
+                    "args": "",
+                    "id": "2.11.23",
+                    "prevs": [
+                        "2.11.22",
+                        "2.11.6"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "2.11.24",
+                    "prevs": [
+                        "2.11.23",
+                        "2.11.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "2.11.25",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e",
+                    "id": "2.11.26",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e"
+                },
+                {
+                    "args": "",
+                    "id": "2.11.27",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ ∀n. ∀x. n ≥ N + 1 ∧ -w < x ∧ x < w ⟶ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * x ^ (i - 1)) - real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) ≤ e"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.11.27.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "t, real",
+                    "id": "2.11.27.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR t"
+                },
+                {
+                    "args": "n ≥ N + 1 ∧ -w < t ∧ t < w",
+                    "id": "2.11.27.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n ≥ N + 1 ∧ -w < t ∧ t < w ⊢ n ≥ N + 1 ∧ -w < t ∧ t < w"
+                },
+                {
+                    "args": "0 < n",
+                    "id": "2.11.27.3",
+                    "prevs": [
+                        "2.11.27.2"
+                    ],
+                    "rule": "z3",
+                    "th": "n ≥ N + 1 ∧ -w < t ∧ t < w ⊢ 0 < n"
+                },
+                {
+                    "args": "le_Pre, {m: N + 1}",
+                    "id": "2.11.27.4",
+                    "prevs": [
+                        "2.11.27.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n ≥ N + 1 ∧ -w < t ∧ t < w ⊢ Pre (N + 1) ≤ Pre n ⟷ N + 1 ≤ n"
+                },
+                {
+                    "args": "add_1_right",
+                    "id": "2.11.27.5",
+                    "prevs": [
+                        "2.11.27.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "n ≥ N + 1 ∧ -w < t ∧ t < w ⊢ Pre (Suc N) ≤ Pre n ⟷ Suc N ≤ n"
+                },
+                {
+                    "args": "Pre_def_2",
+                    "id": "2.11.27.6",
+                    "prevs": [
+                        "2.11.27.5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "n ≥ N + 1 ∧ -w < t ∧ t < w ⊢ N ≤ Pre n ⟷ Suc N ≤ n"
+                },
+                {
+                    "args": "N + 1 ≤ n",
+                    "id": "2.11.27.7",
+                    "prevs": [
+                        "2.11.27.2"
+                    ],
+                    "rule": "z3",
+                    "th": "n ≥ N + 1 ∧ -w < t ∧ t < w ⊢ N + 1 ≤ n"
+                },
+                {
+                    "args": "add_1_right, Suc N ≤ n",
+                    "id": "2.11.27.8",
+                    "prevs": [
+                        "2.11.27.7"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, n ≥ N + 1 ∧ -w < t ∧ t < w, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ Suc N ≤ n"
+                },
+                {
+                    "args": "N ≤ Pre n",
+                    "id": "2.11.27.9",
+                    "prevs": [
+                        "2.11.27.6",
+                        "2.11.27.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, n ≥ N + 1 ∧ -w < t ∧ t < w, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ N ≤ Pre n"
+                },
+                {
+                    "args": "-(abs w) ≤ t ∧ t ≤ abs w",
+                    "id": "2.11.27.10",
+                    "prevs": [
+                        "2.11.27.2"
+                    ],
+                    "rule": "z3",
+                    "th": "n ≥ N + 1 ∧ -w < t ∧ t < w ⊢ -(abs w) ≤ t ∧ t ≤ abs w"
+                },
+                {
+                    "args": "in_real_closed_interval, t ∈ real_closed_interval (-(abs w)) (abs w)",
+                    "id": "2.11.27.11",
+                    "prevs": [
+                        "2.11.27.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, n ≥ N + 1 ∧ -w < t ∧ t < w, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ t ∈ real_closed_interval (-(abs w)) (abs w)"
+                },
+                {
+                    "args": "",
+                    "id": "2.11.27.12",
+                    "prevs": [
+                        "2.11.26",
+                        "2.11.27.9",
+                        "2.11.27.11"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, n ≥ N + 1 ∧ -w < t ∧ t < w, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ abs (sum (image Pre (diff s ({0})) ∩ {0..Pre n}) (λi. of_nat (Suc i) * a (Suc i) * t ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * t ^ i)) < e"
+                },
+                {
+                    "args": "power_sum_derivative_shift_lemma3, {a: a, s: s, x: t}",
+                    "id": "2.11.27.13",
+                    "prevs": [
+                        "2.11.27.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n ≥ N + 1 ∧ -w < t ∧ t < w ⊢ sum (image Pre (diff s ({0})) ∩ {0..Pre n}) (λi. of_nat (Suc i) * a (Suc i) * t ^ i) = sum (s ∩ {0..n}) (λi. of_nat i * a i * t ^ (i - 1))"
+                },
+                {
+                    "args": "",
+                    "id": "2.11.27.14",
+                    "prevs": [
+                        "2.11.27.13",
+                        "2.11.27.12"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, n ≥ N + 1 ∧ -w < t ∧ t < w, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * t ^ (i - 1)) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * t ^ i)) < e"
+                },
+                {
+                    "args": "real_infsum_def",
+                    "id": "2.11.27.15",
+                    "prevs": [
+                        "2.11.27.14"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, n ≥ N + 1 ∧ -w < t ∧ t < w, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * t ^ (i - 1)) - (THE l. real_sums (λi. of_nat (Suc i) * a (Suc i) * t ^ i) l (image Pre (diff s ({0}))))) < e"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "2.11.27.16",
+                    "prevs": [
+                        "2.11.27.15"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, n ≥ N + 1 ∧ -w < t ∧ t < w, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * t ^ (i - 1)) - (THE l. real_sums (λi. of_nat (Suc i) * a (Suc i) * t ^ i) l (image Pre (diff s ({0}))))) ≤ e"
+                },
+                {
+                    "args": "power_series_derivative_shift, abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * t ^ (i - 1)) - (THE l. real_sums (λi. of_nat i * a i * t ^ (i - 1)) l s)) ≤ e",
+                    "id": "2.11.27.17",
+                    "prevs": [
+                        "2.11.27.16"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, n ≥ N + 1 ∧ -w < t ∧ t < w, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * t ^ (i - 1)) - (THE l. real_sums (λi. of_nat i * a i * t ^ (i - 1)) l s)) ≤ e"
+                },
+                {
+                    "args": "real_infsum_def, abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * t ^ (i - 1)) - real_infsum s (λi. of_nat i * a i * t ^ (i - 1))) ≤ e",
+                    "id": "2.11.27.18",
+                    "prevs": [
+                        "2.11.27.17"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, n ≥ N + 1 ∧ -w < t ∧ t < w, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * t ^ (i - 1)) - real_infsum s (λi. of_nat i * a i * t ^ (i - 1))) ≤ e"
+                },
+                {
+                    "args": "",
+                    "id": "2.11.27.19",
+                    "prevs": [
+                        "2.11.27.0",
+                        "2.11.27.1",
+                        "2.11.27.2",
+                        "2.11.27.18"
+                    ],
+                    "rule": "intros",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ ∀n. ∀t. n ≥ N + 1 ∧ -w < t ∧ t < w ⟶ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * t ^ (i - 1)) - real_infsum s (λi. of_nat i * a i * t ^ (i - 1))) ≤ e"
+                },
+                {
+                    "args": "exI, {P: λN. ∀n. ∀x. n ≥ N ∧ -w < x ∧ x < w ⟶ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * x ^ (i - 1)) - real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) ≤ e, a: N + 1}",
+                    "id": "2.11.28",
+                    "prevs": [
+                        "2.11.27"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "w < r, 0 < e, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e ⊢ ∃a1. ∀n. ∀x. n ≥ a1 ∧ -w < x ∧ x < w ⟶ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * x ^ (i - 1)) - real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) ≤ e"
+                },
+                {
+                    "args": "∃N. ∀n. ∀x. N ≤ n ⟶ x ∈ real_closed_interval (-(abs w)) (abs w) ⟶ abs (sum (image Pre (diff s ({0})) ∩ {0..n}) (λi. of_nat (Suc i) * a (Suc i) * x ^ i) - real_infsum (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * x ^ i)) < e",
+                    "id": "2.11.29",
                     "prevs": [
                         "2.11.0",
                         "2.11.1",
-                        "2.11.12"
+                        "2.11.24",
+                        "2.11.25",
+                        "2.11.26",
+                        "2.11.28"
                     ],
                     "rule": "intros",
                     "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ -w < x ∧ x < w ⟶ abs (sum (s ∩ {0..n}) (λi. of_nat i * a i * x ^ (i - 1)) - real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) ≤ e)"
@@ -19303,20 +19629,573 @@
                 {
                     "args": "",
                     "id": "2.12",
+                    "prevs": [
+                        "2.10",
+                        "2.11"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ (∃x. ∃l. (-w < x ∧ x < w) ∧ real_sums (λn. a n * x ^ n) l s) ⟶ (∃g. ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)))"
+                },
+                {
+                    "args": "real_series_0, {s: s}",
+                    "id": "2.13",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃f1. ∀x. abs x < w ⟶ has_real_derivative f (f1 x) (atreal x) ∧ real_sums (λi. of_nat i * a i * x ^ (i - 1)) (f1 x) s"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_sums (λn. 0) 0 s"
+                },
+                {
+                    "args": "exI, {P: λl. real_sums (λn. 0) l s, a: (0::real)}",
+                    "id": "2.14",
+                    "prevs": [
+                        "2.13"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃a1. real_sums (λn. 0) a1 s"
                 },
                 {
                     "args": "",
-                    "id": "2.13",
+                    "id": "2.15",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀i. i ≥ 1 ⟶ i ∈ s ⟶ abs (a i * 0 ^ i) ≤ 0"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "2.15.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "i ≥ 1",
+                    "id": "2.15.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "i ≥ 1 ⊢ i ≥ 1"
+                },
+                {
+                    "args": "i ∈ s",
+                    "id": "2.15.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "i ∈ s ⊢ i ∈ s"
+                },
+                {
+                    "args": "¬(i = 0)",
+                    "id": "2.15.3",
+                    "prevs": [
+                        "2.15.1"
+                    ],
+                    "rule": "z3",
+                    "th": "i ≥ 1 ⊢ ¬(i = 0)"
+                },
+                {
+                    "args": "real_le_refl, {x: (0::real)}",
+                    "id": "2.15.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 0"
+                },
+                {
+                    "args": "real_abs_0, abs (0::real) ≤ 0",
+                    "id": "2.15.5",
+                    "prevs": [
+                        "2.15.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "i ≥ 1, w < r, 0 < w, i ∈ s, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ abs (0::real) ≤ 0"
+                },
+                {
+                    "args": "real_mul_rzero, abs (a i * 0) ≤ 0",
+                    "id": "2.15.6",
+                    "prevs": [
+                        "2.15.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "i ≥ 1, w < r, 0 < w, i ∈ s, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ abs (a i * 0) ≤ 0"
+                },
+                {
+                    "args": "if_not_P, abs (a i * (if i = 0 then 1 else 0)) ≤ 0",
+                    "id": "2.15.7",
+                    "prevs": [
+                        "2.15.6",
+                        "2.15.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "i ≥ 1, w < r, 0 < w, i ∈ s, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ abs (a i * (if i = 0 then 1 else 0)) ≤ 0"
+                },
+                {
+                    "args": "real_pow_zero, abs (a i * 0 ^ i) ≤ 0",
+                    "id": "2.15.8",
+                    "prevs": [
+                        "2.15.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "i ≥ 1, w < r, 0 < w, i ∈ s, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ abs (a i * 0 ^ i) ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "2.15.9",
+                    "prevs": [
+                        "2.15.0",
+                        "2.15.1",
+                        "2.15.2",
+                        "2.15.8"
+                    ],
+                    "rule": "intros",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀i. i ≥ 1 ⟶ i ∈ s ⟶ abs (a i * 0 ^ i) ≤ 0"
+                },
+                {
+                    "args": "exI, {P: λN. ∀i. i ≥ N ⟶ i ∈ s ⟶ abs (a i * 0 ^ i) ≤ 0, a: (1::nat)}",
+                    "id": "2.16",
+                    "prevs": [
+                        "2.15"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃a1. ∀i. i ≥ a1 ⟶ i ∈ s ⟶ abs (a i * 0 ^ i) ≤ 0"
+                },
+                {
+                    "args": "real_series_comparison",
+                    "id": "2.17",
+                    "prevs": [
+                        "2.14",
+                        "2.16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃l. real_sums (λi. a i * 0 ^ i) l s"
+                },
+                {
+                    "args": "-w < 0 ∧ 0 < w",
+                    "id": "2.18",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < w ⊢ -w < 0 ∧ 0 < w"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.19",
+                    "prevs": [
+                        "2.17",
+                        "2.18"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ (∃x1. real_sums (λn. a n * 0 ^ n) x1 s) ∧ -w < 0 ∧ 0 < w"
+                },
+                {
+                    "args": "left_exists_and_thm, ∃l. real_sums (λn. a n * 0 ^ n) l s ∧ -w < 0 ∧ 0 < w",
+                    "id": "2.20",
+                    "prevs": [
+                        "2.19"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃l. real_sums (λn. a n * 0 ^ n) l s ∧ -w < 0 ∧ 0 < w"
+                },
+                {
+                    "args": "conj_comm, ∃l. (-w < 0 ∧ 0 < w) ∧ real_sums (λn. a n * 0 ^ n) l s",
+                    "id": "2.21",
+                    "prevs": [
+                        "2.20"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃l. (-w < 0 ∧ 0 < w) ∧ real_sums (λn. a n * 0 ^ n) l s"
+                },
+                {
+                    "args": "exI, {P: λx. ∃l. (-w < x ∧ x < w) ∧ real_sums (λn. a n * x ^ n) l s, a: (0::real)}",
+                    "id": "2.22",
+                    "prevs": [
+                        "2.21"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃a1. ∃l. (-w < a1 ∧ a1 < w) ∧ real_sums (λn. a n * a1 ^ n) l s"
+                },
+                {
+                    "args": "",
+                    "id": "2.23",
+                    "prevs": [
+                        "2.12",
+                        "2.22"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∃g. ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w))"
+                },
+                {
+                    "args": "g, real ⇒ real",
+                    "id": "2.24",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR g"
+                },
+                {
+                    "args": "∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w))",
+                    "id": "2.25",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w))"
+                },
+                {
+                    "args": "",
+                    "id": "2.26",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ ∀y. abs y < w ⟶ g y = f y"
+                },
+                {
+                    "args": "y, real",
+                    "id": "2.26.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "abs y < w",
+                    "id": "2.26.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs y < w ⊢ abs y < w"
+                },
+                {
+                    "args": "-w < y ∧ y < w",
+                    "id": "2.26.2",
+                    "prevs": [
+                        "2.26.1"
+                    ],
+                    "rule": "z3",
+                    "th": "abs y < w ⊢ -w < y ∧ y < w"
+                },
+                {
+                    "args": "",
+                    "id": "2.26.3",
+                    "prevs": [
+                        "2.25",
+                        "2.26.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "abs y < w, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ real_sums (λn. a n * y ^ n) (g y) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * y ^ (i - 1))) (within (atreal y) (real_open_interval (-w) w))"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.26.4",
+                    "prevs": [
+                        "2.26.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs y < w, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ real_sums (λn. a n * y ^ n) (g y) s"
+                },
+                {
+                    "args": "real_lt_trans",
+                    "id": "2.26.5",
+                    "prevs": [
+                        "2.26.1",
+                        "2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "w < r, abs y < w ⊢ abs y < r"
+                },
+                {
+                    "args": "y",
+                    "id": "2.26.6",
+                    "prevs": [
+                        "0",
+                        "2.26.5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "w < r, 0 < w, abs w < r, abs y < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ real_sums (λi. a i * y ^ i) (f y) s"
+                },
+                {
+                    "args": "real_series_unique",
+                    "id": "2.26.7",
+                    "prevs": [
+                        "2.26.4",
+                        "2.26.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "w < r, 0 < w, abs w < r, abs y < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ g y = f y"
+                },
+                {
+                    "args": "",
+                    "id": "2.26.8",
+                    "prevs": [
+                        "2.26.0",
+                        "2.26.1",
+                        "2.26.7"
+                    ],
+                    "rule": "intros",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ ∀y. abs y < w ⟶ g y = f y"
+                },
+                {
+                    "args": "",
+                    "id": "2.27",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ ∀x. abs x < w ⟶ has_real_derivative f (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (atreal x) ∧ real_sums (λi. of_nat i * a i * x ^ (i - 1)) (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) s"
+                },
+                {
+                    "args": "x, real",
+                    "id": "2.27.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "abs x < w",
+                    "id": "2.27.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < w ⊢ abs x < w"
+                },
+                {
+                    "args": "-w < x ∧ x < w",
+                    "id": "2.27.2",
+                    "prevs": [
+                        "2.27.1"
+                    ],
+                    "rule": "z3",
+                    "th": "abs x < w ⊢ -w < x ∧ x < w"
+                },
+                {
+                    "args": "",
+                    "id": "2.27.3",
+                    "prevs": [
+                        "2.25",
+                        "2.27.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "abs x < w, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w))"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.27.4",
+                    "prevs": [
+                        "2.27.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < w, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ real_sums (λn. a n * x ^ n) (g x) s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.27.5",
+                    "prevs": [
+                        "2.27.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < w, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w))"
+                },
+                {
+                    "args": "in_real_open_interval, x ∈ real_open_interval (-w) w",
+                    "id": "2.27.6",
+                    "prevs": [
+                        "2.27.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ x ∈ real_open_interval (-w) w"
+                },
+                {
+                    "args": "real_open_real_interval, {a: -w, b: w}",
+                    "id": "2.27.7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_open (real_open_interval (-w) w)"
+                },
+                {
+                    "args": "has_real_derivative_within_real_open, {f: g}",
+                    "id": "2.27.8",
+                    "prevs": [
+                        "2.27.6",
+                        "2.27.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ ∀f1. has_real_derivative g f1 (within (atreal x) (real_open_interval (-w) w)) ⟷ has_real_derivative g f1 (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "2.27.9",
+                    "prevs": [
+                        "2.27.8",
+                        "2.27.5"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (atreal x)"
+                },
+                {
+                    "args": "0 < (w - abs x) / 2",
+                    "id": "2.27.10",
+                    "prevs": [
+                        "2.27.1"
+                    ],
+                    "rule": "z3",
+                    "th": "abs x < w ⊢ 0 < (w - abs x) / 2"
+                },
+                {
+                    "args": "",
+                    "id": "2.27.11",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ ∀x1. abs (x1 - x) < (w - abs x) / 2 ⟶ g x1 = f x1"
+                },
+                {
+                    "args": "x1, real",
+                    "id": "2.27.11.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "abs (x1 - x) < (w - abs x) / 2",
+                    "id": "2.27.11.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs (x1 - x) < (w - abs x) / 2 ⊢ abs (x1 - x) < (w - abs x) / 2"
+                },
+                {
+                    "args": "abs x1 < w",
+                    "id": "2.27.11.2",
+                    "prevs": [
+                        "2.27.11.1"
+                    ],
+                    "rule": "z3",
+                    "th": "abs (x1 - x) < (w - abs x) / 2 ⊢ abs x1 < w"
+                },
+                {
+                    "args": "x1",
+                    "id": "2.27.11.3",
+                    "prevs": [
+                        "2.26",
+                        "2.27.11.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, abs (x1 - x) < (w - abs x) / 2, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ g x1 = f x1"
+                },
+                {
+                    "args": "",
+                    "id": "2.27.11.4",
+                    "prevs": [
+                        "2.27.11.0",
+                        "2.27.11.1",
+                        "2.27.11.3"
+                    ],
+                    "rule": "intros",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ ∀x1. abs (x1 - x) < (w - abs x) / 2 ⟶ g x1 = f x1"
+                },
+                {
+                    "args": "has_real_derivative_transform_atreal",
+                    "id": "2.27.12",
+                    "prevs": [
+                        "2.27.10",
+                        "2.27.11",
+                        "2.27.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ has_real_derivative f (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (atreal x)"
+                },
+                {
+                    "args": "summable_power_series_derivative, {a: a, s: s, y: w}",
+                    "id": "2.27.13",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_summable s (λi. a i * w ^ i) ⟶ (∀x. abs x < w ⟶ real_summable s (λi. of_nat i * a i * x ^ (i - 1)))"
+                },
+                {
+                    "args": "w",
+                    "id": "2.27.14",
+                    "prevs": [
+                        "0",
+                        "2.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ real_sums (λi. a i * w ^ i) (f w) s"
+                },
+                {
+                    "args": "exI, {P: λl. real_sums (λi. a i * w ^ i) l s, a: f w}",
+                    "id": "2.27.15",
+                    "prevs": [
+                        "2.27.14"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ ∃a1. real_sums (λi. a i * w ^ i) a1 s"
+                },
+                {
+                    "args": "real_summable_def, real_summable s (λi. a i * w ^ i)",
+                    "id": "2.27.16",
+                    "prevs": [
+                        "2.27.15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ real_summable s (λi. a i * w ^ i)"
+                },
+                {
+                    "args": "",
+                    "id": "2.27.17",
+                    "prevs": [
+                        "2.27.13",
+                        "2.27.16"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ ∀x. abs x < w ⟶ real_summable s (λi. of_nat i * a i * x ^ (i - 1))"
+                },
+                {
+                    "args": "x",
+                    "id": "2.27.18",
+                    "prevs": [
+                        "2.27.17",
+                        "2.27.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ real_summable s (λi. of_nat i * a i * x ^ (i - 1))"
+                },
+                {
+                    "args": "real_sums_infsum, real_sums (λi. of_nat i * a i * x ^ (i - 1)) (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) s",
+                    "id": "2.27.19",
+                    "prevs": [
+                        "2.27.18"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ real_sums (λi. of_nat i * a i * x ^ (i - 1)) (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.27.20",
+                    "prevs": [
+                        "2.27.12",
+                        "2.27.19"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "w < r, 0 < w, abs w < r, abs x < w, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ has_real_derivative f (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (atreal x) ∧ real_sums (λi. of_nat i * a i * x ^ (i - 1)) (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) s"
+                },
+                {
+                    "args": "",
+                    "id": "2.27.21",
+                    "prevs": [
+                        "2.27.0",
+                        "2.27.1",
+                        "2.27.20"
+                    ],
+                    "rule": "intros",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ ∀x. abs x < w ⟶ has_real_derivative f (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (atreal x) ∧ real_sums (λi. of_nat i * a i * x ^ (i - 1)) (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) s"
+                },
+                {
+                    "args": "exI, {P: λf1. ∀x. abs x < w ⟶ has_real_derivative f (f1 x) (atreal x) ∧ real_sums (λi. of_nat i * a i * x ^ (i - 1)) (f1 x) s, a: λx. real_infsum s (λi. of_nat i * a i * x ^ (i - 1))}",
+                    "id": "2.28",
+                    "prevs": [
+                        "2.27"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "w < r, 0 < w, abs w < r, abs w < abs r, ∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s, ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w)) ⊢ ∃a1. ∀x. abs x < w ⟶ has_real_derivative f (a1 x) (atreal x) ∧ real_sums (λi. of_nat i * a i * x ^ (i - 1)) (a1 x) s"
+                },
+                {
+                    "args": "∃g. ∀x. -w < x ∧ x < w ⟶ real_sums (λn. a n * x ^ n) (g x) s ∧ has_real_derivative g (real_infsum s (λi. of_nat i * a i * x ^ (i - 1))) (within (atreal x) (real_open_interval (-w) w))",
+                    "id": "2.29",
                     "prevs": [
                         "2.0",
                         "2.1",
                         "2.2",
                         "2.3",
                         "2.4",
-                        "2.12"
+                        "2.23",
+                        "2.24",
+                        "2.25",
+                        "2.28"
                     ],
                     "rule": "intros",
                     "th": "∀x. abs x < r ⟶ real_sums (λi. a i * x ^ i) (f x) s ⊢ ∀w. 0 < w ⟶ abs w < r ⟶ w < r ⟶ abs w < abs r ⟶ (∃f1. ∀x. abs x < w ⟶ has_real_derivative f (f1 x) (atreal x) ∧ real_sums (λi. of_nat i * a i * x ^ (i - 1)) (f1 x) s)"
@@ -19549,7 +20428,7 @@
                     "goal_id": "2.8",
                     "method_name": "rewrite_fact",
                     "sym": "false",
-                    "theorem": "is_real_open_interval"
+                    "theorem": "in_real_open_interval"
                 },
                 {
                     "goal": "(∀n. ∀x. -w < x ∧ x < w ⟶ has_real_derivative (λx1. a n * x1 ^ n) (of_nat n * a n * x ^ (n - 1)) (within (atreal x) (real_open_interval (-w) w)))",
@@ -19774,6 +20653,628 @@
                     ],
                     "goal_id": "2.11.11",
                     "method_name": "z3"
+                },
+                {
+                    "goal_id": "2.11.12",
+                    "method_name": "apply_forward_step",
+                    "param_a": "a",
+                    "param_s": "s",
+                    "param_y": "((r + w) / 2 + r) / 2",
+                    "theorem": "summable_power_series_derivative"
+                },
+                {
+                    "goal": "real_summable s (λi. a i * (((r + w) / 2 + r) / 2) ^ i)",
+                    "goal_id": "2.11.13",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.11.13",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_summable_def"
+                },
+                {
+                    "goal_id": "2.11.13",
+                    "method_name": "inst_exists_goal",
+                    "s": "f (((r + w) / 2 + r) / 2)"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.11.13",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.12",
+                        "2.11.15"
+                    ],
+                    "goal_id": "2.11.16",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal_id": "2.11.17",
+                    "method_name": "apply_forward_step",
+                    "param_a": "(%i. of_nat(Suc i) * a (Suc i))",
+                    "param_s": "image Pre (diff s {0})",
+                    "param_t": "w",
+                    "param_y": "(r + w) / 2",
+                    "theorem": "power_series_uniform"
+                },
+                {
+                    "goal": "real_summable (image Pre (diff s ({0}))) (λi. of_nat (Suc i) * a (Suc i) * ((r + w) / 2) ^ i)",
+                    "goal_id": "2.11.18",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.11.18",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_summable_def"
+                },
+                {
+                    "goal_id": "2.11.18",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "power_series_derivative_shift"
+                },
+                {
+                    "goal_id": "2.11.18",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_summable_def"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.16"
+                    ],
+                    "goal_id": "2.11.18",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.17",
+                        "2.11.21"
+                    ],
+                    "goal_id": "2.11.22",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.22",
+                        "2.11.6"
+                    ],
+                    "goal_id": "2.11.23",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.23",
+                        "2.11.1"
+                    ],
+                    "goal_id": "2.11.24",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.24"
+                    ],
+                    "goal_id": "2.11.25",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "2.11.27",
+                    "method_name": "inst_exists_goal",
+                    "s": "N+1"
+                },
+                {
+                    "goal_id": "2.11.27",
+                    "method_name": "introduction",
+                    "names": "n,t"
+                },
+                {
+                    "goal": "0 < n",
+                    "goal_id": "2.11.27.3",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.27.2"
+                    ],
+                    "goal_id": "2.11.27.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "N <= Pre n",
+                    "goal_id": "2.11.27.4",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.27.3"
+                    ],
+                    "goal_id": "2.11.27.4",
+                    "method_name": "apply_forward_step",
+                    "param_m": "N+1",
+                    "theorem": "le_Pre"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.27.4"
+                    ],
+                    "goal_id": "2.11.27.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.27.5"
+                    ],
+                    "goal_id": "2.11.27.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "Pre_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.27.6"
+                    ],
+                    "goal_id": "2.11.27.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.11.27.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.27.2"
+                    ],
+                    "goal_id": "2.11.27.7",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "t ∈ real_closed_interval (-(abs w)) (abs w)",
+                    "goal_id": "2.11.27.10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.11.27.10",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_real_closed_interval"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.27.2"
+                    ],
+                    "goal_id": "2.11.27.10",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.26",
+                        "2.11.27.9",
+                        "2.11.27.11"
+                    ],
+                    "goal_id": "2.11.27.12",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.27.3"
+                    ],
+                    "goal_id": "2.11.27.13",
+                    "method_name": "apply_forward_step",
+                    "param_a": "a",
+                    "param_s": "s",
+                    "param_x": "t",
+                    "theorem": "power_sum_derivative_shift_lemma3"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.27.13",
+                        "2.11.27.12"
+                    ],
+                    "goal_id": "2.11.27.14",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "2.11.27.15",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "real_infsum_def"
+                },
+                {
+                    "fact_ids": [
+                        "2.11.27.14"
+                    ],
+                    "goal_id": "2.11.27.15",
+                    "method_name": "rewrite_fact",
+                    "sym": "",
+                    "theorem": "real_infsum_def"
+                },
+                {
+                    "goal_id": "2.11.27.16",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "power_series_derivative_shift"
+                },
+                {
+                    "goal_id": "2.11.27.16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "2.10",
+                        "2.11"
+                    ],
+                    "goal_id": "2.12",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "(∃x. ∃l. (-w < x ∧ x < w) ∧ real_sums (λn. a n * x ^ n) l s)",
+                    "goal_id": "2.13",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.13",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::real)"
+                },
+                {
+                    "goal_id": "2.13",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "conj_comm"
+                },
+                {
+                    "goal_id": "2.13",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "left_exists_and_thm"
+                },
+                {
+                    "goal_id": "2.13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.13",
+                    "method_name": "apply_backward_step",
+                    "param_g": "(%n::nat. (0::real))",
+                    "theorem": "real_series_comparison"
+                },
+                {
+                    "goal_id": "2.13",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::real)"
+                },
+                {
+                    "goal_id": "2.13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_series_0"
+                },
+                {
+                    "goal_id": "2.15",
+                    "method_name": "inst_exists_goal",
+                    "s": "(1::nat)"
+                },
+                {
+                    "goal_id": "2.15",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "goal_id": "2.15.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_zero"
+                },
+                {
+                    "goal": "~(i = 0)",
+                    "goal_id": "2.15.3",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.15.1"
+                    ],
+                    "goal_id": "2.15.3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.15.3"
+                    ],
+                    "goal_id": "2.15.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "2.15.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rzero"
+                },
+                {
+                    "goal_id": "2.15.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_0"
+                },
+                {
+                    "goal_id": "2.15.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.18",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.12",
+                        "2.22"
+                    ],
+                    "goal_id": "2.23",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.23"
+                    ],
+                    "goal_id": "2.24",
+                    "method_name": "exists_elim",
+                    "names": "g"
+                },
+                {
+                    "goal_id": "2.26",
+                    "method_name": "inst_exists_goal",
+                    "s": "(%x. real_infsum s (%i. (of_nat i * a i) * x ^ (i - 1)))"
+                },
+                {
+                    "goal_id": "2.26",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal": "!y. abs y < w --> g y = f y",
+                    "goal_id": "2.26",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.26",
+                    "method_name": "introduction",
+                    "names": "y"
+                },
+                {
+                    "goal": "-w < y ∧ y < w",
+                    "goal_id": "2.26.2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.26.1"
+                    ],
+                    "goal_id": "2.26.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.25",
+                        "2.26.2"
+                    ],
+                    "goal_id": "2.26.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.26.3"
+                    ],
+                    "goal_id": "2.26.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.26.4"
+                    ],
+                    "goal_id": "2.26.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_series_unique"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.26.5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.26.1",
+                        "2.3"
+                    ],
+                    "goal_id": "2.26.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_trans"
+                },
+                {
+                    "goal": "-w < x ∧ x < w",
+                    "goal_id": "2.27.2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.27.1"
+                    ],
+                    "goal_id": "2.27.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.25",
+                        "2.27.2"
+                    ],
+                    "goal_id": "2.27.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.27.3"
+                    ],
+                    "goal_id": "2.27.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.27.3"
+                    ],
+                    "goal_id": "2.27.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "2.27.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal": "x ∈ (real_open_interval (-w) w)",
+                    "goal_id": "2.27.6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.27.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_real_open_interval"
+                },
+                {
+                    "goal": "real_open (real_open_interval (-w) w)",
+                    "goal_id": "2.27.7",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.27.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_open_real_interval"
+                },
+                {
+                    "fact_ids": [
+                        "2.27.6",
+                        "2.27.7"
+                    ],
+                    "goal_id": "2.27.8",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g",
+                    "param_f1": "",
+                    "theorem": "has_real_derivative_within_real_open"
+                },
+                {
+                    "fact_ids": [
+                        "2.27.8",
+                        "2.27.5"
+                    ],
+                    "goal_id": "2.27.9",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "2.27.10",
+                    "method_name": "apply_backward_step",
+                    "param_d": "(w - abs x) / 2",
+                    "param_f": "g",
+                    "theorem": "has_real_derivative_transform_atreal"
+                },
+                {
+                    "fact_ids": [
+                        "2.27.1"
+                    ],
+                    "goal_id": "2.27.10",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "2.27.11",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "2.26"
+                    ],
+                    "goal_id": "2.27.11.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.27.11.1"
+                    ],
+                    "goal_id": "2.27.11.2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "2.27.13",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sums_infsum"
+                },
+                {
+                    "goal_id": "2.27.13",
+                    "method_name": "apply_forward_step",
+                    "param_a": "a",
+                    "param_s": "s",
+                    "param_y": "w",
+                    "theorem": "summable_power_series_derivative"
+                },
+                {
+                    "goal": "real_summable s (λi. a i * w ^ i)",
+                    "goal_id": "2.27.14",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.27.14",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_summable_def"
+                },
+                {
+                    "goal_id": "2.27.14",
+                    "method_name": "inst_exists_goal",
+                    "s": "f w"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.27.14",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.27.13",
+                        "2.27.16"
+                    ],
+                    "goal_id": "2.27.17",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.27.17"
+                    ],
+                    "goal_id": "2.27.18",
+                    "method_name": "apply_prev"
                 }
             ],
             "ty": "thm",
