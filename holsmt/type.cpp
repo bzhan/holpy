@@ -3,6 +3,11 @@
 #include<algorithm>
 #include "type.h"
 
+TConst BoolType = TConst("bool");
+TConst NatType = TConst("nat");
+TConst IntType = TConst("int");
+TConst RealType = TConst("real");
+
 std::ostream& operator << (std::ostream& os, const Type& t) {
 	if (t.type() == 0) {
 		return os << "?'" << t.name();
@@ -321,61 +326,4 @@ Type TFun(std::vector<Type> v) {
 		res = TConst("fun", { *iter, res });
 	}
 	return res;
-}
-
-int main() {
-	STVar st("a");
-	std::cout << st << std::endl;
-	TVar tv("b");
-	std::cout << tv << std::endl;
-	TConst bo("bool");
-	TConst nat("nat");
-	std::cout << bo << std::endl;
-	std::vector<Type> v1{nat, bo};
-	TConst fun = TConst("fun", v1);
-	std::cout << fun << std::endl;
-	std::cout << fun.domain_type() << " "<< fun.range_type() << std::endl;
-	std::vector<Type> v2{ nat };
-	TConst nat_list("list", v2);
-	std::cout << nat_list << std::endl;
-	std::vector<Type> v3{nat, fun };
-	TConst nat_nat_bo("fun", v3);
-	std::cout << nat_nat_bo << std::endl;
-	std::cout << nat_nat_bo.range_type() << std::endl;
-	std::cout << nat_nat_bo.size() << std::endl;
-	std::cout << nat_nat_bo.strip_type().second << std::endl;
-	for (auto& s : nat_nat_bo.strip_type().first) {
-		std::cout << s << " ";
-	}
-	std::cout << std::endl;
-	
-	STVar b("b");
-	std::map<STVar, Type> m = { {STVar("a"), TConst("bool")}, {STVar("b"), TConst("nat")} };
-	std::vector<Type> v4{ st, b };
-	TConst f4("fun", v4);
-	std::cout << f4 << std::endl;
-	std::cout << subst(f4, m) <<std::endl;
-	std::map<std::string, Type> m1 = st.match(bo);
-	for (auto it = m1.cbegin(); it != m1.cend(); ++it)
-	{
-		std::cout << it->first << ":=" << it->second << "\n";
-	}
-	STVar a("a");
-	std::vector<Type> v5{ a, b };
-	TConst p("fun", v5);
-	std::map<std::string, Type> m2 = p.match(fun);
-	for (auto it = m2.cbegin(); it != m2.cend(); ++it)
-	{
-		std::cout << it->first << ":=" << it->second << "\n";
-	}
-
-	std::set<Type> s = p.get_stvars();
-	for (auto it = s.cbegin(); it != s.cend(); ++it)
-	{
-		std::cout << *it << " ";
-	}
-	Type fun1 = TFun({ nat, nat, nat });
-	std::cout << "\n" << fun1 << "\n";
-	std::cout << nat.is_numeral_type() << "\n";
-	return 0;
 }

@@ -73,9 +73,9 @@ TVar to_tvar(Type& t);
 TConst to_tconst(Type& t);
 Type TFun(std::vector<Type>);
 
-TConst BoolType = TConst("bool");
-TConst NatType = TConst("nat");
-TConst IntType = TConst("int");
-TConst RealType = TConst("real");
+extern TConst BoolType;
+extern TConst NatType;
+extern TConst IntType;
+extern TConst RealType;
 
 #endif // !__TYPE__
