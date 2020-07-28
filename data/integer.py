@@ -1,5 +1,5 @@
 from kernel.type import TFun, IntType
-from kernel.term import Var, Int, Eq, Term
+from kernel.term import Var, Int, Eq, Term, equals, Const, less, less_eq, greater, greater_eq
 from kernel import term_ord
 from kernel.proofterm import refl
 from kernel.macro import Macro
@@ -303,7 +303,50 @@ class simp_full(Conv):
             top_conv(rewr_conv('pow_1_r')))
 
 class norm_eq(Conv):
-    """Give an equality, move all term from rhs to lhs.
+    """Give an equality(inequality), move all term from rhs to lhs.
     """
     def get_proof_term(self, t):
-        assert t.is_equals(), "%s is not an equality term" % t
+        assert t.is_equals() or t.is_less_eq() or t.is_less()\
+            or t.is_greater_eq() or t.is_greater(), "%s is not an equality term" % t
+        pt1 = refl(t) # a = b <==> a = b
+        if t.is_equals():
+            pt2 = pt1.on_rhs(rewr_conv('sub_move_0_r', sym=True)) # a = b <==> a - b = 0
+            eq_refl = ProofTerm.reflexive(equals(IntType))
+        elif t.is_less_eq():
+            pt2 = pt1.on_rhs(rewr_conv('int_le'))
+            eq_refl = ProofTerm.reflexive(less_eq(IntType))
+        elif t.is_less():
+            pt2 = pt1.on_rhs(rewr_conv('int_lt'))
+            eq_refl = ProofTerm.reflexive(less(IntType))
+        elif t.is_greater_eq():
+            pt2 = pt1.on_rhs(rewr_conv('int_ge'))
+            eq_refl = ProofTerm.reflexive(greater_eq(IntType))
+        elif t.is_greater():
+            pt2 = pt1.on_rhs(rewr_conv('int_gt'))
+            eq_refl = ProofTerm.reflexive(greater(IntType))
+        pt3 = norm_full().get_proof_term(pt2.prop.arg.arg1) # a - b = a + (-1) * b
+        pt4 = ProofTerm.combination(eq_refl, pt3)
+        pt5 = ProofTerm.combination(pt4, refl(Const('zero', IntType))) # a - b = 0 <==> a + (-1)*b = 0
+        return pt2.transitive(pt5) # a = b <==> a + (-1) * b = 0
+
+@register_macro('int_eq_macro')
+class int_eq_macro(Macro):
+    """Prove 2 integer equations(inequations) are equal.
+    
+    Example: a = b + 3 <==> a - 3 = b.
+    """
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def get_proof_term(self, goal, prevs):
+        assert goal.is_equals(), "int_eq_norm, %s is not equation" % goal
+
+        # Get normal form on both sides.
+        pt1 = refl(goal.lhs).on_rhs(norm_eq())
+        pt2 = refl(goal.rhs).on_rhs(norm_eq())
+
+        assert pt1.rhs == pt2.rhs
+        return pt1.transitive(pt2.symmetric())
+

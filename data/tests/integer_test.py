@@ -18,3 +18,13 @@ class IntegerTest(unittest.TestCase):
         vars = {"x": "int", "y": "int", "z": "int"}
         for expr in test_data:
             test_macro(self, 'int', 'int_norm', vars=vars, res=expr, args=expr)
+
+    def testIntEqMacro(self):
+        test_data = (
+            ("x = y * z <--> x = z * y"),
+            ("x - 3 > y <--> x - y > 3")
+        )
+
+        vars = {"x": "int", "y": "int"}
+        for expr in test_data:
+            test_macro(self, 'int', 'int_eq_macro', vars=vars, res=expr, args=expr)
