@@ -1,5 +1,5 @@
 from kernel.type import TFun, IntType
-from kernel.term import Var, Int, Eq
+from kernel.term import Var, Int, Eq, Term
 from kernel import term_ord
 from kernel.proofterm import refl
 from kernel.macro import Macro
@@ -136,17 +136,17 @@ class norm_add_monomial(Conv):
     def get_proof_term(self, t):
         pt = refl(t)
         if t.is_minus(): # a - c
-            if t.arg.arg1.dest_number() < 0: # a - (-k) * body, k > 0
-                return pt.on_rhs(
-                    arg_conv(rewr_conv('mul_opp_l')), # a - (-(k * body))
-                    rewr_conv('sub_opp_r'), # a + k * body
-                    arg_conv(norm_mult_monomial()),
-                    norm_add_monomial())
-            else:
-                return pt.on_rhs(
-                    rewr_conv('int_poly_neg2'), # a + (-k) * body
-                    arg_conv(norm_mult_monomial()),
-                    norm_add_monomial())
+            # if t.arg.arg1.dest_number() < 0: # a - (-k) * body, k > 0
+            #     return pt.on_rhs(
+            #         arg_conv(rewr_conv('mul_opp_l')), # a - (-(k * body))
+            #         rewr_conv('sub_opp_r'), # a + k * body
+            #         arg_conv(norm_mult_monomial()),
+            #         norm_add_monomial())
+            # else:
+            return pt.on_rhs(
+                rewr_conv('int_poly_neg2'), # a + (-k) * body
+                arg_conv(norm_mult_monomial()),
+                norm_add_monomial())
         elif t.arg1.is_plus():  # (a + b) + c
             cp = compare_monomial(t.arg1.arg, t.arg)  # compare b with c
             if cp > 0:  # if b > c, need to swap b with c
@@ -269,6 +269,10 @@ class norm_full(Conv):
             return pt
         elif t.is_nat_power() and t.arg.is_number():  # rewrite x ^ n to 1 * x ^ n
             return pt.on_rhs(rewr_conv('mul_1_l', sym=True))
+        elif t.is_uminus():
+            pt_mul_neg1 = pt.on_rhs(rewr_conv('int_poly_neg1'))
+            pt_new = self.get_proof_term(pt_mul_neg1.prop.rhs)
+            return pt.transitive(pt_mul_neg1).transitive(pt_new)
         else:  # rewrite x to 1 * x ^ 1
             return pt.on_rhs(
                 rewr_conv('pow_1_r', sym=True),
@@ -278,6 +282,7 @@ class norm_full(Conv):
 class int_norm_macro(Macro):
     def __init__(self):
         self.level = 1
+        self.sig = Term
         self.limit = 'int_power_add'
         
     def get_proof_term(self, goal, prevs):
@@ -297,3 +302,8 @@ class simp_full(Conv):
             top_conv(rewr_conv('mul_1_l')),
             top_conv(rewr_conv('pow_1_r')))
 
+class norm_eq(Conv):
+    """Give an equality, move all term from rhs to lhs.
+    """
+    def get_proof_term(self, t):
+        assert t.is_equals(), "%s is not an equality term" % t
