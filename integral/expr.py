@@ -416,6 +416,27 @@ class Expr:
                 return poly.constant(Const(0))
             elif a.is_constant() and b.is_constant():
                 return poly.constant(Op("*", a.normalize(), b.normalize()))
+            elif a.ty == OP and a.op == "/" and b.ty == OP and b.op == "/":
+                # (a/b)*(c/d) ==> (ac)/(bd)
+                return Op("/", a.args[0] * b.args[0], a.args[1] * b.args[1]).to_poly()
+            elif a.ty == OP and a.op in ("+", "-") and (b.ty == OP and b.op == "/" or\
+                b.ty == OP and b.op == "^"):
+                # something like (1 + x) * 1/(1 + x), treat (1 + x) as singleton
+                single_a = poly.singleton(a)
+                denoms = [f[0] for f in b.to_poly().monomials[0].factors]
+                if a in denoms:
+                    return single_a * b.to_poly()
+                else:
+                    return a.to_poly() * b.to_poly()
+            elif b.ty == OP and b.op in ("+", "-") and (a.ty == OP and a.op == "/" or\
+                a.ty == OP and a.op == "^"):
+                # dual situation
+                single_b = poly.singleton(b)
+                denoms = [f[0] for f in a.to_poly().monomials[0].factors]
+                if b in denoms:
+                    return a.to_poly() * single_b
+                else:
+                    return a.to_poly() * b.to_poly()
             else:
                 return a.to_poly() * b.to_poly()
         
@@ -423,9 +444,48 @@ class Expr:
             a, b = self.args
             if b.ty == CONST:
                 return a.to_poly() * poly.constant(Const(Fraction(1, b.val)))
+            
+            num_factor, denom_factor = [], []
+            def rec(e, power=False):
+                if e.ty == OP and e.op == "*":
+                    l1 = rec(e.args[0], power=power)
+                    l2 = rec(e.args[1], power=power)
+                    return l1 + l2
+                else:
+                    if e.normalize().ty == OP and e.normalize().op == "^" and not power:
+                        return [e.normalize().args[0]]
+                    else:
+                        return [e.normalize()]
+
+            num_factor_bot, denom_factor_bot = rec(a), rec(b)
+            if len(set(num_factor_bot) & set(denom_factor_bot)) != 0:
+                num_factor = rec(a, power=True)
+                num_factor_single = []
+                for i in num_factor:
+                    if i.ty == OP and i.op == "^":
+                        num_factor_single.append(i.to_poly())
+                    elif i.ty == CONST:
+                        num_factor_single.append(poly.constant(i))
+                    else:
+                        num_factor_single.append(poly.singleton(i))
+                num_poly = functools.reduce(operator.mul, num_factor_single)
+                denom_factor = rec(b, power=True)
+                denom_factor_single = [Op("^", i, Const(-1)).normalize().to_poly() if i.ty != CONST else poly.constant(Const(Fraction(i.val) ** (-1))) for i in denom_factor]
+                denom_poly = functools.reduce(operator.mul, denom_factor_single)
+                return num_poly * denom_poly
+
             elif b.ty == OP and b.op == "*": # 1/(a*b) ==> (1/a) * (1/b)
                 return a.to_poly() * Op("^", b.args[0], Const(-1)).to_poly() * \
                         Op("^", b.args[1], Const(-1)).to_poly()
+            # elif a.ty == OP and a.op in ("+", "-", "*"):
+            #     single_a = poly.singleton(a.normalize())
+            #     norm_b_poly = Op("^", b.normalize(), Const(-1)).to_poly()
+            #     basic_poly = a.normalize().to_poly() * norm_b_poly
+            #     denoms = [f[0] for f in norm_b_poly.monomials[0].factors]
+            #     if a.normalize() in denoms:
+            #         return single_a * norm_b_poly
+            #     else:
+            #         return basic_poly
             else:
                 return a.to_poly() * Op("^", b.normalize(), Const(-1)).to_poly()
         
@@ -699,6 +759,25 @@ class Expr:
         abs_collect(self)
         return abs_value
 
+    def is_spec_function(self, fun_name):
+        """Return true iff e is formed by rational options of fun_name."""
+        v = Symbol("v", [VAR,OP,FUN])
+        pat1 = sin(v)
+        if len(find_pattern1(self, pat1)) != 1:
+            return False
+        def rec(ex):
+            if ex.ty == CONST:
+                return True
+            elif ex.ty == VAR:
+                return False
+            elif ex.ty == OP:
+                return all(rec(arg) for arg in ex.args)
+            elif ex.ty == FUN:
+                return True if ex.func_name == fun_name else False
+            else:
+                return False
+        return rec(self)
+
     def pre_order_pat(self):
         """Traverse the tree node in preorder and return its pattern."""
         pat = []
@@ -887,9 +966,9 @@ def match(exp, pattern):
             return rec(exp.body, pattern) 
     return rec(exp, pattern)  
 
-def find_pattern1(expr, pat):
+def find_pattern1(expr, pat, loc=False):
     """Find all subexpr can be matched with the given pattern.
-    Return the matched expr list.
+    Return the matched expr list. If loc is True, also return location.
     """
     c = []
     def rec(e, pat):
@@ -900,7 +979,18 @@ def find_pattern1(expr, pat):
                 rec(arg, pat)
         elif e.ty in (INTEGRAL, DERIV, EVAL_AT):
             rec(e.body, pat)
-    rec(expr, pat)
+
+    def rec_loc(e, pat, loc):
+        if match(e.normalize(), pat):
+            return c.append((e, loc[1:]))
+        elif e.ty in (OP, FUN):
+            for i in range(len(e.args)):
+                rec_loc(e.args[i], pat, loc + '.' + str(i))
+
+    if loc:
+        rec_loc(expr, pat, "")
+    else:
+        rec(expr, pat)
     return c
 
 def collect_spec_expr(expr, symb):
@@ -964,19 +1054,19 @@ def from_mono(m):
             factors.append(simplify_constant(m.coeff))
 
     exps = []
-    for factor, pow in m.factors:
+    for factor, power in m.factors:
         if factor.ty == FUN and factor.func_name == "exp":
-            exps.append(factor.args[0]*Const(pow))
-        elif pow == 1:
+            exps.append(factor.args[0]*Const(power))
+        elif power == 1:
             factors.append(factor)
         else:
-            factors.append(factor ^ Const(pow))
+            factors.append(factor ^ Const(power))
     new_exp = Const(1)
     if exps:
         k = sum(exps[1:], exps[0])
         if k.normalize() != Const(0):
             new_exp = Fun("exp", k.normalize())
-    if new_exp !=Const(1):
+    if new_exp != Const(1):
         factors.append(new_exp)
     if len(factors) == 0:
         return Const(1)
