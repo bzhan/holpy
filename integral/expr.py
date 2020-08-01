@@ -437,6 +437,24 @@ class Expr:
                     return a.to_poly() * single_b
                 else:
                     return a.to_poly() * b.to_poly()
+            elif a.ty == OP and a.op == "^" and b.ty == OP and b.op == "^" and a.args[1] == b.args[1]:
+                # (1 + x)^(-1) * ((1+x)^(-1))^(-1)
+                if a.args[0].normalize().size() < b.args[0].normalize().size() and a.args[0].ty != CONST:
+                    # try multiply a.args[0] with each of b.args[0]'s argument  
+                    single_a = poly.singleton(a.args[0].normalize())
+                    if from_poly(single_a * b.args[0].normalize().to_poly()).size() <= b.args[0].normalize().size():
+                        return Op("^", from_poly(single_a * b.args[0].normalize().to_poly()), a.args[1]).to_poly()
+                    else:
+                        return a.to_poly() * b.to_poly()
+                elif a.args[0].normalize().size() > b.args[0].normalize().size() and b.args[0].ty != CONST:
+                    # try multiply b.args[0] with each of a.args[0]'s argument
+                    single_b = poly.singleton(b.args[0].normalize())
+                    if from_poly(a.args[0].normalize().to_poly() * single_b).size() <= a.args[0].normalize().size():
+                        return Op("^", from_poly(a.args[0].normalize().to_poly() * single_b), a.args[1]).to_poly()
+                    else:
+                        return a.to_poly() * b.to_poly()
+                else:
+                    return a.to_poly() * b.to_poly()
             else:
                 return a.to_poly() * b.to_poly()
         
@@ -459,6 +477,7 @@ class Expr:
 
             num_factor_bot, denom_factor_bot = rec(a), rec(b)
             if len(set(num_factor_bot) & set(denom_factor_bot)) != 0:
+                # numerator and denominator have same element to reduce
                 num_factor = rec(a, power=True)
                 num_factor_single = []
                 for i in num_factor:
@@ -477,15 +496,7 @@ class Expr:
             elif b.ty == OP and b.op == "*": # 1/(a*b) ==> (1/a) * (1/b)
                 return a.to_poly() * Op("^", b.args[0], Const(-1)).to_poly() * \
                         Op("^", b.args[1], Const(-1)).to_poly()
-            # elif a.ty == OP and a.op in ("+", "-", "*"):
-            #     single_a = poly.singleton(a.normalize())
-            #     norm_b_poly = Op("^", b.normalize(), Const(-1)).to_poly()
-            #     basic_poly = a.normalize().to_poly() * norm_b_poly
-            #     denoms = [f[0] for f in norm_b_poly.monomials[0].factors]
-            #     if a.normalize() in denoms:
-            #         return single_a * norm_b_poly
-            #     else:
-            #         return basic_poly
+
             else:
                 return a.to_poly() * Op("^", b.normalize(), Const(-1)).to_poly()
         
@@ -580,8 +591,8 @@ class Expr:
             a = self
             if a.lower == a.upper:
                 return poly.constant(Const(0))
-            a.body = a.body.normalize()
-            return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), a.body))
+            body = a.body.normalize()
+            return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), a.body.normalize()))
 
         else:
             return poly.singleton(self)
@@ -636,6 +647,9 @@ class Expr:
                     return Fun(self.func_name, new_arg)
                 else:
                     return Fun(self.func_name, *[copy.deepcopy(arg) for arg in  self.args])
+            elif self.ty == INTEGRAL:
+                body = self.body.replace_trig(trig_old, trig_new)
+                return Integral(self.var, self.lower, self.upper, body)
             else:
                 return copy.deepcopy(self)
 
@@ -982,13 +996,15 @@ def find_pattern1(expr, pat, loc=False):
 
     def rec_loc(e, pat, loc):
         if match(e.normalize(), pat):
-            return c.append((e, loc[1:]))
-        elif e.ty in (OP, FUN):
+            c.append((e, loc))
+        if e.ty in (OP, FUN):
             for i in range(len(e.args)):
-                rec_loc(e.args[i], pat, loc + '.' + str(i))
+                rec_loc(e.args[i], pat, loc + [i])
+        elif e.ty in (INTEGRAL, DERIV, EVAL_AT):
+            rec_loc(e.body, pat, loc + [0])
 
     if loc:
-        rec_loc(expr, pat, "")
+        rec_loc(expr, pat, [])
     else:
         rec(expr, pat)
     return c
