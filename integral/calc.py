@@ -17,14 +17,31 @@ class IntegrationStep:
         """
         pass
 
+    def __str__(self):
+        s = ''
+        for k, v in self.info().items():
+            s += str(k) + ": " + str(v) + "\n"
+        return s + "\n"
+
+class InitialStep(IntegrationStep):
+    def __init__(self, e):
+        self.e = e
+        self.latex = latex.convert_expr(e)
+    
+    def info(self):
+        return {
+            "reason" : "Initial",
+            "latex" : self.latex,
+            "text": str(self.e)
+        }
+
 class SimplifyStep(IntegrationStep):
-    def __init__(self, e, comp, loc=[]):
+    def __init__(self, e, loc=[]):
         """comp is the integration method.
         """
         self.e = e
         self.reason = "Simplification"
         self.latex = latex.convert_expr(e)
-        self.comp = comp.eval
         self.loc = loc
 
     def info(self):
@@ -32,11 +49,8 @@ class SimplifyStep(IntegrationStep):
             "text": str(self.compute()),
             "latex": self.latex,
             "reason": "Simplification",
-            "loc": self.loc
+            "location": self.loc
         }
-
-    def compute(self):
-        return self.comp(self.e)
 
 class LinearityStep(IntegrationStep):
     def __init__(self, e, loc=[]):
@@ -47,7 +61,7 @@ class LinearityStep(IntegrationStep):
 
     def info(self):
         return {
-            "text": str(e),
+            "text": str(self.e),
             "latex": self.latex,
             "reason": "Simplification"
         }
@@ -61,8 +75,9 @@ class CommonIntegralStep(IntegrationStep):
 
     def info(self):
         return {
-            "text": str(e),
+            "text": str(self.e),
             "latex": self.latex,
+            "location": self.loc,
             "reason": "Simplification"
         }
 
@@ -82,7 +97,7 @@ class SubstitutionStep(IntegrationStep):
             "latex": self.latex,
             "location":  self.loc,
             "params": {
-                "f": str(f),
+                "f": str(self.f),
                 "g": str(self.var_subst),
                 "var_name": self.var_name
             },
@@ -105,9 +120,9 @@ class SubstitutionInverseStep(IntegrationStep):
             "latex": self.latex,
             "reason": self.reason,
             "params": {
-                "a": str(e.lower),
-                "b": str(e.upper),
-                "g": str(var_subst),
+                "a": str(self.e.lower),
+                "b": str(self.e.upper),
+                "g": str(self.var_subst),
                 "var_name": self.var_name
             }
         }

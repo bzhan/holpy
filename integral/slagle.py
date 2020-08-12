@@ -101,7 +101,11 @@ class CommonIntegral(AlgorithmRule):
 
     def eval(self, e):
         new_e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
-        new_e.steps = [calc.CommonIntegralStep(new_e)]
+        steps = []
+
+        if new_e.normalize() != e.normalize():
+            steps.append(calc.CommonIntegralStep(new_e))
+        new_e.steps = steps
         return new_e
 
 
@@ -113,6 +117,7 @@ class DividePolynomial(AlgorithmRule):
 
     """
     def eval(self, e):
+        steps = []
         e_body = e.body.normalize()
         if e_body.ty == OP and e_body.op == "/" or e_body.ty == OP and e_body.op == "*" and \
             e_body.args[1].ty == OP and e_body.args[1].op == "^" and e_body.args[1].args[1].ty == CONST\
@@ -121,13 +126,17 @@ class DividePolynomial(AlgorithmRule):
                 denom = e_body.args[1]
             else:
                 denom = e_body.args[1].args[0]
-            new_e_1 = rules.PolynomialDivision().eval(e)
-            rhs = new_e_1.body
-            new_e_2 = Linearity().eval(new_e_1)
-            new_e_2.steps = [calc.PolynomialDivisionStep(e=new_e_1,denom=denom,rhs=rhs),
-                                calc.LinearityStep(new_e_2)]
-            
-            return new_e_2
+            try:
+                new_e_1 = rules.PolynomialDivision().eval(e)
+                rhs = new_e_1.body
+                new_e_2 = Linearity().eval(new_e_1)
+                new_e_2.steps = steps + [calc.PolynomialDivisionStep(e=new_e_1,denom=denom,rhs=rhs),
+                                    calc.LinearityStep(new_e_2)]
+                
+                return new_e_2
+            except:
+                e.steps = []
+                return e
         else:
             return e
 
@@ -140,9 +149,15 @@ class Linearity(AlgorithmRule):
     
     """
     def eval(self, e):
-        new_e = rules.Linearity().eval(e)
-        new_e.steps = calc.LinearityStep(new_e)
-        return new_e
+        steps = []
+        new_e = rules.Linearity().eval(e, single=True)
+        if new_e.normalize() != e.normalize():
+            steps.append(calc.LinearityStep(new_e))
+            new_e.steps = steps
+            return new_e
+        else:
+            return e
+                
 
 class LinearSubstitution(AlgorithmRule):
     """Algorithm rule (d) in Slagle's thesis.
@@ -164,10 +179,10 @@ class LinearSubstitution(AlgorithmRule):
 
 
 algorithm_rules = [
+    DividePolynomial,
     Linearity,
     LinearSubstitution,
     CommonIntegral,
-    # DividePolynomial
 ]
 
 class TrigFunction(HeuristicRule):
@@ -325,21 +340,21 @@ class TrigFunction(HeuristicRule):
             tmp = r.sin_cos(e)
             steps = tmp.steps
             tmp = tmp.normalize()
-            tmp.steps = steps + [calc.SimplifyStep(tmp, rules.Simplify)]
+            tmp.steps = steps + [calc.SimplifyStep(tmp)]
             res.append(tmp)
 
         if r.tan_sec(e).normalize() != e.normalize():
             tmp = r.tan_sec(e)
             steps = tmp.steps
             tmp = tmp.normalize()
-            tmp.steps = steps + [calc.SimplifyStep(tmp, rules.Simplify)]
+            tmp.steps = steps + [calc.SimplifyStep(tmp)]
             res.append(tmp)
 
         if r.cot_csc(e).normalize() != e.normalize():
             tmp = r.cot_csc(e)
             steps = tmp.steps
             tmp = tmp.normalize()
-            tmp.steps = steps + [calc.SimplifyStep(tmp, rules.Simplify)]
+            tmp.steps = steps + [calc.SimplifyStep(tmp)]
             res.append(tmp)
  
         return res
@@ -500,7 +515,7 @@ class HeuristicSubstitution(HeuristicRule):
     def eval(self, e, loc=[]):
         res = []
 
-        all_subterms = e.body.normalize().nonlinear_subexpr()
+        all_subterms = e.body.nonlinear_subexpr()
 
         depth = 0
         try:
@@ -654,7 +669,7 @@ class HeuristicElimQuadratic(HeuristicRule):
             new_integral = HeuristicExpandPower().eval(new_integral)[0]
             steps += new_integral.steps
             new_integral = new_integral.normalize()
-            steps.append(calc.SimplifyStep(new_integral, rules.Simplify()))
+            steps.append(calc.SimplifyStep(new_integral))
             new_integral.steps = steps
             res.append(new_integral)
 
@@ -714,7 +729,7 @@ class HeuristicTrigSubstitution(HeuristicRule):
             new_integral = rules.Substitution2("u", subst).eval(e)
             new_integral.steps = [calc.SubstitutionInverseStep(new_integral, "u", subst)]
             simp = new_integral.normalize()
-            simp.steps = new_integral.steps + [calc.SimplifyStep(simp, rules.Simplify)]
+            simp.steps = new_integral.steps + [calc.SimplifyStep(simp)]
             res.append(simp)
 
         return res
@@ -730,7 +745,7 @@ class HeuristicDistributionSum(HeuristicRule):
     """
     def eval(self, e, loc=[]):
         new_e = e.normalize()
-        new_e.steps = [calc.SimplifyStep(new_e, rules.Simplify(),loc)]
+        new_e.steps = [calc.SimplifyStep(new_e, loc)]
         return [new_e]
 
 class HeuristicExpandPower(HeuristicRule):
@@ -751,7 +766,7 @@ class HeuristicExpandPower(HeuristicRule):
             if isinstance(s.normalize().args[1].val, int) and s.normalize().args[1].val > 1:
                 pw = functools.reduce(operator.mul, [p]*s.args[1].val)
                 expand_expr = expand_expr.replace_trig(s, from_poly(pw))
-                steps.append(calc.UnfoldPowerStep(expand_expr, loc+[0]+l))
+                steps.append(calc.UnfoldPowerStep(expand_expr, loc+l))
 
         expand_expr.steps = steps
         return [expand_expr]
@@ -824,8 +839,17 @@ class HeuristicRationalSineCosine(HeuristicRule):
             return Integral("u", lower, upper, new_e_body)
         else:
             return [e]
-        
 
+class HeuristicSimplify(HeuristicRule):
+    """If all above heuristic rules are in vain, try to simplify the body. 
+    """
+    def eval(self, e, loc=[]):
+        steps = []
+        if e != e.normalize():
+            e = e.normalize()
+            steps.append(calc.SimplifyStep(e))
+            e.steps = steps
+        return [e]
 
 heuristic_rules = [
     TrigFunction,
@@ -834,12 +858,30 @@ heuristic_rules = [
     HeuristicDistributionSum,
     HeuristicExpandPower,
     HeuristicTrigSubstitution,
-    HeuristicExponentBase
+    HeuristicExponentBase,
+    HeuristicSimplify
 ]
 
 
 class GoalNode:
-    pass
+    def trace(self):
+        '''Give computation trace for resolved integration.'''
+        assert self.resolved == True, '%s haven\'t been solved' % self.root
+        
+        if hasattr(self.root, 'steps'):
+            t = self.root.steps if self.root.steps is not None else []
+        else:
+            t = [calc.InitialStep(self.root)]
+        
+        if isinstance(self, OrNode):
+            for c in self.children:
+                if c.resolved == True:
+                    return t + c.trace()
+        
+        else:
+            for c in self.children:
+                t += c.trace()
+            return t
 
 
 class OrNode(GoalNode):
@@ -880,7 +922,7 @@ class OrNode(GoalNode):
         result is a linear combination of integrals, then put a single AndNode
         as the child nodes.
 
-        If we get an new integral after transformation, we need to store them in a set, 
+        If we get a new integral after transformation, we need to store them in a set, 
         in case of repeatedly try to solve same integral(Trigonometric functions can 
         transform to them self). 
 
