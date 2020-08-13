@@ -910,7 +910,7 @@ class OrNode(GoalNode):
         for c in self.children:
             str_c = str(c)
             for line in str_c.splitlines():
-                s += '  %s\n' % line
+                s += '   %s\n' % line
         s += ']'
         return s
 
@@ -996,7 +996,7 @@ class AndNode(GoalNode):
         for c in self.children:
             str_c = str(c)
             for line in str_c.splitlines():
-                s += '  %s\n' % line
+                s += '   %s\n' % line
         s += ']'
         return s
 

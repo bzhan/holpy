@@ -499,11 +499,11 @@ class Expr:
                 return num_poly * denom_poly
 
             elif b.ty == OP and b.op == "*": # 1/(a*b) ==> (1/a) * (1/b)
-                return a.to_poly(single=single) * Op("^", b.args[0], Const(-1)).to_poly(single=single) * \
-                        Op("^", b.args[1], Const(-1)).to_poly(single=single)
+                return a.to_poly(single=single) * Op("^", b.args[0], Const(-1)).normalize().to_poly(single=single) * \
+                        Op("^", b.args[1], Const(-1)).normalize().to_poly(single=single)
 
             else:
-                return a.to_poly(single=single) * Op("^", b.normalize(), Const(-1)).to_poly(single=single)
+                return a.to_poly(single=single) * Op("^", b.normalize(), Const(-1)).normalize().to_poly(single=single)
         
         elif self.ty == OP and self.op == "^":
             base = self.args[0]
