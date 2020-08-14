@@ -561,7 +561,7 @@ class Expr:
         elif self.ty == FUN and self.func_name in ("sin", "cos", "tan", "cot", "csc", "sec"):
             if self.is_constant(Pi=True):
                 return poly.singleton(compute_trig_value(self))
-            elif self.args[0].ty == FUN and self.args[0].func_name == "a" + self.func_name():
+            elif self.args[0].ty == FUN and self.args[0].func_name == "a" + self.func_name:
                 # sin(asin(x)) = x
                 return self.args[0].args[0].to_poly()
             else:

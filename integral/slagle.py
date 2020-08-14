@@ -7,6 +7,7 @@ from integral.parser import parse_expr
 from integral import rules
 from integral import calc
 import math
+import multiprocessing.pool
 
 a = Symbol('a', [CONST])
 b = Symbol('b', [CONST])
@@ -188,15 +189,21 @@ class HalfAngleIdentity(AlgorithmRule):
     """
     def eval(self, e):
         x = Symbol('x', [CONST, VAR, OP, FUN])
+        y = Symbol('y', [CONST, VAR, OP, FUN])
         pat1 = sin(x) * cos(x)
         pat2 = cos(x) * sin(x)
         pat3 = sin(x) ^ Const(2)
         pat4 = cos(x) ^ Const(2)
+        pat5 = y * sin(x) * cos(x)
+        pat6 = y * cos(x) * sin(x)
 
         sin_cos_expr = find_pattern1(e, pat1, loc=True)
         cos_sin_expr = find_pattern1(e, pat2, loc=True)
         sin_power_expr = find_pattern1(e, pat3, loc=True)
         cos_power_expr = find_pattern1(e, pat4, loc=True)
+        y_sin_cos_expr = find_pattern1(e, pat5, loc=True)
+        y_cos_sin_expr = find_pattern1(e, pat6, loc=True)
+
 
         half = Const(Fraction(1, 2))
 
@@ -212,6 +219,12 @@ class HalfAngleIdentity(AlgorithmRule):
         for t, loc in cos_power_expr:
             e = e.replace_trig(t, half - half * cos(Const(2) * t.args[0].args[0]))
         
+        for t, loc in y_sin_cos_expr:
+            e = e.replace_trig(t, half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0]))
+
+        for t, loc in y_cos_sin_expr:
+            e = e.replace_trig(t, half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0]))
+
         return e.normalize()
 
 algorithm_rules = [
@@ -909,7 +922,7 @@ class GoalNode:
         if hasattr(self.root, 'steps'):
             t = self.root.steps if self.root.steps is not None else []
         else:
-            t = [calc.InitialStep(self.root)]
+            t = []
         
         if isinstance(self, OrNode):
             for c in self.children:
@@ -1063,7 +1076,25 @@ def bfs(node):
         n = q.popleft()
         if isinstance(n, OrNode):
             n.expand(not_solved_integral)
+        
+        n.children = sorted(n.children, key=lambda x:x.root.depth)
         for c in n.children:
             q.append(c)
 
     return node
+
+def timeout(max_timeout):
+    """Timeout decorator, parameter in seconds."""
+    def timeout_decorator(item):
+        """Wrap the original function."""
+        @functools.wraps(item)
+        def func_wrapper(*args, **kwargs):
+            """Closure for function."""
+            pool = multiprocessing.pool.ThreadPool(processes=1)
+            async_result = pool.apply_async(item, args, kwargs)
+            # raises a TimeoutError if execution exceeds max_timeout
+            return async_result.get(max_timeout)
+        return func_wrapper
+    return timeout_decorator
+
+
