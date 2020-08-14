@@ -465,7 +465,9 @@ export default {
         problem: this.cur_calc[this.cur_calc.length - 1].text
       };
       const response = await axios.post("http://127.0.0.1:5000/api/integral-slagle", JSON.stringify(data));
-      this.cur_calc.push(response.data)
+      for(var i = 0; i < response.data.length; ++i){
+        this.cur_calc.push(response.data[i])
+      }
     },
 
     elimAbs: function() {
