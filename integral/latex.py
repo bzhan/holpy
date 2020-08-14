@@ -111,7 +111,7 @@ def convert_expr(e, mode="large"):
                         if y.ty == OP and y.op != '^':
                             return "%s (%s)" % (sx, sy)
                         return "%s %s" % (sx, sy)    
-                    elif y.ty != CONST and y.is_constant():
+                    elif y.ty != CONST and y.is_constant() and not (y.ty == OP and y.op in ('+', '-')):
                         return "%s %s"%(sx, sy)
                     elif y.ty == OP and y.op == "^" and not y.args[0].is_constant():
                         return "%s %s" % (sx, sy)

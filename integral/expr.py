@@ -561,11 +561,18 @@ class Expr:
         elif self.ty == FUN and self.func_name in ("sin", "cos", "tan", "cot", "csc", "sec"):
             if self.is_constant(Pi=True):
                 return poly.singleton(compute_trig_value(self))
+            elif self.args[0].ty == FUN and self.args[0].func_name == "a" + self.func_name():
+                # sin(asin(x)) = x
+                return self.args[0].args[0].to_poly()
             else:
                 return poly.singleton(Fun(self.func_name, self.args[0].normalize())) # Not complete
 
         elif self.ty == FUN and self.func_name in ("asin","acos","atan","acot","acsc","asec"):
-            return poly.singleton(Fun(self.func_name, self.args[0].normalize()))
+            if self.args[0].ty == FUN and self.args[0].func_name == self.func_name[1:]:
+                # asin(sin(x)) = x
+                return self.args[0].args[0].to_poly()
+            else:
+                return poly.singleton(Fun(self.func_name, self.args[0].normalize()))
         elif self.ty == FUN and self.func_name == "log":
             if self.args[0] == Const(1):
                 return poly.constant(Const(0))
@@ -574,7 +581,7 @@ class Expr:
                 return self.args[0].args[0].to_poly(single=single)
  
             else:
-                return poly.singleton(self)
+                return poly.singleton(Fun("log", self.args[0].normalize()))
 
         elif self.ty == FUN and self.func_name == "sqrt":
             return Op("^", self.args[0], Const(Fraction(1, 2))).to_poly(single=single)

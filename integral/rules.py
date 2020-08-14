@@ -247,7 +247,10 @@ class Substitution1(Rule):
         var_name = parser.parse_expr(self.var_name)
         var_subst = self.var_subst
         dfx = expr.deriv(e.var, var_subst)
-        body =holpy_style(sympy_style(e.body/dfx)).normalize()
+        try:
+            body =holpy_style(apart(sympy_style(e.body/dfx))).normalize()
+        except:
+            body =holpy_style(sympy_style(e.body/dfx)).normalize()
         body = body.normalize().replace_trig(var_subst.normalize(), var_name)
         lower = var_subst.subst(e.var, e.lower).normalize()
         upper = var_subst.subst(e.var, e.upper).normalize()

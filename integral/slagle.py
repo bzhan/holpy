@@ -177,9 +177,46 @@ class LinearSubstitution(AlgorithmRule):
         e.steps = steps
         return e
 
+class HalfAngleIdentity(AlgorithmRule):
+    """Algorithm rule (h) in Slagle's thesis.
+
+    Take following identity:
+    a) sin(v)cos(v) = 1/2 * sin(2v)
+    b) cos^2(v) = 1/2 + 1/2 * cos(2v)
+    c) sin^2(v) = 1/2 - 1/2 * cos(2v)
+    
+    """
+    def eval(self, e):
+        x = Symbol('x', [CONST, VAR, OP, FUN])
+        pat1 = sin(x) * cos(x)
+        pat2 = cos(x) * sin(x)
+        pat3 = sin(x) ^ Const(2)
+        pat4 = cos(x) ^ Const(2)
+
+        sin_cos_expr = find_pattern1(e, pat1, loc=True)
+        cos_sin_expr = find_pattern1(e, pat2, loc=True)
+        sin_power_expr = find_pattern1(e, pat3, loc=True)
+        cos_power_expr = find_pattern1(e, pat4, loc=True)
+
+        half = Const(Fraction(1, 2))
+
+        for t, loc in sin_cos_expr:
+            e = e.replace_trig(t, half * sin(Const(2) * t.args[0].args[0]))
+
+        for t, loc in cos_sin_expr:
+            e = e.replace_trig(t, half * sin(Const(2) * t.args[0].args[0]))
+
+        for t, loc in sin_power_expr:
+            e = e.replace_trig(t, half + half * cos(Const(2) * t.args[0].args[0]))
+
+        for t, loc in cos_power_expr:
+            e = e.replace_trig(t, half - half * cos(Const(2) * t.args[0].args[0]))
+        
+        return e.normalize()
 
 algorithm_rules = [
     DividePolynomial,
+    HalfAngleIdentity,
     Linearity,
     LinearSubstitution,
     CommonIntegral,
@@ -518,20 +555,20 @@ class HeuristicSubstitution(HeuristicRule):
         all_subterms = e.body.nonlinear_subexpr()
 
         depth = 0
-        try:
-            for subexpr in all_subterms:
+        for subexpr in all_subterms:
+            try:    
                 r, f = rules.Substitution1(gen_rand_letter(e.var), subexpr).eval(e)
                 r.steps = [calc.SubstitutionStep(r, r.var, subexpr, f, loc)]
                 res.append(r)
-            
-            if res: # res is not empty
-                res = [r for r in res if r != Const(0)] # May have bug when result is 0.
-                res = sorted(res, key=lambda x:x.depth)
-                return [res[0]] if res != [] else [] 
+            except:
+                continue
 
-            else:
-                return []
-        except:
+        if res: # res is not empty
+            res = [r for r in res if r != Const(0)] # May have bug when result is 0.
+            res = sorted(res, key=lambda x:x.depth)
+            return [res[0]] if res != [] else [] 
+
+        else:
             return []
 
 class HeuristicIntegrationByParts(HeuristicRule):
@@ -853,6 +890,7 @@ class HeuristicSimplify(HeuristicRule):
 
 heuristic_rules = [
     TrigFunction,
+    HeuristicTirgonometricSubstitution,
     HeuristicSubstitution,
     HeuristicElimQuadratic,
     HeuristicDistributionSum,

@@ -29,6 +29,18 @@ class SlagleTest(unittest.TestCase):
             v_res = parse_expr(v_res)
             self.assertEqual(slagle.DividePolynomial().eval(v), v_res)
 
+    def testHalfAngleIdentity(self):
+        test_data = [
+            ('INT x:[0, pi/2]. sin(2*x) * cos(2*x)', 'INT x:[0, pi/2]. 1/2 * sin(4*x)'),
+            ('INT x:[0, pi/2]. sin(x) ^ 2', 'INT x:[0, pi/2]. 1/2 + 1/2 * cos(2 * x)'),
+            ('INT x:[0, pi/2]. cos(x) ^ 2', 'INT x:[0, pi/2]. 1/2 - 1/2 * cos(2 * x)')
+        ]
+
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            v_res = parse_expr(v_res)
+            self.assertEqual(slagle.HalfAngleIdentity().eval(v), v_res)
+
     def testLinearity(self):
         test_data = [
             ('INT x:[1, 2]. 3*x', '3*INT x:[1, 2]. x'),
