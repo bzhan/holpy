@@ -103,7 +103,6 @@ class CommonIntegral(AlgorithmRule):
     def eval(self, e):
         new_e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         steps = []
-
         if new_e.normalize() != e.normalize():
             steps.append(calc.CommonIntegralStep(new_e))
         new_e.steps = steps
@@ -491,10 +490,10 @@ class HeuristicTirgonometricSubstitution(HeuristicRule):
             pat3 = tan(v)^n
             if match(e, pat1):
                 n_value = e.args[1].args[1].val
-                return True, e.args[0].args[0] if n_value % 2 == 1 else (False, None)
+                return (True, e.args[0].args[0]) if n_value % 2 == 1 else (False, None)
             elif match(e, pat3):
                 n_value = e.args[1].val
-                return True, e.args[0].args[0] if n_value % 2 == 1 else (False, None)
+                return (True, e.args[0].args[0]) if n_value % 2 == 1 else (False, None)
             elif match(e, pat2):
                 return True, e.args[0].args[0]
             else:
@@ -594,7 +593,7 @@ class HeuristicIntegrationByParts(HeuristicRule):
     solved by CommonIntegral rule after algorithm transformation.
     
     """
-    def eval(self, e):
+    def eval(self, e, loc=[]):
         if not isinstance(e, Integral):
             return e
 
@@ -606,11 +605,19 @@ class HeuristicIntegrationByParts(HeuristicRule):
             return []
         
         for i in range(len(factors)):
-            node = bfs(OrNode(Integral(e.var, e.lower, e.upper, factors[i])))
-            if node.resolved:
-                u = functools.reduce(operator.mul, factors[:i], Const(1)) * functools.reduce(operator.mul, factors[i+1:], Const(1))
-                v = node.compute_value()
-                res.append(rules.IntegrationByParts(u, v).eval(e))
+            h = factors[i]
+            rest_factor = [f for f in factors if f != h]
+            G = functools.reduce(operator.mul, rest_factor)
+            H = rules.CommonIntegral().eval(Integral(e.var, e.lower, e.upper, h))
+            if H.body != h or h == exp(Var(e.var)):
+                u = G
+                v = H.body
+                try: # can't deriv abs now
+                    new_integral = rules.IntegrationByParts(u, v).eval(e)
+                except:
+                    continue
+                new_integral.steps = [calc.IntegrationByPartsStep(new_integral, u, v, loc)]
+                res.append(new_integral)
         
         return res
 
@@ -905,12 +912,13 @@ heuristic_rules = [
     TrigFunction,
     HeuristicTirgonometricSubstitution,
     HeuristicSubstitution,
+    HeuristicIntegrationByParts,
     HeuristicElimQuadratic,
     HeuristicDistributionSum,
     HeuristicExpandPower,
     HeuristicTrigSubstitution,
     HeuristicExponentBase,
-    HeuristicSimplify
+    HeuristicSimplify,
 ]
 
 
@@ -1057,15 +1065,16 @@ class AndNode(GoalNode):
             self.parent.compute_resolved()
 
     def compute_value(self):
+        value = self.root
         if not self.resolved:
             return self.root
         if len(self.children) == 0:
             return self.root.normalize()
         else:
             for c in self.children:
-                self.root = self.root.replace_trig(c.root, c.compute_value())
+                value = value.replace_trig(c.root, c.compute_value())
                 
-            return self.root.normalize()
+            return value.normalize()
 
 
 def bfs(node):
@@ -1093,7 +1102,9 @@ def timeout(max_timeout):
             pool = multiprocessing.pool.ThreadPool(processes=1)
             async_result = pool.apply_async(item, args, kwargs)
             # raises a TimeoutError if execution exceeds max_timeout
-            return async_result.get(max_timeout)
+            res = async_result.get(max_timeout)
+            pool.close()
+            return res
         return func_wrapper
     return timeout_decorator
 

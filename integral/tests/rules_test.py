@@ -114,7 +114,7 @@ class RulesTest(unittest.TestCase):
     def testSubstitution4(self):
         e = parse_expr("INT x:[1, 4]. 1/(1+sqrt(x))")
         e, _ = rules.Substitution1("u", parse_expr("sqrt(x)")).eval(e)
-        self.assertEqual(e, parse_expr("INT u:[1,2]. 2 * u * (1 + u) ^ -1"))
+        self.assertEqual(e, parse_expr("INT u:[1,2]. 2 + -2 * (1 + u) ^ -1"))
 
     def testSubstitution5(self):
         e = parse_expr("INT t:[0, 1]. t * exp(-(t^2/2))")
@@ -130,7 +130,7 @@ class RulesTest(unittest.TestCase):
     def testSubstitution7(self):
         e = parse_expr("INT x:[3/4, 1]. 1/(sqrt(1-x) - 1)")
         e, l = rules.Substitution1("u", parse_expr("sqrt(1 - x)")).eval(e)
-        self.assertEqual(e, parse_expr("INT u:[0, (1/4) ^ (1/2)]. 2 * u * (-1 + u) ^ -1"))
+        self.assertEqual(e, parse_expr("INT u:[0,(1/4) ^ (1/2)]. 2 + 2 * (-1 + u) ^ -1"))
 
     def testSubstitution8(self):
         e = parse_expr("INT x:[1, exp(1)]. sin(log(x))")
@@ -200,7 +200,7 @@ class RulesTest(unittest.TestCase):
         e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
-        self.assertEqual(e.normalize(), parse_expr("2 * exp(2) + -1 * exp(2) + 2 * exp(-1)"))
+        self.assertEqual(e.normalize(), parse_expr("2 * exp(-1) + exp(2)"))
 
     def testPolynomialDivision(self):
         test_data = [

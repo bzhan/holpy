@@ -83,8 +83,11 @@ class Monomial:
 
     def __mul__(self, other):
         # Contain bug.
-        return Monomial((self.coeff * other.coeff).normalize(), self.factors + other.factors)
-
+        if self.coeff.ty == expr.CONST and other.coeff.ty == expr.CONST:
+            return Monomial((self.coeff * other.coeff).normalize(), self.factors + other.factors)
+        else:
+            return Monomial((self.coeff * other.coeff), self.factors + other.factors)
+            
     def scale(self, c):
         """Test delete 
         """

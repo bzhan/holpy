@@ -611,7 +611,7 @@ def integral_slagle():
     data = json.loads(request.get_data().decode('utf-8'))
     problem = data['problem']
     
-    t = 3
+    t = 60
     # limit slagle only run 60 seconds 
     limit_bfs = slagle.timeout(t)(slagle.bfs)
     try:

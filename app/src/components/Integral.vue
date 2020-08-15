@@ -262,6 +262,7 @@ export default {
       this.filename = file_name
       const response = await axios.post("http://127.0.0.1:5000/api/integral-open-file", JSON.stringify(data))
       this.content = response.data.content
+      this.cur_calc = undefined
     },
 
     initialize: async function (index) {

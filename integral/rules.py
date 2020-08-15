@@ -335,7 +335,7 @@ class IntegrationByParts(Rule):
         e.body = e.body.normalize()
         du = expr.deriv(e.var, self.u)
         dv = expr.deriv(e.var, self.v)
-        udv = (self.u * dv).normalize().normalize()
+        udv = (self.u * dv).normalize()
         if udv == e.body:
             return expr.EvalAt(e.var, e.lower, e.upper, (self.u * self.v).normalize()) - \
                    expr.Integral(e.var, e.lower, e.upper, (self.v * du).normalize())

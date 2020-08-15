@@ -417,8 +417,10 @@ class Expr:
                 return a.to_poly(single=single)
             elif a == Const(0) or b == Const(0):
                 return poly.constant(Const(0))
-            elif a.is_constant() and b.is_constant():
-                return poly.constant(Op("*", a.normalize(), b.normalize()))
+            elif a.is_constant() and b.is_constant() and b.ty == OP and b.op in ('+', '-'):
+                return Op(b.op, a * b.args[0], a * b.args[1]).to_poly()
+            elif a.is_constant() and b.is_constant() and a.ty == OP and a.op in ('+', '-'):
+                return Op(a.op, a.args[0] * b, a.args[1] * b).to_poly()
             elif a.ty == OP and a.op == "/" and b.ty == OP and b.op == "/":
                 # (a/b)*(c/d) ==> (ac)/(bd)
                 return Op("/", a.args[0] * b.args[0], a.args[1] * b.args[1]).to_poly(single=single)
@@ -590,8 +592,8 @@ class Expr:
             return poly.singleton(self)
 
         elif self.ty == FUN and self.func_name == "abs":
-            if self.args[0].ty == CONST:
-                return poly.constant(Const(abs(self.args[0].val)))
+            if self.args[0].normalize().ty == CONST:
+                return poly.constant(Const(abs(self.args[0].normalize().val)))
             return poly.singleton(Fun("abs", self.args[0].normalize()))
 
         elif self.ty == EVAL_AT:

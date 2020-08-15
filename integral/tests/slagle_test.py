@@ -31,9 +31,9 @@ class SlagleTest(unittest.TestCase):
 
     def testHalfAngleIdentity(self):
         test_data = [
-            ('INT x:[0, pi/2]. sin(2*x) * cos(2*x)', 'INT x:[0, pi/2]. 1/2 * sin(4*x)'),
-            ('INT x:[0, pi/2]. sin(x) ^ 2', 'INT x:[0, pi/2]. 1/2 + 1/2 * cos(2 * x)'),
-            ('INT x:[0, pi/2]. cos(x) ^ 2', 'INT x:[0, pi/2]. 1/2 - 1/2 * cos(2 * x)')
+            ('INT x:[0, pi/2]. sin(2*x) * cos(2*x)', 'INT x:[0, 1/2 * pi]. 1/2 * sin(4*x)'),
+            ('INT x:[0, pi/2]. sin(x) ^ 2', 'INT x:[0, 1/2 * pi]. 1/2 + 1/2 * cos(2 * x)'),
+            ('INT x:[0, pi/2]. cos(x) ^ 2', 'INT x:[0, 1/2 * pi]. 1/2 + -1/2 * cos(2 * x)')
         ]
 
         for v, v_res in test_data:
@@ -137,7 +137,7 @@ class SlagleTest(unittest.TestCase):
             'INT x:[exp(1),exp(2)].3/(x*log(x))',
             'INT x:[0,1].cos(5*x)/exp(sin(5*x))',
             'INT x:[0,1]. x * (x ^ (1/2) + x ^ (-1/2)) ^ 2',
-            # 'INT x:[0,1]. exp(6*x)/(exp(4*x)+1)',
+            'INT x:[0,1]. exp(6*x)/(exp(4*x)+1)',
 
         ]
 
