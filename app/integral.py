@@ -611,7 +611,7 @@ def integral_slagle():
     data = json.loads(request.get_data().decode('utf-8'))
     problem = data['problem']
     
-    t = 60
+    t = 3
     # limit slagle only run 60 seconds 
     limit_bfs = slagle.timeout(t)(slagle.bfs)
     try:
@@ -621,8 +621,8 @@ def integral_slagle():
         final_simp = trace[-1]
         last_expr = final_simp.e.normalize()
         last_step = {
-            'text': str(last_expr),
-            'latex': integral.latex.convert_expr(last_expr),
+            'text': str(new_problem),
+            'latex': integral.latex.convert_expr(new_problem),
             'reason': 'Simplification'
         }
         t = [i.info() for i in trace]
@@ -630,9 +630,9 @@ def integral_slagle():
         return json.dumps(t)
     except:
         new_problem = integral.parser.parse_expr(problem)
-        return jsonify({
+        return json.dumps([{
             'text': str(new_problem),
             'latex': integral.latex.convert_expr(new_problem),
             'reason': "By Slagle algorithm"
-        })
+        }])
     
