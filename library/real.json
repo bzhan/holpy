@@ -36,11 +36,6 @@
             "type": "real ⇒ real ⇒ real"
         },
         {
-            "name": "uminus",
-            "ty": "def.ax",
-            "type": "real ⇒ real"
-        },
-        {
             "attributes": [
                 "hint_rewrite"
             ],

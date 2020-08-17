@@ -28,8 +28,13 @@
             "type": "int ⇒ int ⇒ int"
         },
         {
+            "name": "divides",
+            "prop": "divides a b ⟷ (∃x. b = a * x)",
+            "ty": "def",
+            "type": "int ⇒ int ⇒ bool"
+        },
+        {
             "name": "uminus",
-            "overloaded": true,
             "ty": "def.ax",
             "type": "'a ⇒ 'a"
         },
@@ -41,21 +46,6 @@
             "prop": "abs n = (if 0 ≤ n then n else -n)",
             "ty": "def",
             "type": "'a ⇒ 'a"
-        },
-        {
-            "name": "uminus",
-            "ty": "def.ax",
-            "type": "int ⇒ int"
-        },
-        {
-            "name": "minus",
-            "ty": "def.ax",
-            "type": "int ⇒ int ⇒ int"
-        },
-        {
-            "name": "times",
-            "ty": "def.ax",
-            "type": "int ⇒ int ⇒ int"
         },
         {
             "name": "less_eq",
@@ -141,7 +131,7 @@
         },
         {
             "name": "sub_0_l",
-            "prop": "0 - n = n",
+            "prop": "0 - n = -n",
             "ty": "thm",
             "vars": {
                 "n": "int"
@@ -588,12 +578,6 @@
             "vars": {
                 "n": "int"
             }
-        },
-        {
-            "name": "lt_m1_0",
-            "prop": "-(1::int) < 0",
-            "ty": "thm",
-            "vars": {}
         },
         {
             "name": "sub_lt_mono_l",
@@ -1118,7 +1102,7 @@
         },
         {
             "name": "int_sub_n_0",
-            "prop": "n - 0 = 0",
+            "prop": "n - 0 = n",
             "ty": "thm",
             "vars": {
                 "n": "int"
@@ -1137,6 +1121,174 @@
             "prop": "n ^ (1::nat) = n",
             "ty": "thm",
             "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "int_lt",
+            "prop": "m < n ⟷ m - n < 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "int_le",
+            "prop": "m ≤ n ⟷ m - n ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "int_gt",
+            "prop": "m > n ⟷ m - n > 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "int_ge",
+            "prop": "m ≥ n ⟷ m - n ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "eq_conj_less",
+            "prop": "m = n ⟷ m < n + 1 ∧ n < m + 1",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "neg_eq_disj_less",
+            "prop": "¬(m = n) ⟷ m < n ∨ n < m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "neg_le",
+            "prop": "¬(m < n) ⟷ n < m + 1",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "lesseq_0",
+            "prop": "m ≤ 0 ⟷ m < 1",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "greater_less",
+            "prop": "m > 0 ⟷ -m < 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int"
+            }
+        },
+        {
+            "name": "greatereq_less",
+            "prop": "m ≥ 0 ⟷ -m < 1",
+            "ty": "thm",
+            "vars": {
+                "m": "int"
+            }
+        },
+        {
+            "name": "pos_mul_less",
+            "prop": "c > 0 ⟶ m < n ⟷ c * m < c * n",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "neg_mul_less",
+            "prop": "c < 0 ⟶ m < n ⟷ c * m > c * n",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "pos_mul_less_eq",
+            "prop": "c > 0 ⟶ m ≤ n ⟷ c * m ≤ c * n",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "neg_mul_less_eq",
+            "prop": "c < 0 ⟶ m ≤ n ⟷ c * m ≥ c * n",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "pos_mul_greater",
+            "prop": "c > 0 ⟶ m > n ⟷ c * m > c * n",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "neg_mul_greater",
+            "prop": "c < 0 ⟶ m > n ⟶ c * m < c * n",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "pos_mul_greater_eq",
+            "prop": "c > 0 ⟶ m ≤ n ⟶ c * m ≥ c * n",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "neg_mul_greater_eq",
+            "prop": "c < 0 ⟶ m ≥ n ⟶ c * m ≤ c * n",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "m": "int",
                 "n": "int"
             }
         }

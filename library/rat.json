@@ -16,11 +16,6 @@
             "type": "rat ⇒ rat ⇒ rat"
         },
         {
-            "name": "uminus",
-            "ty": "def.ax",
-            "type": "rat ⇒ rat"
-        },
-        {
             "name": "minus",
             "ty": "def.ax",
             "type": "rat ⇒ rat ⇒ rat"
