@@ -78,4 +78,4 @@ def length(xs):
 def nth(xs, n):
     """Returns the term nth xs n."""
     T = xs.get_type().args[0]
-    return Const("nth", TFun(listT(T), NatType, T))(xs, n)
+    return Const("nth", TFun(ListType(T), NatType, T))(xs, n)
