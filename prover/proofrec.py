@@ -6,7 +6,8 @@ by Sascha Böhme and Tjark Weber.
 
 import z3
 from z3.z3consts import *
-from data.integer import int_norm_macro
+from data.integer import int_norm_macro, int_ineq_macro, collect_int_polynomial_coeff,\
+    int_multiple_ineq_equiv
 from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar, TVar
 from kernel.term import *
 from kernel.thm import Thm
@@ -407,6 +408,10 @@ def schematic_rules_rewr(thms, lhs, rhs):
             continue
     return None
 
+def is_ineq(t):
+    """determine whether t is an inequality"""
+    return t.is_less() or t.is_less_eq() or t.is_greater() or t.is_greater_eq()
+
 def rewrite(t, z3terms):
     """
     Multiple strategies for rewrite rule:
@@ -415,6 +420,7 @@ def rewrite(t, z3terms):
     """
 
     if z3.is_distinct(z3terms[0].arg(0)) and z3.is_false(z3terms[0].arg(1)):
+        context.set_context('logic')
         conjs = t.lhs.strip_conj()
         same = None
         for i in range(len(conjs)):
@@ -430,7 +436,6 @@ def rewrite(t, z3terms):
                 pt9 = pt8.implies_intr(pt8.hyps[0]) # ⊢ ~A ∧ B --> false
                 pt10 = apply_theorem('falseE', inst=Inst(A=t.lhs)) # ⊢ false --> ~A ∧ B
                 return apply_theorem('iffI', pt9, pt10, inst=Inst(A=t.lhs, B=false)) # ~A ∧ B <--> false
-        
 
     def norm_int(t):
         """Use nat norm macro to normalize nat expression."""
@@ -446,6 +451,19 @@ def rewrite(t, z3terms):
 
     if t.lhs == t.rhs:
         return ProofTerm.reflexive(t.lhs)
+    if is_ineq(t.lhs) and is_ineq(t.rhs) and t.lhs.arg1.get_type() == IntType:
+        
+        context.set_context('int')
+        lhs_norm = int_ineq_macro().get_proof_term(t.lhs)
+        rhs_norm = int_ineq_macro().get_proof_term(t.rhs)
+        try:
+            return lhs_norm.transitive(rhs_norm.symmetric())
+        except:
+            pass
+        try:
+            return int_multiple_ineq_equiv().get_proof_term([t.lhs, t.rhs])
+        except:
+            pass        
 
     # first try use schematic theorems
     with open('library/smt.json', 'r', encoding='utf-8') as f:
@@ -919,7 +937,6 @@ def convert_method(term, *args, subterms=None):
         return nnf_pos(args[:-1], args[-1], subterms)
     elif name in ('nnf-pos', 'nnf-neg'):
         raise NotImplementedError
-        #return ProofTerm.sorry(Thm([], args[-1]))
     elif name == 'proof-bind':
         return args[0]
     elif name == 'quant-inst':
@@ -997,7 +1014,7 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False):
             r[i] = translate(term[i],bounds=bounds)
         else:
             subterms = [term[j] for j in net[i]]
-            if i == 170:
+            if i == 413:
                 i
             r[i] = convert_method(term[i], *args, subterms=subterms)
             if trace:
