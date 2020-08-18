@@ -262,14 +262,36 @@ def monotonicity(pts, concl):
     to implemented custom strip_disj()/strip_conj() method.
 
     The translate process have bugs(∧,∨ are polyadic), that's why disj and conj are special.
+
+    When f is +/-/*, there is another pitfall: in HOL, while ∧ or ∨ is right associative, +/-/*
+    is left associative when construct terms.
     """
 
-    def get_argument(f):
+    def get_argument(f, left_assoc=False):
         """
         Suppose f is f x1 x2 x3, return [x1, x2, x3]
+        When assoc_direction is true, we can't use strip_comb.
         """
-        _, fx = f.strip_comb()
-        return fx
+        if not left_assoc:
+            _, fx = f.strip_comb()
+            return fx
+        else:
+            args = deque()
+            while f.is_plus():
+                args.appendleft(f.args[1])
+                f = f.args[0]
+            return [f] + list(args)
+
+    def arith_eq(fun_eq, pts):
+        """
+        fun is ⊢+ = +/- = -/* = *,
+        pts is a list of equality proof terms: [a = a', b = b', c = c', ...]
+        return a proofterm: ⊢ a + b + c + ⋯ = a' + b' + c' + ⋯
+        """
+        if len(pts) == 1:
+            return pts[0]
+        else:
+            return fun_eq.combination(arith_eq(fun_eq, pts[:-1])).combination(pts[-1])
 
     # First get f, g.
     f_expr, g_expr = concl.lhs, concl.rhs
@@ -278,7 +300,10 @@ def monotonicity(pts, concl):
 
         # Next collect arguments: x1...xn/y1...yn
         # We can't split the term in pts into subterms.
-        fx, gy = get_argument(f_expr), get_argument(g_expr)
+        if not f_expr.is_plus():
+            fx, gy = get_argument(f_expr), get_argument(g_expr)
+        else:
+            fx, gy = get_argument(f_expr, True), get_argument(g_expr, True)
         # Then put all useful equalities proofterm in equalities.
         equalities = []
         if f == g:
@@ -295,7 +320,10 @@ def monotonicity(pts, concl):
                 index += 1
 
         # use combination get final proof
-        return functools.reduce(lambda f, x : f.combination(x), equalities)
+        if not f_expr.is_plus():
+            return functools.reduce(lambda f, x : f.combination(x), equalities)
+        else:
+            return arith_eq(ProofTerm.reflexive(f_expr.head), equalities[1:])
     else:
         eq_prop = concl # f x1 x2 ... xk ~ f y1 y2 ... yk
         eq_hyps = pts
@@ -1014,7 +1042,7 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False):
             r[i] = translate(term[i],bounds=bounds)
         else:
             subterms = [term[j] for j in net[i]]
-            if i == 413:
+            if i == 53:
                 i
             r[i] = convert_method(term[i], *args, subterms=subterms)
             if trace:
