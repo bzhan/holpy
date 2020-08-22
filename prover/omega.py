@@ -558,7 +558,7 @@ def one_var_analysis(db, em):
             else:
                 return Satifiable({x_var:u})
 
-def throwaway_redundant_factoids(db):
+def throwaway_redundant_factoids(db, nextstage):
     """
     throwaway_redundant_factoids ptree nextstage kont
 
@@ -587,20 +587,46 @@ def throwaway_redundant_factoids(db):
                 elif k > 0:
                     has_low[i] = True
 
-    new_db = DataBase(db.width)
-    elim = [] # store redundant factoids
-    for _, dfactoids in db.items():
-        for df in dfactoids:
-            fk = df.factoid.keys
-            for i, k in enumerate(fk):
-                if has_low[i] != has_up[i]:
-                    state = has_up[i]
-                    if fk[i] == 0:
-                        new_db.insert(df)
-                    else:
-                        elim.append(df)
+    def handle_result(r, i, elim):
+        if isinstance(r, Satifiable):
+            vmap = r.store
+            def mapthis(df):
+                v = int(df.factoid.eval_factoid_except(vmap, i)/abs(df.factoid[i]))
+                return v if has_up[i] else -v
+            evaluated = map(mapthis, elim)
+            if has_up[i]:
+                r.insert(i=min(evaluated))
+            else:
+                r.insert(i=max(evaluated))
+            return r
+        else:
+            return r
+    
+    def find_redundant_var(db):
+        for _, dfactoids in db.items():
+            for df in dfactoids:
+                fk = df.factoid.keys
+                for i, k in enumerate(fk):
+                    if has_low[i] != has_up[i]:
+                        return (i, has_up[i])
+        return None
 
-    pass
+    if find_redundant_var(db) is not None:
+        j, state = find_redundant_var(db)
+        new_db = DataBase(db.width)
+        elim = [] # store redundant factoids   
+        for _, dfactoids in db.items():
+            for df in dfactoids:
+                fk = df.factoid.keys
+                if fk[j] == 0:
+                    new_db.insert(df)
+                else:
+                    elim.append(df)
+        r = throwaway_redundant_factoids(new_db, nextstage)
+        return handle_result(r, j, elim)
+    else:
+        return nextstage(db)    
+
             
             
 
@@ -827,4 +853,4 @@ def toplevel(db, em):
         else:
             return one_step(db, em)
 
-    return throwaway_redundant_factoids(db)
+    return throwaway_redundant_factoids(db, after_throwaway)
