@@ -184,7 +184,7 @@ class OmegaTest(unittest.TestCase):
 
         for r, res in test_data:
             r = Factoid(r)
-            self.assertEqual(lookup_fkey(db, r)[0].factoid.key, res)
+            self.assertEqual(lookup_fkey(db, r).factoid.key, res)
 
     def testDBAdd(self):
         db = DataBase(3)
@@ -208,3 +208,21 @@ class OmegaTest(unittest.TestCase):
                 self.assertEqual(r in db[hash(f1)], res)
             except RedundantAdditionException: 
                 self.assertEqual(r in db[hash(f1)], res)
+
+    def testTopLevel(self):
+        test_data = [
+            ((Factoid([2,3,6]), Factoid([-1,-4,7])), EXACT),
+            ((Factoid([2,3,4]), Factoid([-3,-4,7])), DARK),
+            ((Factoid([2,3,4]), Factoid([-3,-4,7]), Factoid([4,-5,-10])), DARK),
+            ((Factoid([2,3,4]), Factoid([-3,-4,7]), Factoid([4,5,-10])), DARK),
+            ((Factoid([1,0,-1]), Factoid([0,1,-1]), Factoid([-1,0,1])), DARK),
+            ((Factoid([1,2,3,4]), Factoid([2,-2,3,-10]), Factoid([2,3,-5,6]), Factoid([-3,-2,1,7])), DARK)
+        ]
+
+        for fts, mode in test_data:
+            db = DataBase(len(fts[0]))
+            dfs = [dfactoid(ft, ASM(ft)) for ft in fts]
+            db.insert(*dfs)
+            sat_map = toplevel(db, mode, kont).store
+            for f in fts:
+                self.assertGreaterEqual(f.eval_factoid_rhs(sat_map), 0)
