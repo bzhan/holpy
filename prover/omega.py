@@ -5,7 +5,7 @@ Reference: https://github.com/HOL-Theorem-Prover/HOL/blob/develop/src/integer/Om
 """
 import collections
 import functools
-from math import gcd
+from math import gcd, ceil, floor
 from kernel.term import Int
 import copy
 
@@ -281,7 +281,7 @@ class Contr(Result):
     def __repr__(self):
         return str(self)
 
-class Satifiable(Result):
+class Satisfiable(Result):
     def __init__(self, *args, **kwargs):
         self.store = dict()
         if args is not None:
@@ -356,7 +356,7 @@ def mode_result(em, result):
     if em == EXACT:
         return result
     elif em == REAL:
-        return NoConcl() if isinstance(result, Satifiable) else result
+        return NoConcl() if isinstance(result, Satisfiable) else result
     elif em in (DARK, EDARK):
         return NoConcl() if isinstance(result, Contr) else result
 
@@ -545,12 +545,12 @@ def one_var_analysis(db, em):
         if em == REAL:
             return NoConcl
         else:
-            return Satifiable(x_var = upper[0])
+            return Satisfiable(x_var = upper[0])
     elif upper is None and lower is not None:
         if em == REAL:
             return NoConcl
         else:
-            return Satifiable(x_var = lower[0])
+            return Satisfiable(x_var = lower[0])
     else:
         u, du, l, dl = upper[0], upper[1], lower[0], lower[1]
         if u < l:
@@ -562,7 +562,7 @@ def one_var_analysis(db, em):
             if em == REAL:
                 return NoConcl
             else:
-                return Satifiable({x_var:u})
+                return Satisfiable({x_var:u})
 
 def throwaway_redundant_factoids(db, nextstage, kont):
     """
@@ -614,10 +614,13 @@ def throwaway_redundant_factoids(db, nextstage, kont):
                 else:
                     elim.append(df)
         def handle_result(r):
-            if isinstance(r, Satifiable):
+            if isinstance(r, Satisfiable):
                 vmap = r.store
                 def mapthis(df):
-                    v = int(df.factoid.eval_factoid_except(vmap, j)/abs(df.factoid[i]))
+                    if has_up[j]:
+                        v = floor(df.factoid.eval_factoid_except(vmap, j)/abs(df.factoid[i]))
+                    else:
+                        v = ceil(df.factoid.eval_factoid_except(vmap, j)/abs(df.factoid[i]))
                     return v if has_up[j] else -v
                 evaluated = [mapthis(df) for df in elim]
                 if has_up[j]:
@@ -627,7 +630,10 @@ def throwaway_redundant_factoids(db, nextstage, kont):
                 return r
             else:
                 return r
-        return throwaway_redundant_factoids(new_db, nextstage, handle_result)
+
+        def kont_result(r):
+            return kont(handle_result(r))
+        return throwaway_redundant_factoids(new_db, nextstage, kont_result)
     else:
         return nextstage(db, kont)    
 
@@ -723,7 +729,7 @@ def extend_vmap(db, i, vmap):
         coeff = fk[i]
 
         if coeff < 0: #upper case
-            c = int(c0/(-coeff))
+            c = floor(c0/(-coeff))
             if upper is None or c < upper:
                 return (lower, c)
             else:
@@ -733,7 +739,7 @@ def extend_vmap(db, i, vmap):
             return (lower, upper)
         
         else: #lower case
-            c = -(c0/(-coeff))
+            c = ceil(-(c0/(coeff)))
             if lower is None or c > lower:
                 return (c, upper)
             else:
@@ -796,7 +802,7 @@ def one_step(db, em, next, kont):
     """
     var_to_elim, mode = exact_var(db), em
     if var_to_elim is None:
-        var_to_elim = least_coeff_var(db)
+        var_to_elim, _ = least_coeff_var(db)
         mode = inexactify(em)
 
     def categorise(df, notmentioned, uppers, lowers):
@@ -817,8 +823,8 @@ def one_step(db, em, next, kont):
         return NoConcl if isinstance(re, Contr) else re
 
     def extend_satisfiable(r):
-        if isinstance(r, Satifiable):
-            return extend_vmap(db, var_to_elim, r.store)
+        if isinstance(r, Satisfiable):
+            return Satisfiable(extend_vmap(db, var_to_elim, r.store))
         else:
             return r
     def newkont(em, mode):
@@ -829,7 +835,7 @@ def one_step(db, em, next, kont):
                 if isinstance(r, Contr):
                     return r
                 else:
-                    return one_step(db, EDARK, next)
+                    return one_step(db, EDARK, next, kont)
             elif em == REAL and mode == REAL:
                 return r
             elif em == EDARK and mode == EDARK:
@@ -843,7 +849,7 @@ def one_step(db, em, next, kont):
         return _newkont
 
     def newnext(db, k):
-        return next(db, mode, kont)
+        return next(db, mode, k)
 
     return generate_cross_product(newdb, em, var_to_elim, uppers, lowers, newnext, newkont(em, mode))
 
@@ -853,7 +859,7 @@ def kont(r):
 def toplevel(db, em, kont):
     def after_throwaway(db, k):
         if len(db) == 0:
-            return k(Satifiable(zero_upto(db.width - 2)))
+            return k(Satisfiable(zero_upto(db.width - 2)))
         elif has_one_var(db):
             return k(mode_result(em, one_var_analysis(db, em)))
         else:
