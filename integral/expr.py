@@ -133,7 +133,7 @@ class Expr:
         return Op("-", self)
 
     def size(self):
-        if self.ty in (VAR, CONST):
+        if self.ty in (VAR, CONST, SYMBOL):
             return 1
         elif self.ty in (OP, FUN):
             return 1 + sum(arg.size() for arg in self.args)
@@ -187,7 +187,12 @@ class Expr:
         elif self.ty == INTEGRAL or self.ty == EVAL_AT:
             return (self.body, self.lower, self.upper, self.var) <= \
                 (other.body, other.lower, other.upper, other.var)
+        elif self.ty == SYMBOL:
+            return sum(self.ty) <= sum(other.ty)
         else:
+            print(self)
+            print(type(self))
+            print(self.ty)
             raise NotImplementedError
 
     def priority(self):
@@ -942,57 +947,59 @@ def match(exp, pattern):
     d = dict()
     def rec(exp, pattern):
         if not isinstance(pattern, Symbol) and exp.ty != pattern.ty:
-            return False
+            return {}
         if exp.ty == VAR:
             if not isinstance(pattern, Symbol) or VAR not in pattern.pat:
-                return False
-            if pattern.name in d.keys():
-                return exp == d[pattern.name]
+                return {}
+            if pattern in d.keys():
+                return d if exp == d[pattern] else {}
             else:
-                d[pattern.name] = exp
-                return True
+                d[pattern] = exp
+                return d
         elif exp.ty == CONST:
             if pattern.ty == CONST and pattern.val == exp.val:
-                return True
+                return d
             if not isinstance(pattern, Symbol) or CONST not in pattern.pat:
-                return False
-            if pattern.name in d.keys():
-                return exp == d[pattern.name]
+                return {}
+            if pattern in d.keys():
+                return d if exp == d[pattern] else {}
             else:
-                d[pattern.name] = exp
-                return True
+                d[pattern] = exp
+                return d
         elif exp.ty == OP:
             if isinstance(pattern, Symbol):
                 if OP in pattern.pat:
-                    if pattern.name in d.keys():
-                        return d[pattern.name] == exp
+                    if pattern in d.keys():
+                        return d if d[pattern] == exp else {}
                     else:
-                        d[pattern.name] = exp
-                        return True
+                        d[pattern] = exp
+                        return d
                 else:
-                    return False
+                    return {}
             if exp.op != pattern.op or len(exp.args) != len(pattern.args):
-                return False
+                return {}
             
             table = [rec(exp.args[i], pattern.args[i]) for i  in range(len(exp.args))]
-            return functools.reduce(lambda x, y: x and y, table)    
+            and_table = functools.reduce(lambda x, y: x and y, table)
+            return d if and_table else {}    
         elif exp.ty == FUN:
             if isinstance(pattern, Symbol):
                 if FUN in pattern.pat:
-                    if pattern.name in d.keys():
-                        return d[pattern.name] == exp
+                    if pattern in d.keys():
+                        return d if d[pattern] == exp else {}
                     else:
-                        d[pattern.name] = exp
-                        return True
+                        d[pattern] = exp
+                        return d
                 else:
-                    return False
+                    return {}
             if exp.func_name != pattern.func_name or len(exp.args) != len(pattern.args):
-                return False
+                return {}
             table = [rec(exp.args[i], pattern.args[i]) for i  in range(len(exp.args))]
-            return functools.reduce(lambda x, y: x and y, table, True)  
+            and_table = functools.reduce(lambda x, y: x and y, table, True)
+            return d if and_table else {}  
         elif exp.ty in (DERIV, EVAL_AT, INTEGRAL):
             return rec(exp.body, pattern) 
-    return rec(exp, pattern)  
+    return rec(exp, pattern)
 
 def find_pattern1(expr, pat, loc=False):
     """Find all subexpr can be matched with the given pattern.
@@ -1685,7 +1692,7 @@ class Symbol(Expr):
     def __init__(self, name, ty):
         self.name = name
         self.ty = SYMBOL
-        self.pat = ty
+        self.pat = tuple(ty)
     
     def __eq__(self, other):
         if not isinstance(other, Symbol):
@@ -1693,7 +1700,7 @@ class Symbol(Expr):
         return self.name == other.name and self.pat == other.pat
 
     def __hash__(self):
-        return hash((SYMBOL, self.name, self.ty, self.pat))
+        return hash((SYMBOL, self.name, self.ty, sum(self.pat)))
     
     def __str__(self):
         return "%s" % (self.name)
@@ -1730,7 +1737,7 @@ def trig_table():
     """Trigonometric value table on 0,pi/6,pi/4,pi/3,pi/2,(2/3)*pi,(3/4)*pi,(5/6)*pi,pi.
     
     """
-    trig_table = {
+    return {
         "sin": {parser.parse_expr(key):parser.parse_expr(value) for key, value in sin_table.items()},
         "cos": {parser.parse_expr(key):parser.parse_expr(value) for key, value in cos_table.items()},
         "tan": {parser.parse_expr(key):parser.parse_expr(value) for key, value in tan_table.items()},
@@ -1738,11 +1745,10 @@ def trig_table():
         "csc": {parser.parse_expr(key):parser.parse_expr(value) for key, value in csc_table.items()},
         "sec": {parser.parse_expr(key):parser.parse_expr(value) for key, value in sec_table.items()},
     }
-    return trig_table
 
 def inverse_trig_table():
     """Inverse trigonometric value table."""
-    trig_table = {
+    return {
         "asin": {parser.parse_expr(value):parser.parse_expr(key) for key, value in sin_table.items()},
         "acos": {parser.parse_expr(value):parser.parse_expr(key) for key, value in cos_table.items()},
         "atan": {parser.parse_expr(value):parser.parse_expr(key) for key, value in tan_table.items()},
@@ -1750,4 +1756,3 @@ def inverse_trig_table():
         "acsc": {parser.parse_expr(value):parser.parse_expr(key) for key, value in csc_table.items()},
         "asec": {parser.parse_expr(value):parser.parse_expr(key) for key, value in sec_table.items()},
     }
-    return trig_table

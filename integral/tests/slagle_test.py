@@ -108,7 +108,7 @@ class SlagleTest(unittest.TestCase):
     def testHeuristicExpandPower(self):
         test_data = [
             ('INT x:[0,1]. x*(x^(1/2) + x^(-1/2))^2',
-            ['INT x:[0,1]. x * (2 + x ^ -1 + x)']),
+            ['INT x:[0,1]. 1 + 2 * x + x ^ 2']),
         ]
 
         for v, v_res in test_data:

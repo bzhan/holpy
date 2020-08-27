@@ -24,7 +24,7 @@ linear_pat = [pat0, pat1, pat2, pat4, pat5]
 
 
 def gen_rand_letter(ex):
-    return random.choices(string.ascii_lowercase.replace(ex, ''))[0]
+    return string.ascii_lowercase[(string.ascii_lowercase.index(ex) + 1) % len(string.ascii_lowercase)]
 
 def linearize(integral):
     """integral is an Expr."""
@@ -69,6 +69,15 @@ def algo_trans(integral):
     assert isinstance(integral, Integral), "%s Should be an integral.l"
     integral = integral.normalize()
     return linear_substitution(linearize(integral))
+
+def add_simplify_step(e, loc=[]):
+    """e is an integral, normalize e and add simplify step into e's steps."""
+    steps = []
+    if hasattr(e, 'steps'):
+        steps = e.steps
+    e = e.normalize()
+    e.steps = steps + [calc.SimplifyStep(e, loc=loc)]
+    return e
 
 class AlgorithmRule:
     def eval(self, e):
@@ -255,10 +264,6 @@ class TrigFunction(HeuristicRule):
         TR1, TR2
         
         """
-        # e_body = e.body
-        # lower = e.lower
-        # upper = e.upper
-
         x = Symbol('x', [OP,CONST,VAR,FUN])
         tan_pat = tan(x)
         cot_pat = cot(x)
@@ -380,30 +385,26 @@ class TrigFunction(HeuristicRule):
         e.steps = steps
         return e
 
-    def eval(self, e):
+    def eval(self, e, loc=[]):
         r = TrigFunction()
+        e = e.normalize()
+        initial_step = calc.SimplifyStep(e)
         
         res = []
 
         if r.sin_cos(e).normalize() != e.normalize():
             tmp = r.sin_cos(e)
-            steps = tmp.steps
-            tmp = tmp.normalize()
-            tmp.steps = steps + [calc.SimplifyStep(tmp)]
+            tmp = add_simplify_step(tmp, loc)
             res.append(tmp)
 
         if r.tan_sec(e).normalize() != e.normalize():
             tmp = r.tan_sec(e)
-            steps = tmp.steps
-            tmp = tmp.normalize()
-            tmp.steps = steps + [calc.SimplifyStep(tmp)]
+            tmp = add_simplify_step(tmp, loc)
             res.append(tmp)
 
         if r.cot_csc(e).normalize() != e.normalize():
             tmp = r.cot_csc(e)
-            steps = tmp.steps
-            tmp = tmp.normalize()
-            tmp.steps = steps + [calc.SimplifyStep(tmp)]
+            tmp = add_simplify_step(tmp, loc)
             res.append(tmp)
  
         return res
@@ -511,43 +512,53 @@ class HeuristicTirgonometricSubstitution(HeuristicRule):
             else:
                 return False, None
 
+        e = e.normalize()
+        initial_step = [calc.SimplifyStep(e)]
+
         e_body = e.body.normalize()
         new_var = gen_rand_letter(e.var)
+            
         if is_pat1(e_body)[0]:
             """Substitute sin(v) by u."""
             _, b = is_pat1(e_body)
             integ, f = rules.Substitution1(new_var, sin(b)).eval(e)
-            integ.steps = [calc.SubstitutionStep(integ, new_var, sin(b), f, loc)]
+            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, sin(b), f, loc)]
+            integ = add_simplify_step(integ, loc)
             return [integ]
         elif is_pat2(e_body)[0]:
             """Substitute cos(v) by u."""
             _, b = is_pat2(e_body)
             integ, f = rules.Substitution1(new_var, cos(b)).eval(e)
-            integ.steps = [calc.SubstitutionStep(integ, new_var, cos(b), f, loc)]
+            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, cos(b), f, loc)]
+            integ = add_simplify_step(integ, loc)
             return [integ]
         elif is_pat3(e_body)[0]:
             """Substitute tan(v) by u."""
             _, b = is_pat3(e_body)
             integ, f = rules.Substitution1(new_var, tan(b)).eval(e)
-            integ.steps = [calc.SubstitutionStep(integ, new_var, tan(b), f, loc)]
+            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, tan(b), f, loc)]
+            integ = add_simplify_step(integ, loc)
             return [integ]
         elif is_pat4(e_body)[0]:
             """Substitute cot(v) by u."""
             _, b = is_pat4(e_body)
             integ, f = rules.Substitution1(new_var, cot(b)).eval(e)
-            integ.steps = [calc.SubstitutionStep(integ, new_var, cot(b), f, loc)]
+            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, cot(b), f, loc)]
+            integ = add_simplify_step(integ, loc)
             return [integ]
         elif is_pat5(e_body)[0]:
             """Substitute sec(v) by u."""
             _, b = is_pat5(e_body)
             integ, f = rules.Substitution1(new_var, sec(b)).eval(e)
-            integ.steps = [calc.SubstitutionStep(integ, new_var, sec(b), f, loc)]
+            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, sec(b), f, loc)]
+            integ = add_simplify_step(integ, loc)
             return [integ]
         elif is_pat6(e_body)[0]:
             """Substitute csc(v) by u."""
             _, b = is_pat6(e_body)
             integ, f = rules.Substitution1(new_var, csc(b)).eval(e)
-            integ.steps = [calc.SubstitutionStep(integ, new_var, csc(b), f, loc)]
+            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, csc(b), f, loc)]
+            integ = add_simplify_step(integ, loc)
             return [integ]
         else:
             return [e]
@@ -563,14 +574,16 @@ class HeuristicSubstitution(HeuristicRule):
     """
     def eval(self, e, loc=[]):
         res = []
-
+        e = e.normalize()
+        initial_step = [calc.SimplifyStep(e, loc=loc)]
         all_subterms = e.body.nonlinear_subexpr()
 
         depth = 0
         for subexpr in all_subterms:
             try:    
                 r, f = rules.Substitution1(gen_rand_letter(e.var), subexpr).eval(e)
-                r.steps = [calc.SubstitutionStep(r, r.var, subexpr, f, loc)]
+                r.steps = initial_step + [calc.SubstitutionStep(r, r.var, subexpr, f, loc)]
+                r = add_simplify_step(r, loc)
                 res.append(r)
             except:
                 continue
@@ -597,6 +610,8 @@ class HeuristicIntegrationByParts(HeuristicRule):
         if not isinstance(e, Integral):
             return e
 
+        e = e.normalize()
+        initial_step = [calc.SimplifyStep(e, loc=loc)]
         res = []
         
         factors = decompose_expr_factor(e.body.normalize())
@@ -617,6 +632,7 @@ class HeuristicIntegrationByParts(HeuristicRule):
                 except:
                     continue
                 new_integral.steps = [calc.IntegrationByPartsStep(new_integral, u, v, loc)]
+                new_integral = add_simplify_step(new_integral, loc)
                 res.append(new_integral)
         
         return res
@@ -676,6 +692,9 @@ class HeuristicElimQuadratic(HeuristicRule):
             else:
                 raise NotImplementedError
 
+        e = e.normalize()
+        initial_step = [calc.SimplifyStep(e, loc=loc)]
+
         x = Symbol('x', [VAR, FUN])
         a = Symbol('a', [CONST])
         b = Symbol('b', [CONST])
@@ -683,27 +702,13 @@ class HeuristicElimQuadratic(HeuristicRule):
         steps = []
         quadratic_patterns = [
             x + (x^Const(2)),
-            x - (x^Const(2)),
             x + a * (x^Const(2)),
-            x - a * (x^Const(2)),
             b * x + a * (x^Const(2)),
-            b * x - a * (x^Const(2)),
             c + x + (x^Const(2)),
-            c + x - (x^Const(2)),
-            c - x + (x^Const(2)),
-            c - x - (x^Const(2)),
             c + x + a * (x^Const(2)),
-            c + x - a * (x^Const(2)),
-            c - x + a * (x^Const(2)),
-            c - x - a * (x^Const(2)),
-            c + b*x + (x^Const(2)),
-            c + b*x - (x^Const(2)),
-            c - b*x + (x^Const(2)),
-            c - b*x - (x^Const(2)),
+            c + b * x + (x^Const(2)),
             c + b * x + a*(x^Const(2)),
-            c + b * x - a*(x^Const(2)),
-            c - b * x + a*(x^Const(2)),
-            c - b * x - a*(x^Const(2))
+            c + (x ^ Const(2))
         ]
         
         quadratic_terms = []
@@ -728,6 +733,7 @@ class HeuristicElimQuadratic(HeuristicRule):
             new_integral = new_integral.normalize()
             steps.append(calc.SimplifyStep(new_integral))
             new_integral.steps = steps
+            new_integral = add_simplify_step(new_integral)
             res.append(new_integral)
 
         return res
@@ -743,7 +749,7 @@ class HeuristicTrigSubstitution(HeuristicRule):
 
     """
 
-    def eval(self, e):
+    def eval(self, e, loc=None):
 
         def find_ab(p):
             """Find a, b in a + b*x^2"""
@@ -752,6 +758,9 @@ class HeuristicTrigSubstitution(HeuristicRule):
                 return (p.args[0], Const(1))
             else: # a + b*x^2
                 return (p.args[0], p.args[1].args[0])
+
+        e = e.normalize()
+        initial_step = [calc.SimplifyStep(e, loc=loc)]
 
         a = Symbol('a', [CONST])
         b = Symbol('b', [CONST])
@@ -812,6 +821,8 @@ class HeuristicExpandPower(HeuristicRule):
     
     """
     def eval(self, e, loc=[]):
+        e = e.normalize()
+        initial_step = [calc.SimplifyStep(e, loc=loc)]
         steps = []
         a = Symbol('a', [CONST])
         c = Symbol('c', [OP])
@@ -825,7 +836,8 @@ class HeuristicExpandPower(HeuristicRule):
                 expand_expr = expand_expr.replace_trig(s, from_poly(pw))
                 steps.append(calc.UnfoldPowerStep(expand_expr, loc+l))
 
-        expand_expr.steps = steps
+        expand_expr.steps = initial_step + steps
+        expand_expr = add_simplify_step(expand_expr, loc)
         return [expand_expr]
 
 class HeuristicExponentBase(HeuristicRule):
@@ -840,6 +852,8 @@ class HeuristicExponentBase(HeuristicRule):
     def eval(self, e, loc=[]):
         n = Symbol('n', [CONST])
         x = Symbol('x', [VAR])
+        e = e.normalize()
+        initial_step = [calc.SimplifyStep(e, loc=loc)]
 
         pat = exp(n*x)
         exponents = find_pattern1(e.body, pat)
@@ -862,6 +876,7 @@ class HeuristicExponentBase(HeuristicRule):
         new_integral, f = rules.Substitution1("u", exp(Const(gcd)*Var(e.var))).eval(e)
 
         new_integral.steps = [calc.SubstitutionStep(new_integral, "u", exp(Const(gcd)*Var(e.var)), f, loc)]
+        new_integral = add_simplify_step(new_integral, loc)
         return [new_integral]
 
 class HeuristicRationalSineCosine(HeuristicRule):
