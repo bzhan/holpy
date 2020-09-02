@@ -150,11 +150,11 @@ def factoid_gcd(f):
     eliminates common factors in the variable coefficients of a factoid,
     or raises the exception no_gcd, if there is no common factor.
     """
-    g = functools.reduce(gcd, f)
+    g = functools.reduce(gcd, f[:-1])
     if g < 1:
         raise NoGCDException
 
-    elim_gcd_factoid = [int(i / g) for i in f]
+    elim_gcd_factoid = [floor(i / g) for i in f]
     return Factoid(elim_gcd_factoid)
 
 def dest_plus(tm):
@@ -169,7 +169,7 @@ def dest_plus(tm):
 def dest_times(tm):
     """tm is of form x * y, return (x, y)"""
     assert tm.is_times()
-    return (tm.arg1, tm.arg2)
+    return (tm.arg1, tm.arg)
 
 
 def term_to_factoid(vars, tm):
@@ -185,17 +185,17 @@ def term_to_factoid(vars, tm):
         if len(vlist) == 0 and len(slist) == 0:
             return [0]
         elif len(vlist) == 0 and len(slist) == 1:
-            return slist[tm.dest_number()]
+            return [slist[0].dest_number()]
         elif len(vlist) == 0:
             raise ValueError
         elif len(vlist) > 0 and len(slist) == 0:
             return [0] + mk_coeff(vlist[1:], [])
         elif len(vlist) > 0 and len(slist) > 0:
-            v, s = slist[0], vlist[0]
+            s, v = slist[0], vlist[0]
             if s.is_times():
                 c, mv = dest_times(s)
                 if mv == v:
-                    return [c] + mk_coeff(vlist[1:], slist[1:])
+                    return [c.dest_number()] + mk_coeff(vlist[1:], slist[1:])
                 else:
                     return [0] + mk_coeff(vlist[1:], slist)
             else:
@@ -618,10 +618,10 @@ def throwaway_redundant_factoids(db, nextstage, kont):
                 vmap = r.store
                 def mapthis(df):
                     if has_up[j]:
-                        v = floor(df.factoid.eval_factoid_except(vmap, j)/abs(df.factoid[i]))
+                        v = floor(-df.factoid.eval_factoid_except(vmap, j)/df.factoid[j])
                     else:
-                        v = ceil(df.factoid.eval_factoid_except(vmap, j)/abs(df.factoid[i]))
-                    return v if has_up[j] else -v
+                        v = ceil(-df.factoid.eval_factoid_except(vmap, j)/df.factoid[j])
+                    return v
                 evaluated = [mapthis(df) for df in elim]
                 if has_up[j]:
                     r.update({j:min(evaluated)})
@@ -681,8 +681,15 @@ def least_coeff_var(db):
             f = df.factoid
             for i, ai in enumerate(f.key):
                 sums[i] += abs(ai)
+    
+    def find_min(lst):
+        lst = sorted(lst)
+        for index, el in enumerate(lst):
+            if el != 0:
+                return (index, el)
 
-    return (sums.index(min(sums)), min(sums))
+
+    return find_min(sums)
 
 def generate_row(db0, em, i, up, lows, next, kont):
     """
@@ -691,6 +698,10 @@ def generate_row(db0, em, i, up, lows, next, kont):
     contradictory, then return it immediately, using kont.  If a factoid
     is vacuous, drop it.
     """
+
+    def after_add(db, k):
+        return generate_row(db, em, i, up, lows[1:], next, k)
+
     if lows == []:
         return next(db0, kont)
     else:
@@ -701,7 +712,7 @@ def generate_row(db0, em, i, up, lows, next, kont):
         elif f.is_false_factoid():
             return kont(Contr(d))
         else:
-            return add_check_factoid(db0, dfactoid(f, d), next, kont)
+            return add_check_factoid(db0, dfactoid(f, d), after_add, kont)
 
 def generate_cross_product(db0, em, i, ups, lows, next, kont):
     """
@@ -810,7 +821,8 @@ def one_step(db, em, next, kont):
         if f[var_to_elim] < 0:
             return (notmentioned, [df] + uppers, lowers)
         elif f[var_to_elim] == 0:
-            return (notmentioned.insert(df), uppers, lowers)
+            notmentioned.insert(df)
+            return (notmentioned, uppers, lowers)
         else:
             return (notmentioned, uppers, [df] + lowers)
     lowers, uppers = [], []
@@ -866,3 +878,12 @@ def toplevel(db, em, kont):
             return k(one_step(db, em, toplevel, k))
 
     return throwaway_redundant_factoids(db, after_throwaway, kont)
+
+def solve_matrix(matrix, mode=EXACT):
+    """
+    Give some factoids, return the result.
+    """
+    fs = [Factoid(f) for f in matrix]
+    db = DataBase(len(matrix[0]))
+    db.insert(*[dfactoid(ft, ASM(ft)) for ft in fs])
+    return toplevel(db, DARK, kont).store

@@ -211,18 +211,17 @@ class OmegaTest(unittest.TestCase):
 
     def testTopLevel(self):
         test_data = [
-            ((Factoid([2,3,6]), Factoid([-1,-4,7])), EXACT),
-            ((Factoid([2,3,4]), Factoid([-3,-4,7])), DARK),
-            ((Factoid([2,3,4]), Factoid([-3,-4,7]), Factoid([4,-5,-10])), DARK),
-            ((Factoid([2,3,4]), Factoid([-3,-4,7]), Factoid([4,5,-10])), DARK),
-            ((Factoid([1,0,-1]), Factoid([0,1,-1]), Factoid([-1,0,1])), DARK),
-            ((Factoid([1,2,3,4]), Factoid([2,-2,3,-10]), Factoid([2,3,-5,6]), Factoid([-3,-2,1,7])), DARK)
+            ([[2,3,6],[-1,-4,7]], {0: -9, 1: 4}),
+            ([[2,3,4],[-3,-4,7]], {0: 34, 1: -24}),
+            ([[2,3,4],[-3,-4,7],[4,5,-10]], {1: -8, 0: 13}),
+            ([[2,3,4],[-3,-4,7],[4,-5,-10]], {1: -1, 0: 2}),
+            ([[1,0,-1], [0,1,-1], [-1,0,1]], {0: 1, 1: 1}),
+            ([[1,2,3,4],[2,1,4,3],[5,6,7,-8],[-3,2,-1,6]], {0: 0, 1: 2, 2: 0}),
+            ([[1,2,3,4],[2,-2,3,-10],[2,3,-5,6],[-3,-2,1,7]], {2: 2, 1: 0, 0: 2}),
+            ([[-9, -11, -8, 9, 11], [15, 0, 8, -7, 8], [4, 3, 11, -2, -13]], {0: 8, 1: -6, 2: 0, 3: 0}),
+            ([[-13, -8, -14, 15, 8], [-10, 9, 15, -13, 9], [-15, -14, -3, 2, 5]], {0: 0, 1: 0, 2: 0, 3: 0}),
+            ([[2, -1, -5, 14, -7]], {0: 4, 1: 0, 2: 0, 3: 0})
         ]
 
-        for fts, mode in test_data:
-            db = DataBase(len(fts[0]))
-            dfs = [dfactoid(ft, ASM(ft)) for ft in fts]
-            db.insert(*dfs)
-            sat_map = toplevel(db, mode, kont).store
-            for f in fts:
-                self.assertGreaterEqual(f.eval_factoid_rhs(sat_map), 0)
+        for matrix, sol in test_data:
+            self.assertEqual(solve_matrix(matrix), sol)
