@@ -5,11 +5,21 @@ Reference:
 Bruno Dutertre and Leonardo de Moura. A Fast Linear-Arithmetic Solver for DPLL(T) 
 """
 
+from kernel.term import Term, Var, greater_eq, Real, Eq, less_eq
+from kernel.type import RealType
+from kernel.proofterm import ProofTerm
+from kernel.theory import register_macro, Thm
+from kernel.macro import Macro
+from logic.logic import apply_theorem
+from logic import basic
+from data.real import real_eval
 from collections import namedtuple
 import math
 import numbers
 import string
 from fractions import Fraction
+
+basic.load_theory('real')
 
 SAT, UNSAT = range(2)
 
@@ -194,6 +204,9 @@ class Simplex:
         # orignial inequalities inserted into solver
         self.orginal = []
 
+        # basic variable that can't find a suitable value
+        self.wrong_var = None
+
     def __str__(self):
         s = "Original inequlities: \n"
         for ineq in self.orginal:
@@ -356,6 +369,14 @@ class Simplex:
                 self.basic.add(s)
                 self.bound[s] = (-math.inf, math.inf)
 
+    def preprocess(self):
+        """
+        Simplify the constraints Ax = 0 by Gauss elimination.
+        Remove any variable xi that does not occur in any elementary atom of inequalities.
+        Introduce a new variable when elimination is done.
+        """
+        pass
+
     def aij(self, xi, xj):
         """
         xi is a basic variable, xj is a non_basic variable.
@@ -461,6 +482,7 @@ class Simplex:
             self.update(x, c)
 
     def check(self):
+        self.wrong_var = None
         while True:
             basic_vars = sorted(list(self.basic))
             flag = False
@@ -482,6 +504,7 @@ class Simplex:
                         flag = True
                         break
                 if not flag:
+                    self.wrong_var = xi
                     return UNSAT
 
             if self.mapping[xi] > self.bound[xi][1]:
@@ -496,6 +519,7 @@ class Simplex:
                         break
                 
                 if not flag:
+                    self.wrong_var = xi
                     return UNSAT
 
     def handle_assertion(self):
@@ -509,18 +533,182 @@ class Simplex:
             if assertion.var_name in self.basic:
                 res = self.check()
                 if res == UNSAT:
-                    raise UNSATException
+                    raise UNSATException("variable %s is wrong." % str(self.wrong_var))
 
-def dest_plus(tm):
-    """tm is of form x + y, return (x, y)"""
-    if not tm.is_plus():
-        return (tm,)
-    if not tm.arg1.is_plus():
-        return (tm.arg1, tm.arg)
-    else:
-        return dest_plus(tm.arg1) + (tm.arg,)
+    def explaination(self, xi):
+        """
+        When a conflict occurs, return the minimal clause.
 
-def dest_times(tm):
-    """tm is of form x * y, return (x, y)"""
-    assert tm.is_times()
-    return (tm.arg1, tm.arg2)
+        There are two main reasons for inconsistency:
+
+        1) A basic variable xi such that β(xi) < li and for all non-basic variable we have
+        aij > 0 --> β(xj) ≥ uj and aij < 0 --> β(xj) ≤ lj.
+
+        2) A basic variable xj such that β(xj) > uj and for all non-basic variable we have
+        aij > 0 --> β(xj) ≤ lj and aij < 0 --> β(xj) ≥ uj.
+
+        For 1), the clause is
+            Γ  = {xj ≤ uj | j ∈ N+} ∪ {xj ≥ lj | j ∈ N-} ∪ {xi ≥ li}
+
+        For 2), the clause is
+            Γ  = {xj ≥ lj | j ∈ N+} ∪ {xj ≤ uj | j ∈ N-} ∪ {xj ≤ ui}
+        """
+        explain = [] # store the atoms
+        if self.mapping[xi] < self.bound[xi][0]: # reason 1
+            for jar in self.equality[xi]:
+                if jar.coeff > 0:
+                    upper = self.bound[jar.var][1]
+                    explain.append(leq_atom(jar.var, upper))
+                else:
+                    lower = self.bound[jar.var][0]
+                    explain.append(geq_atom(jar.var, lower))
+            explain.append(geq_atom(xi, self.bound[xi][0]))
+
+        else:
+            for jar in self.equality[xi]:
+                if jar.coeff > 0:
+                    lower = self.bound[jar.var][0]
+                    explain.append(geq_atom(jar.var, lower))
+                else:
+                    upper = self.bound[jar.var][1]
+                    explain.append(leq_atom(jar.var, upper))
+            explain.append(leq_atom(xi, self.bound[xi][1]))    
+
+        return explain
+
+
+def is_ineq(tm):
+    """check if tm is an ineq term."""
+    return tm.is_greater() or tm.is_greater_eq() or tm.is_less() or tm.is_less_eq()
+
+@register_macro('real_compare')
+class RealCompareMacro(Macro):
+    """
+    Compare two real numbers.
+    """
+    def __init__(self):
+        self.level = 0
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, goal, prevs=[]):
+        assert is_ineq(goal), "real_compare_macro: Should be an inequality term"
+        lhs, rhs = real_eval(goal.arg1), real_eval(goal.arg)
+        if goal.is_less():
+            assert lhs < rhs, "%f !< %f" % (lhs, rhs)
+        elif goal.is_less_eq():
+            assert lhs <= rhs, "%f !< %f" % (lhs, rhs)
+        elif goal.is_greater():
+            assert lhs > rhs, "%f !< %f" % (lhs, rhs)
+        elif goal.is_greater_eq():
+            assert lhs >= rhs, "%f !< %f" % (lhs, rhs)
+        
+        return Thm([], goal)
+
+class SimplexHOLWrapper:
+    """
+    Wrapper for simplex method in higher-order logic. 
+    """
+    def __init__(self):
+        # core data structure
+        self.simplex = Simplex()
+        
+        # proofterms for input inequlities, key is the HOL lhs
+        self.ineq_pts = dict()
+
+        # proofterms for equalities, key is the new introduced variable
+        self.eq_pts = dict()
+
+        # proofterms for bounds, key is variable.
+        self.lower_bound_pts = dict()
+        self.upper_bound_pts = dict()
+
+    def __str__(self):
+        s = "Inequality ProofTerms: \n"
+        for _, pt in self.ineq_pts.items():
+            s += "\t %s \n" % str(pt)
+        
+        s += "\nEquality ProofTerms: \n"
+        for _, pt in self.eq_pts.items():
+            s += "\t %s \n" % str(pt)
+        
+        s += "\nLower Bound ProofTerms:\n"
+        for _, pt in self.lower_bound_pts.items():
+            s += "\t %s \n" % str(pt)
+
+        s += "\nUpper Bound ProofTerms:\n"
+        for _, pt in self.upper_bound_pts.items():
+            s += "\t %s \n" % str(pt)
+
+        return s
+
+    def add_ineq(self, ineq):
+        """Take an ineq, convert it higher-order logic terms and assertions."""
+        assert isinstance(ineq, InEquation)
+        if isinstance(ineq, GreaterEq): # a * x + b * y + ... ≥ c
+            lhs_atoms = [Real(j.coeff) * Var(j.var, RealType) for j in ineq.jars]
+            lhs = sum(lhs_atoms[1:], lhs_atoms[0])
+            rhs = Real(ineq.lower_bound)
+            hol_geq = greater_eq(RealType)(lhs, rhs)
+            self.ineq_pts[lhs] = ProofTerm.assume(hol_geq)
+            self.simplex.add_ineq(ineq)
+            
+            if len(ineq.jars) == 1 and ineq.jars[0].coeff == 1: # x ≥ c
+                x = Var(ineq.jars[0].var, RealType)
+                if x in self.lower_bound_pts: # already have a lower bound assertion on x: ⊨ x ≥ k
+                    lower1 = self.lower_bound_pts[x].prop.arg # old assertion
+                    lower2 = rhs # new assertion
+                    pt1 = ProofTerm.assume(x >= rhs)
+                    pt2 = self.lower_bound_pts[x]
+                    if real_eval(lower1) < real_eval(lower2): # replace lower1 by lower2    
+                        pt3 = ProofTerm('real_compare', lower2 >= lower1)
+                        self.lower_bound_pts[x] = apply_theorem('real_geq_comp1', pt1, pt2, pt3)
+                    else: # lower 1 >= lower 2
+                        pt3 = ProofTerm('real_compare', lower1 >= lower2)
+                        self.lower_bound_pts[x] = apply_theorem('real_geq_comp2', pt1, pt2, pt3)
+                else:
+                    self.lower_bound_pts[x] = ProofTerm.assume(x >= rhs)
+            else: # a * x + b * y + ... ≥ c
+                aux_var = Var('^'+string.ascii_lowercase[self.simplex.index - 1], RealType)
+                self.eq_pts[aux_var] = ProofTerm.assume(Eq(aux_var, lhs))
+                # Give the new introduced variable a lower bound
+                pt1 = self.eq_pts[aux_var] # ⊨ s = a * x + b * y + ...
+                pt2 = self.ineq_pts[lhs]   # ⊨ a * x + b * y + ... ≥ c
+                pt3 = ProofTerm.reflexive(pt2.prop.arg) # ⊨ c = c
+                pt4 = ProofTerm.reflexive(greater_eq(RealType)) # ⊨ ≥ = ≥
+                pt5 = ProofTerm.combination(pt4, pt1).combination(pt3)
+                self.lower_bound_pts[aux_var] = pt5.symmetric().equal_elim(pt2)
+        else:
+            lhs_atoms = [Real(j.coeff) * Var(j.var, RealType) for j in ineq.jars]
+            lhs = sum(lhs_atoms[1:], lhs_atoms[0])
+            rhs = Real(ineq.upper_bound)
+            hol_geq = less_eq(RealType)(lhs, rhs)
+            self.ineq_pts[lhs] = ProofTerm.assume(hol_geq)
+            self.simplex.add_ineq(ineq)
+            if len(ineq.jars) == 1 and ineq.jars[0].coeff == 1: # x ≤ c
+                x = Var(ineq.jars[0].var, RealType)
+                if x in self.upper_bound_pts: # ⊨ already have a upper bound assertion on x: x ≤ k
+                    upper1 = self.upper_bound_pts[x].prop.arg # old assertion
+                    upper2 = rhs # new assertion
+                    pt1 = ProofTerm.assume(x <= rhs)
+                    pt2 = self.upper_bound_pts[x]
+                    if real_eval(upper1) < real_eval(upper2): # replace lower1 by lower2    
+                        pt3 = ProofTerm('real_compare', upper1 <= upper2)
+                        self.lower_bound_pts[x] = apply_theorem('real_leq_comp1', pt1, pt2, pt3)
+                    else: # upper 1 >= upper 2
+                        pt3 = ProofTerm('real_compare', upper2 <= upper1)
+                        self.lower_bound_pts[x] = apply_theorem('real_geq_comb2', pt1, pt2, pt3)
+                else:
+                    self.upper_bound_pts[x] = ProofTerm.assume(x <= rhs)
+            else: # a * x + b * y + ... ≤ c
+                aux_var = Var(string.ascii_lowercase[self.simplex.index - 1], RealType)
+                self.eq_pts[aux_var] = ProofTerm.assume(Eq(aux_var, lhs))
+                # Give the new introduced variable a upper bound
+                pt1 = self.eq_pts[aux_var] # ⊨ s = a * x + b * y + ...
+                pt2 = self.ineq_pts[lhs]   # ⊨ a * x + b * y + ... ≤ c
+                pt3 = ProofTerm.reflexive(pt2.prop.arg) # ⊨ c = c
+                pt4 = ProofTerm.reflexive(less_eq(RealType)) # ⊨ ≤ = ≤
+                pt5 = ProofTerm.combination(pt4, pt1).combination(pt3)
+                self.upper_bound_pts[aux_var] = pt5.symmetric().equal_elim(pt2)
+
+    
