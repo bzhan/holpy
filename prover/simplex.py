@@ -5,14 +5,15 @@ Reference:
 Bruno Dutertre and Leonardo de Moura. A Fast Linear-Arithmetic Solver for DPLL(T) 
 """
 
-from kernel.term import Term, Var, greater_eq, Real, Eq, less_eq
+from kernel.term import Term, Var, greater_eq, Real, Eq, less_eq, minus
 from kernel.type import RealType
 from kernel.proofterm import ProofTerm
 from kernel.theory import register_macro, Thm
 from kernel.macro import Macro
 from logic.logic import apply_theorem
 from logic import basic
-from data.real import real_eval
+from data.real import real_eval, real_norm_conv
+from logic.conv import rewr_conv
 from collections import namedtuple
 import math
 import numbers
@@ -577,6 +578,15 @@ class Simplex:
         return explain
 
 
+def dest_plus(tm):
+    """tm is of form x + y, return (x, y)"""
+    if not tm.is_plus():
+        return (tm,)
+    if not tm.arg1.is_plus():
+        return (tm.arg1, tm.arg)
+    else:
+        return dest_plus(tm.arg1) + (tm.arg,)
+
 def is_ineq(tm):
     """check if tm is an ineq term."""
     return tm.is_greater() or tm.is_greater_eq() or tm.is_less() or tm.is_less_eq()
@@ -597,11 +607,11 @@ class RealCompareMacro(Macro):
         if goal.is_less():
             assert lhs < rhs, "%f !< %f" % (lhs, rhs)
         elif goal.is_less_eq():
-            assert lhs <= rhs, "%f !< %f" % (lhs, rhs)
+            assert lhs <= rhs, "%f !<= %f" % (lhs, rhs)
         elif goal.is_greater():
-            assert lhs > rhs, "%f !< %f" % (lhs, rhs)
+            assert lhs > rhs, "%f !> %f" % (lhs, rhs)
         elif goal.is_greater_eq():
-            assert lhs >= rhs, "%f !< %f" % (lhs, rhs)
+            assert lhs >= rhs, "%f !>= %f" % (lhs, rhs)
         
         return Thm([], goal)
 
@@ -623,6 +633,9 @@ class SimplexHOLWrapper:
         self.lower_bound_pts = dict()
         self.upper_bound_pts = dict()
 
+        # Unsatisfiable proof, key is variable which leads to inconsistency
+        self.unsat = dict()
+
     def __str__(self):
         s = "Inequality ProofTerms: \n"
         for _, pt in self.ineq_pts.items():
@@ -643,72 +656,125 @@ class SimplexHOLWrapper:
         return s
 
     def add_ineq(self, ineq):
-        """Take an ineq, convert it higher-order logic terms and assertions."""
+        """
+        Take an inequation, convert it higher-order logic terms.
+        Add the inequation to ineq_pts.
+        If necessary, introduce new variables to construct elemenatry atoms, and also
+        add equality proofterm to eq_pts.
+        """
         assert isinstance(ineq, InEquation)
-        if isinstance(ineq, GreaterEq): # a * x + b * y + ... ≥ c
-            lhs_atoms = [Real(j.coeff) * Var(j.var, RealType) for j in ineq.jars]
-            lhs = sum(lhs_atoms[1:], lhs_atoms[0])
+        lhs_atoms = [Real(j.coeff) * Var(j.var, RealType) for j in ineq.jars]
+        lhs = sum(lhs_atoms[1:], lhs_atoms[0])
+        if isinstance(ineq, GreaterEq): # a * x + b * y + ... ≥ c    
             rhs = Real(ineq.lower_bound)
             hol_geq = greater_eq(RealType)(lhs, rhs)
             self.ineq_pts[lhs] = ProofTerm.assume(hol_geq)
-            self.simplex.add_ineq(ineq)
-            
-            if len(ineq.jars) == 1 and ineq.jars[0].coeff == 1: # x ≥ c
-                x = Var(ineq.jars[0].var, RealType)
-                if x in self.lower_bound_pts: # already have a lower bound assertion on x: ⊨ x ≥ k
-                    lower1 = self.lower_bound_pts[x].prop.arg # old assertion
-                    lower2 = rhs # new assertion
-                    pt1 = ProofTerm.assume(x >= rhs)
-                    pt2 = self.lower_bound_pts[x]
-                    if real_eval(lower1) < real_eval(lower2): # replace lower1 by lower2    
-                        pt3 = ProofTerm('real_compare', lower2 >= lower1)
-                        self.lower_bound_pts[x] = apply_theorem('real_geq_comp1', pt1, pt2, pt3)
-                    else: # lower 1 >= lower 2
-                        pt3 = ProofTerm('real_compare', lower1 >= lower2)
-                        self.lower_bound_pts[x] = apply_theorem('real_geq_comp2', pt1, pt2, pt3)
-                else:
-                    self.lower_bound_pts[x] = ProofTerm.assume(x >= rhs)
-            else: # a * x + b * y + ... ≥ c
-                aux_var = Var('^'+string.ascii_lowercase[self.simplex.index - 1], RealType)
-                self.eq_pts[aux_var] = ProofTerm.assume(Eq(aux_var, lhs))
-                # Give the new introduced variable a lower bound
-                pt1 = self.eq_pts[aux_var] # ⊨ s = a * x + b * y + ...
-                pt2 = self.ineq_pts[lhs]   # ⊨ a * x + b * y + ... ≥ c
-                pt3 = ProofTerm.reflexive(pt2.prop.arg) # ⊨ c = c
-                pt4 = ProofTerm.reflexive(greater_eq(RealType)) # ⊨ ≥ = ≥
-                pt5 = ProofTerm.combination(pt4, pt1).combination(pt3)
-                self.lower_bound_pts[aux_var] = pt5.symmetric().equal_elim(pt2)
-        else:
-            lhs_atoms = [Real(j.coeff) * Var(j.var, RealType) for j in ineq.jars]
-            lhs = sum(lhs_atoms[1:], lhs_atoms[0])
+        else: # a * x + b * y + ... ≤ c
             rhs = Real(ineq.upper_bound)
             hol_geq = less_eq(RealType)(lhs, rhs)
             self.ineq_pts[lhs] = ProofTerm.assume(hol_geq)
-            self.simplex.add_ineq(ineq)
-            if len(ineq.jars) == 1 and ineq.jars[0].coeff == 1: # x ≤ c
-                x = Var(ineq.jars[0].var, RealType)
-                if x in self.upper_bound_pts: # ⊨ already have a upper bound assertion on x: x ≤ k
-                    upper1 = self.upper_bound_pts[x].prop.arg # old assertion
-                    upper2 = rhs # new assertion
-                    pt1 = ProofTerm.assume(x <= rhs)
-                    pt2 = self.upper_bound_pts[x]
-                    if real_eval(upper1) < real_eval(upper2): # replace lower1 by lower2    
-                        pt3 = ProofTerm('real_compare', upper1 <= upper2)
-                        self.lower_bound_pts[x] = apply_theorem('real_leq_comp1', pt1, pt2, pt3)
-                    else: # upper 1 >= upper 2
-                        pt3 = ProofTerm('real_compare', upper2 <= upper1)
-                        self.lower_bound_pts[x] = apply_theorem('real_geq_comb2', pt1, pt2, pt3)
-                else:
-                    self.upper_bound_pts[x] = ProofTerm.assume(x <= rhs)
-            else: # a * x + b * y + ... ≤ c
-                aux_var = Var(string.ascii_lowercase[self.simplex.index - 1], RealType)
-                self.eq_pts[aux_var] = ProofTerm.assume(Eq(aux_var, lhs))
-                # Give the new introduced variable a upper bound
-                pt1 = self.eq_pts[aux_var] # ⊨ s = a * x + b * y + ...
-                pt2 = self.ineq_pts[lhs]   # ⊨ a * x + b * y + ... ≤ c
-                pt3 = ProofTerm.reflexive(pt2.prop.arg) # ⊨ c = c
-                pt4 = ProofTerm.reflexive(less_eq(RealType)) # ⊨ ≤ = ≤
-                pt5 = ProofTerm.combination(pt4, pt1).combination(pt3)
-                self.upper_bound_pts[aux_var] = pt5.symmetric().equal_elim(pt2)
+        
+        # Add the inequation to the simplex solver.
+        self.simplex.add_ineq(ineq)
+        
+        # Check the necessity to introduce new variables
+        if not (len(lhs_atoms) == 1 and lhs_atoms[0].coeff == 1): # need to introduce a new variable
+            s = Var('$'+string.ascii_lowercase[self.simplex.index - 1]+'$', RealType)
+            self.eq_pts[s] = ProofTerm.assume(Eq(s, lhs)) 
+            
+    def assert_upper(self, x, upper_bound):
+        """
+        Assert x <= c. If there is already an assertion on x's upper bound,
+        suppose it is d, if c <= d, then apply the new assertion, otherwise 
+        still take the old assertion.
+        If there is an assertion on x's lower bound, suppose it is e; If e > c,
+        then we can derive a direct contradiction: x <= c and x >= e is inconsistency. 
+        """
+        self.simplex.assert_upper(x, upper_bound)
+        assertion = ProofTerm.assume(x >= upper_bound)
+        if x in self.upper_bound_pts:
+            old_assertion = self.upper_bound[x]
+            old_upper_bound = real_eval(old_assertion.prop.arg)
+            if old_upper_bound >= upper_bound:
+                pt_less = ProofTerm('real_compare', upper_bound <= old_upper_bound)
+                self.upper_bound_pts[x] = apply_theorem('real_geq_comp2', assertion, old_assertion, pt_less)
+        else:
+            self.upper_bound_pts[x] = assertion
+        
+        new_upper_bound = upper_bound if (old_upper_bound >= upper_bound) else old_upper_bound
 
-    
+        # check consistency with x's lower bound
+        if x in self.lower_bound_pts:
+            lower_assertion = self.lower_bound[x]
+            lower_bound = real_eval(lower_assertion.prop.arg)
+            if lower_bound > new_upper_bound: # incosistency
+                pt_up_less_low = ProofTerm('real_compare', new_upper_bound < lower_bound)
+                pt_contr = apply_theorem('real_comp_contr', pt_up_less_low, lower_assertion, self.upper_bound_pts[x])
+                self.unsat[x] = pt_contr
+
+        
+        
+    def assert_lower(self, x, lower_bound):
+        """
+        Assert x >= c. If there is already an assertion on x's lower bound,
+        suppose it is d, if c >= d, then apply the new assertion, otherwise 
+        still take the old assertion.
+        If there is an assertion on x's upper bound, suppose it is e: If e < c,
+        then we can derive a direct contradiction: x >= c and x <= e is inconsistency. 
+        """
+        self.simplex.assert_lower(x, lower_bound)
+        assertion = ProofTerm.assume(x >= lower_bound)
+        if x in self.lower_bound_pts:
+            old_assertion = self.lower_bound[x]
+            old_lower_bound = real_eval(old_assertion.prop.arg)
+            if old_lower_bound <= lower_bound:
+                pt_greater = ProofTerm('real_compare', lower_bound >= old_lower_bound)
+                self.lower_bound_pts[x] = apply_theorem('real_geq_comp2', assertion, old_assertion, pt_greater)
+        else:
+            self.lower_bound_pts[x] = assertion
+        
+        new_lower_bound = lower_bound if (old_lower_bound >= lower_bound) else old_lower_bound
+
+        # check consistency with x's lower bound
+        if x in self.upper_bound_pts:
+            upper_assertion = self.upper_bound[x]
+            upper_bound = real_eval(upper_assertion.prop.arg)
+            if upper_bound < new_lower_bound: # incosistency
+                pt_up_less_low = ProofTerm('real_compare', upper_bound < new_lower_bound)
+                pt_contr = apply_theorem('real_comp_contr', pt_up_less_low, upper_assertion, self.lower_bound_pts[x])
+                self.unsat[x] = pt_contr
+
+    def pivot(self, xi, xj):
+        """
+        Pivot basic variable xi and non-basic variable xj. 
+        """
+        # find the equation: xi = ... + aij * xj + ...
+        # aij ≠ 0
+        self.simplex.pivot(xi, xj)
+        pt_eq = self.eq_pts[xi]
+        a = self.simplex.aij(xi.name, xj.name)
+        # convert the equation to xj = ...
+        # use theorem: real_sub_0, real_mul
+
+        # xi - (... + aij * xj + ...) = 0
+        pt_right_shift = pt_eq.on_prop(rewr_conv('real_sub_0', sym=True))
+        # construct (xi - (... + aij * xj + ...)) * 1/aij = 0
+        pt_divide_aij = real_norm_conv().get_proof_term(pt_right_shift.lhs * Fraction(1, a))
+        # normalize lhs
+        pt_divide_aij_norm = pt_divide_aij.on_lhs(real_norm_conv())
+        # convert to ... + (-1) * xj = 0
+        eq_lhs = pt_divide_aij_norm.lhs
+        pt_eq_lhs = real_norm_conv().get_proof_term(eq_lhs)
+        adder_except_xj = [t for t in eq_lhs if t.arg != xj]
+        eq_lhs_xj_right = sum(adder_except_xj[1:], adder_except_xj[0]) + (-1) * xj
+        pt_eq_lhs_xj_right = real_norm_conv().get_proof_term(eq_lhs_xj_right)
+        pt_eq_comm = ProofTerm.transitive(pt_eq_lhs, pt_eq_lhs_xj_right.symmetric())
+        pt_comm_eq_0 = ProofTerm.transitive(pt_eq_comm.symmetric(), pt_divide_aij_norm)
+
+        # xj = ... + (1/aij) * xi + ... 
+        pt_final = pt_comm_eq_0.on_prop(rewr_conv('real_add_uminus'))
+        self.eq_pts[xj] = pt_final
+        self.eq_pts = delete_key(self.eq_pts, xi)
+
+        
+        
