@@ -29623,6 +29623,144 @@
                 "x": "real",
                 "y": "real"
             }
+        },
+        {
+            "name": "real_geq_comp1",
+            "prop": "x ≥ a ⟶ x ≥ b ⟶ a ≥ b ⟶ x ≥ a",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_geq_comp2",
+            "prop": "x ≥ a ⟶ x ≥ b ⟶ b ≥ a ⟶ x ≥ b",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_leq_comp1",
+            "prop": "x ≤ a ⟶ x ≤ b ⟶ a ≤ b ⟶ x ≤ a",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_leq_comp2",
+            "prop": "x ≤ a ⟶ x ≤ b ⟶ b ≤ a ⟶ x ≤ b",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_comp_contr1",
+            "prop": "a < b ⟶ x ≥ b ⟶ x ≤ a ⟶ false",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_comp_contr2",
+            "prop": "a < b ⟶ b ≤ x ⟶ x ≤ a ⟶ false",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_times_0",
+            "prop": "x = 0 ⟶ a * x = 0",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_add_uminus",
+            "prop": "x + -1 * y = 0 ⟷ x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_eq_zero_mul_const",
+            "prop": "x = 0 ⟶ c * x = 0",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_leq_mul_neg",
+            "prop": "x ≤ u ⟶ a < 0 ⟶ a * u ≤ a * x",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "u": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_geq_mul_pos",
+            "prop": "x ≥ l ⟶ a > 0 ⟶ a * l ≤ a * x",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "l": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_leq_pair_plus",
+            "prop": "a ≤ b ⟶ c ≤ d ⟶ a + c ≤ b + d",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real"
+            }
+        },
+        {
+            "name": "real_leq_mul_pos",
+            "prop": "x ≤ u ⟶ a > 0 ⟶ a * x ≤ a * u",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "u": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_geq_mul_less",
+            "prop": "x ≥ l ⟶ a < 0 ⟶ a * x ≤ a * l",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "l": "real",
+                "x": "real"
+            }
         }
     ],
     "description": "real numbers",

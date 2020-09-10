@@ -28,8 +28,8 @@
             "type": "int ⇒ int ⇒ int"
         },
         {
-            "name": "divides",
-            "prop": "divides a b ⟷ (∃x. b = a * x)",
+            "name": "int_divides",
+            "prop": "int_divides p q ⟷ (∃m. m * p = q)",
             "ty": "def",
             "type": "int ⇒ int ⇒ bool"
         },
@@ -1290,6 +1290,30 @@
                 "c": "int",
                 "m": "int",
                 "n": "int"
+            }
+        },
+        {
+            "name": "int_great_to_geq",
+            "prop": "m > 0 ⟷ m ≥ 1",
+            "ty": "thm",
+            "vars": {
+                "m": "int"
+            }
+        },
+        {
+            "name": "int_leq_to_geq",
+            "prop": "m ≤ 0 ⟷ -m ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int"
+            }
+        },
+        {
+            "name": "int_less_to_geq",
+            "prop": "m < 0 ⟷ -m ≥ 1",
+            "ty": "thm",
+            "vars": {
+                "m": "int"
             }
         }
     ],
