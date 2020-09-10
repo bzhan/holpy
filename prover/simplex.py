@@ -5,15 +5,15 @@ Reference:
 Bruno Dutertre and Leonardo de Moura. A Fast Linear-Arithmetic Solver for DPLL(T) 
 """
 
-from kernel.term import Term, Var, greater_eq, Real, Eq, less_eq, minus
+from kernel.term import Term, Var, Inst, greater_eq, Real, Eq, less_eq, minus
 from kernel.type import RealType
 from kernel.proofterm import ProofTerm
 from kernel.theory import register_macro, Thm
 from kernel.macro import Macro
 from logic.logic import apply_theorem
-from logic import basic
+from logic import basic, matcher
 from data.real import real_eval, real_norm_conv
-from logic.conv import rewr_conv
+from logic.conv import Conv, ConvException, rewr_conv, top_conv
 from collections import namedtuple
 import math
 import numbers
@@ -208,6 +208,9 @@ class Simplex:
         # basic variable that can't find a suitable value
         self.wrong_var = None
 
+        # Restore the pivot trace: ((xi, xj), aij, nbasic[xj]) each time call check()
+        self.trace = []
+
     def __str__(self):
         s = "Original inequlities: \n"
         for ineq in self.orginal:
@@ -267,7 +270,7 @@ class Simplex:
                         self.bound[var_name] = (-math.inf, math.inf)
 
                 elif coeff != 0: # a * x >= b
-                    s = "?" + string.ascii_lowercase[self.index]
+                    s = "$" + string.ascii_lowercase[self.index] + "$"
                     self.index += 1
                     self.lower_atom.append((s, lower_bound))
                     self.atom.append(geq_atom(s, lower_bound))
@@ -297,7 +300,7 @@ class Simplex:
                         self.bound[v] = (-math.inf, math.inf) 
 
                 lower_bound = ineq.lower_bound
-                s = "?" + string.ascii_lowercase[self.index]
+                s = "$" + string.ascii_lowercase[self.index] + "$"
                 self.index += 1
                 self.equality[s] = ineq.jars
                 self.lower_atom.append((s, lower_bound))
@@ -326,7 +329,7 @@ class Simplex:
                         self.bound[var_name] = (-math.inf, math.inf)
 
                 elif coeff != 0: # a * x <= b
-                    s = "?" + string.ascii_lowercase[self.index]
+                    s = "$" + string.ascii_lowercase[self.index] + "$"
                     self.index += 1
                     self.upper_atom.append((s, upper_bound))
                     self.atom.append(leq_atom(s, upper_bound))
@@ -355,7 +358,7 @@ class Simplex:
                         self.bound[v] = (-math.inf, math.inf)
 
                 upper_bound = ineq.upper_bound
-                s = "?" + string.ascii_lowercase[self.index]
+                s = "$" + string.ascii_lowercase[self.index] + "$"
                 self.index += 1
                 self.equality[s] = ineq.jars
                 self.upper_atom.append((s, upper_bound))
@@ -427,7 +430,7 @@ class Simplex:
             if x != xi:
                 rhs = self.equality[x]
                 _, xj_jar = find_coeff(xj, rhs)
-                rhs_without_xj = reduce_pairs([j for j in rhs if j != xj_jar] + xj_repr_jars)
+                rhs_without_xj = reduce_pairs([j for j in rhs if j != xj_jar] + [Jar(xj_jar.coeff * v.coeff, v.var) for v in xj_repr_jars])
                 self.equality[x] = rhs_without_xj
 
         # update basic and non_basic variables
@@ -484,6 +487,7 @@ class Simplex:
 
     def check(self):
         self.wrong_var = None
+        self.pivot_trace = []
         while True:
             basic_vars = sorted(list(self.basic))
             flag = False
@@ -501,6 +505,7 @@ class Simplex:
                     coeff, xj = j.coeff, j.var
                     if coeff > 0 and self.mapping[xj] < self.bound[xj][1] or\
                         coeff < 0 and self.mapping[xj] > self.bound[xj][0]:
+                        self.trace.append(((xi, xj), coeff, self.nbasic_basic[xj]))
                         self.pivotAndUpdate(xi, xj, self.bound[xi][0])
                         flag = True
                         break
@@ -515,6 +520,7 @@ class Simplex:
                     coeff, xj = j.coeff, j.var
                     if coeff < 0 and self.mapping[xj] < self.bound[xj][1] or\
                         coeff > 0 and self.mapping[xj] > self.bound[xj][0]:
+                        self.trace.append(((xi, xj), coeff, self.nbasic_basic[xj]))
                         self.pivotAndUpdate(xi, xj, self.bound[xi][1])
                         flag = True
                         break
@@ -587,6 +593,17 @@ def dest_plus(tm):
     else:
         return dest_plus(tm.arg1) + (tm.arg,)
 
+def add_atom(d, key, atom):
+    """
+    d is a dict, add an atom to list d[key] 
+    """
+    if key not in d:
+        d[key] = (atom, )
+    else:
+        d[key] = tuple(d[key] + (atom, ))
+    
+    return d  
+
 def is_ineq(tm):
     """check if tm is an ineq term."""
     return tm.is_greater() or tm.is_greater_eq() or tm.is_less() or tm.is_less_eq()
@@ -615,6 +632,16 @@ class RealCompareMacro(Macro):
         
         return Thm([], goal)
 
+class replace_conv(Conv):
+    def __init__(self, pt):
+        self.pt = pt
+
+    def get_proof_term(self, t):
+        if t == self.pt.prop.lhs:
+            return self.pt
+        else:
+            raise ConvException
+
 class SimplexHOLWrapper:
     """
     Wrapper for simplex method in higher-order logic. 
@@ -623,11 +650,14 @@ class SimplexHOLWrapper:
         # core data structure
         self.simplex = Simplex()
         
-        # proofterms for input inequlities, key is the HOL lhs
+        # # proofterms for input inequlities, key is the HOL lhs
         self.ineq_pts = dict()
 
         # proofterms for equalities, key is the new introduced variable
         self.eq_pts = dict()
+
+        # proofterm for atom inequalities, used in assertion procedure
+        self.atom_ineq_pts = dict()
 
         # proofterms for bounds, key is variable.
         self.lower_bound_pts = dict()
@@ -645,6 +675,10 @@ class SimplexHOLWrapper:
         for _, pt in self.eq_pts.items():
             s += "\t %s \n" % str(pt)
         
+        s +="\nInequality atom ProofTerms:\n"
+        for _, pt in self.atom_ineq_pts.items():
+            s += "\t %s \n" % str(pt)
+
         s += "\nLower Bound ProofTerms:\n"
         for _, pt in self.lower_bound_pts.items():
             s += "\t %s \n" % str(pt)
@@ -667,20 +701,30 @@ class SimplexHOLWrapper:
         lhs = sum(lhs_atoms[1:], lhs_atoms[0])
         if isinstance(ineq, GreaterEq): # a * x + b * y + ... ≥ c    
             rhs = Real(ineq.lower_bound)
-            hol_geq = greater_eq(RealType)(lhs, rhs)
-            self.ineq_pts[lhs] = ProofTerm.assume(hol_geq)
+            hol_ineq = greater_eq(RealType)(lhs, rhs)
+            self.ineq_pts[hol_ineq] = ProofTerm.assume(hol_ineq)
         else: # a * x + b * y + ... ≤ c
             rhs = Real(ineq.upper_bound)
-            hol_geq = less_eq(RealType)(lhs, rhs)
-            self.ineq_pts[lhs] = ProofTerm.assume(hol_geq)
+            hol_ineq = less_eq(RealType)(lhs, rhs)
+            self.ineq_pts[hol_ineq] = ProofTerm.assume(hol_ineq)
         
         # Add the inequation to the simplex solver.
         self.simplex.add_ineq(ineq)
         
         # Check the necessity to introduce new variables
-        if not (len(lhs_atoms) == 1 and lhs_atoms[0].coeff == 1): # need to introduce a new variable
+        if not (len(ineq.jars) == 1 and ineq.jars[0].coeff == 1): # need to introduce a new variable
             s = Var('$'+string.ascii_lowercase[self.simplex.index - 1]+'$', RealType)
-            self.eq_pts[s] = ProofTerm.assume(Eq(s, lhs)) 
+            s_eq_pt = ProofTerm.assume(Eq(s, lhs))
+            self.eq_pts[s] = s_eq_pt
+            # construct the inequlity proofterm for x
+            s_ineq_pt = ProofTerm.assume(hol_ineq).on_prop(top_conv(replace_conv(s_eq_pt.symmetric())))
+            self.atom_ineq_pts = add_atom(self.atom_ineq_pts, s, s_ineq_pt)
+        else: # directly add x ⋈ c into atom_ineq_pts 
+            x = lhs.arg
+            # prove 1 * x = x
+            pt_x = real_norm_conv().get_proof_term(1 * x)
+            pt_atom = ProofTerm.assume(hol_ineq).on_prop(top_conv(replace_conv(pt_x)))
+            self.atom_ineq_pts = add_atom(self.atom_ineq_pts, x, pt_atom)
             
     def assert_upper(self, x, upper_bound):
         """
@@ -690,18 +734,20 @@ class SimplexHOLWrapper:
         If there is an assertion on x's lower bound, suppose it is e; If e > c,
         then we can derive a direct contradiction: x <= c and x >= e is inconsistency. 
         """
-        self.simplex.assert_upper(x, upper_bound)
-        assertion = ProofTerm.assume(x >= upper_bound)
+        upper_bound = real_eval(upper_bound)
+        self.simplex.assert_upper(x.name, upper_bound)
+        assertion = ProofTerm.assume(x <= upper_bound)
         if x in self.upper_bound_pts:
             old_assertion = self.upper_bound[x]
             old_upper_bound = real_eval(old_assertion.prop.arg)
             if old_upper_bound >= upper_bound:
                 pt_less = ProofTerm('real_compare', upper_bound <= old_upper_bound)
                 self.upper_bound_pts[x] = apply_theorem('real_geq_comp2', assertion, old_assertion, pt_less)
+            new_upper_bound = upper_bound if (old_upper_bound >= upper_bound) else old_upper_bound
         else:
             self.upper_bound_pts[x] = assertion
+            new_upper_bound = upper_bound
         
-        new_upper_bound = upper_bound if (old_upper_bound >= upper_bound) else old_upper_bound
 
         # check consistency with x's lower bound
         if x in self.lower_bound_pts:
@@ -711,8 +757,6 @@ class SimplexHOLWrapper:
                 pt_up_less_low = ProofTerm('real_compare', new_upper_bound < lower_bound)
                 pt_contr = apply_theorem('real_comp_contr', pt_up_less_low, lower_assertion, self.upper_bound_pts[x])
                 self.unsat[x] = pt_contr
-
-        
         
     def assert_lower(self, x, lower_bound):
         """
@@ -722,7 +766,8 @@ class SimplexHOLWrapper:
         If there is an assertion on x's upper bound, suppose it is e: If e < c,
         then we can derive a direct contradiction: x >= c and x <= e is inconsistency. 
         """
-        self.simplex.assert_lower(x, lower_bound)
+        lower_bound = real_eval(lower_bound)
+        self.simplex.assert_lower(x.name, lower_bound)
         assertion = ProofTerm.assume(x >= lower_bound)
         if x in self.lower_bound_pts:
             old_assertion = self.lower_bound[x]
@@ -730,10 +775,11 @@ class SimplexHOLWrapper:
             if old_lower_bound <= lower_bound:
                 pt_greater = ProofTerm('real_compare', lower_bound >= old_lower_bound)
                 self.lower_bound_pts[x] = apply_theorem('real_geq_comp2', assertion, old_assertion, pt_greater)
+            new_lower_bound = lower_bound if (old_lower_bound >= lower_bound) else old_lower_bound
         else:
             self.lower_bound_pts[x] = assertion
+            new_lower_bound = lower_bound
         
-        new_lower_bound = lower_bound if (old_lower_bound >= lower_bound) else old_lower_bound
 
         # check consistency with x's lower bound
         if x in self.upper_bound_pts:
@@ -744,37 +790,71 @@ class SimplexHOLWrapper:
                 pt_contr = apply_theorem('real_comp_contr', pt_up_less_low, upper_assertion, self.lower_bound_pts[x])
                 self.unsat[x] = pt_contr
 
-    def pivot(self, xi, xj):
+    def pivot(self, xi, xj, basic_var, coeff):
         """
         Pivot basic variable xi and non-basic variable xj. 
         """
+
+        # Find the xj occurrence in other equalities, try to substitute it by xj's rhs.
+        basic_variable_xj_lhs = delete_elem(basic_var, xi.name)
+        basic_variable_xj_lhs = [Var(v, RealType) for v in basic_variable_xj_lhs]
+        a = coeff # aij
+        
         # find the equation: xi = ... + aij * xj + ...
         # aij ≠ 0
-        self.simplex.pivot(xi, xj)
         pt_eq = self.eq_pts[xi]
-        a = self.simplex.aij(xi.name, xj.name)
         # convert the equation to xj = ...
         # use theorem: real_sub_0, real_mul
-
         # xi - (... + aij * xj + ...) = 0
         pt_right_shift = pt_eq.on_prop(rewr_conv('real_sub_0', sym=True))
         # construct (xi - (... + aij * xj + ...)) * 1/aij = 0
-        pt_divide_aij = real_norm_conv().get_proof_term(pt_right_shift.lhs * Fraction(1, a))
+        pt_divide_aij = real_norm_conv().get_proof_term(Fraction(1, a) * pt_right_shift.lhs)
         # normalize lhs
         pt_divide_aij_norm = pt_divide_aij.on_lhs(real_norm_conv())
+        
+        pt_eq_mul_coeff = apply_theorem('real_eq_zero_mul_const', pt_right_shift, inst=Inst(c = Real(Fraction(1, a))))
+        pt_divide_aij_norm_0 = pt_divide_aij.symmetric().transitive(pt_eq_mul_coeff)
         # convert to ... + (-1) * xj = 0
         eq_lhs = pt_divide_aij_norm.lhs
+        eq_lhs_dest = dest_plus(eq_lhs)
         pt_eq_lhs = real_norm_conv().get_proof_term(eq_lhs)
-        adder_except_xj = [t for t in eq_lhs if t.arg != xj]
+        adder_except_xj = [t if t.is_times() else 1 * t for t in eq_lhs_dest]
+        adder_except_xj = [t for t in adder_except_xj if t.arg != xj]
         eq_lhs_xj_right = sum(adder_except_xj[1:], adder_except_xj[0]) + (-1) * xj
         pt_eq_lhs_xj_right = real_norm_conv().get_proof_term(eq_lhs_xj_right)
         pt_eq_comm = ProofTerm.transitive(pt_eq_lhs, pt_eq_lhs_xj_right.symmetric())
-        pt_comm_eq_0 = ProofTerm.transitive(pt_eq_comm.symmetric(), pt_divide_aij_norm)
+        pt_comm_eq_0 = pt_eq_comm.symmetric().transitive(pt_divide_aij_norm_0)
 
         # xj = ... + (1/aij) * xi + ... 
-        pt_final = pt_comm_eq_0.on_prop(rewr_conv('real_add_uminus'))
+        pt_final = pt_comm_eq_0.on_prop(rewr_conv('real_add_uminus')).symmetric()
         self.eq_pts[xj] = pt_final
         self.eq_pts = delete_key(self.eq_pts, xi)
 
-        
-        
+        # euqalities relevant to xj
+        for _v in basic_variable_xj_lhs:
+            v_lhs_eq_pt = self.eq_pts[_v]
+            v_lhs_eq_pt_replace_norm = v_lhs_eq_pt.on_rhs(top_conv(replace_conv(pt_final)), real_norm_conv())
+            self.eq_pts[_v] = v_lhs_eq_pt_replace_norm
+
+    def explanation(self):
+        pass
+
+    def handle_assertion(self):
+        """
+        Assert each atom assertion, either get a bound or raise a contradiction.
+        """
+        for var, asts in self.atom_ineq_pts.items():
+            for ast in asts:
+                if ast.prop.is_less_eq():
+                    self.assert_upper(var, ast.prop.arg)
+                else:
+                    self.assert_lower(var, ast.prop.arg)
+
+            if var.name in self.simplex.basic:
+                # check
+                if self.simplex.check() == UNSAT:
+                    trace = self.simplex.trace
+                    for xij, coeff, basic_var in trace:
+                        xi, xj = xij
+                        self.pivot(Var(xi, RealType), Var(xj, RealType), basic_var, coeff)
+                    self.explanation()
