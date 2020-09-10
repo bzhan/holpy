@@ -15,7 +15,6 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='auto'>Oracle</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='superSimplify'>Simplify</b-dropdown-item>          
           <b-dropdown-item href="#" v-on:click='substitution'>Substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='substitution1'>Substitution inverse</b-dropdown-item>
@@ -441,20 +440,6 @@ export default {
       //this.cur_calc.push(response.data);
 
       this.cur_calc.push(response.data)
-    },
-
-    auto: async function (){
-      this.clear_separate_integral();
-      if (this.cur_calc.length === 0){
-        return;
-      }
-      const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text
-      };
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-oracle", JSON.stringify(data));
-      for(var i = 0; i < response.data.length; ++i){
-        this.cur_calc.push(response.data[i])
-      }
     },
 
     slagle: async function(){
