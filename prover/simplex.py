@@ -5,15 +5,15 @@ Reference:
 Bruno Dutertre and Leonardo de Moura. A Fast Linear-Arithmetic Solver for DPLL(T) 
 """
 
-from kernel.term import Term, Var, Inst, greater_eq, Real, Eq, less_eq, minus
+from kernel.term import Term, Var, Inst, greater_eq, Real, Eq, less_eq, minus, greater, less
 from kernel.type import RealType
 from kernel.proofterm import ProofTerm
 from kernel.theory import register_macro, Thm
 from kernel.macro import Macro
 from logic.logic import apply_theorem
 from logic import basic, matcher
-from data.real import real_eval, real_norm_conv
-from logic.conv import Conv, ConvException, rewr_conv, top_conv
+from data.real import real_eval, real_norm_conv, real_eval_conv
+from logic.conv import Conv, ConvException, rewr_conv, top_conv, arg_conv, arg1_conv
 from collections import namedtuple
 import math
 import numbers
@@ -537,10 +537,10 @@ class Simplex:
             else:
                 self.assert_lower(assertion.var_name, assertion.lower)
 
-            if assertion.var_name in self.basic:
-                res = self.check()
-                if res == UNSAT:
-                    raise UNSATException("variable %s is wrong." % str(self.wrong_var))
+            # if assertion.var_name in self.basic:
+            res = self.check()
+            if res == UNSAT:
+                raise UNSATException("variable %s is wrong." % str(self.wrong_var))
 
     def explaination(self, xi):
         """
@@ -726,7 +726,7 @@ class SimplexHOLWrapper:
             pt_atom = ProofTerm.assume(hol_ineq).on_prop(top_conv(replace_conv(pt_x)))
             self.atom_ineq_pts = add_atom(self.atom_ineq_pts, x, pt_atom)
             
-    def assert_upper(self, x, upper_bound):
+    def assert_upper(self, x, upper_bound_pt):
         """
         Assert x <= c. If there is already an assertion on x's upper bound,
         suppose it is d, if c <= d, then apply the new assertion, otherwise 
@@ -734,18 +734,18 @@ class SimplexHOLWrapper:
         If there is an assertion on x's lower bound, suppose it is e; If e > c,
         then we can derive a direct contradiction: x <= c and x >= e is inconsistency. 
         """
-        upper_bound = real_eval(upper_bound)
+        upper_bound = real_eval(upper_bound_pt.prop.arg)
         self.simplex.assert_upper(x.name, upper_bound)
-        assertion = ProofTerm.assume(x <= upper_bound)
+        # assertion = ProofTerm.assume(x <= upper_bound)
         if x in self.upper_bound_pts:
             old_assertion = self.upper_bound[x]
             old_upper_bound = real_eval(old_assertion.prop.arg)
             if old_upper_bound >= upper_bound:
                 pt_less = ProofTerm('real_compare', upper_bound <= old_upper_bound)
-                self.upper_bound_pts[x] = apply_theorem('real_geq_comp2', assertion, old_assertion, pt_less)
+                self.upper_bound_pts[x] = apply_theorem('real_geq_comp2', upper_bound_pt, old_assertion, pt_less)
             new_upper_bound = upper_bound if (old_upper_bound >= upper_bound) else old_upper_bound
         else:
-            self.upper_bound_pts[x] = assertion
+            self.upper_bound_pts[x] = upper_bound_pt
             new_upper_bound = upper_bound
         
 
@@ -755,10 +755,10 @@ class SimplexHOLWrapper:
             lower_bound = real_eval(lower_assertion.prop.arg)
             if lower_bound > new_upper_bound: # incosistency
                 pt_up_less_low = ProofTerm('real_compare', new_upper_bound < lower_bound)
-                pt_contr = apply_theorem('real_comp_contr', pt_up_less_low, lower_assertion, self.upper_bound_pts[x])
+                pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, lower_assertion, self.upper_bound_pts[x])
                 self.unsat[x] = pt_contr
         
-    def assert_lower(self, x, lower_bound):
+    def assert_lower(self, x, lower_bound_pt):
         """
         Assert x >= c. If there is already an assertion on x's lower bound,
         suppose it is d, if c >= d, then apply the new assertion, otherwise 
@@ -766,18 +766,17 @@ class SimplexHOLWrapper:
         If there is an assertion on x's upper bound, suppose it is e: If e < c,
         then we can derive a direct contradiction: x >= c and x <= e is inconsistency. 
         """
-        lower_bound = real_eval(lower_bound)
+        lower_bound = real_eval(lower_bound_pt.prop.arg)
         self.simplex.assert_lower(x.name, lower_bound)
-        assertion = ProofTerm.assume(x >= lower_bound)
         if x in self.lower_bound_pts:
             old_assertion = self.lower_bound[x]
             old_lower_bound = real_eval(old_assertion.prop.arg)
             if old_lower_bound <= lower_bound:
                 pt_greater = ProofTerm('real_compare', lower_bound >= old_lower_bound)
-                self.lower_bound_pts[x] = apply_theorem('real_geq_comp2', assertion, old_assertion, pt_greater)
+                self.lower_bound_pts[x] = apply_theorem('real_geq_comp2', lower_bound_pt, old_assertion, pt_greater)
             new_lower_bound = lower_bound if (old_lower_bound >= lower_bound) else old_lower_bound
         else:
-            self.lower_bound_pts[x] = assertion
+            self.lower_bound_pts[x] = lower_bound_pt
             new_lower_bound = lower_bound
         
 
@@ -787,7 +786,7 @@ class SimplexHOLWrapper:
             upper_bound = real_eval(upper_assertion.prop.arg)
             if upper_bound < new_lower_bound: # incosistency
                 pt_up_less_low = ProofTerm('real_compare', upper_bound < new_lower_bound)
-                pt_contr = apply_theorem('real_comp_contr', pt_up_less_low, upper_assertion, self.lower_bound_pts[x])
+                pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, upper_assertion, self.lower_bound_pts[x])
                 self.unsat[x] = pt_contr
 
     def pivot(self, xi, xj, basic_var, coeff):
@@ -837,7 +836,118 @@ class SimplexHOLWrapper:
             self.eq_pts[_v] = v_lhs_eq_pt_replace_norm
 
     def explanation(self):
-        pass
+        """
+        Explanation is the core procedure which returns an unsatisfiable proof.
+        """
+        assert self.simplex.wrong_var is not None, "No var causes contradiction."
+        contr_var = Var(self.simplex.wrong_var, RealType)
+        unsat_clause = self.simplex.explaination(contr_var.name)
+
+        # Translate unsat clauses into HOL form.
+        hol_unsat_upper_bound = dict()
+        hol_unsat_lower_bound = dict()
+        
+        for c in unsat_clause[:-1]:
+            if isinstance(c, geq_atom): # x >= k
+                var_name, lower_bound = c.var_name, c.lower
+                var = Var(var_name, RealType)
+                hol_unsat_lower_bound[var] = self.lower_bound_pts[var]
+            else:
+                var_name, upper_bound = c.var_name, c.upper
+                var = Var(var_name, RealType)
+                hol_unsat_upper_bound[var] = self.upper_bound_pts[var]                
+
+        if isinstance(unsat_clause[-1], leq_atom): 
+            # contradiction comes from contr_var's value is larger than it's upper bound.
+            upper_bound_pt = self.upper_bound_pts[contr_var]
+            ineq_atom_pts = [] # store a > 0, x >= l ⊢ a * x >= a * l term
+            # Get contr_var's lower bound
+            for var, upper_bound in hol_unsat_upper_bound.items():
+                # the coefficient must < 0, so coeff * upper_bound is coeff * x 's lower bound 
+                coeff = self.simplex.aij(contr_var.name, var.name)
+                assert coeff < 0
+                pt_coeff_less_zero = ProofTerm('real_compare', less(RealType)(Real(coeff), Real(0)))
+                # ⊢ x <= u --> a < 0 --> a * u <= a * x
+                pt_lower_bound = apply_theorem('real_leq_mul_neg', upper_bound, pt_coeff_less_zero)
+                # pt_lower_bound_2 = ProofTerm.implies_elim(upper_bound, pt_lower_bound_1)
+                # pt_lower_bound_3 = ProofTerm.implies_elim(pt_coeff_less_zero, pt_lower_bound_2)
+                ineq_atom_pts.append(pt_lower_bound)
+            
+            for var, lower_bound in hol_unsat_lower_bound.items():
+                # the coefficient must > 0, so coeff * lower_bound is coeff * x 's lower bound 
+                coeff = self.simplex.aij(contr_var.name, var.name)
+                assert coeff > 0
+                pt_coeff_greater_zero = ProofTerm('real_compare', greater(RealType)(Real(coeff), Real(0)))
+                # ⊢ x >= l --> a > 0 --> a * l <= a * x
+                pt_lower_bound = apply_theorem('real_geq_mul_pos', lower_bound, pt_coeff_greater_zero)
+                # pt_lower_bound_2 = ProofTerm.implies_elim(lower_bound, pt_lower_bound_1)
+                # pt_lower_bound_3 = ProofTerm.implies_elim(pt_coeff_greater_zero, pt_lower_bound_2)
+                ineq_atom_pts.append(pt_lower_bound)
+
+            # sum contr var atom lower bound to get the total lower bound
+            # a < b --> c < d --> a + c < b + d
+            sum_pt = ineq_atom_pts[0]
+            for pt in ineq_atom_pts[1:]:
+                sum_pt = apply_theorem('real_leq_pair_plus', sum_pt, pt)
+            
+            # combine above pts
+            pt_norm_contr_var_rhs = self.eq_pts[contr_var].on_rhs(real_norm_conv()).symmetric()
+            pt_norm_sum_rhs = sum_pt.on_prop(arg_conv(real_norm_conv()))
+            pt_comb = pt_norm_sum_rhs.on_prop(top_conv(replace_conv(pt_norm_contr_var_rhs)), arg1_conv(real_eval_conv()))
+
+            # after we get contr_var's lower bound(lb), we get lb > β(contr_var), but β(contr_var) > contr_var's upper bound,
+            # so we could deriv a contradiction
+            lower_bound_value = pt_comb.prop.arg1
+            upper_bound_pt = self.upper_bound_pts[contr_var]
+            upper_bound_value = upper_bound_pt.prop.arg
+            pt_upper_less_lower = ProofTerm('real_compare', upper_bound_value < lower_bound_value)
+            return apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
+
+        else: 
+            # contradiction comes from contr_var's value is less than it's lower bound.
+            lower_bound_pt = self.lower_bound_pts[contr_var]
+            ineq_atom_pts = [] # store like a < 0, x >= l ⊢ a * x <= a * l term
+            # Get contr_var's upper bound
+            for var, upper_bound in hol_unsat_upper_bound.items():
+                # the coefficient must > 0, so coeff * upper_bound is coeff * x 's upper bound 
+                coeff = self.simplex.aij(contr_var.name, var.name)
+                assert coeff > 0
+                pt_coeff_greater_zero = ProofTerm('real_compare', greater(RealType)(Real(coeff), Real(0)))
+                # ⊢ x <= u --> a > 0 --> a * x <= a * u
+                pt_upper_bound = apply_theorem('real_leq_mul_pos', upper_bound, pt_coeff_greater_zero)
+                ineq_atom_pts.append(pt_upper_bound)
+            
+            for var, lower_bound in hol_unsat_lower_bound.items():
+                # the coefficient must < 0, so coeff * lower_bound is coeff * x 's upper bound 
+                coeff = self.simplex.aij(contr_var.name, var.name)
+                assert coeff < 0
+                pt_coeff_greater_zero = ProofTerm('real_compare', less(RealType)(Real(coeff), Real(0)))
+                # ⊢ x >= l --> a < 0 --> a * x <= a * l
+                pt_lower_bound = apply_theorem('real_geq_mul_less', lower_bound, pt_coeff_greater_zero)
+                ineq_atom_pts.append(pt_upper_bound)
+
+            # sum contr var atom upper bound to get the total upper bound
+            # a < b --> c < d --> a + c < b + d
+            sum_pt = ineq_atom_pts[0]
+            for pt in ineq_atom_pts[1:]:
+                sum_pt = apply_theorem('real_leq_pair_plus', sum_pt, pt)
+            
+            # combine above pts
+            pt_norm_contr_var_rhs = self.eq_pts[contr_var].on_rhs(real_norm_conv()).symmetric()
+            pt_norm_sum_rhs = sum_pt.on_prop(arg1_conv(real_norm_conv()))
+            pt_comb = pt_norm_sum_rhs.on_prop(top_conv(replace_conv(pt_norm_contr_var_rhs)), arg_conv(real_eval_conv()))
+
+            # after we get contr_var's upper bound(ub), we get lb > β(contr_var), but β(contr_var) > contr_var's upper bound,
+            # so we could deriv a contradiction
+            upper_bound_value = pt_comb.prop.arg1
+            lower_bound_pt = self.lower_bound_pts[contr_var]
+            lower_bound_value = lower_bound_pt.prop.arg
+            pt_upper_less_lower = ProofTerm('real_compare', upper_bound_value < lower_bound_value)
+            return apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
+        
+
+
+
 
     def handle_assertion(self):
         """
@@ -846,11 +956,11 @@ class SimplexHOLWrapper:
         for var, asts in self.atom_ineq_pts.items():
             for ast in asts:
                 if ast.prop.is_less_eq():
-                    self.assert_upper(var, ast.prop.arg)
+                    self.assert_upper(var, ast)
                 else:
-                    self.assert_lower(var, ast.prop.arg)
+                    self.assert_lower(var, ast)
 
-            if var.name in self.simplex.basic:
+            # if var.name in self.simplex.basic:
                 # check
                 if self.simplex.check() == UNSAT:
                     trace = self.simplex.trace
