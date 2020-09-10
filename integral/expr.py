@@ -796,7 +796,7 @@ class Expr:
         """Return true iff e is formed by rational options of fun_name."""
         v = Symbol("v", [VAR,OP,FUN])
         pat1 = sin(v)
-        if len(find_pattern1(self, pat1)) != 1:
+        if len(find_pattern(self, pat1)) != 1:
             return False
         def rec(ex):
             if ex.ty == CONST:
@@ -852,7 +852,7 @@ class Expr:
         a = Symbol('a', [CONST])
         c = Symbol('c', [OP])
         pat = c ^ a
-        subexpr  = find_pattern1(self, pat)
+        subexpr  = find_pattern(self, pat)
         expand_expr = copy.deepcopy(self)
 
 
@@ -1001,7 +1001,7 @@ def match(exp, pattern):
             return rec(exp.body, pattern) 
     return rec(exp, pattern)
 
-def find_pattern1(expr, pat, loc=False):
+def find_pattern(expr, pat, loc=False):
     """Find all subexpr can be matched with the given pattern.
     Return the matched expr list. If loc is True, also return location.
     """
@@ -1031,7 +1031,7 @@ def find_pattern1(expr, pat, loc=False):
     return c
 
 def collect_spec_expr(expr, symb):
-    c = [p.args[0] for p in find_pattern1(expr, symb) if len(p.args) != 0]
+    c = [p.args[0] for p in find_pattern(expr, symb) if len(p.args) != 0]
     return c   
 
 def decompose_expr_factor(e):
@@ -1205,23 +1205,6 @@ def collect(m, res = {}, sub = 0, el = None):
     else:
         raise NotImplementedError
 
-def find_pattern(e, is_pattern, f=None):
-    """Find subexpr with given pattern."""
-    poly = []
-    def find(exp):
-        if is_pattern(exp, f):
-            exp.selected = True
-            poly.append((exp, e.get_location()))
-        elif exp.ty in (OP, FUN):
-            for arg in exp.args:
-                find(arg)
-        elif exp.ty == INTEGRAL:
-            find(exp.body)
-    
-    find(e)
-    return poly
-        
-
 def deriv(var, e):
     """Compute the derivative of e with respect to variable
     name var.
@@ -1338,11 +1321,6 @@ def apart(e):
 
     def params(e):
         pass
-
-    
-
-    
-
 
 class Var(Expr):
     """Variable."""

@@ -205,12 +205,12 @@ class HalfAngleIdentity(AlgorithmRule):
         pat5 = y * sin(x) * cos(x)
         pat6 = y * cos(x) * sin(x)
 
-        sin_cos_expr = find_pattern1(e, pat1, loc=True)
-        cos_sin_expr = find_pattern1(e, pat2, loc=True)
-        sin_power_expr = find_pattern1(e, pat3, loc=True)
-        cos_power_expr = find_pattern1(e, pat4, loc=True)
-        y_sin_cos_expr = find_pattern1(e, pat5, loc=True)
-        y_cos_sin_expr = find_pattern1(e, pat6, loc=True)
+        sin_cos_expr = find_pattern(e, pat1, loc=True)
+        cos_sin_expr = find_pattern(e, pat2, loc=True)
+        sin_power_expr = find_pattern(e, pat3, loc=True)
+        cos_power_expr = find_pattern(e, pat4, loc=True)
+        y_sin_cos_expr = find_pattern(e, pat5, loc=True)
+        y_cos_sin_expr = find_pattern(e, pat6, loc=True)
 
 
         half = Const(Fraction(1, 2))
@@ -270,10 +270,10 @@ class TrigFunction(HeuristicRule):
         sec_pat = sec(x)
         csc_pat = csc(x)
 
-        tan_expr = find_pattern1(e, tan_pat, loc=True)
-        cot_expr = find_pattern1(e, cot_pat, loc=True)
-        sec_expr = find_pattern1(e, sec_pat, loc=True)
-        csc_expr = find_pattern1(e, csc_pat, loc=True)
+        tan_expr = find_pattern(e, tan_pat, loc=True)
+        cot_expr = find_pattern(e, cot_pat, loc=True)
+        sec_expr = find_pattern(e, sec_pat, loc=True)
+        csc_expr = find_pattern(e, csc_pat, loc=True)
 
         steps = []
 
@@ -317,10 +317,10 @@ class TrigFunction(HeuristicRule):
         cot_pat = cot(x)
         csc_pat = csc(x)
 
-        sin_expr = find_pattern1(e, sin_pat, loc=True)
-        cos_expr = find_pattern1(e, cos_pat, loc=True)
-        cot_expr = find_pattern1(e, cot_pat, loc=True)
-        csc_expr = find_pattern1(e, csc_pat, loc=True)
+        sin_expr = find_pattern(e, sin_pat, loc=True)
+        cos_expr = find_pattern(e, cos_pat, loc=True)
+        cot_expr = find_pattern(e, cot_pat, loc=True)
+        csc_expr = find_pattern(e, csc_pat, loc=True)
 
         steps = []
 
@@ -359,10 +359,10 @@ class TrigFunction(HeuristicRule):
         tan_pat = tan(x)
         sec_pat = sec(x)
 
-        sin_expr = find_pattern1(e, sin_pat, loc=True)
-        cos_expr = find_pattern1(e, cos_pat, loc=True)
-        tan_expr = find_pattern1(e, tan_pat, loc=True)
-        sec_expr = find_pattern1(e, sec_pat, loc=True)
+        sin_expr = find_pattern(e, sin_pat, loc=True)
+        cos_expr = find_pattern(e, cos_pat, loc=True)
+        tan_expr = find_pattern(e, tan_pat, loc=True)
+        sec_expr = find_pattern(e, sec_pat, loc=True)
 
         steps = []
         reason = "cotangent cosecant"
@@ -713,7 +713,7 @@ class HeuristicElimQuadratic(HeuristicRule):
         
         quadratic_terms = []
         for p in quadratic_patterns:
-            quad = find_pattern1(e.body, p, True)
+            quad = find_pattern(e.body, p, True)
             if quad:
                 quadratic_terms.append(quad)
 
@@ -773,7 +773,7 @@ class HeuristicTrigSubstitution(HeuristicRule):
 
         all_subterms = []
         for p in pats:
-            all_subterms.append(find_pattern1(e.body, p, loc=True))
+            all_subterms.append(find_pattern(e.body, p, loc=True))
 
         if not all_subterms:
             return []
@@ -827,7 +827,7 @@ class HeuristicExpandPower(HeuristicRule):
         a = Symbol('a', [CONST])
         c = Symbol('c', [OP])
         pat = c ^ a
-        subexpr  = find_pattern1(e, pat, loc=True)
+        subexpr  = find_pattern(e, pat, loc=True)
         expand_expr = copy.deepcopy(e)
         for s, l in subexpr:
             p = s.args[0].to_poly()
@@ -856,7 +856,7 @@ class HeuristicExponentBase(HeuristicRule):
         initial_step = [calc.SimplifyStep(e, loc=loc)]
 
         pat = exp(n*x)
-        exponents = find_pattern1(e.body, pat)
+        exponents = find_pattern(e.body, pat)
 
         if len(exponents) <= 1:
             return []
@@ -892,7 +892,7 @@ class HeuristicRationalSineCosine(HeuristicRule):
             """
             v = Symbol("v", [VAR,OP,FUN])
             pat1 = sin(v)
-            s = find_pattern1(e_body, pat1)
+            s = find_pattern(e_body, pat1)
             new_e_body = e_body.replace_trig(s, parse_expr('2*u/(1+u^2)')) * parse_expr('2/(1+u^2)')
             lower = tan(e.lower/2).normalize()
             upper = tan(e.upper/2).normalize()
@@ -904,7 +904,7 @@ class HeuristicRationalSineCosine(HeuristicRule):
             """
             v = Symbol("v", [VAR,OP,FUN])
             pat1 = sin(v)
-            s = find_pattern1(e_body, pat1)
+            s = find_pattern(e_body, pat1)
             new_e_body = e_body.replace_trig(s, parse_expr('(1-u^2)/(1+u^2)')) * parse_expr('2/(1+u^2)')
             lower = tan(e.lower/2).normalize()
             upper = tan(e.upper/2).normalize()
