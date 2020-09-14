@@ -1,4 +1,6 @@
 """
+Author: Runqing Xu
+
 Implementation of Simplex-based quantifier-free linear arithmetic solver.
 
 Reference: 
@@ -15,6 +17,7 @@ from logic import basic, matcher
 from data.real import real_eval, real_norm_conv, real_eval_conv
 from logic.conv import Conv, ConvException, rewr_conv, top_conv, arg_conv, arg1_conv
 from collections import namedtuple
+from collections import deque
 import math
 import numbers
 import string
@@ -42,7 +45,7 @@ class UNSATException(Exception):
         return self.msg
 
 class AssertLowerException(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, msg):
         self.msg = msg
 
     def __str__(self):
@@ -203,7 +206,7 @@ class Simplex:
         self.nbasic_basic = dict()
 
         # orignial inequalities inserted into solver
-        self.orginal = []
+        self.original = []
 
         # basic variable that can't find a suitable value
         self.wrong_var = None
@@ -211,9 +214,12 @@ class Simplex:
         # Restore the pivot trace: ((xi, xj), aij, nbasic[xj]) each time call check()
         self.trace = []
 
+        # input vars
+        self.input_vars = set()
+
     def __str__(self):
         s = "Original inequlities: \n"
-        for ineq in self.orginal:
+        for ineq in self.original:
             s += "\t %s\n" % str(ineq) 
 
         s += "Equality:\n"
@@ -255,11 +261,12 @@ class Simplex:
         Add an inequality to the current solver, and update relevant states.
         """
         assert isinstance(ineq, InEquation)
-        self.orginal.append(ineq)
+        self.original.append(ineq)
         if isinstance(ineq, GreaterEq):
             if len(ineq.jars) == 1: # a * x >= b
                 jar = ineq.jars[0]
                 coeff, var_name, lower_bound = jar.coeff, jar.var, ineq.lower_bound
+                self.input_vars.add(var_name)
                 if coeff == 1: # x >= b (atom)
                     self.lower_atom.append((var_name, lower_bound))
                     self.atom.append(geq_atom(var_name, lower_bound))
@@ -268,6 +275,7 @@ class Simplex:
                     self.non_basic.add(var_name)
                     if var_name not in self.bound.keys():
                         self.bound[var_name] = (-math.inf, math.inf)
+            
 
                 elif coeff != 0: # a * x >= b
                     s = "$" + string.ascii_lowercase[self.index] + "$"
@@ -297,7 +305,8 @@ class Simplex:
                     if v not in self.non_basic:
                         self.non_basic.add(v)
                     if v not in self.bound.keys():
-                        self.bound[v] = (-math.inf, math.inf) 
+                        self.bound[v] = (-math.inf, math.inf)
+                    self.input_vars.add(v) 
 
                 lower_bound = ineq.lower_bound
                 s = "$" + string.ascii_lowercase[self.index] + "$"
@@ -319,6 +328,7 @@ class Simplex:
             if len(ineq.jars) == 1: # a * x <= b
                 jar = ineq.jars[0]
                 coeff, var_name, upper_bound = jar.coeff, jar.var, ineq.upper_bound
+                self.input_vars.add(var_name)
                 if coeff == 1: # x <= b (atom)
                     self.upper_atom.append((var_name, upper_bound))
                     self.atom.append(leq_atom(var_name, upper_bound))
@@ -356,6 +366,7 @@ class Simplex:
                         self.non_basic.add(v)
                     if v not in self.bound.keys():
                         self.bound[v] = (-math.inf, math.inf)
+                    self.input_vars.add(v)
 
                 upper_bound = ineq.upper_bound
                 s = "$" + string.ascii_lowercase[self.index] + "$"
@@ -372,6 +383,8 @@ class Simplex:
 
                 self.basic.add(s)
                 self.bound[s] = (-math.inf, math.inf)
+
+        self.variables_bound()
 
     def preprocess(self):
         """
@@ -453,7 +466,7 @@ class Simplex:
         a = self.aij(xi, xj)
         theta = Fraction(v - self.mapping[xi], a)
         self.mapping[xi] = v
-        self.mapping[xj] = self.mapping[xi] + theta
+        self.mapping[xj] = self.mapping[xj] + theta
         for xk in self.basic:
             if xk != xi:
                 k = self.aij(xk, xj)
@@ -464,26 +477,23 @@ class Simplex:
     def assert_upper(self, x, c):
         assert x in self.bound, "No such variable in solver"
         l, u = self.bound[x]
-        if c >= u:
-            return
-        elif c < l:
-            raise AssertUpperException("%s's lower bound %s is larger than %s" % (x, str(l), str(c)))
         
-        self.bound[x] = (l, c)
-        if x in self.non_basic and self.mapping[x] > c:
-            self.update(x, c)
+        if c < l:
+            raise AssertUpperException("%s's lower bound %s is larger than %s" % (x, str(l), str(c)))
+        elif c < u:
+            self.bound[x] = (l, c)
+            if x in self.non_basic and self.mapping[x] > c:
+                self.update(x, c)
 
     def assert_lower(self, x, c):
         assert x in self.bound, "No such variable in solver"
         l, u = self.bound[x]
-        if c <= l:
-            return
-        elif c > u:
-            raise AssertUpperException("%s's lower bound %s is larger than c" % (x, str(l), str(c)))
-        
-        self.bound[x] = (c, u)
-        if x in self.non_basic and self.mapping[x] < c:
-            self.update(x, c)
+        if c > u:
+            raise AssertUpperException("%s's lower bound %s is larger than %s" % (x, str(l), str(c)))
+        elif c > l:
+            self.bound[x] = (c, u)
+            if x in self.non_basic and self.mapping[x] < c:
+                self.update(x, c)
 
     def check(self):
         self.wrong_var = None
@@ -582,6 +592,107 @@ class Simplex:
             explain.append(leq_atom(xi, self.bound[xi][1]))    
 
         return explain
+
+    def theta(self):
+        """
+        For Ax ≤ b, Ax ≥ c. 
+            θ(A) = max(|aij|), θ(b) = max(|bi|), θ(c) = max(|ci|)
+        θ is max(θ(A), θ(b), θ(c))
+        θ can be used to deriv non-basic variables' bound.
+        """
+        t = 0
+        ineqs = self.original
+        for ineq in ineqs:
+            if isinstance(ineq, GreaterEq):
+                jars, lower_bound = ineq.jars, ineq.lower_bound
+                for j in jars:
+                    if abs(j.coeff) > t:
+                        t = abs(j.coeff)
+                if abs(lower_bound) > t:
+                    t = abs(lower_bound)
+            else:
+                jars, upper_bound = ineq.jars, ineq.upper_bound
+                for j in jars:
+                    if abs(j.coeff) > t:
+                        t = abs(j.coeff)
+                if abs(upper_bound) > t:
+                    t = abs(upper_bound)
+        return t
+
+    def variables_bound(self):
+        """
+        Compute each non-basic variables' bound based on the following theorem:
+        If x is an extreme point of conv(S), then:
+                x <= ((m+n)nθ)^n
+        Where m is the number of inequations, n is the number of non-basic vars.
+        """
+        m = len(self.original)
+        n = len(self.basic)
+        t = self.theta()
+        bound = ((m + n) * n * t) ** n
+
+        # set the bound for each non-basic variable
+        for var in self.non_basic:
+                if self.bound[var][0] < -bound:
+                    self.bound[var] = (-bound, self.bound[var][1])
+                if bound < self.bound[var][1]:
+                    self.bound[var] = (self.bound[var][0], bound)
+
+    def add_ineqs(self, *ineqs):
+        for ineq in ineqs:
+            self.add_ineq(ineq)
+
+    def all_integer(self):
+        """Check if all items in d are integer"""
+        for var, value in self.mapping.items():
+            if var in self.input_vars:
+                v = float(value)
+                if not v.is_integer():
+                    return False
+
+        return True
+
+    
+    def find_not_int_var(self):
+        """Find the var which value is not integer."""
+        assert not self.all_integer(), "No integer!"
+        for v, value in self.mapping.items():
+            if v in self.input_vars:
+                val = float(value)
+                if not val.is_integer():
+                    return v, val
+        return None
+
+def branch_and_bound(tableau):
+    """
+    If current solution is not a good solution(some variable's value is not integer),
+    add more constraints and perform simplex again, until find a good solution.
+    """
+    tree = deque([tableau])
+    while len(tree) != 0:
+        try:
+            simplex = tree.popleft()
+            simplex.handle_assertion()
+            if not simplex.all_integer():
+                v, val = simplex.find_not_int_var()
+                s1, s2 = Simplex(), Simplex()
+                ineq1 = LessEq([Jar(1, v)], math.floor(val))
+                ineq2 = GreaterEq([Jar(1, v)], math.ceil(val))
+                s1.add_ineqs(ineq1, *simplex.original)
+                s2.add_ineqs(ineq2, *simplex.original)
+                tree.appendleft(s1)
+                tree.appendleft(s2)
+            else:
+                return simplex.mapping
+                
+                
+        except:
+            continue
+    
+    print("No integer solution!")
+
+
+
 
 
 def dest_plus(tm):
@@ -735,13 +846,12 @@ class SimplexHOLWrapper:
         then we can derive a direct contradiction: x <= c and x >= e is inconsistency. 
         """
         upper_bound = real_eval(upper_bound_pt.prop.arg)
-        self.simplex.assert_upper(x.name, upper_bound)
         # assertion = ProofTerm.assume(x <= upper_bound)
         if x in self.upper_bound_pts:
             old_assertion = self.upper_bound[x]
             old_upper_bound = real_eval(old_assertion.prop.arg)
             if old_upper_bound >= upper_bound:
-                pt_less = ProofTerm('real_compare', upper_bound <= old_upper_bound)
+                pt_less = ProofTerm('real_compare', less_eq(RealType)(Real(upper_bound), Real(old_upper_bound)))
                 self.upper_bound_pts[x] = apply_theorem('real_geq_comp2', upper_bound_pt, old_assertion, pt_less)
             new_upper_bound = upper_bound if (old_upper_bound >= upper_bound) else old_upper_bound
         else:
@@ -751,12 +861,15 @@ class SimplexHOLWrapper:
 
         # check consistency with x's lower bound
         if x in self.lower_bound_pts:
-            lower_assertion = self.lower_bound[x]
+            lower_assertion = self.lower_bound_pts[x]
             lower_bound = real_eval(lower_assertion.prop.arg)
             if lower_bound > new_upper_bound: # incosistency
-                pt_up_less_low = ProofTerm('real_compare', new_upper_bound < lower_bound)
+                pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(new_upper_bound), Real(lower_bound)))
                 pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, lower_assertion, self.upper_bound_pts[x])
                 self.unsat[x] = pt_contr
+                raise AssertUpperException(str(pt_contr))
+
+        self.simplex.assert_upper(x.name, upper_bound)
         
     def assert_lower(self, x, lower_bound_pt):
         """
@@ -767,12 +880,11 @@ class SimplexHOLWrapper:
         then we can derive a direct contradiction: x >= c and x <= e is inconsistency. 
         """
         lower_bound = real_eval(lower_bound_pt.prop.arg)
-        self.simplex.assert_lower(x.name, lower_bound)
         if x in self.lower_bound_pts:
             old_assertion = self.lower_bound[x]
             old_lower_bound = real_eval(old_assertion.prop.arg)
             if old_lower_bound <= lower_bound:
-                pt_greater = ProofTerm('real_compare', lower_bound >= old_lower_bound)
+                pt_greater = ProofTerm('real_compare', greater_eq(RealType)(Real(lower_bound), Real(old_lower_bound)))
                 self.lower_bound_pts[x] = apply_theorem('real_geq_comp2', lower_bound_pt, old_assertion, pt_greater)
             new_lower_bound = lower_bound if (old_lower_bound >= lower_bound) else old_lower_bound
         else:
@@ -782,12 +894,16 @@ class SimplexHOLWrapper:
 
         # check consistency with x's lower bound
         if x in self.upper_bound_pts:
-            upper_assertion = self.upper_bound[x]
+            upper_assertion = self.upper_bound_pts[x]
             upper_bound = real_eval(upper_assertion.prop.arg)
             if upper_bound < new_lower_bound: # incosistency
-                pt_up_less_low = ProofTerm('real_compare', upper_bound < new_lower_bound)
-                pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, upper_assertion, self.lower_bound_pts[x])
+                pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_bound), Real(new_lower_bound)))
+                pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, self.lower_bound_pts[x], upper_assertion)
                 self.unsat[x] = pt_contr
+                raise AssertLowerException(str(pt_contr))
+        
+        self.simplex.assert_lower(x.name, lower_bound)
+
 
     def pivot(self, xi, xj, basic_var, coeff):
         """
@@ -901,6 +1017,7 @@ class SimplexHOLWrapper:
             upper_bound_pt = self.upper_bound_pts[contr_var]
             upper_bound_value = upper_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('real_compare', upper_bound_value < lower_bound_value)
+            self.unsat[contr_var] = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
             return apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
 
         else: 
@@ -943,12 +1060,9 @@ class SimplexHOLWrapper:
             lower_bound_pt = self.lower_bound_pts[contr_var]
             lower_bound_value = lower_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('real_compare', upper_bound_value < lower_bound_value)
+            self.unsat[contr_var] = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
             return apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
         
-
-
-
-
     def handle_assertion(self):
         """
         Assert each atom assertion, either get a bound or raise a contradiction.
@@ -968,3 +1082,8 @@ class SimplexHOLWrapper:
                         xi, xj = xij
                         self.pivot(Var(xi, RealType), Var(xj, RealType), basic_var, coeff)
                     self.explanation()
+                    raise UNSATException("%s" % str(self.unsat[self.wrong_var]))
+    
+
+        
+
