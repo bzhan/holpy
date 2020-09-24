@@ -66,7 +66,7 @@ class int_eval_macro(Macro):
 
         return Thm([], goal)
 
-class int_conv(Conv):
+class int_eval_conv(Conv):
     def get_proof_term(self, t):
         simp_t = Int(int_eval(t))
         if simp_t == t:
@@ -87,7 +87,7 @@ class norm_mult_atom(Conv):
                 return pt.on_rhs(
                     rewr_conv('int_mult_assoc', sym=True),  # a * (b^e1 * b^e2)
                     arg_conv(rewr_conv('int_power_add', sym=True)),  # a * (b^(e1 + e2))
-                    arg_conv(arg_conv(int_conv())))  # evaluate e1 + e2
+                    arg_conv(arg_conv(int_eval_conv())))  # evaluate e1 + e2
             else:  # if b < c, atoms already ordered since we assume b is ordered.
                 return pt
         else:  # t is of the form a * b
@@ -97,7 +97,7 @@ class norm_mult_atom(Conv):
             elif cp == 0:  # if a and b have the same base, combine the exponents
                 return pt.on_rhs(
                     rewr_conv('int_power_add', sym=True),
-                    arg_conv(int_conv()))
+                    arg_conv(int_eval_conv()))
             else:
                 return pt
 
@@ -116,18 +116,18 @@ class norm_mult_monomial(Conv):
     def get_proof_term(self, t):
         pt = refl(t)
         if t.arg1.is_number() and t.arg.is_number():  # c * d
-            return pt.on_rhs(int_conv())
+            return pt.on_rhs(int_eval_conv())
         elif t.arg1.is_number() and not t.arg.is_number():  # c * (d * body)
             return pt.on_rhs(
                 rewr_conv('int_mult_assoc'),  # (c * d) * body
-                arg1_conv(int_conv()))  # evaluate c * d
+                arg1_conv(int_eval_conv()))  # evaluate c * d
         elif not t.arg1.is_number() and t.arg.is_number():  # (c * body) * d
             return pt.on_rhs(rewr_conv('int_mult_comm'), self)  # d * (c * body)
         else:  # (c * body1) * (d * body2)
             return pt.on_rhs(
                 rewr_conv('int_mult_assoc'),  # ((c * body1) * d) * body2
                 arg1_conv(swap_mult_r()),  # ((c * d) * body1) * body2
-                arg1_conv(arg1_conv(int_conv())),  # evaluate c * d
+                arg1_conv(arg1_conv(int_eval_conv())),  # evaluate c * d
                 rewr_conv('int_mult_assoc', sym=True),  # cd * (body1 * body2)
                 arg_conv(norm_mult_monomial_wo_coeff()))
 
@@ -170,7 +170,7 @@ class norm_add_monomial(Conv):
                 return pt.on_rhs(
                     rewr_conv('int_add_assoc', sym=True),  # a + (c1 * b + c2 * b)
                     arg_conv(rewr_conv('mul_add_distr_r', sym=True)), # a + (c1 + c2) * b
-                    arg_conv(arg1_conv(int_conv())), # evaluate c1 + c2
+                    arg_conv(arg1_conv(int_eval_conv())), # evaluate c1 + c2
                     try_conv(arg_conv(rewr_conv('mul_0_l'))),
                     try_conv(rewr_conv('int_add_0_right')))
             else:  # if b < c, monomials are already sorted
@@ -186,11 +186,11 @@ class norm_add_monomial(Conv):
                 return pt.on_rhs(rewr_conv('int_add_comm'))
             elif cp == 0:  # if b and c have the same body, combine coefficients
                 if t.arg.is_number():
-                    return pt.on_rhs(int_conv())
+                    return pt.on_rhs(int_eval_conv())
                 else:
                     return pt.on_rhs(
                         rewr_conv('mul_add_distr_r', sym=True),
-                        arg1_conv(int_conv()),
+                        arg1_conv(int_eval_conv()),
                         try_conv(rewr_conv('mul_0_l')))
             else:
                 return pt
@@ -274,7 +274,7 @@ class norm_mult_polynomials(Conv):
         else:
             return pt.on_rhs(norm_mult_poly_monomial())
 
-class norm_full(Conv):
+class simp_full(Conv):
     def get_proof_term(self, t):
         pt = refl(t)
         if t.is_plus() or t.is_minus():
@@ -305,16 +305,16 @@ class int_norm_macro(Macro):
         assert goal.is_equals(), 'int_norm: goal is not an equality'
         
         # Obtain the normalization of the two sides
-        pt1 = refl(goal.lhs).on_rhs(norm_full())
-        pt2 = refl(goal.rhs).on_rhs(norm_full())
+        pt1 = refl(goal.lhs).on_rhs(simp_full())
+        pt2 = refl(goal.rhs).on_rhs(simp_full())
         
         assert pt1.rhs == pt2.rhs, 'int_norm: normalizations are not equal.'
         return pt1.transitive(pt2.symmetric())
 
-class simp_full(Conv):
+class int_norm_conv(Conv):
     def get_proof_term(self, t):
         return refl(t).on_rhs(
-            norm_full(),
+            simp_full(),
             top_conv(rewr_conv('mul_1_l')),
             top_conv(rewr_conv('pow_1_r')))
 
@@ -340,7 +340,7 @@ class norm_eq(Conv):
         elif t.is_greater():
             pt2 = pt1.on_rhs(rewr_conv('int_gt'))
             eq_refl = ProofTerm.reflexive(greater(IntType))
-        pt3 = norm_full().get_proof_term(pt2.prop.arg.arg1) # a - b = a + (-1) * b
+        pt3 = simp_full().get_proof_term(pt2.prop.arg.arg1) # a - b = a + (-1) * b
         pt4 = ProofTerm.combination(eq_refl, pt3)
         pt5 = ProofTerm.combination(pt4, refl(Const('zero', IntType))) # a - b = 0 <==> a + (-1)*b = 0
         return pt2.transitive(pt5) # a = b <==> a + (-1) * b = 0
@@ -401,7 +401,7 @@ class int_ineq_macro(Macro):
                 pt_less = norm_ineq_pt.on_rhs(rewr_conv('greater_less'))
             elif norm_ineq_pt.rhs.is_greater_eq():
                 pt_less = norm_ineq_pt.on_rhs(rewr_conv('greatereq_less'))
-            pt_norm_lhs = refl(pt_less.rhs.arg1).on_rhs(norm_full())
+            pt_norm_lhs = refl(pt_less.rhs.arg1).on_rhs(simp_full())
             return pt_less.transitive(refl(pt_less.rhs.head).combination(pt_norm_lhs).combination(refl(pt_less.rhs.arg)))
 
 @register_macro('int_ineq_mul_const')
@@ -439,7 +439,7 @@ def collect_int_polynomial_coeff(poly):
     return a list of triple: (coeff, var_name, power)
     """
     assert poly.get_type() == IntType, "%s should be an integer term" % str(poly)
-    p = norm_full().get_proof_term(poly).rhs
+    p = simp_full().get_proof_term(poly).rhs
     triple = []
     while p.is_plus() or p.is_times():
         t = p.arg if p.is_plus() else p
@@ -461,9 +461,9 @@ class int_const_ineq_macro(Macro):
         self.limit = None
 
     def eval(self, goal, prevs):
-        assert len(prevs) == 0, "int_eval_macro: no conditions expected"
+        assert len(prevs) == 0, "int_const_ineq: no conditions expected"
         assert goal.is_less() or goal.is_greater() or goal.is_less_eq() or goal.is_greater_eq(),\
-            "int_eval_macro: goal must be an inequality"
+            "int_const_ineq: goal must be an inequality"
         lhs, rhs = int_eval(goal.arg1), int_eval(goal.arg)
         if goal.is_less():
             assert lhs < rhs
@@ -524,3 +524,83 @@ class int_multiple_ineq_equiv(Macro):
         pt_rhs_mul_norm = pt_rhs_mul.transitive(norm_eq().get_proof_term(pt_rhs_mul.prop.rhs))
 
         return pt_lhs_mul_norm.transitive(pt_rhs_mul_norm.symmetric())
+        
+def omega_compare_monomial(t1, t2):
+    """Assume t1 and t2 are in the form c1 * body1 and c2 * body2,
+    compare body1 with body2."""
+    if t1.is_number() and t2.is_number():
+        return 0
+    if t1.is_number() and not t2.is_number():
+        return 1
+    if not t1.is_number() and t2.is_number():
+        return -1
+    else:
+        return term_ord.fast_compare(t1.arg, t2.arg)
+
+class omega_norm_add_num(Conv):
+    """
+    If there is an number in the term, move it to the right-most side.
+    """
+    def get_proof_term(self, t):
+        pt = refl(t)
+        if t.arg1.is_plus():
+            pt1 = pt.on_rhs(arg1_conv(self))
+            cp = omega_compare_monomial(pt1.rhs.arg1.arg, pt1.rhs.arg)
+            if cp > 0:
+                return pt1.on_rhs(swap_add_r())
+            else:
+                return pt1
+        elif t.is_plus():
+            cp = omega_compare_monomial(t.arg1, t.arg)
+            if cp > 0:
+                return pt.on_rhs(rewr_conv('int_add_comm'))
+            else:
+                return pt
+        else:
+            return pt
+
+class omega_simp_full(Conv):
+    def get_proof_term(self, t):
+        return refl(t).on_rhs(
+            simp_full(),
+            top_conv(rewr_conv('pow_1_r')),
+            omega_norm_add_num())
+
+
+@register_macro('omega_norm_int_ineq')
+class omega_norm_int_ineq_macro(Macro):
+    """
+    Convert all kinds of inequalities to less equalities.
+    Method: 
+    1) First move all terms to lhs, normalize lhs
+    2) c * x + ⋯ < 0, (-c) * x + ⋯ ≥ 1;
+    3) c * x + ⋯ ≤ 0 --> (-c) * x + ⋯ ≥ 0;
+    3) c * x + ⋯ > 0 --> c * x + ⋯ ≥ 1;
+    4) c * x + ⋯ ≥ 0 --> no conversion;
+    """
+    def get_proof_term(self, goal):
+        assert isinstance(goal, Term), "%s should be a hol term" % str(goal)
+        assert goal.is_less() or goal.is_less_eq() or goal.is_greater() or goal.is_greater_eq(),\
+            "%s should be an inequality term" % str(goal)
+
+        norm_ineq_pt = norm_eq().get_proof_term(goal)
+        # find the first monomial
+        first_monomial = norm_ineq_pt.rhs
+        while not first_monomial.is_times() and not first_monomial.is_number():
+            first_monomial = first_monomial.arg1
+
+        coeff = first_monomial.arg1 if first_monomial.is_times() else first_monomial
+        assert coeff.is_int()
+        coeff_value = int_eval(coeff)
+        # normalize
+        if norm_ineq_pt.rhs.is_greater_eq():
+            return norm_ineq_pt
+        elif norm_ineq_pt.rhs.is_greater():
+            return norm_ineq_pt.on_rhs(rewr_conv('int_great_to_geq'))
+        else:
+            if norm_ineq_pt.rhs.is_less():
+                pt_great = norm_ineq_pt.on_rhs(rewr_conv('int_less_to_geq'))
+            elif norm_ineq_pt.rhs.is_less_eq():
+                pt_great = norm_ineq_pt.on_rhs(rewr_conv('int_leq_to_geq'))
+            pt_norm_lhs = refl(pt_great.rhs.arg1).on_rhs(omega_simp_full())
+            return pt_great.transitive(refl(pt_great.rhs.head).combination(pt_norm_lhs).combination(refl(pt_great.rhs.arg)))
