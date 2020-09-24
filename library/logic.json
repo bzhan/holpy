@@ -6227,7 +6227,7 @@
         },
         {
             "name": "eq_imp_false",
-            "prop": "(A = B ⟶ false) ⟶ false",
+            "prop": "(A = A ⟶ false) ⟶ false",
             "ty": "thm",
             "vars": {
                 "A": "'a",
@@ -6236,10 +6236,28 @@
         },
         {
             "name": "disj_false",
-            "prop": "¬A ∨ false ⟷ ¬A",
+            "prop": "A ∨ false ⟷ A",
             "ty": "thm",
             "vars": {
                 "A": "bool"
+            }
+        },
+        {
+            "name": "force_disj_true1",
+            "prop": "A ∨ B ⟶ ¬B ⟶ A",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
+            "name": "force_disj_true2",
+            "prop": "A ∨ ¬B ⟶ B ⟶ A",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
             }
         }
     ],
