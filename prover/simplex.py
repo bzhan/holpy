@@ -761,7 +761,7 @@ class SimplexHOLWrapper:
         # core data structure
         self.simplex = Simplex()
         
-        # # proofterms for input inequlities, key is the HOL lhs
+        # proofterms for input inequlities, key is the HOL lhs
         self.ineq_pts = dict()
 
         # proofterms for equalities, key is the new introduced variable
@@ -773,6 +773,9 @@ class SimplexHOLWrapper:
         # proofterms for bounds, key is variable.
         self.lower_bound_pts = dict()
         self.upper_bound_pts = dict()
+
+        # additional equalities for introduced variables
+        self.intro_eq = set()
 
         # Unsatisfiable proof, key is variable which leads to inconsistency
         self.unsat = dict()
@@ -827,6 +830,7 @@ class SimplexHOLWrapper:
             s = Var('$'+string.ascii_lowercase[self.simplex.index - 1]+'$', RealType)
             s_eq_pt = ProofTerm.assume(Eq(s, lhs))
             self.eq_pts[s] = s_eq_pt
+            self.intro_eq.add(s_eq_pt)
             # construct the inequlity proofterm for x
             s_ineq_pt = ProofTerm.assume(hol_ineq).on_prop(top_conv(replace_conv(s_eq_pt.symmetric())))
             self.atom_ineq_pts = add_atom(self.atom_ineq_pts, s, s_ineq_pt)
@@ -927,7 +931,7 @@ class SimplexHOLWrapper:
         # normalize lhs
         pt_divide_aij_norm = pt_divide_aij.on_lhs(real_norm_conv())
         
-        pt_eq_mul_coeff = apply_theorem('real_eq_zero_mul_const', pt_right_shift, inst=Inst(c = Real(Fraction(1, a))))
+        pt_eq_mul_coeff = apply_theorem('real_times_0', pt_right_shift, inst=Inst(a = Real(Fraction(1, a))))
         pt_divide_aij_norm_0 = pt_divide_aij.symmetric().transitive(pt_eq_mul_coeff)
         # convert to ... + (-1) * xj = 0
         eq_lhs = pt_divide_aij_norm.lhs
@@ -1018,7 +1022,7 @@ class SimplexHOLWrapper:
             upper_bound_value = upper_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('real_compare', upper_bound_value < lower_bound_value)
             self.unsat[contr_var] = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
-            return apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
+            pt_concl = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
 
         else: 
             # contradiction comes from contr_var's value is less than it's lower bound.
@@ -1061,8 +1065,14 @@ class SimplexHOLWrapper:
             lower_bound_value = lower_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('real_compare', upper_bound_value < lower_bound_value)
             self.unsat[contr_var] = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
-            return apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
+            pt_concl = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
         
+        for eq in self.intro_eq:
+            eq = eq.prop
+            pt_concl = pt_concl.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+        
+        return pt_concl
+    
     def handle_assertion(self):
         """
         Assert each atom assertion, either get a bound or raise a contradiction.
@@ -1082,7 +1092,7 @@ class SimplexHOLWrapper:
                         xi, xj = xij
                         self.pivot(Var(xi, RealType), Var(xj, RealType), basic_var, coeff)
                     self.explanation()
-                    raise UNSATException("%s" % str(self.unsat[self.wrong_var]))
+                    raise UNSATException("%s" % str(self.unsat[Var(self.simplex.wrong_var, RealType)]))
     
 
         
