@@ -16,9 +16,11 @@ from kernel.macro import Macro
 from kernel.theory import check_proof, register_macro
 from kernel import theory
 from logic import basic, context, matcher
-from logic.logic import apply_theorem, imp_disj_iff, disj_norm, imp_conj_macro
+from logic.logic import apply_theorem, imp_disj_iff, disj_norm, imp_conj_macro, resolution
 from logic.tactic import rewrite_goal_with_prev
 from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv
+from prover import sat, tseitin
+from sat import zchaff
 # from syntax.settings import settings
 # settings.unicode = True
 from collections import deque
@@ -31,7 +33,7 @@ import time
 method = ('mp', 'mp~', 'asserted', 'trans', 'trans*', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
             'iff-true', 'iff-false', 'unit-resolution', 'commutativity', 'def-intro', 'apply-def',
             'def-axiom', 'iff~', 'nnf-pos', 'nnf-neg', 'sk', 'proof-bind', 'quant-inst', 'quant-intro',
-            'lemma', 'hypothesis', 'symm', 'refl', 'apply-def', 'intro-def', 'th-lemma')
+            'lemma', 'hypothesis', 'symm', 'refl', 'apply-def', 'intro-def', 'th-lemma', 'elim-unused')
 
 
 class Z3Term:
@@ -105,6 +107,42 @@ def translate_type(sort):
         return TVar(sort.name())
     else:
         raise NotImplementedError
+
+def solve_cnf(F):
+    encode_pt = tseitin.encode(Not(F))
+    cnf = tseitin.convert_cnf(encode_pt.prop)
+    res, proof = sat.solve_cnf(cnf)
+    assert res == 'unsatisfiable', 'solve_cnf: statement is not provable'
+    
+    # Perform the resolution steps
+    clause_pts = [ProofTerm.assume(clause) for clause in encode_pt.prop.strip_conj()]
+    for new_id in sorted(proof.keys()):
+        steps = proof[new_id]
+        pt = clause_pts[steps[0]]
+        for step in steps[1:]:
+            pt = resolution(pt, clause_pts[step])
+        clause_pts.append(pt)
+
+    contra_pt = clause_pts[-1]
+    assert contra_pt.prop == false
+    
+    # Show contradiction from ~F and definitions of new variables
+    pt1, pt2 = encode_pt, contra_pt
+    while pt1.prop.is_conj():
+        pt_left = apply_theorem('conjD1', pt1)
+        pt2 = pt2.implies_intr(pt_left.prop).implies_elim(pt_left)  # remove one clause from assumption
+        pt1 = apply_theorem('conjD2', pt1)
+    pt2 = pt2.implies_intr(pt1.prop).implies_elim(pt1)  # remove last clause from assumption
+
+    # Clear definition of new variables from antecedent
+    eqs = [t for t in pt2.hyps if t.is_equals()]
+    eqs = list(reversed(sorted(eqs, key=lambda t: int(t.lhs().name[1:]))))
+
+    for eq in eqs:
+        pt2 = pt2.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs) \
+                 .implies_elim(ProofTerm.reflexive(eq.rhs))
+
+    return apply_theorem('negI', pt2.implies_intr(pt2.hyps[0])).on_prop(rewr_conv('double_neg'))
 
 def translate(term, bounds=deque()):
     """Transalte z3 term into holpy term.
@@ -440,7 +478,7 @@ def is_ineq(t):
     """determine whether t is an inequality"""
     return t.is_less() or t.is_less_eq() or t.is_greater() or t.is_greater_eq()
 
-def rewrite(t, z3terms):
+def rewrite(t, z3terms, assertions=[]):
     """
     Multiple strategies for rewrite rule:
     a) if we want to rewrite distinct[a,...,z] to false, we can check the args whether have
@@ -515,10 +553,23 @@ def rewrite(t, z3terms):
                     return norm_int(t)
                 except AssertionError:
                     return ProofTerm.sorry(Thm([], t))
+            elif t.lhs.get_type() == BoolType and is_prop_fm(t):
+                basic.load_theory('sat')
+                f = Implies(*assertions, t)
+                time1 = time.perf_counter()
+                pt = zchaff.zChaff(Not(f)).solve()
+                time2 = time.perf_counter()
+                print("Time: ", time2 - time1)
+                for assertion in assertions:
+                    pt_assert = ProofTerm.assume(assertion)
+                    pt = ProofTerm.implies_elim(pt, pt_assert)
+                return pt
             else:
                 return ProofTerm.sorry(Thm([], t))
         else:
             raise NotImplementedError
+
+    # Try use sat solver combines with assertions to prove the conclusion
     else:
         return pt  
 
@@ -930,10 +981,23 @@ def nnf_pos(pts, concl, z3terms):
         pt_forall = ProofTerm.reflexive(forall(concl.lhs.arg.var_T))
         return ProofTerm.combination(pt_forall, pts[0])
 
+def elim_unused(eq):
+    """
+    Given an formula ?X. p, p doesn't have X, return ?X.p ⟷ p.
+    """
+    lhs, rhs = eq.lhs, eq.rhs
+    pt_lhs_assume = ProofTerm.assume(lhs)
+    pt_rhs_assume = ProofTerm.assume(rhs)
+    var = Var(lhs.arg.var_name, lhs.arg.var_T)
+    # first prove ?X.p ⟶ p
+    pt_lhs_elim_var = pt_lhs_assume.forall_elim(var).implies_intr(lhs)
+    # second prove p ⟶ ?X.p
+    pt_rhs_intro_var = pt_rhs_assume.forall_intr(var).implies_intr(rhs)
+    return ProofTerm.equal_intr(pt_lhs_elim_var, pt_rhs_intro_var)
 
 
 
-def convert_method(term, *args, subterms=None):
+def convert_method(term, *args, subterms=None, assertions=[]):
     name = term.decl().name()
     if name == 'asserted': # {P} ⊢ {P}
         return asserted(args[0])
@@ -958,7 +1022,7 @@ def convert_method(term, *args, subterms=None):
         return mp(arg1, arg2)
     elif name in ('rewrite', 'commutativity'):
         arg1, = args
-        return rewrite(arg1, subterms)
+        return rewrite(arg1, subterms, assertions=assertions)
     elif name == 'unit-resolution':
         return unit_resolution(args[0], args[1:-1], args[-1], subterms)
     elif name == 'nnf-pos':
@@ -1000,6 +1064,8 @@ def convert_method(term, *args, subterms=None):
         return sk(arg1)
     elif name == 'th-lemma':
         return th_lemma(args)
+    elif name == 'elim-unused':
+        return elim_unused(args[0])
     else:
         raise NotImplementedError
     
@@ -1023,8 +1089,20 @@ def delete_redundant(pt, redundant):
     
     return new_pt
 
+def is_prop_fm(f):
+    """Determine an assertion is whether a propositional formula."""
+    if f.is_var() or f.is_const():
+        return f.T == BoolType
+    elif f.is_comb():
+        head, args = f.head, f.args
+        head_ty = head.get_type()
+        head_range_ty = head_ty.strip_type()[-1]
+        return head_range_ty == BoolType and all(is_prop_fm(arg) for arg in args)
+    else:
+        return False
 
-def proofrec(proof, bounds=deque(), trace=False, debug=False):
+
+def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     """
     If trace is true, print reconstruction trace.
     """
@@ -1033,21 +1111,24 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False):
     r = dict()
     or_expr.clear()
     and_expr.clear()
-
+    basic.load_theory('int')
+    basic.load_theory('real')
+    hol_assertions = [translate(ast) for ast in assertions if is_prop_fm(translate(ast))]
     for i in order:
         args = tuple(r[j] for j in net[i])
         if trace:
             print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i],bounds=bounds)
+        elif term[i].decl().name() == "rewrite":
+            subterms = [term[j] for j in net[i]]
+            r[i] = convert_method(term[i], *args, subterms=subterms, assertions=hol_assertions)
+            if trace:
+                print('r['+str(i)+']', r[i])
         else:
             subterms = [term[j] for j in net[i]]
-            if i == 53:
-                i
             r[i] = convert_method(term[i], *args, subterms=subterms)
             if trace:
-                basic.load_theory('int')
-                basic.load_theory('real')
                 print('r['+str(i)+']', r[i])
     conclusion = delete_redundant(r[0], redundant)
     redundant.clear()
