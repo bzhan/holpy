@@ -178,11 +178,13 @@ def translate(term, bounds=deque()):
             return l
         elif term.is_exists():
             e = Exists(*var, translate(body, bounds))
-            bounds.clear()
+            for i in range(len(var)):
+                bounds.popleft()
             return e
         elif term.is_forall():
             f = Forall(*var, translate(body, bounds))
-            bounds.clear()
+            for i in range(len(var)):
+                bounds.popleft()
             return f
         else:
             raise NotImplementedError
