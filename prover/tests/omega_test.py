@@ -123,17 +123,6 @@ class OmegaTest(unittest.TestCase):
         for i, r1, r2, res in test_data:
             r1, r2, res = Factoid(r1), Factoid(r2), Factoid(res)
             self.assertEqual(combine_dark_factoid(i, r1, r2), res)
-
-    def testFactoidGCD(self):
-        test_data = [
-            ([2,4,2], [1,2,1]),
-            ([1,4,5], [1,4,5]),
-            ([2,0,2], [1,0,1])
-        ]
-
-        for r, res in test_data:
-            r, res = Factoid(r), Factoid(res)
-            self.assertEqual(factoid_gcd(r), res)
     
     def testTermToFactoid(self):
         x = term.Var('x', IntType)
@@ -151,7 +140,7 @@ class OmegaTest(unittest.TestCase):
             self.assertEqual(term_to_factoid(vars, r), Factoid(res))
 
     def testLookUpFKey(self):
-        db = DataBase(3)
+        db = dict()
         f1 = Factoid([3,-3,-2,1])
         f2 = Factoid([-4,2,1,2])
         f3 = Factoid([-3,3,2,-5])
@@ -159,7 +148,8 @@ class OmegaTest(unittest.TestCase):
         df2 = dfactoid(f2, NoConcl())
         df3 = dfactoid(f3, NoConcl())
 
-        db.insert(df1, df2, df3)
+        for df in [df1, df2, df3]:
+            insert_db(db, df)
 
         test_data = [
             ([3,-3,-2,5], (3,-3,-2)),
@@ -171,7 +161,7 @@ class OmegaTest(unittest.TestCase):
             self.assertEqual(lookup_fkey(db, r).factoid.key, res)
 
     def testDBAdd(self):
-        db = DataBase(3)
+        db = dict()
         f1 = Factoid([3,-3,-2,1])
         f4 = Factoid([3,-3,-2,6])
         f5 = Factoid([3,-3,-2,0])
@@ -185,8 +175,8 @@ class OmegaTest(unittest.TestCase):
         ]
 
         for r, res in test_data:    
-            db = DataBase(3)
-            db.insert(df1)
+            db = dict()
+            insert_db(db, df1)
             try:
                 db = dbadd(db, r)
                 self.assertEqual(r in db[hash(f1)], res)
