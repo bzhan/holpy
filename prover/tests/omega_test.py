@@ -160,29 +160,6 @@ class OmegaTest(unittest.TestCase):
             r = Factoid(r)
             self.assertEqual(lookup_fkey(db, r).factoid.key, res)
 
-    def testDBAdd(self):
-        db = dict()
-        f1 = Factoid([3,-3,-2,1])
-        f4 = Factoid([3,-3,-2,6])
-        f5 = Factoid([3,-3,-2,0])
-        df1 = dfactoid(f1, NoConcl())
-        df4 = dfactoid(f4, NoConcl())
-        df5 = dfactoid(f5, NoConcl())
-
-        test_data = [
-            (df4, False), 
-            (df5, True)
-        ]
-
-        for r, res in test_data:    
-            db = dict()
-            insert_db(db, df1)
-            try:
-                db = dbadd(db, r)
-                self.assertEqual(r in db[hash(f1)], res)
-            except RedundantAdditionException: 
-                self.assertEqual(r in db[hash(f1)], res)
-
     def testTopLevel(self):
         test_data = [
             ([[2,3,6],[-1,-4,7]], {0: -9, 1: 4}),

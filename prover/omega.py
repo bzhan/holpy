@@ -368,56 +368,6 @@ def lookup_fkey(db, fk):
     else:
         raise KeyError
 
-def dbadd(db, df):
-    """
-    dbadd df db
-
-    Precondition: df is neither a trivially true nor false factoid.
-
-    adds a dfactoid (i.e., a factoid along with its derivation) to a
-    database of accumulating factoids.  If the factoid is
-    actually redundant, because there is already a factoid with the
-    same constraint key in the tree with a less or equal constant,
-    then the exception RedundantAddition is raised.  Otherwise the
-    return value is the new database.
-    """
-    f = df.factoid
-    db = copy.deepcopy(db)
-    if hash(f) in db.keys():
-        for v in db[hash(f)]:
-            if v.factoid.constant <= f.constant and v.factoid.key == f.key:
-                raise RedundantAdditionException("Already have %s, so %s is redundant." % (str(v.factoid), str(df.factoid)))
-        db[hash(f)].append(df)
-    else:
-        db[hash(f)] = [df]
-
-    return db
-
-def add_check_factoid(db0, df, next, kont):
-    """
-    When add a factoid A, if there is a factoid B in database, whose keys are
-    opposite to keys in A. Suppose constant in A is ac, constant in B is bc, if
-    bc < ~ac, then we can derive a diretct contradiction from A and B.
-    """
-    try:
-        db = dbadd(db0, df)
-    except RedundantAdditionException:
-        return next(db0, kont)
-    fk, fc = df.factoid.split_factoid()
-    try:
-        negdf = lookup_fkey(db, negate_key(df.factoid))
-    except KeyError:
-        return next(db, kont)
-
-    negf, negd = negdf.factoid, negdf.deriv
-    negc = negf.constant
-    if negc < -fc:
-        return kont(Contr(DirectContr(df.deriv, negd)))
-    else:
-        return next(db, kont)
-    
-    
-
 def has_one_var(db):
     """
     returns true if all of ptree's factoids are over just one variable
@@ -476,98 +426,26 @@ def one_var_analysis(db, em):
         raise ValueError
     elif upper is not None and lower is None:
         if em == REAL:
-            return NoConcl
+            return NoConcl()
         else:
-            return Satisfiable(x_var = upper[0])
+            return Satisfiable({x_var:upper[0]})
     elif upper is None and lower is not None:
         if em == REAL:
-            return NoConcl
+            return NoConcl()
         else:
-            return Satisfiable(x_var = lower[0])
+            return Satisfiable({x_var:lower[0]})
     else:
         u, du, l, dl = upper[0], upper[1], lower[0], lower[1]
         if u < l:
             if em in (DARK, EDARK):
-                return NoConcl
+                return NoConcl()
             else:
                 return Contr(DirectContr(du, dl))
         else:
             if em == REAL:
-                return NoConcl
+                return NoConcl()
             else:
                 return Satisfiable({x_var:u})
-
-def throwaway_redundant_factoids(db, width, nextstage, kont):
-    """
-    throwaway_redundant_factoids ptree nextstage kont
-
-    checks ptree for variables that are constrained only in one sense
-    (i.e., with upper or lower bounds only).
-
-    The function nextstage takes a ptree and a continuation; it is
-    called when ptree has run out of constraints that can be thrown
-    away.
-
-    The continuation function kont is of type result -> 'a, and will be
-    called when the whole process eventually gets an answer.  This code
-    will not call it directly, but if it does throw anything away, it will
-    modify it so that a satisfying value can be calculated for the variables
-    that are chucked.
-    """
-    numvars = width - 1
-    has_low, has_up = [False] * numvars, [False] * numvars
-    for _, dfactoids in db.items():
-        for df in dfactoids:
-            fk = df.factoid.key
-            for i, k in enumerate(fk):
-                if k < 0:
-                    has_up[i] = True
-                elif k > 0:
-                    has_low[i] = True
-    
-    def find_redundant_var(db):
-        for _, dfactoids in db.items():
-            for df in dfactoids:
-                fk = df.factoid.key
-                for i, k in enumerate(fk):
-                    if has_low[i] != has_up[i]:
-                        return (i, has_up[i])
-        return None
-
-    if find_redundant_var(db) is not None:
-        j, state = find_redundant_var(db)
-        new_db = dict()
-        elim = [] # store redundant factoids   
-        for _, dfactoids in db.items():
-            for df in dfactoids:
-                fk = df.factoid.key
-                if fk[j] == 0:
-                    insert_db(new_db, df)
-                else:
-                    elim.append(df)
-        def handle_result(r):
-            if isinstance(r, Satisfiable):
-                vmap = r.store
-                def mapthis(df):
-                    if has_up[j]:
-                        v = floor(-df.factoid.eval_factoid_except(vmap, j)/df.factoid[j])
-                    else:
-                        v = ceil(-df.factoid.eval_factoid_except(vmap, j)/df.factoid[j])
-                    return v
-                evaluated = [mapthis(df) for df in elim]
-                if has_up[j]:
-                    r.update({j:min(evaluated)})
-                else:
-                    r.update({j:max(evaluated)})
-                return r
-            else:
-                return r
-
-        def kont_result(r):
-            return kont(handle_result(r))
-        return throwaway_redundant_factoids(new_db, width, nextstage, kont_result)
-    else:
-        return nextstage(db, kont)
 
 def exact_var(db, width):
     """
@@ -615,56 +493,12 @@ def least_coeff_var(db, width):
                 sums[i] += abs(ai)
     
     def find_min(lst):
-        lst = sorted(lst)
-        for index, el in enumerate(lst):
+        pairs = sorted([(val, index) for index, val in enumerate(lst)])
+        for el, index in pairs:
             if el != 0:
-                return (index, el)
-
+                return index
 
     return find_min(sums)
-
-def generate_row(db0, em, i, up, lows, next, kont):
-    """
-    "Resolves" dfactoid against all the factoids in lows, producing new
-    factoids, which get added to the ptree.  If a factoid is directly
-    contradictory, then return it immediately, using kont.  If a factoid
-    is vacuous, drop it.
-    """
-
-    def after_add(db, k):
-        return generate_row(db, em, i, up, lows[1:], next, k)
-
-    if lows == []:
-        return next(db0, kont)
-    else:
-        low = lows[0]
-
-        df = combine_dfactoid(em, i, low.factoid, low.deriv, up.factoid, up.deriv)
-        g = functools.reduce(gcd, df.factoid[:-1])
-        if g <= 1:
-            f, d = (df.factoid, df.deriv)
-        else:
-            elim_gcd_factoid = [floor(i / g) for i in df.factoid]
-            f, d = Factoid(elim_gcd_factoid), GCDCheck(df.deriv)
-
-        if f.is_true_factoid():
-            return generate_row(db0, em, i, up, lows[1:], next, kont)
-        elif f.is_false_factoid():
-            return kont(Contr(d))
-        else:
-            return add_check_factoid(db0, dfactoid(f, d), after_add, kont)
-
-def generate_cross_product(db0, em, i, ups, lows, next, kont):
-    """
-    Operate generate_row on each up in ups.
-    """
-    if ups == []:
-        return next(db0, kont)
-    else:
-        u = ups[0]
-        def after(db, k):
-            return generate_cross_product(db, em, i, ups[1:], lows, next, k)
-        return generate_row(db0, em, i, u, lows, after, kont)
 
 def extend_vmap(db, i, vmap):
     """
@@ -709,102 +543,174 @@ def zero_upto(n):
 
     return v
 
-def one_step(db, width, em, next, kont):
-    """
-    Assume that ptree doesn't contain anything directly contradictory,
-    and that there aren't any redundant constraints around (these have
-    been thrown away by throwaway_redundant_factoids).
-
-    Perform one step of the shadow calculation algorithm:
-      (a) if there is only one variable left in all of the constraints
-          in ptree do one_var_analysis to return some sort of result,
-          and pass this result to kont.
-      (b) otherwise, decide on a variable to eliminate.  If there's a
-          variable that allows for an exact shadow (has coefficients of
-          one in all of its lower-bound or upper-bound occurrences),
-          pick this.  Otherwise, take the variable whose coefficients'
-          absolute values sum to the least amount.
-      (c) the initial tree of the result contains all of those
-          constraints from the original which do not mention the
-          variable to be eliminated.
-      (d) divide the constraints that do mention the variable to be
-          eliminated into upper and lower bound sets.
-    Then (in generate_crossproduct):
-      (e) work through all of the possible combinations in
-            upper x lower
-          using combine_dfactoids.  Each new dfactoid has to be added
-          to the accumulating tree.  This may produce a direct
-          contradiction, in which case, stop and return this (again,
-          using the kont function).  Otherwise keep going.
-      (f) pass the completed new ptree to nextstage, with an augmented
-          continuation that copes with satisfiable results (though
-          satisfiable results won't come back if the mode is REAL
-          of course).
-    """
-    var_to_elim, mode = exact_var(db, width), em
-    if var_to_elim is None:
-        var_to_elim, _ = least_coeff_var(db, width)
-        mode = inexactify(em)
-
-    lowers, uppers = [], []
-    newdb = dict()
+def find_redundant_var(db, width):
+    numvars = width - 1
+    has_low, has_up = [False] * numvars, [False] * numvars
     for _, dfactoids in db.items():
         for df in dfactoids:
-            f = df.factoid
-            if f[var_to_elim] < 0:
-                uppers.append(df)
-            elif f[var_to_elim] == 0:
-                insert_db(notmentioned, df)
+            fk = df.factoid.key
+            for i, k in enumerate(fk):
+                if k < 0:
+                    has_up[i] = True
+                elif k > 0:
+                    has_low[i] = True
+    
+    for _, dfactoids in db.items():
+        for df in dfactoids:
+            fk = df.factoid.key
+            for i, k in enumerate(fk):
+                if has_low[i] != has_up[i]:
+                    return (i, has_up[i])
+    return None
+
+def extend_cross_product(db, is_exact, i, lowers, uppers):
+    """Extend db with the cross product between lowers and uppers"""
+    for low in lowers:
+        for up in uppers:
+            # Combine the two
+            f1, d1 = low.factoid, low.deriv
+            f2, d2 = up.factoid, up.deriv
+            if is_exact:
+                df = dfactoid(combine_real_factoid(i, f1, f2), RealCombine(i, d1, d2))
             else:
-                lowers.append(df)
+                df = dfactoid(combine_dark_factoid(i, f1, f2), d1)
 
-    def drop_contr(re):
-        return NoConcl if isinstance(re, Contr) else re
+            # Reduce gcd
+            g = functools.reduce(gcd, df.factoid[:-1])
+            if g > 1:
+                elim_gcd_factoid = [floor(i / g) for i in df.factoid]
+                df = dfactoid(Factoid(elim_gcd_factoid), GCDCheck(df.deriv))
 
-    def extend_satisfiable(r):
-        if isinstance(r, Satisfiable):
-            return Satisfiable(extend_vmap(db, var_to_elim, r.store))
-        else:
+            if df.factoid.is_true_factoid():
+                continue
+            elif df.factoid.is_false_factoid():
+                return Contr(df.deriv)
+            else:
+                f = df.factoid
+                found_redundant, found_contra = None, None
+                if hash(f) in db.keys():
+                    for v in db[hash(f)]:
+                        if v.factoid.key == f.key and v.factoid.constant <= f.constant:
+                            found_redundant = True
+                if hash(negate_key(f)) in db.keys():
+                    for v in db[hash(negate_key(f))]:
+                        if v.factoid.key == f.key and v.factoid.constant < -f.constant:
+                            found_contra = v.deriv
+
+                if found_redundant:
+                    continue
+                elif found_contra:
+                    return Contr(DirectContr(df.deriv, found_contra))
+                else:
+                    insert_db(db, df)
+                    
+    return db
+
+def solve(em, db, width):
+    if len(db) == 0:
+        # Trivial case
+        return Satisfiable(zero_upto(width - 2))
+
+    elif has_one_var(db):
+        # Only one variable
+        r = one_var_analysis(db, em)
+        return mode_result(em, r)
+
+    elif find_redundant_var(db, width):
+        # Has variable with only upper or lower bounds
+        j, has_up = find_redundant_var(db, width)
+        new_db = dict()
+        elim = [] # store redundant factoids
+        for _, dfactoids in db.items():
+            for df in dfactoids:
+                fk = df.factoid.key
+                if fk[j] == 0:
+                    insert_db(new_db, df)
+                else:
+                    elim.append(df)
+
+        r = solve(em, new_db, width)
+        if not isinstance(r, Satisfiable):
             return r
-    def newkont(em, mode):
-        def _newkont(r):
-            if em == EXACT and mode == EXACT:
+
+        vmap = r.store
+        def mapthis(df):
+            if has_up:
+                return floor(-df.factoid.eval_factoid_except(vmap, j)/df.factoid[j])
+            else:
+                return ceil(-df.factoid.eval_factoid_except(vmap, j)/df.factoid[j])
+        evaluated = [mapthis(df) for df in elim]
+        if has_up:
+            r.update({j:min(evaluated)})
+        else:
+            r.update({j:max(evaluated)})
+        return r
+
+    else:
+        var_to_elim = exact_var(db, width)
+        if var_to_elim:
+            is_exact = True
+            # print('exact elim %d' % var_to_elim)
+        else:
+            var_to_elim = least_coeff_var(db, width)
+            is_exact = False
+            # print('dark elim %d' % var_to_elim)
+
+        lowers, uppers = [], []
+        newdb = dict()
+        for _, dfactoids in db.items():
+            for df in dfactoids:
+                f = df.factoid
+                if f[var_to_elim] < 0:
+                    uppers.append(df)
+                elif f[var_to_elim] == 0:
+                    insert_db(newdb, df)
+                else:
+                    lowers.append(df)
+
+        def drop_contr(re):
+            return NoConcl() if isinstance(re, Contr) else re
+
+        def extend_satisfiable(r):
+            if isinstance(r, Satisfiable):
+                r2 = Satisfiable(extend_vmap(db, var_to_elim, r.store))
+                return r2
+            else:
+                return r
+
+        def db_exact():
+            return extend_cross_product(copy.deepcopy(newdb), True, var_to_elim, lowers, uppers)
+
+        def db_dark():
+            return extend_cross_product(copy.deepcopy(newdb), False, var_to_elim, lowers, uppers)
+
+        if em == EXACT:
+            if is_exact:
+                r = solve(EXACT, db_exact(), width)
                 return extend_satisfiable(r)
-            elif em == EXACT and mode == REAL:
+            else:
+                r = solve(REAL, db_exact(), width)
                 if isinstance(r, Contr):
                     return r
                 else:
-                    return one_step(db, EDARK, next, kont)
-            elif em == REAL and mode == REAL:
-                return r
-            elif em == EDARK and mode == EDARK:
-                return drop_contr(extend_satisfiable(r))
-            elif em == EDARK and mode == DARK:
-                return drop_contr(extend_satisfiable(r))
-            elif em == DARK and mode == DARK:
+                    r2 = solve(EDARK, db_dark(), width)
+                    return drop_contr(extend_satisfiable(r2))
+        elif em == REAL:
+            return solve(REAL, db_exact(), width)
+        elif em == EDARK:
+            if is_exact:
+                r = solve(EDARK, db_exact(), width)
                 return drop_contr(extend_satisfiable(r))
             else:
-                raise ValueError
-        return _newkont
-
-    def newnext(db, k):
-        return next(db, width, mode, k)
-
-    return generate_cross_product(newdb, em, var_to_elim, uppers, lowers, newnext, newkont(em, mode))
-
-def kont(r):
-    return r
-
-def toplevel(db, width, em, kont):
-    def after_throwaway(db, k):
-        if len(db) == 0:
-            return k(Satisfiable(zero_upto(width - 2)))
-        elif has_one_var(db):
-            return k(mode_result(em, one_var_analysis(db, em)))
-        else:
-            return k(one_step(db, width, em, toplevel, k))
-
-    return throwaway_redundant_factoids(db, width, after_throwaway, kont)
+                r = solve(DARK, db_dark(), width)
+                return drop_contr(extend_satisfiable(r))
+        else:  # em == DARK
+            if is_exact:
+                r = solve(DARK, db_exact(), width)
+                return drop_contr(extend_satisfiable(r))
+            else:
+                r = solve(DARK, db_dark(), width)
+                return drop_contr(extend_satisfiable(r))
 
 def solve_matrix(matrix, mode=EXACT):
     """
@@ -814,4 +720,4 @@ def solve_matrix(matrix, mode=EXACT):
     db = dict()
     for ft in fs:
         insert_db(db, dfactoid(ft, ASM(ft)))
-    return toplevel(db, len(matrix[0]), DARK, kont).store
+    return solve(EXACT, db, len(matrix[0])).store
