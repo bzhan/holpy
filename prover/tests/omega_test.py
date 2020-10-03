@@ -135,36 +135,20 @@ class OmegaTest(unittest.TestCase):
             r, res = Factoid(r), Factoid(res)
             self.assertEqual(factoid_gcd(r), res)
     
-    def testDestPlus(self):
+    def testTermToFactoid(self):
         x = term.Var('x', IntType)
         y = term.Var('y', IntType)
         z = term.Var('z', IntType)
+        vars = [x, y, z]
 
         test_data = [
-            (x + y, (x, y)),
-            (x + y + z, (x, y, z)),
-            (x * y, (x*y,)),
-            (x + y - z, (x+y-z,))
+            (3 * x + 2 * y + (-2), (3,2,0,-2)),
+            (1 * y, (0,1,0,0)),
+            (term.Number(IntType, 6), (0,0,0,6))
         ]
 
         for r, res in test_data:
-            self.assertEqual(dest_plus(r), res)
-
-    # def testTermToFactoid(self):
-    #     x = term.Var('x', IntType)
-    #     y = term.Var('y', IntType)
-    #     z = term.Var('z', IntType)
-    #     vars = [x, y, z]
-
-    #     test_data = [
-    #         (3 * x + 2 * y + (-2), (3,2,0,-2)),
-    #         (y, (0,1,0,0)),
-    #         (6, (0,0,0,6))
-    #     ]
-
-    #     for r, res in test_data:
-    #         print(term_to_factoid(vars, r))
-            # self.assertEqual(term_to_factoid(Factoid(r)), Factoid(res))
+            self.assertEqual(term_to_factoid(vars, r), Factoid(res))
 
     def testLookUpFKey(self):
         db = DataBase(3)

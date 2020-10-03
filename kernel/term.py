@@ -846,8 +846,8 @@ class Term():
             else:
                 return Fraction(num) / denom
 
-        if not self.is_comb('of_nat', 1) and self.arg.is_binary():
-            raise TermException('dest_number: term is not a number.')
+        if not (self.is_comb('of_nat', 1) and self.arg.is_binary()):
+            raise TermException('dest_number: term %s is not a number.' % self)
         return self.arg.dest_binary()
 
     def __add__(self, other):

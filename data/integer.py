@@ -18,6 +18,19 @@ from logic import matcher
 basic.load_theory('int')
 
 
+def strip_plus(t):
+    """Given t1 + ... + tn, return [t1, ..., tn]."""
+    if t.is_plus():
+        return strip_plus(t.arg1) + [t.arg]
+    else:
+        return [t]
+
+def dest_times(t):
+    """Given t1 * t2, return (t1, t2)."""
+    assert t.is_times(), "dest_times"
+    return (t.arg1, t.arg)
+
+
 """Normalization of integer polynomials"""
 
 class swap_mult_r(Conv):

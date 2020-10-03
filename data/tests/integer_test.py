@@ -1,5 +1,7 @@
 import unittest
 from data import integer
+from kernel import term
+from kernel.type import IntType
 from logic.tests.logic_test import test_macro
 from syntax import parser
 from logic import basic
@@ -7,6 +9,21 @@ from logic import basic
 basic.load_theory('int')
 
 class IntegerTest(unittest.TestCase):
+    def testDestPlus(self):
+        x = term.Var('x', IntType)
+        y = term.Var('y', IntType)
+        z = term.Var('z', IntType)
+
+        test_data = [
+            (x + y, [x, y]),
+            (x + y + z, [x, y, z]),
+            (x * y, [x*y]),
+            (x + y - z, [x+y-z])
+        ]
+
+        for r, res in test_data:
+            self.assertEqual(integer.strip_plus(r), res)
+
     def testIntNormMacro(self):
         test_data = (
             ("x * z * y = x * y * z"),

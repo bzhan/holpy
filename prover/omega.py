@@ -1,13 +1,19 @@
 """
 Implementation of Omega Test decision procedure.
 
-Reference: https://github.com/HOL-Theorem-Prover/HOL/blob/develop/src/integer/OmegaMLShadow.sml
+Reference: implementation of Omega in HOL4
+https://github.com/HOL-Theorem-Prover/HOL/blob/develop/src/integer/OmegaMLShadow.sml
+
 """
+
 import collections
 import functools
-from math import gcd, ceil, floor
-from kernel.term import Int
 import copy
+from math import gcd, ceil, floor
+
+from kernel.term import Int
+from data import integer
+
 
 class NoGCDException(Exception):
     """Indicates there are no gcd in current factoid."""
@@ -26,6 +32,11 @@ class RedundantAdditionException(Exception):
         return self.msg
 
 class Factoid:
+    """A factoid is represented by the list of coefficients c[0..n], meaning
+
+    0 <= c[0] * v_0 + ... c[n-1] * v_{n-1} + c[n] * 1
+
+    """
     def __init__(self, coeff):
         assert isinstance(coeff, collections.abc.Iterable) and \
             all(isinstance(i, int) for i in coeff) and len(coeff) > 0, "Invalid coefficients list"
@@ -47,7 +58,7 @@ class Factoid:
         if 0 <= self.coeff[0]:
             h = 0
             for i in range(len(self.coeff) - 1):
-                h += i * self.coeff[i]
+                h += (i+1) * self.coeff[i]
             return h
         else:
             return hash(Factoid([-n for n in self.coeff]))
@@ -99,7 +110,6 @@ class Factoid:
         Note j starts from 0.
         """
         s = 0
-        s = 0
         for i in range(len(self.coeff) - 1):
             if self.coeff[i] != 0 and i in vmap.keys() and i != j:
                 s += self.coeff[i] * vmap[i]
@@ -112,33 +122,33 @@ def negate_key(f):
     
 def lcm(a, b):
     """Return least common multiple"""
-    return a * b / (gcd(a, b))
+    return a * b / gcd(a, b)
 
 def combine_real_factoid(i, f1, f2):
     """
-    takes two factoids and produces a fresh one by "variable
-    elimination" over the i'th variable in the vector.  It requires
-    that the coefficient of v_i is strictly positive in f1, and
-    strictly negative in f2.  The combination may produce a factoid where
-    the coefficients can all be divided through by some number, but
-    this factor won't be the gcd of the coefficients of v_i; this
-    factor is eliminated from the outset.
+    Combine two factoids by "variable elimination" on the i'th variable.
+    
+    The coefficient of v_i should be strictly positive in f1, and
+    strictly negative in f2. The combination may produce a factoid where
+    all coefficients can be divided by some factor.
+
     """
-    assert f1[i] > 0 and f2[i] < 0, "combine_real_factoid"
-    assert i < len(f1) - 1
+    assert f1[i] > 0 and f2[i] < 0 and i < len(f1) - 1, "combine_real_factoid"
     c0, d0 = f1[i], -f2[i]
-    l = lcm(c0, d0)
-    c, d = int(l / d0), int(l / c0)
+    g = gcd(c0, d0)
+    c, d = int(c0 / g), int(d0 / g)
     real_factoid = [c * n + d * m for m, n in zip(f1, f2)]
     return Factoid(real_factoid)
 
 def combine_dark_factoid(i, f1, f2):
     """
-    takes two factoids and combines them to produce a new, "dark shadow"
-    factoid.  As above, the first one must have a positive coefficient of
-    i, and the second a negative coefficient.
+    Combine two factoids to produce a "dark shadow" factoid.
+    
+    The coefficient of v_i should be strictly positive in f1, and
+    strictly negative in f2.
+
     """
-    assert f1[i] > 0 and f2[i] < 0, "combine_dark_factoid"
+    assert f1[i] > 0 and f2[i] < 0 and i < len(f1) - 1, "combine_real_factoid"
     a, b = f1[i], -f2[i]
     dark_factoid = [a * n + b * m for m, n in zip(f1, f2)]
     dark_factoid[-1] = dark_factoid[-1] - (a - 1) * (b - 1)
@@ -147,8 +157,10 @@ def combine_dark_factoid(i, f1, f2):
 
 def factoid_gcd(f):
     """
-    eliminates common factors in the variable coefficients of a factoid,
-    or raises the exception no_gcd, if there is no common factor.
+    Eliminates common factors in the variable coefficients of a factoid.
+
+    Raises NoGCDException if there is no common factor.
+
     """
     g = functools.reduce(gcd, f[:-1])
     if g < 1:
@@ -157,30 +169,18 @@ def factoid_gcd(f):
     elim_gcd_factoid = [floor(i / g) for i in f]
     return Factoid(elim_gcd_factoid)
 
-def dest_plus(tm):
-    """tm is of form x + y, return (x, y)"""
-    if not tm.is_plus():
-        return (tm,)
-    if not tm.arg1.is_plus():
-        return (tm.arg1, tm.arg)
-    else:
-        return dest_plus(tm.arg1) + (tm.arg,)
 
-def dest_times(tm):
-    """tm is of form x * y, return (x, y)"""
-    assert tm.is_times()
-    return (tm.arg1, tm.arg)
-
-
-def term_to_factoid(vars, tm):
+def term_to_factoid(vars, t):
     """
-    returns the factoid corresponding to tm.  tm is thus of the form
+    Returns the factoid corresponding to a term t.
+
+    Given t of the form
       0 <= c1 * v1 + ... + cn * vn + num
     Assumes that the variables are in the "correct" order (as given in the
-    list vars), but that all are not necessarily present.  Omission
-    indicates a coefficient of zero, of course.
-    """
+    list vars), but are not necessarily all present. Omission indicates
+    a coefficient of zero.
     
+    """
     def mk_coeff(vlist, slist):
         if len(vlist) == 0 and len(slist) == 0:
             return [0]
@@ -193,7 +193,7 @@ def term_to_factoid(vars, tm):
         elif len(vlist) > 0 and len(slist) > 0:
             s, v = slist[0], vlist[0]
             if s.is_times():
-                c, mv = dest_times(s)
+                c, mv = integer.dest_times(s)
                 if mv == v:
                     return [c.dest_number()] + mk_coeff(vlist[1:], slist[1:])
                 else:
@@ -201,12 +201,14 @@ def term_to_factoid(vars, tm):
             else:
                 return [0] + mk_coeff(vlist[1:], slist)
 
-    return Factoid(mk_coeff(vars, dest_plus(tm)))
+    return Factoid(mk_coeff(vars, integer.strip_plus(t)))
 
 def factoid_to_term(vars, f):
     """
-    returns the term corresponding to f, interpreting f over the list of
-    variables vars.
+    Returns the term corresponding to f.
+    
+    Here vars is the list of variables.
+
     """
     t = None
     for v, c in zip(vars, f[:-1]):
@@ -221,6 +223,7 @@ class Derivation:
     pass
 
 class ASM(Derivation):
+    """Assumptions"""
     def __init__(self, t):
         self.t = t
 
@@ -263,12 +266,20 @@ class DirectContr(Derivation):
     def __repr__(self):
         return str(self)
 
+
+# A factoid together with its derivation
 dfactoid = collections.namedtuple('dfactoid', ['factoid', 'deriv'])
 
 def split_dfactoid(df):
+    """Given a factoid with a derivation, extract its key, constant,
+    and derivation in a three-tuple.
+
+    """
     return (df.factoid.key, df.factoid.constant, df.deriv)
 
+
 class Result:
+    """Result of the decision algorithm."""
     pass
 
 class Contr(Result):
@@ -307,42 +318,20 @@ class NoConcl(Result):
     def __repr__(self):
         return str(self)
 
-def direct_contradiction(d1, d2):
-    return Contr(DirectContr(d1, d2))
-
-def gcd_check_dfactoid(df):
-    try:
-        return (factoid_gcd(df.factoid), GCDCheck(df.deriv))
-    except:
-        return (df.factoid, df.deriv)
-
-def dfactoid_key(f, d):
-    return f.key
-
-def dfactoid_derivation(f, d):
-    return d
-
-def term_to_dfactoid(vars, t):
-    return (term_to_factoid(vars, t), ASM(t))
-
 
 """
-    The "elimination mode" datatype.
+The elimination modes keeps track what sort of shadow we're currently
+working on.
 
-    This records what sort of shadow we're currently working on.
-
-"""
-
-REAL, DARK, EXACT, EDARK = range(4)
-
-"""
 REAL when we're looking for a contradiction (only)
-DARK when we're looking for satisfiability and the problem is not
-     exact
+DARK when we're looking for satisfiability and the problem is not exact
 EXACT when we're looking for either a contradiction or satisfiability.
 EDARK when we're looking for satisfiability (i.e., have switched from
       a REAL search, but where the problem is still EXACT)
+
 """
+REAL, DARK, EXACT, EDARK = range(4)
+
 
 def inexactify(mode):
     if mode == EXACT:
@@ -470,7 +459,7 @@ def add_check_factoid(db0, df, next, kont):
     negf, negd = negdf.factoid, negdf.deriv
     negc = negf.constant
     if negc < -fc:
-        return kont(direct_contradiction(df.deriv, negd))
+        return kont(Contr(DirectContr(df.deriv, negd)))
     else:
         return next(db, kont)
     
@@ -557,7 +546,7 @@ def one_var_analysis(db, em):
             if em in (DARK, EDARK):
                 return NoConcl
             else:
-                return direct_contradiction(du, dl)
+                return Contr(DirectContr(du, dl))
         else:
             if em == REAL:
                 return NoConcl
@@ -706,7 +695,12 @@ def generate_row(db0, em, i, up, lows, next, kont):
         return next(db0, kont)
     else:
         low = lows[0]
-        f, d = gcd_check_dfactoid(combine_dfactoid(em, i, low.factoid, low.deriv, up.factoid, up.deriv))
+
+        df = combine_dfactoid(em, i, low.factoid, low.deriv, up.factoid, up.deriv)
+        try:
+            f, d = (factoid_gcd(df.factoid), GCDCheck(df.deriv))
+        except:
+            f, d = (df.factoid, df.deriv)
         if f.is_true_factoid():
             return generate_row(db0, em, i, up, lows[1:], next, kont)
         elif f.is_false_factoid():
