@@ -123,7 +123,7 @@ def read_cnf_file(cnf_file):
         clause_num = int(base_info[3][:-1])
         disjs = []
         for l in lines[1:]:
-            lits = l.split(' ')
+            lits = list(filter(None, re.split(r'(?:\t|\n|\s)\s*', l)))
             t = []
             for lit in lits[:-1]:
                 l = int(lit)
@@ -250,58 +250,26 @@ class zChaff:
     def clause_num(self):
         return len(self.cnf_list)
 
-    def cnf_file_format(self):
+    def solve(self):
         """
-        Write the formula to a .cnf file.
-        The format is
-
-        p cnf variable_num clause num
-        clause_1
-        clause_2
-        ⋯
-        clause_n
-        
-        each clause end with 0
+        Call zChaff solver, return the proof term.
         """
+        # First write the cnf to a .cnf file.
         s = 'p cnf ' + str(self.var_num) + ' ' + str(self.clause_num)
         for clause in self.cnf_list:
             s += '\n' + ' '.join(str(l) for l in clause) + ' 0'
-        return s
-        
-    def call_zchaff(self):
-        """
-        Call zChaff solver, check if the cnf is SAT or UNSAT,
-        if the cnf is unsat, there will be a proof trace i
-        """
-        cnf_file = self.cnf_file_format()
         with open('./sat/x.cnf', 'w') as f:
-            f.write(cnf_file)
-        
+            f.write(s)
+
+        # then call zChaff to get the proof trace
         p = subprocess.Popen('.\\sat\\binaries\\zchaff.exe .\\sat\\x.cnf', 
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         stdout, stderr = p.communicate()
-        print(stdout)
         result = stdout.decode('utf-8').split('\n')[-2]
-        if result == "RESULT:\tUNSAT\r":
-            self.state = "UNSAT"
-        else:
-            self.state = "SAT"
-        
-        return self.state
+        assert result == "RESULT:\tUNSAT\r"
 
-    def handle_resolve_trace(self):
-        """
-        Resolve the trace provided by zChaff.
-        
-        The trace contains three sections:
-        1) The new introduced clauses:
-        CL: clause_index <= [c1, c2, ..., cn]
-        2) The variable assignments implied by the first section and by other variable assignment:
-        VAR: 'var_index' L: 'level' V: 'value' A: 'antecedent' Lits: [antecedent literals list]
-        3) The conflict clause, in which the literals are all false:
-        clause_index: [literals]
-        """
+        # proof reconstruct 
         first = []
         second = []
         third = []
@@ -340,9 +308,9 @@ class zChaff:
 
         conflict_cls = third[0]
         literal_pt = [var_pt[floor(i/2)] for i in conflict_cls.lits]
-        self.conflict_pt = DisjFalseMacro().get_proof_term(self.clause_pt[conflict_cls.cls], literal_pt)        
+        self.conflict_pt = DisjFalseMacro().get_proof_term(self.clause_pt[conflict_cls.cls], literal_pt)    
 
-    def solve_cnf(self):
+        # return the theorem
         pt1, pt2 = self.encode_pt, self.conflict_pt
         while pt1.prop.is_conj():
             pt_left = apply_theorem('conjD1', pt1)
@@ -358,4 +326,4 @@ class zChaff:
             pt2 = pt2.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs) \
                     .implies_elim(ProofTerm.reflexive(eq.rhs))
 
-        return apply_theorem('negI', pt2.implies_intr(pt2.hyps[0])).on_prop(rewr_conv('double_neg'))
+        return apply_theorem('negI', pt2.implies_intr(pt2.hyps[0])).on_prop(rewr_conv('double_neg'))                
