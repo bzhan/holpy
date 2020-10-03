@@ -175,7 +175,7 @@ class OmegaTest(unittest.TestCase):
         ]
 
         for matrix, sol in test_data:
-            self.assertEqual(solve_matrix(matrix), sol)
+            self.assertEqual(solve_matrix(matrix), ("SAT", sol))
 
     def testContradiction(self):
         test_data = [

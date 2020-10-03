@@ -154,20 +154,6 @@ def combine_dark_factoid(i, f1, f2):
     dark_factoid[-1] = dark_factoid[-1] - (a - 1) * (b - 1)
     return Factoid(dark_factoid)
 
-def dest_plus(tm):
-    """tm is of form x + y, return (x, y)"""
-    if not tm.is_plus():
-        return (tm,)
-    if not tm.arg1.is_plus():
-        return (tm.arg1, tm.arg)
-    else:
-        return dest_plus(tm.arg1) + (tm.arg,)
-
-def dest_times(tm):
-    """tm is of form x * y, return (x, y)"""
-    assert tm.is_times()
-    return (tm.arg1, tm.arg)
-
 def term_to_factoid(vars, t):
     """
     Returns the factoid corresponding to a term t.
@@ -191,7 +177,7 @@ def term_to_factoid(vars, t):
         elif len(vlist) > 0 and len(slist) > 0:
             s, v = slist[0], vlist[0]
             if s.is_times():
-                c, mv = dest_times(s)
+                c, mv = integer.dest_times(s)
                 if mv == v:
                     return [c.dest_number()] + mk_coeff(vlist[1:], slist[1:])
                 else:
@@ -199,7 +185,7 @@ def term_to_factoid(vars, t):
             else:
                 return [0] + mk_coeff(vlist[1:], slist)
 
-    return Factoid(mk_coeff(vars, dest_plus(t)))
+    return Factoid(mk_coeff(vars, integer.strip_plus(t)))
 
 def factoid_to_term(vars, f):
     """
@@ -620,7 +606,10 @@ def extend_cross_product(db, is_exact, i, lowers, uppers):
     return db
 
 def solve(em, db, width):
-    if len(db) == 0:
+    if isinstance(db, Contr):
+        return db
+
+    elif len(db) == 0:
         # Trivial case
         return Satisfiable(zero_upto(width - 2))
 
@@ -733,4 +722,10 @@ def solve_matrix(matrix, mode=EXACT):
     db = dict()
     for ft in fs:
         insert_db(db, dfactoid(ft, ASM(ft)))
-    return solve(EXACT, db, len(matrix[0])).store
+    r = solve(EXACT, db, len(matrix[0]))
+    if isinstance(r, Satisfiable):
+        return "SAT", r.store
+    elif isinstance(r, Contr):
+        return "UNSAT", r
+    elif isinstance(r, NoConcl):
+        return "NOCONCL", None
