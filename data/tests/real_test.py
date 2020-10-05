@@ -152,6 +152,29 @@ class RealTest(unittest.TestCase):
         for expr, res in test_data:
             test_conv(self, 'transcendentals', auto.auto_conv(), vars=vars, t=expr, t_res=res)
 
+    def testNegInequation(self):
+        test_data = [
+            ("~(x > y)", "x <= y"),
+            ("~(x >= y)", "y > x"),
+            ("~(x < y)", "y <= x"),
+            ("~(x <= y)", "x > y")
+        ]
+
+        vars = {'x' : 'real', 'y' : 'real'}
+        for expr, res in test_data:
+            test_conv(self, 'transcendentals', real.norm_neg_real_ineq_conv(), vars=vars, t=expr, t_res=res)
+
+    def testNormInequation(self):
+        test_data = [
+            ("a - b > c", "0 < a + -1 * b + -1 * c"),
+            ("a + b < c", "0 < -1 * a + -1 * b + c"),
+            ("-b * 5 <= 2 * a + -4 * c", "0 <= 2 * a + 5 * b + -4 * c"),
+            ("a - a >= b - c", "0 <= -1 * b + c")
+        ]
+
+        for expr, res in test_data:
+            vars = {'a' : 'real', 'b' : 'real', 'c' : 'real'}
+            test_conv(self, 'transcendentals', real.norm_real_ineq_conv(), vars=vars, t=expr, t_res=res)
 
 if __name__ == "__main__":
     unittest.main()

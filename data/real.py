@@ -17,6 +17,7 @@ from data import nat
 from data.set import setT
 from logic import logic
 from logic import auto
+from logic import matcher
 from logic.conv import rewr_conv, binop_conv, arg1_conv, arg_conv, try_conv, Conv, ConvException
 from logic.tactic import MacroTactic
 from kernel.proofterm import refl, ProofTerm
@@ -777,3 +778,47 @@ class real_norm_method(Method):
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "real_norm_method"
         state.apply_tactic(id, MacroTactic('real_norm'))
+
+def is_real_ineq(tm):
+    """Check if tm is an real inequality."""
+    return (tm.is_less() or tm.is_less_eq() or tm.is_greater() or tm.is_greater_eq()) and tm.arg1.get_type() == RealType
+
+class norm_real_ineq_conv(Conv):
+    """
+    Given an linear real arithmetic inequation, normalize it to canonical form.
+    There are four possible input inequality forms:
+    1) a < b <==> 0 < b - a
+    2) a > b <==> 0 < a - b
+    3) a ≤ b <==> 0 ≤ b - a
+    4) a ≥ b <==> 0 ≤ a - b
+    """
+    def get_proof_term(self, tm):
+        assert is_real_ineq(tm), "Invalid term: %s" % str(tm)
+        if tm.is_less():
+            return rewr_conv('real_sub_lt', sym=True).get_proof_term(tm).on_rhs(arg_conv(auto.auto_conv()))
+        elif tm.is_greater():
+            return rewr_conv('real_ge_to_le').get_proof_term(tm).on_rhs(norm_real_ineq_conv())
+        elif tm.is_less_eq():
+            return rewr_conv('real_sub_le', sym=True).get_proof_term(tm).on_rhs(arg_conv(auto.auto_conv()))
+        elif tm.is_greater_eq():
+            return rewr_conv('real_geq_to_leq').get_proof_term(tm).on_rhs(norm_real_ineq_conv())
+
+class norm_neg_real_ineq_conv(Conv):
+    """
+    Give a negative linear real arithmetic inequation, normalize it to canonical form:
+    There are four possible input inequality form:
+    1) Not(a < b) <==> a ≥ b
+    2) Not(a ≤ b) <==> a > b
+    3) Not(a > b) <==> a ≤ b
+    4) Not(a ≥ b) <==> a < b
+    """
+    def get_proof_term(self, tm):
+        assert tm.is_not() and is_real_ineq(tm.arg), "Invalid term: %s" % str(tm)
+        if tm.arg.is_less():
+            return rewr_conv('real_not_lt').get_proof_term(tm)
+        elif tm.arg.is_greater():
+            return arg_conv(rewr_conv('real_ge_to_le')).get_proof_term(tm).on_rhs(norm_neg_real_ineq_conv())
+        elif tm.arg.is_less_eq():
+            return rewr_conv('real_not_leq').get_proof_term(tm)
+        else:
+            return arg_conv(rewr_conv('real_geq_to_leq')).get_proof_term(tm).on_rhs(norm_neg_real_ineq_conv())
