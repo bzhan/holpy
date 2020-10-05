@@ -793,7 +793,8 @@ class norm_real_ineq_conv(Conv):
     4) a ≥ b <==> 0 ≤ a - b
     """
     def get_proof_term(self, tm):
-        assert is_real_ineq(tm), "Invalid term: %s" % str(tm)
+        if not is_real_ineq(tm):
+            raise ConvException("Invalid term: %s" % str(tm))
         if tm.is_less():
             return rewr_conv('real_sub_lt', sym=True).get_proof_term(tm).on_rhs(arg_conv(auto.auto_conv()))
         elif tm.is_greater():
@@ -813,7 +814,8 @@ class norm_neg_real_ineq_conv(Conv):
     4) Not(a ≥ b) <==> a < b
     """
     def get_proof_term(self, tm):
-        assert tm.is_not() and is_real_ineq(tm.arg), "Invalid term: %s" % str(tm)
+        if not tm.is_not() or not is_real_ineq(tm.arg):
+            raise ConvException("Invalid term: %s" % str(tm))
         if tm.arg.is_less():
             return rewr_conv('real_not_lt').get_proof_term(tm)
         elif tm.arg.is_greater():
