@@ -994,6 +994,19 @@ class Term():
 
         return term_ord.sorted_terms(rec(self))
 
+    def get_consts(self):
+        def rec(t):
+            if t.is_const():
+                return [t]
+            elif t.is_comb():
+                return rec(t.fun) + rec(t.arg)
+            elif t.is_abs():
+                return rec(t.body)
+            else:
+                return []
+        return term_ord.sorted_terms(rec(self))
+        
+
     def has_var(self):
         if self.is_var():
             return True
