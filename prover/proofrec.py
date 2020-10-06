@@ -8,26 +8,29 @@ import z3
 from z3.z3consts import *
 from data.integer import int_norm_macro, int_ineq_macro, collect_int_polynomial_coeff,\
     int_multiple_ineq_equiv
+from data.real import norm_real_ineq_conv, norm_neg_real_ineq_conv, real_const_eq_conv
 from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar, TVar
 from kernel.term import *
 from kernel.thm import Thm
-from kernel.proofterm import ProofTerm
+from kernel.proofterm import ProofTerm, refl
 from kernel.macro import Macro
 from kernel.theory import check_proof, register_macro
 from kernel import theory
 from logic import basic, context, matcher
 from logic.logic import apply_theorem, imp_disj_iff, disj_norm, imp_conj_macro, resolution
 from logic.tactic import rewrite_goal_with_prev
-from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv
+from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv
 from prover import sat, tseitin
 from sat import zchaff
-# from syntax.settings import settings
-# settings.unicode = True
+from syntax.settings import settings
+settings.unicode = True
 from collections import deque
 import functools
 import operator
 import json
 import time
+
+basic.load_theory('smt')
 
 # Z3 proof method name.
 method = ('mp', 'mp~', 'asserted', 'trans', 'trans*', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
@@ -261,7 +264,6 @@ def translate(term, bounds=deque()):
         raise NotImplementedError
 
 def and_elim(pt, concl):
-    context.set_context('logic_base')
     r = dict()
     def rec(pt):
         if pt.prop == concl:
@@ -462,11 +464,9 @@ def distinct_monotonicity(pts, concl, z3terms):
 
 def schematic_rules_rewr(thms, lhs, rhs):
     """Rewrite by instantiating schematic theorems."""
-    context.set_context('smt')
     if rhs == true:
         rhs
     for thm in thms:
-        context.set_context('smt')
         pt = ProofTerm.theorem(thm)
         try:
             inst1 = matcher.first_order_match(pt.prop.lhs, lhs)
@@ -483,12 +483,11 @@ def is_ineq(t):
 def rewrite(t, z3terms, assertions=[]):
     """
     Multiple strategies for rewrite rule:
-    a) if we want to rewrite distinct[a,...,z] to false, we can check the args whether have
-    same term.
+    a) if we want to rewrite distinct[a,...,z] to false, we can check whether there are
+    same terms in args.
     """
 
     if z3.is_distinct(z3terms[0].arg(0)) and z3.is_false(z3terms[0].arg(1)):
-        context.set_context('logic')
         conjs = t.lhs.strip_conj()
         same = None
         for i in range(len(conjs)):
@@ -505,13 +504,29 @@ def rewrite(t, z3terms, assertions=[]):
                 pt10 = apply_theorem('falseE', inst=Inst(A=t.lhs)) # ⊢ false --> ~A ∧ B
                 return apply_theorem('iffI', pt9, pt10, inst=Inst(A=t.lhs, B=false)) # ~A ∧ B <--> false
 
+    occur_vars = t.get_vars()
+    occur_consts = t.get_consts()
+    # real situation
+    if (len(occur_vars) != 0 and all(v.T == RealType for v in occur_vars))\
+            or (len(occur_consts) != 0 and all(v.T == RealType for v in occur_vars)):
+        refl_pt = refl(t)
+        conv_pt = refl_pt.on_rhs(
+            try_conv(bottom_conv(norm_neg_real_ineq_conv())),
+            try_conv(bottom_conv(norm_real_ineq_conv())),
+            try_conv(bottom_conv(real_const_eq_conv())),
+            try_conv(rewr_conv('eq_mean_true')))
+
+        # print("###real pt: ", conv_pt.on_prop(try_conv(rewr_conv('eq_true', sym=True))))
+        pt_after_conv = conv_pt.on_prop(try_conv(rewr_conv('eq_true', sym=True)))
+        if pt_after_conv.prop == t:
+            return pt_after_conv
+
     def norm_int(t):
         """Use nat norm macro to normalize nat expression."""
         return int_norm_macro().get_proof_term(t, [])
 
     def equal_is_true(pt):
         """pt is ⊢ x = y, return: ⊢ (x = y) ↔ true"""
-        context.set_context('logic_base')
         pt0 = apply_theorem('trueI') # ⊢ true
         pt1 = pt0.implies_intr(pt.prop) # ⊢ (x = y) → true
         pt2 = pt.implies_intr(pt0.prop) # ⊢ true → (x = y)
@@ -521,7 +536,6 @@ def rewrite(t, z3terms, assertions=[]):
         return ProofTerm.reflexive(t.lhs)
     if is_ineq(t.lhs) and is_ineq(t.rhs) and t.lhs.arg1.get_type() == IntType:
         
-        context.set_context('int')
         lhs_norm = int_ineq_macro().get_proof_term(t.lhs)
         rhs_norm = int_ineq_macro().get_proof_term(t.rhs)
         try:
@@ -581,7 +595,6 @@ def quant_inst(p):
     Note: because "a" maybe not equal to "x", so we need to
     replace "x" by "a" when necessary.
     """
-    basic.load_theory('logic')
     pat = ProofTerm.theorem('forall_elim')
     f = Implies(p.arg1.arg, p.arg)
     inst = matcher.first_order_match(pat.prop, f)
@@ -651,7 +664,6 @@ def iff_true(arg1, arg2):
     arg1: ⊢ p
     return: ⊢ p <--> true
     """
-    basic.load_theory('logic')
     pt1 = apply_theorem('eq_true', inst=Inst(A=arg1.prop))
     return ProofTerm.equal_elim(pt1, arg1)
 
@@ -660,14 +672,12 @@ def iff_false(arg1, arg2):
     arg1: ⊢ ¬p
     return: ⊢ ¬p <--> false
     """
-    basic.load_theory('logic')
     pt1 = apply_theorem('eq_false', inst=Inst(A=arg1.prop.arg))
     return ProofTerm.equal_elim(pt1, arg1)
 
 def not_or_elim(arg1, arg2):
     """
     """
-    context.set_context('logic')
     th = theory.get_theorem('de_morgan_thm2')
     r = dict()
     def rec(pt):
@@ -730,7 +740,6 @@ def beta_norm_lambda_eq(pt):
 
 def schematic_rules_def_axiom(axiom):
     """Rewrite by instantiating def_axiom schematic theorems."""
-    context.set_context('smt')
     with open('library/smt.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     thms = [f_data['content'][i]['name'] for i in range(len(f_data['content'])) if f_data['content'][i]['name'][0]=='d']
@@ -840,7 +849,6 @@ def unit_resolution(pt1, pts, concl, z3terms):
     with Ti, the set delete corresponding li.
     c) call resolution method to resolve each Ti.
     """
-    basic.load_theory('int')
     n = len(z3terms) - 2
     original_disj = z3terms[0].arg(z3terms[0].num_args() - 1)
     if z3.is_or(original_disj):
@@ -1113,20 +1121,12 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     r = dict()
     or_expr.clear()
     and_expr.clear()
-    basic.load_theory('int')
-    basic.load_theory('real')
-    hol_assertions = [translate(ast) for ast in assertions if is_prop_fm(translate(ast))]
     for i in order:
         args = tuple(r[j] for j in net[i])
         if trace:
             print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i],bounds=bounds)
-        elif term[i].decl().name() == "rewrite":
-            subterms = [term[j] for j in net[i]]
-            r[i] = convert_method(term[i], *args, subterms=subterms, assertions=hol_assertions)
-            if trace:
-                print('r['+str(i)+']', r[i])
         else:
             subterms = [term[j] for j in net[i]]
             r[i] = convert_method(term[i], *args, subterms=subterms)
