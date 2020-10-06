@@ -19,7 +19,8 @@ from kernel import theory
 from logic import basic, context, matcher
 from logic.logic import apply_theorem, imp_disj_iff, disj_norm, imp_conj_macro, resolution
 from logic.tactic import rewrite_goal_with_prev
-from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv
+from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv, ConvException, Conv
+from logic import auto
 from prover import sat, tseitin
 from sat import zchaff
 from syntax.settings import settings
@@ -480,6 +481,36 @@ def is_ineq(t):
     """determine whether t is an inequality"""
     return t.is_less() or t.is_less_eq() or t.is_greater() or t.is_greater_eq()
 
+class flat_left_assoc_conj_conv(Conv):
+    """convert the left-associative conjunction to right-associative conjunction."""
+    def get_proof_term(self, t):
+        pt = refl(t)
+        if t.is_conj():
+            if t.arg1.is_conj():
+                return pt.on_rhs(
+                    rewr_conv('conj_assoc', sym=True),
+                    self
+                )
+            else:
+                return pt
+        else:
+            return pt
+
+class flat_left_assoc_disj_conv(Conv):
+    """convert the left-associative disjunction to right-associative disjunction."""
+    def get_proof_term(self, t):
+        pt = refl(t)
+        if t.is_disj():
+            if t.arg1.is_disj():
+                return pt.on_rhs(
+                    rewr_conv('disj_assoc_eq', sym=True),
+                    self
+                )
+            else:
+                return pt
+        else:
+            return pt
+
 def rewrite(t, z3terms, assertions=[]):
     """
     Multiple strategies for rewrite rule:
@@ -507,13 +538,24 @@ def rewrite(t, z3terms, assertions=[]):
     occur_vars = t.get_vars()
     occur_consts = t.get_consts()
     # real situation
-    if (len(occur_vars) != 0 and all(v.T == RealType for v in occur_vars))\
-            or (len(occur_consts) != 0 and all(v.T == RealType for v in occur_vars)):
+    if (len(occur_vars) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars))\
+            or (len(occur_consts) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars)):
         refl_pt = refl(t)
         conv_pt = refl_pt.on_rhs(
+            try_conv(bottom_conv(rewr_conv('de_morgan_thm1'))),
+            try_conv(bottom_conv(rewr_conv('de_morgan_thm2'))),
+            try_conv(bottom_conv(rewr_conv('double_neg'))),
+            try_conv(top_conv(flat_left_assoc_conj_conv())),
+            try_conv(top_conv(flat_left_assoc_disj_conv())),
+            try_conv(bottom_conv(rewr_conv('cond_swap'))),
             try_conv(bottom_conv(norm_neg_real_ineq_conv())),
             try_conv(bottom_conv(norm_real_ineq_conv())),
             try_conv(bottom_conv(real_const_eq_conv())),
+            try_conv(bottom_conv(rewr_conv('conj_false_right'))),
+            try_conv(bottom_conv(rewr_conv('conj_false_left'))),
+            try_conv(bottom_conv(rewr_conv('disj_false_right'))),
+            try_conv(bottom_conv(rewr_conv('disj_false_left'))),
+            try_conv(auto.auto_conv()),        
             try_conv(rewr_conv('eq_mean_true')))
 
         # print("###real pt: ", conv_pt.on_prop(try_conv(rewr_conv('eq_true', sym=True))))
@@ -759,9 +801,9 @@ def def_axiom(arg1):
     for reason that prove need propositional logic decision procedure,
     currently use proofterm.sorry
     """
-    if schematic_rules_def_axiom(arg1) != None:
-        return schematic_rules_def_axiom(arg1)
-    else:
+    try:
+        return solve_cnf(arg1)
+    except:
         return ProofTerm.sorry(Thm([], arg1))
 
 def intro_def(concl):
@@ -926,7 +968,7 @@ def lemma(arg1, arg2, subterm):
         pt1 = pt1.implies_intr(h)
     # now we have Γ ⊢ L1 --> L2 --> ...--> Ln --> ⟂
     cv1 = top_conv(rewr_conv('disj_conv_imp', sym=True))
-    cv2 = top_sweep_conv(rewr_conv('disj_false'))
+    cv2 = top_sweep_conv(rewr_conv('disj_false_right'))
     cv3 = top_conv(rewr_conv('double_neg'))
     return pt1.on_prop(cv1, cv2, cv3)
 
@@ -1122,6 +1164,8 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     or_expr.clear()
     and_expr.clear()
     for i in order:
+        if i == 297:
+            i
         args = tuple(r[j] for j in net[i])
         if trace:
             print('term['+str(i)+']', term[i])
@@ -1134,4 +1178,4 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
                 print('r['+str(i)+']', r[i])
     conclusion = delete_redundant(r[0], redundant)
     redundant.clear()
-    return conclusion
+    return r[0]
