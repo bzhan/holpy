@@ -6235,8 +6235,16 @@
             }
         },
         {
-            "name": "disj_false",
+            "name": "disj_false_right",
             "prop": "A ∨ false ⟷ A",
+            "ty": "thm",
+            "vars": {
+                "A": "bool"
+            }
+        },
+        {
+            "name": "disj_false_left",
+            "prop": "false ∨ A ⟷ A",
             "ty": "thm",
             "vars": {
                 "A": "bool"
@@ -6266,6 +6274,22 @@
             "ty": "thm",
             "vars": {
                 "A": "bool"
+            }
+        },
+        {
+            "name": "conj_false_right",
+            "prop": "false ∧ P ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "conj_false_left",
+            "prop": "P ∧ false ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
             }
         }
     ],
