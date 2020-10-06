@@ -2070,7 +2070,8 @@
     "imports": [
         "logic_base",
         "int",
-        "real"
+        "real",
+        "sat"
     ],
     "name": "smt"
 }

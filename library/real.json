@@ -11,6 +11,11 @@
             "type": "nat ⇒ real"
         },
         {
+            "name": "of_int",
+            "ty": "def.ax",
+            "type": "int ⇒ real"
+        },
+        {
             "attributes": [
                 "hint_rewrite",
                 "hint_rewrite_sym"
@@ -29760,6 +29765,150 @@
                 "a": "real",
                 "l": "real",
                 "x": "real"
+            }
+        },
+        {
+            "name": "real_of_int_eq",
+            "prop": "of_int m = of_int n ⟷ m = n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "real_of_int_le",
+            "prop": "of_int m ≤ of_int n ⟷ m ≤ n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "real_of_int_lt",
+            "prop": "of_int m < of_int n ⟷ m < n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "real_of_int_add",
+            "prop": "of_int m + of_int n = of_int (m + n)",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "real_of_int_minus",
+            "prop": "of_int m - of_int n = of_int (m - n)",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "real_of_int_mul",
+            "prop": "of_int m * of_int n = of_int (m * n)",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "real_le_sub",
+            "prop": "x < y ⟷ x - y < 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_ge_to_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "greater_def, x > y ⟷ y < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x > y ⟷ y < x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x > y ⟷ y < x"
+                }
+            ],
+            "prop": "x > y ⟷ y < x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "greater_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_geq_to_leq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "greater_eq_def, x ≥ y ⟷ y ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ≥ y ⟷ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ≥ y ⟷ y ≤ x"
+                }
+            ],
+            "prop": "x ≥ y ⟷ y ≤ x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "greater_eq_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_not_leq",
+            "prop": "¬(x ≤ y) ⟷ x > y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
             }
         }
     ],

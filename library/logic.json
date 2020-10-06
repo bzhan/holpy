@@ -6259,6 +6259,14 @@
                 "A": "bool",
                 "B": "bool"
             }
+        },
+        {
+            "name": "eq_mean_true",
+            "prop": "(A ⟷ A) ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "A": "bool"
+            }
         }
     ],
     "description": "Basic results in logic",
