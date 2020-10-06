@@ -7,7 +7,7 @@ from sympy.ntheory.factor_ import factorint
 
 from kernel.type import TFun, BoolType, RealType
 from kernel import term
-from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod
+from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod, true, false
 from kernel.thm import Thm
 from kernel.theory import register_macro
 from kernel.macro import Macro
@@ -824,3 +824,39 @@ class norm_neg_real_ineq_conv(Conv):
             return rewr_conv('real_not_leq').get_proof_term(tm)
         else:
             return arg_conv(rewr_conv('real_geq_to_leq')).get_proof_term(tm).on_rhs(norm_neg_real_ineq_conv())
+
+@register_macro('real_const_eq')
+class RealEqMacro(Macro):
+    """Give an real constant (in)equation, prove it (in)correctness."""
+    def __init__(self):
+        self.level = 0
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, goal, prevs=None):
+        if len(goal.get_vars()) != 0:
+            raise ConvException
+        try:
+            if goal.is_equals():
+                if real_eval(goal.lhs) == real_eval(goal.rhs):
+                    return Thm([], Eq(goal, true))
+                else:
+                    return Thm([], Eq(goal, false))
+            else: # inequations
+                lhs, rhs = real_eval(goal.arg1), real_eval(goal.arg)
+                if goal.is_less():
+                    return Thm([], Eq(goal, true)) if lhs < rhs else Thm([], Eq(goal, false))
+                elif goal.is_less_eq():
+                    return Thm([], Eq(goal, true)) if lhs <= rhs else Thm([], Eq(goal, false))
+                elif goal.is_greater():
+                    return Thm([], Eq(goal, true)) if lhs > rhs else Thm([], Eq(goal, false))
+                elif goal.is_greater_eq():
+                    return Thm([], Eq(goal, true)) if lhs >= rhs else Thm([], Eq(goal, false))
+                else:
+                    raise NotImplementedError
+        except:
+            raise ConvException
+
+class real_const_eq_conv(Conv):
+    def get_proof_term(self, t):
+        return ProofTerm('real_const_eq', t)
