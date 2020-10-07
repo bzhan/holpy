@@ -1,6 +1,4 @@
 """
-Author: Runqing Xu
-
 Implementation of Simplex-based quantifier-free linear arithmetic solver.
 
 Reference: 
@@ -178,7 +176,7 @@ def delete_elem(s, elem):
 
 class Simplex:
     """"""
-    def __init__(self):
+    def __init__(self, ilp=False):
         # table represents the solver current tableau(state)
         self.equality = dict()
 
@@ -216,6 +214,9 @@ class Simplex:
 
         # input vars
         self.input_vars = set()
+
+        # represents whether this is an ILP problem
+        self.ilp = ilp
 
     def __str__(self):
         s = "Original inequlities: \n"
@@ -384,7 +385,8 @@ class Simplex:
                 self.basic.add(s)
                 self.bound[s] = (-math.inf, math.inf)
 
-        self.variables_bound()
+        if self.ilp:
+            self.variables_bound()
 
     def preprocess(self):
         """
@@ -665,7 +667,7 @@ class Simplex:
 
 def branch_and_bound(tableau):
     """
-    If current solution is not a good solution(some variable's value is not integer),
+    If current solution is not a good solution(some variables' value are not integer),
     add more constraints and perform simplex again, until find a good solution.
     """
     tree = deque([tableau])
@@ -805,7 +807,7 @@ class SimplexHOLWrapper:
 
     def add_ineq(self, ineq):
         """
-        Take an inequation, convert it higher-order logic terms.
+        Take an inequation, convert it into higher-order logic terms.
         Add the inequation to ineq_pts.
         If necessary, introduce new variables to construct elemenatry atoms, and also
         add equality proofterm to eq_pts.
@@ -1079,11 +1081,13 @@ class SimplexHOLWrapper:
         """
         for var, asts in self.atom_ineq_pts.items():
             for ast in asts:
-                if ast.prop.is_less_eq():
-                    self.assert_upper(var, ast)
-                else:
-                    self.assert_lower(var, ast)
-
+                try:
+                    if ast.prop.is_less_eq():
+                        self.assert_upper(var, ast)
+                    else:
+                        self.assert_lower(var, ast)
+                except AssertLowerException or AssertUpperException:
+                    return self.unsat[var]
             # if var.name in self.simplex.basic:
                 # check
                 if self.simplex.check() == UNSAT:
@@ -1091,9 +1095,41 @@ class SimplexHOLWrapper:
                     for xij, coeff, basic_var in trace:
                         xi, xj = xij
                         self.pivot(Var(xi, RealType), Var(xj, RealType), basic_var, coeff)
-                    self.explanation()
-                    raise UNSATException("%s" % str(self.unsat[Var(self.simplex.wrong_var, RealType)]))
-    
+                    return self.explanation()
+                    # raise UNSATException("%s" % str(self.unsat[Var(self.simplex.wrong_var, RealType)]))
+
+        return self.simplex.mapping
+
+
+def solve_hol_ineqs(ineqs):
+    """
+    Given a list of HOL inequalities, use simplex method to decide whether it is SAT or UNSAT,
+    if it is SAT, return an assignment for each variable, or return the UNSAT proof term.
+    """
+    hol = SimplexHOLWrapper()
+    # First convert the inequalies to GreaterEq or LessEq form.
+    converted_ineq = []
+    for ii in ineqs:
+        lhs = dest_plus(ii.arg1)
+        jars = []
+        for l in lhs:
+            if l.is_var():
+                jars.append(Jar(1, l.name))
+            elif l.is_times():
+                jars.append(Jar(l.arg1.dest_number(), l.arg.name))
+            else:
+                raise NotImplementedError
+        if ii.is_less_eq():    
+            converted_ineq.append(LessEq(jars, ii.arg.dest_number()))
+        elif ii.is_greater_eq():
+            converted_ineq.append(GreaterEq(jars, ii.arg.dest_number()))
+        else:
+            raise NotImplementedError("Simplex cannot handle %s now" % str(ii))
+
+    # add these inequalities into simplex
+    for ii in converted_ineq:
+        hol.add_ineq(ii)
+
+    return hol.handle_assertion()
 
         
-

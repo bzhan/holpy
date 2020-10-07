@@ -21,7 +21,7 @@ from logic.logic import apply_theorem, imp_disj_iff, disj_norm, imp_conj_macro, 
 from logic.tactic import rewrite_goal_with_prev
 from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv, ConvException, Conv
 from logic import auto
-from prover import sat, tseitin
+from prover import sat, tseitin, simplex
 from sat import zchaff
 from syntax.settings import settings
 settings.unicode = True
@@ -979,6 +979,91 @@ def sk(arg1):
     """
     return ProofTerm.sorry(Thm([], Eq(arg1.lhs, arg1.rhs)))
 
+class replace_conv(Conv):
+    def __init__(self, pt):
+        self.pt = pt
+
+    def get_proof_term(self, t):
+        if t == self.pt.prop.lhs:
+            return self.pt
+        else:
+            raise ConvException
+
+
+def real_th_lemma(args):
+    """handle real th-lemma."""
+    def traverse_A(pt):
+            if pt.prop.is_conj():
+                return traverse_A(apply_theorem('conjD1', pt)) + traverse_A(apply_theorem('conjD2', pt))
+            else:
+                return [pt]
+    if len(args) == 1: 
+        # case1: single term. e.g. Or(Not(x_4 <= 0), Not(x_4 >= 60))
+        # In this case, we need to prove its negation is false.
+        
+        # First step, negate it and use de morgan to simplify it: And(x_4 <= 0, x_4 >= 60)
+        pt1 = ProofTerm.assume(Not(args[0])).on_prop(
+            top_conv(rewr_conv('de_morgan_thm2')),
+            top_conv(rewr_conv('double_neg')),
+            bottom_conv(norm_neg_real_ineq_conv()),
+            bottom_conv(norm_real_ineq_conv())
+        )
+
+        # Second step, send the inequalies in conjunction to simplex, get
+        # |- x_4 <= 0 --> x_4 >= 60 --> false
+        conjs = pt1.prop.strip_conj()
+        try:
+            pt2 = simplex.solve_hol_ineqs(conjs) # 1 * x_4 <= 0, 1 * x_4 >= 60 |- false
+        except:
+            return ProofTerm.sorry(Thm([], args[-1]))
+        for h in reversed(pt2.hyps): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
+            pt2 = pt2.implies_intr(h)
+        pt2 = pt2.on_prop(bottom_conv(rewr_conv('real_mul_lid'))) # |- x_4 <= 0 --> x_4 >= 60 --> false
+        
+        # Third step, construct the proof for each conjunct from the conjunction assumption, e.g.
+        # 1 * x_4 <= 0, 1 * x_4 >= 60 |- 1 * x_4 <= 0
+        # 1 * x_4 <= 0, 1 * x_4 >= 60 |- 1 * x_4 >= 60
+
+        pts_A = traverse_A(ProofTerm.assume(pt1.prop))
+
+        # Fourth step, use the conjunct proofs to do implies_elim, finally got 
+        # |- 1 * x_4 <= 0 & 1 * x_4 >= 60 --> false
+        pt3 = functools.reduce(lambda x, y: x.implies_elim(y), [pt2] + pts_A)
+        pt4 = pt3.implies_intr(pt3.hyps[0])
+        
+        # Last step, prove the original formula is true
+        pt5 = refl(Not(args[0])).on_rhs(
+            top_conv(rewr_conv('de_morgan_thm2')),
+            top_conv(rewr_conv('double_neg'),
+            bottom_conv(norm_real_ineq_conv()))
+        ) # |- Not(Or(Not(x_4 <= 0), Not(x_4 >= 60))) <--> And(x_4 <= 0, x_4 >= 60)
+        pt6 = pt4.on_prop(top_conv(replace_conv(pt5.symmetric()))) # |- Not(Or(Not(x_4 <= 0), Not(x_4 >= 60))) --> false
+        pt7 = apply_theorem('negI', pt6).on_prop(rewr_conv('double_neg'))
+        return pt7
+
+    else:
+        # case2, there are several proofterms in args, and the last arg is false, e.g.
+        # |- x_4 ≥ 60
+        # |- x_2 ≤ 1
+        # |- x_2 + -1 * x_4 ≥ 0
+        # false
+        
+        # First step, send these inequalies to simplex, get
+        # |- x_4 ≥ 60 --> x_2 ≤ 1 --> x_2 + -1 * x_4 ≥ 0 --> false
+        ineqs = [pt.prop for pt in args[:-1]]
+        try:
+            pt1 = simplex.solve_hol_ineqs(ineqs)
+        except:
+            return ProofTerm.sorry(Thm([h for a in args[:-1] for h in a.hyps], args[-1]))
+        for h in reversed(ineqs): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
+            pt1 = pt1.implies_intr(h)
+        pt2 = pt1.on_prop(bottom_conv(rewr_conv('real_mul_lid')))
+        
+        # Second step, implies elim each given proof term's proposition with the simplex's proof term
+        pt_final = functools.reduce(lambda x, y: x.implies_elim(y), [pt1] + list(args[:-1]))
+
+        return pt_final
+
 
 def th_lemma(args):
     """
@@ -992,8 +1077,16 @@ def th_lemma(args):
     so for now, we just use the last parameter
     as sorry.
     """
+    occur_vars = args[-1].get_vars()
+    occur_consts = args[-1].get_consts()
+    # real case
+    if (len(occur_vars) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars))\
+            or (len(occur_consts) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars)):
+        return real_th_lemma(args)
+        
+
     pts = args[-1]
-    hyps = [h for a in args[:-1] for h in a.hyps]  
+    hyps = [h for a in args[:-1] for h in a.hyps]
     return ProofTerm.sorry(Thm(hyps, args[-1]))
 
 def hypothesis(prop):
@@ -1135,9 +1228,8 @@ def delete_redundant(pt, redundant):
     """
     new_pt = pt
     for r in redundant:
-        pt1 = apply_theorem('eq_imp_false', inst=Inst(A=r.lhs, B=r.rhs)) # ⊢ (A = B --> false) --> false
-        pt2 = new_pt.implies_intr(r) # ⊢ A = B --> false
-        new_pt = pt1.implies_elim(pt2)
+        new_pt = new_pt.implies_intr(r).forall_intr(r.lhs).forall_elim(r.rhs) \
+             .implies_elim(ProofTerm.reflexive(r.rhs))
     
     return new_pt
 
@@ -1164,9 +1256,9 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     or_expr.clear()
     and_expr.clear()
     for i in order:
-        if i == 297:
-            i
         args = tuple(r[j] for j in net[i])
+        if i == 716:
+            i
         if trace:
             print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
