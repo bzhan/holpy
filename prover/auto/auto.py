@@ -5,9 +5,9 @@ import queue
 from kernel.term import Not
 from kernel.proofterm import ProofTerm
 from kernel import theory
-from logic.logic import apply_theorem
+from logic import logic
 from logic import matcher
-from logic.conv import rewr_conv
+from logic.conv import rewr_conv, top_conv
 
 
 class ProofStateException(Exception):
@@ -58,6 +58,29 @@ class TermItem(Item):
     def __str__(self):
         return '[%s]' % str(self.t)
 
+class DisjItem(Item):
+    """Disjunctive normal form for a disjunction or forall-implication."""
+    def __init__(self, pt):
+        self.pt = pt
+
+        self.pt = self.pt.on_prop(top_conv(rewr_conv('disj_conv_imp', sym=True)))
+        new_names = logic.get_forall_names(pt.prop)
+        new_vars, _, _ = logic.strip_all_implies(pt.prop, new_names)
+        for new_var in new_vars:
+            self.pt = self.pt.forall_elim(new_var)
+
+        self.prop = self.pt.prop
+        self.disjuncts = self.prop.strip_disj()
+
+    def size(self):
+        return self.pt.prop.size()
+
+    def __eq__(self, other):
+        return isinstance(other, DisjItem) and self.disjuncts == other.disjuncts
+
+    def __str__(self):
+        return ', '.join(str(t) for t in self.disjuncts)
+
 
 class Normalizer:
     """Normalization functions for items.
@@ -78,12 +101,25 @@ class ConjNormalizer(Normalizer):
         if not prop.is_conj():
             return None
         else:
-            return [FactItem(apply_theorem('conjD1', item.pt)),
-                    FactItem(apply_theorem('conjD2', item.pt))]
+            return [FactItem(logic.apply_theorem('conjD1', item.pt)),
+                    FactItem(logic.apply_theorem('conjD2', item.pt))]
+
+class DisjNormalizer(Normalizer):
+    """Normalization of disjunction, implication, and forall-implication."""
+    def __call__(self, item):
+        if not isinstance(item, FactItem):
+            return None
+
+        prop = item.prop
+        if not (prop.is_forall() or prop.is_implies() or prop.is_disj()):
+            return None
+        else:
+            return [DisjItem(item.pt)]
 
 global_normalizers = list()
 
 global_normalizers.append(ConjNormalizer())
+global_normalizers.append(DisjNormalizer())
 
 
 def normalize(item):
@@ -241,7 +277,7 @@ class Update:
     
     def __lt__(self, other):
         return self.sc < other.sc
-        
+
 class ProofState:
     """Overall state of the proof.
     

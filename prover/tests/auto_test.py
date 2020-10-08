@@ -12,8 +12,8 @@ class AutoTest(unittest.TestCase):
 
         st = auto.init_proof_theorem('open_empty')
         st.step_for(20, debug=False)
-        self.assertEqual(st.step_count, 9)
-        self.assertEqual(len(st.updates), 8)
+        self.assertEqual(st.step_count, 7)
+        self.assertEqual(len(st.updates), 6)
 
 
 if __name__ == "__main__":
