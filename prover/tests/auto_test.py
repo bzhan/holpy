@@ -11,7 +11,9 @@ class AutoTest(unittest.TestCase):
         basic.load_theory('topology')
 
         st = auto.init_proof_theorem('open_empty')
-        st.step_for(10, debug=False)
+        st.step_for(20, debug=False)
+        self.assertEqual(st.step_count, 10)
+        self.assertEqual(len(st.updates), 9)
 
 
 if __name__ == "__main__":

@@ -5,6 +5,8 @@ import queue
 from kernel.term import Not
 from kernel.proofterm import ProofTerm
 from kernel import theory
+from logic import matcher
+from logic.conv import rewr_conv
 
 
 class ProofStateException(Exception):
@@ -31,6 +33,9 @@ class FactItem(Item):
     def __init__(self, pt):
         self.pt = pt
         self.prop = self.pt.prop
+
+    def size(self):
+        return self.prop.size()
     
     def __eq__(self, other):
         return isinstance(other, FactItem) and self.prop == other.prop
@@ -42,7 +47,10 @@ class TermItem(Item):
     """A term that currently exists in the proof."""
     def __init__(self, t):
         self.t = t
-        
+
+    def size(self):
+        return self.t.size()
+
     def __eq__(self, other):
         return isinstance(other, TermItem) and self.t == other.t
 
@@ -112,8 +120,55 @@ class TermProofStep(ProofStep):
         return list(TermItem(subt) for subt in get_all_subterms(t))
         
 
+class ForwardProofStep(ProofStep):
+    """Apply a theorem in the forward direction."""
+    def __init__(self, th_name):
+        self.th_name = th_name
+        self.pt = ProofTerm.theorem(th_name)
+        self.th = self.pt.th
+        self.prop = self.pt.prop
+        self.incr_sc = 'SIZE'
+        
+    def __str__(self):
+        return 'forward %s' % self.th_name
+
+    def __call__(self, *args):
+        if not (len(args) == 1 and isinstance(args[0], FactItem)):
+            return []
+        
+        t = args[0].prop
+        pt = args[0].pt
+        res = []
+
+        if self.prop.is_equals():
+            try:
+                inst = matcher.first_order_match(self.prop.lhs, t)
+                res.append(FactItem(self.pt.substitution(inst).equal_elim(pt)))
+            except matcher.MatchException:
+                pass
+        elif self.prop.is_implies():
+            try:
+                inst = matcher.first_order_match(self.prop.arg1, t)
+                res.append(FactItem(self.pt.substitution(inst).implies_elim(pt)))
+            except matcher.MatchException:
+                pass
+        else:
+            pass
+        
+        return res
+    
+
 global_prfsteps1 = list()
 global_prfsteps1.append(TermProofStep())
+
+from logic import basic
+basic.load_theory('topology')
+forward_ths = [
+    'is_topology_def'
+]
+
+for th_name in forward_ths:
+    global_prfsteps1.append(ForwardProofStep(th_name))
 
 
 class Update:
@@ -164,6 +219,9 @@ class ProofState:
         # Add the initial assumptions to the queue
         for assm in self.assms:
             self.queue.put(Update(0, '$INIT', [], FactItem(ProofTerm.assume(assm))))
+        
+        # Overall count of number of steps
+        self.step_count = 0
             
     def __str__(self):
         res = 'Variables: %s\n' % ', '.join(str(var) for var in self.vars)
@@ -187,7 +245,8 @@ class ProofState:
         """
         if self.queue.empty():
             raise ProofStateException('Queue is empty.')
-            
+        
+        self.step_count += 1
         cur_update = self.queue.get()
         
         if self.has_item(cur_update.item):
@@ -196,30 +255,30 @@ class ProofState:
         self.updates.append(cur_update)
         cur_sc = cur_update.sc
         cur_item = cur_update.item
+        cur_id = len(self.updates) - 1
         
         for prfstep1 in global_prfsteps1:
             new_items = prfstep1(cur_item)
-            new_sc = cur_sc + prfstep1.incr_sc
             for new_item in new_items:
                 if not self.has_item(new_item):
-                    self.queue.put(Update(new_sc, prfstep1, [cur_item], new_item))
-                
+                    if prfstep1.incr_sc == 'SIZE':
+                        new_sc = cur_sc + new_item.size()
+                    else:
+                        new_sc = cur_sc + prfstep1.incr_sc
+                    self.queue.put(Update(new_sc, prfstep1, [cur_id], new_item))
+
     def step_for(self, n, debug=True):
-        init_n = n
         while n > 0 and not self.queue.empty():
             self.step()
             n -= 1
 
-        if n == 0:
-            if debug:
-                print('Reached limit of %d steps' % init_n)
-            return init_n
-        else:
-            if debug:
-                print('Finished after %d steps' % (init_n - n))
-            return init_n - n
+        if debug:
+            if n == 0:
+                print('Reached limit at %d steps' % self.step_count)
+            else:
+                print('Finished after %d steps' % self.step_count)
 
-            
+
 def init_proof(prop):
     """Initialize proof for proposition."""
     vars = prop.get_vars()
