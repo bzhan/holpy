@@ -5,6 +5,7 @@ import queue
 from kernel.term import Not
 from kernel.proofterm import ProofTerm
 from kernel import theory
+from logic.logic import apply_theorem
 from logic import matcher
 from logic.conv import rewr_conv
 
@@ -56,8 +57,48 @@ class TermItem(Item):
 
     def __str__(self):
         return '[%s]' % str(self.t)
-    
-    
+
+
+class Normalizer:
+    """Normalization functions for items.
+
+    These normalization functions will be automatically applied to every
+    output item of proofsteps.
+
+    """
+    pass
+
+class ConjNormalizer(Normalizer):
+    """Normalization of item A1 & ... & An into items A1, ..., An"""
+    def __call__(self, item):
+        if not isinstance(item, FactItem):
+            return None
+
+        prop = item.prop
+        if not prop.is_conj():
+            return None
+        else:
+            return [FactItem(apply_theorem('conjD1', item.pt)),
+                    FactItem(apply_theorem('conjD2', item.pt))]
+
+global_normalizers = list()
+
+global_normalizers.append(ConjNormalizer())
+
+
+def normalize(item):
+    """Repeatly apply normalizers to an item."""
+    for norm in global_normalizers:
+        norm_res = norm(item)
+        if norm_res:
+            res = []
+            for norm_item in norm_res:
+                res.extend(normalize(norm_item))
+            return res
+
+    return [item]
+
+
 class ProofStep:
     pass
 
@@ -258,7 +299,11 @@ class ProofState:
         cur_id = len(self.updates) - 1
         
         for prfstep1 in global_prfsteps1:
-            new_items = prfstep1(cur_item)
+            # Apply proof step, then normalize every item
+            new_items = []
+            for new_item in prfstep1(cur_item):
+                new_items.extend(normalize(new_item))
+
             for new_item in new_items:
                 if not self.has_item(new_item):
                     if prfstep1.incr_sc == 'SIZE':
