@@ -8,7 +8,7 @@ import z3
 from z3.z3consts import *
 from data.integer import int_norm_macro, int_ineq_macro, collect_int_polynomial_coeff,\
     int_multiple_ineq_equiv
-from data.real import norm_real_ineq_conv, norm_neg_real_ineq_conv, real_const_eq_conv
+from data.real import norm_real_ineq_conv, norm_neg_real_ineq_conv, real_const_eq_conv, real_eval_conv
 from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar, TVar
 from kernel.term import *
 from kernel.thm import Thm
@@ -372,7 +372,10 @@ def monotonicity(pts, concl):
         eq_hyps = pts
         assert eq_prop.lhs.head == eq_prop.rhs.head
         head = eq_prop.lhs.head
-        head_arity = arity(head)
+        if head.name == "disj":
+            head_arity = len(concl.lhs.strip_disj())
+        elif head.name == "conj":
+            head_arity = len(concl.lhs.strip_conj())
         # collect xi ~ yi
         lhs_param, rhs_param = [], []
         eq_assms_lhs = [p.prop.lhs for p in eq_hyps]
@@ -402,12 +405,12 @@ def monotonicity(pts, concl):
                 index += 1
             else:
                 eq_pts.appendleft(ProofTerm.reflexive(l))
+                if l in eq_assms_lhs:
+                    index += 1
         pt1 = eq_pts[0]
         if len(eq_pts) == 1:
             return pt_concl.combination(eq_pts[0])
         for i in range(len(eq_pts) - 1):
-            for j in range(head_arity - 1):
-                pt_left = pt_concl.combination()
             pt1 = pt_concl.combination(eq_pts[i+1]).combination(pt1)
 
         return pt1
@@ -562,6 +565,11 @@ def rewrite(t, z3terms, assertions=[]):
         pt_after_conv = conv_pt.on_prop(try_conv(rewr_conv('eq_true', sym=True)))
         if pt_after_conv.prop == t:
             return pt_after_conv
+        else:
+            if t.is_equals() and t.lhs.is_equals() and t.rhs.is_conj(): # maybe x = y ⟷ x ≥ y ∧ x ≤ y
+                pt = refl(t.lhs).on_rhs(rewr_conv('real_ge_le_same_num'))
+                if pt.prop == t:
+                    return pt
 
     def norm_int(t):
         """Use nat norm macro to normalize nat expression."""
@@ -698,7 +706,7 @@ def mp(arg1, arg2):
     try:
         pt = ProofTerm.equal_elim(arg2, arg1)
     except:
-        pt = ProofTerm.sorry(Thm(arg2.th.hyps + arg1.th.hyps, arg1.prop))
+        pt = ProofTerm.sorry(Thm(arg2.th.hyps + arg1.th.hyps, arg2.prop))
     return pt
 
 def iff_true(arg1, arg2):
@@ -1005,18 +1013,18 @@ def real_th_lemma(args):
         pt1 = ProofTerm.assume(Not(args[0])).on_prop(
             top_conv(rewr_conv('de_morgan_thm2')),
             top_conv(rewr_conv('double_neg')),
-            bottom_conv(norm_neg_real_ineq_conv()),
-            bottom_conv(norm_real_ineq_conv())
+            bottom_conv(norm_neg_real_ineq_conv())
         )
 
         # Second step, send the inequalies in conjunction to simplex, get
         # |- x_4 <= 0 --> x_4 >= 60 --> false
-        conjs = pt1.prop.strip_conj()
+        pt_norm_prop = pt1.on_prop(bottom_conv(rewr_conv('real_mul_lid', sym=True)), bottom_conv(real_eval_conv()))
+        conjs = pt_norm_prop.prop.strip_conj()
         try:
             pt2 = simplex.solve_hol_ineqs(conjs) # 1 * x_4 <= 0, 1 * x_4 >= 60 |- false
         except:
             return ProofTerm.sorry(Thm([], args[-1]))
-        for h in reversed(pt2.hyps): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
+        for h in reversed(conjs): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
             pt2 = pt2.implies_intr(h)
         pt2 = pt2.on_prop(bottom_conv(rewr_conv('real_mul_lid'))) # |- x_4 <= 0 --> x_4 >= 60 --> false
         
@@ -1034,8 +1042,7 @@ def real_th_lemma(args):
         # Last step, prove the original formula is true
         pt5 = refl(Not(args[0])).on_rhs(
             top_conv(rewr_conv('de_morgan_thm2')),
-            top_conv(rewr_conv('double_neg'),
-            bottom_conv(norm_real_ineq_conv()))
+            top_conv(rewr_conv('double_neg')),
         ) # |- Not(Or(Not(x_4 <= 0), Not(x_4 >= 60))) <--> And(x_4 <= 0, x_4 >= 60)
         pt6 = pt4.on_prop(top_conv(replace_conv(pt5.symmetric()))) # |- Not(Or(Not(x_4 <= 0), Not(x_4 >= 60))) --> false
         pt7 = apply_theorem('negI', pt6).on_prop(rewr_conv('double_neg'))
@@ -1257,8 +1264,6 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     and_expr.clear()
     for i in order:
         args = tuple(r[j] for j in net[i])
-        if i == 716:
-            i
         if trace:
             print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
