@@ -543,8 +543,21 @@ def rewrite(t, z3terms, assertions=[]):
     # real situation
     if (len(occur_vars) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars))\
             or (len(occur_consts) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars)):
-        refl_pt = refl(t)
-        conv_pt = refl_pt.on_rhs(
+        refl_pt = refl_pt_simp = refl(t)
+        
+        # preprocess by implicitly asssertions
+        for c in assert_atom:
+            refl_pt_simp = refl_pt_simp.on_rhs(
+                bottom_conv(replace_conv(c)),
+                bottom_conv(rewr_conv('eq_false', sym=True)),
+                bottom_conv(rewr_conv('not_false')),
+                bottom_conv(rewr_conv('if_false')),
+                bottom_conv(rewr_conv('if_true')),
+                bottom_conv(rewr_conv('r049')),
+                bottom_conv(rewr_conv('r050'))
+            )
+        
+        conv_pt = refl_pt_simp.on_rhs(
             try_conv(bottom_conv(rewr_conv('de_morgan_thm1'))),
             try_conv(bottom_conv(rewr_conv('de_morgan_thm2'))),
             try_conv(bottom_conv(rewr_conv('double_neg'))),
@@ -1018,8 +1031,8 @@ def real_th_lemma(args):
 
         # Second step, send the inequalies in conjunction to simplex, get
         # |- x_4 <= 0 --> x_4 >= 60 --> false
-        pt_norm_prop = pt1.on_prop(bottom_conv(rewr_conv('real_mul_lid', sym=True)), bottom_conv(real_eval_conv()))
-        conjs = pt_norm_prop.prop.strip_conj()
+        # pt_norm_prop = pt1.on_prop(bottom_conv(rewr_conv('real_mul_lid', sym=True)), bottom_conv(real_eval_conv()))
+        conjs = pt1.prop.strip_conj()
         try:
             pt2 = simplex.solve_hol_ineqs(conjs) # 1 * x_4 <= 0, 1 * x_4 >= 60 |- false
         except:
@@ -1226,6 +1239,8 @@ redundant = []
 hypos = set()
 or_expr = set()
 and_expr = set()
+# store boolvars' true value in assertion which maybe implicitly used in rewrite rules.
+assert_atom = set()
 
 def delete_redundant(pt, redundant):
     """
@@ -1253,6 +1268,35 @@ def is_prop_fm(f):
         return False
 
 
+def find_atom_in_assertion(ast):
+    """
+    Find the atomic bool var(or boolvar negation) conjuncts from asserted conjunction, 
+    they must be true(false) in proof.
+    """
+    if not ast.is_conj():
+        return
+
+    # flat the conjunction and strip it
+    pt = ProofTerm.assume(ast)
+    pt_flat = pt.on_prop(            
+        try_conv(top_conv(flat_left_assoc_conj_conv())),
+        try_conv(top_conv(flat_left_assoc_disj_conv())))
+        
+    conjs = pt_flat.prop.strip_conj()
+    
+    for c in conjs:
+        if c.is_var():
+            pt_imp_conj = imp_conj_macro().get_proof_term(Eq(pt_flat.prop, c), None)
+            pt_var_eq_true = pt_imp_conj.implies_elim(pt_flat).on_prop(rewr_conv('eq_true'))
+            assert_atom.add(pt_var_eq_true)
+        elif c.is_not() and c.arg.is_var():
+            pt_imp_conj = imp_conj_macro().get_proof_term(Eq(pt_flat.prop, c), None)
+            pt_var_eq_false = pt_imp_conj.implies_elim(pt_flat).on_prop(rewr_conv('eq_false'))
+            assert_atom.add(pt_var_eq_false)            
+        
+    
+
+
 def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     """
     If trace is true, print reconstruction trace.
@@ -1262,6 +1306,9 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     r = dict()
     or_expr.clear()
     and_expr.clear()
+    assert_atom.clear()
+    for ast in assertions:
+        find_atom_in_assertion(translate(ast))
     for i in order:
         args = tuple(r[j] for j in net[i])
         if trace:
@@ -1269,6 +1316,8 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i],bounds=bounds)
         else:
+            if i == 204:
+                i
             subterms = [term[j] for j in net[i]]
             r[i] = convert_method(term[i], *args, subterms=subterms)
             if trace:
