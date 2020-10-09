@@ -13,7 +13,7 @@ from kernel.macro import Macro
 from logic.logic import apply_theorem
 from logic import basic, matcher
 from data.real import real_eval, real_norm_conv, real_eval_conv
-from logic.conv import Conv, ConvException, rewr_conv, top_conv, arg_conv, arg1_conv
+from logic.conv import Conv, ConvException, rewr_conv, top_conv, arg_conv, arg1_conv, bottom_conv
 from collections import namedtuple
 from collections import deque
 import math
@@ -1073,7 +1073,27 @@ class SimplexHOLWrapper:
             eq = eq.prop
             pt_concl = pt_concl.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
         
+        
+        
+        
+
+        return self.normalize_conflict_pt(pt_concl)
+
+    def normalize_conflict_pt(self, pt_concl):
+        """
+        Convert all x to 1 * x in the UNSAT proof term.
+        """
+        # rewrite 1 * x to x in hyps
+        for hyp in pt_concl.hyps:
+            pt_concl = pt_concl.implies_intr(hyp)
+        pt_concl = pt_concl.on_prop(bottom_conv(rewr_conv('real_mul_lid')))
+        imps, _ = pt_concl.prop.strip_implies()
+
+        for ii in imps:
+            pt_concl = pt_concl.implies_elim(ProofTerm.assume(ii))
+
         return pt_concl
+
     
     def handle_assertion(self):
         """
@@ -1087,7 +1107,7 @@ class SimplexHOLWrapper:
                     else:
                         self.assert_lower(var, ast)
                 except AssertLowerException or AssertUpperException:
-                    return self.unsat[var]
+                    return self.normalize_conflict_pt(self.unsat[var])
             # if var.name in self.simplex.basic:
                 # check
                 if self.simplex.check() == UNSAT:
@@ -1095,7 +1115,7 @@ class SimplexHOLWrapper:
                     for xij, coeff, basic_var in trace:
                         xi, xj = xij
                         self.pivot(Var(xi, RealType), Var(xj, RealType), basic_var, coeff)
-                    return self.explanation()
+                    return self.normalize_conflict_pt(self.explanation())
                     # raise UNSATException("%s" % str(self.unsat[Var(self.simplex.wrong_var, RealType)]))
 
         return self.simplex.mapping
