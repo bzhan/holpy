@@ -159,8 +159,8 @@ def type_infer(t, *, forbid_internal=True):
             except TypeInferenceException as e:
                 err_str = e.err + '\n'
                 err_str += "When infering type of " + t.print_basic() + "\n"
-                err_str += "Type of %s: %s\n" % (t.fun, funT.print_basic())
-                err_str += "Type of %s: %s\n" % (t.arg, argT.print_basic())
+                err_str += "Type of %s: %s\n" % (t.fun.print_basic(), funT.print_basic())
+                err_str += "Type of %s: %s\n" % (t.arg.print_basic(), argT.print_basic())
                 raise TypeInferenceException(err_str)
 
         # Abs case: if var_T is not known, make a new type. Recursively

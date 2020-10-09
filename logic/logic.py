@@ -649,18 +649,17 @@ def imp_conj_iff(goal):
     pt2 = ProofTerm('imp_conj', Implies(goal.rhs, goal.lhs))
     return ProofTerm.equal_intr(pt1, pt2)
 
-def strip_conj(t):
-    def rec(t):
-        if t.is_conj():
-            return rec(t.arg1) + rec(t.arg)
-        else:
-            return [t]
-    return term_ord.sorted_terms(rec(t))
-
 class conj_norm(Conv):
     """Normalize an conjunction."""
     def get_proof_term(self, t):
-        goal = Eq(t, And(*strip_conj(t)))
+        def strip_conj_all(t):
+            if t.is_conj():
+                return strip_conj_all(t.arg1) + strip_conj_all(t.arg)
+            else:
+                return [t]
+
+        conj_terms = term_ord.sorted_terms(strip_conj_all(t))
+        goal = Eq(t, And(*conj_terms))
         return imp_conj_iff(goal)
 
 
