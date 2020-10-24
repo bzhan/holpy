@@ -505,6 +505,10 @@ class Term():
         """Whether self is of the form A = B."""
         return self.is_comb('equals', 2)
 
+    def is_compares(self):
+        """Whether self is of the form A <(=) B or A >(=) B"""
+        return self.is_less() or self.is_less_eq() or self.is_greater() or self.is_greater_eq()
+
     def is_reflexive(self):
         """Whether self is of the form A = A."""
         return self.is_equals() and self.arg1 == self.arg
@@ -1356,3 +1360,12 @@ def NatVars(s):
     """
     nms = s.split(' ')
     return [Var(nm, NatType) for nm in nms]
+
+def IntVars(s):
+    """Create a list of variables of int type.
+
+    s is a string containing space-separated names of variables.
+
+    """
+    nms = s.split(' ')
+    return [Var(nm, IntType) for nm in nms]
