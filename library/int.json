@@ -243,7 +243,7 @@
             }
         },
         {
-            "name": "sub_add_distr",
+            "name": "int_sub_add_distr",
             "prop": "n - (m + p) = n - m - p",
             "ty": "thm",
             "vars": {
@@ -253,7 +253,7 @@
             }
         },
         {
-            "name": "sub_sub_distr",
+            "name": "int_sub_sub_distr",
             "prop": "n - (m - p) = n - m + p",
             "ty": "thm",
             "vars": {
@@ -368,7 +368,7 @@
             }
         },
         {
-            "name": "sub_move_0_r",
+            "name": "int_sub_move_0_r",
             "prop": "n - m = 0 ⟷ n = m",
             "ty": "thm",
             "vars": {
@@ -907,7 +907,7 @@
             }
         },
         {
-            "name": "mul_0_r",
+            "name": "int_mul_0_r",
             "prop": "n * 0 = 0",
             "ty": "thm",
             "vars": {
@@ -915,7 +915,7 @@
             }
         },
         {
-            "name": "mul_add_distr_r",
+            "name": "int_mul_add_distr_r",
             "prop": "(n + m) * p = n * p + m * p",
             "ty": "thm",
             "vars": {
@@ -925,7 +925,7 @@
             }
         },
         {
-            "name": "mul_add_distr_l",
+            "name": "int_mul_add_distr_l",
             "prop": "n * (m + p) = n * m + n * p",
             "ty": "thm",
             "vars": {
@@ -935,7 +935,7 @@
             }
         },
         {
-            "name": "mul_1_l",
+            "name": "int_mul_1_l",
             "prop": "1 * n = n",
             "ty": "thm",
             "vars": {
@@ -943,7 +943,7 @@
             }
         },
         {
-            "name": "mul_1_r",
+            "name": "int_mul_1_r",
             "prop": "n * 1 = n",
             "ty": "thm",
             "vars": {
@@ -1109,7 +1109,7 @@
             }
         },
         {
-            "name": "mul_0_l",
+            "name": "int_mul_0_l",
             "prop": "0 * n = 0",
             "ty": "thm",
             "vars": {
@@ -1117,7 +1117,7 @@
             }
         },
         {
-            "name": "pow_1_r",
+            "name": "int_pow_1_r",
             "prop": "n ^ (1::nat) = n",
             "ty": "thm",
             "vars": {
@@ -1454,6 +1454,239 @@
                 "l": "int",
                 "u": "int",
                 "x": "int"
+            }
+        },
+        {
+            "name": "int_less_pair_add",
+            "prop": "a < b ⟶ c < d ⟶ a + c < b + d",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "c": "int",
+                "d": "int"
+            }
+        },
+        {
+            "name": "int_lesseq_pair_add",
+            "prop": "a ≤ b ⟶ c ≤ d ⟶ a + c ≤ b + d",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "c": "int",
+                "d": "int"
+            }
+        },
+        {
+            "name": "int_greater_pair_add",
+            "prop": "a > b ⟶ c > d ⟶ a + c > b + d",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "c": "int",
+                "d": "int"
+            }
+        },
+        {
+            "name": "int_greatereq_pair_add",
+            "prop": "a ≥ b ⟶ c ≥ d ⟶ a + c ≥ b + d",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "c": "int",
+                "d": "int"
+            }
+        },
+        {
+            "name": "int_gcd_pos",
+            "prop": "c > 0 ⟶ 0 ≤ c * x + d ⟶ 0 > c * n + d ⟶ 0 < c * (n + 1) + d ⟶ 0 ≤ x - (n + 1)",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "d": "int",
+                "n": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_gcd_neg",
+            "prop": "c < 0 ⟶ 0 ≤ c * x + d ⟶ 0 < c * n + d ⟶ 0 > c * (n + 1) + d ⟶ 0 ≤ -1 * x + n",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "d": "int",
+                "n": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_gcd_divide",
+            "prop": "c > 1 ⟶ 0 ≤ x ⟶ x = c * y ⟶ 0 ≤ y",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_gcd",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "c > 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "c > 0 ⊢ c > 0"
+                },
+                {
+                    "args": "0 ≤ x + d",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x + d ⊢ 0 ≤ x + d"
+                },
+                {
+                    "args": "c * y = x",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "c * y = x ⊢ c * y = x"
+                },
+                {
+                    "args": "c * n + d < 0",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "c * n + d < 0 ⊢ c * n + d < 0"
+                },
+                {
+                    "args": "c * (n + 1) + d > 0",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "c * (n + 1) + d > 0 ⊢ c * (n + 1) + d > 0"
+                },
+                {
+                    "args": "0 ≤ y - (n + 1)",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "z3",
+                    "th": "c > 0, 0 ≤ x + d, c * y = x, c * n + d < 0, c * (n + 1) + d > 0 ⊢ 0 ≤ y - (n + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ c > 0 ⟶ 0 ≤ x + d ⟶ c * y = x ⟶ c * n + d < 0 ⟶ c * (n + 1) + d > 0 ⟶ 0 ≤ y - (n + 1)"
+                }
+            ],
+            "prop": [
+                "c > 0 ",
+                "⟶ 0 ≤ x + d ⟶ c * y = x ⟶ c * n + d < 0 ⟶ c * (n + 1) + d > 0 ⟶ 0 ≤ y + -(n + 1)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "d": "int",
+                "m": "int",
+                "n": "int",
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_geq_zero_mul_pos",
+            "prop": "c > 0 ⟶ 0 ≤ x ⟶ 0 ≤ c * x",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_geq_zero_mul_neg",
+            "prop": "c < 0 ⟶ 0 ≤ x ⟶ 0 ≤ -c * x",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_pos_plus",
+            "prop": "0 ≤ x ⟶ 0 ≤ y ⟶ 0 ≤ x + y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_zero_less",
+            "prop": "x < y ⟷ 0 ≤ y - x - 1",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_zero_less_eq",
+            "prop": "x ≤ y ⟷ 0 ≤ y - x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_zero_grearter",
+            "prop": "x > y ⟷ 0 ≤ x - y - 1",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_zero_greater_eq",
+            "prop": "x ≥ y ⟷ 0 ≤ x - y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
             }
         }
     ],
