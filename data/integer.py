@@ -15,7 +15,7 @@ from kernel.thm import Thm
 from syntax.settings import settings
 from math import gcd
 from logic import matcher
-basic.load_theory('int')
+basic.load_theory('real')
 
 
 def strip_plus(t):
@@ -59,6 +59,8 @@ def int_eval(t):
     elif t.is_minus():
         m, n = int_eval(t.arg1), int_eval(t.arg)
         return m - n
+    elif t.is_uminus():
+        return -(int_eval(t.arg))
     elif t.is_times():
         return int_eval(t.arg1) * int_eval(t.arg)
     else:
@@ -182,9 +184,9 @@ class norm_add_monomial(Conv):
             elif cp == 0:  # if b and c have the same body, combine coefficients
                 return pt.on_rhs(
                     rewr_conv('int_add_assoc', sym=True),  # a + (c1 * b + c2 * b)
-                    arg_conv(rewr_conv('mul_add_distr_r', sym=True)), # a + (c1 + c2) * b
+                    arg_conv(rewr_conv('int_mul_add_distr_r', sym=True)), # a + (c1 + c2) * b
                     arg_conv(arg1_conv(int_eval_conv())), # evaluate c1 + c2
-                    try_conv(arg_conv(rewr_conv('mul_0_l'))),
+                    try_conv(arg_conv(rewr_conv('int_mul_0_l'))),
                     try_conv(rewr_conv('int_add_0_right')))
             else:  # if b < c, monomials are already sorted
                 return pt
@@ -202,9 +204,9 @@ class norm_add_monomial(Conv):
                     return pt.on_rhs(int_eval_conv())
                 else:
                     return pt.on_rhs(
-                        rewr_conv('mul_add_distr_r', sym=True),
+                        rewr_conv('int_mul_add_distr_r', sym=True),
                         arg1_conv(int_eval_conv()),
-                        try_conv(rewr_conv('mul_0_l')))
+                        try_conv(rewr_conv('int_mul_0_l')))
             else:
                 return pt
 
@@ -232,13 +234,13 @@ class norm_add_polynomial(Conv):
         elif t.is_minus(): 
             if t.arg.is_plus(): # t is of form a - (b + c)
                 return pt.on_rhs(
-                    rewr_conv('sub_add_distr'), # a - b - c
+                    rewr_conv('int_sub_add_distr'), # a - b - c
                     arg1_conv(self), # merge terms in b into a
                     norm_add_monomial() # merge c into a - b
                 )
             elif t.arg.is_minus(): # t is of form a - (b - c)
                 return pt.on_rhs(
-                    rewr_conv('sub_sub_distr'), # a - b + c
+                    rewr_conv('int_sub_sub_distr'), # a - b + c
                     arg1_conv(self), # merge terms in b into c
                     norm_add_monomial() # merge c into a - b
                 )
@@ -253,7 +255,7 @@ class norm_mult_poly_monomial(Conv):
         pt = refl(t)
         if t.arg1.is_plus():  # (a + b) * c
             return pt.on_rhs(
-                rewr_conv('mul_add_distr_r'),  # a * c + b * c
+                rewr_conv('int_mul_add_distr_r'),  # a * c + b * c
                 arg1_conv(self),  # process a * c
                 arg_conv(norm_mult_monomial()), # process b * c
                 norm_add_polynomial())  # add the results
@@ -265,12 +267,12 @@ class norm_mult_polynomials(Conv):
     def get_proof_term(self, t):
         pt = refl(t)
         if t.arg1.is_zero():
-            return pt.on_rhs(rewr_conv('mul_0_l'))
+            return pt.on_rhs(rewr_conv('int_mul_0_l'))
         elif t.arg.is_zero():
-            return pt.on_rhs(rewr_conv('mul_0_r'))
+            return pt.on_rhs(rewr_conv('int_mul_0_l'))
         elif t.arg.is_plus():  # a * (b + c)
             return pt.on_rhs(
-                rewr_conv('mul_add_distr_l'), # a * b + a * c
+                rewr_conv('int_mul_add_distr_l'), # a * b + a * c
                 arg1_conv(self),  # process a * b
                 arg_conv(norm_mult_poly_monomial()),  # process a * c
                 norm_add_polynomial())
@@ -297,15 +299,15 @@ class simp_full(Conv):
         elif t.is_number():
             return pt
         elif t.is_nat_power() and t.arg.is_number():  # rewrite x ^ n to 1 * x ^ n
-            return pt.on_rhs(rewr_conv('mul_1_l', sym=True))
+            return pt.on_rhs(rewr_conv('int_mul_1_l', sym=True))
         elif t.is_uminus():
             pt_mul_neg1 = pt.on_rhs(rewr_conv('int_poly_neg1'))
             pt_new = self.get_proof_term(pt_mul_neg1.prop.rhs)
             return pt.transitive(pt_mul_neg1).transitive(pt_new)
         else:  # rewrite x to 1 * x ^ 1
             return pt.on_rhs(
-                rewr_conv('pow_1_r', sym=True),
-                rewr_conv('mul_1_l', sym=True))
+                rewr_conv('int_pow_1_r', sym=True),
+                rewr_conv('int_mul_1_l', sym=True))
 
 @register_macro('int_norm')
 class int_norm_macro(Macro):
@@ -328,8 +330,8 @@ class int_norm_conv(Conv):
     def get_proof_term(self, t):
         return refl(t).on_rhs(
             simp_full(),
-            top_conv(rewr_conv('mul_1_l')),
-            top_conv(rewr_conv('pow_1_r')))
+            top_conv(rewr_conv('int_mul_1_l')),
+            top_conv(rewr_conv('int_pow_1_r')))
 
 class norm_eq(Conv):
     """Give an equality(inequality), move all term from rhs to lhs.
@@ -339,7 +341,7 @@ class norm_eq(Conv):
             or t.is_greater_eq() or t.is_greater(), "%s is not an equality term" % t
         pt1 = refl(t) # a = b <==> a = b
         if t.is_equals():
-            pt2 = pt1.on_rhs(rewr_conv('sub_move_0_r', sym=True)) # a = b <==> a - b = 0
+            pt2 = pt1.on_rhs(rewr_conv('int_sub_move_0_r', sym=True)) # a = b <==> a - b = 0
             eq_refl = ProofTerm.reflexive(equals(IntType))
         elif t.is_less_eq():
             pt2 = pt1.on_rhs(rewr_conv('int_le'))
@@ -572,11 +574,11 @@ class omega_norm_add_num(Conv):
         else:
             return pt
 
-class omega_simp_full(Conv):
+class omega_simp_full_conv(Conv):
     def get_proof_term(self, t):
         return refl(t).on_rhs(
             simp_full(),
-            top_conv(rewr_conv('pow_1_r')),
+            top_conv(rewr_conv('int_pow_1_r')),
             omega_norm_add_num())
 
 
@@ -591,6 +593,11 @@ class omega_norm_int_ineq_macro(Macro):
     3) c * x + ⋯ > 0 --> c * x + ⋯ ≥ 1;
     4) c * x + ⋯ ≥ 0 --> no conversion;
     """
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
     def get_proof_term(self, goal):
         assert isinstance(goal, Term), "%s should be a hol term" % str(goal)
         assert goal.is_less() or goal.is_less_eq() or goal.is_greater() or goal.is_greater_eq(),\
@@ -615,5 +622,38 @@ class omega_norm_int_ineq_macro(Macro):
                 pt_great = norm_ineq_pt.on_rhs(rewr_conv('int_less_to_geq'))
             elif norm_ineq_pt.rhs.is_less_eq():
                 pt_great = norm_ineq_pt.on_rhs(rewr_conv('int_leq_to_geq'))
-            pt_norm_lhs = refl(pt_great.rhs.arg1).on_rhs(omega_simp_full())
+            pt_norm_lhs = refl(pt_great.rhs.arg1).on_rhs(omega_simp_full_conv())
             return pt_great.transitive(refl(pt_great.rhs.head).combination(pt_norm_lhs).combination(refl(pt_great.rhs.arg)))
+
+class omega_form_conv(Conv):
+    """
+    Convert all integer inequalities to 0 <= Σ c * x + k
+    """
+    def get_proof_term(self, t):
+        assert t.is_compares() and t.arg.get_type() == IntType, "%s is not an integer comparison." % str(t)
+        pt_refl = refl(t)
+        if t.is_less():
+            pt = pt_refl.on_rhs(rewr_conv('int_zero_less'))
+        elif t.is_less_eq():
+            pt = pt_refl.on_rhs(rewr_conv('int_zero_less_eq'))
+        elif t.is_greater():
+            pt = pt_refl.on_rhs(rewr_conv('int_zero_greater'))
+        else:
+            pt = pt_refl.on_rhs(rewr_conv('int_zero_greater_eq')) 
+
+        return pt.on_rhs(arg_conv(omega_simp_full_conv()))
+
+# class int_to_real_conv(Conv):
+#     """Given a linear integer expression, convert it to real term."""
+#     def get_proof_term(self, t):
+#         pt = refl(t)
+
+#         if not t.get_type() == IntType:
+#             return pt
+
+#         if t.is_var():
+#             return 
+#         if t.is_times():
+#             return pt.on_rhs(
+#                 rewr_conv('')
+#             )
