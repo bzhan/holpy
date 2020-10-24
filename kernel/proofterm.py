@@ -61,7 +61,7 @@ class ProofTerm():
         if self.rule == 'sorry':
             self.gaps = [self.th]
         else:
-            self.gaps = sum([prev.gaps for prev in self.prevs], [])
+            self.gaps = list(set(sum([prev.gaps for prev in self.prevs], [])))
 
     def __repr__(self):
         return str(self)
