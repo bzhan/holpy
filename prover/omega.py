@@ -11,8 +11,14 @@ import functools
 import copy
 from math import gcd, ceil, floor
 
-from kernel.term import Int
+from kernel import term
+from kernel import term_ord
+from kernel import proofterm
 from data import integer
+from logic import logic, basic
+from logic import conv
+
+basic.load_theory('int')
 
 
 class NoGCDException(Exception):
@@ -185,7 +191,7 @@ def term_to_factoid(vars, t):
             else:
                 return [0] + mk_coeff(vlist[1:], slist)
 
-    return Factoid(mk_coeff(vars, integer.strip_plus(t)))
+    return Factoid(mk_coeff(vars, integer.strip_plus(t.arg)))
 
 def factoid_to_term(vars, f):
     """
@@ -194,12 +200,7 @@ def factoid_to_term(vars, f):
     Here vars is the list of variables.
 
     """
-    t = None
-    for v, c in zip(vars, f[:-1]):
-        if c != 0:
-            t += Int(c) * v
-    
-    return t + Int(f[-1])
+    return term.less_eq(term.IntType)(term.Int(0), sum([term.Int(c) * v for c, v in zip(f[1:-1], vars[1:])], term.Int(f[0]) * vars[0]) + term.Int(f[-1]))
 
 
 class Derivation:
@@ -225,7 +226,7 @@ class RealCombine(Derivation):
         self.deriv2 = deriv2
 
     def __str__(self):
-        return "REAL_COMBIN var %s: %s <*> %s" % (str(self.i), str(self.deriv1), str(self.deriv2))
+        return "\tREAL_COMBIN var %s:\n\t\t %s\n\t %s\n" % (str(self.i), str(self.deriv1), str(self.deriv2))
 
     def __repr__(self):
         return str(self)
@@ -235,7 +236,7 @@ class GCDCheck(Derivation):
         self.deriv = deriv
 
     def __str__(self):
-        return "GCD_CHECK: %s" % str(self.deriv)
+        return "GCD_CHECK: \n  %s\n" % str(self.deriv)
 
     def __repr__(self):
         return str(self)
@@ -246,7 +247,7 @@ class DirectContr(Derivation):
         self.deriv2 = deriv2
 
     def __str__(self):
-        return "DIRECT_CONTR: %s ~~ %s" % (str(self.deriv1), str(self.deriv2))
+        return "DIRECT_CONTR: \n  %s\n  %s\n" % (str(self.deriv1), str(self.deriv2))
 
     def __repr__(self):
         return str(self)
@@ -729,3 +730,115 @@ def solve_matrix(matrix, mode=EXACT):
         return "UNSAT", r
     elif isinstance(r, NoConcl):
         return "NOCONCL", None
+
+def is_integer_ineq(tm):
+    """
+    Check tm is whether an integer inequlity term. 
+    """
+    return tm.is_compares() and tm.arg.get_type() == term.IntType and tm.arg1.get_type() == term.IntType
+
+class OmegaHOL:
+    """
+    Handling omega test decision procedure in higher-order logic.
+    """
+    def __init__(self, ineqs):
+        """
+        Must guarantee the input inequalities are all integer terms.
+        """
+        assert isinstance(ineqs, collections.abc.Iterable) and all(is_integer_ineq(t) for t in ineqs)
+        self.ineqs = ineqs
+        
+        # store all the normal form inequlities: 0 <= Σ ai * xi + c
+        self.norm_pts = dict()
+        self.norm_ineqs = list()
+        occr_vars = set()
+        for i in range(len(self.ineqs)):
+            pt = proofterm.ProofTerm.assume(self.ineqs[i]).on_prop(integer.omega_form_conv())
+            self.norm_pts[self.ineqs[i]] = pt
+            self.norm_ineqs.append(pt.prop)
+            occr_vars |= set(self.ineqs[i].get_vars())
+        
+        # store ordered vars
+        self.vars = term_ord.sorted_terms(occr_vars)
+
+        # convert inequalities to factoids
+        self.factoids = [term_to_factoid(self.vars, t) for t in self.norm_ineqs]
+
+        # mapping from factoids to HOL terms
+        self.fact_hol = {f: factoid_to_term(self.vars, f) for f in self.factoids}
+
+    def real_combine_pt(self, pt1, pt2, c1, c2):
+        """
+        pt1, pt2 are all proof terms which prop is a normal inequality,
+        v is the variable index which will be elimated.
+        c1, c2 are the coefficient pt1, pt2's prop need to multiply
+        """
+        def get_const_comp_pt(c):
+            """
+            c is a number, return a pt: c ⋈ 0
+            """
+            if c > 0:
+                return proofterm.ProofTerm('int_const_ineq', term.greater(term.IntType)(term.Int(c), term.Int(0)))
+            else:
+                return proofterm.ProofTerm('int_const_ineq', term.less(term.IntType)(term.Int(c), term.Int(0)))
+        
+        def ineq_mul_const(c, pt):
+            assert c != 0
+            pt_c = get_const_comp_pt(c)
+            if c > 0:
+                return logic.apply_theorem('int_geq_zero_mul_pos', pt_c, pt)
+            else:
+                return logic.apply_theorem('int_geq_zero_mul_neg', pt_c, pt)
+        
+        pt1_mul_c1, pt2_mul_c2 = ineq_mul_const(c1, pt1), ineq_mul_const(c2, pt2)
+        pt_final = logic.apply_theorem('int_pos_plus', pt1_mul_c1, pt2_mul_c2)
+        return pt_final.on_prop(conv.arg_conv(integer.omega_simp_full_conv()))
+
+    def gcd_pt(self, vars, pt):
+        fact = term_to_factoid(vars, pt.prop)
+        g = functools.reduce(gcd, fact[:-1])
+        assert g > 1
+        elim_gcd_fact = [floor(i / g) for i in fact]
+        pt1 = proofterm.ProofTerm('int_const_ineq', term.Int(g) > term.Int(0))
+        pt2 = pt
+        elim_gcd_no_constant = sum([c * v for c, v in zip(elim_gcd_fact[1:-1], vars[1:])], elim_gcd_fact[0] * vars[0])
+        original_no_constant = sum([c * v for c, v in zip(fact[1:-1], vars[1:])], fact[0] * vars[0])
+        
+        elim_gcd_no_constant = integer.int_norm_conv().get_proof_term(elim_gcd_no_constant).rhs
+        original_no_constant = integer.int_norm_conv().get_proof_term(original_no_constant).rhs
+
+        pt3 = integer.int_norm_conv().get_proof_term(g * elim_gcd_no_constant).transitive(
+                    integer.int_norm_conv().get_proof_term(original_no_constant).symmetric())
+        n = floor(-fact[-1] / g)
+        pt4 = proofterm.ProofTerm('int_const_ineq', term.Int(g) * term.Int(n) + fact[-1] < 0)
+        pt5 = proofterm.ProofTerm('int_const_ineq', term.Int(g) * (term.Int(n) + term.Int(1)) + fact[-1] > 0)
+        pt6 = integer.int_eval_conv().get_proof_term(-(term.Int(n) + term.Int(1)))
+        return logic.apply_theorem('int_gcd', pt1, pt2, pt3, pt4, pt5).on_prop(conv.top_sweep_conv(conv.rewr_conv(pt6)))
+        
+    def handle_unsat_result(self, res):
+        
+        def extract(f):
+            if isinstance(f, ASM):
+                return proofterm.ProofTerm.assume(self.fact_hol[f.t])
+            else:
+                return self.handle_unsat_result(f)
+        if isinstance(res, ASM):
+            return proofterm.ProofTerm.assume(self.fact_hol[res.t])
+        elif isinstance(res, RealCombine):
+            i, l1, l2 = res.i, self.handle_unsat_result(res.deriv1), self.handle_unsat_result(res.deriv2)
+            c1, c2 = term_to_factoid(self.vars, l1.prop)[i], term_to_factoid(self.vars, l2.prop)[i]
+            g = gcd(c1, c2)
+            return self.real_combine_pt(l1, l2, int(c1/g), int(c2/g))
+        
+        elif isinstance(res, GCDCheck):
+            return self.gcd_pt(self.vars, self.handle_unsat_result(res.deriv))
+        
+        elif isinstance(res, DirectContr):
+            d1, d2 = extract(res.deriv1), extract(res.deriv2)
+
+    def solve(self):
+        res, value = solve_matrix(self.factoids)
+        if res == "SAT":
+            return value
+        elif res == "UNSAT":
+            pass
