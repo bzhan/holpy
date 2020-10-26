@@ -230,13 +230,39 @@ class OmegaTest(unittest.TestCase):
             ([5, 0, 8], [1, 0, 1]),
             ([2, 4, 6, 5], [1, 2, 3, 2]),
             ([2, 4, 6, -5], [1, 2, 3, -3]),
+            ([7, 0], [1, 0]),
+            ([3, 6, -3], [1, 2, -1])
         ]
 
         vars = term.IntVars('x0 x1 x2')
         hol = OmegaHOL([])
         for r, res in test_data:
-            
             len_fact = len(r)
             r, res = factoid_to_term(vars[:len_fact-1], r), factoid_to_term(vars[:len_fact-1], res)
             after_gcd = hol.gcd_pt(vars[:len_fact-1], proofterm.ProofTerm.assume(r))
             self.assertEqual(res, after_gcd.prop)
+
+    def testHOLRecProof(self):
+        test_data = [
+            (((-3,-1,6), (2,1,-5), (3,-1,-3))),
+            (((0, 1, 0, 1, 0, 1, 0, -1, 0, 0, 1), (0, -1, 0, -1, 0, 0, -1, 0, 0, 1, 1), 
+            (0, -1, -1, 0, 0, 0, -1, 1, 1, 0, 0), (0, 0, 0, 0, 0, 0, 1, 0, -2, 0, 0),
+            (0, 0, 1, 0, -1, 0, -1, 0, 0, -1, -1), (-2, 0, 0, 0, 0, 1, -1, 0, 0, 1, 0),
+            (1, -1, 0, 1, 0, -1, -1, 0, 1, 0, 0), (0, -2, 0, 0, -1, 0, 0, 0, 0, 2, 0),
+            (0, 0, 0, 0, 1, 0, 2, 1, 0, 0, -1), (1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0),
+            (0, 0, 0, 0, 0, 0, 0, 1, -2, -1, 1), (0, -1, 0, 0, 0, 0, -1, -2, -1, -1, 0),
+            (0, 0, -1, -1, 0, -1, -1, 0, 1, 0, -1), (0, 0, -1, 1, 0, 1, 0, -1, 0, 0, -1),
+            (0, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0), (-1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1),
+            (1, 0, 0, 0, -1, 0, 0, 0, 0, 0, -1), (0, 0, 0, 1, 0, -1, 0, 0, 0, -1, 0),
+            (1, 0, 0, 0, -3, 0, 0, 0, 0, 0, 1), (-1, 0, 1, 0, 0, -1, 1, 1, 0, 0, -1))),
+        ]
+
+        vars = term.IntVars('x0 x1 x2 x3 x4 x5 x6 x7 x8 x9')
+
+        for facts in test_data:
+            len_fact = len(facts[0])
+            hol_facts = [factoid_to_term(vars[:len_fact-1], f) for f in facts]
+            hol = OmegaHOL(hol_facts)
+            _, res = solve_matrix(facts)
+            proof = hol.handle_unsat_result(res.deriv)
+            self.assertEqual(proof.prop, term.false)

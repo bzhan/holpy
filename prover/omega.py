@@ -200,8 +200,9 @@ def factoid_to_term(vars, f):
     Here vars is the list of variables.
 
     """
-    return term.less_eq(term.IntType)(term.Int(0), sum([term.Int(c) * v for c, v in zip(f[1:-1], vars[1:])], term.Int(f[0]) * vars[0]) + term.Int(f[-1]))
-
+    assert len(vars) + 1 == len(f)
+    s = [term.Int(c) * v for c, v in zip(f[:-1], vars) if c != 0] + [term.Int(f[-1])]
+    return term.less_eq(term.IntType)(term.Int(0), sum(s[1:], s[0]))
 
 class Derivation:
     """A derivation is a proof of a factoid."""
@@ -791,50 +792,73 @@ class OmegaHOL:
                 return logic.apply_theorem('int_geq_zero_mul_neg', pt_c, pt)
         
         pt1_mul_c1, pt2_mul_c2 = ineq_mul_const(c1, pt1), ineq_mul_const(c2, pt2)
-        pt_final = logic.apply_theorem('int_pos_plus', pt1_mul_c1, pt2_mul_c2)
-        return pt_final.on_prop(conv.arg_conv(integer.omega_simp_full_conv()))
+        pt_final = logic.apply_theorem('int_pos_plus', pt1_mul_c1, pt2_mul_c2).on_prop(conv.arg_conv(integer.omega_simp_full_conv()))
+
+        if pt_final.prop.arg.is_number(): # ⊢ 0 <= -3
+            pt_less_zero = proofterm.ProofTerm('int_const_ineq', term.less(term.IntType)(pt_final.prop.arg, term.Int(0)))
+            return logic.apply_theorem('int_zero_less_eq_neg', pt_less_zero, pt_final)
+        else:
+            return pt_final
 
     def gcd_pt(self, vars, pt):
         fact = term_to_factoid(vars, pt.prop)
         g = functools.reduce(gcd, fact[:-1])
         assert g > 1
-        elim_gcd_fact = [floor(i / g) for i in fact]
         pt1 = proofterm.ProofTerm('int_const_ineq', term.Int(g) > term.Int(0))
         pt2 = pt
-        elim_gcd_no_constant = sum([c * v for c, v in zip(elim_gcd_fact[1:-1], vars[1:])], elim_gcd_fact[0] * vars[0])
-        original_no_constant = sum([c * v for c, v in zip(fact[1:-1], vars[1:])], fact[0] * vars[0])
-        
-        elim_gcd_no_constant = integer.int_norm_conv().get_proof_term(elim_gcd_no_constant).rhs
-        original_no_constant = integer.int_norm_conv().get_proof_term(original_no_constant).rhs
+        elim_gcd_fact = [floor(i / g) for i in fact]
+        if int(fact[-1] / g) != fact[-1] / g:    
+            elim_gcd_no_constant = sum([c * v for c, v in zip(elim_gcd_fact[1:-1], vars[1:])], elim_gcd_fact[0] * vars[0])
+            original_no_constant = sum([c * v for c, v in zip(fact[1:-1], vars[1:])], fact[0] * vars[0])
+            
+            elim_gcd_no_constant = integer.int_norm_conv().get_proof_term(elim_gcd_no_constant).rhs
+            original_no_constant = integer.int_norm_conv().get_proof_term(original_no_constant).rhs
 
-        pt3 = integer.int_norm_conv().get_proof_term(g * elim_gcd_no_constant).transitive(
-                    integer.int_norm_conv().get_proof_term(original_no_constant).symmetric())
-        n = floor(-fact[-1] / g)
-        pt4 = proofterm.ProofTerm('int_const_ineq', term.Int(g) * term.Int(n) + fact[-1] < 0)
-        pt5 = proofterm.ProofTerm('int_const_ineq', term.Int(g) * (term.Int(n) + term.Int(1)) + fact[-1] > 0)
-        pt6 = integer.int_eval_conv().get_proof_term(-(term.Int(n) + term.Int(1)))
-        return logic.apply_theorem('int_gcd', pt1, pt2, pt3, pt4, pt5).on_prop(conv.top_sweep_conv(conv.rewr_conv(pt6)))
-        
+            pt3 = integer.int_norm_conv().get_proof_term(g * elim_gcd_no_constant).transitive(
+                        integer.int_norm_conv().get_proof_term(original_no_constant).symmetric())
+            n = floor(-fact[-1] / g)
+            pt4 = proofterm.ProofTerm('int_const_ineq', term.Int(g) * term.Int(n) + fact[-1] < 0)
+            pt5 = proofterm.ProofTerm('int_const_ineq', term.Int(g) * (term.Int(n) + term.Int(1)) + fact[-1] > 0)
+            pt6 = integer.int_eval_conv().get_proof_term(-(term.Int(n) + term.Int(1)))
+            return logic.apply_theorem('int_gcd', pt1, pt2, pt3, pt4, pt5).on_prop(
+                conv.top_sweep_conv(conv.rewr_conv(pt6)),
+                conv.arg_conv(integer.omega_simp_full_conv()))
+        else:
+            elim_gcd_term = factoid_to_term(vars, elim_gcd_fact)
+            pt3 = integer.omega_simp_full_conv().get_proof_term(pt.prop.arg).transitive(\
+                    integer.omega_simp_full_conv().get_proof_term(term.Int(g) * elim_gcd_term.arg).symmetric())
+            return logic.apply_theorem('int_gcd_1', pt1, pt2, pt3)
+
+
+    def direct_contr_pt(self, lower, upper):
+        pos, neg = lower.prop.arg.arg1, upper.prop.arg.arg1
+        pt_eq = integer.omega_simp_full_conv().get_proof_term(neg).\
+            transitive(integer.omega_simp_full_conv().get_proof_term(term.Int(-1) * pos).symmetric())
+        pt1 = lower
+        pt2 = upper.on_prop(conv.top_sweep_conv(conv.rewr_conv(pt_eq)))
+        lower_bound, upper_bound = -integer.int_eval(lower.prop.arg.arg), integer.int_eval(upper.prop.arg.arg)
+        pt3 = proofterm.ProofTerm('int_const_ineq', term.greater(term.IntType)(term.Int(lower_bound), term.Int(upper_bound)))
+        return logic.apply_theorem('int_comp_contr', pt1, pt2, pt3)
+
     def handle_unsat_result(self, res):
+        if isinstance(res, Contr):
+            return self.handle_unsat_result(res.deriv)
         
-        def extract(f):
-            if isinstance(f, ASM):
-                return proofterm.ProofTerm.assume(self.fact_hol[f.t])
-            else:
-                return self.handle_unsat_result(f)
-        if isinstance(res, ASM):
+        elif isinstance(res, ASM):
             return proofterm.ProofTerm.assume(self.fact_hol[res.t])
+        
         elif isinstance(res, RealCombine):
             i, l1, l2 = res.i, self.handle_unsat_result(res.deriv1), self.handle_unsat_result(res.deriv2)
             c1, c2 = term_to_factoid(self.vars, l1.prop)[i], term_to_factoid(self.vars, l2.prop)[i]
             g = gcd(c1, c2)
-            return self.real_combine_pt(l1, l2, int(c1/g), int(c2/g))
+            return self.real_combine_pt(l1, l2, int(c2/g), int(c1/g))
         
         elif isinstance(res, GCDCheck):
             return self.gcd_pt(self.vars, self.handle_unsat_result(res.deriv))
         
         elif isinstance(res, DirectContr):
-            d1, d2 = extract(res.deriv1), extract(res.deriv2)
+            d1, d2 = self.handle_unsat_result(res.deriv1), self.handle_unsat_result(res.deriv2)
+            return self.direct_contr_pt(d1, d2)
 
     def solve(self):
         res, value = solve_matrix(self.factoids)
