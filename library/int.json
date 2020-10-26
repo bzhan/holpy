@@ -1601,7 +1601,8 @@
             ],
             "prop": [
                 "c > 0 ",
-                "⟶ 0 ≤ x + d ⟶ c * y = x ⟶ c * n + d < 0 ⟶ c * (n + 1) + d > 0 ⟶ 0 ≤ y + -(n + 1)"
+                "⟶ 0 ≤ x + d ",
+                "   ⟶ c * y = x ⟶ c * n + d < 0 ⟶ c * (n + 1) + d > 0 ⟶ 0 ≤ 1 * y + -(n + 1)"
             ],
             "steps": [
                 {
@@ -1627,6 +1628,16 @@
             }
         },
         {
+            "name": "int_gcd_1",
+            "prop": "c > 0 ⟶ 0 ≤ x ⟶ x = c * y ⟶ 0 ≤ y",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
             "name": "int_geq_zero_mul_pos",
             "prop": "c > 0 ⟶ 0 ≤ x ⟶ 0 ≤ c * x",
             "ty": "thm",
@@ -1637,7 +1648,7 @@
         },
         {
             "name": "int_geq_zero_mul_neg",
-            "prop": "c < 0 ⟶ 0 ≤ x ⟶ 0 ≤ -c * x",
+            "prop": "c < 0 ⟶ 0 ≤ x ⟶ 0 ≤ -1 * c * x",
             "ty": "thm",
             "vars": {
                 "c": "int",
@@ -1687,6 +1698,72 @@
             "vars": {
                 "x": "int",
                 "y": "int"
+            }
+        },
+        {
+            "name": "int_comp_contr",
+            "prop": "0 ≤ x + a ⟶ 0 ≤ -1 * x + b ⟶ -a > b ⟶ false",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_zero_less_eq_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x < 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < 0 ⊢ x < 0"
+                },
+                {
+                    "args": "0 ≤ x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "false",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "x < 0, 0 ≤ x ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x < 0 ⟶ 0 ≤ x ⟶ false"
+                }
+            ],
+            "prop": "x < 0 ⟶ 0 ≤ x ⟶ false",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1",
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "int"
             }
         }
     ],
