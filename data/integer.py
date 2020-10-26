@@ -558,7 +558,9 @@ class omega_norm_add_num(Conv):
     """
     def get_proof_term(self, t):
         pt = refl(t)
-        if t.arg1.is_plus():
+        if t.is_number() and t.is_int():
+            return pt.on_rhs(int_eval_conv())
+        elif t.arg1.is_plus():
             pt1 = pt.on_rhs(arg1_conv(self))
             cp = omega_compare_monomial(pt1.rhs.arg1.arg, pt1.rhs.arg)
             if cp > 0:
