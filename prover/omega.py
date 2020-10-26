@@ -61,13 +61,7 @@ class Factoid:
         return str(self.coeff)
     
     def __hash__(self):
-        if 0 <= self.coeff[0]:
-            h = 0
-            for i in range(len(self.coeff) - 1):
-                h += (i+1) * self.coeff[i]
-            return h
-        else:
-            return hash(Factoid([-n for n in self.coeff]))
+        return hash(self.key)
     
     def __eq__(self, f):
         return self.coeff == f.coeff
@@ -865,4 +859,4 @@ class OmegaHOL:
         if res == "SAT":
             return value
         elif res == "UNSAT":
-            pass
+            return self.handle_unsat_result(value)
