@@ -29910,6 +29910,36 @@
                 "x": "real",
                 "y": "real"
             }
+        },
+        {
+            "name": "real_ge_le_same_num",
+            "prop": "x = y ⟷ x ≤ y ∧ x ≥ y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_of_int_0",
+            "prop": "of_int 0 = 0",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "real_of_int_1",
+            "prop": "of_int 1 = 1",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "real_of_int_add",
+            "prop": "of_int (x + y) = of_int x + of_int y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
         }
     ],
     "description": "real numbers",

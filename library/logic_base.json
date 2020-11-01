@@ -285,7 +285,56 @@
         },
         {
             "name": "trivial",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ A ⟶ A"
+                },
+                {
+                    "args": "A",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0",
+                        "0.0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A ⟶ A"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A ⟶ A"
+                }
+            ],
             "prop": "A ⟶ A",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "bool"

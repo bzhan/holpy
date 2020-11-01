@@ -3216,7 +3216,140 @@
                 "hint_rewrite"
             ],
             "name": "de_morgan_thm1",
+            "num_gaps": 3,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ A ∧ B ⟶ A"
+                },
+                {
+                    "args": "A ∧ B",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ∧ B ⊢ A ∧ B"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A ∧ B ⊢ A"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A ∧ B ⟶ A"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬A ⟶ ¬(A ∧ B)"
+                },
+                {
+                    "args": "¬A",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬A ⊢ ¬A"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬A ⊢ ¬(A ∧ B)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬A ⟶ ¬(A ∧ B)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ¬(A ∧ B) ⟶ ¬A ∨ ¬B"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ¬A ∨ ¬B ⟶ ¬(A ∧ B)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(A ∧ B) ⟷ ¬A ∨ ¬B"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(A ∧ B) ⟷ ¬A ∨ ¬B"
+                }
+            ],
             "prop": "¬(A ∧ B) ⟷ ¬A ∨ ¬B",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal": "A ∧ B ⟶ A",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal": "¬A ⟶ ¬(A ∧ B)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -6277,7 +6410,7 @@
             }
         },
         {
-            "name": "conj_false_right",
+            "name": "conj_false_left",
             "prop": "false ∧ P ⟷ false",
             "ty": "thm",
             "vars": {
@@ -6285,8 +6418,179 @@
             }
         },
         {
-            "name": "conj_false_left",
+            "name": "conj_false_right",
             "prop": "P ∧ false ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "imply_neg",
+            "num_gaps": 4,
+            "proof": [
+                {
+                    "args": "disj_conv_imp, (P ⟶ Q) ⟷ ¬P ∨ Q",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (P ⟶ Q) ⟷ ¬P ∨ Q"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (P ⟶ Q) ⟶ ¬P ∨ Q"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (P ⟶ Q) ⟶ ¬Q ⟶ ¬P"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ¬P ∨ Q ⟷ Q ∨ ¬P"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (¬Q ⟶ ¬P) ⟶ P ⟶ Q"
+                },
+                {
+                    "args": "iffI",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (P ⟶ Q) ⟷ (¬Q ⟶ ¬P)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (P ⟶ Q) ⟷ (¬Q ⟶ ¬P)"
+                }
+            ],
+            "prop": "(P ⟶ Q) ⟷ (¬Q ⟶ ¬P)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal": "(P ⟶ Q) ⟷ (¬P ∨ Q)",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "True",
+                    "theorem": "disj_conv_imp"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal": "(P ⟶ Q) ⟶ (¬P ∨ Q)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal": "¬P ∨ Q ⟷ Q ∨ ¬P",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "not_or_elim1",
+            "prop": "¬(p ∨ q) ⟶ ¬p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "not_or_elim2",
+            "prop": "¬(p ∨ q) ⟶ ¬q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "conj_true_left",
+            "prop": "true ∧ P ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "conj_true_right",
+            "prop": "P ∧ true ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "disj_true_left",
+            "prop": "true ∨ P ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "disj_true_right",
+            "prop": "P ∨ true ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "conj_pos_neg",
+            "prop": "P ∧ ¬P ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "conj_neg_pos",
+            "prop": "¬P ∧ P ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "conj_same_atom",
+            "prop": "P ∧ P ⟷ P",
             "ty": "thm",
             "vars": {
                 "P": "bool"
