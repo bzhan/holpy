@@ -7,7 +7,7 @@ by Sascha Böhme and Tjark Weber.
 import z3
 from z3.z3consts import *
 from data.integer import int_norm_macro, int_ineq_macro, collect_int_polynomial_coeff,\
-    int_multiple_ineq_equiv
+    int_multiple_ineq_equiv, int_eq_macro, int_eq_comparison_macro
 from data.real import norm_real_ineq_conv, norm_neg_real_ineq_conv, real_const_eq_conv, real_eval_conv
 from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar, TVar
 from kernel.term import *
@@ -148,7 +148,7 @@ def solve_cnf(F):
 
     return apply_theorem('negI', pt2.implies_intr(pt2.hyps[0])).on_prop(rewr_conv('double_neg'))
 
-def translate(term, bounds=deque()):
+def translate(term, bounds=deque(), subterms=[]):
     """Transalte z3 term into holpy term.
        bounds represents bounded variables, key is de-Bruijn index of the var, value is the bounded variable already in holpy.
     """
@@ -197,7 +197,9 @@ def translate(term, bounds=deque()):
             return bounds[z3.get_var_index(term)]
         kind = term.decl().kind() # term function application
         sort = translate_type(term.sort()) # term sort
-        args = tuple(translate(term.arg(i), bounds) for i in range(term.num_args()))
+        args = subterms
+        if len(subterms) == 0 and term.num_args() != 0:
+            args = tuple(translate(term.arg(i), bounds) for i in range(term.num_args()))
         if z3.is_int_value(term): # int number
             return Int(term.as_long())
         elif z3.is_rational_value(term): # Return `True` if term is rational value of sort Real
@@ -264,18 +266,22 @@ def translate(term, bounds=deque()):
     else:
         raise NotImplementedError
 
-def and_elim(pt, concl):
+def and_elim(arg1, concl):
     r = dict()
-    def rec(pt):
-        if pt.prop == concl:
-            r[pt.prop] = pt
-        elif pt.prop.is_conj():
-            rec(apply_theorem('conjD1', pt))
-            rec(apply_theorem('conjD2', pt))
+    def rec(pt, t):
+        if pt.prop.is_conj():
+            left, right = pt.prop.arg1, pt.prop.arg
+            if left == t:
+                return apply_theorem('conjD1', pt)
+            elif right == t:
+                return apply_theorem('conjD2', pt)
+            else:
+                return rec(apply_theorem('conjD2', pt), t)
         else:
-            r[pt.prop] = pt
-    rec(pt)
-    return r[concl]
+            assert pt.prop == t
+            return pt
+
+    return rec(arg1, concl)
 
 def monotonicity(pts, concl):
     """
@@ -514,143 +520,184 @@ class flat_left_assoc_disj_conv(Conv):
         else:
             return pt
 
+def analyze_type(tm):
+    """
+    Infer the theory which term tm most likely belongs to.
+    """
+    if tm.is_number():
+        return tm.get_type()
+    else:
+        types = [v.T for v in tm.get_vars()]
+        if not types: # only have true or false
+            return BoolType
+        else:
+            return max(set(types), key=types.count)
+
+def rewrite_bool(tm):
+    return ProofTerm.sorry(Thm([], tm))
+
+def rewrite_int(tm):
+    if tm.lhs.is_compares() and tm.rhs.is_compares():
+        return int_eq_comparison_macro().get_proof_term(tm)
+    elif not tm.lhs.is_compares() and not tm.rhs.is_compares():
+        return int_norm_macro().get_proof_term(tm)
+    else:
+        return ProofTerm.sorry(Thm([], tm))
+
+def rewrite_real(tm):
+    return ProofTerm.sorry(Thm([], tm))
+
+def _rewrite(tm):
+    if tm.lhs == tm.rhs:
+        return refl(tm.lhs)
+    T = analyze_type(tm)
+    if T == IntType:
+        return rewrite_int(tm)
+    elif T == RealType:
+        return rewrite_real(tm)
+    else:
+        return rewrite_bool(tm)
+
 def rewrite(t, z3terms, assertions=[]):
     """
     Multiple strategies for rewrite rule:
     a) if we want to rewrite distinct[a,...,z] to false, we can check whether there are
     same terms in args.
     """
+    try:
+        return _rewrite(t)
+    except:
+        return ProofTerm.sorry(Thm([], t))
+    # if z3.is_distinct(z3terms[0].arg(0)) and z3.is_false(z3terms[0].arg(1)):
+    #     conjs = t.lhs.strip_conj()
+    #     same = None
+    #     for i in range(len(conjs)):
+    #         if conjs[i].arg.is_reflexive():
+    #             pt1 = imp_conj_macro().get_proof_term(Implies(t.lhs, conjs[i]), None) # ⊢ ~A ∧ B --> ~A
+    #             pt2 = ProofTerm.reflexive(conjs[i].arg.lhs) # ⊢ A
+    #             pt3 = apply_theorem('double_neg', inst=Inst(A=pt2.prop)).symmetric() # ⊢ A = ~~(A)
+    #             pt4 = apply_theorem('negE', inst=Inst(A=Not(pt2.prop))) # ~~A --> ~A --> false
+    #             pt5 = pt3.equal_elim(pt2) # ⊢ ~~A
+    #             pt6 = pt4.implies_elim(pt5) # ⊢ ~A --> false
+    #             pt7 = pt1.implies_elim(ProofTerm.assume(t.lhs)) # ~A ∧ B ⊢ ~A
+    #             pt8 = pt6.implies_elim(pt7) # ~A ∧ B ⊢ false
+    #             pt9 = pt8.implies_intr(pt8.hyps[0]) # ⊢ ~A ∧ B --> false
+    #             pt10 = apply_theorem('falseE', inst=Inst(A=t.lhs)) # ⊢ false --> ~A ∧ B
+    #             return apply_theorem('iffI', pt9, pt10, inst=Inst(A=t.lhs, B=false)) # ~A ∧ B <--> false
 
-    if z3.is_distinct(z3terms[0].arg(0)) and z3.is_false(z3terms[0].arg(1)):
-        conjs = t.lhs.strip_conj()
-        same = None
-        for i in range(len(conjs)):
-            if conjs[i].arg.is_reflexive():
-                pt1 = imp_conj_macro().get_proof_term(Implies(t.lhs, conjs[i]), None) # ⊢ ~A ∧ B --> ~A
-                pt2 = ProofTerm.reflexive(conjs[i].arg.lhs) # ⊢ A
-                pt3 = apply_theorem('double_neg', inst=Inst(A=pt2.prop)).symmetric() # ⊢ A = ~~(A)
-                pt4 = apply_theorem('negE', inst=Inst(A=Not(pt2.prop))) # ~~A --> ~A --> false
-                pt5 = pt3.equal_elim(pt2) # ⊢ ~~A
-                pt6 = pt4.implies_elim(pt5) # ⊢ ~A --> false
-                pt7 = pt1.implies_elim(ProofTerm.assume(t.lhs)) # ~A ∧ B ⊢ ~A
-                pt8 = pt6.implies_elim(pt7) # ~A ∧ B ⊢ false
-                pt9 = pt8.implies_intr(pt8.hyps[0]) # ⊢ ~A ∧ B --> false
-                pt10 = apply_theorem('falseE', inst=Inst(A=t.lhs)) # ⊢ false --> ~A ∧ B
-                return apply_theorem('iffI', pt9, pt10, inst=Inst(A=t.lhs, B=false)) # ~A ∧ B <--> false
-
-    occur_vars = t.get_vars()
-    occur_consts = t.get_consts()
-    # real situation
-    if (len(occur_vars) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars))\
-            or (len(occur_consts) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars)):
-        refl_pt = refl_pt_simp = refl(t)
+    # occur_vars = t.get_vars()
+    # occur_consts = t.get_consts()
+    # # real situation
+    # if (len(occur_vars) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars))\
+    #         or (len(occur_consts) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars)):
+    #     refl_pt = refl_pt_simp = refl(t)
         
-        # preprocess by implicitly asssertions
-        for c in assert_atom:
-            refl_pt_simp = refl_pt_simp.on_rhs(
-                bottom_conv(replace_conv(c)),
-                bottom_conv(rewr_conv('eq_false', sym=True)),
-                bottom_conv(rewr_conv('not_false')),
-                bottom_conv(rewr_conv('if_false')),
-                bottom_conv(rewr_conv('if_true')),
-                bottom_conv(rewr_conv('r049')),
-                bottom_conv(rewr_conv('r050'))
-            )
+    #     # preprocess by implicitly asssertions
+    #     for c in assert_atom:
+    #         refl_pt_simp = refl_pt_simp.on_rhs(
+    #             bottom_conv(replace_conv(c)),
+    #             bottom_conv(rewr_conv('eq_false', sym=True)),
+    #             bottom_conv(rewr_conv('not_false')),
+    #             bottom_conv(rewr_conv('if_false')),
+    #             bottom_conv(rewr_conv('if_true')),
+    #             bottom_conv(rewr_conv('r049')),
+    #             bottom_conv(rewr_conv('r050'))
+    #         )
         
-        conv_pt = refl_pt_simp.on_rhs(
-            try_conv(bottom_conv(rewr_conv('de_morgan_thm1'))),
-            try_conv(bottom_conv(rewr_conv('de_morgan_thm2'))),
-            try_conv(bottom_conv(rewr_conv('double_neg'))),
-            try_conv(top_conv(flat_left_assoc_conj_conv())),
-            try_conv(top_conv(flat_left_assoc_disj_conv())),
-            try_conv(bottom_conv(rewr_conv('cond_swap'))),
-            try_conv(bottom_conv(norm_neg_real_ineq_conv())),
-            try_conv(bottom_conv(norm_real_ineq_conv())),
-            try_conv(bottom_conv(real_const_eq_conv())),
-            try_conv(bottom_conv(rewr_conv('conj_false_right'))),
-            try_conv(bottom_conv(rewr_conv('conj_false_left'))),
-            try_conv(bottom_conv(rewr_conv('disj_false_right'))),
-            try_conv(bottom_conv(rewr_conv('disj_false_left'))),
-            try_conv(auto.auto_conv()),        
-            try_conv(rewr_conv('eq_mean_true')))
+    #     conv_pt = refl_pt_simp.on_rhs(
+    #         try_conv(bottom_conv(rewr_conv('de_morgan_thm1'))),
+    #         try_conv(bottom_conv(rewr_conv('de_morgan_thm2'))),
+    #         try_conv(bottom_conv(rewr_conv('double_neg'))),
+    #         try_conv(top_conv(flat_left_assoc_conj_conv())),
+    #         try_conv(top_conv(flat_left_assoc_disj_conv())),
+    #         try_conv(bottom_conv(rewr_conv('cond_swap'))),
+    #         try_conv(bottom_conv(norm_neg_real_ineq_conv())),
+    #         try_conv(bottom_conv(norm_real_ineq_conv())),
+    #         try_conv(bottom_conv(real_const_eq_conv())),
+    #         try_conv(bottom_conv(rewr_conv('conj_false_right'))),
+    #         try_conv(bottom_conv(rewr_conv('conj_false_left'))),
+    #         try_conv(bottom_conv(rewr_conv('disj_false_right'))),
+    #         try_conv(bottom_conv(rewr_conv('disj_false_left'))),
+    #         try_conv(auto.auto_conv()),        
+    #         try_conv(rewr_conv('eq_mean_true')))
 
-        # print("###real pt: ", conv_pt.on_prop(try_conv(rewr_conv('eq_true', sym=True))))
-        pt_after_conv = conv_pt.on_prop(try_conv(rewr_conv('eq_true', sym=True)))
-        if pt_after_conv.prop == t:
-            return pt_after_conv
-        else:
-            if t.is_equals() and t.lhs.is_equals() and t.rhs.is_conj(): # maybe x = y ⟷ x ≥ y ∧ x ≤ y
-                pt = refl(t.lhs).on_rhs(rewr_conv('real_ge_le_same_num'))
-                if pt.prop == t:
-                    return pt
+    #     # print("###real pt: ", conv_pt.on_prop(try_conv(rewr_conv('eq_true', sym=True))))
+    #     pt_after_conv = conv_pt.on_prop(try_conv(rewr_conv('eq_true', sym=True)))
+    #     if pt_after_conv.prop == t:
+    #         return pt_after_conv
+    #     else:
+    #         if t.is_equals() and t.lhs.is_equals() and t.rhs.is_conj() and t.lhs.lhs.get_type() == RealType: # maybe x = y ⟷ x ≥ y ∧ x ≤ y
+    #             pt = refl(t.lhs).on_rhs(rewr_conv('real_ge_le_same_num'))
+    #             if pt.prop == t:
+    #                 return pt
 
-    def norm_int(t):
-        """Use nat norm macro to normalize nat expression."""
-        return int_norm_macro().get_proof_term(t, [])
+    # def norm_int(t):
+    #     """Use nat norm macro to normalize nat expression."""
+    #     return int_norm_macro().get_proof_term(t, [])
 
-    def equal_is_true(pt):
-        """pt is ⊢ x = y, return: ⊢ (x = y) ↔ true"""
-        pt0 = apply_theorem('trueI') # ⊢ true
-        pt1 = pt0.implies_intr(pt.prop) # ⊢ (x = y) → true
-        pt2 = pt.implies_intr(pt0.prop) # ⊢ true → (x = y)
-        return ProofTerm.equal_intr(pt1, pt2)
+    # def equal_is_true(pt):
+    #     """pt is ⊢ x = y, return: ⊢ (x = y) ↔ true"""
+    #     pt0 = apply_theorem('trueI') # ⊢ true
+    #     pt1 = pt0.implies_intr(pt.prop) # ⊢ (x = y) → true
+    #     pt2 = pt.implies_intr(pt0.prop) # ⊢ true → (x = y)
+    #     return ProofTerm.equal_intr(pt1, pt2)
 
-    if t.lhs == t.rhs:
-        return ProofTerm.reflexive(t.lhs)
-    if is_ineq(t.lhs) and is_ineq(t.rhs) and t.lhs.arg1.get_type() == IntType:
+    # if t.lhs == t.rhs:
+    #     return ProofTerm.reflexive(t.lhs)
+    # if is_ineq(t.lhs) and is_ineq(t.rhs) and t.lhs.arg1.get_type() == IntType:
         
-        lhs_norm = int_ineq_macro().get_proof_term(t.lhs)
-        rhs_norm = int_ineq_macro().get_proof_term(t.rhs)
-        try:
-            return lhs_norm.transitive(rhs_norm.symmetric())
-        except:
-            pass
-        try:
-            return int_multiple_ineq_equiv().get_proof_term([t.lhs, t.rhs])
-        except:
-            pass        
+    #     lhs_norm = int_ineq_macro().get_proof_term(t.lhs)
+    #     rhs_norm = int_ineq_macro().get_proof_term(t.rhs)
+    #     try:
+    #         return lhs_norm.transitive(rhs_norm.symmetric())
+    #     except:
+    #         pass
+    #     try:
+    #         return int_multiple_ineq_equiv().get_proof_term([t.lhs, t.rhs])
+    #     except:
+    #         pass        
 
-    # first try use schematic theorems
-    with open('library/smt.json', 'r', encoding='utf-8') as f:
-        f_data = json.load(f)
-    th_name = [f_data['content'][i]['name'] for i in range(len(f_data['content'])) if f_data['content'][i]['name'][0]=='r']
-    pt = schematic_rules_rewr(th_name, t.lhs, t.rhs)  # rewrite by schematic theorems 
-    if pt is None:
-        if t.rhs == true and t.lhs.is_equals(): # prove ⊢ (x = y) ↔ true
-            eq = t.lhs
-            if eq.lhs.get_type() == IntType: # Maybe can reuse schematic theorems to prove ⊢ (x = y) in further
-                pt_eq = norm_int(eq)
-                return equal_is_true(pt_eq)
-            else:
-                raise NotImplementedError
-        elif t.is_equals(): # Equations that can't match with schematic theorems
-            # Try int norm macro:
-            # Note that if t is of form: if (x::real) > 1 then (0::int) else 1
-            # get_type will also return IntType, but we can't solve this by norm_int()
-            if t.lhs.get_type() == IntType:
-                try:
-                    return norm_int(t)
-                except AssertionError:
-                    return ProofTerm.sorry(Thm([], t))
-            elif t.lhs.get_type() == BoolType and is_prop_fm(t):
-                basic.load_theory('sat')
-                f = Implies(*assertions, t)
-                time1 = time.perf_counter()
-                pt = zchaff.zChaff(Not(f)).solve()
-                time2 = time.perf_counter()
-                print("Time: ", time2 - time1)
-                for assertion in assertions:
-                    pt_assert = ProofTerm.assume(assertion)
-                    pt = ProofTerm.implies_elim(pt, pt_assert)
-                return pt
-            else:
-                return ProofTerm.sorry(Thm([], t))
-        else:
-            raise NotImplementedError
+    # # first try use schematic theorems
+    # with open('library/smt.json', 'r', encoding='utf-8') as f:
+    #     f_data = json.load(f)
+    # th_name = [f_data['content'][i]['name'] for i in range(len(f_data['content'])) if f_data['content'][i]['name'][0]=='r']
+    # pt = schematic_rules_rewr(th_name, t.lhs, t.rhs)  # rewrite by schematic theorems 
+    # if pt is None:
+    #     if t.rhs == true and t.lhs.is_equals(): # prove ⊢ (x = y) ↔ true
+    #         eq = t.lhs
+    #         if eq.lhs.get_type() == IntType: # Maybe can reuse schematic theorems to prove ⊢ (x = y) in further
+    #             pt_eq = norm_int(eq)
+    #             return equal_is_true(pt_eq)
+    #         else:
+    #             raise NotImplementedError
+    #     elif t.is_equals(): # Equations that can't match with schematic theorems
+    #         # Try int norm macro:
+    #         # Note that if t is of form: if (x::real) > 1 then (0::int) else 1
+    #         # get_type will also return IntType, but we can't solve this by norm_int()
+    #         if t.lhs.get_type() == IntType:
+    #             try:
+    #                 return norm_int(t)
+    #             except AssertionError:
+    #                 return ProofTerm.sorry(Thm([], t))
+    #         # elif t.lhs.get_type() == BoolType and is_prop_fm(t):
+    #         #     basic.load_theory('sat')
+    #         #     f = Implies(*assertions, t)
+    #         #     time1 = time.perf_counter()
+    #         #     pt = zchaff.zChaff(Not(f)).solve()
+    #         #     time2 = time.perf_counter()
+    #         #     print("Time: ", time2 - time1)
+    #         #     for assertion in assertions:
+    #         #         pt_assert = ProofTerm.assume(assertion)
+    #         #         pt = ProofTerm.implies_elim(pt, pt_assert)
+    #         #     return pt
+    #         else:
+    #             return ProofTerm.sorry(Thm([], t))
+    #     else:
+    #         raise NotImplementedError
 
-    # Try use sat solver combines with assertions to prove the conclusion
-    else:
-        return pt  
+    # # Try use sat solver combines with assertions to prove the conclusion
+    # else:
+    #     return pt  
 
 def quant_inst(p):
     """
@@ -740,30 +787,30 @@ def iff_false(arg1, arg2):
 
 def not_or_elim(arg1, arg2):
     """
+    For the reason that z3 elimates double neg term implicitly, so arg2 may be negative or positive.  
+    There are two cases:
+    1) arg2 is a negative term: ¬t: we need to check if there exists a disjunct in arg1
+    proposition which is equal to t;
+    2) arg2 is a positive term t: we need to check if there exists a disjunct in arg1's proposition
+    which is equal to ¬t;
     """
-    th = theory.get_theorem('de_morgan_thm2')
-    r = dict()
-    def rec(pt):
-        if pt.prop.is_not() and pt.prop.arg.is_disj():
-            inst = matcher.first_order_match(th.prop.lhs, pt.prop)
-            pt1 = apply_theorem('de_morgan_thm2', inst=inst)
-            pt2 = ProofTerm.equal_elim(pt1, pt)
-            pt_lhs = apply_theorem('conjD1', pt2)
-            pt_rhs = apply_theorem('conjD2', pt2)
-            rec(pt_lhs)
-            rec(pt_rhs)
+    def rec(pt, t):
+        if pt.prop.arg.is_disj():
+            disj1, disj2 = pt.prop.arg.arg1, pt.prop.arg.arg
+            if disj1 == t:
+                return apply_theorem('not_or_elim1', pt)
+            elif disj2 == t:
+                return apply_theorem('not_or_elim2', pt)
+            else:
+                return rec(apply_theorem('not_or_elim2', pt), t)
         else:
-            r[pt.prop] = pt
-    rec(arg1)
-    dict_items = [(key, value) for key, value in r.items()] # dictionary keys can't change during loop
-    for key, value in dict_items:
-        new_key = try_conv(rewr_conv('double_neg')).get_proof_term(key)
-        if new_key.prop.rhs != key:
-            r.pop(key)
-            new_key_pt = ProofTerm.equal_elim(new_key, value)
-            r[new_key.prop.rhs] = new_key_pt
-            
-    return r[arg2]
+            assert pt.prop == t
+            return pt
+
+    disj = arg2.arg if arg2.is_not() else Not(arg2)
+
+    result_pt = rec(arg1, disj)
+    return result_pt.on_prop(try_conv(rewr_conv('double_neg')))
 
 def double_neg(pt):
     """
@@ -1307,19 +1354,22 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     or_expr.clear()
     and_expr.clear()
     assert_atom.clear()
-    for ast in assertions:
-        find_atom_in_assertion(translate(ast))
+    gaps = set()
+    # for ast in assertions:
+    #     find_atom_in_assertion(translate(ast))
     for i in order:
         args = tuple(r[j] for j in net[i])
         if trace:
             print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
-            r[i] = translate(term[i],bounds=bounds)
+            r[i] = translate(term[i],bounds=bounds, subterms=args)
         else:
-            if i == 204:
-                i
             subterms = [term[j] for j in net[i]]
             r[i] = convert_method(term[i], *args, subterms=subterms)
+            if r[i].rule == 'sorry':
+                gaps |= set(r[i].gaps)
+                print('term['+str(i)+']', term[i])
+                print('r['+str(i)+']', r[i])
             if trace:
                 print('r['+str(i)+']', r[i])
     conclusion = delete_redundant(r[0], redundant)
