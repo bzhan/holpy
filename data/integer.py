@@ -316,7 +316,7 @@ class int_norm_macro(Macro):
         self.sig = Term
         self.limit = 'int_power_add'
         
-    def get_proof_term(self, goal, prevs):
+    def get_proof_term(self, goal):
         assert goal.is_equals(), 'int_norm: goal is not an equality'
         
         # Obtain the normalization of the two sides
@@ -334,7 +334,7 @@ class int_norm_conv(Conv):
             top_conv(rewr_conv('int_pow_1_r')))
 
 class norm_eq(Conv):
-    """Give an equality(inequality), move all term from rhs to lhs.
+    """Give an equality(inequality), move all term from rhs to lhs, and .
     """
     def get_proof_term(self, t):
         assert t.is_equals() or t.is_less_eq() or t.is_less()\
@@ -644,6 +644,25 @@ class omega_form_conv(Conv):
             pt = pt_refl.on_rhs(rewr_conv('int_zero_greater_eq')) 
 
         return pt.on_rhs(arg_conv(omega_simp_full_conv()))
+
+@register_macro('int_eq_comparison')
+class int_eq_comparison_macro(Macro):
+    """
+    Prove two comparisons' equivalence.
+    """
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def get_proof_term(self, goal):
+        assert goal.is_equals() and goal.lhs.is_compares() and goal.rhs.is_compares()
+
+        pt1 = refl(goal.lhs).on_rhs(omega_form_conv())
+        pt2 = refl(goal.rhs).on_rhs(omega_form_conv())
+
+        assert pt1.rhs == pt2.rhs
+        return pt1.transitive(pt2.symmetric())
 
 # class int_to_real_conv(Conv):
 #     """Given a linear integer expression, convert it to real term."""
