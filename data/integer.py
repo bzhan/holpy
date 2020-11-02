@@ -334,7 +334,7 @@ class int_norm_conv(Conv):
             top_conv(rewr_conv('int_pow_1_r')))
 
 class norm_eq(Conv):
-    """Give an equality(inequality), move all term from rhs to lhs, and .
+    """Given an equality(inequality), move all term from rhs to lhs, and .
     """
     def get_proof_term(self, t):
         assert t.is_equals() or t.is_less_eq() or t.is_less()\
@@ -663,6 +663,27 @@ class int_eq_comparison_macro(Macro):
 
         assert pt1.rhs == pt2.rhs
         return pt1.transitive(pt2.symmetric())
+
+class int_norm_eq(Conv):
+    """Prove two linear equations are equal."""
+    def get_proof_term(self, t):
+        assert t.is_equals(), "%s must be an equality." % str(t)
+        pt = refl(t)
+        pt1 = pt.on_rhs(
+            rewr_conv('int_sub_move_0_r', sym=True),
+            arg1_conv(simp_full()),
+            top_conv(rewr_conv('int_pow_1_r'))
+        )
+        summands = strip_plus(pt1.rhs.arg1)
+        first_coeff = summands[0].arg1
+        if int_eval(first_coeff) < 0:
+            return pt1.on_rhs(
+                rewr_conv('pos_neg_eq_0'),
+                arg1_conv(simp_full()),
+                top_conv(rewr_conv('int_pow_1_r'))
+            )
+        else:
+            return pt1
 
 # class int_to_real_conv(Conv):
 #     """Given a linear integer expression, convert it to real term."""
