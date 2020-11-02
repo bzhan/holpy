@@ -7,7 +7,8 @@ by Sascha Böhme and Tjark Weber.
 import z3
 from z3.z3consts import *
 from data.integer import int_norm_macro, int_ineq_macro, collect_int_polynomial_coeff,\
-    int_multiple_ineq_equiv, int_eq_macro, int_eq_comparison_macro
+    int_multiple_ineq_equiv, int_eq_macro, int_eq_comparison_macro, int_norm_eq
+from data import proplogic
 from data.real import norm_real_ineq_conv, norm_neg_real_ineq_conv, real_const_eq_conv, real_eval_conv
 from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar, TVar
 from kernel.term import *
@@ -520,6 +521,19 @@ class flat_left_assoc_disj_conv(Conv):
         else:
             return pt
 
+def compare_lhs_rhs(tm, cv):
+    """
+    tm is an equality term, try to use conversion cv to normalize tm's left-hand side
+    and tm's right-hand side.
+    """
+    norm_lhs_pt = cv.get_proof_term(tm.lhs)
+    if norm_lhs_pt.rhs == tm.rhs:
+        return norm_lhs_pt
+    norm_rhs_pt = cv.get_proof_term(tm.rhs)
+    if norm_rhs_pt.rhs == norm_lhs_pt.rhs:
+        return norm_lhs_pt.transitive(norm_rhs_pt.symmetric())
+    return ProofTerm.sorry(Thm([], tm))
+
 def analyze_type(tm):
     """
     Infer the theory which term tm most likely belongs to.
@@ -527,36 +541,59 @@ def analyze_type(tm):
     if tm.is_number():
         return tm.get_type()
     else:
-        types = [v.T for v in tm.get_vars()]
+        types = [v.T for v in tm.get_vars()] + [v.T for v in tm.get_consts()]
         if not types: # only have true or false
-            return BoolType
+            return set([BoolType])
         else:
-            return max(set(types), key=types.count)
+            return set(types)
 
 def rewrite_bool(tm):
-    return ProofTerm.sorry(Thm([], tm))
+    # norm_lhs_pt = proplogic.norm_full().get_proof_term(tm.lhs)
+    # if norm_lhs_pt.rhs == tm.rhs:
+    #     return norm_lhs_pt
+    # norm_rhs_pt = proplogic.norm_full().get_proof_term(tm.rhs)
+    # if norm_rhs_pt.rhs == norm_lhs_pt.rhs:
+    #     return norm_lhs_pt.transitive(norm_rhs_pt.symmetric())
+    # return ProofTerm.sorry(Thm([], tm))
+    return compare_lhs_rhs(tm, proplogic.norm_full())
+    
 
-def rewrite_int(tm):
+def rewrite_int(tm, has_bool=False):
+    
     if tm.lhs.is_compares() and tm.rhs.is_compares():
         return int_eq_comparison_macro().get_proof_term(tm)
-    elif not tm.lhs.is_compares() and not tm.rhs.is_compares():
+    elif tm.lhs.is_equals() and tm.rhs.is_equals():
+        return compare_lhs_rhs(tm, int_norm_eq())
+    elif tm.lhs.get_type() == IntType and tm.rhs.get_type() == IntType:
         return int_norm_macro().get_proof_term(tm)
+    elif has_bool:
+        # norm_lhs_pt = proplogic.norm_full().get_proof_term(tm.lhs)
+        # if norm_lhs_pt.rhs == tm.rhs:
+        #     return norm_lhs_pt
+        # norm_rhs_pt = proplogic.norm_full().get_proof_term(tm.rhs)
+        # if norm_rhs_pt.rhs == norm_lhs_pt.rhs:
+        #     return norm_lhs_pt.transitive(norm_rhs_pt.symmetric())
+        # else:
+        #     return ProofTerm.sorry(Thm([], tm))
+        return compare_lhs_rhs(tm, proplogic.norm_full())
     else:
         return ProofTerm.sorry(Thm([], tm))
 
-def rewrite_real(tm):
+def rewrite_real(tm, has_bool=False):
     return ProofTerm.sorry(Thm([], tm))
 
 def _rewrite(tm):
     if tm.lhs == tm.rhs:
         return refl(tm.lhs)
-    T = analyze_type(tm)
-    if T == IntType:
-        return rewrite_int(tm)
-    elif T == RealType:
-        return rewrite_real(tm)
-    else:
+    Ts = analyze_type(tm)
+    if IntType not in Ts and RealType not in Ts: # only have bool type variables
         return rewrite_bool(tm)
+    elif IntType in Ts:
+        return rewrite_int(tm, True) if BoolType in Ts else rewrite_int(tm, False)
+    elif RealType in Ts:
+        return rewrite_bool(tm, has_bool=True) if BoolType in Ts else rewrite_real(tm, False)
+    else:
+        return ProofTerm.sorry(Thm([], tm))
 
 def rewrite(t, z3terms, assertions=[]):
     """
@@ -566,7 +603,7 @@ def rewrite(t, z3terms, assertions=[]):
     """
     try:
         return _rewrite(t)
-    except:
+    except ConvException:
         return ProofTerm.sorry(Thm([], t))
     # if z3.is_distinct(z3terms[0].arg(0)) and z3.is_false(z3terms[0].arg(1)):
     #     conjs = t.lhs.strip_conj()
