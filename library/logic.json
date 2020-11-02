@@ -7542,18 +7542,15 @@
             ],
             "ty": "thm",
             "vars": {
-<<<<<<< HEAD
-                "A": "bool",
-                "B": "bool"
+                "P": "bool"
             }
         },
         {
             "name": "eq_imp_false",
-            "prop": "(A = A ⟶ false) ⟶ false",
+            "prop": "(A ⟷ A ⟶ false) ⟶ false",
             "ty": "thm",
             "vars": {
-                "A": "'a",
-                "B": "'a"
+                "A": "bool"
             }
         },
         {
@@ -7611,8 +7608,6 @@
             "prop": "P ∧ false ⟷ false",
             "ty": "thm",
             "vars": {
-=======
->>>>>>> 5f59864ebbe527f3254854105c4b4c7de6d700c8
                 "P": "bool"
             }
         },
@@ -7782,6 +7777,30 @@
         {
             "name": "conj_same_atom",
             "prop": "P ∧ P ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "disj_pos_neg",
+            "prop": "P ∨ ¬P ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "disj_neg_pos",
+            "prop": "¬P ∨ P ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "disj_same_atom",
+            "prop": "P ∨ P ⟷ P",
             "ty": "thm",
             "vars": {
                 "P": "bool"
