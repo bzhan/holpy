@@ -1765,6 +1765,14 @@
             "vars": {
                 "x": "int"
             }
+        },
+        {
+            "name": "pos_neg_eq_0",
+            "prop": "x = 0 ⟷ -1 * x = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
         }
     ],
     "description": "integers",
