@@ -22,9 +22,11 @@ class nnf_conv(Conv):
                 return pt.on_rhs(rewr_conv('de_morgan_thm1'), arg1_conv(self), arg_conv(self))
             elif t.arg.is_disj():
                 return pt.on_rhs(rewr_conv('de_morgan_thm2'), arg1_conv(self), arg_conv(self))
+            elif t.arg.is_equals():
+                return pt.on_rhs(arg_conv(binop_conv(self)))
             else:
                 return pt
-        elif t.is_disj() or t.is_conj():
+        elif t.is_disj() or t.is_conj() or t.is_equals():
             return pt.on_rhs(arg1_conv(self), arg_conv(self))
         else:
             return pt
@@ -169,7 +171,11 @@ class norm_full(Conv):
             return pt.on_rhs(binop_conv(self), norm_conj_conjunction())
         elif t.is_disj():
             return pt.on_rhs(binop_conv(self), norm_disj_disjunction())
+        elif t.is_equals():
+            return pt.on_rhs(binop_conv(self))
         elif t.is_not() and (t.arg.is_conj() or t.arg.is_disj() or t.arg.is_not() or t.arg == true or t.arg == false):
             return pt.on_rhs(nnf_conv(), self)
+        elif t.is_not() and t.arg.is_equals():
+            return pt.on_rhs(nnf_conv())
         else:
             return pt
