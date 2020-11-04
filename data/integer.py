@@ -309,23 +309,6 @@ class simp_full(Conv):
                 rewr_conv('int_pow_1_r', sym=True),
                 rewr_conv('int_mul_1_l', sym=True))
 
-@register_macro('int_norm')
-class int_norm_macro(Macro):
-    def __init__(self):
-        self.level = 1
-        self.sig = Term
-        self.limit = 'int_power_add'
-        
-    def get_proof_term(self, goal):
-        assert goal.is_equals(), 'int_norm: goal is not an equality'
-        
-        # Obtain the normalization of the two sides
-        pt1 = refl(goal.lhs).on_rhs(simp_full())
-        pt2 = refl(goal.rhs).on_rhs(simp_full())
-        
-        assert pt1.rhs == pt2.rhs, 'int_norm: normalizations are not equal.'
-        return pt1.transitive(pt2.symmetric())
-
 class int_norm_conv(Conv):
     def get_proof_term(self, t):
         return refl(t).on_rhs(
@@ -632,7 +615,8 @@ class omega_form_conv(Conv):
     Convert all integer inequalities to 0 <= Σ c * x + k
     """
     def get_proof_term(self, t):
-        assert t.is_compares() and t.arg.get_type() == IntType, "%s is not an integer comparison." % str(t)
+        if not (t.is_compares() and t.arg.get_type() == IntType):
+            raise ConvException("%s is not an integer comparison." % str(t))
         pt_refl = refl(t)
         if t.is_less():
             pt = pt_refl.on_rhs(rewr_conv('int_zero_less'))
@@ -661,13 +645,15 @@ class int_eq_comparison_macro(Macro):
         pt1 = refl(goal.lhs).on_rhs(omega_form_conv())
         pt2 = refl(goal.rhs).on_rhs(omega_form_conv())
 
-        assert pt1.rhs == pt2.rhs
+        if pt1.rhs != pt2.rhs:
+            raise ConvException(str(goal))
         return pt1.transitive(pt2.symmetric())
 
 class int_norm_eq(Conv):
     """Prove two linear equations are equal."""
     def get_proof_term(self, t):
-        assert t.is_equals(), "%s must be an equality." % str(t)
+        if not t.is_equals():
+            raise ConvException("%s must be an equality." % str(t))
         pt = refl(t)
         pt1 = pt.on_rhs(
             rewr_conv('int_sub_move_0_r', sym=True),
@@ -684,6 +670,24 @@ class int_norm_eq(Conv):
             )
         else:
             return pt1
+
+class int_norm_neg_compares(Conv):
+    """Convert a negative comparison term to a normal comparison term."""
+    def get_proof_term(self, t):
+        if not (t.is_not() and t.arg.is_compares()):
+            raise ConvException("%s is not a negative comparison term." % str(t))
+        pt = refl(t)
+        ineq = t.arg
+        if ineq.is_less():
+            return pt.on_rhs(rewr_conv('int_not_less'), omega_form_conv())
+        elif ineq.is_less_eq():
+            return pt.on_rhs(rewr_conv('int_not_less_eq'), omega_form_conv())
+        elif ineq.is_greater():
+            return pt.on_rhs(rewr_conv('int_not_greater'), omega_form_conv())
+        elif ineq.is_greater_eq():
+            return pt.on_rhs(rewr_conv('int_not_greater_eq'), omega_form_conv())
+        else:
+            raise ConvException
 
 # class int_to_real_conv(Conv):
 #     """Given a linear integer expression, convert it to real term."""
