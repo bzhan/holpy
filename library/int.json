@@ -1683,7 +1683,7 @@
             }
         },
         {
-            "name": "int_zero_grearter",
+            "name": "int_zero_greater",
             "prop": "x > y ⟷ 0 ≤ x - y - 1",
             "ty": "thm",
             "vars": {
@@ -1772,6 +1772,51 @@
             "ty": "thm",
             "vars": {
                 "x": "int"
+            }
+        },
+        {
+            "name": "int_eq_leq_geq",
+            "prop": "x = y ⟷ x ≤ y ∧ x ≥ y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_not_less",
+            "prop": "¬(x < y) ⟷ x ≥ y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_not_less_eq",
+            "prop": "¬(x ≤ y) ⟷ x > y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_not_greater",
+            "prop": "¬(x > y) ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_not_greater_eq",
+            "prop": "¬(x ≥ y) ⟷ x < y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
             }
         }
     ],
