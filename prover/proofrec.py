@@ -6,8 +6,9 @@ by Sascha Böhme and Tjark Weber.
 
 import z3
 from z3.z3consts import *
-from data.integer import int_norm_macro, int_ineq_macro, collect_int_polynomial_coeff,\
-    int_multiple_ineq_equiv, int_eq_macro, int_eq_comparison_macro, int_norm_eq
+from data.integer import int_ineq_macro, collect_int_polynomial_coeff,\
+    int_multiple_ineq_equiv, int_eq_macro, int_eq_comparison_macro, int_norm_eq, int_norm_neg_compares,\
+    simp_full, omega_form_conv
 from data import proplogic
 from data.real import norm_real_ineq_conv, norm_neg_real_ineq_conv, real_const_eq_conv, real_eval_conv
 from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar, TVar
@@ -25,12 +26,15 @@ from logic import auto
 from prover import sat, tseitin, simplex
 from sat import zchaff
 from syntax.settings import settings
+from syntax import parser
 settings.unicode = True
 from collections import deque
 import functools
 import operator
 import json
 import time
+import sys
+sys.setrecursionlimit(1000000)
 
 basic.load_theory('smt')
 
@@ -317,6 +321,23 @@ def monotonicity(pts, concl):
     is left associative when construct terms.
     """
 
+    def strip_fun(fun, tm, tl):
+        """
+        tm is a function term, fun is its function name, tl is a term list, 
+        in which are arguments occured in tm(but not all). strip_fun will strip
+        tm's arguments based on tl.
+        
+        For example, fun is plus, tm is v1 * 2 - s_0 * 16 + v0, tl is [v1 * 2 - s_0 * 16],
+        then the return list is [v1 * 2 - s_0 * 16, v0]
+        """
+        if tm.is_comb(fun, None):
+            if tm.arg1 in tl:
+                return tm.args
+            else:
+                return strip_fun(fun, tm.arg1, tl) + [tm.arg]
+        else:
+            return [tm]
+
     def get_argument(f, left_assoc=False):
         """
         Suppose f is f x1 x2 x3, return [x1, x2, x3]
@@ -350,11 +371,18 @@ def monotonicity(pts, concl):
 
         # Next collect arguments: x1...xn/y1...yn
         # We can't split the term in pts into subterms.
-        if not f_expr.is_plus():
-            fx, gy = get_argument(f_expr), get_argument(g_expr)
-        else:
-            fx, gy = get_argument(f_expr, True), get_argument(g_expr, True)
+        # if not f_expr.is_plus():
+        #     fx, gy = get_argument(f_expr), get_argument(g_expr)
+        # else:
+        #     fx, gy = get_argument(f_expr, True), get_argument(g_expr, True)
+        # fx = get_argument(f_expr) if not (f_expr.is_plus() or f_expr().is_minus()) else get_argument(f_expr, True)
+        # gy = get_argument(g_expr) if not (g_expr.is_plus() or g_expr().is_minus()) else get_argument(g_expr, True)
         # Then put all useful equalities proofterm in equalities.
+        if f_expr.is_plus() or f_expr.is_minus() or f_expr.is_times():
+            pts_lhs, pts_rhs = [pt.lhs for pt in pts], [pt.rhs for pt in pts]
+            fx, gy = strip_fun(f.name, f_expr, pts_lhs), strip_fun(g.name, g_expr, pts_rhs)
+        else:
+            fx, gy = get_argument(f_expr), get_argument(g_expr)
         equalities = []
         if f == g:
             equalities.append(ProofTerm.reflexive(f))
@@ -475,8 +503,6 @@ def distinct_monotonicity(pts, concl, z3terms):
 
 def schematic_rules_rewr(thms, lhs, rhs):
     """Rewrite by instantiating schematic theorems."""
-    if rhs == true:
-        rhs
     for thm in thms:
         pt = ProofTerm.theorem(thm)
         try:
@@ -485,7 +511,7 @@ def schematic_rules_rewr(thms, lhs, rhs):
             return pt.substitution(inst1)
         except matcher.MatchException:
             continue
-    return None
+    return ProofTerm.sorry(Thm([], Eq(lhs, rhs)))
 
 def is_ineq(t):
     """determine whether t is an inequality"""
@@ -521,18 +547,36 @@ class flat_left_assoc_disj_conv(Conv):
         else:
             return pt
 
-def compare_lhs_rhs(tm, cv):
+def compare_lhs_rhs(tm, cvs):
     """
-    tm is an equality term, try to use conversion cv to normalize tm's left-hand side
+    tm is an equality term, try to use conversion list cvs to normalize tm's left-hand side
     and tm's right-hand side.
     """
-    norm_lhs_pt = cv.get_proof_term(tm.lhs)
+    norm_lhs_pt = refl(tm.lhs).on_rhs(*cvs)
     if norm_lhs_pt.rhs == tm.rhs:
         return norm_lhs_pt
-    norm_rhs_pt = cv.get_proof_term(tm.rhs)
+    norm_rhs_pt = refl(tm.rhs).on_rhs(*cvs)
     if norm_rhs_pt.rhs == norm_lhs_pt.rhs:
         return norm_lhs_pt.transitive(norm_rhs_pt.symmetric())
     return ProofTerm.sorry(Thm([], tm))
+
+def match_pattern(pat, tm):
+    """If the schematic pattern can match with term tm, return true, else false"""
+    if isinstance(pat, str):
+        pat = parser.parse_term(pat).convert_svar()
+    
+    try:
+        matcher.first_order_match(pat, tm)
+        return True
+    except matcher.MatchException:
+        return False
+
+def try_tran_pt(pt1, pt2):
+    """Try to do transition with pt1 and pt2, """
+    if pt1.rhs == pt2.lhs:
+        return pt1.transitive(pt2)
+    else:
+        return ProofTerm.sorry(Thm([], Eq(pt1.lhs, pt2.rhs)))
 
 def analyze_type(tm):
     """
@@ -548,48 +592,85 @@ def analyze_type(tm):
             return set(types)
 
 def rewrite_bool(tm):
-    # norm_lhs_pt = proplogic.norm_full().get_proof_term(tm.lhs)
-    # if norm_lhs_pt.rhs == tm.rhs:
-    #     return norm_lhs_pt
-    # norm_rhs_pt = proplogic.norm_full().get_proof_term(tm.rhs)
-    # if norm_rhs_pt.rhs == norm_lhs_pt.rhs:
-    #     return norm_lhs_pt.transitive(norm_rhs_pt.symmetric())
-    # return ProofTerm.sorry(Thm([], tm))
-    return compare_lhs_rhs(tm, proplogic.norm_full())
-    
+    return compare_lhs_rhs(tm, [proplogic.norm_full()])
 
 def rewrite_int(tm, has_bool=False):
-    
+    """
+    Patterns:
+    1) a ⋈ b <--> c ⋈ d
+    2) a = b <--> c = d
+    3) a = b
+    4) ¬(a = b) <--> ¬(c = d)
+    5) (a = b) <--> (a ≤ b) & (a ≥ b)
+    6) a ⋈ b <--> ¬(c ⋈ d)
+    7) ¬(a ⋈ b) <--> ¬(c ⋈ d)
+    8) a | b = c <--> a | b ≤ c & b ≥ c
+    9) ¬(a ⋈ b) <--> ¬(c ⋈ d) (k * a = c, k * b = d)
+
+    If all above patterns cannot match tm, we have to apply a more general strategy:
+    1) normalize the logic term;
+    2) normalize all comparison;
+    3) convert all equality term to less_eq /\ greater_eq
+
+    """
     if tm.lhs.is_compares() and tm.rhs.is_compares():
         return int_eq_comparison_macro().get_proof_term(tm)
     elif tm.lhs.is_equals() and tm.rhs.is_equals():
-        return compare_lhs_rhs(tm, int_norm_eq())
+        return compare_lhs_rhs(tm, [int_norm_eq()])
     elif tm.lhs.get_type() == IntType and tm.rhs.get_type() == IntType:
-        return int_norm_macro().get_proof_term(tm)
-    elif has_bool:
-        # norm_lhs_pt = proplogic.norm_full().get_proof_term(tm.lhs)
-        # if norm_lhs_pt.rhs == tm.rhs:
-        #     return norm_lhs_pt
-        # norm_rhs_pt = proplogic.norm_full().get_proof_term(tm.rhs)
-        # if norm_rhs_pt.rhs == norm_lhs_pt.rhs:
-        #     return norm_lhs_pt.transitive(norm_rhs_pt.symmetric())
-        # else:
-        #     return ProofTerm.sorry(Thm([], tm))
-        return compare_lhs_rhs(tm, proplogic.norm_full())
+        pt1 = refl(tm.lhs).on_rhs(simp_full())
+        pt2 = refl(tm.rhs).on_rhs(simp_full())
+        return try_tran_pt(pt1, pt2.symmetric())
+    elif tm.lhs.is_not() and tm.rhs.is_not() and tm.lhs.arg.is_equals() and tm.rhs.arg.is_equals():
+        return refl(neg).combination(compare_lhs_rhs(Eq(tm.lhs.arg, tm.rhs.arg), [int_norm_eq()]))
+    elif tm.lhs.is_equals() and tm.rhs.is_conj() and tm.rhs.arg1.is_less_eq() and tm.rhs.arg.is_greater_eq():
+        pt = refl(tm.lhs).on_rhs(rewr_conv('int_eq_leq_geq'))
+        if pt.rhs == tm.rhs:
+            return pt
+        else:
+            return ProofTerm.sorry(Thm([], tm))
+    elif tm.lhs.is_compares() and tm.rhs.is_not() and tm.rhs.arg.is_compares():
+        pt_elim_neg_sym = refl(tm.rhs).on_rhs(int_norm_neg_compares()).symmetric()
+        pt_eq = int_eq_comparison_macro().get_proof_term(Eq(tm.lhs, pt_elim_neg_sym.lhs))
+        return try_tran_pt(pt_eq, pt_elim_neg_sym)
+    elif tm.lhs.is_not() and tm.lhs.arg.is_compares() and tm.rhs.is_not() and tm.rhs.arg.is_compares():
+        pt_lhs_elim_neg = refl(tm.lhs).on_rhs(int_norm_neg_compares())
+        pt_rhs_elim_neg_sym = refl(tm.rhs).on_rhs(int_norm_neg_compares()).symmetric()
+        return try_tran_pt(pt_lhs_elim_neg, pt_rhs_elim_neg_sym)
+    elif match_pattern('a | (b::int) = c <--> a | ~(~((b::int) <= c) | ~(b >=c))', tm):
+        pt_lhs = refl(tm.lhs).on_rhs(arg_conv(rewr_conv('int_eq_leq_geq')), arg_conv(proplogic.norm_full()))
+        pt_rhs_sym = refl(tm.rhs).on_rhs(arg_conv(proplogic.norm_full())).symmetric()        
+        return try_tran_pt(pt_lhs, pt_rhs_sym)
     else:
-        return ProofTerm.sorry(Thm([], tm))
+        # Try to normalize all comparisons
+        return compare_lhs_rhs(tm, [
+            try_conv(bottom_conv(omega_form_conv())),
+            try_conv(bottom_conv(int_norm_neg_compares())),
+            try_conv(bottom_conv(int_norm_eq())),
+            try_conv(proplogic.norm_full())])
 
 def rewrite_real(tm, has_bool=False):
     return ProofTerm.sorry(Thm([], tm))
 
 def _rewrite(tm):
+    with open('library/smt.json', 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
+    th_name = sorted([f_data['content'][i]['name'] for i in range(len(f_data['content'])) if f_data['content'][i]['name'][0]=='r'])
     if tm.lhs == tm.rhs:
         return refl(tm.lhs)
     Ts = analyze_type(tm)
     if IntType not in Ts and RealType not in Ts: # only have bool type variables
-        return rewrite_bool(tm)
+        pt = rewrite_bool(tm)
+        if pt.rule != 'sorry':
+            return pt
+        else:
+            return schematic_rules_rewr(th_name[:60], tm.lhs, tm.rhs)
     elif IntType in Ts:
-        return rewrite_int(tm, True) if BoolType in Ts else rewrite_int(tm, False)
+        pt = rewrite_int(tm, True) if BoolType in Ts else rewrite_int(tm, False)
+        if pt.rule != 'sorry':
+            return pt
+        else:
+            return schematic_rules_rewr(th_name[60:], tm.lhs, tm.rhs)
     elif RealType in Ts:
         return rewrite_bool(tm, has_bool=True) if BoolType in Ts else rewrite_real(tm, False)
     else:
