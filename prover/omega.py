@@ -714,7 +714,7 @@ def solve_matrix(matrix, mode=EXACT):
     """
     Give some factoids, return the result.
     """
-    fs = [Factoid(f) for f in matrix]
+    fs = [Factoid(f) if isinstance(f, collections.abc.Iterable) else f for f in matrix]
     db = dict()
     for ft in fs:
         insert_db(db, dfactoid(ft, ASM(ft)))
@@ -830,8 +830,8 @@ class OmegaHOL:
             transitive(integer.omega_simp_full_conv().get_proof_term(term.Int(-1) * pos).symmetric())
         pt1 = lower
         pt2 = upper.on_prop(conv.top_sweep_conv(conv.rewr_conv(pt_eq)))
-        lower_bound, upper_bound = -integer.int_eval(lower.prop.arg.arg), integer.int_eval(upper.prop.arg.arg)
-        pt3 = proofterm.ProofTerm('int_const_ineq', term.greater(term.IntType)(term.Int(lower_bound), term.Int(upper_bound)))
+        lower_bound, upper_bound = -term.Int(integer.int_eval(lower.prop.arg.arg)), term.Int(integer.int_eval(upper.prop.arg.arg))
+        pt3 = proofterm.ProofTerm('int_const_ineq', term.greater(term.IntType)(lower_bound, upper_bound))
         return logic.apply_theorem('int_comp_contr', pt1, pt2, pt3)
 
     def handle_unsat_result(self, res):
@@ -859,4 +859,16 @@ class OmegaHOL:
         if res == "SAT":
             return value
         elif res == "UNSAT":
-            return self.handle_unsat_result(value)
+            pt_unsat = self.handle_unsat_result(value)
+            # for the reason that the comparisons in hypothesis may have term like:
+            # 0 <= Σ ai * xi + 0, but we don't want to keep the zero, so we need to
+            # postprocess to normalize each comparisons again.
+            hyps = pt_unsat.hyps
+            pt_norm = pt_unsat
+            for h in hyps:
+                pt_norm = pt_norm.implies_intr(h)
+            pt_norm = pt_norm.on_prop(conv.top_conv(integer.omega_form_conv()))
+            premises, _ = pt_norm.prop.strip_implies()
+            for p in premises:
+                pt_norm = pt_norm.implies_elim(proofterm.ProofTerm.assume(p))
+            return pt_norm
