@@ -670,7 +670,7 @@ class imp_disj_macro(Macro):
         self.sig = Term
         self.limit = None
 
-    def get_proof_term(thy, goal, pts):
+    def get_proof_term(self, goal, pts):
         """Goal is of the form A_1 | ... | A_m --> B_1 | ...| B_n, where
         {A_1, ..., A_m} is a subset of {B_1, ..., B_n}."""
 

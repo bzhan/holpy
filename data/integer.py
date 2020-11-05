@@ -661,7 +661,10 @@ class int_norm_eq(Conv):
             top_conv(rewr_conv('int_pow_1_r'))
         )
         summands = strip_plus(pt1.rhs.arg1)
-        first_coeff = summands[0].arg1
+        if summands[0].is_number():
+            first_coeff = summands[0]
+        else:
+            first_coeff = summands[0].arg1
         if int_eval(first_coeff) < 0:
             return pt1.on_rhs(
                 rewr_conv('pos_neg_eq_0'),

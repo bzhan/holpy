@@ -23,7 +23,7 @@ class nnf_conv(Conv):
             elif t.arg.is_disj():
                 return pt.on_rhs(rewr_conv('de_morgan_thm2'), arg1_conv(self), arg_conv(self))
             elif t.arg.is_equals():
-                return pt.on_rhs(arg_conv(binop_conv(self)))
+                return pt.on_rhs(rewr_conv('neg_iff'), binop_conv(self))
             else:
                 return pt
         elif t.is_disj() or t.is_conj() or t.is_equals():
