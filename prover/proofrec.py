@@ -27,6 +27,7 @@ from prover import sat, tseitin, simplex
 from sat import zchaff
 from syntax.settings import settings
 from syntax import parser
+from prover import omega
 settings.unicode = True
 from collections import deque
 import functools
@@ -37,6 +38,9 @@ import sys
 sys.setrecursionlimit(1000000)
 
 basic.load_theory('smt')
+
+conj_expr = dict()
+disj_expr = dict()
 
 # Z3 proof method name.
 method = ('mp', 'mp~', 'asserted', 'trans', 'trans*', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
@@ -234,12 +238,8 @@ def translate(term, bounds=deque(), subterms=[]):
         elif z3.is_eq(term):
             return Eq(*args)
         elif z3.is_and(term):
-            if term not in and_expr:
-                and_expr.add(term)
             return And(*args)
         elif z3.is_or(term):
-            if term not in or_expr:
-                or_expr.add(term)
             return Or(*args)
         elif z3.is_implies(term):
             return Implies(*args)
@@ -272,21 +272,28 @@ def translate(term, bounds=deque(), subterms=[]):
         raise NotImplementedError
 
 def and_elim(arg1, concl):
-    r = dict()
-    def rec(pt, t):
-        if pt.prop.is_conj():
-            left, right = pt.prop.arg1, pt.prop.arg
-            if left == t:
-                return apply_theorem('conjD1', pt)
-            elif right == t:
-                return apply_theorem('conjD2', pt)
-            else:
-                return rec(apply_theorem('conjD2', pt), t)
-        else:
-            assert pt.prop == t
-            return pt
+    global conj_expr
+    if arg1.prop not in conj_expr:
+        conj_expr.update({arg1.prop: dict()})
+    
+    for key, value in conj_expr[arg1.prop].items():
+        if key == concl:
+            print("!!")
+            return value    
 
-    return rec(arg1, concl)
+    pt = arg1
+    while pt.prop.is_conj():
+        left, right = pt.prop.arg1, pt.prop.arg
+        pt_l, pt_r = apply_theorem('conjD1', pt), apply_theorem('conjD2', pt)
+        conj_expr[arg1.prop].update({left: pt_l, right: pt_r})
+        if left == concl:
+            return pt_l
+        elif right == concl:
+            return pt_r
+        else:
+            pt = pt_r
+    assert pt.prop == concl # I will implement proofrec exception later
+    return pt
 
 def monotonicity(pts, concl):
     """
@@ -549,15 +556,22 @@ class flat_left_assoc_disj_conv(Conv):
 
 def compare_lhs_rhs(tm, cvs):
     """
-    tm is an equality term, try to use conversion list cvs to normalize tm's left-hand side
-    and tm's right-hand side.
+    tm is an equality term, first try use conversions in cvs iteratively to normalize left-hand side
+    to match tm's right-hand side. If failed, then use conversions to normalize right-hand side similarly.
+    If they still can't match, we can only return sorry.
     """
-    norm_lhs_pt = refl(tm.lhs).on_rhs(*cvs)
-    if norm_lhs_pt.rhs == tm.rhs:
-        return norm_lhs_pt
-    norm_rhs_pt = refl(tm.rhs).on_rhs(*cvs)
-    if norm_rhs_pt.rhs == norm_lhs_pt.rhs:
-        return norm_lhs_pt.transitive(norm_rhs_pt.symmetric())
+    norm_lhs_pt = refl(tm.lhs)
+    for cv in cvs:
+        norm_lhs_pt = norm_lhs_pt.on_rhs(cv)
+        if norm_lhs_pt.rhs == tm.rhs:
+            return norm_lhs_pt
+
+    norm_rhs_pt = refl(tm.rhs)
+    for cv in cvs:
+        norm_rhs_pt = norm_rhs_pt.on_rhs(cv)
+        if norm_rhs_pt.rhs == norm_lhs_pt.rhs:
+            return norm_lhs_pt.transitive(norm_rhs_pt.symmetric())
+        
     return ProofTerm.sorry(Thm([], tm))
 
 def match_pattern(pat, tm):
@@ -592,7 +606,15 @@ def analyze_type(tm):
             return set(types)
 
 def rewrite_bool(tm):
-    return compare_lhs_rhs(tm, [proplogic.norm_full()])
+    pt1 = compare_lhs_rhs(tm, [proplogic.norm_full()])
+    if pt1.rule == 'sorry':
+        return compare_lhs_rhs(tm, [
+            proplogic.norm_full(),
+            top_conv(rewr_conv('neg_iff_both_sides')),
+            proplogic.norm_full()
+        ])
+    else:
+        return pt1
 
 def rewrite_int(tm, has_bool=False):
     """
@@ -642,12 +664,28 @@ def rewrite_int(tm, has_bool=False):
         pt_rhs_sym = refl(tm.rhs).on_rhs(arg_conv(proplogic.norm_full())).symmetric()        
         return try_tran_pt(pt_lhs, pt_rhs_sym)
     else:
-        # Try to normalize all comparisons
-        return compare_lhs_rhs(tm, [
-            try_conv(bottom_conv(omega_form_conv())),
-            try_conv(bottom_conv(int_norm_neg_compares())),
-            try_conv(bottom_conv(int_norm_eq())),
-            try_conv(proplogic.norm_full())])
+        return rewrite_int_second_level(tm)
+
+def rewrite_int_second_level(tm):
+    """Use single rewrite conversion"""
+    armony = [
+        (proplogic.norm_full(), ),
+        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq'))),
+        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_leq_geq'))),
+        (proplogic.norm_full(), try_conv(bottom_conv(int_norm_eq())), top_conv(rewr_conv('int_eq_geq_leq'))),
+        (proplogic.norm_full(),try_conv(top_conv(int_norm_eq())), try_conv(bottom_conv(simp_full())), top_conv(rewr_conv('int_eq_geq_leq')), proplogic.norm_full()),
+        (try_conv(bottom_conv(omega_form_conv())),
+        try_conv(bottom_conv(int_norm_neg_compares())),
+        try_conv(bottom_conv(int_norm_eq())),
+        try_conv(proplogic.norm_full()),
+        top_conv(rewr_conv('neg_iff_both_sides')), 
+        try_conv(proplogic.norm_full()))
+    ]
+    for arm in armony:
+        pt = compare_lhs_rhs(tm, arm)
+        if pt.rule != 'sorry':
+            return pt
+    return ProofTerm.sorry(Thm([], tm))
 
 def rewrite_real(tm, has_bool=False):
     return ProofTerm.sorry(Thm([], tm))
@@ -670,7 +708,7 @@ def _rewrite(tm):
         if pt.rule != 'sorry':
             return pt
         else:
-            return schematic_rules_rewr(th_name[60:], tm.lhs, tm.rhs)
+            return schematic_rules_rewr(th_name, tm.lhs, tm.rhs)
     elif RealType in Ts:
         return rewrite_bool(tm, has_bool=True) if BoolType in Ts else rewrite_real(tm, False)
     else:
@@ -912,23 +950,31 @@ def not_or_elim(arg1, arg2):
     2) arg2 is a positive term t: we need to check if there exists a disjunct in arg1's proposition
     which is equal to ¬t;
     """
-    def rec(pt, t):
-        if pt.prop.arg.is_disj():
-            disj1, disj2 = pt.prop.arg.arg1, pt.prop.arg.arg
-            if disj1 == t:
-                return apply_theorem('not_or_elim1', pt)
-            elif disj2 == t:
-                return apply_theorem('not_or_elim2', pt)
-            else:
-                return rec(apply_theorem('not_or_elim2', pt), t)
-        else:
-            assert pt.prop == t
-            return pt
+    global disj_expr
+    if arg1.prop not in disj_expr:
+        disj_expr.update({arg1.prop: dict()})
+    
+    for key, value in disj_expr[arg1.prop].items():
+        if key == arg2:
+            print("!!!")
+            return value        
 
     disj = arg2.arg if arg2.is_not() else Not(arg2)
 
-    result_pt = rec(arg1, disj)
-    return result_pt.on_prop(try_conv(rewr_conv('double_neg')))
+    pt = arg1
+    while pt.prop.arg.is_disj():
+        disj1, disj2 = pt.prop.arg.arg1, pt.prop.arg.arg
+        pt_l, pt_r = apply_theorem('not_or_elim1', pt).on_prop(try_conv(rewr_conv('double_neg'))),\
+            apply_theorem('not_or_elim2', pt).on_prop(try_conv(rewr_conv('double_neg')))
+        disj_expr[arg1.prop].update({disj1: pt_l, disj2: pt_r})
+        if disj1 == disj:
+            return pt_l.on_prop(try_conv(rewr_conv('double_neg')))
+        elif disj2 == disj:
+            return pt_r.on_prop(try_conv(rewr_conv('double_neg')))
+        else:
+            pt = pt_r
+    assert pt.prop == disj
+    return pt.on_prop(try_conv(rewr_conv('double_neg')))
 
 def double_neg(pt):
     """
@@ -1249,30 +1295,74 @@ def real_th_lemma(args):
 
         return pt_final
 
+def int_th_lemma_1(tm):
+    def traverse_A(pt):
+            if pt.prop.is_conj():
+                return traverse_A(apply_theorem('conjD1', pt)) + traverse_A(apply_theorem('conjD2', pt))
+            else:
+                return [pt]
+    pt_refl = refl(Not(tm))
+    pt_norm = pt_refl.on_rhs(
+        top_conv(proplogic.norm_full()),
+        top_conv(int_norm_neg_compares()),
+        top_conv(omega_form_conv())
+    )
+    conjs = pt_norm.rhs.strip_conj()
+    solver = omega.OmegaHOL(conjs)
+
+    pt = solver.solve()
+    
+    # reconstruction, get proof ⊢ P
+    # for now, we have a proof of e_1, ..., e_n ⊢ false
+    # the proof is as following:
+    # a) get ⊢ e_1 → ... → e_n -> false
+    # b) get e_1 ∧ ... ∧ e_n ⊢ e_1, ..., e_1 ∧ ... ∧ e_n ⊢ e_n
+    # c) get e_1 ∧ ... ∧ e_n ⊢ false QED
+    # a)  
+    pt_implies_false = functools.reduce(lambda x, y: x.implies_intr(y), reversed(conjs), pt)
+    # b)
+    conj_pts = [p.on_prop(omega_form_conv()) for p in traverse_A(ProofTerm.assume(pt_norm.rhs))]
+    # c)
+    pt_conj_false = functools.reduce(lambda x, y: x.implies_elim(y), conj_pts, pt_implies_false)
+
+    # final step, we already have ⊢ ¬P ⟷ e_1 ∧ ... ∧ e_n and ⊢ e_1 ∧ ... ∧ e_n → false
+    # so we could derive ⊢ P
+    pt_neg_prop_implies_false = pt_conj_false.implies_intr(pt_norm.rhs).on_prop(top_conv(replace_conv(pt_norm.symmetric())))
+    return apply_theorem('negI', pt_neg_prop_implies_false).on_prop(rewr_conv('double_neg'))
+
+def int_th_lemma_n(tms):
+    pts = tms[:-1]
+    pt_norm_eq = [refl(pt.prop).on_rhs(omega_form_conv()).symmetric() for pt in pts]
+    solver = omega.OmegaHOL([pt.rhs for pt in pt_norm_eq])
+    pt_unsat = solver.solve()
+    pt_implies_false = functools.reduce(lambda x, y: x.implies_intr(y), pt_unsat.hyps, pt_unsat)
+    pt_implies_false_initial = pt_implies_false
+    for pt in pt_norm_eq:
+       pt_implies_false_initial = pt_implies_false_initial.on_prop(top_conv(replace_conv(pt)))
+    imps, _ = pt_implies_false_initial.prop.strip_implies()
+    pt_final = pt_implies_false_initial
+    for imp in imps:
+        pt_final = pt_final.implies_elim(ProofTerm.assume(imp))
+    return pt_final 
 
 def th_lemma(args):
     """
     th-lemma: Generic proof for theory lemmas.
-    currently use proofterm.sorry.
-    args may contains several parameters, like:
-    h1 ⊢ x ≥ 0
-    h2 ⊢ x ≤ 0
-    --------
-    h1, h2 ⊢ x == 0
-    so for now, we just use the last parameter
-    as sorry.
     """
-    occur_vars = args[-1].get_vars()
-    occur_consts = args[-1].get_consts()
-    # real case
-    if (len(occur_vars) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars))\
-            or (len(occur_consts) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars)):
-        return real_th_lemma(args)
-        
-
-    pts = args[-1]
-    hyps = [h for a in args[:-1] for h in a.hyps]
-    return ProofTerm.sorry(Thm(hyps, args[-1]))
+    tms = [p.prop if isinstance(p, ProofTerm) else p for p in args]
+    Ts = set(sum([list(analyze_type(tm)) for tm in tms], []))
+    try:
+        if IntType in Ts:
+            if len(args) == 1:
+                return int_th_lemma_1(tms[0])
+            else:
+                return int_th_lemma_n(tms)
+        elif RealType in Ts:
+            return real_th_lemma(tms)
+    except:
+        pts = args[-1]
+        hyps = [h for a in args[:-1] for h in a.hyps]
+        return ProofTerm.sorry(Thm(hyps, args[-1]))
 
 def hypothesis(prop):
     """
@@ -1402,8 +1492,6 @@ def convert_method(term, *args, subterms=None, assertions=[]):
 local = dict()
 redundant = []
 hypos = set()
-or_expr = set()
-and_expr = set()
 # store boolvars' true value in assertion which maybe implicitly used in rewrite rules.
 assert_atom = set()
 
@@ -1466,11 +1554,12 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     """
     If trace is true, print reconstruction trace.
     """
+    global conj_expr, disj_expr
     term, net = index_and_relation(proof)
     order = DepthFirstOrder(net)
     r = dict()
-    or_expr.clear()
-    and_expr.clear()
+    conj_expr.clear()
+    disj_expr.clear()
     assert_atom.clear()
     gaps = set()
     # for ast in assertions:
@@ -1484,7 +1573,7 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
         else:
             subterms = [term[j] for j in net[i]]
             r[i] = convert_method(term[i], *args, subterms=subterms)
-            if r[i].rule == 'sorry':
+            if r[i].rule == 'sorry' and not trace:
                 gaps |= set(r[i].gaps)
                 print('term['+str(i)+']', term[i])
                 print('r['+str(i)+']', r[i])
