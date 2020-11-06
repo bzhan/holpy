@@ -110,7 +110,7 @@ class DisjFalseMacro(Macro):
         new_disj_pt = disj_pt
         for pt in prev_eq_pt:
             new_disj_pt = new_disj_pt.on_prop(bottom_conv(replace_conv(pt)), bottom_conv(rewr_conv('not_true')))
-        return new_disj_pt.on_prop(bottom_conv(rewr_conv('disj_false')))
+        return new_disj_pt.on_prop(bottom_conv(rewr_conv('disj_false_right')))
         
 
 def read_cnf_file(cnf_file):
