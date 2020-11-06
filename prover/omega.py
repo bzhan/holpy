@@ -825,6 +825,18 @@ class OmegaHOL:
 
 
     def direct_contr_pt(self, lower, upper):
+        """When lower and upper's comparisons don't contain constant, we need to treat them carefully.
+        """
+        def norm_pt(pt):
+            """If comparison in pt's prop does not contain constant, add a zero on the tail."""
+            tm = factoid_to_term(self.vars, term_to_factoid(self.vars, lower.prop))
+            pt1 = integer.omega_form_conv().get_proof_term(tm).symmetric()
+            return pt.on_prop(conv.top_sweep_conv(conv.rewr_conv(pt1)))
+       
+        if lower.prop.arg.is_times():
+            lower = norm_pt(lower)
+        if upper.prop.arg.is_times():
+            upper = norm_pt(upper)
         pos, neg = lower.prop.arg.arg1, upper.prop.arg.arg1
         pt_eq = integer.omega_simp_full_conv().get_proof_term(neg).\
             transitive(integer.omega_simp_full_conv().get_proof_term(term.Int(-1) * pos).symmetric())
