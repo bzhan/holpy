@@ -769,7 +769,7 @@ class Prover:
                         fact = new_fact
                         new_facts.append(new_fact)
 
-            print(new_facts[-1], facts, rule_name)
+            # print(new_facts[-1], facts, rule_name)
             self.hyps.extend(new_facts)
             for new_fact in new_facts:
                 # if new_fact.pred_name in ('simtri', 'contri', 'eqangle', 'para', 'midp'):
@@ -837,18 +837,13 @@ class Prover:
         if res is not None:
             return res
         steps = 0
-        # self.print_hyps(only_not_shadowed=True)
-        # print(self.lines)
         while steps < 5:
             steps += 1
-            print('Step', steps)
             res = self.search_step(only_updated=True)
 
             if res is not None:
                 return res
 
-        self.print_hyps(only_not_shadowed=True)
-        print(self.lines)
         return False
 
     def combine_facts(self, fact, goal) -> Optional[Fact]:

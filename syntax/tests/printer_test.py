@@ -116,8 +116,9 @@ class PrinterTest(unittest.TestCase):
             (mk_if(A, P, Q), "if A then P else Q"),
         ]
 
-        for t, s in test_data:
-            self.assertEqual(printer.print_term(t), s)
+        with global_setting(unicode=False):
+            for t, s in test_data:
+                self.assertEqual(printer.print_term(t), s)
 
     def testPrintRename(self):
         test_data = [
@@ -126,8 +127,9 @@ class PrinterTest(unittest.TestCase):
             (Abs("x", NatType, nat.less(Bound(0), Var("x", NatType))), "%x1. x1 < x"),
         ]
 
-        for t, s in test_data:
-            self.assertEqual(printer.print_term(t), s)
+        with global_setting(unicode=False):
+            for t, s in test_data:
+                self.assertEqual(printer.print_term(t), s)
 
     def testPrintComb(self):
         f = Var("f", TFun(Ta, Ta))
@@ -139,8 +141,9 @@ class PrinterTest(unittest.TestCase):
             (And(nn(A), B), "n A & B"),
         ]
 
-        for t, s in test_data:
-            self.assertEqual(printer.print_term(t), s)
+        with global_setting(unicode=False):
+            for t, s in test_data:
+                self.assertEqual(printer.print_term(t), s)
 
     def testPrintArithmetic(self):
         test_data = [
@@ -162,8 +165,9 @@ class PrinterTest(unittest.TestCase):
             (nat.less_eq(nat.plus(m, n), p), "m + n <= p"),
         ]
 
-        for t, s in test_data:
-            self.assertEqual(printer.print_term(t), s)
+        with global_setting(unicode=False):
+            for t, s in test_data:
+                self.assertEqual(printer.print_term(t), s)
 
     def testReal(self):
         basic.load_theory('real')
@@ -275,7 +279,8 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s1, s2 in test_data:
-            self.assertEqual(printer.print_term(t), s1)
+            with global_setting(unicode=False):
+                self.assertEqual(printer.print_term(t), s1)
             with global_setting(unicode=True):
                 self.assertEqual(printer.print_term(t), s2)
 
@@ -306,8 +311,9 @@ class PrinterTest(unittest.TestCase):
         ]
 
         basic.load_theory('function')
-        for t, s in test_data:
-            self.assertEqual(printer.print_term(t), s)
+        with global_setting(unicode=False):
+            for t, s in test_data:
+                self.assertEqual(printer.print_term(t), s)
 
     def testPrintString(self):
         test_data = [
@@ -326,8 +332,9 @@ class PrinterTest(unittest.TestCase):
             (Forall(a, Eq(a, a)), "!a::'a. a = a"),
         ]
 
-        for t, s in test_data:
-            self.assertEqual(printer.print_term(t), s)
+        with global_setting(unicode=False):
+            for t, s in test_data:
+                self.assertEqual(printer.print_term(t), s)
 
     def testPrintUnicode(self):
         test_data = [
@@ -349,7 +356,7 @@ class PrinterTest(unittest.TestCase):
     def testPrintHighlight(self):
         """Test highlight"""
         t = Exists(a,Forall(b,R(a,b)))
-        with global_setting(highlight=True):
+        with global_setting(unicode=False, highlight=True):
             res = printer.print_term(t)
         self.assertEqual(res, [
             {'color': 0, 'text': '?'},
@@ -371,7 +378,7 @@ class PrinterTest(unittest.TestCase):
         B = Var('B', BoolType)
         A_to_B = Implies(A, B)
         th = Thm([A, A_to_B], B)
-        with global_setting(highlight=True):
+        with global_setting(unicode=False, highlight=True):
             res = printer.print_thm(th)
         self.assertEqual(res, [
             {'color': 2, 'text': 'A'},

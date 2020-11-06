@@ -8,6 +8,8 @@ from kernel import term
 from kernel.term import Term, Var, Implies, Inst
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof, ItemID
+from syntax.settings import global_setting
+
 
 A = Var("A", BoolType)
 B = Var("B", BoolType)
@@ -86,7 +88,8 @@ class ProofTest(unittest.TestCase):
             "1: assume A",
             "2: A, implies A B |- B by implies_elim from 0, 1"])
         
-        self.assertEqual(str(prf), str_prf)
+        with global_setting(unicode=False):
+            self.assertEqual(str(prf), str_prf)
 
 
 if __name__ == "__main__":

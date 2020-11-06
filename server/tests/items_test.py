@@ -6,6 +6,7 @@ from kernel import theory
 from logic import basic
 from server import items
 from syntax import printer
+from syntax.settings import global_setting
 
 
 class ItemsTest(unittest.TestCase):
@@ -32,7 +33,9 @@ class ItemsTest(unittest.TestCase):
             "Theorem nat_induct: P 0 --> (!n. P n --> P (Suc n)) --> P x",
             "Attribute nat_induct [var_induct]"
         ]
-        self.assertEqual(printer.print_extensions(ext), '\n'.join(ext_output))
+
+        with global_setting(unicode=False):
+            self.assertEqual(printer.print_extensions(ext), '\n'.join(ext_output))
 
     def testDatatypeList(self):
         basic.load_theory('logic_base')
@@ -57,7 +60,9 @@ class ItemsTest(unittest.TestCase):
             "Theorem list_induct: P [] --> (!x1. !xs. P xs --> P (x1 # xs)) --> P x",
             "Attribute list_induct [var_induct]"
         ]
-        self.assertEqual(printer.print_extensions(ext), '\n'.join(ext_output))
+
+        with global_setting(unicode=False):
+            self.assertEqual(printer.print_extensions(ext), '\n'.join(ext_output))
 
     def testDatatypeProd(self):
         basic.load_theory('logic_base')
@@ -79,7 +84,9 @@ class ItemsTest(unittest.TestCase):
             "Theorem prod_induct: (!a. !b. P (Pair a b)) --> P x",
             "Attribute prod_induct [var_induct]"
         ]
-        self.assertEqual(printer.print_extensions(ext), '\n'.join(ext_output))
+
+        with global_setting(unicode=False):
+            self.assertEqual(printer.print_extensions(ext), '\n'.join(ext_output))
 
     def testFunPlus(self):
         basic.load_theory('nat', limit=('def', 'one'))
@@ -102,7 +109,9 @@ class ItemsTest(unittest.TestCase):
             "Theorem plus_def_2: Suc m + n = Suc (m + n)",
             "Attribute plus_def_2 [hint_rewrite]"
         ]
-        self.assertEqual(printer.print_extensions(ext), '\n'.join(ext_output))
+
+        with global_setting(unicode=False):
+            self.assertEqual(printer.print_extensions(ext), '\n'.join(ext_output))
 
     def testPredEven(self):
         basic.load_theory('nat', limit=('def', 'one'))
@@ -126,7 +135,9 @@ class ItemsTest(unittest.TestCase):
             "Attribute even_Suc [hint_backward]",
             "Theorem even_cases: even _a1 --> (_a1 = 0 --> P) --> (!n. _a1 = Suc (Suc n) --> even n --> P) --> P"
         ]
-        self.assertEqual(printer.print_extensions(ext), '\n'.join(ext_output))
+
+        with global_setting(unicode=False):
+            self.assertEqual(printer.print_extensions(ext), '\n'.join(ext_output))
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@
 import unittest
 from fractions import Fraction
 
-from integral.expr import Const,deriv
+from integral.expr import Const, deriv
 from integral.parser import parse_expr
 from integral import rules
 from sympy.parsing import sympy_parser

@@ -43,7 +43,8 @@ class ParserTest(unittest.TestCase):
         for s in test_data:
             T = parser.parse_type(s)
             self.assertIsInstance(T, Type)
-            self.assertEqual(str(T), s)
+            with global_setting(unicode=False):
+                self.assertEqual(str(T), s)
 
     def testParseUnicodeType(self):
         test_data = [
@@ -76,7 +77,8 @@ class ParserTest(unittest.TestCase):
         T = parser.parse_type(Ts)
         self.assertIsInstance(t, Term)
         self.assertEqual(t.checked_get_type(), T)
-        self.assertEqual(print_term(t), s)
+        with global_setting(unicode=False):
+            self.assertEqual(print_term(t), s)
 
     def testParseTerm(self):
         test_data = [
@@ -298,7 +300,8 @@ class ParserTest(unittest.TestCase):
         vars = {"x": "'a", "y": "'a", "A": "'a set", "B": "'a set",
                 "P": "'a => bool", "S": "'a set set", "f": "'a set => 'a set"}
         for s1, s2, Ts in test_data:
-            self.run_test('set', vars=vars, s=s1, Ts=Ts)
+            with global_setting(unicode=False):
+                self.run_test('set', vars=vars, s=s1, Ts=Ts)
             with global_setting(unicode=True):
                 self.run_test('set', vars=vars, s=s2, Ts=Ts)
 
@@ -384,7 +387,8 @@ class ParserTest(unittest.TestCase):
         for s, ascii_s in test_data:
             t = parser.parse_term(s)
             self.assertIsInstance(t, Term)
-            self.assertEqual(print_term(t), ascii_s)
+            with global_setting(unicode=False):
+                self.assertEqual(print_term(t), ascii_s)
 
     def testParseThm(self):
         A = Var('A', BoolType)

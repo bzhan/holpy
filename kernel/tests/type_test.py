@@ -3,6 +3,7 @@
 import unittest
 
 from kernel.type import STVar, TVar, TConst, TFun, BoolType, TyInst, TypeMatchException
+from syntax.settings import global_setting
 
 Ta = TVar("a")
 Tb = TVar("b")
@@ -44,7 +45,8 @@ class TypeTest(unittest.TestCase):
         ]
 
         for T, str_T in test_data:
-            self.assertEqual(str(T), str_T)
+            with global_setting(unicode=False):
+                self.assertEqual(str(T), str_T)
 
     def testStripType(self):
         test_data = [

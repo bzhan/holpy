@@ -8,6 +8,7 @@ from kernel import term
 from kernel.term import Term, Var, Const, Eq
 from kernel.thm import Thm
 from kernel.report import ProofReport, ExtensionReport
+from syntax.settings import global_setting
 
 Ta = TVar("a")
 x = Var("x", Ta)
@@ -46,7 +47,8 @@ class ReportTest(unittest.TestCase):
             "Axiom added: 1",
             "id.simps: |- equals (id x) x"])
 
-        self.assertEqual(str(ext_report), str_ext_report)
+        with global_setting(unicode=False):
+            self.assertEqual(str(ext_report), str_ext_report)
 
     def testPrintExtensionReport2(self):
         ext_report = ExtensionReport()
@@ -58,7 +60,8 @@ class ReportTest(unittest.TestCase):
             "Type nat with arity 0",
             "id :: 'a => 'a"])
 
-        self.assertEqual(str(ext_report), str_ext_report)
+        with global_setting(unicode=False):
+            self.assertEqual(str(ext_report), str_ext_report)
 
 
 if __name__ == "__main__":

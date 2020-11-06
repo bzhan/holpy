@@ -6,6 +6,7 @@ from kernel.type import TVar, TFun
 from kernel.term import Term, Var, Const, Abs, Bound
 from kernel.thm import Thm
 from kernel.extension import TConst, Constant, Theorem
+from syntax.settings import global_setting
 
 
 class ExtensionTest(unittest.TestCase):
@@ -21,7 +22,8 @@ class ExtensionTest(unittest.TestCase):
         ]
 
         for ext, str_ext in zip(exts, str_exts):
-            self.assertEqual(str(ext), str_ext)
+            with global_setting(unicode=False):
+                self.assertEqual(str(ext), str_ext)
 
 
 if __name__ == "__main__":
