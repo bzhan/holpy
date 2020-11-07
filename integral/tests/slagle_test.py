@@ -39,7 +39,7 @@ class SlagleTest(unittest.TestCase):
         for v, v_res in test_data:
             v = parse_expr(v)
             v_res = parse_expr(v_res)
-            self.assertEqual(slagle.HalfAngleIdentity().eval(v), v_res)
+            self.assertEqual(slagle.HalfAngleIdentity().eval(v).normalize(), v_res)
 
     def testLinearity(self):
         test_data = [
@@ -97,13 +97,13 @@ class SlagleTest(unittest.TestCase):
     def testHeuristicTrigSubstitution(self):
         test_data = [
             ('INT x:[-1/2,1/2]. x^4/(1-x^2)^(5/2)',
-            ['INT u:[- 1/ 6*pi,1 / 6 * pi]. cos(u) * sin(u) ^ 4 * (1 + -1 * sin(u) ^ 2) ^ (-5/2)']),
+             ['INT u:[- 1/ 6*pi,1 / 6 * pi]. cos(u) * sin(u) ^ 4 * (1 + -1 * sin(u) ^ 2) ^ (-5/2)']),
         ]
 
         for v, v_res in test_data:
             v = parse_expr(v)
             v_res = [parse_expr(v2) for v2 in v_res]
-            self.assertEqual(slagle.HeuristicTrigSubstitution().eval(v), v_res)
+            self.assertEqual([e.normalize() for e in slagle.HeuristicTrigSubstitution().eval(v)], v_res)
 
     def testHeuristicExpandPower(self):
         test_data = [
