@@ -8,17 +8,26 @@ from flask.json import jsonify
 from lark import Lark, Transformer, v_args, exceptions
 from fractions import Fraction
 from sympy import expand_multinomial
-import copy
-
+import pathlib
+import os
 import integral
 from integral import slagle
 from app.app import app
 
 
+@app.route("/api/integral-load-file-list", methods=['POST'])
+def integral_load_file_list():
+    os.chdir('./integral/examples')
+    json_files = tuple(str(z) for z in list(pathlib.Path('./').rglob('*.json')))
+    os.chdir('../../')
+    return jsonify({
+        'file_list': json_files
+    })
+
 @app.route("/api/integral-open-file", methods=['POST'])
 def integral_open_file():
     data = json.loads(request.get_data().decode('utf-8'))
-    file_name = "integral/examples/%s.json" % data['filename']
+    file_name = "integral/examples/%s" % data['filename']
     with open(file_name, 'r', encoding='utf-8') as f:
         f_data = json.load(f)
 
@@ -37,6 +46,25 @@ def integral_initialize():
         'latex': integral.latex.convert_expr(problem),
         'reason': "Initial"
     })
+
+@app.route("/api/integral-validate-integral", methods=['POST'])
+def integral_validate_integral():
+    data = json.loads(request.get_data().decode('utf-8'))
+    try:
+        problem = integral.parser.parse_expr(data['expr'])
+        index = int(data['index'])
+        return jsonify({
+            'flag': True,            
+            'content': {
+                'name': 'Exercise ' + str(data['index']),
+                'problem': data['expr'],
+                '_problem_latex': integral.latex.convert_expr(problem),
+            }
+        })
+    except:
+        return jsonify({
+            'flag': False
+        })
 
 @app.route("/api/integral-super-simplify", methods=['POST'])
 def integral_super_simplify():
