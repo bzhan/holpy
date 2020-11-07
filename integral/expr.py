@@ -324,7 +324,7 @@ class Expr:
         else:
             raise NotImplementedError
     
-    def is_constant(self, Pi = False):
+    def is_constant(self):
         """Determine whether expr is a number.
         
         If Pi is false, consider pi as a function.
@@ -335,12 +335,12 @@ class Expr:
         elif self.ty == VAR:
             return False
         elif self.ty == FUN:
-            if len(self.args) == 0: #pi
-                return False if not Pi else True
+            if len(self.args) == 0: # pi
+                return True
             else:
-                return self.args[0].is_constant(Pi=Pi)
+                return self.args[0].is_constant()
         elif self.ty == OP:
-            return all(arg.is_constant(Pi=Pi) for arg in self.args)
+            return all(arg.is_constant() for arg in self.args)
         else:
             return False
 
@@ -560,7 +560,7 @@ class Expr:
                 return poly.singleton(Fun("exp", self.args[0].normalize()))
 
         elif self.ty == FUN and self.func_name in ("sin", "cos", "tan", "cot", "csc", "sec"):
-            if self.is_constant(Pi=True):
+            if self.is_constant():
                 return poly.singleton(compute_trig_value(self))
             elif self.args[0].ty == FUN and self.args[0].func_name == "a" + self.func_name:
                 # sin(asin(x)) = x
@@ -1047,7 +1047,7 @@ def simplify_constant(e):
     def length(e):
         return e.size()
 
-    assert e.is_constant(Pi=True), "%s is not a constant" % e
+    assert e.is_constant(), "%s is not a constant" % e
     factors = decompose_expr_factor(e)
     if len(factors) <= 1:
         return e
@@ -1478,7 +1478,7 @@ def norm_trig_body(body):
     (2) If n is even, transform body to (x-n)*pi
     (3) If n is odd, transform body to (x - n - 1) * pi
     """
-    assert body.is_constant(Pi=True), "%s has variable." % body
+    assert body.is_constant(), "%s has variable." % body
     
     if body.normalize() == Const(0):
         return Const(0)
@@ -1505,13 +1505,11 @@ def norm_trig_body(body):
 def compute_trig_value(trig):
     """Compute the value of a trigonometric function based on trig table.
     """
-    assert trig.is_constant(Pi=True), "%s has variable." % trig
+    assert trig.is_constant(), "%s has variable." % trig
     assert trig.ty == FUN and trig.func_name in ("sin", "cos", "tan", "cot", "csc", "sec"), \
         "%s is not a trig function" % trig
 
 
-    if trig.is_constant(Pi=False) and trig.args[0].normalize() != Const(0): # cannot compute trig value withoud pi.
-        return trig
     trig_body = trig.args[0].normalize()
     table = trig_table()
     norm = norm_trig_body(trig_body) 
@@ -1521,6 +1519,7 @@ def compute_trig_value(trig):
             return value
         elif norm == (-key).normalize():
             return (-value).normalize() if trig.func_name in ("sin","tan","cot","csc") else value
+
     # no matching value
     return Fun(trig.func_name, norm)
 
@@ -1528,7 +1527,7 @@ def compute_inverse_trig_value(inv_trig):
     """Compute the inverse trigonometric function value.
     
     """
-    assert inv_trig.is_constant(Pi=True), "%s has variable." % inv_trig
+    assert inv_trig.is_constant(), "%s has variable." % inv_trig
     assert inv_trig.ty == FUN and inv_trig.func_name in ("asin, acos", "atan", "acot", "acsc", "asec"), \
         "%s is not a inverse trig function" % inv_trig
 
