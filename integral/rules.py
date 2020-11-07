@@ -6,7 +6,8 @@ from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_iden
         sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, sin, cos, FUN
 import functools, operator
 from sympy.parsing import sympy_parser
-from sympy import solvers, Interval, solveset, expand_multinomial, apart
+from sympy import Interval, expand_multinomial, apart
+from sympy.solvers import solvers, solveset
 from integral import parser
 from fractions import Fraction
 import copy
