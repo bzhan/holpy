@@ -6,6 +6,7 @@ from kernel.type import STVar, TVar, TFun, BoolType, TyInst
 from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq, Forall, \
     Inst, TypeCheckException
 from kernel.thm import Thm, InvalidDerivationException
+from syntax.settings import global_setting
 
 Ta = TVar("a")
 Tb = TVar("b")
@@ -28,7 +29,8 @@ class ThmTest(unittest.TestCase):
         ]
 
         for th, str_th in test_data:
-            self.assertEqual(str(th), str_th)
+            with global_setting(unicode=False):
+                self.assertEqual(str(th), str_th)
 
     def testCheckThmType(self):
         self.assertEqual(Thm([A], A).check_thm_type(), None)

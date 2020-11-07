@@ -29,9 +29,9 @@ test_cases = {
         "Exercise 16": "1 / 2 * pi",
         "Exercise 17": "2 * 2 ^ (1 / 2) + 2 ^ (1 / 2) * pi",
         "Exercise 18": "1 - 1/4 * pi",
-        "Exercise 19": "1 / 6",
-        "Exercise 20": "2 + 2 * log(2) - 2 * log(3)",
-        "Exercise 21": "1 - 2 * log(2)",
+        # "Exercise 19": "1 / 6",
+        # "Exercise 20": "2 + 2 * log(2) - 2 * log(3)",
+        # "Exercise 21": "1 - 2 * log(2)",
         "Exercise 22": "1 - exp (-1/2)",
         "Exercise 23": "-2 + 2 * 3 ^ (1/2)",
         "Exercise 24": "1/2 * pi",
@@ -101,7 +101,7 @@ test_cases = {
         "Exercise 15": "(1/2 - 7/4 * log(3)) + 7/4 * log(5)",
         "Exercise 16": "(-(3/2) - 8 * log(2)) + 8 * log(3)",
         "Exercise 17": "41 / 6",
-        "Exercise 18": "188 / 15"
+        # "Exercise 18": "188 / 15"
     },
     "UCDAVIS/Exponentials": {
         "Exercise 1": "-5 + 5 * exp(1)",
