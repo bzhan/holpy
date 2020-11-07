@@ -2,8 +2,9 @@
 
 import unittest
 
-from integral.expr import Var, Const
-from integral.poly import Monomial, parse_mono, parse_poly
+from integral import expr
+from integral.expr import Var, Const, pi, E
+from integral.poly import ConstantMonomial, Monomial, parse_mono, parse_poly
 from decimal import Decimal
 from fractions import Fraction
 
@@ -34,6 +35,28 @@ class PolynomialTest(unittest.TestCase):
         for s in test_data:
             p = parse_poly(s)
             self.assertEqual(str(p), s)
+
+    def testConstantMonomial(self):
+        test_data = [
+            (1, [], "1"),
+            (1, [(2, "1/2")], "2^(1/2)"),
+            (1, [(2, "3/2")], "2 * 2^(1/2)"),
+            (1, [(2, "-1/2")], "1/2 * 2^(1/2)"),
+            (1, [(6, "1/2")], "2^(1/2) * 3^(1/2)"),
+            (1, [(pi, "1/2")], "pi^(1/2)"),
+            (1, [(E, "1/2")], "e^(1/2)"),
+            (1, [(9, "1/2")], "3"),
+            (1, [(2, 2)], "4"),
+            (1, [(8, "1/2"), (6, "1/2"), (9, "1/3")], "12 * 3^(1/6)"),
+            (1, [(expr.sin(Const(1)), 2)], "sin(1)^2"),
+            (1, [(expr.sin(Const(1)) + expr.sin(Const(2)), 2)], "(sin(1) + sin(2))^2"),
+            (1, [(expr.sin(Const(1)) * expr.sin(Const(2)), 2)], "sin(1)^2 * sin(2)^2"),
+        ]
+
+        for coeff, factors, res in test_data:
+            factors = [(n, Fraction(e)) for n, e in factors]
+            mono = ConstantMonomial(coeff, factors)
+            self.assertEqual(str(mono), res)
 
     def testMultMonomial(self):
         test_data = [

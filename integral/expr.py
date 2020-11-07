@@ -165,6 +165,15 @@ class Expr:
     def is_evalat(self):
         return self.ty == EVAL_AT
 
+    def is_plus(self):
+        return self.ty == OP and self.op == '+'
+
+    def is_times(self):
+        return self.ty == OP and self.op == '*'
+
+    def is_power(self):
+        return self.ty == OP and self.op == '^'
+
     def __le__(self, other):
         if self.size() != other.size():
             return self.size() <= other.size()
@@ -268,7 +277,6 @@ class Expr:
             else:
                 raise NotImplementedError
         elif self.ty == FUN:
-            # Can't resolve pi now.
             assert loc.head < len(self.args), "get_subexpr: invalid location"
             arg = self.args[loc.head].replace_expr(loc.rest, new_expr)
             return Fun(self.func_name, arg)
@@ -288,7 +296,7 @@ class Expr:
             raise NotImplementedError
 
     def get_location(self):
-        """Give an expression, return the sub-expression location which selected field is True."""
+        """Returns the location at which the 'selected' field is True."""
         location = []
         def get(exp, loc = ''):
             if hasattr(exp, 'selected') and exp.selected == True:
@@ -305,7 +313,6 @@ class Expr:
                 get(exp.body, loc+".0")
         get(self)
         return location[0]
-
 
     def subst(self, var, e):
         """Substitute occurrence of var for e in self."""
@@ -325,11 +332,7 @@ class Expr:
             raise NotImplementedError
     
     def is_constant(self):
-        """Determine whether expr is a number.
-        
-        If Pi is false, consider pi as a function.
-        Else pi is a constant.
-        """
+        """Determine whether expr is a number."""
         if self.ty == CONST:
             return True
         elif self.ty == VAR:
@@ -366,15 +369,21 @@ class Expr:
         else:
             raise NotImplementedError
 
+    def normalize_constant(self):
+        """Normalize a constant expression.
+
+        The normal form is defined as follows:
+
+
+        """
+        pass
+
     def to_poly(self):
         """Convert expression to polynomial without sympy.
         
         Currently pi is considered as a 0-arity function, put it in monomial's factors
         rather than coefficient, in order to perform coefficient arithmetic conviniently.
 
-        Args:
-            a)singleton: If singleton is True, we will consider (a + b) and (c + d) as singleton
-              in terms (a + b) * (c + d)
         """
         if self.ty == VAR:
             return poly.singleton(self)
@@ -1328,6 +1337,7 @@ def sqrt(e):
     return Fun("sqrt", e)
 
 pi = Fun("pi")
+E = Fun("exp", Const(1))
 
 def norm_trig_body(body):
     """Transform trig function body in range: [-π,π]

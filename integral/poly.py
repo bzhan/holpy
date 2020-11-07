@@ -4,7 +4,11 @@ from lark import Lark, Transformer, v_args, exceptions
 from fractions import Fraction
 from decimal import Decimal
 from collections.abc import Iterable
+import sympy
+import math
+
 from integral import expr
+
 
 def collect_pairs(ps):
     """Reduce a list of pairs by collecting into groups according to
@@ -24,7 +28,109 @@ def collect_pairs(ps):
                 res[v] += c
         else:
             res[v] = c
-    return tuple(sorted(((k, v) for k, v in res.items())))
+    return tuple(sorted((k, v) for k, v in res.items()))
+
+def reduce_power(n, e):
+    """Reduce n^e to normal form."""
+    if isinstance(n, expr.Expr):
+        if n.is_times():
+            return reduce_power(n.args[0], e) + reduce_power(n.args[1], e)
+        elif n.is_power() and (isinstance(e, int) or (isinstance(e, Fraction) and e.denominator == 1)):
+            return reduce_power(n.args[0], n.args[1] * e)
+        else:
+            return ((n, e),)
+    elif isinstance(n, int):
+        return tuple((ni, e * ei) for ni, ei in sympy.factorint(n).items())
+    else:
+        raise NotImplementedError
+
+def extract_frac(ps):
+    """Given a list of pairs (n, e), reduce list by collecting rational coefficient."""
+    res = []
+    coeff = 1
+
+    for n, e in ps:
+        if isinstance(n, int):
+            if e >= 1:
+                coeff *= (n ** math.floor(e))
+            if e < 0:
+                coeff *= Fraction(1, n ** (-math.floor(e)))
+            if e - math.floor(e) != 0:
+                res.append((n, e - math.floor(e)))
+        else:
+            res.append((n, e))
+    return tuple(res), coeff
+
+
+class ConstantMonomial:
+    """Represents a monomial constant expression.
+
+    The expression is in the form
+
+    c * p_1 ^ e_1 * p_2 ^ e_2 ... * p_k ^ e_k * Pi ^ e_Pi * exp(n) *
+        t_1 ^ f_1 * t_2 ^ f_2 ... * t_k ^ f_k
+
+    Here c is a rational number, each p_i are primes and e_i are fractions
+    between 0 and 1 (exclusive). e_Pi is the exponent of Pi and n is the
+    exponent of e (both arbitrary fractions). Each t_i is a distinct
+    term that cannot be further simplified. Each f_i are non-zero fractions.
+
+    """
+    def __init__(self, coeff, factors):
+        """Construct a monomial from coefficient and tuple of factors."""
+        assert isinstance(coeff, (int, Fraction))
+
+        self.coeff = coeff
+
+        reduced_factors = []
+        for n, e in factors:
+            reduced_factors.extend(reduce_power(n, e))
+
+        self.factors = tuple((i, j) for i, j in collect_pairs(reduced_factors) if j != 0)
+        self.factors, coeff2 = extract_frac(self.factors)
+        self.coeff *= coeff2
+
+    def __str__(self):
+        def print_pair(n, e):
+            if isinstance(n, expr.Expr) and n == expr.E:
+                str_base = "e"
+            elif isinstance(n, int) or (isinstance(n, expr.Expr) and n.priority() > expr.op_priority['^']):
+                str_base = str(n)
+            else:
+                str_base = "(" + str(n) + ")"
+            if e == 1:
+                return str_base
+            elif isinstance(e, int) or (isinstance(e, Fraction) and e.denominator == 1):
+                str_exp = str(e)
+            else:
+                str_exp = "(" + str(e) + ")"
+            return str_base + "^" + str_exp
+
+        if not self.factors:
+            return str(self.coeff)
+
+        str_factors = " * ".join(print_pair(n, e) for n, e in self.factors)
+        if self.coeff == 1:
+            return str_factors
+        else:
+            return str(self.coeff) + " * " + str_factors
+
+    def __mul__(self, other):
+        return ConstantMonomial()
+
+
+class ConstantPolynomial:
+    """Represents a sum of constant monomials"""
+    def __init__(self, monomials):
+        ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
+        self.monomials = tuple(Monomial(coeff, factor) for factor, coeff in ts if coeff != expr.Const(0))
+
+    def __add__(self, other):
+        pass
+
+    def __mul__(self, other):
+        pass
+
 
 class Monomial:
     """Represents a monomial."""
