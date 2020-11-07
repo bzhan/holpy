@@ -50,13 +50,26 @@ class PolynomialTest(unittest.TestCase):
             (1, [(8, "1/2"), (6, "1/2"), (9, "1/3")], "12 * 3^(1/6)"),
             (1, [(expr.sin(Const(1)), 2)], "sin(1)^2"),
             (1, [(expr.sin(Const(1)) + expr.sin(Const(2)), 2)], "(sin(1) + sin(2))^2"),
-            (1, [(expr.sin(Const(1)) * expr.sin(Const(2)), 2)], "sin(1)^2 * sin(2)^2"),
         ]
 
         for coeff, factors, res in test_data:
             factors = [(n, Fraction(e)) for n, e in factors]
             mono = ConstantMonomial(coeff, factors)
             self.assertEqual(str(mono), res)
+
+    def testMultConstantMonomial(self):
+        test_data = [
+            (1, [(2, "1/2")], 1, [(2, "3/2")], "4"),
+            (2, [(2, "1/2")], 3, [(3, "3/2")], "18 * 2^(1/2) * 3^(1/2)"),
+            (2, [(3, "1/2")], 3, [(2, "3/2")], "12 * 2^(1/2) * 3^(1/2)"),
+        ]
+
+        for coeff1, factors1, coeff2, factors2, res in test_data:
+            factors1 = [(n, Fraction(e)) for n, e in factors1]
+            factors2 = [(n, Fraction(e)) for n, e in factors2]
+            mono1 = ConstantMonomial(coeff1, factors1)
+            mono2 = ConstantMonomial(coeff2, factors2)
+            self.assertEqual(str(mono1 * mono2), res)
 
     def testMultMonomial(self):
         test_data = [

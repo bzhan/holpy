@@ -16,7 +16,7 @@ class ExprTest(unittest.TestCase):
         test_data = [
             (x, "x"),
             (Const(1), "1"),
-            (Const(Decimal("1.1")), "1.1"),
+            (Const(Decimal("1.1")), "11/10"),
             (Const((-1)), "-1"),
             (x + y, "x + y"),
             (x - y, "x - y"),
@@ -80,23 +80,45 @@ class ExprTest(unittest.TestCase):
 
     def testNormalizeConstant(self):
         test_data = [
-            # ("(3 + sqrt(2)) * (2 + sqrt(2))", "8 + 5 * sqrt(2)"),
-            # ("(3 + sqrt(2)) * (2 + sqrt(3))", "5 + 2 * sqrt(2) + 3 * sqrt(3) + sqrt(6)"),
-            # ("sqrt(8)", "2 * sqrt(2)"),
-            # ("sqrt(8) + 3 * sqrt(2)", "5 * sqrt(2)"),
-            # ("sqrt(12)", "3 * sqrt(2)"),
-            # ("sqrt(12) + 2 * sqrt(2)", "5 * sqrt(2)"),
+            ("(3 + sqrt(2)) * (2 + sqrt(2))", "8 + 5 * sqrt(2)"),
+            ("(3 + sqrt(2)) * (2 + sqrt(3))", "6 + 2 * sqrt(2) + sqrt(2) * sqrt(3) + 3 * sqrt(3)"),
+            ("sqrt(8)", "2 * sqrt(2)"),
+            ("sqrt(8) + 3 * sqrt(2)", "5 * sqrt(2)"),
+            ("sqrt(18)", "3 * sqrt(2)"),
+            ("sqrt(18) + 2 * sqrt(2)", "5 * sqrt(2)"),
+            ("2 ^ (1/2) * 2 ^ (1/3)", "2 ^ (5/6)"),
+            ("sqrt(8) / sqrt(10)", "2/5 * sqrt(5)"),
+            ("sqrt(8) / (1 + sqrt(10))", "2 * sqrt(2) * (1 + sqrt(10)) ^ -1"),
+            ("sqrt(8) ^ 2", "8"),
+            ("(3 + sqrt(2)) ^ 2", "11 + 6 * sqrt(2)"),
+            ("(3 + sqrt(2)) ^ 3", "45 + 29 * sqrt(2)"),
+            ("(3 + sqrt(2)) ^ -1", "(3 + sqrt(2)) ^ -1"),
             ("pi / 2 - pi / 3", "1/6 * pi"),
+            ("exp(0)", "1"),
             ("exp(2) * exp(3)", "exp(5)"),
-            ("sin(pi/4)", "2 ^ (-1/2)"),
-            # ("sin(pi/4) * sqrt(2)", "1"),
-            # ("atan(1)", "pi/4"),
-            # ("2 ^ (1/2) * 2 ^ (1/3)", "2 ^ (5/6)"),
+            ("exp(pi) * exp(3)", "exp(3) * exp(pi)"),
+            ("log(1)", "0"),
+            ("log(2)", "log(2)"),
+            ("sin(pi/4)", "1/2 * sqrt(2)"),
+            ("sin(pi/4) * sqrt(2)", "1"),
+            ("atan(1)", "1/4 * pi"),
+            ("abs(-2)", "2")
         ]
 
         for s, res in test_data:
             t = parse_expr(s)
-            self.assertEqual(str(t.normalize()), res)
+            self.assertEqual(str(t.normalize_constant()), res)
+
+    def testNormalizeConstantTrig(self):
+        table = expr.trig_table()
+        for func_name in ('sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
+            for k, v in table[func_name].items():
+                self.assertEqual(Fun(func_name, k).normalize_constant(), v)
+
+        inv_table = expr.inverse_trig_table()
+        for func_name in ('asin', 'acos', 'atan', 'acot', 'acsc', 'asec'):
+            for k, v in inv_table[func_name].items():
+                self.assertEqual(Fun(func_name, k).normalize_constant(), v)
 
     def testNormalize(self):
         test_data = [
@@ -108,15 +130,15 @@ class ExprTest(unittest.TestCase):
             ("0 / (x + y)", "0"),
             ("2 + x / y + 2 * (x / y) + 3", "5 + 3 * x * y ^ -1"),
             ("(x + y) ^ 2", "(x + y) ^ 2"),
-            ("x^(1.5)","x ^ 1.5"),
+            ("x^(1.5)","x ^ (3/2)"),
             ("(x + y) * (x - y)", "x ^ 2 + -1 * y ^ 2"),
             ("[x]_x=a,b", "-1 * a + b"),
             ("[x ^ 2 * y]_x=a,b", "-1 * a ^ 2 * y + b ^ 2 * y"),
             ("[x ^ 2]_x=3,4", "7"),
             ("cos(x ^ 2)", "cos(x ^ 2)"),
-            ("cos(pi/4)", "2 ^ (-1/2)"),
+            ("cos(pi/4)", "1/2 * sqrt(2)"),
             ("-(-x)", "x"),
-            ("cos(0) - cos(pi/4)", "-1 * 2 ^ (-1/2) + 1"),
+            ("cos(0) - cos(pi/4)", "-1/2 * 2 ^ (1/2) + 1"),
             ("cos(0) - cos(pi/2)", "1"),
             ("([x]_x=a,b) + 2 * ([x ^ 2 / 2]_x=a,b) + [x ^ 3 / 3]_x=a,b",
              "-1 * a + -1 * a ^ 2 + -1/3 * a ^ 3 + b + b ^ 2 + 1/3 * b ^ 3"),
@@ -125,7 +147,7 @@ class ExprTest(unittest.TestCase):
             # ("atan(1)", "1/4 * pi"),
             # ("atan(sqrt(3)/3)", "1/6 * pi"),
             # ("atan(sqrt(3))", "1/3 * pi"),
-            ("sin(3/4 * pi)", "2 ^ (-1/2)"),
+            ("sin(3/4 * pi)", "1/2 * sqrt(2)"),
             ("pi + pi / 3", "4/3 * pi"),
             ("1 - cos(x) ^ 2", "1 + -1 * cos(x) ^ 2"),
             ("x^2 * 6", "6 * x ^ 2"),
@@ -429,7 +451,7 @@ class ExprTest(unittest.TestCase):
             ("pi/2-pi/3", "1/6 * pi"),
             ("(3/4)^(-1)", "(4/3)"),
             ("3 ^ (1/2) * 2 ^ -1","1/2 * 3 ^ (1/2)"),
-            ("sin(pi/4)", "2^(-1/2)"),
+            ("sin(pi/4)", "1/2 * sqrt(2)"),
             ("sin(4/pi)", "sin(4*pi^(-1))"),
             ("pi*pi", "pi^2"),
             ("(1/4) * pi * (1/2)", "(1/8) * pi"),
@@ -471,7 +493,7 @@ class ExprTest(unittest.TestCase):
         test_data = [
             ("sin(0)", "0"),
             ("sin(pi/2)", "1"),
-            ("sin(pi/4)", "2^(-1/2)"),
+            ("sin(pi/4)", "1/2 * sqrt(2)"),
             ("sin(pi/7)", "sin(1/7*pi)"),
             ("cos(-pi/3)", "1/2"),
             ("sin(-pi/3)", "-(1/2) * 3^(1/2)"),

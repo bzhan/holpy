@@ -33,12 +33,7 @@ def collect_pairs(ps):
 def reduce_power(n, e):
     """Reduce n^e to normal form."""
     if isinstance(n, expr.Expr):
-        if n.is_times():
-            return reduce_power(n.args[0], e) + reduce_power(n.args[1], e)
-        elif n.is_power() and (isinstance(e, int) or (isinstance(e, Fraction) and e.denominator == 1)):
-            return reduce_power(n.args[0], n.args[1] * e)
-        else:
-            return ((n, e),)
+        return ((n, e),)
     elif isinstance(n, int):
         return tuple((ni, e * ei) for ni, ei in sympy.factorint(n).items())
     else:
@@ -80,15 +75,13 @@ class ConstantMonomial:
         """Construct a monomial from coefficient and tuple of factors."""
         assert isinstance(coeff, (int, Fraction))
 
-        self.coeff = coeff
-
         reduced_factors = []
         for n, e in factors:
             reduced_factors.extend(reduce_power(n, e))
 
-        self.factors = tuple((i, j) for i, j in collect_pairs(reduced_factors) if j != 0)
-        self.factors, coeff2 = extract_frac(self.factors)
-        self.coeff *= coeff2
+        reduced_factors = tuple((i, j) for i, j in collect_pairs(reduced_factors) if j != 0)
+        self.factors, coeff2 = extract_frac(reduced_factors)
+        self.coeff = coeff * coeff2
 
     def __str__(self):
         def print_pair(n, e):
@@ -115,22 +108,103 @@ class ConstantMonomial:
         else:
             return str(self.coeff) + " * " + str_factors
 
+    def __le__(self, other):
+        if len(self.factors) < len(other.factors):
+            return True
+        elif len(self.factors) > len(other.factors):
+            return False
+        else:
+            return (self.factors, self.coeff) <= (other.factors, other.coeff)
+
+    def __lt__(self, other):
+        return self <= other and self != other
+
+    def __neg__(self):
+        return ConstantMonomial(-1 * self.coeff, self.factors)
+
     def __mul__(self, other):
-        return ConstantMonomial()
+        return ConstantMonomial(self.coeff * other.coeff, self.factors + other.factors)
+
+    def __truediv__(self, other):
+        inv_factors = tuple((n, -e) for n, e in other.factors)
+        return ConstantMonomial(self.coeff * Fraction(1,other.coeff), self.factors + inv_factors)
+
+    def __pow__(self, exp):
+        # Assume the power is a fraction
+        if isinstance(exp, (int, Fraction)) and int(exp) == exp:
+            return ConstantMonomial(Fraction(self.coeff) ** exp, [(n, e * exp) for n, e in self.factors])
+        elif isinstance(exp, Fraction):
+            coeff = Fraction(self.coeff)
+            num, denom = coeff.numerator, coeff.denominator
+            return ConstantMonomial(1, [(num, exp), (denom, -exp)] + [(n, e * exp) for n, e in self.factors])
+        else:
+            raise ValueError
+
+    def is_fraction(self):
+        return len(self.factors) == 0
+
+    def get_fraction(self):
+        return self.coeff
 
 
 class ConstantPolynomial:
     """Represents a sum of constant monomials"""
     def __init__(self, monomials):
         ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
-        self.monomials = tuple(Monomial(coeff, factor) for factor, coeff in ts if coeff != expr.Const(0))
+        self.monomials = tuple(ConstantMonomial(coeff, factor) for factor, coeff in ts if coeff != 0)
 
     def __add__(self, other):
-        pass
+        return ConstantPolynomial(self.monomials + other.monomials)
+
+    def __neg__(self):
+        return ConstantPolynomial([-m for m in self.monomials])
+
+    def __sub__(self, other):
+        return self + (-other)
 
     def __mul__(self, other):
-        pass
+        return ConstantPolynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
 
+    def __truediv__(self, other):
+        # Assume the denominator is a monomial
+        if len(other.monomials) == 1:
+            return ConstantPolynomial([m / other.monomials[0] for m in self.monomials])
+        else:
+            raise ValueError
+
+    def __pow__(self, exp):
+        # Assume self is a monomial and exp is a fraction
+        if len(self.monomials) == 1 and isinstance(exp, (int, Fraction)):
+            return ConstantPolynomial([self.monomials[0] ** exp])
+        else:
+            raise ValueError('%s, %s' % (self, exp))
+
+    def is_monomial(self):
+        """Whether self has only one monomial."""
+        return len(self.monomials) == 1
+
+    def get_monomial(self):
+        """Returns the only monomial in self."""
+        return self.monomials[0]
+
+    def is_fraction(self):
+        """Whether self is a fraction."""
+        if len(self.monomials) == 0:
+            return True
+        return self.is_monomial() and self.get_monomial().is_fraction()
+
+    def get_fraction(self):
+        """Convert self to fraction."""
+        if len(self.monomials) == 0:
+            return 0
+        else:
+            return self.get_monomial().get_fraction()
+
+def const_singleton(t):
+    return ConstantPolynomial([ConstantMonomial(1, [(t, 1)])])
+
+def const_fraction(r):
+    return ConstantPolynomial([ConstantMonomial(r, [])])
 
 class Monomial:
     """Represents a monomial."""

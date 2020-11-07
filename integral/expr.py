@@ -1,6 +1,5 @@
 """Expressions."""
 
-from decimal import Decimal
 from fractions import Fraction
 from integral import poly
 from integral.poly import *
@@ -24,67 +23,67 @@ trig_identity = []
 
 sin_table = {
     "0": "0",
-    "pi/6": "1/2",
-    "pi/4": "2^(-1/2)",
-    "pi/3": "3^(1/2)*2^(-1)",
-    "pi/2": "1",
-    "2/3 * pi": "3^(1/2)*2^(-1)",
-    "3/4 * pi": "2^(-1/2)",
+    "1/6 * pi": "1/2",
+    "1/4 * pi": "1/2 * sqrt(2)",
+    "1/3 * pi": "1/2 * sqrt(3)",
+    "1/2 * pi": "1",
+    "2/3 * pi": "1/2 * sqrt(3)",
+    "3/4 * pi": "1/2 * sqrt(2)",
     "5/6 * pi": "1/2",
     "pi": "0"
 }
 
 cos_table = {
     "0": "1",
-    "pi/6": "3^(1/2)*2^(-1)",
-    "pi/4": "2^(-1/2)",
-    "pi/3": "1/2",
-    "pi/2": "0",
+    "1/6 * pi": "1/2 * sqrt(3)",
+    "1/4 * pi": "1/2 * sqrt(2)",
+    "1/3 * pi": "1/2",
+    "1/2 * pi": "0",
     "2/3 * pi": "-1/2",
-    "3/4 * pi": "-2^(-1/2)",
-    "5/6 * pi": "-3^(1/2)*2^(-1)",
+    "3/4 * pi": "-1/2 * sqrt(2)",
+    "5/6 * pi": "-1/2 * sqrt(3)",
     "pi": "-1"
 }
 
 tan_table = {
     "0": "0",
-    "pi/6": "(1/3)^(1/2)",
-    "pi/4": "1",
-    "pi/3": "3^(1/2)",
-    "2/3 * pi": "-(3^(1/2))",
+    "1/6 * pi": "1/3 * sqrt(3)",
+    "1/4 * pi": "1",
+    "1/3 * pi": "sqrt(3)",
+    "2/3 * pi": "-sqrt(3)",
     "3/4 * pi": "-1",
-    "5/6 * pi": "-(1/3)^(1/2)",
+    "5/6 * pi": "-1/3 * sqrt(3)",
     "pi": "0"
 }
 
 cot_table = {
-    "pi/6": "3^(1/2)",
-    "pi/4": "1",
-    "pi/3": "(1/3)^(1/2)",
-    "pi/2": "0",
-    "2/3 * pi": "-(1/3)^(1/2)",
+    "1/6 * pi": "sqrt(3)",
+    "1/4 * pi": "1",
+    "1/3 * pi": "1/3 * sqrt(3)",
+    "1/2 * pi": "0",
+    "2/3 * pi": "-1/3 * sqrt(3)",
     "3/4 * pi": "-1",
-    "5/6 * pi": "-(3^(1/2))",
+    "5/6 * pi": "-sqrt(3)",
 }
 
 csc_table = {
-    "pi/6": "2",
-    "pi/4": "2^(1/2)",
-    "pi/3": "2*3^(-1/2)",
-    "pi/2": "1",
-    "2/3 * pi": "2*3^(-1/2)",
-    "3/4 * pi": "2^(1/2)",
+    "1/6 * pi": "2",
+    "1/4 * pi": "sqrt(2)",
+    "1/3 * pi": "2/3 * sqrt(3)",
+    "1/2 * pi": "1",
+    "2/3 * pi": "2/3 * sqrt(3)",
+    "3/4 * pi": "sqrt(2)",
     "5/6 * pi": "2",
 }
 
 sec_table = {
     "0": "1",
-    "pi/6": "2*3^(-1/2)",
-    "pi/4": "2^(1/2)",
-    "pi/3": "2",
+    "1/6 * pi": "2/3 * sqrt(3)",
+    "1/4 * pi": "sqrt(2)",
+    "1/3 * pi": "2",
     "2/3 * pi": "-2",
-    "3/4 * pi": "-2^(1/2)",
-    "5/6 * pi": "-2*3^(-1/2)",
+    "3/4 * pi": "-sqrt(2)",
+    "5/6 * pi": "-2/3 * sqrt(3)",
     "pi": "-1"
 }
 
@@ -127,6 +126,9 @@ class Expr:
         return Op("/", self, other)
 
     def __xor__(self, other):
+        return Op("^", self, other)
+
+    def __pow__(self, other):
         return Op("^", self, other)
 
     def __neg__(self):
@@ -175,6 +177,9 @@ class Expr:
         return self.ty == OP and self.op == '^'
 
     def __le__(self, other):
+        if isinstance(other, (int, Fraction)):
+            return False
+
         if self.size() != other.size():
             return self.size() <= other.size()
 
@@ -369,14 +374,109 @@ class Expr:
         else:
             raise NotImplementedError
 
-    def normalize_constant(self):
+    def to_const_poly(self):
         """Normalize a constant expression.
-
-        The normal form is defined as follows:
-
-
+        
+        Assume self.is_constant() = True in this function.
+        
         """
-        pass
+        if self.ty == VAR:
+            raise ValueError
+
+        elif self.ty == CONST:
+            return poly.const_fraction(self.val)
+
+        elif self.ty == OP and self.op == '+':
+            return self.args[0].to_const_poly() + self.args[1].to_const_poly()
+        
+        elif self.ty == OP and self.op == '-':
+            if len(self.args) == 1:
+                return -self.args[0].to_const_poly()
+            else:
+                return self.args[0].to_const_poly() - self.args[1].to_const_poly()
+
+        elif self.ty == OP and self.op == '*':
+            return self.args[0].to_const_poly() * self.args[1].to_const_poly()
+
+        elif self.ty == OP and self.op == '/':
+            a, b = self.args[0].to_const_poly(), self.args[1].to_const_poly()
+            if b.is_monomial():
+                return a / b
+            else:
+                return a / poly.const_singleton(self.args[1])
+
+        elif self.ty == OP and self.op == '^':
+            a, b = self.args[0].to_const_poly(), self.args[1].to_const_poly()
+            if a.is_monomial() and b.is_fraction():
+                return a ** b.get_fraction()
+            elif b.is_fraction():
+                rb = b.get_fraction()
+                if rb > 0 and int(rb) == rb:
+                    res = poly.const_fraction(1)
+                    for i in range(int(rb)):
+                        res *= a
+                    return res
+                else:
+                    return poly.const_singleton(self)
+            else:
+                return poly.const_singleton(self)
+
+        elif self.ty == FUN and self.func_name == 'sqrt':
+            a = self.args[0].to_const_poly()
+            if a.is_monomial():
+                return a ** Fraction(1/2)
+            else:
+                return poly.const_singleton(self)
+
+        elif self.ty == FUN and self.func_name == 'pi':
+            return poly.ConstantPolynomial([poly.ConstantMonomial(1, [(pi, 1)])])
+
+        elif self.ty == FUN and self.func_name == 'exp':
+            a = self.args[0].to_const_poly()
+            if a.is_fraction() and a.get_fraction() == 0:
+                return poly.const_fraction(1)
+            elif a.is_fraction():
+                return poly.ConstantPolynomial([poly.ConstantMonomial(1, [(E, a.get_fraction())])])
+            else:
+                return poly.const_singleton(self)
+        
+        elif self.ty == FUN and self.func_name == 'log':
+            a = self.args[0].to_const_poly()
+            if a.is_fraction() and a.get_fraction() == 1:
+                return poly.const_fraction(0)
+            else:
+                return poly.const_singleton(self)
+
+        elif self.ty == FUN and self.func_name in ('sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
+            a = self.args[0].to_const_poly()
+            norm_a = from_const_poly(a)
+            table = trig_table()[self.func_name]
+            if norm_a in table:
+                return table[norm_a].to_const_poly()
+            else:
+                return poly.const_singleton(self)
+
+        elif self.ty == FUN and self.func_name in ('asin', 'acos', 'atan', 'acot', 'acsc', 'asec'):
+            a = self.args[0].to_const_poly()
+            norm_a = from_const_poly(a)
+            table = inverse_trig_table()[self.func_name]
+            if norm_a in table:
+                return table[norm_a].to_const_poly()
+            else:
+                return poly.const_singleton(self)
+
+        elif self.ty == FUN and self.func_name == 'abs':
+            a = self.args[0].to_const_poly()
+            if a.is_fraction():
+                return poly.const_fraction(abs(a.get_fraction()))
+            else:
+                return poly.const_singleton(self)
+
+        else:
+            raise NotImplementedError
+
+    def normalize_constant(self):
+        return from_const_poly(self.to_const_poly())
 
     def to_poly(self):
         """Convert expression to polynomial without sympy.
@@ -1049,6 +1149,41 @@ def simplify_constant(e):
         return Op("*", Const(consts_value), others_value)    
 
 
+def from_const_mono(m):
+    """Convert a ConstantMonomial to an expression."""
+    factors = []
+    for base, power in m.factors:
+        if isinstance(base, expr.Expr) and base == E:
+            factors.append(exp(Const(power)))
+        else:
+            if isinstance(base, int):
+                base = Const(base)
+            if not isinstance(base, expr.Expr):
+                raise ValueError
+            if power == 1:
+                factors.append(base)
+            elif power == Fraction(1/2):
+                factors.append(sqrt(base))
+            else:
+                factors.append(base ** Const(power))
+
+    if len(factors) == 0:
+        return Const(m.coeff)
+    elif m.coeff == 1:
+        return functools.reduce(operator.mul, factors[1:], factors[0])
+    elif m.coeff == -1:
+        return - functools.reduce(operator.mul, factors[1:], factors[0])
+    else:
+        return functools.reduce(operator.mul, factors, Const(m.coeff))
+
+def from_const_poly(p):
+    """Convert a ConstantPolynomial to an expression."""
+    if len(p.monomials) == 0:
+        return Const(0)
+    else:
+        monos = [from_const_mono(m) for m in p.monomials]
+        return sum(monos[1:], monos[0])
+
 def from_mono(m):
     """Convert a monomial to an expression.""" 
     factors = []
@@ -1197,8 +1332,10 @@ class Var(Expr):
 class Const(Expr):
     """Constants."""
     def __init__(self, val):
-        assert isinstance(val, (int, Fraction, Decimal))
+        assert isinstance(val, (int, Decimal, Fraction))
         self.ty = CONST
+        if isinstance(val, Decimal):
+            val = Fraction(val)
         self.val = val
 
     def __hash__(self):
