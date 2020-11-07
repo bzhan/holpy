@@ -31,6 +31,7 @@ export default {
   methods:{
     renderMathJax() {
       if (window.MathJax) {
+        window.MathJax.Hub.processSectionDelay = 0;
         window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub,this.$refs.mathJaxEl]);
       }
     }
