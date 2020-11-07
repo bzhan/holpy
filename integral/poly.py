@@ -89,10 +89,8 @@ class Monomial:
             return Monomial((self.coeff * other.coeff), self.factors + other.factors)
             
     def scale(self, c):
-        """Test delete 
-        """
         assert isinstance(c, expr.Expr) and c.is_constant(), "Unexpected coeff: %s" % str(c)
-        return Monomial((c * self.coeff).normalize(), self.factors)
+        return Monomial(c, ()) * self
 
     def __neg__(self):
         return self.scale(expr.Const(-1))

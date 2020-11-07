@@ -259,12 +259,12 @@ class Expr:
             if len(self.args) == 1:
                 return Op(self.op, self.args[0].replace_expr(loc.rest, new_expr))
             elif len(self.args) == 2:
-                arg1 = self.args[loc.head].replace_expr(loc.rest, new_expr)
-                arg2 = copy.deepcopy(self.args[1 - loc.head])
                 if loc.head == 0:
-                    return Op(self.op, arg1, arg2)
+                    return Op(self.op, self.args[0].replace_expr(loc.rest, new_expr), self.args[1])
+                elif loc.head == 1:
+                    return Op(self.op, self.args[0], self.args[1].replace_expr(loc.rest, new_expr))
                 else:
-                    return Op(self.op, arg2, arg1)
+                    raise AssertionError("replace_expr: invalid location")
             else:
                 raise NotImplementedError
         elif self.ty == FUN:
@@ -273,18 +273,14 @@ class Expr:
             arg = self.args[loc.head].replace_expr(loc.rest, new_expr)
             return Fun(self.func_name, arg)
         elif self.ty == INTEGRAL or self.ty == EVAL_AT:
-            arg0 = copy.deepcopy(self.body)
-            arg1 = copy.deepcopy(self.lower)
-            arg2 = copy.deepcopy(self.upper)
             if loc.head == 0:
-                arg0 = self.body.replace_expr(loc.rest, new_expr)
+                return Integral(self.var, self.lower, self.upper, self.body.replace_expr(loc.rest, new_expr))
             elif loc.head == 1:
-                arg1 = self.lower.replace_expr(loc.rest, new_expr)
+                return Integral(self.var, self.lower.replace_expr(loc.rest, new_expr), self.upper, self.body)
             elif loc.head == 2:
-                arg2 = self.upper.replace_expr(loc.rest, new_expr)
+                return Integral(self.var, self.lower, self.upper.replace_expr(loc.rest, new_expr), self.body)
             else:
                 raise AssertionError("get_subexpr: invalid location")
-            return Integral(self.var, arg1, arg2, arg0)
         elif self.ty == DERIV:      
             assert loc.head == 0, "get_subexpr: invalid location"
             return Deriv(self.var, self.body.replace_expr(loc.rest, new_expr))
@@ -659,18 +655,18 @@ class Expr:
                     new_arg2 = self.args[1].replace_trig(trig_old, trig_new)
                     return Op(self.op, new_arg1, new_arg2)
                 else:
-                    return Op(self.op, [copy.deepcopy(arg) for arg in self.args])
+                    return self
             elif self.ty == FUN:
                 if len(self.args) > 0:
                     new_arg = self.args[0].replace_trig(trig_old, trig_new)
                     return Fun(self.func_name, new_arg)
                 else:
-                    return Fun(self.func_name, *[copy.deepcopy(arg) for arg in  self.args])
+                    return self
             elif self.ty == INTEGRAL:
                 body = self.body.replace_trig(trig_old, trig_new)
                 return Integral(self.var, self.lower, self.upper, body)
             else:
-                return copy.deepcopy(self)
+                return self
 
     def separate_integral(self):
         """Find all integrals in expr."""
@@ -839,16 +835,18 @@ class Expr:
         a = Symbol('a', [CONST])
         c = Symbol('c', [OP])
         pat = c ^ a
-        subexpr  = find_pattern(self, pat)
-        expand_expr = copy.deepcopy(self)
-
+        subexpr = find_pattern(self, pat)
+        expand_expr = self
 
         for s in subexpr:
-            p = s.args[0].to_poly()
-            if isinstance(s.normalize().args[1].val, int) and s.normalize().args[1].val > 1:
-                pw = functools.reduce(operator.mul, [p]*s.args[1].val)
+            base = s.args[0].to_poly()
+            exp = s.args[1].val
+            if isinstance(exp, int) and exp > 1:
+                pw = base
+                for i in range(exp-1):
+                    pw = pw * base
                 expand_expr = expand_expr.replace_trig(s, from_poly(pw))
-        
+
         return expand_expr
 
     def is_univariate(self, var=False):
@@ -1610,11 +1608,8 @@ class Integral(Expr):
         return hash((INTEGRAL, self.var, self.lower, self.upper, self.body))
 
     def __eq__(self, other):
-        if other.ty != INTEGRAL:
-            return False
-        condition1 = other.ty == INTEGRAL and other.lower == self.lower and other.upper == self.upper
-        other_copy = copy.deepcopy(other).alpha_convert(self.var) 
-        return other.ty == INTEGRAL and self.lower == other.lower and self.upper == other.upper and self.body == other_copy.body
+        return other.ty == INTEGRAL and self.lower == other.lower and self.upper == other.upper and \
+            self.body == other.alpha_convert(self.var).body
 
     def __str__(self):
         return "INT %s:[%s,%s]. %s" % (self.var, str(self.lower), str(self.upper), str(self.body))
@@ -1622,9 +1617,10 @@ class Integral(Expr):
     def __repr__(self):
         return "Integral(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
 
-    def alpha_convert(self, alpha):
-        alpha_eq_integral = copy.deepcopy(self)
-        return Integral(alpha, alpha_eq_integral.lower, alpha_eq_integral.upper, alpha_eq_integral.body.replace_trig(parser.parse_expr(self.var), parser.parse_expr(alpha)))
+    def alpha_convert(self, new_name):
+        """Change the variable of integration to new_name."""
+        assert isinstance(new_name, str), "alpha_convert"
+        return Integral(new_name, self.lower, self.upper, self.body.subst(self.var, Var(new_name)))
 
 class EvalAt(Expr):
     """Evaluation at upper and lower, then subtract."""

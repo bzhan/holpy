@@ -266,11 +266,10 @@ class Substitution1(Rule):
                 return e, 
             gu = gu[-1] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
-            var_subst_1 = copy.deepcopy(var_subst)
             c = e.body.replace_trig(parser.parse_expr(e.var), gu)
             new_problem_body = holpy_style(sympy_style(e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)))
-            lower = holpy_style(sympy_style(var_subst_1).subs(sympy_style(e.var), sympy_style(e.lower)))
-            upper = holpy_style(sympy_style(var_subst_1).subs(sympy_style(e.var), sympy_style(e.upper)))
+            lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
+            upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
             if sympy_style(lower) < sympy_style(upper):
                 return Integral(self.var_name, lower, upper, new_problem_body).normalize(), new_problem_body.normalize()
             else:
@@ -391,11 +390,9 @@ class ElimAbs(Rule):
             g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
             new_integral = []
             for l, h in g:
-                body1 = copy.deepcopy(e.body)
-                new_integral.append(expr.Integral(e.var, l, h, body1.replace_trig(abs_expr, abs_expr.args[0])))
+                new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, abs_expr.args[0])))
             for l, h in s:
-                body2 = copy.deepcopy(e.body)
-                new_integral.append(expr.Integral(e.var, l, h, body2.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
+                new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
             return sum(new_integral[1:], new_integral[0])
         else:
             abs_expr = e.body.getAbs()
@@ -418,8 +415,7 @@ class ElimAbs(Rule):
                 zero_point += [sympy_style(e.upper), sympy_style(e.lower)]
                 zero_point.sort()
                 for i in range(len(zero_point) - 1):
-                    body = copy.deepcopy(e.body)
-                    integer = expr.Integral(e.var, holpy_style(zero_point[i]), holpy_style(zero_point[i + 1]), body)
+                    integer = expr.Integral(e.var, holpy_style(zero_point[i]), holpy_style(zero_point[i + 1]), e.body)
                     for a in abs_expr:
                         arg = a.args[0]
                         g, l = arg.ranges(e.var, zero_point[i], zero_point[i + 1])

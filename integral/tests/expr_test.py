@@ -78,6 +78,26 @@ class ExprTest(unittest.TestCase):
             self.assertFalse(t <= s)
             self.assertFalse(t < s)
 
+    def testNormalizeConstant(self):
+        test_data = [
+            # ("(3 + sqrt(2)) * (2 + sqrt(2))", "8 + 5 * sqrt(2)"),
+            # ("(3 + sqrt(2)) * (2 + sqrt(3))", "5 + 2 * sqrt(2) + 3 * sqrt(3) + sqrt(6)"),
+            # ("sqrt(8)", "2 * sqrt(2)"),
+            # ("sqrt(8) + 3 * sqrt(2)", "5 * sqrt(2)"),
+            # ("sqrt(12)", "3 * sqrt(2)"),
+            # ("sqrt(12) + 2 * sqrt(2)", "5 * sqrt(2)"),
+            ("pi / 2 - pi / 3", "1/6 * pi"),
+            ("exp(2) * exp(3)", "exp(5)"),
+            ("sin(pi/4)", "2 ^ (-1/2)"),
+            # ("sin(pi/4) * sqrt(2)", "1"),
+            # ("atan(1)", "pi/4"),
+            # ("2 ^ (1/2) * 2 ^ (1/3)", "2 ^ (5/6)"),
+        ]
+
+        for s, res in test_data:
+            t = parse_expr(s)
+            self.assertEqual(str(t.normalize()), res)
+
     def testNormalize(self):
         test_data = [
             ("2 + 3", "5"),
@@ -164,7 +184,8 @@ class ExprTest(unittest.TestCase):
             ("2 ^ (1/2) ^ 6 / 6", "4/3"),
             # ("sin(x) ^ 2 * csc(x) ^ 3", "csc(x)"),
             # ("sin(x) ^ 3 * csc(x) ^ 2", "sin(x)"),
-            ("1 / (2 - sqrt(3))", "(2 + -1 * 3 ^ (1/2)) ^ -1")
+            ("1 / (2 - sqrt(3))", "(2 + -1 * 3 ^ (1/2)) ^ -1"),
+            ("x ^ (1/2) * x ^ (1/3)", "x ^ (5/6)"),
         ]
 
         for s, res in test_data:

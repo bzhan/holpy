@@ -824,16 +824,21 @@ class HeuristicExpandPower(HeuristicRule):
         e = e.normalize()
         initial_step = [calc.SimplifyStep(e, loc=loc)]
         steps = []
+
         a = Symbol('a', [CONST])
         c = Symbol('c', [OP])
         pat = c ^ a
-        subexpr  = find_pattern(e, pat, loc=True)
-        expand_expr = copy.deepcopy(e)
+        subexpr = find_pattern(e, pat, loc=True)
+
+        expand_expr = e
         for s, l in subexpr:
-            p = s.args[0].to_poly()
-            if isinstance(s.normalize().args[1].val, int) and s.normalize().args[1].val > 1:
-                pw = functools.reduce(operator.mul, [p]*s.args[1].val)
-                expand_expr = expand_expr.replace_trig(s, from_poly(pw))
+            base = s.args[0].to_poly()
+            exp = s.args[1].val
+            if isinstance(exp, int) and exp > 1:
+                pw = base
+                for i in range(exp-1):
+                    pw = pw * base
+                expand_expr = expand_expr.replace_expr(l, from_poly(pw))
                 steps.append(calc.UnfoldPowerStep(expand_expr, loc+l))
 
         expand_expr.steps = initial_step + steps
