@@ -10,7 +10,7 @@ from integral import parser
 from sympy.parsing import sympy_parser
 import copy
 from sympy.simplify.fu import *
-from sympy import solveset, Interval, Eq, Union, EmptySet, apart, pexquo
+from sympy import solveset, Interval, Eq, Union, EmptySet, pexquo
 from numbers import Number
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL = range(9)
@@ -613,25 +613,6 @@ class Expr:
     def normalize(self):
         return from_poly(self.to_poly())
 
-    def little_to_poly(self):
-        """Convert an expression to multiplication between polynomials."""
-        if self.ty == OP and self.op == "*":
-            arg1, arg2 = self.args
-            return arg1.little_to_poly() * arg2.little_to_poly()
-        elif self.ty == OP and self.op == "/":
-            arg1, arg2 = self.args
-            if arg2.ty == OP and arg2.op == "^":
-                arg2_inv = Op("^", arg2.arg1, Op("-", arg2.arg2).normalize())
-            else:
-                arg2_inv = Op("^", arg2, Const(-1))
-            return arg1.little_to_poly() * arg2_inv.little_to_poly()
-        elif self.ty == OP and self.op == "^" and self.args[1].ty == CONST:
-            arg1, arg2 = self.args
-            return poly.Polynomial([poly.Monomial(Const(1), [(arg1.normalize(), arg2.val)])])
-        else:
-            return poly.singleton(self)
-            
-
     def replace_trig(self, trig_old, trig_new):
         """Replace the old trig to its identity trig in e."""
         assert isinstance(trig_new, Expr)
@@ -879,13 +860,6 @@ class Expr:
         """
         return not self.is_univariate()
 
-    def is_pure_constant(self):
-        """Constant without functions.
-        
-        Need to put function constants into factors.
-        """
-        pass
-
 
 def sympy_style(s):
         """Transform expr to sympy object.
@@ -1101,93 +1075,6 @@ def from_poly(p):
         monos = [from_mono(m) for m in p.monomials]
         return sum(monos[1:], monos[0]) 
 
-def extract(p):
-    """If a polynomial have common factors, extract them from it.
-    """
-    if len(p.monomials) == 0:
-        return Const(0)
-    else:
-        monos = [from_mono(m) for m in p.monomials]
-        common_factor = collect_common_factor(monos)
-        common_keys = common_factor[0].keys()
-        for d in common_factor:
-            common_keys &= d.keys()
-        min_dic = {}
-        for k in common_keys:
-            min = common_factor[0][k]
-            for d in common_factor:
-                if d[k] < min:
-                    min = d[k]
-            min_dic[k] = min
-        for k, v in min_dic.items():
-            collect_common_factor(monos, v, k)
-        return monos, min_dic 
-
-
-def collect_common_factor(monos, sub = 0, el = None):
-    d = []
-    if sub == 0:
-        for m in monos:
-            res = {}
-            collect(m, res)
-            d.append(res)
-        return d
-    else:
-        for i in range(len(monos)):
-            monos[i] = collect(monos[i], sub = sub, el = el)
-
-
-def collect(m, res = {}, sub = 0, el = None):
-    if sub == 0:
-        #collect information
-        if m.ty == VAR:
-            res[m] = 1
-        elif m.ty == FUN:
-            res[m] = 1
-        elif m.ty == OP and m.op == "^":
-            if m.args[0].ty == VAR:
-                # x ^ n
-                res[m.args[0]] = m.args[1].val
-            elif m.args[0].ty == FUN:
-                # sin(x) ^ n
-                res[m.args[0]] = m.args[1].val
-            else:
-                raise NotImplementedError
-        elif m.ty == OP and m.op == "*":
-            collect(m.args[0], res)
-            collect(m.args[1], res)
-    elif sub > 0:
-        #extract common factors
-        if m.ty == VAR and m == el:
-            #only exists when factor is 1
-            return Const(1)
-        elif m.ty == FUN and isinstance(el, Fun) and m == el:
-            #only exists when factor is 1
-            return Const(1)
-        elif m.ty == OP and m.op == "^":
-            if m.args[0].ty == VAR and m.args[0] == el:
-                # x ^ n => x ^ (n - sub)
-                m.args[1].val -= sub
-                return Op(m.op, m.args[0], m.args[1])
-            elif m.args[0].ty == FUN and m.args[0] == el:
-                # sin(x) ^ n => sin(x) ^ (n - sub)
-                m.args[1].val -= sub
-                return Op(m.op, m.args[0], m.args[1])
-            else:
-                return m
-        elif m.ty == OP and m.op == "*":
-            if m.args[1].ty == VAR and m.args[1] == el:
-                #because op'args is a tuple which is immutable
-                return m.args[0]
-            else:         
-                a = collect(m.args[0], res, sub, el)
-                b = collect(m.args[1], res, sub, el)
-                return a * b
-        else:
-            return m
-    else:
-        raise NotImplementedError
-
 def deriv(var, e):
     """Compute the derivative of e with respect to variable
     name var.
@@ -1278,32 +1165,6 @@ def deriv(var, e):
             raise NotImplementedError
     else:
         raise NotImplementedError
-
-def apart(e):
-    """Do polynomial divison on e.
-    
-    If p(x) and g(x) are any two polynomials with g(x) ≠ 0,
-    then there exists q(x) and r(x) such that:
-    p(x) = q(x) × g(x) + r(x)
-
-    where r(x) = 0 or degree of r(x) < degree of g(x)
-    Dividend = Quotient × Divisor + Remainder
- 
-    """
-    assert e.is_univariate(), "%s should be univariate" % e
-
-    fx = e.is_univariate(var=True) # store e's univariate
-
-    subst_e = e.replace_trig(fx, Var("x")).normalize()
-   
-    p = Symbol("f", [VAR, CONST, OP, FUN])
-    g = Symbol("f", [VAR, OP, FUN])
-
-    if not match(e, p*(g^Const(-1))):
-        return e
-
-    def params(e):
-        pass
 
 class Var(Expr):
     """Variable."""
