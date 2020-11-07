@@ -48,11 +48,11 @@ class Linearity(Rule):
     def __init__(self):
         self.name = "Linearity"
     
-    def eval(self, e, single=False):
+    def eval(self, e):
         def eval1(e):
             if e.ty != expr.INTEGRAL:
                 return e           
-            p = e.body.to_poly(single=single)
+            p = e.body.to_poly()
             ts = []
             for mono in p.monomials:
                 t = expr.Integral(e.var, e.lower, e.upper, expr.from_mono(poly.Monomial(Const(1), mono.factors)))

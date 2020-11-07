@@ -26,12 +26,6 @@ linear_pat = [pat0, pat1, pat2, pat4, pat5]
 def gen_rand_letter(ex):
     return string.ascii_lowercase[(string.ascii_lowercase.index(ex) + 1) % len(string.ascii_lowercase)]
 
-def linearize(integral):
-    """integral is an Expr."""
-    new_integral = rules.Linearity().eval(integral)
-    new_integral.steps = [calc.LinearityStep(new_integral)]
-    return new_integral
-
 def substitution(integral, subst):
     new_var = gen_rand_letter(integral.var)
     new_e, new_e_body = rules.Substitution1(new_var, subst).eval(integral)
@@ -64,11 +58,6 @@ def linear_substitution(integral):
 
     else:
         return integral
-
-def algo_trans(integral):
-    assert isinstance(integral, Integral), "%s Should be an integral.l"
-    integral = integral.normalize()
-    return linear_substitution(linearize(integral))
 
 def add_simplify_step(e, loc=[]):
     """e is an integral, normalize e and add simplify step into e's steps."""
@@ -160,7 +149,7 @@ class Linearity(AlgorithmRule):
     """
     def eval(self, e):
         steps = []
-        new_e = rules.Linearity().eval(e, single=True)
+        new_e = rules.Linearity().eval(e)
         if new_e != e:
             steps.append(calc.LinearityStep(new_e))
             new_e.steps = steps
@@ -168,7 +157,7 @@ class Linearity(AlgorithmRule):
         else:
             e.steps = steps
             return e
-                
+
 
 class LinearSubstitution(AlgorithmRule):
     """Algorithm rule (d) in Slagle's thesis.
