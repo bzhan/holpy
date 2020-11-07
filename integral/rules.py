@@ -310,15 +310,6 @@ class Equation(Rule):
             return Integral(e.var, e.lower, e.upper, self.old_expr)
         else:
             return Integral(e.var, e.lower, e.upper, self.new_expr)
-
-class TrigSubstitution(Rule):
-    """Apply trig identities transformation on expression."""
-    def eval(self, e, rule_list=None):
-        exprs =  e.body.identity_trig_expr(trig_identity, e.var, rule_list)
-        n_expr = [] #exprs in a tuple
-        for i in range(len(exprs)):
-            n_expr.append((Integral(e.var, e.lower, e.upper, exprs[i][0]),exprs[i][1]))
-        return n_expr
         
 
 class IntegrationByParts(Rule):

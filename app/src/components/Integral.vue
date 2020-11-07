@@ -539,21 +539,6 @@ export default {
         this.sep_int = []
     },
 
-    doTrigSubstitution: async function(){
-      this.trig_identities_data.new_expr = []
-      const data = {
-        problem: this.sep_int[this.integral_index].text,
-        exp: this.trig_identities_data.old_expr
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-trig-transformation", JSON.stringify(data))
-      //this.trig_identities_data.new_expr.push(response.data)
-      for(var i=0; i < response.data.length; ++i){
-        this.trig_identities_data.new_expr.push(response.data[i])
-      }
-      this.r_query_mode = 'display_trig'
-      this.take_effect = 1
-    },
-
     transform: function(item){
       //this.cur_calc.push(item)
       this.sep_int[this.integral_index] = item;

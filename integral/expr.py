@@ -672,19 +672,6 @@ class Expr:
             else:
                 return copy.deepcopy(self)
 
-    def identity_trig_expr(self, trigs, var, rule_list=None):
-        """Input: A list contains the trigs expected to transform in trig_identity.
-           Output: A list contains all possible transformation and it's rule occurs in self.
-        """
-        n = []
-        for t in trigs:
-            s = trig_transform(t, var, rule_list) #transformation set
-            for item in s:
-                c = copy.deepcopy(self)
-                c = c.replace_trig(t, parser.parse_expr(str(item[0]).replace("**", "^")))
-                n.append((c, item[1]))
-        return n
-
     def separate_integral(self):
         """Find all integrals in expr."""
         result = []

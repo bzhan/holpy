@@ -173,25 +173,25 @@ class RulesTest(unittest.TestCase):
         e = parse_expr("INT x:[0, sqrt(2)]. sqrt(2 - x^2)")
         e = rules.Substitution2("u", parse_expr("sqrt(2) * sin(u)")).eval(e)
 
-    def testTrigSubstitution(self):
-        test_data = [
-            ("INT x:[0, pi]. $sin(x) ^ 2$ * sin(x)",
-                {"INT x:[0,pi]. (1 - cos(x) ^ 2) * sin(x)",
-                "INT x:[0,pi]. sin(x) ^ 2 * sin(x)",
-                "INT x:[0,pi]. (1/2 - cos(2 * x) / 2) * sin(x)"}
-            ),
-            ("INT x:[0, pi]. $sin(3*x)*cos(2*x)$",
-                {"INT x:[0,pi]. sin(x) / 2 + sin(5 * x) / 2",
-                "INT x:[0,pi]. sin(3 * x) * cos(2 * x)",
-                "INT x:[0,pi]. (-sin(x) ^ 2 + cos(x) ^ 2) * sin(3 * x)"}
-            )
-        ]
-        for s, s2 in test_data:
-            s = parse_expr(s)
-            result = rules.TrigSubstitution().eval(s)
-            for i in range(len(result)):
-                result[i] = str(result[i][0])
-            self.assertEqual(set(result), s2)
+    # def testTrigSubstitution(self):
+    #     test_data = [
+    #         ("INT x:[0, pi]. $sin(x) ^ 2$ * sin(x)",
+    #             {"INT x:[0,pi]. (1 - cos(x) ^ 2) * sin(x)",
+    #             "INT x:[0,pi]. sin(x) ^ 2 * sin(x)",
+    #             "INT x:[0,pi]. (1/2 - cos(2 * x) / 2) * sin(x)"}
+    #         ),
+    #         ("INT x:[0, pi]. $sin(3*x)*cos(2*x)$",
+    #             {"INT x:[0,pi]. sin(x) / 2 + sin(5 * x) / 2",
+    #             "INT x:[0,pi]. sin(3 * x) * cos(2 * x)",
+    #             "INT x:[0,pi]. (-sin(x) ^ 2 + cos(x) ^ 2) * sin(3 * x)"}
+    #         )
+    #     ]
+    #     for s, s2 in test_data:
+    #         s = parse_expr(s)
+    #         result = rules.TrigSubstitution().eval(s)
+    #         for i in range(len(result)):
+    #             result[i] = str(result[i][0])
+    #         self.assertEqual(set(result), s2)
     
     def testIntegrationByParts(self):
         e = parse_expr("INT x:[-1,2]. x * exp(x)")
