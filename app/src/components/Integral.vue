@@ -5,7 +5,8 @@
       <b-navbar-brand href="#">Integral</b-navbar-brand>
       <b-navbar-nav>
         <b-nav-item-dropdown text="File" left>
-          <b-dropdown-item href="#" v-on:click='open_file_prompt'>Open</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='load_file_list'>Open file</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='insert_integral'>New integral</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Calc" left>
           <b-dropdown-item href="#" v-on:click="back">Back</b-dropdown-item>
@@ -30,12 +31,19 @@
       </b-navbar-nav>
     </b-navbar>
     <div id="content">
-      <div v-for="(item, index) in content" :key="index" style="margin:5px 10px">
-        <div>{{item.name}}:</div>
-        <MathEquation
-          v-on:click.native="initialize(index)"
-          v-bind:data="'\\(' + item._problem_latex + '\\)'"
-          style="cursor:pointer"/>
+      <div v-if="content_state === false" align=left>
+        <div v-for="name in file_list" v-bind:key=name style="margin:5px 10px">
+          <a href="#" v-on:click="openFile(name)">{{name}}</a>
+        </div>
+      </div>
+      <div v-if="content_state === true">
+        <div v-for="(item, index) in content" :key="index" style="margin:5px 10px">
+          <div>{{item.name}}:</div>
+          <MathEquation
+            v-on:click.native="initialize(index)"
+            v-bind:data="'\\(' + item._problem_latex + '\\)'"
+            style="cursor:pointer"/>
+        </div>
       </div>
     </div>
     <div id="calc">
@@ -53,7 +61,7 @@
         </div>
         <div>
           <label>Substitute</label>
-          <input v-model="subst_data.var_name" style="margin:0px 5px;width:200px">
+          <input v-model="this.subst_data.var_name" style="margin:0px 5px;width:50px">
           <label>for</label>
           <input v-model="subst_data.expr" style="margin:0px 5px;width:200px">
         </div>
@@ -191,6 +199,7 @@
 <script>
 import axios from 'axios'
 import MathEquation from './util/MathEquation'
+
 export default {
   name: 'Integral',
   components: {
@@ -206,6 +215,9 @@ export default {
     return {
       filename: 'tongji7',    // Currently opened file
       content: [],         // List of problems
+      file_list: [],      //List of integral list
+      content_state: undefined, // state of the content panel, if it is true, display the integrals in content,
+                                // or else display the json files in file list
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
       query_mode: undefined,  // Currently performing which query
@@ -244,14 +256,17 @@ export default {
 
       lhs: undefined, //equation left hand side
       split_point: undefined,
-      split_success: undefined
+      split_success: undefined,
+      integral_str: '', // record the input string of new integral
     }
   },
 
   methods: {
 
-    open_file_prompt: function() {
-      this.openFile(prompt('Please enter the filename', 'tongji7'))
+    load_file_list: async function (){
+      const response = await axios.post('http://127.0.0.1:5000/api/integral-load-file-list')
+      this.file_list = response.data.file_list
+      this.content_state = false
     },
 
     openFile: async function (file_name) {
@@ -262,6 +277,21 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/integral-open-file", JSON.stringify(data))
       this.content = response.data.content
       this.cur_calc = undefined
+      this.content_state = true
+    },
+
+    insert_integral: async function (){
+      var integration = prompt('Please write the integral', '');
+      const data = {
+        expr: integration,
+        index: this.content.length + 1
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-validate-integral", JSON.stringify(data))
+      if(response.data.flag){
+        this.content.push(response.data.content)
+      }else{
+        prompt('Bad input!')
+      }
     },
 
     initialize: async function (index) {
@@ -410,8 +440,7 @@ export default {
       this.split_success = undefined;
     },
 
-    clear_input_info: function() {
-      this.subst_data =  { var_name: '', expr: ''};
+    clear_input_info: function() {      
       this.byparts_data =  {parts_u: '', parts_v: ''};
       this.equation_data = {new_expr: '', fail_reason: undefined};
       this.trig_identities_data = {old_expr: undefined, new_expr: []};
@@ -493,7 +522,8 @@ export default {
         }
         const response = await axios.post("http://127.0.0.1:5000/api/integral-compose-integral", JSON.stringify(data))
         this.cur_calc.push(response.data)        
-      }this.clear_separate_integral()
+      }this.clear_separate_integral();
+      this.clear_input_info()
     },
 
     displaySeparateIntegrals: async function(){
@@ -555,6 +585,14 @@ export default {
         return;
       this.sep_int = []
       this.query_mode = 'substitution'
+      //compute the default subst var name
+      let current_var = this.content[this.cur_id]["problem"][4];
+      
+      if (current_var != "u"){
+        this.subst_data.var_name = "u";
+      }else{
+        this.subst_data.var_name = "v";
+      }
       this.displaySeparateIntegrals()
     },
 
@@ -578,8 +616,9 @@ export default {
     substitution1: function () {
       if (this.cur_calc.length === 0)
         return;
-      this.sep_int = []
-      this.query_mode = 'substitution1'
+      this.sep_int = [];
+      this.query_mode = 'substitution1';
+      this.subst_data = {var_name: '', expr: ''};
       this.displaySeparateIntegrals()
     },
 
@@ -734,7 +773,7 @@ export default {
   },
 
   created: function () {
-    this.openFile()
+    this.load_file_list()
   }
 }
 </script>
