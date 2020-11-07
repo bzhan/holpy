@@ -6,9 +6,7 @@ by Sascha Böhme and Tjark Weber.
 
 import z3
 from z3.z3consts import *
-from data.integer import int_ineq_macro, collect_int_polynomial_coeff,\
-    int_multiple_ineq_equiv, int_eq_macro, int_eq_comparison_macro, int_norm_eq, int_norm_neg_compares,\
-    simp_full, omega_form_conv
+from data import integer
 from data import proplogic
 from data.real import norm_real_ineq_conv, norm_neg_real_ineq_conv, real_const_eq_conv, real_eval_conv
 from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar, TVar
@@ -636,15 +634,23 @@ def rewrite_int(tm, has_bool=False):
 
     """
     if tm.lhs.is_compares() and tm.rhs.is_compares():
-        return int_eq_comparison_macro().get_proof_term(tm)
-    elif tm.lhs.is_equals() and tm.rhs.is_equals():
-        return compare_lhs_rhs(tm, [int_norm_eq()])
+        """
+        Two cases:
+        1. prove equality by moving terms
+        2. simplified one side by dividing GCD to match with the other
+        """
+        try:
+            return integer.int_eq_comparison_macro().get_proof_term(tm)
+        except:
+            return compare_lhs_rhs(tm, [top_conv(integer.int_gcd_compares()), integer.omega_form_conv()])
+    elif match_pattern('((a::int) = b) <--> ((c::int) = d)', tm):
+        return compare_lhs_rhs(tm, [integer.int_norm_eq()])
     elif tm.lhs.get_type() == IntType and tm.rhs.get_type() == IntType:
-        pt1 = refl(tm.lhs).on_rhs(simp_full())
-        pt2 = refl(tm.rhs).on_rhs(simp_full())
+        pt1 = refl(tm.lhs).on_rhs(integer.simp_full())
+        pt2 = refl(tm.rhs).on_rhs(integer.simp_full())
         return try_tran_pt(pt1, pt2.symmetric())
     elif tm.lhs.is_not() and tm.rhs.is_not() and tm.lhs.arg.is_equals() and tm.rhs.arg.is_equals():
-        return refl(neg).combination(compare_lhs_rhs(Eq(tm.lhs.arg, tm.rhs.arg), [int_norm_eq()]))
+        return refl(neg).combination(compare_lhs_rhs(Eq(tm.lhs.arg, tm.rhs.arg), [integer.int_norm_eq()]))
     elif tm.lhs.is_equals() and tm.rhs.is_conj() and tm.rhs.arg1.is_less_eq() and tm.rhs.arg.is_greater_eq():
         pt = refl(tm.lhs).on_rhs(rewr_conv('int_eq_leq_geq'))
         if pt.rhs == tm.rhs:
@@ -652,13 +658,21 @@ def rewrite_int(tm, has_bool=False):
         else:
             return ProofTerm.sorry(Thm([], tm))
     elif tm.lhs.is_compares() and tm.rhs.is_not() and tm.rhs.arg.is_compares():
-        pt_elim_neg_sym = refl(tm.rhs).on_rhs(int_norm_neg_compares()).symmetric()
-        pt_eq = int_eq_comparison_macro().get_proof_term(Eq(tm.lhs, pt_elim_neg_sym.lhs))
+        pt_elim_neg_sym = refl(tm.rhs).on_rhs(integer.int_norm_neg_compares()).symmetric()
+        pt_eq = integer.int_eq_comparison_macro().get_proof_term(Eq(tm.lhs, pt_elim_neg_sym.lhs))
         return try_tran_pt(pt_eq, pt_elim_neg_sym)
     elif tm.lhs.is_not() and tm.lhs.arg.is_compares() and tm.rhs.is_not() and tm.rhs.arg.is_compares():
-        pt_lhs_elim_neg = refl(tm.lhs).on_rhs(int_norm_neg_compares())
-        pt_rhs_elim_neg_sym = refl(tm.rhs).on_rhs(int_norm_neg_compares()).symmetric()
-        return try_tran_pt(pt_lhs_elim_neg, pt_rhs_elim_neg_sym)
+        """
+        Two cases:
+        1. normalize the comparisons can prove they are equal.
+        2. use gcd, ¬(a ⋈ b) <--> ¬(m * c ⋈ m * d)
+        """
+        pt_lhs_elim_neg = refl(tm.lhs).on_rhs(integer.int_norm_neg_compares())
+        pt_rhs_elim_neg_sym = refl(tm.rhs).on_rhs(integer.int_norm_neg_compares()).symmetric()
+        pt1 = try_tran_pt(pt_lhs_elim_neg, pt_rhs_elim_neg_sym)
+        if pt1.rule != 'sorry':
+            return pt1
+        return compare_lhs_rhs(tm, [top_conv(integer.int_gcd_compares()), integer.int_norm_neg_compares()])
     elif match_pattern('a | (b::int) = c <--> a | ~(~((b::int) <= c) | ~(b >=c))', tm):
         pt_lhs = refl(tm.lhs).on_rhs(arg_conv(rewr_conv('int_eq_leq_geq')), arg_conv(proplogic.norm_full()))
         pt_rhs_sym = refl(tm.rhs).on_rhs(arg_conv(proplogic.norm_full())).symmetric()        
@@ -672,11 +686,14 @@ def rewrite_int_second_level(tm):
         (proplogic.norm_full(), ),
         (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq'))),
         (proplogic.norm_full(), top_conv(rewr_conv('int_eq_leq_geq'))),
-        (proplogic.norm_full(), try_conv(bottom_conv(int_norm_eq())), top_conv(rewr_conv('int_eq_geq_leq'))),
-        (proplogic.norm_full(),try_conv(top_conv(int_norm_eq())), try_conv(bottom_conv(simp_full())), top_conv(rewr_conv('int_eq_geq_leq')), proplogic.norm_full()),
-        (try_conv(bottom_conv(omega_form_conv())),
-        try_conv(bottom_conv(int_norm_neg_compares())),
-        try_conv(bottom_conv(int_norm_eq())),
+        (proplogic.norm_full(), try_conv(bottom_conv(integer.int_norm_eq())), top_conv(rewr_conv('int_eq_geq_leq'))),
+        (proplogic.norm_full(), try_conv(bottom_conv(integer.int_norm_eq())), bottom_conv(integer.omega_form_conv())),
+        (proplogic.norm_full(),try_conv(top_conv(integer.int_norm_eq())), try_conv(bottom_conv(integer.simp_full())), top_conv(rewr_conv('int_eq_geq_leq')), proplogic.norm_full()),
+        (proplogic.norm_full(), top_conv(integer.int_gcd_compares()), top_conv(integer.int_norm_neg_compares())),
+        (top_conv(rewr_conv('neg_iff_both_sides')), top_conv(rewr_conv('double_neg'))),
+        (try_conv(bottom_conv(integer.omega_form_conv())),
+        try_conv(bottom_conv(integer.int_norm_neg_compares())),
+        try_conv(bottom_conv(integer.int_norm_eq())),
         try_conv(proplogic.norm_full()),
         top_conv(rewr_conv('neg_iff_both_sides')), 
         try_conv(proplogic.norm_full()))
@@ -1304,8 +1321,8 @@ def int_th_lemma_1(tm):
     pt_refl = refl(Not(tm))
     pt_norm = pt_refl.on_rhs(
         top_conv(proplogic.norm_full()),
-        top_conv(int_norm_neg_compares()),
-        top_conv(omega_form_conv())
+        top_conv(integer.int_norm_neg_compares()),
+        top_conv(integer.omega_form_conv())
     )
     conjs = pt_norm.rhs.strip_conj()
     solver = omega.OmegaHOL(conjs)
@@ -1321,7 +1338,7 @@ def int_th_lemma_1(tm):
     # a)  
     pt_implies_false = functools.reduce(lambda x, y: x.implies_intr(y), reversed(conjs), pt)
     # b)
-    conj_pts = [p.on_prop(omega_form_conv()) for p in traverse_A(ProofTerm.assume(pt_norm.rhs))]
+    conj_pts = [p.on_prop(integer.omega_form_conv()) for p in traverse_A(ProofTerm.assume(pt_norm.rhs))]
     # c)
     pt_conj_false = functools.reduce(lambda x, y: x.implies_elim(y), conj_pts, pt_implies_false)
 
@@ -1332,8 +1349,8 @@ def int_th_lemma_1(tm):
 
 def int_th_lemma_n(tms):
     pts = tms[:-1]
-    pt_norm_eq = [refl(pt.prop).on_rhs(omega_form_conv()).symmetric() for pt in pts]
-    solver = omega.OmegaHOL([pt.rhs for pt in pt_norm_eq])
+    pt_norm_eq = [refl(pt.prop).on_rhs(try_conv(integer.int_norm_neg_compares()), integer.omega_form_conv()).symmetric() for pt in pts]
+    solver = omega.OmegaHOL([pt.lhs for pt in pt_norm_eq])
     pt_unsat = solver.solve()
     pt_implies_false = functools.reduce(lambda x, y: x.implies_intr(y), pt_unsat.hyps, pt_unsat)
     pt_implies_false_initial = pt_implies_false
@@ -1356,7 +1373,7 @@ def th_lemma(args):
             if len(args) == 1:
                 return int_th_lemma_1(tms[0])
             else:
-                return int_th_lemma_n(tms)
+                return int_th_lemma_n(args)
         elif RealType in Ts:
             return real_th_lemma(tms)
     except:
@@ -1566,19 +1583,21 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     #     find_atom_in_assertion(translate(ast))
     for i in order:
         args = tuple(r[j] for j in net[i])
-        if trace:
-            print('term['+str(i)+']', term[i])
+        # if trace:
+        #     print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i],bounds=bounds, subterms=args)
         else:
+            method_name = term[i].decl().name()
             subterms = [term[j] for j in net[i]]
             r[i] = convert_method(term[i], *args, subterms=subterms)
-            if r[i].rule == 'sorry' and not trace:
-                gaps |= set(r[i].gaps)
-                print('term['+str(i)+']', term[i])
-                print('r['+str(i)+']', r[i])
-            if trace:
-                print('r['+str(i)+']', r[i])
-    conclusion = delete_redundant(r[0], redundant)
-    redundant.clear()
+            with open('int_prf.txt', 'a', encoding='utf-8') as f:
+                if r[i].rule == 'sorry':
+                    gaps |= set(r[i].gaps)
+                    print('term['+str(i)+']', term[i], file=f)
+                    print('r['+str(i)+']', r[i], file=f)
+                if trace:
+                    print('r['+str(i)+']', term[i].decl().name(), file=f)
+    # conclusion = delete_redundant(r[0], redundant)
+    # redundant.clear()
     return r[0]

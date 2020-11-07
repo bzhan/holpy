@@ -1827,6 +1827,51 @@
                 "x": "int",
                 "y": "int"
             }
+        },
+        {
+            "name": "int_omega_leq_comp_simp",
+            "prop": "c > 0 ⟶ 0 ≤ c * x ⟷ 0 ≤ x",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_simp_gt",
+            "prop": "c > 0 ⟶ c * x > 0 ⟷ x > 0",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_simp_geq",
+            "prop": "c > 0 ⟶ c * x ≥ 0 ⟷ x ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_simp_less",
+            "prop": "c > 0 ⟶ c * x < 0 ⟷ x < 0",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_simp_leq",
+            "prop": "c > 0 ⟶ c * x ≤ 0 ⟷ x ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
         }
     ],
     "description": "integers",

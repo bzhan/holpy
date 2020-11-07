@@ -1,7 +1,7 @@
 from kernel.type import TFun, IntType
 from kernel.term import Var, Int, Eq, Term, equals, Const, less, less_eq, greater, greater_eq
 from kernel import term_ord
-from kernel.proofterm import refl
+from kernel.proofterm import ProofTerm, refl
 from kernel.macro import Macro
 from kernel.theory import check_proof, register_macro, get_theorem
 from kernel.proofterm import ProofTerm
@@ -15,6 +15,7 @@ from kernel.thm import Thm
 from syntax.settings import settings
 from math import gcd
 from logic import matcher
+import functools
 basic.load_theory('real')
 
 
@@ -691,6 +692,68 @@ class int_norm_neg_compares(Conv):
             return pt.on_rhs(rewr_conv('int_not_greater_eq'), omega_form_conv())
         else:
             raise ConvException
+
+class int_gcd_compares(Conv):
+    """Elimates the greatest common divisor of coefficients in comparison."""
+    def get_proof_term(self, t):
+        if not t.is_compares():
+            raise ConvException('%s is not a comparison.' % str(t))
+        
+        pt = refl(t)
+        # pt_omega_form = pt.on_rhs(omega_form_conv())
+        # summands = strip_plus(pt_omega_form.rhs.arg)
+        # coeffs = [int_eval(s.arg1) if not s.is_number() else int_eval(s) for s in summands]
+        # g = functools.reduce(gcd, coeffs)
+        # if g <= 1:
+        #     return pt
+        
+        # vars = [s.arg for s in summands if not s.is_number()]
+        # elim_gcd_coeffs = [int(i/g) for i in coeffs]
+        # if len(vars) < len(coeffs):
+        #     simp_t = sum([coeff * v for coeff, v in zip(elim_gcd_coeffs[1:-1], vars[1:])], elim_gcd_coeffs[0] * vars[0]) + Int(elim_gcd_coeffs[-1])
+        # else:
+        #     simp_t = sum([coeff * v for coeff, v in zip(elim_gcd_coeffs[1:], vars[1:])], elim_gcd_coeffs[0] * vars[0])
+
+        # simp_t_times_gcd = Int(g) * simp_t
+        # pt_simp_t_times_gcd = refl(simp_t_times_gcd).on_rhs(omega_simp_full_conv()).symmetric()
+        # pt_c = ProofTerm('int_const_ineq', greater(IntType)(Int(g), Int(0)))
+        
+        # gcd_pt = ProofTerm.theorem('int_omega_leq_comp_simp')
+        # inst1 = matcher.first_order_match(gcd_pt.prop.arg1, pt_c.prop)
+        # inst2 = matcher.first_order_match(gcd_pt.prop.arg.rhs.arg, simp_t, inst=inst1)
+        # pt_simp = gcd_pt.substitution(inst2).implies_elim(pt_c).on_lhs(omega_form_conv())
+        # return pt_omega_form.transitive(pt_simp)
+        pt_norm_form = pt.on_rhs(norm_eq(), arg1_conv(omega_simp_full_conv()))
+        summands = strip_plus(pt_norm_form.rhs.arg1)
+        coeffs = [int_eval(s.arg1) if not s.is_number() else int_eval(s) for s in summands]
+        g = functools.reduce(gcd, coeffs)
+        if g <= 1:
+            return pt
+
+        vars = [s.arg for s in summands if not s.is_number()]
+        elim_gcd_coeffs = [int(i/g) for i in coeffs]
+        if len(vars) < len(coeffs):
+            simp_t = sum([coeff * v for coeff, v in zip(elim_gcd_coeffs[1:-1], vars[1:])], elim_gcd_coeffs[0] * vars[0]) + Int(elim_gcd_coeffs[-1])
+        else:
+            simp_t = sum([coeff * v for coeff, v in zip(elim_gcd_coeffs[1:], vars[1:])], elim_gcd_coeffs[0] * vars[0])
+
+        simp_t_times_gcd = Int(g) * simp_t
+        pt_simp_t_times_gcd = refl(simp_t_times_gcd).on_rhs(omega_simp_full_conv()).symmetric()
+        pt_c = ProofTerm('int_const_ineq', greater(IntType)(Int(g), Int(0)))
+        if t.is_less():
+            gcd_pt = ProofTerm.theorem('int_simp_less')
+        elif t.is_less_eq():
+            gcd_pt = ProofTerm.theorem('int_simp_leq')
+        elif t.is_greater():
+            gcd_pt = ProofTerm.theorem('int_simp_gt')
+        elif t.is_greater_eq():
+            gcd_pt = ProofTerm.theorem('int_simp_geq')
+
+        inst1 = matcher.first_order_match(gcd_pt.prop.arg1, pt_c.prop)
+        inst2 = matcher.first_order_match(gcd_pt.prop.arg.rhs.arg1, simp_t, inst=inst1)
+        
+        pt_simp = gcd_pt.substitution(inst2).implies_elim(pt_c).on_lhs(arg1_conv(omega_simp_full_conv()))
+        return pt_norm_form.transitive(pt_simp).on_rhs(omega_form_conv())       
 
 # class int_to_real_conv(Conv):
 #     """Given a linear integer expression, convert it to real term."""
