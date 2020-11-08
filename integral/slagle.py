@@ -26,48 +26,6 @@ linear_pat = [pat0, pat1, pat2, pat4, pat5]
 def gen_rand_letter(ex):
     return string.ascii_lowercase[(string.ascii_lowercase.index(ex) + 1) % len(string.ascii_lowercase)]
 
-def substitution(integral, subst):
-    new_var = gen_rand_letter(integral.var)
-    new_e, new_e_body = rules.Substitution1(new_var, subst).eval(integral)
-    new_e.steps = [calc.SubstitutionStep(e=new_e, var_name=new_var, var_subst=subst, f=new_e_body)]
-    return new_e
-
-def linear_substitution(integral):
-    assert isinstance(integral, Integral), "%s Should be an integral." % (integral)
-    func_body = collect_spec_expr(integral.body, Symbol('f', [FUN]))
-    integral.steps = []
-
-    if len(func_body) == 1 and any([match(func_body[0], p) for p in linear_pat]): 
-        new_e_1 = substitution(integral, func_body[0])
-        new_e_2 = rules.Linearity().eval(new_e_1)
-        new_e_2.steps = new_e_1.steps + [calc.LinearityStep(new_e_2)]
-        return new_e_2
-
-    elif len(func_body) == 0:
-        power_body = collect_spec_expr(integral.body, pat3)
-        if len(power_body) == 0:
-            return integral
-        is_linear = functools.reduce(lambda x,y:x or y, [match(power_body[0], pat) for pat in linear_pat])
-        if len(power_body) == 1 and is_linear:
-            new_e_1 = substitution(integral, power_body[0])
-            new_e_2 = rules.Linearity().eval(new_e_1)
-            new_e_2.steps = new_e_1.steps + [calc.LinearityStep(new_e_2)] 
-            return new_e_2
-        else:
-            return integral
-
-    else:
-        return integral
-
-def add_simplify_step(e, loc=[]):
-    """e is an integral, normalize e and add simplify step into e's steps."""
-    steps = []
-    if hasattr(e, 'steps'):
-        steps = e.steps
-    e = e.normalize()
-    e.steps = steps + [calc.SimplifyStep(e, loc=loc)]
-    return e
-
 class AlgorithmRule:
     def eval(self, e):
         """Algorithmic transformation of e.
@@ -103,8 +61,7 @@ class CommonIntegral(AlgorithmRule):
         steps = []
         if new_e != e:
             steps.append(calc.CommonIntegralStep(new_e))
-        new_e.steps = steps
-        return new_e
+        return new_e, steps
 
 
 class DividePolynomial(AlgorithmRule):
@@ -115,7 +72,6 @@ class DividePolynomial(AlgorithmRule):
 
     """
     def eval(self, e):
-        steps = []
         e_body = e.body
         if e_body.ty == OP and e_body.op == "/" or e_body.ty == OP and e_body.op == "*" and \
             e_body.args[1].ty == OP and e_body.args[1].op == "^" and e_body.args[1].args[1].ty == CONST\
@@ -128,16 +84,13 @@ class DividePolynomial(AlgorithmRule):
                 new_e_1 = rules.PolynomialDivision().eval(e)
                 rhs = new_e_1.body
                 new_e_2 = Linearity().eval(new_e_1)
-                new_e_2.steps = steps + [calc.PolynomialDivisionStep(e=new_e_1, denom=denom, rhs=rhs),
-                                         calc.LinearityStep(new_e_2)]
-                
-                return new_e_2
+                steps = [calc.PolynomialDivisionStep(e=new_e_1, denom=denom, rhs=rhs),
+                         calc.LinearityStep(new_e_2)]
+                return new_e_2, steps
             except:
-                e.steps = []
-                return e
+                return e, None
         else:
-            e.steps = []
-            return e
+            return e, None
 
 class Linearity(AlgorithmRule):
     """Algorithm rule (a),(b),(c) in Slagle's thesis.
@@ -148,16 +101,44 @@ class Linearity(AlgorithmRule):
     
     """
     def eval(self, e):
-        steps = []
         new_e = rules.Linearity().eval(e)
         if new_e != e:
-            steps.append(calc.LinearityStep(new_e))
-            new_e.steps = steps
-            return new_e
+            steps = [calc.LinearityStep(new_e)]
+            return new_e, steps
         else:
-            e.steps = steps
-            return e
+            return e, None
 
+def substitution(integral, subst):
+    new_var = gen_rand_letter(integral.var)
+    new_e, new_e_body = rules.Substitution1(new_var, subst).eval(integral)
+    steps = [calc.SubstitutionStep(e=new_e, var_name=new_var, var_subst=subst, f=new_e_body)]
+    return new_e, steps
+
+def linear_substitution(integral):
+    assert isinstance(integral, Integral), "%s Should be an integral." % (integral)
+    func_body = collect_spec_expr(integral.body, Symbol('f', [FUN]))
+
+    if len(func_body) == 1 and any([match(func_body[0], p) for p in linear_pat]): 
+        new_e_1, step1 = substitution(integral, func_body[0])
+        new_e_2 = rules.Linearity().eval(new_e_1)
+        step2 = [calc.LinearityStep(new_e_2)]
+        return new_e_2, step1 + step2
+
+    elif len(func_body) == 0:
+        power_body = collect_spec_expr(integral.body, pat3)
+        if len(power_body) == 0:
+            return integral, None
+        is_linear = functools.reduce(lambda x,y:x or y, [match(power_body[0], pat) for pat in linear_pat])
+        if len(power_body) == 1 and is_linear:
+            new_e_1, step1 = substitution(integral, power_body[0])
+            new_e_2 = rules.Linearity().eval(new_e_1)
+            step2 = [calc.LinearityStep(new_e_2)] 
+            return new_e_2, step1 + step2
+        else:
+            return integral, None
+
+    else:
+        return integral, None
 
 class LinearSubstitution(AlgorithmRule):
     """Algorithm rule (d) in Slagle's thesis.
@@ -166,16 +147,14 @@ class LinearSubstitution(AlgorithmRule):
     If there is only one function and its body is linear,
     try to substitute the original variable by the function 
     linear body.
+
     """
     def eval(self, e):
         integrals = e.separate_integral()
-        steps = []
         for i, loc in integrals:
-            new_e_i = linear_substitution(i)
+            new_e_i, steps = linear_substitution(i)
             e = e.replace_trig(i, new_e_i)
-            steps += new_e_i.steps 
-        e.steps = steps
-        return e
+        return e, steps
 
 class HalfAngleIdentity(AlgorithmRule):
     """Algorithm rule (h) in Slagle's thesis.
@@ -224,8 +203,7 @@ class HalfAngleIdentity(AlgorithmRule):
         for t, loc in y_cos_sin_expr:
             e = e.replace_trig(t, half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0]))
 
-        e.steps = []
-        return e
+        return e, None
 
 algorithm_rules = [
     DividePolynomial,
@@ -268,7 +246,6 @@ class TrigFunction(HeuristicRule):
         csc_expr = find_pattern(e, csc_pat, loc=True)
 
         steps = []
-
         reason = "sine cosine"
 
         for t, loc in tan_expr:
@@ -287,8 +264,7 @@ class TrigFunction(HeuristicRule):
             e = e.replace_trig(t, Const(1)/sin(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/sin(t.args[0]), reason))
 
-        e.steps = steps
-        return e
+        return e, steps
 
     def tan_sec(self, e):
         """1) Transform to tangent and secant.
@@ -315,7 +291,6 @@ class TrigFunction(HeuristicRule):
         csc_expr = find_pattern(e, csc_pat, loc=True)
 
         steps = []
-
         reason = "tangent secant"
 
         for t, loc in sin_expr:
@@ -334,8 +309,7 @@ class TrigFunction(HeuristicRule):
             e = e.replace_trig(t, sec(t.args[0])/tan(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, sec(t.args[0])/tan(t.args[0]), reason))
 
-        e.steps = steps
-        return e
+        return e, steps
 
     def cot_csc(self, e):
         """3) Transform to cotangent and cosecant.
@@ -358,6 +332,7 @@ class TrigFunction(HeuristicRule):
 
         steps = []
         reason = "cotangent cosecant"
+
         for t, loc in sin_expr:
             e = e.replace_trig(t, Const(1)/csc(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/csc(t.args[0]), reason))
@@ -374,28 +349,24 @@ class TrigFunction(HeuristicRule):
             e = e.replace_trig(t, csc(t.args[0])/cot(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, csc(t.args[0])/cot(t.args[0]), reason))
 
-        e.steps = steps
-        return e
+        return e, steps
 
     def eval(self, e, loc=[]):
         initial_step = calc.SimplifyStep(e)
         
         res = []
 
-        if self.sin_cos(e) != e:
-            tmp = self.sin_cos(e)
-            tmp = add_simplify_step(tmp, loc)
-            res.append(tmp)
+        res1, step1 = self.sin_cos(e)
+        if step1:
+            res.append((res1, step1))
 
-        if self.tan_sec(e) != e:
-            tmp = self.tan_sec(e)
-            tmp = add_simplify_step(tmp, loc)
-            res.append(tmp)
+        res2, step2 = self.tan_sec(e)
+        if step2:
+            res.append((res2, step2))
 
-        if self.cot_csc(e) != e:
-            tmp = self.cot_csc(e)
-            tmp = add_simplify_step(tmp, loc)
-            res.append(tmp)
+        res3, step3 = self.cot_csc(e)
+        if step3:
+            res.append((res3, step3))
  
         return res
 
@@ -411,7 +382,6 @@ class HeuristicTrigonometricSubstitution(HeuristicRule):
     6) elf{csc(v),cot^2(v)}              ==> u = csc(v);
     """
     def eval(self, e, loc=[]):
-
         def is_pat1(e):
             """elf{sin(v),cos^2(v)}cos^{2n+1}(v)"""
             v = Symbol('v', [VAR, OP, FUN])
@@ -502,8 +472,6 @@ class HeuristicTrigonometricSubstitution(HeuristicRule):
             else:
                 return False, None
 
-        initial_step = [calc.SimplifyStep(e)]
-
         e_body = e.body
         new_var = gen_rand_letter(e.var)
             
@@ -511,47 +479,40 @@ class HeuristicTrigonometricSubstitution(HeuristicRule):
             """Substitute sin(v) by u."""
             _, b = is_pat1(e_body)
             integ, f = rules.Substitution1(new_var, sin(b)).eval(e)
-            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, sin(b), f, loc)]
-            integ = add_simplify_step(integ, loc)
-            return [integ]
+            step = [calc.SubstitutionStep(integ, new_var, sin(b), f, loc)]
+            return [(integ, step)]
         elif is_pat2(e_body)[0]:
             """Substitute cos(v) by u."""
             _, b = is_pat2(e_body)
             integ, f = rules.Substitution1(new_var, cos(b)).eval(e)
-            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, cos(b), f, loc)]
-            integ = add_simplify_step(integ, loc)
-            return [integ]
+            step = [calc.SubstitutionStep(integ, new_var, cos(b), f, loc)]
+            return [(integ, step)]
         elif is_pat3(e_body)[0]:
             """Substitute tan(v) by u."""
             _, b = is_pat3(e_body)
             integ, f = rules.Substitution1(new_var, tan(b)).eval(e)
-            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, tan(b), f, loc)]
-            integ = add_simplify_step(integ, loc)
-            return [integ]
+            step = [calc.SubstitutionStep(integ, new_var, tan(b), f, loc)]
+            return [(integ, step)]
         elif is_pat4(e_body)[0]:
             """Substitute cot(v) by u."""
             _, b = is_pat4(e_body)
             integ, f = rules.Substitution1(new_var, cot(b)).eval(e)
-            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, cot(b), f, loc)]
-            integ = add_simplify_step(integ, loc)
-            return [integ]
+            step = [calc.SubstitutionStep(integ, new_var, cot(b), f, loc)]
+            return [(integ, step)]
         elif is_pat5(e_body)[0]:
             """Substitute sec(v) by u."""
             _, b = is_pat5(e_body)
             integ, f = rules.Substitution1(new_var, sec(b)).eval(e)
-            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, sec(b), f, loc)]
-            integ = add_simplify_step(integ, loc)
-            return [integ]
+            step = [calc.SubstitutionStep(integ, new_var, sec(b), f, loc)]
+            return [(integ, step)]
         elif is_pat6(e_body)[0]:
             """Substitute csc(v) by u."""
             _, b = is_pat6(e_body)
             integ, f = rules.Substitution1(new_var, csc(b)).eval(e)
-            integ.steps = initial_step + [calc.SubstitutionStep(integ, new_var, csc(b), f, loc)]
-            integ = add_simplify_step(integ, loc)
-            return [integ]
+            step = [calc.SubstitutionStep(integ, new_var, csc(b), f, loc)]
+            return [(integ, step)]
         else:
-            e.steps = []
-            return [e]
+            return [(e, None)]
 
 class HeuristicSubstitution(HeuristicRule):
     """Heuristic rule (c) in Slagle's thesis.
@@ -564,22 +525,20 @@ class HeuristicSubstitution(HeuristicRule):
     """
     def eval(self, e, loc=[]):
         res = []
-        initial_step = [calc.SimplifyStep(e, loc=loc)]
         all_subterms = e.body.nonlinear_subexpr()
 
         depth = 0
         for subexpr in all_subterms:
             try:    
                 r, f = rules.Substitution1(gen_rand_letter(e.var), subexpr).eval(e)
-                r.steps = initial_step + [calc.SubstitutionStep(r, r.var, subexpr, f, loc)]
-                r = add_simplify_step(r, loc)
-                res.append(r)
+                step = [calc.SubstitutionStep(r, r.var, subexpr, f, loc)]
+                res.append((r, step))
             except:
                 continue
 
         if res: # res is not empty
-            res = [r for r in res if r != Const(0)] # May have bug when result is 0.
-            res = sorted(res, key=lambda x:x.depth)
+            res = [(r, step) for r, step in res if r != Const(0)] # May have bug when result is 0.
+            res = sorted(res, key=lambda x:x[0].depth)
             return [res[0]] if res != [] else [] 
 
         else:
@@ -599,9 +558,7 @@ class HeuristicIntegrationByParts(HeuristicRule):
         if not isinstance(e, Integral):
             return e
 
-        initial_step = [calc.SimplifyStep(e, loc=loc)]
-        res = []
-        
+        res = []        
         factors = decompose_expr_factor(e.body)
         
         if len(factors) <= 1:
@@ -619,9 +576,8 @@ class HeuristicIntegrationByParts(HeuristicRule):
                     new_integral = rules.IntegrationByParts(u, v).eval(e)
                 except:
                     continue
-                new_integral.steps = [calc.IntegrationByPartsStep(new_integral, u, v, loc)]
-                new_integral = add_simplify_step(new_integral, loc)
-                res.append(new_integral)
+                step = [calc.IntegrationByPartsStep(new_integral, u, v, loc)]
+                res.append((new_integral, step))
         
         return res
 
@@ -642,14 +598,26 @@ class HeuristicElimQuadratic(HeuristicRule):
             if not (quad.args[0].ty == OP and quad.args[0].op in ("+","-")): # b*x +/- a*x^2
                 if quad.args[0].ty == VAR: # x +/- a*x^2 
                     if quad.args[1].ty == OP and quad.args[1].op == "^": # x +/- x^2
-                        return (Const(0), Const(1), Const(1)) if quad.op == "+" else (Const(0), Const(1), Const(-1))
+                        if quad.op == "+":
+                            return (Const(0), Const(1), Const(1))
+                        else:
+                            return (Const(0), Const(1), Const(-1))
                     else: # x +/- a * x^2
-                        return (Const(0), Const(1), quad.args[1].args[0]) if quad.op == "+" else (Const(0), Const(1), -quad.args[1].args[0])
+                        if quad.op == '+':
+                            return (Const(0), Const(1), quad.args[1].args[0])
+                        else:
+                            return (Const(0), Const(1), -quad.args[1].args[0])
                 else: # b*x + a*x^2
                     if quad.args[1].ty == OP and quad.args[1].op == "^": # b*x +/- x^2
-                        return (Const(0), quad.args[0].args[0], Const(1)) if quad.op == "+" else (Const(0), quad.args[0].args[0], Const(-1))
+                        if quad.op == "+":
+                            return (Const(0), quad.args[0].args[0], Const(1))
+                        else:
+                            return (Const(0), quad.args[0].args[0], Const(-1))
                     else: # b* x +/- a * x^2
-                        return (Const(0), quad.args[0].args[0], quad.args[1].args[0]) if quad.op == "+" else (Const(0), quad.args[0].args[0], -quad.args[1].args[0])
+                        if quad.op == "+":
+                            return (Const(0), quad.args[0].args[0], quad.args[1].args[0])
+                        else:
+                            return (Const(0), quad.args[0].args[0], -quad.args[1].args[0])
             else: # c +/- b*x +/- a * x ^ 2
                 if quad.args[0].args[1].ty == VAR: # c +/- x +/- x^2
                     if quad.args[1].args[1] == Const(2): # c +/- x +/- x^2
@@ -680,13 +648,11 @@ class HeuristicElimQuadratic(HeuristicRule):
             else:
                 raise NotImplementedError
 
-        initial_step = [calc.SimplifyStep(e, loc=loc)]
-
         x = Symbol('x', [VAR, FUN])
         a = Symbol('a', [CONST])
         b = Symbol('b', [CONST])
         c = Symbol('c', [CONST])
-        steps = []
+
         quadratic_patterns = [
             x + (x^Const(2)),
             x + a * (x^Const(2)),
@@ -711,16 +677,14 @@ class HeuristicElimQuadratic(HeuristicRule):
         res = []
 
         for quad, l in quadratics:
+            print('quad', quad)
             a, b, c = find_abc(quad)
             new_integral, f = rules.Substitution1(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
 
-            steps.append(calc.SubstitutionStep(new_integral, new_integral.var, Var(e.var) + (b/(Const(2)*c)), f, loc + [0] + l))
-            new_integral = HeuristicExpandPower().eval(new_integral)[0]
-            steps += new_integral.steps
-            steps.append(calc.SimplifyStep(new_integral))
-            new_integral.steps = steps
-            new_integral = add_simplify_step(new_integral)
-            res.append(new_integral)
+            step1 = [calc.SubstitutionStep(
+                new_integral, new_integral.var, Var(e.var) + (b/(Const(2)*c)), f, loc + [0] + l)]
+            new_integral, step2 = HeuristicExpandPower().eval(new_integral)[0]
+            res.append((new_integral, step1 + step2))
 
         return res
 
@@ -743,8 +707,6 @@ class HeuristicTrigSubstitution(HeuristicRule):
                 return (p.args[0], Const(1))
             else: # a + b*x^2
                 return (p.args[0], p.args[1].args[0])
-
-        initial_step = [calc.SimplifyStep(e, loc=loc)]
 
         a = Symbol('a', [CONST])
         b = Symbol('b', [CONST])
@@ -777,8 +739,8 @@ class HeuristicTrigSubstitution(HeuristicRule):
                 subst = Op("^", Const(Fraction(-a.val, b.val)), Const(Fraction(1,2))).normalize() * sec(Var("u"))
 
             new_integral = rules.Substitution2("u", subst).eval(e)
-            new_integral.steps = [calc.SubstitutionInverseStep(new_integral, "u", subst)]
-            res.append(new_integral)
+            step = [calc.SubstitutionInverseStep(new_integral, "u", subst)]
+            res.append((new_integral, step))
 
         return res
 
@@ -789,7 +751,6 @@ class HeuristicExpandPower(HeuristicRule):
     
     """
     def eval(self, e, loc=[]):
-        initial_step = [calc.SimplifyStep(e, loc=loc)]
         steps = []
 
         a = Symbol('a', [CONST])
@@ -808,9 +769,7 @@ class HeuristicExpandPower(HeuristicRule):
                 expand_expr = expand_expr.replace_expr(l, from_poly(pw))
                 steps.append(calc.UnfoldPowerStep(expand_expr, loc+l))
 
-        expand_expr.steps = initial_step + steps
-        expand_expr = add_simplify_step(expand_expr, loc)
-        return [expand_expr]
+        return [(expand_expr, steps)]
 
 class HeuristicExponentBase(HeuristicRule):
     """Heuristic rule(i) in Slgle's thesis.
@@ -824,8 +783,6 @@ class HeuristicExponentBase(HeuristicRule):
     def eval(self, e, loc=[]):
         n = Symbol('n', [CONST])
         x = Symbol('x', [VAR])
-
-        initial_step = [calc.SimplifyStep(e, loc=loc)]
 
         pat = exp(n*x)
         exponents = find_pattern(e.body, pat)
@@ -847,9 +804,9 @@ class HeuristicExponentBase(HeuristicRule):
         gcd = functools.reduce(math.gcd, coeffs)
         new_integral, f = rules.Substitution1("u", exp(Const(gcd)*Var(e.var))).eval(e)
 
-        new_integral.steps = [calc.SubstitutionStep(new_integral, "u", exp(Const(gcd)*Var(e.var)), f, loc)]
-        new_integral = add_simplify_step(new_integral, loc)
-        return [new_integral]
+        step = [calc.SubstitutionStep(new_integral, "u", exp(Const(gcd)*Var(e.var)), f, loc)]
+        return [(new_integral, step)]
+
 
 class HeuristicRationalSineCosine(HeuristicRule):
     """
@@ -860,29 +817,30 @@ class HeuristicRationalSineCosine(HeuristicRule):
         e_body = e.body
         if e_body.is_spec_function("sin"):
             """
-            Repalce sin(v) by 2*u/(1+u^2) 
+            Replace sin(v) by 2*u/(1+u^2) 
             """
-            v = Symbol("v", [VAR,OP,FUN])
+            v = Symbol("v", [VAR, OP, FUN])
             pat1 = sin(v)
             s = find_pattern(e_body, pat1)
             new_e_body = e_body.replace_trig(s, parse_expr('2*u/(1+u^2)')) * parse_expr('2/(1+u^2)')
             lower = tan(e.lower/2)
             upper = tan(e.upper/2)
-            return [Integral("u", lower, upper, new_e_body)]
+            return [(Integral("u", lower, upper, new_e_body), None)]
             
         elif e.is_spec_function("cos"):
             """
             Repalce cos(v) by (1-u^2)/(1+u^2) 
             """
-            v = Symbol("v", [VAR,OP,FUN])
+            v = Symbol("v", [VAR, OP, FUN])
             pat1 = sin(v)
             s = find_pattern(e_body, pat1)
             new_e_body = e_body.replace_trig(s, parse_expr('(1-u^2)/(1+u^2)')) * parse_expr('2/(1+u^2)')
             lower = tan(e.lower/2)
             upper = tan(e.upper/2)
-            return Integral("u", lower, upper, new_e_body)
+            return [(Integral("u", lower, upper, new_e_body), None)]
+
         else:
-            return [e]
+            return [(e, None)]
 
 
 heuristic_rules = [
@@ -925,7 +883,7 @@ class OrNode(GoalNode):
     child nodes. Each of the child nodes is a GoalNode.
 
     """
-    def __init__(self, root, loc=[], parent=None):
+    def __init__(self, root, loc=None, parent=None, steps=None):
         if isinstance(root, str):
             root = parse_expr(root)
 
@@ -933,19 +891,28 @@ class OrNode(GoalNode):
         self.parent = parent
         self.children = []
         self.resolved = False
+        if loc is None:
+            loc = list()
         self.loc = loc
         self.root.loc = self.loc
+
+        # Step used to go from parent to self.
+        if steps is None:
+            steps = tuple()
+        self.steps = steps
 
     def __str__(self):
         if len(self.children) == 0:
             return 'OrNode(%s,%s,[])' % (str(self.root), str(self.resolved))
 
-        s = 'OrNode(%s,%s,[\n' % (str(self.root), str(self.resolved))
+        s = 'OrNode(%s,%s,\n' % (str(self.root), str(self.resolved))
+        for step in self.steps:
+            s += '   %s\n' % step
         for c in self.children:
             str_c = str(c)
             for line in str_c.splitlines():
                 s += '   %s\n' % line
-        s += ']'
+        s += ')'
         return s
 
     def expand(self, not_solved_integral):
@@ -962,34 +929,32 @@ class OrNode(GoalNode):
 
         """
         cur_integral = self.root
-        old_cur_integral = cur_integral
         
+        algo_steps = []
+
         not_solved_integral.add(cur_integral)
         for rule in algorithm_rules:
-            cur_integral = rule().eval(cur_integral)
-            steps = cur_integral.steps
-            cur_integral = cur_integral.normalize()
-            cur_integral.steps = steps
+            cur_integral, cur_steps = rule().eval(cur_integral)
+            if cur_steps:
+                cur_integral = cur_integral.normalize()
+                algo_steps.extend(cur_steps)
 
         if cur_integral.ty == INTEGRAL:
             # Single integral case
             for rule in heuristic_rules:
                 res = rule().eval(cur_integral)
-                for r in res:
-                    steps = r.steps
-                    r = r.normalize()
-                    r.steps = steps
-                    if r == cur_integral:
-                        continue
-                    if r.ty == INTEGRAL and r not in not_solved_integral:
-                        self.children.append(OrNode(r, r.steps[-1].loc, parent=self))
-                    elif r not in not_solved_integral:
-                        self.children.append(AndNode(r, r.steps[-1].loc, parent=self))
+                for r, steps in res:
+                    if steps:
+                        r = r.normalize()
+                        if r.ty == INTEGRAL and r not in not_solved_integral:
+                            self.children.append(OrNode(r, loc=self.loc, parent=self, steps=algo_steps+steps))
+                        elif r not in not_solved_integral:
+                            self.children.append(AndNode(r, loc=self.loc, parent=self, steps=algo_steps+steps))
         
         else:
             # Linear combination of integrals
-            not_solved_integral.remove(old_cur_integral)
-            self.children.append(AndNode(cur_integral, self.loc, parent=self))
+            not_solved_integral.remove(self.root)
+            self.children.append(AndNode(cur_integral, loc=self.loc, parent=self, steps=algo_steps))
 
         self.compute_resolved()
 
@@ -1014,7 +979,7 @@ class AndNode(GoalNode):
     integrals, and the child nodes are the individual integrals.
 
     """
-    def __init__(self, root, loc, parent=None):
+    def __init__(self, root, loc, parent=None, steps=None):
         if isinstance(root, str):
             root = parse_expr(root)
 
@@ -1027,9 +992,13 @@ class AndNode(GoalNode):
         if self.resolved:
             self.parent.compute_resolved()
 
+        if steps is None:
+            steps = tuple()
+        self.steps = steps
+
     def __str__(self):
         if len(self.children) == 0:
-            return 'AndNode(%s,%s,[])' % (str(self.root), str(self.resolved))
+            return 'AndNode(%s,%s,%s)' % (str(self.root), str(self.resolved), self.steps)
 
         s = 'AndNode(%s,%s,[\n' % (str(self.root), str(self.resolved))
         for c in self.children:
