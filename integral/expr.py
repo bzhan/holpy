@@ -450,9 +450,28 @@ class Expr:
         elif self.ty == FUN and self.func_name in ('sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
             a = self.args[0].to_const_poly()
             norm_a = from_const_poly(a)
+
+            c = Symbol('c', [CONST])
+            if match(norm_a, c * pi):
+                x = norm_a.args[0]
+                n = int(x.val)
+                if n % 2 == 0:
+                    norm_a = Const(x.val - n) * pi
+                else:
+                    norm_a = Const(x.val - (n+1)) * pi if n > 0 else Const(x.val - (n-1)) * pi
             table = trig_table()[self.func_name]
             if norm_a in table:
                 return table[norm_a].to_const_poly()
+            elif match(norm_a, c * pi) and norm_a.args[0].val < 0:
+                neg_norm_a = Const(-norm_a.args[0].val) * pi
+                if neg_norm_a in table:
+                    if self.func_name in ('sin', 'tan', 'cot', 'csc'):
+                        val = -table[neg_norm_a]
+                    else:
+                        val = table[neg_norm_a]
+                    return val.to_const_poly()
+                else:
+                    return poly.const_singleton(self)
             else:
                 return poly.const_singleton(self)
 

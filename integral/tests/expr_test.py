@@ -104,6 +104,11 @@ class ExprTest(unittest.TestCase):
             ("log(2)", "log(2)"),
             ("sin(pi/4)", "1/2 * sqrt(2)"),
             ("sin(pi/4) * sqrt(2)", "1"),
+            ("sin(5*pi/4)", "-1/2 * sqrt(2)"),
+            ("sin(9*pi/4)", "1/2 * sqrt(2)"),
+            ("sin(-5*pi/4)", "1/2 * sqrt(2)"),
+            ("cos(5*pi/3)", "1/2"),
+            ("cos(4*pi/3)", "-1/2"),
             ("atan(1)", "1/4 * pi"),
             ("abs(-2)", "2")
         ]
