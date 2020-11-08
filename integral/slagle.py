@@ -899,7 +899,10 @@ class OrNode(GoalNode):
         # Step used to go from parent to self.
         if steps is None:
             steps = tuple()
-        self.steps = steps
+        self.steps = tuple(steps)
+
+        # When resolved, total chain of steps to resolution
+        self.resolved_steps = None
 
     def __str__(self):
         if len(self.children) == 0:
@@ -959,7 +962,12 @@ class OrNode(GoalNode):
         self.compute_resolved()
 
     def compute_resolved(self):
-        self.resolved = any(c.resolved for c in self.children)
+        for c in self.children:
+            if c.resolved:
+                self.resolved = True
+                self.resolved_steps = self.steps + c.resolved_steps
+                break
+
         if self.resolved and self.parent is not None:
             self.parent.compute_resolved()
 
@@ -988,28 +996,44 @@ class AndNode(GoalNode):
         self.loc = loc
         self.root.loc = loc
         self.children = [OrNode(r, self.loc+list(Location(l).data), parent=self) for r, l in root.separate_integral()]
-        self.resolved = (len(self.children) == 0)
-        if self.resolved:
-            self.parent.compute_resolved()
 
         if steps is None:
             steps = tuple()
-        self.steps = steps
+        self.steps = tuple(steps)
+
+        # When resolved, total chain of steps to resolution
+        self.resolved_steps = None        
+        self.resolved = (len(self.children) == 0)
+        if self.resolved:
+            self.resolved_steps = self.steps
+            self.parent.compute_resolved()
 
     def __str__(self):
         if len(self.children) == 0:
             return 'AndNode(%s,%s,%s)' % (str(self.root), str(self.resolved), self.steps)
 
-        s = 'AndNode(%s,%s,[\n' % (str(self.root), str(self.resolved))
+        s = 'AndNode(%s,%s,(\n' % (str(self.root), str(self.resolved))
+        for step in self.steps:
+            s += '   %s\n' % step
         for c in self.children:
             str_c = str(c)
             for line in str_c.splitlines():
                 s += '   %s\n' % line
-        s += ']'
+        s += ')'
         return s
 
     def compute_resolved(self):
-        self.resolved = all(c.resolved for c in self.children)
+        self.resolved_steps = self.steps
+        for c in self.children:
+            if c.resolved:
+                self.resolved_steps += c.resolved_steps  # need to add location info
+            else:
+                self.resolved_steps = None
+                break
+
+        if self.resolved_steps:
+            self.resolved = True
+
         if self.resolved and self.parent is not None:
             self.parent.compute_resolved()
 
