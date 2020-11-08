@@ -35,7 +35,11 @@ def reduce_power(n, e):
     if isinstance(n, expr.Expr):
         return ((n, e),)
     elif isinstance(n, int):
-        return tuple((ni, e * ei) for ni, ei in sympy.factorint(n).items())
+        if n >= 0:
+            return tuple((ni, e * ei) for ni, ei in sympy.factorint(n).items())
+        else:
+            assert Fraction(e).denominator % 2 == 1, 'reduce_power'
+            return ((-1, 1),) + tuple((ni, e * ei) for ni, ei in sympy.factorint(-n).items())
     else:
         raise NotImplementedError
 
