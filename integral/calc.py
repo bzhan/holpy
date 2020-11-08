@@ -248,3 +248,15 @@ class PolynomialDivisionStep(IntegrationStep):
 
     def __str__(self):
         return "Polynomial division on %s" % self.loc
+
+    def info(self):
+        return {
+            "latex": latex.convert_expr(self.e),
+            "location": str(self.loc),
+            "params": {
+                "denom": str(self.denom),
+                "rhs": str(self.rhs)
+            },
+            "reason": "Rewrite fraction",
+            "text": str(self.e)
+        }

@@ -868,22 +868,7 @@ class GoalNode:
     def trace(self):
         '''Give computation trace for resolved integration.'''
         assert self.resolved == True, '%s haven\'t been solved' % self.root
-        
-        if hasattr(self.root, 'steps'):
-            t = self.root.steps if self.root.steps is not None else []
-        else:
-            t = []
-        
-        if isinstance(self, OrNode):
-            for c in self.children:
-                if c.resolved == True:
-                    return t + c.trace()
-        
-        else:
-            for c in self.children:
-                t += c.trace()
-            return t
-
+        return self.resolved_steps
 
 class OrNode(GoalNode):
     """OR relationship in Slagle's thesis.
