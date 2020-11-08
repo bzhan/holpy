@@ -560,28 +560,30 @@ class Expr:
             if a.ty == FUN and a.func_name == "log":
                 return a.args[0].to_poly()
             else:
-                return poly.singleton(Fun("exp", self.args[0].normalize()))
+                return poly.Polynomial([poly.Monomial(poly.const_fraction(1), [(E, a.to_poly())])])
 
         elif self.ty == FUN and self.func_name in ("sin", "cos", "tan", "cot", "csc", "sec"):
-            if self.args[0].ty == FUN and self.args[0].func_name == "a" + self.func_name:
+            a, = self.args
+            if a.ty == FUN and a.func_name == "a" + self.func_name:
                 # sin(asin(x)) = x
-                return self.args[0].args[0].to_poly()
+                return a.args[0].to_poly()
             else:
-                return poly.singleton(Fun(self.func_name, self.args[0].normalize()))
+                return poly.singleton(Fun(self.func_name, a.normalize()))
 
         elif self.ty == FUN and self.func_name in ("asin","acos","atan","acot","acsc","asec"):
-            if self.func_name in ("atan","acot") and \
-                self.args[0].ty == FUN and self.args[0].func_name == self.func_name[1:]:
+            a, = self.args
+            if self.func_name in ("atan","acot") and a.ty == FUN and a.func_name == self.func_name[1:]:
                 # atan(tan(x)) = x
-                return self.args[0].args[0].to_poly()
+                return a.args[0].to_poly()
             else:
-                return poly.singleton(Fun(self.func_name, self.args[0].normalize()))
+                return poly.singleton(Fun(self.func_name, a.normalize()))
 
-        elif self.ty == FUN and self.func_name == "log": 
-            if self.args[0].ty == FUN and self.args[0].func_name == "exp":
-                return self.args[0].args[0].to_poly()
+        elif self.ty == FUN and self.func_name == "log":
+            a, = self.args
+            if a.ty == FUN and a.func_name == "exp":
+                return a.args[0].to_poly()
             else:
-                return poly.singleton(Fun("log", self.args[0].normalize()))
+                return poly.singleton(log(a.normalize()))
 
         elif self.ty == FUN and self.func_name == "sqrt":
             return Op("^", self.args[0], Const(Fraction(1, 2))).to_poly()
@@ -1078,7 +1080,10 @@ def from_mono(m):
     factors = []
     for base, power in m.factors:
         if isinstance(base, expr.Expr) and base == E:
-            factors.append(exp(Const(power)))
+            if isinstance(power, poly.Polynomial):
+                factors.append(exp(from_poly(power)))
+            else:
+                factors.append(exp(Const(power)))
         else:
             if power == 1:
                 factors.append(base)

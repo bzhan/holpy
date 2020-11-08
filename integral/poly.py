@@ -22,13 +22,10 @@ def collect_pairs(ps):
     res = {}
     for v, c in ps:
         if v in res:
-            if isinstance(res[v], expr.Expr) and res[v].ty == expr.CONST and isinstance(c, expr.Expr) and c.ty == expr.CONST:
-                res[v] = expr.Const(res[v].val + c.val)
-            else:
-                res[v] += c
+            res[v] += c
         else:
             res[v] = c
-    return tuple(sorted((k, v) for k, v in res.items()))
+    return tuple(sorted((k, v) for k, v in res.items() if v != 0))
 
 def reduce_power(n, e):
     """Reduce n^e to normal form."""
@@ -87,6 +84,9 @@ class ConstantMonomial:
         self.factors, coeff2 = extract_frac(reduced_factors)
         self.coeff = coeff * coeff2
 
+    def __hash__(self):
+        return hash(("CMONO", self.coeff, self.factors))
+
     def __str__(self):
         def print_pair(n, e):
             if isinstance(n, expr.Expr) and n == expr.E:
@@ -127,7 +127,12 @@ class ConstantMonomial:
         return ConstantMonomial(-1 * self.coeff, self.factors)
 
     def __mul__(self, other):
-        return ConstantMonomial(self.coeff * other.coeff, self.factors + other.factors)
+        if isinstance(other, (int, Fraction)):
+            return ConstantMonomial(self.coeff * other, self.factors)
+        elif isinstance(other, ConstantMonomial):
+            return ConstantMonomial(self.coeff * other.coeff, self.factors + other.factors)
+        else:
+            raise NotImplementedError
 
     def __truediv__(self, other):
         inv_factors = tuple((n, -e) for n, e in other.factors)
@@ -157,6 +162,21 @@ class ConstantPolynomial:
         ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
         self.monomials = tuple(ConstantMonomial(coeff, factor) for factor, coeff in ts if coeff != 0)
 
+    def __hash__(self):
+        return hash(("CPOLY", self.monomials))
+
+    def __eq__(self, other):
+        if isinstance(other, (int, Fraction)):
+            return self.is_fraction() and self.get_fraction() == other
+        
+        return isinstance(other, ConstantPolynomial) and self.monomials == other.monomials
+
+    def __le__(self, other):
+        return self.monomials <= other.monomials
+
+    def __lt__(self, other):
+        return self <= other and self != other
+
     def __add__(self, other):
         return ConstantPolynomial(self.monomials + other.monomials)
 
@@ -167,7 +187,12 @@ class ConstantPolynomial:
         return self + (-other)
 
     def __mul__(self, other):
-        return ConstantPolynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
+        if isinstance(other, (int, Fraction)):
+            return ConstantPolynomial(m * other for m in self.monomials)
+        elif isinstance(other, ConstantPolynomial):
+            return ConstantPolynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
+        else:
+            raise NotImplementedError
 
     def __truediv__(self, other):
         # Assume the denominator is a monomial
@@ -232,11 +257,14 @@ class Monomial:
         """
         assert isinstance(coeff, ConstantPolynomial), "Unexpected coeff: %s" % str(coeff)
         assert all(isinstance(factor, Iterable) and len(factor) == 2 and \
-            isinstance(factor[1], (int, Fraction)) for factor in factors), \
+            isinstance(factor[1], (int, Fraction, Polynomial)) for factor in factors), \
             "Unexpected argument for factors: %s" % str(factors)
 
         self.coeff = coeff
         self.factors = tuple((i, j) for i, j in collect_pairs(factors) if j != 0)
+
+    def __hash__(self):
+        return hash(("MONO", self.coeff, self.factors))
 
     def __eq__(self, other):
         return isinstance(other, Monomial) and self.coeff == other.coeff and \
@@ -269,13 +297,18 @@ class Monomial:
         return "Monomial(%s)" % str(self)
 
     def __le__(self, other):
-        return (self.factors, self.coeff) < (other.factors, other.coeff)
+        return (self.factors, self.coeff) <= (other.factors, other.coeff)
 
     def __lt__(self, other):
         return self <= other and self != other
 
     def __mul__(self, other):
-        return Monomial(self.coeff * other.coeff, self.factors + other.factors)
+        if isinstance(other, (int, Fraction)):
+            return Monomial(self.coeff * other, self.factors)
+        elif isinstance(other, Monomial):
+            return Monomial(self.coeff * other.coeff, self.factors + other.factors)
+        else:
+            raise NotImplementedError
 
     def __neg__(self):
         return Monomial(const_fraction(-1) * self.coeff, self.factors)
@@ -320,10 +353,22 @@ class Polynomial:
         monomials = tuple(monomials)
         assert all(isinstance(mono, Monomial) for mono in monomials)
         ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
-        self.monomials = tuple(Monomial(coeff, factor) for factor, coeff in ts if not coeff.is_zero())
+        self.monomials = tuple(Monomial(coeff, factor) for factor, coeff in ts if coeff != 0)
 
     def __eq__(self, other):
+        if isinstance(other, (int, Fraction)):
+            return self.is_fraction() and self.get_fraction() == other
+
         return isinstance(other, Polynomial) and self.monomials == other.monomials
+
+    def __le__(self, other):
+        return self.monomials <= other.monomials
+
+    def __lt__(self, other):
+        return self <= other and self != other
+
+    def __hash__(self):
+        return hash(("POLY", self.monomials))
 
     def __str__(self):
         if len(self.monomials) == 0:
@@ -344,7 +389,12 @@ class Polynomial:
         return self + (-other)
 
     def __mul__(self, other):
-        return Polynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
+        if isinstance(other, (int, Fraction)):
+            return Polynomial(m * other for m in self.monomials)
+        elif isinstance(other, Polynomial):
+            return Polynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
+        else:
+            raise NotImplementedError
 
     def __truediv__(self, other):
         # Assume the denominator is a monomial
