@@ -162,6 +162,12 @@ class ConstantPolynomial:
         ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
         self.monomials = tuple(ConstantMonomial(coeff, factor) for factor, coeff in ts if coeff != 0)
 
+    def __str__(self):
+        if len(self.monomials) == 0:
+            return "0"
+        else:
+            return " + ".join(str(mono) for mono in self.monomials)
+
     def __hash__(self):
         return hash(("CPOLY", self.monomials))
 
@@ -255,6 +261,10 @@ class Monomial:
         (2, ((x, 2), (y, 1))) -> 2 * x^2 * y
 
         """
+        if isinstance(coeff, (int, Fraction)):
+            coeff = const_fraction(coeff)
+        elif isinstance(coeff, expr.Expr):
+            coeff = const_singleton(coeff)
         assert isinstance(coeff, ConstantPolynomial), "Unexpected coeff: %s" % str(coeff)
         assert all(isinstance(factor, Iterable) and len(factor) == 2 and \
             isinstance(factor[1], (int, Fraction, Polynomial)) for factor in factors), \
@@ -272,7 +282,7 @@ class Monomial:
 
     def __str__(self):
         res = ""
-        if self.coeff != expr.Const(1):
+        if self.coeff != 1:
             res += str(self.coeff)
         for var, p in self.factors:
             s = str(var)
@@ -465,60 +475,3 @@ def constant(c):
     """Polynomial for c (numerical constant)."""
     assert isinstance(c, ConstantPolynomial), "Unexpected constant: %s, type: %s" % (str(c), type(c))
     return Polynomial([Monomial(c, tuple())])
-
-
-# A simple parser for polynomials, where all variables are characters.
-grammar = r"""
-    ?factor: LETTER -> unit_factor
-        | LETTER "^" INT -> factor
-
-    ?monomial: (factor)* -> monomial
-        | INT (factor)* -> int_monomial
-        | DECIMAL (factor)* -> decimal_monomial
-
-    ?polynomial: monomial ("+" monomial)* -> polynomial
-
-    %import common.LETTER
-    
-    %import common.INT
-    %import common.DECIMAL
-    %import common.WS
-
-    %ignore WS
-"""
-
-@v_args(inline=True)
-class PolyTransformer(Transformer):
-    def __init__(self):
-        pass
-
-    def unit_factor(self, name):
-        return (str(name), 1)
-
-    def factor(self, name, pow):
-        return (str(name), int(pow))
-
-    def monomial(self, *factors):
-        return Monomial(expr.Const(1), factors)
-
-    def int_monomial(self, n, *factors):
-        return Monomial(expr.Const(int(n)), factors)
-
-    def decimal_factors(self, n, *factors):
-        return Monomial(expr.Const(Decimal(n)), factors)
-
-    def polynomial(self, *monomials):
-        return Polynomial(monomials)
-
-mono_parser = Lark(grammar, start="monomial", parser="lalr", transformer=PolyTransformer())
-poly_parser = Lark(grammar, start="polynomial", parser="lalr", transformer=PolyTransformer())
-
-def parse_mono(s):
-    return mono_parser.parse(s)
-
-def parse_poly(s):
-    try:
-        return poly_parser.parse(s)
-    except exceptions.UnexpectedCharacters as e:
-        print("When parsing:", s)
-        raise e

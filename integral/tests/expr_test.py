@@ -7,7 +7,7 @@ import copy
 
 from integral import expr
 from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt, Symbol,\
-    VAR, CONST, OP, FUN, match, norm_trig_body, compute_trig_value, pi, Const
+    VAR, CONST, OP, FUN, match, pi, Const
 from integral.parser import parse_expr
 
 class ExprTest(unittest.TestCase):
@@ -91,7 +91,7 @@ class ExprTest(unittest.TestCase):
             ("(-8)^(2/3)", "-4"),
             ("0 ^ 5", "0"),
             ("sqrt(8) / sqrt(10)", "2/5 * sqrt(5)"),
-            ("sqrt(8) / (1 + sqrt(10))", "2 * sqrt(2) * (1 + sqrt(10)) ^ -1"),
+            ("sqrt(8) / (1 + sqrt(10))", "2 * sqrt(2) * (1 + sqrt(2) * sqrt(5)) ^ -1"),
             ("sqrt(8) ^ 2", "8"),
             ("(3 + sqrt(2)) ^ 2", "11 + 6 * sqrt(2)"),
             ("(3 + sqrt(2)) ^ 3", "45 + 29 * sqrt(2)"),
@@ -222,7 +222,6 @@ class ExprTest(unittest.TestCase):
         ]
 
         for s, res in test_data:
-            print(s, res)
             t = parse_expr(s)
             self.assertEqual(str(t.normalize()), res)
 
@@ -284,23 +283,22 @@ class ExprTest(unittest.TestCase):
             ("2 * x", "2"),
             ("x ^ 2", "2 * x"),
             ("x * y", "y"),
-            ("1 / x", "- 1 / x ^ 2"),
+            ("1 / x", "-1 / x ^ 2"),
             ("3 * x + 1", "3"),
             ("x + pi / 3", "1"),
             ("2 * x + pi / 3", "2"),
             ("sin(x)", "cos(x)"),
-            ("sin(x^2)", "2 * x * cos(x^2)"),
-            ("cos(x)", "-1*sin(x)"),
-            ("log(x)", "x ^ (-1)"),
+            ("sin(x^2)", "2 * x * cos(x ^ 2)"),
+            ("cos(x)", "-sin(x)"),
+            ("log(x)", "x ^ -1"),
             ("x * log(x)", "1 + log(x)"),
             ("exp(x)", "exp(x)"),
-            ("exp(x^2)", "2 * x * exp(x^2)"),
+            ("exp(x^2)", "2 * x * exp(x ^ 2)"),
         ]
 
         for s, s2 in test_data:
             s = parse_expr(s)
-            s2 = parse_expr(s2)
-            self.assertEqual(expr.deriv("x", s), s2)
+            self.assertEqual(str(expr.deriv("x", s)), s2)
 
     def testSeparateIntegral(self):
         test_data = [
@@ -481,42 +479,7 @@ class ExprTest(unittest.TestCase):
 
         for v, v_res in test_data:
             v = parse_expr(v)
-            print(v, v_res)
             self.assertEqual(str(v.normalize()), v_res)
-
-    def testNormTrigBody(self):
-        test_data = [
-            ("0", "0"),
-            ("pi", "pi"),
-            ("-pi", "-pi"),
-            ("(2/3)*pi", "(2/3)*pi"),
-            ("(50/3)*pi", "(2/3)*pi"),
-            ("(-50/3)*pi", "(-2/3)*pi"),
-            ("(52/3)*pi", "(-2/3)*pi"),
-            ("(-52/3)*pi", "(2/3)*pi")
-        ]
-
-        for v, v_res in test_data:
-            v = parse_expr(v)
-            v_res = parse_expr(v_res)
-            self.assertEqual(norm_trig_body(v), v_res)
-
-    def testComputeTrigValue(self):
-        test_data = [
-            ("sin(0)", "0"),
-            ("sin(pi/2)", "1"),
-            ("sin(pi/4)", "1/2 * sqrt(2)"),
-            ("sin(pi/7)", "sin(1/7*pi)"),
-            ("cos(-pi/3)", "1/2"),
-            ("sin(-pi/3)", "-(1/2) * 3^(1/2)"),
-            ("tan(pi/4)", "1"),
-            ("cot(-pi/4)", "-1")
-        ]
-
-        for v, v_res in test_data:
-            v = parse_expr(v)
-            v_res = parse_expr(v_res)
-            self.assertEqual(compute_trig_value(v), v_res)
 
     def testUnivariatePolynomial(self):
         test_data = [
