@@ -1,5 +1,6 @@
 import random, string
 import collections
+import heapq
 import functools
 import operator
 from integral.expr import *
@@ -164,7 +165,6 @@ class HalfAngleIdentity(AlgorithmRule):
     a) sin(v)cos(v) = 1/2 * sin(2v)
     b) cos^2(v) = 1/2 + 1/2 * cos(2v)
     c) sin^2(v) = 1/2 - 1/2 * cos(2v)
-
     """
     def eval(self, e):
         x = Symbol('x', [CONST, VAR, OP, FUN])
@@ -206,12 +206,43 @@ class HalfAngleIdentity(AlgorithmRule):
 
         return e, None
 
+class TrigIdentity(AlgorithmRule):
+    """
+    Take the following identities:
+    1) a + (-a) * sin^2(x) = a * cos^2(x)
+    2) a + (-a) * cos^2(x) = a * sin^2(x)
+    """
+    def eval(self, e):
+        x = Symbol('x', [VAR, OP, FUN])
+        a = Symbol('a', [CONST])
+        b = Symbol('b', [CONST])
+        pat1 = a + b * (sin(x) ** Const(2))
+        pat2 = a + b * (cos(x) ** Const(2))
+        
+        sin_power_expr = [(t, loc) for t, loc in find_pattern(e, pat1, loc=True)\
+                        if t.args[1].args[0].val < 0 and t.args[0].val + t.args[1].args[0].val == 0]
+        cos_power_expr = [(t, loc) for t, loc in find_pattern(e, pat2, loc=True)\
+                        if t.args[1].args[0].val < 0 and t.args[0].val + t.args[1].args[0].val == 0]
+    
+        for t, loc in sin_power_expr:
+            sin_coeff = t.args[0]
+            body = t.args[1].args[1].args[0].args[0]
+            e = e.replace_trig(t, sin_coeff * (cos(body) ** Const(2)))
+
+        for t, loc in cos_power_expr:
+            cos_coeff = t.args[0]
+            body = t.args[1].args[1].args[0].args[0]
+            e = e.replace_trig(t, cos_coeff * (sin(body) ** Const(2)))
+        
+        return e, None
+
 algorithm_rules = [
     DividePolynomial,
     HalfAngleIdentity,
     Linearity,
     LinearSubstitution,
     CommonIntegral,
+    TrigIdentity
 ]
 
 class TrigFunction(HeuristicRule):
@@ -868,22 +899,7 @@ class GoalNode:
     def trace(self):
         '''Give computation trace for resolved integration.'''
         assert self.resolved == True, '%s haven\'t been solved' % self.root
-        
-        if hasattr(self.root, 'steps'):
-            t = self.root.steps if self.root.steps is not None else []
-        else:
-            t = []
-        
-        if isinstance(self, OrNode):
-            for c in self.children:
-                if c.resolved == True:
-                    return t + c.trace()
-        
-        else:
-            for c in self.children:
-                t += c.trace()
-            return t
-
+        return self.resolved_steps
 
 class OrNode(GoalNode):
     """OR relationship in Slagle's thesis.
@@ -1071,7 +1087,6 @@ def bfs(node):
         n = q.popleft()
         if isinstance(n, OrNode):
             n.expand(not_solved_integral)
-        
         n.children = sorted(n.children, key=lambda x:x.root.depth)
         for c in n.children:
             q.append(c)
