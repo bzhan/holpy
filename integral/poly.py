@@ -183,6 +183,9 @@ class ConstantPolynomial:
         else:
             raise ValueError('%s, %s' % (self, exp))
 
+    def is_zero(self):
+        return len(self.monomials) == 0
+
     def is_monomial(self):
         """Whether self has only one monomial."""
         return len(self.monomials) == 1
@@ -204,6 +207,12 @@ class ConstantPolynomial:
         else:
             return self.get_monomial().get_fraction()
 
+    def is_one(self):
+        return self.is_fraction() and self.get_fraction() == 1
+
+    def is_minus_one(self):
+        return self.is_fraction() and self.get_fraction() == -1
+
 def const_singleton(t):
     return ConstantPolynomial([ConstantMonomial(1, [(t, 1)])])
 
@@ -221,13 +230,13 @@ class Monomial:
         (2, ((x, 2), (y, 1))) -> 2 * x^2 * y
 
         """
-        assert isinstance(coeff, expr.Expr) and coeff.is_constant(), "Unexpected coeff: %s" % str(coeff)
+        assert isinstance(coeff, ConstantPolynomial), "Unexpected coeff: %s" % str(coeff)
         assert all(isinstance(factor, Iterable) and len(factor) == 2 and \
-            isinstance(factor[1], (int, Fraction, Decimal)) for factor in factors), \
+            isinstance(factor[1], (int, Fraction)) for factor in factors), \
             "Unexpected argument for factors: %s" % str(factors)
+
         self.coeff = coeff
         self.factors = tuple((i, j) for i, j in collect_pairs(factors) if j != 0)
-
 
     def __eq__(self, other):
         return isinstance(other, Monomial) and self.coeff == other.coeff and \
@@ -266,18 +275,21 @@ class Monomial:
         return self <= other and self != other
 
     def __mul__(self, other):
-        # Contain bug.
-        if self.coeff.ty == expr.CONST and other.coeff.ty == expr.CONST:
-            return Monomial((self.coeff * other.coeff).normalize(), self.factors + other.factors)
-        else:
-            return Monomial((self.coeff * other.coeff), self.factors + other.factors)
-            
-    def scale(self, c):
-        assert isinstance(c, expr.Expr) and c.is_constant(), "Unexpected coeff: %s" % str(c)
-        return Monomial(c, ()) * self
+        return Monomial(self.coeff * other.coeff, self.factors + other.factors)
 
     def __neg__(self):
-        return self.scale(expr.Const(-1))
+        return Monomial(const_fraction(-1) * self.coeff, self.factors)
+
+    def __truediv__(self, other):
+        inv_factors = tuple((n, -e) for n, e in other.factors)
+        return Monomial(self.coeff / other.coeff, self.factors + inv_factors)
+
+    def __pow__(self, exp):
+        # Assume the power is a fraction
+        if isinstance(exp, (int, Fraction)):
+            return Monomial(self.coeff ** exp, [(n, e * exp) for n, e in self.factors])
+        else:
+            raise ValueError
 
     def is_constant(self):
         return len(self.factors) == 0
@@ -287,6 +299,12 @@ class Monomial:
             return self.coeff
         else:
             raise AssertionError
+
+    def is_fraction(self):
+        return len(self.factors) == 0 and self.coeff.is_fraction()
+
+    def get_fraction(self):
+        return self.coeff.get_fraction()
 
     @property
     def degree(self):
@@ -302,7 +320,7 @@ class Polynomial:
         monomials = tuple(monomials)
         assert all(isinstance(mono, Monomial) for mono in monomials)
         ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
-        self.monomials = tuple(Monomial(coeff, factor) for factor, coeff in ts if coeff != expr.Const(0))
+        self.monomials = tuple(Monomial(coeff, factor) for factor, coeff in ts if not coeff.is_zero())
 
     def __eq__(self, other):
         return isinstance(other, Polynomial) and self.monomials == other.monomials
@@ -319,11 +337,8 @@ class Polynomial:
     def __add__(self, other):
         return Polynomial(self.monomials + other.monomials)
 
-    def scale(self, c):
-        return Polynomial(mono.scale(c) for mono in self.monomials)
-
     def __neg__(self):
-        return self.scale(expr.Const(-1))
+        return Polynomial([-m for m in self.monomials])
 
     def __sub__(self, other):
         return self + (-other)
@@ -331,6 +346,37 @@ class Polynomial:
     def __mul__(self, other):
         return Polynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
 
+    def __truediv__(self, other):
+        # Assume the denominator is a monomial
+        if len(other.monomials) == 1:
+            return Polynomial([m / other.monomials[0] for m in self.monomials])
+        else:
+            raise ValueError
+
+    def __pow__(self, exp):
+        # Assume self is a monomial and exp is a fraction
+        if len(self.monomials) == 1 and isinstance(exp, (int, Fraction)):
+            return Polynomial([self.monomials[0] ** exp])
+        else:
+            raise ValueError('%s, %s' % (self, exp))
+
+    def is_monomial(self):
+        return len(self.monomials) == 1
+
+    def get_monomial(self):
+        return self.monomials[0]
+
+    def is_fraction(self):
+        if len(self.monomials) == 0:
+            return True
+        return self.is_monomial() and self.get_monomial().is_fraction()
+
+    def get_fraction(self):
+        if len(self.monomials) == 0:
+            return 0
+        else:
+            return self.get_monomial().get_fraction()
+        
     def get_constant(self):
         """If self is a constant, return the constant. Otherwise raise an exception."""
         if len(self.monomials) == 0:
@@ -353,7 +399,6 @@ class Polynomial:
                 d.add(mono.factors[0][0])
         
         return len(d) <= 1
-        
 
     def is_multivariate(self):
         return not self.is_univariate()
@@ -364,12 +409,13 @@ class Polynomial:
 
 def singleton(s):
     """Polynomial for 1*s^1."""
-    return Polynomial([Monomial(expr.Const(1), [(s, 1)])])
+    return Polynomial([Monomial(const_fraction(1), [(s, 1)])])
 
 def constant(c):
     """Polynomial for c (numerical constant)."""
-    assert isinstance(c, expr.Expr) and c.is_constant(), "Unexpected constant: %s, type: %s" % (str(c), type(c))
+    assert isinstance(c, ConstantPolynomial), "Unexpected constant: %s, type: %s" % (str(c), type(c))
     return Polynomial([Monomial(c, tuple())])
+
 
 # A simple parser for polynomials, where all variables are characters.
 grammar = r"""

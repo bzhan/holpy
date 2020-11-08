@@ -411,7 +411,7 @@ class Expr:
             if b.is_monomial():
                 return a / b
             else:
-                return a / poly.const_singleton(self.args[1])
+                return a / poly.const_singleton(from_const_poly(b))
 
         elif self.ty == OP and self.op == '^':
             a, b = self.args[0].to_const_poly(), self.args[1].to_const_poly()
@@ -446,14 +446,28 @@ class Expr:
             elif a.is_fraction():
                 return poly.ConstantPolynomial([poly.ConstantMonomial(1, [(E, a.get_fraction())])])
             else:
-                return poly.const_singleton(self)
+                return poly.const_singleton(exp(from_const_poly(a)))
         
         elif self.ty == FUN and self.func_name == 'log':
             a = self.args[0].to_const_poly()
             if a.is_fraction() and a.get_fraction() == 1:
                 return poly.const_fraction(0)
+            elif a.is_monomial():
+                mono = a.get_monomial()
+                log_factors = []
+                for n, e in mono.factors:
+                    if isinstance(n, (int, Fraction)):
+                        log_factors.append(poly.const_fraction(e) * poly.const_singleton(log(Const(n))))
+                    elif isinstance(n, Expr) and n == E:
+                        log_factors.append(poly.const_fraction(e))
+                    else:
+                        log_factors.append(poly.const_fraction(e) * poly.const_singleton(log(n)))
+                if mono.coeff == 1:
+                    return sum(log_factors[1:], log_factors[0])
+                else:
+                    return sum(log_factors, poly.const_singleton(log(Const(mono.coeff))))
             else:
-                return poly.const_singleton(self)
+                return poly.const_singleton(log(from_const_poly(a)))
 
         elif self.ty == FUN and self.func_name in ('sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
             a = self.args[0].to_const_poly()
@@ -506,217 +520,66 @@ class Expr:
         return from_const_poly(self.to_const_poly())
 
     def to_poly(self):
-        """Convert expression to polynomial without sympy.
-        
-        Currently pi is considered as a 0-arity function, put it in monomial's factors
-        rather than coefficient, in order to perform coefficient arithmetic conviniently.
-
-        """
+        """Convert expression to polynomial."""
         if self.ty == VAR:
             return poly.singleton(self)
 
-        elif self.ty == CONST:
-            return poly.constant(self)
+        elif self.is_constant():
+            return poly.constant(self.to_const_poly())
         
         elif self.ty == OP and self.op == "+":
-            a, b = self.args
-            if a.ty == CONST and b.ty == CONST:
-                return poly.constant(Const(a.val + b.val))
-            elif a == Const(0):
-                return b.to_poly()
-            elif b == Const(0):
-                return a.to_poly()
-            else:
-                return a.to_poly() + b.to_poly()
+            return self.args[0].to_poly() + self.args[1].to_poly()
         
         elif self.ty == OP and self.op == "-":
-            if len(self.args) == 1: # uminus
-                b = self.args[0] 
-                if b.ty == CONST:
-                    return poly.constant(Const(-b.val))
-                else:
-                    return (Const(-1) * b).to_poly()
-            
-            a, b = self.args
-            
-            if a.ty == CONST and b.ty == CONST:
-                return poly.constant(Const(a.val - b.val))
-            else: 
-                return self.args[0].to_poly() + (Const(-1) * self.args[1]).normalize().to_poly()
-        
-        elif self.ty == OP and self.op == "*":
-            a, b = self.args
-            if a.ty == CONST and b.ty == CONST:
-                return poly.constant(Const(a.val * b.val))
-            elif a == Const(1):
-                return b.to_poly()
-            elif b == Const(1):
-                return a.to_poly()
-            elif a == Const(0) or b == Const(0):
-                return poly.constant(Const(0))
-            elif a.is_constant() and b.is_constant() and b.ty == OP and b.op in ('+', '-'):
-                return Op(b.op, a * b.args[0], a * b.args[1]).to_poly()
-            elif a.is_constant() and b.is_constant() and a.ty == OP and a.op in ('+', '-'):
-                return Op(a.op, a.args[0] * b, a.args[1] * b).to_poly()
-            elif a.ty == OP and a.op == "/" and b.ty == OP and b.op == "/":
-                # (a/b)*(c/d) ==> (ac)/(bd)
-                return Op("/", a.args[0] * b.args[0], a.args[1] * b.args[1]).to_poly()
-            elif a.ty == OP and a.op in ("+", "-") and (b.ty == OP and b.op == "/" or\
-                b.ty == OP and b.op == "^"):
-                # something like (1 + x) * 1/(1 + x), treat (1 + x) as singleton
-                single_a = poly.singleton(a)
-                denoms = [f[0] for f in b.to_poly().monomials[0].factors]
-                if a in denoms:
-                    return single_a * b.to_poly()
-                else:
-                    return a.to_poly() * b.to_poly()
-            elif b.ty == OP and b.op in ("+", "-") and (a.ty == OP and a.op == "/" or\
-                a.ty == OP and a.op == "^"):
-                # dual situation
-                single_b = poly.singleton(b)
-                denoms = [f[0] for f in a.to_poly().monomials[0].factors]
-                if b in denoms:
-                    return a.to_poly() * single_b
-                else:
-                    return a.to_poly() * b.to_poly()
-            elif a.ty == OP and a.op == "^" and b.ty == OP and b.op == "^" and a.args[1] == b.args[1]:
-                # (1 + x)^(-1) * ((1+x)^(-1))^(-1)
-                if a.args[0].normalize().size() < b.args[0].normalize().size() and a.args[0].ty != CONST:
-                    # try multiply a.args[0] with each of b.args[0]'s argument  
-                    single_a = poly.singleton(a.args[0].normalize())
-                    if from_poly(single_a * b.args[0].normalize().to_poly()).size() <= b.args[0].normalize().size():
-                        return Op("^", from_poly(single_a * b.args[0].normalize().to_poly()), a.args[1]).to_poly()
-                    else:
-                        return a.to_poly() * b.to_poly()
-                elif a.args[0].normalize().size() > b.args[0].normalize().size() and b.args[0].ty != CONST:
-                    # try multiply b.args[0] with each of a.args[0]'s argument
-                    single_b = poly.singleton(b.args[0].normalize())
-                    if from_poly(a.args[0].normalize().to_poly() * single_b).size() <= a.args[0].normalize().size():
-                        return Op("^", from_poly(a.args[0].normalize().to_poly() * single_b), a.args[1]).to_poly()
-                    else:
-                        return a.to_poly() * b.to_poly()
-                else:
-                    return a.to_poly() * b.to_poly()
+            if len(self.args) == 1:
+                return -self.args[0].to_poly()
             else:
-                return a.to_poly() * b.to_poly()
+                return self.args[0].to_poly() - self.args[1].to_poly()
+
+        elif self.ty == OP and self.op == "*":
+            return self.args[0].to_poly() * self.args[1].to_poly()
         
         elif self.ty == OP and self.op == "/":
-            a, b = self.args
-            if b.ty == CONST:
-                return a.to_poly() * poly.constant(Const(Fraction(1, b.val)))
-            
-            num_factor, denom_factor = [], []
-            def rec(e, power=False):
-                if e.ty == OP and e.op == "*":
-                    l1 = rec(e.args[0], power=power)
-                    l2 = rec(e.args[1], power=power)
-                    return l1 + l2
-                else:
-                    if e.normalize().ty == OP and e.normalize().op == "^" and not power:
-                        return [e.normalize().args[0]]
-                    else:
-                        return [e.normalize()]
-
-            num_factor_bot, denom_factor_bot = rec(a), rec(b)
-            if len(set(num_factor_bot) & set(denom_factor_bot)) != 0:
-                # numerator and denominator have same element to reduce
-                num_factor = rec(a, power=True)
-                num_factor_single = []
-                for i in num_factor:
-                    if i.ty == OP and i.op == "^":
-                        num_factor_single.append(i.to_poly())
-                    elif i.ty == CONST:
-                        num_factor_single.append(poly.constant(i))
-                    else:
-                        num_factor_single.append(poly.singleton(i))
-                num_poly = functools.reduce(operator.mul, num_factor_single)
-                denom_factor = rec(b, power=True)
-                denom_factor_single = [Op("^", i, Const(-1)).normalize().to_poly() if i.ty != CONST else poly.constant(Const(Fraction(i.val) ** (-1))) for i in denom_factor]
-                denom_poly = functools.reduce(operator.mul, denom_factor_single)
-                return num_poly * denom_poly
-
-            elif b.ty == OP and b.op == "*": # 1/(a*b) ==> (1/a) * (1/b)
-                return a.to_poly() * Op("^", b.args[0], Const(-1)).normalize().to_poly() * \
-                        Op("^", b.args[1], Const(-1)).normalize().to_poly()
-
+            a, b = self.args[0].to_poly(), self.args[1].to_poly()
+            if b.is_monomial():
+                return a / b
             else:
-                return a.to_poly() * Op("^", b.normalize(), Const(-1)).normalize().to_poly()
+                return a / poly.singleton(from_poly(b))
         
         elif self.ty == OP and self.op == "^":
-            base = self.args[0]
-            p = self.args[1].normalize()
-
-            if base == Const(1):
-                return poly.constant(Const(1))
-        
-            if self.args[0].ty == CONST and self.args[1].ty == CONST:
-                if isinstance(self.args[0].val, (int, Fraction)) and isinstance(p.val, int):
-                    # only when power is natural number can do power arithmetic
-                    return poly.constant(Const(Fraction(Fraction(self.args[0].val) ** p.val)))
-                elif self.args[0] == Const(1):
-                    return poly.constant(Const(1))
-                elif not isinstance(self.args[0].val ** p.val, complex) and (self.args[0].val ** p.val) % 1 == 0: # integer
-                    # in case of complex number: (-1)^(1/2)
-                    return poly.constant(Const(int(self.args[0].val ** p.val)))
-                else:
-                    return poly.constant(Op("^", self.args[0], p))
-        
-            if not (base.ty == FUN and base.func_name == 'exp'):
-                assert p.ty == CONST and isinstance(p.val, Number) or p.is_constant()
-                if base.ty == OP and base.op == "*": # (x*y)^n
-                    a, b = self.args[0].args
-                    return (a^p).to_poly() * (b^p).to_poly()
-        
-                elif base.ty == OP and base.op == "/":
-                    a, b = base.args
-                    new_b = (b^Const(-1)).normalize()
-                    return Op("^", a * new_b, p).to_poly()
-
-                elif base.ty == OP and base.op == "^":
-                    new_power = (base.args[1] * p).normalize()
-                    return Op("^", base.args[0], new_power).to_poly()
-
-                else:
-                    try:
-                        mono = poly.Monomial(Const(1), ((base.normalize(), p.val),))
-                        return poly.Polynomial([mono])
-                    except:
-                        return poly.singleton(self)
+            a, b = self.args[0].to_poly(), self.args[1].to_poly()
+            if a.is_monomial() and b.is_fraction():
+                return a ** b.get_fraction()
+            elif b.is_fraction():
+                return poly.Polynomial([poly.Monomial(poly.const_fraction(1), [(from_poly(a), b.get_fraction())])])
             else:
-                power = (base.args[0] * p).normalize()
-                return poly.singleton(exp(power))
+                return poly.const_singleton(self)
 
         elif self.ty == FUN and self.func_name == "exp":
             a, = self.args
-            if a == Const(0):
-                return poly.constant(Const(1))
-            elif a.ty == FUN and a.func_name == "log":
+            if a.ty == FUN and a.func_name == "log":
                 return a.args[0].to_poly()
             else:
                 return poly.singleton(Fun("exp", self.args[0].normalize()))
 
         elif self.ty == FUN and self.func_name in ("sin", "cos", "tan", "cot", "csc", "sec"):
-            if self.is_constant():
-                return poly.singleton(compute_trig_value(self))
-            elif self.args[0].ty == FUN and self.args[0].func_name == "a" + self.func_name:
+            if self.args[0].ty == FUN and self.args[0].func_name == "a" + self.func_name:
                 # sin(asin(x)) = x
                 return self.args[0].args[0].to_poly()
             else:
-                return poly.singleton(Fun(self.func_name, self.args[0].normalize())) # Not complete
+                return poly.singleton(Fun(self.func_name, self.args[0].normalize()))
 
         elif self.ty == FUN and self.func_name in ("asin","acos","atan","acot","acsc","asec"):
-            if self.args[0].ty == FUN and self.args[0].func_name == self.func_name[1:]:
-                # asin(sin(x)) = x
+            if self.func_name in ("atan","acot") and \
+                self.args[0].ty == FUN and self.args[0].func_name == self.func_name[1:]:
+                # atan(tan(x)) = x
                 return self.args[0].args[0].to_poly()
             else:
                 return poly.singleton(Fun(self.func_name, self.args[0].normalize()))
-        elif self.ty == FUN and self.func_name == "log":
-            if self.args[0] == Const(1):
-                return poly.constant(Const(0))
- 
-            elif self.args[0].ty == FUN and self.args[0].func_name == "exp":
+
+        elif self.ty == FUN and self.func_name == "log": 
+            if self.args[0].ty == FUN and self.args[0].func_name == "exp":
                 return self.args[0].args[0].to_poly()
- 
             else:
                 return poly.singleton(Fun("log", self.args[0].normalize()))
 
@@ -737,11 +600,10 @@ class Expr:
             return (upper.normalize() - lower.normalize()).to_poly()
 
         elif self.ty == INTEGRAL:
-            a = self
-            if a.lower == a.upper:
+            if self.lower == self.upper:
                 return poly.constant(Const(0))
-            body = a.body.normalize()
-            return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), a.body.normalize()))
+            body = self.body.normalize()
+            return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), body))
 
         else:
             return poly.singleton(self)
@@ -1214,29 +1076,25 @@ def from_const_poly(p):
 def from_mono(m):
     """Convert a monomial to an expression.""" 
     factors = []
-    if m.coeff != Const(1): # reorder the coefficient to simplify
-        if simplify_constant(m.coeff) != Const(1):
-            factors.append(simplify_constant(m.coeff))
-
-    exps = []
-    for factor, power in m.factors:
-        if factor.ty == FUN and factor.func_name == "exp":
-            exps.append(factor.args[0]*Const(power))
-        elif power == 1:
-            factors.append(factor)
+    for base, power in m.factors:
+        if isinstance(base, expr.Expr) and base == E:
+            factors.append(exp(Const(power)))
         else:
-            factors.append(factor ^ Const(power))
-    new_exp = Const(1)
-    if exps:
-        k = sum(exps[1:], exps[0])
-        if k.normalize() != Const(0):
-            new_exp = Fun("exp", k.normalize())
-    if new_exp != Const(1):
-        factors.append(new_exp)
+            if power == 1:
+                factors.append(base)
+            elif power == Fraction(1/2):
+                factors.append(sqrt(base))
+            else:
+                factors.append(base ** Const(power))
+
     if len(factors) == 0:
-        return Const(1)
-    else:
+        return from_const_poly(m.coeff)
+    elif m.coeff.is_one():
         return functools.reduce(operator.mul, factors[1:], factors[0])
+    elif m.coeff.is_minus_one():
+        return - functools.reduce(operator.mul, factors[1:], factors[0])
+    else:
+        return functools.reduce(operator.mul, factors, from_const_poly(m.coeff))
 
 def from_poly(p):
     """Convert a polynomial to an expression."""
