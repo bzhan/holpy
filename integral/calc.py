@@ -5,7 +5,7 @@ Record integral calculation process.
 import json
 from integral import latex
 from integral import rules
-from integral.expr import Location
+from integral.expr import Location, Var
 
 
 class IntegrationStep:
@@ -103,7 +103,6 @@ class SubstitutionStep(IntegrationStep):
         self.e = e
         self.var_name = var_name
         self.var_subst = var_subst
-        self.reason = "Substitution"
         self.f = f
         self.latex = latex.convert_expr(e)
         self.loc = Location(loc)
@@ -112,7 +111,7 @@ class SubstitutionStep(IntegrationStep):
         return "Substitute %s for %s on %s" % (self.var_name, self.var_subst, self.loc)
 
     def info(self):
-        return {
+        return  {
             "text": str(self.e),
             "latex": self.latex,
             "location": str(self.loc),
@@ -121,7 +120,9 @@ class SubstitutionStep(IntegrationStep):
                 "g": str(self.var_subst),
                 "var_name": self.var_name
             },
-            "reason": self.reason,
+            "_latex_reason": "Substitute \\(%s\\) for  \\(%s\\)" %\
+                                (latex.convert_expr(Var(self.var_name)), latex.convert_expr(self.var_subst)),
+            "reason": "Substitution"
         }
 
 class SubstitutionInverseStep(IntegrationStep):
@@ -141,6 +142,8 @@ class SubstitutionInverseStep(IntegrationStep):
         return {
             "text": str(self.e),
             "latex": self.latex,
+            "_latex_reason": "Substitute \\(%s\\) for \\(%s\\)" % \
+                                (latex.convert_expr(Var(self.var_name)), latex.convert_expr(self.var_subst)),
             "reason": self.reason,
             "location": str(self.loc),
             "params": {
@@ -210,6 +213,9 @@ class TrigSubstitutionStep(IntegrationStep):
     def info(self):
         return {
             "text": str(self.e),
+            "reason": "Rewrite trigonometric",
+            "_latex_reason": "Rewrite trigonometric \\(%s\\) to \\(%s\\)" %\
+                (latex.convert_expr(old_trig), latex.convert_expr(new_trig)),
             "latex": self.latex,
             "old_trig": self.old_trig,
             "new_trig": self.new_trig,
@@ -231,6 +237,9 @@ class IntegrationByPartsStep(IntegrationStep):
         return {
             "text": str(self.e),
             "latex": self.latex,
+            "reason": "Integrate by parts",
+            "_latex_reason": "Integrate by parts, \\(u = %s, v = %s\\)" %\
+                            (latex.convert_expr(self.u), latex.convert_expr(self.v)),
             "location": str(self.loc),
             "params": {
                 "part_u": str(self.u),
