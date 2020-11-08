@@ -328,7 +328,7 @@ class IntegrationByParts(Rule):
                    expr.Integral(e.var, e.lower, e.upper, (self.v * du).normalize())
         else:
             print("%s != %s" % (str(udv), str(e.body)))
-            raise NotImplementedError
+            raise NotImplementedError("%s != %s" % (str(udv), str(e.body)))
 
 class PolynomialDivision(Rule):
     """Simplify the representation of polynomial divided by polynomial.

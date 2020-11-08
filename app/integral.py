@@ -203,11 +203,28 @@ def integral_compose_integral():
 @app.route("/api/integral-substitution", methods=['POST'])
 def integral_substitution():
     data = json.loads(request.get_data().decode('utf-8'))
-    expr = integral.parser.parse_expr(data['expr'])
+    try:
+        expr = integral.parser.parse_expr(data['expr'])
+    except:
+        return jsonify({
+                'flag': False,
+                'reason': "%s is not a valid substitution expression." % data['expr']
+            })
     rule = integral.rules.Substitution1(data['var_name'], expr)
     problem = integral.parser.parse_expr(data['problem'])
-    new_problem, new_problem_body = rule.eval(problem)
-    return jsonify({
+    if data['var_name'] == problem.var:
+        return jsonify({
+            'flag': False,
+            'reason': "%s is not a valid variable for substitution." % data['var_name']
+        })
+    try:
+        new_problem, new_problem_body = rule.eval(problem)
+    except:
+        return jsonify({
+            'flag': False,
+            'reason': "Substitution failed."
+        })
+    log = {
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
         'reason': "Substitution",
@@ -220,16 +237,27 @@ def integral_substitution():
         '_latex_reason': "Substitute \\(%s\\) for \\(%s\\)" % (
             integral.latex.convert_expr(integral.parser.parse_expr(data['var_name'])), integral.latex.convert_expr(expr)
         )
-    })
+    }
+    return jsonify({
+            'flag': True,
+            'log': log
+        })
 
 @app.route("/api/integral-substitution2", methods=['POST'])
 def integral_substitution2():
     data = json.loads(request.get_data().decode('utf-8'))
-    expr = integral.parser.parse_expr(data['expr'])
+    try:
+        expr = integral.parser.parse_expr(data['expr'])
+    except:
+        return jsonify({
+            'flag': False,
+            'reason': "%s is not a valid expression" % data['expr']
+        })
     rule = integral.rules.Substitution2(data['var_name'], expr)
+    
     problem = integral.parser.parse_expr(data['problem'])
     new_problem = rule.eval(problem)
-    return jsonify({
+    log = jsonify({
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
         'reason': "Substitution inverse",
@@ -243,6 +271,10 @@ def integral_substitution2():
         '_latex_reason': "Substitute \\(%s\\) for \\(%s\\)" % (
             integral.latex.convert_expr(integral.parser.parse_expr(problem.var)), integral.latex.convert_expr(expr)
         )
+    })
+    return jsonify({
+        'flag': True,
+        'log': log
     })
 
 @app.route("/api/integral-validate-expr", methods=['POST'])
@@ -447,12 +479,31 @@ def integral_split():
 @app.route("/api/integral-integrate-by-parts", methods=['POST'])
 def integral_integrate_by_parts():
     data = json.loads(request.get_data().decode('utf-8'))
-    parts_u = integral.parser.parse_expr(data['parts_u'])
-    parts_v = integral.parser.parse_expr(data['parts_v'])
+    try:
+        parts_u = integral.parser.parse_expr(data['parts_u'])
+    except:
+        return jsonify({
+            "flag": False,
+            "reason": "%s is not valid expression." % data['parts_u']
+        })
+    try:
+        parts_v = integral.parser.parse_expr(data['parts_v'])
+    except:
+        print("wow")
+        return jsonify({
+            "flag": False,
+            "reason": "%s is not valid expression." % data['parts_v']
+        })
     rule = integral.rules.IntegrationByParts(parts_u, parts_v)
     problem = integral.parser.parse_expr(data['problem'])
-    new_problem = rule.eval(problem)
-    return jsonify({
+    try:
+        new_problem = rule.eval(problem)
+    except NotImplementedError as e:
+        return jsonify({
+            "flag": False,
+            "reason": str(e)
+        })
+    log = {
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
         'reason': "Integrate by parts",
@@ -464,6 +515,10 @@ def integral_integrate_by_parts():
             integral.latex.convert_expr(parts_u), integral.latex.convert_expr(parts_v)
         ),
         'location': data['location']
+    }
+    return jsonify({
+        "flag": True,
+        "log": log
     })
 
 @app.route("/api/integral-equation-substitution", methods=['POST'])
@@ -496,7 +551,13 @@ def integral_polynomial_division():
     rule = integral.rules.PolynomialDivision()
     problem = integral.parser.parse_expr(data['problem'])
     body = problem.body
-    new_problem = rule.eval(problem)
+    try:
+        new_problem = rule.eval(problem)
+    except:
+        return jsonify({
+            'flag': False,
+            'reason': "Can't do divison now."
+        })
     rhs = new_problem.body
     location = data['location']
     if location:

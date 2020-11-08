@@ -61,12 +61,15 @@
         </div>
         <div>
           <label>Substitute</label>
-          <input v-model="this.subst_data.var_name" style="margin:0px 5px;width:50px">
+          <input v-model="subst_data.var_name" style="margin:0px 5px;width:50px">
           <label>for</label>
           <input v-model="subst_data.expr" style="margin:0px 5px;width:200px">
         </div>
         <div style="margin-top:10px">
           <button v-on:click="doSubstitution">OK</button>
+        </div>
+        <div>
+          <p v-if="seen === true" style="color:red">{{this.error_message}}</p>
         </div>
       </div>
       <div v-if="r_query_mode === 'substitution1'">
@@ -79,8 +82,14 @@
           <label>The expression: </label>
           <input v-model="subst_data.expr" style="margin:0px 5px;width:200px">
         </div>
+        <div>
+          <p v-if="seen === true" style="color:red">{{this.error_message}}</p>
+        </div>
         <div style="margin-top:10px">
           <button v-on:click="doSubstitution1">OK</button>
+        </div>
+        <div>
+          <p v-if="seen === true" style="color:red">{{this.error_message}}</p>
         </div>
       </div>
       <div v-if="r_query_mode === 'unfoldpower'">
@@ -95,7 +104,7 @@
         <input id="cloned" ref="mycloned" style="width:500px" disabled="disabled" v-model="this.sep_int[integral_index].body">
         <button v-on:click="validation">OK</button>
         <br>
-        <p v-if="seen === true" color="red">Illegal!</p>
+        <p v-if="seen === true" style="color:red">Illegal selection: "{{this.selected}}" is not a valid expression.</p>
       </div>
       <div v-if="r_query_mode === 'display_trig'">
         <div v-for="(step, index) in trig_identities_data.new_expr" :key="index">
@@ -120,6 +129,9 @@
         </div>
         <div style="margin-top:10px">
           <button v-on:click="doIntegrateByParts">OK</button>
+        </div>
+        <div>
+          <p v-if="seen === true" style="color:red">{{this.error_message}}</p>
         </div>
       </div>
       <div v-if="r_query_mode === 'eqsubst'">
@@ -151,7 +163,7 @@
         <div>   
             <input v-model="split_point" style="margin:0px 5px;width:100px">
             <button v-on:click="doSplitIntegral">OK</button>
-            <label v-if="split_success === false" style="color:red">Invalid split!</label>
+            <label v-if="split_success === false" style="color:red">Invalid split.</label>
         </div>
       </div>
     </div>
@@ -175,6 +187,9 @@
           v-on:click.native="doPolynomialDivision(index)"
           v-bind:data="'\\(' + step.latex + '\\)'"
           style="cursor:pointer"/>
+        </div>
+        <div>
+          <p v-if="seen === true" style="color:red">{{this.error_message}}</p>
         </div>
         <div style="margin-top:10px">
           <button v-on:click="closeIntegral">Close</button>
@@ -230,6 +245,9 @@ export default {
 
       seen: false, //When an error occurs, make the error message can be seen.
       rewrite_error_flag: false, //When the rewrite is invalid, display error warning.
+
+      selected: undefined,
+      error_message: undefined,
 
       subst_data: {
         var_name: '',  // name of new variable u
@@ -330,11 +348,12 @@ export default {
     validation: async function() {
       let selected = this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionStart, this.$refs.mycloned.selectionEnd);
       let expr_with_dollar = this.sep_int[this.integral_index].body.slice(0, this.$refs.mycloned.selectionStart) + '$' + selected + '$' + this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionEnd);
+      this.selected = selected
       const data = {
         integral_location: this.sep_int[this.integral_index].location,
         problem: this.sep_int[this.integral_index].text,
         dollar: expr_with_dollar,
-        select: selected
+        select: this.selected
       };
       const response = await axios.post("http://127.0.0.1:5000/api/integral-validate-expr", JSON.stringify(data))
       if(response.data.flag === true){
@@ -438,6 +457,9 @@ export default {
       this.take_effect = 0;
       this.rewrite_error_flag = undefined;
       this.split_success = undefined;
+      this.selected = undefined;
+      this.error_message = undefined;
+      this.seen = undefined;
     },
 
     clear_input_info: function() {      
@@ -604,13 +626,20 @@ export default {
         expr: this.subst_data.expr
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-substitution", JSON.stringify(data))
-      this.sep_int[this.integral_index] = response.data;
-      this.r_query_mode = undefined;
-      this.subst_data = {var_name: '', expr: ''};
-      this.take_effect = 1;
-      this.process_index = this.integral_index;
-      this.closeIntegral();
-      this.integral_index = undefined;
+      if (response.data.flag === true){
+        this.sep_int[this.integral_index] = response.data.log;
+        this.r_query_mode = undefined;
+        this.subst_data = {var_name: '', expr: ''};
+        this.take_effect = 1;
+        this.process_index = this.integral_index;
+        this.closeIntegral();
+        this.integral_index = undefined;
+      }
+      else{
+        this.seen = true;
+        this.error_message = response.data.reason;
+      }
+      
     },
 
     substitution1: function () {
@@ -630,13 +659,19 @@ export default {
         expr: this.subst_data.expr
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-substitution2", JSON.stringify(data))
-      this.sep_int[this.integral_index] = response.data;
-      this.r_query_mode = undefined;
-      this.subst_data = {var_name: '', expr: ''};
-      this.take_effect = 1;
-      this.process_index = this.integral_index;
-      this.closeIntegral();
-      this.integral_index = undefined;
+      if(response.data.flag === true){
+        this.sep_int[this.integral_index] = response.data.log;
+        this.r_query_mode = undefined;
+        this.subst_data = {var_name: '', expr: ''};
+        this.take_effect = 1;
+        this.process_index = this.integral_index;
+        this.closeIntegral();
+        this.integral_index = undefined;
+      }
+      else{
+        this.seen = true;
+        this.error_message = response.data.reason;
+      }
     },
     
     split: function(){
@@ -690,15 +725,20 @@ export default {
         parts_v: this.byparts_data.parts_v,
         location: this.sep_int[this.integral_index].location
       }
-
       const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-parts", JSON.stringify(data))
-      this.sep_int[this.integral_index] = response.data;
-      this.r_query_mode = undefined;
-      this.byparts_data = {parts_u: '', parts_v: ''};
-      this.take_effect = 1;
-      this.process_index = this.integral_index;
-      this.integral_index = undefined;
-      this.closeIntegral();
+      if(response.data.flag === true){
+        this.sep_int[this.integral_index] = response.data.log;
+        this.r_query_mode = undefined;
+        this.byparts_data = {parts_u: '', parts_v: ''};
+        this.take_effect = 1;
+        this.process_index = this.integral_index;
+        this.integral_index = undefined;
+        this.closeIntegral();
+      }
+      else{
+        this.seen = true;
+        this.error_message = response.data.reason;
+      }
     },
 
     integrateByEquation: function(){
@@ -736,10 +776,13 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/integral-polynomial-division", JSON.stringify(data));
       if(response.data.flag === true){
         this.sep_int[index] = response.data;
+        this.take_effect = 1;
+        this.process_index = index;
+        this.closeIntegral();
+      }else{
+        this.seen = true;
+        this.error_message = response.data.reason;
       }
-      this.take_effect = 1;
-      this.process_index = index;
-      this.closeIntegral();
     },
 
     equationSubst: function() {
