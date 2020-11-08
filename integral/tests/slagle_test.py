@@ -52,7 +52,22 @@ class SlagleTest(unittest.TestCase):
         for v, v_res in test_data:
             v = parse_expr(v)
             v_res = parse_expr(v_res)
-            self.assertEqual(slagle.Linearity().eval(v)[0].normalize(), v_res)            
+            self.assertEqual(slagle.Linearity().eval(v)[0].normalize(), v_res)  
+
+    def testTrigIdentity(self):
+        test_data = [
+            ('INT u:[0,1/2 * pi]. cos(u) * (1 + -1 * sin(u) ^ 2) ^ (1/2)',
+            'INT u:[0,1/2 * pi]. cos(u) ^ 2'),
+            ('INT u:[0,1/2 * pi]. cos(u) * (1 + -1 * cos(u) ^ 2) ^ (1/2)',
+            'INT u:[0,1/2 * pi]. cos(u) * sin(u)'),
+            ('INT u:[0, 1/2 * pi]. 6 + (-6) * sin(x) ^ 2', 'INT u:[0, 1/2 * pi]. 6 * cos(x) ^ 2'),
+            ('INT u:[0, 1/2 * pi]. 6 + (-5) * sin(x) ^ 2', 'INT u:[0, 1/2 * pi]. 6 + (-5) * sin(x) ^ 2')
+        ]
+
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            v_res = parse_expr(v_res)
+            self.assertEqual(slagle.TrigIdentity().eval(v)[0].normalize(), v_res)        
 
     def testTrigFunction(self):
         test_data = [
