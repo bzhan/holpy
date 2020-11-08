@@ -180,7 +180,7 @@ class Expr:
     def is_plus(self):
         return self.ty == OP and self.op == '+'
 
-    def is_neg(self):
+    def is_uminus(self):
         return self.ty == OP and self.op == '-' and len(self.args) == 1
 
     def is_minus(self):

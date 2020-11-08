@@ -57,7 +57,7 @@ class Linearity(Rule):
         if e.body.is_plus():
             return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) + \
                    rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
-        elif e.body.is_neg():
+        elif e.body.is_uminus():
             return -rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0]))
         elif e.body.is_minus():
             return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) - \
@@ -350,7 +350,7 @@ class PolynomialDivision(Rule):
 class ElimAbs(Rule):
     """Eliminate abstract value."""
     def __init__(self):
-        self.name = "Elimate abs"
+        self.name = "Eliminate abs"
 
     def check_zero_point(self, e):
         integrals = e.separate_integral()
@@ -379,7 +379,7 @@ class ElimAbs(Rule):
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
             return e
-        abs_expr = e.body.normalize().getAbsByMonomial()
+        abs_expr = e.body.getAbsByMonomial()
         if abs_expr != Const(1):
             greator = [] #collect all abs values greater than 0's set
             smallor = [] #collect all abs values smaller than 0's set
@@ -420,7 +420,6 @@ class ElimAbs(Rule):
                         if l:
                             integer.body = integer.body.replace_trig(a, Op("-",a.args[0]))
                     new_integral.append(integer)
-                        #if Interval(sympy_style(zero_point[i]), sympy_style(zero_point[i + 1]))
                 return sum(new_integral[1:], new_integral[0])
 
 class IntegrateByEquation(Rule):
@@ -430,64 +429,28 @@ class IntegrateByEquation(Rule):
         self.lhs = lhs.normalize()
         self.rhs = rhs.normalize()
         self.var = lhs.var
-
-    def validate(self):
-        """Determine whether the lhs exists in rhs"""
-        integrals = self.rhs.separate_integral()
-        if not integrals:
-            return False
-        for i,j in integrals:
-            if i.normalize() == self.lhs:
-                return True
-        return False
-
-    def getCoeff(self):
-        """Get coeff of the lhs integral in the rhs."""
-        coeff = Const(1)
-        def coe(e, uminus = 1):
-            nonlocal coeff
-            if e.ty == expr.OP:
-                if len(e.args) == 1:
-                    if e.args[0].normalize() == self.lhs:
-                        self.var = e.args[0].var
-                        coeff = coeff * Const(-uminus)
-                    else:
-                        coe(e.arg[0], uminus=-uminus)
-                else:
-                    if e.op == "+":
-                        if e.args[0].normalize() == self.lhs or e.args[1].normalize() == self.lhs:
-                            self.var = e.args[0].var
-                            coeff = coeff * Const(uminus)
-                        else:
-                            coe(e.args[0],uminus=uminus)
-                            coe(e.args[1],uminus=uminus)
-                    elif e.op == "-":
-                        if e.args[0].normalize() == self.lhs:
-                            self.var = e.args[0].var
-                            coeff = coeff * Const(uminus)
-                        elif e.args[1].normalize() == self.lhs:
-                            self.var = e.args[1].var
-                            coeff = coeff * Const(-uminus)
-                        else:
-                            coe(e.args[0],uminus=uminus)
-                            coe(e.args[1], uminus=-uminus)
-                    elif e.op == "*":
-                        if e.args[1].normalize() == self.lhs:
-                            self.var = e.args[1].var
-                            coeff = e.args[0]*Const(uminus)
-                        else:
-                            coe(e.args[0],uminus=uminus)
-                            coe(e.args[1],uminus=uminus)
-        coe(self.rhs)
-        if self.validate():
-            return coeff
-        else:
-            return Const(0)
-                
+        
     def eval(self):
         """Eliminate the lhs's integral in rhs by solving equation."""
-        coeff = self.getCoeff()
-        if coeff == Const(0):
+        def get_coeff(t):
+            if t.ty == INTEGRAL:
+                if t == self.lhs:
+                    return 1
+                else:
+                    return 0
+            elif t.is_plus():
+                return get_coeff(t.args[0]) + get_coeff(t.args[1])
+            elif t.is_minus():
+                return get_coeff(t.args[0]) - get_coeff(t.args[1])
+            elif t.is_uminus():
+                return -get_coeff(t.args[0])
+            elif t.is_times() and t.args[0].ty == CONST:
+                return t.args[0].val * get_coeff(t.args[1])
+            else:
+                return 0
+
+        coeff = get_coeff(self.rhs)
+        if coeff == 0:
             return self.rhs
-        new_rhs = (self.rhs+((-coeff)*self.lhs.alpha_convert(self.var))).normalize().normalize()
-        return (new_rhs/(Const(1) - coeff)).normalize()
+        new_rhs = (self.rhs + (Const(-coeff)*self.lhs.alpha_convert(self.var))).normalize()
+        return (new_rhs/(Const(1-coeff))).normalize()

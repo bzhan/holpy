@@ -215,9 +215,11 @@ class RulesTest(unittest.TestCase):
     def testElimAbsByMonomial(self):
         test_data = [
             ("INT x:[-pi/2, pi/2]. sqrt(cos(x))*abs(sin(x))",
-            "(INT x:[0,pi / 2]. cos(x) ^ (1/2) * sin(x)) + (INT x:[-pi / 2,0]. -cos(x) ^ (1/2) * sin(x))"),
-            ("INT x:[0, pi]. sqrt(2) * abs(cos(x))", "(INT x:[0,pi / 2]. 2 ^ (1/2) * cos(x)) + (INT x:[pi / 2,pi]. -2 ^ (1/2) * cos(x))"),
-            ("INT u:[1,3]. u * abs(u) ^ -1", "INT u:[1,3]. u * u ^ -1")
+             "(INT x:[0,pi / 2]. cos(x) ^ (1/2) * sin(x)) + (INT x:[-pi / 2,0]. -cos(x) ^ (1/2) * sin(x))"),
+            ("INT x:[0, pi]. sqrt(2) * abs(cos(x))",
+             "(INT x:[0,pi / 2]. 2 ^ (1/2) * cos(x)) + (INT x:[pi / 2,pi]. -2 ^ (1/2) * cos(x))"),
+            ("INT u:[1,3]. u * abs(u) ^ -1",
+             "INT u:[1,3]. u * u ^ -1")
         ]
 
         for s, s1 in test_data:
@@ -240,14 +242,14 @@ class RulesTest(unittest.TestCase):
     def testIntegrateByEquation(self):
         test_data = [
             ("INT x:[0,pi / 2]. exp(2 * x) * cos(x)", 
-            "(-2) + exp(pi) + (-4) * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))", 
-            "-2/5 + exp(pi)/5"),
+             "(-2) + exp(pi) + (-4) * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))", 
+             "-2/5 + exp(pi)/5"),
             ("INT u:[0,1]. exp(u) * sin(u)",
-            "1 + (-1) * cos(1) * exp(1) + sin(1) * exp(1) + (-1) * (INT u:[0,1]. exp(u) * sin(u))",
-            "(1 + -1 * cos(1) * exp(1) + sin(1) * exp(1)) * (1/2)"),
+             "1 + (-1) * cos(1) * exp(1) + sin(1) * exp(1) + (-1) * (INT u:[0,1]. exp(u) * sin(u))",
+             "(1 + -1 * cos(1) * exp(1) + sin(1) * exp(1)) * (1/2)"),
             ("INT x:[0,pi / 2]. exp(2 * x) * cos(x)",
-            "(-2 + exp(pi)) - 4 * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))",
-            "-2/5 + 1/5 * exp(pi)")
+             "(-2 + exp(pi)) - 4 * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))",
+             "-2/5 + 1/5 * exp(pi)")
         ]
 
         for s, s1, s2 in test_data:
