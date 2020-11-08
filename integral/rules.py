@@ -49,30 +49,26 @@ class Linearity(Rule):
         self.name = "Linearity"
     
     def eval(self, e):
-        def eval1(e):
-            if e.ty != expr.INTEGRAL:
-                return e           
-            p = e.body.to_poly()
-            ts = []
-            for mono in p.monomials:
-                t = expr.Integral(e.var, e.lower, e.upper, expr.from_mono(poly.Monomial(Const(1), mono.factors)))
-                if mono.coeff != Const(1):
-                    t = mono.coeff * t
-                ts.append(t)
-            if len(ts) == 0:
-                return Const(0)
-            else:
-                return sum(ts[1:], ts[0])
-        def eval2(c):
-            integrals = c.separate_integral()
-            result = []
-            for i in integrals:
-                result.append(eval1(i[0]))
-            for i in range(len(integrals)):
-                c = c.replace_trig(integrals[i][0], result[i]) # e = a * b * INT c
-            return c
-        c = eval2(e).normalize().normalize()
-        return eval2(c)
+        if e.ty != expr.INTEGRAL:
+            return e
+
+        rec = Linearity().eval
+
+        if e.body.is_plus():
+            return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) + \
+                   rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
+        elif e.body.is_neg():
+            return -rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0]))
+        elif e.body.is_minus():
+            return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) - \
+                   rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
+        elif e.body.is_times() and e.body.args[0].is_constant():
+            return e.body.args[0] * rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
+        elif e.body.is_constant() and e.body != Const(1):
+            return e.body * expr.Integral(e.var, e.lower, e.upper, Const(1))
+        else:
+            return e
+
 
 class CommonIntegral(Rule):
     """Applies common integrals:

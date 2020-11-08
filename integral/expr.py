@@ -20,6 +20,8 @@ op_priority = {
 
 trig_identity = []
 
+def is_square(r):
+    return math.sqrt(r) * math.sqrt(r) == r
 
 sin_table = {
     "0": "0",
@@ -177,6 +179,12 @@ class Expr:
 
     def is_plus(self):
         return self.ty == OP and self.op == '+'
+
+    def is_neg(self):
+        return self.ty == OP and self.op == '-' and len(self.args) == 1
+
+    def is_minus(self):
+        return self.ty == OP and self.op == '-' and len(self.args) == 2
 
     def is_times(self):
         return self.ty == OP and self.op == '*'
@@ -431,10 +439,12 @@ class Expr:
 
         elif self.ty == FUN and self.func_name == 'sqrt':
             a = self.args[0].to_const_poly()
-            if a.is_monomial():
+            if a.is_fraction() and is_square(a.get_fraction()):  # is square
+                return poly.const_fraction(Fraction(math.sqrt(a.get_fraction())))
+            elif a.is_monomial():
                 return a ** Fraction(1/2)
             else:
-                return poly.const_singleton(self)
+                return poly.const_singleton(sqrt(from_const_poly(a)))
 
         elif self.ty == FUN and self.func_name == 'pi':
             return poly.ConstantPolynomial([poly.ConstantMonomial(1, [(pi, 1)])])
@@ -862,20 +872,12 @@ class Expr:
 
 
 def sympy_style(s):
-        """Transform expr to sympy object.
-        """
-        return sympy_parser.parse_expr(str(s).replace("^", "**"))
+    """Transform expr to sympy object."""
+    return sympy_parser.parse_expr(str(s).replace("^", "**"))
 
 def holpy_style(s):
+    """Transform sympy object to expr."""
     return parser.parse_expr(str(s).replace("**", "^")).replace_trig(Var("E"), Fun("exp", Const(1)))
-
-
-def valid_expr(s):
-    try:
-        sk = parser.parse_expr(s)
-    except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
-        return False
-    return True
 
 def trig_transform(trig, var, rule_list=None):
     """Compute all possible trig function equal to trig"""
@@ -1007,38 +1009,6 @@ def decompose_expr_factor(e):
 
     f(e)
     return factors
-
-def is_divisible(f, g):
-    try:
-        pexquo(f, g)
-        return True
-    except:
-        return False
-
-def simplify_constant(e):
-    """Simplify a constant.
-    """
-    def length(e):
-        return e.size()
-
-    assert e.is_constant(), "%s is not a constant" % e
-    factors = decompose_expr_factor(e)
-    if len(factors) <= 1:
-        return e
-    
-    consts = [f.val for f in factors if f.ty == CONST]
-    others = sorted([f for f in factors if f.ty != CONST], key = length)
-    consts_value = functools.reduce(operator.mul, consts) if len(consts) != 0 else 1
-    
-    others_value = functools.reduce(operator.mul, others) if len(others) != 0 else Const(1)
-
-    if consts_value == 1:
-        return others_value
-    elif others_value == Const(1):
-        return Const(consts_value)
-    else:
-        return Op("*", Const(consts_value), others_value)    
-
 
 def from_const_mono(m):
     """Convert a ConstantMonomial to an expression."""

@@ -110,7 +110,9 @@ class ExprTest(unittest.TestCase):
             ("cos(5*pi/3)", "1/2"),
             ("cos(4*pi/3)", "-1/2"),
             ("atan(1)", "1/4 * pi"),
-            ("abs(-2)", "2")
+            ("abs(-2)", "2"),
+            ("sqrt(1 - 1)", "0"),
+            ("sqrt(2 + 1/4)", "3/2"),
         ]
 
         for s, res in test_data:

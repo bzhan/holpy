@@ -21,13 +21,12 @@ class SlagleTest(unittest.TestCase):
     def testDividePolynomial(self):
         test_data = [
             ('INT y:[tan(2),tan(1)]. -y ^ 4 * (1 + y ^ 2) ^ -1',
-             '(INT y:[tan(2),tan(1)]. 1) + -1 * (INT y:[tan(2),tan(1)]. y ^ 2) + -1 * (INT y:[tan(2),tan(1)]. (1 + y ^ 2) ^ -1)'),
+             '(INT y:[tan(2),tan(1)]. 1) + -(INT y:[tan(2),tan(1)]. y ^ 2) + -(INT y:[tan(2),tan(1)]. (1 + y ^ 2) ^ -1)'),
         ]
 
         for v, v_res in test_data:
             v = parse_expr(v)
-            v_res = parse_expr(v_res)
-            self.assertEqual(slagle.DividePolynomial().eval(v)[0], v_res)
+            self.assertEqual(str(slagle.DividePolynomial().eval(v)[0].normalize()), v_res)
 
     def testHalfAngleIdentity(self):
         test_data = [
@@ -43,16 +42,15 @@ class SlagleTest(unittest.TestCase):
 
     def testLinearity(self):
         test_data = [
-            ('INT x:[1, 2]. 3*x', '3*INT x:[1, 2]. x'),
-            ('INT x:[1, 2]. 3*x + exp(x)', '3*(INT x:[1, 2]. x) + INT x:[1, 2]. exp(x)'),
-            ('INT x:[1, 2]. x*exp(x)', 'INT x:[1, 2]. x*exp(x)'),
-            ('INT x:[1, 2]. 4*exp(x) - sin(x)', '4 * (INT x:[1,2]. exp(x)) + -1 * (INT x:[1,2]. sin(x))')
+            ('INT x:[1, 2]. 3*x', '3 * (INT x:[1,2]. x)'),
+            ('INT x:[1, 2]. 3*x + exp(x)', '3 * (INT x:[1,2]. x) + (INT x:[1,2]. exp(x))'),
+            ('INT x:[1, 2]. x*exp(x)', 'INT x:[1,2]. x * exp(x)'),
+            ('INT x:[1, 2]. 4*exp(x) - sin(x)', '4 * (INT x:[1,2]. exp(x)) + -(INT x:[1,2]. sin(x))')
         ]
 
         for v, v_res in test_data:
             v = parse_expr(v)
-            v_res = parse_expr(v_res)
-            self.assertEqual(slagle.Linearity().eval(v)[0].normalize(), v_res)            
+            self.assertEqual(str(slagle.Linearity().eval(v)[0].normalize()), v_res)            
 
     def testTrigFunction(self):
         test_data = [
@@ -65,7 +63,7 @@ class SlagleTest(unittest.TestCase):
             v_res = [parse_expr(v2) for v2 in v_res]
             self.assertEqual([r.normalize() for r, _ in slagle.TrigFunction().eval(v)], v_res)
 
-    def testHeuristicTirgonometricSubstitution(self):
+    def testHeuristicTrigonometricSubstitution(self):
         test_data = [
             ('INT x:[0,1].sin(x)*cos(x)^3', 'INT s:[0,sin(1)]. s + -1 * s ^ 3'),
             ('INT x:[0,1].sin(x)^5*cos(x)', 'INT j:[cos(1),1]. j * (1 + -1 * j ^ 2) ^ 2'),
@@ -75,24 +73,24 @@ class SlagleTest(unittest.TestCase):
     def testHeuristicSubstitution(self):
         test_data = [
             ('INT x:[1,2]. tan(x)^4',
-             ['INT y:[tan(2),tan(1)]. -1*y ^ 4 * (1 + y ^ 2) ^ -1']),
+             ['INT y:[tan(2),tan(1)]. -y ^ 4 * (1 + y ^ 2) ^ -1']),
         ]
 
         for v, v_res in test_data:
             v = parse_expr(v)
-            v_res = [parse_expr(v2) for v2 in v_res]
-            self.assertEqual([r.normalize() for r, _ in slagle.HeuristicSubstitution().eval(v)], v_res)
+            self.assertEqual([str(r.normalize())
+                              for r, _ in slagle.HeuristicSubstitution().eval(v)], v_res)
 
     def testHeuristicElimQuadratic(self):
         test_data = [
             ('INT x:[0,1]. x/(sqrt(x^2+2*x+5))',
-            ['INT c:[1,2]. c * (4 + c ^ 2) ^ (-1/2) + -1 * (4 + c ^ 2) ^ (-1/2)']),
+            ['INT y:[1,2]. y * (4 + y ^ 2) ^ (-1/2) + -(4 + y ^ 2) ^ (-1/2)']),
         ]
 
         for v, v_res in test_data:
             v = parse_expr(v)
-            v_res = [parse_expr(v2) for v2 in v_res]
-            self.assertEqual([r.normalize() for r, _ in slagle.HeuristicElimQuadratic().eval(v)], v_res)
+            self.assertEqual([str(r.normalize())
+                              for r, _ in slagle.HeuristicElimQuadratic().eval(v)], v_res)
 
     def testHeuristicTrigSubstitution(self):
         test_data = [
@@ -102,8 +100,8 @@ class SlagleTest(unittest.TestCase):
 
         for v, v_res in test_data:
             v = parse_expr(v)
-            v_res = [parse_expr(v2) for v2 in v_res]
-            self.assertEqual([e.normalize() for e, _ in slagle.HeuristicTrigSubstitution().eval(v)], v_res)
+            self.assertEqual([str(e.normalize())
+                              for e, _ in slagle.HeuristicTrigSubstitution().eval(v)], v_res)
 
     def testHeuristicExpandPower(self):
         test_data = [
@@ -124,8 +122,8 @@ class SlagleTest(unittest.TestCase):
 
         for v, v_res in test_data:
             v = parse_expr(v)
-            v_res = [parse_expr(v2) for v2 in v_res]
-            self.assertEqual([r.normalize() for r, _ in slagle.HeuristicExponentBase().eval(v)], v_res)
+            self.assertEqual([str(r.normalize())
+                              for r, _ in slagle.HeuristicExponentBase().eval(v)], v_res)
     
     def testBFS(self):
         test_data = [
