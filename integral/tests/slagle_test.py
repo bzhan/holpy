@@ -144,6 +144,10 @@ class SlagleTest(unittest.TestCase):
             node = slagle.OrNode(v)
             slagle.bfs(node)
             self.assertTrue(node.resolved)
+            # print(node)
+            # print(node.resolved_steps)
+            # for step in node.resolved_steps:
+            #     print(step.info())
 
 
 if __name__ == "__main__":

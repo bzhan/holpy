@@ -5,6 +5,8 @@ Record integral calculation process.
 import json
 from integral import latex
 from integral import rules
+from integral.expr import Location
+
 
 class IntegrationStep:
     def info(self):
@@ -17,6 +19,9 @@ class IntegrationStep:
         """
         pass
 
+    def prepend_loc(self, prefix):
+        self.loc = Location(prefix.data + self.loc.data)
+
     def __repr__(self):
         return str(self)
 
@@ -25,6 +30,7 @@ class InitialStep(IntegrationStep):
     def __init__(self, e):
         self.e = e
         self.latex = latex.convert_expr(e)
+        self.loc = Location()
 
     def __str__(self):
         return "Initial"
@@ -43,7 +49,7 @@ class SimplifyStep(IntegrationStep):
         self.e = e
         self.reason = "Simplification"
         self.latex = latex.convert_expr(e)
-        self.loc = loc
+        self.loc = Location(loc)
 
     def __str__(self):
         return "Simplification on %s" % self.loc
@@ -53,7 +59,7 @@ class SimplifyStep(IntegrationStep):
             "text": str(self.compute()),
             "latex": self.latex,
             "reason": "Simplification",
-            "location": self.loc
+            "location": str(self.loc),
         }
 
 class LinearityStep(IntegrationStep):
@@ -61,7 +67,7 @@ class LinearityStep(IntegrationStep):
         self.e = e
         self.reason = "Linearity"
         self.latex = latex.convert_expr(e)
-        self.loc = loc
+        self.loc = Location(loc)
 
     def __str__(self):
         return "Linearity on %s" % self.loc
@@ -70,6 +76,7 @@ class LinearityStep(IntegrationStep):
         return {
             "text": str(self.e),
             "latex": self.latex,
+            "location": str(self.loc),
             "reason": "Simplification"
         }
         
@@ -78,7 +85,7 @@ class CommonIntegralStep(IntegrationStep):
         self.e = e
         self.reason = "CommonIntegral"
         self.latex = latex.convert_expr(e)
-        self.loc = loc
+        self.loc = Location(loc)
 
     def __str__(self):
         return "Common integral on %s" % self.loc
@@ -87,7 +94,7 @@ class CommonIntegralStep(IntegrationStep):
         return {
             "text": str(self.e),
             "latex": self.latex,
-            "location": self.loc,
+            "location": str(self.loc),
             "reason": "Simplification"
         }
 
@@ -99,7 +106,7 @@ class SubstitutionStep(IntegrationStep):
         self.reason = "Substitution"
         self.f = f
         self.latex = latex.convert_expr(e)
-        self.loc = loc
+        self.loc = Location(loc)
 
     def __str__(self):
         return "Substitute %s for %s on %s" % (self.var_name, self.var_subst, self.loc)
@@ -108,7 +115,7 @@ class SubstitutionStep(IntegrationStep):
         return {
             "text": str(self.e),
             "latex": self.latex,
-            "location":  self.loc,
+            "location": str(self.loc),
             "params": {
                 "f": str(self.f),
                 "g": str(self.var_subst),
@@ -125,16 +132,17 @@ class SubstitutionInverseStep(IntegrationStep):
         self.var_name = var_name
         self.var_subst = var_subst
         self.comp = rules.Substitution2(var_name, var_subst).eval  
-        self.loc = loc 
+        self.loc = Location(loc) 
 
     def __str__(self):
-        return "Inverse substitute %s for %s" % (self.var_name, self.var_subst)
+        return "Inverse substitute %s for %s on %s" % (self.var_name, self.var_subst, self.loc)
 
     def info(self):
         return {
             "text": str(self.e),
             "latex": self.latex,
             "reason": self.reason,
+            "location": str(self.loc),
             "params": {
                 "a": str(self.e.lower),
                 "b": str(self.e.upper),
@@ -152,7 +160,7 @@ class UnfoldPowerStep(IntegrationStep):
         self.latex = latex.convert_expr(e)
         self.reason = "Unfold Power"
         self.comp = rules.unfoldPower.eval
-        self.loc = loc
+        self.loc = Location(loc)
 
     def __str__(self):
         return "Unfold power on %s" % self.loc
@@ -162,7 +170,7 @@ class UnfoldPowerStep(IntegrationStep):
             "text": str(self.e),
             "latex": self.latex,
             "reason": self.reason,
-            "location": self.loc
+            "location": str(self.loc),
         }
 
     def compute(self):
@@ -172,14 +180,16 @@ class EquationSubstitutionStep(IntegrationStep):
     def __init__(self, e, loc=[]):
         self.e = e
         self.latex = latex.convert_expr(e)
+        self.loc = Location(loc)
 
     def __str__(self):
-        return "Equation substitution"
+        return "Equation substitution on %s" % self.loc
 
     def info(self):
         return {
             "text": str(self.e),
-            "latex": self.latex
+            "latex": self.latex,
+            "location": str(self.loc),
         }
 
     def compute(self):
@@ -190,7 +200,7 @@ class TrigSubstitutionStep(IntegrationStep):
         self.e = e
         self.old_trig = old_trig
         self.new_trig = new_trig
-        self.loc = loc
+        self.loc = Location(loc)
         self.latex =  latex.convert_expr(e)
         self.reason = reason
 
@@ -203,7 +213,7 @@ class TrigSubstitutionStep(IntegrationStep):
             "latex": self.latex,
             "old_trig": self.old_trig,
             "new_trig": self.new_trig,
-            "location": self.loc
+            "location": str(self.loc),
         }
 
 class IntegrationByPartsStep(IntegrationStep):
@@ -211,17 +221,17 @@ class IntegrationByPartsStep(IntegrationStep):
         self.e = e
         self.u = u
         self.v = v
-        self.loc = loc
+        self.loc = Location(loc)
         self.latex = latex.convert_expr(e)
 
     def __str__(self):
-        return "Integrate by parts with u = %s and v = %s" % (self.u, self.v)
+        return "Integrate by parts with u = %s and v = %s on %s" % (self.u, self.v, self.loc)
 
     def info(self):
         return {
             "text": str(self.e),
             "latex": self.latex,
-            "location": self.loc,
+            "location": str(self.loc),
             "params": {
                 "part_u": str(self.u),
                 "part_v": str(self.v)
@@ -232,9 +242,9 @@ class PolynomialDivisionStep(IntegrationStep):
     def __init__(self, e, denom, rhs, loc=[]):
         self.e = e
         self.denom = denom
-        self.loc = loc
+        self.loc = Location(loc)
         self.rhs = rhs
         self.latex= latex.convert_expr(e)
 
     def __str__(self):
-        return "Polynomial division"
+        return "Polynomial division on %s" % self.loc

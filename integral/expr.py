@@ -96,8 +96,16 @@ class Location:
             self.data = tuple(data)
         elif isinstance(data, str):
             self.data = tuple(int(n) for n in data.split('.'))
+        elif isinstance(data, Location):
+            self.data = data.data
         else:
             raise TypeError
+
+    def __str__(self):
+        if not self.data:
+            return "."
+        else:
+            return ".".join(str(n) for n in self.data)
 
     def is_empty(self):
         return len(self.data) == 0

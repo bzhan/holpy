@@ -902,7 +902,7 @@ class OrNode(GoalNode):
         self.resolved = False
         if loc is None:
             loc = list()
-        self.loc = loc
+        self.loc = Location(loc)
         self.root.loc = self.loc
 
         # Step used to go from parent to self.
@@ -949,7 +949,9 @@ class OrNode(GoalNode):
             cur_integral, cur_steps = rule().eval(cur_integral)
             if cur_steps:
                 cur_integral = cur_integral.normalize()
-                algo_steps.extend(cur_steps)
+                for step in cur_steps:
+                    step.prepend_loc(self.loc)
+                    algo_steps.append(step)
 
         if cur_integral.ty == INTEGRAL:
             # Single integral case
@@ -957,6 +959,8 @@ class OrNode(GoalNode):
                 res = rule().eval(cur_integral)
                 for r, steps in res:
                     if steps:
+                        for step in steps:
+                            step.prepend_loc(self.loc)
                         r = r.normalize()
                         if r.ty == INTEGRAL and r not in not_solved_integral:
                             self.children.append(OrNode(r, loc=self.loc, parent=self, steps=algo_steps+steps))
@@ -1002,9 +1006,9 @@ class AndNode(GoalNode):
 
         self.root = root
         self.parent = parent
-        self.loc = loc
-        self.root.loc = loc
-        self.children = [OrNode(r, self.loc+list(Location(l).data), parent=self) for r, l in root.separate_integral()]
+        self.loc = Location(loc)
+        self.children = [OrNode(r, self.loc.data+Location(l).data, parent=self)
+                         for r, l in root.separate_integral()]
 
         if steps is None:
             steps = tuple()
