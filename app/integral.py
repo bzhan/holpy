@@ -537,10 +537,10 @@ def integral_slagle():
         new_problem = node.compute_value()
         trace = node.trace()
         final_simp = trace[-1]
-        last_expr = final_simp.e.normalize()
+        last_expr = new_problem.normalize().normalize_constant()
         last_step = {
-            'text': str(new_problem),
-            'latex': integral.latex.convert_expr(new_problem),
+            'text': str(last_expr),
+            'latex': integral.latex.convert_expr(last_expr),
             'reason': 'Simplification'
         }
         t = [i.info() for i in trace]
