@@ -83,7 +83,7 @@ class DividePolynomial(AlgorithmRule):
             try:
                 new_e_1 = rules.PolynomialDivision().eval(e)
                 rhs = new_e_1.body
-                new_e_2 = Linearity().eval(new_e_1)
+                new_e_2 = rules.Linearity().eval(new_e_1)
                 steps = [calc.PolynomialDivisionStep(e=new_e_1, denom=denom, rhs=rhs),
                          calc.LinearityStep(new_e_2)]
                 return new_e_2, steps
@@ -151,6 +151,7 @@ class LinearSubstitution(AlgorithmRule):
     """
     def eval(self, e):
         integrals = e.separate_integral()
+        steps = list()
         for i, loc in integrals:
             new_e_i, steps = linear_substitution(i)
             e = e.replace_trig(i, new_e_i)
@@ -163,7 +164,7 @@ class HalfAngleIdentity(AlgorithmRule):
     a) sin(v)cos(v) = 1/2 * sin(2v)
     b) cos^2(v) = 1/2 + 1/2 * cos(2v)
     c) sin^2(v) = 1/2 - 1/2 * cos(2v)
-    
+
     """
     def eval(self, e):
         x = Symbol('x', [CONST, VAR, OP, FUN])
@@ -595,7 +596,16 @@ class HeuristicElimQuadratic(HeuristicRule):
         def find_abc(quad):
             """Find the value of a, b, c in a + b * x + c * x ^ 2."""
             quad = quad.normalize()
-            if not (quad.args[0].ty == OP and quad.args[0].op in ("+","-")): # b*x +/- a*x^2
+            if quad.args[0].ty == CONST: # a + b * x^2
+                if quad.args[1].ty == OP and quad.args[1].op == "*": # a + b * x^2
+                    return (quad.args[0], Const(0), quad.args[1].args[0])
+                elif quad.args[1].ty == OP and len(quad.args[1].args) == 1: # a + -x^2
+                    return (quad.args[0], Const(0), Const(-1))
+                elif quad.args[1].ty == OP and quad.args[1].op == "^": # a + x ^ 2
+                    return (quad.args[0], Const(0), Const(1))
+                else:
+                    raise NotImplementedError
+            elif not (quad.args[0].ty == OP and quad.args[0].op in ("+","-")): # b*x +/- a*x^2
                 if quad.args[0].ty == VAR: # x +/- a*x^2 
                     if quad.args[1].ty == OP and quad.args[1].op == "^": # x +/- x^2
                         if quad.op == "+":
@@ -677,7 +687,6 @@ class HeuristicElimQuadratic(HeuristicRule):
         res = []
 
         for quad, l in quadratics:
-            print('quad', quad)
             a, b, c = find_abc(quad)
             new_integral, f = rules.Substitution1(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
 
