@@ -101,7 +101,7 @@ class RulesTest(unittest.TestCase):
         e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
-        self.assertEqual(e.normalize(), parse_expr("(-1/6) + 1/6 * exp(6)"))
+        self.assertEqual(str(e.normalize()), "-1/6 + 1/6 * exp(6)")
 
     def testSubstitution3(self):
         e = parse_expr("INT x:[0, pi/2].sqrt(cos(x))*sin(x)")
@@ -197,7 +197,7 @@ class RulesTest(unittest.TestCase):
         e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
-        self.assertEqual(e.normalize(), parse_expr("2 * exp(-1) + exp(2)"))
+        self.assertEqual(str(e.normalize()), "2 * exp(-1) + exp(2)")
 
     def testPolynomialDivision(self):
         test_data = [

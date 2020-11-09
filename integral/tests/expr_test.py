@@ -403,26 +403,24 @@ class ExprTest(unittest.TestCase):
         test_data = [
             ('x - 1', x - a, {x: Var('x'), a: Const(1)}),
             ('x - 2', x - Const(2), {x: Var('x')}),
-            ('x + 3', x - b, {}),
-            ('x', x + a, {}),
+            ('x + 3', x - b, None),
+            ('x', x + a, None),
             ('3*x', a * x, {a: Const(3), x: Var('x')}),
             ('3 * x + 5', a * x + b, {a: Const(3), x: Var('x'), b: Const(5)}),
-            ('2 * x + 3', a * x + a, {}),
+            ('2 * x + 3', a * x + a, None),
             ('x ^ 2', x ^ Const(2), {x: Var('x')}),
-            ('x ^ 3 - 2', x ^ Const(3), {}),
+            ('x ^ 3 - 2', x ^ Const(3), None),
             ('1 - x ^ 2', a - (x ^ Const(2)), {a: Const(1), x: Var('x')}),
             ('cos(x) ^ 2', cos(x) ^ Const(2), {x: Var('x')}),
             ('(1 - x ^ 2) ^ (1/2)', (Const(1) - (x ^ Const(2)))^(Const(Fraction(1/2))), {x: Var('x')}),
-            ('(1 - x ^ 3) ^ (1/2)', (Const(1) - (x ^ Const(2)))^(Const(Fraction(1/2))), {}),
+            ('(1 - x ^ 3) ^ (1/2)', (Const(1) - (x ^ Const(2)))^(Const(Fraction(1/2))), None),
             ('(1 - 2 * sin(x) ^ 2) ^ (1/2)', (b - a * (sin(x) ^ Const(2)))^Const(Fraction(1/2)), {b: Const(1), a: Const(2), x: Var('x')}),
-            ('sin(x) ^ 2 + cos(y)^2', (sin(x)^Const(2))+(cos(x)^Const(2)), {}),
+            ('sin(x) ^ 2 + cos(y)^2', (sin(x)^Const(2))+(cos(x)^Const(2)), None),
             ('sin(2*x+1)^2 + cos(2*x+1) ^ 2', (sin(y)^Const(2))+(cos(y)^Const(2)), {y: Op("+",Op("*",Const(2),Var('x')),Const(1))}),
             ('2*pi', a * pi, {a: Const(2)}),
         ]
 
         for r1, r2, r3 in test_data:
-            # print(match(parse_expr(r1), r2))
-            # 
             self.assertEqual(match(parse_expr(r1), r2), r3)
 
     def testExpandPower(self):

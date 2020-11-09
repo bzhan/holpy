@@ -2,7 +2,7 @@
 
 from integral import expr
 from integral import poly
-from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_identity, \
+from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
         sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, sin, cos, FUN
 import functools, operator
 from sympy.parsing import sympy_parser
@@ -88,104 +88,43 @@ class CommonIntegral(Rule):
     def __init__(self):
         self.name = "CommonIntegral"
 
-
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
             return e
 
-        if e.body == Var(e.var):
-            # Integral of x is x^2/2.
-            return EvalAt(e.var, e.lower, e.upper, (Var(e.var) ^ Const(2)) / Const(2))
-        elif e.body.is_constant(): 
-            if e.body.ty == expr.CONST and e.body.val == 1:
-                # Integral of 1 is x
-                integral = Var(e.var)
-            else:
-                # Integral of c is c*x
-                integral = e.body * Var(e.var)
-            return EvalAt(e.var, e.lower, e.upper, integral)
-        elif e.body.ty == expr.OP:
-            if e.body.op == "^":
-                a, b = e.body.args
-                if a.ty == expr.CONST and b.ty == expr.CONST:
-                    integral = e.body * Var(e.var)
-                    return EvalAt(e.var, e.lower, e.upper, integral)
-                elif a == Var(e.var) and b.ty == expr.CONST and b.val != -1:
-                    # Integral of x ^ n is x ^ (n + 1)/(n + 1)
-                    # Intgeral of (x + c) ^ n = (x + c) ^ (n + 1) / (n + 1)
-                    integral = (a ^ Const(b.val + 1)) / Const(b.val + 1)
-                    return EvalAt(e.var, e.lower, e.upper, integral)
-                elif a == Var(e.var) and b.ty == expr.CONST and b.val == -1:
-                    # Integral of x ^ -1 is log(x)
-                    # Integral of (x + c) ^ -1 is log(x)
-                    return EvalAt(e.var, e.lower, e.upper, expr.log(Fun("abs",a)))
-                elif a.ty == expr.FUN:
-                    if b ==  Const(2):
-                        if a.func_name == "sec" and a.args[0] == Var(e.var):
-                            return EvalAt(e.var, e.lower, e.upper, expr.Fun("tan", *a.args))
-                        elif a.func_name == "csc" and a.args[0] == Var(e.var):
-                            return EvalAt(e.var, e.lower, e.upper, -expr.Fun("cot", *a.args))
-                        else:
-                            return e
-                    else:
-                        return e
-                if a.ty == OP and a.op == "+" and a.args[0] == Const(1) and a.args[1].ty == OP \
-                    and a.args[1].op == "^" and a.args[1].args[0] == Var(e.var) and a.args[1].args[1] == Const(2) \
-                    and b == Const(-1):
-                    # (1 + x^2) ^ (-1) => arctan(x)
-                    return EvalAt(e.var, e.lower, e.upper, expr.arctan(Var(e.var)))
-                else:
-                    return e
-            elif e.body.op == "/":
-                a, b = e.body.args
-                if b.ty == expr.OP and a.ty == expr.CONST:
-                    c, d = b.args
-                    if b.op == "^":
-                        if (c == Var(e.var) or c.op in ("+", "-") and c.args[0] == Var(e.var) and \
-                                c.args[1].ty == expr.CONST) and d.ty == expr.CONST and d.val != 1:
-                            #Integral of 1 / x ^ n is (-n) / x ^ (n + 1)
-                            #Integral of 1 / (x + c) ^ n is (-1) / (n - 1) * x ^ (n - 1)
-                            integral = a * Const(-1) / (Const(d.val - 1) * (c ^ Const(d.val - 1)))
-                            return EvalAt(e.var, e.lower, e.upper, integral)
-                        else:
-                            return e
-                    elif b.op in ("+", "-"):
-                        if c == Var(e.var) and d.ty == expr.CONST:
-                            #Integral of 1 / (x + c) is log(x + c)
-                            return EvalAt(e.var, e.lower, e.upper, a * expr.log(Fun("abs", b)))
-                        elif b.op == "+" and d.ty == expr.OP and d.op == "^" and \
-                                d.args[0] == Var(e.var) and d.args[1] == Const(2) and \
-                                c == expr.Const(1):
-                            #Integral of 1 / x ^ 2 + 1 is arctan(x)
-                            return EvalAt(e.var, e.lower, e.upper, expr.arctan(Var(e.var)))
-                        elif b.op == "+" and c.ty == expr.OP and c.op == "^" and \
-                                c.args[0] == Var(e.var) and c.args[1] == Const(2) and \
-                                d == expr.Const(1):
-                            return EvalAt(e.var, e.lower, e.upper, expr.arctan(Var(e.var)))
-                        else:
-                            return e
-                    else:
-                        return e
-                elif b == Var(e.var):
-                    return EvalAt(e.var, e.lower, e.upper, a * expr.log(Fun("abs", b)))
-                else:
-                    return e
-            else:
-                return e
+        if e.body.is_constant() and e.body != Const(1):
+            return EvalAt(e.var, e.lower, e.upper, e.body * Var(e.var))
 
-        elif e.body.ty == expr.FUN:
-            if e.body.func_name == "sqrt" and e.body.args[0] == Var(e.var):
-                return EvalAt(e.var, e.lower, e.upper, Const(Fraction(2,3)) * (Var(e.var) ^ Const(Fraction(3,2))))
-            elif e.body.func_name == "sin" and e.body.args[0] == Var(e.var):
-                return EvalAt(e.var, e.lower, e.upper, -expr.cos(Var(e.var)))
-            elif e.body.func_name == "cos" and e.body.args[0] == Var(e.var):
-                return EvalAt(e.var, e.lower, e.upper, expr.sin(Var(e.var)))
-            elif e.body.func_name == "exp" and e.body.args[0] == Var(e.var):
-                return EvalAt(e.var, e.lower, e.upper, expr.exp(Var(e.var)))
-            else:
-                return e
-        else:
-            return e
+        x = Var(e.var)
+        c = Symbol('c', [CONST])
+        rules = [
+            (Const(1), None, Var(e.var)),
+            (c, None, c * Var(e.var)),
+            (x, None, (x ^ 2) / 2),
+            (x ^ c, lambda m: m[c].val != -1, lambda m: (x ^ Const(m[c].val + 1)) / (Const(m[c].val + 1))),
+            (Const(1) / x ^ c, lambda m: m[c].val != 1, (-c) / (x ^ (c + 1))),
+            (expr.sqrt(x), None, Fraction(2,3) * (x ^ Fraction(3,2))),
+            (sin(x), None, -cos(x)),
+            (cos(x), None, sin(x)),
+            (expr.exp(x), None, expr.exp(x)),
+            (Const(1) / x, None, expr.log(expr.Fun('abs', x))),
+            (x ^ Const(-1), None, expr.log(expr.Fun('abs', x))),
+            ((1 + (x ^ Const(2))) ^ Const(-1), None, expr.arctan(x)),
+            (expr.sec(x) ^ Const(2), None, expr.tan(x)),
+            (expr.csc(x) ^ Const(2), None, -expr.cot(x)),
+        ]
+
+        for pat, cond, pat_res in rules:
+            mapping = expr.match(e.body, pat)
+            if mapping is not None and (cond is None or cond(mapping)):
+                if isinstance(pat_res, expr.Expr):
+                    integral = pat_res.inst_pat(mapping)
+                else:
+                    integral = pat_res(mapping)
+                return EvalAt(e.var, e.lower, e.upper, integral)
+
+        return e
+
 
 class CommonDeriv(Rule):
     """Common rules for evaluating a derivative."""

@@ -155,21 +155,48 @@ class Location:
 class Expr:
     """Expressions."""
     def __add__(self, other):
+        if isinstance(other, (int, Fraction)):
+            other = Const(other)
         return Op("+", self, other)
 
+    def __radd__(self, other):
+        if isinstance(other, (int, Fraction)):
+            other = Const(other)
+        return Op("+", other, self)
+
     def __sub__(self, other):
+        if isinstance(other, (int, Fraction)):
+            other = Const(other)
         return Op("-", self, other)
 
     def __mul__(self, other):
+        if isinstance(other, (int, Fraction)):
+            other = Const(other)
         return Op("*", self, other)
 
+    def __rmul__(self, other):
+        if isinstance(other, (int, Fraction)):
+            other = Const(other)
+        return Op("*", other, self)
+
     def __truediv__(self, other):
+        if isinstance(other, (int, Fraction)):
+            other = Const(other)
         return Op("/", self, other)
 
+    def __rtruediv__(self, other):
+        if isinstance(other, (int, Fraction)):
+            other = Const(other)
+        return Op("/", other, self)
+
     def __xor__(self, other):
+        if isinstance(other, (int, Fraction)):
+            other = Const(other)
         return Op("^", self, other)
 
     def __pow__(self, other):
+        if isinstance(other, (int, Fraction)):
+            other = Const(other)
         return Op("^", self, other)
 
     def __neg__(self):
@@ -332,13 +359,22 @@ class Expr:
             assert loc.head < len(self.args), "get_subexpr: invalid location"
             arg = self.args[loc.head].replace_expr(loc.rest, new_expr)
             return Fun(self.func_name, arg)
-        elif self.ty == INTEGRAL or self.ty == EVAL_AT:
+        elif self.ty == INTEGRAL:
             if loc.head == 0:
                 return Integral(self.var, self.lower, self.upper, self.body.replace_expr(loc.rest, new_expr))
             elif loc.head == 1:
                 return Integral(self.var, self.lower.replace_expr(loc.rest, new_expr), self.upper, self.body)
             elif loc.head == 2:
                 return Integral(self.var, self.lower, self.upper.replace_expr(loc.rest, new_expr), self.body)
+            else:
+                raise AssertionError("get_subexpr: invalid location")
+        elif self.ty == EVAL_AT:
+            if loc.head == 0:
+                return EvalAt(self.var, self.lower, self.upper, self.body.replace_expr(loc.rest, new_expr))
+            elif loc.head == 1:
+                return EvalAt(self.var, self.lower.replace_expr(loc.rest, new_expr), self.upper, self.body)
+            elif loc.head == 2:
+                return EvalAt(self.var, self.lower, self.upper.replace_expr(loc.rest, new_expr), self.body)
             else:
                 raise AssertionError("get_subexpr: invalid location")
         elif self.ty == DERIV:      
@@ -901,6 +937,28 @@ class Expr:
         """
         return not self.is_univariate()
 
+    def inst_pat(self, mapping):
+        """Instantiate by replacing symbols in term with mapping."""
+        if self.ty in (VAR, CONST):
+            return self
+        elif self.ty == SYMBOL:
+            assert self in mapping, "inst_pat: %s not found" % self.name
+            return mapping[self]
+        elif self.ty == OP:
+            return Op(self.op, *(arg.inst_pat(mapping) for arg in self.args))
+        elif self.ty == FUN:
+            return Fun(self.func_name, *(arg.inst_pat(mapping) for arg in self.args))
+        elif self.ty == INTEGRAL:
+            return Integral(self.var, self.lower.inst_pat(mapping), self.upper.inst_pat(mapping),
+                            self.body.inst_pat(mapping))
+        elif self.ty == EVAL_AT:
+            return EvalAt(self.var, self.lower.inst_pat(mapping), self.upper.inst_pat(mapping),
+                          self.body.inst_pat(mapping))
+        elif self.ty == DERIV:
+            return Deriv(self.var, self.body.inst_pat(mapping))
+        else:
+            raise NotImplementedError
+
 
 def sympy_style(s):
     """Transform expr to sympy object."""
@@ -932,17 +990,20 @@ def match(exp, pattern):
     """Match expr with given pattern. 
     
     If successful, return a dictionary mapping symbols to expressions.
+    Otherwise returns None.
 
     """
     d = dict()
     def rec(exp, pattern):
         if not isinstance(pattern, Symbol) and exp.ty != pattern.ty:
-            return {}
+            return None
         if exp.ty == VAR:
+            if pattern.ty == VAR and pattern.name == exp.name:
+                return d
             if not isinstance(pattern, Symbol) or VAR not in pattern.pat:
-                return {}
+                return None
             if pattern in d.keys():
-                return d if exp == d[pattern] else {}
+                return d if exp == d[pattern] else None
             else:
                 d[pattern] = exp
                 return d
@@ -950,9 +1011,9 @@ def match(exp, pattern):
             if pattern.ty == CONST and pattern.val == exp.val:
                 return d
             if not isinstance(pattern, Symbol) or CONST not in pattern.pat:
-                return {}
+                return None
             if pattern in d.keys():
-                return d if exp == d[pattern] else {}
+                return d if exp == d[pattern] else None
             else:
                 d[pattern] = exp
                 return d
@@ -960,35 +1021,38 @@ def match(exp, pattern):
             if isinstance(pattern, Symbol):
                 if OP in pattern.pat:
                     if pattern in d.keys():
-                        return d if d[pattern] == exp else {}
+                        return d if d[pattern] == exp else None
                     else:
                         d[pattern] = exp
                         return d
                 else:
-                    return {}
+                    return None
             if exp.op != pattern.op or len(exp.args) != len(pattern.args):
-                return {}
+                return None
             
-            table = [rec(exp.args[i], pattern.args[i]) for i  in range(len(exp.args))]
+            table = [rec(exp.args[i], pattern.args[i]) for i in range(len(exp.args))]
             and_table = functools.reduce(lambda x, y: x and y, table)
-            return d if and_table else {}    
+            return d if and_table else None
         elif exp.ty == FUN:
             if isinstance(pattern, Symbol):
                 if FUN in pattern.pat:
                     if pattern in d.keys():
-                        return d if d[pattern] == exp else {}
+                        return d if d[pattern] == exp else None
                     else:
                         d[pattern] = exp
                         return d
                 else:
-                    return {}
+                    return None
             if exp.func_name != pattern.func_name or len(exp.args) != len(pattern.args):
-                return {}
-            table = [rec(exp.args[i], pattern.args[i]) for i  in range(len(exp.args))]
+                return None
+            table = [rec(exp.args[i], pattern.args[i]) for i in range(len(exp.args))]
             and_table = functools.reduce(lambda x, y: x and y, table, True)
-            return d if and_table else {}  
+            return d if and_table else None
         elif exp.ty in (DERIV, EVAL_AT, INTEGRAL):
-            return rec(exp.body, pattern) 
+            return rec(exp.body, pattern)
+
+    if exp == pattern:
+        return dict()
     return rec(exp, pattern)
 
 def find_pattern(expr, pat, transform=None):
