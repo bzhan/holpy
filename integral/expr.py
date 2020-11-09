@@ -991,15 +991,22 @@ def match(exp, pattern):
             return rec(exp.body, pattern) 
     return rec(exp, pattern)
 
-def find_pattern(expr, pat):
+def find_pattern(expr, pat, transform=None):
     """Find all subexpr can be matched with the given pattern.
-    Return the matched expr list. If loc is True, also return location.
+
+    Return a list of: matched expression, location, mapping of symbols.
+    If the transform function is provided, first apply it to the mapping
+    of symbols.
+ 
     """
     c = []
     def rec(e, pat, cur_loc):
         mapping = match(e, pat)
         if mapping:
-            c.append((e, cur_loc, mapping))
+            if transform is None:
+                c.append((e, cur_loc, mapping))
+            else:
+                c.append((e, cur_loc, transform(mapping)))
         if e.ty in (OP, FUN):
             for i in range(len(e.args)):
                 rec(e.args[i], pat, cur_loc + (i,))

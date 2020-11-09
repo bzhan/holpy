@@ -638,89 +638,25 @@ class HeuristicElimQuadratic(HeuristicRule):
 
     """
     def eval(self, e, loc=[]):
-        def find_abc(quad):
-            """Find the value of a, b, c in a + b * x + c * x ^ 2."""
-            if quad.args[0].ty == CONST: # a + b * x^2
-                if quad.args[1].ty == OP and quad.args[1].op == "*": # a + b * x^2
-                    return (quad.args[0], Const(0), quad.args[1].args[0])
-                elif quad.args[1].ty == OP and len(quad.args[1].args) == 1: # a + -x^2
-                    return (quad.args[0], Const(0), Const(-1))
-                elif quad.args[1].ty == OP and quad.args[1].op == "^": # a + x ^ 2
-                    return (quad.args[0], Const(0), Const(1))
-                else:
-                    raise NotImplementedError
-            elif not (quad.args[0].ty == OP and quad.args[0].op in ("+","-")): # b*x +/- a*x^2
-                if quad.args[0].ty == VAR: # x +/- a*x^2 
-                    if quad.args[1].ty == OP and quad.args[1].op == "^": # x +/- x^2
-                        if quad.op == "+":
-                            return (Const(0), Const(1), Const(1))
-                        else:
-                            return (Const(0), Const(1), Const(-1))
-                    else: # x +/- a * x^2
-                        if quad.op == '+':
-                            return (Const(0), Const(1), quad.args[1].args[0])
-                        else:
-                            return (Const(0), Const(1), -quad.args[1].args[0])
-                else: # b*x + a*x^2
-                    if quad.args[1].ty == OP and quad.args[1].op == "^": # b*x +/- x^2
-                        if quad.op == "+":
-                            return (Const(0), quad.args[0].args[0], Const(1))
-                        else:
-                            return (Const(0), quad.args[0].args[0], Const(-1))
-                    else: # b* x +/- a * x^2
-                        if quad.op == "+":
-                            return (Const(0), quad.args[0].args[0], quad.args[1].args[0])
-                        else:
-                            return (Const(0), quad.args[0].args[0], -quad.args[1].args[0])
-            else: # c +/- b*x +/- a * x ^ 2
-                if quad.args[0].args[1].ty == VAR: # c +/- x +/- x^2
-                    if quad.args[1].args[1] == Const(2): # c +/- x +/- x^2
-                        return check(quad, (quad.args[0].args[0], Const(1), Const(1)))
-                    else:# c + x + a*x^2
-                        return check(quad, (quad.args[0].args[0], Const(1), quad.args[1].args[0])) 
-                else:# c +/- b*x +/- a * x^2
-                    if quad.args[1].args[1] == Const(2): # c +/- b*x +/- x^2
-                        return check(quad, (quad.args[0].args[0], quad.args[0].args[1].args[0], Const(1))) 
-                    else:
-                        return check(quad, (quad.args[0].args[0], quad.args[0].args[1].args[0], quad.args[1].args[0]))
-
-        def check(quad, t):
-            """Input: quad is a expression in a +/- b * x +/- c * x ^ 2 form, 
-                      t is (a, b, c) tuple
-            
-               Output: the quadratic expression's coefficient.
-            """
-            symbol = [quad.op, quad.args[0].op]
-            if symbol == ["+", "+"]:
-                return (t[0], t[1], t[2])
-            elif symbol == ["-", "+"]:
-                return (t[0], t[1], Op("-",t[2]).normalize())
-            elif symbol == ["+", "-"]:
-                return (t[0], Op("-",t[1]).normalize(), t[2])
-            elif symbol == ["-", "-"]:
-                return (t[0], Op("-",t[1]).normalize(), Op("-",t[2]).normalize())
-            else:
-                raise NotImplementedError
-
         x = Symbol('x', [VAR, FUN])
         a = Symbol('a', [CONST])
         b = Symbol('b', [CONST])
         c = Symbol('c', [CONST])
 
         quadratic_patterns = [
-            x + (x^Const(2)),
-            x + a * (x^Const(2)),
-            b * x + a * (x^Const(2)),
-            c + x + (x^Const(2)),
-            c + x + a * (x^Const(2)),
-            c + b * x + (x^Const(2)),
-            c + b * x + a*(x^Const(2)),
-            c + (x ^ Const(2))
+            (x + (x^Const(2)), lambda m: (Const(0), Const(1), Const(1))),
+            (x + a * (x^Const(2)), lambda m: (Const(0), Const(1), m[a])),
+            (b * x + a * (x^Const(2)), lambda m: (Const(0), m[b], m[a])),
+            (c + x + (x^Const(2)), lambda m: (m[c], Const(1), Const(1))),
+            (c + x + a * (x^Const(2)), lambda m: (m[c], Const(1), m[a])),
+            (c + b * x + (x^Const(2)), lambda m: (m[c], m[b], Const(1))),
+            (c + b * x + a*(x^Const(2)), lambda m: (m[c], m[b], m[a])),
+            (c + (x ^ Const(2)), lambda m: (m[c], Const(0), Const(1))),
         ]
 
         quadratic_terms = []
-        for p in quadratic_patterns:
-            quad = find_pattern(e.body, p)
+        for p, f in quadratic_patterns:
+            quad = find_pattern(e.body, p, transform=f)
             if quad:
                 quadratic_terms.append(quad)
 
@@ -730,8 +666,7 @@ class HeuristicElimQuadratic(HeuristicRule):
         quadratics = [l for r in quadratic_terms for l in r]
         res = []
 
-        for quad, l, _ in quadratics:
-            a, b, c = find_abc(quad)
+        for quad, l, (a, b, c) in quadratics:
             new_integral, f = rules.Substitution1(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
 
             step1 = [calc.SubstitutionStep(
@@ -751,52 +686,38 @@ class HeuristicTrigSubstitution(HeuristicRule):
     (3) a < 0, b > 0, substitute x by sqrt(-a/b)*sec(u);
 
     """
-
     def eval(self, e, loc=None):
-        def find_ab(p):
-            """Find a, b in a + b*x^2"""
-            if p.is_minus() and p.args[1].is_power() and p.args[1].args[1] == Const(2):
-                return (p.args[0], Const(-1))
-            elif p.is_minus() and p.args[1].is_times():
-                return (p.args[0], -p.args[1].args[0])
-            elif p.args[1].args[1] == Const(2): # a + x ^ 2
-                return (p.args[0], Const(1))
-            elif p.args[1].is_uminus():
-                return (p.args[0], Const(-1))
-            else: # a + b*x^2
-                return (p.args[0], p.args[1].args[0])
-
         a = Symbol('a', [CONST])
         b = Symbol('b', [CONST])
         x = Symbol('x', [VAR])
 
         pats = [
-            a + (x ^ Const(2)),
-            a + b * (x ^ Const(2)),
-            a - b * (x ^ Const(2)),
-            a + -(x ^ Const(2)),
-            a - (x ^ Const(2)),
+            (a + (x ^ Const(2)), lambda m: (m[a], Const(1))),
+            (a + b * (x ^ Const(2)), lambda m: (m[a], m[b])),
+            (a - b * (x ^ Const(2)), lambda m: (m[a], Const(-(m[b].val)))),
+            (a + -(x ^ Const(2)), lambda m: (m[a], Const(-1))),
+            (a - (x ^ Const(2)), lambda m: (m[a], Const(-1)))
         ]
 
         all_subterms = []
-        for p in pats:
-            all_subterms.extend(find_pattern(e.body, p))
+        for p, f in pats:
+            all_subterms.extend(find_pattern(e.body, p, transform=f))
 
         if not all_subterms:
             return []
 
         res = []
-        for s, loc, _ in all_subterms:
-            a, b = find_ab(s)
-            assert not a.val < 0 or not b.val < 0, "Invalid value: a=%s, b=%s" % (a.val, b.val)
-            if a.val > 0 and b.val > 0:
-                subst = Op("^", Const(Fraction(a.val, b.val)), Const(Fraction(1,2))).normalize()*tan(Var("u"))
+        for s, loc, (a, b) in all_subterms:
+            a, b = a.val, b.val
+            assert not a < 0 or not b < 0, "Invalid value: a=%s, b=%s" % (a, b)
+            if a > 0 and b > 0:
+                subst = Op("^", Const(Fraction(a, b)), Const(Fraction(1,2))).normalize() * tan(Var("u"))
                 
-            elif a.val > 0 and b.val < 0:
-                subst = Op("^", Const(Fraction(a.val, -b.val)), Const(Fraction(1,2))).normalize() * sin(Var("u"))
+            elif a > 0 and b < 0:
+                subst = Op("^", Const(Fraction(a, -b)), Const(Fraction(1,2))).normalize() * sin(Var("u"))
             
-            elif a.val < 0 and b.val > 0:
-                subst = Op("^", Const(Fraction(-a.val, b.val)), Const(Fraction(1,2))).normalize() * sec(Var("u"))
+            elif a < 0 and b > 0:
+                subst = Op("^", Const(Fraction(-a, b)), Const(Fraction(1,2))).normalize() * sec(Var("u"))
 
             new_integral = rules.Substitution2("u", subst).eval(e)
             step = [calc.SubstitutionInverseStep(new_integral, "u", subst)]
