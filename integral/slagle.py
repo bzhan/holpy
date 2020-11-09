@@ -176,32 +176,32 @@ class HalfAngleIdentity(AlgorithmRule):
         pat5 = y * sin(x) * cos(x)
         pat6 = y * cos(x) * sin(x)
 
-        sin_cos_expr = find_pattern(e, pat1, loc=True)
-        cos_sin_expr = find_pattern(e, pat2, loc=True)
-        sin_power_expr = find_pattern(e, pat3, loc=True)
-        cos_power_expr = find_pattern(e, pat4, loc=True)
-        y_sin_cos_expr = find_pattern(e, pat5, loc=True)
-        y_cos_sin_expr = find_pattern(e, pat6, loc=True)
+        sin_cos_expr = find_pattern(e, pat1)
+        cos_sin_expr = find_pattern(e, pat2)
+        sin_power_expr = find_pattern(e, pat3)
+        cos_power_expr = find_pattern(e, pat4)
+        y_sin_cos_expr = find_pattern(e, pat5)
+        y_cos_sin_expr = find_pattern(e, pat6)
 
 
         half = Const(Fraction(1, 2))
 
-        for t, loc in sin_cos_expr:
+        for t, loc, _ in sin_cos_expr:
             e = e.replace_trig(t, half * sin(Const(2) * t.args[0].args[0]))
 
-        for t, loc in cos_sin_expr:
+        for t, loc, _ in cos_sin_expr:
             e = e.replace_trig(t, half * sin(Const(2) * t.args[0].args[0]))
 
-        for t, loc in sin_power_expr:
+        for t, loc, _ in sin_power_expr:
             e = e.replace_trig(t, half + half * cos(Const(2) * t.args[0].args[0]))
 
-        for t, loc in cos_power_expr:
+        for t, loc, _ in cos_power_expr:
             e = e.replace_trig(t, half - half * cos(Const(2) * t.args[0].args[0]))
         
-        for t, loc in y_sin_cos_expr:
+        for t, loc, _ in y_sin_cos_expr:
             e = e.replace_trig(t, half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0]))
 
-        for t, loc in y_cos_sin_expr:
+        for t, loc, _ in y_cos_sin_expr:
             e = e.replace_trig(t, half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0]))
 
         return e, None
@@ -223,12 +223,12 @@ class TrigIdentity(AlgorithmRule):
         pat3 = Const(1) + -(sin(x) ** Const(2))
         pat4 = Const(1) + -(cos(x) ** Const(2))
         
-        sin_power_expr = [(t, loc) for t, loc in find_pattern(e, pat1, loc=True)
+        sin_power_expr = [(t, loc) for t, loc, _ in find_pattern(e, pat1)
                           if t.args[1].args[0].val < 0 and t.args[0].val + t.args[1].args[0].val == 0]
-        cos_power_expr = [(t, loc) for t, loc in find_pattern(e, pat2, loc=True)
+        cos_power_expr = [(t, loc) for t, loc, _ in find_pattern(e, pat2)
                           if t.args[1].args[0].val < 0 and t.args[0].val + t.args[1].args[0].val == 0]
-        sin_power1_expr = find_pattern(e, pat3, loc=True)
-        cos_power1_expr = find_pattern(e, pat4, loc=True)
+        sin_power1_expr = find_pattern(e, pat3)
+        cos_power1_expr = find_pattern(e, pat4)
     
         for t, loc in sin_power_expr:
             sin_coeff = t.args[0]
@@ -240,11 +240,11 @@ class TrigIdentity(AlgorithmRule):
             body = t.args[1].args[1].args[0].args[0]
             e = e.replace_trig(t, cos_coeff * (sin(body) ** Const(2)))
 
-        for t, loc in sin_power1_expr:
+        for t, loc, _ in sin_power1_expr:
             body = t.args[1].args[0].args[0].args[0]
             e = e.replace_trig(t, (cos(body) ** Const(2)))
         
-        for t, loc in cos_power1_expr:
+        for t, loc, _ in cos_power1_expr:
             body = t.args[1].args[0].args[0].args[0]
             e = e.replace_trig(t, (sin(body) ** Const(2)))
 
@@ -286,27 +286,27 @@ class TrigFunction(HeuristicRule):
         sec_pat = sec(x)
         csc_pat = csc(x)
 
-        tan_expr = find_pattern(e, tan_pat, loc=True)
-        cot_expr = find_pattern(e, cot_pat, loc=True)
-        sec_expr = find_pattern(e, sec_pat, loc=True)
-        csc_expr = find_pattern(e, csc_pat, loc=True)
+        tan_expr = find_pattern(e, tan_pat)
+        cot_expr = find_pattern(e, cot_pat)
+        sec_expr = find_pattern(e, sec_pat)
+        csc_expr = find_pattern(e, csc_pat)
 
         steps = []
         reason = "sine cosine"
 
-        for t, loc in tan_expr:
+        for t, loc, _ in tan_expr:
             e = e.replace_trig(t, sin(t.args[0])/cos(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, sin(t.args[0])/cos(t.args[0]), reason))          
 
-        for t, loc in cot_expr:
+        for t, loc, _ in cot_expr:
             e = e.replace_trig(t, cos(t.args[0])/sin(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, cos(t.args[0])/sin(t.args[0]), reason))  
 
-        for t, loc in sec_expr:
+        for t, loc, _ in sec_expr:
             e = e.replace_trig(t, Const(1)/cos(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/cos(t.args[0]), reason))
 
-        for t, loc in csc_expr:
+        for t, loc, _ in csc_expr:
             e = e.replace_trig(t, Const(1)/sin(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/sin(t.args[0]), reason))
 
@@ -331,27 +331,27 @@ class TrigFunction(HeuristicRule):
         cot_pat = cot(x)
         csc_pat = csc(x)
 
-        sin_expr = find_pattern(e, sin_pat, loc=True)
-        cos_expr = find_pattern(e, cos_pat, loc=True)
-        cot_expr = find_pattern(e, cot_pat, loc=True)
-        csc_expr = find_pattern(e, csc_pat, loc=True)
+        sin_expr = find_pattern(e, sin_pat)
+        cos_expr = find_pattern(e, cos_pat)
+        cot_expr = find_pattern(e, cot_pat)
+        csc_expr = find_pattern(e, csc_pat)
 
         steps = []
         reason = "tangent secant"
 
-        for t, loc in sin_expr:
+        for t, loc, _ in sin_expr:
             e = e.replace_trig(t, tan(t.args[0])/sec(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, tan(t.args[0])/sec(t.args[0]), reason))
 
-        for t, loc in cos_expr:
+        for t, loc, _ in cos_expr:
             e = e.replace_trig(t, Const(1)/sec(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/sec(t.args[0]), reason))
 
-        for t, loc in cot_expr:
+        for t, loc, _ in cot_expr:
             e = e.replace_trig(t, Const(1)/tan(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/tan(t.args[0]), reason))
 
-        for t, loc in csc_expr:
+        for t, loc, _ in csc_expr:
             e = e.replace_trig(t, sec(t.args[0])/tan(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, sec(t.args[0])/tan(t.args[0]), reason))
 
@@ -371,27 +371,27 @@ class TrigFunction(HeuristicRule):
         tan_pat = tan(x)
         sec_pat = sec(x)
 
-        sin_expr = find_pattern(e, sin_pat, loc=True)
-        cos_expr = find_pattern(e, cos_pat, loc=True)
-        tan_expr = find_pattern(e, tan_pat, loc=True)
-        sec_expr = find_pattern(e, sec_pat, loc=True)
+        sin_expr = find_pattern(e, sin_pat)
+        cos_expr = find_pattern(e, cos_pat)
+        tan_expr = find_pattern(e, tan_pat)
+        sec_expr = find_pattern(e, sec_pat)
 
         steps = []
         reason = "cotangent cosecant"
 
-        for t, loc in sin_expr:
+        for t, loc, _ in sin_expr:
             e = e.replace_trig(t, Const(1)/csc(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/csc(t.args[0]), reason))
 
-        for t, loc in cos_expr:
+        for t, loc, _ in cos_expr:
             e = e.replace_trig(t, cot(t.args[0])/csc(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, cot(t.args[0])/csc(t.args[0]), reason))
 
-        for t, loc in tan_expr:
+        for t, loc, _ in tan_expr:
             e = e.replace_trig(t, Const(1)/cot(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/cot(t.args[0]), reason))
 
-        for t, loc in sec_expr:
+        for t, loc, _ in sec_expr:
             e = e.replace_trig(t, csc(t.args[0])/cot(t.args[0]))
             steps.append(calc.TrigSubstitutionStep(e, loc, t, csc(t.args[0])/cot(t.args[0]), reason))
 
@@ -720,7 +720,7 @@ class HeuristicElimQuadratic(HeuristicRule):
 
         quadratic_terms = []
         for p in quadratic_patterns:
-            quad = find_pattern(e.body, p, True)
+            quad = find_pattern(e.body, p)
             if quad:
                 quadratic_terms.append(quad)
 
@@ -730,12 +730,12 @@ class HeuristicElimQuadratic(HeuristicRule):
         quadratics = [l for r in quadratic_terms for l in r]
         res = []
 
-        for quad, l in quadratics:
+        for quad, l, _ in quadratics:
             a, b, c = find_abc(quad)
             new_integral, f = rules.Substitution1(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
 
             step1 = [calc.SubstitutionStep(
-                new_integral, new_integral.var, Var(e.var) + (b/(Const(2)*c)), f, loc + [0] + l)]
+                new_integral, new_integral.var, Var(e.var) + (b/(Const(2)*c)), f, tuple(loc) + (0,) + l)]
             new_integral, step2 = HeuristicExpandPower().eval(new_integral)[0]
             res.append((new_integral, step1 + step2))
 
@@ -780,13 +780,13 @@ class HeuristicTrigSubstitution(HeuristicRule):
 
         all_subterms = []
         for p in pats:
-            all_subterms.extend(find_pattern(e.body, p, loc=True))
+            all_subterms.extend(find_pattern(e.body, p))
 
         if not all_subterms:
             return []
 
         res = []
-        for s, loc in all_subterms:
+        for s, loc, _ in all_subterms:
             a, b = find_ab(s)
             assert not a.val < 0 or not b.val < 0, "Invalid value: a=%s, b=%s" % (a.val, b.val)
             if a.val > 0 and b.val > 0:
@@ -816,10 +816,10 @@ class HeuristicExpandPower(HeuristicRule):
         a = Symbol('a', [CONST])
         c = Symbol('c', [OP])
         pat = c ^ a
-        subexpr = find_pattern(e, pat, loc=True)
+        subexpr = find_pattern(e, pat)
 
         expand_expr = e
-        for s, l in subexpr:
+        for s, l, _ in subexpr:
             base = s.args[0].to_poly()
             exp = s.args[1].val
             if isinstance(exp, int) and exp > 1:
@@ -827,7 +827,7 @@ class HeuristicExpandPower(HeuristicRule):
                 for i in range(exp-1):
                     pw = pw * base
                 expand_expr = expand_expr.replace_expr(l, from_poly(pw))
-                steps.append(calc.UnfoldPowerStep(expand_expr, loc+l))
+                steps.append(calc.UnfoldPowerStep(expand_expr, tuple(loc)+l))
 
         return [(expand_expr, steps)]
 
@@ -851,7 +851,7 @@ class HeuristicExponentBase(HeuristicRule):
             return []
 
         coeffs = []
-        for exponent in exponents:
+        for exponent, _, _ in exponents:
             if exponent.args[0].ty == CONST:
                 coeffs.append(1)
             else:

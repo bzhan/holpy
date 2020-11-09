@@ -858,7 +858,7 @@ class Expr:
         subexpr = find_pattern(self, pat)
         expand_expr = self
 
-        for s in subexpr:
+        for s, _, _ in subexpr:
             base = s.args[0].to_poly()
             exp = s.args[1].val
             if isinstance(exp, int) and exp > 1:
@@ -930,10 +930,10 @@ def trig_transform(trig, var, rule_list=None):
 
 def match(exp, pattern):
     """Match expr with given pattern. 
-    ======
-    If successful, return True.
-    """
+    
+    If successful, return a dictionary mapping symbols to expressions.
 
+    """
     d = dict()
     def rec(exp, pattern):
         if not isinstance(pattern, Symbol) and exp.ty != pattern.ty:
@@ -991,37 +991,26 @@ def match(exp, pattern):
             return rec(exp.body, pattern) 
     return rec(exp, pattern)
 
-def find_pattern(expr, pat, loc=False):
+def find_pattern(expr, pat):
     """Find all subexpr can be matched with the given pattern.
     Return the matched expr list. If loc is True, also return location.
     """
     c = []
-    def rec(e, pat):
-        if match(e, pat):
-            c.append(e)
-        if e.ty in (OP, FUN):
-            for arg in e.args:
-                rec(arg, pat)
-        elif e.ty in (INTEGRAL, DERIV, EVAL_AT):
-            rec(e.body, pat)
-
-    def rec_loc(e, pat, loc):
-        if match(e, pat):
-            c.append((e, loc))
+    def rec(e, pat, cur_loc):
+        mapping = match(e, pat)
+        if mapping:
+            c.append((e, cur_loc, mapping))
         if e.ty in (OP, FUN):
             for i in range(len(e.args)):
-                rec_loc(e.args[i], pat, loc + [i])
+                rec(e.args[i], pat, cur_loc + (i,))
         elif e.ty in (INTEGRAL, DERIV, EVAL_AT):
-            rec_loc(e.body, pat, loc + [0])
+            rec(e.body, pat, cur_loc + (0,))
 
-    if loc:
-        rec_loc(expr, pat, [])
-    else:
-        rec(expr, pat)
+    rec(expr, pat, tuple())
     return c
 
 def collect_spec_expr(expr, symb):
-    c = [p.args[0] for p in find_pattern(expr, symb) if len(p.args) != 0]
+    c = [p.args[0] for p, _, _ in find_pattern(expr, symb) if len(p.args) != 0]
     return c   
 
 def decompose_expr_factor(e):
