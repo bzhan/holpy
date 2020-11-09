@@ -89,7 +89,38 @@ sec_table = {
     "pi": "-1"
 }
 
+asin_table = {
+    "-1": "-1/2 * pi",
+    "-1/2 * sqrt(3)": "-1/3 * pi",
+    "-1/2 * sqrt(2)": "-1/4 * pi",
+    "-1/2": "-1/6 * pi",
+    "0": "0",
+    "1/2": "1/6 * pi",
+    "1/2 * sqrt(2)": "1/4 * pi",
+    "1/2 * sqrt(3)": "1/3 * pi",
+    "1": "1/2 * pi",
+}
 
+atan_table = {
+    "-sqrt(3)": "-1/3 * pi",
+    "-1": "-1/4 * pi",
+    "-1/3 * sqrt(3)": "-1/6 * pi",
+    "0": "0",
+    "1/3 * sqrt(3)": "1/6 * pi",
+    "1": "1/4 * pi",
+    "sqrt(3)": "1/3 * pi",
+}
+
+acsc_table = {
+    "-2": "-1/6 * pi",
+    "-sqrt(2)": "-1/4 * pi",
+    "-2/3 * sqrt(3)": "-1/3 * pi",
+    "-1": "-1/2 * pi",
+    "1": "1/2 * pi",
+    "2/3 * sqrt(3)": "1/3 * pi",
+    "sqrt(2)": "1/4 * pi",
+    "2": "1/6 * pi",
+}
 
 class Location:
     """Location within an expression."""
@@ -1460,26 +1491,32 @@ trigFun = {
     TR111: "negative sin-cos-tan powers to csc-sec-cot"
 }
 
+trig_table_cache = None
 def trig_table():
-    """Trigonometric value table on 0,pi/6,pi/4,pi/3,pi/2,(2/3)*pi,(3/4)*pi,(5/6)*pi,pi.
-    
-    """
-    return {
-        "sin": {parser.parse_expr(key):parser.parse_expr(value) for key, value in sin_table.items()},
-        "cos": {parser.parse_expr(key):parser.parse_expr(value) for key, value in cos_table.items()},
-        "tan": {parser.parse_expr(key):parser.parse_expr(value) for key, value in tan_table.items()},
-        "cot": {parser.parse_expr(key):parser.parse_expr(value) for key, value in cot_table.items()},
-        "csc": {parser.parse_expr(key):parser.parse_expr(value) for key, value in csc_table.items()},
-        "sec": {parser.parse_expr(key):parser.parse_expr(value) for key, value in sec_table.items()},
-    }
+    """Trigonometric value table on 0,pi/6,pi/4,pi/3,pi/2,(2/3)*pi,(3/4)*pi,(5/6)*pi,pi."""
+    global trig_table_cache
+    if trig_table_cache is None:
+        trig_table_cache = {
+            "sin": {parser.parse_expr(key):parser.parse_expr(value) for key, value in sin_table.items()},
+            "cos": {parser.parse_expr(key):parser.parse_expr(value) for key, value in cos_table.items()},
+            "tan": {parser.parse_expr(key):parser.parse_expr(value) for key, value in tan_table.items()},
+            "cot": {parser.parse_expr(key):parser.parse_expr(value) for key, value in cot_table.items()},
+            "csc": {parser.parse_expr(key):parser.parse_expr(value) for key, value in csc_table.items()},
+            "sec": {parser.parse_expr(key):parser.parse_expr(value) for key, value in sec_table.items()},
+        }
+    return trig_table_cache
 
+inverse_trig_table_cache = None
 def inverse_trig_table():
     """Inverse trigonometric value table."""
-    return {
-        "asin": {parser.parse_expr(value):parser.parse_expr(key) for key, value in sin_table.items()},
-        "acos": {parser.parse_expr(value):parser.parse_expr(key) for key, value in cos_table.items()},
-        "atan": {parser.parse_expr(value):parser.parse_expr(key) for key, value in tan_table.items()},
-        "acot": {parser.parse_expr(value):parser.parse_expr(key) for key, value in cot_table.items()},
-        "acsc": {parser.parse_expr(value):parser.parse_expr(key) for key, value in csc_table.items()},
-        "asec": {parser.parse_expr(value):parser.parse_expr(key) for key, value in sec_table.items()},
-    }
+    global inverse_trig_table_cache
+    if inverse_trig_table_cache is None:
+        inverse_trig_table_cache = {
+            "asin": {parser.parse_expr(key):parser.parse_expr(value) for key, value in asin_table.items()},
+            "acos": {parser.parse_expr(value):parser.parse_expr(key) for key, value in cos_table.items()},
+            "atan": {parser.parse_expr(key):parser.parse_expr(value) for key, value in atan_table.items()},
+            "acot": {parser.parse_expr(value):parser.parse_expr(key) for key, value in cot_table.items()},
+            "acsc": {parser.parse_expr(key):parser.parse_expr(value) for key, value in acsc_table.items()},
+            "asec": {parser.parse_expr(value):parser.parse_expr(key) for key, value in sec_table.items()},
+        }
+    return inverse_trig_table_cache
