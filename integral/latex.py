@@ -63,7 +63,7 @@ def convert_expr(e, mode="large"):
                     sy = "{%s}" % sy
                 if y.ty == expr.OP and y.op == e.op and y.op in ("-", "/"):
                     sy = "{(%s)}" % sy
-                return "%s %s {%s}" % (sx, e.op, sy)
+                return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "*":
                 if not x.is_constant() and not y.is_constant() and not (y.ty == OP and y.op == "^" and y.args[1].ty == CONST and y.args[1].val < 0) or x == expr.Fun("pi") or y == expr.Fun("pi"):
                     if x.ty == expr.OP and (x.op not in ("^", "*")) and not len(x.args) == 1:
@@ -80,7 +80,7 @@ def convert_expr(e, mode="large"):
                         sy = "(" + sy + ")"
                     if x.ty == expr.CONST and isinstance(x.val, Fraction) and mode == "short":
                         sx = "(" + sx + ")"
-                    return "%s \\times %s" % (sx, sy)
+                    return "%s %s" % (sx, sy)
                 elif x.is_constant() and y.ty == CONST and isinstance(y.val, Fraction) and y.val.numerator == 1 and y.val.denominator != 1:
                     return "\\frac{%s}{%s}" % (sx, convert_expr(expr.Const(y.val.denominator)))
                 elif y.ty == OP and y.op == "^" and y.args[1].ty == CONST and y.args[1].val < 0:
