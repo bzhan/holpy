@@ -829,7 +829,7 @@ class OmegaHOL:
         """
         def norm_pt(pt):
             """If comparison in pt's prop does not contain constant, add a zero on the tail."""
-            tm = factoid_to_term(self.vars, term_to_factoid(self.vars, lower.prop))
+            tm = factoid_to_term(self.vars, term_to_factoid(self.vars, pt.prop))
             pt1 = integer.omega_form_conv().get_proof_term(tm).symmetric()
             return pt.on_prop(conv.top_sweep_conv(conv.rewr_conv(pt1)))
        
