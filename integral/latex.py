@@ -3,7 +3,7 @@
 from decimal import Decimal
 from fractions import Fraction
 from integral import expr
-from integral.expr import OP, CONST, FUN, Const, Op
+from integral.expr import EVAL_AT, OP, CONST, FUN, Const, Op
 
 
 def convert_expr(e, mode="large"):
@@ -58,12 +58,12 @@ def convert_expr(e, mode="large"):
                 if x.priority() < expr.op_priority[e.op]:
                     sx = "(%s)" % sx
                 if y.priority() < expr.op_priority[e.op]:
-                    sy = "(%s)" % sy
+                    sy = "{(%s)}" % sy
                 if e.op == "^" and len(sy) > 1:
                     sy = "{%s}" % sy
                 if y.ty == expr.OP and y.op == e.op and y.op in ("-", "/"):
-                    sy = "(%s)" % sy
-                return "%s %s %s" % (sx, e.op, sy)
+                    sy = "{(%s)}" % sy
+                return "%s %s {%s}" % (sx, e.op, sy)
             elif e.op == "*":
                 if not x.is_constant() and not y.is_constant() and not (y.ty == OP and y.op == "^" and y.args[1].ty == CONST and y.args[1].val < 0) or x == expr.Fun("pi") or y == expr.Fun("pi"):
                     if x.ty == expr.OP and (x.op not in ("^", "*")) and not len(x.args) == 1:
@@ -80,7 +80,7 @@ def convert_expr(e, mode="large"):
                         sy = "(" + sy + ")"
                     if x.ty == expr.CONST and isinstance(x.val, Fraction) and mode == "short":
                         sx = "(" + sx + ")"
-                    return "%s %s" % (sx, sy)
+                    return "%s \\times %s" % (sx, sy)
                 elif x.is_constant() and y.ty == CONST and isinstance(y.val, Fraction) and y.val.numerator == 1 and y.val.denominator != 1:
                     return "\\frac{%s}{%s}" % (sx, convert_expr(expr.Const(y.val.denominator)))
                 elif y.ty == OP and y.op == "^" and y.args[1].ty == CONST and y.args[1].val < 0:
@@ -88,7 +88,7 @@ def convert_expr(e, mode="large"):
                         return "\\frac{%s}{%s}" % (sx, convert_expr(y.args[0]))
                     else:
                         new_denom = Op("^", y.args[0], Const(-y.args[1].val))
-                        return "\\frac{%s}{%s}" % (sx, new_denom)
+                        return "\\frac{%s}{%s}" % (sx, convert_expr(new_denom, mode))
                 elif x.ty == expr.CONST:
                     if x.val == -1:
                         if y.ty == OP:
@@ -110,7 +110,9 @@ def convert_expr(e, mode="large"):
                     elif not y.is_constant():
                         if y.ty == OP and y.op != '^':
                             return "%s (%s)" % (sx, sy)
-                        return "%s %s" % (sx, sy)    
+                        elif y.ty == EVAL_AT:
+                            return "%s \\times (%s)" % (sx, sy)
+                        return "%s %s" % (sx, sy)
                     elif y.ty != CONST and y.is_constant() and not (y.ty == OP and y.op in ('+', '-')):
                         return "%s %s"%(sx, sy)
                     elif y.ty == OP and y.op == "^" and not y.args[0].is_constant():
@@ -137,7 +139,7 @@ def convert_expr(e, mode="large"):
                             sxx = convert_expr(x.args[0])
                             return "-\\frac{%s}{%s}" % (sxx, sy)
                         elif y.ty == expr.CONST:
-                            return "\\frac{1}{%s} * %s" % (sy, sx)
+                            return "\\frac{1}{%s} \\times %s" % (sy, sx)
                         else:
                             return "\\frac{%s}{%s}" % (sx, sy)
                     else:

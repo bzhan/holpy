@@ -537,6 +537,9 @@ class Expr:
                         log_factors.append(poly.const_fraction(e) * poly.const_singleton(log(Const(n))))
                     elif isinstance(n, Expr) and n == E:
                         log_factors.append(poly.const_fraction(e))
+                    elif isinstance(n, Expr) and n.is_fun() and n.func_name == "exp":
+                        body = n.args[0]
+                        log_factors.append(poly.const_singleton(body))
                     else:
                         log_factors.append(poly.const_fraction(e) * poly.const_singleton(log(n)))
                 if mono.coeff == 1:

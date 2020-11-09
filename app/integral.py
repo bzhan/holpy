@@ -69,7 +69,7 @@ def integral_validate_integral():
 @app.route("/api/integral-super-simplify", methods=['POST'])
 def integral_super_simplify():
     data = json.loads(request.get_data().decode('utf-8'))
-    rules_set = [integral.rules.Simplify(), integral.rules.Linearity(), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
+    rules_set = [integral.rules.Simplify(), integral.rules.OnSubterm(integral.rules.Linearity()), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
     abs_rule = integral.rules.ElimAbs()
     problem = integral.parser.parse_expr(data['problem'])
     if not (abs_rule.check_zero_point(problem) and len(problem.getAbs()) == 0):
@@ -578,7 +578,7 @@ def integral_polynomial_division():
 @app.route("/api/integral-save-file", methods=['POST'])
 def integral_save_file():
     data = json.loads(request.get_data().decode('utf-8'))
-    file_name = "integral/examples/%s.json" % data['filename']
+    file_name = "integral/examples/%s" % data['filename']
     with open(file_name, 'w', encoding='utf-8') as f:
         json.dump({"content": data['content']}, f, indent=4, ensure_ascii=False, sort_keys=True)
 

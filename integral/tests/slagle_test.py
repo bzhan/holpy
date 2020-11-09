@@ -87,7 +87,7 @@ class SlagleTest(unittest.TestCase):
     def testHeuristicSubstitution(self):
         test_data = [
             ('INT x:[1,2]. tan(x)^4',
-             ['INT y:[tan(2),tan(1)]. -y ^ 4 * (1 + y ^ 2) ^ -1']),
+             ['INT u:[tan(2),tan(1)]. -u ^ 4 * (1 + u ^ 2) ^ -1']),
         ]
 
         for v, v_res in test_data:
@@ -98,7 +98,7 @@ class SlagleTest(unittest.TestCase):
     def testHeuristicElimQuadratic(self):
         test_data = [
             ('INT x:[0,1]. x/(sqrt(5 + 2 * x + x ^ 2))',
-             ['INT y:[1,2]. y * (4 + y ^ 2) ^ (-1/2) + -(4 + y ^ 2) ^ (-1/2)']),
+             ['INT u:[1,2]. u * (4 + u ^ 2) ^ (-1/2) + -(4 + u ^ 2) ^ (-1/2)']),
         ]
 
         for v, v_res in test_data:
@@ -142,19 +142,20 @@ class SlagleTest(unittest.TestCase):
     def testBFS(self):
         test_data = [
             # 'INT x:[1,2]. sin(x)^4/cos(x)^4',
-            'INT x:[0, 1]. (2*x + 5)*(x^2+5*x)^7',
-            'INT x:[1,2]. sqrt(7*x+9)',
-            'INT x:[0, 1]. x^3/(1+x^4)^(1/4)',
-            'INT x:[0, 1].exp(5*x+2)',
-            'INT x:[exp(1),exp(2)].3/(x*log(x))',
-            'INT x:[0,1].cos(5*x)/exp(sin(5*x))',
-            'INT x:[0,1]. x * (x ^ (1/2) + x ^ (-1/2)) ^ 2',
+            # 'INT x:[0, 1]. (2*x + 5)*(x^2+5*x)^7',
+            # 'INT x:[1,2]. sqrt(7*x+9)',
+            # 'INT x:[0, 1]. x^3/(1+x^4)^(1/4)',
+            # 'INT x:[0, 1].exp(5*x+2)',
+            # 'INT x:[exp(1),exp(2)].3/(x*log(x))',
+            # 'INT x:[0,1].cos(5*x)/exp(sin(5*x))',
+            # 'INT x:[0,1]. x * (x ^ (1/2) + x ^ (-1/2)) ^ 2',
+            'INT x:[0, 4]. (2 * x + 1)/(2 * x ^ 2 + 2 * x + 1)',
             # 'INT x:[0,1]. exp(6*x)/(exp(4*x)+1)',
         ]
 
         for v in test_data:
             node = slagle.OrNode(v)
-            slagle.timeout(10)(slagle.bfs)(node)
+            slagle.timeout(90)(slagle.bfs)(node)
             self.assertTrue(node.resolved)
             # print(node)
             # print(node.resolved_steps)

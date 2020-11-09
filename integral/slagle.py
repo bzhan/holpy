@@ -25,7 +25,7 @@ linear_pat = [pat0, pat1, pat2, pat4, pat5]
 
 
 def gen_rand_letter(ex):
-    return string.ascii_lowercase[(string.ascii_lowercase.index(ex) + 1) % len(string.ascii_lowercase)]
+    return "u" if ex != "u" else "v"
 
 class AlgorithmRule:
     def eval(self, e):
@@ -585,7 +585,7 @@ class HeuristicSubstitution(HeuristicRule):
         if res: # res is not empty
             res = [(r, step) for r, step in res if r != Const(0)] # May have bug when result is 0.
             res = sorted(res, key=lambda x:x[0].depth)
-            return [res[0]] if res != [] else [] 
+            return [res[0]] if res != [] else []
 
         else:
             return []
@@ -1049,5 +1049,3 @@ def timeout(max_timeout):
             return res
         return func_wrapper
     return timeout_decorator
-
-
