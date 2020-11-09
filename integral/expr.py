@@ -997,7 +997,7 @@ def find_pattern(expr, pat, loc=False):
     """
     c = []
     def rec(e, pat):
-        if match(e.normalize(), pat):
+        if match(e, pat):
             c.append(e)
         if e.ty in (OP, FUN):
             for arg in e.args:
@@ -1006,7 +1006,7 @@ def find_pattern(expr, pat, loc=False):
             rec(e.body, pat)
 
     def rec_loc(e, pat, loc):
-        if match(e.normalize(), pat):
+        if match(e, pat):
             c.append((e, loc))
         if e.ty in (OP, FUN):
             for i in range(len(e.args)):

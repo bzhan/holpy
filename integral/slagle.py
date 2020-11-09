@@ -211,6 +211,8 @@ class TrigIdentity(AlgorithmRule):
     Take the following identities:
     1) a + (-a) * sin^2(x) = a * cos^2(x)
     2) a + (-a) * cos^2(x) = a * sin^2(x)
+    3) 1 + -sin^2(x) = cos^2(x)
+    4) 1 + -cos^2(x) = sin^2(x)
     """
     def eval(self, e):
         x = Symbol('x', [VAR, OP, FUN])
@@ -218,11 +220,15 @@ class TrigIdentity(AlgorithmRule):
         b = Symbol('b', [CONST])
         pat1 = a + b * (sin(x) ** Const(2))
         pat2 = a + b * (cos(x) ** Const(2))
+        pat3 = Const(1) + -(sin(x) ** Const(2))
+        pat4 = Const(1) + -(cos(x) ** Const(2))
         
-        sin_power_expr = [(t, loc) for t, loc in find_pattern(e, pat1, loc=True)\
-                        if t.args[1].args[0].val < 0 and t.args[0].val + t.args[1].args[0].val == 0]
-        cos_power_expr = [(t, loc) for t, loc in find_pattern(e, pat2, loc=True)\
-                        if t.args[1].args[0].val < 0 and t.args[0].val + t.args[1].args[0].val == 0]
+        sin_power_expr = [(t, loc) for t, loc in find_pattern(e, pat1, loc=True)
+                          if t.args[1].args[0].val < 0 and t.args[0].val + t.args[1].args[0].val == 0]
+        cos_power_expr = [(t, loc) for t, loc in find_pattern(e, pat2, loc=True)
+                          if t.args[1].args[0].val < 0 and t.args[0].val + t.args[1].args[0].val == 0]
+        sin_power1_expr = find_pattern(e, pat3, loc=True)
+        cos_power1_expr = find_pattern(e, pat4, loc=True)
     
         for t, loc in sin_power_expr:
             sin_coeff = t.args[0]
@@ -233,7 +239,15 @@ class TrigIdentity(AlgorithmRule):
             cos_coeff = t.args[0]
             body = t.args[1].args[1].args[0].args[0]
             e = e.replace_trig(t, cos_coeff * (sin(body) ** Const(2)))
+
+        for t, loc in sin_power1_expr:
+            body = t.args[1].args[0].args[0].args[0]
+            e = e.replace_trig(t, (cos(body) ** Const(2)))
         
+        for t, loc in cos_power1_expr:
+            body = t.args[1].args[0].args[0].args[0]
+            e = e.replace_trig(t, (sin(body) ** Const(2)))
+
         return e, None
 
 algorithm_rules = [
@@ -626,7 +640,6 @@ class HeuristicElimQuadratic(HeuristicRule):
     def eval(self, e, loc=[]):
         def find_abc(quad):
             """Find the value of a, b, c in a + b * x + c * x ^ 2."""
-            quad = quad.normalize()
             if quad.args[0].ty == CONST: # a + b * x^2
                 if quad.args[1].ty == OP and quad.args[1].op == "*": # a + b * x^2
                     return (quad.args[0], Const(0), quad.args[1].args[0])
@@ -704,7 +717,7 @@ class HeuristicElimQuadratic(HeuristicRule):
             c + b * x + a*(x^Const(2)),
             c + (x ^ Const(2))
         ]
-        
+
         quadratic_terms = []
         for p in quadratic_patterns:
             quad = find_pattern(e.body, p, True)
@@ -735,16 +748,21 @@ class HeuristicTrigSubstitution(HeuristicRule):
     There are 3 cases:
     (1) a > 0, b > 0, substitute x by sqrt(a/b)*tan(u);
     (2) a > 0, b < 0, substitute x by sqrt(a/-b)*sin(u);
-    (1) a < 0, b > 0, substitute x by sqrt(-a/b)*sec(u);
+    (3) a < 0, b > 0, substitute x by sqrt(-a/b)*sec(u);
 
     """
 
     def eval(self, e, loc=None):
         def find_ab(p):
             """Find a, b in a + b*x^2"""
-            p = p.normalize()
-            if p.args[1].args[1] == Const(2): # a + x ^ 2
+            if p.is_minus() and p.args[1].is_power() and p.args[1].args[1] == Const(2):
+                return (p.args[0], Const(-1))
+            elif p.is_minus() and p.args[1].is_times():
+                return (p.args[0], -p.args[1].args[0])
+            elif p.args[1].args[1] == Const(2): # a + x ^ 2
                 return (p.args[0], Const(1))
+            elif p.args[1].is_uminus():
+                return (p.args[0], Const(-1))
             else: # a + b*x^2
                 return (p.args[0], p.args[1].args[0])
 
@@ -755,17 +773,19 @@ class HeuristicTrigSubstitution(HeuristicRule):
         pats = [
             a + (x ^ Const(2)),
             a + b * (x ^ Const(2)),
+            a - b * (x ^ Const(2)),
+            a + -(x ^ Const(2)),
+            a - (x ^ Const(2)),
         ]
 
         all_subterms = []
         for p in pats:
-            all_subterms.append(find_pattern(e.body, p, loc=True))
+            all_subterms.extend(find_pattern(e.body, p, loc=True))
 
         if not all_subterms:
             return []
-        all_subterms = [p for l in all_subterms for p in l]        
-        res = []
 
+        res = []
         for s, loc in all_subterms:
             a, b = find_ab(s)
             assert not a.val < 0 or not b.val < 0, "Invalid value: a=%s, b=%s" % (a.val, b.val)
@@ -812,11 +832,11 @@ class HeuristicExpandPower(HeuristicRule):
         return [(expand_expr, steps)]
 
 class HeuristicExponentBase(HeuristicRule):
-    """Heuristic rule(i) in Slgle's thesis.
+    """Heuristic rule(i) in Slagle's thesis.
 
     If the integrand has a list of subexpression like [b^{mv}, b^{nv}, ...],
     the base b is an exponent function, n is integer and v is var.
-    Try to find the great divisor of m, n... assume it is k.
+    Try to find the greatest divisor of m, n... assume it is k.
     Then try substitution: u = b^{kv}. 
 
     """

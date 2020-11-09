@@ -212,32 +212,34 @@ class RulesTest(unittest.TestCase):
             s2 = parse_expr(e2)
             self.assertEqual(rule.eval(s1), s2)
 
-    def testElimAbsByMonomial(self):
-        test_data = [
-            ("INT x:[-pi/2, pi/2]. sqrt(cos(x))*abs(sin(x))",
-             "(INT x:[0,pi / 2]. cos(x) ^ (1/2) * sin(x)) + (INT x:[-pi / 2,0]. -cos(x) ^ (1/2) * sin(x))"),
-            ("INT x:[0, pi]. sqrt(2) * abs(cos(x))",
-             "(INT x:[0,pi / 2]. 2 ^ (1/2) * cos(x)) + (INT x:[pi / 2,pi]. -2 ^ (1/2) * cos(x))"),
-            ("INT u:[1,3]. u * abs(u) ^ -1",
-             "INT u:[1,3]. u * u ^ -1")
-        ]
-
-        for s, s1 in test_data:
-            s = parse_expr(s)
-            rule = rules.ElimAbs()
-            e = rules.OnSubterm(rule).eval(s).normalize()
-            self.assertEqual(str(e), s1)
-    
     def testElimAbs(self):
         test_data = [
-            ("INT u:[1, 4]. 2*u/(1 + abs(u))", "INT u:[1, 4]. 2*u/(1 + u)"),
-            ("INT u:[-2, 3]. 2*u/(abs(u) + abs(u + 1))", "(INT u:[-2,-1]. 2 * u / (-u + -(u + 1))) + (INT u:[-1,0]. 2 * u / (-u + u + 1)) + (INT u:[0,3]. 2 * u / (u + u + 1))")
+            ("INT x:[-pi/2, pi/2]. sqrt(cos(x))*abs(sin(x))",
+             "(INT x:[0,1/2 * pi]. sqrt(cos(x)) * sin(x)) + (INT x:[-1/2 * pi,0]. -sqrt(cos(x)) * sin(x))"),
+            ("INT x:[0, pi]. sqrt(2) * abs(cos(x))",
+             "(INT x:[0,1/2 * pi]. sqrt(2) * cos(x)) + (INT x:[1/2 * pi,pi]. -sqrt(2) * cos(x))"),
+            ("INT u:[1,3]. u * abs(u) ^ -1",
+             "INT u:[1,3]. 1"),
+            ("INT u:[1,4]. 2 * u / (1 + abs(u))",
+             "INT u:[1,4]. 2 * u * (1 + u) ^ -1"),
         ]
 
         for s, s1 in test_data:
             s = parse_expr(s)
-            s1 = parse_expr(s1)
-            self.assertEqual(rules.ElimAbs().eval(s).normalize(), s1.normalize())
+            e = rules.ElimAbs().eval(s).normalize()
+            self.assertEqual(str(e), s1)
+
+    def testElimAbs2(self):
+        test_data = [
+            ("INT u:[-2, 3]. 2 * u / (abs(u) + abs(u + 1))",
+             "(INT u:[-1,0]. 2 * u) + (INT u:[-2,-1]. 2 * u * (-1 + -2 * u) ^ -1) + (INT u:[0,3]. 2 * u * (1 + 2 * u) ^ -1)")
+        ]
+
+        for s, s1 in test_data:
+            e = parse_expr(s)
+            e = rules.ElimAbs().eval(e).normalize()
+            e = rules.OnSubterm(rules.ElimAbs()).eval(e).normalize()
+            self.assertEqual(str(e), s1)
 
     def testIntegrateByEquation(self):
         test_data = [
