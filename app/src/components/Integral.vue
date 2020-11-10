@@ -579,6 +579,18 @@ export default {
     operate: function(index){
       this.clear_input_info()
       this.r_query_mode = this.query_mode
+      // if user want to do substitution,
+      // recommend a subst variable.
+      if(this.r_query_mode === 'substitution'){
+        let current_var = this.sep_int[index]["var_name"];
+        if(current_var === "u"){
+          this.subst_data.var_name = "v";
+        }
+        else{
+          this.subst_data.var_name = "u";
+        }
+      }
+
       this.integral_index = index
     },
 
@@ -607,14 +619,6 @@ export default {
         return;
       this.sep_int = []
       this.query_mode = 'substitution'
-      //compute the default subst var name
-      let current_var = this.content[this.cur_id]["problem"][4];
-      
-      if (current_var != "u"){
-        this.subst_data.var_name = "u";
-      }else{
-        this.subst_data.var_name = "v";
-      }
       this.displaySeparateIntegrals()
     },
 

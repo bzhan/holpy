@@ -146,12 +146,13 @@ def integral_separate_integrals():
     problem = integral.parser.parse_expr(data['problem'])
     integrals = problem.separate_integral()
     n = []
-    for i in integrals:
+    for i, loc in integrals:
         n.append({
-            "text": str(i[0]),
-            "body": str(i[0].body),
-            "latex": integral.latex.convert_expr(i[0]),
-            "location": str(i[1])
+            "text": str(i),
+            "var_name": i.var,
+            "body": str(i.body),
+            "latex": integral.latex.convert_expr(i),
+            "location": str(loc)
         })
     return json.dumps(n)
 
@@ -182,9 +183,9 @@ def integral_compose_integral():
             rhs = d['rhs']
     curr = integral.parser.parse_expr(data['cur_calc'])
     new_expr = curr
-    old_integral = curr.separate_integral()
+    old_integral, _ = curr.separate_integral()
     for i in range(len(old_integral)):
-        new_expr = new_expr.replace_trig(old_integral[i][0], new_integral[i])
+        new_expr = new_expr.replace_trig(old_integral[i], new_integral[i])
     info = {
         'text': str(new_expr),
         'latex': integral.latex.convert_expr(new_expr),
