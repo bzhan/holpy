@@ -3,7 +3,7 @@
 from integral import expr
 from integral import poly
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
-        sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, sin, cos, FUN
+        sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, sin, cos, FUN, decompose_expr_factor
 import functools, operator
 from sympy.parsing import sympy_parser
 from sympy import Interval, expand_multinomial, apart
@@ -62,8 +62,13 @@ class Linearity(Rule):
         elif e.body.is_minus():
             return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) - \
                    rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
-        elif e.body.is_times() and e.body.args[0].is_constant():
-            return e.body.args[0] * rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
+        elif e.body.is_times():
+            factors = decompose_expr_factor(e.body)
+            if factors[0].is_constant():
+                return factors[0] * rec(expr.Integral(e.var, e.lower, e.upper, 
+                            functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
+            else:
+                return e
         elif e.body.is_constant() and e.body != Const(1):
             return e.body * expr.Integral(e.var, e.lower, e.upper, Const(1))
         else:

@@ -36,6 +36,7 @@ class RulesTest(unittest.TestCase):
              "-2 * (INT t:[0,-1/2]. exp(t))"),
             ("INT x:[-1, 1]. u / (u^2 + 1) + 1 / (u^2 + 1)", 
              "(INT x:[-1,1]. u / (u ^ 2 + 1)) + (INT x:[-1,1]. 1 / (u ^ 2 + 1))"),
+            ("INT x:[0,1]. 1/2 * x ^ 2 * (1 + x ^ 2) ^ -1", "1/2 * (INT x:[0,1]. x ^ 2 * (1 + x ^ 2) ^ -1)")
         ]
 
         rule = rules.Linearity()
