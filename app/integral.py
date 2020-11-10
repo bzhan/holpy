@@ -79,6 +79,8 @@ def integral_super_simplify():
         for i in range(5):
             for r in rules_set:             
                 problem = r.eval(problem)
+                if problem.is_constant():
+                    return problem
         return problem
     problem = simplify(integral.parser.parse_expr(data['problem']))
     return jsonify({
