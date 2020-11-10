@@ -349,7 +349,17 @@ class IntegrateByEquation(Rule):
         assert isinstance(lhs, Integral)
         self.lhs = lhs.normalize()
         self.rhs = rhs.normalize()
-        
+    
+    def validate(self):
+        """Determine whether the lhs exists in rhs"""
+        integrals = self.rhs.separate_integral()
+        if not integrals:
+            return False
+        for i,j in integrals:
+            if i.normalize() == self.lhs:
+                return True
+        return False
+
     def eval(self):
         """Eliminate the lhs's integral in rhs by solving equation."""
         rhs_var = None
@@ -376,4 +386,4 @@ class IntegrateByEquation(Rule):
         if coeff == 0:
             return self.rhs
         new_rhs = (self.rhs + (Const(-coeff)*self.lhs.alpha_convert(rhs_var))).normalize()
-        return (new_rhs/(Const(1-coeff))).normalize()
+        return (new_rhs/(Const(1-coeff))).normalize(), -Const(coeff).normalize()

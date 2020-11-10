@@ -270,7 +270,8 @@ class RulesTest(unittest.TestCase):
             s1 = parse_expr(s1)
             s2 = parse_expr(s2)
             rule = rules.IntegrateByEquation(s, s1)
-            self.assertEqual(rule.eval().normalize(), s2.normalize())
+            res, _ = rule.eval()
+            self.assertEqual(res.normalize(), s2.normalize())
 
     
 

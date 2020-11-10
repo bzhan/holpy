@@ -124,9 +124,9 @@ def integrate_by_equation():
         return jsonify({
             'flag': False
         })
-    coeff = rule.getCoeff()
-    coeff = (-coeff).normalize()
-    new_problem = rule.eval()
+    # coeff = rule.getCoeff()
+    # coeff = (-coeff).normalize()
+    new_problem, coeff = rule.eval()
     return jsonify({
         "text": str(new_problem),
         "latex": integral.latex.convert_expr(new_problem),
