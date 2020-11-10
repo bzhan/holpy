@@ -562,6 +562,7 @@ class Expr:
                 else:
                     norm_a = Const(x.val - (n+1)) * pi if n > 0 else Const(x.val - (n-1)) * pi
             table = trig_table()[self.func_name]
+            norm_a = norm_a.normalize_constant()
             if norm_a in table:
                 return table[norm_a].to_const_poly()
             elif match(norm_a, c * pi) and norm_a.args[0].val < 0:
