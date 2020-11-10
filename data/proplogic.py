@@ -22,7 +22,7 @@ class nnf_conv(Conv):
                 return pt.on_rhs(rewr_conv('de_morgan_thm1'), arg1_conv(self), arg_conv(self))
             elif t.arg.is_disj():
                 return pt.on_rhs(rewr_conv('de_morgan_thm2'), arg1_conv(self), arg_conv(self))
-            elif t.arg.is_equals():
+            elif t.arg.is_equals() and t.arg.lhs.get_type() == BoolType:
                 return pt.on_rhs(rewr_conv('neg_iff'), binop_conv(self))
             else:
                 return pt
