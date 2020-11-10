@@ -141,8 +141,8 @@ class ProofTerm():
     def combination(self, pt2):
         return ProofTerm("combination", None, [self, pt2])
 
-    def equal_intr(pt1, pt2):
-        return ProofTerm("equal_intr", None, [pt1, pt2])
+    def equal_intr(self, pt2):
+        return ProofTerm("equal_intr", None, [self, pt2])
 
     def equal_elim(self, pt2):
         if self.is_reflexive():

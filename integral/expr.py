@@ -1364,7 +1364,7 @@ class Fun(Expr):
     def __init__(self, func_name, *args):
         assert isinstance(func_name, str) and all(isinstance(arg, Expr) for arg in args)
         if len(args) == 0:
-            assert func_name in ["pi"]
+            assert func_name in ["pi", "inf"]
         elif len(args) == 1:
             assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "csc", "sec", "cot", "asin", "acos", "atan", "acot", "acsc", "asec", "abs"]
         else:
