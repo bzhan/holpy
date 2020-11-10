@@ -144,6 +144,16 @@ class RulesTest(unittest.TestCase):
         e, l = rules.Substitution1("u", parse_expr("pi * sqrt(x)")).eval(e)
         self.assertEqual(e, parse_expr("INT u:[0,21 * pi]. 2 * sin(u)"))
 
+    def testSubstitution11(self):
+        e = parse_expr("INT x:[0, 1]. (2 * x + 1)/(2 * x ^ 2 + 2 * x + 1)")
+        res, l = rules.Substitution1("u", parse_expr("2 * x ^ 2 + 2 * x + 1")).eval(e)
+        self.assertEqual(res, parse_expr("INT u:[1, 5]. (1/2) * u ^ (-1)"))
+
+    def testSubstitution12(self):
+        e = parse_expr("INT x:[0, 1]. x ^ 3 / (1 + x ^ 4) ^ (1/4)")
+        res, l = rules.Substitution1("u", parse_expr("1 + x ^ 4")).eval(e)
+        self.assertEqual(res, parse_expr("INT u:[1, 2]. (1/4) * u ^ (-1/4)"))
+
     def testUnfoldPower(self):
         test_data = [
             ("INT x:[1, 2].(x + y) ^ 3", "INT x:[1,2]. 3 * x * y ^ 2 + 3 * x ^ 2 * y + x ^ 3 + y ^ 3"),
