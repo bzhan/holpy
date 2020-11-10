@@ -5,6 +5,7 @@ from decimal import Decimal
 from fractions import Fraction
 
 from integral import expr
+from integral import inequality
 
 
 grammar = r"""
@@ -33,6 +34,8 @@ grammar = r"""
         | plus "-" times -> minus_expr | times
 
     ?expr: plus
+
+    !interval: ("(" | "[") expr "," expr ("]" | ")") -> interval_expr
 
     %import common.CNAME
     %import common.WS
@@ -105,15 +108,27 @@ class ExprTransformer(Transformer):
         e.selected = True
         expr.trig_identity.append(e)
         return e
-        
+
+    def interval_expr(self, l, e1, comma, e2, r):
+        return inequality.Interval(e1, e2, left_open=(l == '('), right_open=(r == ')'))
+
 
 expr_parser = Lark(grammar, start="expr", parser="lalr", transformer=ExprTransformer())
+interval_parser = Lark(grammar, start="interval", parser="lalr", transformer=ExprTransformer())
 
 def parse_expr(s):
     """Parse an integral expression."""
     try:
         trig_identity = []
         return expr_parser.parse(s)
+    except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
+        print("When parsing:", s)
+        raise e
+
+def parse_interval(s):
+    """Parse an interval."""
+    try:
+        return interval_parser.parse(s)
     except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
         print("When parsing:", s)
         raise e
