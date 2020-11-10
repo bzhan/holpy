@@ -233,6 +233,8 @@ class RulesTest(unittest.TestCase):
              "INT u:[1,3]. 1"),
             ("INT u:[1,4]. 2 * u / (1 + abs(u))",
              "INT u:[1,4]. 2 * u * (1 + u) ^ -1"),
+            ("INT x:[1/exp(1), 1]. abs(log(x))", "INT x:[exp(-1),1]. -log(x)"),
+            ("INT x:[1,exp(1)]. abs(log(x))", "INT x:[1,exp(1)]. log(x)")
         ]
 
         for s, s1 in test_data:

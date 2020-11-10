@@ -9,7 +9,7 @@ from integral import parser
 from sympy.parsing import sympy_parser
 import copy
 from sympy.simplify.fu import *
-from sympy import solveset, Interval, Eq, Union, EmptySet, pexquo
+from sympy import solveset, re, Interval, Eq, Union, EmptySet, pexquo
 from numbers import Number
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL = range(9)
@@ -784,8 +784,8 @@ class Expr:
         var = sympy_style(var)
         lower = sympy_style(lower)
         upper = sympy_style(upper)
-        greater_zero = solveset(e > 0, var, Interval(lower, upper, left_open = True, right_open = True))
-        smaller_zero = solveset(e < 0, var, Interval(lower, upper, left_open = True, right_open = True))
+        greater_zero = solveset(re(e) > 0, var, Interval(lower, upper, left_open = True, right_open = True))
+        smaller_zero = solveset(re(e) < 0, var, Interval(lower, upper, left_open = True, right_open = True))
         def to_holpy(l):
             if isinstance(l, Union):
                 return [(holpy_style(x.start), holpy_style(x.end)) for x in l.args]
