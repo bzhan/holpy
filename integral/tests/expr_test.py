@@ -115,7 +115,9 @@ class ExprTest(unittest.TestCase):
             ("sqrt(2 + 1/4)", "3/2"),
             ("sin(2 * pi)", "0"),
             ("cos(2 * pi)", "1"),
-            ("sin((2 + 3/4) * pi)", "1/2 * sqrt(2)")
+            ("sin((2 + 3/4) * pi)", "1/2 * sqrt(2)"),
+            ("(39 * (pi / 100)) / 2", "39/200 * pi"),
+            ("cos((39 * (pi / 100)) / 2)", "cos(39/200 * pi)")
         ]
 
         for s, res in test_data:
@@ -465,7 +467,7 @@ class ExprTest(unittest.TestCase):
             ("(3/4)^(-1)", "4/3"),
             ("3 ^ (1/2) * 2 ^ -1","1/2 * sqrt(3)"),
             ("sin(pi/4)", "1/2 * sqrt(2)"),
-            ("sin(4/pi)", "sin(4 / pi)"),
+            ("sin(4/pi)", "sin(4 * pi ^ -1)"),
             ("pi*pi", "pi ^ 2"),
             ("(1/4) * pi * (1/2)", "1/8 * pi"),
             ("pi/2 - pi/3", "1/6 * pi"),

@@ -576,7 +576,7 @@ class Expr:
                 else:
                     return poly.const_singleton(self)
             else:
-                return poly.const_singleton(self)
+                return poly.const_singleton(Fun(self.func_name, norm_a))
 
         elif self.ty == FUN and self.func_name in ('asin', 'acos', 'atan', 'acot', 'acsc', 'asec'):
             a = self.args[0].to_const_poly()
