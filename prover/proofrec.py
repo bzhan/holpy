@@ -22,7 +22,6 @@ from logic.tactic import rewrite_goal_with_prev
 from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv, ConvException, Conv
 from logic import auto
 from prover import sat, tseitin, simplex
-from sat import zchaff
 from syntax.settings import settings
 from syntax import parser
 from prover import omega
@@ -234,7 +233,7 @@ def translate(term, bounds=deque(), subterms=[]):
         elif z3.is_div(term) or z3.is_idiv(term):
             return divides(sort)(*args)
         elif z3.is_eq(term):
-            return Eq(*args)
+            return Eq(args[0], args[1])
         elif z3.is_and(term):
             return And(*args)
         elif z3.is_or(term):
@@ -242,7 +241,7 @@ def translate(term, bounds=deque(), subterms=[]):
         elif z3.is_implies(term):
             return Implies(*args)
         elif z3.is_not(term):
-            return Not(*args)
+            return Not(args[0])
         elif z3.is_lt(term):
             return less(args[0].get_type())(*args)
         elif z3.is_le(term):
@@ -513,7 +512,7 @@ def schematic_rules_rewr(thms, lhs, rhs):
         try:
             inst1 = matcher.first_order_match(pt.prop.lhs, lhs)
             inst2 = matcher.first_order_match(pt.prop.rhs, rhs, inst=inst1)
-            return pt.substitution(inst1)
+            return pt.substitution(inst2)
         except matcher.MatchException:
             continue
     return ProofTerm.sorry(Thm([], Eq(lhs, rhs)))
@@ -626,6 +625,7 @@ def rewrite_int(tm, has_bool=False):
     7) ¬(a ⋈ b) <--> ¬(c ⋈ d)
     8) a | b = c <--> a | b ≤ c & b ≥ c
     9) ¬(a ⋈ b) <--> ¬(c ⋈ d) (k * a = c, k * b = d)
+    10) (a = b) <--> false
 
     If all above patterns cannot match tm, we have to apply a more general strategy:
     1) normalize the logic term;
@@ -677,6 +677,8 @@ def rewrite_int(tm, has_bool=False):
         pt_lhs = refl(tm.lhs).on_rhs(arg_conv(rewr_conv('int_eq_leq_geq')), arg_conv(proplogic.norm_full()))
         pt_rhs_sym = refl(tm.rhs).on_rhs(arg_conv(proplogic.norm_full())).symmetric()        
         return try_tran_pt(pt_lhs, pt_rhs_sym)
+    elif match_pattern('(a :: int) = b <--> false', tm):
+        return refl(tm.lhs).on_rhs(integer.int_norm_eq(), integer.int_neq_false_conv())
     else:
         return rewrite_int_second_level(tm)
 
@@ -686,6 +688,8 @@ def rewrite_int_second_level(tm):
         (proplogic.norm_full(), ),
         (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq'))),
         (proplogic.norm_full(), top_conv(rewr_conv('int_eq_leq_geq'))),
+        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq')), proplogic.norm_full()),
+        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_leq_geq')), proplogic.norm_full()),
         (proplogic.norm_full(), try_conv(bottom_conv(integer.int_norm_eq())), top_conv(rewr_conv('int_eq_geq_leq'))),
         (proplogic.norm_full(), try_conv(bottom_conv(integer.int_norm_eq())), bottom_conv(integer.omega_form_conv())),
         (proplogic.norm_full(),try_conv(top_conv(integer.int_norm_eq())), try_conv(bottom_conv(integer.simp_full())), top_conv(rewr_conv('int_eq_geq_leq')), proplogic.norm_full()),
@@ -727,7 +731,7 @@ def _rewrite(tm):
         else:
             return schematic_rules_rewr(th_name, tm.lhs, tm.rhs)
     elif RealType in Ts:
-        return rewrite_bool(tm, has_bool=True) if BoolType in Ts else rewrite_real(tm, False)
+        return rewrite_real(tm, has_bool=True) if BoolType in Ts else rewrite_real(tm, False)
     else:
         return ProofTerm.sorry(Thm([], tm))
 
@@ -1378,7 +1382,7 @@ def th_lemma(args):
             return real_th_lemma(tms)
     except:
         pts = args[-1]
-        hyps = [h for a in args[:-1] for h in a.hyps]
+        hyps = [h.prop for h in args[:-1]]
         return ProofTerm.sorry(Thm(hyps, args[-1]))
 
 def hypothesis(prop):
@@ -1581,6 +1585,10 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     gaps = set()
     # for ast in assertions:
     #     find_atom_in_assertion(translate(ast))
+    # delete content
+    with open('int_prf.txt', 'a', encoding='utf-8') as f:
+        f.seek(0)
+        f.truncate()
     for i in order:
         args = tuple(r[j] for j in net[i])
         # if trace:
