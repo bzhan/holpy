@@ -1344,8 +1344,7 @@ class Op(Expr):
                 elif a.ty in (EVAL_AT, INTEGRAL, DERIV):
                     s1 = "(%s)" % s1
             if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
-                if not (b.ty == OP and b.op in ("+", "*") and b.op == self.op):
-                    s2 = "(%s)" % s2
+                s2 = "(%s)" % s2
             elif self.op == "^" and a.ty == CONST and a.val < 0:
                 s1 = "(%s)" % s1
             elif self.op == "^" and a.is_constant() and a.ty == OP and len(a.args) == 1:

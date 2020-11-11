@@ -29,7 +29,7 @@ class ExprTest(unittest.TestCase):
             (x * y + z, "x * y + z"),
             (x * (y + z), "x * (y + z)"),
             (x + y + z, "x + y + z"),
-            (x + (y + z), "x + y + z"),
+            (x + (y + z), "x + (y + z)"),
             (x * (y ^ Const(2)), "x * y ^ 2"),
             ((x * y) ^ Const(2), "(x * y) ^ 2"),
             (-(x + y), "-(x + y)"),

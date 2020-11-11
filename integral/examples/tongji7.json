@@ -838,7 +838,7 @@
             "problem": "INT x:[3/4, 1]. 1/(sqrt(1-x) - 1)"
         },
         {
-            "_problem_latex": "\\int_{0}^{1} t e^{-\\frac{1}{2} * t ^ 2} \\,\\mathrm{dt}",
+            "_problem_latex": "\\int_{0}^{1} t e^{-\\frac{1}{2} \\times t ^ 2} \\,\\mathrm{dt}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{1} t e^{-\\frac{1}{2} * t ^ 2} \\,\\mathrm{dt}",
@@ -1145,43 +1145,43 @@
                     "text": "INT x:[0,pi]. sqrt(1 + cos(2 * x))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(1 + \\cos{(2 x)}\\) to \\(-\\sin^{2}(x) + \\cos^{2}(x) + 1\\)",
-                    "latex": "\\int_{0}^{\\pi} \\sqrt{-\\sin^{2}(x) + \\cos^{2}(x) + 1} \\,\\mathrm{dx}",
-                    "location": "0.0",
+                    "_latex_reason": "Rewrite trigonometric \\(\\cos{(2 x)}\\) to \\(-\\sin^{2}(x) + \\cos^{2}(x)\\)",
+                    "latex": "\\int_{0}^{\\pi} \\sqrt{1 + -\\sin^{2}(x) + \\cos^{2}(x)} \\,\\mathrm{dx}",
+                    "location": "0.0.1",
                     "params": {
                         "rule": "TR11"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "INT x:[0,pi]. sqrt(-(sin(x) ^ 2) + cos(x) ^ 2 + 1)"
+                    "text": "INT x:[0,pi]. sqrt(1 + (-sin(x) ^ 2 + cos(x) ^ 2))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(-\\sin^{2}(x) + \\cos^{2}(x) + 1\\) to \\(2 \\cos^{2}(x)\\)",
-                    "latex": "\\int_{0}^{\\pi} \\sqrt{2 \\cos^{2}(x)} \\,\\mathrm{dx}",
-                    "location": "0.0",
+                    "_latex_reason": "Rewrite trigonometric \\(-\\sin^{2}(x)\\) to \\(\\cos^{2}(x) - 1\\)",
+                    "latex": "\\int_{0}^{\\pi} \\sqrt{1 + \\cos^{2}(x) - 1 + \\cos^{2}(x)} \\,\\mathrm{dx}",
+                    "location": "0.0.1.0",
                     "params": {
                         "rule": "TR5"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "INT x:[0,pi]. sqrt(2 * cos(x) ^ 2)"
+                    "text": "INT x:[0,pi]. sqrt(1 + ((cos(x) ^ 2 - 1) + cos(x) ^ 2))"
                 },
                 {
                     "latex": "\\sqrt{2} * (\\int_{0}^{\\pi} \\left| \\cos{(x)} \\right| \\,\\mathrm{dx})",
                     "reason": "Simplification",
-                    "text": "2 ^ (1/2) * (INT x:[0,pi]. abs(cos(x)))"
+                    "text": "sqrt(2) * (INT x:[0,pi]. abs(cos(x)))"
                 },
                 {
-                    "latex": "\\sqrt{2} * ((\\int_{0}^{\\pi/2} \\left| \\cos{(x)} \\right| \\,\\mathrm{dx}) + (\\int_{\\pi/2}^{\\pi} \\left| \\cos{(x)} \\right| \\,\\mathrm{dx}))",
+                    "latex": "\\sqrt{2} * ((\\int_{0}^{\\pi/2} \\cos{(x)} \\,\\mathrm{dx}) + {(\\int_{\\pi/2}^{\\pi} -\\cos{(x)} \\,\\mathrm{dx})})",
                     "location": "1",
                     "params": {
                         "c": "pi / 2"
                     },
                     "reason": "Split region",
-                    "text": "2 ^ (1/2) * ((INT x:[0,pi / 2]. abs(cos(x))) + (INT x:[pi / 2,pi]. abs(cos(x))))"
+                    "text": "sqrt(2) * ((INT x:[0,pi / 2]. cos(x)) + (INT x:[pi / 2,pi]. -cos(x)))"
                 },
                 {
                     "latex": "2 \\sqrt{2}",
                     "reason": "Simplification",
-                    "text": "2 * 2 ^ (1/2)"
+                    "text": "2 * sqrt(2)"
                 }
             ],
             "name": "Exercise 27",
