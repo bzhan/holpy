@@ -1,11 +1,16 @@
 """
+Note that the equality dict in Simplex data structure can be simplified by elimate the jar whose coefficient
+is zero. This will be fixed later.
+"""
+
+"""
 Implementation of Simplex-based quantifier-free linear arithmetic solver.
 
 Reference: 
 Bruno Dutertre and Leonardo de Moura. A Fast Linear-Arithmetic Solver for DPLL(T) 
 """
 
-from kernel.term import Term, Var, Inst, greater_eq, Real, Eq, less_eq, minus, greater, less
+from kernel.term import Term, Var, Inst, greater_eq, Real, Eq, less_eq, minus, greater, less, Const, TFun
 from kernel.type import RealType
 from kernel.proofterm import ProofTerm
 from kernel.theory import register_macro, Thm
@@ -440,7 +445,7 @@ class Simplex:
         # by xj_repr_jars
         self.equality = delete_key(self.equality, xi)
         self.equality[xj] = xj_repr_jars
-        equlity_has_xj = []
+
         for x in self.nbasic_basic[xj]:
             if x != xi:
                 rhs = self.equality[x]
@@ -578,7 +583,7 @@ class Simplex:
                 if jar.coeff > 0:
                     upper = self.bound[jar.var][1]
                     explain.append(leq_atom(jar.var, upper))
-                else:
+                elif jar.coeff < 0:
                     lower = self.bound[jar.var][0]
                     explain.append(geq_atom(jar.var, lower))
             explain.append(geq_atom(xi, self.bound[xi][0]))
@@ -588,7 +593,7 @@ class Simplex:
                 if jar.coeff > 0:
                     lower = self.bound[jar.var][0]
                     explain.append(geq_atom(jar.var, lower))
-                else:
+                elif jar.coeff < 0:
                     upper = self.bound[jar.var][1]
                     explain.append(leq_atom(jar.var, upper))
             explain.append(leq_atom(xi, self.bound[xi][1]))    
@@ -600,7 +605,7 @@ class Simplex:
         For Ax ≤ b, Ax ≥ c. 
             θ(A) = max(|aij|), θ(b) = max(|bi|), θ(c) = max(|ci|)
         θ is max(θ(A), θ(b), θ(c))
-        θ can be used to deriv non-basic variables' bound.
+        θ can be used to derive non-basic variables' bound.
         """
         t = 0
         ineqs = self.original
@@ -623,7 +628,7 @@ class Simplex:
 
     def variables_bound(self):
         """
-        Compute each non-basic variables' bound based on the following theorem:
+        Compute each non-basic variables' bound based on the following theorem(NEMHAUSER, 1998, P125):
         If x is an extreme point of conv(S), then:
                 x <= ((m+n)nθ)^n
         Where m is the number of inequations, n is the number of non-basic vars.
@@ -693,10 +698,6 @@ def branch_and_bound(tableau):
     
     print("No integer solution!")
 
-
-
-
-
 def dest_plus(tm):
     """tm is of form x + y, return (x, y)"""
     if not tm.is_plus():
@@ -755,11 +756,13 @@ class replace_conv(Conv):
         else:
             raise ConvException
 
+
+
 class SimplexHOLWrapper:
     """
     Wrapper for simplex method in higher-order logic. 
     """
-    def __init__(self):
+    def __init__(self, ilp=False):
         # core data structure
         self.simplex = Simplex()
         
@@ -854,7 +857,7 @@ class SimplexHOLWrapper:
         upper_bound = real_eval(upper_bound_pt.prop.arg)
         # assertion = ProofTerm.assume(x <= upper_bound)
         if x in self.upper_bound_pts:
-            old_assertion = self.upper_bound[x]
+            old_assertion = self.upper_bound_pts[x]
             old_upper_bound = real_eval(old_assertion.prop.arg)
             if old_upper_bound >= upper_bound:
                 pt_less = ProofTerm('real_compare', less_eq(RealType)(Real(upper_bound), Real(old_upper_bound)))
@@ -887,7 +890,7 @@ class SimplexHOLWrapper:
         """
         lower_bound = real_eval(lower_bound_pt.prop.arg)
         if x in self.lower_bound_pts:
-            old_assertion = self.lower_bound[x]
+            old_assertion = self.lower_bound_pts[x]
             old_lower_bound = real_eval(old_assertion.prop.arg)
             if old_lower_bound <= lower_bound:
                 pt_greater = ProofTerm('real_compare', greater_eq(RealType)(Real(lower_bound), Real(old_lower_bound)))
@@ -1047,7 +1050,7 @@ class SimplexHOLWrapper:
                 pt_coeff_greater_zero = ProofTerm('real_compare', less(RealType)(Real(coeff), Real(0)))
                 # ⊢ x >= l --> a < 0 --> a * x <= a * l
                 pt_lower_bound = apply_theorem('real_geq_mul_less', lower_bound, pt_coeff_greater_zero)
-                ineq_atom_pts.append(pt_upper_bound)
+                ineq_atom_pts.append(pt_lower_bound)
 
             # sum contr var atom upper bound to get the total upper bound
             # a < b --> c < d --> a + c < b + d
@@ -1062,20 +1065,16 @@ class SimplexHOLWrapper:
 
             # after we get contr_var's upper bound(ub), we get lb > β(contr_var), but β(contr_var) > contr_var's upper bound,
             # so we could deriv a contradiction
-            upper_bound_value = pt_comb.prop.arg1
+            upper_bound_value = pt_comb.prop.arg
             lower_bound_pt = self.lower_bound_pts[contr_var]
             lower_bound_value = lower_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('real_compare', upper_bound_value < lower_bound_value)
-            self.unsat[contr_var] = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
-            pt_concl = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
+            self.unsat[contr_var] = apply_theorem('real_comp_contr1', pt_upper_less_lower, lower_bound_pt, pt_comb)
+            pt_concl = self.unsat[contr_var]
         
         for eq in self.intro_eq:
             eq = eq.prop
             pt_concl = pt_concl.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
-        
-        
-        
-        
 
         return self.normalize_conflict_pt(pt_concl)
 
@@ -1106,17 +1105,21 @@ class SimplexHOLWrapper:
                         self.assert_upper(var, ast)
                     else:
                         self.assert_lower(var, ast)
-                except AssertLowerException or AssertUpperException:
+                except (AssertLowerException, AssertUpperException):
                     return self.normalize_conflict_pt(self.unsat[var])
             # if var.name in self.simplex.basic:
                 # check
                 if self.simplex.check() == UNSAT:
                     trace = self.simplex.trace
+                    # print("trace: ", trace)
+                    # print("self", self)
+                    # print("self.simplex: ", self.simplex)
+                    # print("wrong_var: ", self.simplex.wrong_var)
                     for xij, coeff, basic_var in trace:
                         xi, xj = xij
                         self.pivot(Var(xi, RealType), Var(xj, RealType), basic_var, coeff)
                     return self.normalize_conflict_pt(self.explanation())
-                    # raise UNSATException("%s" % str(self.unsat[Var(self.simplex.wrong_var, RealType)]))
+                    raise UNSATException("%s" % str(self.unsat[Var(self.simplex.wrong_var, RealType)]))
 
         return self.simplex.mapping
 
@@ -1150,6 +1153,4 @@ def solve_hol_ineqs(ineqs):
     for ii in converted_ineq:
         hol.add_ineq(ii)
 
-    return hol.handle_assertion()
-
-        
+    return hol.handle_assertion()        
