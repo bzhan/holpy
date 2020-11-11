@@ -17,7 +17,7 @@ from data import nat
 from fractions import Fraction
 from syntax.parser import parse_term
 
-basic.load_theory('int')
+basic.load_theory('smt')
 
 class ProofrecTest(unittest.TestCase):
     def testTranslateTerm(self):
@@ -137,297 +137,34 @@ class ProofrecTest(unittest.TestCase):
         s.check()
         proofrec.proofrec(s.proof())
 
-    """
-    Files that have reconstructed successful:
+    def testRewriteInt(self):
+        test_data = [
+            # bakery
+            "false ∨ false ∨ false ∨ true ∨ ¬(x_8 = uclid_ZERO) ∨ ¬(x_7 + -1 * x_5 = 1)\
+            ∨ ¬(x_6 = x_5) ∨ ¬(x_9 = uclid_ZERO) ⟷ true",
+            
+            "~(x_10 ∨ x_11 ∨ ¬x_12 ∨ x_13 ∨ k3 ∨ ~(uclid_ZERO + -1 * x_8 = -1) ∨ \
+            ~(uclid_ZERO + -1 * x_7 = 0) ∨ ~(uclid_ZERO + -1 * x_6 = -1))\
+            ⟷\
+            ~(x_10 ∨ x_11 ∨ ¬x_12 ∨ x_13 ∨ ~(uclid_ZERO + -1 * x_7 ≤ 0) ∨ k3 ∨ \
+            ~(uclid_ZERO + -1 * x_7 ≥ 0) ∨ ~(uclid_ZERO + -1 * x_8 ≤ -1) ∨ ~(uclid_ZERO + -1 * x_8 ≥ -1) \
+            ∨ ~(uclid_ZERO + -1 * x_6 ≤ -1) ∨ ~(uclid_ZERO + -1 * x_6 ≥ -1))",
 
-    QF_UF
-    ====================================================
-    QF_UF/20170829-Rodin/smt249825283571301584.smt2
-    QF_UF/20170829-Rodin/smt1300175744189082250.smt2
-    QF_UF/20170829-Rodin/smt1468783596909311386.smt2
-    QF_UF/20170829-Rodin/smt2080745738819601301.smt2
-    QF_UF/20170829-Rodin/smt2325451563592377472.smt2
-    QF_UF/20170829-Rodin/smt2598599073465845145.smt2
-    QF_UF/20170829-Rodin/smt3166111930664231918.smt2
-    QF_UF/20170829-Rodin/smt3534838651727683253.smt2
-    QF_UF/20170829-Rodin/smt4057580428149921510.smt2
-    QF_UF/20170829-Rodin/smt4458073420585573738.smt2
-    QF_UF/20170829-Rodin/smt5144869669709662262.smt2
-    QF_UF/20170829-Rodin/smt5490086717622526120.smt2
-    QF_UF/20170829-Rodin/smt5801285361354912971.smt2
-    QF_UF/20170829-Rodin/smt5832055835117075398.smt2
-    QF_UF/20170829-Rodin/smt6739662804326223632.smt2
-    QF_UF/20170829-Rodin/smt7452810379672948208.smt2
-    QF_UF/20170829-Rodin/smt7632939434921259240.smt2
-    QF_UF/20170829-Rodin/smt7665342989239969743.smt2
-    QF_UF/20170829-Rodin/smt2061505268723161891.smt2
-    QF_UF/20170829-Rodin/smt2080745738819601301.smt2
-    QF_UF/20170829-Rodin/smt2970577543992530805.smt2
-    
-    ======================================================
+            "¬(x_15 ∨ x_16 ∨ x_17 ∨ x_25 ∨ x_26 ∨ x_27 ∨ x_59 ∨ x_60 ∨ x_61 ∨ ¬(x_3 ∨ ¬x_22) \
+            ∨ ¬(¬x_3 ∨ x_22) ∨ ¬(x_4 ∨ ¬x_23) ∨ ¬(¬x_4 ∨ x_23) ∨ ¬(x_5 ∨ ¬x_24) ∨ ¬(¬x_5 ∨ x_24)) \
+            ⟷ ¬(x_25 ∨ x_26 ∨ x_27 ∨ x_22 ∨ x_23 ∨ x_24 ∨ x_59 ∨ x_60 ∨ x_61)"
+            # lpsat
+        ]
 
-    diamond
-    ======================================================
-    eq_diamond2 proof seems to have a bug in and-elim rule.
-    ======================================================
+        context.set_context('int', vars={
+            "x_10": "bool", "x_11": "bool", "x_12": "bool", "x_13": "bool", "k3": "bool", "k2": "bool",
+            "x_8": "int", "x_7": "int", "x_5": "int", "x_6": "int", "x_9": "int", "uclid_ZERO": "int"
+        })
 
-
-    TypeSafe
-    ======================================================
-    QF_UF/TypeSafe/z3.1184131.smt2
-    QF_UF/TypeSafe/z3.1184147.smt2
-    QF_UF/TypeSafe/z3.1184163.smt2
-    ======================================================
-
-    LIA
-    =============================================
-    LIA/tptp/NUM917=1.smt2
-    LIA/tptp/NUM918=1.smt2
-    =============================================
-    """
-
-
-    """
-    UNSAT files in QF_UF/2018-Goel-hwbench/
-    ==================================================
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_blocks.2.prop1_ab_reg_max.smt2', ✓
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_blocks.3.prop1_ab_reg_max.smt2', ✓
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_bridge.1.prop1_ab_reg_max.smt2', ✓
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_bridge.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_bridge.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp.6.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.1.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.1.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.2.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.2.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.3.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.3.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.4.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.4.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.5.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.5.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.6.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.6.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_bug-1_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cache_coherence_three_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.1.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.2.prop1_ab_fp_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.2.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.3.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.4.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.5.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.6.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.6.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.7.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cambridge.7.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_collision.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_collision.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_collision.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_collision.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_collision.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_collision.6.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_counter_v_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cyclic_scheduler.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cyclic_scheduler.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cyclic_scheduler.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_cyclic_scheduler.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_elevator.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_elevator.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_elevator.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_elevator.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_elevator.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_elevator_planning.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_eq_sdp_v7_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_exit.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_exit.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_exit.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_exit.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_extinction.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_firewire_tree.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_firewire_tree.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_firewire_tree.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_frogs.1.prop1_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_frogs.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_gear.1.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_gear.1.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_gear.1.prop4_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_gear.2.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_gear.2.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_gear.2.prop4_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_hanoi.2.prop1_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_Heap_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_Arbiter_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_b02_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_b04_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_b04_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_b05_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_b08_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_b08_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_Barrel_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_BufAl_ab_fp_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_Rrobin_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_Rrobin_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_segments_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_Spinner_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_TicTacToe_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_traffic_light_example_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_traffic_light_example_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_TreeArb_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_TreeArb_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_Vlunc_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_iprotocol.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_iprotocol.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_iprotocol.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_iprotocol.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_iprotocol.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_iprotocol.6.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_iprotocol.7.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_itc99_b12_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_itc99_b13_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lamport.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lann.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_leader_election.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_leader_election.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lifts.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lifts.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lifts.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lifts.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lifts.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lifts.6.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lifts.7.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lifts.8.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_loyd.1.prop1_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_loyd.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_loyd.2.prop1_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_loyd.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_loyd.3.prop1_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_loyd.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lup.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lup.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lup.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lup.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_msmie.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_msmie.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_msmie.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_msmie.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.1.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.1.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.1.prop4_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.2.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.2.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.2.prop4_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.3.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.3.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.3.prop4_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.4.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.4.prop3_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_needham.4.prop4_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_peg_solitaire.1.prop1_ab_fp_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_peg_solitaire.2.prop1_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_peg_solitaire.4.prop1_ab_fp_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_peg_solitaire.5.prop1_ab_fp_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_peg_solitaire.6.prop1_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pgm_protocol.1.prop6_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pgm_protocol.2.prop6_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pgm_protocol.3.prop6_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pgm_protocol.4.prop5_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pgm_protocol.4.prop6_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pgm_protocol.5.prop6_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pgm_protocol.6.prop5_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pgm_protocol.6.prop6_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pgm_protocol.7.prop6_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pgm_protocol.8.prop6_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pipeline_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pj_icu_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pj_icu_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pouring.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_pouring.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_production_cell.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_production_cell.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_protocols.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_protocols.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_protocols.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_protocols.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_protocols.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_reader_writer.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_reader_writer.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_reader_writer.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_resistance.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_resistance.1.prop2_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_resistance.1.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_resistance.1.prop3_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_resistance.2.prop2_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_resistance.2.prop2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_resistance.2.prop3_ab_cti_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_rether.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_rether.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_rether.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_rether.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_rether.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_rether.6.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_rether.7.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_schedule_world.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_schedule_world.2.prop1_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_schedule_world.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_sokoban.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_sokoban.2.prop1_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_sokoban.3.prop1_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_sw_ball2004_1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_sw_ball2004_2_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_sw_loop_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_sw_loop_v_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_sw_state_machine_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_sw_sym_ex_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_sw_sym_ex_v_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_synapse.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_synapse.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_synapse.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_synapse.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_synapse.6.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_synapse.7.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_telephony.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_telephony.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_telephony.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_telephony.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_telephony.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_telephony.7.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_telephony.8.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_train-gate.1.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_train-gate.2.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_train-gate.3.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_train-gate.4.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_train-gate.5.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_train-gate.6.prop1_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_train-gate.6.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_train-gate.7.prop1_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_usb_phy_ab_reg_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_v_Unidec_ab_br_max.smt2',
-    'D:/smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_v_Unidec_ab_fp_max.smt2'
-    ==================================================
-    
-    """
-
-
-
-
-
-
+        for tm in test_data:
+            tm = parse_term(tm)
+            pt = proofrec._rewrite(tm)
+            self.assertNotEqual(pt.rule, "sorry")
 
 if __name__ == "__main__":
     unittest.main()

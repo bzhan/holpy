@@ -1872,6 +1872,22 @@
                 "c": "int",
                 "x": "int"
             }
+        },
+        {
+            "name": "int_pos_neq_zero",
+            "prop": "x > 0 ⟶ x = 0 ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_neg_neq_zero",
+            "prop": "x < 0 ⟶ x = 0 ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
         }
     ],
     "description": "integers",
