@@ -226,6 +226,10 @@ class ExprTest(unittest.TestCase):
             # ("sin(x) ^ 3 * csc(x) ^ 2", "sin(x)"),
             ("1 / (2 - sqrt(3))", "(2 + -sqrt(3)) ^ -1"),
             ("x ^ (1/2) * x ^ (1/3)", "x ^ (5/6)"),
+            ("sqrt(x ^ 2)", "abs(x)"),
+            ("sqrt(2 * x ^ 2)", "sqrt(2) * abs(x)"),
+            ("sqrt(2 * cos(x) ^ 2)", "sqrt(2) * abs(cos(x))"),
+            ("(2 * x^2) ^ (3/2)", "2 * sqrt(2) * abs(x) ^ 3"),
         ]
 
         for s, res in test_data:
