@@ -70,11 +70,11 @@ def integral_validate_integral():
 def integral_super_simplify():
     data = json.loads(request.get_data().decode('utf-8'))
     rules_set = [integral.rules.Simplify(), integral.rules.OnSubterm(integral.rules.Linearity()), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
-    abs_rule = integral.rules.ElimAbs()
+    # abs_rule = integral.rules.ElimAbs()
     problem = integral.parser.parse_expr(data['problem'])
-    if not (abs_rule.check_zero_point(problem) and len(problem.getAbs()) == 0):
-        # If there are no abs expression or there are no zero point
-        rules_set.append(integral.rules.OnSubterm(integral.rules.ElimAbs()))
+    # if not (abs_rule.check_zero_point(problem) and len(problem.getAbs()) == 0):
+    #     # If there are no abs expression or there are no zero point
+    #     rules_set.append(integral.rules.OnSubterm(integral.rules.ElimAbs()))
     def simplify(problem):
         for i in range(5):
             for r in rules_set:             
@@ -102,8 +102,7 @@ def integral_elim_abs():
             'latex': integral.latex.convert_expr(new_problem)
         })
     c = rule.get_zero_point(problem)
-    new_problem = integral.expr.Integral(problem.var, problem.lower, c, problem.body) + integral.expr.Integral(problem.var, 
-                            c, problem.upper, problem.body)
+    new_problem = rule.eval(problem)
     return jsonify({
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
