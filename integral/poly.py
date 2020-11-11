@@ -329,8 +329,16 @@ class Monomial:
 
     def __pow__(self, exp):
         # Assume the power is a fraction
-        if isinstance(exp, (int, Fraction)):
+        if isinstance(exp, int) or (isinstance(exp, Fraction) and exp.denominator % 2 == 1):
             return Monomial(self.coeff ** exp, [(n, e * exp) for n, e in self.factors])
+        elif isinstance(exp, Fraction) and exp.denominator % 2 == 0:
+            sqrt_factors = []
+            for n, e in self.factors:
+                if isinstance(n, expr.Expr) and isinstance(e, int) and e % 2 == 0:
+                    sqrt_factors.append((expr.Fun('abs', n), e * exp))
+                else:
+                    sqrt_factors.append((n, e * exp))
+            return Monomial(self.coeff ** exp, sqrt_factors)
         else:
             raise ValueError
 
