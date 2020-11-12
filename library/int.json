@@ -1161,34 +1161,7 @@
             }
         },
         {
-            "name": "eq_conj_less",
-            "prop": "m = n ⟷ m < n + 1 ∧ n < m + 1",
-            "ty": "thm",
-            "vars": {
-                "m": "int",
-                "n": "int"
-            }
-        },
-        {
-            "name": "neg_eq_disj_less",
-            "prop": "¬(m = n) ⟷ m < n ∨ n < m",
-            "ty": "thm",
-            "vars": {
-                "m": "int",
-                "n": "int"
-            }
-        },
-        {
-            "name": "neg_le",
-            "prop": "¬(m < n) ⟷ n < m + 1",
-            "ty": "thm",
-            "vars": {
-                "m": "int",
-                "n": "int"
-            }
-        },
-        {
-            "name": "lesseq_0",
+            "name": "int_lesseq_0",
             "prop": "m ≤ 0 ⟷ m < 1",
             "ty": "thm",
             "vars": {
@@ -1197,7 +1170,7 @@
             }
         },
         {
-            "name": "greater_less",
+            "name": "int_greater_less",
             "prop": "m > 0 ⟷ -m < 0",
             "ty": "thm",
             "vars": {
@@ -1205,7 +1178,7 @@
             }
         },
         {
-            "name": "greatereq_less",
+            "name": "int_greatereq_less",
             "prop": "m ≥ 0 ⟷ -m < 1",
             "ty": "thm",
             "vars": {
@@ -1213,7 +1186,7 @@
             }
         },
         {
-            "name": "pos_mul_less",
+            "name": "int_pos_mul_less",
             "prop": "c > 0 ⟶ m < n ⟷ c * m < c * n",
             "ty": "thm",
             "vars": {
@@ -1223,7 +1196,7 @@
             }
         },
         {
-            "name": "neg_mul_less",
+            "name": "int_neg_mul_less",
             "prop": "c < 0 ⟶ m < n ⟷ c * m > c * n",
             "ty": "thm",
             "vars": {
@@ -1233,7 +1206,7 @@
             }
         },
         {
-            "name": "pos_mul_less_eq",
+            "name": "int_pos_mul_less_eq",
             "prop": "c > 0 ⟶ m ≤ n ⟷ c * m ≤ c * n",
             "ty": "thm",
             "vars": {
@@ -1243,7 +1216,7 @@
             }
         },
         {
-            "name": "neg_mul_less_eq",
+            "name": "int_neg_mul_less_eq",
             "prop": "c < 0 ⟶ m ≤ n ⟷ c * m ≥ c * n",
             "ty": "thm",
             "vars": {
@@ -1253,7 +1226,7 @@
             }
         },
         {
-            "name": "pos_mul_greater",
+            "name": "int_pos_mul_greater",
             "prop": "c > 0 ⟶ m > n ⟷ c * m > c * n",
             "ty": "thm",
             "vars": {
@@ -1263,7 +1236,7 @@
             }
         },
         {
-            "name": "neg_mul_greater",
+            "name": "int_neg_mul_greater",
             "prop": "c < 0 ⟶ m > n ⟶ c * m < c * n",
             "ty": "thm",
             "vars": {
@@ -1273,7 +1246,7 @@
             }
         },
         {
-            "name": "pos_mul_greater_eq",
+            "name": "int_pos_mul_greater_eq",
             "prop": "c > 0 ⟶ m ≤ n ⟶ c * m ≥ c * n",
             "ty": "thm",
             "vars": {
@@ -1283,7 +1256,7 @@
             }
         },
         {
-            "name": "neg_mul_greater_eq",
+            "name": "int_neg_mul_greater_eq",
             "prop": "c < 0 ⟶ m ≥ n ⟶ c * m ≤ c * n",
             "ty": "thm",
             "vars": {

@@ -30947,7 +30947,7 @@
             }
         },
         {
-            "name": "real_of_int_le",
+            "name": "real_of_int_leq",
             "prop": "of_int m ≤ of_int n ⟷ m ≤ n",
             "ty": "thm",
             "vars": {
@@ -30958,6 +30958,24 @@
         {
             "name": "real_of_int_lt",
             "prop": "of_int m < of_int n ⟷ m < n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "real_of_int_gt",
+            "prop": "of_int m > of_int n ⟷ m > n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "real_of_int_geq",
+            "prop": "of_int m ≥ of_int n ⟷ m ≥ n",
             "ty": "thm",
             "vars": {
                 "m": "int",
