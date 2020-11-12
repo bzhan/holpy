@@ -328,13 +328,13 @@ class norm_eq(Conv):
             pt2 = pt1.on_rhs(rewr_conv('int_sub_move_0_r', sym=True)) # a = b <==> a - b = 0
             eq_refl = ProofTerm.reflexive(equals(IntType))
         elif t.is_less_eq():
-            pt2 = pt1.on_rhs(rewr_conv('int_le'))
+            pt2 = pt1.on_rhs(rewr_conv('int_leq'))
             eq_refl = ProofTerm.reflexive(less_eq(IntType))
         elif t.is_less():
-            pt2 = pt1.on_rhs(rewr_conv('int_lt'))
+            pt2 = pt1.on_rhs(rewr_conv('int_less'))
             eq_refl = ProofTerm.reflexive(less(IntType))
         elif t.is_greater_eq():
-            pt2 = pt1.on_rhs(rewr_conv('int_ge'))
+            pt2 = pt1.on_rhs(rewr_conv('int_geq'))
             eq_refl = ProofTerm.reflexive(greater_eq(IntType))
         elif t.is_greater():
             pt2 = pt1.on_rhs(rewr_conv('int_gt'))
@@ -394,12 +394,12 @@ class int_ineq_macro(Macro):
         if norm_ineq_pt.rhs.is_less():
             return norm_ineq_pt
         elif norm_ineq_pt.rhs.is_less_eq():
-            return norm_ineq_pt.on_rhs(rewr_conv('lesseq_0'))
+            return norm_ineq_pt.on_rhs(rewr_conv('int_lesseq_0'))
         else:
             if norm_ineq_pt.rhs.is_greater():
-                pt_less = norm_ineq_pt.on_rhs(rewr_conv('greater_less'))
+                pt_less = norm_ineq_pt.on_rhs(rewr_conv('int_greater_less'))
             elif norm_ineq_pt.rhs.is_greater_eq():
-                pt_less = norm_ineq_pt.on_rhs(rewr_conv('greatereq_less'))
+                pt_less = norm_ineq_pt.on_rhs(rewr_conv('int_greatereq_less'))
             pt_norm_lhs = refl(pt_less.rhs.arg1).on_rhs(simp_full())
             return pt_less.transitive(refl(pt_less.rhs.head).combination(pt_norm_lhs).combination(refl(pt_less.rhs.arg)))
 
@@ -415,13 +415,10 @@ class int_ineq_mul_const_macro(Macro):
     return a proof term like: c * m ⋈ c * n
     """
     def get_proof_term(self, prevs, args):
-        # assert isinstance(prevs, list) and len(prevs) == 2 and \
-        #     all(isinstance(pt, ProofTerm) for pt in prevs), "int_ineq_mul_const_macro"
-        # assert prevs[1].prop.arg1.is_int() and prevs[1].prop.arg.is_zero(), "Unexpected %s" % str(prevs[1])
         assert isinstance(prevs, ProofTerm) and prevs.prop.arg1.is_int() and prevs.prop.arg.is_zero(), "Unexpected %s" % str(prevs)
         assert isinstance(args, Term) and (args.is_less() or args.is_less_eq() or args.is_greater or args.is_greater_eq())
-        th_names = ['pos_mul_less', 'neg_mul_less', 'pos_mul_less_eq', 'neg_mul_less_eq',
-                    'pos_mul_greater', 'neg_mul_greater', 'pos_mul_greater_eq', 'neg_mul_greater_eq']
+        th_names = ['int_pos_mul_less', 'int_neg_mul_less', 'int_pos_mul_less_eq', 'int_neg_mul_less_eq',
+                    'int_pos_mul_greater', 'int_neg_mul_greater', 'int_pos_mul_greater_eq', 'int_neg_mul_greater_eq']
         for th in th_names:
             try:
                 th1 = get_theorem(th)
@@ -683,13 +680,13 @@ class int_norm_neg_compares(Conv):
         pt = refl(t)
         ineq = t.arg
         if ineq.is_less():
-            return pt.on_rhs(rewr_conv('int_not_less'), omega_form_conv())
+            return pt.on_rhs(rewr_conv('int_not_less'))
         elif ineq.is_less_eq():
-            return pt.on_rhs(rewr_conv('int_not_less_eq'), omega_form_conv())
+            return pt.on_rhs(rewr_conv('int_not_less_eq'))
         elif ineq.is_greater():
-            return pt.on_rhs(rewr_conv('int_not_greater'), omega_form_conv())
+            return pt.on_rhs(rewr_conv('int_not_greater'))
         elif ineq.is_greater_eq():
-            return pt.on_rhs(rewr_conv('int_not_greater_eq'), omega_form_conv())
+            return pt.on_rhs(rewr_conv('int_not_greater_eq'))
         else:
             raise ConvException
 
@@ -748,17 +745,74 @@ class int_neq_false_conv(Conv):
             premise_pt = ProofTerm("int_const_ineq", less(IntType)(Int(lhs_value), Int(0)))
             return apply_theorem("int_neg_neq_zero", premise_pt)
 
-# class int_to_real_conv(Conv):
-#     """Given a linear integer expression, convert it to real term."""
-#     def get_proof_term(self, t):
-#         pt = refl(t)
+class int_compare_to_real(Conv):
+    """Given an integer comparison, convert it to a real comparison.
+    Suppose the linear expression of both side is an addition.
+    """
+    def get_proof_term(self, t):
+        if not (t.is_compares() or t.is_equals()) or not t.arg1.get_type() == IntType:
+            raise ConvException(str(t))
+        pt = refl(t)
+        if t.is_equals():
+            pt1 = pt.on_rhs(rewr_conv("real_of_int_eq", sym=True))
+        elif t.is_greater_eq():
+            pt1 = pt.on_rhs(rewr_conv("real_of_int_geq", sym=True))
+        elif t.is_greater():
+            pt1 = pt.on_rhs(rewr_conv("real_of_int_gt", sym=True))
+        elif t.is_less_eq():
+            pt1 = pt.on_rhs(rewr_conv("real_of_int_leq", sym=True))
+        elif t.is_less():
+            pt1 = pt.on_rhs(rewr_conv("real_of_int_lt", sym=True))
+        else:
+            raise NotImplementedError
 
-#         if not t.get_type() == IntType:
-#             return pt
+        return pt1.on_rhs(
+                top_conv(rewr_conv('real_of_int_add', sym=True)),
+                top_conv(rewr_conv('real_of_int_mul', sym=True)),   
+        )
 
-#         if t.is_var():
-#             return 
-#         if t.is_times():
-#             return pt.on_rhs(
-#                 rewr_conv('')
-#             )
+class int_simplex_form(Conv):
+    """Convert an integer comparison to a simplex normal form:
+                        y ⋈ b
+    """
+    def get_proof_term(self, t):
+        if not t.is_compares() or not t.arg1.get_type() == IntType:
+            raise ConvException(str(t))
+        pt = refl(t)
+        # first move all terms in rhs to lhs and normalize lhs
+        if t.is_greater():
+            pt1 = pt.on_rhs(
+                rewr_conv('int_gt_to_geq'),
+                rewr_conv('int_geq'),
+                arg1_conv(omega_simp_full_conv())
+            )
+        elif t.is_greater_eq():
+            pt1 = pt.on_rhs(
+                rewr_conv('int_geq'),
+                arg1_conv(omega_simp_full_conv())
+            )
+        elif t.is_less():
+            pt1 = pt.on_rhs(
+                rewr_conv('int_less_to_leq'),
+                rewr_conv('int_leq'),
+                arg1_conv(omega_simp_full_conv())
+            )
+        elif t.is_less_eq():
+            pt1 = pt.on_rhs(
+                rewr_conv('int_leq'),
+                arg1_conv(omega_simp_full_conv())
+            )
+        else:
+            raise NotImplementedError
+        # move all constant term on lhs to rhs
+        lhs = pt1.rhs.arg1
+        if lhs.is_number() or lhs.is_times() or lhs.arg.is_times():
+            return pt1
+        elif pt1.rhs.is_greater_eq() and lhs.arg.is_number():
+            return pt1.on_rhs(rewr_conv('int_geq_shift'), arg_conv(int_eval_conv()))
+        elif pt1.rhs.is_less_eq() and lhs.arg.is_number():
+            return pt1.on_rhs(rewr_conv('int_leq_shift'), arg_conv(int_eval_conv()))
+        else:
+            raise NotImplementedError       
+
+    
