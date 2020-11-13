@@ -1250,6 +1250,9 @@ def divides(T):
 def of_nat(T):
     return Const('of_nat', TFun(NatType, T))
 
+def of_int(T):
+    return Const('of_int', TFun(IntType, T))
+
 def nat_power(T):
     return Const('power', TFun(T, NatType, T))
 

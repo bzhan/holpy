@@ -17,7 +17,7 @@ from kernel.theory import register_macro, Thm
 from kernel.macro import Macro
 from logic.logic import apply_theorem
 from logic import basic, matcher
-from data.real import real_eval, real_norm_conv, real_eval_conv
+from data import real, integer
 from logic.conv import Conv, ConvException, rewr_conv, top_conv, arg_conv, arg1_conv, bottom_conv
 from collections import namedtuple
 from collections import deque
@@ -25,6 +25,7 @@ import math
 import numbers
 import string
 from fractions import Fraction
+import functools
 
 basic.load_theory('real')
 
@@ -393,6 +394,9 @@ class Simplex:
         if self.ilp:
             self.variables_bound()
 
+    def __len__(self):
+        return len(self.original)
+
     def preprocess(self):
         """
         Simplify the constraints Ax = 0 by Gauss elimination.
@@ -734,7 +738,7 @@ class RealCompareMacro(Macro):
 
     def eval(self, goal, prevs=[]):
         assert is_ineq(goal), "real_compare_macro: Should be an inequality term"
-        lhs, rhs = real_eval(goal.arg1), real_eval(goal.arg)
+        lhs, rhs = real.real_eval(goal.arg1), real.real_eval(goal.arg)
         if goal.is_less():
             assert lhs < rhs, "%f !< %f" % (lhs, rhs)
         elif goal.is_less_eq():
@@ -842,7 +846,7 @@ class SimplexHOLWrapper:
         else: # directly add x ⋈ c into atom_ineq_pts 
             x = lhs.arg
             # prove 1 * x = x
-            pt_x = real_norm_conv().get_proof_term(1 * x)
+            pt_x = real.real_norm_conv().get_proof_term(1 * x)
             pt_atom = ProofTerm.assume(hol_ineq).on_prop(top_conv(replace_conv(pt_x)))
             self.atom_ineq_pts = add_atom(self.atom_ineq_pts, x, pt_atom)
             
@@ -854,11 +858,11 @@ class SimplexHOLWrapper:
         If there is an assertion on x's lower bound, suppose it is e; If e > c,
         then we can derive a direct contradiction: x <= c and x >= e is inconsistency. 
         """
-        upper_bound = real_eval(upper_bound_pt.prop.arg)
+        upper_bound = real.real_eval(upper_bound_pt.prop.arg)
         # assertion = ProofTerm.assume(x <= upper_bound)
         if x in self.upper_bound_pts:
             old_assertion = self.upper_bound_pts[x]
-            old_upper_bound = real_eval(old_assertion.prop.arg)
+            old_upper_bound = real.real_eval(old_assertion.prop.arg)
             if old_upper_bound >= upper_bound:
                 pt_less = ProofTerm('real_compare', less_eq(RealType)(Real(upper_bound), Real(old_upper_bound)))
                 self.upper_bound_pts[x] = apply_theorem('real_geq_comp2', upper_bound_pt, old_assertion, pt_less)
@@ -871,7 +875,7 @@ class SimplexHOLWrapper:
         # check consistency with x's lower bound
         if x in self.lower_bound_pts:
             lower_assertion = self.lower_bound_pts[x]
-            lower_bound = real_eval(lower_assertion.prop.arg)
+            lower_bound = real.real_eval(lower_assertion.prop.arg)
             if lower_bound > new_upper_bound: # incosistency
                 pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(new_upper_bound), Real(lower_bound)))
                 pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, lower_assertion, self.upper_bound_pts[x])
@@ -888,10 +892,10 @@ class SimplexHOLWrapper:
         If there is an assertion on x's upper bound, suppose it is e: If e < c,
         then we can derive a direct contradiction: x >= c and x <= e is inconsistency. 
         """
-        lower_bound = real_eval(lower_bound_pt.prop.arg)
+        lower_bound = real.real_eval(lower_bound_pt.prop.arg)
         if x in self.lower_bound_pts:
             old_assertion = self.lower_bound_pts[x]
-            old_lower_bound = real_eval(old_assertion.prop.arg)
+            old_lower_bound = real.real_eval(old_assertion.prop.arg)
             if old_lower_bound <= lower_bound:
                 pt_greater = ProofTerm('real_compare', greater_eq(RealType)(Real(lower_bound), Real(old_lower_bound)))
                 self.lower_bound_pts[x] = apply_theorem('real_geq_comp2', lower_bound_pt, old_assertion, pt_greater)
@@ -904,7 +908,7 @@ class SimplexHOLWrapper:
         # check consistency with x's lower bound
         if x in self.upper_bound_pts:
             upper_assertion = self.upper_bound_pts[x]
-            upper_bound = real_eval(upper_assertion.prop.arg)
+            upper_bound = real.real_eval(upper_assertion.prop.arg)
             if upper_bound < new_lower_bound: # incosistency
                 pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_bound), Real(new_lower_bound)))
                 pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, self.lower_bound_pts[x], upper_assertion)
@@ -932,20 +936,20 @@ class SimplexHOLWrapper:
         # xi - (... + aij * xj + ...) = 0
         pt_right_shift = pt_eq.on_prop(rewr_conv('real_sub_0', sym=True))
         # construct (xi - (... + aij * xj + ...)) * 1/aij = 0
-        pt_divide_aij = real_norm_conv().get_proof_term(Fraction(1, a) * pt_right_shift.lhs)
+        pt_divide_aij = real.real_norm_conv().get_proof_term(Fraction(1, a) * pt_right_shift.lhs)
         # normalize lhs
-        pt_divide_aij_norm = pt_divide_aij.on_lhs(real_norm_conv())
+        pt_divide_aij_norm = pt_divide_aij.on_lhs(real.real_norm_conv())
         
         pt_eq_mul_coeff = apply_theorem('real_times_0', pt_right_shift, inst=Inst(a = Real(Fraction(1, a))))
         pt_divide_aij_norm_0 = pt_divide_aij.symmetric().transitive(pt_eq_mul_coeff)
         # convert to ... + (-1) * xj = 0
         eq_lhs = pt_divide_aij_norm.lhs
         eq_lhs_dest = dest_plus(eq_lhs)
-        pt_eq_lhs = real_norm_conv().get_proof_term(eq_lhs)
+        pt_eq_lhs = real.real_norm_conv().get_proof_term(eq_lhs)
         adder_except_xj = [t if t.is_times() else 1 * t for t in eq_lhs_dest]
         adder_except_xj = [t for t in adder_except_xj if t.arg != xj]
         eq_lhs_xj_right = sum(adder_except_xj[1:], adder_except_xj[0]) + (-1) * xj
-        pt_eq_lhs_xj_right = real_norm_conv().get_proof_term(eq_lhs_xj_right)
+        pt_eq_lhs_xj_right = real.real_norm_conv().get_proof_term(eq_lhs_xj_right)
         pt_eq_comm = ProofTerm.transitive(pt_eq_lhs, pt_eq_lhs_xj_right.symmetric())
         pt_comm_eq_0 = pt_eq_comm.symmetric().transitive(pt_divide_aij_norm_0)
 
@@ -957,7 +961,7 @@ class SimplexHOLWrapper:
         # euqalities relevant to xj
         for _v in basic_variable_xj_lhs:
             v_lhs_eq_pt = self.eq_pts[_v]
-            v_lhs_eq_pt_replace_norm = v_lhs_eq_pt.on_rhs(top_conv(replace_conv(pt_final)), real_norm_conv())
+            v_lhs_eq_pt_replace_norm = v_lhs_eq_pt.on_rhs(top_conv(replace_conv(pt_final)), real.real_norm_conv())
             self.eq_pts[_v] = v_lhs_eq_pt_replace_norm
 
     def explanation(self):
@@ -1016,9 +1020,9 @@ class SimplexHOLWrapper:
                 sum_pt = apply_theorem('real_leq_pair_plus', sum_pt, pt)
             
             # combine above pts
-            pt_norm_contr_var_rhs = self.eq_pts[contr_var].on_rhs(real_norm_conv()).symmetric()
-            pt_norm_sum_rhs = sum_pt.on_prop(arg_conv(real_norm_conv()))
-            pt_comb = pt_norm_sum_rhs.on_prop(top_conv(replace_conv(pt_norm_contr_var_rhs)), arg1_conv(real_eval_conv()))
+            pt_norm_contr_var_rhs = self.eq_pts[contr_var].on_rhs(real.real_norm_conv()).symmetric()
+            pt_norm_sum_rhs = sum_pt.on_prop(arg_conv(real.real_norm_conv()))
+            pt_comb = pt_norm_sum_rhs.on_prop(top_conv(replace_conv(pt_norm_contr_var_rhs)), arg1_conv(real.real_eval_conv()))
 
             # after we get contr_var's lower bound(lb), we get lb > β(contr_var), but β(contr_var) > contr_var's upper bound,
             # so we could deriv a contradiction
@@ -1059,9 +1063,9 @@ class SimplexHOLWrapper:
                 sum_pt = apply_theorem('real_leq_pair_plus', sum_pt, pt)
             
             # combine above pts
-            pt_norm_contr_var_rhs = self.eq_pts[contr_var].on_rhs(real_norm_conv()).symmetric()
-            pt_norm_sum_rhs = sum_pt.on_prop(arg1_conv(real_norm_conv()))
-            pt_comb = pt_norm_sum_rhs.on_prop(top_conv(replace_conv(pt_norm_contr_var_rhs)), arg_conv(real_eval_conv()))
+            pt_norm_contr_var_rhs = self.eq_pts[contr_var].on_rhs(real.real_norm_conv()).symmetric()
+            pt_norm_sum_rhs = sum_pt.on_prop(arg1_conv(real.real_norm_conv()))
+            pt_comb = pt_norm_sum_rhs.on_prop(top_conv(replace_conv(pt_norm_contr_var_rhs)), arg_conv(real.real_eval_conv()))
 
             # after we get contr_var's upper bound(ub), we get lb > β(contr_var), but β(contr_var) > contr_var's upper bound,
             # so we could deriv a contradiction
@@ -1124,33 +1128,88 @@ class SimplexHOLWrapper:
         return self.simplex.mapping
 
 
-def solve_hol_ineqs(ineqs):
+def solve_hol_ineqs(ineqs, is_integer=False):
     """
     Given a list of HOL inequalities, use simplex method to decide whether it is SAT or UNSAT,
     if it is SAT, return an assignment for each variable, or return the UNSAT proof term.
+    If is_integer is true, the varible in comparisons is a of_int term, we need to introduce real 
+    variables to rename them, and after simplex returning a proof term, we can resume them.
     """
     hol = SimplexHOLWrapper()
     # First convert the inequalies to GreaterEq or LessEq form.
     converted_ineq = []
+    rename_pt = []
+    names = {}
+    name_index = 0
     for ii in ineqs:
         lhs = dest_plus(ii.arg1)
         jars = []
         for l in lhs:
             if l.is_var():
                 jars.append(Jar(1, l.name))
-            elif l.is_times():
-                jars.append(Jar(l.arg1.dest_number(), l.arg.name))
+            elif l.is_times() and l.arg.is_var():
+                jars.append(Jar(real.real_eval(l.arg1), l.arg.name))
+            elif l.is_times() and l.arg.is_comb() and l.arg.head.name == "of_int":
+                int_var = l.arg.arg
+                if int_var not in names:
+                    names[int_var] = Var("_n" + str(name_index), RealType)
+                    name_index += 1
+                var = names[int_var]
+                rename_pt.append(ProofTerm.assume(Eq(var, l.arg)))
+                jars.append(Jar(real.real_eval(l.arg1), var.name))               
             else:
                 raise NotImplementedError
         if ii.is_less_eq():    
-            converted_ineq.append(LessEq(jars, ii.arg.dest_number()))
+            converted_ineq.append(LessEq(jars, real.real_eval(ii.arg)))
         elif ii.is_greater_eq():
-            converted_ineq.append(GreaterEq(jars, ii.arg.dest_number()))
+            converted_ineq.append(GreaterEq(jars, real.real_eval(ii.arg)))
         else:
             raise NotImplementedError("Simplex cannot handle %s now" % str(ii))
-
     # add these inequalities into simplex
     for ii in converted_ineq:
         hol.add_ineq(ii)
+    if not is_integer:
+        return hol.handle_assertion()        
+    
+    result = hol.handle_assertion()
+    if not isinstance(result, ProofTerm):
+        raise ValueError("Cannot get a unsat proof term!")
+    
+    pt1 = functools.reduce(lambda x, y: x.implies_intr(y), result.hyps, result)
+    pt2 = pt1.on_prop(*[top_conv(replace_conv(cv)) for cv in rename_pt])
+    implications, _ = pt2.prop.strip_implies()
+    pt3 = functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), implications, pt2)
+    # for pt in rename_pt:
+    pt4 = pt3
+    for eq in rename_pt:
+        eq = eq.prop
+        pt4 = pt4.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
 
-    return hol.handle_assertion()        
+    return pt4
+
+
+def unsat_integer_simplex(ineqs):
+    """
+    Given a set of integer comparisons. Get the real version of them,
+    then pass them to simplex, if the simplex can give a unsat proof term,
+    we also can derive the original integer comparisons' conjunction are unsat.
+    """
+    # d is a dict mapping integer comparison term to a equality pt between integer and real comparison
+    d = [integer.int_compare_to_real().get_proof_term(ineq).symmetric() for ineq in ineqs]
+
+    real_ineqs = [pt.lhs for pt in d]
+
+    real_simplex_result = solve_hol_ineqs(real_ineqs, is_integer=True)
+
+    if not isinstance(real_simplex_result, ProofTerm):
+        raise ValueError(real_simplex_result)
+
+    pt1 = real_simplex_result # a ⋈ x, ..., c ⋈ z ⊢ false
+    for hyp in pt1.hyps:
+        pt1 = pt1.implies_intr(hyp)
+    dd = [pt.on_lhs(top_conv(real.real_eval_conv()), bottom_conv(rewr_conv('real_mul_lid'))) for pt in d]
+    # pt1: ⊢ a ⋈ x ⟶ ... ⟶ c ⋈ z ⟶ false
+    pt2 = pt1.on_prop(*[top_conv(replace_conv(cv)) for cv in dd])
+    # pt2 is an integer version of pt1
+    implies_int_ineqs, _ = pt2.prop.strip_implies()
+    return functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), implies_int_ineqs, pt2)

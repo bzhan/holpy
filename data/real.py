@@ -13,7 +13,7 @@ from kernel.theory import register_macro
 from kernel.macro import Macro
 from kernel.proofterm import TacticException
 from kernel import term_ord
-from data import nat
+from data import nat, integer
 from data.set import setT
 from logic import logic
 from logic import auto
@@ -79,6 +79,8 @@ def real_eval(t):
             return t.dest_number()
         elif t.is_comb('of_nat', 1):
             return nat.nat_eval(t.arg)
+        elif t.is_comb('of_int', 1):
+            return integer.int_eval(t.arg)
         elif t.is_plus():
             return rec(t.arg1) + rec(t.arg)
         elif t.is_minus():
@@ -139,6 +141,8 @@ class real_eval_macro(Macro):
 class real_eval_conv(Conv):
     """Simplify all arithmetic operations."""
     def get_proof_term(self, t):
+        if t.get_type() != RealType:
+            return refl(t)
         simp_t = Real(real_eval(t))
         if simp_t == t:
             return refl(t)
