@@ -1125,7 +1125,7 @@
             }
         },
         {
-            "name": "int_lt",
+            "name": "int_less",
             "prop": "m < n ⟷ m - n < 0",
             "ty": "thm",
             "vars": {
@@ -1134,7 +1134,7 @@
             }
         },
         {
-            "name": "int_le",
+            "name": "int_leq",
             "prop": "m ≤ n ⟷ m - n ≤ 0",
             "ty": "thm",
             "vars": {
@@ -1152,7 +1152,7 @@
             }
         },
         {
-            "name": "int_ge",
+            "name": "int_geq",
             "prop": "m ≥ n ⟷ m - n ≥ 0",
             "ty": "thm",
             "vars": {
@@ -1859,6 +1859,42 @@
             "prop": "x < 0 ⟶ x = 0 ⟷ false",
             "ty": "thm",
             "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_less_to_leq",
+            "prop": "x < y ⟷ x ≤ y - 1",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_gt_to_geq",
+            "prop": "x > y ⟷ x ≥ y + 1",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_geq_shift",
+            "prop": "x + c ≥ 0 ⟷ x ≥ -c",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_leq_shift",
+            "prop": "x + c ≤ 0 ⟷ x ≤ -c",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
                 "x": "int"
             }
         }
