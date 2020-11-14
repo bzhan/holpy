@@ -26,6 +26,7 @@ import numbers
 import string
 from fractions import Fraction
 import functools
+import hashlib
 
 basic.load_theory('real')
 
@@ -69,6 +70,9 @@ class Jar:
     def __repr__(self):
         return "Jar(%s, %s)" % (str(self.coeff), self.var)
 
+    def __hash__(self):
+        return int(hashlib.sha1(self.var.encode('utf-8')).hexdigest(), 16) % (10 ** 8) + self.coeff ** 3
+
     def __eq__(self, value):
         return type(value) == Jar and self.coeff == value.coeff and self.var == value.var
 
@@ -98,7 +102,7 @@ class GreaterEq(InEquation):
     def __init__(self, jars, lower_bound):
         assert(all(isinstance(j, Jar) for j in jars))
         assert(isinstance(lower_bound, numbers.Number))
-        self.jars = jars
+        self.jars = tuple(jars)
         self.lower_bound = lower_bound
 
     def __str__(self):
@@ -111,7 +115,7 @@ class LessEq(InEquation):
     def __init__(self, jars, upper_bound):
         assert(all(isinstance(j, Jar) for j in jars))
         assert(isinstance(upper_bound, numbers.Number))
-        self.jars = jars
+        self.jars = tuple(jars)
         self.upper_bound = upper_bound
 
     def __str__(self):
@@ -224,6 +228,9 @@ class Simplex:
         # represents whether this is an ILP problem
         self.ilp = ilp
 
+        # represents the input non-atom expressions
+        self.matrix = dict()
+
     def __str__(self):
         s = "Original inequlities: \n"
         for ineq in self.original:
@@ -285,11 +292,15 @@ class Simplex:
             
 
                 elif coeff != 0: # a * x >= b
-                    s = "$" + string.ascii_lowercase[self.index] + "$"
-                    self.index += 1
+                    if ineq.jars not in self.matrix:
+                        s = "$" + string.ascii_lowercase[self.index] + "$"
+                        self.index += 1
+                        self.matrix[ineq.jars] = s
+                        self.equality[s] = ineq.jars
+                    else:
+                        s = self.matrix[ineq.jars]
                     self.lower_atom.append((s, lower_bound))
                     self.atom.append(geq_atom(s, lower_bound))
-                    self.equality[s] = ineq.jars
                     self.basic.add(s)
                     self.non_basic.add(var_name)
                     if var_name not in self.nbasic_basic:
@@ -316,9 +327,13 @@ class Simplex:
                     self.input_vars.add(v) 
 
                 lower_bound = ineq.lower_bound
-                s = "$" + string.ascii_lowercase[self.index] + "$"
-                self.index += 1
-                self.equality[s] = ineq.jars
+                if ineq.jars not in self.matrix:
+                    s = "$" + string.ascii_lowercase[self.index] + "$"
+                    self.index += 1
+                    self.equality[s] = ineq.jars
+                    self.matrix[ineq.jars] = s
+                else:
+                    s = self.matrix[ineq.jars]
                 self.lower_atom.append((s, lower_bound))
                 self.atom.append(geq_atom(s, lower_bound))
                 self.mapping[s] = 0
@@ -346,11 +361,16 @@ class Simplex:
                         self.bound[var_name] = (-math.inf, math.inf)
 
                 elif coeff != 0: # a * x <= b
-                    s = "$" + string.ascii_lowercase[self.index] + "$"
-                    self.index += 1
+                    if ineq.jars not in self.matrix:
+                        s = "$" + string.ascii_lowercase[self.index] + "$"
+                        self.index += 1
+                        self.equality[s] = ineq.jars
+                        self.matrix[ineq.jars] = s
+                    else:
+                        s = self.matrix[ineq.jars]
                     self.upper_atom.append((s, upper_bound))
                     self.atom.append(leq_atom(s, upper_bound))
-                    self.equality[s] = ineq.jars
+                    
                     self.basic.add(s)
                     self.non_basic.add(var_name)
                     if var_name not in self.mapping:
@@ -376,9 +396,13 @@ class Simplex:
                     self.input_vars.add(v)
 
                 upper_bound = ineq.upper_bound
-                s = "$" + string.ascii_lowercase[self.index] + "$"
-                self.index += 1
-                self.equality[s] = ineq.jars
+                if ineq.jars not in self.matrix:
+                    s = "$" + string.ascii_lowercase[self.index] + "$"
+                    self.index += 1
+                    self.equality[s] = ineq.jars
+                    self.matrix[ineq.jars] = s
+                else:
+                    s = self.matrix[ineq.jars]
                 self.upper_atom.append((s, upper_bound))
                 self.atom.append(leq_atom(s, upper_bound))
                 self.mapping[s] = 0
@@ -501,7 +525,7 @@ class Simplex:
         assert x in self.bound, "No such variable in solver"
         l, u = self.bound[x]
         if c > u:
-            raise AssertUpperException("%s's lower bound %s is larger than %s" % (x, str(l), str(c)))
+            raise AssertLowerException("%s's lower bound %s is larger than %s" % (x, str(l), str(c)))
         elif c > l:
             self.bound[x] = (c, u)
             if x in self.non_basic and self.mapping[x] < c:
@@ -862,7 +886,7 @@ class SimplexHOLWrapper:
             old_upper_bound = real.real_eval(old_assertion.prop.arg)
             if old_upper_bound >= upper_bound:
                 pt_less = ProofTerm('real_compare', less_eq(RealType)(Real(upper_bound), Real(old_upper_bound)))
-                self.upper_bound_pts[x] = apply_theorem('real_geq_comp2', upper_bound_pt, old_assertion, pt_less)
+                self.upper_bound_pts[x] = apply_theorem('real_leq_comp1', upper_bound_pt, old_assertion, pt_less)
             new_upper_bound = upper_bound if (old_upper_bound >= upper_bound) else old_upper_bound
         else:
             self.upper_bound_pts[x] = upper_bound_pt
@@ -895,8 +919,8 @@ class SimplexHOLWrapper:
             old_lower_bound = real.real_eval(old_assertion.prop.arg)
             if old_lower_bound <= lower_bound:
                 pt_greater = ProofTerm('real_compare', greater_eq(RealType)(Real(lower_bound), Real(old_lower_bound)))
-                self.lower_bound_pts[x] = apply_theorem('real_geq_comp2', lower_bound_pt, old_assertion, pt_greater)
-            new_lower_bound = lower_bound if (old_lower_bound >= lower_bound) else old_lower_bound
+                self.lower_bound_pts[x] = apply_theorem('real_geq_comp2', old_assertion, lower_bound_pt, pt_greater)
+            new_lower_bound = lower_bound if (old_lower_bound <= lower_bound) else old_lower_bound
         else:
             self.lower_bound_pts[x] = lower_bound_pt
             new_lower_bound = lower_bound
