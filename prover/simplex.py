@@ -417,11 +417,12 @@ class Simplex:
     
     def update(self, x, v):
         assert x in self.non_basic
-        rlt = self.nbasic_basic[x]
-        for b in rlt:
-            a = self.aij(b, x)
-            self.mapping[b] += a * (v - self.mapping[x])
-        
+        if x in self.nbasic_basic:
+            rlt = self.nbasic_basic[x]
+            for b in rlt:
+                a = self.aij(b, x)
+                self.mapping[b] += a * (v - self.mapping[x])
+            
         self.mapping[x] = v
 
     def pivot(self, xi, xj):
@@ -660,10 +661,8 @@ class Simplex:
                 v = float(value)
                 if not v.is_integer():
                     return False
-
         return True
 
-    
     def find_not_int_var(self):
         """Find the var which value is not integer."""
         assert not self.all_integer(), "No integer!"
@@ -759,8 +758,6 @@ class replace_conv(Conv):
             return self.pt
         else:
             raise ConvException
-
-
 
 class SimplexHOLWrapper:
     """
