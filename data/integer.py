@@ -84,6 +84,8 @@ class int_eval_macro(Macro):
 
 class int_eval_conv(Conv):
     def get_proof_term(self, t):
+        if t.get_type() != IntType:
+            return refl(t)
         simp_t = Int(int_eval(t))
         if simp_t == t:
             return refl(t)
@@ -665,7 +667,7 @@ class int_norm_eq(Conv):
             first_coeff = summands[0].arg1
         if int_eval(first_coeff) < 0:
             return pt1.on_rhs(
-                rewr_conv('pos_neg_eq_0'),
+                rewr_conv('int_pos_neg_eq_0'),
                 arg1_conv(simp_full()),
                 top_conv(rewr_conv('int_pow_1_r'))
             )

@@ -150,21 +150,84 @@ class ProofrecTest(unittest.TestCase):
             ~(uclid_ZERO + -1 * x_7 ≥ 0) ∨ ~(uclid_ZERO + -1 * x_8 ≤ -1) ∨ ~(uclid_ZERO + -1 * x_8 ≥ -1) \
             ∨ ~(uclid_ZERO + -1 * x_6 ≤ -1) ∨ ~(uclid_ZERO + -1 * x_6 ≥ -1))",
 
-            "¬(x_15 ∨ x_16 ∨ x_17 ∨ x_25 ∨ x_26 ∨ x_27 ∨ x_59 ∨ x_60 ∨ x_61 ∨ ¬(x_3 ∨ ¬x_22) \
-            ∨ ¬(¬x_3 ∨ x_22) ∨ ¬(x_4 ∨ ¬x_23) ∨ ¬(¬x_4 ∨ x_23) ∨ ¬(x_5 ∨ ¬x_24) ∨ ¬(¬x_5 ∨ x_24)) \
-            ⟷ ¬(x_25 ∨ x_26 ∨ x_27 ∨ x_22 ∨ x_23 ∨ x_24 ∨ x_59 ∨ x_60 ∨ x_61)"
-            # lpsat
+            # "¬(x_15 ∨ x_16 ∨ x_17 ∨ x_25 ∨ x_26 ∨ x_27 ∨ x_59 ∨ x_60 ∨ x_61 ∨ ¬(x_3 ∨ ¬x_22) \
+            # ∨ ¬(¬x_3 ∨ x_22) ∨ ¬(x_4 ∨ ¬x_23) ∨ ¬(¬x_4 ∨ x_23) ∨ ¬(x_5 ∨ ¬x_24) ∨ ¬(¬x_5 ∨ x_24)) \
+            # ⟷ ¬(x_25 ∨ x_26 ∨ x_27 ∨ x_22 ∨ x_23 ∨ x_24 ∨ x_59 ∨ x_60 ∨ x_61)",
+            
+            "(if hash_1 x1 = hash_2 x1 then hash_2 x1 else hash_1 x1 + hash_1 x1) = (if hash_1 x1 = hash_2 x1 then hash_2 x1 else 2 * hash_1 x1)"
         ]
 
-        context.set_context('int', vars={
+        context.set_context('smt', vars={
             "x_10": "bool", "x_11": "bool", "x_12": "bool", "x_13": "bool", "k3": "bool", "k2": "bool",
-            "x_8": "int", "x_7": "int", "x_5": "int", "x_6": "int", "x_9": "int", "uclid_ZERO": "int"
+            "x_8": "int", "x_7": "int", "x_5": "int", "x_6": "int", "x_9": "int", "uclid_ZERO": "int",
+            "hash_1": "int => int", "hash_2": "int => int", "x1": "int"
         })
 
         for tm in test_data:
             tm = parse_term(tm)
             pt = proofrec._rewrite(tm)
+            print(pt)
             self.assertNotEqual(pt.rule, "sorry")
+
+    def testThLemmaIntSingle(self):
+        test_data = [
+            # ¬(y ≤ 3), y ≤ 4 ⊢ 0 = -4 + y,
+            # y ≥ 0, y ≤ 0 ⊢ 1 = 1 + y,
+            # y ≥ 0, ¬(y ≥ 1) ⊢ 1 = 1 + y,
+            "x ≥ 1 ∨ x ≤ 0",
+            "¬(x ≥ 2) ∨ ¬(x ≤ 0)",
+            "¬(x ≥ 1) ∨ ¬(x ≤ 0)",
+            "¬(x ≤ 2) ∨ x ≤ 3",
+            "¬(x ≤ 3) ∨ ¬(x ≥ 4)",
+            "¬(x = 4) ∨ x ≤ 4",
+            "¬(1 = x) ∨ x ≥ 1",
+            "¬(x ≤ 0) ∨ 4 + x = (if x ≤ 0 then 4 + x else -1 + x)",
+            "1 = x ∨ ¬(x ≤ 1) ∨ ¬(x ≥ 1)",
+            "3 = -1 + x ∨ ¬(-1 + x ≤ 3) ∨ ¬(-1 + x ≥ 3)",
+            "x = 3 ∨ ¬(x ≤ 3) ∨ ¬(x ≥ 3)",
+            # "x ≥ 4 ∨ 1 + x = (if x ≥ 4 then -4 + x else 1 + x)",
+            # "¬(4 + x = (if x ≤ 0 then 4 + x else -1 + x)) ∨ 4 + x + -1 * (if x ≤ 0 then 4 + x else -1 + x) ≥ 0)",
+            # "¬(-1 + x = (if x ≤ 0 then 4 + x else -1 + x)) ∨ -1 + x + -1 * (if x ≤ 0 then 4 + x else -1 + x) ≥ 0)",
+            "¬(Succ x = 3) ∨ Succ x ≤ 3",
+            "¬(Sum (Pred x) (Succ y) ≥ 2) ∨ ¬(Sum (Pred x) (Succ y) ≤ 1)",
+            "¬(Sum (Pred x) (Succ y) = 2) ∨ Sum (Pred x) (Succ y) ≥ 2",
+        ]
+        
+        context.set_context('smt', vars={
+            "x" : "int", "Succ": "int => int", "Pred": "int => int", "Sum": "int => int => int"}
+        )
+        for tm in test_data:
+            tm = parse_term(tm)
+            self.assertNotEqual(proofrec.th_lemma([tm]).rule, 'sorry')
+
+    def testThLemmaIntMulti(self):
+        test_data = [
+            (('¬(x ≤ 3)', 'x ≤ 4'), '0 = -4 + x'),
+            (('x ≥ 0', 'x ≤ 0'), '1 = 1 + x'),
+            (('x ≥ 0', '¬(x ≥ 1)'), '1 = 1 + x')
+        ]
+
+        context.set_context('smt', vars={'x': 'int'})
+
+        for assms, res in test_data:
+            assms = [ProofTerm.assume(parse_term(assm)) for assm in assms]
+            res = parse_term(res)
+            self.assertEqual(proofrec.th_lemma([*assms, res]).prop, res)
+
+    def testDefAxiom(self):
+        test_data = [
+            # "x ≤ 0 ∨ -1 + x = (if x ≤ 0 then 4 + x else -1 + x)",
+            # "¬(y ≤ 0) ∨ 4 + y = (if y ≤ 0 then 4 + y else -1 + y))",
+            # '¬(y + x ≥ 10) ∨ -10 + y + x = (if y + x ≥ 10 then -10 + y + x else y + x))',
+        ]
+        
+        context.set_context('real', vars={
+            "x": "int"
+        })
+
+        for tm in test_data:
+            tm = parse_term(tm)
+            self.assertNotEqual(proofrec.def_axiom(tm).rule, 'sorry')
 
 if __name__ == "__main__":
     unittest.main()

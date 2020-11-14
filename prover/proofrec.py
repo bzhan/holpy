@@ -19,7 +19,7 @@ from kernel import theory
 from logic import basic, context, matcher
 from logic.logic import apply_theorem, imp_disj_iff, disj_norm, imp_conj_macro, resolution
 from logic.tactic import rewrite_goal_with_prev
-from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv, ConvException, Conv
+from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv, ConvException, Conv, arg1_conv
 from logic import auto
 from prover import sat, tseitin, simplex
 from syntax.settings import settings
@@ -503,7 +503,7 @@ def distinct_monotonicity(pts, concl, z3terms):
     for i in reversed(range(len(new_pts2) - 1)):
         pt = ProofTerm.combination(conj_refl, new_pts2[i]).combination(pt_conj)
         pt_conj = pt
-    return pt
+    return pt_conj
 
 def schematic_rules_rewr(thms, lhs, rhs):
     """Rewrite by instantiating schematic theorems."""
@@ -575,7 +575,6 @@ def match_pattern(pat, tm):
     """If the schematic pattern can match with term tm, return true, else false"""
     if isinstance(pat, str):
         pat = parser.parse_term(pat).convert_svar()
-    
     try:
         matcher.first_order_match(pat, tm)
         return True
@@ -648,7 +647,9 @@ def rewrite_int(tm, has_bool=False):
     elif tm.lhs.get_type() == IntType and tm.rhs.get_type() == IntType:
         pt1 = refl(tm.lhs).on_rhs(integer.simp_full())
         pt2 = refl(tm.rhs).on_rhs(integer.simp_full())
-        return try_tran_pt(pt1, pt2.symmetric())
+        res = try_tran_pt(pt1, pt2.symmetric())
+        if res.rule != 'sorry':
+            return res
     elif tm.lhs.is_not() and tm.rhs.is_not() and tm.lhs.arg.is_equals() and tm.rhs.arg.is_equals():
         return refl(neg).combination(compare_lhs_rhs(Eq(tm.lhs.arg, tm.rhs.arg), [integer.int_norm_eq()]))
     elif tm.lhs.is_equals() and tm.rhs.is_conj() and tm.rhs.arg1.is_less_eq() and tm.rhs.arg.is_greater_eq():
@@ -658,7 +659,7 @@ def rewrite_int(tm, has_bool=False):
         else:
             return ProofTerm.sorry(Thm([], tm))
     elif tm.lhs.is_compares() and tm.rhs.is_not() and tm.rhs.arg.is_compares():
-        pt_elim_neg_sym = refl(tm.rhs).on_rhs(integer.int_norm_neg_compares()).symmetric()
+        pt_elim_neg_sym = refl(tm.rhs).on_rhs(integer.int_norm_neg_compares(), integer.omega_form_conv()).symmetric()
         pt_eq = integer.int_eq_comparison_macro().get_proof_term(Eq(tm.lhs, pt_elim_neg_sym.lhs))
         return try_tran_pt(pt_eq, pt_elim_neg_sym)
     elif tm.lhs.is_not() and tm.lhs.arg.is_compares() and tm.rhs.is_not() and tm.rhs.arg.is_compares():
@@ -667,36 +668,37 @@ def rewrite_int(tm, has_bool=False):
         1. normalize the comparisons can prove they are equal.
         2. use gcd, ¬(a ⋈ b) <--> ¬(m * c ⋈ m * d)
         """
-        pt_lhs_elim_neg = refl(tm.lhs).on_rhs(integer.int_norm_neg_compares())
-        pt_rhs_elim_neg_sym = refl(tm.rhs).on_rhs(integer.int_norm_neg_compares()).symmetric()
+        pt_lhs_elim_neg = refl(tm.lhs).on_rhs(integer.int_norm_neg_compares(), integer.omega_form_conv())
+        pt_rhs_elim_neg_sym = refl(tm.rhs).on_rhs(integer.int_norm_neg_compares(), integer.omega_form_conv()).symmetric()
         pt1 = try_tran_pt(pt_lhs_elim_neg, pt_rhs_elim_neg_sym)
         if pt1.rule != 'sorry':
             return pt1
-        return compare_lhs_rhs(tm, [top_conv(integer.int_gcd_compares()), integer.int_norm_neg_compares()])
+        return compare_lhs_rhs(tm, [top_conv(integer.int_gcd_compares()), integer.int_norm_neg_compares(), integer.omega_form_conv()])
     elif match_pattern('a | (b::int) = c <--> a | ~(~((b::int) <= c) | ~(b >=c))', tm):
         pt_lhs = refl(tm.lhs).on_rhs(arg_conv(rewr_conv('int_eq_leq_geq')), arg_conv(proplogic.norm_full()))
         pt_rhs_sym = refl(tm.rhs).on_rhs(arg_conv(proplogic.norm_full())).symmetric()        
         return try_tran_pt(pt_lhs, pt_rhs_sym)
     elif match_pattern('(a :: int) = b <--> false', tm):
         return refl(tm.lhs).on_rhs(integer.int_norm_eq(), integer.int_neq_false_conv())
-    else:
-        return rewrite_int_second_level(tm)
+    
+    return rewrite_int_second_level(tm)
 
 def rewrite_int_second_level(tm):
     """Use single rewrite conversion"""
     armony = [
         (proplogic.norm_full(), ),
-        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq'))),
+        (bottom_conv(integer.int_norm_conv()), ),
+        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq_conj'))),
         (proplogic.norm_full(), top_conv(rewr_conv('int_eq_leq_geq'))),
-        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq')), proplogic.norm_full()),
+        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq_conj')), proplogic.norm_full()),
         (proplogic.norm_full(), top_conv(rewr_conv('int_eq_leq_geq')), proplogic.norm_full()),
-        (proplogic.norm_full(), try_conv(bottom_conv(integer.int_norm_eq())), top_conv(rewr_conv('int_eq_geq_leq'))),
+        (proplogic.norm_full(), try_conv(bottom_conv(integer.int_norm_eq())), top_conv(rewr_conv('int_eq_geq_leq_conj'))),
         (proplogic.norm_full(), try_conv(bottom_conv(integer.int_norm_eq())), bottom_conv(integer.omega_form_conv())),
-        (proplogic.norm_full(),try_conv(top_conv(integer.int_norm_eq())), try_conv(bottom_conv(integer.simp_full())), top_conv(rewr_conv('int_eq_geq_leq')), proplogic.norm_full()),
-        (proplogic.norm_full(), top_conv(integer.int_gcd_compares()), top_conv(integer.int_norm_neg_compares())),
+        (proplogic.norm_full(),try_conv(top_conv(integer.int_norm_eq())), try_conv(bottom_conv(integer.simp_full())), top_conv(rewr_conv('int_eq_geq_leq_conj')), proplogic.norm_full()),
+        (proplogic.norm_full(), top_conv(integer.int_gcd_compares()), top_conv(integer.int_norm_neg_compares()), top_conv(integer.omega_form_conv())),
         (top_conv(rewr_conv('neg_iff_both_sides')), top_conv(rewr_conv('double_neg'))),
         (try_conv(bottom_conv(integer.omega_form_conv())),
-        try_conv(bottom_conv(integer.int_norm_neg_compares())),
+        try_conv(bottom_conv(integer.int_norm_neg_compares())), try_conv(bottom_conv(integer.omega_form_conv())),
         try_conv(bottom_conv(integer.int_norm_eq())),
         try_conv(proplogic.norm_full()),
         top_conv(rewr_conv('neg_iff_both_sides')), 
@@ -1316,7 +1318,7 @@ def real_th_lemma(args):
 
         return pt_final
 
-def int_th_lemma_1(tm):
+def int_th_lemma_1_omega(tm):
     def traverse_A(pt):
             if pt.prop.is_conj():
                 return traverse_A(apply_theorem('conjD1', pt)) + traverse_A(apply_theorem('conjD2', pt))
@@ -1325,7 +1327,7 @@ def int_th_lemma_1(tm):
     pt_refl = refl(Not(tm))
     pt_norm = pt_refl.on_rhs(
         top_conv(proplogic.norm_full()),
-        top_conv(integer.int_norm_neg_compares()),
+        top_conv(integer.int_norm_neg_compares()), top_conv(integer.omega_form_conv()),
         top_conv(integer.omega_form_conv())
     )
     conjs = pt_norm.rhs.strip_conj()
@@ -1351,9 +1353,9 @@ def int_th_lemma_1(tm):
     pt_neg_prop_implies_false = pt_conj_false.implies_intr(pt_norm.rhs).on_prop(top_conv(replace_conv(pt_norm.symmetric())))
     return apply_theorem('negI', pt_neg_prop_implies_false).on_prop(rewr_conv('double_neg'))
 
-def int_th_lemma_n(tms):
+def int_th_lemma_n_omega(tms):
     pts = tms[:-1]
-    pt_norm_eq = [refl(pt.prop).on_rhs(try_conv(integer.int_norm_neg_compares()), integer.omega_form_conv()).symmetric() for pt in pts]
+    pt_norm_eq = [refl(pt.prop).on_rhs(try_conv(integer.int_norm_neg_compares()), try_conv(integer.omega_form_conv())).symmetric() for pt in pts]
     solver = omega.OmegaHOL([pt.lhs for pt in pt_norm_eq])
     pt_unsat = solver.solve()
     pt_implies_false = functools.reduce(lambda x, y: x.implies_intr(y), pt_unsat.hyps, pt_unsat)
@@ -1366,6 +1368,129 @@ def int_th_lemma_n(tms):
         pt_final = pt_final.implies_elim(ProofTerm.assume(imp))
     return pt_final 
 
+def int_th_lemma_1_simplex(tm):
+    def traverse_A(pt):
+            if pt.prop.is_conj():
+                return traverse_A(apply_theorem('conjD1', pt)) + traverse_A(apply_theorem('conjD2', pt))
+            else:
+                return [pt]
+    pt_refl = refl(Not(tm))
+    pt_norm = pt_refl.on_rhs(
+        top_conv(rewr_conv('int_neg_equal')),
+        top_conv(proplogic.norm_full()),
+        top_conv(integer.int_norm_neg_compares()),
+        top_conv(integer.int_simplex_form())
+    )
+    conjs = pt_norm.rhs.strip_conj()
+    pt = simplex.unsat_integer_simplex(conjs)
+
+    # pt = solver.solve()
+    
+    # reconstruction, get proof ⊢ P
+    # for now, we have a proof of e_1, ..., e_n ⊢ false
+    # the proof is as following:
+    # a) get ⊢ e_1 → ... → e_n -> false
+    # b) get e_1 ∧ ... ∧ e_n ⊢ e_1, ..., e_1 ∧ ... ∧ e_n ⊢ e_n
+    # c) get e_1 ∧ ... ∧ e_n ⊢ false QED
+    # a)  
+    pt_implies_false = functools.reduce(lambda x, y: x.implies_intr(y), reversed(conjs), pt)
+    # b)
+    conj_pts = [p.on_prop(integer.int_simplex_form()) for p in traverse_A(ProofTerm.assume(pt_norm.rhs))]
+    # c)
+    pt_conj_false = functools.reduce(lambda x, y: x.implies_elim(y), conj_pts, pt_implies_false)
+
+    # final step, we already have ⊢ ¬P ⟷ e_1 ∧ ... ∧ e_n and ⊢ e_1 ∧ ... ∧ e_n → false
+    # so we could derive ⊢ P
+    pt_neg_prop_implies_false = pt_conj_false.implies_intr(pt_norm.rhs).on_prop(top_conv(replace_conv(pt_norm.symmetric())))
+    return apply_theorem('negI', pt_neg_prop_implies_false).on_prop(rewr_conv('double_neg'))
+
+def int_th_lemma_n_simplex(tms):
+    """Two cases, 
+        1) ... ⊢ false
+        2) ... ⊢   
+    """
+    pts = tms[:-1]
+    pt_norm_eq = [refl(pt.prop).on_rhs(try_conv(integer.int_norm_neg_compares()), try_conv(integer.int_simplex_form())).symmetric() for pt in pts]
+    # solver = omega.OmegaHOL([pt.lhs for pt in pt_norm_eq])
+    # pt_unsat = solver.solve()
+    pt_unsat = simplex.unsat_integer_simplex([pt.lhs for pt in pt_norm_eq])
+    pt_implies_false = functools.reduce(lambda x, y: x.implies_intr(y), pt_unsat.hyps, pt_unsat)
+    pt_implies_false_initial = pt_implies_false
+    for pt in pt_norm_eq:
+       pt_implies_false_initial = pt_implies_false_initial.on_prop(top_conv(replace_conv(pt)))
+    imps, _ = pt_implies_false_initial.prop.strip_implies()
+    pt_final = pt_implies_false_initial
+    for imp in imps:
+        pt_final = pt_final.implies_elim(ProofTerm.assume(imp))
+    return pt_final
+
+def int_th_lemma_equation(args):
+    """
+    args[-1] is an equation, args[:-1] can derive the only possible value for variable
+    occurs in args[-1].
+    For example, ¬(y ≤ 3), y ≤ 4 ⊢ 0 = -4 + y
+    The proving strategy is first get the conjunction of the two hyps, eliminate the negation,
+    then get the conclusion of the possible value for the varibale, finally use conversion.
+    1) ¬(y ≤ 3), y ≤ 4 ⊢ ¬(y ≤ 3) ∧ y ≤ 4
+    2) ¬(y ≤ 3), y ≤ 4 ⊢ y ≥ 4 ∧ y ≤ 4
+    3) ¬(y ≤ 3), y ≤ 4 ⊢ y = 4
+    4) ⊢ 0 = -4 + y ⟷ y = 4
+    5) ⊢ ¬(y ≤ 3), y ≤ 4 ⊢ 0 = -4 + y
+    """
+    # if len(args) != 3 or not args[-1].prop.is_equals():
+    #     return None
+    
+    pt1 = apply_theorem('conjI', args[0], args[1])
+    pt2 = pt1.on_prop(
+        top_conv(rewr_conv('int_not_less_eq')),
+        top_conv(rewr_conv('int_not_greater_eq')),
+        top_conv(rewr_conv('int_less_to_leq')),
+        top_conv(rewr_conv('int_gt_to_geq')),
+        top_conv(integer.int_eval_conv()),
+    )
+    if pt2.prop.arg1.is_less_eq():
+        pt2 = pt2.on_prop(rewr_conv('conj_comm'))
+
+    pt3 = pt2.on_prop(rewr_conv('int_eq_geq_leq_conj', sym=True))
+    
+    pt4 = refl(args[-1]).on_rhs(rewr_conv('int_eq_move_left'), arg1_conv(integer.omega_simp_full_conv()))
+    if pt4.rhs.arg1.is_plus() and integer.int_eval(pt4.rhs.arg1.arg1.arg1) == -1:
+        pt4 = pt4.on_rhs(rewr_conv('int_pos_neg_eq_0'), arg1_conv(integer.omega_simp_full_conv()))
+    elif pt4.rhs.arg1.is_times() and integer.int_eval(pt4.rhs.arg1.arg1) == -1:
+        pt4 = pt4.on_rhs(rewr_conv('int_pos_neg_eq_0'), arg1_conv(integer.omega_simp_full_conv()))
+    if pt4.rhs.arg1.arg.is_number():
+        pt4 = pt4.on_rhs(rewr_conv('add_move_0_r'), arg_conv(integer.int_eval_conv()))
+    pt5 = pt4.on_rhs(arg1_conv(rewr_conv('int_mul_1_l')))
+    return pt5.symmetric().equal_elim(pt3)
+    
+
+def match_and_apply(tm, th_name):
+    """Match tm with the theorem, if successful, instantiate it."""
+    for name in th_name:
+        try:
+            pt = ProofTerm.theorem(name)
+            inst = matcher.first_order_match(pt.prop, tm)
+            return pt.substitution(inst)
+        except:
+            continue
+    return None
+
+def int_th_lemma(args):
+    if len(args) == 1:
+        th_name = ['int_ite_tau', 't036', 't037']
+        res = match_and_apply(args[0], th_name)
+        if res:
+            return res
+    if len(args) == 3 and args[-1].is_equals():
+        res = int_th_lemma_equation(args)
+        if res:
+            return res
+    if len(args) == 1:        
+        return int_th_lemma_1_simplex(args[0])
+    else:
+        return int_th_lemma_n_simplex(args)
+
+
 def th_lemma(args):
     """
     th-lemma: Generic proof for theory lemmas.
@@ -1374,14 +1499,10 @@ def th_lemma(args):
     Ts = set(sum([list(analyze_type(tm)) for tm in tms], []))
     try:
         if IntType in Ts:
-            if len(args) == 1:
-                return int_th_lemma_1(tms[0])
-            else:
-                return int_th_lemma_n(args)
+            return int_th_lemma(args)
         elif RealType in Ts:
-            return real_th_lemma(tms)
+            return real_th_lemma(args)
     except:
-        pts = args[-1]
         hyps = [h.prop for h in args[:-1]]
         return ProofTerm.sorry(Thm(hyps, args[-1]))
 
@@ -1436,6 +1557,8 @@ def elim_unused(eq):
     pt_rhs_intro_var = pt_rhs_assume.forall_intr(var).implies_intr(rhs)
     return ProofTerm.equal_intr(pt_lhs_elim_var, pt_rhs_intro_var)
 
+def trans(args):
+    return functools.reduce(lambda x, y: x.transitive(y), args[:-1])
 
 
 def convert_method(term, *args, subterms=None, assertions=[]):
@@ -1456,8 +1579,7 @@ def convert_method(term, *args, subterms=None, assertions=[]):
             return distinct_monotonicity(equals, concl, subterms)
         return monotonicity(equals, concl)
     elif name in ('trans', 'trans*'):
-        arg1, arg2, _ = args
-        return arg1.transitive(arg2)
+        return trans(args)
     elif name in ('mp', 'mp~'):
         arg1, arg2, _ = args
         return mp(arg1, arg2)
@@ -1575,6 +1697,7 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     """
     If trace is true, print reconstruction trace.
     """
+    time1 = time.perf_counter()
     global conj_expr, disj_expr
     term, net = index_and_relation(proof)
     order = DepthFirstOrder(net)
@@ -1608,4 +1731,6 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
                     print('r['+str(i)+']', term[i].decl().name(), file=f)
     # conclusion = delete_redundant(r[0], redundant)
     # redundant.clear()
+    time2 = time.perf_counter()
+    print("total time: ", time2 - time1)
     return r[0]
