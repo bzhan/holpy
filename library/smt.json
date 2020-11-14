@@ -2064,6 +2064,24 @@
                 "y": "int",
                 "z": "int"
             }
+        },
+        {
+            "name": "t036",
+            "prop": "x = y ∨ ¬(x ≤ y) ∨ ¬(x ≥ y)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "t037",
+            "prop": "x = y ∨ ¬(y ≤ x) ∨ ¬(y ≥ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
         }
     ],
     "description": "Used for z3 rule rewrite, th-lemma and def-axiom.",

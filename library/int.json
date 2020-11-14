@@ -1740,7 +1740,7 @@
             }
         },
         {
-            "name": "pos_neg_eq_0",
+            "name": "int_pos_neg_eq_0",
             "prop": "x = 0 ⟷ -1 * x = 0",
             "ty": "thm",
             "vars": {
@@ -1793,7 +1793,7 @@
             }
         },
         {
-            "name": "int_eq_geq_leq",
+            "name": "int_eq_geq_leq_conj",
             "prop": "x = y ⟷ x ≥ y ∧ x ≤ y",
             "ty": "thm",
             "vars": {
@@ -1896,6 +1896,34 @@
             "vars": {
                 "c": "int",
                 "x": "int"
+            }
+        },
+        {
+            "name": "int_neg_equal",
+            "prop": "¬(x = c) ⟷ x > c ∨ x < c",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "int_ite_tau",
+            "prop": "¬P ∨ x = (if P then x else y)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_eq_move_left",
+            "prop": "x = y ⟷ x - y = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
             }
         }
     ],
