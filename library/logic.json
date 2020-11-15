@@ -7334,7 +7334,7 @@
                     "th": "⊢ (A ⟷ A) ⟷ true"
                 }
             ],
-            "prop": "(A ⟷ A) ⟷ true",
+            "prop": "A = A ⟷ true",
             "steps": [
                 {
                     "goal_id": "0",
@@ -7362,7 +7362,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "A": "bool"
+                "A": "'a"
             }
         },
         {

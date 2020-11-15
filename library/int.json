@@ -1925,6 +1925,17 @@
                 "x": "int",
                 "y": "int"
             }
+        },
+        {
+            "name": "int_ite01",
+            "prop": "x = (if P then y else z) ⟷ P ∧ x = y ∨ ¬P ∧ x = z",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
         }
     ],
     "description": "integers",

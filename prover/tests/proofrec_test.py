@@ -216,13 +216,15 @@ class ProofrecTest(unittest.TestCase):
 
     def testDefAxiom(self):
         test_data = [
-            # "x ≤ 0 ∨ -1 + x = (if x ≤ 0 then 4 + x else -1 + x)",
-            # "¬(y ≤ 0) ∨ 4 + y = (if y ≤ 0 then 4 + y else -1 + y))",
-            # '¬(y + x ≥ 10) ∨ -10 + y + x = (if y + x ≥ 10 then -10 + y + x else y + x))',
+            "y ≤ 0 ∨ -1 + y = (if y ≤ 0 then 4 + y else -1 + y)",
+            "¬(y ≤ 0) ∨ 4 + y = (if y ≤ 0 then 4 + y else -1 + y)",
+            '¬(y + x ≥ 10) ∨ -10 + y + x = (if y + x ≥ 10 then -10 + y + x else y + x)',
+            # "Succ x + (if x ≤ 0 then 4 + x else -1 + x) ≥ 5 ∨ Succ x + (if x ≤ 0 then 4 + x else -1 + x) = (if Succ x + (if x ≤ 0 then 4 + x else -1 + x) ≥ 5 then -5 + Succ x + (if x ≤ 0 then 4 + x else -1 + x) else Succ x + (if x ≤ 0 then 4 + x else -1 + x))",
+
         ]
         
         context.set_context('real', vars={
-            "x": "int"
+            "y": "int"
         })
 
         for tm in test_data:

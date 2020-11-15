@@ -1056,6 +1056,22 @@ def def_axiom(arg1):
     for reason that prove need propositional logic decision procedure,
     currently use proofterm.sorry
     """
+    Ts = analyze_type(arg1)
+    if IntType in Ts:
+        pt = refl(arg1).on_rhs(
+            top_conv(rewr_conv('int_ite01')),
+            bottom_conv(rewr_conv('eq_mean_true')),
+            bottom_conv(integer.int_norm_eq()),
+            bottom_conv(integer.int_neq_false_conv()),
+            proplogic.norm_full()
+        )
+        pt = pt.symmetric()
+        try:
+            basic.load_theory('sat')
+            pt_cnf = solve_cnf(pt.lhs)
+            return pt.equal_elim(pt_cnf)
+        except:
+            pass
     try:
         return solve_cnf(arg1)
     except:

@@ -55,7 +55,8 @@
     ],
     "description": "SAT solver",
     "imports": [
-        "logic"
+        "logic",
+        "int"
     ],
     "name": "sat"
 }
