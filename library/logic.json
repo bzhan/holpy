@@ -7766,6 +7766,22 @@
                 "P": "bool",
                 "Q": "bool"
             }
+        },
+        {
+            "name": "pos_eq_neg",
+            "prop": "(P ⟷ ¬P) ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "neg_eq_pos",
+            "prop": "(¬P ⟷ P) ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
         }
     ],
     "description": "Basic results in logic",
