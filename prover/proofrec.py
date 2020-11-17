@@ -730,7 +730,7 @@ def rewrite_int_second_level(tm):
     for arm in armony_with_norm:
         pt = compare_lhs_rhs(tm_norm_full, arm)
         if pt.rule != 'sorry':
-            return pt_norm_full.transitive(pt)
+            return pt_norm_full.symmetric().equal_elim(pt)
 
     return ProofTerm.sorry(Thm([], tm))
 
@@ -740,7 +740,7 @@ def rewrite_by_assertion(tm):
     """
     global atoms
     pt = refl(tm)
-    boolvars = [v for v in tm.get_vars() if v.T == BoolType] + [v for v in tm.get_consts() if v.T == BoolType]
+    boolvars = [v for v in tm.get_vars() if v.T in (BoolType, IntType)] + [v for v in tm.get_consts() if v.T in (BoolType, IntType)]
     for b in boolvars:
         if b in atoms:
             pt = pt.on_rhs(top_conv(replace_conv(atoms[b])))
@@ -760,22 +760,24 @@ def _rewrite(tm):
         pt1 = rewrite_bool(tm)
         if pt1.rule != 'sorry':
             return pt1
-        pt_asst = rewrite_by_assertion(tm.lhs)
-        tm_asst = Eq(pt_asst.rhs, tm.rhs)
+        pt_asst_lhs = rewrite_by_assertion(tm.lhs)
+        pt_asst_rhs = rewrite_by_assertion(tm.rhs)
+        tm_asst = Eq(pt_asst_lhs.rhs, pt_asst_rhs.rhs)
         pt2 = rewrite_bool(tm_asst)
         if pt2.rule != 'sorry':
-            return pt_asst.transitive(pt2)
+            return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
         else:
             return schematic_rules_rewr(th_name[:60], tm.lhs, tm.rhs)
     elif IntType in Ts:
         pt1 = rewrite_int(tm, True) if BoolType in Ts else rewrite_int(tm, False)
         if pt1.rule != 'sorry':
             return pt1
-        pt_asst = rewrite_by_assertion(tm.lhs)
-        tm_asst = Eq(pt_asst.rhs, tm.rhs)
+        pt_asst_lhs = rewrite_by_assertion(tm.lhs)
+        pt_asst_rhs = rewrite_by_assertion(tm.rhs)
+        tm_asst = Eq(pt_asst_lhs.rhs, pt_asst_rhs.rhs)
         pt2 = rewrite_int(tm_asst)
         if pt2.rule != 'sorry':
-            return pt_asst.transitive(pt2)
+            return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
         else:
             return schematic_rules_rewr(th_name, tm.lhs, tm.rhs)
     elif RealType in Ts:
@@ -1771,6 +1773,9 @@ def handle_assertion(ast):
                 elif lhs.is_var() and rhs in (true, false):
                     atoms[lhs] = value
                     new_conv.append(atoms[lhs])
+                elif lhs.is_var() and lhs.T == IntType:
+                    atoms[lhs] = value
+                    new_conv.append(atoms[lhs])
 
         if flag:
             flag = False
@@ -1805,17 +1810,16 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
         else:
             method_name = term[i].decl().name()
             subterms = [term[j] for j in net[i]]
-            if i != 1278:
-                r[i] = convert_method(term[i], *args, subterms=subterms)
-            else:
-                r[i] = ProofTerm.sorry(Thm([], args[0]))
+            t1 = time.perf_counter()
+            r[i] = convert_method(term[i], *args, subterms=subterms)
+            t2 = time.perf_counter()
             with open('int_prf.txt', 'a', encoding='utf-8') as f:
                 if r[i].rule == 'sorry':
                     gaps |= set(r[i].gaps)
                     print('term['+str(i)+']', term[i], file=f)
-                    print('r['+str(i)+']', r[i], file=f)
+                    print('r['+str(i)+']', r[i], t2 - t1, file=f)
                 if trace:
-                    print('r['+str(i)+']', term[i].decl().name(), file=f)
+                    print('r['+str(i)+']', term[i].decl().name(), t2 - t1, file=f)
     # conclusion = delete_redundant(r[0], redundant)
     # redundant.clear()
     time2 = time.perf_counter()

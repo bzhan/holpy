@@ -172,7 +172,10 @@ class norm_full(Conv):
         elif t.is_disj():
             return pt.on_rhs(binop_conv(self), norm_disj_disjunction())
         elif t.is_equals():
-            return pt.on_rhs(binop_conv(self))
+            if t.lhs == t.rhs:
+                return pt.on_rhs(rewr_conv('eq_mean_true'))
+            else:
+                return pt.on_rhs(binop_conv(self))
         elif t.is_not() and (t.arg.is_conj() or t.arg.is_disj() or t.arg.is_not() or t.arg == true or t.arg == false):
             return pt.on_rhs(nnf_conv(), self)
         elif t.is_not() and t.arg.is_equals():
