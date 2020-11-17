@@ -20,7 +20,7 @@ from kernel.report import ProofReport
 from logic import basic, context, matcher
 from logic.logic import apply_theorem, imp_disj_iff, disj_norm, imp_conj_macro, resolution
 from logic.tactic import rewrite_goal_with_prev
-from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv, ConvException, Conv, arg1_conv
+from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv, ConvException, Conv, arg1_conv, binop_conv
 from logic import auto
 from prover import sat, tseitin, simplex
 from syntax.settings import settings
@@ -691,14 +691,14 @@ def rewrite_int_second_level(tm):
         (try_conv(rewr_conv('pos_eq_neg')), ),
         (try_conv(rewr_conv('neg_eq_pos')), ),
         (bottom_conv(integer.int_norm_conv()), ),
-        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq_conj'))),
-        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_leq_geq'))),
-        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq_conj')), proplogic.norm_full()),
-        (proplogic.norm_full(), top_conv(rewr_conv('int_eq_leq_geq')), proplogic.norm_full()),
-        (proplogic.norm_full(), try_conv(bottom_conv(integer.int_norm_eq())), top_conv(rewr_conv('int_eq_geq_leq_conj'))),
-        (proplogic.norm_full(), try_conv(bottom_conv(integer.int_norm_eq())), bottom_conv(integer.omega_form_conv())),
-        (proplogic.norm_full(),try_conv(top_conv(integer.int_norm_eq())), try_conv(bottom_conv(integer.simp_full())), top_conv(rewr_conv('int_eq_geq_leq_conj')), proplogic.norm_full()),
-        (proplogic.norm_full(), top_conv(integer.int_gcd_compares()), top_conv(integer.int_norm_neg_compares()), top_conv(integer.omega_form_conv())),
+        # (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq_conj'))),
+        # (proplogic.norm_full(), top_conv(rewr_conv('int_eq_leq_geq'))),
+        # (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq_conj')), proplogic.norm_full()),
+        # (proplogic.norm_full(), top_conv(rewr_conv('int_eq_leq_geq')), proplogic.norm_full()),
+        # (proplogic.norm_full(), try_conv(bottom_conv(integer.int_norm_eq())), top_conv(rewr_conv('int_eq_geq_leq_conj'))),
+        # (proplogic.norm_full(), try_conv(bottom_conv(integer.int_norm_eq())), bottom_conv(integer.omega_form_conv())),
+        # (proplogic.norm_full(),try_conv(top_conv(integer.int_norm_eq())), try_conv(bottom_conv(integer.simp_full())), top_conv(rewr_conv('int_eq_geq_leq_conj')), proplogic.norm_full()),
+        # (proplogic.norm_full(), top_conv(integer.int_gcd_compares()), top_conv(integer.int_norm_neg_compares()), top_conv(integer.omega_form_conv())),
         (top_conv(rewr_conv('neg_iff_both_sides')), top_conv(rewr_conv('double_neg'))),
         (try_conv(bottom_conv(integer.omega_form_conv())),
         try_conv(bottom_conv(integer.int_norm_neg_compares())), try_conv(bottom_conv(integer.omega_form_conv())),
@@ -707,10 +707,30 @@ def rewrite_int_second_level(tm):
         top_conv(rewr_conv('neg_iff_both_sides')), 
         try_conv(proplogic.norm_full()))
     ]
+
     for arm in armony:
         pt = compare_lhs_rhs(tm, arm)
         if pt.rule != 'sorry':
             return pt
+
+    armony_with_norm = [
+        (top_conv(rewr_conv('int_eq_geq_leq_conj')), ),
+        (top_conv(rewr_conv('int_eq_geq_leq_conj')), ),
+        (top_conv(rewr_conv('int_eq_leq_geq')), ),
+        (top_conv(rewr_conv('int_eq_geq_leq_conj')), proplogic.norm_full()),
+        (top_conv(rewr_conv('int_eq_leq_geq')), proplogic.norm_full()),
+        (try_conv(bottom_conv(integer.int_norm_eq())), top_conv(rewr_conv('int_eq_geq_leq_conj'))),
+        (try_conv(bottom_conv(integer.int_norm_eq())), bottom_conv(integer.omega_form_conv())),
+        (proplogic.norm_full(),try_conv(top_conv(integer.int_norm_eq())), try_conv(bottom_conv(integer.simp_full())), top_conv(rewr_conv('int_eq_geq_leq_conj')), proplogic.norm_full()),
+        (top_conv(integer.int_gcd_compares()), top_conv(integer.int_norm_neg_compares()), top_conv(integer.omega_form_conv())),
+    ]
+
+    pt_norm_full = refl(tm).on_rhs(binop_conv(proplogic.norm_full()))
+    tm_norm_full = pt_norm_full.rhs
+    for arm in armony_with_norm:
+        pt = compare_lhs_rhs(tm_norm_full, arm)
+        if pt.rule != 'sorry':
+            return pt_norm_full.transitive(pt)
 
     return ProofTerm.sorry(Thm([], tm))
 
@@ -1713,9 +1733,11 @@ def handle_assertion(ast):
     If the assertion is a conjunction, find all boolean variables or negative boolean variables
     in assertion, convert them to proofterm like "⊢ x ⟷ true" or "⊢ x ⟷ false"
     Note, the assertion conjunction may not have already been flatten, we need to preprocess it.
+    
+    This is a iterative process, every time we get an atom is true or false, we can also use it to get 
+    more information by rewriting the assertion, until no more new information we can get.
     """    
     global atoms
-    d = dict()
     def traverse_A(pt):
         if pt.prop.is_conj():
             traverse_A(apply_theorem('conjD1', pt))
@@ -1724,20 +1746,37 @@ def handle_assertion(ast):
             d[pt.prop] = pt
 
     hol_ast = translate(ast)
+    flag = True
     pt_ast = ProofTerm.assume(hol_ast).on_prop(proplogic.norm_full())
-    if not pt_ast.prop.is_conj():
-        return
+    while True:
+        if not pt_ast.prop.is_conj():
+            break
+        new_conv = []
+        d = dict()
+        traverse_A(pt_ast)
+        for key, value in d.items():
+            if key.is_var() and key not in atoms:
+                atoms[key] = value.on_prop(rewr_conv('eq_true'))
+                new_conv.append(atoms[key])
+                flag = True
+            elif key.is_not() and key.arg not in atoms:
+                atoms[key.arg] = value.on_prop(rewr_conv('eq_false'))    
+                flag = True
+                new_conv.append(atoms[key.arg])
+            elif key.is_equals():
+                lhs, rhs = key.lhs, key.rhs
+                if lhs in (true, false) and rhs.is_var():
+                    atoms[rhs] = value.symmetric()
+                    new_conv.append(atoms[rhs])
+                elif lhs.is_var() and rhs in (true, false):
+                    atoms[lhs] = value
+                    new_conv.append(atoms[lhs])
 
-    traverse_A(pt_ast)
-    for key, value in d.items():
-        if key.is_var():
-            atoms[key] = value.on_prop(rewr_conv('eq_true'))
-        elif key.is_not():
-            atoms[key.arg] = value.on_prop(rewr_conv('eq_false'))
-        
-    return
-    
-
+        if flag:
+            flag = False
+            pt_ast = pt_ast.on_prop(*[top_conv(replace_conv(cv)) for cv in new_conv], proplogic.norm_full())
+        else:
+            break
 
 def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     """
@@ -1766,7 +1805,10 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
         else:
             method_name = term[i].decl().name()
             subterms = [term[j] for j in net[i]]
-            r[i] = convert_method(term[i], *args, subterms=subterms)
+            if i != 1278:
+                r[i] = convert_method(term[i], *args, subterms=subterms)
+            else:
+                r[i] = ProofTerm.sorry(Thm([], args[0]))
             with open('int_prf.txt', 'a', encoding='utf-8') as f:
                 if r[i].rule == 'sorry':
                     gaps |= set(r[i].gaps)
@@ -1778,7 +1820,7 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     # redundant.clear()
     time2 = time.perf_counter()
     print("total time: ", time2 - time1)
-    rpt = ProofReport()
-    theory.check_proof(r[0].export(), rpt)
-    print(rpt)
+    # rpt = ProofReport()
+    # theory.check_proof(r[0].export(), rpt)
+    # print(rpt)
     return r[0]
