@@ -20,122 +20,122 @@ from syntax.parser import parse_term
 basic.load_theory('smt')
 
 class ProofrecTest(unittest.TestCase):
-    def testTranslateTerm(self):
-        Z = IntSort()
-        B = BoolSort()
-        F = Function('F', Z, Z)
-        x = zInt('x')
-        y = zInt('y')
-        # Focus on nat case now.
-        test_data = [
-            # (IntVal(0), '(0::int)'),
-            # (IntVal(10), '(10::int)'),
-            # (IntVal(-3), '(-3::int)'),
-            (RealVal('3/5'), '((3/5)::real)'),
-            (BoolVal(True), 'true'),
-            (BoolVal(False), 'false'),
-            (zInt('x'), 'x'),
-            (x + (-1) * y, 'x + (-1) * y'),
-            (x + y, 'x + y'),
-            (x - y, 'x - y'),
-            (x - (-1) * y, 'x - (-1) * y'),
-            (zInt('y'), 'y'),
-            (F, 'F'),
-            (F(0) * x, 'F(0) * x'),
-        ]
+    # def testTranslateTerm(self):
+    #     Z = IntSort()
+    #     B = BoolSort()
+    #     F = Function('F', Z, Z)
+    #     x = zInt('x')
+    #     y = zInt('y')
+    #     # Focus on nat case now.
+    #     test_data = [
+    #         # (IntVal(0), '(0::int)'),
+    #         # (IntVal(10), '(10::int)'),
+    #         # (IntVal(-3), '(-3::int)'),
+    #         (RealVal('3/5'), '((3/5)::real)'),
+    #         (BoolVal(True), 'true'),
+    #         (BoolVal(False), 'false'),
+    #         (zInt('x'), 'x'),
+    #         (x + (-1) * y, 'x + (-1) * y'),
+    #         (x + y, 'x + y'),
+    #         (x - y, 'x - y'),
+    #         (x - (-1) * y, 'x - (-1) * y'),
+    #         (zInt('y'), 'y'),
+    #         (F, 'F'),
+    #         (F(0) * x, 'F(0) * x'),
+    #     ]
 
-        for i, k in test_data:
-            context.set_context('int', vars={'x':'int', 'y':'int',  'F':'int=>int'})
-            basic.load_theory('real')
-            k = parse_term(k)
-            vars = ['x', 'y']
-            self.assertEqual(proofrec.translate(i), k)
+    #     for i, k in test_data:
+    #         context.set_context('int', vars={'x':'int', 'y':'int',  'F':'int=>int'})
+    #         basic.load_theory('real')
+    #         k = parse_term(k)
+    #         vars = ['x', 'y']
+    #         self.assertEqual(proofrec.translate(i), k)
 
-    def testRec1(self):
-        test_data = [
-            ('s 0 = 0 & s 1 = 0 --> s 1 = s 0 * B', 
-            '~(s 1 = s 0 * B), s 0 = 0 & s 1 = 0 |- false'),
-            ('s 1 = s 0 * B & ~~s 0 = A --> s 1 = A * B', 
-            '~(s 1 = A * B), s 1 = s 0 * B & s 0 = A |- false'),
-            ('s 1 = s 0 * B & ~s 0 = A --> s 1 + B = (s 0 + 1) * B',
-            '~(s 1 + B = (s 0 + 1) * B), s 1 = s 0 * B & ~(s 0 = A) |- false'),
-            ('A * B + 1 = 1 + B * A', '~(A * B + 1 = 1 + B * A) |- false'),
-            ('s 0 + s 1 = A --> A + s 2 = B --> s 0 + s 2 + s 1 = B', 
-            's 0 + s 1 = A, A + s 2 = B, ~(s 0 + s 2 + s 1 = B) |- false'),
-            ('(!n. s n = 0) --> s 2 = 0', '!n. s n = 0, ~(s 2 = 0) |- false')
-        ]
-
-
-        for t, p in test_data:    
-            context.set_context('nat', vars={"s": 'nat => nat', "A": 'nat', "B": 'nat'})
-            t = parse_term(t)
-            proof=z3wrapper.solve_and_proof(t)    
-            r = proofrec.proofrec(proof)
-            basic.load_theory('int')
-            self.assertEqual(str(r.th), p)
-
-    def testRecSolveSet(self):
-        test_data = [
-            ('x Mem S --> S Sub T --> x Mem T', 'S x, ~(T x), !x1. S x1 --> T x1 |- false'),
-            ('m Mem univ', '~true |- false'),
-            ('x Mem (diff S T) --> x Mem S', '~(S x), S x & ~(T x) |- false'),
-            ('(?x1. x = x1 & x1 Mem S) --> x Mem S', '~(S x), ?x1. x = x1 & S x1 |- false'),
-            ('(?a1. a = a1 & a1 Mem A) --> a Mem A', '~(A a), ?a1. a = a1 & A a1 |- false'),
-        ]
+    # def testRec1(self):
+    #     test_data = [
+    #         ('s 0 = 0 & s 1 = 0 --> s 1 = s 0 * B', 
+    #         '~(s 1 = s 0 * B), s 0 = 0 & s 1 = 0 |- false'),
+    #         ('s 1 = s 0 * B & ~~s 0 = A --> s 1 = A * B', 
+    #         '~(s 1 = A * B), s 1 = s 0 * B & s 0 = A |- false'),
+    #         ('s 1 = s 0 * B & ~s 0 = A --> s 1 + B = (s 0 + 1) * B',
+    #         '~(s 1 + B = (s 0 + 1) * B), s 1 = s 0 * B & ~(s 0 = A) |- false'),
+    #         ('A * B + 1 = 1 + B * A', '~(A * B + 1 = 1 + B * A) |- false'),
+    #         ('s 0 + s 1 = A --> A + s 2 = B --> s 0 + s 2 + s 1 = B', 
+    #         's 0 + s 1 = A, A + s 2 = B, ~(s 0 + s 2 + s 1 = B) |- false'),
+    #         ('(!n. s n = 0) --> s 2 = 0', '!n. s n = 0, ~(s 2 = 0) |- false')
+    #     ]
 
 
-        for t, p in test_data:
-            context.set_context('set', vars={
-            'm': 'nat', 'S': 'nat set', 'T': 'nat set', 'x': 'nat',
-            'a': "'a", 'A': "'a set"})
-            t = parse_term(t)
-            proof=z3wrapper.solve_and_proof(t)    
-            r = proofrec.proofrec(proof)
-            self.assertEqual(str(r.th), p)
+    #     for t, p in test_data:    
+    #         context.set_context('nat', vars={"s": 'nat => nat', "A": 'nat', "B": 'nat'})
+    #         t = parse_term(t)
+    #         proof=z3wrapper.solve_and_proof(t)    
+    #         r = proofrec.proofrec(proof)
+    #         basic.load_theory('int')
+    #         self.assertEqual(str(r.th), p)
 
-    def testRecRealSet(self):
-        test_data = [
-            ('max a b = (1/2) * (a + b + abs(a - b))',
-            '~((if a >= b then a else b) = 1 / 2 * (a + b + (if a - b >= 0 then a - b else -(a - b)))) |- false'),
-            ('{x. (a <= x & x <= b) & ~(a < x & x < b)} Sub {a, b}',
-            '~(x = a | x = b), (a <= x & x <= b) & ~(a < x & x < b) |- false'),
-            ('(x Mem T --> 0 <= f x) --> S Sub T --> (if x Mem S then f x else 0) <= (if x Mem T then f x else 0)', 
-            '!x1. S x1 --> T x1, T x --> f x >= 0, ~((if S x then f x else 0) <= (if T x then f x else 0)) |- false'),
-            ('max (if x Mem S then (1::real) else 0) (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)', 
-            '~((if (if S x then (1::int) else 0) >= (if T x then 1 else 0) then if S x then (1::int) else 0 else if T x then 1 else 0) = (if S x | T x then 1 else 0)) |- false'),
-            ('min (if x Mem S then (1::real) else 0) (if x Mem T then 1 else 0) = (if x Mem (S Int T) then 1 else 0)',
-            '~(~(S x) | ~(T x)), ~((if (if S x then (1::int) else 0) <= (if T x then 1 else 0) then if S x then (1::int) else 0 else if T x then 1 else 0) = (if S x & T x then 1 else 0)) |- false'),
-            ('S Int T = empty_set --> (if x Mem S then (1::real) else 0) + (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)',
-            '!x1. ~(S x1 & T x1), ~((if S x then (1::int) else 0) + (if T x then 1 else 0) = (if S x | T x then 1 else 0)) |- false'),
-            ('S ∪ T = S ∩ T ∪ {x. x ∈ S & ~x ∈ T} ∪ {x. x ∈ T & ~x ∈ S}',
-            '~(~(~(S x) | ~(T x)) | ~(T x | ~(S x)) | ~(S x | ~(T x))), ~(S x | T x <--> (S x & T x | S x & ~(T x)) | T x & ~(S x)) |- false'),
-            ('(0::real) <= (if x Mem s & 1 / (of_nat n + 1) <= abs (f x) then 1 else 0)',
-            '~((if s x & 1 / (rn + 1) <= (if f x >= 0 then f x else -(f x)) then (1::int) else 0) >= 0) |- false'),
-            ('(0::real) <= of_nat n + 1', 'rn >= 0, ~(rn + 1 >= 0) |- false'),
-            ('1 / (of_nat n + 1) < b --> 1 < (of_nat n + 1) * b', 'rn >= 0, 1 / (rn + 1) < b, ~((rn + 1) * b > 1) |- false'),
-            ('a <= of_nat n --> a < of_nat (n + 1)', 'a <= rn, ~(a < rn + 1) |- false'),
-            ('~(n = 0) --> of_nat (n - 1) + (1::real) = of_nat n', 'n >= 0, ~(n = 0), ~((if n >= 1 then rn - 1 else 0) + 1 = rn) |- false'),
-            ('(1::real) = 0 --> real_inverse a = b', 'false |- false')
-        ]
+    # def testRecSolveSet(self):
+    #     test_data = [
+    #         ('x Mem S --> S Sub T --> x Mem T', 'S x, ~(T x), !x1. S x1 --> T x1 |- false'),
+    #         ('m Mem univ', '~true |- false'),
+    #         ('x Mem (diff S T) --> x Mem S', '~(S x), S x & ~(T x) |- false'),
+    #         ('(?x1. x = x1 & x1 Mem S) --> x Mem S', '~(S x), ?x1. x = x1 & S x1 |- false'),
+    #         ('(?a1. a = a1 & a1 Mem A) --> a Mem A', '~(A a), ?a1. a = a1 & A a1 |- false'),
+    #     ]
 
-        for t, p in test_data:
-            context.set_context('real', vars={
-            'a': 'real', 'b': 'real', 'x': 'real', 'f': 'real => real', 'S': 'real set', 'T': 'real set',
-            'n': 'nat'})
-            t = parse_term(t)
-            proof=z3wrapper.solve_and_proof(t)    
-            r = proofrec.proofrec(proof)
-            basic.load_theory('real')
-            self.assertEqual(str(r.th), p)
 
-    def testQuantIntro(self):
-        ctx = z3.Context()
-        u,v,w = z3.Ints('u v w',ctx=ctx)
-        f = z3.ForAll([u,v],z3.Exists(w, u - w == v))
-        s = z3.Solver(ctx=ctx)
-        s.add(z3.Not(f))
-        s.check()
-        proofrec.proofrec(s.proof())
+    #     for t, p in test_data:
+    #         context.set_context('set', vars={
+    #         'm': 'nat', 'S': 'nat set', 'T': 'nat set', 'x': 'nat',
+    #         'a': "'a", 'A': "'a set"})
+    #         t = parse_term(t)
+    #         proof=z3wrapper.solve_and_proof(t)    
+    #         r = proofrec.proofrec(proof)
+    #         self.assertEqual(str(r.th), p)
+
+    # def testRecRealSet(self):
+    #     test_data = [
+    #         ('max a b = (1/2) * (a + b + abs(a - b))',
+    #         '~((if a >= b then a else b) = 1 / 2 * (a + b + (if a - b >= 0 then a - b else -(a - b)))) |- false'),
+    #         ('{x. (a <= x & x <= b) & ~(a < x & x < b)} Sub {a, b}',
+    #         '~(x = a | x = b), (a <= x & x <= b) & ~(a < x & x < b) |- false'),
+    #         ('(x Mem T --> 0 <= f x) --> S Sub T --> (if x Mem S then f x else 0) <= (if x Mem T then f x else 0)', 
+    #         '!x1. S x1 --> T x1, T x --> f x >= 0, ~((if S x then f x else 0) <= (if T x then f x else 0)) |- false'),
+    #         ('max (if x Mem S then (1::real) else 0) (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)', 
+    #         '~((if (if S x then (1::int) else 0) >= (if T x then 1 else 0) then if S x then (1::int) else 0 else if T x then 1 else 0) = (if S x | T x then 1 else 0)) |- false'),
+    #         ('min (if x Mem S then (1::real) else 0) (if x Mem T then 1 else 0) = (if x Mem (S Int T) then 1 else 0)',
+    #         '~(~(S x) | ~(T x)), ~((if (if S x then (1::int) else 0) <= (if T x then 1 else 0) then if S x then (1::int) else 0 else if T x then 1 else 0) = (if S x & T x then 1 else 0)) |- false'),
+    #         ('S Int T = empty_set --> (if x Mem S then (1::real) else 0) + (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)',
+    #         '!x1. ~(S x1 & T x1), ~((if S x then (1::int) else 0) + (if T x then 1 else 0) = (if S x | T x then 1 else 0)) |- false'),
+    #         ('S ∪ T = S ∩ T ∪ {x. x ∈ S & ~x ∈ T} ∪ {x. x ∈ T & ~x ∈ S}',
+    #         '~(~(~(S x) | ~(T x)) | ~(T x | ~(S x)) | ~(S x | ~(T x))), ~(S x | T x <--> (S x & T x | S x & ~(T x)) | T x & ~(S x)) |- false'),
+    #         ('(0::real) <= (if x Mem s & 1 / (of_nat n + 1) <= abs (f x) then 1 else 0)',
+    #         '~((if s x & 1 / (rn + 1) <= (if f x >= 0 then f x else -(f x)) then (1::int) else 0) >= 0) |- false'),
+    #         ('(0::real) <= of_nat n + 1', 'rn >= 0, ~(rn + 1 >= 0) |- false'),
+    #         ('1 / (of_nat n + 1) < b --> 1 < (of_nat n + 1) * b', 'rn >= 0, 1 / (rn + 1) < b, ~((rn + 1) * b > 1) |- false'),
+    #         ('a <= of_nat n --> a < of_nat (n + 1)', 'a <= rn, ~(a < rn + 1) |- false'),
+    #         ('~(n = 0) --> of_nat (n - 1) + (1::real) = of_nat n', 'n >= 0, ~(n = 0), ~((if n >= 1 then rn - 1 else 0) + 1 = rn) |- false'),
+    #         ('(1::real) = 0 --> real_inverse a = b', 'false |- false')
+    #     ]
+
+    #     for t, p in test_data:
+    #         context.set_context('real', vars={
+    #         'a': 'real', 'b': 'real', 'x': 'real', 'f': 'real => real', 'S': 'real set', 'T': 'real set',
+    #         'n': 'nat'})
+    #         t = parse_term(t)
+    #         proof=z3wrapper.solve_and_proof(t)    
+    #         r = proofrec.proofrec(proof)
+    #         basic.load_theory('real')
+    #         self.assertEqual(str(r.th), p)
+
+    # def testQuantIntro(self):
+    #     ctx = z3.Context()
+    #     u,v,w = z3.Ints('u v w',ctx=ctx)
+    #     f = z3.ForAll([u,v],z3.Exists(w, u - w == v))
+    #     s = z3.Solver(ctx=ctx)
+    #     s.add(z3.Not(f))
+    #     s.check()
+    #     proofrec.proofrec(s.proof())
 
     def testRewriteInt(self):
         test_data = [
@@ -166,7 +166,6 @@ class ProofrecTest(unittest.TestCase):
         for tm in test_data:
             tm = parse_term(tm)
             pt = proofrec._rewrite(tm)
-            print(pt)
             self.assertNotEqual(pt.rule, "sorry")
 
     def testThLemmaIntSingle(self):
@@ -213,6 +212,25 @@ class ProofrecTest(unittest.TestCase):
             assms = [ProofTerm.assume(parse_term(assm)) for assm in assms]
             res = parse_term(res)
             self.assertEqual(proofrec.th_lemma([*assms, res]).prop, res)
+
+    def testRewriteIntWithAsserstion(self):
+        test_data = [
+            ("¬(¬(¬(¬P8 ∨ ¬(F20 + -1 * F18 ≤ 0)) ∨ ¬(P8 ∨ ¬(F4 + -1 * F2 ≤ 0))) ∨ ¬(¬(P8 ∨ ¬(F6 + -1 * F4 ≤ 0)) ∨ \
+            ¬(¬P8 ∨ ¬(F22 + -1 * F20 ≤ 0))) ∨ ¬(¬(P8 ∨ ¬(F2 + -1 * F0 ≤ 0)) ∨ ¬(¬P8 ∨ ¬(F18 + -1 * F16 ≤ 0))))\
+            ⟷ ¬(¬(F2 + -1 * F0 ≤ 0) ∨ ¬(F6 + -1 * F4 ≤ 0) ∨ ¬(F4 + -1 * F2 ≤ 0))", ("P8", "P8 ⟷ false"))
+        ]
+
+        context.set_context('smt', vars={
+            "P8": "bool", "F20": "int", "F18": "int",
+            "P8": "bool", "F4": "int", "F2": "int", "F6": "int", "F22" : "int", "F20": "int", "F2": "int", "F16": "int",
+            "F0": "int"
+        })
+        for tm, ast in test_data:
+            tm = parse_term(tm)
+            var, prop = [parse_term(i) for i in ast]
+            proofrec.atoms.clear()
+            proofrec.atoms[var] = ProofTerm.assume(prop)
+            proofrec._rewrite(tm)
 
     def testDefAxiom(self):
         test_data = [

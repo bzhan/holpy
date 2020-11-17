@@ -16,6 +16,7 @@ from kernel.proofterm import ProofTerm, refl
 from kernel.macro import Macro
 from kernel.theory import check_proof, register_macro
 from kernel import theory
+from kernel.report import ProofReport
 from logic import basic, context, matcher
 from logic.logic import apply_theorem, imp_disj_iff, disj_norm, imp_conj_macro, resolution
 from logic.tactic import rewrite_goal_with_prev
@@ -32,7 +33,7 @@ import operator
 import json
 import time
 import sys
-sys.setrecursionlimit(1000000)
+sys.setrecursionlimit(10000000)
 
 basic.load_theory('smt')
 
@@ -687,6 +688,8 @@ def rewrite_int_second_level(tm):
     """Use single rewrite conversion"""
     armony = [
         (proplogic.norm_full(), ),
+        (try_conv(rewr_conv('pos_eq_neg')), ),
+        (try_conv(rewr_conv('neg_eq_pos')), ),
         (bottom_conv(integer.int_norm_conv()), ),
         (proplogic.norm_full(), top_conv(rewr_conv('int_eq_geq_leq_conj'))),
         (proplogic.norm_full(), top_conv(rewr_conv('int_eq_leq_geq'))),
@@ -708,7 +711,20 @@ def rewrite_int_second_level(tm):
         pt = compare_lhs_rhs(tm, arm)
         if pt.rule != 'sorry':
             return pt
+
     return ProofTerm.sorry(Thm([], tm))
+
+def rewrite_by_assertion(tm):
+    """
+    Rewrite the tm by assertions. Currently we only rewrite the absolute boolean variables.
+    """
+    global atoms
+    pt = refl(tm)
+    boolvars = [v for v in tm.get_vars() if v.T == BoolType] + [v for v in tm.get_consts() if v.T == BoolType]
+    for b in boolvars:
+        if b in atoms:
+            pt = pt.on_rhs(top_conv(replace_conv(atoms[b])))
+    return pt
 
 def rewrite_real(tm, has_bool=False):
     return ProofTerm.sorry(Thm([], tm))
@@ -721,15 +737,25 @@ def _rewrite(tm):
         return refl(tm.lhs)
     Ts = analyze_type(tm)
     if IntType not in Ts and RealType not in Ts: # only have bool type variables
-        pt = rewrite_bool(tm)
-        if pt.rule != 'sorry':
-            return pt
+        pt1 = rewrite_bool(tm)
+        if pt1.rule != 'sorry':
+            return pt1
+        pt_asst = rewrite_by_assertion(tm.lhs)
+        tm_asst = Eq(pt_asst.rhs, tm.rhs)
+        pt2 = rewrite_bool(tm_asst)
+        if pt2.rule != 'sorry':
+            return pt_asst.transitive(pt2)
         else:
             return schematic_rules_rewr(th_name[:60], tm.lhs, tm.rhs)
     elif IntType in Ts:
-        pt = rewrite_int(tm, True) if BoolType in Ts else rewrite_int(tm, False)
-        if pt.rule != 'sorry':
-            return pt
+        pt1 = rewrite_int(tm, True) if BoolType in Ts else rewrite_int(tm, False)
+        if pt1.rule != 'sorry':
+            return pt1
+        pt_asst = rewrite_by_assertion(tm.lhs)
+        tm_asst = Eq(pt_asst.rhs, tm.rhs)
+        pt2 = rewrite_int(tm_asst)
+        if pt2.rule != 'sorry':
+            return pt_asst.transitive(pt2)
         else:
             return schematic_rules_rewr(th_name, tm.lhs, tm.rhs)
     elif RealType in Ts:
@@ -1069,6 +1095,7 @@ def def_axiom(arg1):
         try:
             basic.load_theory('sat')
             pt_cnf = solve_cnf(pt.lhs)
+            basic.load_theory('smt')
             return pt.equal_elim(pt_cnf)
         except:
             pass
@@ -1264,10 +1291,10 @@ class replace_conv(Conv):
 def real_th_lemma(args):
     """handle real th-lemma."""
     def traverse_A(pt):
-            if pt.prop.is_conj():
-                return traverse_A(apply_theorem('conjD1', pt)) + traverse_A(apply_theorem('conjD2', pt))
-            else:
-                return [pt]
+        if pt.prop.is_conj():
+            return traverse_A(apply_theorem('conjD1', pt)) + traverse_A(apply_theorem('conjD2', pt))
+        else:
+            return [pt]
     if len(args) == 1: 
         # case1: single term. e.g. Or(Not(x_4 <= 0), Not(x_4 >= 60))
         # In this case, we need to prove its negation is false.
@@ -1679,37 +1706,40 @@ def is_prop_fm(f):
     else:
         return False
 
+atoms = dict()
 
-def find_atom_in_assertion(ast):
+def handle_assertion(ast):
     """
-    Find the atomic bool var(or boolvar negation) conjuncts from asserted conjunction, 
-    they must be true(false) in proof.
-    """
-    if not ast.is_conj():
+    If the assertion is a conjunction, find all boolean variables or negative boolean variables
+    in assertion, convert them to proofterm like "⊢ x ⟷ true" or "⊢ x ⟷ false"
+    Note, the assertion conjunction may not have already been flatten, we need to preprocess it.
+    """    
+    global atoms
+    d = dict()
+    def traverse_A(pt):
+        if pt.prop.is_conj():
+            traverse_A(apply_theorem('conjD1', pt))
+            traverse_A(apply_theorem('conjD2', pt))
+        else:
+            d[pt.prop] = pt
+
+    hol_ast = translate(ast)
+    pt_ast = ProofTerm.assume(hol_ast).on_prop(proplogic.norm_full())
+    if not pt_ast.prop.is_conj():
         return
 
-    # flat the conjunction and strip it
-    pt = ProofTerm.assume(ast)
-    pt_flat = pt.on_prop(            
-        try_conv(top_conv(flat_left_assoc_conj_conv())),
-        try_conv(top_conv(flat_left_assoc_disj_conv())))
+    traverse_A(pt_ast)
+    for key, value in d.items():
+        if key.is_var():
+            atoms[key] = value.on_prop(rewr_conv('eq_true'))
+        elif key.is_not():
+            atoms[key.arg] = value.on_prop(rewr_conv('eq_false'))
         
-    conjs = pt_flat.prop.strip_conj()
-    
-    for c in conjs:
-        if c.is_var():
-            pt_imp_conj = imp_conj_macro().get_proof_term(Eq(pt_flat.prop, c), None)
-            pt_var_eq_true = pt_imp_conj.implies_elim(pt_flat).on_prop(rewr_conv('eq_true'))
-            assert_atom.add(pt_var_eq_true)
-        elif c.is_not() and c.arg.is_var():
-            pt_imp_conj = imp_conj_macro().get_proof_term(Eq(pt_flat.prop, c), None)
-            pt_var_eq_false = pt_imp_conj.implies_elim(pt_flat).on_prop(rewr_conv('eq_false'))
-            assert_atom.add(pt_var_eq_false)            
-        
+    return
     
 
 
-def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
+def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     """
     If trace is true, print reconstruction trace.
     """
@@ -1721,10 +1751,9 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     conj_expr.clear()
     disj_expr.clear()
     assert_atom.clear()
+    atoms.clear()
     gaps = set()
-    # for ast in assertions:
-    #     find_atom_in_assertion(translate(ast))
-    # delete content
+    handle_assertion(assertions[0])
     with open('int_prf.txt', 'a', encoding='utf-8') as f:
         f.seek(0)
         f.truncate()
@@ -1733,7 +1762,7 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
         # if trace:
         #     print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
-            r[i] = translate(term[i],bounds=bounds, subterms=args)
+            r[i] = translate(term[i], bounds=bounds, subterms=args)
         else:
             method_name = term[i].decl().name()
             subterms = [term[j] for j in net[i]]
@@ -1749,4 +1778,7 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=[]):
     # redundant.clear()
     time2 = time.perf_counter()
     print("total time: ", time2 - time1)
+    rpt = ProofReport()
+    theory.check_proof(r[0].export(), rpt)
+    print(rpt)
     return r[0]
