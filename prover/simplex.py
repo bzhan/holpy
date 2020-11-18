@@ -796,6 +796,8 @@ class IntSimplexTree:
             solver.add_ineqs(self.simplex.original)
             pt_real = solver.handle_assertion()
             pt_integer = unsat_integer_simplex_stage2(solve_hol_integer_ineqs(pt_real))
+            if self.new_ast is None:
+                return pt_integer
             pt_integer1 = pt_integer.implies_intr(pt_integer.hyps[0])
             bound = pt_integer.hyps[0].arg
             bound_value = of_int(RealType)(Int(real.real_eval(bound)))
@@ -815,8 +817,6 @@ class IntSimplexTree:
             pt_concl = th.substitution(inst).on_lhs(bottom_conv(integer.int_eval_conv()))
             pt_conj = apply_theorem('conjI', pt1, pt2)
             return pt_concl.equal_elim(pt_conj)
-
-
 
 def dest_plus(tm):
     """tm is of form x + y, return (x, y)"""
@@ -1361,4 +1361,6 @@ def unsat_integer_simplex_stage2(real_simplex_result):
     return functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), implies_int_ineqs, pt2)
 
 def unsat_integer_simplex(ineqs):
+    rename_pt.clear()
+    d.clear()
     return unsat_integer_simplex_stage2(unsat_integer_simplex_stage1(ineqs))
