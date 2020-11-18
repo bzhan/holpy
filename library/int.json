@@ -1936,6 +1936,15 @@
                 "y": "int",
                 "z": "int"
             }
+        },
+        {
+            "name": "int_geq_leq_true",
+            "prop": "(x ≤ y ⟶ false) ∧ (x ≥ y + 1 ⟶ false) ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
         }
     ],
     "description": "integers",
