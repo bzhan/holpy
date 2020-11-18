@@ -10,10 +10,10 @@ Reference:
 Bruno Dutertre and Leonardo de Moura. A Fast Linear-Arithmetic Solver for DPLL(T) 
 """
 
-from kernel.term import Term, Var, Inst, greater_eq, Real, Eq, less_eq, minus, greater, less, Const, TFun
-from kernel.type import RealType
+from kernel.term import Term, Var, Inst, Int, greater_eq, Real, Eq, less_eq, minus, greater, less, Const, TFun, of_int
+from kernel.type import RealType, IntType
 from kernel.proofterm import ProofTerm
-from kernel.theory import register_macro, Thm
+from kernel.theory import register_macro, Thm, get_theorem
 from kernel.macro import Macro
 from logic.logic import apply_theorem
 from logic import basic, matcher
@@ -415,8 +415,8 @@ class Simplex:
                 self.basic.add(s)
                 self.bound[s] = (-math.inf, math.inf)
 
-        if self.ilp:
-            self.variables_bound()
+        # if self.ilp:
+        #     self.variables_bound()
 
     def __len__(self):
         return len(self.original)
@@ -697,33 +697,126 @@ class Simplex:
                     return v, val
         return None
 
+# def branch_and_bound(tableau):
+#     """
+#     If current solution is not a good solution(some variables' value are not integer),
+#     add more constraints and perform simplex again, until find a good solution.
+#     """
+#     tree = deque([tableau])
+#     while len(tree) != 0:
+#         try:
+#             simplex = tree.popleft()
+#             simplex.handle_assertion()
+#             if not simplex.all_integer():
+#                 v, val = simplex.find_not_int_var()
+#                 s1, s2 = Simplex(), Simplex()
+#                 ineq1 = LessEq([Jar(1, v)], math.floor(val))
+#                 ineq2 = GreaterEq([Jar(1, v)], math.ceil(val))
+#                 s1.add_ineqs(ineq1, *simplex.original)
+#                 s2.add_ineqs(ineq2, *simplex.original)
+#                 tree.appendleft(s1)
+#                 tree.appendleft(s2)
+#             else:
+#                 return simplex.mapping
+                
+                
+#         except:
+#             continue
+    
+#     print("No integer solution!")
+
+
 def branch_and_bound(tableau):
     """
     If current solution is not a good solution(some variables' value are not integer),
     add more constraints and perform simplex again, until find a good solution.
     """
-    tree = deque([tableau])
+    T = IntSimplexTree(tableau)
+    tree = deque([T])
     while len(tree) != 0:
         try:
-            simplex = tree.popleft()
-            simplex.handle_assertion()
-            if not simplex.all_integer():
-                v, val = simplex.find_not_int_var()
+            node = tree.popleft()
+            node.simplex.handle_assertion()
+            if not node.simplex.all_integer():
+                v, val = node.simplex.find_not_int_var()
+                node.var = v
                 s1, s2 = Simplex(), Simplex()
                 ineq1 = LessEq([Jar(1, v)], math.floor(val))
                 ineq2 = GreaterEq([Jar(1, v)], math.ceil(val))
-                s1.add_ineqs(ineq1, *simplex.original)
-                s2.add_ineqs(ineq2, *simplex.original)
-                tree.appendleft(s1)
-                tree.appendleft(s2)
+                s1.add_ineqs(ineq1, *node.simplex.original)
+                s2.add_ineqs(ineq2, *node.simplex.original)
+                b1, b2 = IntSimplexTree(s1, new_ast=ineq1), IntSimplexTree(s2, new_ast=ineq2)
+                node.branches = (b1, b2)
+                tree.appendleft(b1)
+                tree.appendleft(b2)
             else:
-                return simplex.mapping
+                return node.simplex.mapping
                 
                 
         except:
             continue
     
     print("No integer solution!")
+    return T
+
+
+class IntSimplexTree:
+    """The tree of branch and bound method."""
+    def __init__(self, simplex, var=None, branches=(), new_ast=None):
+        # var is the varible which splits the simplex
+        self.var = var
+
+        # simplex is the problem at this node
+        self.simplex = simplex
+
+        # branches are the subproblems, when simplex is UNSAT,
+        # branches would be empty
+        self.branches = branches
+
+        # new_ast are the newly added assertions for the non-integer var
+        self.new_ast = new_ast
+
+    def __str__(self):
+        s  = str(self.new_ast)
+        for b in self.branches:
+            s += "\n\t" + str(b)
+        return s + "\n"
+
+    def __repr__(self):
+        s = " ".join(str(p) for p in self.simplex.original)
+        for b in self.branches:
+            s += "\n\t%s" % str(b)
+        return s + "\n"
+
+
+    def branch_and_bound_pt(self):
+        """Get an unsat proof term for self.simplex."""
+        if not self.branches:
+            solver = SimplexHOLWrapper()
+            solver.add_ineqs(self.simplex.original)
+            pt_real = solver.handle_assertion()
+            pt_integer = unsat_integer_simplex_stage2(solve_hol_integer_ineqs(pt_real))
+            pt_integer1 = pt_integer.implies_intr(pt_integer.hyps[0])
+            bound = pt_integer.hyps[0].arg
+            bound_value = of_int(RealType)(Int(real.real_eval(bound)))
+            value_pt = real.real_eval_conv().get_proof_term(bound_value)
+            pt_integer2 = pt_integer1.on_prop(top_conv(replace_conv(value_pt.symmetric())))
+            assert isinstance(pt_integer2, ProofTerm)
+            if pt_integer.hyps[0].is_less_eq():
+                return pt_integer2.on_prop(arg1_conv(rewr_conv('real_of_int_leq')))
+            else:
+                return pt_integer2.on_prop(arg1_conv(rewr_conv('real_of_int_geq')))
+        else:
+            pt1, pt2 = [b.branch_and_bound_pt() for b in self.branches]
+            # pt1_intr_new_ast = pt1.implies_intr(ineq_to_term(self.branches[0].new_ast))
+            # pt2_intr_new_ast = pt2.implies_intr(ineq_to_term(self.branches[1].new_ast))
+            th = ProofTerm.theorem('int_geq_leq_true')
+            inst = matcher.first_order_match(th.lhs.arg1, pt1.prop)
+            pt_concl = th.substitution(inst).on_lhs(bottom_conv(integer.int_eval_conv()))
+            pt_conj = apply_theorem('conjI', pt1, pt2)
+            return pt_concl.equal_elim(pt_conj)
+
+
 
 def dest_plus(tm):
     """tm is of form x + y, return (x, y)"""
@@ -748,6 +841,18 @@ def add_atom(d, key, atom):
 def is_ineq(tm):
     """check if tm is an ineq term."""
     return tm.is_greater() or tm.is_greater_eq() or tm.is_less() or tm.is_less_eq()
+
+def ineq_to_term(ineq):
+    """Given an inequation, convert it to a hol term."""
+    assert isinstance(ineq, InEquation)
+    lhs_atoms = [Int(j.coeff) * Var(j.var, IntType) if j.coeff != 1 else Var(j.var, IntType) for j in ineq.jars]
+    lhs = sum(lhs_atoms[1:], lhs_atoms[0])
+    if isinstance(ineq, GreaterEq): # a * x + b * y + ... ≥ c    
+        rhs = Int(ineq.lower_bound)
+        return greater_eq(RealType)(lhs, rhs)
+    else: # a * x + b * y + ... ≤ c
+        rhs = Real(ineq.upper_bound)
+        return less_eq(RealType)(lhs, rhs)
 
 @register_macro('real_compare')
 class RealCompareMacro(Macro):
@@ -870,6 +975,10 @@ class SimplexHOLWrapper:
             pt_x = real.real_norm_conv().get_proof_term(1 * x)
             pt_atom = ProofTerm.assume(hol_ineq).on_prop(top_conv(replace_conv(pt_x)))
             self.atom_ineq_pts = add_atom(self.atom_ineq_pts, x, pt_atom)
+
+    def add_ineqs(self, ineqs):
+        for ineq in ineqs:
+            self.add_ineq(ineq)
             
     def assert_upper(self, x, upper_bound_pt):
         """
@@ -1148,6 +1257,7 @@ class SimplexHOLWrapper:
 
         return self.simplex.mapping
 
+rename_pt = []
 
 def solve_hol_ineqs(ineqs, is_integer=False):
     """
@@ -1156,10 +1266,10 @@ def solve_hol_ineqs(ineqs, is_integer=False):
     If is_integer is true, the varible in comparisons is a of_int term, we need to introduce real 
     variables to rename them, and after simplex returning a proof term, we can resume them.
     """
+    global rename_pt
     hol = SimplexHOLWrapper()
     # First convert the inequalies to GreaterEq or LessEq form.
     converted_ineq = []
-    rename_pt = []
     names = {}
     name_index = 0
     for ii in ineqs:
@@ -1187,13 +1297,23 @@ def solve_hol_ineqs(ineqs, is_integer=False):
         else:
             raise NotImplementedError("Simplex cannot handle %s now" % str(ii))
     # add these inequalities into simplex
-    for ii in converted_ineq:
-        hol.add_ineq(ii)
-    if not is_integer:
-        return hol.handle_assertion()        
-    
-    result = hol.handle_assertion()
+    if is_integer:
+        s = Simplex()
+        s.add_ineqs(*converted_ineq)
+        T = branch_and_bound(s)
+        return T.branch_and_bound_pt()
+    else:
+        return hol.handle_assertion()
+    # for ii in converted_ineq:
+    #     hol.add_ineq(ii)
+    # if not is_integer:
+    #     return hol.handle_assertion()        
+
+def solve_hol_integer_ineqs(result):
+    global rename_pt
     if not isinstance(result, ProofTerm):
+        # T = branch_and_bound(hol.simplex)
+        # T.branch_and_bound_pt()
         raise ValueError("Cannot get a unsat proof term!")
     
     pt1 = functools.reduce(lambda x, y: x.implies_intr(y), result.hyps, result)
@@ -1208,23 +1328,28 @@ def solve_hol_ineqs(ineqs, is_integer=False):
 
     return pt4
 
+d = []
 
-def unsat_integer_simplex(ineqs):
+def unsat_integer_simplex_stage1(ineqs):
     """
     Given a set of integer comparisons. Get the real version of them,
     then pass them to simplex, if the simplex can give a unsat proof term,
     we also can derive the original integer comparisons' conjunction are unsat.
     """
+    global d
     # d is a dict mapping integer comparison term to a equality pt between integer and real comparison
     d = [integer.int_compare_to_real().get_proof_term(ineq).symmetric() for ineq in ineqs]
 
     real_ineqs = [pt.lhs for pt in d]
 
-    real_simplex_result = solve_hol_ineqs(real_ineqs, is_integer=True)
+    real_simplex_result = solve_hol_integer_ineqs(solve_hol_ineqs(real_ineqs, is_integer=True))
 
     if not isinstance(real_simplex_result, ProofTerm):
         raise ValueError(real_simplex_result)
+    return real_simplex_result
 
+def unsat_integer_simplex_stage2(real_simplex_result):
+    global d
     pt1 = real_simplex_result # a ⋈ x, ..., c ⋈ z ⊢ false
     for hyp in pt1.hyps:
         pt1 = pt1.implies_intr(hyp)
@@ -1234,3 +1359,6 @@ def unsat_integer_simplex(ineqs):
     # pt2 is an integer version of pt1
     implies_int_ineqs, _ = pt2.prop.strip_implies()
     return functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), implies_int_ineqs, pt2)
+
+def unsat_integer_simplex(ineqs):
+    return unsat_integer_simplex_stage2(unsat_integer_simplex_stage1(ineqs))
