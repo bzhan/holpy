@@ -1758,7 +1758,7 @@ def handle_assertion(ast):
                 pt = apply_theorem('conjD2', pt)
     
     if len(ast) == 1:
-        hol_ast = translate(ast)
+        hol_ast = translate(ast[0])
         pt_ast = ProofTerm.assume(hol_ast).on_prop(proplogic.norm_full())
     else:
         hol_asts = [translate(a) for a in ast]
@@ -1782,10 +1782,10 @@ def handle_assertion(ast):
                 new_conv.append(atoms[key.arg])
             elif key.is_equals():
                 lhs, rhs = key.lhs, key.rhs
-                if lhs in (true, false) and rhs.is_var():
+                if lhs in (true, false):
                     atoms[rhs] = value.symmetric()
                     new_conv.append(atoms[rhs])
-                elif lhs.is_var() and rhs in (true, false):
+                elif rhs in (true, false):
                     atoms[lhs] = value
                     new_conv.append(atoms[lhs])
                 else:
