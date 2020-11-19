@@ -168,6 +168,26 @@ class ProofrecTest(unittest.TestCase):
             pt = proofrec._rewrite(tm)
             self.assertNotEqual(pt.rule, "sorry")
 
+    def testRewriteReal(self):
+        test_data = [
+            "(x_11 ∧ x_12) ∧ ¬(x_13 - cvclZero = 1) ∨ (x_16 ∧ x_17) ∧ ¬(x_13 - cvclZero = 2) ⟷ x_11 ∧ x_12 ∧ ¬(x_13 + -1 * cvclZero = 1) ∨ x_16 ∧ x_17 ∧ ¬(x_13 + -1 * cvclZero = 2)",
+            "¬(x_13 - cvclZero = 3) ⟷ ¬(x_13 + -1 * cvclZero = 3)",
+            "(x_14 ∧ x_15) ∧ ¬(x_13 + -1 * cvclZero = 3) ⟷ x_14 ∧ x_15 ∧ ¬(x_13 + -1 * cvclZero = 3)",
+            "(x_11 ∧ x_12 ∧ ¬(x_13 + -1 * cvclZero = 1) ∨ x_16 ∧ x_17 ∧ ¬(x_13 + -1 * cvclZero = 2)) ∨ x_14 ∧ x_15 ∧ ¬(x_13 + -1 * cvclZero = 3) ⟷ x_11 ∧ x_12 ∧ ¬(x_13 + -1 * cvclZero = 1) ∨ x_16 ∧ x_17 ∧ ¬(x_13 + -1 * cvclZero = 2) ∨ x_14 ∧ x_15 ∧ ¬(x_13 + -1 * cvclZero = 3)",
+            "(x_11 ∧ x_12 ∧ ¬(x_13 + -1 * cvclZero = 1) ∨ x_16 ∧ x_17 ∧ ¬(x_13 + -1 * cvclZero = 2) ∨ x_14 ∧ x_15 ∧ ¬(x_13 + -1 * cvclZero = 3)) ∨ x_0 ∧ x_1 ∧ ¬(x_9 + -1 * cvclZero = 1) ⟷ x_0 ∧ x_1 ∧ ¬(x_9 + -1 * cvclZero = 1) ∨ x_11 ∧ x_12 ∧ ¬(x_13 + -1 * cvclZero = 1) ∨ x_16 ∧ x_17 ∧ ¬(x_13 + -1 * cvclZero = 2) ∨ x_14 ∧ x_15 ∧ ¬(x_13 + -1 * cvclZero = 3)",
+        ]
+
+        context.set_context('smt', vars={
+            "x_11": "bool", "x_12": "bool", "x_16": "bool", "x_17": "bool",
+            "x_13": "real", "cvclZero": "real"
+        })
+
+        for tm in test_data:
+            tm = parse_term(tm)
+            pt = proofrec._rewrite(tm)
+            self.assertNotEqual(pt.rule, "sorry")
+
+
     def testThLemmaIntSingle(self):
         test_data = [
             # ¬(y ≤ 3), y ≤ 4 ⊢ 0 = -4 + y,

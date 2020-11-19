@@ -31010,15 +31010,6 @@
             }
         },
         {
-            "name": "real_le_sub",
-            "prop": "x < y ⟷ x - y < 0",
-            "ty": "thm",
-            "vars": {
-                "x": "real",
-                "y": "real"
-            }
-        },
-        {
             "name": "real_ge_to_le",
             "num_gaps": 0,
             "proof": [
@@ -31119,6 +31110,74 @@
             "prop": "of_int 1 = 1",
             "ty": "thm",
             "vars": {}
+        },
+        {
+            "name": "real_le_sub",
+            "prop": "x < y ⟷ x - y < 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_leq_sub",
+            "prop": "x ≤ y ⟷ x - y ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_gt_sub",
+            "prop": "x > y ⟷ x - y > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_geq_sub",
+            "prop": "x ≥ y ⟷ x - y ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_le_gt",
+            "prop": "x < 0 ⟷ -1 * x > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_gt_le",
+            "prop": "x > 0 ⟷ -1 * x < 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_leq_geq",
+            "prop": "x ≤ 0 ⟷ -1 * x ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_geq_leq",
+            "prop": "x ≥ 0 ⟷ -1 * x ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
         }
     ],
     "description": "real numbers",

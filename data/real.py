@@ -864,3 +864,50 @@ class RealEqMacro(Macro):
 class real_const_eq_conv(Conv):
     def get_proof_term(self, t):
         return ProofTerm('real_const_eq', t)
+
+class real_norm_comparison(Conv):
+    """Given an real comparison(including equation and inequation), move all term to
+    left-hand side, and guarantee the left-most term' coefficient is positive.
+    """
+    def get_proof_term(self, t):
+
+
+        if not t.is_equals() and not t.is_compares() or t.arg1.get_type() != RealType:
+            return refl(t)
+        pt = refl(t)
+        if t.is_equals():
+            pt1 = pt.on_rhs(rewr_conv('real_sub_0', sym=True), auto.auto_conv())
+        elif t.is_greater_eq():
+            pt1 = pt.on_rhs(rewr_conv('real_geq_sub'), auto.auto_conv())
+        elif t.is_greater():
+            pt1 = pt.on_rhs(rewr_conv('real_gt_sub'), auto.auto_conv())
+        elif t.is_less_eq():
+            pt1 = pt.on_rhs(rewr_conv('real_leq_sub'), auto.auto_conv())
+        elif t.is_less():
+            pt1 = pt.on_rhs(rewr_conv('real_le_sub'), auto.auto_conv())
+        else:
+            raise ConvException(str(t))
+
+        summands = integer.strip_plus(pt1.rhs.arg1)
+        first = summands[0]
+        if first.is_var():
+            return pt1
+        elif first.is_number() and real_eval(first) > 0:
+            return pt1
+        elif first.is_times() and real_eval(first.arg1) > 0:
+            return pt1
+
+        lhs = pt1.rhs
+        if lhs.is_equals():
+            return pt1.on_rhs(rewr_conv('real_eq_neg2', sym=True), auto.auto_conv())
+        elif lhs.is_greater_eq():
+            return pt1.on_rhs(rewr_conv('real_geq_leq'), auto.auto_conv())
+        elif lhs.is_greater():
+            return pt1.on_rhs(rewr_conv('real_gt_le'), auto.auto_conv())
+        elif lhs.is_less_eq():
+            return pt1.on_rhs(rewr_conv('real_leq_geq'), auto.auto_conv())
+        elif lhs.is_less():
+            return pt1.on_rhs(rewr_conv('real_le_gt'), auto.auto_conv())
+        
+
+        

@@ -8,7 +8,7 @@ import z3
 from z3.z3consts import *
 from data import integer
 from data import proplogic
-from data.real import norm_real_ineq_conv, norm_neg_real_ineq_conv, real_const_eq_conv, real_eval_conv
+from data.real import norm_real_ineq_conv, norm_neg_real_ineq_conv, real_const_eq_conv, real_eval_conv, real_norm_comparison
 from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar, TVar
 from kernel.term import *
 from kernel.thm import Thm
@@ -747,6 +747,27 @@ def rewrite_by_assertion(tm):
     return pt
 
 def rewrite_real(tm, has_bool=False):
+    if match_pattern("(x::real) = y <--> x <= y & x >= y", tm):
+        return refl(tm.lhs).on_rhs(rewr_conv('real_ge_le_same_num'))
+    elif match_pattern("((x::real) = y) <--> false", tm):
+        return real_const_eq_conv().get_proof_term(tm.lhs)
+    elif match_pattern("(if P then (t :: 'a) else t) = t", tm):
+        return refl(tm.lhs).on_rhs(rewr_conv('cond_id'))
+    return rewrite_real_second_level(tm)
+
+def rewrite_real_second_level(tm):
+    armony = [
+        # (auto.auto_conv(), top_conv(rewr_conv('ite_to_disj')), bottom_conv(norm_neg_real_ineq_conv()), bottom_conv(real_norm_comparison()), proplogic.norm_full()),
+        (auto.auto_conv(), top_conv(rewr_conv('ite_to_disj')), proplogic.norm_full(), top_conv(rewr_conv('real_ge_le_same_num')), bottom_conv(norm_neg_real_ineq_conv()), bottom_conv(real_norm_comparison()), proplogic.norm_full()),
+        (real_eval_conv(), ),
+    ]
+
+    pt_norm_full = refl(tm).on_rhs(binop_conv(proplogic.norm_full()))
+    tm_norm_full = pt_norm_full.rhs
+    for arm in armony:
+        pt = compare_lhs_rhs(tm_norm_full, arm)
+        if pt.rule != 'sorry':
+            return pt_norm_full.symmetric().equal_elim(pt)
     return ProofTerm.sorry(Thm([], tm))
 
 def _rewrite(tm):
@@ -781,7 +802,17 @@ def _rewrite(tm):
         else:
             return schematic_rules_rewr(th_name, tm.lhs, tm.rhs)
     elif RealType in Ts:
-        return rewrite_real(tm, has_bool=True) if BoolType in Ts else rewrite_real(tm, False)
+        pt1 = rewrite_real(tm, has_bool=True) if BoolType in Ts else rewrite_real(tm, False)
+        if pt1.rule != 'sorry':
+            return pt1
+        pt_asst_lhs = rewrite_by_assertion(tm.lhs)
+        pt_asst_rhs = rewrite_by_assertion(tm.rhs)
+        tm_asst = Eq(pt_asst_lhs.rhs, pt_asst_rhs.rhs)
+        pt2 = rewrite_real(tm_asst)
+        if pt2.rule != 'sorry':
+            return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
+        else:
+            return ProofTerm.sorry(Thm([], tm))
     else:
         return ProofTerm.sorry(Thm([], tm))
 
@@ -1104,27 +1135,27 @@ def def_axiom(arg1):
     for reason that prove need propositional logic decision procedure,
     currently use proofterm.sorry
     """
-    Ts = analyze_type(arg1)
-    if IntType in Ts:
-        pt = refl(arg1).on_rhs(
-            top_conv(rewr_conv('int_ite01')),
-            bottom_conv(rewr_conv('eq_mean_true')),
-            bottom_conv(integer.int_norm_eq()),
-            bottom_conv(integer.int_neq_false_conv()),
-            proplogic.norm_full()
-        )
-        pt = pt.symmetric()
-        try:
-            basic.load_theory('sat')
-            pt_cnf = solve_cnf(pt.lhs)
-            basic.load_theory('smt')
-            return pt.equal_elim(pt_cnf)
-        except:
-            pass
-    try:
-        return solve_cnf(arg1)
-    except:
-        return ProofTerm.sorry(Thm([], arg1))
+    # Ts = analyze_type(arg1)
+    # if IntType in Ts:
+    #     pt = refl(arg1).on_rhs(
+    #         top_conv(rewr_conv('int_ite01')),
+    #         bottom_conv(rewr_conv('eq_mean_true')),
+    #         bottom_conv(integer.int_norm_eq()),
+    #         bottom_conv(integer.int_neq_false_conv()),
+    #         proplogic.norm_full()
+    #     )
+    #     pt = pt.symmetric()
+    #     try:
+    #         basic.load_theory('sat')
+    #         pt_cnf = solve_cnf(pt.lhs)
+    #         basic.load_theory('smt')
+    #         return pt.equal_elim(pt_cnf)
+    #     except:
+    #         pass
+    # try:
+    #     return solve_cnf(arg1)
+    # except:
+    return ProofTerm.sorry(Thm([], arg1))
 
 def intro_def(concl):
     """
@@ -1562,14 +1593,14 @@ def th_lemma(args):
     """
     tms = [p.prop if isinstance(p, ProofTerm) else p for p in args]
     Ts = set(sum([list(analyze_type(tm)) for tm in tms], []))
-    # try:
-    if IntType in Ts:
-        return int_th_lemma(args)
-    elif RealType in Ts:
-        return real_th_lemma(args)
-    # except:
-    #     hyps = [h.prop for h in args[:-1]]
-    #     return ProofTerm.sorry(Thm(hyps, args[-1]))
+    try:
+        if IntType in Ts:
+            return int_th_lemma(args)
+        elif RealType in Ts:
+            return real_th_lemma(args)
+    except:
+        hyps = [h.prop for h in args[:-1]]
+        return ProofTerm.sorry(Thm(hyps, args[-1]))
 
 def hypothesis(prop):
     """
@@ -1826,12 +1857,12 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
             method_name = term[i].decl().name()
             subterms = [term[j] for j in net[i]]
             t1 = time.perf_counter()
-            if i == 31:
+            if i == 0:
                 i
             r[i] = convert_method(term[i], *args, subterms=subterms)
             t2 = time.perf_counter()
             with open('int_prf.txt', 'a', encoding='utf-8') as f:
-                if r[i].rule == 'sorry':
+                if r[i].rule == 'sorry' and method_name != 'def-axiom':
                     gaps |= set(r[i].gaps)
                     print('term['+str(i)+']', term[i], file=f)
                     print('r['+str(i)+']', r[i], t2 - t1, file=f)

@@ -7782,6 +7782,16 @@
             "vars": {
                 "P": "bool"
             }
+        },
+        {
+            "name": "ite_to_disj",
+            "prop": "(if P then Q else R) ⟷ P ∧ Q ∨ ¬P ∧ R",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
         }
     ],
     "description": "Basic results in logic",
