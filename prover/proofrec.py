@@ -563,7 +563,6 @@ def compare_lhs_rhs(tm, cvs):
         norm_lhs_pt = norm_lhs_pt.on_rhs(cv)
         if norm_lhs_pt.rhs == tm.rhs:
             return norm_lhs_pt
-
     norm_rhs_pt = refl(tm.rhs)
     for cv in cvs:
         norm_rhs_pt = norm_rhs_pt.on_rhs(cv)
@@ -597,10 +596,11 @@ def analyze_type(tm):
         return tm.get_type()
     else:
         types = [v.T for v in tm.get_vars()] + [v.T for v in tm.get_consts()]
+        range_types = [T.strip_type()[-1] for T in types]
         if not types: # only have true or false
             return set([BoolType])
         else:
-            return set(types)
+            return set(range_types)
 
 def rewrite_bool(tm):
     pt1 = compare_lhs_rhs(tm, [proplogic.norm_full()])
@@ -749,7 +749,7 @@ def rewrite_by_assertion(tm):
 def rewrite_real(tm, has_bool=False):
     if match_pattern("(x::real) = y <--> x <= y & x >= y", tm):
         return refl(tm.lhs).on_rhs(rewr_conv('real_ge_le_same_num'))
-    elif match_pattern("((x::real) = y) <--> false", tm):
+    elif match_pattern("((x::real) = y) <--> false", tm) or match_pattern("((x::real) = y) <--> true", tm):
         return real_const_eq_conv().get_proof_term(tm.lhs)
     elif match_pattern("(if P then (t :: 'a) else t) = t", tm):
         return refl(tm.lhs).on_rhs(rewr_conv('cond_id'))
@@ -758,8 +758,24 @@ def rewrite_real(tm, has_bool=False):
 def rewrite_real_second_level(tm):
     armony = [
         # (auto.auto_conv(), top_conv(rewr_conv('ite_to_disj')), bottom_conv(norm_neg_real_ineq_conv()), bottom_conv(real_norm_comparison()), proplogic.norm_full()),
-        (auto.auto_conv(), top_conv(rewr_conv('ite_to_disj')), proplogic.norm_full(), top_conv(rewr_conv('real_ge_le_same_num')), bottom_conv(norm_neg_real_ineq_conv()), bottom_conv(real_norm_comparison()), proplogic.norm_full()),
+        (auto.auto_conv(), 
+        top_conv(rewr_conv('not_true')),
+        top_conv(rewr_conv('not_false')),
+        top_conv(real_const_eq_conv()),
+        bottom_conv(proplogic.norm_full()),
+        top_conv(rewr_conv('if_true')),
+        top_conv(rewr_conv('if_false')), 
+        top_conv(rewr_conv('ite_to_disj')),
+        top_conv(rewr_conv('eq_false', sym=True)),
+        bottom_conv(proplogic.norm_full()), 
+        top_conv(rewr_conv('real_ge_le_same_num')), 
+        bottom_conv(norm_neg_real_ineq_conv()), 
+        bottom_conv(real_norm_comparison()), 
+        bottom_conv(proplogic.norm_full()),),
+        
         (real_eval_conv(), ),
+    
+        (top_conv(rewr_conv('cond_swap')), )
     ]
 
     pt_norm_full = refl(tm).on_rhs(binop_conv(proplogic.norm_full()))
