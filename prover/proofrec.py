@@ -740,7 +740,7 @@ def rewrite_by_assertion(tm):
     """
     global atoms
     pt = refl(tm)
-    boolvars = [v for v in tm.get_vars() if v.T in (BoolType, IntType)] + [v for v in tm.get_consts() if v.T in (BoolType, IntType)]
+    boolvars = [v for v in tm.get_vars()] + [v for v in tm.get_consts()]
     for b in boolvars:
         if b in atoms:
             pt = pt.on_rhs(top_conv(replace_conv(atoms[b])))
@@ -1562,14 +1562,14 @@ def th_lemma(args):
     """
     tms = [p.prop if isinstance(p, ProofTerm) else p for p in args]
     Ts = set(sum([list(analyze_type(tm)) for tm in tms], []))
-    try:
-        if IntType in Ts:
-            return int_th_lemma(args)
-        elif RealType in Ts:
-            return real_th_lemma(args)
-    except:
-        hyps = [h.prop for h in args[:-1]]
-        return ProofTerm.sorry(Thm(hyps, args[-1]))
+    # try:
+    if IntType in Ts:
+        return int_th_lemma(args)
+    elif RealType in Ts:
+        return real_th_lemma(args)
+    # except:
+    #     hyps = [h.prop for h in args[:-1]]
+    #     return ProofTerm.sorry(Thm(hyps, args[-1]))
 
 def hypothesis(prop):
     """
@@ -1732,30 +1732,45 @@ atoms = dict()
 
 def handle_assertion(ast):
     """
-    If the assertion is a conjunction, find all boolean variables or negative boolean variables
+    Two cases:
+    1) If the assertion is a conjunction, find all boolean variables or negative boolean variables
     in assertion, convert them to proofterm like "⊢ x ⟷ true" or "⊢ x ⟷ false"
     Note, the assertion conjunction may not have already been flatten, we need to preprocess it.
     
     This is a iterative process, every time we get an atom is true or false, we can also use it to get 
     more information by rewriting the assertion, until no more new information we can get.
+    2) If there are more than one assertion Γ_1, ..., Γ_n, we need to first get the set of proof terms:
+                                Γ_1, ..., Γ_n ⊢ Γ_1 ∧ ... ∧ Γ_n
+    then do the same things as above
     """    
     global atoms
-    def traverse_A(pt):
-        if pt.prop.is_conj():
-            traverse_A(apply_theorem('conjD1', pt))
-            traverse_A(apply_theorem('conjD2', pt))
-        else:
-            d[pt.prop] = pt
-
-    hol_ast = translate(ast)
+    
+    def traverse(pt):
+        """Note that we assume pt is right-associative"""
+        while pt.prop.is_conj():
+            lhs, rhs = pt.prop.arg1, pt.prop.arg
+            if not lhs.is_conj():
+                d[lhs] = apply_theorem('conjD1', pt)
+            if not rhs.is_conj():
+                d[rhs] = apply_theorem('conjD2', pt)
+                break
+            else:
+                pt = apply_theorem('conjD2', pt)
+    
+    if len(ast) == 1:
+        hol_ast = translate(ast)
+        pt_ast = ProofTerm.assume(hol_ast).on_prop(proplogic.norm_full())
+    else:
+        hol_asts = [translate(a) for a in ast]
+        pt_ast = functools.reduce(lambda x, y: apply_theorem('conjI', x, ProofTerm.assume(y)),\
+                                hol_asts[1:], ProofTerm.assume(hol_asts[0])).on_prop(proplogic.norm_full())
     flag = True
-    pt_ast = ProofTerm.assume(hol_ast).on_prop(proplogic.norm_full())
     while True:
         if not pt_ast.prop.is_conj():
             break
         new_conv = []
         d = dict()
-        traverse_A(pt_ast)
+        traverse(pt_ast)
         for key, value in d.items():
             if key.is_var() and key not in atoms:
                 atoms[key] = value.on_prop(rewr_conv('eq_true'))
@@ -1773,7 +1788,7 @@ def handle_assertion(ast):
                 elif lhs.is_var() and rhs in (true, false):
                     atoms[lhs] = value
                     new_conv.append(atoms[lhs])
-                elif lhs.is_var() and lhs.T == IntType:
+                else:
                     atoms[lhs] = value
                     new_conv.append(atoms[lhs])
 
@@ -1797,7 +1812,7 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     assert_atom.clear()
     atoms.clear()
     gaps = set()
-    handle_assertion(assertions[0])
+    handle_assertion(assertions)
     with open('int_prf.txt', 'a', encoding='utf-8') as f:
         f.seek(0)
         f.truncate()
@@ -1811,6 +1826,8 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
             method_name = term[i].decl().name()
             subterms = [term[j] for j in net[i]]
             t1 = time.perf_counter()
+            if i == 31:
+                i
             r[i] = convert_method(term[i], *args, subterms=subterms)
             t2 = time.perf_counter()
             with open('int_prf.txt', 'a', encoding='utf-8') as f:
