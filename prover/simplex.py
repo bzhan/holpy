@@ -1303,6 +1303,7 @@ def solve_hol_ineqs(ineqs, is_integer=False):
         T = branch_and_bound(s)
         return T.branch_and_bound_pt()
     else:
+        hol.add_ineqs(converted_ineq)
         return hol.handle_assertion()
     # for ii in converted_ineq:
     #     hol.add_ineq(ii)
