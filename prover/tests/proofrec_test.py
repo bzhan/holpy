@@ -177,12 +177,14 @@ class ProofrecTest(unittest.TestCase):
             "(x_11 ∧ x_12 ∧ ¬(x_13 + -1 * cvclZero = 1) ∨ x_16 ∧ x_17 ∧ ¬(x_13 + -1 * cvclZero = 2) ∨ x_14 ∧ x_15 ∧ ¬(x_13 + -1 * cvclZero = 3)) ∨ x_0 ∧ x_1 ∧ ¬(x_9 + -1 * cvclZero = 1) ⟷ x_0 ∧ x_1 ∧ ¬(x_9 + -1 * cvclZero = 1) ∨ x_11 ∧ x_12 ∧ ¬(x_13 + -1 * cvclZero = 1) ∨ x_16 ∧ x_17 ∧ ¬(x_13 + -1 * cvclZero = 2) ∨ x_14 ∧ x_15 ∧ ¬(x_13 + -1 * cvclZero = 3)",
             "(if false then (3::real) else 2) = 2",
             "x_46 = (if false then 2 else 1) ⟷ x_46 = 1",
-
+            # "x_0 = 1 ∧ (if x_8 then 2 else x_0) = 2 ⟷ x_0 = 1 ∧ (x_8 ∨ x_0 = 2)",
+            # "(if x_7 then 1 else x_0) = 2 ⟷ ¬x_7 ∧ x_0 = 2)",
         ]
 
         context.set_context('smt', vars={
             "x_11": "bool", "x_12": "bool", "x_16": "bool", "x_17": "bool",
-            "x_13": "real", "cvclZero": "real", "x_46": "real"
+            "x_13": "real", "cvclZero": "real", "x_46": "real",
+            # "x_0": "real", "x_8": "bool", "x_7": "bool",
         })
 
         for tm in test_data:

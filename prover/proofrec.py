@@ -756,23 +756,28 @@ def rewrite_real(tm, has_bool=False):
     return rewrite_real_second_level(tm)
 
 def rewrite_real_second_level(tm):
+    global atoms
+    cvs = [value for _, value in atoms.items()]
+    
     armony = [
         # (auto.auto_conv(), top_conv(rewr_conv('ite_to_disj')), bottom_conv(norm_neg_real_ineq_conv()), bottom_conv(real_norm_comparison()), proplogic.norm_full()),
-        (auto.auto_conv(), 
-        top_conv(rewr_conv('not_true')),
-        top_conv(rewr_conv('not_false')),
-        top_conv(real_const_eq_conv()),
+        (bottom_conv(real_norm_comparison()),
+        *[top_conv(replace_conv(cv)) for cv in cvs],
+        auto.auto_conv(), 
+        bottom_conv(rewr_conv('not_true')),
+        bottom_conv(rewr_conv('not_false')),
+        bottom_conv(real_const_eq_conv()),
         bottom_conv(proplogic.norm_full()),
-        top_conv(rewr_conv('if_true')),
-        top_conv(rewr_conv('if_false')), 
-        top_conv(rewr_conv('ite_to_disj')),
-        top_conv(rewr_conv('eq_false', sym=True)),
+        bottom_conv(rewr_conv('if_true')),
+        bottom_conv(rewr_conv('if_false')), 
+        bottom_conv(rewr_conv('ite_to_disj')),
+        bottom_conv(rewr_conv('eq_false', sym=True)),
         bottom_conv(proplogic.norm_full()), 
-        top_conv(rewr_conv('real_ge_le_same_num')), 
+        top_conv(rewr_conv('real_ge_le_same_num')),
         bottom_conv(norm_neg_real_ineq_conv()), 
-        bottom_conv(real_norm_comparison()), 
-        bottom_conv(proplogic.norm_full()),),
-        
+        bottom_conv(real_norm_comparison()),
+        bottom_conv(proplogic.norm_full())),
+
         (real_eval_conv(), ),
     
         (top_conv(rewr_conv('cond_swap')), )
@@ -821,12 +826,12 @@ def _rewrite(tm):
         pt1 = rewrite_real(tm, has_bool=True) if BoolType in Ts else rewrite_real(tm, False)
         if pt1.rule != 'sorry':
             return pt1
-        pt_asst_lhs = rewrite_by_assertion(tm.lhs)
-        pt_asst_rhs = rewrite_by_assertion(tm.rhs)
-        tm_asst = Eq(pt_asst_lhs.rhs, pt_asst_rhs.rhs)
-        pt2 = rewrite_real(tm_asst)
-        if pt2.rule != 'sorry':
-            return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
+        # pt_asst_lhs = rewrite_by_assertion(tm.lhs)
+        # pt_asst_rhs = rewrite_by_assertion(tm.rhs)
+        # tm_asst = Eq(pt_asst_lhs.rhs, pt_asst_rhs.rhs)
+        # pt2 = rewrite_real(tm_asst)
+        # if pt2.rule != 'sorry':
+        #     return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
         else:
             return ProofTerm.sorry(Thm([], tm))
     else:
@@ -1819,11 +1824,11 @@ def handle_assertion(ast):
         d = dict()
         traverse(pt_ast)
         for key, value in d.items():
-            if key.is_var() and key not in atoms:
+            if key.is_var() and (key not in atoms or value != atoms[key]):
                 atoms[key] = value.on_prop(rewr_conv('eq_true'))
                 new_conv.append(atoms[key])
                 flag = True
-            elif key.is_not() and key.arg not in atoms:
+            elif key.is_not() and (key.arg not in atoms or value != atoms[key.arg]):
                 atoms[key.arg] = value.on_prop(rewr_conv('eq_false'))    
                 flag = True
                 new_conv.append(atoms[key.arg])
@@ -1835,15 +1840,40 @@ def handle_assertion(ast):
                 elif rhs in (true, false):
                     atoms[lhs] = value
                     new_conv.append(atoms[lhs])
-                else:
+                elif not (lhs.head.is_const("IF") or rhs.head.is_const("IF")):
                     atoms[lhs] = value
                     new_conv.append(atoms[lhs])
 
         if flag:
             flag = False
-            pt_ast = pt_ast.on_prop(*[top_conv(replace_conv(cv)) for cv in new_conv], proplogic.norm_full())
+            pt_ast = pt_ast.on_prop(
+                *[top_conv(replace_conv(cv)) for cv in new_conv],
+                proplogic.norm_full(),
+                bottom_conv(rewr_conv('not_true')),
+                bottom_conv(rewr_conv('not_false')),
+                bottom_conv(rewr_conv('if_true')),
+                bottom_conv(rewr_conv('if_false')), 
+                bottom_conv(proplogic.norm_full()))
         else:
             break
+
+    # normalize atoms key, for example, a pair in atoms maybe "x_9 ≤ x_3: x_9 ≤ x_3 ⟷ false",
+    # we need to add a new pair: "x_3 + -1 * x_9 < 0: x_3 + -1 * x_9 < 0 ⟷ false"
+    for key in list(atoms.keys()):
+        if key.is_equals() or key.is_compares() and key.arg1.get_type() == RealType:
+            norm_key = refl(key).on_rhs(
+                bottom_conv(real_norm_comparison())
+            )
+            atoms[norm_key.rhs] = atoms[key].on_prop(top_conv(replace_conv(norm_key)))
+            ori = atoms[key]
+            if ori.rhs == false:
+                pt_true = ori.on_prop(
+                    rewr_conv('eq_false', sym=True),
+                    norm_neg_real_ineq_conv(),
+                    real_norm_comparison(),
+                    rewr_conv('eq_true')
+                )
+                atoms[pt_true.lhs] = pt_true
 
 def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     """
@@ -1860,6 +1890,8 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     atoms.clear()
     gaps = set()
     handle_assertion(assertions)
+    for key, value in atoms.items():
+        print(key, value.prop)
     with open('int_prf.txt', 'a', encoding='utf-8') as f:
         f.seek(0)
         f.truncate()
