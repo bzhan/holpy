@@ -7792,6 +7792,17 @@
                 "Q": "bool",
                 "R": "bool"
             }
+        },
+        {
+            "name": "ite_eq_value",
+            "prop": "(if P then x else y) = z ⟷ P ∧ x = z ∨ ¬P ∧ y = z",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "x": "'a",
+                "y": "'a",
+                "z": "'a"
+            }
         }
     ],
     "description": "Basic results in logic",

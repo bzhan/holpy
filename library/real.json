@@ -31178,6 +31178,56 @@
             "vars": {
                 "x": "real"
             }
+        },
+        {
+            "name": "real_sub_both_sides_eq",
+            "prop": "x = y ⟷ x - c = y - c",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_sub_both_sides_le",
+            "prop": "x < y ⟷ x - c = y - c",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_sub_both_sides_leq",
+            "prop": "x ≤ y ⟷ x - c ≤ y - c",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_sub_both_sides_gt",
+            "prop": "x > y ⟷ x - c > y - c",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_sub_both_sides_geq",
+            "prop": "x ≥ y ⟷ x - c ≥ y - c",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real",
+                "y": "real"
+            }
         }
     ],
     "description": "real numbers",
