@@ -740,11 +740,8 @@ def rewrite_by_assertion(tm):
     """
     global atoms
     pt = refl(tm)
-    boolvars = [v for v in tm.get_vars()] + [v for v in tm.get_consts()]
-    for b in boolvars:
-        if b in atoms:
-            pt = pt.on_rhs(top_conv(replace_conv(atoms[b])))
-    return pt
+    # boolvars = [v for v in tm.get_vars()] + [v for v in tm.get_consts()]
+    return pt.on_rhs(*[top_conv(replace_conv(v)) for _, v in atoms.items()])
 
 def rewrite_real(tm, has_bool=False):
     if match_pattern("(x::real) = y <--> x <= y & x >= y", tm):
@@ -762,7 +759,6 @@ def rewrite_real_second_level(tm):
     armony = [
         # (auto.auto_conv(), top_conv(rewr_conv('ite_to_disj')), bottom_conv(norm_neg_real_ineq_conv()), bottom_conv(real_norm_comparison()), proplogic.norm_full()),
         (bottom_conv(real_norm_comparison()),
-        *[top_conv(replace_conv(cv)) for cv in cvs],
         auto.auto_conv(), 
         bottom_conv(rewr_conv('not_true')),
         bottom_conv(rewr_conv('not_false')),
@@ -771,24 +767,25 @@ def rewrite_real_second_level(tm):
         bottom_conv(rewr_conv('if_true')),
         bottom_conv(rewr_conv('if_false')), 
         bottom_conv(rewr_conv('ite_to_disj')),
+        bottom_conv(rewr_conv('ite_cond_disj_to_conj')),
         bottom_conv(rewr_conv('eq_false', sym=True)),
-        bottom_conv(proplogic.norm_full()), 
         top_conv(rewr_conv('real_ge_le_same_num')),
-        bottom_conv(norm_neg_real_ineq_conv()), 
-        bottom_conv(real_norm_comparison()),
-        bottom_conv(proplogic.norm_full())),
+        bottom_conv(proplogic.norm_full()),
+        bottom_conv(norm_neg_real_ineq_conv()),
+        bottom_conv(real_norm_comparison()), 
+        bottom_conv(proplogic.norm_full()),),
 
-        (real_eval_conv(), ),
+        (proplogic.norm_full(), real_eval_conv(), ),
     
-        (top_conv(rewr_conv('cond_swap')), )
+        (proplogic.norm_full(), top_conv(rewr_conv('cond_swap')), )
     ]
 
-    pt_norm_full = refl(tm).on_rhs(binop_conv(proplogic.norm_full()))
-    tm_norm_full = pt_norm_full.rhs
+    # pt_norm_full = refl(tm).on_rhs(binop_conv(proplogic.norm_full()))
+    # tm_norm_full = pt_norm_full.rhs
     for arm in armony:
-        pt = compare_lhs_rhs(tm_norm_full, arm)
+        pt = compare_lhs_rhs(tm, arm)
         if pt.rule != 'sorry':
-            return pt_norm_full.symmetric().equal_elim(pt)
+            return pt
     return ProofTerm.sorry(Thm([], tm))
 
 def _rewrite(tm):
@@ -826,12 +823,12 @@ def _rewrite(tm):
         pt1 = rewrite_real(tm, has_bool=True) if BoolType in Ts else rewrite_real(tm, False)
         if pt1.rule != 'sorry':
             return pt1
-        # pt_asst_lhs = rewrite_by_assertion(tm.lhs)
-        # pt_asst_rhs = rewrite_by_assertion(tm.rhs)
-        # tm_asst = Eq(pt_asst_lhs.rhs, pt_asst_rhs.rhs)
-        # pt2 = rewrite_real(tm_asst)
-        # if pt2.rule != 'sorry':
-        #     return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
+        pt_asst_lhs = rewrite_by_assertion(tm.lhs)
+        pt_asst_rhs = rewrite_by_assertion(tm.rhs)
+        tm_asst = Eq(pt_asst_lhs.rhs, pt_asst_rhs.rhs)
+        pt2 = rewrite_real(tm_asst)
+        if pt2.rule != 'sorry':
+            return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
         else:
             return ProofTerm.sorry(Thm([], tm))
     else:
@@ -1905,8 +1902,6 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
             method_name = term[i].decl().name()
             subterms = [term[j] for j in net[i]]
             t1 = time.perf_counter()
-            if i == 0:
-                i
             r[i] = convert_method(term[i], *args, subterms=subterms)
             t2 = time.perf_counter()
             with open('int_prf.txt', 'a', encoding='utf-8') as f:

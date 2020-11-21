@@ -7803,6 +7803,17 @@
                 "y": "'a",
                 "z": "'a"
             }
+        },
+        {
+            "name": "ite_cond_disj_to_conj",
+            "prop": "(if P ∨ Q then x else y) = (if ¬P ∧ ¬Q then y else x)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "x": "'a",
+                "y": "'a"
+            }
         }
     ],
     "description": "Basic results in logic",
