@@ -7823,6 +7823,17 @@
                 "P": "bool",
                 "Q": "bool"
             }
+        },
+        {
+            "name": "ite_elim_else_if",
+            "prop": "(if P then x else if Q then x else y) = (if P ∨ Q then x else y)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "x": "'a",
+                "y": "'a"
+            }
         }
     ],
     "description": "Basic results in logic",

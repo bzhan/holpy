@@ -750,6 +750,8 @@ def rewrite_real(tm, has_bool=False):
         return real_const_eq_conv().get_proof_term(tm.lhs)
     elif match_pattern("(if P then (t :: 'a) else t) = t", tm):
         return refl(tm.lhs).on_rhs(rewr_conv('cond_id'))
+    elif match_pattern("(if P then (x::'a) else if Q then x else y) = (if P ∨ Q then (x::'a) else y)", tm):
+        return refl(tm.lhs).on_rhs(rewr_conv('ite_elim_else_if'))
     return rewrite_real_second_level(tm)
 
 def rewrite_real_second_level(tm):

@@ -177,7 +177,12 @@ class ProofrecTest(unittest.TestCase):
             "(x_11 ∧ x_12 ∧ ¬(x_13 + -1 * cvclZero = 1) ∨ x_16 ∧ x_17 ∧ ¬(x_13 + -1 * cvclZero = 2) ∨ x_14 ∧ x_15 ∧ ¬(x_13 + -1 * cvclZero = 3)) ∨ x_0 ∧ x_1 ∧ ¬(x_9 + -1 * cvclZero = 1) ⟷ x_0 ∧ x_1 ∧ ¬(x_9 + -1 * cvclZero = 1) ∨ x_11 ∧ x_12 ∧ ¬(x_13 + -1 * cvclZero = 1) ∨ x_16 ∧ x_17 ∧ ¬(x_13 + -1 * cvclZero = 2) ∨ x_14 ∧ x_15 ∧ ¬(x_13 + -1 * cvclZero = 3)",
             "(if false then (3::real) else 2) = 2",
             "x_46 = (if false then 2 else 1) ⟷ x_46 = 1",
-            # "(if x_3 then x_2 else if x_7 + -1 * x_42 ≥ 0 ∨ ¬(x_9 + -1 * x_42 ≥ 0) ∨ x_2 ≥ 3 then x_2 else 1 + x_2) = (if x_3 ∨ x_7 + -1 * x_42 ≥ 0 ∨ ¬(x_9 + -1 * x_42 ≥ 0) ∨ x_2 ≥ 3 then x_2 else 1 + x_2)",
+            # "(if x_3 then x_2 else if x_7 + -1 * x_42 ≥ 0 ∨ ¬(x_9 + -1 * x_42 ≥ 0) ∨ x_2 ≥ 3 then x_2 else 1 + x_2) =\
+            #  (if x_3 ∨ x_7 + -1 * x_42 ≥ 0 ∨ ¬(x_9 + -1 * x_42 ≥ 0) ∨ x_2 ≥ 3 then x_2 else 1 + x_2)",
+            # "(if x_1 then x_4 else if x_10 + -1 * x_42 ≥ 0 ∨ ¬(x_12 + -1 * x_42 ≥ 0) ∨ x_4 ≥ 3 then x_4 else 1 + x_4) =\
+            #  (if x_1 ∨ x_10 + -1 * x_42 ≥ 0 ∨ ¬(x_12 + -1 * x_42 ≥ 0) ∨ x_4 ≥ 3 then x_4 else 1 + x_4)",
+            # "(if x_2 then x_5 else if x_10 + -1 * x_43 ≥ 0 ∨ x_5 ≥ 3 ∨ ¬(x_12 + -1 * x_43 ≥ 0) then x_5 else 1 + x_5) =\
+            #  (if x_2 ∨ x_10 + -1 * x_43 ≥ 0 ∨ x_5 ≥ 3 ∨ ¬(x_12 + -1 * x_43 ≥ 0) then x_5 else 1 + x_5)",
             # "x_0 = 1 ∧ (if x_8 then 2 else x_0) = 2 ⟷ x_0 = 1 ∧ (x_8 ∨ x_0 = 2)",
             # "(if x_7 then 1 else x_0) = 2 ⟷ ¬x_7 ∧ x_0 = 2)",
         ]
