@@ -7814,6 +7814,15 @@
                 "x": "'a",
                 "y": "'a"
             }
+        },
+        {
+            "name": "norm_neg_equality",
+            "prop": "(¬P ⟷ Q) ⟷ P ⟷ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
         }
     ],
     "description": "Basic results in logic",

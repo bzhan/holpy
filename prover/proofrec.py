@@ -758,6 +758,8 @@ def rewrite_real_second_level(tm):
     
     armony = [
         # (auto.auto_conv(), top_conv(rewr_conv('ite_to_disj')), bottom_conv(norm_neg_real_ineq_conv()), bottom_conv(real_norm_comparison()), proplogic.norm_full()),
+        (bottom_conv(rewr_conv("if_true")), bottom_conv(rewr_conv("if_false"))),
+        
         (bottom_conv(real_norm_comparison()),
         auto.auto_conv(), 
         bottom_conv(rewr_conv('not_true')),
@@ -770,10 +772,14 @@ def rewrite_real_second_level(tm):
         bottom_conv(rewr_conv('ite_cond_disj_to_conj')),
         bottom_conv(rewr_conv('eq_false', sym=True)),
         top_conv(rewr_conv('real_ge_le_same_num')),
+        bottom_conv(rewr_conv('norm_neg_equality')),
         bottom_conv(proplogic.norm_full()),
         bottom_conv(norm_neg_real_ineq_conv()),
-        bottom_conv(real_norm_comparison()), 
+        bottom_conv(real_norm_comparison()),
+        bottom_conv(rewr_conv('cond_swap')), 
         bottom_conv(proplogic.norm_full()),),
+
+        (bottom_conv(rewr_conv('ite_eq_value')), bottom_conv(real_const_eq_conv()), proplogic.norm_full()),
 
         (proplogic.norm_full(), real_eval_conv(), ),
     
