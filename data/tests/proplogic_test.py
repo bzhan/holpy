@@ -119,3 +119,38 @@ class PropLogicTest(unittest.TestCase):
         for t, res in test_data:
             t, res = parser.parse_term(t), parser.parse_term(res)
             test_conv(self, 'logic', proplogic.norm_disj_disjunction(), vars=vars, t=t, t_res=res)
+
+    def testSortConjuntion(self):
+        test_data = [
+            ('A & ~A', 'false'),
+            ('A & B & ~A', 'false'),
+            ('A & C & B', 'A & B & C'),
+            ('A & (A & C) & B', 'A & B & C'),
+            ('~A & C & (B & false)', 'false'),
+            ('A & true', 'A'),
+            ('false & A', 'false')
+        ]
+        vars = {"A": "bool", "B" : "bool", "C": "bool", "D": "bool",
+                "E": "bool", "F" : "bool", "G": "bool", "H": "bool"}
+        context.set_context('logic', vars=vars)
+
+        for t, t_res in test_data:
+            t, t_res = parser.parse_term(t), parser.parse_term(t_res)
+            test_conv(self, 'logic', proplogic.sort_conj(), vars=vars, t=t, t_res=t_res)
+
+    def testSortDisjunction(self):
+        test_data = [
+            ('A | ~A', 'true'),
+            ('A | B | ~A', 'true'),
+            ('A | B | (true | false) | C', 'true'),
+            ('A | false', 'A'),
+            ('B | (A | C) | (E | A) | D', 'A | B | C | D | E')
+        ]
+
+        vars = {"A": "bool", "B" : "bool", "C": "bool", "D": "bool",
+                "E": "bool", "F" : "bool", "G": "bool", "H": "bool"}
+        context.set_context('logic', vars=vars)
+
+        for t, t_res in test_data:
+            t, t_res = parser.parse_term(t), parser.parse_term(t_res)
+            test_conv(self, 'logic', proplogic.sort_disj(), vars=vars, t=t, t_res=t_res)
