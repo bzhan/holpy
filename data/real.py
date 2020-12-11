@@ -4,10 +4,11 @@ from fractions import Fraction
 import math
 import sympy
 from sympy.ntheory.factor_ import factorint
+import typing
 
 from kernel.type import TFun, BoolType, RealType
 from kernel import term
-from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod, true, false
+from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod, true, false, Var, Exists, And, Implies, Not
 from kernel.thm import Thm
 from kernel.theory import register_macro
 from kernel.macro import Macro
@@ -18,13 +19,13 @@ from data.set import setT
 from logic import logic
 from logic import auto
 from logic import matcher
-from logic.conv import rewr_conv, binop_conv, arg1_conv, arg_conv, try_conv, Conv, ConvException
+from logic.conv import rewr_conv, binop_conv, arg1_conv, arg_conv, try_conv, Conv, ConvException, top_conv
 from logic.tactic import MacroTactic
 from kernel.proofterm import refl, ProofTerm
 from syntax import pprint, settings
 from server.method import Method, register_method
 from util import poly
-
+import functools
 
 # Basic definitions
 
@@ -908,6 +909,98 @@ class real_norm_comparison(Conv):
             return pt1.on_rhs(rewr_conv('real_leq_geq'), auto.auto_conv())
         elif lhs.is_less():
             return pt1.on_rhs(rewr_conv('real_le_gt'), auto.auto_conv())
-        
 
+class replace_conv(Conv):
+    def __init__(self, pt):
+        self.pt = pt
+
+    def get_proof_term(self, t):
+        if t == self.pt.prop.lhs:
+            return self.pt
+        else:
+            raise ConvException
+
+@register_macro('non_strict_simplex')
+class non_strict_simplex_macro(Macro):
+    """
+    Given a set of strict inequalities, 
+        x_1 > b_1,
+        x_2 < b_2,
+        ... 
+        x_n < b_n,
+
+    return a proof term: x_1 > b_1, ... , x_n < b_n ⊢ ∃δ. x_1 >= b_1 + δ ∧ ... ∧ x_n <= b_n - δ 
+    """
+    def __init__(self):
+        self.level = 1
+        self.sig = typing.List[Term]
+        self.limit = None
+
+    def get_proof_term(self, args, prevs=None):
+        """
+        The strategy is to prove ¬(x_1 > b_1 ⟶ ... ⟶ x_n < b_n ⟶ ∃δ. x_1 ≥ b_1 + δ ∧ ... ∧ x_n ≤ b_n - δ) ⊢ false.
+
+        Use the above hypothesis, we can derive 
+                            ⊢ x_1 > b_1, ..., ⊢ x_n < b_n                                                     (1) 
+        and
+                            ⊢ ∀δ. ¬(x_1 ≥ b_1 + δ ∧ ... ∧ x_n ≤ b_n - δ)                                   (2)
+        Initialize δ with zero in (2), we can get 
+                            ⊢ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n)                                               (3)
+        It is known that
+                            ⊢ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ⟷ ¬(x_1 >= b_1) ∨ ... ∨ ¬(x_n >= b_n)  (4)
+        and
+                            ⊢ (x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ∨ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n)        (5)
+        use (4) and (5), we can get
+                            ⊢ (x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ∨ ¬(x_1 >= b_1) ∨ ... ∨ ¬(x_n >= b_n)    (6)
+        At the meantime, we know that
+                            ⊢ x_1 ≥ b_1 ∨ ~(x_1 > b_1), ... , ⊢ x_n ≤ b_1 ∨ ~(x_1 < b_1)                 (7) 
+        is true, we can do resolution between (7) and (1), get
+                            ⊢ x_1 ≥ b_1, ..., ⊢ x_n ≤ b_n,                                                    (8) 
+        then do resolution between (6) and (8), get
+                            ⊢ x_1 ≥ b_1 ∧ ... ∧ x_n ≤ b_n                                                     (9)
+        we can get a contradiction from (3) and (9).                                                        ■
+        args is the list of strict inequalities.
+        """
+        # first check whether there are inequalities are invalid(not strict)
         
+        # construct term x_1 > b_1 ⟶ ... ⟶ x_n < b_n ⟶ ∃δ. x_1 >= b_1 + δ ∧ ... ∧ x_n <= b_n - δ
+        delta = Var("δ", RealType)
+        non_strict_tms = [greater_eq(t.arg1, t.arg + delta) if t.is_greater() else
+                        less_eq(t.arg1, t.arg - delta) for t in args]
+        exists_tm = Exists(delta, And(*non_strict_tms))
+        implies_tm = functools.reduce(lambda x, y: Implies(y, x), reversed(args), exists_tm)
+        # proof
+        pt0 = ProofTerm.assume(Not(implies_tm))
+        # get ⊢ x_1 > b_1, ..., ⊢ x_n < b_n
+        strict_ineq_pts = []
+        aux_pt = pt0
+        for i in range(len(args)):
+            pt_strict = logic.apply_theorem("veriT_not_implies1", aux_pt)
+            aux_pt = logic.apply_theorem("veriT_not_implies2", aux_pt)
+            strict_ineq_pts.append(pt_strict)
+        # get ⊢ ∀δ. ¬(x_1 ≥ b_1 + δ ∧ ... ∧ x_n ≤ b_n - δ)
+        pt1 = aux_pt.on_prop(rewr_conv("not_exists"))
+        # get ⊢ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n)
+        pt2 = pt1.forall_elim(Real(0)).on_prop(top_conv(rewr_conv('real_add_rid')), top_conv(rewr_conv('real_sub_rzero')))
+        # get ⊢ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ⟷ ¬(x_1 >= b_1) ∨ ... ∨ ¬(x_n >= b_n)
+        pt3 = refl(pt2.prop).on_rhs(top_conv("de_morgan_thm1"))
+        # get ⊢ (x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ∨ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n)
+        pt4 = logic.apply_theorem('classical', inst=matcher.Inst(A=pt3.lhs.arg))
+        # get ⊢ (x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ∨ ¬(x_1 >= b_1) ∨ ... ∨ ¬(x_n >= b_n)
+        pt5 = pt4.on_prop(top_conv(replace_conv(pt3)))
+        # get ⊢ x_1 ≥ b_1 ∨ ~(x_1 > b_1), ... , ⊢ x_n ≤ b_1 ∨ ~(x_1 < b_1) 
+        tauto_pts = []
+        for arg in args:
+            if arg.is_greater():
+                tauto_pts.append(logic.apply_theorem('real_leq_or_not_less', inst=matcher.Inst(x=arg.arg1, b=arg.arg)))
+            elif arg.is_less():
+                tauto_pts.append(logic.apply_theorem('real_geq_or_not_gt', inst=matcher.Inst(x=arg.arg1, b=arg.arg)))
+            else:
+                raise NotImplementedError
+        # do resolution between strict_ineq_pts and tauto_pts
+        non_strict_ineq_pts = [logic.resolution(x, y) for x, y in zip(strict_ineq_pts, tauto_pts)]
+        # do resolution between pt5 and non_strict_ineq_pts, get ⊢ x_1 ≥ b_1 ∧ ... ∧ x_n ≤ b_n
+        pt6 = functools.reduce(lambda x, y: logic.resolution(x, y), non_strict_ineq_pts, pt5)
+        # get a contradiction from pt2 and pt6
+        pt7 = logic.resolution(pt2, pt6)
+        return logic.apply_theorem("negI", pt7.implies_intr(pt7.hyps[0])).on_prop(rewr_conv("double_neg"))

@@ -176,5 +176,21 @@ class RealTest(unittest.TestCase):
             vars = {'a' : 'real', 'b' : 'real', 'c' : 'real'}
             test_conv(self, 'transcendentals', real.norm_real_ineq_conv(), vars=vars, t=expr, t_res=res)
 
+    def testNonStrictSimplexMarco(self):
+        test_data = [
+            (["1 * x + -1 * z < 0"], "1 * x + -1 * z < 0 --> ?t. 1 * x + -1 * z <= 0 - t"),
+            (["1 * x + -1 * z < 0", "1 * x + -1 * y > 0"], 
+            "1 * x + -1 * z < 0 --> 1 * x + -1 * y > 0 --> (?t. 1 * x + -1 * z <= 0 - t & 1 * x + -1 * y >= 0 + t)")
+        ]
+        
+        vars = {"x": "real", "y": "real", "z": "real"}
+        context.set_context("real", vars=vars)
+
+        for ts, res in test_data:
+            ts = [parser.parse_term(t) for t in ts]
+            res = parser.parse_term(res)
+            # test_macro(self, 'real', 'non_strict_simplex', vars=vars, args=ts, res=res)
+            self.assertEqual(real.non_strict_simplex_macro().get_proof_term(args=ts).prop, res)
+
 if __name__ == "__main__":
     unittest.main()
