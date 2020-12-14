@@ -8,13 +8,13 @@ import typing
 
 from kernel.type import TFun, BoolType, RealType
 from kernel import term
-from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod, true, false, Var, Exists, And, Implies, Not
+from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod, true, false, Var, Exists, And, Implies, Not, false
 from kernel.thm import Thm
 from kernel.theory import register_macro
 from kernel.macro import Macro
 from kernel.proofterm import TacticException
 from kernel import term_ord
-from data import nat, integer
+from data import nat, integer, proplogic
 from data.set import setT
 from logic import logic
 from logic import auto
@@ -871,8 +871,6 @@ class real_norm_comparison(Conv):
     left-hand side, and guarantee the left-most term' coefficient is positive.
     """
     def get_proof_term(self, t):
-
-
         if not t.is_equals() and not t.is_compares() or t.arg1.get_type() != RealType:
             return refl(t)
         pt = refl(t)
@@ -921,7 +919,7 @@ class replace_conv(Conv):
             raise ConvException
 
 @register_macro('non_strict_simplex')
-class non_strict_simplex_macro(Macro):
+class relax_strict_simplex_macro(Macro):
     """
     Given a set of strict inequalities, 
         x_1 > b_1,
@@ -929,7 +927,7 @@ class non_strict_simplex_macro(Macro):
         ... 
         x_n < b_n,
 
-    return a proof term: x_1 > b_1, ... , x_n < b_n ⊢ ∃δ. x_1 >= b_1 + δ ∧ ... ∧ x_n <= b_n - δ 
+    return a proof term: x_1 > b_1, ... , x_n < b_n ⊢ ∃δ. δ > 0 ∧ x_1 >= b_1 + δ ∧ ... ∧ x_n <= b_n - δ 
     """
     def __init__(self):
         self.level = 1
@@ -938,36 +936,27 @@ class non_strict_simplex_macro(Macro):
 
     def get_proof_term(self, args, prevs=None):
         """
-        The strategy is to prove ¬(x_1 > b_1 ⟶ ... ⟶ x_n < b_n ⟶ ∃δ. x_1 ≥ b_1 + δ ∧ ... ∧ x_n ≤ b_n - δ) ⊢ false.
-
+        The strategy is to prove ¬(x_1 > b_1 ⟶ ... ⟶ x_n < b_n ⟶ ∃δ. δ > 0 ∧ x_1 ≥ b_1 + δ ∧ ... ∧ x_n ≤ b_n - δ) ⊢ false.
+    
         Use the above hypothesis, we can derive 
-                            ⊢ x_1 > b_1, ..., ⊢ x_n < b_n                                                     (1) 
+        (1)                    ⊢ ∀δ. ¬(δ > 0 ∧ x_1 ≥ b_1 + δ ∧ ... ∧ x_n ≤ b_n - δ)
         and
-                            ⊢ ∀δ. ¬(x_1 ≥ b_1 + δ ∧ ... ∧ x_n ≤ b_n - δ)                                   (2)
-        Initialize δ with zero in (2), we can get 
-                            ⊢ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n)                                               (3)
-        It is known that
-                            ⊢ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ⟷ ¬(x_1 >= b_1) ∨ ... ∨ ¬(x_n >= b_n)  (4)
-        and
-                            ⊢ (x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ∨ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n)        (5)
-        use (4) and (5), we can get
-                            ⊢ (x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ∨ ¬(x_1 >= b_1) ∨ ... ∨ ¬(x_n >= b_n)    (6)
-        At the meantime, we know that
-                            ⊢ x_1 ≥ b_1 ∨ ~(x_1 > b_1), ... , ⊢ x_n ≤ b_1 ∨ ~(x_1 < b_1)                 (7) 
-        is true, we can do resolution between (7) and (1), get
-                            ⊢ x_1 ≥ b_1, ..., ⊢ x_n ≤ b_n,                                                    (8) 
-        then do resolution between (6) and (8), get
-                            ⊢ x_1 ≥ b_1 ∧ ... ∧ x_n ≤ b_n                                                     (9)
-        we can get a contradiction from (3) and (9).                                                        ■
-        args is the list of strict inequalities.
+        (2)                    ⊢ x_1 > b_1, ..., x_n < b_n
+        then instantiate δ with x_i - b_i(if x_i > b_i), or b_i - x_i(if b_i > x_i), we can get
+        (3)                    ⊢ ¬(x_i - b_i > 0 ∧ x_1 ≥ x_1 ∧ ... ∧ x_n ≤ b_n - x_i + b_i)...
+        we know that x_i - b_i > 0(w.r.t b_i - x_i > 0) and x_i ≥ x_i(x_i ≤ x_i) are always true, so we can elimate them,
+        then each proposition is a disjunction and contains n - 1 ICs, we can observe a property for the n proof terms,
+        we have n ICs, there are n * (n-1)/2 pairs for the combination of them, we have n * (n-1) ICs, if an IC is a < b, there
+        is always existing an IC of b < a form, we know that ⊢ a < b ⟶ b < a ⟶ false, this is just like resolution, after resolution,
+        we can derive false.
         """
-        # first check whether there are inequalities are invalid(not strict)
+        # first get the proof terms of x_1 - b_1 > 0
         
         # construct term x_1 > b_1 ⟶ ... ⟶ x_n < b_n ⟶ ∃δ. x_1 >= b_1 + δ ∧ ... ∧ x_n <= b_n - δ
         delta = Var("δ", RealType)
         non_strict_tms = [greater_eq(t.arg1, t.arg + delta) if t.is_greater() else
                         less_eq(t.arg1, t.arg - delta) for t in args]
-        exists_tm = Exists(delta, And(*non_strict_tms))
+        exists_tm = Exists(delta, And(delta > Real(0), *non_strict_tms))
         implies_tm = functools.reduce(lambda x, y: Implies(y, x), reversed(args), exists_tm)
         # proof
         pt0 = ProofTerm.assume(Not(implies_tm))
@@ -978,29 +967,58 @@ class non_strict_simplex_macro(Macro):
             pt_strict = logic.apply_theorem("veriT_not_implies1", aux_pt)
             aux_pt = logic.apply_theorem("veriT_not_implies2", aux_pt)
             strict_ineq_pts.append(pt_strict)
-        # get ⊢ ∀δ. ¬(x_1 ≥ b_1 + δ ∧ ... ∧ x_n ≤ b_n - δ)
-        pt1 = aux_pt.on_prop(rewr_conv("not_exists"))
-        # get ⊢ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n)
-        pt2 = pt1.forall_elim(Real(0)).on_prop(top_conv(rewr_conv('real_add_rid')), top_conv(rewr_conv('real_sub_rzero')))
-        # get ⊢ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ⟷ ¬(x_1 >= b_1) ∨ ... ∨ ¬(x_n >= b_n)
-        pt3 = refl(pt2.prop).on_rhs(top_conv("de_morgan_thm1"))
-        # get ⊢ (x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ∨ ¬(x_1 >= b_1 ∧ ... ∧ x_n <= b_n)
-        pt4 = logic.apply_theorem('classical', inst=matcher.Inst(A=pt3.lhs.arg))
-        # get ⊢ (x_1 >= b_1 ∧ ... ∧ x_n <= b_n) ∨ ¬(x_1 >= b_1) ∨ ... ∨ ¬(x_n >= b_n)
-        pt5 = pt4.on_prop(top_conv(replace_conv(pt3)))
-        # get ⊢ x_1 ≥ b_1 ∨ ~(x_1 > b_1), ... , ⊢ x_n ≤ b_1 ∨ ~(x_1 < b_1) 
-        tauto_pts = []
-        for arg in args:
-            if arg.is_greater():
-                tauto_pts.append(logic.apply_theorem('real_leq_or_not_less', inst=matcher.Inst(x=arg.arg1, b=arg.arg)))
-            elif arg.is_less():
-                tauto_pts.append(logic.apply_theorem('real_geq_or_not_gt', inst=matcher.Inst(x=arg.arg1, b=arg.arg)))
+        # get ⊢ x_1 - b_1 > 0, ..., ⊢ b_n - x_n > 0
+        # delta_inst_dict = {pt.prop.arg1: pt.on_prop(rewr_conv('real_gt_sub')) if pt.prop.is_greater()
+        #         else pt.on_prop(rewr_conv('real_ge_to_le', sym=True), rewr_conv('real_gt_sub')) for pt in strict_ineq_pts}
+        delta_inst_dict = {}
+        for pt in strict_ineq_pts:
+            if pt.prop.is_greater():
+                pt_comp = pt.on_prop(rewr_conv('real_gt_sub'))
             else:
-                raise NotImplementedError
-        # do resolution between strict_ineq_pts and tauto_pts
-        non_strict_ineq_pts = [logic.resolution(x, y) for x, y in zip(strict_ineq_pts, tauto_pts)]
-        # do resolution between pt5 and non_strict_ineq_pts, get ⊢ x_1 ≥ b_1 ∧ ... ∧ x_n ≤ b_n
-        pt6 = functools.reduce(lambda x, y: logic.resolution(x, y), non_strict_ineq_pts, pt5)
-        # get a contradiction from pt2 and pt6
-        pt7 = logic.resolution(pt2, pt6)
-        return logic.apply_theorem("negI", pt7.implies_intr(pt7.hyps[0])).on_prop(rewr_conv("double_neg"))
+                pt_comp = pt.on_prop(rewr_conv('real_ge_to_le', sym=True), rewr_conv('real_gt_sub'))
+            delta_inst_dict.update({pt_comp.prop.arg1: pt_comp})
+        # get ⊢ ∀δ. ¬(δ > 0 ∧ x_1 ≥ b_1 + δ ∧ ... ∧ x_n ≤ b_n - δ)
+        pt1 = aux_pt.on_prop(rewr_conv("not_exists"))
+        # instantiate δ with x_i - b_i(b_i - x_i) and elinmate x_i - b_i > 0(w.r.t b_i - x_i > 0) and x_i ≥ x_i(x_i ≤ x_i) 
+        pt_leq_than_self = logic.apply_theorem("real_le_refl", inst=matcher.Inst(x=Real(0)))
+        pt_geq_than_self = pt_leq_than_self.on_prop(rewr_conv("real_geq_to_leq", sym=True))
+        inst_pts = [pt1.forall_elim(value).on_prop(top_conv(replace_conv(pt.on_prop(rewr_conv("eq_true")))), 
+                            top_conv(real_norm_comparison()), 
+                            top_conv(replace_conv(pt_leq_than_self.on_prop(rewr_conv("eq_true")))),
+                            top_conv(replace_conv(pt_geq_than_self.on_prop(rewr_conv("eq_true")))),
+                            top_conv(proplogic.norm_full()),
+                            top_conv(rewr_conv("real_not_leq")),
+                            top_conv(rewr_conv("real_not_geq")),
+                            top_conv(rewr_conv("real_gt_neg_lt")),) for value, pt in delta_inst_dict.items()]
+
+        if len(inst_pts) == 1:
+            pt = inst_pts[0]
+            return logic.apply_theorem("negI", pt.implies_intr(pt.hyps[0])).on_prop(rewr_conv("double_neg"))
+        # d is mapping from left hand side to the proof term it belongs to, every key have 2 proof terms, one is its
+        # positive form and the other is its negative form
+        d_pos, d_neg = {}, {}
+        for pt in inst_pts:
+            disjs = pt.prop.strip_disj()
+            for disj in disjs:
+                if disj.is_not():
+                    d_neg[disj.arg] = pt
+                else:
+                    d_pos[disj] = pt
+        assert len(d_pos) == len(d_neg) # not strong enough
+        # do resolution
+        for key in list(d_pos.keys()):
+            pt = logic.resolution(d_pos[key], d_neg[key])
+            if pt.prop == false:
+                break
+            if pt.prop.is_disj():
+                disjs = pt.prop.strip_disj()
+            else:
+                disjs = [pt.prop]
+
+            for disj in disjs:
+                if disj.is_not():
+                    d_neg[disj.arg] = pt
+                else:
+                    d_pos[disj] = pt
+
+        return logic.apply_theorem("negI", pt.implies_intr(pt.hyps[0])).on_prop(rewr_conv("double_neg"))
