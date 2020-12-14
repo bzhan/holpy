@@ -7834,6 +7834,81 @@
                 "x": "'a",
                 "y": "'a"
             }
+        },
+        {
+            "name": "conj_extend_exists",
+            "prop": "P ⟶ (∃t. Q t ∧ R t) ⟶ (∃t. Q t ∧ P ∧ R t)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "'a ⇒ bool",
+                "R": "'a ⇒ bool",
+                "t": "'a"
+            }
+        },
+        {
+            "name": "exists_forall",
+            "prop": "(∃a. P a) ⟷ ¬(∀a. ¬(P a))",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "a": "'a"
+            }
+        },
+        {
+            "name": "veriT_not_implies1",
+            "prop": "¬(P ⟶ Q) ⟶ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "veriT_not_implies2",
+            "prop": "¬(P ⟶ Q) ⟶ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "conj_extend_exists1",
+            "prop": "R ⟶ (∃t. Q t ⟶ P t) ⟶ (∃t. Q t ⟶ R ∧ P t)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "'a ⇒ bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "implies_or_assm",
+            "prop": "(A ⟶ B) ∨ A",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
+            "name": "implies_or_neg_concl",
+            "prop": "(A ⟶ B) ∨ ¬B",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
+            "name": "forall_exists",
+            "prop": "(∀t. P t) ⟷ ¬(∃t1. ¬(P t1))",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "t": "'a"
+            }
         }
     ],
     "description": "Basic results in logic",

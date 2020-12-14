@@ -31191,7 +31191,7 @@
         },
         {
             "name": "real_sub_both_sides_le",
-            "prop": "x < y ⟷ x - c = y - c",
+            "prop": "x < y ⟷ x - c < y - c",
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -31225,6 +31225,216 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_gt_to_geq",
+            "prop": "x > l ⟶ (∃D. D > 0 ⟶ x ≥ l + D)",
+            "ty": "thm",
+            "vars": {
+                "D": "real",
+                "l": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_dec_upper_bound1",
+            "prop": "x ≤ u - l ⟶ x ≤ v - l ⟶ u ≤ v ⟶ x ≤ u - l",
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "u": "real",
+                "v": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_dec_upper_bound2",
+            "prop": "x ≤ u - l ⟶ x ≤ v ⟶ u ≤ v ⟶ x ≤ u - l",
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "u": "real",
+                "v": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_dec_upper_bound3",
+            "prop": "x ≤ u ⟶ x ≤ v - l ⟶ u ≤ v ⟶ x ≤ u",
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "u": "real",
+                "v": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_comp_contr3",
+            "prop": "l > 0 ⟶ x ≤ u - l ⟶ x ≥ v ⟶ u < v ⟶ false",
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "u": "real",
+                "v": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_comp_contr4",
+            "prop": "l > 0 ⟶ x ≤ u ⟶ x ≥ v + l ⟶ u < v ⟶ false",
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "u": "real",
+                "v": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_comp_contr5",
+            "prop": "l > 0 ⟶ x ≤ u - l ⟶ x ≥ v + l ⟶ u < v ⟶ false",
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "u": "real",
+                "v": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_inc_lower_bound1",
+            "prop": "x ≥ u + l ⟶ x ≥ v + l ⟶ u ≥ v ⟶ x ≥ u + l",
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "u": "real",
+                "v": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_inc_lower_bound2",
+            "prop": "x ≥ u + l ⟶ x ≥ v ⟶ u ≥ v ⟶ x ≥ u + l",
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "u": "real",
+                "v": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_inc_lower_bound3",
+            "prop": "x ≥ u ⟶ x ≥ v + l ⟶ u ≥ v ⟶ x ≥ u",
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "u": "real",
+                "v": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_less_to_leq",
+            "prop": "x < u ⟶ (∃l. x ≤ u - l)",
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "u": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_greater_to_geq",
+            "prop": "x > l ⟶ (∃u. x ≥ l + u)",
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "u": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_leq_conj_exists",
+            "prop": "x ≤ u ⟶ (∃t. Q t) ⟶ (∃t1. x ≤ u ∧ Q t1)",
+            "ty": "thm",
+            "vars": {
+                "Q": "real ⇒ bool",
+                "u": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_geq_refl",
+            "prop": "x ≥ x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_leq_or_not_less",
+            "prop": "x ≥ b ∨ ¬(x > b)",
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_geq_or_not_gt",
+            "prop": "x ≤ b ∨ ¬(x < b)",
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_simplex_delta",
+            "prop": "delta > 0 ⟶ x ≤ 0 ⟶ delta > x",
+            "ty": "thm",
+            "vars": {
+                "delta": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_geq_sym",
+            "prop": "x ≥ y ∨ y ≥ x",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_leq_sym",
+            "prop": "x ≤ y ∨ y ≤ x",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_gt_neg_lt",
+            "prop": "x > y ⟷ ¬(x < y)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_not_geq",
+            "prop": "¬(x ≥ y) ⟷ x < y",
+            "ty": "thm",
+            "vars": {
                 "x": "real",
                 "y": "real"
             }
