@@ -272,7 +272,7 @@ class norm_mult_polynomials(Conv):
         if t.arg1.is_zero():
             return pt.on_rhs(rewr_conv('int_mul_0_l'))
         elif t.arg.is_zero():
-            return pt.on_rhs(rewr_conv('int_mul_0_l'))
+            return pt.on_rhs(rewr_conv('int_mul_0_r'))
         elif t.arg.is_plus():  # a * (b + c)
             return pt.on_rhs(
                 rewr_conv('int_mul_add_distr_l'), # a * b + a * c

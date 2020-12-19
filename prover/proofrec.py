@@ -22,7 +22,7 @@ from logic.logic import apply_theorem, imp_disj_iff, disj_norm, imp_conj_macro, 
 from logic.tactic import rewrite_goal_with_prev
 from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv, ConvException, Conv, arg1_conv, binop_conv
 from logic import auto
-from prover import sat, tseitin, simplex
+from prover import sat, tseitin, simplex, simplex_strict
 from syntax.settings import settings
 from syntax import parser
 from prover import omega
@@ -33,6 +33,10 @@ import operator
 import json
 import time
 import sys
+import multiprocessing
+# from z3 import Context, Solver, parse_smt2_file, set_param
+import z3
+z3.set_param(proof=True)
 sys.setrecursionlimit(10000000)
 
 basic.load_theory('smt')
@@ -177,7 +181,7 @@ def translate(term, bounds=deque(), subterms=[]):
                 return ProofTerm.reflexive(Lambda(*var, lhs))
             elif body.decl().name() in method:
                 subst_var = [z3.Const(term.var_name(term.num_vars()-1-i), term.var_sort(term.num_vars()-1-i)) for i in range(term.num_vars())]
-                prf = proofrec(z3.substitute_vars(body, *subst_var), bounds=bounds)
+                prf = proofrec(z3.substitute_vars(body, *subst_var), bounds=bounds, assertions=[])
                 bounds.clear()
                 for v in reversed(var):
                     prf = prf.abstraction(v)
@@ -643,7 +647,7 @@ def rewrite_int(tm, has_bool=False):
             return integer.int_eq_comparison_macro().get_proof_term(tm)
         except:
             return compare_lhs_rhs(tm, [top_conv(integer.int_gcd_compares()), integer.omega_form_conv()])
-    elif match_pattern('((a::int) = b) <--> ((c::int) = d)', tm):
+    elif match_pattern('(a::int) = (b::int) <--> (c::int) = (d::int)', tm):
         return compare_lhs_rhs(tm, [integer.int_norm_eq()])
     elif tm.lhs.get_type() == IntType and tm.rhs.get_type() == IntType:
         pt1 = refl(tm.lhs).on_rhs(integer.simp_full())
@@ -652,7 +656,9 @@ def rewrite_int(tm, has_bool=False):
         if res.rule != 'sorry':
             return res
     elif tm.lhs.is_not() and tm.rhs.is_not() and tm.lhs.arg.is_equals() and tm.rhs.arg.is_equals():
-        return refl(neg).combination(compare_lhs_rhs(Eq(tm.lhs.arg, tm.rhs.arg), [integer.int_norm_eq()]))
+        pt_internal = compare_lhs_rhs(Eq(tm.lhs.arg, tm.rhs.arg), [integer.int_norm_eq()])
+        if pt_internal.rule != 'sorry':
+            return refl(neg).combination(compare_lhs_rhs(Eq(tm.lhs.arg, tm.rhs.arg), [integer.int_norm_eq()]))        
     elif tm.lhs.is_equals() and tm.rhs.is_conj() and tm.rhs.arg1.is_less_eq() and tm.rhs.arg.is_greater_eq():
         pt = refl(tm.lhs).on_rhs(rewr_conv('int_eq_leq_geq'))
         if pt.rhs == tm.rhs:
@@ -675,12 +681,14 @@ def rewrite_int(tm, has_bool=False):
         if pt1.rule != 'sorry':
             return pt1
         return compare_lhs_rhs(tm, [top_conv(integer.int_gcd_compares()), integer.int_norm_neg_compares(), integer.omega_form_conv()])
-    elif match_pattern('a | (b::int) = c <--> a | ~(~((b::int) <= c) | ~(b >=c))', tm):
+    elif match_pattern('(a::bool) | (b::int) = c <--> (a::bool) | ~(~((b::int) <= c) | ~((b::int) >=c))', tm):
         pt_lhs = refl(tm.lhs).on_rhs(arg_conv(rewr_conv('int_eq_leq_geq')), arg_conv(proplogic.norm_full()))
         pt_rhs_sym = refl(tm.rhs).on_rhs(arg_conv(proplogic.norm_full())).symmetric()        
         return try_tran_pt(pt_lhs, pt_rhs_sym)
-    elif match_pattern('(a :: int) = b <--> false', tm):
+    elif match_pattern('((a :: int) = (b :: int)) <--> false', tm):
         return refl(tm.lhs).on_rhs(integer.int_norm_eq(), integer.int_neq_false_conv())
+    elif match_pattern("(a :: int) * 0 = 0", tm):
+        return refl(tm.lhs).on_rhs(rewr_conv('int_mul_0_r'))
     
     return rewrite_int_second_level(tm)
 
@@ -703,6 +711,7 @@ def rewrite_int_second_level(tm):
         (try_conv(bottom_conv(integer.omega_form_conv())),
         try_conv(bottom_conv(integer.int_norm_neg_compares())), try_conv(bottom_conv(integer.omega_form_conv())),
         try_conv(bottom_conv(integer.int_norm_eq())),
+        top_conv(rewr_conv('eq_mean_true')),
         try_conv(proplogic.norm_full()),
         top_conv(rewr_conv('neg_iff_both_sides')), 
         try_conv(proplogic.norm_full()))
@@ -741,23 +750,23 @@ def rewrite_by_assertion(tm):
     global atoms
     pt = refl(tm)
     # boolvars = [v for v in tm.get_vars()] + [v for v in tm.get_consts()]
-    return pt.on_rhs(*[top_conv(replace_conv(v)) for _, v in atoms.items()])
+    return pt.on_rhs(*[top_conv(replace_conv(v)) for _, v in atoms.items()]).on_rhs(*[top_conv(replace_conv(v)) for _, v in atoms.items()])
 
 def rewrite_real(tm, has_bool=False):
-    if match_pattern("(x::real) = y <--> x <= y & x >= y", tm):
+    if match_pattern("(x::real) = y <--> (x::real) <= y & x >= y", tm):
         return refl(tm.lhs).on_rhs(rewr_conv('real_ge_le_same_num'))
     elif match_pattern("((x::real) = y) <--> false", tm) or match_pattern("((x::real) = y) <--> true", tm):
-        return real_const_eq_conv().get_proof_term(tm.lhs)
+        t = real_const_eq_conv().get_proof_term(tm.lhs)
+        return t
     elif match_pattern("(if P then (t :: 'a) else t) = t", tm):
         return refl(tm.lhs).on_rhs(rewr_conv('cond_id'))
-    elif match_pattern("(if P then (x::'a) else if Q then x else y) = (if P ∨ Q then (x::'a) else y)", tm):
+    elif match_pattern("(if P then (x::'a) else if (Q::bool) then (x::'a) else (y::'a)) = (if P ∨ Q then (x::'a) else y)", tm):
         return refl(tm.lhs).on_rhs(rewr_conv('ite_elim_else_if'))
     return rewrite_real_second_level(tm)
 
 def rewrite_real_second_level(tm):
     global atoms
     cvs = [value for _, value in atoms.items()]
-    
     armony = [
         # (auto.auto_conv(), top_conv(rewr_conv('ite_to_disj')), bottom_conv(norm_neg_real_ineq_conv()), bottom_conv(real_norm_comparison()), proplogic.norm_full()),
         (bottom_conv(rewr_conv("if_true")), bottom_conv(rewr_conv("if_false"))),
@@ -825,19 +834,7 @@ def _rewrite(tm):
     if tm.lhs == tm.rhs:
         return refl(tm.lhs)
     Ts = analyze_type(tm)
-    if IntType not in Ts and RealType not in Ts: # only have bool type variables
-        pt1 = rewrite_bool(tm)
-        if pt1.rule != 'sorry':
-            return pt1
-        pt_asst_lhs = rewrite_by_assertion(tm.lhs)
-        pt_asst_rhs = rewrite_by_assertion(tm.rhs)
-        tm_asst = Eq(pt_asst_lhs.rhs, pt_asst_rhs.rhs)
-        pt2 = rewrite_bool(tm_asst)
-        if pt2.rule != 'sorry':
-            return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
-        else:
-            return schematic_rules_rewr(th_name[:60], tm.lhs, tm.rhs)
-    elif IntType in Ts:
+    if IntType in Ts:
         pt1 = rewrite_int(tm, True) if BoolType in Ts else rewrite_int(tm, False)
         if pt1.rule != 'sorry':
             return pt1
@@ -849,7 +846,7 @@ def _rewrite(tm):
             return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
         else:
             return schematic_rules_rewr(th_name, tm.lhs, tm.rhs)
-    elif RealType in Ts:
+    elif RealType in list(Ts):
         pt1 = rewrite_real(tm, has_bool=True) if BoolType in Ts else rewrite_real(tm, False)
         if pt1.rule != 'sorry':
             return pt1
@@ -861,10 +858,24 @@ def _rewrite(tm):
             return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
         else:
             return ProofTerm.sorry(Thm([], tm))
+    elif IntType not in Ts and RealType not in Ts: # only have bool type variables
+        pt1 = rewrite_bool(tm)
+        if pt1.rule != 'sorry':
+            return pt1
+        pt_asst_lhs = rewrite_by_assertion(tm.lhs)
+        pt_asst_rhs = rewrite_by_assertion(tm.rhs)
+        tm_asst = Eq(pt_asst_lhs.rhs, pt_asst_rhs.rhs)
+        pt2 = rewrite_bool(tm_asst)
+        if pt2.rule != 'sorry':
+            return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
+        else:
+            return schematic_rules_rewr(th_name[:60], tm.lhs, tm.rhs)
+
     else:
         return ProofTerm.sorry(Thm([], tm))
 
-def rewrite(t, z3terms, assertions=[]):
+# def rewrite(t, z3terms, assertions=[]):
+def rewrite(t):
     """
     Multiple strategies for rewrite rule:
     a) if we want to rewrite distinct[a,...,z] to false, we can check whether there are
@@ -1412,7 +1423,11 @@ def real_th_lemma(args):
         # pt_norm_prop = pt1.on_prop(bottom_conv(rewr_conv('real_mul_lid', sym=True)), bottom_conv(real_eval_conv()))
         conjs = pt1.prop.strip_conj()
         try:
-            pt2 = simplex.solve_hol_ineqs(conjs) # 1 * x_4 <= 0, 1 * x_4 >= 60 |- false
+            if any(conj.is_greater() or conj.is_less() for conj in conjs):
+                pt2 = simplex_strict.SimplexMacro().get_proof_term(args=conjs)
+            else:
+                pt2 = simplex.solve_hol_ineqs(conjs) # 1 * x_4 <= 0, 1 * x_4 >= 60 |- false
+
         except:
             return ProofTerm.sorry(Thm([], args[-1]))
         for h in reversed(conjs): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
@@ -1450,7 +1465,10 @@ def real_th_lemma(args):
         # |- x_4 ≥ 60 --> x_2 ≤ 1 --> x_2 + -1 * x_4 ≥ 0 --> false
         ineqs = [pt.prop for pt in args[:-1]]
         try:
-            pt1 = simplex.solve_hol_ineqs(ineqs)
+            if any(ineq.is_greater() or ineq.is_less() for ineq in ineqs):
+               pt1 = simplex_strict.SimplexMacro().get_proof_term(args=ineqs)
+            else:     
+                pt1 = simplex.solve_hol_ineqs(ineqs)
         except:
             return ProofTerm.sorry(Thm([h for a in args[:-1] for h in a.hyps], args[-1]))
         for h in reversed(ineqs): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
@@ -1729,7 +1747,8 @@ def convert_method(term, *args, subterms=None, assertions=[]):
         return mp(arg1, arg2)
     elif name in ('rewrite', 'commutativity'):
         arg1, = args
-        return rewrite(arg1, subterms, assertions=assertions)
+        # return rewrite(arg1, subterms=subterms, assertions=assertions)
+        return rewrite(arg1)
     elif name == 'unit-resolution':
         return unit_resolution(args[0], args[1:-1], args[-1], subterms)
     elif name == 'nnf-pos':
@@ -1875,19 +1894,18 @@ def handle_assertion(ast):
             flag = False
             pt_ast = pt_ast.on_prop(
                 *[top_conv(replace_conv(cv)) for cv in new_conv],
-                proplogic.norm_full(),
                 bottom_conv(rewr_conv('not_true')),
                 bottom_conv(rewr_conv('not_false')),
                 bottom_conv(rewr_conv('if_true')),
                 bottom_conv(rewr_conv('if_false')), 
-                bottom_conv(proplogic.norm_full()))
+                proplogic.norm_full(),)
+                # bottom_conv(proplogic.norm_full()))
         else:
             break
-
     # normalize atoms key, for example, a pair in atoms maybe "x_9 ≤ x_3: x_9 ≤ x_3 ⟷ false",
     # we need to add a new pair: "x_3 + -1 * x_9 < 0: x_3 + -1 * x_9 < 0 ⟷ false"
     for key in list(atoms.keys()):
-        if key.is_equals() or key.is_compares() and key.arg1.get_type() == RealType:
+        if (key.is_equals() or key.is_compares()) and key.arg1.get_type() == RealType:
             norm_key = refl(key).on_rhs(
                 bottom_conv(real_norm_comparison())
             )
@@ -1896,7 +1914,7 @@ def handle_assertion(ast):
             if ori.rhs == false:
                 pt_true = ori.on_prop(
                     rewr_conv('eq_false', sym=True),
-                    norm_neg_real_ineq_conv(),
+                    try_conv(norm_neg_real_ineq_conv()),
                     real_norm_comparison(),
                     rewr_conv('eq_true')
                 )
@@ -1916,9 +1934,8 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     assert_atom.clear()
     atoms.clear()
     gaps = set()
-    handle_assertion(assertions)
-    for key, value in atoms.items():
-        print(key, value.prop)
+    if assertions:
+        handle_assertion(assertions)
     with open('int_prf.txt', 'a', encoding='utf-8') as f:
         f.seek(0)
         f.truncate()

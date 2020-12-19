@@ -250,7 +250,7 @@ def solve_and_proof(t, debug=False):
     """Solve the given goal using Z3 and get proof."""
     s = solve_core(z3.Solver(ctx=z3.Context()) ,t, debug)
     assert str(s.check()) == 'unsat'
-    return s.proof()
+    return s.proof(), s.assertions()
 
 @register_macro('z3')
 class Z3Macro(Macro):

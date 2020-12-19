@@ -1,5 +1,5 @@
 from kernel.term import Term, BoolType, Not, Var, true, false, And
-from logic.conv import Conv, rewr_conv, arg1_conv, arg_conv, binop_conv, try_conv
+from logic.conv import Conv, rewr_conv, arg1_conv, arg_conv, binop_conv, try_conv, top_conv, bottom_conv, top_sweep_conv
 from kernel.proofterm import refl, ProofTerm
 from logic.logic import apply_theorem
 from logic import matcher
@@ -168,14 +168,48 @@ class norm_disj_disjunction(Conv):
         else:
             return pt.on_rhs(norm_disj_atom())
 
+# class norm_full(Conv):
+#     """Normalize the full propostional formula."""
+#     def get_proof_term(self, t):
+#         pt = refl(t)
+#         if t.is_conj():
+#             # return pt.on_rhs(binop_conv(top_conv(top_sweep_conv(sort_disj()))), sort_conj())
+#             # return pt.on_rhs(binop_conv(self), norm_conj_conjunction())
+#             return pt.on_rhs(sort_conj())
+#         elif t.is_disj():
+#             # return pt.on_rhs(binop_conv(top_sweep_conv(sort_conj())), binop_conv(top_sweep_conv(sort_disj())), sort_disj())
+#             # return pt.on_rhs(binop_conv(self), norm_disj_disjunction())
+#             return pt.on_rhs(sort_disj())
+#         elif t.is_equals():
+#             lhs, rhs = t.lhs, t.rhs
+#             if lhs == rhs:
+#                 return pt.on_rhs(rewr_conv('eq_mean_true'))
+#             elif lhs == true: # (true ⟷ P) ⟷ P
+#                 return pt.on_rhs(rewr_conv('eq_sym_eq'), rewr_conv('eq_true', sym=True))
+#             elif rhs == true: # (P ⟷ true) ⟷ P
+#                 return pt.on_rhs(rewr_conv('eq_true', sym=True))
+#             elif lhs == false: # (false ⟷ P) ⟷ ¬P
+#                 return pt.on_rhs(rewr_conv('eq_sym_eq'), rewr_conv('eq_false', sym=True))
+#             elif rhs == false: # (P ⟷ false) ⟷ ¬P
+#                 return pt.on_rhs(rewr_conv('eq_false', sym=True))
+#             else:
+#                 return pt.on_rhs(binop_conv(self))
+#         elif t.is_not() and (t.arg.is_conj() or t.arg.is_disj() or t.arg.is_not() or t.arg == true or t.arg == false):
+#             return pt.on_rhs(nnf_conv(), self)
+#         elif t.is_not() and t.arg.is_equals():
+#             return pt.on_rhs(nnf_conv())
+#         else:
+#             return pt
+
+
 class norm_full(Conv):
     """Normalize the full propostional formula."""
     def get_proof_term(self, t):
         pt = refl(t)
         if t.is_conj():
-            return pt.on_rhs(binop_conv(self), sort_conj())
+            return pt.on_rhs(binop_conv(self), norm_conj_conjunction())
         elif t.is_disj():
-            return pt.on_rhs(binop_conv(self), sort_disj())
+            return pt.on_rhs(binop_conv(self), norm_disj_disjunction())
         elif t.is_equals():
             lhs, rhs = t.lhs, t.rhs
             if lhs == rhs:
@@ -238,7 +272,10 @@ class sort_conj(Conv):
                     else:
                         d_pos[conj2] = pt_conj2
             else:
-                d[pt.prop] = pt
+                if pt.prop.is_not():
+                    d_neg[pt.prop] = pt
+                else:
+                    d_pos[pt.prop] = pt
 
         # first check if there are opposite terms in conjunctions, if there exists, return a false proof term
         for key in d_pos:
@@ -268,8 +305,11 @@ class sort_conj(Conv):
         else:
             d_keys_without_true = term_ord.sorted_terms([k for k in d if k != true])
             sorted_keys = [true] + d_keys_without_true
-        pt_right = right_assoc(sorted_keys)
-        # order implies chaos
+        sorted_keys_num = len(sorted_keys)
+        pt_right = functools.reduce(lambda x, y: apply_theorem('conjI', d[sorted_keys[sorted_keys_num - y - 2]], x), \
+                        range(sorted_keys_num - 1), d[sorted_keys[-1]])
+        # pt_right = right_assoc(sorted_keys)
+        # order implies original
         dd = dict()
         norm_conj = And(*sorted_keys)
         norm_conj_pt = ProofTerm.assume(norm_conj)
@@ -290,9 +330,9 @@ class sort_conj(Conv):
 
         pt_final = ProofTerm.equal_intr(pt_right.implies_intr(t), pt_left.implies_intr(norm_conj))
         if true in d:
-            return pt_final.on_rhs(rewr_conv("conj_true_left"))
+            return pt_final.on_rhs(rewr_conv("conj_true_left"), top_sweep_conv(sort_disj()))
         else:
-            return pt_final
+            return pt_final.on_rhs(top_sweep_conv(sort_disj()))
 
 class sort_disj(Conv):
     """Given a conjunction, return its normal form"""
@@ -304,3 +344,5 @@ class sort_disj(Conv):
         norm_neg_disj_pt = sort_conj().get_proof_term(nnf_pt.rhs)
         nnf_pt_norm = nnf_pt.transitive(norm_neg_disj_pt)
         return nnf_pt_norm.on_prop(rewr_conv('neg_iff_both_sides'), arg1_conv(rewr_conv('double_neg')), arg_conv(nnf_conv()))
+
+            

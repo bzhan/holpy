@@ -1372,3 +1372,12 @@ def IntVars(s):
     """
     nms = s.split(' ')
     return [Var(nm, IntType) for nm in nms]
+
+def RealVars(s):
+    """Create a list of variables of int type.
+
+    s is a string containing space-separated names of variables.
+
+    """
+    nms = s.split(' ')
+    return [Var(nm, RealType) for nm in nms]

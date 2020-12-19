@@ -755,30 +755,6 @@ def dest_plus(tm):
     else:
         return dest_plus(tm.arg1) + (tm.arg,)
 
-@register_macro('real_compare')
-class RealCompareMacro(Macro):
-    """
-    Compare two real numbers.
-    """
-    def __init__(self):
-        self.level = 0
-        self.sig = Term
-        self.limit = None
-
-    def eval(self, goal, prevs=[]):
-        assert goal.is_compares(), "real_compare_macro: Should be an inequality term"
-        lhs, rhs = real.real_eval(goal.arg1), real.real_eval(goal.arg)
-        if goal.is_less():
-            assert lhs < rhs, "%f !< %f" % (lhs, rhs)
-        elif goal.is_less_eq():
-            assert lhs <= rhs, "%f !<= %f" % (lhs, rhs)
-        elif goal.is_greater():
-            assert lhs > rhs, "%f !> %f" % (lhs, rhs)
-        elif goal.is_greater_eq():
-            assert lhs >= rhs, "%f !>= %f" % (lhs, rhs)
-        
-        return Thm([], goal)
-
 @register_macro('simplex_delta_macro')
 class SimplexPosDelataMacro(Macro):
     """
@@ -1007,7 +983,7 @@ class SimplexHOLWrapper:
             upper_bound = self.eval_bound(upper_assertion.prop.arg)
             if upper_bound < new_lower_bound: # incosistency
                 lower_x, lower_y, upper_x, upper_y = new_lower_bound.x, new_lower_bound.y, upper_bound.x, upper_bound.y
-                pt_up_less_low = ProofTerm('real_compare', less(RealType)(upper_x, lower_x))
+                pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_x), Real(lower_x)))
                 pt_l_bound = ProofTerm.assume(greater(RealType)(delta, Real(0)))
                 if lower_y == 0 and upper_y == 0:
                     self.unsat[x] = apply_theorem('real_comp_contr1', pt_up_less_low, self.lower_bound_pts[x], upper_assertion)

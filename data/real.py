@@ -918,6 +918,30 @@ class replace_conv(Conv):
         else:
             raise ConvException
 
+@register_macro('real_compare')
+class RealCompareMacro(Macro):
+    """
+    Compare two real numbers.
+    """
+    def __init__(self):
+        self.level = 0
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, goal, prevs=[]):
+        assert goal.is_compares(), "real_compare_macro: Should be an inequality term"
+        lhs, rhs = real_eval(goal.arg1), real_eval(goal.arg)
+        if goal.is_less():
+            assert lhs < rhs, "%f !< %f" % (lhs, rhs)
+        elif goal.is_less_eq():
+            assert lhs <= rhs, "%f !<= %f" % (lhs, rhs)
+        elif goal.is_greater():
+            assert lhs > rhs, "%f !> %f" % (lhs, rhs)
+        elif goal.is_greater_eq():
+            assert lhs >= rhs, "%f !>= %f" % (lhs, rhs)
+        
+        return Thm([], goal)
+
 @register_macro('non_strict_simplex')
 class relax_strict_simplex_macro(Macro):
     """
