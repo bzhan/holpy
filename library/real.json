@@ -31274,7 +31274,7 @@
         },
         {
             "name": "real_comp_contr3",
-            "prop": "l > 0 ⟶ x ≤ u - l ⟶ x ≥ v ⟶ u < v ⟶ false",
+            "prop": "l > 0 ⟶ x ≤ u - l ⟶ x ≥ v ⟶ u - l < v ⟶ false",
             "ty": "thm",
             "vars": {
                 "l": "real",
@@ -31285,7 +31285,7 @@
         },
         {
             "name": "real_comp_contr4",
-            "prop": "l > 0 ⟶ x ≤ u ⟶ x ≥ v + l ⟶ u < v ⟶ false",
+            "prop": "l > 0 ⟶ x ≤ u ⟶ x ≥ v + l ⟶ u < v + l ⟶ false",
             "ty": "thm",
             "vars": {
                 "l": "real",
@@ -31395,15 +31395,6 @@
             }
         },
         {
-            "name": "real_simplex_delta",
-            "prop": "delta > 0 ⟶ x ≤ 0 ⟶ delta > x",
-            "ty": "thm",
-            "vars": {
-                "delta": "real",
-                "x": "real"
-            }
-        },
-        {
             "name": "real_geq_sym",
             "prop": "x ≥ y ∨ y ≥ x",
             "ty": "thm",
@@ -31433,6 +31424,44 @@
         {
             "name": "real_not_geq",
             "prop": "¬(x ≥ y) ⟷ x < y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_simplex_delta1",
+            "prop": "delta > 0 ⟶ x ≤ 0 ⟶ delta > x",
+            "ty": "thm",
+            "vars": {
+                "delta": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_simplex_delta2",
+            "prop": "x - y < z ⟷ y > x - z",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "real_simplex_delta3",
+            "prop": "c > 0 ⟶ c * x > y ⟷ x > 1 / c * y",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_not_gt",
+            "prop": "¬(x < y) ⟷ x ≥ y",
             "ty": "thm",
             "vars": {
                 "x": "real",

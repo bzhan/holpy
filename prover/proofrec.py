@@ -1422,14 +1422,11 @@ def real_th_lemma(args):
         # |- x_4 <= 0 --> x_4 >= 60 --> false
         # pt_norm_prop = pt1.on_prop(bottom_conv(rewr_conv('real_mul_lid', sym=True)), bottom_conv(real_eval_conv()))
         conjs = pt1.prop.strip_conj()
-        try:
-            if any(conj.is_greater() or conj.is_less() for conj in conjs):
-                pt2 = simplex_strict.SimplexMacro().get_proof_term(args=conjs)
-            else:
-                pt2 = simplex.solve_hol_ineqs(conjs) # 1 * x_4 <= 0, 1 * x_4 >= 60 |- false
+        if any(conj.is_greater() or conj.is_less() for conj in conjs):
+            pt2 = simplex_strict.SimplexMacro().get_proof_term(args=conjs)
+        else:
+            pt2 = simplex.solve_hol_ineqs(conjs) # 1 * x_4 <= 0, 1 * x_4 >= 60 |- false
 
-        except:
-            return ProofTerm.sorry(Thm([], args[-1]))
         for h in reversed(conjs): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
             pt2 = pt2.implies_intr(h)
         pt2 = pt2.on_prop(bottom_conv(rewr_conv('real_mul_lid'))) # |- x_4 <= 0 --> x_4 >= 60 --> false
@@ -1449,6 +1446,8 @@ def real_th_lemma(args):
         pt5 = refl(Not(args[0])).on_rhs(
             top_conv(rewr_conv('de_morgan_thm2')),
             top_conv(rewr_conv('double_neg')),
+            top_conv(rewr_conv('real_not_leq')),
+            top_conv(rewr_conv('real_not_geq')),
         ) # |- Not(Or(Not(x_4 <= 0), Not(x_4 >= 60))) <--> And(x_4 <= 0, x_4 >= 60)
         pt6 = pt4.on_prop(top_conv(replace_conv(pt5.symmetric()))) # |- Not(Or(Not(x_4 <= 0), Not(x_4 >= 60))) --> false
         pt7 = apply_theorem('negI', pt6).on_prop(rewr_conv('double_neg'))
@@ -1464,13 +1463,10 @@ def real_th_lemma(args):
         # First step, send these inequalies to simplex, get
         # |- x_4 ≥ 60 --> x_2 ≤ 1 --> x_2 + -1 * x_4 ≥ 0 --> false
         ineqs = [pt.prop for pt in args[:-1]]
-        try:
-            if any(ineq.is_greater() or ineq.is_less() for ineq in ineqs):
-               pt1 = simplex_strict.SimplexMacro().get_proof_term(args=ineqs)
-            else:     
-                pt1 = simplex.solve_hol_ineqs(ineqs)
-        except:
-            return ProofTerm.sorry(Thm([h for a in args[:-1] for h in a.hyps], args[-1]))
+        if any(ineq.is_greater() or ineq.is_less() for ineq in ineqs):
+            pt1 = simplex_strict.SimplexMacro().get_proof_term(args=ineqs)
+        else:     
+            pt1 = simplex.solve_hol_ineqs(ineqs)
         for h in reversed(ineqs): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
             pt1 = pt1.implies_intr(h)
         pt2 = pt1.on_prop(bottom_conv(rewr_conv('real_mul_lid')))
@@ -1660,10 +1656,10 @@ def th_lemma(args):
     tms = [p.prop if isinstance(p, ProofTerm) else p for p in args]
     Ts = set(sum([list(analyze_type(tm)) for tm in tms], []))
     try:
-        if IntType in Ts:
-            return int_th_lemma(args)
-        elif RealType in Ts:
+        if RealType in Ts:
             return real_th_lemma(args)
+        elif IntType in Ts:
+            return int_th_lemma(args)
     except:
         hyps = [h.prop for h in args[:-1]]
         return ProofTerm.sorry(Thm(hyps, args[-1]))
@@ -1946,6 +1942,8 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i], bounds=bounds, subterms=args)
         else:
+            if i == 56:
+                i
             method_name = term[i].decl().name()
             subterms = [term[j] for j in net[i]]
             t1 = time.perf_counter()

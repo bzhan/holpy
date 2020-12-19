@@ -821,14 +821,16 @@ class norm_neg_real_ineq_conv(Conv):
     def get_proof_term(self, tm):
         if not tm.is_not() or not is_real_ineq(tm.arg):
             raise ConvException("Invalid term: %s" % str(tm))
+        pt = refl(tm)
         if tm.arg.is_less():
-            return rewr_conv('real_not_lt').get_proof_term(tm)
+            return pt.on_rhs(rewr_conv("real_not_lt"))
         elif tm.arg.is_greater():
-            return arg_conv(rewr_conv('real_ge_to_le')).get_proof_term(tm).on_rhs(norm_neg_real_ineq_conv())
+            return pt.on_rhs(rewr_conv("real_not_gt"))            
         elif tm.arg.is_less_eq():
-            return rewr_conv('real_not_leq').get_proof_term(tm)
+            return pt.on_rhs(rewr_conv("real_not_leq")) 
         else:
-            return arg_conv(rewr_conv('real_geq_to_leq')).get_proof_term(tm).on_rhs(norm_neg_real_ineq_conv())
+            return pt.on_rhs(rewr_conv("real_not_geq")) 
+
 
 @register_macro('real_const_eq')
 class RealEqMacro(Macro):

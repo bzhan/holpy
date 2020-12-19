@@ -13,7 +13,7 @@ from kernel.macro import Macro
 from logic.logic import apply_theorem
 from logic import basic, matcher, auto
 from data import real, integer
-from logic.conv import Conv, ConvException, rewr_conv, top_conv, arg_conv, arg1_conv, bottom_conv, try_conv
+from logic.conv import Conv, ConvException, rewr_conv, top_conv, arg_conv, arg1_conv, bottom_conv, try_conv, top_sweep_conv
 from collections import namedtuple
 from collections import deque
 import math
@@ -163,7 +163,7 @@ class Jar:
         return "Jar(%s, %s)" % (str(self.coeff), self.var)
 
     def __hash__(self):
-        return int(hashlib.sha1(self.var.encode('utf-8')).hexdigest(), 16) % (10 ** 8) + self.coeff ** 3
+        return int(int(hashlib.sha1(self.var.encode('utf-8')).hexdigest(), 16) % (10 ** 8) + self.coeff ** 3)
 
     def __eq__(self, value):
         return type(value) == Jar and self.coeff == value.coeff and self.var == value.var
@@ -758,7 +758,12 @@ def dest_plus(tm):
 @register_macro('simplex_delta_macro')
 class SimplexPosDelataMacro(Macro):
     """
-    Given a comparison contained δ, prove its correctness with hypothesis δ > 0
+    Given a comparison contained δ, prove its correctness with hypothesis δ > 0.
+    The proof strategy is that, first normalize the comparsions(move all rhs terms to lhs),
+    then check the lhs, (assume that δ is on the right-most position), if lhs is a plus(minus) term,
+    then let both side substract(add) a term to make lhs only contains δ. The next step is to check whether
+    lhs is a minus term, if it is, make lhs δ(divide the coeff on both side). Then use the theorem 
+    "delta > 0 ⟶ x ≤ 0 ⟶ delta > x" to get the final conclusion.
     """
     def __init__(self):
         self.level = 1
@@ -770,18 +775,27 @@ class SimplexPosDelataMacro(Macro):
         pt_refl = refl(ineq)
         pt_norm_ineq = pt_refl.on_rhs(real.real_norm_comparison())
         norm_ineq = pt_norm_ineq.rhs
-        if norm_ineq.arg1.is_plus() or norm_ineq.arg1.is_minus():
+        if norm_ineq.arg1.is_plus():
             pt_th = ProofTerm.theorem("real_sub_both_sides_gt")
             pt_inst_th = pt_norm_ineq.transitive(pt_th.substitution(inst=Inst(x=norm_ineq.arg1, y=norm_ineq.arg, c=norm_ineq.arg1.arg1)).on_rhs(auto.auto_conv()))
             converted_ineq = pt_inst_th.rhs
+        elif norm_ineq.arg1.is_minus():
+            pt_th = ProofTerm.theorem("real_simplex_delta2")
+            pt_inst_th = pt_norm_ineq.transitive(pt_th.substitution(inst=Inst(x=norm_ineq.arg1.arg1, y=norm_ineq.arg1.arg, z=norm_ineq.arg)).on_rhs(auto.auto_conv()))
+            converted_ineq = pt_inst_th.rhs
         else:
+            pt_inst_th = pt_norm_ineq
             converted_ineq = norm_ineq
 
+        if converted_ineq.arg1.is_times():
+            coeff, x, y = converted_ineq.arg1.arg1, converted_ineq.arg1.arg, converted_ineq.arg
+            pt_pos = ProofTerm("real_const_eq", coeff > Real(0)).on_prop(rewr_conv("eq_true", sym=True))
+            pt_th = ProofTerm.theorem("real_simplex_delta3").substitution(inst=Inst(c=coeff, x=x, y=y))
+            pt_inst_th = pt_inst_th.transitive(pt_th.implies_elim(pt_pos)).on_rhs(auto.auto_conv())
         b = converted_ineq.arg
         pt_b = ProofTerm("real_const_eq", less_eq(RealType)(b, Real(0))).on_prop(rewr_conv("eq_true", sym=True))
-        pt_delta = apply_theorem("real_simplex_delta", ProofTerm.assume(greater(RealType)(Var("δ", RealType), Real(0))), pt_b)
+        pt_delta = apply_theorem("real_simplex_delta1", ProofTerm.assume(greater(RealType)(Var("δ", RealType), Real(0))), pt_b)
         return pt_inst_th.symmetric().equal_elim(pt_delta)
-
 
 class SimplexHOLWrapper:
     """
@@ -926,7 +940,10 @@ class SimplexHOLWrapper:
             lower_bound = self.eval_bound(lower_assertion.prop.arg)
             if lower_bound > new_upper_bound: # incosistency
                 upper_x, upper_y, lower_x, lower_y = new_upper_bound.x, new_upper_bound.y, lower_bound.x, lower_bound.y
-                pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_x), Real(lower_x)))
+                if upper_y == 0 and lower_y == 0:
+                    pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_x), Real(lower_x)))
+                else:
+                    pt_up_less_low = ProofTerm("simplex_delta_macro", upper_bound_pt.prop.arg < lower_assertion.prop.arg)
                 pt_l_bound = ProofTerm.assume(greater(RealType)(delta, Real(0)))
                 if upper_y == 0 and lower_y == 0:
                     pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, lower_assertion, self.upper_bound_pts[x])
@@ -983,7 +1000,10 @@ class SimplexHOLWrapper:
             upper_bound = self.eval_bound(upper_assertion.prop.arg)
             if upper_bound < new_lower_bound: # incosistency
                 lower_x, lower_y, upper_x, upper_y = new_lower_bound.x, new_lower_bound.y, upper_bound.x, upper_bound.y
-                pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_x), Real(lower_x)))
+                if lower_y == 0 and upper_y == 0:
+                    pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_x), Real(lower_x)))
+                else:
+                    pt_up_less_low = ProofTerm("simplex_delta_macro", upper_assertion.prop.arg < lower_bound_pt.prop.arg)
                 pt_l_bound = ProofTerm.assume(greater(RealType)(delta, Real(0)))
                 if lower_y == 0 and upper_y == 0:
                     self.unsat[x] = apply_theorem('real_comp_contr1', pt_up_less_low, self.lower_bound_pts[x], upper_assertion)
@@ -1102,7 +1122,7 @@ class SimplexHOLWrapper:
             # combine above pts
             pt_norm_contr_var_rhs = self.eq_pts[contr_var].on_rhs(real.real_norm_conv()).symmetric()
             pt_norm_sum_rhs = sum_pt.on_prop(arg_conv(real.real_norm_conv()))
-            pt_comb = pt_norm_sum_rhs.on_prop(top_conv(replace_conv(pt_norm_contr_var_rhs)), arg1_conv(real.real_eval_conv()))
+            pt_comb = pt_norm_sum_rhs.on_prop(top_conv(replace_conv(pt_norm_contr_var_rhs)), try_conv(arg1_conv(real.real_eval_conv())))
 
             # after we get contr_var's lower bound(lb), we get lb > β(contr_var), but β(contr_var) > contr_var's upper bound,
             # so we could deriv a contradiction
@@ -1158,9 +1178,9 @@ class SimplexHOLWrapper:
             self.unsat[contr_var] = apply_theorem('real_comp_contr1', pt_upper_less_lower, lower_bound_pt, pt_comb)
             pt_concl = self.unsat[contr_var]
         
-        for eq in self.intro_eq:
-            eq = eq.prop
-            pt_concl = pt_concl.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+        # for eq in self.intro_eq:
+        #     eq = eq.prop
+        #     pt_concl = pt_concl.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
 
         return self.normalize_conflict_pt(pt_concl)
 
@@ -1169,6 +1189,9 @@ class SimplexHOLWrapper:
         Convert all x to 1 * x in the UNSAT proof term.
         """
         # rewrite 1 * x to x in hyps
+        for eq in self.intro_eq:
+            eq = eq.prop
+            pt_concl = pt_concl.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
         for hyp in pt_concl.hyps:
             pt_concl = pt_concl.implies_intr(hyp)
         pt_concl = pt_concl.on_prop(bottom_conv(rewr_conv('real_mul_lid')))
@@ -1200,27 +1223,96 @@ class SimplexHOLWrapper:
                     for xij, coeff, basic_var in trace:
                         xi, xj = xij
                         self.pivot(Var(xi, RealType), Var(xj, RealType), basic_var, coeff)
-                    return self.normalize_conflict_pt(self.explanation())
+                    return self.explanation()
                     raise UNSATException("%s" % str(self.unsat[Var(self.simplex.wrong_var, RealType)]))
 
         return self.simplex.mapping
 
-def term_to_ineq(tm):
+def terms_to_ineqs(tms):
     """
-    Given a linear arithmetic comparison term, return an object of class InEquation.
+    Given a list of linear arithmetic comparison term, return an object of class InEquation.
     """
-    assert tm.is_compares(), "%s is not a linear comparison." % str(tm)
-    times_tm = [(real.real_eval(t.arg1), t.arg.name) if t.is_times() else (1, t.name) for t in dest_plus(tm.arg1)]
-    bound = real.real_eval(tm.arg)
-    if tm.is_greater():
-        return GreaterEq([Jar(c, x) for c, x in times_tm], Pair(bound, 1))
-    elif tm.is_greater_eq():
-        return GreaterEq([Jar(c, x) for c, x in times_tm], Pair(bound))
-    elif tm.is_less():
-        return LessEq([Jar(c, x) for c, x in times_tm], Pair(bound, -1))
-    elif tm.is_less_eq():
-        return LessEq([Jar(c, x) for c, x in times_tm], Pair(bound))
+    i = 0
+    ineqs = []
+    d_1 = {}
+    d_2 = set()
+    rename_pt = []
+    flag = False
+    for tm in tms:
+        assert tm.is_compares(), "%s is not a linear comparison." % str(tm)
+        # times_tm = [(real.real_eval(t.arg1), t.arg.name) if t.is_times() else (1, t.name) for t in dest_plus(tm.arg1)]
+        # # check if there are constant in times_tm
+        summands = dest_plus(tm.arg1)
+        times_tm = []
+        bound = real.real_eval(tm.arg)
+        for t in summands:
+            if t.is_times():
+                m = t.arg
+                if m in d_1:
+                    v = d_1[m]
+                else:
+                    v = Var("x_%s" % i, RealType)
+                    d_1[m] = v
+                    rename_pt.append(ProofTerm.assume(Eq(v, m)))
+                    i += 1
+                times_tm.append((real.real_eval(t.arg1), v.name))
+            elif t.is_number():
+                flag = True
+                bound -= real.real_eval(t)
+            elif t.is_var() or t.is_comb():
+                m = t
+                if m in d_1:
+                    v = d_1[m]
+                else:
+                    v = Var("x_%s" % i, RealType)
+                    d_1[m] = v
+                    rename_pt.append(ProofTerm.assume(Eq(v, m)))
+                    i += 1
+                times_tm.append((1, v.name))
+            else:
+                raise NotImplementedError
+        if tm.is_greater():
+            ineq = GreaterEq([Jar(c, x) for c, x in times_tm], Pair(bound, 1))
+        elif tm.is_greater_eq():
+            ineq = GreaterEq([Jar(c, x) for c, x in times_tm], Pair(bound))
+        elif tm.is_less():
+            ineq = LessEq([Jar(c, x) for c, x in times_tm], Pair(bound, -1))
+        elif tm.is_less_eq():
+            ineq = LessEq([Jar(c, x) for c, x in times_tm], Pair(bound))
+        else:
+            raise NotImplementedError
+        ineqs.append(ineq)
+        if flag:
+            convert_tm = ineq_to_term(ineq)
+            pt_old_norm_ineq = refl(tm).on_rhs(real.real_norm_comparison())
+            pt_new_norm_ineq = handle_result1(refl(convert_tm).on_rhs(real.real_norm_comparison()), rename_pt)
+            d_2.add(pt_old_norm_ineq.transitive(pt_new_norm_ineq.symmetric()))
+            flag = False
 
+    return ineqs, rename_pt, d_2
+
+def ineq_to_term(ineq):
+    """Given an ineqaution, return a hol term."""
+    delta = Var("δ", RealType)
+    if isinstance(ineq, GreaterEq):
+        jars, bound = ineq.jars, ineq.lower_bound
+        tm_jars = [Real(jar.coeff) * Var(jar.var, RealType) if jar.coeff != 1 else Var(jar.var, RealType) for jar in jars]
+        lhs = sum(tm_jars[1:], tm_jars[0])
+        if bound.y == 0:
+            tm = greater_eq(RealType)(lhs, Real(bound.x))
+        else:
+            tm = greater_eq(RealType)(lhs, Real(bound.x) + Real(bound.y) * delta)
+    elif isinstance(ineq, LessEq):
+        jars, bound = ineq.jars, ineq.upper_bound
+        tm_jars = [Real(jar.coeff) * Var(jar.var, RealType) if jar.coeff != 1 else Var(jar.var, RealType) for jar in jars]
+        lhs = sum(tm_jars[1:], tm_jars[0])
+        if bound.y == 0:
+            tm = less_eq(RealType)(lhs, Real(bound.x))
+        else:
+            tm = less_eq(RealType)(lhs, Real(bound.x) + Real(bound.y) * delta)
+    else:
+        raise NotImplementedError
+    return tm
 
 @register_macro('simplex_norm_form')
 class ConjAtomsExists(Macro):
@@ -1236,6 +1328,35 @@ class ConjAtomsExists(Macro):
 
     def get_proof_term(self, args, prevs):
         return 
+
+def handle_result(pt, rename, pt_eq_tm):
+    # for pt_eq in rename:
+    #     eq = pt_eq.prop
+    #     pt = pt.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+
+    new_pt = functools.reduce(lambda x, y: x.implies_intr(y), pt.hyps, pt)
+    after_rename_pt = new_pt.on_prop(*[top_sweep_conv(replace_conv(p)) for p in reversed(rename)], *[top_sweep_conv(replace_conv(p.symmetric())) for p in pt_eq_tm])
+    impls, _ = after_rename_pt.prop.strip_implies()
+    pt_final = functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), impls, after_rename_pt)
+    for eq_pt in rename:
+        eq = eq_pt.prop
+        pt_final = pt_final.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+    return pt_final
+
+def handle_result1(pt, rename):
+    # for pt_eq in rename:
+    #     eq = pt_eq.prop
+    #     pt = pt.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+
+    new_pt = functools.reduce(lambda x, y: x.implies_intr(y), pt.hyps, pt)
+    after_rename_pt = new_pt.on_prop(*[top_sweep_conv(replace_conv(p)) for p in reversed(rename)])
+    impls, _ = after_rename_pt.prop.strip_implies()
+    pt_final = functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), impls, after_rename_pt)
+    for eq_pt in rename:
+        eq = eq_pt.prop
+        pt_final = pt_final.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+    return pt_final
+
 
 @register_macro('simplex_macro')
 class SimplexMacro(Macro):
@@ -1258,13 +1379,12 @@ class SimplexMacro(Macro):
         strict_tms = [tm for tm in args if tm.is_less() or tm.is_greater()]
         # convert HOL terms to InEquations
         s = SimplexHOLWrapper()
-        comparisons = [term_to_ineq(arg) for arg in args]
+        comparisons, rename_pt, pt_eq_tm = terms_to_ineqs(args)
         s.add_ineqs(comparisons)
         result = s.handle_assertion()
         if not isinstance(result, ProofTerm) or not strict_tms:
             return result
-
-
+        result = handle_result(result, rename_pt, pt_eq_tm)
         # for strict comparisons S, get the proof term ⊢ ∃t. t > 0 ⟶ S'(t)
         pt_exists = real.relax_strict_simplex_macro().get_proof_term(strict_tms)
         # put all implications to hyps
