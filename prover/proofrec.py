@@ -1462,13 +1462,26 @@ def real_th_lemma(args):
         
         # First step, send these inequalies to simplex, get
         # |- x_4 ≥ 60 --> x_2 ≤ 1 --> x_2 + -1 * x_4 ≥ 0 --> false
-        ineqs = [pt.prop for pt in args[:-1]]
-        if any(ineq.is_greater() or ineq.is_less() for ineq in ineqs):
-            pt1 = simplex_strict.SimplexMacro().get_proof_term(args=ineqs)
+        norm_pts = []
+        input_ineq = []
+        for pt in args[:-1]:
+            if pt.prop.is_not():
+                norm_pt = refl(pt.prop).on_rhs(norm_neg_real_ineq_conv()).symmetric()
+                norm_pts.append(norm_pt)
+                input_ineq.append(norm_pt.lhs)
+            else:
+                input_ineq.append(pt.prop)
+
+        
+        # ineqs = [pt.prop for pt in args[:-1]]
+
+        if any(ineq.is_greater() or ineq.is_less() for ineq in input_ineq):
+            pt1 = simplex_strict.SimplexMacro().get_proof_term(args=input_ineq)
         else:     
-            pt1 = simplex.solve_hol_ineqs(ineqs)
-        for h in reversed(ineqs): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
+            pt1 = simplex.solve_hol_ineqs(input_ineq)
+        for h in reversed(input_ineq): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
             pt1 = pt1.implies_intr(h)
+        pt1 = pt1.on_prop(*[top_conv(replace_conv(pt)) for pt in norm_pts])
         pt2 = pt1.on_prop(bottom_conv(rewr_conv('real_mul_lid')))
         
         # Second step, implies elim each given proof term's proposition with the simplex's proof term
