@@ -31461,6 +31461,15 @@
         },
         {
             "name": "real_not_gt",
+            "prop": "¬(x > y) ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_neg_lt",
             "prop": "¬(x < y) ⟷ x ≥ y",
             "ty": "thm",
             "vars": {

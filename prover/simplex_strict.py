@@ -770,17 +770,28 @@ class SimplexPosDelataMacro(Macro):
         pt_refl = refl(ineq)
         pt_norm_ineq = pt_refl.on_rhs(real.real_norm_comparison())
         norm_ineq = pt_norm_ineq.rhs
-        if norm_ineq.arg1.is_plus() or norm_ineq.arg1.is_minus():
+        if norm_ineq.arg1.is_plus():
             pt_th = ProofTerm.theorem("real_sub_both_sides_gt")
             pt_inst_th = pt_norm_ineq.transitive(pt_th.substitution(inst=Inst(x=norm_ineq.arg1, y=norm_ineq.arg, c=norm_ineq.arg1.arg1)).on_rhs(auto.auto_conv()))
             converted_ineq = pt_inst_th.rhs
+        elif norm_ineq.arg1.is_minus():
+            pt_th = ProofTerm.theorem("real_simplex_delta2")
+            pt_inst_th = pt_norm_ineq.transitive(pt_th.substitution(inst=Inst(x=norm_ineq.arg1.arg1, y=norm_ineq.arg1.arg, z=norm_ineq.arg)).on_rhs(auto.auto_conv()))
+            converted_ineq = pt_inst_th.rhs
         else:
+            pt_inst_th = pt_norm_ineq
             converted_ineq = norm_ineq
 
+        if converted_ineq.arg1.is_times():
+            coeff, x, y = converted_ineq.arg1.arg1, converted_ineq.arg1.arg, converted_ineq.arg
+            pt_pos = ProofTerm("real_const_eq", coeff > Real(0)).on_prop(rewr_conv("eq_true", sym=True))
+            pt_th = ProofTerm.theorem("real_simplex_delta3").substitution(inst=Inst(c=coeff, x=x, y=y))
+            pt_inst_th = pt_inst_th.transitive(pt_th.implies_elim(pt_pos)).on_rhs(auto.auto_conv())
         b = converted_ineq.arg
         pt_b = ProofTerm("real_const_eq", less_eq(RealType)(b, Real(0))).on_prop(rewr_conv("eq_true", sym=True))
-        pt_delta = apply_theorem("real_simplex_delta", ProofTerm.assume(greater(RealType)(Var("δ", RealType), Real(0))), pt_b)
+        pt_delta = apply_theorem("real_simplex_delta1", ProofTerm.assume(greater(RealType)(Var("δ", RealType), Real(0))), pt_b)
         return pt_inst_th.symmetric().equal_elim(pt_delta)
+
 
 
 class SimplexHOLWrapper:
@@ -908,9 +919,9 @@ class SimplexHOLWrapper:
                     self.upper_bound_pts[x] = apply_theorem('real_leq_comp1', upper_bound_pt, old_assertion, pt_less)
                 elif new_y == -1 and old_y == 0:
                     self.upper_bound_pts[x] = apply_theorem('real_dec_upper_bound2', upper_bound_pt, old_assertion, pt_less)
-                elif new_y == 0 and old_y == 1:
+                elif new_y == 0 and old_y == -1:
                     self.upper_bound_pts[x] = apply_theorem("real_dec_upper_bound3", upper_bound_pt, old_assertion, pt_less)
-                elif new_y == 1 and old_y == 1:
+                elif new_y == -1 and old_y == -1:
                     self.upper_bound_pts[x] = apply_theorem('real_dec_upper_bound1', upper_bound_pt, old_assertion, pt_less)
                 else:
                     raise NotImplementedError
@@ -926,7 +937,10 @@ class SimplexHOLWrapper:
             lower_bound = self.eval_bound(lower_assertion.prop.arg)
             if lower_bound > new_upper_bound: # incosistency
                 upper_x, upper_y, lower_x, lower_y = new_upper_bound.x, new_upper_bound.y, lower_bound.x, lower_bound.y
-                pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_x), Real(lower_x)))
+                if upper_y == 0 and lower_y == 0:
+                    pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_x), Real(lower_x)))
+                else:
+                    pt_up_less_low = ProofTerm('simplex_delta_macro', upper_bound_pt.prop.arg < lower_assertion.prop.arg)
                 pt_l_bound = ProofTerm.assume(greater(RealType)(delta, Real(0)))
                 if upper_y == 0 and lower_y == 0:
                     pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, lower_assertion, self.upper_bound_pts[x])
@@ -983,7 +997,10 @@ class SimplexHOLWrapper:
             upper_bound = self.eval_bound(upper_assertion.prop.arg)
             if upper_bound < new_lower_bound: # incosistency
                 lower_x, lower_y, upper_x, upper_y = new_lower_bound.x, new_lower_bound.y, upper_bound.x, upper_bound.y
-                pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_x), Real(lower_x)))
+                if lower_y == 0 and upper_y == 0:
+                    pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_x), Real(lower_x)))
+                else:
+                    pt_up_less_low = ProofTerm("simplex_delta_macro", upper_assertion.prop.arg < lower_bound_pt.prop.arg)
                 pt_l_bound = ProofTerm.assume(greater(RealType)(delta, Real(0)))
                 if lower_y == 0 and upper_y == 0:
                     self.unsat[x] = apply_theorem('real_comp_contr1', pt_up_less_low, self.lower_bound_pts[x], upper_assertion)
@@ -1102,7 +1119,7 @@ class SimplexHOLWrapper:
             # combine above pts
             pt_norm_contr_var_rhs = self.eq_pts[contr_var].on_rhs(real.real_norm_conv()).symmetric()
             pt_norm_sum_rhs = sum_pt.on_prop(arg_conv(real.real_norm_conv()))
-            pt_comb = pt_norm_sum_rhs.on_prop(top_conv(replace_conv(pt_norm_contr_var_rhs)), arg1_conv(real.real_eval_conv()))
+            pt_comb = pt_norm_sum_rhs.on_prop(top_conv(replace_conv(pt_norm_contr_var_rhs)), arg1_conv(try_conv(real.real_eval_conv())))
 
             # after we get contr_var's lower bound(lb), we get lb > β(contr_var), but β(contr_var) > contr_var's upper bound,
             # so we could deriv a contradiction
@@ -1210,7 +1227,7 @@ def term_to_ineq(tm):
     Given a linear arithmetic comparison term, return an object of class InEquation.
     """
     assert tm.is_compares(), "%s is not a linear comparison." % str(tm)
-    times_tm = [(real.real_eval(t.arg1), t.arg.name) if t.is_times() else (1, t.name) for t in dest_plus(tm.arg1)]
+    times_tm = [(real.real_eval(t.arg1), str(t.arg)) if t.is_times() else (1, str(t)) for t in dest_plus(tm.arg1)]
     bound = real.real_eval(tm.arg)
     if tm.is_greater():
         return GreaterEq([Jar(c, x) for c, x in times_tm], Pair(bound, 1))

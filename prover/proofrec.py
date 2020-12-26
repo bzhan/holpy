@@ -1405,7 +1405,8 @@ def real_th_lemma(args):
         pt1 = ProofTerm.assume(Not(args[0])).on_prop(
             top_conv(rewr_conv('de_morgan_thm2')),
             top_conv(rewr_conv('double_neg')),
-            bottom_conv(norm_neg_real_ineq_conv())
+            bottom_conv(norm_neg_real_ineq_conv()),
+            proplogic.norm_full()
         )
 
         # Second step, send the inequalies in conjunction to simplex, get
@@ -1436,8 +1437,8 @@ def real_th_lemma(args):
         pt5 = refl(Not(args[0])).on_rhs(
             top_conv(rewr_conv('de_morgan_thm2')),
             top_conv(rewr_conv('double_neg')),
-            top_conv(rewr_conv('real_not_leq')),
-            top_conv(rewr_conv('real_not_geq')),
+            bottom_conv(norm_neg_real_ineq_conv()),
+            proplogic.norm_full()
         ) # |- Not(Or(Not(x_4 <= 0), Not(x_4 >= 60))) <--> And(x_4 <= 0, x_4 >= 60)
         pt6 = pt4.on_prop(top_conv(replace_conv(pt5.symmetric()))) # |- Not(Or(Not(x_4 <= 0), Not(x_4 >= 60))) --> false
         pt7 = apply_theorem('negI', pt6).on_prop(rewr_conv('double_neg'))
@@ -1666,7 +1667,7 @@ def th_lemma(args):
     # analyze type
     t1 = args[0]
     if not isinstance(t1, ProofTerm):
-        t2 = t1.arg
+        t2 = t1.arg1
         if t2.is_not():
             T = t2.arg.arg.get_type()
         else:

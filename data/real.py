@@ -823,7 +823,7 @@ class norm_neg_real_ineq_conv(Conv):
             raise ConvException("Invalid term: %s" % str(tm))
         pt = refl(tm)
         if tm.arg.is_less():
-            return pt.on_rhs(rewr_conv("real_not_lt"))
+            return pt.on_rhs(rewr_conv("real_neg_lt"))
         elif tm.arg.is_greater():
             return pt.on_rhs(rewr_conv("real_not_gt"))            
         elif tm.arg.is_less_eq():
