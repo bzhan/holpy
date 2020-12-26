@@ -20,7 +20,7 @@ from kernel.report import ProofReport
 from logic import basic, context, matcher
 from logic.logic import apply_theorem, imp_disj_iff, disj_norm, imp_conj_macro, resolution
 from logic.tactic import rewrite_goal_with_prev
-from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv, ConvException, Conv, arg1_conv, binop_conv
+from logic.conv import rewr_conv, try_conv, top_conv, top_sweep_conv, bottom_conv, arg_conv, ConvException, Conv, arg1_conv, binop_conv, replace_conv
 from logic import auto
 from prover import sat, tseitin, simplex, simplex_strict
 from syntax.settings import settings
@@ -1389,16 +1389,6 @@ def sk(arg1):
     """
     return ProofTerm.sorry(Thm([], Eq(arg1.lhs, arg1.rhs)))
 
-class replace_conv(Conv):
-    def __init__(self, pt):
-        self.pt = pt
-
-    def get_proof_term(self, t):
-        if t == self.pt.prop.lhs:
-            return self.pt
-        else:
-            raise ConvException
-
 
 def real_th_lemma(args):
     """handle real th-lemma."""
@@ -1666,13 +1656,33 @@ def th_lemma(args):
     """
     th-lemma: Generic proof for theory lemmas.
     """
-    tms = [p.prop if isinstance(p, ProofTerm) else p for p in args]
-    Ts = set(sum([list(analyze_type(tm)) for tm in tms], []))
+    if len(args) == 1:
+        th_name = ['int_ite_tau', 't036', 't037', 't099', 't100']
+        res = match_and_apply(args[0], th_name)
+        if res:
+            return res
+    # tms = [p.prop if isinstance(p, ProofTerm) else p for p in args]
+    # Ts = set(sum([list(analyze_type(tm)) for tm in tms], []))
+    # analyze type
+    t1 = args[0]
+    if not isinstance(t1, ProofTerm):
+        t2 = t1.arg
+        if t2.is_not():
+            T = t2.arg.arg.get_type()
+        else:
+            T = t2.arg.get_type()
+    else:
+        if t1.prop.is_not():
+            T = t1.prop.arg.arg.get_type()
+        else:
+            T = t1.prop.arg.get_type()
     try:
-        if RealType in Ts:
+        if RealType == T:
             return real_th_lemma(args)
-        elif IntType in Ts:
+        elif IntType == T:
             return int_th_lemma(args)
+        else:
+            raise NotImplementedError
     except:
         hyps = [h.prop for h in args[:-1]]
         return ProofTerm.sorry(Thm(hyps, args[-1]))
@@ -1944,10 +1954,12 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     atoms.clear()
     gaps = set()
     if assertions:
+        print("start process assertion!")
         handle_assertion(assertions)
     with open('int_prf.txt', 'a', encoding='utf-8') as f:
         f.seek(0)
         f.truncate()
+    print("done")
     for i in order:
         args = tuple(r[j] for j in net[i])
         # if trace:

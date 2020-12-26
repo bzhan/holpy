@@ -395,6 +395,16 @@ class rewr_conv(Conv):
         assert pt.th.prop.lhs == t, "rewr_conv: wrong result. Expected %s, got %s" % (str(t), str(pt.th.prop.lhs))
         return pt
 
+class replace_conv(Conv):
+    def __init__(self, pt):
+        self.pt = pt
+
+    def get_proof_term(self, t):
+        if t == self.pt.prop.lhs:
+            return self.pt
+        else:
+            raise ConvException
+
 def has_rewrite(th, t, *, sym=False, conds=None):
     """Returns whether a rewrite is possible on a subterm of t.
     
