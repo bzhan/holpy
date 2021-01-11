@@ -13,6 +13,7 @@ grammar = r"""
     ?type: "(declare-sort" NAME INT ")" -> sort_type
         | "(declare-fun " NAME "(" NAME+ ")" NAME ")" -> fun_type1
         | "(declare-fun " NAME "()" NAME ")" -> fun_type2
+
     ?atom: NAME -> var_name
         | INT -> integer
         | DECIMAL -> decimal
@@ -21,27 +22,22 @@ grammar = r"""
     ?typed_atom: "(" NAME "Int" ")" -> int_tm
         | "(" NAME "Real)" -> real_tm
         | "(" NAME "Bool)" -> bool_tm 
-    
-    ?comb: "(" comb atom+ ")" -> comb_tm
-        | atom
 
-    ?arith: "(-" arith ")" -> uminus_tm
-        | "(+" arith arith ")" -> plus_tm
-        | "(-" arith arith ")" -> minus_tm
-        | "(*" arith arith ")" -> times_tm
-        | "(/" arith arith ")" -> divides_tm
-        | comb
-
-    ?compares: "(>" arith arith ")" -> greater_tm
-        | "(<" arith arith ")" -> less_tm
-        | "(>=" arith arith ")" -> greater_eq_tm
-        | "(<=" arith arith ")" -> less_eq_tm
-        | arith
-
-    ?logical: "(not" logical ")" -> neg_tm
+    ?logical: "(" logical logical+ ")" -> comb_tm
+        | "(-" logical ")" -> uminus_tm
+        | "(+" logical logical ")" -> plus_tm
+        | "(-" logical logical ")" -> minus_tm
+        | "(*" logical logical ")" -> times_tm
+        | "(/" logical logical ")" -> divides_tm
+        | "(>" logical logical ")" -> greater_tm
+        | "(<" logical logical ")" -> less_tm
+        | "(>=" logical logical ")" -> greater_eq_tm
+        | "(<=" logical logical ")" -> less_eq_tm
+        | "(not" logical ")" -> neg_tm
         | "(and" logical logical+ ")" -> conj_tm
         | "(or" logical logical+ ")" -> disj_tm
-        | "(=>" logical logical ")" -> implies_tm        
+        | "(=>" logical logical ")" -> implies_tm      
+        | "(ite" logical logical logical ")"  
         | "#" INT ":" logical -> names_tm
         | "#" INT -> repr_tm
         | "(exists" "(" typed_atom+ ")" logical* ")" -> exists_tm
@@ -49,7 +45,7 @@ grammar = r"""
         | "(" logical logical ")" -> pair_tm
         | "(=" logical logical ")" -> equals_tm
         | "#" INT ":(let (" (logical)+ ")" logical* ")" -> name_let_tm
-        | compares
+        | atom
 
     ?conclusion: "conclusion (" logical* ")" -> concl_tm
 
@@ -57,9 +53,9 @@ grammar = r"""
 
     ?clauses: "clauses (" clause_name+ ")" -> clauses
 
-    ?args: "args (" CNAME ")" -> args
+    ?args: "args (" NAME ")" -> args
 
-    ?proof: "(set .c" INT "(" CNAME ":" ((clauses | args)":")? conclusion "))" -> step_proof 
+    ?proof: "(set .c" INT "(" NAME ":" ((clauses | args)":")? conclusion "))" -> step_proof 
         | "(set .c" INT "(input :" conclusion "))" -> input_proof
         | logical
 
@@ -69,7 +65,7 @@ grammar = r"""
     %import common.DECIMAL
     %import common.WS
     %ignore WS
-    NAME: (CNAME|"$"|"@")("$"|"@"|CNAME|DIGIT)*
+    NAME: (CNAME|"$"|"@"|"?")("?"|"$"|"@"|CNAME)*
 """
 @v_args(inline=True)
 class TypeTransformer(Transformer):
