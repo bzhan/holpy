@@ -40,9 +40,9 @@ grammar = r"""
         | "(ite" logical logical logical ")"  
         | "#" INT ":" logical -> names_tm
         | "#" INT -> repr_tm
-        | "(exists" "(" typed_atom+ ")" logical* ")" -> exists_tm
-        | "(forall" "(" typed_atom+ ")" logical* ")" -> forall_tm
-        | "(" logical logical ")" -> pair_tm
+        | "(exists" "(" typed_atom ")" logical* ")" -> exists_tm
+        | "(forall" "(" typed_atom ")" logical* ")" -> forall_tm
+        | "(" logical "#" INT ":" logical ")" -> pair_tm
         | "(=" logical logical ")" -> equals_tm
         | "#" INT ":(let (" (logical)+ ")" logical* ")" -> name_let_tm
         | atom
@@ -65,7 +65,7 @@ grammar = r"""
     %import common.DECIMAL
     %import common.WS
     %ignore WS
-    NAME: (CNAME|"$"|"@"|"?")("?"|"$"|"@"|CNAME)*
+    NAME: (CNAME|"$"|"@"|"?")("?"|"$"|"@"|CNAME|DIGIT)*
 """
 @v_args(inline=True)
 class TypeTransformer(Transformer):
@@ -150,49 +150,52 @@ class TermTransformer(Transformer):
         return Real(num)
 
     def int_tm(self, var):
+        self.sorts[var.value] = Var(var.value, IntType)
         return Var(var.value, IntType)
     
     def real_tm(self, var):
+        self.sorts[var.value] = Var(var.value, RealType)
         return Var(var.value, RealType)
 
     def bool_tm(self, var):
+        self.sorts[var.value] = Var(var.value, BoolType)
         return Var(var.value, BoolType)
 
     def comb_tm(self, *args):
         return args[0](*args[1:])
 
     def uminus_tm(self, arg):
-        return Const("uminus", None)(arg)
+        return -arg
 
     def plus_tm(self, lhs, rhs):
-        return Const("plus", None)(lhs, rhs)
+        return lhs + rhs
 
     def minus_tm(self, lhs, rhs):
-        return Const("minus", None)(lhs, rhs)
+        return lhs - rhs
 
     def times_tm(self, lhs, rhs):
-        return Const("times", None)(lhs, rhs)
+        return lhs * rhs
 
     def greater_tm(self, lhs, rhs):
-        return Const("greater", None)(lhs, rhs)
+        return lhs > rhs
 
     def greater_eq_tm(self, lhs, rhs):
-        return Const("greater_eq", None)(lhs, rhs)
+        return lhs >= rhs
 
     def less_tm(self, lhs, rhs):
-        return Const("less", None)(lhs, rhs)
+        return lhs < rhs
 
     def less_eq_tm(self, lhs, rhs):
-        return Const("less_eq", None)(lhs, rhs)
+        return lhs <= rhs
 
     def neg_tm(self, tm):
         return Not(tm)
 
     def conj_tm(self, *tm):
-        return And(tm)
+        return And(*tm)
 
     def disj_tm(self, *tm):
-        return Or(tm)
+        return Or(*tm)
 
     def implies_tm(self, s, t):
         return Implies(s, t)
@@ -217,10 +220,10 @@ class TermTransformer(Transformer):
         return (s, t)
 
     def let_tm(self, *tms):
-        return [ProofTerm.assume(Eq(s, t)) for s, t in tms]
+        pass
 
-    def name_let_tm(self, num, *tms):
-        return [ProofTerm.assume(Eq(s, t)) for s, t in tms]
+    def name_let_tm(self, tm, *tms):
+        pass
     
     def concl_tm(self, *tms):
         return Or(*tms)
@@ -248,10 +251,10 @@ def term_parser(sorts):
 
 type_parser = Lark(grammar, start="type", parser="lalr", transformer=TypeTransformer())
 
-def parse_term(s):
+def parse_step(s, sorts):
     """Parse a proof step."""
     try:
-        return term_parser.parse(s)
+        return term_parser(sorts).parse(s)
     except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
         print("When parsing:", s)
         raise e
