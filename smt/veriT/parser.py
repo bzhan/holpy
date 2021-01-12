@@ -22,6 +22,8 @@ grammar = r"""
     ?typed_atom: "(" NAME "Int" ")" -> int_tm
         | "(" NAME "Real)" -> real_tm
         | "(" NAME "Bool)" -> bool_tm 
+    
+    ?let_pair: "(" NAME logical ")" -> let_pair
 
     ?logical: "(" logical logical+ ")" -> comb_tm
         | "(-" logical ")" -> uminus_tm
@@ -44,7 +46,7 @@ grammar = r"""
         | "(forall" "(" typed_atom ")" logical* ")" -> forall_tm
         | "(" logical "#" INT ":" logical ")" -> pair_tm
         | "(=" logical logical ")" -> equals_tm
-        | "#" INT ":(let (" (logical)+ ")" logical* ")" -> name_let_tm
+        | "(let (" let_pair ")" logical* ")" -> let_tm
         | atom
 
     ?conclusion: "conclusion (" logical* ")" -> concl_tm
@@ -219,11 +221,19 @@ class TermTransformer(Transformer):
     def pair_tm(self, s, t):
         return (s, t)
 
-    def let_tm(self, *tms):
-        pass
+    def let_pair(self, tm1, tm2):
+        """Note: the let var used in body will be inserted a dollar symbol at first position."""
+        inferred_tm1 = Var("$" + tm1.value, tm2.get_type())
+        self.sorts["$" + tm1.value] = inferred_tm1
+        return (inferred_tm1, tm2)
 
-    def name_let_tm(self, tm, *tms):
-        pass
+    def let_tm(self, *tms):
+        return tms[-1]
+
+    def name_let_tm(self, tm1, tm2, *tms):
+        ty = tm2.get_type()
+        self.sorts[tm1.name] = Var(tm1.name, ty)
+        return tms[-1]
     
     def concl_tm(self, *tms):
         return Or(*tms)
