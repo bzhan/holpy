@@ -53,11 +53,13 @@ grammar = r"""
 
     ?clause_name: ".c" INT -> clause_name
 
-    ?clauses: "clauses (" clause_name+ ")" -> clauses
+    ?clauses: "clauses (" clause_name+ ")" -> get_clauses
 
     ?args: "args (" NAME ")" -> args
 
-    ?proof: "(set .c" INT "(" NAME ":" ((clauses | args)":")? conclusion "))" -> step_proof 
+    ?proof: "(set .c" INT "(" NAME ":" clauses ":" conclusion "))" -> step_proof1
+        | "(set .c" INT "(" NAME ":" args ":" conclusion "))" -> step_proof2
+        | "(set .c" INT "(" NAME ":"  conclusion "))" -> step_proof3
         | "(set .c" INT "(input :" conclusion "))" -> input_proof
         | logical
 
@@ -75,36 +77,28 @@ class TypeTransformer(Transformer):
     def __init__(self):
         pass
 
+    def convert_type(self, T):
+        """convert Int, Bool, Real to IntType, BoolType, RealType."""
+        if T == "Bool":
+            return BoolType
+        elif T == "Int":
+            return IntType
+        elif T == "Real":
+            return RealType
+        else:
+            return TConst(T)
+
     def sort_type(self, name, arity):
         return TConst(str(name))
 
     def fun_type1(self, name, *args):
-        """
-        Args:
-            n1: name of the variable
-            n2: list of arguments
-            n3: range type
-
-        return a HOL variable
-        """ 
-        domain_type = [TConst(t) for t in args[:-1]]
-        if args[-1] == "Bool":
-            range_type = BoolType
-        elif args[-1] == "Int":
-            range_type = IntType
-        elif args[-1] == "Real":
-            range_type = RealType
-        else:
-            range_type = TConst(args[-1])
-
-        return Var(str(name), TFun(*domain_type, range_type))
+        return Var(str(name), TFun(*[self.convert_type(t) for t in args]))
 
     def fun_type2(self, n1, n2):
         """
         Args:
             n1: name of the variable
-            n2: list of arguments
-            n3: range type
+            n2: type
 
         return a HOL variable
         """ 
@@ -143,7 +137,10 @@ class TermTransformer(Transformer):
         self.clauses = dict()
 
     def var_name(self, x):
-        return self.sorts[x]
+        if x in self.sorts:
+            return self.sorts[x]
+        else:
+            raise NotImplementedError
     
     def integer(self, num):
         return Int(num)
@@ -216,7 +213,7 @@ class TermTransformer(Transformer):
         return Forall(v, t)
     
     def equals_tm(self, lhs, rhs):
-        return Const("equals", None)(lhs, rhs)
+        return Eq(lhs, rhs)
 
     def pair_tm(self, s, t):
         return (s, t)
@@ -236,21 +233,30 @@ class TermTransformer(Transformer):
         return tms[-1]
     
     def concl_tm(self, *tms):
-        return Or(*tms)
+        if len(tms) == 1:
+            return tms[0]
+        else:
+            return Or(*tms)
 
     def clause_name(self, cl):
-        return self.clauses[cl]
+        return int(cl.value)
 
-    def clauses(self, *clauses):
+    def get_clauses(self, *clauses):
         return tuple(clauses)
 
     def args(self, name):
         """Used in forall_inst."""
         return name
 
-    def step_proof(self, num, params, concl):
-        self.clauses[num] = concl
-        return Rule(num, params, concl)
+    def step_proof1(self, num, proof_name, assms, concl):
+        self.clauses[int(num.value)] = concl
+        return Rule(num, proof_name, concl, assms=assms)
+
+    def step_proof2(self, num, proof_name, args, concl):
+        return Rule(num, proof_name, concl, args=args)
+
+    def step_proof3(self, num, proof_name, concl):
+        return Rule(num, proof_name, concl)
 
     def input_proof(self, num, concl):
         self.clauses[num] = concl

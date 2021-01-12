@@ -46,7 +46,9 @@ class VeriTParserTest(unittest.TestCase):
             ("(T x_1)", T(x_1)),
             ("#10:(forall ( (x_1 Int) ) #11:(=> #12:(S x_1) #13:(T x_1)))", 
             Forall(x_1, Implies(S(x_1), T(x_1)))),
-            ("#9: (let ( (x47 #9:(T x_1)) ) (not $x47))", Not(Var("$x47", BoolType)))
+            ("#9: (let ( (x47 #9:(T x_1)) ) (not $x47))", Not(Var("$x47", BoolType))),
+            ("#2:(forall ( (x_1 Int) ) #3:(let ( (x35 #4:(T x_1)) ) #5:(let ( (x36 #6:(S x_1)) ) #7:(=> $x36 $x35))))",
+            Forall(x_1, Implies(Var("$x36", BoolType), Var("$x35", BoolType))))
         ]
 
         sorts = {"x_1": x_1, "x_2": x_2, "P": P, "Q": Q, "R": R, "T": T, "S": S}
