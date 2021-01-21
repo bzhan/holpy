@@ -177,12 +177,19 @@ class RealTest(unittest.TestCase):
             test_conv(self, 'transcendentals', real.norm_real_ineq_conv(), vars=vars, t=expr, t_res=res)
 
     def testRelaxSimplexMacro(self):
-        test_data = [
-            (["1 * x + -1 * z < 0"], "1 * x + -1 * z < 0 --> ?t. t > 0 & 1 * x + -1 * z <= 0 - t"),
-            (["1 * x + -1 * z < 0", "1 * x + -1 * y > 0"], 
-            "1 * x + -1 * z < 0 --> 1 * x + -1 * y > 0 --> (?t. t > 0 & 1 * x + -1 * z <= 0 - t & 1 * x + -1 * y >= 0 + t)")
-        ]
+        # test_data = [
+        #     (["1 * x + -1 * z < 0"], "1 * x + -1 * z < 0 --> ?t. t > 0 & 1 * x + -1 * z <= 0 - t"),
+        #     (["1 * x + -1 * z < 0", "1 * x + -1 * y > 0"], 
+        #     "1 * x + -1 * z < 0 --> 1 * x + -1 * y > 0 --> (?t. t > 0 & 1 * x + -1 * z <= 0 - t & 1 * x + -1 * y >= 0 + t)")
+        # ]
         
+        test_data = [
+            (["x > 0"], "?a1. a1 > 0 ∧ x ≥ a1"),
+            (["x > 0", "y > 0"], "?a1. a1 > 0 & x >= a1 & y >= a1"),
+            (["x > 0", "y < 0"], "?a1. a1 > 0 & y <= -a1 & x >= a1"),
+            (["x > 0", "y < 1"], "?a1. a1 > 0 & y - 1 <= -a1 & x >= a1")
+        ]
+
         vars = {"x": "real", "y": "real", "z": "real"}
         context.set_context("real", vars=vars)
 
@@ -190,6 +197,7 @@ class RealTest(unittest.TestCase):
             ts = [parser.parse_term(t) for t in ts]
             res = parser.parse_term(res)
             # test_macro(self, 'real', 'non_strict_simplex', vars=vars, args=ts, res=res)
+            # print(real.relax_strict_simplex_macro().get_proof_term(args=ts).prop)
             self.assertEqual(real.relax_strict_simplex_macro().get_proof_term(args=ts).prop, res)
 
 if __name__ == "__main__":
