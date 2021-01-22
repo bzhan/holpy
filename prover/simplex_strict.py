@@ -163,7 +163,8 @@ class Jar:
         return "Jar(%s, %s)" % (str(self.coeff), self.var)
 
     def __hash__(self):
-        return int(hashlib.sha1(self.var.encode('utf-8')).hexdigest(), 16) % (10 ** 8) + self.coeff ** 3
+        # print(type(int(hashlib.sha1(self.var.encode('utf-8')).hexdigest(), 16) % (10 ** 8)))
+        return int(hashlib.sha1(self.var.encode('utf-8')).hexdigest(), 16) % (10 ** 8) + int(self.coeff ** 3)
 
     def __eq__(self, value):
         return type(value) == Jar and self.coeff == value.coeff and self.var == value.var
@@ -957,8 +958,8 @@ class SimplexHOLWrapper:
                                                         lower_assertion, pt_up_less_low)
                 else:
                     raise NotImplementedError
-                self.unsat[x] = pt_contr
-                raise AssertUpperException(str(pt_contr))
+                self.unsat[x] = self.elim_aux_vars(pt_contr)
+                raise AssertUpperException(str(self.unsat[x]))
 
         self.simplex.assert_upper(x.name, upper_bound)
         
@@ -1005,13 +1006,14 @@ class SimplexHOLWrapper:
                     pt_up_less_low = ProofTerm("simplex_delta_macro", upper_assertion.prop.arg < lower_bound_pt.prop.arg)
                 pt_l_bound = ProofTerm.assume(greater(RealType)(delta, Real(0)))
                 if lower_y == 0 and upper_y == 0:
-                    self.unsat[x] = apply_theorem('real_comp_contr1', pt_up_less_low, self.lower_bound_pts[x], upper_assertion)
+                    pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, self.lower_bound_pts[x], upper_assertion)
                 elif lower_y == 0 and upper_y == -1:
-                    self.unsat[x] = apply_theorem('real_comp_contr3', pt_l_bound, upper_assertion, self.lower_bound_pts[x], pt_up_less_low)
+                    pt_contr = apply_theorem('real_comp_contr3', pt_l_bound, upper_assertion, self.lower_bound_pts[x], pt_up_less_low)
                 elif lower_y == 1 and upper_y == 0:
-                    self.unsat[x] = apply_theorem('real_comp_contr4', pt_l_bound, upper_assertion, self.lower_bound_pts[x], pt_up_less_low)
+                    pt_contr = apply_theorem('real_comp_contr4', pt_l_bound, upper_assertion, self.lower_bound_pts[x], pt_up_less_low)
                 elif lower_y == 1 and upper_y == -1:
-                    self.unsat[x] = apply_theorem('real_comp_contr5', pt_l_bound, upper_assertion, self.lower_bound_pts[x], pt_up_less_low)
+                    pt_contr = apply_theorem('real_comp_contr5', pt_l_bound, upper_assertion, self.lower_bound_pts[x], pt_up_less_low)
+                self.unsat[x] = self.elim_aux_vars(pt_contr)
                 raise AssertLowerException(str(self.unsat[x]))
         
         self.simplex.assert_lower(x.name, lower_bound)
@@ -1130,9 +1132,9 @@ class SimplexHOLWrapper:
             upper_bound_value = upper_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('simplex_delta_macro', upper_bound_value < lower_bound_value)
             # pt_upper_less_lower = ProofTerm.sorry(Thm([], upper_bound_value < lower_bound_value))
-            self.unsat[contr_var] = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt).on_prop(
-                        top_conv(rewr_conv('real_add_lid')), top_conv(rewr_conv('real_zero_minus')))
-            pt_concl = self.unsat[contr_var]
+            pt_concl = self.elim_aux_vars(apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt).on_prop(
+                        top_conv(rewr_conv('real_add_lid')), top_conv(rewr_conv('real_zero_minus'))))
+            self.unsat[contr_var] = pt_concl
 
         else: 
             # contradiction comes from contr_var's value is less than it's lower bound.
@@ -1175,21 +1177,30 @@ class SimplexHOLWrapper:
             lower_bound_value = lower_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('simplex_delta_macro', upper_bound_value < lower_bound_value)
             # pt_upper_less_lower = ProofTerm.sorry(Thm([], upper_bound_value < lower_bound_value))
-            self.unsat[contr_var] = apply_theorem('real_comp_contr1', pt_upper_less_lower, lower_bound_pt, pt_comb).on_prop(
-                        top_conv(rewr_conv('real_add_lid')), top_conv(rewr_conv('real_zero_minus')))
-            pt_concl = self.unsat[contr_var]
+            pt_concl = self.elim_aux_vars(apply_theorem('real_comp_contr1', pt_upper_less_lower, lower_bound_pt, pt_comb).on_prop(
+                        top_conv(rewr_conv('real_add_lid')), top_conv(rewr_conv('real_zero_minus'))))
+            
+            self.unsat[contr_var] = pt_concl
         
-        for eq in self.intro_eq:
-            eq = eq.prop
-            pt_concl = pt_concl.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+        # for eq in self.intro_eq:
+        #     eq = eq.prop
+        #     pt_concl = pt_concl.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
 
         return self.normalize_conflict_pt(pt_concl)
+
+    def elim_aux_vars(self, pt):
+        for eq in self.intro_eq:
+            eq = eq.prop
+            pt = pt.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+
+        return pt
 
     def normalize_conflict_pt(self, pt_concl):
         """
         Convert all x to 1 * x in the UNSAT proof term.
         """
         # rewrite 1 * x to x in hyps
+        pt_concl = self.elim_aux_vars(pt_concl)
         for hyp in pt_concl.hyps:
             pt_concl = pt_concl.implies_intr(hyp)
         pt_concl = pt_concl.on_prop(bottom_conv(rewr_conv('real_mul_lid')))

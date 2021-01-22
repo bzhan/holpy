@@ -1080,7 +1080,7 @@ class SimplexHOLWrapper:
             if lower_bound > new_upper_bound: # incosistency
                 pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(new_upper_bound), Real(lower_bound)))
                 pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, lower_assertion, self.upper_bound_pts[x])
-                self.unsat[x] = pt_contr
+                self.unsat[x] = self.elim_aux_vars(pt_contr)
                 raise AssertUpperException(str(pt_contr))
 
         self.simplex.assert_upper(x.name, upper_bound)
@@ -1113,7 +1113,7 @@ class SimplexHOLWrapper:
             if upper_bound < new_lower_bound: # incosistency
                 pt_up_less_low = ProofTerm('real_compare', less(RealType)(Real(upper_bound), Real(new_lower_bound)))
                 pt_contr = apply_theorem('real_comp_contr1', pt_up_less_low, self.lower_bound_pts[x], upper_assertion)
-                self.unsat[x] = pt_contr
+                self.unsat[x] = self.elim_aux_vars(pt_contr)
                 raise AssertLowerException(str(pt_contr))
         
         self.simplex.assert_lower(x.name, lower_bound)
@@ -1231,8 +1231,8 @@ class SimplexHOLWrapper:
             upper_bound_pt = self.upper_bound_pts[contr_var]
             upper_bound_value = upper_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('real_compare', upper_bound_value < lower_bound_value)
-            self.unsat[contr_var] = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
-            pt_concl = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
+            pt_concl = self.elim_aux_vars(apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt))
+            self.unsat[contr_var] = pt_concl
 
         else: 
             # contradiction comes from contr_var's value is less than it's lower bound.
@@ -1274,14 +1274,16 @@ class SimplexHOLWrapper:
             lower_bound_pt = self.lower_bound_pts[contr_var]
             lower_bound_value = lower_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('real_compare', upper_bound_value < lower_bound_value)
-            self.unsat[contr_var] = apply_theorem('real_comp_contr1', pt_upper_less_lower, lower_bound_pt, pt_comb)
-            pt_concl = self.unsat[contr_var]
-        
-        for eq in self.intro_eq:
-            eq = eq.prop
-            pt_concl = pt_concl.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+            pt_concl = self.elim_aux_vars(apply_theorem('real_comp_contr1', pt_upper_less_lower, lower_bound_pt, pt_comb))            
+            self.unsat[contr_var] = pt_concl
 
         return self.normalize_conflict_pt(pt_concl)
+
+    def elim_aux_vars(self, pt):
+        for eq in self.intro_eq:
+            eq = eq.prop
+            pt = pt.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+        return pt
 
     def normalize_conflict_pt(self, pt_concl):
         """
