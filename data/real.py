@@ -8,7 +8,7 @@ import typing
 
 from kernel.type import TFun, BoolType, RealType
 from kernel import term
-from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod, true, false, Var, Exists, And, Implies, Not, false, binary_min
+from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod, true, false, Var, Exists, And, Implies, Not, false
 from kernel.thm import Thm
 from kernel.theory import register_macro
 from kernel.macro import Macro
@@ -1025,12 +1025,12 @@ class relax_strict_simplex_macro(Macro):
         pt_a = pt_lower_bound
         d = set()
         
-        for i in range(len(pts) - 1):
+        for i in range(len(pts)):
             if i != len(pts) - 1:
                 pt = logic.apply_theorem("both_geq_min", pt_a)
                 pt_1, pt_2 = logic.apply_theorem("conjD1", pt), logic.apply_theorem("conjD2", pt)
             else:
-                pt_2 = pt_b
+                pt_2 = pt_a
 
             ineq = pt_2.prop
 
@@ -1038,26 +1038,15 @@ class relax_strict_simplex_macro(Macro):
                 # move all constant term from left to right in pt_2's prop
                 num = ineq.arg1.arg
                 expr = greater_eq(ineq.arg1.arg1, num+delta)
-                pt_eq_comp = ProofTerm("real_eq_comparison", Eq(ineq, expr))
-                geq_pt.insert(0, pt_2.on_prop(replace_conv(pt_eq_comp)))
+                
             else:
-                geq_pt.insert(0, pt_2)
+                expr = greater_eq(ineq.arg1, Real(0)+delta)
+
+            pt_eq_comp = ProofTerm("real_eq_comparison", Eq(ineq, expr))
+            geq_pt.insert(0, pt_2.on_prop(replace_conv(pt_eq_comp)))
 
             if i != len(pts) - 1:
                 pt_a = pt_1
-
-        # convert a > b ⊢ a - b ≥ δ ---> a > b ⊢ a ≥ b + δ
-        # geq_pt_ed = []
-        # for pt in geq_pt:
-        #     comp = pt.prop
-        #     if comp.arg1.is_minus()
-        #     if initial.arg == Real(0):
-        #         geq_pt_ed.append(pt)
-        #     else:
-        #         expr = greater_eq(initial.arg1, initial.arg + delta)
-
-        #         pt_eq_comp = ProofTerm("real_eq_comparison", Eq(pt.prop, expr))
-        #         geq_pt_ed.append(pt.on_prop(replace_conv(pt_eq_comp)))
 
         return geq_pt
 
@@ -1111,24 +1100,14 @@ class relax_strict_simplex_macro(Macro):
             if ineq.arg1.is_minus() and ineq.arg1.arg.is_number():
                 num = ineq.arg1.arg
                 expr = less_eq(ineq.arg1.arg1, num-delta)
-                pt_eq_comp = ProofTerm("real_eq_comparison", Eq(ineq, expr))
-                leq_pt.insert(0, pt_2.on_prop(replace_conv(pt_eq_comp)))
+                
             else:
-                leq_pt.insert(0, pt_2)
+                expr = less_eq(ineq.arg1, Real(0)-delta)
 
+            pt_eq_comp = ProofTerm("real_eq_comparison", Eq(ineq, expr))
+            leq_pt.insert(0, pt_2.on_prop(replace_conv(pt_eq_comp)))
             if i != len(pts) - 1:
                 pt_b = pt_1        
-
-        # # convert a < b ⊢ a - b ≤ -δ ---> a < b ⊢ a ≤ b - δ 
-        # leq_pt_ed = []
-        # for pt in leq_pt:
-        #     initial = pt.hyps[0]
-        #     if initial.arg == Real(0):
-        #         leq_pt_ed.append(pt)
-        #     else:
-        #         expr = less_eq(initial.arg1, initial.arg - delta)
-        #         pt_eq_comp = ProofTerm("real_eq_comparison", Eq(pt.prop, expr))
-        #         leq_pt_ed.append(pt.on_prop(replace_conv(pt_eq_comp)))
 
         return leq_pt
 
@@ -1226,6 +1205,4 @@ class relax_strict_simplex_macro(Macro):
             else:
                 pt_final = pt_final.implies_intr(pt_subst.prop).forall_intr(rhs.arg).\
                     forall_elim(-lhs).on_prop(top_conv(rewr_conv("real_neg_neg"))).implies_elim(ProofTerm.reflexive(lhs))
-
-        print(pt_final)
         return pt_final

@@ -5100,6 +5100,16 @@
             }
         },
         {
+            "name": "real_geq_trans",
+            "prop": "x ≥ y ⟶ y ≥ z ⟶ x ≥ z",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1",
@@ -31296,7 +31306,7 @@
         },
         {
             "name": "real_comp_contr5",
-            "prop": "l > 0 ⟶ x ≤ u - l ⟶ x ≥ v + l ⟶ u < v ⟶ false",
+            "prop": "l > 0 ⟶ x ≤ u - l ⟶ x ≥ v + l ⟶ u - l < v + l ⟶ false",
             "ty": "thm",
             "vars": {
                 "l": "real",
@@ -31475,6 +31485,115 @@
             "vars": {
                 "x": "real",
                 "y": "real"
+            }
+        },
+        {
+            "name": "real_divides_larger_1",
+            "prop": "y ≥ 1 ⟶ x > 0 ⟶ x ≥ x / y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "min_greater_0",
+            "prop": "x > 0 ⟶ y > 0 ⟶ min x y > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "both_geq_min",
+            "prop": "min x y ≥ z ⟶ x ≥ z ∧ y ≥ z",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "max_less_0",
+            "prop": "x < 0 ⟶ y < 0 ⟶ max x y < 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_neg_divides_larger_1",
+            "prop": "y ≥ 1 ⟶ x < 0 ⟶ x ≤ x / y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "both_leq_max",
+            "prop": "max x y ≤ z ⟶ x ≤ z ∧ y ≤ z",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "real_neg_div_pos",
+            "prop": "x < 0 ⟶ y > 0 ⟶ x / y < 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_greater_min",
+            "prop": "x ≥ min x y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "max_min",
+            "prop": "max (-y) (-x) = -(min x y)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_less_max",
+            "prop": "x ≤ max x y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "min_pos",
+            "prop": "x > 0 ⟶ y > 0 ⟶ min x y > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_zero_minus",
+            "prop": "0 - x = -x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
             }
         }
     ],

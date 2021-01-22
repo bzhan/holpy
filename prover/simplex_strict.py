@@ -787,7 +787,9 @@ class SimplexPosDelataMacro(Macro):
             pt_pos = ProofTerm("real_const_eq", coeff > Real(0)).on_prop(rewr_conv("eq_true", sym=True))
             pt_th = ProofTerm.theorem("real_simplex_delta3").substitution(inst=Inst(c=coeff, x=x, y=y))
             pt_inst_th = pt_inst_th.transitive(pt_th.implies_elim(pt_pos)).on_rhs(auto.auto_conv())
-        b = converted_ineq.arg
+            b = pt_inst_th.rhs.arg
+        else:
+            b = converted_ineq.arg
         pt_b = ProofTerm("real_const_eq", less_eq(RealType)(b, Real(0))).on_prop(rewr_conv("eq_true", sym=True))
         pt_delta = apply_theorem("real_simplex_delta1", ProofTerm.assume(greater(RealType)(Var("δ", RealType), Real(0))), pt_b)
         return pt_inst_th.symmetric().equal_elim(pt_delta)
@@ -1128,8 +1130,9 @@ class SimplexHOLWrapper:
             upper_bound_value = upper_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('simplex_delta_macro', upper_bound_value < lower_bound_value)
             # pt_upper_less_lower = ProofTerm.sorry(Thm([], upper_bound_value < lower_bound_value))
-            self.unsat[contr_var] = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
-            pt_concl = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt)
+            self.unsat[contr_var] = apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt).on_prop(
+                        top_conv(rewr_conv('real_add_lid')), top_conv(rewr_conv('real_zero_minus')))
+            pt_concl = self.unsat[contr_var]
 
         else: 
             # contradiction comes from contr_var's value is less than it's lower bound.
@@ -1172,7 +1175,8 @@ class SimplexHOLWrapper:
             lower_bound_value = lower_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('simplex_delta_macro', upper_bound_value < lower_bound_value)
             # pt_upper_less_lower = ProofTerm.sorry(Thm([], upper_bound_value < lower_bound_value))
-            self.unsat[contr_var] = apply_theorem('real_comp_contr1', pt_upper_less_lower, lower_bound_pt, pt_comb)
+            self.unsat[contr_var] = apply_theorem('real_comp_contr1', pt_upper_less_lower, lower_bound_pt, pt_comb).on_prop(
+                        top_conv(rewr_conv('real_add_lid')), top_conv(rewr_conv('real_zero_minus')))
             pt_concl = self.unsat[contr_var]
         
         for eq in self.intro_eq:
@@ -1296,7 +1300,7 @@ class SimplexMacro(Macro):
         _, exists_tm = pt_conj_exists.prop.strip_implies()
         
         var = Var("δ", RealType)
-        ordered_comparisons = non_strict_tms + [tm for tm in exists_tm.args[-1].subst_bound(var).arg.strip_conj() if tm.arg.is_plus() or tm.arg.is_minus()]
+        ordered_comparisons = [tm for tm in exists_tm.args[-1].subst_bound(var).arg.strip_conj()]
         pt_assume_slack_tms = [ProofTerm.assume(tm).on_prop(try_conv(arg_conv(rewr_conv('real_poly_neg2')))) for tm in ordered_comparisons]
         pt_implies_hyps_result = functools.reduce(lambda x, y: x.implies_intr(y), reversed(ordered_comparisons), result)
         pt_conjs = traverse_A(ProofTerm.assume(And(*ordered_comparisons)))
