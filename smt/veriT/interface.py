@@ -50,7 +50,10 @@ def solve_and_proof(tm):
 def proof_rec(file_name):
     """Given a smt2 file, get the proof and reconstruct it."""
     res = solve(file_name).split("\n")
-    status, proof_steps = res[0], res[1:-1]
+    if res[0] in ("sat", "unsat"):
+        status, proof_steps = res[0], res[1:-1]
+    elif res[0] == "unsupported":
+        status, proof_steps = res[1], res[2:-1]
     if status == "sat":
         print("sat")
         return

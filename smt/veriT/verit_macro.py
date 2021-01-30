@@ -4,9 +4,33 @@ Macros used in the proof reconstruction.
 
 from kernel.macro import Macro
 from kernel.theory import register_macro
-from kernel.proofterm import ProofTerm
-from kernel.term import Term
+from kernel.proofterm import ProofTerm, Thm
+from kernel.term import Term, Not, Or
 from logic import conv
+import functools
+
+@register_macro("imp_to_or")
+class ImpEqToMacro(Macro):
+    """Given a proof term ⊢ A --> B --> ... --> C, 
+    construct ⊢ ~A | ~B | ... | C"""
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        pt = prevs[0]
+        goal = args[-1]
+        # preds, concl = pt.prop.strip_implies()
+        concl = Or(*args[:-1], pt.prop)
+        assert concl == goal, "%s %s" % (concl, goal)
+        return Thm([], concl)
+    
+    def get_proof_term(self, args, prevs):
+        disjs = [tm.arg for arg in args]
+        pt0 = prevs[0]
+        pt1 = functools.reduce(lambda x, y: x.implies_intr(y).on_prop(rewr_conv("imp_disj_eq")), reversed(disjs), pt0)
+        return pt1
 
 @register_macro("verit_and_rule")
 class AndRuleMacro(Macro):
@@ -41,10 +65,22 @@ class AndRuleMacro(Macro):
             pt0 = pt0.symmetric() 
 
         assert pt0.prop == elems[-1], "%s \n %s" % (str(pt0.prop), str(goal.strip_disj()[-1]))
-
-        pt2 = pt0
-        for disj in reversed(disjs):
-            pt2 = pt2.implies_intr(disj).on_prop(conv.rewr_conv("imp_disj_eq"))
         
-        assert pt2.prop == goal
-        return pt2
+        return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt0])
+
+@register_macro("verit_eq_congurent")
+class EqCongurentMacro(Macro):
+    """Given a disj term which pattern is like (not (= x_1 y_1)) ... (not (= x_n y_n)) (= (f x_1 ... x_n) (f y_1 ... y_n))."""
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+    
+    def get_proof_term(self, goal, prevs=None):
+        elems = goal.strip_disj()
+        preds, concl = elems[:-1], elems[-1]
+        fun = concl.lhs.head
+        pt0 = ProofTerm.reflexive(fun)
+        pt_args_assms = [ProofTerm.assume(tm.arg) for tm in preds]
+        pt1 = functools.reduce(lambda x, y: x.combination(y), pt_args_assms, pt0)
+        return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt1])

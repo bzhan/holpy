@@ -73,6 +73,14 @@ class ProofReconstruction(object):
             self.and_rule(step)
         elif name == "and_pos":
             self.and_pos(step)
+        elif name == "eq_congruent":
+            self.eq_congruent(step)
+        elif name == "equiv1":
+            self.equiv1(step)
+        elif name == "equiv2":
+            self.equiv2(step)
+        elif name == "equiv_pos1":
+            self.equiv_pos1(step)
         else:
             print(step.proof_name)
             print(step)
@@ -80,13 +88,24 @@ class ProofReconstruction(object):
             self.not_imp(step)
     
     def not_imp(self, step):
-        self.proof[step.seq_num] = ProofTerm.sorry(Thm(step.assms, step.concl))
+        self.proof[step.seq_num] = ProofTerm.sorry(Thm([hyp for i in step.assms for hyp in self.proof[i].hyps], step.concl))
 
-    def schematic_rule(self, th_name, tm):
-        """Match the given theorem with tm, return a tautology proof term."""
-        pt = ProofTerm.theorem(tm)
-        inst = matcher.first_order_match(pt.prop, step.concl)
-        return pt.substitution(inst=inst)
+    def schematic_rule1(self, th_name, pt):
+        """
+        The th is in a ⊢ A --> B form, pt is ⊢ A, return ⊢ B. 
+        """
+        pt_th = ProofTerm.theorem(th_name)
+        inst = matcher.first_order_match(pt_th.prop.arg1, pt.prop)
+        pt_th_inst = pt_th.substitution(inst=inst)
+        return pt_th_inst.implies_elim(pt)
+
+    def schematic_rule2(self, th_name, tm):
+        """
+        The th is in ⊢ A, A is a tautology, instantiate th by tm.
+        """
+        pt_th = ProofTerm.theorem(th_name)
+        inst = matcher.first_order_match(pt_th.prop, tm)
+        return pt_th.substitution(inst=inst)
 
     def input_rule(self, step):
         """
@@ -151,7 +170,20 @@ class ProofReconstruction(object):
         pt = ProofTerm("imp_conj", term.Implies(step.concl.arg1.arg, step.concl.arg))
         self.proof[step.seq_num] = pt.on_prop(conv.rewr_conv("imp_disj_eq"))
 
+    def eq_congruent(self, step):
+        self.proof[step.seq_num] = ProofTerm("verit_eq_congurent", step.concl)
 
+    def equiv1(self, step):
+        """a ⟷ b --> ¬a ∨ b """
+        self.proof[step.seq_num] = self.schematic_rule1("equiv1", self.proof[step.assms[0]])
+
+    def equiv2(self, step):
+        """a ⟷ b --> a ∨ ¬b """
+        self.proof[step.seq_num] = self.schematic_rule1("equiv2", self.proof[step.assms[0]])
+
+    def equiv_pos1(self, step):
+        """¬(a ⟷ b) ∨ a ∨ ¬b"""
+        self.proof[step.seq_num] = self.schematic_rule2("equiv_pos1", step.concl)
 
 
 # class InputRule(Rule):
