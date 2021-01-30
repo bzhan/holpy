@@ -109,7 +109,7 @@ class TypeTransformer(Transformer):
         elif n2 == "Real":
             range_type = RealType
         else:
-            range_type = TConst(n3)
+            range_type = TConst(n2)
 
         return Var(str(n1), range_type)
 
@@ -200,6 +200,7 @@ class TermTransformer(Transformer):
         return Implies(s, t)
 
     def names_tm(self, num, tm):
+
         self.names[num] = tm
         return tm
 
@@ -250,17 +251,17 @@ class TermTransformer(Transformer):
 
     def step_proof1(self, num, proof_name, assms, concl):
         self.clauses[int(num.value)] = concl
-        return Rule(num, proof_name, concl, assms=assms)
+        return Rule(int(num), str(proof_name), concl, assms=assms)
 
     def step_proof2(self, num, proof_name, args, concl):
-        return Rule(num, proof_name, concl, args=args)
+        return Rule(int(num), str(proof_name), concl, args=args)
 
     def step_proof3(self, num, proof_name, concl):
-        return Rule(num, proof_name, concl)
+        return Rule(int(num), str(proof_name), concl)
 
     def input_proof(self, num, concl):
         self.clauses[num] = concl
-        return Input(num, concl)
+        return Rule(int(num), "input", concl)
 
 def term_parser(sorts):
     return Lark(grammar, start="proof", parser="lalr", transformer=TermTransformer(sorts=sorts))

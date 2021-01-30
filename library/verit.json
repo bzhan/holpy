@@ -1,0 +1,26 @@
+{
+    "content": [
+        {
+            "name": "forall_inst",
+            "prop": "¬(∀x1. P x1) ∨ P x",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "or_pos",
+            "prop": "¬P ∨ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        }
+    ],
+    "description": "Schematic verit proof rule.",
+    "imports": [
+        "logic"
+    ],
+    "name": "verit"
+}

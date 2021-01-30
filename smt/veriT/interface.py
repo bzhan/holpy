@@ -5,6 +5,7 @@ VeriT Interface.
 import z3
 import subprocess
 from prover import z3wrapper
+from smt.veriT import parser, proof
 
 class SATException(Exception):
     """Exception for SAT term."""
@@ -24,9 +25,7 @@ def solve(f):
                         --proof-version=2 \
                         --proof=- %s" % f, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, err = p.communicate()
-    print(">>>")
     print(output.decode("utf-8"))
-    # print(err)
     return output.decode("utf-8")
     
 
@@ -48,3 +47,18 @@ def solve_and_proof(tm):
 
 
 
+def proof_rec(file_name):
+    """Given a smt2 file, get the proof and reconstruct it."""
+    res = solve(file_name).split("\n")
+    status, proof_steps = res[0], res[1:-1]
+    if status == "sat":
+        print("sat")
+        return
+
+    sorts = parser.bind_var(file_name)
+    proof_parser = parser.term_parser(sorts)
+    parsed_proof_steps = [proof_parser.parse(step) for step in proof_steps]
+    rct = proof.ProofReconstruction(parsed_proof_steps)
+    hol_proof = rct.main()
+    print(hol_proof)
+    return hol_proof

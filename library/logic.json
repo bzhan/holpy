@@ -7909,6 +7909,15 @@
                 "P": "'a ⇒ bool",
                 "t": "'a"
             }
+        },
+        {
+            "name": "imp_disj_eq",
+            "prop": "(A ⟶ B) ⟷ ¬A ∨ B",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
         }
     ],
     "description": "Basic results in logic",
