@@ -9,6 +9,14 @@ import functools
 
 basic.load_theory("verit")
 
+class Concl(object):
+    def __init__(self, *tms):
+        self.tms = tms
+    
+    def __len__(self):
+        return len(self.tms)
+        
+
 class Input(object):
     def __init__(self, seq_num, concl):
         self.seq_num = seq_num
@@ -18,9 +26,17 @@ class Rule(object):
     def __init__(self, seq_num, proof_name, concl, assms=[], args=None):
         self.seq_num = seq_num
         self.proof_name = str(proof_name)
-        self.concl = concl
+        arity = len(concl)
+        if arity > 1:
+            self.concl = Or(*concl.tms) 
+        elif arity == 1:
+            self.concl = concl.tms[0]
+        else:
+            self.concl = term.false
+        self.arity = arity
         self.assms = assms
         self.args = args
+
     def __str__(self):
         return "%s: %s: %s: %s: %s" % (
             self.seq_num,
@@ -41,7 +57,16 @@ class ProofReconstruction(object):
 
     def main(self):
         for step in self.steps:
-            self.reconstruct(step)
+            # if step.seq_num in (145, 137, 142, 136, 265, 121, 80, 119, 250, 65, 64, 244, 239, 245, 68, 247, 71, 76, 249, 285):
+            # if step.seq_num in (90, 112):
+            #     self.reconstruct(step)
+            # else:
+            #     self.not_imp(step)
+            if step.seq_num < 294:
+                self.not_imp(step)
+            else:
+                self.reconstruct(step)
+            # self.reconstruct(step)
             print(step.seq_num)
         return self.proof[len(self.steps)]
 
@@ -79,12 +104,55 @@ class ProofReconstruction(object):
             self.equiv1(step)
         elif name == "equiv2":
             self.equiv2(step)
+        elif name == "not_equiv1":
+            self.not_equiv1(step)
+        elif name == "not_equiv2":
+            self.not_equiv2(step)
         elif name == "equiv_pos1":
             self.equiv_pos1(step)
+        elif name == "equiv_pos2":
+            self.equiv_pos2(step)
+        elif name == "equiv_neg1":
+            self.equiv_neg1(step)
+        elif name == "equiv_neg2":
+            self.equiv_neg2(step)
+        elif name == "tmp_distinct_elim":
+            self.tmp_distinct_elim(step)
+        elif name == "and_neg":
+            self.and_neg(step)
+        elif name == "tmp_LA_pre":
+            # self.tmp_LA_pre(step)
+            self.not_imp(step)
+        elif name == "not_or":
+            self.not_or_rule(step)
+        elif name == "or_neg":
+            self.or_neg(step)
+        elif name == "not_and":
+            self.not_and(step)
+        elif name == "implies":
+            self.implies_rule(step)
+        elif name == "not_implies1":
+            self.not_implies1(step)
+        elif name == "not_implies2":
+            self.not_implies2(step)
+        elif name == "ite1":
+            self.ite1(step)
+        elif name == "ite2":
+            self.ite2(step)
+        elif name == "not_ite1":
+            self.not_ite1(step)
+        elif name == "not_ite2":
+            self.not_ite2(step)
+        elif name == "ite_pos1":
+            self.ite_pos1(step)
+        elif name == "ite_pos2":
+            self.ite_pos2(step)
+        elif name == "ite_neg1":
+            self.ite_neg1(step)
+        elif name == "ite_neg2":
+            self.ite_neg2(step)
         else:
             print(step.proof_name)
-            print(step)
-            # raise NotImplementedError
             self.not_imp(step)
     
     def not_imp(self, step):
@@ -104,8 +172,8 @@ class ProofReconstruction(object):
         The th is in ⊢ A, A is a tautology, instantiate th by tm.
         """
         pt_th = ProofTerm.theorem(th_name)
-        inst = matcher.first_order_match(pt_th.prop, tm)
-        return pt_th.substitution(inst=inst)
+        inst = matcher.first_order_match(pt_th.prop.arg1, tm.arg1)
+        return pt_th.substitution(inst=inst).on_prop(conv.top_conv(conv.rewr_conv("double_neg")))
 
     def input_rule(self, step):
         """
@@ -130,11 +198,12 @@ class ProofReconstruction(object):
 
     def forall_inst(self, step):
         """⊢ (¬∀x. P (x)) ∨ P(x0)"""
-        self.proof[step.seq_num] = self.schematic_rule("forall_inst")
+        self.proof[step.seq_num] = self.schematic_rule2("forall_inst", step.concl)
 
     def or_pos(self, step):
         """⊢ ¬(a_1 ∨ ... ∨ a_n) ∨ a_1 ∨ ... ∨ a_n"""
-        self.proof[step.seq_num] = self.schematic_rule("or_pos")
+        # self.proof[step.seq_num] = self.schematic_rule2("or_pos", step.concl)
+        self.proof[step.seq_num] = ProofTerm("or_pos", step.concl)
 
     def or_rule(self, step):
         """
@@ -146,7 +215,20 @@ class ProofReconstruction(object):
     def resolution(self, step):
         """Given a sequence of proof terms, take resolution on them one by one."""
         res_pts = [self.proof[num] for num in step.assms]
-        self.proof[step.seq_num] = functools.reduce(lambda x, y: logic.resolution(x, y), res_pts[1:], res_pts[0])
+        # print("bug num: ", step.seq_num)
+        # for i in step.assms:
+        #     print(self.proof[i].prop)
+        pt_0 = self.proof[step.assms[0]]
+        arity1 = self.steps[step.assms[0]-1].arity
+        for i in step.assms[1:]:
+            arity2 = self.steps[i-1].arity
+            print(arity1)
+            if i == 138:
+                i
+            assert self.proof[i].prop == self.steps[i-1].concl, i
+            pt_0, arity1 = verit_resolution(pt_0, self.proof[i], arity1, arity2)
+        assert pt_0.prop == step.concl, step.seq_num
+        self.proof[step.seq_num] = pt_0
 
     def eq_reflexive(self, step):
         """{(= x x)}"""
@@ -181,10 +263,91 @@ class ProofReconstruction(object):
         """a ⟷ b --> a ∨ ¬b """
         self.proof[step.seq_num] = self.schematic_rule1("equiv2", self.proof[step.assms[0]])
 
+    def not_equiv1(self, step):
+        """¬(P ⟷ Q) ⟶ P ∨ Q"""
+        self.proof[step.seq_num] = self.schematic_rule1("not_equiv1", self.proof[step.assms[0]])
+
+    def not_equiv2(self, step):
+        """¬(P ⟷ Q) ⟶ ¬P ∨ ¬Q"""
+        self.proof[step.seq_num] = self.schematic_rule1("not_equiv2", self.proof[step.assms[0]])
+
     def equiv_pos1(self, step):
         """¬(a ⟷ b) ∨ a ∨ ¬b"""
         self.proof[step.seq_num] = self.schematic_rule2("equiv_pos1", step.concl)
 
+    def equiv_pos2(self, step):
+        """¬(a ⟷ b) ∨ a ∨ ¬b"""
+        self.proof[step.seq_num] = self.schematic_rule2("equiv_pos2", step.concl)
+
+    def equiv_neg1(self, step):
+        """(a ⟷ b) ∨ ¬a ∨ ¬b"""
+        self.proof[step.seq_num] = self.schematic_rule2("equiv_neg1", step.concl)
+
+    def equiv_neg2(self, step):
+        """(a ⟷ b) ∨ a ∨ b"""
+        self.proof[step.seq_num] = self.schematic_rule2("equiv_neg2", step.concl)
+
+    def tmp_distinct_elim(self, step):
+        """formula where distinct have been eliminated, which have done in the parsing process."""
+        self.proof[step.seq_num] = self.proof[step.assms[0]]
+
+    def and_neg(self, step):
+        """⊢ (a_1 ∧ ... ∧ a_n) ∨ ¬a_1 ∨ ... ∨ ¬a_n"""
+        self.proof[step.seq_num] = ProofTerm("and_neg", [step.arity, step.concl])
+
+    def tmp_LA_pre(self, step):
+        """formula with = replaced by conjunction of two inequalities"""
+        self.proof[step.seq_num] = self.proof[step.assms[0]].on_prop(conv.top_conv(conv.rewr_conv("tmp_LA_pre_int")))        
+
+    def not_or_rule(self, step):
+        """¬(a_1 ∨ ... ∨ a_n) --> ¬a_i"""
+        self.proof[step.seq_num] = ProofTerm("not_or_rule", [step.concl], [self.proof[i] for i in step.assms])
+
+    def or_neg(self, step):
+        """⊢ (a_1 ∨ ... ∨ a_n) ∨ ¬a_i"""
+        concl = step.concl
+        disj, atom = concl.arg1, concl.arg
+        if atom.is_not():
+            pt0 = ProofTerm("imp_disj", term.Implies(atom.arg, disj))
+        else:
+            pt0 = ProofTerm("imp_disj", term.Implies(term.Not(atom), disj))
+        pt1 = pt0.on_prop(conv.rewr_conv("imp_disj_eq"), conv.rewr_conv("disj_comm"))
+        self.proof[step.seq_num] = pt1
+
+    def not_and(self, step):
+        """⊢ ¬(a_1 ∧ ... ∧ a_n) --> ¬a_1 ∨ ... ∨ ¬a_n"""
+        arity = len(step.concl.arg.strip_disj())
+        pt = ProofTerm("not_and", [step.concl], [self.proof[step.assms[0]]])
+        # assert self.proof[step.assms[0]].on_prop(conv.top_conv(conv.rewr_conv("de_morgan_thm1"))).prop == step.concl
+        self.proof[step.seq_num] = pt
+
+    def implies_rule(self, step):
+        """{(implies a b)} --> {(not a) b}"""
+        self.proof[step.seq_num] = self.proof[step.assms[0]].on_prop(conv.rewr_conv("imp_disj_eq"))
+
+    def not_implies1(self, step):
+        """¬(a --> b) --> a"""
+        self.proof[step.seq_num] = self.schematic_rule1("not_implies1", self.proof[step.assms[0]])
+
+    def not_implies2(self, step):
+        """¬(a --> b) --> ¬b"""
+        self.proof[step.seq_num] = self.schematic_rule1("not_implies2", self.proof[step.assms[0]])
+
+    def ite1(self, step):
+        """ite a b c --> a ∨ c"""
+        self.proof[step.seq_num] = self.schematic_rule1("verit_ite1", self.proof[step.assms[0]])
+
+    def ite2(self, step):
+        """ite a b c --> ¬a ∨ b"""
+        self.proof[step.seq_num] = self.schematic_rule1("verit_ite2", self.proof[step.assms[0]])
+    
+    def not_ite1(self, step):
+        """¬(ite a b c) --> a ∨ ¬c"""
+        self.proof[step.seq_num] = self.schematic_rule1("verit_not_ite1", self.proof[step.assms[0]])
+
+    def not_ite2(self, step):
+        """¬(ite a b c) --> ¬a ∨ ¬b"""
+        self.proof[step.seq_num] = self.schematic_rule1("verit_not_ite2", self.proof[step.assms[0]])
 
 # class InputRule(Rule):
 #     """Assertion."""

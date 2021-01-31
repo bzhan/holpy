@@ -25,8 +25,7 @@ grammar = r"""
     
     ?let_pair: "(" NAME logical ")" -> let_pair
 
-    ?logical: "(" logical logical+ ")" -> comb_tm
-        | "(-" logical ")" -> uminus_tm
+    ?logical: "(-" logical ")" -> uminus_tm
         | "(+" logical logical ")" -> plus_tm
         | "(-" logical logical ")" -> minus_tm
         | "(*" logical logical ")" -> times_tm
@@ -39,14 +38,16 @@ grammar = r"""
         | "(and" logical logical+ ")" -> conj_tm
         | "(or" logical logical+ ")" -> disj_tm
         | "(=>" logical logical ")" -> implies_tm      
-        | "(ite" logical logical logical ")"  
+        | "(ite" logical logical logical ")"
+        | "(distinct" logical logical+ ")" -> distinct_tm  
         | "#" INT ":" logical -> names_tm
         | "#" INT -> repr_tm
         | "(exists" "(" typed_atom ")" logical* ")" -> exists_tm
         | "(forall" "(" typed_atom ")" logical* ")" -> forall_tm
         | "(" logical "#" INT ":" logical ")" -> pair_tm
         | "(=" logical logical ")" -> equals_tm
-        | "(let (" let_pair ")" logical* ")" -> let_tm
+        | "(let (" let_pair+ ")" logical* ")" -> let_tm1
+        | "(" logical logical+ ")" -> comb_tm
         | atom
 
     ?conclusion: "conclusion (" logical* ")" -> concl_tm
@@ -143,10 +144,10 @@ class TermTransformer(Transformer):
             raise NotImplementedError
     
     def integer(self, num):
-        return Int(num)
+        return Int(int(num))
     
     def decimal(self, num):
-        return Real(num)
+        return Real(float(num))
 
     def int_tm(self, var):
         self.sorts[var.value] = Var(var.value, IntType)
@@ -191,16 +192,23 @@ class TermTransformer(Transformer):
         return Not(tm)
 
     def conj_tm(self, *tm):
-        return And(*tm)
+        conj_tm = And(*tm)
+        conj_tm.arity = len(tm)
+        return conj_tm
 
     def disj_tm(self, *tm):
-        return Or(*tm)
+        disj_tm = Or(*tm)
+        disj_tm.arity = len(tm)
+        return disj_tm
 
     def implies_tm(self, s, t):
         return Implies(s, t)
 
-    def names_tm(self, num, tm):
+    def distinct_tm(self, *tm):
+        dis_tm = [Not(Eq(tm[i], tm[j])) for i in range(len(tm)) for j in range(i+1, len(tm))]
+        return And(*dis_tm)
 
+    def names_tm(self, num, tm):
         self.names[num] = tm
         return tm
 
@@ -221,11 +229,14 @@ class TermTransformer(Transformer):
 
     def let_pair(self, tm1, tm2):
         """Note: the let var used in body will be inserted a dollar symbol at first position."""
-        inferred_tm1 = Var("$" + tm1.value, tm2.get_type())
-        self.sorts["$" + tm1.value] = inferred_tm1
+        inferred_tm1 = Var(tm1.value, tm2.get_type())
+        self.sorts[tm1.value] = inferred_tm1
         return (inferred_tm1, tm2)
 
-    def let_tm(self, *tms):
+    def let_tm1(self, *tms):
+        return tms[-1]
+
+    def let_tm2(self, *tms):
         return tms[-1]
 
     def name_let_tm(self, tm1, tm2, *tms):
@@ -234,10 +245,11 @@ class TermTransformer(Transformer):
         return tms[-1]
     
     def concl_tm(self, *tms):
-        if len(tms) == 1:
-            return tms[0]
-        else:
-            return Or(*tms)
+        # if len(tms) == 1:
+        #     return tms[0]
+        # else:
+        #     return Or(*tms)
+        return Concl(*tms)
 
     def clause_name(self, cl):
         return int(cl.value)

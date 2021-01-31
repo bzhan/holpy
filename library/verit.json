@@ -16,11 +16,150 @@
             "vars": {
                 "P": "bool"
             }
+        },
+        {
+            "name": "equiv1",
+            "prop": "P ⟷ Q ⟶ ¬P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "equiv2",
+            "prop": "P ⟷ Q ⟶ P ∨ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "not_equiv1",
+            "prop": "¬(P ⟷ Q) ⟶ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "not_equiv2",
+            "prop": "¬(P ⟷ Q) ⟶ ¬P ∨ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "equiv_pos1",
+            "prop": "¬(P ⟷ Q) ∨ P ∨ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "equiv_pos2",
+            "prop": "¬(P ⟷ Q) ∨ ¬P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "equiv_neg1",
+            "prop": "(P ⟷ Q) ∨ ¬P ∨ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "equiv_neg2",
+            "prop": "(P ⟷ Q) ∨ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "tmp_LA_pre_int",
+            "prop": "x = y ⟷ x ≤ y ∧ y ≤ x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "not_implies1",
+            "prop": "¬(P ⟶ Q) ⟶ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "not_implies2",
+            "prop": "¬(P ⟶ Q) ⟶ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_ite1",
+            "prop": "(if P then Q else R) ⟶ P ∨ R",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_ite2",
+            "prop": "(if P then Q else R) ⟶ ¬P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_not_ite1",
+            "prop": "¬(if P then Q else R) ⟶ P ∨ ¬R",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_not_ite2",
+            "prop": "¬(if P then Q else R) ⟶ ¬P ∨ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",
     "imports": [
-        "logic"
+        "real"
     ],
     "name": "verit"
 }
