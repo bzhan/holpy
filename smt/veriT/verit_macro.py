@@ -70,7 +70,10 @@ class AndRuleMacro(Macro):
 
 @register_macro("verit_eq_congurent")
 class EqCongurentMacro(Macro):
-    """Given a disj term which pattern is like (not (= x_1 y_1)) ... (not (= x_n y_n)) (= (f x_1 ... x_n) (f y_1 ... y_n))."""
+    """Given a disj term which pattern is like (not (= x_1 y_1)) ... (not (= x_n y_n)) (= (f x_1 ... x_n) (f y_1 ... y_n)).
+    Note: The following situation is possible: (... (not (= x_i y_i) ...) (= (f ... y_i ...) (f ... x_i ...)).
+    
+    """
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -79,11 +82,64 @@ class EqCongurentMacro(Macro):
     def get_proof_term(self, goal, prevs=None):
         elems = goal.strip_disj()
         preds, concl = elems[:-1], elems[-1]
+        args_pair = [(i, j) for i, j in zip(concl.lhs.strip_comb()[1], concl.rhs.strip_comb()[1])]
+        preds_pair = [(i.arg.lhs, i.arg.rhs) for i in preds]
         fun = concl.lhs.head
         pt0 = ProofTerm.reflexive(fun)
-        pt_args_assms = [ProofTerm.assume(tm.arg) for tm in preds]
+        pt_args_assms = []
+        for arg, pred in zip(args_pair, preds_pair):
+            if arg == pred:
+                pt_args_assms.append(ProofTerm.assume(Eq(pred[0], pred[1])))
+            elif arg[0] == pred[1] and pred[0] == arg[1]:
+                pt_args_assms.append(ProofTerm.assume(Eq(pred[0], pred[1])).symmetric())
+            else:
+                raise NotImplementedError
+        # pt_args_assms = [ProofTerm.assume(tm.arg) for tm in preds]
         pt1 = functools.reduce(lambda x, y: x.combination(y), pt_args_assms, pt0)
         return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt1])
+
+@register_macro("verit_eq_congurent_pred")
+class EqCongurentPredMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+    def get_proof_term(self, goal, prevs=None):
+        """{(not (= x_1 y_1)) ... (not (= x_n y_n)) (not (p x_1 ... x_n)) (p y_1 ... y_n)}
+        Special case: (not (= x y)) (not (p x y)) (p y x)
+        """
+        elems = goal.strip_disj()
+        preds, pred_fun, concl = elems[:-2], elems[-2], elems[-1] 
+        if pred_fun.is_not():
+            args_pair = [(i, j) for i, j in zip(pred_fun.arg.strip_comb()[1], concl.strip_comb()[1])]
+        else:
+            args_pair = [(i, j) for i, j in zip(pred_fun.strip_comb()[1], concl.arg.strip_comb()[1])]
+        if len(preds) > 1:
+            preds_pair = [(i.arg.lhs, i.arg.rhs) for i in preds]
+        else:
+            preds_pair = [(preds[0].arg.lhs, preds[0].arg.rhs), (preds[0].arg.lhs, preds[0].arg.rhs)]
+        if pred_fun.is_not():
+            fun = concl.head
+        else:
+            fun = pred_fun.head
+        pt0 = ProofTerm.reflexive(fun)
+        pt_args_assms = []
+        for arg, pred in zip(args_pair, preds_pair):
+            if arg == pred:
+                pt_args_assms.append(ProofTerm.assume(Eq(pred[0], pred[1])))
+            elif arg[0] == pred[1] and pred[0] == arg[1]:
+                pt_args_assms.append(ProofTerm.assume(Eq(pred[0], pred[1])).symmetric())
+            else:
+                raise NotImplementedError
+        pt1 = functools.reduce(lambda x, y: x.combination(y), pt_args_assms, pt0)
+        if pred_fun.is_not():
+            pt2 = logic.apply_theorem("eq_implies1", pt1).implies_elim(ProofTerm.assume(pred_fun.arg))
+            return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt2])
+        else:
+            pt2 = pt1.on_prop(conv.rewr_conv("neg_iff_both_sides"))
+            pt3 = logic.apply_theorem("eq_implies1", pt2).implies_elim(ProofTerm.assume(Not(pred_fun)))
+            return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt3])   
+
 
 @register_macro("not_or_rule")
 class NotOrRuleMacro(Macro):

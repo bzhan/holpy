@@ -16,6 +16,7 @@ grammar = r"""
 
     ?atom: "true" -> true_tm
         | "false" -> false_tm
+        | "@ite" INT -> ite_name
         | NAME -> var_name
         | INT -> integer
         | DECIMAL -> decimal
@@ -72,7 +73,7 @@ grammar = r"""
     %import common.DECIMAL
     %import common.WS
     %ignore WS
-    NAME: (CNAME|"$"|"@"|"?")("?"|"$"|"@"|CNAME|DIGIT)*
+    NAME: (CNAME|"$"|"?")("~"|"?"|"$"|"@"|CNAME|DIGIT)*
 """
 @v_args(inline=True)
 class TypeTransformer(Transformer):
@@ -139,11 +140,17 @@ class TermTransformer(Transformer):
         # clauses mapping a sequence number to a proof term
         self.clauses = dict()
 
+        # ite_num mapping a number to an ite term
+        self.ites = dict()
+
     def true_tm(self):
         return term.true
     
-    def false_tm(selfz):
+    def false_tm(self):
         return term.false
+
+    def ite_name(self, num):
+        return self.ites[int(num)]
 
     def var_name(self, x):
         if x in self.sorts:
@@ -237,7 +244,9 @@ class TermTransformer(Transformer):
 
     def ite_tm(self, *tms):
         T = tms[1].get_type()
-        return term.Const("IF", term.TFun(BoolType, T, T, T))(*tms)
+        tm = term.Const("IF", term.TFun(BoolType, T, T, T))(*tms)
+        self.ites[len(self.ites)] = tm
+        return tm
 
     def let_pair(self, tm1, tm2):
         """Note: the let var used in body will be inserted a dollar symbol at first position."""

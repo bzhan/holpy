@@ -6,7 +6,7 @@ from kernel.proofterm import ProofTerm, Thm
 from logic import basic, matcher, logic, conv
 from kernel import term
 import functools
-from prover.proofrec import int_th_lemma_1_simplex
+from prover.proofrec import int_th_lemma_1_omega
 
 basic.load_theory("verit")
 
@@ -59,7 +59,6 @@ class ProofReconstruction(object):
     def main(self):
         for step in self.steps:
             self.reconstruct(step)
-            print(step.seq_num)
         return self.proof[len(self.steps)]
 
     def reconstruct(self, step):
@@ -144,11 +143,13 @@ class ProofReconstruction(object):
             self.ite_neg2(step)
         elif name == "la_generic":
             self.la_generic(step)
+        elif name == "eq_congruent_pred":
+            self.eq_congruent_pred(step)
         else:
-            print(step.proof_name)
             self.not_imp(step)
     
     def not_imp(self, step):
+        print(step.seq_num, step.proof_name)
         self.proof[step.seq_num] = ProofTerm.sorry(Thm([hyp for i in step.assms for hyp in self.proof[i].hyps], step.concl))
 
     def schematic_rule1(self, th_name, pt):
@@ -191,7 +192,9 @@ class ProofReconstruction(object):
 
     def forall_inst(self, step):
         """⊢ (¬∀x. P (x)) ∨ P(x0)"""
-        self.proof[step.seq_num] = self.schematic_rule2("forall_inst", step.concl)
+        pt_th = ProofTerm.theorem("forall_inst")
+        inst = matcher.first_order_match(pt_th.prop, step.concl)
+        self.proof[step.seq_num] = pt_th.substitution(inst=inst).on_prop(conv.top_conv(conv.beta_conv()))
 
     def or_pos(self, step):
         """⊢ ¬(a_1 ∨ ... ∨ a_n) ∨ a_1 ∨ ... ∨ a_n"""
@@ -345,8 +348,17 @@ class ProofReconstruction(object):
 
     def la_generic(self, step):
         """"""
-        self.proof[step.seq_num] = int_th_lemma_1_simplex(step.concl)
-
+        try:
+            self.proof[step.seq_num] = int_th_lemma_1_omega(step.concl)
+        except:
+            self.not_imp(step)
+    
+    def eq_congruent_pred(self, step):
+        """{(not (= x_1 y_1)) ... (not (= x_n y_n)) (not (p x_1 ... x_n)) (p y_1 ... y_n)}"""
+        try:
+            self.proof[step.seq_num] = ProofTerm("verit_eq_congurent_pred", step.concl)
+        except:
+            self.not_imp(step)
 # class InputRule(Rule):
 #     """Assertion."""
 #     def __init__(self, seq_num, params, concl):
