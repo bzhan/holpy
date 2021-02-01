@@ -18,18 +18,20 @@ class SATException(Exception):
 
 def solve(f):
     """Use veriT solver to solve a smt2 file"""
+    args = "--proof-prune "\
+            "--proof-with-sharing "\
+            "--proof-merge "\
+            "--disable-print-success "\
+            "--disable-banner "\
+            "--proof-version=2 "\
+            "--proof=-"
+
     if platform == "win32":
-        exec_file = "veriT.exe"
+        p = subprocess.Popen("veriT.exe %s %s" % (args, f), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     else:
-        exec_file = "veriT"
-    
-    p = subprocess.Popen("%s --proof-prune \
-                        --proof-with-sharing \
-                        --proof-merge \
-                        --disable-print-success \
-                        --disable-banner \
-                        --proof-version=2 \
-                        --proof=- %s" % (exec_file, f), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen("veriT %s %s" % (args, f), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            shell=True)
+
     output, err = p.communicate()
     print(output.decode("utf-8"))
     return output.decode("utf-8")
