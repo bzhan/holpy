@@ -6,6 +6,7 @@ import z3
 import subprocess
 from prover import z3wrapper
 from smt.veriT import parser, proof
+from sys import platform
 
 class SATException(Exception):
     """Exception for SAT term."""
@@ -17,13 +18,18 @@ class SATException(Exception):
 
 def solve(f):
     """Use veriT solver to solve a smt2 file"""
-    p = subprocess.Popen("veriT.exe --proof-prune \
+    if platform == "win32":
+        exec_file = "veriT.exe"
+    else:
+        exec_file = "veriT"
+    
+    p = subprocess.Popen("%s --proof-prune \
                         --proof-with-sharing \
                         --proof-merge \
                         --disable-print-success \
                         --disable-banner \
                         --proof-version=2 \
-                        --proof=- %s" % f, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        --proof=- %s" % (exec_file, f), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, err = p.communicate()
     print(output.decode("utf-8"))
     return output.decode("utf-8")

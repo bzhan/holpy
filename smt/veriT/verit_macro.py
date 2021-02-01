@@ -137,111 +137,12 @@ class VeritResolutionMacro(Macro):
         self.limit = 'resolution_right'
 
     def get_proof_term(self, args, pts):
-        # def strip_disj_num(tm, num):
-        #     """Strip the disjunction by the provided number, in case of
-        #     over-strip.
-        #     """
-        #     disj = tm
-        #     atoms = []
-        #     for i in range(num-1):
-        #         atoms.append(disj.arg1)
-        #         disj = disj.arg
 
-        #     return atoms + [disj]
-
-        # pt1, pt2 = pts
-        # if pt1.prop == Not(pt2.prop):
-        #     return logic.apply_theorem("negE", pt1, pt2)
-        # elif Not(pt1.prop) == pt2.prop:
-        #     return logic.apply_theorem("negE", pt2, pt1)
-
-        # atom = pt2.prop
-
-        # disj = pt1.prop
-        # left_disjs = []
-        # new_disjs = None
-        # while disj.is_disj():
-        #     l, r = disj.arg1, disj.arg
-        #     if atom.is_not() and l == atom.arg or l.is_not() and l.arg == atom:
-        #         new_disjs = Or(l, *left_disjs, r)
-        #         break
-        #     left_disjs.append(l)
-        #     if atom.is_not() and r == atom.arg or r.is_not() and r.arg == atom:
-        #         new_disjs = Or(r, *left_disjs)
-        #         break
-        #     else:
-        #         disj = r
-        # try:
-        #     assert new_disjs is not None, "literal not found"
-        # except:
-        #     return logic.resolution(pt1, pt2)
-        # # if new_disjs is None:
-        # #     return logic.resolution(pt1, pt2)
-
-        # pt1 = logic.imp_disj_iff(Eq(pt1.prop, new_disjs)).equal_elim(pt1)
-        # if pt2.prop.is_not():
-        #     return logic.apply_theorem('resolution_left', pt1, pt2)
-        # else:
-        #     return logic.apply_theorem('resolution_right', pt2, pt1)
-        
         # First, find the pair i, j such that B_j = ~A_i or A_i = ~B_j, the
-        # variable side records the side of the positive literal.
-        # pt1, pt2 = pts
-        # disj1 = pt1.prop.strip_disj()
-        # disj2 = pt2.prop.strip_disj()
-
-        # side = None
-        # for i, t1 in enumerate(disj1):
-        #     for j, t2 in enumerate(disj2):
-        #         if t2 == Not(t1):
-        #             side = 'left'
-        #             break
-        #         elif t1 == Not(t2):
-        #             side = 'right'
-        #             break
-        #     if side is not None:
-        #         break
-        
-        # if Not(pt1.prop) in disj2:
-        #     side = 'left'
-        # elif Not(pt2.prop) in disj1:
-        #     side = 'right'
-        # else:
-        #     assert side is not None, "resolution: literal not found"
-        
-        # # If side is wrong, just swap:
-        # if side == 'right':
-        #     return self.get_proof_term(arg, [pt2, pt1])
-        
-        # if Not(pt1.prop) in disj2:
-        #     idx = disj2.index(Not(pt1.prop))
-        #     disj1 = [pt1.prop]
-        #     disj2 = [Not(pt1.prop)] + disj2[:idx] + disj2[idx+1:]
-        # else:
-        #     # Move items i and j to the front
-        #     disj1 = [disj1[i]] + disj1[:i] + disj1[i+1:]
-        #     disj2 = [disj2[j]] + disj2[:j] + disj2[j+1:]
-        
-        # eq_pt1 = logic.imp_disj_iff(Eq(pt1.prop, Or(*disj1)))
-        # eq_pt2 = logic.imp_disj_iff(Eq(pt2.prop, Or(*disj2)))
-        # pt1 = eq_pt1.equal_elim(pt1)
-        # pt2 = eq_pt2.equal_elim(pt2)
-        
-        # if len(disj1) > 1 and len(disj2) > 1:
-        #     pt = logic.apply_theorem('resolution', pt1, pt2)
-        # elif len(disj1) > 1 and len(disj2) == 1:
-        #     pt = logic.apply_theorem('resolution_left', pt1, pt2)
-        # elif len(disj1) == 1 and len(disj2) > 1:
-        #     pt = logic.apply_theorem('resolution_right', pt1, pt2)
-        # else:
-        #     pt = logic.apply_theorem('negE', pt2, pt1)
-
-                # First, find the pair i, j such that B_j = ~A_i or A_i = ~B_j, the
         # variable side records the side of the positive literal.
         pt1, pt2 = pts
         disj1 = strip_num(pt1.prop, args[0])
         disj2 = strip_num(pt2.prop, args[1])
-        
         side = None
         for i, t1 in enumerate(disj1):
             for j, t2 in enumerate(disj2):

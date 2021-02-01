@@ -57,16 +57,7 @@ class ProofReconstruction(object):
 
     def main(self):
         for step in self.steps:
-            # if step.seq_num in (145, 137, 142, 136, 265, 121, 80, 119, 250, 65, 64, 244, 239, 245, 68, 247, 71, 76, 249, 285):
-            # if step.seq_num in (90, 112):
-            #     self.reconstruct(step)
-            # else:
-            #     self.not_imp(step)
-            if step.seq_num < 294:
-                self.not_imp(step)
-            else:
-                self.reconstruct(step)
-            # self.reconstruct(step)
+            self.reconstruct(step)
             print(step.seq_num)
         return self.proof[len(self.steps)]
 
@@ -215,20 +206,23 @@ class ProofReconstruction(object):
     def resolution(self, step):
         """Given a sequence of proof terms, take resolution on them one by one."""
         res_pts = [self.proof[num] for num in step.assms]
-        # print("bug num: ", step.seq_num)
-        # for i in step.assms:
-        #     print(self.proof[i].prop)
         pt_0 = self.proof[step.assms[0]]
         arity1 = self.steps[step.assms[0]-1].arity
         for i in step.assms[1:]:
             arity2 = self.steps[i-1].arity
-            print(arity1)
-            if i == 138:
-                i
             assert self.proof[i].prop == self.steps[i-1].concl, i
+            pt_1 = pt_0
             pt_0, arity1 = verit_resolution(pt_0, self.proof[i], arity1, arity2)
-        assert pt_0.prop == step.concl, step.seq_num
-        self.proof[step.seq_num] = pt_0
+            print(i, arity1)
+
+        if pt_0.prop == step.concl:
+            self.proof[step.seq_num] = pt_0
+        else:
+            concl_disjs = strip_num(step.concl, step.arity)
+            pt_disjs = strip_num(pt_0.prop, step.arity)
+            assert set(concl_disjs) == set(pt_disjs)
+            implies_pt_norm = ProofTerm("imp_disj", term.Implies(pt_0.prop, Or(*concl_disjs)))
+            self.proof[step.seq_num] = implies_pt_norm.implies_elim(pt_0)
 
     def eq_reflexive(self, step):
         """{(= x x)}"""
