@@ -6,6 +6,7 @@ from kernel.proofterm import ProofTerm, Thm
 from logic import basic, matcher, logic, conv
 from kernel import term
 import functools
+from prover.proofrec import int_th_lemma_1_simplex
 
 basic.load_theory("verit")
 
@@ -112,8 +113,7 @@ class ProofReconstruction(object):
         elif name == "and_neg":
             self.and_neg(step)
         elif name == "tmp_LA_pre":
-            # self.tmp_LA_pre(step)
-            self.not_imp(step)
+            self.tmp_LA_pre(step)
         elif name == "not_or":
             self.not_or_rule(step)
         elif name == "or_neg":
@@ -142,6 +142,8 @@ class ProofReconstruction(object):
             self.ite_neg1(step)
         elif name == "ite_neg2":
             self.ite_neg2(step)
+        elif name == "la_generic":
+            self.la_generic(step)
         else:
             print(step.proof_name)
             self.not_imp(step)
@@ -213,7 +215,6 @@ class ProofReconstruction(object):
             assert self.proof[i].prop == self.steps[i-1].concl, i
             pt_1 = pt_0
             pt_0, arity1 = verit_resolution(pt_0, self.proof[i], arity1, arity2)
-            print(i, arity1)
 
         if pt_0.prop == step.concl:
             self.proof[step.seq_num] = pt_0
@@ -312,7 +313,6 @@ class ProofReconstruction(object):
         """⊢ ¬(a_1 ∧ ... ∧ a_n) --> ¬a_1 ∨ ... ∨ ¬a_n"""
         arity = len(step.concl.arg.strip_disj())
         pt = ProofTerm("not_and", [step.concl], [self.proof[step.assms[0]]])
-        # assert self.proof[step.assms[0]].on_prop(conv.top_conv(conv.rewr_conv("de_morgan_thm1"))).prop == step.concl
         self.proof[step.seq_num] = pt
 
     def implies_rule(self, step):
@@ -342,6 +342,10 @@ class ProofReconstruction(object):
     def not_ite2(self, step):
         """¬(ite a b c) --> ¬a ∨ ¬b"""
         self.proof[step.seq_num] = self.schematic_rule1("verit_not_ite2", self.proof[step.assms[0]])
+
+    def la_generic(self, step):
+        """"""
+        self.proof[step.seq_num] = int_th_lemma_1_simplex(step.concl)
 
 # class InputRule(Rule):
 #     """Assertion."""

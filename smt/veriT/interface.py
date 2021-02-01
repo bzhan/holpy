@@ -33,7 +33,7 @@ def solve(f):
                             shell=True)
 
     output, err = p.communicate()
-    print(output.decode("utf-8"))
+    # print(output.decode("utf-8"))
     return output.decode("utf-8")
     
 
@@ -71,5 +71,4 @@ def proof_rec(file_name):
     parsed_proof_steps = [proof_parser.parse(step) for step in proof_steps]
     rct = proof.ProofReconstruction(parsed_proof_steps)
     hol_proof = rct.main()
-    print(hol_proof)
     return hol_proof

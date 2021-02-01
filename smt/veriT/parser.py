@@ -14,7 +14,9 @@ grammar = r"""
         | "(declare-fun " NAME "(" NAME+ ")" NAME ")" -> fun_type1
         | "(declare-fun " NAME "()" NAME ")" -> fun_type2
 
-    ?atom: NAME -> var_name
+    ?atom: "true" -> true_tm
+        | "false" -> false_tm
+        | NAME -> var_name
         | INT -> integer
         | DECIMAL -> decimal
         | "@" NAME -> quant_var
@@ -38,7 +40,7 @@ grammar = r"""
         | "(and" logical logical+ ")" -> conj_tm
         | "(or" logical logical+ ")" -> disj_tm
         | "(=>" logical logical ")" -> implies_tm      
-        | "(ite" logical logical logical ")"
+        | "(ite" logical logical logical ")" -> ite_tm
         | "(distinct" logical logical+ ")" -> distinct_tm  
         | "#" INT ":" logical -> names_tm
         | "#" INT -> repr_tm
@@ -137,6 +139,12 @@ class TermTransformer(Transformer):
         # clauses mapping a sequence number to a proof term
         self.clauses = dict()
 
+    def true_tm(self):
+        return term.true
+    
+    def false_tm(selfz):
+        return term.false
+
     def var_name(self, x):
         if x in self.sorts:
             return self.sorts[x]
@@ -226,6 +234,10 @@ class TermTransformer(Transformer):
 
     def pair_tm(self, s, t):
         return (s, t)
+
+    def ite_tm(self, *tms):
+        T = tms[1].get_type()
+        return term.Const("IF", term.TFun(BoolType, T, T, T))(*tms)
 
     def let_pair(self, tm1, tm2):
         """Note: the let var used in body will be inserted a dollar symbol at first position."""
