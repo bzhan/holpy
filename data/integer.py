@@ -1,5 +1,5 @@
 from kernel.type import TFun, IntType
-from kernel.term import Var, Int, Eq, Term, equals, Const, less, less_eq, greater, greater_eq
+from kernel.term import Var, Int, Eq, Term, equals, Const, less, less_eq, greater, greater_eq, Not
 from kernel import term_ord
 from kernel.proofterm import ProofTerm, refl
 from kernel.macro import Macro
@@ -460,19 +460,40 @@ class int_const_ineq_macro(Macro):
 
     def eval(self, goal, prevs):
         assert len(prevs) == 0, "int_const_ineq: no conditions expected"
-        assert goal.is_less() or goal.is_greater() or goal.is_less_eq() or goal.is_greater_eq(),\
-            "int_const_ineq: goal must be an inequality"
+
+        if goal.is_not():
+            goal = goal.arg
+
+        assert (goal.is_compares() or goal.is_equals()) and goal.arg1.is_constant() and goal.arg.is_constant()\
+            and goal.arg1.get_type() == IntType, repr(goal)
         lhs, rhs = int_eval(goal.arg1), int_eval(goal.arg)
         if goal.is_less():
-            assert lhs < rhs
-        if goal.is_less_eq():
-            assert lhs <= rhs
-        if goal.is_greater():
-            assert lhs > rhs
-        if goal.is_greater_eq():
-            assert lhs >= rhs
-
-        return Thm([], goal)
+            if lhs < rhs:
+                return Thm([], goal)
+            else:
+                return Thm([], Not(goal))
+        elif goal.is_less_eq():
+            if lhs <= rhs:
+                return Thm([], goal)
+            else:
+                return Thm([], Not(goal))
+        elif goal.is_greater():
+            if lhs > rhs:
+                return Thm([], goal)
+            else:
+                return Thm([], Not(goal))
+        elif goal.is_greater_eq():
+            if lhs >= rhs:
+                return Thm([], goal)
+            else:
+                return Thm([], Not(goal))
+        elif goal.is_equals():
+            if lhs == rhs:
+                return Thm([], goal)
+            else:
+                return Thm([], Not(goal))
+        else:
+            raise NotImplementedError
 
 
 @register_macro('int_multiple_ineq_equiv')
@@ -817,4 +838,16 @@ class int_simplex_form(Conv):
         else:
             raise NotImplementedError       
 
-    
+class int_const_compares(Conv):
+    """
+    Given an int constant comparison, convert it to false or true.
+    """
+    def get_proof_term(self, tm):
+        if not ((tm.is_compares() or tm.is_equals()) and \
+            tm.arg1.is_constant() and tm.arg.is_constant()):
+            return refl(tm)
+        pt = ProofTerm("int_const_ineq", tm)
+        if pt.prop.is_not():
+            return pt.on_prop(rewr_conv("eq_false"))
+        else:
+            return pt.on_prop(rewr_conv("eq_true"))
