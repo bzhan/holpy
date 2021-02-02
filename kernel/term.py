@@ -832,6 +832,20 @@ class Term():
         else:
             return self.is_frac_number()
 
+    def is_constant(self):
+        """Whether self represents a constant.
+        
+        Note the constant could be in arbitrary form.
+        """
+        if self.is_number():
+            return True
+        elif self.is_uminus():
+            return self.arg.is_number()
+        elif self.head.name in ("plus", "minus", "times", "real_divide", "power"):
+            return self.arg1.is_number() and self.arg.is_number()
+        else:
+            return False
+
     def dest_number(self):
         """Convert a term to a Python number."""
         if self.is_zero():
