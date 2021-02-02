@@ -5,8 +5,11 @@ Macros used in the proof reconstruction.
 from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, Thm
-from kernel.term import Term, Not, Or, Eq, Implies
+from kernel.term import Term, Not, Or, Eq, Implies, false, true
+from prover.proofrec import int_th_lemma_1_omega, int_th_lemma_1_simplex
 from logic import conv, logic
+from data import integer
+from data import proplogic
 import functools
 
 @register_macro("imp_to_or")
@@ -300,3 +303,29 @@ class OrPosMacro(Macro):
     def eval(self, goal, prevs=None):
         assert goal.arg1.arg == goal.arg
         return Thm([], goal)
+
+@register_macro("la_generic")
+class LaGenericMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def is_constant(self, tm):
+        """Determine whether tm is an inequality only containing constants."""
+        return tm.is_compares() and tm.arg1.is_number() and tm.arg.is_number()
+
+    def get_proof_term(self, args, prevs=None):
+        refl_pt = conv.refl(args).on_rhs(
+                conv.top_conv(conv.rewr_conv("int_eq_leq_geq")),
+                conv.top_conv(conv.rewr_conv("de_morgan_thm1")),
+                conv.top_conv(integer.int_norm_neg_compares()),
+                conv.top_conv(integer.omega_form_conv()),
+                conv.top_conv(integer.int_const_compares()),
+                proplogic.norm_full()
+        )
+        if refl_pt.rhs == true:
+            return refl_pt.on_prop(conv.rewr_conv("eq_true", sym=True))
+    
+        pt_result = int_th_lemma_1_omega(refl_pt.rhs)
+        return refl_pt.symmetric().equal_elim(pt_result)

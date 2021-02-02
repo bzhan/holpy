@@ -59,6 +59,7 @@ class ProofReconstruction(object):
     def main(self):
         for step in self.steps:
             self.reconstruct(step)
+            print(step.seq_num)
         return self.proof[len(self.steps)]
 
     def reconstruct(self, step):
@@ -143,8 +144,12 @@ class ProofReconstruction(object):
             self.ite_neg2(step)
         elif name == "la_generic":
             self.la_generic(step)
+        elif name == "la_disequality":
+            self.la_disequality(step)
         elif name == "eq_congruent_pred":
             self.eq_congruent_pred(step)
+        elif name == "tmp_ite_elim":
+            self.tmp_ite_elim(step)
         else:
             self.not_imp(step)
     
@@ -348,10 +353,7 @@ class ProofReconstruction(object):
 
     def la_generic(self, step):
         """"""
-        try:
-            self.proof[step.seq_num] = int_th_lemma_1_omega(step.concl)
-        except:
-            self.not_imp(step)
+        self.proof[step.seq_num] = ProofTerm("la_generic", step.concl)
     
     def eq_congruent_pred(self, step):
         """{(not (= x_1 y_1)) ... (not (= x_n y_n)) (not (p x_1 ... x_n)) (p y_1 ... y_n)}"""
@@ -359,6 +361,11 @@ class ProofReconstruction(object):
             self.proof[step.seq_num] = ProofTerm("verit_eq_congurent_pred", step.concl)
         except:
             self.not_imp(step)
+
+    def la_disequality(self, step):
+        self.proof[step.seq_num] = self.schematic_rule2("la_disequality", step.concl)
+        assert self.proof[step.seq_num].prop == step.concl
+
 # class InputRule(Rule):
 #     """Assertion."""
 #     def __init__(self, seq_num, params, concl):

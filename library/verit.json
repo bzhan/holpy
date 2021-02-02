@@ -155,6 +155,15 @@
                 "Q": "bool",
                 "R": "bool"
             }
+        },
+        {
+            "name": "la_disequality",
+            "prop": "a = b ∨ ¬(a ≤ b) ∨ ¬(b ≤ a)",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",
