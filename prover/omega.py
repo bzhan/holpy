@@ -751,7 +751,9 @@ class OmegaHOL:
             pt = proofterm.ProofTerm.assume(self.ineqs[i]).on_prop(integer.omega_form_conv())
             self.norm_pts[self.ineqs[i]] = pt
             self.norm_ineqs.append(pt.prop)
-            occr_vars |= set(self.ineqs[i].get_vars())
+            # occr_vars |= set(self.ineqs[i].get_vars())
+            norm_ineq = pt.prop
+            occr_vars |= set([t.arg if t.is_times() else t for t in integer.strip_plus(norm_ineq.arg)])
         
         # store ordered vars
         self.vars = term_ord.sorted_terms(occr_vars)
