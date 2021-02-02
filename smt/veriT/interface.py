@@ -33,7 +33,7 @@ def solve(f):
                             shell=True)
 
     output, err = p.communicate()
-    print(output.decode("utf-8"))
+    # print(output.decode("utf-8"))
     return output.decode("utf-8")
     
 

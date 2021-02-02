@@ -74,8 +74,10 @@ class AndRuleMacro(Macro):
 @register_macro("verit_eq_congurent")
 class EqCongurentMacro(Macro):
     """Given a disj term which pattern is like (not (= x_1 y_1)) ... (not (= x_n y_n)) (= (f x_1 ... x_n) (f y_1 ... y_n)).
-    Note: The following situation is possible: (... (not (= x_i y_i) ...) (= (f ... y_i ...) (f ... x_i ...)).
-    
+    Note: 
+    1) The following situation is possible: (... (not (= x_i y_i) ...) (= (f ... y_i ...) (f ... x_i ...)).
+    2) Using a pair twice but only given one. (not (= x_1 y_1)) (not (= x_2 y_2)) (= (f x_1 x_2 x_2) (f y_1 y_2 y_2))
+
     """
     def __init__(self):
         self.level = 1
@@ -90,14 +92,13 @@ class EqCongurentMacro(Macro):
         fun = concl.lhs.head
         pt0 = ProofTerm.reflexive(fun)
         pt_args_assms = []
-        for arg, pred in zip(args_pair, preds_pair):
-            if arg == pred:
-                pt_args_assms.append(ProofTerm.assume(Eq(pred[0], pred[1])))
-            elif arg[0] == pred[1] and pred[0] == arg[1]:
-                pt_args_assms.append(ProofTerm.assume(Eq(pred[0], pred[1])).symmetric())
-            else:
-                raise NotImplementedError
-        # pt_args_assms = [ProofTerm.assume(tm.arg) for tm in preds]
+        for pair in args_pair:
+            r_pair = pair[::-1]
+            if pair in args_pair:
+                pt_args_assms.append(ProofTerm.assume(Eq(*pair)))
+            elif r_pair in args_pair:
+                pt_args_assms.append(ProofTerm.assume(Eq(*r_pair)))
+
         pt1 = functools.reduce(lambda x, y: x.combination(y), pt_args_assms, pt0)
         return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt1])
 
@@ -243,7 +244,7 @@ class VeritResolutionMacro(Macro):
         implies_pt_norm = ProofTerm("imp_disj", Implies(pt.prop, Or(*disj_new)))
         pt_final = implies_pt_norm.implies_elim(pt)
         self.arity = len(disj_new)
-        return pt_final
+        return pt_final.on_prop(conv.top_conv(conv.rewr_conv("double_neg")))
 
 def verit_resolution(pt1, pt2, arity1, arity2):
     marc = VeritResolutionMacro()
@@ -326,6 +327,9 @@ class LaGenericMacro(Macro):
         )
         if refl_pt.rhs == true:
             return refl_pt.on_prop(conv.rewr_conv("eq_true", sym=True))
-    
+
+        # try:
         pt_result = int_th_lemma_1_omega(refl_pt.rhs)
+        # except:
+            # pt_result = int_th_lemma_1_simplex(refl_pt.rhs)
         return refl_pt.symmetric().equal_elim(pt_result)

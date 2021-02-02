@@ -47,7 +47,6 @@ grammar = r"""
         | "#" INT -> repr_tm
         | "(exists" "(" typed_atom ")" logical* ")" -> exists_tm
         | "(forall" "(" typed_atom ")" logical* ")" -> forall_tm
-        | "(" logical "#" INT ":" logical ")" -> pair_tm
         | "(=" logical logical ")" -> equals_tm
         | "(let (" let_pair+ ")" logical* ")" -> let_tm1
         | "(" logical logical+ ")" -> comb_tm
@@ -238,9 +237,6 @@ class TermTransformer(Transformer):
     
     def equals_tm(self, lhs, rhs):
         return Eq(lhs, rhs)
-
-    def pair_tm(self, s, t):
-        return (s, t)
 
     def ite_tm(self, *tms):
         T = tms[1].get_type()

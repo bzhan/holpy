@@ -57,9 +57,15 @@ class ProofReconstruction(object):
         self.proof = dict()
 
     def main(self):
+        step_num = len(self.steps)
         for step in self.steps:
-            self.reconstruct(step)
-            print(step.seq_num)
+            try:
+                self.reconstruct(step)
+            except:
+                print(step.seq_num)
+                break
+            print("{:.2%}" % (step.seq_num/step_num))
+        print("finished")
         return self.proof[len(self.steps)]
 
     def reconstruct(self, step):
@@ -148,13 +154,15 @@ class ProofReconstruction(object):
             self.la_disequality(step)
         elif name == "eq_congruent_pred":
             self.eq_congruent_pred(step)
-        elif name == "tmp_ite_elim":
-            self.tmp_ite_elim(step)
-        else:
+        # elif name == "tmp_ite_elim":
+        #     self.tmp_ite_elim(step)
+        else:   
             self.not_imp(step)
     
     def not_imp(self, step):
         print(step.seq_num, step.proof_name)
+        if step.proof_name != "tmp_ite_elim":
+            print(step)
         self.proof[step.seq_num] = ProofTerm.sorry(Thm([hyp for i in step.assms for hyp in self.proof[i].hyps], step.concl))
 
     def schematic_rule1(self, th_name, pt):
@@ -164,7 +172,7 @@ class ProofReconstruction(object):
         pt_th = ProofTerm.theorem(th_name)
         inst = matcher.first_order_match(pt_th.prop.arg1, pt.prop)
         pt_th_inst = pt_th.substitution(inst=inst)
-        return pt_th_inst.implies_elim(pt)
+        return pt_th_inst.implies_elim(pt).on_prop(conv.top_conv(conv.rewr_conv("double_neg")))
 
     def schematic_rule2(self, th_name, tm):
         """
