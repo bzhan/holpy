@@ -328,8 +328,8 @@ class LaGenericMacro(Macro):
         if refl_pt.rhs == true:
             return refl_pt.on_prop(conv.rewr_conv("eq_true", sym=True))
 
-        # try:
-        pt_result = int_th_lemma_1_omega(refl_pt.rhs)
-        # except:
-            # pt_result = int_th_lemma_1_simplex(refl_pt.rhs)
+        try:
+            pt_result = int_th_lemma_1_omega(refl_pt.rhs)
+        except:
+            pt_result = int_th_lemma_1_simplex(refl_pt.rhs)
         return refl_pt.symmetric().equal_elim(pt_result)

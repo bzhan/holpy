@@ -840,9 +840,9 @@ class Term():
         if self.is_number():
             return True
         elif self.is_uminus():
-            return self.arg.is_number()
+            return self.arg.is_constant()
         elif self.head.name in ("plus", "minus", "times", "real_divide", "power"):
-            return self.arg1.is_number() and self.arg.is_number()
+            return self.arg1.is_constant() and self.arg.is_constant()
         else:
             return False
 

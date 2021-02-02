@@ -64,7 +64,7 @@ class ProofReconstruction(object):
             except:
                 print(step.seq_num)
                 break
-            print("{:.2%}" % (step.seq_num/step_num))
+            print("{:.2%}".format(step.seq_num/step_num))
         print("finished")
         return self.proof[len(self.steps)]
 
