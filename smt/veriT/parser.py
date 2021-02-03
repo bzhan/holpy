@@ -8,6 +8,8 @@ from smt.veriT.proof import *
 from kernel.term import *
 from kernel.type import TConst
 from kernel.proofterm import ProofTerm
+from fractions import Fraction
+import numbers
 
 grammar = r"""
     ?type: "(declare-sort" NAME INT ")" -> sort_type
@@ -21,10 +23,7 @@ grammar = r"""
         | DECIMAL -> decimal
         | "@" NAME -> quant_var
         
-    ?typed_atom: "(" NAME "Int" ")" -> int_tm
-        | "(" NAME "Real)" -> real_tm
-        | "(" NAME "Bool)" -> bool_tm 
-        | "(" NAME NAME ")" -> common_tm
+    ?typed_atom: "(" NAME NAME ")" -> common_tm
      
     ?let_pair: "(" NAME logical ")" -> let_pair
 
@@ -169,31 +168,23 @@ class TermTransformer(Transformer):
             raise NotImplementedError
     
     def integer(self, num):
-        return Int(int(num))
+        return int(num)
     
     def decimal(self, num):
-        return Real(float(num))
-
-    def int_tm(self, var):
-        if isinstance(var, Term):
-            return var    
-        self.sorts[var.value] = Var(var.value, IntType)
-        return Var(var.value, IntType)
-    
-    def real_tm(self, var):
-        if isinstance(var, Term):
-            return var
-        self.sorts[var.value] = Var(var.value, RealType)
-        return Var(var.value, RealType)
-
-    def bool_tm(self, var):
-        if isinstance(var, Term):
-            return var
-        self.sorts[var.value] = Var(var.value, BoolType)
-        return Var(var.value, BoolType)
+        return float(num)
     
     def common_tm(self, tm, T):
-        var = Var(tm.value, TConst(T.value))
+        if isinstance(tm, Term):
+            return tm
+        
+        if T.value == "Bool":
+            var = Var(tm.value, BoolType)
+        elif T.value == "Int":
+            var = Var(tm.value, IntType)
+        elif T.value == "Real":
+            var = Var(tm.value, RealType)
+        else:
+            var = Var(tm.value, TConst(T.value))
         self.sorts[tm.value] = var
         return var
 
@@ -211,6 +202,11 @@ class TermTransformer(Transformer):
 
     def times_tm(self, lhs, rhs):
         return lhs * rhs
+
+    def divides_tm(self, lhs, rhs):
+        if isinstance(lhs, numbers.Number) and isinstance(rhs, numbers.Number):
+            return Fraction(lhs, rhs)
+        return lhs / rhs
 
     def greater_tm(self, lhs, rhs):
         return lhs > rhs
@@ -260,9 +256,16 @@ class TermTransformer(Transformer):
     def equals_tm(self, lhs, rhs):
         return Eq(lhs, rhs)
 
-    def ite_tm(self, *tms):
-        T = tms[1].get_type()
-        tm = term.Const("IF", term.TFun(BoolType, T, T, T))(*tms)
+    def ite_tm(self, tm1, tm2, tm3):
+        T = tm2.get_type()
+        if isinstance(tm3, numbers.Number):
+            if T == RealType:
+                tm3 = Real(tm3)
+            elif T == IntType:
+                tm3 = Int(tm3)
+            else:
+                raise NotImplementedError
+        tm = term.Const("IF", term.TFun(BoolType, T, T, T))(tm1, tm2, tm3)
         self.ites[len(self.ites)] = tm
         return tm
 
