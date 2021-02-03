@@ -916,6 +916,31 @@ class real_norm_comparison(Conv):
         elif lhs.is_less():
             return pt1.on_rhs(rewr_conv('real_le_gt'), auto.auto_conv())
 
+class real_simplex_form(Conv):
+    """Convert an inequality to simplex form: 
+    c_1 * x_1 + ... + c_n * x_n <> d 
+    """
+    def get_proof_term(self, t):
+        if not is_real_ineq(t):
+            return refl(t)
+
+        pt_refl = refl(t).on_rhs(real_norm_comparison())
+        left_expr = pt_refl.rhs.arg1
+        if not left_expr.is_plus() or not left_expr.arg1.is_constant():
+            return pt_refl
+
+        if pt_refl.rhs.is_greater_eq():
+            return pt_refl.on_rhs(rewr_conv("real_geq_move_left"))
+        elif pt_refl.rhs.is_greater():
+            return pt_refl.on_rhs(rewr_conv("real_gt_move_left"))
+        elif pt_refl.rhs.is_less_eq():
+            return pt_refl.on_rhs(rewr_conv("real_leq_move_left"))
+        elif pt_refl.rhs.is_less():
+            return pt_refl.on_rhs(rewr_conv("real_lt_move_left"))
+        else:
+            raise NotImplementedError(str(t))
+
+
 class replace_conv(Conv):
     def __init__(self, pt):
         self.pt = pt
@@ -949,6 +974,66 @@ class RealCompareMacro(Macro):
             assert lhs >= rhs, "%f !>= %f" % (lhs, rhs)
         
         return Thm([], goal)
+
+
+@register_macro('real_const_ineq')
+class real_const_ineq_macro(Macro):
+    """Get an pure integer inequality"""
+    def __init__(self):
+        self.level = 0 # no expand implement
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, goal, prevs):
+        assert len(prevs) == 0, "int_const_ineq: no conditions expected"
+
+        if goal.is_not():
+            goal = goal.arg
+
+        assert (goal.is_compares() or goal.is_equals()) and goal.arg1.is_constant() and goal.arg.is_constant()\
+            and goal.arg1.get_type() == RealType, repr(goal)
+        lhs, rhs = real_eval(goal.arg1), real_eval(goal.arg)
+        if goal.is_less():
+            if lhs < rhs:
+                return Thm([], goal)
+            else:
+                return Thm([], Not(goal))
+        elif goal.is_less_eq():
+            if lhs <= rhs:
+                return Thm([], goal)
+            else:
+                return Thm([], Not(goal))
+        elif goal.is_greater():
+            if lhs > rhs:
+                return Thm([], goal)
+            else:
+                return Thm([], Not(goal))
+        elif goal.is_greater_eq():
+            if lhs >= rhs:
+                return Thm([], goal)
+            else:
+                return Thm([], Not(goal))
+        elif goal.is_equals():
+            if lhs == rhs:
+                return Thm([], goal)
+            else:
+                return Thm([], Not(goal))
+        else:
+            raise NotImplementedError
+
+class real_const_compares(Conv):
+    """
+    Given an int constant comparison, convert it to false or true.
+    """
+    def get_proof_term(self, tm):
+        if not ((tm.is_compares() or tm.is_equals()) and \
+            tm.arg1.is_constant() and tm.arg.is_constant()):
+            return refl(tm)
+        pt = ProofTerm("real_const_ineq", tm)
+        if pt.prop.is_not():
+            return pt.on_prop(rewr_conv("eq_false"))
+        else:
+            return pt.on_prop(rewr_conv("eq_true"))
 
 @register_macro("real_eq_comparison")
 class RealCompEq(Macro):
