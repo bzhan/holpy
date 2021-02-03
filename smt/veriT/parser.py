@@ -16,7 +16,6 @@ grammar = r"""
 
     ?atom: "true" -> true_tm
         | "false" -> false_tm
-        | "@ite" INT -> ite_name
         | NAME -> var_name
         | INT -> integer
         | DECIMAL -> decimal
@@ -25,7 +24,8 @@ grammar = r"""
     ?typed_atom: "(" NAME "Int" ")" -> int_tm
         | "(" NAME "Real)" -> real_tm
         | "(" NAME "Bool)" -> bool_tm 
-    
+        | "(" NAME NAME ")" -> common_tm
+     
     ?let_pair: "(" NAME logical ")" -> let_pair
 
     ?logical: "(-" logical ")" -> uminus_tm
@@ -122,7 +122,7 @@ def bind_var(smt2_file):
     with open(smt2_file, "r") as f:
         return {type_parser.parse(s.replace("\n", "")).name: \
                     type_parser.parse(s.replace("\n", "")) for s in f.readlines() if \
-                        s.startswith("(declare-fun")}
+                        s.strip().startswith("(declare-fun")}
 
 @v_args(inline=True)
 class TermTransformer(Transformer):
@@ -163,6 +163,8 @@ class TermTransformer(Transformer):
             return self.sorts[x]
         elif x[0] == "$" and x[1:] in self.sorts:
             return self.sorts[x[1:]]
+        elif x[:4] == "@ite":
+            return self.ite_name(int(x[4:]))
         else:
             raise NotImplementedError
     
@@ -189,6 +191,11 @@ class TermTransformer(Transformer):
             return var
         self.sorts[var.value] = Var(var.value, BoolType)
         return Var(var.value, BoolType)
+    
+    def common_tm(self, tm, T):
+        var = Var(tm.value, TConst(T.value))
+        self.sorts[tm.value] = var
+        return var
 
     def comb_tm(self, *args):
         return args[0](*args[1:])
