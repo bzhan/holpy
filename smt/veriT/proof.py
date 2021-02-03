@@ -61,9 +61,6 @@ class ProofReconstruction(object):
         for step in self.steps:
             try:
                 self.reconstruct(step)
-            except:
-                print("failed: ", step.seq_num)
-                return
             print("{:.2%}".format(step.seq_num/step_num))
         print("finished")
         return self.proof[len(self.steps)]
@@ -396,7 +393,6 @@ class ProofReconstruction(object):
         self.proof[step.seq_num] = self.schematic_rule1("verit_not_ite2", self.proof[step.assms[0]])
 
     def la_generic(self, step):
-        """"""
         self.proof[step.seq_num] = ProofTerm("la_generic", step.concl)
     
     def eq_congruent_pred(self, step):
@@ -407,7 +403,17 @@ class ProofReconstruction(object):
             self.not_imp(step)
 
     def la_disequality(self, step):
-        self.proof[step.seq_num] = self.schematic_rule2("la_disequality", step.concl)
+        """
+        Two situtaions:
+        the first is ?a = ?b ∨ ¬(?a ≤ ?b) ∨ ¬(?b ≤ ?a)
+        the second is ?a = ?b ∨ ¬(?b ≤ ?a) ∨ ¬(?a ≤ ?b)
+        """
+        if step.concl.arg1.lhs.get_type() == term.IntType:
+            self.proof[step.seq_num] = self.schematic_rule2("la_disequality_int", step.concl)
+        elif step.concl.arg1.lhs.get_type() == term.RealType:
+            self.proof[step.seq_num] = self.schematic_rule2("la_disequality_real", step.concl)
+        else:
+            raise NotImplementedError
         assert self.proof[step.seq_num].prop == step.concl
 
 # class InputRule(Rule):

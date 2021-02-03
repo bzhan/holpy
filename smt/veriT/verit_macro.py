@@ -6,10 +6,9 @@ from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, Thm
 from kernel.term import Term, Not, Or, Eq, Implies, false, true
-from prover.proofrec import int_th_lemma_1_omega, int_th_lemma_1_simplex
+from prover.proofrec import int_th_lemma_1_omega, int_th_lemma_1_simplex, real_th_lemma
 from logic import conv, logic
-from data import integer
-from data import proplogic
+from data import integer, real, proplogic
 import functools
 
 @register_macro("imp_to_or")
@@ -316,7 +315,22 @@ class LaGenericMacro(Macro):
         """Determine whether tm is an inequality only containing constants."""
         return tm.is_compares() and tm.arg1.is_number() and tm.arg.is_number()
 
-    def get_proof_term(self, args, prevs=None):
+    def real_solver(self, args):
+        refl_pt = conv.refl(args).on_rhs(
+            conv.top_conv(conv.rewr_conv("real_ge_le_same_num")),
+            conv.top_conv(conv.rewr_conv("de_morgan_thm1")),
+            conv.top_conv(real.norm_neg_real_ineq_conv()),
+            conv.top_conv(real.real_norm_comparison()),
+            conv.top_conv(real.real_const_compares()),
+            proplogic.norm_full()
+        )
+        if refl_pt.rhs == true:
+            return refl_pt.on_prop(conv.rewr_conv("eq_true", sym=True))
+
+        pt_result = real_th_lemma([refl_pt.rhs])
+        return refl_pt.symmetric().equal_elim(pt_result)
+
+    def int_solver(self, args):
         refl_pt = conv.refl(args).on_rhs(
                 conv.top_conv(conv.rewr_conv("int_eq_leq_geq")),
                 conv.top_conv(conv.rewr_conv("de_morgan_thm1")),
@@ -333,3 +347,10 @@ class LaGenericMacro(Macro):
         except:
             pt_result = int_th_lemma_1_simplex(refl_pt.rhs)
         return refl_pt.symmetric().equal_elim(pt_result)
+        
+
+    def get_proof_term(self, args, is_int=True):
+        if is_int:
+            return self.int_solver(args)
+        else:
+            return self.real_solver(args)
