@@ -27,13 +27,13 @@ def solve(f):
             "--proof=-"
 
     if platform == "win32":
-        p = subprocess.Popen("veriT.exe %s %s" % (args, f), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen("veriT %s %s" % (args, f), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     else:
         p = subprocess.Popen("veriT %s %s" % (args, f), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             shell=True)
 
     output, err = p.communicate()
-    # print(output.decode("utf-8"))
+    print(output.decode("utf-8"))
     return output.decode("utf-8")
     
 
@@ -43,17 +43,9 @@ def solve_and_proof(tm):
     with open("proof.smt2", "a") as f:
         f.seek(0)
         f.truncate()
-        f.write("(set-logic LRA)\n" + s.to_smt2())
+        f.write("(set-logic LIA)\n" + s.to_smt2())
 
-    result = solve("proof.smt2").split("\n")
-    if result[0] == "sat":
-        raise SATException(str(tm))
-    elif result[0] == "unsat":
-        return result[1:]
-    else:
-        raise NotImplementedError
-
-
+    proof_rec("proof.smt2")
 
 def proof_rec(file_name):
     """Given a smt2 file, get the proof and reconstruct it."""

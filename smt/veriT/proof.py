@@ -62,8 +62,8 @@ class ProofReconstruction(object):
             try:
                 self.reconstruct(step)
             except:
-                print(step.seq_num)
-                break
+                print("failed: ", step.seq_num)
+                return
             print("{:.2%}".format(step.seq_num/step_num))
         print("finished")
         return self.proof[len(self.steps)]
@@ -204,10 +204,46 @@ class ProofReconstruction(object):
         self.proof[step.seq_num] = self.proof[step.assms[0]]
 
     def forall_inst(self, step):
-        """⊢ (¬∀x. P (x)) ∨ P(x0)"""
-        pt_th = ProofTerm.theorem("forall_inst")
-        inst = matcher.first_order_match(pt_th.prop, step.concl)
-        self.proof[step.seq_num] = pt_th.substitution(inst=inst).on_prop(conv.top_conv(conv.beta_conv()))
+        """⊢ (¬∀x. P (x)) ∨ P(x0)
+        
+        Bugs: ⊢ ~(!x. A --> B) | ~A | B
+        """
+        T = step.concl.arg1.arg.arg.var_T
+        if step.args.type == "NAME":
+            inst_var = term.Var(step.args.value, T)
+        elif step.args.type == "NUMBER":
+            if T == term.IntType:
+                inst_var = term.Int(int(step.args))
+            elif T == term.RealType:
+                inst_var = term.Real(float(step.args))
+            elif T == term.BoolType:
+                if step.args.value == "true":
+                    inst_var = term.true
+                elif step.args.value == "false":
+                    inst_var = term.false
+                else:
+                    raise ValueError(str(step.args))
+            else:
+                raise ValueError(str(step.args))
+        else:
+            raise NotImplementedError(step.args)
+        
+        forall_tm = step.concl.arg1.arg
+        pt_assume = ProofTerm.assume(forall_tm)
+        pt_inst = pt_assume.forall_elim(inst_var)
+        pt_implies_hyp = pt_inst.implies_intr(pt_inst.hyps[0]).on_prop(conv.rewr_conv("imp_disj_eq"))
+        if pt_implies_hyp.prop == step.concl:
+            self.proof[step.seq_num] = pt_implies_hyp
+        else: # ⊢ ¬(∀x. A --> B) ∨ ¬A ∨ B
+            is_implicit_conv = step.concl.arg1.arg.arg.body.is_implies()\
+                                and step.concl.arg.is_disj()
+            if not is_implicit_conv:
+                raise ValueError(str(step.concl))
+            pt_final = pt_implies_hyp.on_prop(conv.arg_conv(conv.rewr_conv("imp_disj_eq")))
+            assert pt_final.prop == step.concl, "%s != %s" % (str(pt_final.prop), str(step.concl))
+            self.proof[step.seq_num] = pt_final
+
+
 
     def or_pos(self, step):
         """⊢ ¬(a_1 ∨ ... ∨ a_n) ∨ a_1 ∨ ... ∨ a_n"""

@@ -58,7 +58,7 @@ grammar = r"""
 
     ?clauses: "clauses (" clause_name+ ")" -> get_clauses
 
-    ?args: "args (" NAME ")" -> args
+    ?args: "args (" (NAME|NUMBER) ")" -> args
 
     ?proof: "(set .c" INT "(" NAME ":" clauses ":" conclusion "))" -> step_proof1
         | "(set .c" INT "(" NAME ":" args ":" conclusion "))" -> step_proof2
@@ -71,8 +71,9 @@ grammar = r"""
     %import common.DIGIT
     %import common.DECIMAL
     %import common.WS
+    %import common.NUMBER
     %ignore WS
-    NAME: (CNAME|"$"|"?")("~"|"?"|"$"|"@"|CNAME|DIGIT)*
+    NAME: (CNAME|"$"|"?"|"@")("~"|"?"|"$"|"@"|CNAME|DIGIT)*
 """
 @v_args(inline=True)
 class TypeTransformer(Transformer):
@@ -152,8 +153,16 @@ class TermTransformer(Transformer):
         return self.ites[int(num)]
 
     def var_name(self, x):
+        """
+        Note that if the variable in the smt file started with "$",
+        then verit proof seems omit the $ symbol in the dollar binder,
+        so when parse the var_name, if the var_name not in sorts, we can see 
+        if var_name[1:] is in sorts.
+        """
         if x in self.sorts:
             return self.sorts[x]
+        elif x[0] == "$" and x[1:] in self.sorts:
+            return self.sorts[x[1:]]
         else:
             raise NotImplementedError
     
@@ -164,14 +173,20 @@ class TermTransformer(Transformer):
         return Real(float(num))
 
     def int_tm(self, var):
+        if isinstance(var, Term):
+            return var    
         self.sorts[var.value] = Var(var.value, IntType)
         return Var(var.value, IntType)
     
     def real_tm(self, var):
+        if isinstance(var, Term):
+            return var
         self.sorts[var.value] = Var(var.value, RealType)
         return Var(var.value, RealType)
 
     def bool_tm(self, var):
+        if isinstance(var, Term):
+            return var
         self.sorts[var.value] = Var(var.value, BoolType)
         return Var(var.value, BoolType)
 
