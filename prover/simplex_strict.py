@@ -1237,23 +1237,6 @@ class SimplexHOLWrapper:
 
         return self.simplex.mapping
 
-def term_to_ineq(tm):
-    """
-    Given a linear arithmetic comparison term, return an object of class InEquation.
-    """
-    assert tm.is_compares(), "%s is not a linear comparison." % str(tm)
-    times_tm = [(real.real_eval(t.arg1), str(t.arg)) if t.is_times() else (1, str(t)) for t in dest_plus(tm.arg1)]
-    bound = real.real_eval(tm.arg)
-    if tm.is_greater():
-        return GreaterEq([Jar(c, x) for c, x in times_tm], Pair(bound, 1))
-    elif tm.is_greater_eq():
-        return GreaterEq([Jar(c, x) for c, x in times_tm], Pair(bound))
-    elif tm.is_less():
-        return LessEq([Jar(c, x) for c, x in times_tm], Pair(bound, -1))
-    elif tm.is_less_eq():
-        return LessEq([Jar(c, x) for c, x in times_tm], Pair(bound))
-
-
 @register_macro('simplex_norm_form')
 class ConjAtomsExists(Macro):
     """
@@ -1268,6 +1251,45 @@ class ConjAtomsExists(Macro):
 
     def get_proof_term(self, args, prevs):
         return 
+
+def term_to_ineq(tms):
+    """Convert a list inequalities into a tableau."""
+    vs = dict()
+    i = 0
+    tableau = []
+    new_tms = [] # store the HOL form of standard tableau
+    for tm in tms:
+        summands = [(real.real_eval(t.arg1), t.arg) if t.is_times() else (1, t) for t in dest_plus(tm.arg1)]
+        line = []
+        for coeff, v in summands:
+            if v not in vs:
+                new_var = "x_" + str(i)
+                i += 1
+                vs[v] = new_var
+                line.append(Jar(coeff, new_var))
+            else:
+                line.append(Jar(coeff, vs[v]))
+        bound = real.real_eval(tm.arg)
+
+        left_parts = [jar.coeff * Var(jar.var, RealType) if jar.coeff != 1 else Var(jar.var, RealType) for jar in line]
+        hol_sum = sum(left_parts[1:], left_parts[0])
+
+        if tm.is_less():
+            tableau.append(LessEq(line, Pair(bound, -1)))
+            new_tms.append(hol_sum < bound)
+        elif tm.is_greater():
+            tableau.append(GreaterEq(line, Pair(bound, 1)))
+            new_tms.append(hol_sum > bound)
+        elif tm.is_less_eq():
+            tableau.append(LessEq(line, Pair(bound)))
+            new_tms.append(hol_sum <= bound)
+        elif tm.is_greater_eq():
+            tableau.append(GreaterEq(line, Pair(bound)))
+            new_tms.append(hol_sum >= bound)
+        else:
+            raise NotImplementedError
+
+    return tableau, new_tms, {Var(value, RealType): key for key, value in vs.items()}
 
 @register_macro('simplex_macro')
 class SimplexMacro(Macro):
@@ -1287,15 +1309,16 @@ class SimplexMacro(Macro):
             else:
                 return [pt]
         # first determine whether there are strict comparisons in args
-        strict_tms = [tm for tm in args if tm.is_less() or tm.is_greater()]
+        
         # convert HOL terms to InEquations
         s = SimplexHOLWrapper()
-        comparisons = [term_to_ineq(arg) for arg in args]
+        # comparisons = [term_to_ineq(arg) for arg in args]
+        comparisons, new_args, subst_vars = term_to_ineq(args)
         s.add_ineqs(comparisons)
         result = s.handle_assertion()
+        strict_tms = [tm for tm in new_args if tm.is_less() or tm.is_greater()]
         if not isinstance(result, ProofTerm) or not strict_tms:
             return result
-
 
         # for strict comparisons S, get the proof term ⊢ ∃t. t > 0 ⟶ S'(t)
         pt_exists = real.relax_strict_simplex_macro().get_proof_term(strict_tms)
@@ -1303,7 +1326,7 @@ class SimplexMacro(Macro):
         implications, _ = pt_exists.prop.strip_implies()
         pt_exists = functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), implications, pt_exists)
         # construct conjunctions between non-strict comparisons and ⊢ ∃t. S'(t), get ⊢ ∃t. x_1 ⋈ y_1 ∧ ... ∧ x_n ⋈ y_n ∧ S'(t)
-        non_strict_tms = list(set(args) - set(strict_tms))
+        non_strict_tms = list(set(new_args) - set(strict_tms))
         pt_conj_exists = functools.reduce(lambda x, y: apply_theorem('conj_extend_exists', ProofTerm.assume(y), x),
                                             reversed(non_strict_tms), pt_exists)
         # result is a proof term of s_1', s_2', ...,  ⊢ false, construct ⊢ ¬(s_1' ∧ s_2' ∧ ...)
@@ -1313,12 +1336,32 @@ class SimplexMacro(Macro):
         var = Var("δ", RealType)
         ordered_comparisons = [tm for tm in exists_tm.args[-1].subst_bound(var).arg.strip_conj()]
         pt_assume_slack_tms = [ProofTerm.assume(tm).on_prop(try_conv(arg_conv(rewr_conv('real_poly_neg2')))) for tm in ordered_comparisons]
+        # ⊢ A --> B --> ... --> false
         pt_implies_hyps_result = functools.reduce(lambda x, y: x.implies_intr(y), reversed(ordered_comparisons), result)
+        # A & .. & C ⊢ A, ..., A & .. & C ⊢ C
         pt_conjs = traverse_A(ProofTerm.assume(And(*ordered_comparisons)))
+        # A & .. & C ⊢ false
         pt_conj_false = functools.reduce(lambda x, y: x.implies_elim(y), pt_conjs, pt_implies_hyps_result)
+        # ⊢ ¬(A & ... & C)
         pt_neg_conj = apply_theorem("negE", apply_theorem('negI', pt_conj_false.implies_intr(pt_conj_false.hyps[0])), ProofTerm.assume(greater(RealType)(var, Real(0))))
         # construct ⊢ ∀ t. ¬(s_1' ∧ s_2' ∧ ...), then get ⊢ ¬∃t. (s_1' ∧ s_2' ∧ ...) 
-        # pt_not_exists = apply_theorem("negI", pt_neg_conj.implies_intr(And(*ordered_comparisons))).forall_intr(var).on_prop(rewr_conv('not_exists', sym=True))
         pt_not_exists = apply_theorem("negI", pt_neg_conj.implies_intr(And(*ordered_comparisons))).implies_intr(var > 0).forall_intr(var).on_prop(rewr_conv('forall_exists'), top_conv(rewr_conv("not_imp"), top_conv(rewr_conv("double_neg"))))
-        # get false
-        return apply_theorem('negE', pt_not_exists, pt_conj_exists)
+        # tableau ⊢ false
+        pt_0 = apply_theorem('negE', pt_not_exists, pt_conj_exists)
+        # ⊢ tableau --> false
+        pt_1 = functools.reduce(lambda x, y: x.implies_intr(y), pt_0.hyps, pt_0)
+        # pt_1 = apply_theorem('negI', pt_0.implies_intr(pt_0.hyps[0]))
+        # substitution
+        pt_eqs = [ProofTerm.assume(Eq(key, value)) for key, value in subst_vars.items()]
+        pt_2 = functools.reduce(lambda x, y: x.on_prop(top_conv(replace_conv(y))), pt_eqs, pt_1)
+        # eliminate auxiliary equalities
+        pt_3 = pt_2
+        for pt_eq in pt_eqs:
+            eq = pt_eq.prop
+            pt_3 = pt_3.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+
+        pt_4 = pt_3
+
+        preds, _ = pt_4.prop.strip_implies()
+        pt_5 = functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), preds, pt_4)
+        return pt_5
