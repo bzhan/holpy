@@ -1291,8 +1291,8 @@ def term_to_ineq(tms):
 
     return tableau, new_tms, {Var(value, RealType): key for key, value in vs.items()}
 
-@register_macro('simplex_macro')
-class SimplexMacro(Macro):
+@register_macro('strict_simplex_macro')
+class StrictSimplexMacro(Macro):
     """Simplex macro is used to determine whether a list of real linear arithmetic comparsions(including strict and non-strict inequalities)
     are satisfied with each other.
     If they are compatible, return an assignment for each variable, otherwise return an unsat proof term. 

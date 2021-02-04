@@ -35,100 +35,6 @@ SAT, UNSAT = range(2)
 geq_atom = namedtuple("geq_atom", ["var_name", "lower"])
 leq_atom = namedtuple("leq_atom", ["var_name", "upper"])
 
-class Pair:
-    def __init__(self, x, y=0):
-        assert isinstance(x, (int, Fraction)) or x in (math.inf, -math.inf)
-        if x not in (math.inf, -math.inf):
-            self.x = Fraction(x)
-        else:
-            self.x = x
-        assert isinstance(y, (int, Fraction))
-        self.y = Fraction(y)
-
-    def __repr__(self):
-        return "(%s, %s)" % (self.x, self.y)
-
-    def __str__(self):
-        if self.y > 0:
-            if self.y == 1:
-                return "%s + δ" % self.x
-            else:
-                return "%s + %sδ" % (self.x, self.y)
-        elif self.y == 0:
-            return str(self.x)
-        
-        else:
-            if self.y != -1:
-                return "%s - %sδ" % (self.x, -self.y)
-            else:
-                return "%s - δ" % self.x
-
-    def __eq__(self, other):
-        assert isinstance(other, Pair)
-        return self.x == other.x and self.y == other.y
-
-    def __add__(self, other):
-        assert isinstance(other, Pair)
-        return Pair(self.x + other.x, self.y + other.y)
-
-    def __mul__(self, a):
-        assert isinstance(a, (int, Fraction))
-        a = Fraction(a)
-        return Pair(a * self.x, a * self.y)
-
-    def __rmul__(self, a):
-        assert isinstance(a, (int, Fraction))
-        a = Fraction(a)
-        return Pair(a * self.x, a * self.y)        
-
-    def __sub__(self, other):
-        assert isinstance(other, Pair)
-        return Pair(self.x - other.x, self.y - other.y)
-    
-    def __lt__(self, other):
-        assert isinstance(other, Pair)
-        return self.x < other.x or (self.x == other.x and self.y < other.y)
-
-    def __gt__(self, other):
-        assert isinstance(other, Pair)
-        return self.x > other.x or (self.x == other.x and self.y > other.y)
-
-    def __le__(self, other):
-        assert isinstance(other, Pair)
-        return self.x < other.x or (self.x == other.x and self.y <= other.y)
-
-    def __ge__(self, other):
-        assert isinstance(other, Pair)
-        return self.x > other.x or (self.x == other.x and self.y >= other.y)     
-
-    def __truediv__(self, other):
-        assert isinstance(other, (int, Fraction))
-        return Pair(Fraction(self.x, other), Fraction(self.y, other))    
-
-    def __hash__(self):
-        return hash((self.x, self.y))
-
-def binary_delta(p1, p2):
-    """Given two pairs (x_1, y_1) and (x_2, y_2), where (x_1, y_1) ≤ (x_2, y_2),
-    return a δ_0 which satisfies x_1 + y_1 * δ_0 ≤ x_2 + y_2 * δ_0. 
-    """
-    assert p1 <= p2, "%s is larger than %s" % (p1, p2)
-
-    if p1.x < p2.x and p1.y > p2.y:
-        return Fraction(p2.x - p1.x, p1.y - p2.y)
-    else:
-        return 1
-
-def multi_delta(*ps):
-    """ps is a list of m pairs of Pair: ((c_1, k_1), (d_1, h_1)) ... ((c_m, k_m), (d_m, h_m))
-    return min{(d_i - c_i)/(k_i - h_i) | c_i < d_i and k_i > h_i}
-    """
-    d = set()
-    for p1, p2 in ps:
-        if p1 <= p2:
-            d.add(binary_delta(p1, p2))
-
-    return min(d) if d else 1
 
 class AssertUpperException(Exception):
     def __init__(self, msg):
@@ -1330,111 +1236,123 @@ class SimplexHOLWrapper:
 
         return self.simplex.mapping
 
-rename_pt = []
 
-def solve_hol_ineqs(ineqs, is_integer=False):
-    """
-    Given a list of HOL inequalities, use simplex method to decide whether it is SAT or UNSAT,
-    if it is SAT, return an assignment for each variable, or return the UNSAT proof term.
-    If is_integer is true, the varible in comparisons is a of_int term, we need to introduce real 
-    variables to rename them, and after simplex returning a proof term, we can resume them.
-    """
-    global rename_pt
-    hol = SimplexHOLWrapper()
-    # First convert the inequalies to GreaterEq or LessEq form.
-    converted_ineq = []
-    names = {}
-    name_index = 0
-    for ii in ineqs:
-        lhs = dest_plus(ii.arg1)
-        jars = []
-        for l in lhs:
-            if l.is_var():
-                jars.append(Jar(1, l.name))
-            elif l.is_times() and l.arg.is_var():
-                jars.append(Jar(real.real_eval(l.arg1), l.arg.name))
-            elif l.is_times() and l.arg.is_comb() and l.arg.head.name == "of_int":
-                int_var = l.arg.arg
-                if int_var not in names:
-                    names[int_var] = Var("_n" + str(name_index), RealType)
-                    name_index += 1
-                var = names[int_var]
-                rename_pt.append(ProofTerm.assume(Eq(var, l.arg)))
-                jars.append(Jar(real.real_eval(l.arg1), var.name))               
+def term_to_ineq(tms):
+    """Convert a list inequalities into a tableau."""
+    vs = dict()
+    i = 0
+    tableau = []
+    new_tms = [] # store the HOL form of standard tableau
+    for tm in tms:
+        summands = [(real.real_eval(t.arg1), t.arg) if t.is_times() else (1, t) for t in dest_plus(tm.arg1)]
+        line = []
+        for coeff, v in summands:
+            if v not in vs:
+                new_var = "x_" + str(i)
+                i += 1
+                vs[v] = new_var
+                line.append(Jar(coeff, new_var))
             else:
-                raise NotImplementedError
-        if ii.is_less_eq():    
-            converted_ineq.append(LessEq(jars, real.real_eval(ii.arg)))
-        elif ii.is_greater_eq():
-            converted_ineq.append(GreaterEq(jars, real.real_eval(ii.arg)))
+                line.append(Jar(coeff, vs[v]))
+        bound = real.real_eval(tm.arg)
+
+        left_parts = [jar.coeff * Var(jar.var, RealType) if jar.coeff != 1 else Var(jar.var, RealType) for jar in line]
+        hol_sum = sum(left_parts[1:], left_parts[0])
+
+        if tm.is_less_eq():
+            tableau.append(LessEq(line, bound))
+            new_tms.append(hol_sum <= bound)
+        elif tm.is_greater_eq():
+            tableau.append(GreaterEq(line, bound))
+            new_tms.append(hol_sum >= bound)
         else:
-            raise NotImplementedError("Simplex cannot handle %s now" % str(ii))
-    # add these inequalities into simplex
-    if is_integer:
-        s = Simplex()
-        s.add_ineqs(*converted_ineq)
-        T = branch_and_bound(s)
-        return T.branch_and_bound_pt()
-    else:
-        hol.add_ineqs(converted_ineq)
-        return hol.handle_assertion()
-    # for ii in converted_ineq:
-    #     hol.add_ineq(ii)
-    # if not is_integer:
-    #     return hol.handle_assertion()        
+            raise NotImplementedError
 
-def solve_hol_integer_ineqs(result):
-    global rename_pt
-    if not isinstance(result, ProofTerm):
-        # T = branch_and_bound(hol.simplex)
-        # T.branch_and_bound_pt()
-        raise ValueError("Cannot get a unsat proof term!")
+    return tableau, new_tms, {Var(value, RealType): key for key, value in vs.items()}
+
+@register_macro("simplex_macro")
+class SimplexMacro(Macro):
+    def __init__(self):
+        self.level = 0
+        self.sig = Term
+        self.limit = None
+
+    def get_proof_term(self, args, prevs=None):
+        # assume that all inequalities have been in normal form:
+        # args = [ineq1, ineq2,...]
+        solver = SimplexHOLWrapper()
+        # first give each variable in inequality a new name in case of 
+        # illusion from ite term
+        comparisons, new_args, subst_vars = term_to_ineq(args)
+        solver.add_ineqs(comparisons)
+        result = solver.handle_assertion()
+        if not isinstance(result, ProofTerm):
+            print("SAT")
+            return result
+        # P_1, P_2, ... |- false
+        pt_0 = result
+        # |- P_1 --> P_2 --> ... --> false 
+        pt_1 = functools.reduce(lambda x, y: x.implies_intr(y), pt_0.hyps, pt_0)
+        # substitution
+        pt_eqs = [ProofTerm.assume(Eq(key, value)) for key, value in subst_vars.items()]
+        pt_2 = functools.reduce(lambda x, y: x.on_prop(top_conv(replace_conv(y))), pt_eqs, pt_1)
+        # eliminate auxiliary equalities
+        pt_3 = pt_2
+        for pt_eq in pt_eqs:
+            eq = pt_eq.prop
+            pt_3 = pt_3.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+
+        pt_4 = pt_3
+
+        preds, _ = pt_4.prop.strip_implies()
+        pt_5 = functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), preds, pt_4)
+        return pt_5
+
+@register_macro("integer_simplex")
+class IntegerSimplexMacro(Macro):
+    def __init__(self):
+        self.level = 0
+        self.sig = Term
+        self.limit = None
     
-    pt1 = functools.reduce(lambda x, y: x.implies_intr(y), result.hyps, result)
-    pt2 = pt1.on_prop(*[top_conv(replace_conv(cv)) for cv in rename_pt])
-    implications, _ = pt2.prop.strip_implies()
-    pt3 = functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), implications, pt2)
-    # for pt in rename_pt:
-    pt4 = pt3
-    for eq in rename_pt:
-        eq = eq.prop
-        pt4 = pt4.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+    def get_proof_term(self, args, prevs=None):
+        # assume that all inequalities have been in normal form:
+        # args = [ineq1, ineq2,...]
+        # first convert every integer term to of_int term
+        pt_of_int = [integer.int_compare_to_real().get_proof_term(ineq).symmetric() for ineq in args]
+        real_ineqs = [pt.lhs for pt in pt_of_int]
+        # give each of_int term a new name
+        comparisons, new_args, subst_vars = term_to_ineq(args)
+        # get result
+        s = Simplex()
+        s.add_ineqs(*comparisons)
+        T = branch_and_bound(s)
+        result = T.branch_and_bound_pt()
+        if not isinstance(result, ProofTerm):
+            print("SAT")
+            return result
+        # P_1, P_2, ... |- false
+        pt_0 = result
+        # |- P_1 --> P_2 --> ... --> false 
+        pt_1 = functools.reduce(lambda x, y: x.implies_intr(y), pt_0.hyps, pt_0)
+        # substitution
+        pt_eqs = [ProofTerm.assume(Eq(key, of_int(RealType)(value))) for key, value in subst_vars.items()]
+        pt_2 = functools.reduce(lambda x, y: x.on_prop(top_conv(replace_conv(y))), pt_eqs, pt_1)
+        # eliminate auxiliary equalities
+        pt_3 = pt_2
+        for pt_eq in pt_eqs:
+            eq = pt_eq.prop
+            pt_3 = pt_3.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
 
-    return pt4
+        pt_4 = pt_3
 
-d = []
+        preds, _ = pt_4.prop.strip_implies()
+        pt_5 = functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), preds, pt_4)
 
-def unsat_integer_simplex_stage1(ineqs):
-    """
-    Given a set of integer comparisons. Get the real version of them,
-    then pass them to simplex, if the simplex can give a unsat proof term,
-    we also can derive the original integer comparisons' conjunction are unsat.
-    """
-    global d
-    # d is a dict mapping integer comparison term to a equality pt between integer and real comparison
-    d = [integer.int_compare_to_real().get_proof_term(ineq).symmetric() for ineq in ineqs]
-
-    real_ineqs = [pt.lhs for pt in d]
-
-    real_simplex_result = solve_hol_integer_ineqs(solve_hol_ineqs(real_ineqs, is_integer=True))
-
-    if not isinstance(real_simplex_result, ProofTerm):
-        raise ValueError(real_simplex_result)
-    return real_simplex_result
-
-def unsat_integer_simplex_stage2(real_simplex_result):
-    global d
-    pt1 = real_simplex_result # a ⋈ x, ..., c ⋈ z ⊢ false
-    for hyp in pt1.hyps:
-        pt1 = pt1.implies_intr(hyp)
-    dd = [pt.on_lhs(top_conv(real.real_eval_conv()), bottom_conv(rewr_conv('real_mul_lid'))) for pt in d]
-    # pt1: ⊢ a ⋈ x ⟶ ... ⟶ c ⋈ z ⟶ false
-    pt2 = pt1.on_prop(*[top_conv(replace_conv(cv)) for cv in dd])
-    # pt2 is an integer version of pt1
-    implies_int_ineqs, _ = pt2.prop.strip_implies()
-    return functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), implies_int_ineqs, pt2)
-
-def unsat_integer_simplex(ineqs):
-    rename_pt.clear()
-    d.clear()
-    return unsat_integer_simplex_stage2(unsat_integer_simplex_stage1(ineqs))
+        # |- P_1 --> P_2 --> ... --> false 
+        pt_6= functools.reduce(lambda x, y: x.implies_intr(y), pt_5.hyps, pt_5)
+        # convert all of_int terms to original terms
+        pt_of_int_1 = [pt.on_lhs(top_conv(real.real_eval_conv()), bottom_conv(rewr_conv('real_mul_lid'))) for pt in pt_of_int]
+        pt_7 = pt_6.on_prop(*[top_conv(replace_conv(pt)) for pt in pt_of_int_1])
+        implies_int_ineqs, _ = pt_7.prop.strip_implies()
+        return functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), implies_int_ineqs, pt_7)
