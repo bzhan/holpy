@@ -173,6 +173,15 @@
                 "a": "real",
                 "b": "real"
             }
+        },
+        {
+            "name": "tmp_LA_pre_real",
+            "prop": "x = y ⟷ x ≤ y ∧ y ≤ x",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

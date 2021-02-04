@@ -357,7 +357,10 @@ class ProofReconstruction(object):
 
     def tmp_LA_pre(self, step):
         """formula with = replaced by conjunction of two inequalities"""
-        self.proof[step.seq_num] = self.proof[step.assms[0]].on_prop(conv.top_conv(conv.rewr_conv("tmp_LA_pre_int")))        
+        self.proof[step.seq_num] = self.proof[step.assms[0]].on_prop(
+            conv.top_conv(conv.rewr_conv("tmp_LA_pre_int")),
+            conv.top_conv(conv.rewr_conv("tmp_LA_pre_real")),
+        )
 
     def not_or_rule(self, step):
         """¬(a_1 ∨ ... ∨ a_n) --> ¬a_i"""
