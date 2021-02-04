@@ -8,6 +8,8 @@ from smt.veriT.proof import *
 from kernel.term import *
 from kernel.type import TConst
 from kernel.proofterm import ProofTerm
+from logic import context
+from syntax import parser as hol_parser
 from fractions import Fraction
 import numbers
 
@@ -19,7 +21,7 @@ grammar = r"""
     ?atom: "true" -> true_tm
         | "false" -> false_tm
         | NAME -> var_name
-        | (DECIMAL|INT) -> num_tm
+        | (DECIMAL|INT)
         | "@" NAME -> quant_var
         
     ?typed_atom: "(" NAME NAME ")" -> common_tm
@@ -73,64 +75,18 @@ grammar = r"""
     %ignore WS
     NAME: (CNAME|"$"|"?"|"@")("~"|"?"|"$"|"@"|CNAME|DIGIT)*
 """
-@v_args(inline=True)
-class TypeTransformer(Transformer):
-    """Parse types in format of smt2."""
-    def __init__(self):
-        pass
-
-    def convert_type(self, T):
-        """convert Int, Bool, Real to IntType, BoolType, RealType."""
-        if T == "Bool":
-            return BoolType
-        elif T == "Int":
-            return IntType
-        elif T == "Real":
-            return RealType
-        else:
-            return TConst(T)
-
-    def sort_type(self, name, arity):
-        return TConst(str(name))
-
-    def fun_type1(self, name, *args):
-        return Var(str(name), TFun(*[self.convert_type(t) for t in args]))
-
-    def fun_type2(self, n1, n2):
-        """
-        Args:
-            n1: name of the variable
-            n2: type
-
-        return a HOL variable
-        """ 
-        if n2 == "Bool":
-            range_type = BoolType
-        elif n2 == "Int":
-            range_type = IntType
-        elif n2 == "Real":
-            range_type = RealType
-        else:
-            range_type = TConst(n2)
-
-        return Var(str(n1), range_type)
-
-def bind_var(smt2_file):
-    """Given a smt2 file, parse the declaration of sorts and return a dict."""
-    with open(smt2_file, "r") as f:
-        return {type_parser.parse(s.replace("\n", "")).name: \
-                    type_parser.parse(s.replace("\n", "")) for s in f.readlines() if \
-                        s.strip().startswith("(declare-fun")}
 
 @v_args(inline=True)
 class TermTransformer(Transformer):
     """Parse terms in proof."""
-    def __init__(self, sorts):
+    def __init__(self, ctx):
         """
         Args:
             sorts: maps from variable name to variable
         """
-        self.sorts = sorts
+        context.set_context("verit", vars=ctx)
+        # mapping from let vars to the real tm
+        self.sorts = dict()
 
         # names mapping a sequence number to a term
         self.names = dict()
@@ -141,151 +97,107 @@ class TermTransformer(Transformer):
         # ite_num mapping a number to an ite term
         self.ites = dict()
 
+        # store the vars occured in the text
+        self.vars = set()
+
     def true_tm(self):
-        return term.true
+        return "true"
     
     def false_tm(self):
-        return term.false
+        return "false"
 
     def ite_name(self, num):
         return self.ites[int(num)]
 
     def var_name(self, x):
-        """
-        Note that if the variable in the smt file started with "$",
-        then verit proof seems omit the $ symbol in the dollar binder,
-        so when parse the var_name, if the var_name not in sorts, we can see 
-        if var_name[1:] is in sorts.
-        """
-        if x in self.sorts:
-            return self.sorts[x]
-        elif x[0] == "$" and x[1:] in self.sorts:
-            return self.sorts[x[1:]]
-        elif x[:4] == "@ite":
+        s = str(x)
+        if s in self.sorts:
+            return self.sorts[s]
+        if s[:4] == "@ite":
             return self.ite_name(int(x[4:]))
-        else:
-            raise NotImplementedError
-    
-    def num_tm(self, num):
-        if any(tm.get_type() == IntType for _, tm in self.sorts.items()):
-            return Int(int(num))
-        elif any(tm.get_type() == RealType for _, tm in self.sorts.items()):
-            return Real(float(num))
-        else:
-            raise NotImplementedError(num)
-    
-    def common_tm(self, tm, T):
-        if isinstance(tm, Term):
-            return tm
-        
-        if T.value == "Bool":
-            var = Var(tm.value, BoolType)
-        elif T.value == "Int":
-            var = Var(tm.value, IntType)
-        elif T.value == "Real":
-            var = Var(tm.value, RealType)
-        else:
-            var = Var(tm.value, TConst(T.value))
-        self.sorts[tm.value] = var
-        return var
+        if s[0] == "$" and s not in self.sorts and s[1:] in self.sorts:
+            return s[1:]
+        return s
 
     def comb_tm(self, *args):
-        return args[0](*args[1:])
+        return "(" + " ".join(str(arg) for arg in args) + ")"
 
     def uminus_tm(self, arg):
-        return -arg
+        return "-" + str(arg)
 
     def plus_tm(self, lhs, rhs):
-        return lhs + rhs
+        return "(%s + %s)" % (str(lhs), str(rhs))
 
     def minus_tm(self, lhs, rhs):
-        return lhs - rhs
+        return "(%s - %s)" % (str(lhs), str(rhs))
 
     def times_tm(self, lhs, rhs):
-        return lhs * rhs
+        return "(%s * %s)" % (str(lhs), str(rhs))
 
     def divides_tm(self, lhs, rhs):
-        if isinstance(lhs, numbers.Number) and isinstance(rhs, numbers.Number):
-            return Fraction(lhs, rhs)
-        return lhs / rhs
+        return "(%s / %s)" % (str(lhs), str(rhs))
 
     def greater_tm(self, lhs, rhs):
-        return lhs > rhs
+        return "(%s > %s)" % (str(lhs), str(rhs))
 
     def greater_eq_tm(self, lhs, rhs):
-        return lhs >= rhs
+        return "(%s >= %s)" % (str(lhs), str(rhs))
 
     def less_tm(self, lhs, rhs):
-        return lhs < rhs
+        return "(%s < %s)" % (str(lhs), str(rhs))
 
     def less_eq_tm(self, lhs, rhs):
-        return lhs <= rhs
+        return "(%s <= %s)" % (str(lhs), str(rhs))
 
     def neg_tm(self, tm):
-        return Not(tm)
+        return "~(%s)" % str(tm)
 
-    def conj_tm(self, *tm):
-        conj_tm = And(*tm)
-        conj_tm.arity = len(tm)
-        return conj_tm
+    def conj_tm(self, *tms):
+        return "(%s)" % (" & ".join(str(tm) for tm in tms))
 
-    def disj_tm(self, *tm):
-        disj_tm = Or(*tm)
-        disj_tm.arity = len(tm)
-        return disj_tm
+    def disj_tm(self, *tms):
+        return "(%s)" % (" | ".join(str(tm) for tm in tms))
 
     def implies_tm(self, s, t):
-        return Implies(s, t)
+        return "(%s --> %s)" % (str(s), str(t))
 
-    def distinct_tm(self, *tm):
-        dis_tm = [Not(Eq(tm[i], tm[j])) for i in range(len(tm)) for j in range(i+1, len(tm))]
-        return And(*dis_tm)
+    def distinct_tm(self, *tms):
+        str_tms = ["~(%s = %s)" % (str(tm[i]), str(tm[j])) for i in range(len(tms)) for j in range(i+1, len(tms))]
+        return "(%s)" % (" & ".join(str_tms))
 
     def names_tm(self, num, tm):
-        self.names[num] = tm
-        return tm
+        self.names[num] = str(tm)
+        return str(tm)
 
     def repr_tm(self, num):
         return self.names[num]
 
     def exists_tm(self, v, t):
-        return Exists(v, t)
+        return "(?%s. %s)" % (str(v), str(t))
 
     def forall_tm(self, v, t):
-        return Forall(v, t)
+        return "(!%s. %s)" % (str(v), str(t))
     
     def equals_tm(self, lhs, rhs):
-        return Eq(lhs, rhs)
+        return "(%s = %s)" % (str(lhs), str(rhs))
 
     def ite_tm(self, tm1, tm2, tm3):
-        T = tm2.get_type()
-        tm = term.Const("IF", term.TFun(BoolType, T, T, T))(tm1, tm2, tm3)
-        self.ites[len(self.ites)] = tm
-        return tm
+        s = "(if %s then %s else %s)" % (tm1, tm2, tm3)
+        self.ites[len(self.ites)] = s 
+        return s
 
     def let_pair(self, tm1, tm2):
         """Note: the let var used in body will be inserted a dollar symbol at first position."""
-        inferred_tm1 = Var(tm1.value, tm2.get_type())
-        self.sorts[tm1.value] = inferred_tm1
-        return (inferred_tm1, tm2)
+        T = hol_parser.parse_term(tm2).get_type()
+        s = "(%s :: %s)" % (str(tm1), T.name)
+        self.sorts[str(tm1)] = str(tm2)
 
     def let_tm1(self, *tms):
         return tms[-1]
-
-    def let_tm2(self, *tms):
-        return tms[-1]
-
-    def name_let_tm(self, tm1, tm2, *tms):
-        ty = tm2.get_type()
-        self.sorts[tm1.name] = Var(tm1.name, ty)
-        return tms[-1]
     
     def concl_tm(self, *tms):
-        # if len(tms) == 1:
-        #     return tms[0]
-        # else:
-        #     return Or(*tms)
-        return Concl(*tms)
+        hol_tms = [hol_parser.parse_term(tm) for tm in tms]
+        return Concl(*hol_tms)
 
     def clause_name(self, cl):
         return int(cl.value)
@@ -311,23 +223,13 @@ class TermTransformer(Transformer):
         self.clauses[num] = concl
         return Rule(int(num), "input", concl)
 
-def term_parser(sorts):
-    return Lark(grammar, start="proof", parser="lalr", transformer=TermTransformer(sorts=sorts))
+def term_parser(ctx):
+    return Lark(grammar, start="proof", parser="lalr", transformer=TermTransformer(ctx=ctx))
 
-type_parser = Lark(grammar, start="type", parser="lalr", transformer=TypeTransformer())
-
-def parse_step(s, sorts):
+def parse_step(s, ctx):
     """Parse a proof step."""
     try:
-        return term_parser(sorts).parse(s)
-    except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
-        print("When parsing:", s)
-        raise e
-
-def parse_type(s):
-    """Parse a proof step."""
-    try:
-        return type_parser.parse(s)
+        return term_parser(ctx).parse(s)
     except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
         print("When parsing:", s)
         raise e
