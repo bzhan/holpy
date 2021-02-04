@@ -17,7 +17,7 @@ class StrictSimplexTest(unittest.TestCase):
 
         for tableau in test_data:
             tableau = [parse_term(tm) for tm in tableau]
-            pt = simplex_strict.SimplexMacro().get_proof_term(args=tableau)
+            pt = simplex_strict.StrictSimplexMacro().get_proof_term(args=tableau)
             self.assertNotEqual(pt.rule, "sorry")
             self.assertEqual(pt.prop, false)
 

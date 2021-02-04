@@ -918,7 +918,7 @@ class real_norm_comparison(Conv):
 
 class real_simplex_form(Conv):
     """Convert an inequality to simplex form: 
-    c_1 * x_1 + ... + c_n * x_n <> d 
+    c_1 * x_1 + ... + c_n * x_n ⋈ d 
     """
     def get_proof_term(self, t):
         if not is_real_ineq(t):
@@ -926,21 +926,25 @@ class real_simplex_form(Conv):
 
         pt_refl = refl(t).on_rhs(real_norm_comparison())
         left_expr = pt_refl.rhs.arg1
-        if not left_expr.is_plus() or not left_expr.arg1.is_constant():
-            return pt_refl
+        summands = integer.strip_plus(left_expr)
+        first = summands[0]
 
+        if not left_expr.is_plus() or not first.is_constant():
+            return pt_refl
+        first_value = real_eval(first)
         if pt_refl.rhs.is_greater_eq():
-            return pt_refl.on_rhs(rewr_conv("real_geq_move_left"))
+            pt_th = ProofTerm.theorem("real_sub_both_sides_geq")
         elif pt_refl.rhs.is_greater():
-            return pt_refl.on_rhs(rewr_conv("real_gt_move_left"))
+            pt_th = ProofTerm.theorem("real_sub_both_sides_gt")
         elif pt_refl.rhs.is_less_eq():
-            return pt_refl.on_rhs(rewr_conv("real_leq_move_left"))
+            pt_th = ProofTerm.theorem("real_sub_both_sides_leq")
         elif pt_refl.rhs.is_less():
-            return pt_refl.on_rhs(rewr_conv("real_lt_move_left"))
+            pt_th = ProofTerm.theorem("real_sub_both_sides_le")
         else:
             raise NotImplementedError(str(t))
 
-
+        inst = matcher.first_order_match(pt_th.lhs, pt_refl.rhs, inst=matcher.Inst(c=first))
+        return pt_refl.transitive(pt_th.substitution(inst=inst)).on_rhs(auto.auto_conv())
 class replace_conv(Conv):
     def __init__(self, pt):
         self.pt = pt

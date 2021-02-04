@@ -19,8 +19,7 @@ grammar = r"""
     ?atom: "true" -> true_tm
         | "false" -> false_tm
         | NAME -> var_name
-        | INT -> integer
-        | DECIMAL -> decimal
+        | (DECIMAL|INT) -> num_tm
         | "@" NAME -> quant_var
         
     ?typed_atom: "(" NAME NAME ")" -> common_tm
@@ -167,11 +166,13 @@ class TermTransformer(Transformer):
         else:
             raise NotImplementedError
     
-    def integer(self, num):
-        return int(num)
-    
-    def decimal(self, num):
-        return float(num)
+    def num_tm(self, num):
+        if any(tm.get_type() == IntType for _, tm in self.sorts.items()):
+            return Int(int(num))
+        elif any(tm.get_type() == RealType for _, tm in self.sorts.items()):
+            return Real(float(num))
+        else:
+            raise NotImplementedError(num)
     
     def common_tm(self, tm, T):
         if isinstance(tm, Term):
@@ -258,13 +259,6 @@ class TermTransformer(Transformer):
 
     def ite_tm(self, tm1, tm2, tm3):
         T = tm2.get_type()
-        if isinstance(tm3, numbers.Number):
-            if T == RealType:
-                tm3 = Real(tm3)
-            elif T == IntType:
-                tm3 = Int(tm3)
-            else:
-                raise NotImplementedError
         tm = term.Const("IF", term.TFun(BoolType, T, T, T))(tm1, tm2, tm3)
         self.ites[len(self.ites)] = tm
         return tm

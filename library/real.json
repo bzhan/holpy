@@ -31595,42 +31595,6 @@
             "vars": {
                 "x": "real"
             }
-        },
-        {
-            "name": "real_geq_move_left",
-            "prop": "x + y ≥ 0 ⟷ y ≥ -x",
-            "ty": "thm",
-            "vars": {
-                "x": "real",
-                "y": "real"
-            }
-        },
-        {
-            "name": "real_gt_move_left",
-            "prop": "x + y > 0 ⟷ y > -x",
-            "ty": "thm",
-            "vars": {
-                "x": "real",
-                "y": "real"
-            }
-        },
-        {
-            "name": "real_leq_move_left",
-            "prop": "x + y ≤ 0 ⟷ y ≤ -x",
-            "ty": "thm",
-            "vars": {
-                "x": "real",
-                "y": "real"
-            }
-        },
-        {
-            "name": "real_lt_move_left",
-            "prop": "x + y < 0 ⟷ y < -x",
-            "ty": "thm",
-            "vars": {
-                "x": "real",
-                "y": "real"
-            }
         }
     ],
     "description": "real numbers",
