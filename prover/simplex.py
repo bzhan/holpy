@@ -698,41 +698,13 @@ class Simplex:
                     return v, val
         return None
 
-# def branch_and_bound(tableau):
-#     """
-#     If current solution is not a good solution(some variables' value are not integer),
-#     add more constraints and perform simplex again, until find a good solution.
-#     """
-#     tree = deque([tableau])
-#     while len(tree) != 0:
-#         try:
-#             simplex = tree.popleft()
-#             simplex.handle_assertion()
-#             if not simplex.all_integer():
-#                 v, val = simplex.find_not_int_var()
-#                 s1, s2 = Simplex(), Simplex()
-#                 ineq1 = LessEq([Jar(1, v)], math.floor(val))
-#                 ineq2 = GreaterEq([Jar(1, v)], math.ceil(val))
-#                 s1.add_ineqs(ineq1, *simplex.original)
-#                 s2.add_ineqs(ineq2, *simplex.original)
-#                 tree.appendleft(s1)
-#                 tree.appendleft(s2)
-#             else:
-#                 return simplex.mapping
-                
-                
-#         except:
-#             continue
-    
-#     print("No integer solution!")
-
-
-def branch_and_bound(tableau):
+def branch_and_bound(tableau, pts1, pts2):
     """
     If current solution is not a good solution(some variables' value are not integer),
     add more constraints and perform simplex again, until find a good solution.
+    pts1 is the list of int = of_int, pts2 is the list of of_int v = x_i
     """
-    T = IntSimplexTree(tableau)
+    T = IntSimplexTree(tableau, pts1, pts2)
     tree = deque([T])
     while len(tree) != 0:
         try:
@@ -746,7 +718,8 @@ def branch_and_bound(tableau):
                 ineq2 = GreaterEq([Jar(1, v)], math.ceil(val))
                 s1.add_ineqs(ineq1, *node.simplex.original)
                 s2.add_ineqs(ineq2, *node.simplex.original)
-                b1, b2 = IntSimplexTree(s1, new_ast=ineq1), IntSimplexTree(s2, new_ast=ineq2)
+                b1 = IntSimplexTree(s1, pts1, pts2, new_ast=ineq1)
+                b2 = IntSimplexTree(s2, pts1, pts2, new_ast=ineq2)
                 node.branches = (b1, b2)
                 tree.appendleft(b1)
                 tree.appendleft(b2)
@@ -763,7 +736,7 @@ def branch_and_bound(tableau):
 
 class IntSimplexTree:
     """The tree of branch and bound method."""
-    def __init__(self, simplex, var=None, branches=(), new_ast=None):
+    def __init__(self, simplex, of_int_pts, intro_vars_pts, var=None, branches=(), new_ast=None):
         # var is the varible which splits the simplex
         self.var = var
 
@@ -776,6 +749,12 @@ class IntSimplexTree:
 
         # new_ast are the newly added assertions for the non-integer var
         self.new_ast = new_ast
+
+        # int to of_int pts
+        self.of_int_pts = of_int_pts
+
+        # of_int to introduced var pts
+        self.intro_vars_pts = intro_vars_pts
 
     def __str__(self):
         s  = str(self.new_ast)
@@ -796,7 +775,7 @@ class IntSimplexTree:
             solver = SimplexHOLWrapper()
             solver.add_ineqs(self.simplex.original)
             pt_real = solver.handle_assertion()
-            pt_integer = unsat_integer_simplex_stage2(solve_hol_integer_ineqs(pt_real))
+            pt_integer = of_int_to_int(old_name(pt_real, self.intro_vars_pts), self.of_int_pts)
             if self.new_ast is None:
                 return pt_integer
             pt_integer1 = pt_integer.implies_intr(pt_integer.hyps[0])
@@ -811,13 +790,38 @@ class IntSimplexTree:
                 return pt_integer2.on_prop(arg1_conv(rewr_conv('real_of_int_geq')))
         else:
             pt1, pt2 = [b.branch_and_bound_pt() for b in self.branches]
-            # pt1_intr_new_ast = pt1.implies_intr(ineq_to_term(self.branches[0].new_ast))
-            # pt2_intr_new_ast = pt2.implies_intr(ineq_to_term(self.branches[1].new_ast))
             th = ProofTerm.theorem('int_geq_leq_true')
             inst = matcher.first_order_match(th.lhs.arg1, pt1.prop)
             pt_concl = th.substitution(inst).on_lhs(bottom_conv(integer.int_eval_conv()))
             pt_conj = apply_theorem('conjI', pt1, pt2)
             return pt_concl.equal_elim(pt_conj)
+
+
+def old_name(pt, rename_pt):
+    """convert all introduced variables to original variables."""
+    pt1 = functools.reduce(lambda x, y: x.implies_intr(y), pt.hyps, pt)
+    pt2 = pt1.on_prop(*[top_conv(replace_conv(cv)) for cv in rename_pt])
+    implications, _ = pt2.prop.strip_implies()
+    pt3 = functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), implications, pt2)
+    # for pt in rename_pt:
+    pt4 = pt3
+    for eq in rename_pt:
+        eq = eq.prop
+        pt4 = pt4.implies_intr(eq).forall_intr(eq.lhs).forall_elim(eq.rhs).implies_elim(ProofTerm.reflexive(eq.rhs))
+
+    return pt4
+
+def of_int_to_int(real_simplex_result, d):
+    """convert all of_int terms to integer terms"""
+    pt1 = real_simplex_result # a ⋈ x, ..., c ⋈ z ⊢ false
+    for hyp in pt1.hyps:
+        pt1 = pt1.implies_intr(hyp)
+    dd = [pt.on_lhs(top_conv(real.real_eval_conv()), bottom_conv(rewr_conv('real_mul_lid'))) for pt in d]
+    # pt1: ⊢ a ⋈ x ⟶ ... ⟶ c ⋈ z ⟶ false
+    pt2 = pt1.on_prop(*[top_conv(replace_conv(cv)) for cv in dd])
+    # pt2 is an integer version of pt1
+    implies_int_ineqs, _ = pt2.prop.strip_implies()
+    return functools.reduce(lambda x, y: x.implies_elim(ProofTerm.assume(y)), implies_int_ineqs, pt2)
 
 def dest_plus(tm):
     """tm is of form x + y, return (x, y)"""
@@ -1323,10 +1327,11 @@ class IntegerSimplexMacro(Macro):
         real_ineqs = [pt.lhs for pt in pt_of_int]
         # give each of_int term a new name
         comparisons, new_args, subst_vars = term_to_ineq(args)
+        pt_eqs = [ProofTerm.assume(Eq(key, of_int(RealType)(value))) for key, value in subst_vars.items()]
         # get result
         s = Simplex()
         s.add_ineqs(*comparisons)
-        T = branch_and_bound(s)
+        T = branch_and_bound(s, pt_of_int, pt_eqs)
         result = T.branch_and_bound_pt()
         if not isinstance(result, ProofTerm):
             print("SAT")
@@ -1336,7 +1341,7 @@ class IntegerSimplexMacro(Macro):
         # |- P_1 --> P_2 --> ... --> false 
         pt_1 = functools.reduce(lambda x, y: x.implies_intr(y), pt_0.hyps, pt_0)
         # substitution
-        pt_eqs = [ProofTerm.assume(Eq(key, of_int(RealType)(value))) for key, value in subst_vars.items()]
+        
         pt_2 = functools.reduce(lambda x, y: x.on_prop(top_conv(replace_conv(y))), pt_eqs, pt_1)
         # eliminate auxiliary equalities
         pt_3 = pt_2
