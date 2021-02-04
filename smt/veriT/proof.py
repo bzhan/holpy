@@ -61,7 +61,9 @@ class ProofReconstruction(object):
         for step in self.steps:
             try:
                 self.reconstruct(step)
-            print("{:.2%}".format(step.seq_num/step_num))
+            except:
+                self.not_imp(step)
+            print("%s/%s" % (step.seq_num, step_num))
         print("finished")
         return self.proof[len(self.steps)]
 
@@ -186,6 +188,14 @@ class ProofReconstruction(object):
         """
         self.proof[step.seq_num] = ProofTerm.assume(step.concl)
 
+    def true_rule(self, step):
+        """|- true"""
+        self.proof[step.seq_num] = ProofTerm.theorem("trueI")
+
+    def false_rule(self, step):
+        """|- ~false"""
+        self.proof[step.seq_num] = ProofTerm.theorem("not_false_res")
+        
     def tmp_betared(self, step):
         """
         Assume that tmp_betared rules are only followed by input rules, 
@@ -235,7 +245,7 @@ class ProofReconstruction(object):
             is_implicit_conv = step.concl.arg1.arg.arg.body.is_implies()\
                                 and step.concl.arg.is_disj()
             if not is_implicit_conv:
-                raise ValueError(str(step.concl))
+                return self.not_imp(step)
             pt_final = pt_implies_hyp.on_prop(conv.arg_conv(conv.rewr_conv("imp_disj_eq")))
             assert pt_final.prop == step.concl, "%s != %s" % (str(pt_final.prop), str(step.concl))
             self.proof[step.seq_num] = pt_final
@@ -285,9 +295,15 @@ class ProofReconstruction(object):
     def and_rule(self, step):
         """{(and a_1 ... a_n)} --> {a_i}
             a_1 ∧ ... ∧ a_n --> a_i
+            bug:
+            ¬(m1_2 - m2_2 ≥ 0 ∧ m1_2 - m2_2 ≤ 0) ∨ s1_2 - s2_2 ≥ 4 ∨ s2_2 - s1_2 ≥ 4
+            ¬(0 ≤ m1_2 - m2_2 ∧ m1_2 - m2_2 ≤ 0) ∨ s1_2 - s2_2 ≥ 4 ∨ s2_2 - s1_2 ≥ 4
         """
-        pt = ProofTerm("imp_conj", term.Implies(self.proof[step.assms[0]].prop, step.concl))
-        self.proof[step.seq_num] = pt.implies_elim(self.proof[step.assms[0]])
+        try:
+            pt = ProofTerm("imp_conj", term.Implies(self.proof[step.assms[0]].prop, step.concl))
+            self.proof[step.seq_num] = pt.implies_elim(self.proof[step.assms[0]])
+        except:
+            self.not_imp(step)
 
     def and_pos(self, step):
         """

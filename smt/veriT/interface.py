@@ -16,6 +16,17 @@ class SATException(Exception):
     def __str__(self):
         return self.msg
 
+def hol_context(file_name):
+    """return the context got from smt file """
+    with open(file_name, "r", encoding='utf-8') as f:
+        decls = [line[1:-2] for line in f if line.strip().startswith('(declare')]
+        ctx = {}
+        for line in decls:
+            atoms = line.split(' ')
+            ctx[atoms[1]] = atoms[-1].lower() if atoms[-1] in ("Bool", "Real", "Int") else atoms[-1]
+        
+    return ctx
+
 def solve(f):
     """Use veriT solver to solve a smt2 file"""
     args = "--proof-prune "\
@@ -43,7 +54,7 @@ def solve_and_proof(tm):
     with open("proof.smt2", "a") as f:
         f.seek(0)
         f.truncate()
-        f.write("(set-logic LIA)\n" + s.to_smt2())
+        f.write("(set-logic LRA)\n" + s.to_smt2())
 
     proof_rec("proof.smt2")
 
@@ -60,8 +71,8 @@ def proof_rec(file_name):
         print(status)
         return
 
-    sorts = parser.bind_var(file_name)
-    proof_parser = parser.term_parser(sorts)
+    ctx = hol_context(file_name)
+    proof_parser = parser.term_parser(ctx)
     parsed_proof_steps = [proof_parser.parse(step) for step in proof_steps]
     rct = proof.ProofReconstruction(parsed_proof_steps)
     hol_proof = rct.main()

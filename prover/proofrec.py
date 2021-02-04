@@ -8,7 +8,7 @@ import z3
 from z3.z3consts import *
 from data import integer
 from data import proplogic
-from data.real import norm_real_ineq_conv, norm_neg_real_ineq_conv, real_const_eq_conv, real_eval_conv, real_norm_comparison
+from data.real import norm_neg_real_ineq_conv, real_const_eq_conv, real_eval_conv, real_norm_comparison
 from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar, TVar
 from kernel.term import *
 from kernel.thm import Thm
@@ -288,14 +288,9 @@ def and_elim(arg1, concl):
         left, right = pt.prop.arg1, pt.prop.arg
         pt_l, pt_r = apply_theorem('conjD1', pt), apply_theorem('conjD2', pt)
         conj_expr[arg1.prop].update({left: pt_l, right: pt_r})
-        if left == concl:
-            return pt_l
-        elif right == concl:
-            return pt_r
-        else:
-            pt = pt_r
-    assert pt.prop == concl # I will implement proofrec exception later
-    return pt
+        pt = pt_r
+    # assert pt.prop == concl # I will implement proofrec exception later
+    return conj_expr[arg1.prop][concl]
 
 def monotonicity(pts, concl):
     """
@@ -770,7 +765,6 @@ def rewrite_real_second_level(tm):
     armony = [
         # (auto.auto_conv(), top_conv(rewr_conv('ite_to_disj')), bottom_conv(norm_neg_real_ineq_conv()), bottom_conv(real_norm_comparison()), proplogic.norm_full()),
         (bottom_conv(rewr_conv("if_true")), bottom_conv(rewr_conv("if_false"))),
-        
         (bottom_conv(norm_neg_real_ineq_conv()),
         bottom_conv(real_norm_comparison()),
         *[top_conv(replace_conv(cv)) for cv in cvs],
@@ -885,136 +879,6 @@ def rewrite(t):
         return _rewrite(t)
     except ConvException:
         return ProofTerm.sorry(Thm([], t))
-    # if z3.is_distinct(z3terms[0].arg(0)) and z3.is_false(z3terms[0].arg(1)):
-    #     conjs = t.lhs.strip_conj()
-    #     same = None
-    #     for i in range(len(conjs)):
-    #         if conjs[i].arg.is_reflexive():
-    #             pt1 = imp_conj_macro().get_proof_term(Implies(t.lhs, conjs[i]), None) # ⊢ ~A ∧ B --> ~A
-    #             pt2 = ProofTerm.reflexive(conjs[i].arg.lhs) # ⊢ A
-    #             pt3 = apply_theorem('double_neg', inst=Inst(A=pt2.prop)).symmetric() # ⊢ A = ~~(A)
-    #             pt4 = apply_theorem('negE', inst=Inst(A=Not(pt2.prop))) # ~~A --> ~A --> false
-    #             pt5 = pt3.equal_elim(pt2) # ⊢ ~~A
-    #             pt6 = pt4.implies_elim(pt5) # ⊢ ~A --> false
-    #             pt7 = pt1.implies_elim(ProofTerm.assume(t.lhs)) # ~A ∧ B ⊢ ~A
-    #             pt8 = pt6.implies_elim(pt7) # ~A ∧ B ⊢ false
-    #             pt9 = pt8.implies_intr(pt8.hyps[0]) # ⊢ ~A ∧ B --> false
-    #             pt10 = apply_theorem('falseE', inst=Inst(A=t.lhs)) # ⊢ false --> ~A ∧ B
-    #             return apply_theorem('iffI', pt9, pt10, inst=Inst(A=t.lhs, B=false)) # ~A ∧ B <--> false
-
-    # occur_vars = t.get_vars()
-    # occur_consts = t.get_consts()
-    # # real situation
-    # if (len(occur_vars) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars))\
-    #         or (len(occur_consts) != 0 and all(v.T in (RealType, BoolType) for v in occur_vars)):
-    #     refl_pt = refl_pt_simp = refl(t)
-        
-    #     # preprocess by implicitly asssertions
-    #     for c in assert_atom:
-    #         refl_pt_simp = refl_pt_simp.on_rhs(
-    #             bottom_conv(replace_conv(c)),
-    #             bottom_conv(rewr_conv('eq_false', sym=True)),
-    #             bottom_conv(rewr_conv('not_false')),
-    #             bottom_conv(rewr_conv('if_false')),
-    #             bottom_conv(rewr_conv('if_true')),
-    #             bottom_conv(rewr_conv('r049')),
-    #             bottom_conv(rewr_conv('r050'))
-    #         )
-        
-    #     conv_pt = refl_pt_simp.on_rhs(
-    #         try_conv(bottom_conv(rewr_conv('de_morgan_thm1'))),
-    #         try_conv(bottom_conv(rewr_conv('de_morgan_thm2'))),
-    #         try_conv(bottom_conv(rewr_conv('double_neg'))),
-    #         try_conv(top_conv(flat_left_assoc_conj_conv())),
-    #         try_conv(top_conv(flat_left_assoc_disj_conv())),
-    #         try_conv(bottom_conv(rewr_conv('cond_swap'))),
-    #         try_conv(bottom_conv(norm_neg_real_ineq_conv())),
-    #         try_conv(bottom_conv(norm_real_ineq_conv())),
-    #         try_conv(bottom_conv(real_const_eq_conv())),
-    #         try_conv(bottom_conv(rewr_conv('conj_false_right'))),
-    #         try_conv(bottom_conv(rewr_conv('conj_false_left'))),
-    #         try_conv(bottom_conv(rewr_conv('disj_false_right'))),
-    #         try_conv(bottom_conv(rewr_conv('disj_false_left'))),
-    #         try_conv(auto.auto_conv()),        
-    #         try_conv(rewr_conv('eq_mean_true')))
-
-    #     # print("###real pt: ", conv_pt.on_prop(try_conv(rewr_conv('eq_true', sym=True))))
-    #     pt_after_conv = conv_pt.on_prop(try_conv(rewr_conv('eq_true', sym=True)))
-    #     if pt_after_conv.prop == t:
-    #         return pt_after_conv
-    #     else:
-    #         if t.is_equals() and t.lhs.is_equals() and t.rhs.is_conj() and t.lhs.lhs.get_type() == RealType: # maybe x = y ⟷ x ≥ y ∧ x ≤ y
-    #             pt = refl(t.lhs).on_rhs(rewr_conv('real_ge_le_same_num'))
-    #             if pt.prop == t:
-    #                 return pt
-
-    # def norm_int(t):
-    #     """Use nat norm macro to normalize nat expression."""
-    #     return int_norm_macro().get_proof_term(t, [])
-
-    # def equal_is_true(pt):
-    #     """pt is ⊢ x = y, return: ⊢ (x = y) ↔ true"""
-    #     pt0 = apply_theorem('trueI') # ⊢ true
-    #     pt1 = pt0.implies_intr(pt.prop) # ⊢ (x = y) → true
-    #     pt2 = pt.implies_intr(pt0.prop) # ⊢ true → (x = y)
-    #     return ProofTerm.equal_intr(pt1, pt2)
-
-    # if t.lhs == t.rhs:
-    #     return ProofTerm.reflexive(t.lhs)
-    # if is_ineq(t.lhs) and is_ineq(t.rhs) and t.lhs.arg1.get_type() == IntType:
-        
-    #     lhs_norm = int_ineq_macro().get_proof_term(t.lhs)
-    #     rhs_norm = int_ineq_macro().get_proof_term(t.rhs)
-    #     try:
-    #         return lhs_norm.transitive(rhs_norm.symmetric())
-    #     except:
-    #         pass
-    #     try:
-    #         return int_multiple_ineq_equiv().get_proof_term([t.lhs, t.rhs])
-    #     except:
-    #         pass        
-
-    # # first try use schematic theorems
-    # with open('library/smt.json', 'r', encoding='utf-8') as f:
-    #     f_data = json.load(f)
-    # th_name = [f_data['content'][i]['name'] for i in range(len(f_data['content'])) if f_data['content'][i]['name'][0]=='r']
-    # pt = schematic_rules_rewr(th_name, t.lhs, t.rhs)  # rewrite by schematic theorems 
-    # if pt is None:
-    #     if t.rhs == true and t.lhs.is_equals(): # prove ⊢ (x = y) ↔ true
-    #         eq = t.lhs
-    #         if eq.lhs.get_type() == IntType: # Maybe can reuse schematic theorems to prove ⊢ (x = y) in further
-    #             pt_eq = norm_int(eq)
-    #             return equal_is_true(pt_eq)
-    #         else:
-    #             raise NotImplementedError
-    #     elif t.is_equals(): # Equations that can't match with schematic theorems
-    #         # Try int norm macro:
-    #         # Note that if t is of form: if (x::real) > 1 then (0::int) else 1
-    #         # get_type will also return IntType, but we can't solve this by norm_int()
-    #         if t.lhs.get_type() == IntType:
-    #             try:
-    #                 return norm_int(t)
-    #             except AssertionError:
-    #                 return ProofTerm.sorry(Thm([], t))
-    #         # elif t.lhs.get_type() == BoolType and is_prop_fm(t):
-    #         #     basic.load_theory('sat')
-    #         #     f = Implies(*assertions, t)
-    #         #     time1 = time.perf_counter()
-    #         #     pt = zchaff.zChaff(Not(f)).solve()
-    #         #     time2 = time.perf_counter()
-    #         #     print("Time: ", time2 - time1)
-    #         #     for assertion in assertions:
-    #         #         pt_assert = ProofTerm.assume(assertion)
-    #         #         pt = ProofTerm.implies_elim(pt, pt_assert)
-    #         #     return pt
-    #         else:
-    #             return ProofTerm.sorry(Thm([], t))
-    #     else:
-    #         raise NotImplementedError
-
-    # # Try use sat solver combines with assertions to prove the conclusion
-    # else:
-    #     return pt  
 
 def quant_inst(p):
     """
@@ -1414,9 +1278,9 @@ def real_th_lemma(args):
         # pt_norm_prop = pt1.on_prop(bottom_conv(rewr_conv('real_mul_lid', sym=True)), bottom_conv(real_eval_conv()))
         conjs = pt1.prop.strip_conj()
         if any(conj.is_greater() or conj.is_less() for conj in conjs):
-            pt2 = simplex_strict.SimplexMacro().get_proof_term(args=conjs)
+            pt2 = simplex_strict.StrictSimplexMacro().get_proof_term(args=conjs)
         else:
-            pt2 = simplex.solve_hol_ineqs(conjs) # 1 * x_4 <= 0, 1 * x_4 >= 60 |- false
+            pt2 = simplex.SimplexMacro().get_proof_term(args=conjs) # 1 * x_4 <= 0, 1 * x_4 >= 60 |- false
 
         for h in reversed(conjs): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
             pt2 = pt2.implies_intr(h)
@@ -1467,7 +1331,7 @@ def real_th_lemma(args):
         # ineqs = [pt.prop for pt in args[:-1]]
 
         if any(ineq.is_greater() or ineq.is_less() for ineq in input_ineq):
-            pt1 = simplex_strict.SimplexMacro().get_proof_term(args=input_ineq)
+            pt1 = simplex_strict.StrictSimplexMacro().get_proof_term(args=input_ineq)
         else:     
             pt1 = simplex.solve_hol_ineqs(input_ineq)
         for h in reversed(input_ineq): # |- 1 * x_4 <= 0 --> 1 * x_4 >= 60 --> false
@@ -1544,8 +1408,8 @@ def int_th_lemma_1_simplex(tm):
         top_conv(integer.int_simplex_form())
     )
     conjs = pt_norm.rhs.strip_conj()
-    pt = simplex.unsat_integer_simplex(conjs)
-
+    # pt = simplex.unsat_integer_simplex(conjs)
+    pt = simplex.IntegerSimplexMacro().get_proof_term(args=conjs)
     # pt = solver.solve()
     
     # reconstruction, get proof ⊢ P
@@ -1575,7 +1439,8 @@ def int_th_lemma_n_simplex(tms):
     pt_norm_eq = [refl(pt.prop).on_rhs(try_conv(integer.int_norm_neg_compares()), try_conv(integer.int_simplex_form())).symmetric() for pt in pts]
     # solver = omega.OmegaHOL([pt.lhs for pt in pt_norm_eq])
     # pt_unsat = solver.solve()
-    pt_unsat = simplex.unsat_integer_simplex([pt.lhs for pt in pt_norm_eq])
+    # pt_unsat = simplex.unsat_integer_simplex([pt.lhs for pt in pt_norm_eq])
+    pt_unsat = simplex.IntegerSimplexMacro().get_proof_term(args=[pt.lhs for pt in pt_norm_eq])
     pt_implies_false = functools.reduce(lambda x, y: x.implies_intr(y), pt_unsat.hyps, pt_unsat)
     pt_implies_false_initial = pt_implies_false
     for pt in pt_norm_eq:
@@ -1677,16 +1542,16 @@ def th_lemma(args):
             T = t1.prop.arg.arg.get_type()
         else:
             T = t1.prop.arg.get_type()
-    try:
-        if RealType == T:
-            return real_th_lemma(args)
-        elif IntType == T:
-            return int_th_lemma(args)
-        else:
-            raise NotImplementedError
-    except:
-        hyps = [h.prop for h in args[:-1]]
-        return ProofTerm.sorry(Thm(hyps, args[-1]))
+    # try:
+    if RealType == T:
+        return real_th_lemma(args)
+    elif IntType == T:
+        return int_th_lemma(args)
+    else:
+        raise NotImplementedError
+    # except:
+    #     hyps = [h.prop for h in args[:-1]]
+    #     return ProofTerm.sorry(Thm(hyps, args[-1]))
 
 def hypothesis(prop):
     """
@@ -1944,7 +1809,6 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     """
     If trace is true, print reconstruction trace.
     """
-    time1 = time.perf_counter()
     global conj_expr, disj_expr
     term, net = index_and_relation(proof)
     order = DepthFirstOrder(net)
@@ -1954,10 +1818,11 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     assert_atom.clear()
     atoms.clear()
     gaps = set()
+    time1 = time.perf_counter()
     if assertions:
         print("start process assertion!")
         handle_assertion(assertions)
-    with open('int_prf.txt', 'a', encoding='utf-8') as f:
+    with open('int_prf1.txt', 'a', encoding='utf-8') as f:
         f.seek(0)
         f.truncate()
     print("done")
@@ -1968,14 +1833,12 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i], bounds=bounds, subterms=args)
         else:
-            if i == 56:
-                i
             method_name = term[i].decl().name()
             subterms = [term[j] for j in net[i]]
             t1 = time.perf_counter()
             r[i] = convert_method(term[i], *args, subterms=subterms)
             t2 = time.perf_counter()
-            with open('int_prf.txt', 'a', encoding='utf-8') as f:
+            with open('int_prf1.txt', 'a', encoding='utf-8') as f:
                 if r[i].rule == 'sorry' and method_name != 'def-axiom':
                     gaps |= set(r[i].gaps)
                     print('term['+str(i)+']', term[i], file=f)
@@ -1989,4 +1852,5 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     # rpt = ProofReport()
     # theory.check_proof(r[0].export(), rpt)
     # print(rpt)
+    # print(r[0].export())
     return r[0]
