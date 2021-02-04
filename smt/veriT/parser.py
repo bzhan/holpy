@@ -29,9 +29,9 @@ grammar = r"""
     ?let_pair: "(" NAME logical ")" -> let_pair
 
     ?logical: "(-" logical ")" -> uminus_tm
-        | "(+" logical logical ")" -> plus_tm
-        | "(-" logical logical ")" -> minus_tm
-        | "(*" logical logical ")" -> times_tm
+        | "(+" logical+ ")" -> plus_tm
+        | "(-" logical+ ")" -> minus_tm
+        | "(*" logical+ ")" -> times_tm
         | "(/" logical logical ")" -> divides_tm
         | "(>" logical logical ")" -> greater_tm
         | "(<" logical logical ")" -> less_tm
@@ -75,6 +75,41 @@ grammar = r"""
     %ignore WS
     NAME: (CNAME|"$"|"?"|"@")("~"|"?"|"$"|"@"|CNAME|DIGIT)*
 """
+
+@v_args(inline=True)
+class TypeTransformer(Transformer):
+    """Parse types in format of smt2."""
+    def __init__(self):
+        pass
+
+    def type_str(self, s):
+        return s.lower() if s in ("Bool", "Real", "Int") else s
+
+    def sort_type(self, name, arity):
+        return str(name)
+
+    def fun_type1(self, name, *args):
+        T = " => ".join(self.type_str(s) for s in args)
+        return {name.value: T}
+
+    def fun_type2(self, n1, n2):
+        """
+        Args:
+            n1: name of the variable
+            n2: type
+
+        return a HOL variable
+        """ 
+        return {n1.value: self.type_str(n2)}
+
+def bind_var(smt2_file):
+    """Given a smt2 file, parse the declaration of sorts and return a dict."""
+    d = dict()
+    with open(smt2_file, "r") as f:
+        for s in f.readlines():
+            if s.strip().startswith("(declare-fun"):
+                d.update(type_parser.parse(s.replace("\n", "")))
+    return d
 
 @v_args(inline=True)
 class TermTransformer(Transformer):
@@ -125,14 +160,14 @@ class TermTransformer(Transformer):
     def uminus_tm(self, arg):
         return "-" + str(arg)
 
-    def plus_tm(self, lhs, rhs):
-        return "(%s + %s)" % (str(lhs), str(rhs))
+    def plus_tm(self, *tms):
+        return "(%s)" % (" + ".join(str(t) for t in tms))
 
-    def minus_tm(self, lhs, rhs):
-        return "(%s - %s)" % (str(lhs), str(rhs))
+    def minus_tm(self, *tms):
+        return "(%s)" % (" - ".join(str(t) for t in tms))
 
-    def times_tm(self, lhs, rhs):
-        return "(%s * %s)" % (str(lhs), str(rhs))
+    def times_tm(self, *tms):
+        return "(%s)" % (" * ".join(str(t) for t in tms))
 
     def divides_tm(self, lhs, rhs):
         return "(%s / %s)" % (str(lhs), str(rhs))
@@ -222,6 +257,8 @@ class TermTransformer(Transformer):
     def input_proof(self, num, concl):
         self.clauses[num] = concl
         return Rule(int(num), "input", concl)
+
+type_parser = Lark(grammar, start="type", parser="lalr", transformer=TypeTransformer())
 
 def term_parser(ctx):
     return Lark(grammar, start="proof", parser="lalr", transformer=TermTransformer(ctx=ctx))
