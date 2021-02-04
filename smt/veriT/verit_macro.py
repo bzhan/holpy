@@ -5,7 +5,7 @@ Macros used in the proof reconstruction.
 from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, Thm
-from kernel.term import Term, Not, Or, Eq, Implies, false, true
+from kernel.term import Term, Not, Or, Eq, Implies, false, true, IntType, RealType
 from prover.proofrec import int_th_lemma_1_omega, int_th_lemma_1_simplex, real_th_lemma
 from logic import conv, logic
 from data import integer, real, proplogic
@@ -320,7 +320,7 @@ class LaGenericMacro(Macro):
             conv.top_conv(conv.rewr_conv("real_ge_le_same_num")),
             conv.top_conv(conv.rewr_conv("de_morgan_thm1")),
             conv.top_conv(real.norm_neg_real_ineq_conv()),
-            conv.top_conv(real.real_norm_comparison()),
+            conv.top_conv(real.real_simplex_form()),
             conv.top_conv(real.real_const_compares()),
             proplogic.norm_full()
         )
@@ -343,14 +343,19 @@ class LaGenericMacro(Macro):
             return refl_pt.on_prop(conv.rewr_conv("eq_true", sym=True))
 
         try:
-            pt_result = int_th_lemma_1_omega(refl_pt.rhs)
-        except:
             pt_result = int_th_lemma_1_simplex(refl_pt.rhs)
+        except:
+            pt_result = int_th_lemma_1_omega(refl_pt.rhs)
         return refl_pt.symmetric().equal_elim(pt_result)
         
 
-    def get_proof_term(self, args, is_int=True):
-        if is_int:
+    def analyze_type(self, args):
+        tm = args.arg1.arg1 if args.arg1.is_compares() else args.arg1.arg.arg1
+        return tm.get_type()
+
+    def get_proof_term(self, args, prevs=None):
+        T = self.analyze_type(args)
+        if T == IntType:
             return self.int_solver(args)
         else:
             return self.real_solver(args)
