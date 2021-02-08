@@ -22,7 +22,6 @@ grammar = r"""
         | "false" -> false_tm
         | NAME -> var_name
         | (DECIMAL|INT)
-        | "@" NAME -> quant_var
         
     ?typed_atom: "(" NAME NAME ")" -> common_tm
      
@@ -45,8 +44,8 @@ grammar = r"""
         | "(distinct" logical logical+ ")" -> distinct_tm  
         | "#" INT ":" logical -> names_tm
         | "#" INT -> repr_tm
-        | "(exists" "(" typed_atom ")" logical* ")" -> exists_tm
-        | "(forall" "(" typed_atom ")" logical* ")" -> forall_tm
+        | "(exists" "(" typed_atom+ ")" logical* ")" -> exists_tm
+        | "(forall" "(" typed_atom+ ")" logical* ")" -> forall_tm
         | "(=" logical logical ")" -> equals_tm
         | "(let (" let_pair+ ")" logical* ")" -> let_tm1
         | "(" logical logical+ ")" -> comb_tm
@@ -113,7 +112,10 @@ def bind_var(smt2_file):
 
 @v_args(inline=True)
 class TermTransformer(Transformer):
-    """Parse terms in proof."""
+    """Parse terms in proof.
+    
+    Note: For now, remove all the "?" or "$" at the start of variable.
+    """
     def __init__(self, ctx):
         """
         Args:
@@ -151,6 +153,8 @@ class TermTransformer(Transformer):
         if s[:4] == "@ite":
             return self.ite_name(int(x[4:]))
         if s[0] == "$" and s not in self.sorts and s[1:] in self.sorts:
+            return s[1:]
+        if s[0] == "@":
             return s[1:]
         return s
 
@@ -207,19 +211,28 @@ class TermTransformer(Transformer):
     def repr_tm(self, num):
         return self.names[num]
 
-    def exists_tm(self, v, t):
-        return "(?%s. %s)" % (str(v), str(t))
+    def exists_tm(self, *vs):
+        var, tm = ". ".join("?" + str(v) for v in vs[:-1]), vs[-1]
+        return "(%s. %s)" % (str(var), str(tm))
 
-    def forall_tm(self, v, t):
-        return "(!%s. %s)" % (str(v), str(t))
+    def forall_tm(self, *vs):
+        var, tm = ". ".join("!" + str(v) for v in vs[:-1]), vs[-1]
+        return "(%s. %s)" % (str(var), str(tm))
     
     def equals_tm(self, lhs, rhs):
         return "(%s = %s)" % (str(lhs), str(rhs))
 
     def ite_tm(self, tm1, tm2, tm3):
-        s = "(if %s then %s else %s)" % (tm1, tm2, tm3)
+        s = "(if %s then %s else %s)" % (str(tm1), str(tm2), str(tm3))
         self.ites[len(self.ites)] = s 
         return s
+
+    def common_tm(self, tm1, tm2):
+        if tm2.value in ("Real", "Int", "Bool"):
+            tm2 = str(tm2).lower()
+        if tm1.value[0] == "@":
+            tm1 = str(tm1[1:])
+        return "%s::%s" % (str(tm1), str(tm2))
 
     def let_pair(self, tm1, tm2):
         """Note: the let var used in body will be inserted a dollar symbol at first position."""
@@ -231,7 +244,7 @@ class TermTransformer(Transformer):
         return tms[-1]
     
     def concl_tm(self, *tms):
-        hol_tms = [hol_parser.parse_term(tm) for tm in tms]
+        hol_tms = [hol_parser.parse_term(str(tm)) for tm in tms]
         return Concl(*hol_tms)
 
     def clause_name(self, cl):
