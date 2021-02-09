@@ -7,6 +7,7 @@ import subprocess
 from prover import z3wrapper
 from smt.veriT import parser, proof
 from sys import platform
+import time
 
 class SATException(Exception):
     """Exception for SAT term."""
@@ -64,5 +65,8 @@ def proof_rec(file_name):
     proof_parser = parser.term_parser(ctx)
     parsed_proof_steps = [proof_parser.parse(step) for step in proof_steps]
     rct = proof.ProofReconstruction(parsed_proof_steps)
+    time1 = time.perf_counter()
     hol_proof = rct.main()
+    time2 = time.perf_counter()
+    print("total time: ", time2 - time1)
     return hol_proof
