@@ -165,7 +165,7 @@ class RulesTest(unittest.TestCase):
         for s, s1 in test_data:
             s = parse_expr(s)
             s1 = parse_expr(s1)
-            rule = rules.unfoldPower()
+            rule = rules.UnfoldPower()
             self.assertEqual(rule.eval(s), s1)
 
 

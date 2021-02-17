@@ -315,9 +315,16 @@ class Substitution2(Rule):
         return expr.Integral(self.var_name, expr.holpy_style(lower), expr.holpy_style(upper), new_e_body)
         
 
-class unfoldPower(Rule):
+class UnfoldPower(Rule):
+    """Unfold power"""
+    def __init__(self):
+        self.name = "Unfold power"
+
     def eval(self, e):
-        return Integral(e.var, e.lower, e.upper, e.body.expand())
+        if e.ty == expr.INTEGRAL:
+            return Integral(e.var, e.lower, e.upper, e.body.expand())
+        else:
+            return e.expand()
 
 
 class Equation(Rule):
@@ -426,6 +433,22 @@ class ElimAbs(Rule):
         for l, h in s:
             new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
         return sum(new_integral[1:], new_integral[0])
+
+class SplitRegion(Rule):
+    """Split integral into two parts at a point."""
+    def __init__(self, c):
+        self.name = "Split region"
+        self.c = c
+
+    def eval(self, e):
+        if e.ty != expr.INTEGRAL:
+            return e
+
+        if expr.sympy_style(e.upper) <= expr.sympy_style(self.c) or \
+        expr.sympy_style(e.lower) >= expr.sympy_style(self.c):
+            raise AssertionError("Split region")
+
+        return expr.Integral(e.var, e.lower, self.c, e.body) + expr.Integral(e.var, self.c, e.upper, e.body)
 
 
 class IntegrateByEquation(Rule):
@@ -549,6 +572,21 @@ def check_item(item, target=None, *, debug=False):
 
         elif reason == 'Elim abs':
             rule = ElimAbs()
+            if 'location' in step:
+                result = OnLocation(rule, step['location']).eval(current)
+            else:
+                result = rule.eval(current)
+
+        elif reason == 'Split region':
+            c = parser.parse_expr(step['params']['c'])
+            rule = SplitRegion(c)
+            if 'location' in step:
+                result = OnLocation(rule, step['location']).eval(current)
+            else:
+                result = rule.eval(current)
+
+        elif reason == 'Unfold power':
+            rule = UnfoldPower()
             if 'location' in step:
                 result = OnLocation(rule, step['location']).eval(current)
             else:

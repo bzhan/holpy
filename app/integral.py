@@ -99,7 +99,8 @@ def integral_elim_abs():
         return jsonify({
             'reason': "Elim abs",
             'text': str(new_problem),
-            'latex': integral.latex.convert_expr(new_problem)
+            'latex': integral.latex.convert_expr(new_problem),
+            'location': data['location']
         })
     c = rule.get_zero_point(problem)
     new_problem = rule.eval(problem)
@@ -358,7 +359,7 @@ def integral_validate_power_expr():
             if dollar_location != "":
                 location += "." + dollar_location
             body = problem.body
-            body = body.replace_expr(dollar_location, integral.expr.holpy_style(expand_multinomial(integral.expr.sympy_style(select))))
+            body = body.replace_expr(dollar_location, integral.rules.UnfoldPower().eval(select))
             new_integral = integral.expr.Integral(problem.var, problem.lower, problem.upper, body)
             return jsonify({
                 "flag": True,
