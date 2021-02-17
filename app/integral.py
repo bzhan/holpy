@@ -220,7 +220,8 @@ def integral_substitution():
             'reason': "%s is not a valid variable for substitution." % data['var_name']
         })
     try:
-        new_problem, new_problem_body = rule.eval(problem)
+        new_problem = rule.eval(problem)
+        new_problem_body = rule.f
     except:
         return jsonify({
             'flag': False,
@@ -425,7 +426,7 @@ def integral_rewrite_expr():
                 'flag': True,
                 'text': str(new_problem),
                 'latex': integral.latex.convert_expr(new_problem),
-                'reason': "Rewrite fraction",
+                'reason': "Rewrite",
                 '_latex_reason': "Rewrite \\(%s\\) to \\(%s\\)"%(integral.latex.convert_expr(old_expr),
                                                                 integral.latex.convert_expr(new_expr)),
                 'params': {
@@ -439,7 +440,7 @@ def integral_rewrite_expr():
                 'flag': True,
                 'text': str(new_problem),
                 'latex': integral.latex.convert_expr(new_problem),
-                'reason': "Rewrite fraction",
+                'reason': "Rewrite",
                 '_latex_reason': "Rewrite \\(%s\\) to \\(%s\\)"%(integral.latex.convert_expr(old_expr),
                                                                 integral.latex.convert_expr(new_expr)),
                 'params': {

@@ -5,8 +5,9 @@ import json
 from pstats import Stats
 import cProfile
 
-from logic import basic
-from integral import proof
+# from logic import basic
+# from integral import proof
+from integral import rules
 from prover import sympywrapper
 
 test_cases = {
@@ -15,13 +16,13 @@ test_cases = {
         "Exercise 2": "1 / 4",
         "Exercise 3": "-(1 / 6) + (1 / 6) * exp(6)",
         "Exercise 4": "2 * exp(-1) + exp(2)",
-        "Exercise 5": "1 - 1/2 * 2 ^ (1/2)",
+        "Exercise 5": "1 + -1/2 * sqrt(2)",
         "Exercise 6": "3 / 2",
         "Exercise 7": "21 / 8",
         "Exercise 8": "-(3 / 4)",
-        "Exercise 9": "1 / 11 * -81 * 2 ^ (2 / 3) + 1 / 44 * 945 * 3 ^ (2 / 3)",
+        "Exercise 9": "-81/11 * 2 ^ (2 / 3) + 945/44 * 3 ^ (2 / 3)",
         "Exercise 10": "1 + 1 / 4 * pi",
-        "Exercise 11": "(-(136/3) - 27 * exp(1) - 9/2 * (3 + exp(1)) ^ 2) + 1/3 * (3 + exp(1)) ^ 3",
+        "Exercise 11": "277/6 + -45 * exp(1) + -3/2 * exp(2) + 1/3 * exp(3) + -123 * log(abs(exp(1)))",
         "Exercise 12": "1 / 4",
         "Exercise 13": "-(4 / 3) + pi",
         "Exercise 14": "1/8 * -(3 ^ (1/2)) + 1/6 * pi",
@@ -239,7 +240,7 @@ class RunIntegral(unittest.TestCase):
             pr = cProfile.Profile()
             pr.enable()
 
-        basic.load_theory('realintegral')
+        # basic.load_theory('realintegral')
         for filename in filenames:
             with open('integral/examples/%s.json' % filename, 'r', encoding='utf-8') as f:
                 f_data = json.load(f)
@@ -249,7 +250,8 @@ class RunIntegral(unittest.TestCase):
                     if (test_case is None and item['name'] in test_cases[filename]) or \
                        test_case == item['name']:
                         target = test_cases[filename][item['name']]
-                        proof.translate_item(item, target, debug=True)
+                        rules.check_item(item, target, debug=True)
+                        # proof.translate_item(item, target, debug=True)
 
         if profile:
             p = Stats(pr)

@@ -74,7 +74,6 @@ class Linearity(Rule):
         else:
             return e
 
-
 class CommonIntegral(Rule):
     """Applies common integrals:
 
@@ -165,6 +164,82 @@ class OnSubterm(Rule):
         else:
             raise NotImplementedError
 
+class OnLocation(Rule):
+    """Apply given rule on subterm specified by given location."""
+    def __init__(self, rule, loc):
+        assert isinstance(rule, Rule)
+        self.rule = rule
+        self.loc = expr.Location(loc)
+
+    def eval(self, e):
+        def rec(cur_e, loc):
+            if loc.is_empty():
+                return self.rule.eval(cur_e)
+            elif cur_e.ty == VAR or cur_e.ty == CONST:
+                raise AssertionError("OnLocation: invalid location")
+            elif cur_e.ty == OP:
+                assert loc.head < len(cur_e.args), "OnLocation: invalid location"
+                if len(cur_e.args) == 1:
+                    return Op(cur_e.op, rec(cur_e.args[0], loc.rest))
+                elif len(cur_e.args) == 2:
+                    if loc.head == 0:
+                        return Op(cur_e.op, rec(cur_e.args[0], loc.rest), cur_e.args[1])
+                    elif loc.head == 1:
+                        return Op(cur_e.op, cur_e.args[0], rec(cur_e.args[1], loc.rest))
+                    else:
+                        raise AssertionError("OnLocation: invalid location")
+                else:
+                    raise NotImplementedError
+            elif cur_e.ty == FUN:
+                assert loc.head < len(cur_e.args), "OnLocation: invalid location"
+                return Fun(cur_e.func_name, rec(cur_e.args[0], loc.rest))
+            elif cur_e.ty == INTEGRAL:
+                if loc.head == 0:
+                    return Integral(cur_e.var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest))
+                elif loc.head == 1:
+                    return Integral(cur_e.var, rec(cur_e.lower, loc.rest), cur_e.upper, cur_e.body)
+                elif loc.head == 2:
+                    return Integral(cur_e.var, cur_e.lower, rec(cur_e.upper, loc.rest), cur_e.body)
+                else:
+                    raise AssertionError("OnLocation: invalid location")
+            elif cur_e.ty == EVAL_AT:
+                if loc.head == 0:
+                    return EvalAt(cur_e.var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest))
+                elif loc.head == 1:
+                    return EvalAt(cur_e.var, rec(cur_e.lower, loc.rest), cur_e.upper, cur_e.body)
+                elif loc.head == 2:
+                    return EvalAt(cur_e.var, cur_e.lower, rec(cur_e.upper, loc.rest), cur_e.body)
+                else:
+                    raise AssertionError("OnLocation: invalid location")
+            elif cur_e.ty == DERIV:
+                assert loc.head == 0, "OnLocation: invalid location"
+                return Deriv(cur_e.var, rec(cur_e.body, loc.rest))
+            else:
+                raise NotImplementedError
+
+        return rec(e, self.loc)
+            
+
+class FullSimplify(Rule):
+    """Perform full simplification using CommonIntegral, Linearity, and Simplify."""
+    def __init__(self):
+        self.name = "FullSimplify"
+
+    def eval(self, e):
+        counter = 0
+        current = e
+        while True:
+            s1 = OnSubterm(Linearity()).eval(current)
+            s2 = OnSubterm(CommonIntegral()).eval(s1)
+            s3 = Simplify().eval(s2)
+            if s3 == current:
+                break
+            current = s3
+            counter += 1
+            if counter > 5:
+                raise AssertionError("Loop in FullSimplify")
+        return current
+
 class Substitution1(Rule):
     """Apply substitution u = g(x) x = y(u)  f(x) = x+5  u=>x+1   (x+1)+4 """
     """INT x:[a, b]. f(g(x))*g(x)' = INT u:[g(a), g(b)].f(u)"""
@@ -177,6 +252,7 @@ class Substitution1(Rule):
         self.name = "Substitution"
         self.var_name = var_name
         self.var_subst = var_subst
+        self.f = None  # After application, record f here
 
     def eval(self, e):
         """
@@ -192,22 +268,23 @@ class Substitution1(Rule):
         var_subst = self.var_subst
         dfx = expr.deriv(e.var, var_subst)
         try:
-            body =holpy_style(apart(sympy_style(e.body/dfx)))
+            body = holpy_style(apart(sympy_style(e.body/dfx)))
         except:
-            body =holpy_style(sympy_style(e.body/dfx))
+            body = holpy_style(sympy_style(e.body/dfx))
         body_subst = body.replace_trig(var_subst, var_name)
         if body_subst == body:
             body_subst = body.normalize().replace_trig(var_subst, var_name)
         lower = var_subst.subst(e.var, e.lower).normalize()
         upper = var_subst.subst(e.var, e.upper).normalize()
         if parser.parse_expr(e.var) not in body_subst.findVar():
+            self.f = body_subst.normalize()
             if sympy_style(lower) <= sympy_style(upper):
-                return Integral(self.var_name, lower, upper, body_subst).normalize(), body_subst.normalize()
+                return Integral(self.var_name, lower, upper, body_subst).normalize()
             else:
-                return Integral(self.var_name, upper, lower, Op("-", body_subst)).normalize(), body_subst.normalize()
+                return Integral(self.var_name, upper, lower, Op("-", body_subst)).normalize()
         else:
             gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
-            if gu == []: # sympy can't solve the equation
+            if gu == []:  # sympy can't solve the equation
                 return e, 
             gu = gu[-1] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
@@ -215,10 +292,11 @@ class Substitution1(Rule):
             new_problem_body = holpy_style(sympy_style(e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)))
             lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
             upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
+            self.f = new_problem_body.normalize()
             if sympy_style(lower) < sympy_style(upper):
-                return Integral(self.var_name, lower, upper, new_problem_body).normalize(), new_problem_body.normalize()
+                return Integral(self.var_name, lower, upper, new_problem_body).normalize()
             else:
-                return Integral(self.var_name, upper, lower, Op("-", new_problem_body)).normalize(), new_problem_body.normalize()
+                return Integral(self.var_name, upper, lower, Op("-", new_problem_body)).normalize()
 
 class Substitution2(Rule):
     """Apply substitution x = f(u)"""
@@ -244,18 +322,16 @@ class unfoldPower(Rule):
 
 class Equation(Rule):
     """Apply substitution for equal expressions"""
-    def __init__(self, old_expr, new_expr):
-        assert isinstance(old_expr, Expr) and isinstance(new_expr, Expr)
-        self.old_expr = old_expr
+    def __init__(self, new_expr):
+        assert isinstance(new_expr, Expr)
         self.new_expr = new_expr
         self.name = "Equation"
     
     def eval(self, e):
-        if self.new_expr.normalize() != self.old_expr.normalize():
-            return Integral(e.var, e.lower, e.upper, self.old_expr)
+        if self.new_expr.normalize() != e.normalize():
+            raise AssertionError("Rewriting by equation failed")
         else:
-            return Integral(e.var, e.lower, e.upper, self.new_expr)
-        
+            return self.new_expr
 
 class IntegrationByParts(Rule):
     """Apply integration by parts."""
@@ -387,3 +463,71 @@ class IntegrateByEquation(Rule):
             return self.rhs
         new_rhs = (self.rhs + (Const(-coeff)*self.lhs.alpha_convert(rhs_var))).normalize()
         return (new_rhs/(Const(1-coeff))).normalize(), -Const(coeff).normalize()
+
+
+def check_item(item, target=None, *, debug=False):
+    """Check application of rules in the item."""
+    problem = parser.parse_expr(item['problem'])
+    
+    if debug:
+        print("\n%s: %s" % (item['name'], problem))
+
+    current = problem
+
+    for step in item['calc']:
+        reason = step['reason']
+        expected = parser.parse_expr(step['text'])
+
+        if reason == 'Initial':
+            result = current
+        
+        elif reason == 'Simplification':
+            result = FullSimplify().eval(current)
+
+        elif reason == 'Substitution':
+            var_name = step['params']['var_name']
+            f = parser.parse_expr(step['params']['f'])
+            g = parser.parse_expr(step['params']['g'])
+            rule = Substitution1(var_name, g)
+            if 'location' in step:
+                result = OnLocation(rule, step['location']).eval(current)
+            else:
+                result = rule.eval(current)
+            if rule.f != f:
+                print("Expected f: %s" % f)
+                print("Actual f: %s" % rule.f)
+                raise AssertionError("Unexpected value of f in substitution")
+
+        elif reason == 'Integrate by parts':
+            u = parser.parse_expr(step['params']['parts_u'])
+            v = parser.parse_expr(step['params']['parts_v'])
+            result = IntegrationByParts(u, v).eval(current)
+
+        elif reason == 'Rewrite fraction':
+            result = PolynomialDivision().eval(current)
+
+        elif reason == 'Rewrite':
+            rhs = parser.parse_expr(step['params']['rhs'])
+            rule = Equation(rhs)
+            if 'location' in step:
+                result = OnLocation(rule, step['location']).eval(current)
+            else:
+                result = rule.eval(current)
+
+        else:
+            print("Reason: %s" % reason)
+            raise NotImplementedError
+
+        if result != expected:
+            print("Expected: %s" % expected)
+            print("Result: %s" % result)
+            raise AssertionError("Error on intermediate step (%s)" % reason)
+
+        current = result
+
+    if target is not None:
+        target = parser.parse_expr(target)
+        if current != target:
+            print("Target: %s" % target)
+            print("Result: %s" % current)
+            raise AssertionError("Error on final answer")
