@@ -360,17 +360,26 @@ class PolynomialDivision(Rule):
     """
     def __init__(self):
         self.name = "Fraction Division"
+
     def eval(self, e):
-        if e.ty != expr.INTEGRAL:
+        if e.ty == OP and e.op != "/" and not (e.ty == OP and e.op == "*" and e.args[1].ty == OP and e.args[1].op == "^"\
+            and (e.args[1].args[1].ty == OP and len(e.args[1].args[1]) == 1 or e.args[1].args[1].ty == CONST and e.args[1].args[1].val < 0)):
             return e
-        else:
-            body = e.body
-            if e.body.ty == OP and e.body.op != "/" and not (e.body.ty == OP and e.body.op == "*" and e.body.args[1].ty == OP and e.body.args[1].op == "^"\
-                and (e.body.args[1].args[1].ty == OP and len(e.body.args[1].args[1]) == 1 or e.body.args[1].args[1].ty == CONST and e.body.args[1].args[1].val < 0)):
-                return e
-                
-            result = apart(expr.sympy_style(e.body))
-            return expr.Integral(e.var, e.lower, e.upper, parser.parse_expr(str(result).replace("**","^")))
+            
+        result = apart(expr.sympy_style(e))
+        return parser.parse_expr(str(result).replace("**","^"))
+
+class RewriteTrigonometric(Rule):
+    """Rewrite using one of Fu's rules."""
+    def __init__(self, rule_name):
+        self.name = "Rewrite trigonometric"
+        self.rule_name = rule_name
+
+    def eval(self, e):
+        rule_fun, _ = expr.trigFun[self.rule_name]
+        sympy_result = rule_fun(expr.sympy_style(e))
+        result = expr.holpy_style(sympy_result)
+        return result
 
 class ElimAbs(Rule):
     """Eliminate abstract value."""
@@ -501,14 +510,45 @@ def check_item(item, target=None, *, debug=False):
         elif reason == 'Integrate by parts':
             u = parser.parse_expr(step['params']['parts_u'])
             v = parser.parse_expr(step['params']['parts_v'])
-            result = IntegrationByParts(u, v).eval(current)
+            rule = IntegrationByParts(u, v)
+            if 'location' in step:
+                result = OnLocation(rule, step['location']).eval(current)
+            else:
+                result = rule.eval(current)
 
         elif reason == 'Rewrite fraction':
-            result = PolynomialDivision().eval(current)
+            rule = PolynomialDivision()
+            if 'location' in step:
+                result = OnLocation(rule, step['location']).eval(current)
+            else:
+                result = rule.eval(current)
 
         elif reason == 'Rewrite':
             rhs = parser.parse_expr(step['params']['rhs'])
             rule = Equation(rhs)
+            if 'location' in step:
+                result = OnLocation(rule, step['location']).eval(current)
+            else:
+                result = rule.eval(current)
+
+        elif reason == 'Rewrite trigonometric':
+            rule = RewriteTrigonometric(step['params']['rule'])
+            if 'location' in step:
+                result = OnLocation(rule, step['location']).eval(current)
+            else:
+                result = rule.eval(current)
+
+        elif reason == 'Substitution inverse':
+            var_name = step['params']['var_name']
+            g = parser.parse_expr(step['params']['g'])
+            rule = Substitution2(var_name, g)
+            if 'location' in step:
+                result = OnLocation(rule, step['location']).eval(current)
+            else:
+                result = rule.eval(current)
+
+        elif reason == 'Elim abs':
+            rule = ElimAbs()
             if 'location' in step:
                 result = OnLocation(rule, step['location']).eval(current)
             else:

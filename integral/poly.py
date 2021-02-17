@@ -25,7 +25,21 @@ def collect_pairs(ps):
             res[v] += c
         else:
             res[v] = c
-    return tuple(sorted((k, v) for k, v in res.items() if v != 0))
+    
+    def zero_for(v):
+        if isinstance(v, expr.Expr):
+            return expr.Const(0)
+        elif isinstance(v, ConstantPolynomial):
+            return ConstantPolynomial(tuple())
+        else:
+            return 0
+
+    res_list = []
+    for k, v in res.items():
+        if v != zero_for(v):
+            res_list.append((k, v))
+    
+    return tuple(sorted(res_list, key=lambda p: p[0]))
 
 def reduce_power(n, e):
     """Reduce n^e to normal form."""

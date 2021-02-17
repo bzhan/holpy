@@ -283,6 +283,15 @@ class Expr:
             print(self.ty)
             raise NotImplementedError
 
+    def __lt__(self, other):
+        return self <= other and self != other
+
+    def __gt__(self, other):
+        return other <= self and self != other
+
+    def __ge__(self, other):
+        return not self < other
+
     def priority(self):
         if self.ty in (VAR, SYMBOL):
             return 100
@@ -980,7 +989,7 @@ def trig_transform(trig, var, rule_list=None):
         poss.add((trig * ((sin(Var(var)) ^ Const(2)) + (cos(Var(var))^Const(2))), "TR0"))
         return poss
     i = sympy_parser.parse_expr(str(trig).replace("^", "**"))
-    for f, rule in trigFun.items():
+    for rule_name, (f, rule) in trigFun.items():
         if rule_list is not None and f not in rule_list:
             continue
         j = f(sympy_parser.parse_expr(str(trig).replace("^", "**")))
@@ -1377,6 +1386,8 @@ class Fun(Expr):
         return hash((FUN, self.func_name, self.args))
 
     def __eq__(self, other):
+        if isinstance(other, (int, Fraction)):
+            other = Const(other)
         return other.ty == FUN and self.func_name == other.func_name and self.args == other.args
 
     def __str__(self):
@@ -1529,29 +1540,28 @@ class Symbol(Expr):
     def __repr__(self):
         return "Symbol(%s, %s)" % (self.name, self.pat)
 
-trigFun = {     
-    TR1: "sec-csc to cos-sin",
-    TR2: "tan-cot to sin-cos ratio",
-    TR2i: "sin-cos ratio to tan",
-    TR3: "angle canonicalization",
-    TR4: "functions at special angles",
-    TR5: "powers of sin to powers of cos",
-    TR6: "powers of cos to powers of sin",
-    TR7: "reduce cos power (increase angle)",
-    TR8: "expand products of sin-cos to sums",
-    TR9: "contract sums of sin-cos to products",
-    TR10: "separate sin-cos arguments",
-    TR10i: "collect sin-cos arguments",
-    TR11: "reduce double angles",
-    TR12: "separate tan arguments",
-    TR12i: "collect tan arguments",
-    TR13: "expand product of tan-cot",
-    TRmorrie: "prod(cos(x*2**i), (i, 0, k: 1)) -> sin(2**k*x)/(2**k*sin(x))",
-    TR14: "factored powers of sin or cos to cos or sin power",
-    TR15: "negative powers of sin to cot power",
-    TR16: "negative powers of cos to tan power",
-    TR22: "tan-cot powers to negative powers of sec-csc functions",
-    TR111: "negative sin-cos-tan powers to csc-sec-cot"
+trigFun = {
+    "TR1": (TR1, "sec-csc to cos-sin"),
+    "TR2": (TR2, "tan-cot to sin-cos ratio"),
+    "TR2i": (TR2i, "sin-cos ratio to tan"),
+    "TR3": (TR3, "angle canonicalization"),
+    "TR4": (TR4, "functions at special angles"),
+    "TR5": (TR5, "powers of sin to powers of cos"),
+    "TR6": (TR6, "powers of cos to powers of sin"),
+    "TR7": (TR7, "reduce cos power (increase angle)"),
+    "TR8": (TR8, "expand products of sin-cos to sums"),
+    "TR9": (TR9, "contract sums of sin-cos to products"),
+    "TR10": (TR10, "separate sin-cos arguments"),
+    "TR10i": (TR10i, "collect sin-cos arguments"),
+    "TR11": (TR11, "reduce double angles"),
+    "TR12": (TR12, "separate tan arguments"),
+    "TR12i": (TR12i, "collect tan arguments"),
+    "TR13": (TR13, "expand product of tan-cot"),
+    "TR14": (TR14, "factored powers of sin or cos to cos or sin power"),
+    "TR15": (TR15, "negative powers of sin to cot power"),
+    "TR16": (TR16, "negative powers of cos to tan power"),
+    "TR22": (TR22, "tan-cot powers to negative powers of sec-csc functions"),
+    "TR111": (TR111, "negative sin-cos-tan powers to csc-sec-cot"),
 }
 
 trig_table_cache = None

@@ -97,7 +97,7 @@ def integral_elim_abs():
     if not rule.check_zero_point(problem):
         new_problem = rule.eval(problem)
         return jsonify({
-            'reason': "Simplification",
+            'reason': "Elim abs",
             'text': str(new_problem),
             'latex': integral.latex.convert_expr(new_problem)
         })
@@ -106,7 +106,7 @@ def integral_elim_abs():
     return jsonify({
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
-        'reason': "Split region",
+        'reason': "Elim abs",
         'params': {
             'c': str(c)
         },
@@ -260,7 +260,7 @@ def integral_substitution2():
     
     problem = integral.parser.parse_expr(data['problem'])
     new_problem = rule.eval(problem)
-    log = jsonify({
+    log = {
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
         'reason': "Substitution inverse",
@@ -274,7 +274,7 @@ def integral_substitution2():
         '_latex_reason': "Substitute \\(%s\\) for \\(%s\\)" % (
             integral.latex.convert_expr(integral.parser.parse_expr(problem.var)), integral.latex.convert_expr(expr)
         )
-    })
+    }
     return jsonify({
         'flag': True,
         'log': log
@@ -305,7 +305,9 @@ def integral_validate_expr():
             
             # location = data["integral_location"] + ".0." + dollar_location if data["integral_location"] != "" else "0." + dollar_location
             new_trig_set = tuple(integral.expr.trig_transform(select, problem.var))
-            new_integral_set = [integral.expr.Integral(problem.var, problem.lower, problem.upper, problem.body.replace_expr(dollar_location, t[0])) for t in new_trig_set]
+            new_integral_set = [
+                integral.expr.Integral(problem.var, problem.lower, problem.upper, problem.body.replace_expr(dollar_location, t[0]))
+                for t in new_trig_set]
             transform_info = []
             for i in range(len(new_integral_set)):
                 transform_info.append({

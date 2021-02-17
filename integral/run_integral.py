@@ -25,7 +25,7 @@ test_cases = {
         "Exercise 11": "277/6 + -45 * exp(1) + -3/2 * exp(2) + 1/3 * exp(3) + -123 * log(abs(exp(1)))",
         "Exercise 12": "1 / 4",
         "Exercise 13": "-(4 / 3) + pi",
-        "Exercise 14": "1/8 * -(3 ^ (1/2)) + 1/6 * pi",
+        "Exercise 14": "-1/8 * sqrt(3) + 1/6 * pi",
         "Exercise 15": "1 / 4 * pi",
         "Exercise 16": "1 / 2 * pi",
         "Exercise 17": "2 * 2 ^ (1 / 2) + 2 ^ (1 / 2) * pi",
