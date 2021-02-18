@@ -453,22 +453,22 @@ class SplitRegion(Rule):
 
 class IntegrateByEquation(Rule):
     """When the initial integral occurs in the steps."""
-    def __init__(self, lhs, rhs):
+    def __init__(self, lhs):
         assert isinstance(lhs, Integral)
         self.lhs = lhs.normalize()
-        self.rhs = rhs.normalize()
+        self.coeff = None
     
-    def validate(self):
-        """Determine whether the lhs exists in rhs"""
-        integrals = self.rhs.separate_integral()
+    def validate(self, e):
+        """Determine whether the lhs exists in e."""
+        integrals = e.separate_integral()
         if not integrals:
             return False
-        for i,j in integrals:
+        for i, j in integrals:
             if i.normalize() == self.lhs:
                 return True
         return False
 
-    def eval(self):
+    def eval(self, e):
         """Eliminate the lhs's integral in rhs by solving equation."""
         rhs_var = None
         def get_coeff(t):
@@ -490,11 +490,12 @@ class IntegrateByEquation(Rule):
             else:
                 return 0
 
-        coeff = get_coeff(self.rhs)
+        coeff = get_coeff(e)
         if coeff == 0:
-            return self.rhs
-        new_rhs = (self.rhs + (Const(-coeff)*self.lhs.alpha_convert(rhs_var))).normalize()
-        return (new_rhs/(Const(1-coeff))).normalize(), -Const(coeff).normalize()
+            return e
+        new_rhs = (e + (Const(-coeff)*self.lhs.alpha_convert(rhs_var))).normalize()
+        self.coeff = (-Const(coeff)).normalize()
+        return (new_rhs/(Const(1-coeff))).normalize()
 
 
 def check_item(item, target=None, *, debug=False):
@@ -505,6 +506,7 @@ def check_item(item, target=None, *, debug=False):
         print("\n%s: %s" % (item['name'], problem))
 
     current = problem
+    prev_steps = []
 
     for step in item['calc']:
         reason = step['reason']
@@ -592,6 +594,11 @@ def check_item(item, target=None, *, debug=False):
             else:
                 result = rule.eval(current)
 
+        elif reason == 'Solve equation':
+            prev_id = int(step['params']['prev_id'])
+            rule = IntegrateByEquation(prev_steps[prev_id])
+            result = rule.eval(current)
+
         else:
             print("Reason: %s" % reason)
             raise NotImplementedError
@@ -602,6 +609,7 @@ def check_item(item, target=None, *, debug=False):
             raise AssertionError("Error on intermediate step (%s)" % reason)
 
         current = result
+        prev_steps.append(current)
 
     if target is not None:
         target = parser.parse_expr(target)

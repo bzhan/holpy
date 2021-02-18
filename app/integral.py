@@ -119,14 +119,13 @@ def integrate_by_equation():
     data = json.loads(request.get_data().decode('utf-8'))
     rhs = integral.parser.parse_expr(data['rhs'])
     lhs = integral.parser.parse_expr(data['lhs'])
-    rule = integral.rules.IntegrateByEquation(lhs, rhs)
-    if not rule.validate():
+    rule = integral.rules.IntegrateByEquation(lhs)
+    if not rule.validate(rhs):
         return jsonify({
             'flag': False
         })
-    # coeff = rule.getCoeff()
-    # coeff = (-coeff).normalize()
-    new_problem, coeff = rule.eval()
+    new_problem = rule.eval(rhs)
+    coeff = rule.coeff
     return jsonify({
         "text": str(new_problem),
         "latex": integral.latex.convert_expr(new_problem),
@@ -558,13 +557,13 @@ def integral_polynomial_division():
     problem = integral.parser.parse_expr(data['problem'])
     body = problem.body
     try:
-        new_problem = rule.eval(problem)
+        new_body = rule.eval(body)
     except:
         return jsonify({
             'flag': False,
             'reason': "Can't do divison now."
         })
-    rhs = new_problem.body
+    rhs = integral.expr.Integral(problem.var, problem.lower, problem.upper, new_body)
     location = data['location']
     if location:
         location += ".0"
@@ -572,10 +571,10 @@ def integral_polynomial_division():
         location = "0"
     return jsonify({
         'flag': True,
-        'text': str(new_problem),
-        'latex': integral.latex.convert_expr(new_problem),
+        'text': str(rhs),
+        'latex': integral.latex.convert_expr(rhs),
         'params': {
-            'rhs': str(rhs)
+            'rhs': str(new_body)
         },
         'reason': "Rewrite fraction",
         "location": location

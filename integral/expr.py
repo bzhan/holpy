@@ -264,8 +264,8 @@ class Expr:
             return self.name <= other.name
         elif self.ty == CONST:
             return self.val <= other.val
-        elif self.is_constant() and other.is_constant():
-            return sympy_parser.parse_expr(str(self - other).replace("^", "**")) <= 0
+        # elif self.is_constant() and other.is_constant():
+        #     return sympy_parser.parse_expr(str(self - other).replace("^", "**")) <= 0
         elif self.ty == OP:
             return (self.op, self.args) <= (other.op, other.args)
         elif self.ty == FUN:
@@ -1341,7 +1341,7 @@ class Op(Expr):
             s = str(a)
             if a.ty == CONST and a.val > 0:
                 return "(%s%s)" % (self.op, s)
-            if a.priority() < 70:
+            if a.priority() < self.priority():
                 s = "(%s)" % s
             return "%s%s" % (self.op, s)
         elif len(self.args) == 2:
