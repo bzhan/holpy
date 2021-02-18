@@ -289,7 +289,7 @@ class Substitution1(Rule):
             gu = gu[-1] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
             c = e.body.replace_trig(parser.parse_expr(e.var), gu)
-            new_problem_body = holpy_style(sympy_style(e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)))
+            new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)).normalize()
             lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
             upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
             self.f = new_problem_body.normalize()

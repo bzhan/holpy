@@ -269,3 +269,53 @@ class PolynomialDivisionStep(IntegrationStep):
             "reason": "Rewrite fraction",
             "text": str(self.e)
         }
+
+class ElimAbsStep(IntegrationStep):
+    def __init__(self, e, loc, zero_point=None):
+        self.e = e
+        self.loc = Location(loc)
+        self.zero_point = zero_point
+
+    def __str__(self):
+        return "Elim abs point is %s, loc is %s" % (self.zero_point, self.loc)
+
+    def info(self):
+        logs = {
+            "text": str(self.e),
+            "latex": latex.convert_expr(self.e),
+            "location": str(self.loc),
+            "reason": "Elim abs",   
+        }
+
+        if self.zero_point is not None:
+            logs["params"] = {
+                "c": str(self.zero_point)
+            }
+
+        return logs
+
+class TrigIndentityStep(IntegrationStep):
+    def __init__(self, e, rule_name, before_trig, after_trig, loc=[]):
+        self.e = e
+        self.rule_name = rule_name
+        self.before_trig = before_trig
+        self.after_trig = after_trig
+        self.loc = Location(loc)
+
+    def __str__(self):
+        return "Trig substitution: %s by %s" % (self.before_trig, self.after_trig)
+
+    def info(self):
+        return {
+            "reason": "Rewrite trigonometric",
+            'text': str(self.e),
+            'latex': integral.latex.convert_expr(self.e),
+            "params":{
+                "rule": self.rule_name
+            },
+            '_latex_reason': "Rewrite trigonometric \\(%s\\) to \\(%s\\)" % 
+                        (integral.latex.convert_expr(self.before_trig), integral.latex.convert_expr(self.after_trig)), 
+            # If there is only one integral in the full expression, location begins from the body;
+            # Else from the integral
+            "location": str(self.loc)
+        }
