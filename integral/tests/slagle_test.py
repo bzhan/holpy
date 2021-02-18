@@ -66,6 +66,17 @@ class SlagleTest(unittest.TestCase):
             v = parse_expr(v)
             self.assertEqual(str(slagle.TrigIdentity().eval(v)[0].normalize()), v_res)
 
+    def testElimAbs(self):
+        test_data = [
+            ("INT x:[0, 1]. abs(-x)", "INT x:[0, 1]. --x"),
+            ("INT x:[0, pi/2]. abs(sin(x)) + 1", "INT x:[0, pi/2]. sin(x) + 1"),
+            ("INT x:[-pi/2, pi/2]. abs(sin(x))", "(INT x:[0,pi / 2]. sin(x)) + (INT x:[-pi / 2,0]. -sin(x))")
+        ]
+        for v, v_res in test_data:
+            v = parse_expr(v)
+            v_res = parse_expr(v_res)
+            self.assertEqual(slagle.ElimAbsRule().eval(v)[0], v_res)
+
     def testTrigFunction(self):
         test_data = [
             ('INT x:[1,2]. $sin(x)^4/cos(x)^4$',

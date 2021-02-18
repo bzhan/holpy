@@ -111,8 +111,9 @@ class Linearity(AlgorithmRule):
 
 def substitution(integral, subst):
     new_var = gen_rand_letter(integral.var)
-    new_e, new_e_body = rules.Substitution1(new_var, subst).eval(integral)
-    steps = [calc.SubstitutionStep(e=new_e, var_name=new_var, var_subst=subst, f=new_e_body)]
+    rule = rules.Substitution1(new_var, subst)
+    new_e = rule.eval(integral)
+    steps = [calc.SubstitutionStep(e=new_e, var_name=new_var, var_subst=subst, f=rule.f)]
     return new_e, steps
 
 def linear_substitution(integral):
@@ -213,6 +214,8 @@ class TrigIdentity(AlgorithmRule):
     2) a + (-a) * cos^2(x) = a * sin^2(x)
     3) 1 + -sin^2(x) = cos^2(x)
     4) 1 + -cos^2(x) = sin^2(x)
+
+    TR5(sin -> cos), TR6(cos -> sin)
     """
     def eval(self, e):
         x = Symbol('x', [VAR, OP, FUN])
@@ -230,33 +233,59 @@ class TrigIdentity(AlgorithmRule):
         sin_power1_expr = find_pattern(e, pat3)
         cos_power1_expr = find_pattern(e, pat4)
     
+        steps = []
         for t, loc in sin_power_expr:
             sin_coeff = t.args[0]
             body = t.args[1].args[1].args[0].args[0]
             e = e.replace_trig(t, sin_coeff * (cos(body) ** Const(2)))
-
+            steps.append(calc.TrigIndentityStep(e, "TR5", t, sin_coeff * (cos(body) ** Const(2)))) 
         for t, loc in cos_power_expr:
             cos_coeff = t.args[0]
             body = t.args[1].args[1].args[0].args[0]
             e = e.replace_trig(t, cos_coeff * (sin(body) ** Const(2)))
-
+            steps.append(calc.TrigIndentityStep(e, "TR6", t, cos_coeff * (sin(body) ** Const(2))))
         for t, loc, _ in sin_power1_expr:
             body = t.args[1].args[0].args[0].args[0]
             e = e.replace_trig(t, (cos(body) ** Const(2)))
-        
+            steps.append(calc.TrigIndentityStep(e, "TR5", t, cos(body) ** Const(2))) 
         for t, loc, _ in cos_power1_expr:
             body = t.args[1].args[0].args[0].args[0]
             e = e.replace_trig(t, (sin(body) ** Const(2)))
+            steps.append(calc.TrigIndentityStep(e, "TR6", t, sin(body) ** Const(2)))
+        return e, steps
 
-        return e, None
 
+class ElimAbsRule(AlgorithmRule):
+    """
+    Eliminate absolute expression in the integration body.
+    """
+    def eval(self, e, loc=[]):
+        rule = rules.ElimAbs()
+        # first check if there are abs expr in e
+        x = Symbol("x", [VAR, OP, FUN])
+        abs_exprs = find_pattern(e, Fun("abs", x))
+        # don't have abs express
+        if not abs_exprs:
+            return e, None
+        # don't have zero point
+        if not rule.check_zero_point(e):
+            step = calc.ElimAbsStep(e, loc)
+            return rule.eval(e), [step]
+        # handle zero point
+        c = rule.get_zero_point(e)
+        new_problem = rule.eval(e)
+        step = calc.ElimAbsStep(e, loc, c)
+        return new_problem, [step]
+
+# TrigIdentity must execute before HalfAngleIndetity
 algorithm_rules = [
     DividePolynomial,
-    HalfAngleIdentity,
     Linearity,
     LinearSubstitution,
     CommonIntegral,
-    TrigIdentity
+    TrigIdentity,
+    ElimAbsRule,
+    HalfAngleIdentity
 ]
 
 class TrigFunction(HeuristicRule):
@@ -437,11 +466,16 @@ class HeuristicTrigonometricSubstitution(HeuristicRule):
             pat3 = cos(v)^n
             if match(e, pat1):
                 n_value = e.args[0].args[1].val
-                return True, e.args[1].args[0] if n_value % 2 == 1 else (False, None)
+                if n_value % 2 == 0:
+                    return False, None
+                return (True, e.args[1].args[0]) if n_value % 2 == 1 else (False, None)
             elif match(e, pat3):
                 n_value = e.args[1].val
-                return True, e.args[0].args[0] if n_value % 2 == 1 else (False, None)
+                return (True, e.args[0].args[0]) if n_value % 2 == 1 else (False, None)
             elif match(e, pat2):
+                n = e.args[1].val
+                if n % 2 == 0:
+                    return False, None
                 return True, e.args[0].args[0]
             else:
                 return False, None
@@ -519,44 +553,37 @@ class HeuristicTrigonometricSubstitution(HeuristicRule):
                 return False, None
 
         e_body = e.body
-        new_var = gen_rand_letter(e.var)
             
         if is_pat1(e_body)[0]:
             """Substitute sin(v) by u."""
             _, b = is_pat1(e_body)
-            integ, f = rules.Substitution1(new_var, sin(b)).eval(e)
-            step = [calc.SubstitutionStep(integ, new_var, sin(b), f, loc)]
-            return [(integ, step)]
+            result, step = substitution(e, sin(b))
+            return [(result, step)]
         elif is_pat2(e_body)[0]:
             """Substitute cos(v) by u."""
             _, b = is_pat2(e_body)
-            integ, f = rules.Substitution1(new_var, cos(b)).eval(e)
-            step = [calc.SubstitutionStep(integ, new_var, cos(b), f, loc)]
-            return [(integ, step)]
+            result, step = substitution(e, cos(b))
+            return [(result, step)]
         elif is_pat3(e_body)[0]:
             """Substitute tan(v) by u."""
             _, b = is_pat3(e_body)
-            integ, f = rules.Substitution1(new_var, tan(b)).eval(e)
-            step = [calc.SubstitutionStep(integ, new_var, tan(b), f, loc)]
-            return [(integ, step)]
+            result, step = substitution(e, tan(b))
+            return [(result, step)]
         elif is_pat4(e_body)[0]:
             """Substitute cot(v) by u."""
             _, b = is_pat4(e_body)
-            integ, f = rules.Substitution1(new_var, cot(b)).eval(e)
-            step = [calc.SubstitutionStep(integ, new_var, cot(b), f, loc)]
-            return [(integ, step)]
+            result, step = substitution(e, cot(b))
+            return [(result, step)]
         elif is_pat5(e_body)[0]:
             """Substitute sec(v) by u."""
             _, b = is_pat5(e_body)
-            integ, f = rules.Substitution1(new_var, sec(b)).eval(e)
-            step = [calc.SubstitutionStep(integ, new_var, sec(b), f, loc)]
-            return [(integ, step)]
+            result, step = substitution(e, sec(b))
+            return [(result, step)]
         elif is_pat6(e_body)[0]:
             """Substitute csc(v) by u."""
             _, b = is_pat6(e_body)
-            integ, f = rules.Substitution1(new_var, csc(b)).eval(e)
-            step = [calc.SubstitutionStep(integ, new_var, csc(b), f, loc)]
-            return [(integ, step)]
+            result, step = substitution(e, csc(b))
+            return [(result, step)]
         else:
             return [(e, None)]
 
@@ -575,10 +602,9 @@ class HeuristicSubstitution(HeuristicRule):
 
         depth = 0
         for subexpr in all_subterms:
-            try:    
-                r, f = rules.Substitution1(gen_rand_letter(e.var), subexpr).eval(e)
-                step = [calc.SubstitutionStep(r, r.var, subexpr, f, loc)]
-                res.append((r, step))
+            try:
+                result, step = substitution(e, subexpr)   
+                res.append((result, step))
             except:
                 continue
 
@@ -667,8 +693,8 @@ class HeuristicElimQuadratic(HeuristicRule):
         res = []
 
         for quad, l, (a, b, c) in quadratics:
-            new_integral, f = rules.Substitution1(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
-
+            # new_integral, f = rules.Substitution1(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
+            new_integral, step1 = substitution(e, Var(e.var) + (b/(Const(2)*c)))
             step1 = [calc.SubstitutionStep(
                 new_integral, new_integral.var, Var(e.var) + (b/(Const(2)*c)), f, tuple(loc) + (0,) + l)]
             new_integral, step2 = HeuristicExpandPower().eval(new_integral)[0]
@@ -783,9 +809,7 @@ class HeuristicExponentBase(HeuristicRule):
 
 
         gcd = functools.reduce(math.gcd, coeffs)
-        new_integral, f = rules.Substitution1("u", exp(Const(gcd)*Var(e.var))).eval(e)
-
-        step = [calc.SubstitutionStep(new_integral, "u", exp(Const(gcd)*Var(e.var)), f, loc)]
+        new_integral, step = substitution(e, exp(Const(gcd)*Var(e.var)))        
         return [(new_integral, step)]
 
 
@@ -928,7 +952,6 @@ class OrNode(GoalNode):
             # Linear combination of integrals
             not_solved_integral.remove(self.root)
             self.children.append(AndNode(cur_integral, loc=self.loc, parent=self, steps=algo_steps))
-
         self.compute_resolved()
 
     def compute_resolved(self):
@@ -1049,3 +1072,19 @@ def timeout(max_timeout):
             return res
         return func_wrapper
     return timeout_decorator
+
+class Slagle(rules.Rule):
+    def __init__(self, time_out=None):
+        if time_out is None:
+            self.timeout = 20
+        else:
+            self.timeout = time_out
+
+    def eval(self, e):
+        try:
+            node = timeout(self.timeout)(bfs)(OrNode(e))
+            result = node.compute_value()
+            return result.normalize()
+        except multiprocessing.context.TimeoutError:
+            # print("Time out!")
+            return None
