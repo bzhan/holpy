@@ -6,28 +6,29 @@ import time
 
 test_cases = {
     "tongji": {
-        "Exercise 1": "INT x:[2,3]. 2 * x + x ^ 2",
-        "Exercise 2": "INT x:[0,1]. (3 * x + 1) ^ (-2)",
-        "Exercise 3": "INT x:[0,1]. exp(6*x)",
-        "Exercise 4": "INT x:[-1,2]. x * exp(x)",
-        "Exercise 5": "INT x:[0,pi/4]. sin(x)",
-        "Exercise 6": "INT x:[0,1]. 3*x^2 - x + 1",
-        "Exercise 7": "INT x:[1,2]. x^2 + 1/x^4",
-        "Exercise 8": "INT x:[pi/3, pi]. sin(2*x+pi/3)",
-        "Exercise 9": "INT x:[4, 9]. x ^ (1 / 3) * (x ^ (1 / 2) + 1)",
-        "Exercise 12": "INT x:[0, pi / 2]. sin(x) * cos(x) ^ 3",
-        "Exercise 13": "INT x:[0, pi]. (1 - sin(x)^3)",
-        "Exercise 14": "INT x:[pi/6, pi/2]. cos(x) ^ 2",
-        "Exercise 15": "INT x:[0, 1]. (1 - x^2) ^ (1/2)",
-        "Exercise 16": "INT x:[0, sqrt(2)]. sqrt(2 - x^2)",
-        "Exercise 17": "INT y:[-sqrt(2), sqrt(2)]. sqrt(8 - 2*y^2)",
-        "Exercise 19": "INT x:[-1, 1]. x / sqrt(5 - 4 * x)",
-        "Exercise 21": "INT x:[3/4, 1]. 1/(sqrt(1-x) - 1)",
-        "Exercise 22": "INT t:[0, 1]. t * exp(-t ^ 2 / 2)",
-        "Exercise 23": "INT x:[1, exp(2)]. 1 / (x*sqrt(1+log(x)))",
-        "Exercise 28": "INT x:[0, 1].x*exp(-x)",
-        "Exercise 29": "INT x:[1, exp(1)]. x * log(x)",
-        "Exercise 31": "INT x:[1, 4]. log(x) / sqrt(x)"
+        "Exercise 1" : "34/3",
+        "Exercise 2" : "1/4",
+        "Exercise 3" : "-1/6 + 1/6 * exp(6)",
+        "Exercise 4" : "2 * exp(-1) + exp(2)",
+        "Exercise 5" : "1 + -1/2 * sqrt(2)",
+        "Exercise 6" : "3/2",
+        "Exercise 7" : "21/8",
+        "Exercise 8" : "-3/4",
+        "Exercise 9" : "-81/11 * 2 ^ (2/3) + 945/44 * 3 ^ (2/3)",
+        "Exercise 12" : "1/4",
+        "Exercise 14" : "1/8 * sqrt(3) + 1/6 * pi",
+        "Exercise 15" : "1/4 * pi",
+        "Exercise 16" : "1/2 * pi",
+        "Exercise 17" : "-2 * sqrt(2) + sqrt(2) * pi",
+        "Exercise 19" : "1/6",
+        "Exercise 20" : "2 + 2 * log(2) + -2 * log(3)",
+        "Exercise 21" : "1 + 2 * log(1/2)",
+        "Exercise 22" : "1 + -exp(-1/2)",
+        "Exercise 23" : "-2 + 2 * sqrt(3)",
+        "Exercise 28" : "1 + -2 * exp(-1)",
+        "Exercise 29" : "1/4 + 1/4 * exp(2)",
+        "Exercise 31" : "4 + 2 * log(4) * exp(1/2 * log(4)) + -4 * exp(1/2 * log(4))",
+        
     },
 
     "MIT/2013": {
@@ -41,6 +42,10 @@ test_cases = {
     
     "MIT/2014": {
         "Exercise 1": "2",
+    },
+
+    "MIT/2019": {
+        "Exercise 2": "log(abs(exp(1) + sin(1)))",
     },
 
     "UCDAVIS/usubstitution": {
@@ -92,6 +97,24 @@ test_cases = {
         "Exercise 12" : "6 + -2 * exp(1)",
         "Exercise 13" : "-8/5",
         "Exercise 15" : "2 + -5 * exp(-1)",
+    },
+
+    "UCDAVIS/LogAndArctangent": {
+        "Exercise 1" : "3/2 + 3/2 * log(4)",
+        "Exercise 2" : "-7 * log(5) + 7 * log(6)",
+        "Exercise 4" : "1/2 * log(4) + -1/2 * log(5)",
+        "Exercise 7" : "-log(3) + log(4)",
+        "Exercise 8" : "-1 + -10 * log(3) + 10 * log(4)",
+        "Exercise 9" : "-atan(2) + atan(3)",
+        "Exercise 12" : "-1/2 * log(2) + 1/2 * log(4)",
+        "Exercise 14" : "-1/2 * log(4) + 1/2 * log(abs(2 + 2 * exp(2)))",
+        "Exercise 16" : "-1/2 + 1/2 * exp(2) + 1/2 * log(4) + -1/2 * log(abs(2 + 2 * exp(2)))",
+        "Exercise 17" : "-1/2 + log(2)",
+    },
+
+    "UCDAVIS/PartialFraction": {
+        "Exercise 9" : "-3/8 + log(2)",
+        "Exercise 15" : "log(2) + -log(abs(1 + exp(-1)))",
     }
 }
 
@@ -103,14 +126,14 @@ tongji_not_solved = [
 class RunSlagle(unittest.TestCase):
     def testRunSlagle(self):
         file_names = [
-            # "tongji7",
+            "tongji7",
             # "MIT/2013",
             # "MIT/2014",
             # "MIT/2019",
             # "UCDAVIS/usubstitution",
             # "UCDAVIS/Exponentials",
             # "UCDAVIS/Trigonometric",
-            "UCDAVIS/Byparts",
+            # "UCDAVIS/Byparts",
             # "UCDAVIS/LogAndArctangent",
             # "UCDAVIS/PartialFraction",
         ]
@@ -139,7 +162,7 @@ class RunSlagle(unittest.TestCase):
                 elif result is None:
                     print(item["name"], "Timeout!")
                 else:
-                    print()
+                    print(item["name"], "Errors!")
 
         if profile:
             p = Stats(pr)

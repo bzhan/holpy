@@ -215,10 +215,10 @@ class TrigSubstitutionStep(IntegrationStep):
             "text": str(self.e),
             "reason": "Rewrite trigonometric",
             "_latex_reason": "Rewrite trigonometric \\(%s\\) to \\(%s\\)" %\
-                (latex.convert_expr(old_trig), latex.convert_expr(new_trig)),
+                (latex.convert_expr(self.old_trig), latex.convert_expr(self.new_trig)),
             "latex": self.latex,
-            "old_trig": self.old_trig,
-            "new_trig": self.new_trig,
+            "old_trig": str(self.old_trig),
+            "new_trig": str(self.new_trig),
             "location": str(self.loc),
         }
 
@@ -309,12 +309,12 @@ class TrigIndentityStep(IntegrationStep):
         return {
             "reason": "Rewrite trigonometric",
             'text': str(self.e),
-            'latex': integral.latex.convert_expr(self.e),
+            'latex': latex.convert_expr(self.e),
             "params":{
                 "rule": self.rule_name
             },
             '_latex_reason': "Rewrite trigonometric \\(%s\\) to \\(%s\\)" % 
-                        (integral.latex.convert_expr(self.before_trig), integral.latex.convert_expr(self.after_trig)), 
+                        (latex.convert_expr(self.before_trig), latex.convert_expr(self.after_trig)), 
             # If there is only one integral in the full expression, location begins from the body;
             # Else from the integral
             "location": str(self.loc)

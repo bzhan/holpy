@@ -167,7 +167,7 @@ class HalfAngleIdentity(AlgorithmRule):
     b) cos^2(v) = 1/2 + 1/2 * cos(2v)
     c) sin^2(v) = 1/2 - 1/2 * cos(2v)
     """
-    def eval(self, e):
+    def eval(self, e, _loc=[]):
         x = Symbol('x', [CONST, VAR, OP, FUN])
         y = Symbol('y', [CONST, VAR, OP, FUN])
         pat1 = sin(x) * cos(x)
@@ -187,25 +187,33 @@ class HalfAngleIdentity(AlgorithmRule):
 
         half = Const(Fraction(1, 2))
 
+        steps = []
+
         for t, loc, _ in sin_cos_expr:
-            e = e.replace_trig(t, half * sin(Const(2) * t.args[0].args[0]))
-
+            new_trig = half * sin(Const(2) * t.args[0].args[0])
+            e = e.replace_trig(t, new_trig)
+            steps.append(calc.TrigIndentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in cos_sin_expr:
-            e = e.replace_trig(t, half * sin(Const(2) * t.args[0].args[0]))
-
+            new_trig = half * sin(Const(2) * t.args[0].args[0])
+            e = e.replace_trig(t, new_trig)
+            steps.append(calc.TrigIndentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in sin_power_expr:
-            e = e.replace_trig(t, half + half * cos(Const(2) * t.args[0].args[0]))
-
+            new_trig = half - half * cos(Const(2) * t.args[0].args[0])
+            e = e.replace_trig(t, new_trig)
+            steps.append(calc.TrigIndentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in cos_power_expr:
-            e = e.replace_trig(t, half - half * cos(Const(2) * t.args[0].args[0]))
-        
+            new_trig = half + half * cos(Const(2) * t.args[0].args[0])
+            e = e.replace_trig(t, new_trig)
+            steps.append(calc.TrigIndentityStep(e, "TR7", t, new_trig, _loc+list(loc)))
         for t, loc, _ in y_sin_cos_expr:
-            e = e.replace_trig(t, half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0]))
-
+            new_trig = half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0])
+            e = e.replace_trig(t, new_trig)
+            steps.append(calc.TrigIndentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in y_cos_sin_expr:
-            e = e.replace_trig(t, half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0]))
-
-        return e, None
+            new_trig = half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0])
+            e = e.replace_trig(t, new_trig)
+            steps.append(calc.TrigIndentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
+        return e, steps
 
 class TrigIdentity(AlgorithmRule):
     """
@@ -260,21 +268,32 @@ class ElimAbsRule(AlgorithmRule):
     Eliminate absolute expression in the integration body.
     """
     def eval(self, e, loc=[]):
+        if e.ty == OP and e.op == "*" and not e.args[1].ty == INTEGRAL\
+            or e.is_constant():
+            return e, None
+
+        if e.ty == OP and e.op == "*":
+            integ = e.args[1]
+        else:
+            assert e.ty == INTEGRAL, "Invalid %s" % str(e)
+            integ = e 
         rule = rules.ElimAbs()
         # first check if there are abs expr in e
         x = Symbol("x", [VAR, OP, FUN])
-        abs_exprs = find_pattern(e, Fun("abs", x))
+        abs_exprs = find_pattern(integ, Fun("abs", x))
         # don't have abs express
         if not abs_exprs:
             return e, None
         # don't have zero point
-        if not rule.check_zero_point(e):
-            step = calc.ElimAbsStep(e, loc)
-            return rule.eval(e), [step]
+        loc = loc if e.ty == INTEGRAL else loc + [1]
+        if not rule.check_zero_point(integ):
+            result = e.replace_trig(integ, rule.eval(integ))
+            step = calc.ElimAbsStep(result, loc)
+            return result, [step]
         # handle zero point
-        c = rule.get_zero_point(e)
-        new_problem = rule.eval(e)
-        step = calc.ElimAbsStep(e, loc, c)
+        c = rule.get_zero_point(integ)
+        new_problem = e.replace_trig(integ, rule.eval(integ))
+        step = calc.ElimAbsStep(new_problem, loc, c)
         return new_problem, [step]
 
 # TrigIdentity must execute before HalfAngleIndetity
@@ -733,20 +752,20 @@ class HeuristicTrigSubstitution(HeuristicRule):
             return []
 
         res = []
+        new_var = Var(gen_rand_letter(str(e.var)))
         for s, loc, (a, b) in all_subterms:
             a, b = a.val, b.val
             assert not a < 0 or not b < 0, "Invalid value: a=%s, b=%s" % (a, b)
             if a > 0 and b > 0:
-                subst = Op("^", Const(Fraction(a, b)), Const(Fraction(1,2))).normalize() * tan(Var("u"))
+                subst = Op("^", Const(Fraction(a, b)), Const(Fraction(1,2))).normalize() * tan(new_var)
                 
             elif a > 0 and b < 0:
-                subst = Op("^", Const(Fraction(a, -b)), Const(Fraction(1,2))).normalize() * sin(Var("u"))
+                subst = Op("^", Const(Fraction(a, -b)), Const(Fraction(1,2))).normalize() * sin(new_var)
             
             elif a < 0 and b > 0:
-                subst = Op("^", Const(Fraction(-a, b)), Const(Fraction(1,2))).normalize() * sec(Var("u"))
-
-            new_integral = rules.Substitution2("u", subst).eval(e)
-            step = [calc.SubstitutionInverseStep(new_integral, "u", subst)]
+                subst = Op("^", Const(Fraction(-a, b)), Const(Fraction(1,2))).normalize() * sec(new_var)
+            new_integral = rules.Substitution2(str(new_var), subst).eval(e)
+            step = [calc.SubstitutionInverseStep(new_integral, e.var, subst)]
             res.append((new_integral, step))
 
         return res
