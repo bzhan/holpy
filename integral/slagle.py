@@ -7,8 +7,10 @@ from integral.expr import *
 from integral.parser import parse_expr
 from integral import rules
 from integral import calc
+from integral import latex
 import math
 import multiprocessing.pool
+import json
 
 a = Symbol('a', [CONST])
 b = Symbol('b', [CONST])
@@ -58,28 +60,11 @@ class FullSimplify(AlgorithmRule):
     Compose Linearity, CommonIntegral and Simplify.
     """
     def eval(self, e, loc=[]):
-        # steps = []
-        # current = e
-        # while True:
-        #     s1 = OnSubterm(rules.Linearity()).eval(current)
-        #     if s1 == current:
-        #         return s1, steps
-        #     else:
-        #         steps.append(calc.LinearityStep(s1))
-
-        #     s2 = OnSubterm(rules.CommonIntegral()).eval(current)
-        #     if s2 == current:
-        #         return s2, steps
-        #     else:
-        #         steps.append(calc.LinearityStep(s2))
-
-        #     s3 = OnSubterm(rules.Simplify()).eval(current)
-        #     if s2 == current:
-        #         return s3, steps
-        #     else:
-        #         steps.append(calc.SimplifyStep(s2))
         s = rules.FullSimplify().eval(e)
-        return s, [calc.SimplifyStep(s, loc)]
+        if s == e:
+            return e, None
+        else:
+            return s, [calc.SimplifyStep(s, loc)]
 
 class CommonIntegral(AlgorithmRule):
     """Evaluate common integrals."""
@@ -991,11 +976,13 @@ class OrNode(GoalNode):
                     if steps:
                         for step in steps:
                             step.prepend_loc(self.loc)
-                        r = r.normalize()
-                        if r.ty == INTEGRAL and r not in not_solved_integral:
-                            self.children.append(OrNode(r, loc=self.loc, parent=self, steps=algo_steps+steps))
-                        elif r not in not_solved_integral:
-                            self.children.append(AndNode(r, loc=self.loc, parent=self, steps=algo_steps+steps))
+                        norm_r = rules.FullSimplify().eval(r)
+                        if norm_r != r:
+                            steps.append(calc.SimplifyStep(norm_r, self.loc))
+                        if norm_r.ty == INTEGRAL and norm_r not in not_solved_integral:
+                            self.children.append(OrNode(norm_r, loc=self.loc, parent=self, steps=algo_steps+steps))
+                        elif norm_r not in not_solved_integral:
+                            self.children.append(AndNode(norm_r, loc=self.loc, parent=self, steps=algo_steps+steps))
         
         else:
             # Linear combination of integrals
@@ -1129,6 +1116,12 @@ class Slagle(rules.Rule):
         else:
             self.timeout = time_out
 
+    def compute_node(self, e):
+        try:
+            return bfs(OrNode(e))
+        except multiprocessing.context.TimeoutError:
+            return None
+
     def eval(self, e):
         try:
             node = timeout(self.timeout)(bfs)(OrNode(e))
@@ -1137,3 +1130,71 @@ class Slagle(rules.Rule):
         except multiprocessing.context.TimeoutError:
             # print("Time out!")
             return None
+
+def perform_steps(node):
+    """
+    Perform the real solving steps. 
+    """        
+    real_steps = []
+
+    current = node.root
+
+    for step in node.trace():
+        loc = step.loc
+        if step.reason == "Simplification":
+            rule = rules.FullSimplify()
+            current = rules.OnLocation(rule, loc).eval(current)
+            real_steps.append({
+                "text": str(current),
+                "latex": latex.convert_expr(current),
+                "reason": step.reason,
+                "location": str(loc)
+            })
+        elif step.reason == "Substitution":
+            rule = rules.Substitution1(step.var_name, step.var_subst)
+            current = rules.OnLocation(rule, loc).eval(current)
+            real_steps.append({
+                "text": str(current),
+                "latex": latex.convert_expr(current),
+                "location": str(loc),
+                "params": {
+                    "f": str(step.f),
+                    "g": str(step.var_subst),
+                    "var_name": step.var_name
+                },
+                "_latex_reason": "Substitute \\(%s\\) for  \\(%s\\)" %\
+                                    (latex.convert_expr(Var(step.var_name)), latex.convert_expr(step.var_subst)),
+                "reason": step.reason
+            })
+        elif step.reason == "Integrate by parts":
+            rule = rules.IntegrationByParts(step.u, step.v)
+            current = rules.OnLocation(rule, loc).eval(current)
+            real_steps.append({
+                "text": str(current),
+                "latex": latex.convert_expr(current),
+                "location": str(loc),
+                "reason": step.reason,
+                "_latex_reason": "Integrate by parts, \\(u = %s, v = %s\\)" %\
+                    (latex.convert_expr(step.u), latex.convert_expr(step.v)),
+                "params": {
+                    "parts_u": str(step.u),
+                    "parts_v": str(step.v)
+                }
+            })
+        else:
+            raise NotImplementedError
+
+    last_expr = parse_expr(real_steps[-1]["text"])
+    if last_expr.is_constant():
+        return real_steps
+    print("last_expr", last_expr)
+    final_expr = rules.FullSimplify().eval(last_expr)
+    real_steps.append({
+        "text": str(final_expr),
+        "latex": latex.convert_expr(final_expr),
+        "reason": "Simplification",
+        "location": "."
+    })
+
+    return real_steps
+        

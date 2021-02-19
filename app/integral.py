@@ -494,7 +494,6 @@ def integral_integrate_by_parts():
     try:
         parts_v = integral.parser.parse_expr(data['parts_v'])
     except:
-        print("wow")
         return jsonify({
             "flag": False,
             "reason": "%s is not valid expression." % data['parts_v']
@@ -597,12 +596,14 @@ def integral_slagle():
     problem = data['problem']
     t = 30
     # limit slagle only run 60 seconds 
-    limit_bfs = slagle.timeout(t)(slagle.bfs)
+    rule = slagle.Slagle(t)
     try:
-        node = limit_bfs(slagle.OrNode(problem))
-        new_problem = node.compute_value()
-        t = [i.info() for i in node.trace()]
-        return json.dumps(t)
+        # node = limit_bfs(slagle.OrNode(problem))
+        # new_problem = node.compute_value()
+        # t = [i.info() for i in node.trace()]
+        # return json.dumps(t)
+        node = rule.compute_node(problem)
+        return json.dumps(slagle.perform_steps(node))
     except:
         new_problem = integral.parser.parse_expr(problem)
         return json.dumps([{

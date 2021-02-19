@@ -128,7 +128,10 @@ class Location:
         if isinstance(data, Iterable) and all(isinstance(n, int) for n in data):
             self.data = tuple(data)
         elif isinstance(data, str):
-            self.data = tuple(int(n) for n in data.split('.'))
+            if data in (".", ""):
+                self.data = tuple([])
+            else:
+                self.data = tuple(int(n) for n in data.split('.'))
         elif isinstance(data, Location):
             self.data = data.data
         else:

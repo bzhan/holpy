@@ -106,6 +106,7 @@ class SubstitutionStep(IntegrationStep):
         self.f = f
         self.latex = latex.convert_expr(e)
         self.loc = Location(loc)
+        self.reason = "Substitution"
 
     def __str__(self):
         return "Substitute %s for %s on %s" % (self.var_name, self.var_subst, self.loc)
@@ -122,7 +123,7 @@ class SubstitutionStep(IntegrationStep):
             },
             "_latex_reason": "Substitute \\(%s\\) for  \\(%s\\)" %\
                                 (latex.convert_expr(Var(self.var_name)), latex.convert_expr(self.var_subst)),
-            "reason": "Substitution"
+            "reason": self.reason
         }
 
 class SubstitutionInverseStep(IntegrationStep):
@@ -184,6 +185,7 @@ class EquationSubstitutionStep(IntegrationStep):
         self.e = e
         self.latex = latex.convert_expr(e)
         self.loc = Location(loc)
+        self.reason = "Solve equation"
 
     def __str__(self):
         return "Equation substitution on %s" % self.loc
@@ -193,19 +195,21 @@ class EquationSubstitutionStep(IntegrationStep):
             "text": str(self.e),
             "latex": self.latex,
             "location": str(self.loc),
+            "reason": "Solve equation"
         }
 
     def compute(self):
         return self.comp(e)
 
 class TrigSubstitutionStep(IntegrationStep):
-    def __init__(self, e, loc, old_trig, new_trig, reason):
+    def __init__(self, e, loc, old_trig, new_trig, tr_rule):
         self.e = e
         self.old_trig = old_trig
         self.new_trig = new_trig
         self.loc = Location(loc)
         self.latex =  latex.convert_expr(e)
-        self.reason = reason
+        self.tr_rule = tr_rule
+        self.reason = "Rewrite trigonometric"
 
     def __str__(self):
         return "Trig substitution %s for %s on %s" % (self.old_trig, self.new_trig, self.loc)
@@ -213,10 +217,13 @@ class TrigSubstitutionStep(IntegrationStep):
     def info(self):
         return {
             "text": str(self.e),
-            "reason": "Rewrite trigonometric",
+            "reason": self.reason,
             "_latex_reason": "Rewrite trigonometric \\(%s\\) to \\(%s\\)" %\
                 (latex.convert_expr(self.old_trig), latex.convert_expr(self.new_trig)),
             "latex": self.latex,
+            "params": {
+                "rule": self.tr_rule
+            },
             "old_trig": str(self.old_trig),
             "new_trig": str(self.new_trig),
             "location": str(self.loc),
@@ -229,6 +236,7 @@ class IntegrationByPartsStep(IntegrationStep):
         self.v = v
         self.loc = Location(loc)
         self.latex = latex.convert_expr(e)
+        self.reason = "Integrate by parts"
 
     def __str__(self):
         return "Integrate by parts with u = %s and v = %s on %s" % (self.u, self.v, self.loc)
@@ -237,13 +245,13 @@ class IntegrationByPartsStep(IntegrationStep):
         return {
             "text": str(self.e),
             "latex": self.latex,
-            "reason": "Integrate by parts",
+            "reason": self.reason,
             "_latex_reason": "Integrate by parts, \\(u = %s, v = %s\\)" %\
                             (latex.convert_expr(self.u), latex.convert_expr(self.v)),
             "location": str(self.loc),
             "params": {
-                "part_u": str(self.u),
-                "part_v": str(self.v)
+                "parts_u": str(self.u),
+                "parts_v": str(self.v)
             }
         }
 
@@ -254,6 +262,7 @@ class PolynomialDivisionStep(IntegrationStep):
         self.loc = Location(loc)
         self.rhs = rhs
         self.latex= latex.convert_expr(e)
+        self.reason = "Rewrite fraction"
 
     def __str__(self):
         return "Polynomial division on %s" % self.loc
@@ -266,7 +275,7 @@ class PolynomialDivisionStep(IntegrationStep):
                 "denom": str(self.denom),
                 "rhs": str(self.rhs)
             },
-            "reason": "Rewrite fraction",
+            "reason": self.reason,
             "text": str(self.e)
         }
 
@@ -275,6 +284,7 @@ class ElimAbsStep(IntegrationStep):
         self.e = e
         self.loc = Location(loc)
         self.zero_point = zero_point
+        self.reason = "Elim abs"
 
     def __str__(self):
         return "Elim abs point is %s, loc is %s" % (self.zero_point, self.loc)
@@ -284,7 +294,7 @@ class ElimAbsStep(IntegrationStep):
             "text": str(self.e),
             "latex": latex.convert_expr(self.e),
             "location": str(self.loc),
-            "reason": "Elim abs",   
+            "reason": self.reason,   
         }
 
         if self.zero_point is not None:
@@ -301,13 +311,14 @@ class TrigIndentityStep(IntegrationStep):
         self.before_trig = before_trig
         self.after_trig = after_trig
         self.loc = Location(loc)
+        self.reason = "Rewrite trigonometric"
 
     def __str__(self):
         return "Trig substitution: %s by %s" % (self.before_trig, self.after_trig)
 
     def info(self):
         return {
-            "reason": "Rewrite trigonometric",
+            "reason": self.reason,
             'text': str(self.e),
             'latex': latex.convert_expr(self.e),
             "params":{
