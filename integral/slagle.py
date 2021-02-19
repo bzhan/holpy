@@ -260,20 +260,20 @@ class TrigIdentity(AlgorithmRule):
             sin_coeff = t.args[0]
             body = t.args[1].args[1].args[0].args[0]
             e = e.replace_trig(t, sin_coeff * (cos(body) ** Const(2)))
-            steps.append(calc.TrigIndentityStep(e, "TR5", t, sin_coeff * (cos(body) ** Const(2)))) 
+            steps.append(calc.TrigIndentityStep(e, "TR5", t, sin_coeff * (cos(body) ** Const(2)), loc)) 
         for t, loc in cos_power_expr:
             cos_coeff = t.args[0]
             body = t.args[1].args[1].args[0].args[0]
             e = e.replace_trig(t, cos_coeff * (sin(body) ** Const(2)))
-            steps.append(calc.TrigIndentityStep(e, "TR6", t, cos_coeff * (sin(body) ** Const(2))))
+            steps.append(calc.TrigIndentityStep(e, "TR6", t, cos_coeff * (sin(body) ** Const(2)), loc))
         for t, loc, _ in sin_power1_expr:
             body = t.args[1].args[0].args[0].args[0]
             e = e.replace_trig(t, (cos(body) ** Const(2)))
-            steps.append(calc.TrigIndentityStep(e, "TR5", t, cos(body) ** Const(2))) 
+            steps.append(calc.TrigIndentityStep(e, "TR5", t, cos(body) ** Const(2), loc)) 
         for t, loc, _ in cos_power1_expr:
             body = t.args[1].args[0].args[0].args[0]
             e = e.replace_trig(t, (sin(body) ** Const(2)))
-            steps.append(calc.TrigIndentityStep(e, "TR6", t, sin(body) ** Const(2)))
+            steps.append(calc.TrigIndentityStep(e, "TR6", t, sin(body) ** Const(2), loc))
         return e, steps
 
 
@@ -316,10 +316,10 @@ algorithm_rules = [
     LinearSubstitution,
     # Linearity,
     # CommonIntegral,
-    FullSimplify,
     TrigIdentity,
+    FullSimplify,
+    HalfAngleIdentity,    
     ElimAbsRule,
-    HalfAngleIdentity
 ]
 
 class TrigFunction(HeuristicRule):
@@ -780,7 +780,7 @@ class HeuristicTrigSubstitution(HeuristicRule):
             elif a < 0 and b > 0:
                 subst = Op("^", Const(Fraction(-a, b)), Const(Fraction(1,2))).normalize() * sec(new_var)
             new_integral = rules.Substitution2(str(new_var), subst).eval(e)
-            step = [calc.SubstitutionInverseStep(new_integral, e.var, subst)]
+            step = [calc.SubstitutionInverseStep(new_integral, str(new_var), subst)]
             res.append((new_integral, step))
 
         return res
@@ -1202,8 +1202,39 @@ def perform_steps(node):
                 # Else from the integral
                 "location": str(step.loc)
             })
+        elif step.reason == "Elim abs":
+            rule = rules.ElimAbs()
+            current = rules.OnLocation(rule, loc).eval(current)
+            info = {
+                "reason": step.reason,
+                "text": str(current),
+                "latex": latex.convert_expr(current),
+                "location": str(loc)
+            }
+            if step.zero_point is not None:
+                info["params"] = {
+                    "c": str(step.zero_point)
+                }
+            real_steps.append(info)
+        elif step.reason == "Substitution inverse":
+            rule = rules.Substitution2(step.var_name, step.var_subst)
+            current = rules.OnLocation(rule, loc).eval(current)
+            real_steps.append({
+                "text": str(current),
+                "latex": latex.convert_expr(current),
+                "_latex_reason": "Substitute \\(%s\\) for \\(%s\\)" % \
+                                    (latex.convert_expr(Var(step.var_name)), latex.convert_expr(step.var_subst)),
+                "reason": step.reason,
+                "location": str(loc),
+                "params": {
+                    "a": str(current.lower),
+                    "b": str(current.upper),
+                    "g": str(step.var_subst),
+                    "var_name": str(step.var_name)
+                }
+            })
         else:
-            raise NotImplementedError
+            raise NotImplementedError(step.reason)
 
     last_expr = parse_expr(real_steps[-1]["text"])
     if last_expr.is_constant() and last_expr.normalize() == last_expr:

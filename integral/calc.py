@@ -129,7 +129,7 @@ class SubstitutionStep(IntegrationStep):
 class SubstitutionInverseStep(IntegrationStep):
     def __init__(self, e, var_name, var_subst, loc=[]):
         self.e = e
-        self.reason = "Substitution Inverse"
+        self.reason = "Substitution inverse"
         self.latex = latex.convert_expr(e)
         self.var_name = var_name
         self.var_subst = var_subst
