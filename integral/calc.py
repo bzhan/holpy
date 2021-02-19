@@ -56,7 +56,7 @@ class SimplifyStep(IntegrationStep):
 
     def info(self):
         return {
-            "text": str(self.compute()),
+            "text": str(self.e),
             "latex": self.latex,
             "reason": "Simplification",
             "location": str(self.loc),
@@ -77,7 +77,7 @@ class LinearityStep(IntegrationStep):
             "text": str(self.e),
             "latex": self.latex,
             "location": str(self.loc),
-            "reason": "Simplification"
+            "reason": "Linearity"
         }
         
 class CommonIntegralStep(IntegrationStep):
@@ -95,7 +95,7 @@ class CommonIntegralStep(IntegrationStep):
             "text": str(self.e),
             "latex": self.latex,
             "location": str(self.loc),
-            "reason": "Simplification"
+            "reason": "CommonIntegral"
         }
 
 class SubstitutionStep(IntegrationStep):

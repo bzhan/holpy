@@ -53,6 +53,33 @@ class HeuristicRule:
         """
         pass
 
+class FullSimplify(AlgorithmRule):
+    """
+    Compose Linearity, CommonIntegral and Simplify.
+    """
+    def eval(self, e, loc=[]):
+        # steps = []
+        # current = e
+        # while True:
+        #     s1 = OnSubterm(rules.Linearity()).eval(current)
+        #     if s1 == current:
+        #         return s1, steps
+        #     else:
+        #         steps.append(calc.LinearityStep(s1))
+
+        #     s2 = OnSubterm(rules.CommonIntegral()).eval(current)
+        #     if s2 == current:
+        #         return s2, steps
+        #     else:
+        #         steps.append(calc.LinearityStep(s2))
+
+        #     s3 = OnSubterm(rules.Simplify()).eval(current)
+        #     if s2 == current:
+        #         return s3, steps
+        #     else:
+        #         steps.append(calc.SimplifyStep(s2))
+        s = rules.FullSimplify().eval(e)
+        return s, [calc.SimplifyStep(s, loc)]
 
 class CommonIntegral(AlgorithmRule):
     """Evaluate common integrals."""
@@ -121,10 +148,11 @@ def linear_substitution(integral):
     func_body = collect_spec_expr(integral.body, Symbol('f', [FUN]))
 
     if len(func_body) == 1 and any([match(func_body[0], p) for p in linear_pat]): 
-        new_e_1, step1 = substitution(integral, func_body[0])
-        new_e_2 = rules.Linearity().eval(new_e_1)
-        step2 = [calc.LinearityStep(new_e_2)]
-        return new_e_2, step1 + step2
+        # new_e_1, step1 = substitution(integral, func_body[0])
+        # new_e_2 = rules.Linearity().eval(new_e_1)
+        # step2 = [calc.LinearityStep(new_e_2)]
+        # return new_e_2, step1 + step2
+        return substitution(integral, func_body[0])
 
     elif len(func_body) == 0:
         power_body = collect_spec_expr(integral.body, pat3)
@@ -132,10 +160,11 @@ def linear_substitution(integral):
             return integral, None
         is_linear = functools.reduce(lambda x,y:x or y, [match(power_body[0], pat) for pat in linear_pat])
         if len(power_body) == 1 and is_linear:
-            new_e_1, step1 = substitution(integral, power_body[0])
-            new_e_2 = rules.Linearity().eval(new_e_1)
-            step2 = [calc.LinearityStep(new_e_2)] 
-            return new_e_2, step1 + step2
+            # new_e_1, step1 = substitution(integral, power_body[0])
+            # new_e_2 = rules.Linearity().eval(new_e_1)
+            # step2 = [calc.LinearityStep(new_e_2)] 
+            # return new_e_2, step1 + step2
+            return substitution(integral, power_body[0])
         else:
             return integral, None
 
@@ -269,14 +298,14 @@ class ElimAbsRule(AlgorithmRule):
     """
     def eval(self, e, loc=[]):
         if e.ty == OP and e.op == "*" and not e.args[1].ty == INTEGRAL\
-            or e.is_constant():
+            or e.is_constant() or not e.ty == INTEGRAL:
             return e, None
 
         if e.ty == OP and e.op == "*":
             integ = e.args[1]
         else:
-            assert e.ty == INTEGRAL, "Invalid %s" % str(e)
-            integ = e 
+            # assert e.ty == INTEGRAL, "Invalid %s" % str(e)
+            integ = e
         rule = rules.ElimAbs()
         # first check if there are abs expr in e
         x = Symbol("x", [VAR, OP, FUN])
@@ -299,9 +328,10 @@ class ElimAbsRule(AlgorithmRule):
 # TrigIdentity must execute before HalfAngleIndetity
 algorithm_rules = [
     DividePolynomial,
-    Linearity,
     LinearSubstitution,
-    CommonIntegral,
+    # Linearity,
+    # CommonIntegral,
+    FullSimplify,
     TrigIdentity,
     ElimAbsRule,
     HalfAngleIdentity
@@ -1103,7 +1133,7 @@ class Slagle(rules.Rule):
         try:
             node = timeout(self.timeout)(bfs)(OrNode(e))
             result = node.compute_value()
-            return result.normalize()
+            return result
         except multiprocessing.context.TimeoutError:
             # print("Time out!")
             return None
