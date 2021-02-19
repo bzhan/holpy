@@ -516,7 +516,10 @@ def check_item(item, target=None, *, debug=False):
             result = current
         
         elif reason == 'Simplification':
-            result = FullSimplify().eval(current)
+            if "location" in step:
+                result = OnLocation(FullSimplify(), step["location"]).eval(current)
+            else:
+                result = FullSimplify().eval(current)
 
         elif reason == 'Substitution':
             var_name = step['params']['var_name']

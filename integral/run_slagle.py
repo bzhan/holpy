@@ -2,10 +2,11 @@ import unittest
 import json
 import cProfile
 from integral import slagle
+from integral import rules
 import time
 
 test_cases = {
-    "tongji": {
+    "tongji7": {
         "Exercise 1" : "34/3",
         "Exercise 2" : "1/4",
         "Exercise 3" : "-1/6 + 1/6 * exp(6)",
@@ -16,32 +17,32 @@ test_cases = {
         "Exercise 8" : "-3/4",
         "Exercise 9" : "-81/11 * 2 ^ (2/3) + 945/44 * 3 ^ (2/3)",
         "Exercise 12" : "1/4",
-        "Exercise 14" : "1/8 * sqrt(3) + 1/6 * pi",
-        "Exercise 15" : "1/4 * pi",
-        "Exercise 16" : "1/2 * pi",
-        "Exercise 17" : "-2 * sqrt(2) + sqrt(2) * pi",
-        "Exercise 19" : "1/6",
-        "Exercise 20" : "2 + 2 * log(2) + -2 * log(3)",
-        "Exercise 21" : "1 + 2 * log(1/2)",
-        "Exercise 22" : "1 + -exp(-1/2)",
-        "Exercise 23" : "-2 + 2 * sqrt(3)",
-        "Exercise 28" : "1 + -2 * exp(-1)",
-        "Exercise 29" : "1/4 + 1/4 * exp(2)",
-        "Exercise 31" : "4 + 2 * log(4) * exp(1/2 * log(4)) + -4 * exp(1/2 * log(4))",
-        
+        "Exercise 14" : "-1/8 * sqrt(3) + 1/6 * pi",
+        # "Exercise 15" : "1/4 * pi",
+        # "Exercise 16" : "1/2 * pi",
+        # "Exercise 17" : "2 * sqrt(2) + sqrt(2) * pi",
+        # "Exercise 20" : "2 + 2 * log(2) + -2 * log(3)",
+        # "Exercise 21" : "1 + 2 * log(1/2)",
+        # "Exercise 22" : "1 + -exp(-1/2)",
+        # "Exercise 23" : "-2 + 2 * sqrt(3)",
+        # "Exercise 28" : "1 + -2 * exp(-1)",
+        # "Exercise 29" : "1/4 + 1/4 * exp(2)",
+        # "Exercise 31" : "-4 + 4 * log(4)",
     },
 
     "MIT/2013": {
-        "Exercise 2": "INT x:[-1, 3].exp(abs(x))",
-        "Exercise 4": "INT x:[1, 11].x^3 - 3*x^2 + 3*x - 1",
-        "Exercise 6": "INT x:[0, 6].x+(x - 3)^7 + sin(x - 3)",
-        "Exercise 8": "INT x:[1, 2].(x^5 - x^3 + x^2 - 1) / (x^4 - x^3 + x - 1)",
-        "Exercise 12": "INT x:[0, 441]. (pi * sin(pi*sqrt(x))) / sqrt(x)",
-        "Exercise 19": "INT x:[0, 1].1/(2 - 2*x + x^2)",
+        "Exercise 2" : "-2 + exp(1) + exp(3)",
+        "Exercise 4" : "2500",
+        "Exercise 5" : "sqrt(3) * pi",
+        "Exercise 6" : "18 + cos(-3) + -cos(3)",
+        "Exercise 15" : "-8 * exp(1) + -24 * 0 ^ (1/4) * exp(0 ^ (1/4)) + 12 * (0 ^ (1/4)) ^ 2 * exp(0 ^ (1/4)) + -4 * (0 ^ (1/4)) ^ 3 * exp(0 ^ (1/4)) + 24 * exp(0 ^ (1/4))",
+        "Exercise 19" : "1/4 * pi",
     },
     
     "MIT/2014": {
         "Exercise 1": "2",
+        "Exercise 5" : "-4 + 2 * exp(1)",
+        "Exercise 7" : "4 * sqrt(3) + 2/3 * pi",
     },
 
     "MIT/2019": {
@@ -49,18 +50,19 @@ test_cases = {
     },
 
     "UCDAVIS/usubstitution": {
-        "Exercise 1": "209952",
-        "Exercise 2":"175099/11",
-        "Exercise 3": "74/21",
-        "Exercise 4": "-1/3 + 1/3 * 2 ^ (3/4)",
-        "Exercise 5": "-1/5 * exp(2) + 1/5 * exp(7)",
-        "Exercise 6": "4/3",
-        "Exercise 7": "0",
-        "Exercise 8": "-3/2 * log(2) + 3/2 * log(9)",
-        "Exercise 12": "1",
-        "Exercise 13": "-11/21",
-        "Exercise 14": "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)",
-        "Exercise 17": "41/6",
+        # "Exercise 1" : "209952 + -78125 * 0 ^ (9/2) + -21875 * 0 ^ (11/2) + -875 * 0 ^ (13/2) + -5 * 0 ^ (15/2)",
+        "Exercise 2" : "175099/11",
+        "Exercise 3" : "74/21",
+        "Exercise 4" : "-1/3 + 1/3 * 2 ^ (3/4)",
+        "Exercise 5" : "-1/5 * exp(2) + 1/5 * exp(7)",
+        "Exercise 6" : "4/3",
+        "Exercise 7" : "0",
+        "Exercise 12" : "1",
+        "Exercise 13" : "-11/21",
+        "Exercise 14" : "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)",
+        "Exercise 15" : "1/2 + -7/4 * log(3) + 7/4 * log(5)",
+        "Exercise 16" : "-3/2 + -8 * log(2) + 8 * log(3)",
+        "Exercise 17" : "41/6",
     },
     
     "UCDAVIS/Exponentials": {
@@ -139,30 +141,38 @@ class RunSlagle(unittest.TestCase):
         ]
 
         for filename in file_names:
-            with open("integral/examples/%s.json" % filename, "r", encoding="utf-8") as f:
+            with open("integral/examples/slagle/tongji7.json", "r", encoding="utf-8") as f:
                 f_data = json.load(f)
 
-            for item in f_data["content"]:
-                test_case = item["problem"]
-                item_num = int(item["name"].split(" ")[1])
-                if item_num in tongji_not_solved:
-                    continue
-                time1 = time.perf_counter()
-                try:
-                    result = slagle.Slagle(20).eval(test_case)
-                except:
-                    print(item["name"], "Error")
-                    continue
-                time2 = time.perf_counter()
-                if result is None:
-                    continue
-                if result.is_constant():
-                    # print(item["name"], result, "%.3fs"%(time2 - time1))
-                    print("\"%s\" : \"%s\"," % (item["name"], result))
-                elif result is None:
-                    print(item["name"], "Timeout!")
-                else:
-                    print(item["name"], "Errors!")
+            for item in f_data['content']:
+                if test_file is None or test_file == "tongji7":
+                    if (test_case is None and item['name'] in test_cases["tongji7"]) or \
+                       test_case == item['name']:
+                        target = test_cases["tongji7"][item['name']]
+                        rules.check_item(item, target, debug=True)
+            # for item in f_data["content"]:
+            #     test_case = item["problem"]
+            #     item_num = int(item["name"].split(" ")[1])
+            #     if item_num in tongji_not_solved:
+            #         continue
+            #     solver = slagle.Slagle(20)
+            #     time1 = time.perf_counter()
+            #     try:
+            #         result = solver.eval(test_case)
+            #     except:
+            #         print(item["name"], "Error")
+            #         continue
+            #     time2 = time.perf_counter()
+            #     if result is None:
+            #         continue
+            #     if result.is_constant():
+            #         # print(item["name"], result, "%.3fs"%(time2 - time1))
+            #         print("\"%s\" : \"%s\"," % (item["name"], result))
+            #         solver.write_slagle_json("integral\examples\slagle\%s.json" % filename, item["name"])
+            #     elif result is None:
+            #         print(item["name"], "Timeout!")
+            #     else:
+            #         print(item["name"], "Errors!")
 
         if profile:
             p = Stats(pr)

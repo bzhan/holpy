@@ -359,19 +359,19 @@ class TrigFunction(HeuristicRule):
 
         for t, loc, _ in tan_expr:
             e = e.replace_trig(t, sin(t.args[0])/cos(t.args[0]))
-            steps.append(calc.TrigSubstitutionStep(e, loc, t, sin(t.args[0])/cos(t.args[0]), reason))          
+            steps.append(calc.TrigSubstitutionStep(e, loc, t, sin(t.args[0])/cos(t.args[0]), "TR2"))          
 
         for t, loc, _ in cot_expr:
             e = e.replace_trig(t, cos(t.args[0])/sin(t.args[0]))
-            steps.append(calc.TrigSubstitutionStep(e, loc, t, cos(t.args[0])/sin(t.args[0]), reason))  
+            steps.append(calc.TrigSubstitutionStep(e, loc, t, cos(t.args[0])/sin(t.args[0]), "TR2"))  
 
         for t, loc, _ in sec_expr:
             e = e.replace_trig(t, Const(1)/cos(t.args[0]))
-            steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/cos(t.args[0]), reason))
+            steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/cos(t.args[0]), "TR1"))
 
         for t, loc, _ in csc_expr:
             e = e.replace_trig(t, Const(1)/sin(t.args[0]))
-            steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/sin(t.args[0]), reason))
+            steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/sin(t.args[0]), "TR1"))
 
         return e, steps
 
@@ -883,7 +883,7 @@ class HeuristicRationalSineCosine(HeuristicRule):
 
 
 heuristic_rules = [
-    TrigFunction,
+    # TrigFunction,
     HeuristicTrigonometricSubstitution,
     HeuristicSubstitution,
     HeuristicIntegrationByParts,
@@ -963,10 +963,15 @@ class OrNode(GoalNode):
         for rule in algorithm_rules:
             cur_integral, cur_steps = rule().eval(cur_integral)
             if cur_steps:
-                cur_integral = cur_integral.normalize()
+                # cur_integral = cur_integral.normalize()
                 for step in cur_steps:
                     step.prepend_loc(self.loc)
                     algo_steps.append(step)
+        
+        norm_integral = rules.FullSimplify().eval(cur_integral)
+        if norm_integral != cur_integral:
+            algo_steps.append(calc.SimplifyStep(norm_integral, self.loc))
+            cur_integral = norm_integral
 
         if cur_integral.ty == INTEGRAL:
             # Single integral case
@@ -1181,11 +1186,27 @@ def perform_steps(node):
                     "parts_v": str(step.v)
                 }
             })
+        elif step.reason == "Rewrite trigonometric":
+            rule = rules.RewriteTrigonometric(step.rule_name)
+            current = rules.OnLocation(rule, loc).eval(current)
+            real_steps.append({
+                "reason": step.reason,
+                "text": str(current),
+                "latex": latex.convert_expr(current),
+                "params":{
+                    "rule": step.rule_name
+                },
+                "_latex_reason": "Rewrite trigonometric \\(%s\\) to \\(%s\\)" % 
+                            (latex.convert_expr(step.before_trig), latex.convert_expr(step.after_trig)), 
+                # If there is only one integral in the full expression, location begins from the body;
+                # Else from the integral
+                "location": str(step.loc)
+            })
         else:
             raise NotImplementedError
 
     last_expr = parse_expr(real_steps[-1]["text"])
-    if last_expr.is_constant():
+    if last_expr.is_constant() and last_expr.normalize() == last_expr:
         return real_steps
     print("last_expr", last_expr)
     final_expr = rules.FullSimplify().eval(last_expr)
