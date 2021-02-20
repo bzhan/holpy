@@ -7,7 +7,7 @@ from kernel.type import TFun, BoolType, RealType
 from kernel.term import Term, Var, Const, Not, Eq, Lambda, Nat, Real, Inst
 from kernel.thm import Thm
 from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_conv, \
-    rewr_conv, abs_conv, binop_conv, every_conv, try_conv
+    rewr_conv, abs_conv, binop_conv, every_conv, try_conv, then_conv
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic

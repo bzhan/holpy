@@ -246,7 +246,7 @@ class Interval:
 
     def cos(self):
         """Cos function of an interval."""
-        if self.contained_in(Interval(expr.Const(0), expr.pi / 2, False, False)):
+        if self.contained_in(Interval(expr.Const(0), expr.pi, False, False)):
             return Interval(expr.Fun('cos', self.end).normalize_constant(),
                             expr.Fun('cos', self.start).normalize_constant(),
                             self.right_open, self.left_open)

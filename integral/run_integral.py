@@ -37,8 +37,8 @@ test_cases = {
         "Exercise 23": "-2 + 2 * sqrt(3)",
         "Exercise 24": "1/2 * pi",
         "Exercise 25": "3 / 8 * pi + -1/4 * sin(-pi)",
-        # "Exercise 26": "4 / 3 + -4/3 * 0 ^ (3/2)",
-        # "Exercise 27": "2 * sqrt(2)",
+        "Exercise 26": "4 / 3 + -4/3 * 0 ^ (3/2)",
+        "Exercise 27": "2 * sqrt(2)",
         "Exercise 28": "1 + -2 * exp(-1)",
         "Exercise 29": "1 / 4 + 1 / 4 * exp(2)",
         "Exercise 30": "-1/9 * sqrt(3) * pi + 1/4 * pi + -log(abs(1/2 * sqrt(2))) + log(abs(1/2 * sqrt(3)))",
@@ -47,7 +47,7 @@ test_cases = {
         "Exercise 33": "-(2 / 5) + 1 / 5 * exp(pi)",
         "Exercise 34": "-(1 / 4) * pi + 1 / 6 * pi ^ 3",
         "Exercise 35": "1/2 + -1/2 * cos(1) * exp(1) + 1/2 * exp(1) * sin(1)",
-        # "Exercise 36": "2 + -2 * exp (-1)",
+        "Exercise 36": "2 + -2 * exp (-1)",
         # "Interesting 1": "1 / 4 * pi",
     },
     "MIT/2013": {
@@ -225,7 +225,7 @@ class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
         filenames = [
             "tongji7",
-            "MIT/2013",
+            # "MIT/2013",
             # "MIT/2014",
             # "MIT/2019",
             # "UCDAVIS/usubstitution",
