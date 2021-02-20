@@ -251,7 +251,7 @@ class RunSlagle(unittest.TestCase):
 
     def testValidateSlagle(self):
         for filename in file_names:
-            with open("integral/examples/slagle/%s.json" % filename, "r", encoding="utf-8") as f:
+            with open("integral/examples/%s.json" % filename, "r", encoding="utf-8") as f:
                 f_data = json.load(f)
 
             for item in f_data["content"]:
