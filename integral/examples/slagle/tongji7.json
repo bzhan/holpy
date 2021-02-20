@@ -495,77 +495,24 @@
                     "text": "INT u:[0,1/2 * pi]. cos(u) ^ 2"
                 },
                 {
-                    "_latex_reason": "Substitute \\(v\\) for  \\(\\cos{(u)}\\)",
-                    "latex": "\\int_{0}^{1} \\frac{v ^ 2}{\\sqrt{1 + -v ^ 2}} \\,\\mathrm{dv}",
-                    "location": ".",
+                    "_latex_reason": "Rewrite trigonometric \\(\\cos^{2}(u)\\) to \\(\\frac{1}{2} + \\frac{\\cos{(2 u)}}{2}\\)",
+                    "latex": "\\int_{0}^{1/2 \\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,\\mathrm{du}",
+                    "location": "0",
                     "params": {
-                        "f": "-(v ^ 2 * (1 + -(v ^ 2)) ^ (-1/2))",
-                        "g": "cos(u)",
-                        "var_name": "v"
-                    },
-                    "reason": "Substitution",
-                    "text": "INT v:[0,1]. v ^ 2 * (1 + -(v ^ 2)) ^ (-1/2)"
-                },
-                {
-                    "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(u)}\\)",
-                    "latex": "\\int_{0}^{\\pi/2} \\frac{(\\sin{(u)}) ^ 2}{\\sqrt{1 + -(\\sin{(u)}) ^ 2}} \\cos{(u)} \\,\\mathrm{du}",
-                    "location": ".",
-                    "params": {
-                        "a": "0",
-                        "b": "pi / 2",
-                        "g": "1 * sin(u)",
-                        "var_name": "u"
-                    },
-                    "reason": "Substitution inverse",
-                    "text": "INT u:[0,pi / 2]. (1 * sin(u)) ^ 2 * (1 + -((1 * sin(u)) ^ 2)) ^ (-1/2) * cos(u)"
-                },
-                {
-                    "latex": "\\int_{0}^{1/2 \\pi} \\frac{\\cos{(u)} \\sin^{2}(u)}{\\sqrt{1 + -\\sin^{2}(u)}} \\,\\mathrm{du}",
-                    "location": ".",
-                    "reason": "Simplification",
-                    "text": "INT u:[0,1/2 * pi]. cos(u) * sin(u) ^ 2 * (1 + -(sin(u) ^ 2)) ^ (-1/2)"
-                },
-                {
-                    "_latex_reason": "Rewrite trigonometric \\(1 + -\\sin^{2}(u)\\) to \\(\\cos^{2}(u)\\)",
-                    "latex": "\\int_{0}^{1/2 \\pi} \\frac{\\cos{(u)} \\sin^{2}(u)}{\\sqrt{\\cos^{2}(u)}} \\,\\mathrm{du}",
-                    "location": "0.1.0",
-                    "params": {
-                        "rule": "TR5"
+                        "rule": "TR7"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "INT u:[0,1/2 * pi]. cos(u) * sin(u) ^ 2 * cos(u) ^ 2 ^ (-1/2)"
+                    "text": "INT u:[0,1/2 * pi]. cos(2 * u) / 2 + 1/2"
                 },
                 {
-                    "latex": "\\int_{0}^{1/2 \\pi} \\frac{\\cos{(u)} \\sin^{2}(u)}{\\left| \\cos{(u)} \\right|} \\,\\mathrm{du}",
+                    "latex": "\\frac{1}{4} \\pi + \\frac{1}{2} \\int_{0}^{1/2 \\pi} \\cos{(2 u)} \\,\\mathrm{du}",
                     "location": ".",
                     "reason": "Simplification",
-                    "text": "INT u:[0,1/2 * pi]. cos(u) * sin(u) ^ 2 * abs(cos(u)) ^ -1"
-                },
-                {
-                    "_latex_reason": "Rewrite trigonometric \\(\\sin^{2}(u)\\) to \\(\\frac{1}{2} - \\frac{\\cos{(2 u)}}{2}\\)",
-                    "latex": "\\int_{0}^{1/2 \\pi} \\frac{\\cos{(u)} (\\frac{1}{2} - \\frac{\\cos{(2 u)}}{2})}{\\left| \\cos{(u)} \\right|} \\,\\mathrm{du}",
-                    "location": "0.0.1",
-                    "params": {
-                        "rule": "TR8"
-                    },
-                    "reason": "Rewrite trigonometric",
-                    "text": "INT u:[0,1/2 * pi]. cos(u) * (1/2 - cos(2 * u) / 2) * abs(cos(u)) ^ -1"
-                },
-                {
-                    "latex": "\\int_{0}^{\\pi/2} \\frac{\\cos{(u)} (\\frac{1}{2} - \\frac{\\cos{(2 u)}}{2})}{\\cos{(u)}} \\,\\mathrm{du}",
-                    "location": ".",
-                    "reason": "Elim abs",
-                    "text": "INT u:[0,pi / 2]. cos(u) * (1/2 - cos(2 * u) / 2) * cos(u) ^ -1"
-                },
-                {
-                    "latex": "\\frac{1}{4} \\pi + -\\frac{1}{2} \\int_{0}^{1/2 \\pi} \\cos{(2 u)} \\,\\mathrm{du}",
-                    "location": ".",
-                    "reason": "Simplification",
-                    "text": "1/4 * pi + -1/2 * (INT u:[0,1/2 * pi]. cos(2 * u))"
+                    "text": "1/4 * pi + 1/2 * (INT u:[0,1/2 * pi]. cos(2 * u))"
                 },
                 {
                     "_latex_reason": "Substitute \\(v\\) for  \\(2 u\\)",
-                    "latex": "\\frac{1}{4} \\pi + -\\frac{1}{2} \\int_{0}^{\\pi} \\frac{\\cos{(v)}}{2} \\,\\mathrm{dv}",
+                    "latex": "\\frac{1}{4} \\pi + \\frac{1}{2} \\int_{0}^{\\pi} \\frac{\\cos{(v)}}{2} \\,\\mathrm{dv}",
                     "location": "1.1",
                     "params": {
                         "f": "1/2 * cos(v)",
@@ -573,13 +520,13 @@
                         "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "1/4 * pi + -1/2 * (INT v:[0,pi]. 1/2 * cos(v))"
+                    "text": "1/4 * pi + 1/2 * (INT v:[0,pi]. 1/2 * cos(v))"
                 },
                 {
-                    "latex": "\\frac{1}{4} \\pi + -\\frac{1}{2} * 0",
+                    "latex": "\\frac{1}{4} \\pi + \\frac{0}{2}",
                     "location": "1.1",
                     "reason": "Simplification",
-                    "text": "1/4 * pi + -1/2 * 0"
+                    "text": "1/4 * pi + 1/2 * 0"
                 },
                 {
                     "latex": "\\frac{1}{4} \\pi",
@@ -600,8 +547,15 @@
                     "text": "INT x:[0,sqrt(2)]. sqrt(2 - x ^ 2)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(x\\) for \\(\\sqrt{2} * \\sin{(u)}\\)",
-                    "latex": "\\int_{0}^{\\pi/2} \\sqrt{2 - (\\sqrt{2} * \\sin{(u)}) ^ 2} (\\sqrt{2} * \\cos{(u)}) \\,\\mathrm{du}",
+                    "latex": "\\int_{0}^{\\sqrt{2}} \\sqrt{2 + -x ^ 2} \\,\\mathrm{dx}",
+                    "location": ".",
+                    "reason": "Simplification",
+                    "text": "INT x:[0,sqrt(2)]. sqrt(2 + -(x ^ 2))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\sqrt{2} * \\sin{(u)}\\)",
+                    "latex": "\\int_{0}^{\\pi/2} \\sqrt{2 + -(\\sqrt{2} * \\sin{(u)}) ^ 2} (\\sqrt{2} * \\cos{(u)}) \\,\\mathrm{du}",
+                    "location": ".",
                     "params": {
                         "a": "0",
                         "b": "pi / 2",
@@ -609,10 +563,11 @@
                         "var_name": "u"
                     },
                     "reason": "Substitution inverse",
-                    "text": "INT u:[0,pi / 2]. sqrt(2 - (sqrt(2) * sin(u)) ^ 2) * (sqrt(2) * cos(u))"
+                    "text": "INT u:[0,pi / 2]. sqrt(2 + -((sqrt(2) * sin(u)) ^ 2)) * (sqrt(2) * cos(u))"
                 },
                 {
                     "latex": "\\sqrt{2} * (\\int_{0}^{1/2 \\pi} \\cos{(u)} \\sqrt{2 + -2 \\sin^{2}(u)} \\,\\mathrm{du})",
+                    "location": ".",
                     "reason": "Simplification",
                     "text": "sqrt(2) * (INT u:[0,1/2 * pi]. cos(u) * sqrt(2 + -2 * sin(u) ^ 2))"
                 },
@@ -627,50 +582,60 @@
                     "text": "sqrt(2) * (INT u:[0,1/2 * pi]. cos(u) * sqrt(2 * cos(u) ^ 2))"
                 },
                 {
-                    "latex": "2 \\int_{0}^{1/2 \\pi} \\cos{(u)} \\left| \\cos{(u)} \\right| \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "2 * (INT u:[0,1/2 * pi]. cos(u) * abs(cos(u)))"
-                },
-                {
-                    "latex": "2 \\int_{0}^{\\pi/2} \\cos{(u)} \\cos{(u)} \\,\\mathrm{du}",
+                    "latex": "\\sqrt{2} * \\sqrt{2} * (\\int_{0}^{1/2 \\pi} \\cos{(u)} \\left| \\cos{(u)} \\right| \\,\\mathrm{du})",
                     "location": "1",
-                    "reason": "Elim abs",
-                    "text": "2 * (INT u:[0,pi / 2]. cos(u) * cos(u))"
-                },
-                {
-                    "latex": "2 \\int_{0}^{1/2 \\pi} \\cos^{2}(u) \\,\\mathrm{du}",
                     "reason": "Simplification",
-                    "text": "2 * (INT u:[0,1/2 * pi]. cos(u) ^ 2)"
+                    "text": "sqrt(2) * (sqrt(2) * (INT u:[0,1/2 * pi]. cos(u) * abs(cos(u))))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(\\cos^{2}(u)\\) to \\(\\frac{\\cos{(2 u)}}{2} + \\frac{1}{2}\\)",
-                    "latex": "2 \\int_{0}^{1/2 \\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,\\mathrm{du}",
-                    "location": "1.0",
+                    "latex": "\\sqrt{2} * \\sqrt{2} * (\\int_{0}^{\\pi/2} \\cos{(u)} \\cos{(u)} \\,\\mathrm{du})",
+                    "location": "1.1",
+                    "reason": "Elim abs",
+                    "text": "sqrt(2) * (sqrt(2) * (INT u:[0,pi / 2]. cos(u) * cos(u)))"
+                },
+                {
+                    "latex": "\\sqrt{2} * \\sqrt{2} * (\\int_{0}^{1/2 \\pi} \\cos^{2}(u) \\,\\mathrm{du})",
+                    "location": "1.1",
+                    "reason": "Simplification",
+                    "text": "sqrt(2) * (sqrt(2) * (INT u:[0,1/2 * pi]. cos(u) ^ 2))"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\cos^{2}(u)\\) to \\(\\frac{1}{2} + \\frac{\\cos{(2 u)}}{2}\\)",
+                    "latex": "\\sqrt{2} * \\sqrt{2} * (\\int_{0}^{1/2 \\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,\\mathrm{du})",
+                    "location": "1.1.0",
                     "params": {
                         "rule": "TR7"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "2 * (INT u:[0,1/2 * pi]. cos(2 * u) / 2 + 1/2)"
+                    "text": "sqrt(2) * (sqrt(2) * (INT u:[0,1/2 * pi]. cos(2 * u) / 2 + 1/2))"
                 },
                 {
-                    "latex": "\\frac{1}{2} \\pi + {(\\int_{0}^{1/2 \\pi} \\cos{(2 u)} \\,\\mathrm{du})}",
+                    "latex": "\\sqrt{2} * \\sqrt{2} * (\\frac{1}{4} \\pi + \\frac{1}{2} \\int_{0}^{1/2 \\pi} \\cos{(2 u)} \\,\\mathrm{du})",
+                    "location": "1.1",
                     "reason": "Simplification",
-                    "text": "1/2 * pi + (INT u:[0,1/2 * pi]. cos(2 * u))"
+                    "text": "sqrt(2) * (sqrt(2) * (1/4 * pi + 1/2 * (INT u:[0,1/2 * pi]. cos(2 * u))))"
                 },
                 {
-                    "_latex_reason": "Substitute \\(v\\) for \\(2 u\\)",
-                    "latex": "\\frac{1}{2} \\pi + {(\\int_{0}^{\\pi} \\frac{\\cos{(v)}}{2} \\,\\mathrm{dv})}",
-                    "location": "1",
+                    "_latex_reason": "Substitute \\(v\\) for  \\(2 u\\)",
+                    "latex": "\\sqrt{2} * \\sqrt{2} * (\\frac{1}{4} \\pi + \\frac{1}{2} \\int_{0}^{\\pi} \\frac{\\cos{(v)}}{2} \\,\\mathrm{dv})",
+                    "location": "1.1.1.1",
                     "params": {
                         "f": "1/2 * cos(v)",
                         "g": "2 * u",
                         "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "1/2 * pi + (INT v:[0,pi]. 1/2 * cos(v))"
+                    "text": "sqrt(2) * (sqrt(2) * (1/4 * pi + 1/2 * (INT v:[0,pi]. 1/2 * cos(v))))"
+                },
+                {
+                    "latex": "\\sqrt{2} (\\sqrt{2} * (\\frac{1}{4} \\pi + \\frac{0}{2}))",
+                    "location": "1.1.1.1",
+                    "reason": "Simplification",
+                    "text": "sqrt(2) * (sqrt(2) * (1/4 * pi + 1/2 * 0))"
                 },
                 {
                     "latex": "\\frac{1}{2} \\pi",
+                    "location": ".",
                     "reason": "Simplification",
                     "text": "1/2 * pi"
                 }
@@ -687,8 +652,15 @@
                     "text": "INT y:[-sqrt(2),sqrt(2)]. sqrt(8 - 2 * y ^ 2)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(y\\) for \\(2 \\sin{(u)}\\)",
-                    "latex": "\\int_{-\\pi/4}^{\\pi/4} \\sqrt{8 - 2 (2 \\sin{(u)}) ^ 2} (2 \\cos{(u)}) \\,\\mathrm{du}",
+                    "latex": "\\int_{-\\sqrt{2}}^{\\sqrt{2}} \\sqrt{8 + -2 y ^ 2} \\,\\mathrm{dy}",
+                    "location": ".",
+                    "reason": "Simplification",
+                    "text": "INT y:[-sqrt(2),sqrt(2)]. sqrt(8 + -2 * y ^ 2)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(2 \\sin{(u)}\\)",
+                    "latex": "\\int_{-\\pi/4}^{\\pi/4} \\sqrt{8 + -2 (2 \\sin{(u)}) ^ 2} (2 \\cos{(u)}) \\,\\mathrm{du}",
+                    "location": ".",
                     "params": {
                         "a": "-pi / 4",
                         "b": "pi / 4",
@@ -696,10 +668,11 @@
                         "var_name": "u"
                     },
                     "reason": "Substitution inverse",
-                    "text": "INT u:[-pi / 4,pi / 4]. sqrt(8 - 2 * (2 * sin(u)) ^ 2) * (2 * cos(u))"
+                    "text": "INT u:[-pi / 4,pi / 4]. sqrt(8 + -2 * (2 * sin(u)) ^ 2) * (2 * cos(u))"
                 },
                 {
                     "latex": "2 \\int_{-1/4 \\pi}^{1/4 \\pi} \\cos{(u)} \\sqrt{8 + -8 \\sin^{2}(u)} \\,\\mathrm{du}",
+                    "location": ".",
                     "reason": "Simplification",
                     "text": "2 * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) * sqrt(8 + -8 * sin(u) ^ 2))"
                 },
@@ -714,50 +687,60 @@
                     "text": "2 * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) * sqrt(8 * cos(u) ^ 2))"
                 },
                 {
-                    "latex": "4 \\sqrt{2} * (\\int_{-1/4 \\pi}^{1/4 \\pi} \\cos{(u)} \\left| \\cos{(u)} \\right| \\,\\mathrm{du})",
-                    "reason": "Simplification",
-                    "text": "4 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) * abs(cos(u)))"
-                },
-                {
-                    "latex": "4 \\sqrt{2} * (\\int_{-\\pi/4}^{\\pi/4} \\cos{(u)} \\cos{(u)} \\,\\mathrm{du})",
+                    "latex": "2 (2 \\sqrt{2} * (\\int_{-1/4 \\pi}^{1/4 \\pi} \\cos{(u)} \\left| \\cos{(u)} \\right| \\,\\mathrm{du}))",
                     "location": "1",
-                    "reason": "Elim abs",
-                    "text": "4 * sqrt(2) * (INT u:[-pi / 4,pi / 4]. cos(u) * cos(u))"
-                },
-                {
-                    "latex": "4 \\sqrt{2} * (\\int_{-1/4 \\pi}^{1/4 \\pi} \\cos^{2}(u) \\,\\mathrm{du})",
                     "reason": "Simplification",
-                    "text": "4 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) ^ 2)"
+                    "text": "2 * (2 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) * abs(cos(u))))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(\\cos^{2}(u)\\) to \\(\\frac{\\cos{(2 u)}}{2} + \\frac{1}{2}\\)",
-                    "latex": "4 \\sqrt{2} * (\\int_{-1/4 \\pi}^{1/4 \\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,\\mathrm{du})",
-                    "location": "1.0",
+                    "latex": "2 (2 \\sqrt{2} * (\\int_{-\\pi/4}^{\\pi/4} \\cos{(u)} \\cos{(u)} \\,\\mathrm{du}))",
+                    "location": "1.1",
+                    "reason": "Elim abs",
+                    "text": "2 * (2 * sqrt(2) * (INT u:[-pi / 4,pi / 4]. cos(u) * cos(u)))"
+                },
+                {
+                    "latex": "2 (2 \\sqrt{2} * (\\int_{-1/4 \\pi}^{1/4 \\pi} \\cos^{2}(u) \\,\\mathrm{du}))",
+                    "location": "1.1",
+                    "reason": "Simplification",
+                    "text": "2 * (2 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) ^ 2))"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\cos^{2}(u)\\) to \\(\\frac{1}{2} + \\frac{\\cos{(2 u)}}{2}\\)",
+                    "latex": "2 (2 \\sqrt{2} * (\\int_{-1/4 \\pi}^{1/4 \\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,\\mathrm{du}))",
+                    "location": "1.1.0",
                     "params": {
                         "rule": "TR7"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "4 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. cos(2 * u) / 2 + 1/2)"
+                    "text": "2 * (2 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. cos(2 * u) / 2 + 1/2))"
                 },
                 {
-                    "latex": "\\sqrt{2} \\pi + 2 \\sqrt{2} * (\\int_{-1/4 \\pi}^{1/4 \\pi} \\cos{(2 u)} \\,\\mathrm{du})",
-                    "reason": "Simplification",
-                    "text": "sqrt(2) * pi + 2 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. cos(2 * u))"
-                },
-                {
-                    "_latex_reason": "Substitute \\(v\\) for \\(2 u\\)",
-                    "latex": "\\sqrt{2} \\pi + 2 \\sqrt{2} * (\\int_{-1/2 \\pi}^{1/2 \\pi} \\frac{\\cos{(v)}}{2} \\,\\mathrm{dv})",
+                    "latex": "2 (2 \\sqrt{2} * (\\frac{1}{4} \\pi + \\frac{1}{2} \\int_{-1/4 \\pi}^{1/4 \\pi} \\cos{(2 u)} \\,\\mathrm{du}))",
                     "location": "1.1",
+                    "reason": "Simplification",
+                    "text": "2 * (2 * sqrt(2) * (1/4 * pi + 1/2 * (INT u:[-1/4 * pi,1/4 * pi]. cos(2 * u))))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(v\\) for  \\(2 u\\)",
+                    "latex": "2 (2 \\sqrt{2} * (\\frac{1}{4} \\pi + \\frac{1}{2} \\int_{-1/2 \\pi}^{1/2 \\pi} \\frac{\\cos{(v)}}{2} \\,\\mathrm{dv}))",
+                    "location": "1.1.1.1",
                     "params": {
                         "f": "1/2 * cos(v)",
                         "g": "2 * u",
                         "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "sqrt(2) * pi + 2 * sqrt(2) * (INT v:[-1/2 * pi,1/2 * pi]. 1/2 * cos(v))"
+                    "text": "2 * (2 * sqrt(2) * (1/4 * pi + 1/2 * (INT v:[-1/2 * pi,1/2 * pi]. 1/2 * cos(v))))"
+                },
+                {
+                    "latex": "2 (2 \\sqrt{2} * (\\frac{1}{4} \\pi + \\frac{1}{2}))",
+                    "location": "1.1.1.1",
+                    "reason": "Simplification",
+                    "text": "2 * (2 * sqrt(2) * (1/4 * pi + 1/2 * 1))"
                 },
                 {
                     "latex": "2 \\sqrt{2} + \\sqrt{2} \\pi",
+                    "location": ".",
                     "reason": "Simplification",
                     "text": "2 * sqrt(2) + sqrt(2) * pi"
                 }

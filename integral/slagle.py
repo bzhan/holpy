@@ -314,12 +314,9 @@ class ElimAbsRule(AlgorithmRule):
 algorithm_rules = [
     DividePolynomial,
     LinearSubstitution,
-    # Linearity,
-    # CommonIntegral,
     TrigIdentity,
-    FullSimplify,
-    HalfAngleIdentity,    
     ElimAbsRule,
+    HalfAngleIdentity,    
 ]
 
 class TrigFunction(HeuristicRule):
@@ -968,10 +965,10 @@ class OrNode(GoalNode):
                     step.prepend_loc(self.loc)
                     algo_steps.append(step)
         
-        norm_integral = rules.FullSimplify().eval(cur_integral)
-        if norm_integral != cur_integral:
-            algo_steps.append(calc.SimplifyStep(norm_integral, self.loc))
-            cur_integral = norm_integral
+            norm_integral = rules.FullSimplify().eval(cur_integral)
+            if norm_integral != cur_integral:
+                algo_steps.append(calc.SimplifyStep(norm_integral, self.loc))
+                cur_integral = norm_integral
 
         if cur_integral.ty == INTEGRAL:
             # Single integral case
@@ -1239,7 +1236,6 @@ def perform_steps(node):
     last_expr = parse_expr(real_steps[-1]["text"])
     if last_expr.is_constant() and last_expr.normalize() == last_expr:
         return real_steps
-    print("last_expr", last_expr)
     final_expr = rules.FullSimplify().eval(last_expr)
     real_steps.append({
         "text": str(final_expr),
