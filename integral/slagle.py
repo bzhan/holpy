@@ -86,24 +86,34 @@ class DividePolynomial(AlgorithmRule):
     """
     def eval(self, e):
         e_body = e.body
-        if e_body.ty == OP and e_body.op == "/" or e_body.ty == OP and e_body.op == "*" and \
-            e_body.args[1].ty == OP and e_body.args[1].op == "^" and e_body.args[1].args[1].ty == CONST\
-                and e_body.args[1].args[1].val < 0: # e_body is fraction
-            if e_body.ty == OP and e_body.op == "/":
-                denom = e_body.args[1]
-            else:
-                denom = e_body.args[1].args[0]
-            try:
-                new_e_1 = rules.PolynomialDivision().eval(e)
-                rhs = new_e_1.body
-                new_e_2 = rules.Linearity().eval(new_e_1)
-                steps = [calc.PolynomialDivisionStep(e=new_e_1, denom=denom, rhs=rhs),
-                         calc.LinearityStep(new_e_2)]
-                return new_e_2, steps
-            except:
-                return e, None
-        else:
+
+        a = Symbol("a", [CONST, VAR, OP])
+        b = Symbol("b", [CONST, VAR, OP])
+        c = Symbol("c", [CONST])
+        pat1 = a / b
+        pat2 = a * (b ^ c)
+
+        if not match(e_body, pat1) and not match(e_body, pat2):
             return e, None
+        
+        mapping2 = match(e_body, pat2)
+        if mapping2 is not None:
+            c_value = mapping2[c].val
+            if c_value > 0 or not isinstance(c_value, int):
+                return e, None
+
+        if e_body.ty == OP and e_body.op == "/":
+            denom = e_body.args[1]
+        else:
+            denom = e_body.args[1].args[0]
+        try:
+            divide_expr = rules.PolynomialDivision().eval(e_body)
+            new_integral = Integral(e.var, e.lower, e.upper, divide_expr)
+            step = calc.PolynomialDivisionStep(new_integral, denom, divide_expr, Location([0]))
+            return new_integral, [step]
+        except NotImplementedError:
+            return e, None
+
 
 class Linearity(AlgorithmRule):
     """Algorithm rule (a),(b),(c) in Slagle's thesis.
@@ -1220,8 +1230,8 @@ def perform_steps(node):
                 "reason": step.reason,
                 "location": str(loc),
                 "params": {
-                    "a": str(current.lower),
-                    "b": str(current.upper),
+                    "a": str(step.e.lower),
+                    "b": str(step.e.upper),
                     "g": str(step.var_subst),
                     "var_name": str(step.var_name)
                 }
@@ -1234,6 +1244,19 @@ def perform_steps(node):
                 "latex": latex.convert_expr(current),
                 "reason": "Unfold power",
                 "location": str(loc)
+            })
+        elif step.reason == "Rewrite fraction":
+            rule = rules.PolynomialDivision()
+            current = rules.OnLocation(rule, loc).eval(current)
+            real_steps.append({
+                "text": str(current),
+                "latex": latex.convert_expr(current),
+                "reason": step.reason,
+                "params": {
+                    "rhs": str(step.rhs),
+                    "denom": str(step.denom),
+                },
+                "location": str(step.loc)
             })
         else:
             raise NotImplementedError(step.reason)
