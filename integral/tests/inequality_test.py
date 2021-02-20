@@ -2,9 +2,15 @@
 
 import unittest
 
+from kernel.type import RealType
+from kernel import term
+from kernel.proofterm import ProofTerm
 from logic import context
+from data import set as hol_set
 from integral.parser import parse_expr, parse_interval
 from integral import inequality
+from integral.expr import expr_to_holpy
+from integral.inequality import get_bounds, get_bounds_proof, interval_to_holpy
 
 
 class InequalityTest(unittest.TestCase):
@@ -17,7 +23,7 @@ class InequalityTest(unittest.TestCase):
         for s in test_data:
             self.assertEqual(str(parse_interval(s)), s)
 
-    def testGetBound(self):
+    def testGetBounds(self):
         test_data = [
             ("x - 4", "(0, 1)", "(-4, -3)"),
             ("sqrt(x)", "(1, 4)", "(1, 2)"),
@@ -32,6 +38,20 @@ class InequalityTest(unittest.TestCase):
             s = parse_expr(s)
             var_range = {'x': parse_interval(i1)}
             self.assertEqual(str(inequality.get_bounds(s, var_range)), i2)
+
+    def testGetBoundsProof(self):
+        test_data = [
+            ("x + 3", "[0, 1]", "[3, 4]"),
+        ]
+
+        for s, i1, i2 in test_data:
+            context.set_context('interval_arith')
+            t = expr_to_holpy(parse_expr(s))
+            cond = hol_set.mk_mem(term.Var('x', RealType), interval_to_holpy(parse_interval(i1)))
+            var_range = {'x': ProofTerm.assume(cond)}
+            res = hol_set.mk_mem(t, interval_to_holpy(parse_interval(i2)))
+            pt = get_bounds_proof(t, var_range)
+            self.assertEqual(pt.prop, res)
 
 
 if __name__ == "__main__":

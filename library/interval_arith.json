@@ -69,13 +69,13 @@
                     "th": "⊢ x ≤ x ∧ x ≤ x"
                 },
                 {
-                    "args": "interval_arith_def, interval_arith x x x",
+                    "args": "in_real_closed_interval, x ∈ real_closed_interval x x",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ interval_arith x x x"
+                    "th": "⊢ x ∈ real_closed_interval x x"
                 },
                 {
                     "args": "",
@@ -84,16 +84,28 @@
                         "1"
                     ],
                     "rule": "intros",
-                    "th": "⊢ interval_arith x x x"
+                    "th": "⊢ x ∈ real_closed_interval x x"
                 }
             ],
-            "prop": "interval_arith x x x",
+            "prop": "x ∈ real_closed_interval x x",
             "steps": [
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "interval_arith_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_le_antisym"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_real_closed_interval"
                 },
                 {
                     "goal_id": "0",
@@ -108,165 +120,132 @@
             }
         },
         {
-            "attributes": [
-                "hint_backward",
-                "hint_backward1"
-            ],
-            "name": "approx_interval",
+            "name": "add_interval",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "a ≤ lo",
+                    "args": "x ∈ real_closed_interval a b",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "a ≤ lo ⊢ a ≤ lo"
+                    "th": "x ∈ real_closed_interval a b ⊢ x ∈ real_closed_interval a b"
                 },
                 {
-                    "args": "hi ≤ b",
+                    "args": "y ∈ real_closed_interval c d",
                     "id": "1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "hi ≤ b ⊢ hi ≤ b"
+                    "th": "y ∈ real_closed_interval c d ⊢ y ∈ real_closed_interval c d"
                 },
                 {
-                    "args": "interval_arith x lo hi",
+                    "args": "in_real_closed_interval",
                     "id": "2",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "interval_arith x lo hi ⊢ interval_arith x lo hi"
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ real_closed_interval a b ⊢ a ≤ x ∧ x ≤ b"
                 },
                 {
-                    "args": "interval_arith_def",
+                    "args": "conjD1",
                     "id": "3",
                     "prevs": [
                         "2"
                     ],
-                    "rule": "rewrite_fact",
-                    "th": "interval_arith x lo hi ⊢ lo ≤ x ∧ x ≤ hi"
+                    "rule": "apply_theorem",
+                    "th": "x ∈ real_closed_interval a b ⊢ a ≤ x"
                 },
                 {
-                    "args": "a ≤ x ∧ x ≤ b",
+                    "args": "in_real_closed_interval",
                     "id": "4",
                     "prevs": [
-                        "3",
-                        "1",
-                        "0"
+                        "1"
                     ],
-                    "rule": "z3",
-                    "th": "a ≤ lo, hi ≤ b, interval_arith x lo hi ⊢ a ≤ x ∧ x ≤ b"
+                    "rule": "rewrite_fact",
+                    "th": "y ∈ real_closed_interval c d ⊢ c ≤ y ∧ y ≤ d"
                 },
                 {
-                    "args": "interval_arith_def, interval_arith x a b",
+                    "args": "conjD1",
                     "id": "5",
                     "prevs": [
                         "4"
                     ],
-                    "rule": "rewrite_goal",
-                    "th": "a ≤ lo, hi ≤ b, interval_arith x lo hi ⊢ interval_arith x a b"
+                    "rule": "apply_theorem",
+                    "th": "y ∈ real_closed_interval c d ⊢ c ≤ y"
                 },
                 {
-                    "args": "",
+                    "args": "real_le_add2",
                     "id": "6",
                     "prevs": [
-                        "0",
-                        "1",
-                        "2",
+                        "3",
                         "5"
                     ],
-                    "rule": "intros",
-                    "th": "⊢ a ≤ lo ⟶ hi ≤ b ⟶ interval_arith x lo hi ⟶ interval_arith x a b"
-                }
-            ],
-            "prop": "a ≤ lo ⟶ hi ≤ b ⟶ interval_arith x lo hi ⟶ interval_arith x a b",
-            "steps": [
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "3",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "interval_arith_def"
+                    "rule": "apply_theorem",
+                    "th": "x ∈ real_closed_interval a b, y ∈ real_closed_interval c d ⊢ a + c ≤ x + y"
                 },
                 {
-                    "goal_id": "4",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "interval_arith_def"
-                },
-                {
-                    "fact_ids": [
-                        "3",
-                        "1",
-                        "0"
-                    ],
-                    "goal_id": "4",
-                    "method_name": "z3"
-                }
-            ],
-            "ty": "thm",
-            "vars": {
-                "a": "real",
-                "b": "real",
-                "hi": "real",
-                "lo": "real",
-                "x": "real"
-            }
-        },
-        {
-            "attributes": [
-                "hint_backward"
-            ],
-            "name": "interval_neg",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "interval_arith x a b",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "interval_arith x a b ⊢ interval_arith x a b"
-                },
-                {
-                    "args": "interval_arith_def",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "interval_arith x a b ⊢ a ≤ x ∧ x ≤ b"
-                },
-                {
-                    "args": "-b ≤ -x ∧ -x ≤ -a",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "z3",
-                    "th": "interval_arith x a b ⊢ -b ≤ -x ∧ -x ≤ -a"
-                },
-                {
-                    "args": "interval_arith_def, interval_arith (-x) (-b) (-a)",
-                    "id": "3",
+                    "args": "conjD2",
+                    "id": "7",
                     "prevs": [
                         "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ real_closed_interval a b ⊢ x ≤ b"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "8",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y ∈ real_closed_interval c d ⊢ y ≤ d"
+                },
+                {
+                    "args": "real_le_add2",
+                    "id": "9",
+                    "prevs": [
+                        "7",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ real_closed_interval a b, y ∈ real_closed_interval c d ⊢ x + y ≤ b + d"
+                },
+                {
+                    "args": "conjI",
+                    "id": "10",
+                    "prevs": [
+                        "6",
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ real_closed_interval a b, y ∈ real_closed_interval c d ⊢ a + c ≤ x + y ∧ x + y ≤ b + d"
+                },
+                {
+                    "args": "in_real_closed_interval, x + y ∈ real_closed_interval (a + c) (b + d)",
+                    "id": "11",
+                    "prevs": [
+                        "10"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "interval_arith x a b ⊢ interval_arith (-x) (-b) (-a)"
+                    "th": "x ∈ real_closed_interval a b, y ∈ real_closed_interval c d ⊢ x + y ∈ real_closed_interval (a + c) (b + d)"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "12",
                     "prevs": [
                         "0",
-                        "3"
+                        "1",
+                        "11"
                     ],
                     "rule": "intros",
-                    "th": "⊢ interval_arith x a b ⟶ interval_arith (-x) (-b) (-a)"
+                    "th": "⊢ x ∈ real_closed_interval a b ⟶ y ∈ real_closed_interval c d ⟶ x + y ∈ real_closed_interval (a + c) (b + d)"
                 }
             ],
-            "prop": "interval_arith x a b ⟶ interval_arith (-x) (-b) (-a)",
+            "prop": [
+                "x ∈ real_closed_interval a b ",
+                "⟶ y ∈ real_closed_interval c d ⟶ x + y ∈ real_closed_interval (a + c) (b + d)"
+            ],
             "steps": [
                 {
                     "goal_id": "1",
@@ -289,59 +268,224 @@
                     ],
                     "goal_id": "2",
                     "method_name": "z3"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_real_closed_interval"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_add2"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "in_real_closed_interval"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "in_real_closed_interval"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_add2"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
                 }
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "x": "real"
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
             }
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "interval_neg_eq",
+            "name": "neg_interval",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "-b ≤ -x ∧ -x ≤ -a ⟷ a ≤ x ∧ x ≤ b",
+                    "args": "x ∈ real_closed_interval a b",
                     "id": "0",
                     "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ -b ≤ -x ∧ -x ≤ -a ⟷ a ≤ x ∧ x ≤ b"
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval a b ⊢ x ∈ real_closed_interval a b"
                 },
                 {
-                    "args": "interval_arith_def, interval_arith (-x) (-b) (-a) ⟷ interval_arith x a b",
+                    "args": "in_real_closed_interval",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ interval_arith (-x) (-b) (-a) ⟷ interval_arith x a b"
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ real_closed_interval a b ⊢ a ≤ x ∧ x ≤ b"
                 },
                 {
-                    "args": "",
+                    "args": "conjD2",
                     "id": "2",
                     "prevs": [
                         "1"
                     ],
-                    "rule": "intros",
-                    "th": "⊢ interval_arith (-x) (-b) (-a) ⟷ interval_arith x a b"
-                }
-            ],
-            "prop": "interval_arith (-x) (-b) (-a) ⟷ interval_arith x a b",
-            "steps": [
-                {
-                    "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "interval_arith_def"
+                    "rule": "apply_theorem",
+                    "th": "x ∈ real_closed_interval a b ⊢ x ≤ b"
                 },
                 {
-                    "goal_id": "0",
-                    "method_name": "z3"
+                    "args": "real_le_lneg2, -b ≤ -x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ real_closed_interval a b ⊢ -b ≤ -x"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ real_closed_interval a b ⊢ a ≤ x"
+                },
+                {
+                    "args": "real_le_lneg2, -x ≤ -a",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ real_closed_interval a b ⊢ -x ≤ -a"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ real_closed_interval a b ⊢ -b ≤ -x ∧ -x ≤ -a"
+                },
+                {
+                    "args": "in_real_closed_interval, -x ∈ real_closed_interval (-b) (-a)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ real_closed_interval a b ⊢ -x ∈ real_closed_interval (-b) (-a)"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ real_closed_interval a b ⟶ -x ∈ real_closed_interval (-b) (-a)"
+                }
+            ],
+            "prop": "x ∈ real_closed_interval a b ⟶ -x ∈ real_closed_interval (-b) (-a)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_real_closed_interval"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_le_lneg2"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "in_real_closed_interval"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_le_lneg2"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
                 }
             ],
             "ty": "thm",

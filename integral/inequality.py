@@ -1,11 +1,13 @@
 """Deciding inequalities."""
 
-from kernel.term import Term
+from kernel import term
+from kernel.term import Term, Inst
 from kernel.thm import Thm
 from kernel.proofterm import ProofTerm, TacticException
 from kernel.macro import Macro
 from kernel.theory import register_macro
-from logic.conv import ConvException
+from logic.conv import ConvException, binop_conv, arg_conv
+from logic.logic import apply_theorem
 from data import nat
 from data import real
 from data import set as hol_set
@@ -256,6 +258,19 @@ class Interval:
             raise NotImplementedError
 
 
+def interval_to_holpy(i):
+    """Convert interval to HOL term.
+    
+    Currently only support open and closed intervals.
+
+    """
+    if i.left_open and i.right_open:
+        return real.open_interval(expr.expr_to_holpy(i.start), expr.expr_to_holpy(i.end))
+    elif not i.left_open and not i.right_open:
+        return real.closed_interval(expr.expr_to_holpy(i.start), expr.expr_to_holpy(i.end))
+    else:
+        raise NotImplementedError
+
 
 def get_bounds(e, var_range):
     """Obtain the range of expression e as a variable.
@@ -267,7 +282,7 @@ def get_bounds(e, var_range):
 
     """
     if e.ty == expr.VAR:
-        assert e.name in var_range, "get_bound: variable %s not found" % e.name
+        assert e.name in var_range, "get_bounds: variable %s not found" % e.name
         return var_range[e.name]
 
     elif e.ty == expr.CONST:
@@ -349,6 +364,35 @@ def solve_with_interval(goal, cond):
         lhs_interval = get_bounds(lhs, {var: interval})
         rhs_interval = get_bounds(rhs, {var: interval})
         return lhs_interval.not_eq(rhs_interval)
+    else:
+        raise NotImplementedError
+
+
+def get_bounds_proof(t, var_range):
+    """Given a term t and a mapping from variables to intervals,
+    return a theorem for t belonging to an interval.
+
+    t - Term, a HOL expression.
+    var_range - dict(str, Thm): mapping from variables x to theorems of
+        the form x Mem [a, b] or x Mem (a, b).
+
+    Returns a theorem of the form t Mem [a, b] or t Mem (a, b).
+
+    """
+    if t.ty == Term.VAR:
+        assert t.name in var_range, "get_bounds_proof: variable %s not found" % t.name
+        return var_range[t.name]
+
+    elif t.is_number():
+        return apply_theorem('const_interval', inst=Inst(x=t))
+    
+    elif t.is_plus():
+        pt1 = get_bounds_proof(t.arg1, var_range)
+        pt2 = get_bounds_proof(t.arg, var_range)
+        pt = apply_theorem('add_interval', pt1, pt2)
+        pt = pt.on_prop(arg_conv(binop_conv(auto.auto_conv())))
+        return pt
+
     else:
         raise NotImplementedError
 
