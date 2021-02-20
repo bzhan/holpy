@@ -788,6 +788,9 @@ class Term():
     def is_divides(self):
         return self.is_comb('real_divide', 2)
 
+    def is_real_inverse(self):
+        return self.is_comb("real_inverse", 1) and self.arg.get_type() == RealType
+
     def is_nat_power(self):
         return self.is_comb('power', 2) and self.arg.get_type() == NatType
 

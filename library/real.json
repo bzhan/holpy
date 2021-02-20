@@ -3360,6 +3360,14 @@
             }
         },
         {
+            "name": "real_pow_3",
+            "prop": "x ^ (3::nat) = x * x * x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],

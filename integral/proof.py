@@ -18,13 +18,8 @@ from data import nat
 from data import real
 from data.real import pi
 from data.integral import netT
-from integral.expr import Expr, Location
+from integral.expr import Expr, Location, expr_to_holpy, evalat, real_derivative, real_integral
 from integral.parser import parse_expr
-
-
-evalat = Const('evalat', TFun(TFun(RealType, RealType), RealType, RealType, RealType))
-real_derivative = Const('real_derivative', TFun(TFun(RealType, RealType), RealType, RealType))
-real_integral = Const('real_integral', TFun(set.setT(RealType), TFun(RealType, RealType), RealType))
 
 
 # Introduction rules for real_continuous_on
@@ -254,7 +249,7 @@ auto.add_global_autos_norm(
 )
 
 auto.add_global_autos_norm(
-    real.abs,
+    real.hol_abs,
     auto.norm_rules([
         'real_abs_pos_eq',
         'real_abs_neg_eq',
@@ -876,83 +871,6 @@ def get_at_location(loc, t):
     else:
         return get_at_location(loc.rest, t.args[loc.head])
 
-def expr_to_holpy(expr):
-    """Convert an expression to holpy term."""
-    assert isinstance(expr, Expr), "expr_to_holpy"
-    if expr.is_var():
-        return Var(expr.name, RealType)
-    elif expr.is_const():
-        return Real(expr.val)
-    elif expr.is_op():
-        if expr.op == '-' and len(expr.args) == 1:
-            return -(expr_to_holpy(expr.args[0]))
-
-        if len(expr.args) != 2:
-            raise NotImplementedError
-
-        a, b = [expr_to_holpy(arg) for arg in expr.args]
-        if expr.op == '+':
-            return a + b
-        elif expr.op == '-':
-            return a - b
-        elif expr.op == '*':
-            return a * b
-        elif expr.op == '/':
-            return a / b
-        elif expr.op == '^':
-            if expr.args[1].is_const() and isinstance(expr.args[1].val, int) and expr.args[1].val >= 0:
-                return a ** Nat(expr.args[1].val)
-            else:
-                return a ** b
-        else:
-            raise NotImplementedError
-    elif expr.is_fun():
-        if expr.func_name == 'pi':
-            return pi
-        
-        if len(expr.args) != 1:
-            raise NotImplementedError
-
-        a = expr_to_holpy(expr.args[0])
-        if expr.func_name == 'sin':
-            return real.sin(a)
-        elif expr.func_name == 'cos':
-            return real.cos(a)
-        elif expr.func_name == 'tan':
-            return real.tan(a)
-        elif expr.func_name == 'cot':
-            return real.cot(a)
-        elif expr.func_name == 'sec':
-            return real.sec(a)
-        elif expr.func_name == 'csc':
-            return real.csc(a)
-        elif expr.func_name == 'log':
-            return real.log(a)
-        elif expr.func_name == 'exp':
-            return real.exp(a)
-        elif expr.func_name == 'abs':
-            return real.abs(a)
-        elif expr.func_name == 'sqrt':
-            return real.sqrt(a)
-        elif expr.func_name == 'atan':
-            return real.atn(a)
-        else:
-            raise NotImplementedError
-    elif expr.is_deriv():
-        raise NotImplementedError
-    elif expr.is_integral():
-        a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
-        var = Var(expr.var, RealType)
-        f = Lambda(var, expr_to_holpy(expr.body))
-        return real_integral(real.closed_interval(a, b), f)
-    elif expr.is_evalat():
-        a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
-        var = Var(expr.var, RealType)
-        f = Lambda(var, expr_to_holpy(expr.body))
-        return evalat(f, a, b)
-    else:
-        raise NotImplementedError
-
 def translate_item(item, target=None, *, debug=False):
     """Translate a calculation in json into holpy proof."""
     problem = parse_expr(item['problem'])
@@ -1040,6 +958,15 @@ def translate_item(item, target=None, *, debug=False):
             c = parse_expr(step['params']['c'])
             c = expr_to_holpy(c)
             cv = split_region_conv(c)
+
+        elif reason == 'Elim abs':
+            # Eliminate absolute value
+            if 'params' in step and 'c' in step['params']:
+                c = parse_expr(step['params']['c'])
+                c = expr_to_holpy(c)
+                cv = then_conv(split_region_conv(c), simplify_rewr_conv(expected_loc))
+            else:
+                cv = simplify_rewr_conv(expected_loc)
 
         elif reason == 'Solve equation':
             # Solving equation

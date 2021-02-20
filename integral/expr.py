@@ -1,16 +1,27 @@
 """Expressions."""
 
 from fractions import Fraction
-from integral import poly
-from integral.poly import *
 import functools, operator
 from collections.abc import Iterable
-from integral import parser
-from sympy.parsing import sympy_parser
 import copy
-from sympy.simplify.fu import *
 from sympy import solveset, re, Interval, Eq, Union, EmptySet, pexquo
+from sympy.simplify.fu import *
+from sympy.parsing import sympy_parser
 from numbers import Number
+
+from kernel.type import RealType
+from kernel import term
+from kernel.term import TFun
+from data import real
+from data import set
+from integral import parser
+from integral import poly
+from integral.poly import *
+
+evalat = term.Const('evalat', TFun(TFun(RealType, RealType), RealType, RealType, RealType))
+real_derivative = term.Const('real_derivative', TFun(TFun(RealType, RealType), RealType, RealType))
+real_integral = term.Const('real_integral', TFun(set.setT(RealType), TFun(RealType, RealType), RealType))
+
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL = range(9)
 
@@ -249,6 +260,9 @@ class Expr:
 
     def is_times(self):
         return self.ty == OP and self.op == '*'
+
+    def is_divides(self):
+        return self.ty == OP and self.op == '/'
 
     def is_power(self):
         return self.ty == OP and self.op == '^'
@@ -1596,3 +1610,130 @@ def inverse_trig_table():
             "asec": {parser.parse_expr(value):parser.parse_expr(key) for key, value in sec_table.items()},
         }
     return inverse_trig_table_cache
+
+def expr_to_holpy(expr):
+    """Convert an expression to holpy term."""
+    assert isinstance(expr, Expr), "expr_to_holpy"
+    if expr.is_var():
+        return term.Var(expr.name, RealType)
+    elif expr.is_const():
+        return term.Real(expr.val)
+    elif expr.is_op():
+        if expr.op == '-' and len(expr.args) == 1:
+            return -(expr_to_holpy(expr.args[0]))
+
+        if len(expr.args) != 2:
+            raise NotImplementedError
+
+        a, b = [expr_to_holpy(arg) for arg in expr.args]
+        if expr.op == '+':
+            return a + b
+        elif expr.op == '-':
+            return a - b
+        elif expr.op == '*':
+            return a * b
+        elif expr.op == '/':
+            return a / b
+        elif expr.op == '^':
+            if expr.args[1].is_const() and isinstance(expr.args[1].val, int) and expr.args[1].val >= 0:
+                return a ** term.Nat(expr.args[1].val)
+            else:
+                return a ** b
+        else:
+            raise NotImplementedError
+    elif expr.is_fun():
+        if expr.func_name == 'pi':
+            return real.pi
+        
+        if len(expr.args) != 1:
+            raise NotImplementedError
+
+        a = expr_to_holpy(expr.args[0])
+        if expr.func_name == 'sin':
+            return real.sin(a)
+        elif expr.func_name == 'cos':
+            return real.cos(a)
+        elif expr.func_name == 'tan':
+            return real.tan(a)
+        elif expr.func_name == 'cot':
+            return real.cot(a)
+        elif expr.func_name == 'sec':
+            return real.sec(a)
+        elif expr.func_name == 'csc':
+            return real.csc(a)
+        elif expr.func_name == 'log':
+            return real.log(a)
+        elif expr.func_name == 'exp':
+            return real.exp(a)
+        elif expr.func_name == 'abs':
+            return real.hol_abs(a)
+        elif expr.func_name == 'sqrt':
+            return real.sqrt(a)
+        elif expr.func_name == 'atan':
+            return real.atn(a)
+        else:
+            raise NotImplementedError
+    elif expr.is_deriv():
+        raise NotImplementedError
+    elif expr.is_integral():
+        a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
+        var = term.Var(expr.var, RealType)
+        f = term.Lambda(var, expr_to_holpy(expr.body))
+        return real_integral(real.closed_interval(a, b), f)
+    elif expr.is_evalat():
+        a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
+        var = term.Var(expr.var, RealType)
+        f = term.Lambda(var, expr_to_holpy(expr.body))
+        return evalat(f, a, b)
+    else:
+        raise NotImplementedError
+
+def holpy_to_expr(t):
+    """Convert a HOL term to expression."""
+    assert isinstance(t, term.Term), "holpy_to_expr"
+    if t.is_var():
+        if t.T == RealType:
+            return Var(t.name)
+        else:
+            raise NotImplementedError
+    elif t == real.pi:
+        return pi
+    elif t.is_number():
+        val = t.dest_number()
+        return Const(val)
+    elif t.is_plus():
+        return holpy_to_expr(t.arg1) + holpy_to_expr(t.arg)
+    elif t.is_minus():
+        return holpy_to_expr(t.arg1) - holpy_to_expr(t.arg)
+    elif t.is_uminus():
+        return -holpy_to_expr(t.arg)
+    elif t.is_times():
+        return holpy_to_expr(t.arg1) * holpy_to_expr(t.arg)
+    elif t.is_divides():
+        return holpy_to_expr(t.arg1) / holpy_to_expr(t.arg)
+    elif t.is_nat_power() and t.arg.is_number():
+        return holpy_to_expr(t.arg1) ** t.arg.dest_number()
+    elif t.is_real_power():
+        return holpy_to_expr(t.arg1) ** holpy_to_expr(t.arg)
+    elif t.is_comb('sqrt', 1):
+        return sqrt(holpy_to_expr(t.arg))
+    elif t.is_comb('abs', 1):
+        return Fun('abs', holpy_to_expr(t.arg))
+    elif t.is_comb('exp', 1):
+        return exp(holpy_to_expr(t.arg))
+    elif t.is_comb('log', 1):
+        return log(holpy_to_expr(t.arg))
+    elif t.is_comb('sin', 1):
+        return sin(holpy_to_expr(t.arg))
+    elif t.is_comb('cos', 1):
+        return cos(holpy_to_expr(t.arg))
+    elif t.is_comb('tan', 1):
+        return tan(holpy_to_expr(t.arg))
+    elif t.is_comb('cot', 1):
+        return cot(holpy_to_expr(t.arg))
+    elif t.is_comb('sec', 1):
+        return sec(holpy_to_expr(t.arg))
+    elif t.is_comb('csc', 1):
+        return csc(holpy_to_expr(t.arg))
+    else:
+        raise NotImplementedError

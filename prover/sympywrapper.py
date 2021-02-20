@@ -162,6 +162,10 @@ def solve_with_interval(goal, cond):
     except TypeError:  # raised by Sympy
         print("TypeError")
         return False
+    except RecursionError:  # raised by Sympy
+        print("Sympy solve: ", sympy_goal, " on interval ", interval)
+        print("RecursionError")
+        return False
 
     # print("Result: ", res)
     return res == interval
@@ -200,16 +204,16 @@ def sympy_solve(goal, pts):
     else:
         raise TacticException
 
-auto.add_global_autos(real.greater_eq, sympy_solve)
-auto.add_global_autos(real.greater, sympy_solve)
-auto.add_global_autos(real.less_eq, sympy_solve)
-auto.add_global_autos(real.less, sympy_solve)
+# auto.add_global_autos(real.greater_eq, sympy_solve)
+# auto.add_global_autos(real.greater, sympy_solve)
+# auto.add_global_autos(real.less_eq, sympy_solve)
+# auto.add_global_autos(real.less, sympy_solve)
 
-auto.add_global_autos_neg(real.equals, sympy_solve)
+# auto.add_global_autos_neg(real.equals, sympy_solve)
 
-auto.add_global_autos(nat.greater_eq, sympy_solve)
-auto.add_global_autos(nat.greater, sympy_solve)
-auto.add_global_autos(nat.less_eq, sympy_solve)
-auto.add_global_autos(nat.less, sympy_solve)
+# auto.add_global_autos(nat.greater_eq, sympy_solve)
+# auto.add_global_autos(nat.greater, sympy_solve)
+# auto.add_global_autos(nat.less_eq, sympy_solve)
+# auto.add_global_autos(nat.less, sympy_solve)
 
-auto.add_global_autos_neg(nat.equals, sympy_solve)
+# auto.add_global_autos_neg(nat.equals, sympy_solve)

@@ -59,8 +59,7 @@ tan = Const("tan", TFun(RealType, RealType))
 cot = Const("cot", TFun(RealType, RealType))
 sec = Const("sec", TFun(RealType, RealType))
 csc = Const("csc", TFun(RealType, RealType))
-abs = Const("abs", TFun(RealType, RealType))
-sqrt = Const("sqrt", TFun(RealType, RealType))
+hol_abs = Const("abs", TFun(RealType, RealType))
 atn = Const("atn", TFun(RealType, RealType))
 
 # Intervals
@@ -98,6 +97,12 @@ def real_eval(t):
                 return rec(t.arg1)
             else:
                 return Fraction(rec(t.arg1)) / denom
+        elif t.is_real_inverse():
+            denom = rec(t.arg)
+            if denom == 0:
+                raise ConvException('real_eval: divide by zero')
+            else:
+                return Fraction(1) / denom
         elif t.is_nat_power():
             return rec(t.arg1) ** nat.nat_eval(t.arg)
         elif t.is_real_power():
@@ -123,6 +128,73 @@ def real_eval(t):
         return res.numerator
     else:
         return res
+
+def real_approx_eval(t):
+    """Evaluate t to a Python numeral (int or float) value.
+
+    This is an imprecise (but more general) version of real_eval.
+
+    """
+    def rec(t):
+        if t.is_number():
+            return t.dest_number()
+        elif t.is_comb('of_nat', 1):
+            return nat.nat_eval(t.arg)
+        elif t.is_comb('of_int', 1):
+            return integer.int_eval(t.arg)
+        elif t.is_plus():
+            return rec(t.arg1) + rec(t.arg)
+        elif t.is_minus():
+            return rec(t.arg1) - rec(t.arg)
+        elif t.is_uminus():
+            return -rec(t.arg)
+        elif t.is_times():
+            return rec(t.arg1) * rec(t.arg)
+        elif t.is_divides():
+            denom = rec(t.arg)
+            if denom == 0:
+                raise ConvException('real_approx_eval: divide by zero')
+            else:
+                return rec(t.arg1) / denom
+        elif t.is_real_inverse():
+            denom = rec(t.arg)
+            if denom == 0:
+                raise ConvException('real_approx_eval: divide by zero')
+            else:
+                return 1 / denom
+        elif t.is_nat_power():
+            return rec(t.arg1) ** nat.nat_eval(t.arg)
+        elif t.is_real_power():
+            x, p = rec(t.arg1), rec(t.arg)
+            return x ** p
+        elif t.is_comb() and t.head == sqrt:
+            return math.sqrt(rec(t.arg))
+        elif t == pi:
+            return math.pi
+        elif t.is_comb() and t.head == sin:
+            return math.sin(rec(t.arg))
+        elif t.is_comb() and t.head == cos:
+            return math.cos(rec(t.arg))
+        elif t.is_comb() and t.head == tan:
+            return math.tan(rec(t.arg))
+        elif t.is_comb() and t.head == cot:
+            return math.cot(rec(t.arg))
+        elif t.is_comb() and t.head == sec:
+            return math.sec(rec(t.arg))
+        elif t.is_comb() and t.head == csc:
+            return math.csc(rec(t.arg))
+        elif t.is_comb() and t.head == atn:
+            return math.atan(rec(t.arg))
+        elif t.is_comb() and t.head == log:
+            return math.log(rec(t.arg))
+        elif t.is_comb() and t.head == exp:
+            return math.exp(rec(t.arg))
+        elif t.is_comb() and t.head == hol_abs:
+            return abs(rec(t.arg))
+        else:
+            raise NotImplementedError
+
+    return rec(t)
 
 @register_macro('real_eval')
 class real_eval_macro(Macro):
@@ -531,12 +603,17 @@ auto.add_global_autos_norm(
 
 class real_nat_power_conv(Conv):
     def get_proof_term(self, t):
+        """Unfold powers of 2 and 3, leave other powers unexpanded."""
         a, p = t.args
 
-        # Exponent is 2
+        # Exponent is 2, apply real_add_ldistrib to avoid folding back.
         if p.is_number() and p.dest_number() == 2 and a.is_plus():
             return refl(t).on_rhs(rewr_conv('real_pow_2'),
-                                  rewr_conv('real_add_rdistrib'))
+                                  rewr_conv('real_add_ldistrib'))
+        # Exponent is 3
+        elif p.is_number() and p.dest_number() == 3 and a.is_plus():
+            return refl(t).on_rhs(rewr_conv('real_pow_3'),
+                                  rewr_conv('real_add_ldistrib'))
 
         return refl(t)
 

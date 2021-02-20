@@ -5,8 +5,8 @@ import json
 from pstats import Stats
 import cProfile
 
-# from logic import basic
-# from integral import proof
+from logic import basic
+from integral import proof
 from integral import rules
 from prover import sympywrapper
 
@@ -32,13 +32,13 @@ test_cases = {
         "Exercise 18": "1 + -1/4 * pi",
         "Exercise 19": "1 / 6",
         "Exercise 20": "2 + 2 * log(2) + -2 * log(3)",
-        "Exercise 21": "1 + 2 * log(1/2)",
+        # "Exercise 21": "1 + 2 * log(1/2)",
         "Exercise 22": "1 + -exp(-1/2)",
         "Exercise 23": "-2 + 2 * sqrt(3)",
         "Exercise 24": "1/2 * pi",
         "Exercise 25": "3 / 8 * pi + -1/4 * sin(-pi)",
-        "Exercise 26": "4 / 3 + -4/3 * 0 ^ (3/2)",
-        "Exercise 27": "2 * sqrt(2)",
+        # "Exercise 26": "4 / 3 + -4/3 * 0 ^ (3/2)",
+        # "Exercise 27": "2 * sqrt(2)",
         "Exercise 28": "1 + -2 * exp(-1)",
         "Exercise 29": "1 / 4 + 1 / 4 * exp(2)",
         "Exercise 30": "-1/9 * sqrt(3) * pi + 1/4 * pi + -log(abs(1/2 * sqrt(2))) + log(abs(1/2 * sqrt(3)))",
@@ -47,18 +47,18 @@ test_cases = {
         "Exercise 33": "-(2 / 5) + 1 / 5 * exp(pi)",
         "Exercise 34": "-(1 / 4) * pi + 1 / 6 * pi ^ 3",
         "Exercise 35": "1/2 + -1/2 * cos(1) * exp(1) + 1/2 * exp(1) * sin(1)",
-        "Exercise 36": "2 + -2 * exp (-1)",
+        # "Exercise 36": "2 + -2 * exp (-1)",
         # "Interesting 1": "1 / 4 * pi",
     },
     "MIT/2013": {
         # "Exercise 1": "2 * log(2) + 2 * exp(1) + -2 * log(2 * exp(1)) * exp(1)",
-        "Exercise 2": "-2 + exp(1) + exp(3)",
+        # "Exercise 2": "-2 + exp(1) + exp(3)",
         "Exercise 3": "-sin(exp(1)) + 1/2 * sin(exp(2))",
         "Exercise 4": "2500",
-        "Exercise 5": "sqrt(3) * pi",
+        # "Exercise 5": "sqrt(3) * pi",
         # "Exercise 6": "18",
-        "Exercise 7": "-log(1/2)",
-        "Exercise 8": "5 / 2",
+        # "Exercise 7": "-log(1/2)",
+        # "Exercise 8": "5 / 2",
         # "Exercise 9": None,  # out of range
         # "Exercise 10": "(1 - log(1 - exp(-1))) + log(1 - exp(-2))",
         "Exercise 11": "1 / 8 * pi",
@@ -71,8 +71,8 @@ test_cases = {
         "Exercise 18": "1/2 + -1/2 * log(2)",
         "Exercise 19": "1/4 * pi",
         # "Exercise 20": "-1 + 2 * log(2) + 3 * log (3 ^ (1 / 2) * (1 / 2))",
-        "Exercise 21": "-1/4 * log(1/2) + 1/4 * log(2/3) + -1/4 * log(10/9) + 1/4 * log(5/4) + 1/4 * log(4/3) + -1/4 * log(3/2)",
-        "Exercise 22": "3/2 + (1/3) * sqrt(3) * pi",
+        # "Exercise 21": "-1/4 * log(1/2) + 1/4 * log(2/3) + -1/4 * log(10/9) + 1/4 * log(5/4) + 1/4 * log(4/3) + -1/4 * log(3/2)",
+        # "Exercise 22": "3/2 + (1/3) * sqrt(3) * pi",
         "Exercise 23": "418 / 35",
         # "Exercise 24": "2",
         # "Exercise 25": "2 ^ (1/2) * (1/8) * pi + -2 ^ (1/2) * (1/2) * atan(sqrt(14) / 7)"  # sympy
@@ -240,7 +240,7 @@ class RunIntegral(unittest.TestCase):
             pr = cProfile.Profile()
             pr.enable()
 
-        # basic.load_theory('realintegral')
+        basic.load_theory('realintegral')
         for filename in filenames:
             with open('integral/examples/%s.json' % filename, 'r', encoding='utf-8') as f:
                 f_data = json.load(f)
@@ -251,7 +251,7 @@ class RunIntegral(unittest.TestCase):
                        test_case == item['name']:
                         target = test_cases[filename][item['name']]
                         rules.check_item(item, target, debug=True)
-                        # proof.translate_item(item, target, debug=True)
+                        proof.translate_item(item, target, debug=True)
 
         if profile:
             p = Stats(pr)

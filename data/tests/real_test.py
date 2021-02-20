@@ -47,6 +47,7 @@ class RealTest(unittest.TestCase):
             ("(x + y) ^ (2::nat)", "x ^ (2::nat) + y ^ (2::nat) + 2 * x * y"),
             ("x ^ ((2::nat) - 1)", "x"),
             ("x ^ (0::nat) + y", "1 + y"),
+            ("(3 + x) ^ (3::nat)", "27 + 27 * x + 9 * x ^ (2::nat) + x ^ (3::nat)"),
         ]
 
         vars = {'x': 'real', 'y': 'real', 'z': 'real', 'm': 'nat', 'n': 'nat'}
@@ -64,6 +65,8 @@ class RealTest(unittest.TestCase):
             ("(0::real) ^ (0::real)", 1),
             ("(0::real) ^ (0::nat)", 1),
             ("(1::real) ^ (1 / 2)", 1),
+            ("real_inverse (2::real)", Fraction(1,2)),
+            ("real_inverse (1::real)", 1),
         ]
 
         for expr, res in test_data:
@@ -72,6 +75,22 @@ class RealTest(unittest.TestCase):
             eval_res = real.real_eval(t)
             self.assertEqual(type(eval_res), type(res))
             self.assertEqual(eval_res, res)
+
+    def testRealApproxEval(self):
+        test_data = [
+            ("real_inverse (2::real)", 0.5),
+            ("sqrt 2", math.sqrt(2)),
+            ("sin 1", math.sin(1)),
+            ("cos pi", -1),
+            ("tan (pi/4)", 1),
+            ("abs (-(3::real))", 3),
+        ]
+
+        for expr, res in test_data:
+            context.set_context('transcendentals')
+            t = parser.parse_term(expr)
+            eval_res = real.real_approx_eval(t)
+            self.assertAlmostEqual(eval_res, res)
 
     def testRealEvalConv(self):
         test_data = [
@@ -155,8 +174,8 @@ class RealTest(unittest.TestCase):
     def testNegInequation(self):
         test_data = [
             ("~(x > y)", "x <= y"),
-            ("~(x >= y)", "y > x"),
-            ("~(x < y)", "y <= x"),
+            ("~(x >= y)", "x < y"),
+            ("~(x < y)", "x >= y"),
             ("~(x <= y)", "x > y")
         ]
 
@@ -166,10 +185,10 @@ class RealTest(unittest.TestCase):
 
     def testNormInequation(self):
         test_data = [
-            ("a - b > c", "0 < a + -1 * b + -1 * c"),
-            ("a + b < c", "0 < -1 * a + -1 * b + c"),
-            ("-b * 5 <= 2 * a + -4 * c", "0 <= 2 * a + 5 * b + -4 * c"),
-            ("a - a >= b - c", "0 <= -1 * b + c")
+            ("a - b > c", "a - b - c > 0"),
+            ("a + b < c", "a + b - c < 0"),
+            ("-b * 5 <= 2 * a + -4 * c", "-b * 5 - (2 * a + -4 * c) <= 0"),
+            ("a - a >= b - c", "a - a - (b - c) >= 0")
         ]
 
         for expr, res in test_data:
@@ -184,10 +203,10 @@ class RealTest(unittest.TestCase):
         # ]
         
         test_data = [
-            (["x > 0"], "?a1. a1 > 0 ∧ x ≥ a1"),
-            (["x > 0", "y > 0"], "?a1. a1 > 0 & x >= a1 & y >= a1"),
-            (["x > 0", "y < 0"], "?a1. a1 > 0 & y <= -a1 & x >= a1"),
-            (["x > 0", "y < 1"], "?a1. a1 > 0 & y - 1 <= -a1 & x >= a1")
+            (["x > 0"], "?a1. a1 > 0 ∧ x ≥ 0 + a1"),
+            (["x > 0", "y > 0"], "?a1. a1 > 0 & x >= 0 + a1 & y >= 0 + a1"),
+            (["x > 0", "y < 0"], "?a1. a1 > 0 & y <= 0 - a1 & x >= 0 + a1"),
+            (["x > 0", "y < 1"], "?a1. a1 > 0 & y <= 1 - a1 & x >= 0 + a1")
         ]
 
         vars = {"x": "real", "y": "real", "z": "real"}
