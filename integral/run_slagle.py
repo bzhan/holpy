@@ -45,8 +45,13 @@ test_cases = {
         "Exercise 7" : "4 * sqrt(3) + 2/3 * pi",
     },
 
-    "MIT/2019": {
-        # "Exercise 2": "log(abs(exp(1) + sin(1)))",
+    # "MIT/2019": {
+    #     # "Exercise 2": "log(abs(exp(1) + sin(1)))",
+    # },
+
+    "MIT/2020": {
+        "Exercise 3": "1/4 + 1/4 * exp(2)",
+        "Exercise 5": "1/2 * pi"
     },
 
     "UCDAVIS/usubstitution": {
@@ -78,16 +83,18 @@ test_cases = {
 
     "UCDAVIS/Trigonometric": {
         "Exercise 1" : "1/3",
-        "Exercise 2" : "-1/5 * log(abs(1/2 * sqrt(2)))",
+        "Exercise 2" : "-1/10 * log(1/2)",
         "Exercise 3" : "5/4",
-        "Exercise 5" : "3/4 * pi + -3/20 * sin(-pi)",
+        "Exercise 4" : "1 + 1/2 * pi",
+        "Exercise 5" : "3/4 * pi + 3/20 * sin(-pi)",
         "Exercise 8" : "-1/5 * log(15) + 1/5 * log(20)",
-        "Exercise 12" : "-16/3 + 4 * sqrt(2) * sqrt(3)",
+        # # "Exercise 12" : "-16/3 + 4 * sqrt(2) * sqrt(3)",
         "Exercise 15" : "-exp(4) + exp(5)",
         "Exercise 16" : "1/3 * cos(-1) + -1/3 * cos(1)",
         "Exercise 17" : "1/2 * log(1/2) * log(2) + 1/8 * log(2) ^ 2",
         "Exercise 19" : "-sin(exp(log(1/6) + log(pi))) + sin(exp(log(1/4) + log(pi)))",
-        "Exercise 25" : "-2 + 2 * sqrt(1 + sqrt(2))",
+        "Exercise 20" : "-1/9",
+        "Exercise 21" : "-2 + 1/4 * pi ^ 2"
     },
 
     "UCDAVIS/Byparts": {
@@ -99,13 +106,19 @@ test_cases = {
         "Exercise 9" : "-5/27 * exp(3) + 26/27 * exp(6)",
         "Exercise 12" : "6 + -2 * exp(1)",
         "Exercise 13" : "-8/5",
+        "Exercise 14" : "1/8",
         "Exercise 15" : "2 + -5 * exp(-1)",
+        "Exercise 16" : "1/3",
+        "Exercise 17" : "-1/2 + 1/32 * pi ^ 2 * sin(1/16 * pi ^ 2) + 1/2 * cos(1/16 * pi ^ 2)",
+        "Exercise 19" : "-5/36 + -1/4 * log(1/81) + 1/4 * log(1/36)",
+        "Exercise 20" : "1/3 * cos(1) + -1/3 * exp(3) * cos(exp(3)) + -1/3 * sin(1) + 1/3 * sin(exp(3))",
     },
 
     "UCDAVIS/LogAndArctangent": {
-        "Exercise 1" : "3/2 + 3/2 * log(4)",
+        "Exercise 1" : "3/2 + 3 * log(2)",
         "Exercise 2" : "-7 * log(5) + 7 * log(6)",
         "Exercise 4" : "1/2 * log(4) + -1/2 * log(5)",
+        "Exercise 5" : "26/3 + -8 * log(3)",
         "Exercise 7" : "-log(3) + log(4)",
         "Exercise 8" : "-1 + -10 * log(3) + 10 * log(4)",
         "Exercise 9" : "-atan(2) + atan(3)",
@@ -113,10 +126,12 @@ test_cases = {
         "Exercise 14" : "-1/2 * log(4) + 1/2 * log(abs(2 + 2 * exp(2)))",
         "Exercise 16" : "-1/2 + 1/2 * exp(2) + 1/2 * log(4) + -1/2 * log(abs(2 + 2 * exp(2)))",
         "Exercise 17" : "-1/2 + log(2)",
+        "Exercise 20" : "1/2 * log(2) + -1/2 * log(abs(1 + exp(-2)))",
     },
 
     "UCDAVIS/PartialFraction": {
         "Exercise 9" : "-3/8 + log(2)",
+        "Exercise 14" : "-1/4 * log(abs(-4 + 4 * exp(1))) + 1/4 * log(abs(-4 + 4 * exp(2))) + 1/4 * log(abs(12 + 4 * exp(1))) + -1/4 * log(abs(12 + 4 * exp(2)))",
         "Exercise 15" : "log(2) + -log(abs(1 + exp(-1)))",
     }
 }
@@ -129,16 +144,16 @@ tongji_not_solved = [
 class RunSlagle(unittest.TestCase):
     def testRunSlagle(self):
         file_names = [
-            # "tongji7",
-            # "MIT/2013",
-            # "MIT/2014",
-            # "MIT/2019",
+            "tongji7",
+            "MIT/2013",
+            "MIT/2014",
+            "MIT/2020",
             "UCDAVIS/usubstitution",
-            # "UCDAVIS/Exponentials",
-            # "UCDAVIS/Trigonometric",
-            # "UCDAVIS/Byparts",
-            # "UCDAVIS/LogAndArctangent",
-            # "UCDAVIS/PartialFraction",
+            "UCDAVIS/Exponentials",
+            "UCDAVIS/Trigonometric",
+            "UCDAVIS/Byparts",
+            "UCDAVIS/LogAndArctangent",
+            "UCDAVIS/PartialFraction",
         ]
 
         for filename in file_names:
