@@ -125,7 +125,7 @@ def substitution(integral, subst):
     new_var = gen_rand_letter(integral.var)
     rule = rules.Substitution1(new_var, subst)
     new_e = rule.eval(integral)
-    steps = [calc.SubstitutionStep(e=new_e, var_name=new_var, var_subst=subst, f=rule.f)]
+    steps = [calc.SubstitutionStep(e=new_e, var_name=new_var, var_subst=subst, f=rule.f, loc=[])]
     return new_e, steps
 
 def linear_substitution(integral):
@@ -133,10 +133,6 @@ def linear_substitution(integral):
     func_body = collect_spec_expr(integral.body, Symbol('f', [FUN]))
 
     if len(func_body) == 1 and any([match(func_body[0], p) for p in linear_pat]): 
-        # new_e_1, step1 = substitution(integral, func_body[0])
-        # new_e_2 = rules.Linearity().eval(new_e_1)
-        # step2 = [calc.LinearityStep(new_e_2)]
-        # return new_e_2, step1 + step2
         return substitution(integral, func_body[0])
 
     elif len(func_body) == 0:
@@ -145,10 +141,6 @@ def linear_substitution(integral):
             return integral, None
         is_linear = functools.reduce(lambda x,y:x or y, [match(power_body[0], pat) for pat in linear_pat])
         if len(power_body) == 1 and is_linear:
-            # new_e_1, step1 = substitution(integral, power_body[0])
-            # new_e_2 = rules.Linearity().eval(new_e_1)
-            # step2 = [calc.LinearityStep(new_e_2)] 
-            # return new_e_2, step1 + step2
             return substitution(integral, power_body[0])
         else:
             return integral, None
@@ -167,9 +159,13 @@ class LinearSubstitution(AlgorithmRule):
     """
     def eval(self, e):
         integrals = e.separate_integral()
-        steps = list()
+        steps = []
         for i, loc in integrals:
-            new_e_i, steps = linear_substitution(i)
+            new_e_i, step = linear_substitution(i)
+            if step is None:
+                continue
+            step[0].prepend_loc(Location(loc))
+            steps.append(step[0])
             e = e.replace_trig(i, new_e_i)
         return e, steps
 
@@ -722,12 +718,12 @@ class HeuristicElimQuadratic(HeuristicRule):
 
         quadratics = [l for r in quadratic_terms for l in r]
         res = []
-
+        v = gen_rand_letter(e.var)
         for quad, l, (a, b, c) in quadratics:
             # new_integral, f = rules.Substitution1(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
             new_integral, step1 = substitution(e, Var(e.var) + (b/(Const(2)*c)))
-            step1 = [calc.SubstitutionStep(
-                new_integral, new_integral.var, Var(e.var) + (b/(Const(2)*c)), f, tuple(loc) + (0,) + l)]
+            # step1 = [calc.SubstitutionStep(
+                # new_integral, new_integral.var, Var(e.var) + (b/(Const(2)*c)), f, tuple(loc) + (0,) + l)]
             new_integral, step2 = HeuristicExpandPower().eval(new_integral)[0]
             res.append((new_integral, step1 + step2))
 
@@ -1229,6 +1225,15 @@ def perform_steps(node):
                     "g": str(step.var_subst),
                     "var_name": str(step.var_name)
                 }
+            })
+        elif step.reason == "Unfold power":
+            rule = rules.UnfoldPower()
+            current = rules.OnLocation(rule, loc).eval(current)
+            real_steps.append({
+                "text": str(current),
+                "latex": latex.convert_expr(current),
+                "reason": "Unfold power",
+                "location": str(loc)
             })
         else:
             raise NotImplementedError(step.reason)

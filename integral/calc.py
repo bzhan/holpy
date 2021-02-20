@@ -162,7 +162,7 @@ class UnfoldPowerStep(IntegrationStep):
     def __init__(self, e, loc=[]):
         self.e = e
         self.latex = latex.convert_expr(e)
-        self.reason = "Unfold Power"
+        self.reason = "Unfold power"
         self.comp = rules.UnfoldPower.eval
         self.loc = Location(loc)
 

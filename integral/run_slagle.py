@@ -35,7 +35,7 @@ test_cases = {
         "Exercise 4" : "2500",
         "Exercise 5" : "sqrt(3) * pi",
         "Exercise 6" : "18 + cos(-3) + -cos(3)",
-        "Exercise 15" : "-8 * exp(1) + -24 * 0 ^ (1/4) * exp(0 ^ (1/4)) + 12 * (0 ^ (1/4)) ^ 2 * exp(0 ^ (1/4)) + -4 * (0 ^ (1/4)) ^ 3 * exp(0 ^ (1/4)) + 24 * exp(0 ^ (1/4))",
+        # "Exercise 15" : "-8 * exp(1) + -24 * 0 ^ (1/4) * exp(0 ^ (1/4)) + 12 * (0 ^ (1/4)) ^ 2 * exp(0 ^ (1/4)) + -4 * (0 ^ (1/4)) ^ 3 * exp(0 ^ (1/4)) + 24 * exp(0 ^ (1/4))",
         "Exercise 19" : "1/4 * pi",
     },
     
@@ -46,7 +46,7 @@ test_cases = {
     },
 
     "MIT/2019": {
-        "Exercise 2": "log(abs(exp(1) + sin(1)))",
+        # "Exercise 2": "log(abs(exp(1) + sin(1)))",
     },
 
     "UCDAVIS/usubstitution": {
@@ -59,10 +59,11 @@ test_cases = {
         "Exercise 7" : "0",
         "Exercise 12" : "1",
         "Exercise 13" : "-11/21",
-        "Exercise 14" : "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)",
+        # "Exercise 14" : "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)",
         "Exercise 15" : "1/2 + -7/4 * log(3) + 7/4 * log(5)",
         "Exercise 16" : "-3/2 + -8 * log(2) + 8 * log(3)",
         "Exercise 17" : "41/6",
+        "Exercise 18" : "188/15"
     },
     
     "UCDAVIS/Exponentials": {
@@ -128,11 +129,11 @@ tongji_not_solved = [
 class RunSlagle(unittest.TestCase):
     def testRunSlagle(self):
         file_names = [
-            "tongji7",
+            # "tongji7",
             # "MIT/2013",
             # "MIT/2014",
             # "MIT/2019",
-            # "UCDAVIS/usubstitution",
+            "UCDAVIS/usubstitution",
             # "UCDAVIS/Exponentials",
             # "UCDAVIS/Trigonometric",
             # "UCDAVIS/Byparts",
@@ -141,14 +142,14 @@ class RunSlagle(unittest.TestCase):
         ]
 
         for filename in file_names:
-            with open("integral/examples/slagle/tongji7.json", "r", encoding="utf-8") as f:
+            with open("integral/examples/slagle/%s.json" % filename, "r", encoding="utf-8") as f:
                 f_data = json.load(f)
 
             for item in f_data['content']:
-                if test_file is None or test_file == "tongji7":
-                    if (test_case is None and item['name'] in test_cases["tongji7"]) or \
+                if test_file is None or test_file == filename:
+                    if (test_case is None and item['name'] in test_cases[filename]) or \
                        test_case == item['name']:
-                        target = test_cases["tongji7"][item['name']]
+                        target = test_cases[filename][item['name']]
                         rules.check_item(item, target, debug=True)
             # for item in f_data["content"]:
             #     test_case = item["problem"]
