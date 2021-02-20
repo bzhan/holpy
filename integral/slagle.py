@@ -86,24 +86,34 @@ class DividePolynomial(AlgorithmRule):
     """
     def eval(self, e):
         e_body = e.body
-        if e_body.ty == OP and e_body.op == "/" or e_body.ty == OP and e_body.op == "*" and \
-            e_body.args[1].ty == OP and e_body.args[1].op == "^" and e_body.args[1].args[1].ty == CONST\
-                and e_body.args[1].args[1].val < 0: # e_body is fraction
-            if e_body.ty == OP and e_body.op == "/":
-                denom = e_body.args[1]
-            else:
-                denom = e_body.args[1].args[0]
-            try:
-                new_e_1 = rules.PolynomialDivision().eval(e)
-                rhs = new_e_1.body
-                new_e_2 = rules.Linearity().eval(new_e_1)
-                steps = [calc.PolynomialDivisionStep(e=new_e_1, denom=denom, rhs=rhs),
-                         calc.LinearityStep(new_e_2)]
-                return new_e_2, steps
-            except:
-                return e, None
-        else:
+
+        a = Symbol("a", [CONST, VAR, OP])
+        b = Symbol("b", [CONST, VAR, OP])
+        c = Symbol("c", [CONST])
+        pat1 = a / b
+        pat2 = a * (b ^ c)
+
+        if not match(e_body, pat1) and not match(e_body, pat2):
             return e, None
+        
+        mapping2 = match(e_body, pat2)
+        if mapping2 is not None:
+            c_value = mapping2[c].val
+            if c_value > 0 or not isinstance(c_value, int):
+                return e, None
+
+        if e_body.ty == OP and e_body.op == "/":
+            denom = e_body.args[1]
+        else:
+            denom = e_body.args[1].args[0]
+        try:
+            divide_expr = rules.PolynomialDivision().eval(e_body)
+            new_integral = Integral(e.var, e.lower, e.upper, divide_expr)
+            step = calc.PolynomialDivisionStep(new_integral, denom, divide_expr, Location([0]))
+            return new_integral, [step]
+        except NotImplementedError:
+            return e, None
+
 
 class Linearity(AlgorithmRule):
     """Algorithm rule (a),(b),(c) in Slagle's thesis.
@@ -125,7 +135,7 @@ def substitution(integral, subst):
     new_var = gen_rand_letter(integral.var)
     rule = rules.Substitution1(new_var, subst)
     new_e = rule.eval(integral)
-    steps = [calc.SubstitutionStep(e=new_e, var_name=new_var, var_subst=subst, f=rule.f)]
+    steps = [calc.SubstitutionStep(e=new_e, var_name=new_var, var_subst=subst, f=rule.f, loc=[])]
     return new_e, steps
 
 def linear_substitution(integral):
@@ -133,10 +143,6 @@ def linear_substitution(integral):
     func_body = collect_spec_expr(integral.body, Symbol('f', [FUN]))
 
     if len(func_body) == 1 and any([match(func_body[0], p) for p in linear_pat]): 
-        # new_e_1, step1 = substitution(integral, func_body[0])
-        # new_e_2 = rules.Linearity().eval(new_e_1)
-        # step2 = [calc.LinearityStep(new_e_2)]
-        # return new_e_2, step1 + step2
         return substitution(integral, func_body[0])
 
     elif len(func_body) == 0:
@@ -145,10 +151,6 @@ def linear_substitution(integral):
             return integral, None
         is_linear = functools.reduce(lambda x,y:x or y, [match(power_body[0], pat) for pat in linear_pat])
         if len(power_body) == 1 and is_linear:
-            # new_e_1, step1 = substitution(integral, power_body[0])
-            # new_e_2 = rules.Linearity().eval(new_e_1)
-            # step2 = [calc.LinearityStep(new_e_2)] 
-            # return new_e_2, step1 + step2
             return substitution(integral, power_body[0])
         else:
             return integral, None
@@ -167,9 +169,13 @@ class LinearSubstitution(AlgorithmRule):
     """
     def eval(self, e):
         integrals = e.separate_integral()
-        steps = list()
+        steps = []
         for i, loc in integrals:
-            new_e_i, steps = linear_substitution(i)
+            new_e_i, step = linear_substitution(i)
+            if step is None:
+                continue
+            step[0].prepend_loc(Location(loc))
+            steps.append(step[0])
             e = e.replace_trig(i, new_e_i)
         return e, steps
 
@@ -722,12 +728,12 @@ class HeuristicElimQuadratic(HeuristicRule):
 
         quadratics = [l for r in quadratic_terms for l in r]
         res = []
-
+        v = gen_rand_letter(e.var)
         for quad, l, (a, b, c) in quadratics:
             # new_integral, f = rules.Substitution1(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
             new_integral, step1 = substitution(e, Var(e.var) + (b/(Const(2)*c)))
-            step1 = [calc.SubstitutionStep(
-                new_integral, new_integral.var, Var(e.var) + (b/(Const(2)*c)), f, tuple(loc) + (0,) + l)]
+            # step1 = [calc.SubstitutionStep(
+                # new_integral, new_integral.var, Var(e.var) + (b/(Const(2)*c)), f, tuple(loc) + (0,) + l)]
             new_integral, step2 = HeuristicExpandPower().eval(new_integral)[0]
             res.append((new_integral, step1 + step2))
 
@@ -1224,11 +1230,33 @@ def perform_steps(node):
                 "reason": step.reason,
                 "location": str(loc),
                 "params": {
-                    "a": str(current.lower),
-                    "b": str(current.upper),
+                    "a": str(step.e.lower),
+                    "b": str(step.e.upper),
                     "g": str(step.var_subst),
                     "var_name": str(step.var_name)
                 }
+            })
+        elif step.reason == "Unfold power":
+            rule = rules.UnfoldPower()
+            current = rules.OnLocation(rule, loc).eval(current)
+            real_steps.append({
+                "text": str(current),
+                "latex": latex.convert_expr(current),
+                "reason": "Unfold power",
+                "location": str(loc)
+            })
+        elif step.reason == "Rewrite fraction":
+            rule = rules.PolynomialDivision()
+            current = rules.OnLocation(rule, loc).eval(current)
+            real_steps.append({
+                "text": str(current),
+                "latex": latex.convert_expr(current),
+                "reason": step.reason,
+                "params": {
+                    "rhs": str(step.rhs),
+                    "denom": str(step.denom),
+                },
+                "location": str(step.loc)
             })
         else:
             raise NotImplementedError(step.reason)
