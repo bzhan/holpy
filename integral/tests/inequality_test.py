@@ -7,9 +7,11 @@ from kernel import term
 from kernel.proofterm import ProofTerm
 from logic import context
 from data import set as hol_set
+from data import nat
 from integral.parser import parse_expr, parse_interval
 from integral import inequality
 from integral.expr import expr_to_holpy
+from integral import inequality
 from integral.inequality import get_bounds, get_bounds_proof, interval_to_holpy, IntervalInequalityMacro
 from syntax import parser
 
@@ -40,6 +42,14 @@ class InequalityTest(unittest.TestCase):
             var_range = {'x': parse_interval(i1)}
             self.assertEqual(str(inequality.get_bounds(s, var_range)), i2)
 
+    def testParity(self):
+        test_data = [0,1,2,3,10,11]
+        for n in test_data:
+            if n % 2 == 0:
+                self.assertEqual(inequality.nat_as_even(n).prop, nat.even(term.Nat(n)))
+            else:
+                self.assertEqual(inequality.nat_as_odd(n).prop, nat.odd(term.Nat(n)))
+
     def testGetBoundsProof(self):
         test_data = [
             ("x + 3", "[0, 1]", "[3, 4]"),
@@ -53,6 +63,9 @@ class InequalityTest(unittest.TestCase):
             ("3 - x", "(0, 1)", "(2, 3)"),
             ("x * 2", "[0, 1]", "[0, 2]"),
             ("1 / x", "[1, 2]", "[1/2, 1]"),
+            ("x ^ 2", "[1, 2]", "[1, 4]"),
+            ("x ^ 2", "(-1, 0)", "(0, 1)"),
+            ("x ^ 3", "(-1, 0)", "(-1, 0)"),
         ]
 
         context.set_context('interval_arith')

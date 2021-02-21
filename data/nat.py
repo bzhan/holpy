@@ -38,6 +38,9 @@ greater = term.greater(NatType)
 Suc = Const("Suc", TFun(NatType, NatType))
 Pre = Const("Pre", TFun(NatType, NatType))
 
+even = Const("even", TFun(NatType, BoolType))
+odd = Const("odd", TFun(NatType, BoolType))
+
 # Arithmetic on binary numbers
 
 def convert_to_poly(t):
@@ -228,6 +231,7 @@ class nat_eval_conv(Conv):
             return refl(t)
         return ProofTerm('nat_eval', Eq(t, simp_t))
 
+auto.add_global_autos_norm(Suc, nat_eval_conv())
 auto.add_global_autos_norm(plus, nat_eval_conv())
 auto.add_global_autos_norm(minus, nat_eval_conv())
 auto.add_global_autos_norm(times, nat_eval_conv())

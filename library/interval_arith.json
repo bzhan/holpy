@@ -680,6 +680,89 @@
                 "x": "real",
                 "y": "real"
             }
+        },
+        {
+            "name": "power_interval_pos_closed",
+            "prop": [
+                "a ≥ 0 ",
+                "⟶ x ∈ real_closed_interval a b ⟶ x ^ n ∈ real_closed_interval (a ^ n) (b ^ n)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "power_interval_neg_even_closed",
+            "prop": [
+                "b ≤ 0 ",
+                "⟶ even n ",
+                "   ⟶ x ∈ real_closed_interval a b ⟶ x ^ n ∈ real_closed_interval (b ^ n) (a ^ n)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "power_interval_neg_odd_closed",
+            "prop": [
+                "b ≤ 0 ",
+                "⟶ odd n ",
+                "   ⟶ x ∈ real_closed_interval a b ⟶ x ^ n ∈ real_closed_interval (a ^ n) (b ^ n)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "power_interval_pos_open",
+            "prop": "a ≥ 0 ⟶ x ∈ real_open_interval a b ⟶ x ^ n ∈ real_open_interval (a ^ n) (b ^ n)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "power_interval_neg_even_open",
+            "prop": [
+                "b ≤ 0 ",
+                "⟶ even n ⟶ x ∈ real_open_interval a b ⟶ x ^ n ∈ real_open_interval (b ^ n) (a ^ n)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "power_interval_neg_odd_open",
+            "prop": [
+                "b ≤ 0 ",
+                "⟶ odd n ⟶ x ∈ real_open_interval a b ⟶ x ^ n ∈ real_open_interval (a ^ n) (b ^ n)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "n": "nat",
+                "x": "real"
+            }
         }
     ],
     "description": "Theoretical results for interval arithmetic.",

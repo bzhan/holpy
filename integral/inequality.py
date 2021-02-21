@@ -1,7 +1,7 @@
 """Deciding inequalities."""
 
 from kernel import term
-from kernel.term import Term, Inst
+from kernel.term import Term, Inst, Nat, Real, Eq
 from kernel.thm import Thm
 from kernel.proofterm import ProofTerm, TacticException
 from kernel.macro import Macro
@@ -394,10 +394,16 @@ def norm_mem_interval(pt):
     return pt.on_prop(arg_conv(binop_conv(auto.auto_conv())))
 
 def real_pos(a):
-    return real.greater(a, term.Real(0))
+    return real.greater(a, Real(0))
 
 def real_nonneg(a):
-    return real.greater_eq(a, term.Real(0))
+    return real.greater_eq(a, Real(0))
+
+def real_neg(a):
+    return real.less(a, Real(0))
+
+def real_nonpos(a):
+    return real.less_eq(a, Real(0))
 
 def get_mem_bounds_pt(pt):
     """Given pt is membership in an interval, return the left and right
@@ -460,9 +466,9 @@ def combine_mem_bounds(pt1, pt2):
     b, y = pt2.prop.args
 
     # First obtain the comparison between a and b
-    if a < b:
+    if eval_hol_expr(a) < eval_hol_expr(b):
         pt_ab = ProofTerm('const_inequality', real.less(a, b))
-    elif a <= b:
+    elif eval_hol_expr(a) <= eval_hol_expr(b):
         pt_ab = ProofTerm('const_inequality', real.less_eq(a, b))
     else:
         raise TacticException
@@ -493,6 +499,20 @@ def reverse_inequality(pt):
         return pt.on_prop(rewr_conv('real_ge_to_le'))
     else:
         raise AssertionError('reverse_inequality')
+
+def nat_as_even(n):
+    """Obtain theorem of form even n."""
+    assert n % 2 == 0, "nat_as_even: n is not even"
+    eq_pt = auto.auto_solve(Eq(Nat(2) * Nat(n // 2), Nat(n)))
+    pt = apply_theorem('even_double', inst=Inst(n=Nat(n//2)))
+    return pt.on_prop(arg_conv(rewr_conv(eq_pt)))
+
+def nat_as_odd(n):
+    """Obtain theorem of form odd n."""
+    assert n % 2 == 1, "nat_as_odd: n is not odd"
+    eq_pt = auto.auto_solve(Eq(nat.Suc(Nat(2) * Nat(n // 2)), Nat(n)))
+    pt = apply_theorem('odd_double', inst=Inst(n=Nat(n//2)))
+    return pt.on_prop(arg_conv(rewr_conv(eq_pt)))
 
 def get_bounds_proof(t, var_range):
     """Given a term t and a mapping from variables to intervals,
@@ -568,6 +588,41 @@ def get_bounds_proof(t, var_range):
         rewr_t = t.arg1 * (real.inverse(t.arg))
         pt = get_bounds_proof(rewr_t, var_range)
         return pt.on_prop(arg1_conv(rewr_conv('real_divide_def', sym=True)))
+
+    elif t.is_nat_power():
+        pt = get_bounds_proof(t.arg1, var_range)
+        a, b = get_mem_bounds(pt)
+        if not t.arg.is_number():
+            raise NotImplementedError
+        if eval_hol_expr(a) >= 0 and is_mem_closed(pt):
+            pt = apply_theorem(
+                'power_interval_pos_closed', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=t.arg))
+        elif eval_hol_expr(a) >= 0 and is_mem_open(pt):
+            pt = apply_theorem(
+                'power_interval_pos_open', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=t.arg))
+        elif eval_hol_expr(b) <= 0 and is_mem_closed(pt):
+            n = t.arg.dest_number()
+            if n % 2 == 0:
+                even_pt = nat_as_even(n)
+                pt = apply_theorem(
+                    'power_interval_neg_even_closed', auto.auto_solve(real_nonpos(b)), even_pt, pt)
+            else:
+                odd_pt = nat_as_odd(n)
+                pt = apply_theorem(
+                    'power_interval_neg_odd_closed', auto.auto_solve(real_nonpos(b)), odd_pt, pt)            
+        elif eval_hol_expr(b) <= 0 and is_mem_open(pt):
+            n = t.arg.dest_number()
+            if n % 2 == 0:
+                even_pt = nat_as_even(n)
+                pt = apply_theorem(
+                    'power_interval_neg_even_open', auto.auto_solve(real_nonpos(b)), even_pt, pt)
+            else:
+                odd_pt = nat_as_odd(n)
+                pt = apply_theorem(
+                    'power_interval_neg_odd_open', auto.auto_solve(real_nonpos(b)), odd_pt, pt)
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
 
     else:
         raise NotImplementedError
@@ -655,7 +710,7 @@ def inequality_solve(goal, pts):
     elif len(pts) == 1:
         macro = IntervalInequalityMacro()
         if macro.can_eval(goal, pts):
-            print(goal, pts[0].prop)
+            # print(goal, pts[0].prop)
             return macro.get_proof_term(goal, pts)
             # th = macro.eval(goal, pts)
             # return ProofTerm('interval_inequality', args=goal, prevs=pts, th=th)
