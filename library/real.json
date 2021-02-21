@@ -576,6 +576,24 @@
             }
         },
         {
+            "name": "real_lt_neq",
+            "prop": "x < y ⟶ ¬(x = y)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_gt_neq",
+            "prop": "x > y ⟶ ¬(x = y)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
             "name": "real_gt_to_neq",
             "prop": "x > 0 ⟶ ¬(x = 0)",
             "ty": "thm",

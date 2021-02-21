@@ -6,7 +6,7 @@ from kernel.thm import Thm
 from kernel.proofterm import ProofTerm, TacticException
 from kernel.macro import Macro
 from kernel.theory import register_macro
-from logic.conv import ConvException, binop_conv, arg_conv
+from logic.conv import ConvException, binop_conv, arg_conv, arg1_conv, rewr_conv
 from logic.logic import apply_theorem
 from data import nat
 from data import real
@@ -130,6 +130,12 @@ class Interval:
     @staticmethod
     def point(val):
         return Interval.closed(val, val)
+
+    def is_closed(self):
+        return not self.left_open and not self.right_open
+
+    def is_open(self):
+        return self.left_oepn and self.right_open
 
     def __add__(self, other):
         """Addition in interval arithmetic."""
@@ -367,6 +373,126 @@ def solve_with_interval(goal, cond):
     else:
         raise NotImplementedError
 
+def is_mem_closed(pt):
+    """Whether pt is membership in closed interval."""
+    return pt.prop.arg.is_comb('real_closed_interval', 2)
+
+def is_mem_open(pt):
+    """Whether pt is membership in open interval."""
+    return pt.prop.arg.is_comb('real_open_interval', 2)
+
+def get_mem_bounds(pt):
+    """Given pt is membership in an interval, return as Python numerals
+    the two bounds in pt.
+
+    """
+    interval = pt.prop.arg
+    return interval.arg1, interval.arg
+
+def norm_mem_interval(pt):
+    """Normalize membership in interval."""
+    return pt.on_prop(arg_conv(binop_conv(auto.auto_conv())))
+
+def real_pos(a):
+    return real.greater(a, term.Real(0))
+
+def real_nonneg(a):
+    return real.greater_eq(a, term.Real(0))
+
+def get_mem_bounds_pt(pt):
+    """Given pt is membership in an interval, return the left and right
+    inequalities.
+
+    """
+    if is_mem_closed(pt):
+        pt = pt.on_prop(rewr_conv('in_real_closed_interval'))
+        return apply_theorem('conjD1', pt), apply_theorem('conjD2', pt)
+    elif is_mem_open(pt):
+        pt = pt.on_prop(rewr_conv('in_real_open_interval'))
+        return apply_theorem('conjD1', pt), apply_theorem('conjD2', pt)
+    else:
+        raise NotImplementedError
+
+@register_macro('const_inequality')
+class ConstInequalityMacro(Macro):
+    """Solve inequality between constants using real_eval and real_approx_eval."""
+    def __init__(self):
+        self.level = 0  # No expand implemented.
+        self.sig = Term
+        self.limit = None
+
+    def can_eval(self, goal, prevs):
+        if len(prevs) == 0:
+            res = eval_inequality_expr(goal)
+            return res
+        else:
+            return False
+
+    def eval(self, goal, prevs):
+        assert self.can_eval(goal, prevs), "const_inequality: not solved."
+        return Thm([], goal)
+
+def inequality_trans(pt1, pt2):
+    """Given two inequalities of the form x </<= y and y </<= z, combine
+    to form x </<= z.
+
+    """
+    if pt1.prop.is_less_eq() and pt2.prop.is_less_eq():
+        return apply_theorem('real_le_trans', pt1, pt2)
+    elif pt1.prop.is_less_eq() and pt2.prop.is_less():
+        return apply_theorem('real_let_trans', pt1, pt2)
+    elif pt1.prop.is_less() and pt2.prop.is_less_eq():
+        return apply_theorem('real_lte_trans', pt1, pt2)
+    elif pt1.prop.is_less() and pt2.prop.is_less():
+        return apply_theorem('real_lt_trans', pt1, pt2)
+    else:
+        raise AssertionError("inequality_trans")
+
+def combine_mem_bounds(pt1, pt2):
+    """Given two inequalities of the form x </<= a and b </<= y, where
+    a and b are constants, attempt to form the theorem x </<= y.
+
+    """
+    assert pt1.prop.is_less_eq() or pt1.prop.is_less(), "combine_mem_bounds"
+    assert pt2.prop.is_less_eq() or pt2.prop.is_less(), "combine_mem_bounds"
+
+    x, a = pt1.prop.args
+    b, y = pt2.prop.args
+
+    # First obtain the comparison between a and b
+    if a < b:
+        pt_ab = ProofTerm('const_inequality', real.less(a, b))
+    elif a <= b:
+        pt_ab = ProofTerm('const_inequality', real.less_eq(a, b))
+    else:
+        raise TacticException
+
+    # Next, successively combine the inequalities
+    pt = inequality_trans(inequality_trans(pt1, pt_ab), pt2)
+    return pt
+
+def combine_interval_bounds(pt1, pt2):
+    """Given two membership in intervals pt1 and pt2, where interval in
+    pt1 lies to the left of interval in pt2, return an inequality between
+    the two terms.
+    
+    """
+    _, pt_a = get_mem_bounds_pt(pt1)
+    pt_b, _ = get_mem_bounds_pt(pt2)
+    return combine_mem_bounds(pt_a, pt_b)
+
+def reverse_inequality(pt):
+    """Convert an inequality of the form x </<= y to y >/>= x, and vice versa."""
+    if pt.prop.is_less_eq():
+        return pt.on_prop(rewr_conv('real_geq_to_leq', sym=True))
+    elif pt.prop.is_less():
+        return pt.on_prop(rewr_conv('real_ge_to_le', sym=True))
+    elif pt.prop.is_greater_eq():
+        return pt.on_prop(rewr_conv('real_geq_to_leq'))
+    elif pt.prop.is_greater():
+        return pt.on_prop(rewr_conv('real_ge_to_le'))
+    else:
+        raise AssertionError('reverse_inequality')
 
 def get_bounds_proof(t, var_range):
     """Given a term t and a mapping from variables to intervals,
@@ -389,29 +515,74 @@ def get_bounds_proof(t, var_range):
     elif t.is_plus():
         pt1 = get_bounds_proof(t.arg1, var_range)
         pt2 = get_bounds_proof(t.arg, var_range)
-        pt = apply_theorem('add_interval', pt1, pt2)
-        pt = pt.on_prop(arg_conv(binop_conv(auto.auto_conv())))
-        return pt
+        if is_mem_closed(pt1) and is_mem_closed(pt2):
+            pt = apply_theorem('add_interval_closed', pt1, pt2)
+        elif is_mem_open(pt1) and is_mem_open(pt2):
+            pt = apply_theorem('add_interval_open', pt1, pt2)
+        elif is_mem_open(pt1) and is_mem_closed(pt2):
+            pt = apply_theorem('add_interval_open_closed', pt1, pt2)
+        elif is_mem_closed(pt1) and is_mem_open(pt2):
+            pt = apply_theorem('add_interval_closed_open', pt1, pt2)
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
+
+    elif t.is_uminus():
+        pt = get_bounds_proof(t.arg, var_range)
+        if is_mem_closed(pt):
+            pt = apply_theorem('neg_interval_closed', pt)
+        elif is_mem_open(pt):
+            pt = apply_theorem('neg_interval_open', pt)
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
+
+    elif t.is_minus():
+        rewr_t = t.arg1 + (-t.arg)
+        pt = get_bounds_proof(rewr_t, var_range)
+        return pt.on_prop(arg1_conv(rewr_conv('real_minus_def', sym=True)))
+
+    elif t.is_real_inverse():
+        pt = get_bounds_proof(t.arg, var_range)
+        a, b = get_mem_bounds(pt)
+        if eval_hol_expr(a) > 0 and is_mem_closed(pt):
+            pt = apply_theorem('inverse_interval_pos_closed', auto.auto_solve(real_pos(a)), pt)
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
+
+    elif t.is_times():
+        pt1 = get_bounds_proof(t.arg1, var_range)
+        pt2 = get_bounds_proof(t.arg, var_range)
+        a, b = get_mem_bounds(pt1)
+        c, d = get_mem_bounds(pt2)
+        if eval_hol_expr(a) >= 0 and eval_hol_expr(c) >= 0 and is_mem_closed(pt1) and is_mem_closed(pt2):
+            pt = apply_theorem(
+                'mult_interval_pos_closed', auto.auto_solve(real_nonneg(a)),
+                auto.auto_solve(real_nonneg(c)), pt1, pt2)
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
+
+    elif t.is_divides():
+        rewr_t = t.arg1 * (real.inverse(t.arg))
+        pt = get_bounds_proof(rewr_t, var_range)
+        return pt.on_prop(arg1_conv(rewr_conv('real_divide_def', sym=True)))
 
     else:
         raise NotImplementedError
 
 
-@register_macro('inequality_solve')
-class InequalityMacro(Macro):
-    """Solve inequality using real_eval and real_approx_eval."""
+@register_macro('interval_inequality')
+class IntervalInequalityMacro(Macro):
+    """Solve inequality with one constraint."""
     def __init__(self):
-        self.level = 0  # No expand implemented.
+        self.level = 1
         self.sig = Term
         self.limit = None
 
     def can_eval(self, goal, prevs):
-        if len(prevs) == 0:
-            # print(goal)
-            res = eval_inequality_expr(goal)
-            # print(res)
-            return res
-        elif len(prevs) == 1:
+        if len(prevs) == 1:
             # print(goal, ',', prevs[0].prop)
             res = solve_with_interval(goal, prevs[0].prop)
             # print(res)
@@ -420,19 +591,76 @@ class InequalityMacro(Macro):
             return False
 
     def eval(self, goal, prevs):
-        assert self.can_eval(goal, prevs), "inequality: not solved."
+        assert self.can_eval(goal, prevs), "interval_inequality: not solved."
 
         return Thm(sum([th.hyps for th in prevs], ()), goal)
 
+    def get_proof_term(self, goal, pts):
+        assert len(pts) == 1 and hol_set.is_mem(pts[0].prop) and pts[0].prop.arg1.is_var(), \
+            "interval_inequality"
+        var_name = pts[0].prop.arg1.name
+        var_range = {var_name: pts[0]}
+
+        if goal.is_not() and goal.arg.is_equals():
+            pt1 = get_bounds_proof(goal.arg.arg1, var_range)
+            pt2 = get_bounds_proof(goal.arg.arg, var_range)
+            try:
+                pt = combine_interval_bounds(pt1, pt2)
+                if pt.prop.is_less_eq():
+                    raise TacticException
+                pt = apply_theorem('real_lt_neq', pt)
+            except TacticException:
+                pt = combine_interval_bounds(pt2, pt1)
+                if pt.prop.is_less_eq():
+                    raise TacticException
+                pt = apply_theorem('real_gt_neq', reverse_inequality(pt))
+            return pt
+        else:
+            pt1 = get_bounds_proof(goal.arg1, var_range)
+            pt2 = get_bounds_proof(goal.arg, var_range)
+            if goal.is_less_eq():
+                pt = combine_interval_bounds(pt1, pt2)
+                if pt.prop.is_less():
+                    pt = apply_theorem('real_lt_imp_le', pt)
+                return pt
+            elif goal.is_less():
+                pt = combine_interval_bounds(pt1, pt2)
+                if pt.prop.is_less_eq():
+                    raise TacticException
+                return pt
+            elif goal.is_greater_eq():
+                pt = combine_interval_bounds(pt2, pt1)
+                if pt.prop.is_less():
+                    pt = apply_theorem('real_lt_imp_le', pt)
+                return reverse_inequality(pt)
+            elif goal.is_greater():
+                pt = combine_interval_bounds(pt2, pt1)
+                if pt.prop.is_less_eq():
+                    raise TacticException
+                return reverse_inequality(pt)
+            else:
+                raise AssertionError('interval_inequality')
 
 def inequality_solve(goal, pts):
     if pts is None:
         pts = []
 
-    macro = InequalityMacro()
-    if macro.can_eval(goal, pts):
-        th = Thm(sum([th.hyps for th in pts], ()), goal)
-        return ProofTerm('inequality_solve', args=goal, prevs=pts, th=th)
+    if len(pts) == 0:
+        macro = ConstInequalityMacro()
+        if macro.can_eval(goal, pts):
+            th = macro.eval(goal, pts)
+            return ProofTerm('const_inequality', args=goal, prevs=pts, th=th)
+        else:
+            raise TacticException
+    elif len(pts) == 1:
+        macro = IntervalInequalityMacro()
+        if macro.can_eval(goal, pts):
+            print(goal, pts[0].prop)
+            return macro.get_proof_term(goal, pts)
+            # th = macro.eval(goal, pts)
+            # return ProofTerm('interval_inequality', args=goal, prevs=pts, th=th)
+        else:
+            raise TacticException
     else:
         raise TacticException
 

@@ -10,7 +10,8 @@ from data import set as hol_set
 from integral.parser import parse_expr, parse_interval
 from integral import inequality
 from integral.expr import expr_to_holpy
-from integral.inequality import get_bounds, get_bounds_proof, interval_to_holpy
+from integral.inequality import get_bounds, get_bounds_proof, interval_to_holpy, IntervalInequalityMacro
+from syntax import parser
 
 
 class InequalityTest(unittest.TestCase):
@@ -42,16 +43,39 @@ class InequalityTest(unittest.TestCase):
     def testGetBoundsProof(self):
         test_data = [
             ("x + 3", "[0, 1]", "[3, 4]"),
+            ("x + 3", "(0, 1)", "(3, 4)"),
+            ("3 + x", "(0, 1)", "(3, 4)"),
+            ("x + x", "(0, 1)", "(0, 2)"),
+            ("-x", "[0, 2]", "[-2, 0]"),
+            ("-x", "(1, 3)", "(-3, -1)"),
+            ("-x", "(-1, 1)", "(-1, 1)"),
+            ("x - 3", "[0, 1]", "[-3, -2]"),
+            ("3 - x", "(0, 1)", "(2, 3)"),
+            ("x * 2", "[0, 1]", "[0, 2]"),
+            ("1 / x", "[1, 2]", "[1/2, 1]"),
         ]
 
+        context.set_context('interval_arith')
         for s, i1, i2 in test_data:
-            context.set_context('interval_arith')
             t = expr_to_holpy(parse_expr(s))
             cond = hol_set.mk_mem(term.Var('x', RealType), interval_to_holpy(parse_interval(i1)))
             var_range = {'x': ProofTerm.assume(cond)}
             res = hol_set.mk_mem(t, interval_to_holpy(parse_interval(i2)))
             pt = get_bounds_proof(t, var_range)
             self.assertEqual(pt.prop, res)
+
+    def testInequalityMacro(self):
+        test_data = [
+            ("x < 2", "x Mem real_closed_interval 0 1"),
+        ]
+
+        context.set_context('interval_arith', vars={'x': 'real'})
+        macro = IntervalInequalityMacro()
+        for goal, cond in test_data:
+            goal = parser.parse_term(goal)
+            cond = parser.parse_term(cond)
+            pt = macro.get_proof_term(goal, [ProofTerm.assume(cond)])
+            self.assertEqual(pt.prop, goal)
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ import cProfile
 from logic import basic
 from integral import proof
 from integral import rules
+from integral import inequality
 from prover import sympywrapper
 
 test_cases = {
@@ -32,7 +33,7 @@ test_cases = {
         "Exercise 18": "1 + -1/4 * pi",
         "Exercise 19": "1 / 6",
         "Exercise 20": "2 + 2 * log(2) + -2 * log(3)",
-        # "Exercise 21": "1 + 2 * log(1/2)",
+        "Exercise 21": "1 + 2 * log(1/2)",
         "Exercise 22": "1 + -exp(-1/2)",
         "Exercise 23": "-2 + 2 * sqrt(3)",
         "Exercise 24": "1/2 * pi",
@@ -51,7 +52,7 @@ test_cases = {
         # "Interesting 1": "1 / 4 * pi",
     },
     "MIT/2013": {
-        # "Exercise 1": "2 * log(2) + 2 * exp(1) + -2 * log(2 * exp(1)) * exp(1)",
+        "Exercise 1": "2 * log(2) + 2 * exp(1) + -2 * log(2 * exp(1)) * exp(1)",
         # "Exercise 2": "-2 + exp(1) + exp(3)",
         "Exercise 3": "-sin(exp(1)) + 1/2 * sin(exp(2))",
         "Exercise 4": "2500",
@@ -241,6 +242,7 @@ class RunIntegral(unittest.TestCase):
             pr.enable()
 
         basic.load_theory('realintegral')
+        basic.load_theory('interval_arith')
         for filename in filenames:
             with open('integral/examples/%s.json' % filename, 'r', encoding='utf-8') as f:
                 f_data = json.load(f)

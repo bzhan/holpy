@@ -120,7 +120,7 @@
             }
         },
         {
-            "name": "add_interval",
+            "name": "add_interval_closed",
             "num_gaps": 0,
             "proof": [
                 {
@@ -352,7 +352,55 @@
             }
         },
         {
-            "name": "neg_interval",
+            "name": "add_interval_open",
+            "prop": [
+                "x ∈ real_open_interval a b ",
+                "⟶ y ∈ real_open_interval c d ⟶ x + y ∈ real_open_interval (a + c) (b + d)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "add_interval_open_closed",
+            "prop": [
+                "x ∈ real_open_interval a b ",
+                "⟶ y ∈ real_closed_interval c d ⟶ x + y ∈ real_open_interval (a + c) (b + d)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "add_interval_closed_open",
+            "prop": [
+                "x ∈ real_closed_interval a b ",
+                "⟶ y ∈ real_open_interval c d ⟶ x + y ∈ real_open_interval (a + c) (b + d)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "neg_interval_closed",
             "num_gaps": 0,
             "proof": [
                 {
@@ -493,6 +541,144 @@
                 "a": "real",
                 "b": "real",
                 "x": "real"
+            }
+        },
+        {
+            "name": "neg_interval_open",
+            "prop": "x ∈ real_open_interval a b ⟶ -x ∈ real_open_interval (-b) (-a)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "inverse_interval_pos_closed",
+            "prop": [
+                "a > 0 ",
+                "⟶ x ∈ real_closed_interval a b ",
+                "   ⟶ real_inverse x ∈ real_closed_interval (real_inverse b) (real_inverse a)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "inverse_interval_neg_closed",
+            "prop": [
+                "b < 0 ",
+                "⟶ x ∈ real_closed_interval a b ",
+                "   ⟶ real_inverse x ∈ real_closed_interval (real_inverse b) (real_inverse a)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "inverse_interval_pos_open",
+            "prop": [
+                "a > 0 ",
+                "⟶ x ∈ real_open_interval a b ",
+                "   ⟶ real_inverse x ∈ real_open_interval (real_inverse b) (real_inverse a)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "inverse_interval_neg_open",
+            "prop": [
+                "b < 0 ",
+                "⟶ x ∈ real_open_interval a b ",
+                "   ⟶ real_inverse x ∈ real_open_interval (real_inverse b) (real_inverse a)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "mult_interval_pos_closed",
+            "prop": [
+                "a ≥ 0 ",
+                "⟶ c ≥ 0 ",
+                "   ⟶ x ∈ real_closed_interval a b ",
+                "      ⟶ y ∈ real_closed_interval c d ⟶ x * y ∈ real_closed_interval (a * c) (b * d)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "mult_interval_pos_open",
+            "prop": [
+                "a ≥ 0 ",
+                "⟶ c ≥ 0 ",
+                "   ⟶ x ∈ real_open_interval a b ",
+                "      ⟶ y ∈ real_open_interval c d ⟶ x * y ∈ real_open_interval (a * c) (b * d)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "mult_interval_pos_open_closed",
+            "prop": [
+                "a ≥ 0 ",
+                "⟶ c ≥ 0 ",
+                "   ⟶ x ∈ real_open_interval a b ",
+                "      ⟶ y ∈ real_closed_interval c d ⟶ x * y ∈ real_open_interval (a * c) (b * d)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "mult_interval_pos_closed_open",
+            "prop": [
+                "a ≥ 0 ",
+                "⟶ c ≥ 0 ",
+                "   ⟶ x ∈ real_closed_interval a b ",
+                "      ⟶ y ∈ real_open_interval c d ⟶ x * y ∈ real_open_interval (a * c) (b * d)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
             }
         }
     ],
