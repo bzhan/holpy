@@ -70,6 +70,8 @@ class InequalityTest(unittest.TestCase):
             ("sin(x)", "(-pi/2, 0)", "(-1, 0)"),
             ("cos(x)", "(0, pi/2)", "(0, 1)"),
             ("cos(x)", "(-pi/2, pi/2)", "[0, 1]"),
+            ("x ^ (1/2)", "(0, 4)", "(0, 2)"),
+            ("log(x)", "(1, exp(2))", "(0, 2)"),
         ]
 
         context.set_context('interval_arith')

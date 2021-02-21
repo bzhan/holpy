@@ -718,7 +718,7 @@
             }
         },
         {
-            "name": "power_interval_pos_closed",
+            "name": "nat_power_interval_pos_closed",
             "prop": [
                 "a ≥ 0 ",
                 "⟶ x ∈ real_closed_interval a b ⟶ x ^ n ∈ real_closed_interval (a ^ n) (b ^ n)"
@@ -732,7 +732,7 @@
             }
         },
         {
-            "name": "power_interval_neg_even_closed",
+            "name": "nat_power_interval_neg_even_closed",
             "prop": [
                 "b ≤ 0 ",
                 "⟶ even n ",
@@ -747,7 +747,7 @@
             }
         },
         {
-            "name": "power_interval_neg_odd_closed",
+            "name": "nat_power_interval_neg_odd_closed",
             "prop": [
                 "b ≤ 0 ",
                 "⟶ odd n ",
@@ -762,7 +762,7 @@
             }
         },
         {
-            "name": "power_interval_pos_open",
+            "name": "nat_power_interval_pos_open",
             "prop": "a ≥ 0 ⟶ x ∈ real_open_interval a b ⟶ x ^ n ∈ real_open_interval (a ^ n) (b ^ n)",
             "ty": "thm",
             "vars": {
@@ -773,7 +773,7 @@
             }
         },
         {
-            "name": "power_interval_neg_even_open",
+            "name": "nat_power_interval_neg_even_open",
             "prop": [
                 "b ≤ 0 ",
                 "⟶ even n ⟶ x ∈ real_open_interval a b ⟶ x ^ n ∈ real_open_interval (b ^ n) (a ^ n)"
@@ -787,7 +787,7 @@
             }
         },
         {
-            "name": "power_interval_neg_odd_open",
+            "name": "nat_power_interval_neg_odd_open",
             "prop": [
                 "b ≤ 0 ",
                 "⟶ odd n ⟶ x ∈ real_open_interval a b ⟶ x ^ n ∈ real_open_interval (a ^ n) (b ^ n)"
@@ -797,6 +797,87 @@
                 "a": "real",
                 "b": "real",
                 "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_power_interval_pos_closed",
+            "prop": [
+                "p ≥ 0 ",
+                "⟶ a ≥ 0 ",
+                "   ⟶ x ∈ real_closed_interval a b ⟶ x ^ p ∈ real_closed_interval (a ^ p) (b ^ p)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "p": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_power_interval_pos_open",
+            "prop": [
+                "p ≥ 0 ",
+                "⟶ a ≥ 0 ⟶ x ∈ real_open_interval a b ⟶ x ^ p ∈ real_open_interval (a ^ p) (b ^ p)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "p": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_power_interval_neg_closed",
+            "prop": [
+                "p < 0 ",
+                "⟶ a > 0 ",
+                "   ⟶ x ∈ real_closed_interval a b ⟶ x ^ p ∈ real_closed_interval (b ^ p) (a ^ p)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "p": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_power_interval_neg_open",
+            "prop": [
+                "p < 0 ",
+                "⟶ a > 0 ⟶ x ∈ real_open_interval a b ⟶ x ^ p ∈ real_open_interval (b ^ p) (a ^ p)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "p": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "log_interval_closed",
+            "prop": [
+                "a > 0 ",
+                "⟶ x ∈ real_closed_interval a b ⟶ log x ∈ real_closed_interval (log a) (log b)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "log_interval_open",
+            "prop": "a ≥ 0 ⟶ x ∈ real_open_interval a b ⟶ log x ∈ real_open_interval (log a) (log b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
                 "x": "real"
             }
         },

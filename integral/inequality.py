@@ -606,30 +606,75 @@ def get_bounds_proof(t, var_range):
             raise NotImplementedError
         if eval_hol_expr(a) >= 0 and is_mem_closed(pt):
             pt = apply_theorem(
-                'power_interval_pos_closed', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=t.arg))
+                'nat_power_interval_pos_closed', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=t.arg))
         elif eval_hol_expr(a) >= 0 and is_mem_open(pt):
             pt = apply_theorem(
-                'power_interval_pos_open', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=t.arg))
+                'nat_power_interval_pos_open', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=t.arg))
         elif eval_hol_expr(b) <= 0 and is_mem_closed(pt):
             n = t.arg.dest_number()
             if n % 2 == 0:
                 even_pt = nat_as_even(n)
                 pt = apply_theorem(
-                    'power_interval_neg_even_closed', auto.auto_solve(real_nonpos(b)), even_pt, pt)
+                    'nat_power_interval_neg_even_closed', auto.auto_solve(real_nonpos(b)), even_pt, pt)
             else:
                 odd_pt = nat_as_odd(n)
                 pt = apply_theorem(
-                    'power_interval_neg_odd_closed', auto.auto_solve(real_nonpos(b)), odd_pt, pt)            
+                    'nat_power_interval_neg_odd_closed', auto.auto_solve(real_nonpos(b)), odd_pt, pt)            
         elif eval_hol_expr(b) <= 0 and is_mem_open(pt):
             n = t.arg.dest_number()
             if n % 2 == 0:
                 even_pt = nat_as_even(n)
                 pt = apply_theorem(
-                    'power_interval_neg_even_open', auto.auto_solve(real_nonpos(b)), even_pt, pt)
+                    'nat_power_interval_neg_even_open', auto.auto_solve(real_nonpos(b)), even_pt, pt)
             else:
                 odd_pt = nat_as_odd(n)
                 pt = apply_theorem(
-                    'power_interval_neg_odd_open', auto.auto_solve(real_nonpos(b)), odd_pt, pt)
+                    'nat_power_interval_neg_odd_open', auto.auto_solve(real_nonpos(b)), odd_pt, pt)
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
+
+    elif t.is_real_power():
+        pt = get_bounds_proof(t.arg1, var_range)
+        a, b = get_mem_bounds(pt)
+        if not t.arg.is_number():
+            raise NotImplementedError
+        p = t.arg.dest_number()
+        if p >= 0 and eval_hol_expr(a) >= 0:
+            nonneg_p = auto.auto_solve(real_nonneg(t.arg))
+            nonneg_a = auto.auto_solve(real_nonneg(a))
+            if is_mem_closed(pt):
+                pt = apply_theorem(
+                    'real_power_interval_pos_closed', nonneg_p, nonneg_a, pt)
+            elif is_mem_open(pt):
+                pt = apply_theorem(
+                    'real_power_interval_pos_open', nonneg_p, nonneg_a, pt)
+            else:
+                raise NotImplementedError
+        elif p < 0 and eval_hol_expr(a) > 0:
+            neg_p = auto.auto_solve(real_neg(t.arg))
+            pos_a = auto.auto_solve(real_pos(a))
+            if is_mem_closed(pt):
+                pt = apply_theorem(
+                    'real_power_interval_neg_closed', neg_p, pos_a, pt)
+            elif is_mem_open(pt):
+                pt = apply_theorem(
+                    'real_power_interval_neg_open', neg_p, pos_a, pt)
+            else:
+                raise NotImplementedError
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
+
+    elif t.head == real.log:
+        pt = get_bounds_proof(t.arg, var_range)
+        a, b = get_mem_bounds(pt)
+        if eval_hol_expr(a) > 0 and is_mem_closed(pt):
+            pt = apply_theorem(
+                'log_interval_closed', auto.auto_solve(real_pos(a)), pt)
+        elif eval_hol_expr(a) >= 0 and is_mem_open(pt):
+            pt = apply_theorem(
+                'log_interval_open', auto.auto_solve(real_nonneg(a)), pt)
         else:
             raise NotImplementedError
         return norm_mem_interval(pt)
