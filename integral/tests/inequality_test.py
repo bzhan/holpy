@@ -11,7 +11,7 @@ from data import nat
 from integral.parser import parse_expr, parse_interval
 from integral import inequality
 from integral.expr import expr_to_holpy
-from integral import inequality
+from integral import proof  # for additional auto convs.
 from integral.inequality import get_bounds, get_bounds_proof, interval_to_holpy, IntervalInequalityMacro
 from syntax import parser
 
@@ -66,6 +66,10 @@ class InequalityTest(unittest.TestCase):
             ("x ^ 2", "[1, 2]", "[1, 4]"),
             ("x ^ 2", "(-1, 0)", "(0, 1)"),
             ("x ^ 3", "(-1, 0)", "(-1, 0)"),
+            ("sin(x)", "(0, pi/2)", "(0, 1)"),
+            ("sin(x)", "(-pi/2, 0)", "(-1, 0)"),
+            ("cos(x)", "(0, pi/2)", "(0, 1)"),
+            ("cos(x)", "(-pi/2, pi/2)", "[0, 1]"),
         ]
 
         context.set_context('interval_arith')

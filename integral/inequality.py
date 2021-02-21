@@ -1,5 +1,7 @@
 """Deciding inequalities."""
 
+import math
+
 from kernel import term
 from kernel.term import Term, Inst, Nat, Real, Eq
 from kernel.thm import Thm
@@ -248,7 +250,7 @@ class Interval:
                             expr.Fun('sin', self.end).normalize_constant(),
                             self.left_open, self.right_open)
         elif self.contained_in(Interval(expr.Const(0), expr.pi, False, False)):
-            return Interval(expr.Const(0), expr.Const(1), self.left_open and self.right_open, False)
+            return Interval(expr.Const(0), expr.Const(1), False, False)
         else:
             raise NotImplementedError
 
@@ -259,7 +261,7 @@ class Interval:
                             expr.Fun('cos', self.start).normalize_constant(),
                             self.right_open, self.left_open)
         elif self.contained_in(Interval(-(expr.pi / 2), expr.pi / 2, False, False)):
-            return Interval(expr.Const(0), expr.Const(1), self.left_open and self.right_open, False)
+            return Interval(expr.Const(0), expr.Const(1), False, False)
         else:
             raise NotImplementedError
 
@@ -580,6 +582,14 @@ def get_bounds_proof(t, var_range):
             pt = apply_theorem(
                 'mult_interval_pos_closed', auto.auto_solve(real_nonneg(a)),
                 auto.auto_solve(real_nonneg(c)), pt1, pt2)
+        elif eval_hol_expr(b) <= 0 and eval_hol_expr(c) >= 0 and is_mem_closed(pt1) and is_mem_closed(pt2):
+            pt = apply_theorem(
+                'mult_interval_neg_pos_closed', auto.auto_solve(real_nonpos(b)),
+                auto.auto_solve(real_nonneg(c)), pt1, pt2)
+        elif eval_hol_expr(b) <= 0 and eval_hol_expr(c) >= 0 and is_mem_closed(pt1) and is_mem_open(pt2):
+            pt = apply_theorem(
+                'mult_interval_neg_pos_closed_open', auto.auto_solve(real_nonpos(b)),
+                auto.auto_solve(real_nonneg(c)), pt1, pt2)
         else:
             raise NotImplementedError
         return norm_mem_interval(pt)
@@ -620,6 +630,50 @@ def get_bounds_proof(t, var_range):
                 odd_pt = nat_as_odd(n)
                 pt = apply_theorem(
                     'power_interval_neg_odd_open', auto.auto_solve(real_nonpos(b)), odd_pt, pt)
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
+
+    elif t.head == real.sin:
+        pt = get_bounds_proof(t.arg, var_range)
+        a, b = get_mem_bounds(pt)
+        if eval_hol_expr(a) >= -math.pi/2 and eval_hol_expr(b) <= math.pi/2:
+            if is_mem_closed(pt):
+                pt = apply_theorem(
+                    'sin_interval_main_closed', auto.auto_solve(real.greater_eq(a, -real.pi / 2)),
+                    auto.auto_solve(real.less_eq(b, real.pi / 2)), pt)
+            elif is_mem_open(pt):
+                pt = apply_theorem(
+                    'sin_interval_main_open', auto.auto_solve(real.greater_eq(a, -real.pi / 2)),
+                    auto.auto_solve(real.less_eq(b, real.pi / 2)), pt)
+            else:
+                raise NotImplementedError
+        elif eval_hol_expr(a) >= 0 and eval_hol_expr(b) <= math.pi:
+            pt = apply_theorem(
+                'sin_interval_pos_open', auto.auto_solve(real_nonneg(a)),
+                auto.solve(real.less_eq(b, real.pi)), pt)
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
+
+    elif t.head == real.cos:
+        pt = get_bounds_proof(t.arg, var_range)
+        a, b = get_mem_bounds(pt)
+        if eval_hol_expr(a) >= 0 and eval_hol_expr(b) <= math.pi:
+            if is_mem_closed(pt):
+                pt = apply_theorem(
+                    'cos_interval_main_closed', auto.auto_solve(real_nonneg(a)),
+                    auto.auto_solve(real.less_eq(b, real.pi)), pt)
+            elif is_mem_open(pt):
+                pt = apply_theorem(
+                    'cos_interval_main_open', auto.auto_solve(real_nonneg(a)),
+                    auto.auto_solve(real.less_eq(b, real.pi)), pt)
+            else:
+                raise NotImplementedError
+        elif eval_hol_expr(a) >= -math.pi/2 and eval_hol_expr(b) <= math.pi/2:
+            pt = apply_theorem(
+                'cos_interval_pos_open', auto.auto_solve(real.greater_eq(a, -real.pi / 2)),
+                    auto.auto_solve(real.less_eq(b, real.pi / 2)), pt)
         else:
             raise NotImplementedError
         return norm_mem_interval(pt)
@@ -710,7 +764,7 @@ def inequality_solve(goal, pts):
     elif len(pts) == 1:
         macro = IntervalInequalityMacro()
         if macro.can_eval(goal, pts):
-            # print(goal, pts[0].prop)
+            print(goal, pts[0].prop)
             return macro.get_proof_term(goal, pts)
             # th = macro.eval(goal, pts)
             # return ProofTerm('interval_inequality', args=goal, prevs=pts, th=th)

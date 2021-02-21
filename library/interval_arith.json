@@ -682,6 +682,42 @@
             }
         },
         {
+            "name": "mult_interval_neg_pos_closed",
+            "prop": [
+                "b ≤ 0 ",
+                "⟶ c ≥ 0 ",
+                "   ⟶ x ∈ real_closed_interval a b ",
+                "      ⟶ y ∈ real_closed_interval c d ⟶ x * y ∈ real_closed_interval (a * d) (b * c)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "mult_interval_neg_pos_closed_open",
+            "prop": [
+                "b ≤ 0 ",
+                "⟶ c ≥ 0 ",
+                "   ⟶ x ∈ real_closed_interval a b ",
+                "      ⟶ y ∈ real_open_interval c d ⟶ x * y ∈ real_open_interval (a * d) (b * c)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
             "name": "power_interval_pos_closed",
             "prop": [
                 "a ≥ 0 ",
@@ -761,6 +797,84 @@
                 "a": "real",
                 "b": "real",
                 "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "sin_interval_main_closed",
+            "prop": [
+                "a ≥ -pi / 2 ",
+                "⟶ b ≤ pi / 2 ",
+                "   ⟶ x ∈ real_closed_interval a b ⟶ sin x ∈ real_closed_interval (sin a) (sin b)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "sin_interval_main_open",
+            "prop": [
+                "a ≥ -pi / 2 ",
+                "⟶ b ≤ pi / 2 ",
+                "   ⟶ x ∈ real_open_interval a b ⟶ sin x ∈ real_open_interval (sin a) (sin b)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "sin_interval_pos_open",
+            "prop": "a ≥ 0 ⟶ b ≤ pi ⟶ x ∈ real_open_interval a b ⟶ sin x ∈ real_closed_interval 0 1",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "cos_interval_main_closed",
+            "prop": [
+                "a ≥ 0 ",
+                "⟶ b ≤ pi ",
+                "   ⟶ x ∈ real_closed_interval a b ⟶ cos x ∈ real_closed_interval (cos b) (cos a)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "cos_interval_main_open",
+            "prop": [
+                "a ≥ 0 ",
+                "⟶ b ≤ pi ⟶ x ∈ real_open_interval a b ⟶ cos x ∈ real_open_interval (cos b) (cos a)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "cos_interval_pos_open",
+            "prop": [
+                "a ≥ -pi / 2 ",
+                "⟶ b ≤ pi / 2 ⟶ x ∈ real_open_interval a b ⟶ cos x ∈ real_closed_interval 0 1"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
                 "x": "real"
             }
         }
