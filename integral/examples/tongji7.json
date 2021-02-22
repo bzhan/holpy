@@ -769,31 +769,34 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sqrt{x}\\)",
-                    "latex": "\\int_{1}^{2} 2 + \\frac{-2}{1 + u} \\,\\mathrm{du}",
+                    "latex": "\\int_{1}^{2} \\frac{2 u}{1 + u} \\,\\mathrm{du}",
                     "params": {
-                        "f": "2 + -2 * (1 + u) ^ -1",
+                        "f": "2 * u * (1 + u) ^ -1",
                         "g": "sqrt(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[1,2]. 2 + -2 * (1 + u) ^ -1"
+                    "text": "INT u:[1,2]. 2 * u * (1 + u) ^ -1"
                 },
                 {
-                    "latex": "2 + -2 \\int_{1}^{2} \\frac{1}{1 + u} \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "2 + -2 * (INT u:[1,2]. (1 + u) ^ -1)"
-                },
-                {
-                    "_latex_reason": "Substitute \\(v\\) for \\(1 + u\\)",
-                    "latex": "2 + -2 \\int_{2}^{3} \\frac{1}{v} \\,\\mathrm{dv}",
-                    "location": "1.1",
+                    "latex": "\\int_{1}^{2} 2 - \\frac{2}{u + 1} \\,\\mathrm{du}",
+                    "location": "0",
                     "params": {
-                        "f": "v ^ -1",
-                        "g": "1 + u",
+                        "rhs": "2 - 2 / (u + 1)"
+                    },
+                    "reason": "Rewrite fraction",
+                    "text": "INT u:[1,2]. 2 - 2 / (u + 1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(v\\) for \\(u + 1\\)",
+                    "latex": "\\int_{2}^{3} 2 + \\frac{-2}{v} \\,\\mathrm{dv}",
+                    "params": {
+                        "f": "2 + -2 * v ^ -1",
+                        "g": "u + 1",
                         "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "2 + -2 * (INT v:[2,3]. v ^ -1)"
+                    "text": "INT v:[2,3]. 2 + -2 * v ^ -1"
                 },
                 {
                     "latex": "2 + 2 \\log{(2)} + -2 \\log{(3)}",
@@ -814,31 +817,34 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sqrt{1 - x}\\)",
-                    "latex": "\\int_{0}^{1/2} 2 + \\frac{2}{-1 + u} \\,\\mathrm{du}",
+                    "latex": "\\int_{0}^{1/2} \\frac{2 u}{-1 + u} \\,\\mathrm{du}",
                     "params": {
-                        "f": "-2 + -2 * (-1 + u) ^ -1",
+                        "f": "-2 * u * (-1 + u) ^ -1",
                         "g": "sqrt(1 - x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,1/2]. 2 + 2 * (-1 + u) ^ -1"
+                    "text": "INT u:[0,1/2]. 2 * u * (-1 + u) ^ -1"
                 },
                 {
-                    "latex": "1 + 2 \\int_{0}^{1/2} \\frac{1}{-1 + u} \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "1 + 2 * (INT u:[0,1/2]. (-1 + u) ^ -1)"
-                },
-                {
-                    "_latex_reason": "Substitute \\(v\\) for \\(-1 + u\\)",
-                    "latex": "1 + 2 \\int_{-1}^{-1/2} \\frac{1}{v} \\,\\mathrm{dv}",
-                    "location": "1.1",
+                    "latex": "\\int_{0}^{1/2} 2 + \\frac{2}{u - 1} \\,\\mathrm{du}",
+                    "location": "0",
                     "params": {
-                        "f": "v ^ -1",
-                        "g": "-1 + u",
+                        "rhs": "2 + 2 / (u - 1)"
+                    },
+                    "reason": "Rewrite fraction",
+                    "text": "INT u:[0,1/2]. 2 + 2 / (u - 1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(v\\) for \\(u - 1\\)",
+                    "latex": "\\int_{-1}^{-1/2} 2 + \\frac{2}{v} \\,\\mathrm{dv}",
+                    "params": {
+                        "f": "2 + 2 * v ^ -1",
+                        "g": "u - 1",
                         "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "1 + 2 * (INT v:[-1,-1/2]. v ^ -1)"
+                    "text": "INT v:[-1,-1/2]. 2 + 2 * v ^ -1"
                 },
                 {
                     "latex": "1 + 2 \\log{(\\frac{1}{2})}",

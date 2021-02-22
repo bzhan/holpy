@@ -33,7 +33,7 @@ test_cases = {
         "Exercise 18": "1 + -1/4 * pi",
         "Exercise 19": "1 / 6",
         "Exercise 20": "2 + 2 * log(2) + -2 * log(3)",
-        # "Exercise 21": "1 + 2 * log(1/2)",
+        "Exercise 21": "1 + 2 * log(1/2)",
         "Exercise 22": "1 + -exp(-1/2)",
         "Exercise 23": "-2 + 2 * sqrt(3)",
         "Exercise 24": "1/2 * pi",
@@ -86,7 +86,7 @@ test_cases = {
         "Exercise 2": "log (sin(1) + exp(1))",
     },
     "UCDAVIS/usubstitution": {
-        # "Exercise 1": "209952",
+        "Exercise 1": "209952",
         "Exercise 2": "175099 / 11",
         "Exercise 3": "74 / 21",
         "Exercise 4": "-1/3 + 1/3 * 2 ^ (3/4)",

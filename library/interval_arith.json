@@ -908,7 +908,7 @@
             "name": "real_power_interval_neg_open",
             "prop": [
                 "p < 0 ",
-                "⟶ a > 0 ⟶ x ∈ real_open_interval a b ⟶ x ^ p ∈ real_open_interval (b ^ p) (a ^ p)"
+                "⟶ a ≥ 0 ⟶ x ∈ real_open_interval a b ⟶ x ^ p ∈ real_open_interval (b ^ p) (a ^ p)"
             ],
             "ty": "thm",
             "vars": {

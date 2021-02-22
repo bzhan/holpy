@@ -267,10 +267,10 @@ class Substitution1(Rule):
         var_name = parser.parse_expr(self.var_name)
         var_subst = self.var_subst
         dfx = expr.deriv(e.var, var_subst)
-        try:
-            body = holpy_style(apart(sympy_style(e.body/dfx)))
-        except:
-            body = holpy_style(sympy_style(e.body/dfx))
+        # try:
+        #     body = holpy_style(apart(sympy_style(e.body/dfx)))
+        # except:
+        body = holpy_style(sympy_style(e.body/dfx))
         body_subst = body.replace_trig(var_subst, var_name)
         if body_subst == body:
             body_subst = body.normalize().replace_trig(var_subst, var_name)
@@ -285,7 +285,7 @@ class Substitution1(Rule):
         else:
             gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
             if gu == []:  # sympy can't solve the equation
-                return e, 
+                return e
             gu = gu[-1] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
             c = e.body.replace_trig(parser.parse_expr(e.var), gu)
