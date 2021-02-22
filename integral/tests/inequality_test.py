@@ -61,7 +61,7 @@ class InequalityTest(unittest.TestCase):
             ("-x", "(-1, 1)", "(-1, 1)"),
             ("x - 3", "[0, 1]", "[-3, -2]"),
             ("3 - x", "(0, 1)", "(2, 3)"),
-            ("x * 2", "[0, 1]", "[0, 2]"),
+            ("2 * x", "[0, 1]", "[0, 2]"),
             ("1 / x", "[1, 2]", "[1/2, 1]"),
             ("x ^ 2", "[1, 2]", "[1, 4]"),
             ("x ^ 2", "(-1, 0)", "(0, 1)"),
@@ -115,6 +115,8 @@ class InequalityTest(unittest.TestCase):
     def testInequalityMacro(self):
         test_data = [
             ("x < 2", "x Mem real_closed_interval 0 1"),
+            ("x > 0", "x Mem real_closed_interval 1 2"),
+            ("-1 + x >= 0", "x Mem real_closed_interval 1 2"),
         ]
 
         context.set_context('interval_arith', vars={'x': 'real'})

@@ -36,7 +36,7 @@ test_cases = {
         "Exercise 21": "1 + 2 * log(1/2)",
         "Exercise 22": "1 + -exp(-1/2)",
         "Exercise 23": "-2 + 2 * sqrt(3)",
-        "Exercise 24": "1/2 * pi",
+        # "Exercise 24": "1/2 * pi",
         "Exercise 25": "3 / 8 * pi + -1/4 * sin(-pi)",
         "Exercise 26": "4 / 3 + -4/3 * 0 ^ (3/2)",
         "Exercise 27": "2 * sqrt(2)",
@@ -79,8 +79,8 @@ test_cases = {
         # "Exercise 25": "2 ^ (1/2) * (1/8) * pi + -2 ^ (1/2) * (1/2) * atan(sqrt(14) / 7)"  # sympy
     },
     "MIT/2014": {
-        "Exercise 6": "-(4 / 5)",
-        # "Exercise 8": "1/4062240",
+        "Exercise 6": "-9/10 + -1/10 * cos(-pi)",
+        "Exercise 8": "1/4062240",
     },
     "MIT/2019": {
         "Exercise 1": "-2/39 * log(abs(cos(39/200 * pi)))",
@@ -99,12 +99,12 @@ test_cases = {
         "Exercise 10": "3 * log(2)",
         "Exercise 11": "1/5 + -1/5 * exp(-1)",
         "Exercise 12": "1",
-        # "Exercise 13": "-11 / 21",
-        # "Exercise 14": "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)",
+        "Exercise 13": "-11 / 21",
+        "Exercise 14": "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)",
         # "Exercise 15": "(1/2 - 7/4 * log(3)) + 7/4 * log(5)",
-        # "Exercise 16": "(-(3/2) - 8 * log(2)) + 8 * log(3)",
+        "Exercise 16": "-3/2 + -8 * log(2) + 8 * log(3)",
         "Exercise 17": "41 / 6",
-        # "Exercise 18": "188 / 15"
+        "Exercise 18": "188 / 15"
     },
     "UCDAVIS/Exponentials": {
         "Exercise 1": "-5 + 5 * exp(1)",
@@ -228,7 +228,7 @@ class RunIntegral(unittest.TestCase):
         filenames = [
             "tongji7",
             # "MIT/2013",
-            # "MIT/2014",
+            "MIT/2014",
             "MIT/2019",
             "UCDAVIS/usubstitution",
             # "UCDAVIS/Exponentials",

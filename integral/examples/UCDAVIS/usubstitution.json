@@ -65,11 +65,18 @@
                     "text": "INT x:[0,1]. sqrt(7 * x + 9)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(7 x + 9\\)",
+                    "latex": "\\int_{0}^{1} \\sqrt{9 + 7 x} \\,\\mathrm{dx}",
+                    "location": ".",
+                    "reason": "Simplification",
+                    "text": "INT x:[0,1]. sqrt(9 + 7 * x)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for  \\(9 + 7 x\\)",
                     "latex": "\\int_{9}^{16} \\frac{\\sqrt{u}}{7} \\,\\mathrm{du}",
+                    "location": ".",
                     "params": {
-                        "f": "1/7 * sqrt(u)",
-                        "g": "7 * x + 9",
+                        "f": "sqrt(9 + 7 * (u / 7 - 9/7)) * (1/7)",
+                        "g": "9 + 7 * x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
@@ -77,6 +84,7 @@
                 },
                 {
                     "latex": "\\frac{74}{21}",
+                    "location": ".",
                     "reason": "Simplification",
                     "text": "74/21"
                 }
@@ -93,18 +101,50 @@
                     "text": "INT x:[0,1]. x ^ 3 / (1 + x ^ 4) ^ (1/4)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(1 + x ^ 4\\)",
-                    "latex": "\\int_{1}^{2} \\frac{1}{4} \\frac{1}{\\sqrt[4]{u}} \\,\\mathrm{du}",
+                    "latex": "\\int_{0}^{1} \\frac{x ^ 3}{\\sqrt[4]{1 + x ^ 4}} \\,\\mathrm{dx}",
+                    "location": ".",
+                    "reason": "Simplification",
+                    "text": "INT x:[0,1]. x ^ 3 * (1 + x ^ 4) ^ (-1/4)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for  \\(x ^ 4\\)",
+                    "latex": "\\int_{0}^{1} \\frac{\\frac{1}{4}}{\\sqrt[4]{1 + u}} \\,\\mathrm{du}",
+                    "location": ".",
                     "params": {
-                        "f": "1/4 * u ^ ((-1/4))",
-                        "g": "1 + x ^ 4",
+                        "f": "1 / (4 * (u + 1) ^ (1/4))",
+                        "g": "x ^ 4",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[1,2]. 1/4 * u ^ ((-1/4))"
+                    "text": "INT u:[0,1]. 1/4 * (1 + u) ^ (-1/4)"
                 },
                 {
-                    "latex": "-\\frac{1}{3} + \\frac{1}{3} 2 ^ {(\\frac{3}{4})}",
+                    "latex": "\\frac{1}{4} \\int_{0}^{1} (1 + u) ^ {-\\frac{1}{4}} \\,\\mathrm{du}",
+                    "location": ".",
+                    "reason": "Simplification",
+                    "text": "1/4 * (INT u:[0,1]. (1 + u) ^ (-1/4))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(v\\) for  \\(1 + u\\)",
+                    "latex": "\\frac{1}{4} \\int_{1}^{2} v ^ {-\\frac{1}{4}} \\,\\mathrm{dv}",
+                    "location": "1",
+                    "params": {
+                        "f": "(1 + (v - 1)) ^ (-1/4) * 1",
+                        "g": "1 + u",
+                        "var_name": "v"
+                    },
+                    "reason": "Substitution",
+                    "text": "1/4 * (INT v:[1,2]. v ^ (-1/4))"
+                },
+                {
+                    "latex": "\\frac{1}{4} * (-\\frac{4}{3} + \\frac{4}{3} 2 ^ {\\frac{3}{4}})",
+                    "location": "1",
+                    "reason": "Simplification",
+                    "text": "1/4 * (-4/3 + 4/3 * 2 ^ (3/4))"
+                },
+                {
+                    "latex": "-\\frac{1}{3} + \\frac{1}{3} 2 ^ {\\frac{3}{4}}",
+                    "location": ".",
                     "reason": "Simplification",
                     "text": "-1/3 + 1/3 * 2 ^ (3/4)"
                 }
@@ -121,11 +161,18 @@
                     "text": "INT x:[0,1]. exp(5 * x + 2)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(5 x + 2\\)",
+                    "latex": "\\int_{0}^{1} e^{2 + 5 x} \\,\\mathrm{dx}",
+                    "location": ".",
+                    "reason": "Simplification",
+                    "text": "INT x:[0,1]. exp(2 + 5 * x)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for  \\(2 + 5 x\\)",
                     "latex": "\\int_{2}^{7} \\frac{e^{u}}{5} \\,\\mathrm{du}",
+                    "location": ".",
                     "params": {
-                        "f": "1/5 * exp(u)",
-                        "g": "5 * x + 2",
+                        "f": "exp(2 + 5 * (u / 5 - 2/5)) * (1/5)",
+                        "g": "2 + 5 * x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
@@ -133,8 +180,9 @@
                 },
                 {
                     "latex": "-\\frac{1}{5} e^{2} + \\frac{1}{5} e^{7}",
+                    "location": ".",
                     "reason": "Simplification",
-                    "text": "-(1/5) * exp(2) + 1/5 * exp(7)"
+                    "text": "-1/5 * exp(2) + 1/5 * exp(7)"
                 }
             ],
             "name": "Exercise 5",
@@ -149,18 +197,26 @@
                     "text": "INT x:[0,pi / 6]. 4 * cos(3 * x)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(3 x\\)",
-                    "latex": "\\int_{0}^{1/2 \\pi} (\\frac{4}{3}) \\cos{(u)} \\,\\mathrm{du}",
+                    "latex": "4 \\int_{0}^{1/6 \\pi} \\cos{(3 x)} \\,\\mathrm{dx}",
+                    "location": ".",
+                    "reason": "Simplification",
+                    "text": "4 * (INT x:[0,1/6 * pi]. cos(3 * x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for  \\(3 x\\)",
+                    "latex": "4 \\int_{0}^{1/2 \\pi} \\frac{\\cos{(u)}}{3} \\,\\mathrm{du}",
+                    "location": "1",
                     "params": {
-                        "f": "4/3 * cos(u)",
+                        "f": "cos(u) / 3",
                         "g": "3 * x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,1/2 * pi]. 4/3 * cos(u)"
+                    "text": "4 * (INT u:[0,1/2 * pi]. 1/3 * cos(u))"
                 },
                 {
                     "latex": "\\frac{4}{3}",
+                    "location": ".",
                     "reason": "Simplification",
                     "text": "4/3"
                 }
@@ -177,8 +233,15 @@
                     "text": "INT x:[1,exp(2 * pi)]. sin(log(x)) / x"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(\\log{(x)}\\)",
+                    "latex": "\\int_{1}^{e^{2 \\pi}} \\frac{1}{x} \\sin{(\\log{(x)})} \\,\\mathrm{dx}",
+                    "location": ".",
+                    "reason": "Simplification",
+                    "text": "INT x:[1,exp(2 * pi)]. x ^ -1 * sin(log(x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for  \\(\\log{(x)}\\)",
                     "latex": "\\int_{0}^{2 \\pi} \\sin{(u)} \\,\\mathrm{du}",
+                    "location": ".",
                     "params": {
                         "f": "sin(u)",
                         "g": "log(x)",
@@ -189,6 +252,7 @@
                 },
                 {
                     "latex": "0",
+                    "location": ".",
                     "reason": "Simplification",
                     "text": "0"
                 }
@@ -218,7 +282,7 @@
                     "_latex_reason": "Substitute \\(u\\) for \\(x + 2\\)",
                     "latex": "\\int_{3}^{4} \\frac{3 u}{-7 + u ^ 2} \\,\\mathrm{du}",
                     "params": {
-                        "f": "3 * u * (-7 + u ^ 2) ^ -1",
+                        "f": "((3 * (u - 2) + 6) / (((u - 2) + 2) * ((u - 2) + 2) - 7)) * 1",
                         "g": "x + 2",
                         "var_name": "u"
                     },
@@ -227,14 +291,14 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(v\\) for \\(-7 + u ^ 2\\)",
-                    "latex": "\\int_{2}^{9} \\frac{\\frac{3}{2}}{v} \\,\\mathrm{dv}",
+                    "latex": "\\int_{2}^{9} \\frac{\\frac{3}{2}}{-7 + 7 + v} \\,\\mathrm{dv}",
                     "params": {
-                        "f": "3/2 * v ^ -1",
+                        "f": "3 * sqrt(v + 7) * (-7 + sqrt(v + 7) ^ 2) ^ -1 * (1/2 * (7 + v) ^ (-1/2))",
                         "g": "-7 + u ^ 2",
                         "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "INT v:[2,9]. 3/2 * v ^ -1"
+                    "text": "INT v:[2,9]. 3/2 * (-7 + (7 + v)) ^ -1"
                 },
                 {
                     "latex": "-\\frac{3}{2} \\log{(2)} + \\frac{3}{2} \\log{(9)}",
@@ -259,18 +323,26 @@
                     "text": "INT x:[exp(1),exp(2)]. 3 / (x * log(x))"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(\\log{(x)}\\)",
-                    "latex": "\\int_{1}^{2} 3 \\frac{1}{u} \\,\\mathrm{du}",
+                    "latex": "3 \\int_{e}^{e^{2}} \\frac{\\frac{1}{x}}{\\log{(x)}} \\,\\mathrm{dx}",
+                    "location": ".",
+                    "reason": "Simplification",
+                    "text": "3 * (INT x:[exp(1),exp(2)]. x ^ -1 * log(x) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for  \\(\\log{(x)}\\)",
+                    "latex": "3 \\int_{1}^{2} \\frac{1}{u} \\,\\mathrm{du}",
+                    "location": "1",
                     "params": {
-                        "f": "3 * u ^ (-1)",
+                        "f": "1 / u",
                         "g": "log(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[1,2]. 3 * u ^ (-1)"
+                    "text": "3 * (INT u:[1,2]. u ^ -1)"
                 },
                 {
                     "latex": "3 \\log{(2)}",
+                    "location": "1",
                     "reason": "Simplification",
                     "text": "3 * log(2)"
                 }
@@ -290,7 +362,7 @@
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(5 x)}\\)",
                     "latex": "\\int_{0}^{1} \\frac{e^{-u}}{5} \\,\\mathrm{du}",
                     "params": {
-                        "f": "1/5 * exp(-u)",
+                        "f": "exp(-u) / 5",
                         "g": "sin(5 * x)",
                         "var_name": "u"
                     },
@@ -298,15 +370,21 @@
                     "text": "INT u:[0,1]. 1/5 * exp(-u)"
                 },
                 {
+                    "latex": "\\frac{1}{5} \\int_{0}^{1} e^{-u} \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "1/5 * (INT u:[0,1]. exp(-u))"
+                },
+                {
                     "_latex_reason": "Substitute \\(v\\) for \\(-u\\)",
-                    "latex": "\\int_{-1}^{0} \\frac{e^{v}}{5} \\,\\mathrm{dv}",
+                    "latex": "\\frac{1}{5} \\int_{-1}^{0} e^{v} \\,\\mathrm{dv}",
+                    "location": "1",
                     "params": {
-                        "f": "-1/5 * exp(v)",
+                        "f": "-exp(v)",
                         "g": "-u",
                         "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "INT v:[-1,0]. 1/5 * exp(v)"
+                    "text": "1/5 * (INT v:[-1,0]. exp(v))"
                 },
                 {
                     "latex": "\\frac{1}{5} + -\\frac{1}{5} e^{-1}",
@@ -326,10 +404,11 @@
                     "text": "INT x:[0,sqrt(pi)]. x * sin(x ^ 2)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(x ^ 2\\)",
+                    "_latex_reason": "Substitute \\(u\\) for  \\(x ^ 2\\)",
                     "latex": "\\int_{0}^{\\pi} \\frac{\\sin{(u)}}{2} \\,\\mathrm{du}",
+                    "location": ".",
                     "params": {
-                        "f": "1/2 * sin(u)",
+                        "f": "sin(u) / 2",
                         "g": "x ^ 2",
                         "var_name": "u"
                     },
@@ -338,6 +417,7 @@
                 },
                 {
                     "latex": "1",
+                    "location": ".",
                     "reason": "Simplification",
                     "text": "1"
                 }
@@ -357,7 +437,7 @@
                     "_latex_reason": "Substitute \\(u\\) for \\(x - 1\\)",
                     "latex": "\\int_{-1}^{0} 4 u ^ 5 + u ^ 6 \\,\\mathrm{du}",
                     "params": {
-                        "f": "4 * u ^ 5 + u ^ 6",
+                        "f": "(u + 1 + 3) * ((u + 1) - 1) ^ 5 * 1",
                         "g": "x - 1",
                         "var_name": "u"
                     },
@@ -385,7 +465,7 @@
                     "_latex_reason": "Substitute \\(u\\) for \\(4 - x\\)",
                     "latex": "\\int_{0}^{4} 4 \\sqrt{u} + -u ^ {\\frac{3}{2}} \\,\\mathrm{du}",
                     "params": {
-                        "f": "-4 * sqrt(u) + u ^ (3/2)",
+                        "f": "(4 - u) * sqrt(4 - (4 - u)) * -1",
                         "g": "4 - x",
                         "var_name": "u"
                     },
@@ -472,17 +552,17 @@
                     "latex": "-\\frac{3}{2} + 8 \\int_{2}^{3} \\frac{1}{u} \\,\\mathrm{du}",
                     "location": "1.1",
                     "params": {
-                        "f": "u ^ (-1)",
+                        "f": "(2 + (u - 2)) ^ -1 * 1",
                         "g": "2 + x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "-3/2 + 8 * (INT u:[2,3]. u ^ (-1))"
+                    "text": "-3/2 + 8 * (INT u:[2,3]. u ^ -1)"
                 },
                 {
-                    "latex": "-\\frac{3}{2} - 8 \\log{(2)} + 8 \\log{(3)}",
+                    "latex": "-\\frac{3}{2} + -8 \\log{(2)} + 8 \\log{(3)}",
                     "reason": "Simplification",
-                    "text": "(-(3/2) - 8 * log(2)) + 8 * log(3)"
+                    "text": "-3/2 + -8 * log(2) + 8 * log(3)"
                 }
             ],
             "name": "Exercise 16",
@@ -500,7 +580,7 @@
                     "_latex_reason": "Substitute \\(u\\) for \\(\\log{(x)}\\)",
                     "latex": "\\int_{0}^{2} (-\\frac{1}{4}) u (3 + u) ^ 2 + \\frac{1}{2} (3 + u) ^ 2 \\,\\mathrm{du}",
                     "params": {
-                        "f": "-1/4 * u * (3 + u) ^ 2 + 1/2 * (3 + u) ^ 2",
+                        "f": "((2 - u) * (u + 3) ^ 2) / 4",
                         "g": "log(x)",
                         "var_name": "u"
                     },
@@ -540,7 +620,7 @@
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sqrt{x}\\)",
                     "latex": "\\int_{0}^{3} 2 u \\sqrt{4 + -u} \\,\\mathrm{du}",
                     "params": {
-                        "f": "2 * u * sqrt(4 + -u)",
+                        "f": "2 * u * sqrt(4 - u)",
                         "g": "sqrt(x)",
                         "var_name": "u"
                     },
@@ -551,7 +631,7 @@
                     "_latex_reason": "Substitute \\(v\\) for \\(4 + -u\\)",
                     "latex": "\\int_{1}^{4} 8 \\sqrt{v} + -2 v ^ {\\frac{3}{2}} \\,\\mathrm{dv}",
                     "params": {
-                        "f": "-8 * sqrt(v) + 2 * v ^ (3/2)",
+                        "f": "2 * (4 - v) * sqrt(4 + -(4 - v)) * -1",
                         "g": "4 + -u",
                         "var_name": "v"
                     },

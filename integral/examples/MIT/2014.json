@@ -172,17 +172,17 @@
                     "latex": "-1 + \\frac{1}{2} \\int_{0}^{5 \\pi} \\frac{\\sin{(u)}}{5} \\,\\mathrm{du}",
                     "location": "1.1",
                     "params": {
-                        "f": "(1/5) * sin(u)",
+                        "f": "sin(u) / 5",
                         "g": "5 * x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "-1 + (1/2) * (INT u:[0,5 * pi]. (1/5) * sin(u))"
+                    "text": "-1 + 1/2 * (INT u:[0,5 * pi]. 1/5 * sin(u))"
                 },
                 {
-                    "latex": "-\\frac{4}{5}",
+                    "latex": "-\\frac{9}{10} + -\\frac{1}{10} \\cos{(-\\pi)}",
                     "reason": "Simplification",
-                    "text": "-4/5"
+                    "text": "-9/10 + -1/10 * cos(-pi)"
                 }
             ],
             "name": "Exercise 6",
@@ -225,7 +225,7 @@
                     "_latex_reason": "Substitute \\(u\\) for \\(1 - x\\)",
                     "latex": "\\int_{0}^{1} u ^ {2014} + -u ^ {2015} \\,\\mathrm{du}",
                     "params": {
-                        "f": "-(u ^ 2014) + u ^ 2015",
+                        "f": "(1 - u) * (1 - (1 - u)) ^ 2014 * -1",
                         "g": "1 - x",
                         "var_name": "u"
                     },

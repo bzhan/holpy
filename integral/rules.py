@@ -273,26 +273,30 @@ class Substitution1(Rule):
         body = holpy_style(sympy_style(e.body/dfx))
         body_subst = body.replace_trig(var_subst, var_name)
         if body_subst == body:
-            body_subst = body.normalize().replace_trig(var_subst, var_name)
+            body_subst = body.replace_trig(var_subst, var_name)
         lower = var_subst.subst(e.var, e.lower).normalize()
         upper = var_subst.subst(e.var, e.upper).normalize()
         if parser.parse_expr(e.var) not in body_subst.findVar():
-            self.f = body_subst.normalize()
+            # Substitution is able to clear all x in original integrand
+            print('Substitution: case 1')
+            self.f = body_subst
             if sympy_style(lower) <= sympy_style(upper):
                 return Integral(self.var_name, lower, upper, body_subst).normalize()
             else:
                 return Integral(self.var_name, upper, lower, Op("-", body_subst)).normalize()
         else:
+            # Substitution is unable to clear x, need to solve for x
+            print('Substitution: case 2')
             gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
             if gu == []:  # sympy can't solve the equation
                 return e
             gu = gu[-1] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
             c = e.body.replace_trig(parser.parse_expr(e.var), gu)
-            new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)).normalize()
+            new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu))
             lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
             upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
-            self.f = new_problem_body.normalize()
+            self.f = new_problem_body
             if sympy_style(lower) < sympy_style(upper):
                 return Integral(self.var_name, lower, upper, new_problem_body).normalize()
             else:

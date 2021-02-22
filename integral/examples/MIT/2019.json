@@ -22,7 +22,7 @@
                     "_latex_reason": "Substitute \\(u\\) for \\(\\frac{1}{2} \\times 39 x\\)",
                     "latex": "\\int_{0}^{39/200 \\pi} \\frac{\\frac{2}{39}}{\\cos{(u)}} \\sin{(u)} \\,\\mathrm{du}",
                     "params": {
-                        "f": "2/39 * cos(u) ^ -1 * sin(u)",
+                        "f": "(2 * sin(u)) / (39 * cos(u))",
                         "g": "(39 * x) / 2",
                         "var_name": "u"
                     },
@@ -33,7 +33,7 @@
                     "_latex_reason": "Substitute \\(v\\) for \\(\\cos{(u)}\\)",
                     "latex": "\\int_{\\cos{(39/200 \\pi)}}^{1} \\frac{\\frac{2}{39}}{v} \\,\\mathrm{dv}",
                     "params": {
-                        "f": "-2/39 * v ^ -1",
+                        "f": "-2 / (39 * v)",
                         "g": "cos(u)",
                         "var_name": "v"
                     },
@@ -61,7 +61,7 @@
                     "_latex_reason": "Substitute \\(u\\) for \\(e^{x} + \\sin{(x)}\\)",
                     "latex": "\\int_{1}^{e + \\sin{(1)}} \\frac{1}{u} \\,\\mathrm{du}",
                     "params": {
-                        "f": "u ^ -1",
+                        "f": "1 / u",
                         "g": "exp(x) + sin(x)",
                         "var_name": "u"
                     },
