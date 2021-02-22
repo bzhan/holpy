@@ -77,15 +77,15 @@ test_cases = {
         "Exercise 5" : "-1/5 * exp(2) + 1/5 * exp(7)",
         "Exercise 6" : "4/3",
         "Exercise 7" : "0",
-        # "Exercise 10" : "-3 * log(1/2)",
+        "Exercise 10" : "-3 * log(1/2)",
         "Exercise 11" : "1/5 + -1/5 * exp(-1)",
         "Exercise 12" : "1",
         "Exercise 13" : "-11/21",
         "Exercise 14" : "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)", # auto.py line 302
         # "Exercise 15" : "1/2 + -7/4 * log(6) + 7/4 * log(10)", # proof.py line 397
         "Exercise 16" : "-3/2 + -8 * log(2) + 8 * log(3)",
-        # "Exercise 17" : "41/6", # auto.py line 302
-        "Exercise 18" : "188/15", # auto.py line 302
+        "Exercise 17" : "41/6", # auto.py line 302
+        # "Exercise 18" : "188/15", # auto.py line 302
     },
     
     "UCDAVIS/Exponentials": {
@@ -209,7 +209,7 @@ test_cases = {
 }
 
 file_names = [
-    # "tongji7",
+    "tongji7",
     # "MIT/2013",
     # "MIT/2014",
     # "MIT/2020",
