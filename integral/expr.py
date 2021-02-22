@@ -517,11 +517,13 @@ class Expr:
 
         elif self.ty == OP and self.op == '^':
             a, b = self.args[0].to_const_poly(), self.args[1].to_const_poly()
-            if a.is_monomial() and b.is_fraction():
+            if a.is_zero():
+                return poly.const_fraction(0)
+            elif a.is_monomial() and b.is_fraction():
                 return a ** b.get_fraction()
             elif b.is_fraction():
                 rb = b.get_fraction()
-                if rb > 0 and int(rb) == rb:
+                if rb > 0 and int(rb) == rb and rb <= 3:
                     res = poly.const_fraction(1)
                     for i in range(int(rb)):
                         res *= a

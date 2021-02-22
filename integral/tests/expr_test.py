@@ -201,12 +201,12 @@ class ExprTest(unittest.TestCase):
             # ("abs(sqrt(3) / 2) / abs(sqrt(2) / 2)", "6 ^ (1/2) / 2"),
             # ("([log(abs(u))]_u=1/2 * 2 ^ (1/2),1/2 * 3 ^ (1/2))", "-log(2 ^ (1/2) * (1/2)) + log(3 ^ (1/2) * (1/2))"),
             ("exp(1)", "exp(1)"),
-            ("[exp(u) * sin(u)]_u=0,1", "sin(1) * exp(1)"),
+            ("[exp(u) * sin(u)]_u=0,1", "exp(1) * sin(1)"),
             ("exp(1) ^ 2", "exp(2)"),
             ("cos(acos(u)) ^ 2 ", "u ^ 2"),
             ("log(exp(t)) ^ (-2)", "t ^ -2"),
             ("log(6^(1/2))", "1/2 * log(2) + 1/2 * log(3)"),
-            ("log(6*pi)", "log(pi) + log(6)"),
+            ("log(6*pi)", "log(2) + log(3) + log(pi)"),
             ("exp(-t) * exp(t)", "1"),
             ("(u ^ (-2) * exp(u)) * exp(-u)", "u ^ -2"),
             ("[u ^ 8 / 8]_u=-3,3", "0"),
@@ -218,7 +218,7 @@ class ExprTest(unittest.TestCase):
             ("(2 * u) * pi ^ (-1) *(1/pi)^(-1)", "2 * u"),
             ("((2 * u) * pi ^ (-1)) * (u / pi) ^ (-1)", "2"),
             ("2 * (INT x:[1,exp(1)]. 1) - ([u * log(u)]_u=2,2 * exp(1))",
-             "2 * log(2) + -2 * log(2) * exp(1) + -2 * exp(1) + 2 * (INT x:[1,exp(1)]. 1)"),
+             "-2 * exp(1) + -2 * exp(1) * log(2) + 2 * log(2) + 2 * (INT x:[1,exp(1)]. 1)"),
             ("3 ^ (1/2) * 3 ^ (1/2)", "3"),
             ("2 * ((1/2) * 3 ^ (1/2))", "sqrt(3)"),
             ("exp(5 * x) * 3 / exp(3 * x)",  "3 * exp(2 * x)"),
@@ -237,6 +237,7 @@ class ExprTest(unittest.TestCase):
             ("sqrt(2 * x ^ 2)", "sqrt(2) * abs(x)"),
             ("sqrt(2 * cos(x) ^ 2)", "sqrt(2) * abs(cos(x))"),
             ("(2 * x^2) ^ (3/2)", "2 * sqrt(2) * abs(x) ^ 3"),
+            ("-(11/21) + 2/3 * 0 ^ 6 + 1/7 * 0 ^ 7", "-11/21"),
         ]
 
         for s, res in test_data:

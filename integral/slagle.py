@@ -806,7 +806,7 @@ class HeuristicExpandPower(HeuristicRule):
         for s, l, _ in subexpr:
             base = s.args[0].to_poly()
             exp = s.args[1].val
-            if isinstance(exp, int) and exp > 1:
+            if isinstance(exp, int) and exp > 1 and exp <= 3:
                 pw = base
                 for i in range(exp-1):
                     pw = pw * base

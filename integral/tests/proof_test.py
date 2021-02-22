@@ -128,6 +128,7 @@ class ProofTest(unittest.TestCase):
             ("log 9", "2 * log 3"),
             ("log (9 / 10)", "-1 * log 2 + 2 * log 3 + -1 * log 5"),
             ("log (1 / 2)", "-1 * log(2)"),
+            ("(0::real) ^ (6::nat)", "(0::real)"),
         ]
 
         for t, res in test_data:

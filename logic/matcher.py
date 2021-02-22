@@ -19,6 +19,9 @@ class MatchException(Exception):
     def __init__(self, trace):
         self.trace = trace
 
+    def __str__(self):
+        return self.get_trace()
+
     def get_trace(self):
         pat, t = self.trace[-1]
         trace = '\n'.join("%s --- %s" % (pat, t) for pat, t in self.trace)

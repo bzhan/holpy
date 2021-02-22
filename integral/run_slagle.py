@@ -35,7 +35,7 @@ test_cases = {
         "Exercise 19" : "1/6",
         "Exercise 20" : "2 + 2 * log(2) + -2 * log(3)",
         "Exercise 21" : "1 + -2 * log(2)",
-        "Exercise 22" : "1 + -exp(-1/2)", # inequality.py", line 727
+        "Exercise 22" : "1 + -exp(-1/2)",
         "Exercise 23" : "-2 + 2 * sqrt(3)",
         "Exercise 28" : "1 + -2 * exp(-1)",
         "Exercise 29" : "1/4 + 1/4 * exp(2)",
@@ -49,14 +49,13 @@ test_cases = {
         "Exercise 4" : "2500",
         "Exercise 5" : "sqrt(3) * pi",
         "Exercise 6" : "18 + cos(-3) + -cos(3)", 
-        "Exercise 15" : "-8 * exp(1) + -24 * 0 ^ (1/4) * exp(0 ^ (1/4)) + 12 * (0 ^ (1/4)) ^ 2 * exp(0 ^ (1/4)) + -4 * (0 ^ (1/4)) ^ 3 * exp(0 ^ (1/4)) + 24 * exp(0 ^ (1/4))",
-        # inequality.py line 800
+        "Exercise 15" : "24 + -8 * exp(1)",
         "Exercise 19" : "1/4 * pi",
     },
     
     "MIT/2014": {
         "Exercise 1": "2",
-        "Exercise 5" : "-4 + 2 * exp(1)", # inequality.py line 800
+        "Exercise 5" : "-4 + 2 * exp(1)",
         # "Exercise 7" : "4 * sqrt(3) + 2/3 * pi", # inequality.py line 256
     },
 
@@ -70,7 +69,7 @@ test_cases = {
     },
 
     "UCDAVIS/usubstitution": {
-        # "Exercise 1" : "209952", # conv.py line 375
+        # "Exercise 1" : "209952",
         "Exercise 2" : "175099/11",
         "Exercise 3" : "74/21",
         "Exercise 4" : "-1/3 + 1/3 * 2 ^ (3/4)",
@@ -81,7 +80,7 @@ test_cases = {
         "Exercise 11" : "1/5 + -1/5 * exp(-1)",
         "Exercise 12" : "1",
         "Exercise 13" : "-11/21",
-        "Exercise 14" : "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)",
+        "Exercise 14" : "128/15",
         "Exercise 15" : "1/2 + -7/4 * log(3) + 7/4 * log(5)",
         "Exercise 16" : "-3/2 + -8 * log(2) + 8 * log(3)",
         "Exercise 17" : "41/6",
@@ -93,11 +92,10 @@ test_cases = {
         "Exercise 2" : "5 + -3 * exp(1)",
         "Exercise 3" : "-2 + 2 * exp(log(2))",
         "Exercise 5" : "-149/98 + 3/2 * exp(2) + 1/49 * exp(7)",
-        # "Exercise 6" : "-121/5 + exp(1) + 4 * exp(2) + 8 * exp(3) + 8 * exp(4) + 16/5 * exp(5)", # proof.py line 397
+        "Exercise 6" : "-(243/10) + 1/10 * (1 + 2 * exp(1)) ^ 5",
         "Exercise 7" : "-2 + -1/8 * exp(-8) + 1/8 * exp(8)",
         "Exercise 8" : "-2/3 + exp(1) + -1/3 * exp(3)",
         # "Exercise 10" : "130465/28 + -3645/4 * exp(-8) + -12150/7 * exp(-7) + -1350 * exp(-6) + -540 * exp(-5) + -225/2 * exp(-4) + -10 * exp(-3)",
-        # conv.py line 375
     },
 
     "UCDAVIS/Trigonometric": {
@@ -185,22 +183,22 @@ test_cases = {
     },
 
     "UCDAVIS/PartialFraction": {
-        # "Exercise 1" : "-1/4 * log(4) + 1/4 * log(8) + 1/4 * log(20) + -1/4 * log(24)", # proof.py line 397
-        # "Exercise 2" : "3/2 * log(2) + -3/2 * log(4) + -1/2 * log(8) + 1/2 * log(10)", # proof.py line 397
-        # "Exercise 3" : "2/5 * log(2) + 7/5 * log(30) + -7/5 * log(35)", # proof.py line 397
-        # "Exercise 4" : "1 + 15/8 * log(16) + -15/8 * log(24) + 15/8 * log(40) + -15/8 * log(48)", # proof.py line 397
-        # "Exercise 5" : "46/3 + -4/3 * log(6) + 4/3 * log(9) + 13/3 * log(15) + -13/3 * log(18)",
-        # "Exercise 6" : "-3/2 * log(2) + log(4) + log(6) + -1/2 * log(10)",
-        # "Exercise 7" : "7/8 + 5/4 * log(2) + -5/4 * log(4) + -5/4 * log(16) + 5/4 * log(24)",
-        # "Exercise 8" : "127/64 + -1/8 * log(2) + 1/8 * log(4) + -31/8 * log(32) + 31/8 * log(48)",
-        # "Exercise 9" : "-3/8 + log(2)",
-        # "Exercise 10" : "-1/8 + -log(12) + 4/3 * log(15) + -3/4 * log(16) + 5/12 * log(24)",
+        "Exercise 1" : "-(1/4) * log(3) + 1/4 * log(5)",
+        "Exercise 2" : "-(5/2) * log(2) + 1/2 * log(5)",
+        "Exercise 3" : "9/5 * log(2) + 7/5 * log(3) + -(7/5) * log(7)",
+        "Exercise 4" : "1 + -(15/4) * log(3) + 15/8 * log(5)",
+        "Exercise 5" : "46 / 3 + -(17/3) * log(2) + -3 * log(3) + 13/3 * log(5)",
+        "Exercise 6" : "log(2) + log(3) + -(1/2) * log(5)",
+        "Exercise 7" : "7/8 + -(5/2) * log(2) + 5/4 * log(3)",
+        "Exercise 8" : "127/64 + -(15/4) * log(2) + 31/8 * log(3)",
+        # "Exercise 9" : "-3/8 + log(2)",  # proof 430
+        # "Exercise 10" : "-1/8 + -log(12) + 4/3 * log(15) + -3/4 * log(16) + 5/12 * log(24)",  # proof 430
         # "Exercise 11" : "53/90 + -20/27 * log(27) + 20/27 * log(54) + -7/27 * log(108) + 7/27 * log(135)",
-        # "Exercise 12" : "sqrt(3) + -(tan(1/12 * pi) ^ -1) + -log(abs(1/3 * sqrt(3))) + log(abs(tan(1/12 * pi))) + log(abs(-1 + 1/3 * sqrt(3))) + -log(abs(-1 + tan(1/12 * pi)))",
         # "Exercise 13" : "1 + -16/3 * log(3) + 9/2 * log(4) + 5/6 * log(6) + -7/6 * log(24) + 7/6 * log(30)",
         # "Exercise 14" : "-1/4 * log(abs(-4 + 4 * exp(1))) + 1/4 * log(abs(-4 + 4 * exp(2))) + 1/4 * log(abs(12 + 4 * exp(1))) + -1/4 * log(abs(12 + 4 * exp(2)))",
         # "Exercise 15" : "log(2) + log(abs(exp(1))) + -log(abs(1 + exp(1)))",
         # "Exercise 16" : "1/4 * pi + -atan(2) + 9/2 * log(2) + -3/2 * log(5)",
+        # Exercise 12 Timeout!
         # Exercise 17 Timeout!
         # Exercise 18 Timeout!
         # Exercise 19 Timeout!
@@ -209,12 +207,12 @@ test_cases = {
 }
 
 file_names = [
-    # "tongji7",
-    # "MIT/2013",
-    # "MIT/2014",
-    # "MIT/2020",
+    "tongji7",
+    "MIT/2013",
+    "MIT/2014",
+    "MIT/2020",
     "UCDAVIS/usubstitution",
-    # "UCDAVIS/Exponentials",
+    "UCDAVIS/Exponentials",
     # "UCDAVIS/Trigonometric",
     # "UCDAVIS/Byparts",
     # "UCDAVIS/LogAndArctangent",
