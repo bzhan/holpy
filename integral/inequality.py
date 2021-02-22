@@ -785,15 +785,16 @@ def get_bounds_proof(t, var_range):
                     'real_power_interval_pos_open', nonneg_p, nonneg_a, pt)
             else:
                 raise NotImplementedError
-        elif p < 0 and eval_hol_expr(a) > 0:
+        elif p < 0:
             neg_p = auto.auto_solve(real_neg(t.arg))
-            pos_a = auto.auto_solve(real_pos(a))
-            if is_mem_closed(pt):
+            if is_mem_closed(pt) and eval_hol_expr(a) > 0:
+                pos_a = auto.auto_solve(real_pos(a))
                 pt = apply_theorem(
                     'real_power_interval_neg_closed', neg_p, pos_a, pt)
             elif is_mem_open(pt):
+                nonneg_a = auto.auto_solve(real_nonneg(a))
                 pt = apply_theorem(
-                    'real_power_interval_neg_open', neg_p, pos_a, pt)
+                    'real_power_interval_neg_open', neg_p, nonneg_a, pt)
             else:
                 raise NotImplementedError
         else:
@@ -809,6 +810,16 @@ def get_bounds_proof(t, var_range):
         elif eval_hol_expr(a) >= 0 and is_mem_open(pt):
             pt = apply_theorem(
                 'log_interval_open', auto.auto_solve(real_nonneg(a)), pt)
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
+
+    elif t.head == real.exp:
+        pt = get_bounds_proof(t.arg, var_range)
+        if is_mem_closed(pt):
+            pt = apply_theorem('exp_interval_closed', pt)
+        elif is_mem_open(pt):
+            pt = apply_theorem('exp_interval_open', pt)
         else:
             raise NotImplementedError
         return norm_mem_interval(pt)

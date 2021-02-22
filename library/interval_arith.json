@@ -908,7 +908,7 @@
             "name": "real_power_interval_neg_open",
             "prop": [
                 "p < 0 ",
-                "⟶ a > 0 ⟶ x ∈ real_open_interval a b ⟶ x ^ p ∈ real_open_interval (b ^ p) (a ^ p)"
+                "⟶ a ≥ 0 ⟶ x ∈ real_open_interval a b ⟶ x ^ p ∈ real_open_interval (b ^ p) (a ^ p)"
             ],
             "ty": "thm",
             "vars": {
@@ -934,6 +934,29 @@
         {
             "name": "log_interval_open",
             "prop": "a ≥ 0 ⟶ x ∈ real_open_interval a b ⟶ log x ∈ real_open_interval (log a) (log b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "exp_interval_closed",
+            "prop": "x ∈ real_closed_interval a b ⟶ exp x ∈ real_closed_interval (exp a) (exp b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "exp_interval_open",
+            "prop": "x ∈ real_open_interval a b ⟶ exp x ∈ real_open_interval (exp a) (exp b)",
             "ty": "thm",
             "vars": {
                 "a": "real",

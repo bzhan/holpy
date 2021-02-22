@@ -498,14 +498,26 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\log{(x)}\\)",
-                    "latex": "\\int_{0}^{2} \\frac{9}{2} + (\\frac{3}{4}) u + -u ^ 2 + -\\frac{1}{4} u ^ 3 \\,\\mathrm{du}",
+                    "latex": "\\int_{0}^{2} (-\\frac{1}{4}) u (3 + u) ^ 2 + \\frac{1}{2} (3 + u) ^ 2 \\,\\mathrm{du}",
                     "params": {
-                        "f": "9/2 + 3/4 * u + -(u ^ 2) + -1/4 * u ^ 3",
+                        "f": "-1/4 * u * (3 + u) ^ 2 + 1/2 * (3 + u) ^ 2",
                         "g": "log(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,2]. 9/2 + 3/4 * u + -(u ^ 2) + -1/4 * u ^ 3"
+                    "text": "INT u:[0,2]. -1/4 * u * (3 + u) ^ 2 + 1/2 * (3 + u) ^ 2"
+                },
+                {
+                    "latex": "\\int_{0}^{2} (-\\frac{1}{4}) u (9 + 6 u + u ^ 2) + \\frac{1}{2} (3 + u) ^ 2 \\,\\mathrm{du}",
+                    "location": "0.0.1",
+                    "reason": "Unfold power",
+                    "text": "INT u:[0,2]. -1/4 * u * (9 + 6 * u + u ^ 2) + 1/2 * (3 + u) ^ 2"
+                },
+                {
+                    "latex": "\\int_{0}^{2} (-\\frac{1}{4}) u (9 + 6 u + u ^ 2) + \\frac{1}{2} (9 + 6 u + u ^ 2) \\,\\mathrm{du}",
+                    "location": "0.1.1",
+                    "reason": "Unfold power",
+                    "text": "INT u:[0,2]. -1/4 * u * (9 + 6 * u + u ^ 2) + 1/2 * (9 + 6 * u + u ^ 2)"
                 },
                 {
                     "latex": "\\frac{41}{6}",
@@ -526,36 +538,25 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sqrt{x}\\)",
-                    "latex": "\\int_{0}^{3} (2 u) \\sqrt{4 - \\sqrt{u ^ 2}} \\,\\mathrm{du}",
+                    "latex": "\\int_{0}^{3} 2 u \\sqrt{4 + -u} \\,\\mathrm{du}",
                     "params": {
-                        "f": "2 * u * sqrt(4 - sqrt(u ^ 2))",
+                        "f": "2 * u * sqrt(4 + -u)",
                         "g": "sqrt(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,3]. 2 * u * sqrt(4 - sqrt(u ^ 2))"
+                    "text": "INT u:[0,3]. 2 * u * sqrt(4 + -u)"
                 },
                 {
-                    "latex": "2 \\int_{0}^{3} u \\sqrt{4 - \\left| u \\right|} \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "2 * (INT u:[0,3]. u * (4 - abs(u)) ^ (1/2))"
-                },
-                {
-                    "latex": "2 \\int_{0}^{3} u \\sqrt{4 - u} \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "2 * (INT u:[0,3]. u * (4 - u) ^ (1/2))"
-                },
-                {
-                    "_latex_reason": "Substitute \\(t\\) for \\(4 - u\\)",
-                    "latex": "2 \\int_{1}^{4} 4 \\sqrt{t} - t ^ {(\\frac{3}{2})} \\,\\mathrm{dt}",
-                    "location": "1",
+                    "_latex_reason": "Substitute \\(v\\) for \\(4 + -u\\)",
+                    "latex": "\\int_{1}^{4} 8 \\sqrt{v} + -2 v ^ {\\frac{3}{2}} \\,\\mathrm{dv}",
                     "params": {
-                        "f": "-sqrt(t) * (4 - t)",
-                        "g": "4 - u",
-                        "var_name": "t"
+                        "f": "-8 * sqrt(v) + 2 * v ^ (3/2)",
+                        "g": "4 + -u",
+                        "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "2 * (INT t:[1,4]. 4 * t ^ (1/2) - t ^ (3/2))"
+                    "text": "INT v:[1,4]. 8 * sqrt(v) + -2 * v ^ (3/2)"
                 },
                 {
                     "latex": "\\frac{188}{15}",

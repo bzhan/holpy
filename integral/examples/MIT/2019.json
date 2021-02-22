@@ -9,8 +9,8 @@
                     "text": "INT x:[0,pi / 100]. (sin(20 * x) + sin(19 * x)) / (cos(20 * x) + cos(19 * x))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(\\frac{\\sin{(20 x)} + \\sin{(19 x)}}{\\cos{(20 x)} + \\cos{(19 x)}}\\) to \\(\\frac{\\sin{(\\frac{1}{2} * 39 x)}}{\\cos{(\\frac{1}{2} * 39 x)}}\\)",
-                    "latex": "\\int_{0}^{\\pi/100} \\frac{\\sin{(\\frac{1}{2} * 39 x)}}{\\cos{(\\frac{1}{2} * 39 x)}} \\,\\mathrm{dx}",
+                    "_latex_reason": "Rewrite trigonometric \\(\\frac{\\sin{(20 x)} + \\sin{(19 x)}}{\\cos{(20 x)} + \\cos{(19 x)}}\\) to \\(\\frac{\\sin{(\\frac{1}{2} \\times 39 x)}}{\\cos{(\\frac{1}{2} \\times 39 x)}}\\)",
+                    "latex": "\\int_{0}^{\\pi/100} \\frac{\\sin{(\\frac{1}{2} \\times 39 x)}}{\\cos{(\\frac{1}{2} \\times 39 x)}} \\,\\mathrm{dx}",
                     "location": "0",
                     "params": {
                         "rule": "TR9"
@@ -19,31 +19,31 @@
                     "text": "INT x:[0,pi / 100]. sin((39 * x) / 2) / cos((39 * x) / 2)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(\\frac{1}{2} * 39 x\\)",
-                    "latex": "\\int_{0}^{39 \\pi/200} (\\frac{2}{39} \\frac{1}{\\cos{(u)}}) \\sin{(u)} \\,\\mathrm{du}",
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\frac{1}{2} \\times 39 x\\)",
+                    "latex": "\\int_{0}^{39/200 \\pi} \\frac{\\frac{2}{39}}{\\cos{(u)}} \\sin{(u)} \\,\\mathrm{du}",
                     "params": {
-                        "f": "2/39 * cos(u) ^ (-1) * sin(u)",
+                        "f": "2/39 * cos(u) ^ -1 * sin(u)",
                         "g": "(39 * x) / 2",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,(39 * pi) / 200]. 2/39 * cos(u) ^ (-1) * sin(u)"
+                    "text": "INT u:[0,39/200 * pi]. 2/39 * cos(u) ^ -1 * sin(u)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(t\\) for \\(\\cos{(u)}\\)",
-                    "latex": "\\int_{\\cos{(39 \\pi/200)}}^{1} \\frac{2}{39} \\frac{1}{t} \\,\\mathrm{dt}",
+                    "_latex_reason": "Substitute \\(v\\) for \\(\\cos{(u)}\\)",
+                    "latex": "\\int_{\\cos{(39/200 \\pi)}}^{1} \\frac{\\frac{2}{39}}{v} \\,\\mathrm{dv}",
                     "params": {
-                        "f": "-2/39 * t ^ (-1)",
+                        "f": "-2/39 * v ^ -1",
                         "g": "cos(u)",
-                        "var_name": "t"
+                        "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "INT t:[cos((39 * pi) / 200),1]. 2/39 * t ^ (-1)"
+                    "text": "INT v:[cos(39/200 * pi),1]. 2/39 * v ^ -1"
                 },
                 {
-                    "latex": "-\\frac{2}{39} \\log{(\\cos{(\\frac{1}{200} * 39 \\pi)})}",
+                    "latex": "-\\frac{2}{39} \\log{(\\left| \\cos{(\\frac{39}{200} \\pi)} \\right|)}",
                     "reason": "Simplification",
-                    "text": "-2/39 * log(cos((39 * pi) / 200))"
+                    "text": "-2/39 * log(abs(cos(39/200 * pi)))"
                 }
             ],
             "name": "Exercise 1",
@@ -58,20 +58,20 @@
                     "text": "INT x:[0,1]. (exp(x) + cos(x)) / (exp(x) + sin(x))"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(x)} + e^{x}\\)",
-                    "latex": "\\int_{1}^{\\sin{(1)} + e} \\frac{1}{u} \\,\\mathrm{du}",
+                    "_latex_reason": "Substitute \\(u\\) for \\(e^{x} + \\sin{(x)}\\)",
+                    "latex": "\\int_{1}^{e + \\sin{(1)}} \\frac{1}{u} \\,\\mathrm{du}",
                     "params": {
-                        "f": "1 / u",
-                        "g": "sin(x) + exp(x)",
+                        "f": "u ^ -1",
+                        "g": "exp(x) + sin(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[1,sin(1) + exp(1)]. 1 / u"
+                    "text": "INT u:[1,exp(1) + sin(1)]. u ^ -1"
                 },
                 {
-                    "latex": "\\log{(\\sin{(1)} + e)}",
+                    "latex": "\\log{(\\left| e + \\sin{(1)} \\right|)}",
                     "reason": "Simplification",
-                    "text": "log(sin(1) + exp(1))"
+                    "text": "log(abs(exp(1) + sin(1)))"
                 }
             ],
             "name": "Exercise 2",

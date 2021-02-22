@@ -33,7 +33,7 @@ test_cases = {
         "Exercise 18": "1 + -1/4 * pi",
         "Exercise 19": "1 / 6",
         "Exercise 20": "2 + 2 * log(2) + -2 * log(3)",
-        # "Exercise 21": "1 + 2 * log(1/2)",
+        "Exercise 21": "1 + 2 * log(1/2)",
         "Exercise 22": "1 + -exp(-1/2)",
         "Exercise 23": "-2 + 2 * sqrt(3)",
         "Exercise 24": "1/2 * pi",
@@ -80,13 +80,14 @@ test_cases = {
     },
     "MIT/2014": {
         "Exercise 6": "-(4 / 5)",
+        # "Exercise 8": "1/4062240",
     },
     "MIT/2019": {
-        "Exercise 1": "-2/39 * log(cos(39 * pi / 200))",
-        "Exercise 2": "log (sin(1) + exp(1))",
+        "Exercise 1": "-2/39 * log(abs(cos(39/200 * pi)))",
+        "Exercise 2": "log(abs(exp(1) + sin(1)))",
     },
     "UCDAVIS/usubstitution": {
-        # "Exercise 1": "209952",
+        "Exercise 1": "209952",
         "Exercise 2": "175099 / 11",
         "Exercise 3": "74 / 21",
         "Exercise 4": "-1/3 + 1/3 * 2 ^ (3/4)",
@@ -225,10 +226,10 @@ test_cases = {
 class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
         filenames = [
-            # "tongji7",
+            "tongji7",
             # "MIT/2013",
             # "MIT/2014",
-            # "MIT/2019",
+            "MIT/2019",
             "UCDAVIS/usubstitution",
             # "UCDAVIS/Exponentials",
             # "UCDAVIS/Trigonometric",
