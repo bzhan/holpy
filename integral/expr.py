@@ -13,14 +13,14 @@ from kernel.type import RealType
 from kernel import term
 from kernel.term import TFun
 from data import real
-from data import set
+from data import set as hol_set
 from integral import parser
 from integral import poly
 from integral.poly import *
 
 evalat = term.Const('evalat', TFun(TFun(RealType, RealType), RealType, RealType, RealType))
 real_derivative = term.Const('real_derivative', TFun(TFun(RealType, RealType), RealType, RealType))
-real_integral = term.Const('real_integral', TFun(set.setT(RealType), TFun(RealType, RealType), RealType))
+real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(RealType, RealType), RealType))
 
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL = range(9)
