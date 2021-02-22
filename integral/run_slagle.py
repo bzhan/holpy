@@ -34,12 +34,12 @@ test_cases = {
         # "Exercise 18" : "1 + -1/4 * pi", # auto.py line 161
         "Exercise 19" : "1/6",
         "Exercise 20" : "2 + 2 * log(2) + -2 * log(3)",
-        "Exercise 21" : "1 + 2 * log(1/2)", # inequality.py", line 800
+        "Exercise 21" : "1 + -2 * log(2)",
         "Exercise 22" : "1 + -exp(-1/2)", # inequality.py", line 727
         "Exercise 23" : "-2 + 2 * sqrt(3)",
         "Exercise 28" : "1 + -2 * exp(-1)",
         "Exercise 29" : "1/4 + 1/4 * exp(2)",
-        "Exercise 31" : "-4 + 4 * log(4)",
+        "Exercise 31" : "-4 + 8 * log(2)",
         "Exercise 32" : "-1/2 + 1/4 * pi",
         "Exercise 34" : "-1/4 * pi + 1/6 * pi ^ 3",
     },
@@ -77,14 +77,14 @@ test_cases = {
         "Exercise 5" : "-1/5 * exp(2) + 1/5 * exp(7)",
         "Exercise 6" : "4/3",
         "Exercise 7" : "0",
-        "Exercise 10" : "-3 * log(1/2)",
+        "Exercise 10" : "3 * log(2)",
         "Exercise 11" : "1/5 + -1/5 * exp(-1)",
         "Exercise 12" : "1",
         "Exercise 13" : "-11/21",
-        "Exercise 14" : "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)", # auto.py line 302
-        # "Exercise 15" : "1/2 + -7/4 * log(6) + 7/4 * log(10)", # proof.py line 397
+        "Exercise 14" : "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)",
+        "Exercise 15" : "1/2 + -7/4 * log(3) + 7/4 * log(5)",
         "Exercise 16" : "-3/2 + -8 * log(2) + 8 * log(3)",
-        "Exercise 17" : "41/6", # auto.py line 302
+        "Exercise 17" : "41/6",
         # "Exercise 18" : "188/15", # auto.py line 302
     },
     
@@ -209,7 +209,7 @@ test_cases = {
 }
 
 file_names = [
-    "tongji7",
+    # "tongji7",
     # "MIT/2013",
     # "MIT/2014",
     # "MIT/2020",

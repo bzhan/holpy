@@ -7,6 +7,7 @@ import copy
 from sympy import solveset, re, Interval, Eq, Union, EmptySet, pexquo
 from sympy.simplify.fu import *
 from sympy.parsing import sympy_parser
+from sympy.ntheory.factor_ import factorint
 from numbers import Number
 
 from kernel.type import RealType
@@ -571,7 +572,21 @@ class Expr:
                 if mono.coeff == 1:
                     return sum(log_factors[1:], log_factors[0])
                 else:
-                    return sum(log_factors, poly.const_singleton(log(Const(mono.coeff))))
+                    if isinstance(mono.coeff, int):
+                        int_factors = factorint(mono.coeff)
+                    elif isinstance(mono.coeff, Fraction):
+                        int_factors = factorint(mono.coeff.numerator)
+                        denom_factors = factorint(mono.coeff.denominator)
+                        for b, e in denom_factors.items():
+                            if b not in int_factors:
+                                int_factors[b] = 0
+                            int_factors[b] -= e
+                    else:
+                        raise NotImplementedError
+                    log_ints = []
+                    for b, e in int_factors.items():
+                        log_ints.append(ConstantPolynomial([ConstantMonomial(e, [(log(Const(b)), 1)])]))
+                    return sum(log_factors + log_ints[1:], log_ints[0])
             else:
                 return poly.const_singleton(log(from_const_poly(a)))
 

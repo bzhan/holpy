@@ -123,6 +123,11 @@ class ProofTest(unittest.TestCase):
             ("sin (5 / 6 * pi)", "1 / 2"),
             ("cos (7 / 6 * pi)", "-(1 / 2) * 3 ^ (1 / 2)"),
             ("cos (-pi / 2)", "(0::real)"),
+            ("log 1", "(0::real)"),
+            ("log (exp 2)", "(2::real)"),
+            ("log 9", "2 * log 3"),
+            ("log (9 / 10)", "-1 * log 2 + 2 * log 3 + -1 * log 5"),
+            ("log (1 / 2)", "-1 * log(2)"),
         ]
 
         for t, res in test_data:

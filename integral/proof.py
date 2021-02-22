@@ -1,17 +1,19 @@
 """Proofs for differentiation and integration."""
 
 from fractions import Fraction
+import sympy
+from sympy.ntheory.factor_ import factorint
 
 from kernel import term
 from kernel.type import TFun, BoolType, RealType
 from kernel.term import Term, Var, Const, Not, Eq, Lambda, Nat, Real, Inst
 from kernel.thm import Thm
+from kernel.proofterm import ProofTerm, refl, TacticException
 from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_conv, \
     rewr_conv, abs_conv, binop_conv, every_conv, try_conv, then_conv
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
-from kernel.proofterm import ProofTerm, refl, TacticException
 from logic.context import Context
 from data import set
 from data import nat
@@ -238,6 +240,32 @@ auto.add_global_autos_norm(
     ])
 )
 
+class norm_log_conv(Conv):
+    """Normalization of an expression log n."""
+    def get_proof_term(self, t):
+        if not t.is_comb('log', 1):
+            raise ConvException('norm_log_conv')
+
+        if not t.arg.is_number():
+            raise ConvException('norm_log_conv')
+
+        n = t.arg.dest_number()
+        if n == 1 or sympy.isprime(n) or isinstance(n, Fraction):
+            return refl(t)
+
+        int_factors = list(factorint(n).items())
+        target = None
+        for b, e in int_factors:
+            if e == 1:
+                target = Real(b) if target is None else target * Real(b)
+            else:
+                target = Real(b) ** Nat(e) if target is None else target * (Real(b) ** Nat(e))
+        eq_pt = auto.auto_solve(Eq(Real(n), target))
+        pt = refl(t).on_rhs(arg_conv(rewr_conv(eq_pt)))
+        return pt
+
+auto.add_global_autos_norm(real.log, norm_log_conv())
+
 auto.add_global_autos_norm(
     real.log,
     auto.norm_rules([
@@ -245,6 +273,7 @@ auto.add_global_autos_norm(
         'log_exp',
         'log_pow',
         'log_div',
+        'log_mul',
     ])
 )
 
@@ -326,7 +355,7 @@ auto.add_global_autos_norm(
         "real_integral_sub",
         "real_integral_lmul",
         "real_integral_lmul2",
-        "real_integral_lmul3",
+        # "real_integral_lmul3",
 
         # Common integrals
         "real_integral_0",
@@ -394,7 +423,11 @@ class simplify_rewr_conv(Conv):
         target_eq = refl(self.target).on_rhs(auto.auto_conv(conds=conds))
 
         if target_eq.rhs != t_eq.rhs:
-            raise ConvException("simplify_rewr_conv: %s != %s" % (target_eq.rhs, t_eq.rhs))
+            print("t: %s" % t)
+            print("target: %s" % self.target)
+            print("Result: %s" % t_eq.rhs)
+            print("Target: %s" % target_eq.rhs)
+            raise ConvException("simplify_rewr_conv")
 
         return t_eq.transitive(target_eq.symmetric())
 
