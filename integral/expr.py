@@ -895,7 +895,7 @@ class Expr:
 
     def nonlinear_subexpr(self):
         """Return nonlinear & nonconstant subexpression."""
-        subs = set()
+        subs = []
         a = Symbol('a', [CONST])
         b = Symbol('b', [CONST])
         x = Symbol('x', [VAR])
@@ -904,14 +904,15 @@ class Expr:
             table = [match(exp, p) for p in patterns]
             is_linear = functools.reduce(lambda x, y: x or y, table)
             if not exp.is_constant() and not is_linear:
-                subs.add(exp)
+                if exp not in subs:
+                    subs.append(exp)
             if exp.ty in (OP, FUN):
                 for arg in exp.args:
                     traverse(arg)
             elif exp.ty in (INTEGRAL, EVAL_AT, DERIV):
                 traverse(exp.body)
         traverse(self)
-        subs.discard(self)
+        subs.remove(self)
         return tuple(subs)
 
     def expand(self):
