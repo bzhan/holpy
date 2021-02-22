@@ -66,7 +66,8 @@ atn = Const("atn", TFun(RealType, RealType))
 
 closed_interval = Const("real_closed_interval", TFun(RealType, RealType, setT(RealType)))
 open_interval = Const("real_open_interval", TFun(RealType, RealType, setT(RealType)))
-
+lopen_interval = Const("real_lopen_interval", TFun(RealType, RealType, setT(RealType)))
+ropen_interval = Const("real_ropen_interval", TFun(RealType, RealType, setT(RealType)))
 
 def real_eval(t):
     """Evaluate t as a constant. Return an integer or rational number.

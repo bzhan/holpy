@@ -83,6 +83,35 @@ class InequalityTest(unittest.TestCase):
             pt = get_bounds_proof(t, var_range)
             self.assertEqual(pt.prop, res)
 
+    def testIntervalUnionSubset(self):
+        test_data = [
+            ("[0, 1]", "[0, 1]", "[0, 1]"),
+        ]
+
+        context.set_context('interval_arith')
+        for i1, i2, res in test_data:
+            i1 = interval_to_holpy(parse_interval(i1))
+            i2 = interval_to_holpy(parse_interval(i2))
+            res = interval_to_holpy(parse_interval(res))
+            pt = inequality.interval_union_subset(hol_set.mk_union(i1, i2))
+            self.assertEqual(pt.prop, hol_set.mk_subset(hol_set.mk_union(i1, i2), res))
+
+    def testGetBoundsProofSplit(self):
+        test_data = [
+            ("x ^ 2", "[-1, 1]", "[0, 1]"),
+            ("x ^ 2", "(-1, 1)", "[0, 1)"),
+            ("2 + -1 * x ^ 2", "(-1, 1)", "(1, 2]"),
+        ]
+
+        context.set_context('interval_arith')
+        for s, i1, i2 in test_data:
+            t = expr_to_holpy(parse_expr(s))
+            cond = hol_set.mk_mem(term.Var('x', RealType), interval_to_holpy(parse_interval(i1)))
+            var_range = {'x': ProofTerm.assume(cond)}
+            res = hol_set.mk_mem(t, interval_to_holpy(parse_interval(i2)))
+            pt = get_bounds_proof(t, var_range)
+            self.assertEqual(pt.prop, res)
+
     def testInequalityMacro(self):
         test_data = [
             ("x < 2", "x Mem real_closed_interval 0 1"),

@@ -635,6 +635,24 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "real_lopen_interval",
+            "prop": "real_lopen_interval a b = {p. a < p ∧ p ≤ b}",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real set"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_ropen_interval",
+            "prop": "real_ropen_interval a b = {p. a ≤ p ∧ p < b}",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real set"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "in_real_closed_interval",
             "num_gaps": 0,
             "proof": [
@@ -726,6 +744,110 @@
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "real_open_interval_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "in_real_lopen_interval",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, x ∈ {p. a < p ∧ p ≤ b} ⟷ a < x ∧ x ≤ b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {p. a < p ∧ p ≤ b} ⟷ a < x ∧ x ≤ b"
+                },
+                {
+                    "args": "real_lopen_interval_def, x ∈ real_lopen_interval a b ⟷ a < x ∧ x ≤ b",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ real_lopen_interval a b ⟷ a < x ∧ x ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ real_lopen_interval a b ⟷ a < x ∧ x ≤ b"
+                }
+            ],
+            "prop": "x ∈ real_lopen_interval a b ⟷ a < x ∧ x ≤ b",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_lopen_interval_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "in_real_ropen_interval",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, x ∈ {p. a ≤ p ∧ p < b} ⟷ a ≤ x ∧ x < b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {p. a ≤ p ∧ p < b} ⟷ a ≤ x ∧ x < b"
+                },
+                {
+                    "args": "real_ropen_interval_def, x ∈ real_ropen_interval a b ⟷ a ≤ x ∧ x < b",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ real_ropen_interval a b ⟷ a ≤ x ∧ x < b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ real_ropen_interval a b ⟷ a ≤ x ∧ x < b"
+                }
+            ],
+            "prop": "x ∈ real_ropen_interval a b ⟷ a ≤ x ∧ x < b",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_ropen_interval_def"
                 },
                 {
                     "goal_id": "0",

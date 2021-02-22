@@ -2,13 +2,14 @@
 
 import math
 
+from kernel.type import RealType
 from kernel import term
-from kernel.term import Term, Inst, Nat, Real, Eq
+from kernel.term import Term, Var, Lambda, Inst, Nat, Real, Eq
 from kernel.thm import Thm
 from kernel.proofterm import ProofTerm, TacticException
 from kernel.macro import Macro
 from kernel.theory import register_macro
-from logic.conv import ConvException, binop_conv, arg_conv, arg1_conv, rewr_conv
+from logic.conv import Conv, ConvException, then_conv, binop_conv, arg_conv, arg1_conv, rewr_conv
 from logic.logic import apply_theorem
 from data import nat
 from data import real
@@ -272,10 +273,15 @@ def interval_to_holpy(i):
     Currently only support open and closed intervals.
 
     """
+    e1, e2 = expr.expr_to_holpy(i.start), expr.expr_to_holpy(i.end)
     if i.left_open and i.right_open:
-        return real.open_interval(expr.expr_to_holpy(i.start), expr.expr_to_holpy(i.end))
+        return real.open_interval(e1, e2)
     elif not i.left_open and not i.right_open:
-        return real.closed_interval(expr.expr_to_holpy(i.start), expr.expr_to_holpy(i.end))
+        return real.closed_interval(e1, e2)
+    elif i.left_open and not i.right_open:
+        return real.lopen_interval(e1, e2)
+    elif not i.left_open and i.right_open:
+        return real.ropen_interval(e1, e2)
     else:
         raise NotImplementedError
 
@@ -375,13 +381,33 @@ def solve_with_interval(goal, cond):
     else:
         raise NotImplementedError
 
+def is_closed_interval(t):
+    return t.is_comb('real_closed_interval', 2)
+
+def is_open_interval(t):
+    return t.is_comb('real_open_interval', 2)
+
+def is_lopen_interval(t):
+    return t.is_comb('real_lopen_interval', 2)
+
+def is_ropen_interval(t):
+    return t.is_comb('real_ropen_interval', 2)
+
 def is_mem_closed(pt):
     """Whether pt is membership in closed interval."""
-    return pt.prop.arg.is_comb('real_closed_interval', 2)
+    return is_closed_interval(pt.prop.arg)
 
 def is_mem_open(pt):
     """Whether pt is membership in open interval."""
-    return pt.prop.arg.is_comb('real_open_interval', 2)
+    return is_open_interval(pt.prop.arg)
+
+def is_mem_lopen(pt):
+    """Whether pt is membership in lopen interval."""
+    return is_lopen_interval(pt.prop.arg)
+
+def is_mem_ropen(pt):
+    """Whether pt is membership in ropen interval."""
+    return is_ropen_interval(pt.prop.arg)
 
 def get_mem_bounds(pt):
     """Given pt is membership in an interval, return as Python numerals
@@ -418,6 +444,12 @@ def get_mem_bounds_pt(pt):
     elif is_mem_open(pt):
         pt = pt.on_prop(rewr_conv('in_real_open_interval'))
         return apply_theorem('conjD1', pt), apply_theorem('conjD2', pt)
+    elif is_mem_lopen(pt):
+        pt = pt.on_prop(rewr_conv('in_real_lopen_interval'))
+        return apply_theorem('conjD1', pt), apply_theorem('conjD2', pt)
+    elif is_mem_ropen(pt):
+        pt = pt.on_prop(rewr_conv('in_real_ropen_interval'))
+        return apply_theorem('conjD1', pt), apply_theorem('conjD2', pt)
     else:
         raise NotImplementedError
 
@@ -439,6 +471,22 @@ class ConstInequalityMacro(Macro):
     def eval(self, goal, prevs):
         assert self.can_eval(goal, prevs), "const_inequality: not solved."
         return Thm([], goal)
+
+class const_min_conv(Conv):
+    """Evaluate min(a, b), where a and b are constants."""
+    def get_proof_term(self, t):
+        if eval_hol_expr(t.arg1) <= eval_hol_expr(t.arg):
+            return apply_theorem('real_min_eq_left', auto.auto_solve(real.less_eq(t.arg1, t.arg)))
+        else:
+            return apply_theorem('real_min_eq_right', auto.auto_solve(real.greater(t.arg1, t.arg)))
+
+class const_max_conv(Conv):
+    """Evaluate max(a, b), where a and b are constants."""
+    def get_proof_term(self, t):
+        if eval_hol_expr(t.arg1) <= eval_hol_expr(t.arg):
+            return apply_theorem('real_max_eq_right', auto.auto_solve(real.less_eq(t.arg1, t.arg)))
+        else:
+            return apply_theorem('real_max_eq_left', auto.auto_solve(real.greater(t.arg1, t.arg)))
 
 def inequality_trans(pt1, pt2):
     """Given two inequalities of the form x </<= y and y </<= z, combine
@@ -516,6 +564,103 @@ def nat_as_odd(n):
     pt = apply_theorem('odd_double', inst=Inst(n=Nat(n//2)))
     return pt.on_prop(arg_conv(rewr_conv(eq_pt)))
 
+def interval_union_subset(t):
+    """Given t of the form I1 Un I2, return a theorem of the form
+    I1 Un I2 SUB I.
+
+    """
+    assert t.is_comb('union', 2), "interval_union_subset"
+
+    I1, I2 = t.args
+    a, b = I1.args
+    c, d = I2.args
+    if is_closed_interval(I1) and is_closed_interval(I2):
+        pt = apply_theorem('closed_interval_union', inst=Inst(a=a, b=b, c=c, d=d))
+        return pt.on_prop(arg_conv(then_conv(arg1_conv(const_min_conv()),
+                                             arg_conv(const_max_conv()))))
+    elif is_open_interval(I1) and is_ropen_interval(I2):
+        if eval_hol_expr(c) <= eval_hol_expr(a):
+            pt = apply_theorem(
+                'open_ropen_interval_union1', auto.auto_solve(real.less_eq(c, a)), inst=Inst(b=b, d=d))
+        else:
+            pt = apply_theorem(
+                'open_ropen_interval_union2', auto.auto_solve(real.less(a, c)), inst=Inst(b=b, d=d))
+        return pt.on_prop(arg_conv(arg_conv(const_max_conv())))
+    else:
+        raise NotImplementedError
+
+    return pt
+
+def get_nat_power_bounds(pt, n):
+    """Given theorem of the form t Mem I, obtain a theorem of
+    the form t ^ n Mem J.
+
+    """
+    a, b = get_mem_bounds(pt)
+    if not n.is_number():
+        raise NotImplementedError
+    if eval_hol_expr(a) >= 0 and is_mem_closed(pt):
+        pt = apply_theorem(
+            'nat_power_interval_pos_closed', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=n))
+    elif eval_hol_expr(a) >= 0 and is_mem_open(pt):
+        pt = apply_theorem(
+            'nat_power_interval_pos_open', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=n))
+    elif eval_hol_expr(a) >= 0 and is_mem_lopen(pt):
+        pt = apply_theorem(
+            'nat_power_interval_pos_lopen', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=n))
+    elif eval_hol_expr(a) >= 0 and is_mem_ropen(pt):
+        pt = apply_theorem(
+            'nat_power_interval_pos_ropen', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=n))
+    elif eval_hol_expr(b) <= 0 and is_mem_closed(pt):
+        int_n = n.dest_number()
+        if int_n % 2 == 0:
+            even_pt = nat_as_even(int_n)
+            pt = apply_theorem(
+                'nat_power_interval_neg_even_closed', auto.auto_solve(real_nonpos(b)), even_pt, pt)
+        else:
+            odd_pt = nat_as_odd(int_n)
+            pt = apply_theorem(
+                'nat_power_interval_neg_odd_closed', auto.auto_solve(real_nonpos(b)), odd_pt, pt)            
+    elif eval_hol_expr(b) <= 0 and is_mem_open(pt):
+        int_n = n.dest_number()
+        if int_n % 2 == 0:
+            even_pt = nat_as_even(int_n)
+            pt = apply_theorem(
+                'nat_power_interval_neg_even_open', auto.auto_solve(real_nonpos(b)), even_pt, pt)
+        else:
+            odd_pt = nat_as_odd(int_n)
+            pt = apply_theorem(
+                'nat_power_interval_neg_odd_open', auto.auto_solve(real_nonpos(b)), odd_pt, pt)
+    elif is_mem_closed(pt):
+        # Closed interval containing 0
+        t = pt.prop.arg1
+        assm1 = hol_set.mk_mem(t, real.closed_interval(a, Real(0)))
+        assm2 = hol_set.mk_mem(t, real.closed_interval(Real(0), b))
+        pt1 = get_nat_power_bounds(ProofTerm.assume(assm1), n).implies_intr(assm1)
+        pt2 = get_nat_power_bounds(ProofTerm.assume(assm2), n).implies_intr(assm2)
+        x = Var('x', RealType)
+        pt = apply_theorem(
+            'split_interval_closed', auto.auto_solve(real.less_eq(a, Real(0))),
+            auto.auto_solve(real.less_eq(Real(0), b)), pt1, pt2, pt, inst=Inst(x=t, f=Lambda(x, x ** n)))
+        subset_pt = interval_union_subset(pt.prop.arg)
+        pt = apply_theorem('subsetE', subset_pt, pt)
+    elif is_mem_open(pt):
+        # Open interval containing 0
+        t = pt.prop.arg1
+        assm1 = hol_set.mk_mem(t, real.open_interval(a, Real(0)))
+        assm2 = hol_set.mk_mem(t, real.ropen_interval(Real(0), b))
+        pt1 = get_nat_power_bounds(ProofTerm.assume(assm1), n).implies_intr(assm1)
+        pt2 = get_nat_power_bounds(ProofTerm.assume(assm2), n).implies_intr(assm2)
+        x = Var('x', RealType)
+        pt = apply_theorem(
+            'split_interval_open', auto.auto_solve(real.less_eq(a, Real(0))),
+            auto.auto_solve(real.less_eq(Real(0), b)), pt1, pt2, pt, inst=Inst(x=t, f=Lambda(x, x ** n)))
+        subset_pt = interval_union_subset(pt.prop.arg)
+        pt = apply_theorem('subsetE', subset_pt, pt)
+    else:
+        raise NotImplementedError
+    return norm_mem_interval(pt)
+
 def get_bounds_proof(t, var_range):
     """Given a term t and a mapping from variables to intervals,
     return a theorem for t belonging to an interval.
@@ -545,6 +690,10 @@ def get_bounds_proof(t, var_range):
             pt = apply_theorem('add_interval_open_closed', pt1, pt2)
         elif is_mem_closed(pt1) and is_mem_open(pt2):
             pt = apply_theorem('add_interval_closed_open', pt1, pt2)
+        elif is_mem_closed(pt1) and is_mem_lopen(pt2):
+            pt = apply_theorem('add_interval_closed_lopen', pt1, pt2)
+        elif is_mem_closed(pt1) and is_mem_ropen(pt2):
+            pt = apply_theorem('add_interval_closed_ropen', pt1, pt2)
         else:
             raise NotImplementedError
         return norm_mem_interval(pt)
@@ -574,22 +723,36 @@ def get_bounds_proof(t, var_range):
         return norm_mem_interval(pt)
 
     elif t.is_times():
-        pt1 = get_bounds_proof(t.arg1, var_range)
-        pt2 = get_bounds_proof(t.arg, var_range)
-        a, b = get_mem_bounds(pt1)
-        c, d = get_mem_bounds(pt2)
-        if eval_hol_expr(a) >= 0 and eval_hol_expr(c) >= 0 and is_mem_closed(pt1) and is_mem_closed(pt2):
+        if t.arg1.has_var():
+            raise NotImplementedError
+        pt = get_bounds_proof(t.arg, var_range)
+        a, b = get_mem_bounds(pt)
+        c = t.arg1
+        nc = eval_hol_expr(c)
+        if nc >= 0 and is_mem_closed(pt):
             pt = apply_theorem(
-                'mult_interval_pos_closed', auto.auto_solve(real_nonneg(a)),
-                auto.auto_solve(real_nonneg(c)), pt1, pt2)
-        elif eval_hol_expr(b) <= 0 and eval_hol_expr(c) >= 0 and is_mem_closed(pt1) and is_mem_closed(pt2):
+                'mult_interval_pos_closed', auto.auto_solve(real_nonneg(c)), pt)
+        elif nc >= 0 and is_mem_open(pt):
             pt = apply_theorem(
-                'mult_interval_neg_pos_closed', auto.auto_solve(real_nonpos(b)),
-                auto.auto_solve(real_nonneg(c)), pt1, pt2)
-        elif eval_hol_expr(b) <= 0 and eval_hol_expr(c) >= 0 and is_mem_closed(pt1) and is_mem_open(pt2):
+                'mult_interval_pos_open', auto.auto_solve(real_nonneg(c)), pt)
+        elif nc >= 0 and is_mem_lopen(pt):
             pt = apply_theorem(
-                'mult_interval_neg_pos_closed_open', auto.auto_solve(real_nonpos(b)),
-                auto.auto_solve(real_nonneg(c)), pt1, pt2)
+                'mult_interval_pos_lopen', auto.auto_solve(real_nonneg(c)), pt)
+        elif nc >= 0 and is_mem_ropen(pt):
+            pt = apply_theorem(
+                'mult_interval_pos_ropen', auto.auto_solve(real_nonneg(c)), pt)
+        elif nc < 0 and is_mem_closed(pt):
+            pt = apply_theorem(
+                'mult_interval_neg_closed', auto.auto_solve(real_neg(c)), pt)
+        elif nc < 0 and is_mem_open(pt):
+            pt = apply_theorem(
+                'mult_interval_neg_open', auto.auto_solve(real_neg(c)), pt)
+        elif nc < 0 and is_mem_lopen(pt):
+            pt = apply_theorem(
+                'mult_interval_neg_lopen', auto.auto_solve(real_neg(c)), pt)
+        elif nc < 0 and is_mem_ropen(pt):
+            pt = apply_theorem(
+                'mult_interval_neg_ropen', auto.auto_solve(real_neg(c)), pt)
         else:
             raise NotImplementedError
         return norm_mem_interval(pt)
@@ -601,38 +764,9 @@ def get_bounds_proof(t, var_range):
 
     elif t.is_nat_power():
         pt = get_bounds_proof(t.arg1, var_range)
-        a, b = get_mem_bounds(pt)
         if not t.arg.is_number():
             raise NotImplementedError
-        if eval_hol_expr(a) >= 0 and is_mem_closed(pt):
-            pt = apply_theorem(
-                'nat_power_interval_pos_closed', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=t.arg))
-        elif eval_hol_expr(a) >= 0 and is_mem_open(pt):
-            pt = apply_theorem(
-                'nat_power_interval_pos_open', auto.auto_solve(real_nonneg(a)), pt, inst=Inst(n=t.arg))
-        elif eval_hol_expr(b) <= 0 and is_mem_closed(pt):
-            n = t.arg.dest_number()
-            if n % 2 == 0:
-                even_pt = nat_as_even(n)
-                pt = apply_theorem(
-                    'nat_power_interval_neg_even_closed', auto.auto_solve(real_nonpos(b)), even_pt, pt)
-            else:
-                odd_pt = nat_as_odd(n)
-                pt = apply_theorem(
-                    'nat_power_interval_neg_odd_closed', auto.auto_solve(real_nonpos(b)), odd_pt, pt)            
-        elif eval_hol_expr(b) <= 0 and is_mem_open(pt):
-            n = t.arg.dest_number()
-            if n % 2 == 0:
-                even_pt = nat_as_even(n)
-                pt = apply_theorem(
-                    'nat_power_interval_neg_even_open', auto.auto_solve(real_nonpos(b)), even_pt, pt)
-            else:
-                odd_pt = nat_as_odd(n)
-                pt = apply_theorem(
-                    'nat_power_interval_neg_odd_open', auto.auto_solve(real_nonpos(b)), odd_pt, pt)
-        else:
-            raise NotImplementedError
-        return norm_mem_interval(pt)
+        return get_nat_power_bounds(pt, t.arg)
 
     elif t.is_real_power():
         pt = get_bounds_proof(t.arg1, var_range)
@@ -694,9 +828,16 @@ def get_bounds_proof(t, var_range):
             else:
                 raise NotImplementedError
         elif eval_hol_expr(a) >= 0 and eval_hol_expr(b) <= math.pi:
-            pt = apply_theorem(
-                'sin_interval_pos_open', auto.auto_solve(real_nonneg(a)),
-                auto.solve(real.less_eq(b, real.pi)), pt)
+            if is_mem_closed(pt):
+                pt = apply_theorem(
+                    'sin_interval_pos_closed', auto.auto_solve(real_nonneg(a)),
+                    auto.solve(real.less_eq(b, real.pi)), pt)
+            elif is_mem_open(pt):
+                pt = apply_theorem(
+                    'sin_interval_pos_open', auto.auto_solve(real_nonneg(a)),
+                    auto.solve(real.less_eq(b, real.pi)), pt)
+            else:
+                raise NotImplementedError
         else:
             raise NotImplementedError
         return norm_mem_interval(pt)
@@ -716,9 +857,16 @@ def get_bounds_proof(t, var_range):
             else:
                 raise NotImplementedError
         elif eval_hol_expr(a) >= -math.pi/2 and eval_hol_expr(b) <= math.pi/2:
-            pt = apply_theorem(
-                'cos_interval_pos_open', auto.auto_solve(real.greater_eq(a, -real.pi / 2)),
-                    auto.auto_solve(real.less_eq(b, real.pi / 2)), pt)
+            if is_mem_closed(pt):
+                pt = apply_theorem(
+                    'cos_interval_pos_closed', auto.auto_solve(real.greater_eq(a, -real.pi / 2)),
+                        auto.auto_solve(real.less_eq(b, real.pi / 2)), pt)
+            elif is_mem_open(pt):
+                pt = apply_theorem(
+                    'cos_interval_pos_open', auto.auto_solve(real.greater_eq(a, -real.pi / 2)),
+                        auto.auto_solve(real.less_eq(b, real.pi / 2)), pt)
+            else:
+                raise NotImplementedError
         else:
             raise NotImplementedError
         return norm_mem_interval(pt)

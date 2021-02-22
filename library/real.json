@@ -7393,6 +7393,286 @@
             }
         },
         {
+            "name": "real_min_eq_left",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x ≤ y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ y ⊢ x ≤ y"
+                },
+                {
+                    "args": "if_P, (if x ≤ y then x else y) = x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ y ⊢ (if x ≤ y then x else y) = x"
+                },
+                {
+                    "args": "min_def, min x y = x",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ y ⊢ min x y = x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ≤ y ⟶ min x y = x"
+                }
+            ],
+            "prop": "x ≤ y ⟶ min x y = x",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "min_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_min_eq_right",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x > y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x > y ⊢ x > y"
+                },
+                {
+                    "args": "¬(x ≤ y)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "x > y ⊢ ¬(x ≤ y)"
+                },
+                {
+                    "args": "if_not_P1, {P: x ≤ y, a: x, b: y}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x > y ⊢ (if x ≤ y then x else y) = y"
+                },
+                {
+                    "args": "min_def, min x y = y",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x > y ⊢ min x y = y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x > y ⟶ min x y = y"
+                }
+            ],
+            "prop": "x > y ⟶ min x y = y",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "min_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "if_not_P1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_max_eq_right",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x ≤ y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ y ⊢ x ≤ y"
+                },
+                {
+                    "args": "if_P, (if x ≤ y then y else x) = y",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ y ⊢ (if x ≤ y then y else x) = y"
+                },
+                {
+                    "args": "max_def, max x y = y",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ y ⊢ max x y = y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ≤ y ⟶ max x y = y"
+                }
+            ],
+            "prop": "x ≤ y ⟶ max x y = y",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "max_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_max_eq_left",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x > y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x > y ⊢ x > y"
+                },
+                {
+                    "args": "¬(x ≤ y)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "x > y ⊢ ¬(x ≤ y)"
+                },
+                {
+                    "args": "if_not_P1, {P: x ≤ y, a: y, b: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x > y ⊢ (if x ≤ y then y else x) = x"
+                },
+                {
+                    "args": "max_def, max x y = x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x > y ⊢ max x y = x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x > y ⟶ max x y = x"
+                }
+            ],
+            "prop": "x > y ⟶ max x y = x",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "max_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "if_not_P1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_forward"
