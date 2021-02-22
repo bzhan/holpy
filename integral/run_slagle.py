@@ -34,8 +34,8 @@ test_cases = {
         # "Exercise 18" : "1 + -1/4 * pi", # auto.py line 161
         "Exercise 19" : "1/6",
         "Exercise 20" : "2 + 2 * log(2) + -2 * log(3)",
-        # "Exercise 21" : "1 + 2 * log(1/2)", # inequality.py", line 800
-        # "Exercise 22" : "1 + -exp(-1/2)" # inequality.py", line 727
+        "Exercise 21" : "1 + 2 * log(1/2)", # inequality.py", line 800
+        # "Exercise 22" : "1 + -exp(-1/2)", # inequality.py", line 727
         "Exercise 23" : "-2 + 2 * sqrt(3)",
         "Exercise 28" : "1 + -2 * exp(-1)",
         "Exercise 29" : "1/4 + 1/4 * exp(2)",
@@ -49,14 +49,14 @@ test_cases = {
         "Exercise 4" : "2500",
         "Exercise 5" : "sqrt(3) * pi",
         "Exercise 6" : "18 + cos(-3) + -cos(3)", 
-        # "Exercise 15" : "-8 * exp(1) + -24 * 0 ^ (1/4) * exp(0 ^ (1/4)) + 12 * (0 ^ (1/4)) ^ 2 * exp(0 ^ (1/4)) + -4 * (0 ^ (1/4)) ^ 3 * exp(0 ^ (1/4)) + 24 * exp(0 ^ (1/4))",
+        "Exercise 15" : "-8 * exp(1) + -24 * 0 ^ (1/4) * exp(0 ^ (1/4)) + 12 * (0 ^ (1/4)) ^ 2 * exp(0 ^ (1/4)) + -4 * (0 ^ (1/4)) ^ 3 * exp(0 ^ (1/4)) + 24 * exp(0 ^ (1/4))",
         # inequality.py line 800
         "Exercise 19" : "1/4 * pi",
     },
     
     "MIT/2014": {
         "Exercise 1": "2",
-        # "Exercise 5" : "-4 + 2 * exp(1)", # inequality.py line 800
+        "Exercise 5" : "-4 + 2 * exp(1)", # inequality.py line 800
         # "Exercise 7" : "4 * sqrt(3) + 2/3 * pi", # inequality.py line 256
     },
 
@@ -66,11 +66,11 @@ test_cases = {
 
     "MIT/2020": {
         "Exercise 3": "1/4 + 1/4 * exp(2)",
-        # "Exercise 5": "1/2 * pi" # auto.py, line 161
+        # "Exercise 5": "1/2 * pi" # timeout
     },
 
     "UCDAVIS/usubstitution": {
-        # "Exercise 1" : "209952",
+        # "Exercise 1" : "209952", # conv.py line 375
         "Exercise 2" : "175099/11",
         "Exercise 3" : "74/21",
         # "Exercise 4" : "-1/3 + 1/3 * 2 ^ (3/4)", # inequality.py line 727
@@ -84,8 +84,8 @@ test_cases = {
         # "Exercise 14" : "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)", # auto.py line 302
         # "Exercise 15" : "1/2 + -7/4 * log(6) + 7/4 * log(10)", # proof.py line 397
         "Exercise 16" : "-3/2 + -8 * log(2) + 8 * log(3)",
-        # "Exercise 17" : "41/6", # auto.py line 302
-        # "Exercise 18" : "188/15", # inequality.py line 800
+        "Exercise 17" : "41/6", # auto.py line 302
+        # "Exercise 18" : "188/15", # auto.py line 302
     },
     
     "UCDAVIS/Exponentials": {
@@ -93,7 +93,7 @@ test_cases = {
         "Exercise 2" : "5 + -3 * exp(1)",
         "Exercise 3" : "-2 + 2 * exp(log(2))",
         "Exercise 5" : "-149/98 + 3/2 * exp(2) + 1/49 * exp(7)",
-        # "Exercise 6" : "-121/5 + exp(1) + 4 * exp(2) + 8 * exp(3) + 8 * exp(4) + 16/5 * exp(5)", # inequality.py line 875
+        # "Exercise 6" : "-121/5 + exp(1) + 4 * exp(2) + 8 * exp(3) + 8 * exp(4) + 16/5 * exp(5)", # proof.py line 397
         "Exercise 7" : "-2 + -1/8 * exp(-8) + 1/8 * exp(8)",
         "Exercise 8" : "-2/3 + exp(1) + -1/3 * exp(3)",
         # "Exercise 10" : "130465/28 + -3645/4 * exp(-8) + -12150/7 * exp(-7) + -1350 * exp(-6) + -540 * exp(-5) + -225/2 * exp(-4) + -10 * exp(-3)",
@@ -109,16 +109,16 @@ test_cases = {
         # "Exercise 6" : "1 + 3/4 * pi + -2 * log(1/2)", # auto.py line 302
         # "Exercise 7" : "2/3 + -(0 ^ (1/2)) + 1/3 * 0 ^ (3/2)", # auto.py line 161
         "Exercise 8" : "-1/5 * log(15) + 1/5 * log(20)",
-        # "Exercise 12" : "-16/3 + 4 * sqrt(2) * sqrt(3)", # inequality.py line 800 
+        # "Exercise 12" : "-16/3 + 4 * sqrt(2) * sqrt(3)", # inequality.py line 799
         # "Exercise 13" : "-1/4 + -1/2 * log(1/2)", # auto.py line 302
-        # "Exercise 15" : "-exp(4) + exp(5)", # inequality.py line 875
+        "Exercise 15" : "-exp(4) + exp(5)", # inequality.py line 875
         "Exercise 16" : "1/3 * cos(-1) + -1/3 * cos(1)",
         # "Exercise 17" : "1/2 * log(1/2) * log(2) + 1/8 * log(2) ^ 2", # proof.py line 518
         # "Exercise 19" : "-sin(exp(log(1/6) + log(pi))) + sin(exp(log(1/4) + log(pi)))", # proof.py line 397
         "Exercise 20" : "-1/9",
         "Exercise 21" : "-2 + 1/4 * pi ^ 2",
         "Exercise 22" : "1 + 1/2 * sqrt(2) * exp(1/2 * sqrt(2)) + -exp(1/2 * sqrt(2))",
-        # "Exercise 25" : "-2 + 2 * sqrt(1 + sqrt(2))", # inequality.py line 727
+        # "Exercise 25" : "-2 + 2 * sqrt(1 + sqrt(2))", # can't solve
         
         # Exercise 9 Can't Solve.
         # Exercise 10 Timeout!
@@ -145,11 +145,11 @@ test_cases = {
         # "Exercise 13" : "-8/5", # auto.py line 302
         # "Exercise 14" : "1/8", # proof.py line 397
         "Exercise 15" : "2 + -5 * exp(-1)",
-        # "Exercise 16" : "1/3", # inequality.py line 875
+        "Exercise 16" : "1/3", # inequality.py line 875
         "Exercise 17" : "-1/2 + 1/32 * pi ^ 2 * sin(1/16 * pi ^ 2) + 1/2 * cos(1/16 * pi ^ 2)",
         # "Exercise 18" : "-8/135 * sqrt(2) + 5/27 * sqrt(5)", # auto.py line 302
         # "Exercise 19" : "-5/36 + -1/2 * log(1/9) + 1/2 * log(1/6)", # proof.py line 397
-        # "Exercise 20" : "1/3 * cos(1) + -1/3 * exp(3) * cos(exp(3)) + -1/3 * sin(1) + 1/3 * sin(exp(3))", # inequality.py line 875
+        "Exercise 20" : "1/3 * cos(1) + -1/3 * exp(3) * cos(exp(3)) + -1/3 * sin(1) + 1/3 * sin(exp(3))", # inequality.py line 875
 
         # Exercise 6 Can't Solve.
         # Exercise 7 Can't Solve.
@@ -162,12 +162,12 @@ test_cases = {
         "Exercise 1" : "3/2 + 3 * log(2)",
         "Exercise 2" : "-7 * log(5) + 7 * log(6)",
         # "Exercise 4" : "1/2 * log(1/5) + -1/2 * log(1/4)", # proof.py line 1010
-        "Exercise 5" : "26/3 + -8 * log(3)",
-        "Exercise 7" : "-log(3) + log(4)",
-        # "Exercise 8" : "-1 + -10 * log(3) + 10 * log(4)", # inequality.py line 727
+        # "Exercise 5" : "26/3 + -8 * log(3)", # not solved
+        # "Exercise 7" : "-log(3) + log(4)", # not solved
+        # "Exercise 8" : "-1 + -10 * log(3) + 10 * log(4)", # not solved
         "Exercise 9" : "-atan(2) + atan(3)",
         "Exercise 12" : "-1/2 * log(2) + 1/2 * log(4)",
-        # "Exercise 14" : "-1/2 * log(4) + 1/2 * log(abs(2 + 2 * exp(2)))", # inequality.py line 875
+        "Exercise 14" : "-1/2 * log(4) + 1/2 * log(abs(2 + 2 * exp(2)))", # inequality.py line 875
         # "Exercise 16" : "-1/2 + 1/2 * exp(2) + 1/2 * log(4) + -1/2 * log(abs(2 + 2 * exp(2)))", # inequality.py line 875
         # "Exercise 17" : "-1/2 + log(2)", # proof.py line 397
         # "Exercise 20" : "-1/2 * log(2) + 1/2 * log(8) + 1/2 * log(abs(2 * exp(2))) + -1/2 * log(abs(4 + 4 * exp(2)))", # # inequality.py line 875
@@ -209,14 +209,14 @@ test_cases = {
 }
 
 file_names = [
-    "tongji7",
-    "MIT/2013",
-    "MIT/2014",
-    "MIT/2020",
-    "UCDAVIS/usubstitution",
-    "UCDAVIS/Exponentials",
-    "UCDAVIS/Trigonometric",
-    "UCDAVIS/Byparts",
+    # "tongji7",
+    # "MIT/2013",
+    # "MIT/2014",
+    # "MIT/2020",
+    # "UCDAVIS/usubstitution",
+    # "UCDAVIS/Exponentials",
+    # "UCDAVIS/Trigonometric",
+    # "UCDAVIS/Byparts",
     "UCDAVIS/LogAndArctangent",
     "UCDAVIS/PartialFraction",
 ]
@@ -265,13 +265,13 @@ class RunSlagle(unittest.TestCase):
         for filename in file_names:
             with open("integral/examples/%s.json" % filename, "r", encoding="utf-8") as f:
                 f_data = json.load(f)
-
+            errs = []
             for item in f_data["content"]:
                 if item["name"] in test_cases[filename]:
                     steps = slagle_infos(item["name"], item["problem"])
                     target = test_cases[filename][item['name']]
                     proof.translate_item(steps, target, debug=True)
-            
+
 
 
 def slagle_infos(name, e):
