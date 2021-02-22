@@ -297,6 +297,8 @@ class auto_macro(Macro):
             eq1 = norm(args.lhs, pts)
             eq2 = norm(args.rhs, pts)
             if eq1.rhs != eq2.rhs:
+                print("lhs: %s" % eq1.rhs)
+                print("rhs: %s" % eq2.rhs)
                 raise TacticException
             return eq1.transitive(eq2.symmetric())
         else:

@@ -66,14 +66,14 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(7 x + 9\\)",
-                    "latex": "\\int_{9}^{16} \\frac{1}{7} \\sqrt{u} \\,\\mathrm{du}",
+                    "latex": "\\int_{9}^{16} \\frac{\\sqrt{u}}{7} \\,\\mathrm{du}",
                     "params": {
-                        "f": "1/7 * u ^ (1/2)",
+                        "f": "1/7 * sqrt(u)",
                         "g": "7 * x + 9",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[9,16]. 1/7 * u ^ (1/2)"
+                    "text": "INT u:[9,16]. 1/7 * sqrt(u)"
                 },
                 {
                     "latex": "\\frac{74}{21}",
@@ -150,14 +150,14 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(3 x\\)",
-                    "latex": "\\int_{0}^{\\pi/2} \\frac{4}{3} \\cos{(u)} \\,\\mathrm{du}",
+                    "latex": "\\int_{0}^{1/2 \\pi} (\\frac{4}{3}) \\cos{(u)} \\,\\mathrm{du}",
                     "params": {
                         "f": "4/3 * cos(u)",
                         "g": "3 * x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,pi / 2]. 4/3 * cos(u)"
+                    "text": "INT u:[0,1/2 * pi]. 4/3 * cos(u)"
                 },
                 {
                     "latex": "\\frac{4}{3}",
@@ -205,36 +205,36 @@
                     "text": "INT x:[1,2]. (3 * x + 6) / ((x ^ 2 + 4 * x) - 3)"
                 },
                 {
-                    "_latex_reason": "Rewrite \\(x ^ 2 + 4 x - 3\\) to \\((x + 2) ^ 2 - 7\\)",
-                    "latex": "\\int_{1}^{2} \\frac{3 x + 6}{(x + 2) ^ 2 - 7} \\,\\mathrm{dx}",
+                    "_latex_reason": "Rewrite \\(x ^ 2 + 4 x - 3\\) to \\((x + 2) (x + 2) - 7\\)",
+                    "latex": "\\int_{1}^{2} \\frac{3 x + 6}{(x + 2) (x + 2) - 7} \\,\\mathrm{dx}",
                     "location": "0.1",
                     "params": {
-                        "rhs": "(x + 2) ^ 2 - 7"
+                        "rhs": "(x+2)*(x+2)-7"
                     },
-                    "reason": "Rewrite fraction",
-                    "text": "INT x:[1,2]. (3 * x + 6) / ((x + 2) ^ 2 - 7)"
+                    "reason": "Rewrite",
+                    "text": "INT x:[1,2]. (3 * x + 6) / ((x + 2) * (x + 2) - 7)"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(x + 2\\)",
-                    "latex": "\\int_{3}^{4} \\frac{3 u}{u ^ 2 - 7} \\,\\mathrm{du}",
+                    "latex": "\\int_{3}^{4} \\frac{3 u}{-7 + u ^ 2} \\,\\mathrm{du}",
                     "params": {
-                        "f": "(3 * u) / (u ^ 2 - 7)",
+                        "f": "3 * u * (-7 + u ^ 2) ^ -1",
                         "g": "x + 2",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[3,4]. (3 * u) / (u ^ 2 - 7)"
+                    "text": "INT u:[3,4]. 3 * u * (-7 + u ^ 2) ^ -1"
                 },
                 {
-                    "_latex_reason": "Substitute \\(t\\) for \\(u ^ 2 - 7\\)",
-                    "latex": "\\int_{2}^{9} \\frac{3}{2 t} \\,\\mathrm{dt}",
+                    "_latex_reason": "Substitute \\(v\\) for \\(-7 + u ^ 2\\)",
+                    "latex": "\\int_{2}^{9} \\frac{\\frac{3}{2}}{v} \\,\\mathrm{dv}",
                     "params": {
-                        "f": "3 / (2 * t)",
-                        "g": "u ^ 2 - 7",
-                        "var_name": "t"
+                        "f": "3/2 * v ^ -1",
+                        "g": "-7 + u ^ 2",
+                        "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "INT t:[2,9]. 3 / (2 * t)"
+                    "text": "INT v:[2,9]. 3/2 * v ^ -1"
                 },
                 {
                     "latex": "-\\frac{3}{2} \\log{(2)} + \\frac{3}{2} \\log{(9)}",
@@ -246,7 +246,7 @@
             "problem": "INT x:[1, 2]. (3*x+6)/(x^2 + 4 * x - 3)"
         },
         {
-            "_problem_latex": "\\int_{0}^{1} x 3 ^ {(x ^ 2 + 1)} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{1} x 3 ^ {{(x ^ 2 + 1)}} \\,\\mathrm{dx}",
             "name": "Exercise 9",
             "problem": "INT x:[0, 1]. x*3^(x^2 + 1)"
         },
@@ -298,20 +298,20 @@
                     "text": "INT u:[0,1]. 1/5 * exp(-u)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(t\\) for \\(-u\\)",
-                    "latex": "\\int_{-1}^{0} \\frac{e^{t}}{5} \\,\\mathrm{dt}",
+                    "_latex_reason": "Substitute \\(v\\) for \\(-u\\)",
+                    "latex": "\\int_{-1}^{0} \\frac{e^{v}}{5} \\,\\mathrm{dv}",
                     "params": {
-                        "f": "-(1/5) * exp(t)",
+                        "f": "-1/5 * exp(v)",
                         "g": "-u",
-                        "var_name": "t"
+                        "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "INT t:[-1,0]. 1/5 * exp(t)"
+                    "text": "INT v:[-1,0]. 1/5 * exp(v)"
                 },
                 {
-                    "latex": "\\frac{1}{5} - \\frac{1}{5} e^{-1}",
+                    "latex": "\\frac{1}{5} + -\\frac{1}{5} e^{-1}",
                     "reason": "Simplification",
-                    "text": "1/5 - 1/5 * exp(-1)"
+                    "text": "1/5 + -1/5 * exp(-1)"
                 }
             ],
             "name": "Exercise 11",
@@ -355,14 +355,14 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(x - 1\\)",
-                    "latex": "\\int_{-1}^{0} u ^ 5 (u + 4) \\,\\mathrm{du}",
+                    "latex": "\\int_{-1}^{0} 4 u ^ 5 + u ^ 6 \\,\\mathrm{du}",
                     "params": {
-                        "f": "u ^ 5 * (u + 4)",
+                        "f": "4 * u ^ 5 + u ^ 6",
                         "g": "x - 1",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[-1,0]. u ^ 5 * (u + 4)"
+                    "text": "INT u:[-1,0]. 4 * u ^ 5 + u ^ 6"
                 },
                 {
                     "latex": "-\\frac{11}{21}",
@@ -383,19 +383,19 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(4 - x\\)",
-                    "latex": "\\int_{0}^{4} 4 \\sqrt{u} - u ^ {(\\frac{3}{2})} \\,\\mathrm{du}",
+                    "latex": "\\int_{0}^{4} 4 \\sqrt{u} + -u ^ {\\frac{3}{2}} \\,\\mathrm{du}",
                     "params": {
-                        "f": "-sqrt(u) * (4 - u)",
+                        "f": "-4 * sqrt(u) + u ^ (3/2)",
                         "g": "4 - x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,4]. 4 * u ^ (1/2) - u ^ (3/2)"
+                    "text": "INT u:[0,4]. 4 * sqrt(u) + -(u ^ (3/2))"
                 },
                 {
-                    "latex": "\\frac{128}{15}",
+                    "latex": "\\frac{128}{15} + -\\frac{8}{3} 0 ^ {\\frac{3}{2}} + \\frac{2}{5} 0 ^ {\\frac{5}{2}}",
                     "reason": "Simplification",
-                    "text": "128/15"
+                    "text": "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)"
                 }
             ],
             "name": "Exercise 14",
@@ -413,27 +413,32 @@
                     "latex": "\\int_{0}^{1} \\frac{1}{2} + \\frac{7}{2 (2 x + 3)} \\,\\mathrm{dx}",
                     "location": "0",
                     "params": {
-                        "denom": "2 * x + 3",
                         "rhs": "1/2 + 7 / (2 * (2 * x + 3))"
                     },
                     "reason": "Rewrite fraction",
                     "text": "INT x:[0,1]. 1/2 + 7 / (2 * (2 * x + 3))"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(2 x + 3\\)",
-                    "latex": "\\int_{3}^{5} \\frac{1}{4} + \\frac{7}{4 u} \\,\\mathrm{du}",
+                    "latex": "\\frac{1}{2} + 7 \\int_{0}^{1} \\frac{1}{6 + 4 x} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "1/2 + 7 * (INT x:[0,1]. (6 + 4 * x) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(6 + 4 x\\)",
+                    "latex": "\\frac{1}{2} + 7 \\int_{6}^{10} \\frac{\\frac{1}{4}}{u} \\,\\mathrm{du}",
+                    "location": "1.1",
                     "params": {
-                        "f": "1/4 + 7 / (4 * u)",
-                        "g": "2 * x + 3",
+                        "f": "1/4 * u ^ -1",
+                        "g": "6 + 4 * x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[3,5]. 1/4 + 7 / (4 * u)"
+                    "text": "1/2 + 7 * (INT u:[6,10]. 1/4 * u ^ -1)"
                 },
                 {
-                    "latex": "\\frac{1}{2} - \\frac{7}{4} \\log{(3)} + \\frac{7}{4} \\log{(5)}",
+                    "latex": "\\frac{1}{2} + -\\frac{7}{4} \\log{(6)} + \\frac{7}{4} \\log{(10)}",
                     "reason": "Simplification",
-                    "text": "(1/2 - 7/4 * log(3)) + 7/4 * log(5)"
+                    "text": "1/2 + -7/4 * log(6) + 7/4 * log(10)"
                 }
             ],
             "name": "Exercise 15",
@@ -493,14 +498,14 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\log{(x)}\\)",
-                    "latex": "\\int_{0}^{2} \\frac{1}{4} * (2 - \\log{(e^{u})}) (\\log{(e^{u})} + 3) ^ 2 \\,\\mathrm{du}",
+                    "latex": "\\int_{0}^{2} \\frac{9}{2} + (\\frac{3}{4}) u + -u ^ 2 + -\\frac{1}{4} u ^ 3 \\,\\mathrm{du}",
                     "params": {
-                        "f": "((2 - log(exp(u))) * (log(exp(u)) + 3) ^ 2) / 4",
+                        "f": "9/2 + 3/4 * u + -(u ^ 2) + -1/4 * u ^ 3",
                         "g": "log(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,2]. ((2 - log(exp(u))) * (log(exp(u)) + 3) ^ 2) / 4"
+                    "text": "INT u:[0,2]. 9/2 + 3/4 * u + -(u ^ 2) + -1/4 * u ^ 3"
                 },
                 {
                     "latex": "\\frac{41}{6}",
