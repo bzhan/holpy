@@ -80,10 +80,11 @@ test_cases = {
     },
     "MIT/2014": {
         "Exercise 6": "-(4 / 5)",
+        # "Exercise 8": "1/4062240",
     },
     "MIT/2019": {
-        "Exercise 1": "-2/39 * log(cos(39 * pi / 200))",
-        "Exercise 2": "log (sin(1) + exp(1))",
+        "Exercise 1": "-2/39 * log(abs(cos(39/200 * pi)))",
+        "Exercise 2": "log(abs(exp(1) + sin(1)))",
     },
     "UCDAVIS/usubstitution": {
         "Exercise 1": "209952",
@@ -225,10 +226,10 @@ test_cases = {
 class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
         filenames = [
-            # "tongji7",
+            "tongji7",
             # "MIT/2013",
             # "MIT/2014",
-            # "MIT/2019",
+            "MIT/2019",
             "UCDAVIS/usubstitution",
             # "UCDAVIS/Exponentials",
             # "UCDAVIS/Trigonometric",

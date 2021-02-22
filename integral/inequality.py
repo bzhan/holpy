@@ -814,6 +814,16 @@ def get_bounds_proof(t, var_range):
             raise NotImplementedError
         return norm_mem_interval(pt)
 
+    elif t.head == real.exp:
+        pt = get_bounds_proof(t.arg, var_range)
+        if is_mem_closed(pt):
+            pt = apply_theorem('exp_interval_closed', pt)
+        elif is_mem_open(pt):
+            pt = apply_theorem('exp_interval_open', pt)
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
+
     elif t.head == real.sin:
         pt = get_bounds_proof(t.arg, var_range)
         a, b = get_mem_bounds(pt)

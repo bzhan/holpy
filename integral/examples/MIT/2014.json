@@ -197,9 +197,17 @@
                     "text": "INT x:[0,2 * pi]. abs(1 + 2 * sin(x))"
                 },
                 {
-                    "latex": "2 * (-\\frac{1}{2} * -\\sqrt{3} + 1) + 2 * (-1 + \\frac{1}{2} * \\sqrt{3}) - 2 * (-\\frac{1}{2} * \\sqrt{3} + \\frac{1}{2} * -\\sqrt{3}) + \\frac{2}{3} \\pi",
+                    "latex": "(\\int_{0}^{7 \\pi/6} 1 + 2 \\sin{(x)} \\,\\mathrm{dx}) + {(\\int_{11 \\pi/6}^{2 \\pi} 1 + 2 \\sin{(x)} \\,\\mathrm{dx})} + {(\\int_{7 \\pi/6}^{11 \\pi/6} -(1 + 2 \\sin{(x)}) \\,\\mathrm{dx})}",
+                    "params": {
+                        "c": "(7 * pi) / 6"
+                    },
+                    "reason": "Elim abs",
+                    "text": "(INT x:[0,(7 * pi) / 6]. 1 + 2 * sin(x)) + (INT x:[(11 * pi) / 6,2 * pi]. 1 + 2 * sin(x)) + (INT x:[(7 * pi) / 6,(11 * pi) / 6]. -(1 + 2 * sin(x)))"
+                },
+                {
+                    "latex": "4 \\sqrt{3} + \\frac{2}{3} \\pi",
                     "reason": "Simplification",
-                    "text": "((2 * (-((1/2) * -(3 ^ (1/2))) + 1) + 2 * (-1 + (1/2) * 3 ^ (1/2))) - 2 * (-((1/2) * 3 ^ (1/2)) + (1/2) * -(3 ^ (1/2)))) + (2/3) * pi"
+                    "text": "4 * sqrt(3) + 2/3 * pi"
                 }
             ],
             "name": "Exercise 7",
@@ -214,31 +222,15 @@
                     "text": "INT x:[0,1]. x * (1 - x) ^ 2014"
                 },
                 {
-                    "_latex_reason": "Integrate by parts, \\(u = x, v = -\\frac{(1 - x) ^ {2015}}{2015}\\)",
-                    "latex": "(\\left. (-\\frac{1}{2015} x) (1 - x) ^ {2015} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} -\\frac{1}{2015} ((1 - x) ^ {2015}) \\,\\mathrm{dx})",
-                    "params": {
-                        "parts_u": "x",
-                        "parts_v": "-(1 - x)^2015/2015"
-                    },
-                    "reason": "Integrate by parts",
-                    "text": "([((-1/2015) * x) * (1 - x) ^ 2015]_x=0,1) - (INT x:[0,1]. (-1/2015) * (1 - x) ^ 2015)"
-                },
-                {
-                    "latex": "\\frac{1}{2015} \\int_{0}^{1} (1 - x) ^ {2015} \\,\\mathrm{dx}",
-                    "reason": "Simplification",
-                    "text": "(1/2015) * (INT x:[0,1]. (1 - x) ^ 2015)"
-                },
-                {
                     "_latex_reason": "Substitute \\(u\\) for \\(1 - x\\)",
-                    "latex": "\\frac{1}{2015} \\int_{0}^{1} u ^ {2015} \\,\\mathrm{du}",
-                    "location": "1",
+                    "latex": "\\int_{0}^{1} u ^ {2014} + -u ^ {2015} \\,\\mathrm{du}",
                     "params": {
-                        "f": "-(u ^ 2015)",
+                        "f": "-(u ^ 2014) + u ^ 2015",
                         "g": "1 - x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "(1/2015) * (INT u:[0,1]. u ^ 2015)"
+                    "text": "INT u:[0,1]. u ^ 2014 + -(u ^ 2015)"
                 },
                 {
                     "latex": "\\frac{1}{4062240}",

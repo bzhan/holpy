@@ -942,6 +942,29 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "exp_interval_closed",
+            "prop": "x ∈ real_closed_interval a b ⟶ exp x ∈ real_closed_interval (exp a) (exp b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "exp_interval_open",
+            "prop": "x ∈ real_open_interval a b ⟶ exp x ∈ real_open_interval (exp a) (exp b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
             "name": "sin_interval_main_closed",
             "prop": [
                 "a ≥ -pi / 2 ",
