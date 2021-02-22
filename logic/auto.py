@@ -158,7 +158,7 @@ def solve(goal, pts=None):
             solve_record[goal] = res_pt
         return eq_pt.symmetric().equal_elim(res_pt)
     else:
-        raise TacticException
+        raise TacticException('Cannot solve %s' % goal)
 
 
 def solve_rules(th_names):

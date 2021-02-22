@@ -724,37 +724,47 @@ def get_bounds_proof(t, var_range):
 
     elif t.is_times():
         if t.arg1.has_var():
-            raise NotImplementedError
-        pt = get_bounds_proof(t.arg, var_range)
-        a, b = get_mem_bounds(pt)
-        c = t.arg1
-        nc = eval_hol_expr(c)
-        if nc >= 0 and is_mem_closed(pt):
-            pt = apply_theorem(
-                'mult_interval_pos_closed', auto.auto_solve(real_nonneg(c)), pt)
-        elif nc >= 0 and is_mem_open(pt):
-            pt = apply_theorem(
-                'mult_interval_pos_open', auto.auto_solve(real_nonneg(c)), pt)
-        elif nc >= 0 and is_mem_lopen(pt):
-            pt = apply_theorem(
-                'mult_interval_pos_lopen', auto.auto_solve(real_nonneg(c)), pt)
-        elif nc >= 0 and is_mem_ropen(pt):
-            pt = apply_theorem(
-                'mult_interval_pos_ropen', auto.auto_solve(real_nonneg(c)), pt)
-        elif nc < 0 and is_mem_closed(pt):
-            pt = apply_theorem(
-                'mult_interval_neg_closed', auto.auto_solve(real_neg(c)), pt)
-        elif nc < 0 and is_mem_open(pt):
-            pt = apply_theorem(
-                'mult_interval_neg_open', auto.auto_solve(real_neg(c)), pt)
-        elif nc < 0 and is_mem_lopen(pt):
-            pt = apply_theorem(
-                'mult_interval_neg_lopen', auto.auto_solve(real_neg(c)), pt)
-        elif nc < 0 and is_mem_ropen(pt):
-            pt = apply_theorem(
-                'mult_interval_neg_ropen', auto.auto_solve(real_neg(c)), pt)
+            pt1 = get_bounds_proof(t.arg1, var_range)
+            pt2 = get_bounds_proof(t.arg, var_range)
+            a, b = get_mem_bounds(pt1)
+            c, d = get_mem_bounds(pt2)
+            if eval_hol_expr(a) >= 0 and eval_hol_expr(c) >= 0 and is_mem_open(pt1) and is_mem_open(pt2):
+                pt = apply_theorem(
+                    'mult_interval_pos_pos_open', auto.auto_solve(real_nonneg(a)),
+                    auto.auto_solve(real_nonneg(c)), pt1, pt2)
+            else:
+                raise NotImplementedError('get_bounds: %s, %s' % (pt1, pt2))
         else:
-            raise NotImplementedError
+            pt = get_bounds_proof(t.arg, var_range)
+            a, b = get_mem_bounds(pt)
+            c = t.arg1
+            nc = eval_hol_expr(c)
+            if nc >= 0 and is_mem_closed(pt):
+                pt = apply_theorem(
+                    'mult_interval_pos_closed', auto.auto_solve(real_nonneg(c)), pt)
+            elif nc >= 0 and is_mem_open(pt):
+                pt = apply_theorem(
+                    'mult_interval_pos_open', auto.auto_solve(real_nonneg(c)), pt)
+            elif nc >= 0 and is_mem_lopen(pt):
+                pt = apply_theorem(
+                    'mult_interval_pos_lopen', auto.auto_solve(real_nonneg(c)), pt)
+            elif nc >= 0 and is_mem_ropen(pt):
+                pt = apply_theorem(
+                    'mult_interval_pos_ropen', auto.auto_solve(real_nonneg(c)), pt)
+            elif nc < 0 and is_mem_closed(pt):
+                pt = apply_theorem(
+                    'mult_interval_neg_closed', auto.auto_solve(real_neg(c)), pt)
+            elif nc < 0 and is_mem_open(pt):
+                pt = apply_theorem(
+                    'mult_interval_neg_open', auto.auto_solve(real_neg(c)), pt)
+            elif nc < 0 and is_mem_lopen(pt):
+                pt = apply_theorem(
+                    'mult_interval_neg_lopen', auto.auto_solve(real_neg(c)), pt)
+            elif nc < 0 and is_mem_ropen(pt):
+                pt = apply_theorem(
+                    'mult_interval_neg_ropen', auto.auto_solve(real_neg(c)), pt)
+            else:
+                raise NotImplementedError
         return norm_mem_interval(pt)
 
     elif t.is_divides():
@@ -894,19 +904,19 @@ class IntervalInequalityMacro(Macro):
         self.sig = Term
         self.limit = None
 
-    def can_eval(self, goal, prevs):
-        if len(prevs) == 1:
-            # print(goal, ',', prevs[0].prop)
-            res = solve_with_interval(goal, prevs[0].prop)
-            # print(res)
-            return res
-        else:
-            return False
+    # def can_eval(self, goal, prevs):
+    #     if len(prevs) == 1:
+    #         # print(goal, ',', prevs[0].prop)
+    #         res = solve_with_interval(goal, prevs[0].prop)
+    #         # print(res)
+    #         return res
+    #     else:
+    #         return False
 
-    def eval(self, goal, prevs):
-        assert self.can_eval(goal, prevs), "interval_inequality: not solved."
+    # def eval(self, goal, prevs):
+    #     assert self.can_eval(goal, prevs), "interval_inequality: not solved."
 
-        return Thm(sum([th.hyps for th in prevs], ()), goal)
+    #     return Thm(sum([th.hyps for th in prevs], ()), goal)
 
     def get_proof_term(self, goal, pts):
         assert len(pts) == 1 and hol_set.is_mem(pts[0].prop) and pts[0].prop.arg1.is_var(), \
@@ -967,11 +977,10 @@ def inequality_solve(goal, pts):
             raise TacticException
     elif len(pts) == 1:
         macro = IntervalInequalityMacro()
-        if macro.can_eval(goal, pts):
-            print(goal, pts[0].prop)
+        try:
             return macro.get_proof_term(goal, pts)
-            # th = macro.eval(goal, pts)
-            # return ProofTerm('interval_inequality', args=goal, prevs=pts, th=th)
+        except ConvException:
+            raise TacticException
         else:
             raise TacticException
     else:

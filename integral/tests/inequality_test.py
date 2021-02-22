@@ -117,6 +117,8 @@ class InequalityTest(unittest.TestCase):
             ("x < 2", "x Mem real_closed_interval 0 1"),
             ("x > 0", "x Mem real_closed_interval 1 2"),
             ("-1 + x >= 0", "x Mem real_closed_interval 1 2"),
+            ("1 + -(x ^ (2::nat)) > 0", "x Mem real_open_interval (1 / 2 * 2 ^ (1 / 2)) 1"),
+            ("1 + x > 0", "x Mem real_open_interval (-1 / 2) (1 / 2)"),
         ]
 
         context.set_context('interval_arith', vars={'x': 'real'})

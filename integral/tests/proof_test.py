@@ -49,10 +49,11 @@ class ProofTest(unittest.TestCase):
             "real_continuous_on (%x. (3 * x + 1) ^ (-(2::real))) (real_closed_interval 0 1)",
             "real_continuous_on (%x. x ^ (1 / 2)) (real_closed_interval 0 1)",
             "real_continuous_on (%x::real. 2 ^ x) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. (1 + -(x ^ (2::nat))) ^ -(1 / 2)) (real_open_interval (1 / 2 * 2 ^ (1 / 2)) 1)",
         ]
 
         for expr in test_data:
-            test_macro(self, 'realintegral', 'auto', args=expr, res=expr)
+            test_macro(self, 'interval_arith', 'auto', args=expr, res=expr)
 
     def testRealContinuousOnFail(self):
         test_data = [
@@ -65,7 +66,7 @@ class ProofTest(unittest.TestCase):
         ]
 
         for expr in test_data:
-            test_macro(self, 'realintegral', 'auto', args=expr, failed=TacticException)
+            test_macro(self, 'interval_arith', 'auto', args=expr, failed=TacticException)
 
     def testRealIntegrableOn(self):
         test_data = [
@@ -74,7 +75,7 @@ class ProofTest(unittest.TestCase):
         ]
 
         for expr in test_data:
-            test_macro(self, 'realintegral', 'auto', args=expr, res=expr)
+            test_macro(self, 'interval_arith', 'auto', args=expr, res=expr)
 
     def testRealDifferentiable(self):
         test_data = [
@@ -107,7 +108,7 @@ class ProofTest(unittest.TestCase):
         ]
 
         for expr in test_data:
-            test_macro(self, 'realintegral', 'auto', vars={'x': 'real'}, args=expr, res=expr)
+            test_macro(self, 'interval_arith', 'auto', vars={'x': 'real'}, args=expr, res=expr)
 
     def testNormTranscendental(self):
         test_data = [
@@ -125,7 +126,7 @@ class ProofTest(unittest.TestCase):
         ]
 
         for t, res in test_data:
-            test_conv(self, 'realintegral', auto.auto_conv(), t=t, t_res=res)
+            test_conv(self, 'interval_arith', auto.auto_conv(), t=t, t_res=res)
 
     def testNormAbsoluteValue(self):
         test_data = [
@@ -138,11 +139,11 @@ class ProofTest(unittest.TestCase):
         ]
 
         vars = {'x': 'real'}
-        context.set_context('realintegral', vars=vars)
+        context.set_context('interval_arith', vars=vars)
         for t, conds, res in test_data:
             conds_pt = [ProofTerm.assume(parser.parse_term(cond)) for cond in conds]
             cv = auto.auto_conv(conds_pt)
-            test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
+            test_conv(self, 'interval_arith', cv, vars=vars, t=t, t_res=res, assms=conds)
 
     def testNormRealDerivative(self):
         test_data = [
@@ -178,11 +179,11 @@ class ProofTest(unittest.TestCase):
         ]
 
         vars = {'x': 'real'}
-        context.set_context('realintegral', vars=vars)
+        context.set_context('interval_arith', vars=vars)
         for t, conds, res in test_data:
             conds_pt = [ProofTerm.assume(parser.parse_term(cond)) for cond in conds]
             cv = auto.auto_conv(conds_pt)
-            test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
+            test_conv(self, 'interval_arith', cv, vars=vars, t=t, t_res=res, assms=conds)
 
     def testIneq(self):
         test_data = [
@@ -192,7 +193,7 @@ class ProofTest(unittest.TestCase):
         ]
 
         for expr in test_data:
-            test_macro(self, 'realintegral', 'auto', vars={'x': 'real'}, args=expr, res=expr)
+            test_macro(self, 'interval_arith', 'auto', vars={'x': 'real'}, args=expr, res=expr)
 
     def testRealIncreasing(self):
         test_data = [
@@ -201,7 +202,7 @@ class ProofTest(unittest.TestCase):
         ]
 
         for expr in test_data:
-            test_macro(self, 'realintegral', 'auto', vars={'x': 'real'}, args=expr, res=expr)
+            test_macro(self, 'interval_arith', 'auto', vars={'x': 'real'}, args=expr, res=expr)
 
     def testNormRealIntegral(self):
         test_data = [
@@ -225,7 +226,7 @@ class ProofTest(unittest.TestCase):
         ]
 
         for expr, res in test_data:
-            test_conv(self, 'realintegral', auto.auto_conv(), t=expr, t_res=res)
+            test_conv(self, 'interval_arith', auto.auto_conv(), t=expr, t_res=res)
 
     def testIntegrateByParts(self):
         test_data = [
@@ -235,12 +236,12 @@ class ProofTest(unittest.TestCase):
              "evalat (%x. x * exp x) (-1) 2 - real_integral (real_closed_interval (-1) 2) (%x. exp x)"),
         ]
 
-        context.set_context('realintegral')
+        context.set_context('interval_arith')
         for expr, u, v, res in test_data:
             u = parser.parse_term(u)
             v = parser.parse_term(v)
             res = parser.parse_term(res)
-            test_conv(self, 'realintegral', proof.integrate_by_parts(u, v, res), t=expr, t_res=res)
+            test_conv(self, 'interval_arith', proof.integrate_by_parts(u, v, res), t=expr, t_res=res)
 
     def testSubstitution(self):
         test_data = [
@@ -250,23 +251,23 @@ class ProofTest(unittest.TestCase):
              "real_integral (real_closed_interval 0 6) (%x. 1 / 6 * exp x)"),
         ]
 
-        context.set_context('realintegral')
+        context.set_context('interval_arith')
         for expr, f, g, res in test_data:
             f = parser.parse_term(f)
             g = parser.parse_term(g)
             res = parser.parse_term(res)
-            test_conv(self, 'realintegral', proof.substitution(f, g, res), t=expr, t_res=res)
+            test_conv(self, 'interval_arith', proof.substitution(f, g, res), t=expr, t_res=res)
 
     def testSimplifyRewrConv(self):
         test_data = [
             ("(sin x) ^ (3::nat)", "sin x * (sin x) ^ (2::nat)"),
         ]
 
-        context.set_context('realintegral', vars={'x': 'real'})
+        context.set_context('interval_arith', vars={'x': 'real'})
         for s, t in test_data:
             s = parser.parse_term(s)
             t = parser.parse_term(t)
-            test_conv(self, 'realintegral', proof.simplify_rewr_conv(t), t=s, t_res=t)
+            test_conv(self, 'interval_arith', proof.simplify_rewr_conv(t), t=s, t_res=t)
 
     def testLocationConv(self):
         test_data = [
@@ -277,13 +278,13 @@ class ProofTest(unittest.TestCase):
              "real_integral (real_closed_interval 0 1) (%x. (sin x) * (sin x) ^ (2::nat))"),
         ]
 
-        context.set_context('realintegral', vars={'x': 'real'})
+        context.set_context('interval_arith', vars={'x': 'real'})
         for s, loc, t, res in test_data:
             s = parser.parse_term(s)
             t = parser.parse_term(t)
             res = parser.parse_term(res)
             cv = proof.simplify_rewr_conv(t)
-            test_conv(self, 'realintegral', proof.location_conv(loc, cv), t=s, t_res=res)
+            test_conv(self, 'interval_arith', proof.location_conv(loc, cv), t=s, t_res=res)
 
     def testTrigRewrConv(self):
         test_data = [
@@ -294,13 +295,13 @@ class ProofTest(unittest.TestCase):
              "real_integral (real_closed_interval 0 pi) (%x. (1 - cos x ^ (2::nat)) * sin x)"),
         ]
 
-        context.set_context('realintegral', vars={'x': 'real'})
+        context.set_context('interval_arith', vars={'x': 'real'})
         for s, loc, code, res in test_data:
             s = parser.parse_term(s)
             res = parser.parse_term(res)
             loc = proof.Location(loc)
             cv = proof.location_conv(loc, proof.trig_rewr_conv(code, target=proof.get_at_location(loc, res)))
-            test_conv(self, 'realintegral', cv, t=s, t_res=res)
+            test_conv(self, 'interval_arith', cv, t=s, t_res=res)
 
     def testCombineFractionConv(self):
         test_data = [
@@ -315,20 +316,20 @@ class ProofTest(unittest.TestCase):
         ]
 
         vars = {'x': 'real'}
-        context.set_context('realintegral', vars=vars)
+        context.set_context('interval_arith', vars=vars)
         for s, cond, res in test_data:
             s = parser.parse_term(s)
             res = parser.parse_term(res)
             cond_t = parser.parse_term(cond)
             cv = proof.combine_fraction([ProofTerm.assume(cond_t)])
-            test_conv(self, 'realintegral', cv, vars=vars, t=s, t_res=res, assms=[cond])
+            test_conv(self, 'interval_arith', cv, vars=vars, t=s, t_res=res, assms=[cond])
 
     def testExprToHolpy(self):
         test_data = [
             ("INT x:[2,3]. 2 * x + x ^ 2", "real_integral (real_closed_interval 2 3) (%x. 2 * x + x ^ (2::nat))"),
         ]
 
-        context.set_context('realintegral', vars={'x': 'real'})
+        context.set_context('interval_arith', vars={'x': 'real'})
         for s, res in test_data:
             s = integral.parser.parse_expr(s)
             res = parser.parse_term(res)

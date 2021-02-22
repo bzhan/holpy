@@ -642,6 +642,24 @@
             }
         },
         {
+            "name": "mult_interval_pos_pos_open",
+            "prop": [
+                "a ≥ 0 ",
+                "⟶ c ≥ 0 ",
+                "   ⟶ x ∈ real_open_interval a b ",
+                "      ⟶ y ∈ real_open_interval c d ⟶ x * y ∈ real_open_interval (a * c) (b * d)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
             "name": "mult_interval_pos_closed",
             "prop": [
                 "c ≥ 0 ",
