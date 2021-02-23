@@ -552,6 +552,8 @@ class Expr:
                 return poly.const_fraction(1)
             elif a.is_fraction():
                 return poly.ConstantPolynomial([poly.ConstantMonomial(1, [(E, a.get_fraction())])])
+            elif self.args[0].ty == FUN and self.args[0].func_name == "log":
+                return self.args[0].args[0].to_const_poly()
             else:
                 return poly.const_singleton(exp(from_const_poly(a)))
         
@@ -1582,6 +1584,7 @@ class Symbol(Expr):
         return "Symbol(%s, %s)" % (self.name, self.pat)
 
 trigFun = {
+    "TR0": (TR0, "1 to sin^2 + cos^2"),
     "TR1": (TR1, "sec-csc to cos-sin"),
     "TR2": (TR2, "tan-cot to sin-cos ratio"),
     "TR2i": (TR2i, "sin-cos ratio to tan"),

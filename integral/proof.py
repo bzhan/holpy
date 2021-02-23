@@ -275,6 +275,7 @@ auto.add_global_autos_norm(
         'log_1',
         'log_exp',
         'log_pow',
+        'log_pow_real',
         'log_div',
         'log_mul',
     ])

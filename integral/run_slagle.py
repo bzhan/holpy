@@ -109,7 +109,7 @@ test_cases = {
         "Exercise 8" : "2/5 * log(2) + -(1/5) * log(3)",
         # "Exercise 12" : "-16/3 + 4 * sqrt(2) * sqrt(3)", # inequality.py line 799
         # "Exercise 13" : "-1/4 + -1/2 * log(1/2)", # auto.py line 302
-        "Exercise 15" : "-exp(4) + exp(5)", # inequality.py line 875
+        "Exercise 15" : "-exp(4) + exp(5)",
         "Exercise 16" : "1/3 * cos(-1) + -1/3 * cos(1)",
         # "Exercise 17" : "1/2 * log(1/2) * log(2) + 1/8 * log(2) ^ 2", # proof.py line 518
         # "Exercise 19" : "-sin(exp(log(1/6) + log(pi))) + sin(exp(log(1/4) + log(pi)))", # proof.py line 397
@@ -145,7 +145,7 @@ test_cases = {
         "Exercise 15" : "2 + -5 * exp(-1)",
         "Exercise 16" : "1/3",
         "Exercise 17" : "-1/2 + 1/32 * pi ^ 2 * sin(1/16 * pi ^ 2) + 1/2 * cos(1/16 * pi ^ 2)",
-        "Exercise 18" : "-8/135 * sqrt(2) + 5/27 * sqrt(5)", # auto.py line 302
+        "Exercise 18" : "-8/135 * sqrt(2) + 5/27 * sqrt(5)",
         # "Exercise 19" : "-5/36 + -1/2 * log(1/9) + 1/2 * log(1/6)", # proof.py line 397
         "Exercise 20" : "1/3 * cos(1) + -1/3 * exp(3) * cos(exp(3)) + -1/3 * sin(1) + 1/3 * sin(exp(3))", # inequality.py line 875
 

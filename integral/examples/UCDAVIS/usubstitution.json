@@ -301,9 +301,9 @@
                     "text": "INT v:[2,9]. 3/2 * (-7 + (7 + v)) ^ -1"
                 },
                 {
-                    "latex": "-\\frac{3}{2} \\log{(2)} + \\frac{3}{2} \\log{(9)}",
+                    "latex": "-\\frac{3}{2} \\log{(2)} + 3 \\log{(3)}",
                     "reason": "Simplification",
-                    "text": "-3/2 * log(2) + 3/2 * log(9)"
+                    "text": "-3/2 * log(2) + 3 * log(3)"
                 }
             ],
             "name": "Exercise 8",
@@ -473,9 +473,9 @@
                     "text": "INT u:[0,4]. 4 * sqrt(u) + -(u ^ (3/2))"
                 },
                 {
-                    "latex": "\\frac{128}{15} + -\\frac{8}{3} 0 ^ {\\frac{3}{2}} + \\frac{2}{5} 0 ^ {\\frac{5}{2}}",
+                    "latex": "\\frac{128}{15}",
                     "reason": "Simplification",
-                    "text": "128/15 + -8/3 * 0 ^ (3/2) + 2/5 * 0 ^ (5/2)"
+                    "text": "128/15"
                 }
             ],
             "name": "Exercise 14",
@@ -508,7 +508,7 @@
                     "latex": "\\frac{1}{2} + 7 \\int_{6}^{10} \\frac{\\frac{1}{4}}{u} \\,\\mathrm{du}",
                     "location": "1.1",
                     "params": {
-                        "f": "1/4 * u ^ -1",
+                        "f": "(6 + 4 * (u / 4 - 3/2)) ^ -1 * (1/4)",
                         "g": "6 + 4 * x",
                         "var_name": "u"
                     },
@@ -516,9 +516,9 @@
                     "text": "1/2 + 7 * (INT u:[6,10]. 1/4 * u ^ -1)"
                 },
                 {
-                    "latex": "\\frac{1}{2} + -\\frac{7}{4} \\log{(6)} + \\frac{7}{4} \\log{(10)}",
+                    "latex": "\\frac{1}{2} + -\\frac{7}{4} \\log{(3)} + \\frac{7}{4} \\log{(5)}",
                     "reason": "Simplification",
-                    "text": "1/2 + -7/4 * log(6) + 7/4 * log(10)"
+                    "text": "1/2 + -7/4 * log(3) + 7/4 * log(5)"
                 }
             ],
             "name": "Exercise 15",

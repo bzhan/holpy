@@ -11,8 +11,11 @@ from sympy import expand_multinomial
 import pathlib
 import os
 import integral
+from logic import basic
 from integral import slagle
 from app.app import app
+
+basic.load_theory('interval_arith')
 
 
 @app.route("/api/integral-load-file-list", methods=['POST'])

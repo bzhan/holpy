@@ -41,9 +41,9 @@
                     "text": "INT v:[cos(39/200 * pi),1]. 2/39 * v ^ -1"
                 },
                 {
-                    "latex": "-\\frac{2}{39} \\log{(\\left| \\cos{(\\frac{39}{200} \\pi)} \\right|)}",
+                    "latex": "-\\frac{2}{39} \\log{(\\cos{(\\frac{39}{200} \\pi)})}",
                     "reason": "Simplification",
-                    "text": "-2/39 * log(abs(cos(39/200 * pi)))"
+                    "text": "-2/39 * log(cos(39/200 * pi))"
                 }
             ],
             "name": "Exercise 1",
@@ -69,9 +69,9 @@
                     "text": "INT u:[1,exp(1) + sin(1)]. u ^ -1"
                 },
                 {
-                    "latex": "\\log{(\\left| e + \\sin{(1)} \\right|)}",
+                    "latex": "\\log{(e + \\sin{(1)})}",
                     "reason": "Simplification",
-                    "text": "log(abs(exp(1) + sin(1)))"
+                    "text": "log(exp(1) + sin(1))"
                 }
             ],
             "name": "Exercise 2",

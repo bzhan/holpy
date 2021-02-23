@@ -244,6 +244,7 @@ class ExprTest(unittest.TestCase):
             ("-(11/21) + 2/3 * 0 ^ 6 + 1/7 * 0 ^ 7", "-11/21"),
             ("abs (2 + exp(2))", "2 + exp(2)"),
             ("abs (2 - exp(2))", "-2 + exp(2)"),
+            ("exp (log(2))", "2"),
         ]
 
         for s, res in test_data:

@@ -6967,6 +6967,15 @@
             }
         },
         {
+            "name": "log_pow_real",
+            "prop": "0 < x ⟶ 0 < p ⟶ log (x ^ p) = p * log x",
+            "ty": "thm",
+            "vars": {
+                "p": "real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
