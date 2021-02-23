@@ -304,7 +304,7 @@ class ElimAbsStep(IntegrationStep):
 
         return logs
 
-class TrigIndentityStep(IntegrationStep):
+class TrigIdentityStep(IntegrationStep):
     def __init__(self, e, rule_name, before_trig, after_trig, loc=[]):
         self.e = e
         self.rule_name = rule_name
