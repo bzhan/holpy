@@ -25,7 +25,7 @@ test_cases = {
         "Exercise 8" : "-3/4",
         "Exercise 9" : "-81/11 * 2 ^ (2/3) + 945/44 * 3 ^ (2/3)",
         "Exercise 10" : "1 + 1/4 * pi",
-        "Exercise 11" : "277/6 + -45 * exp(1) + -3/2 * exp(2) + 1/3 * exp(3) + -123 * log(abs(exp(1)))",
+        "Exercise 11" : "-461/6 + -45 * exp(1) + -3/2 * exp(2) + 1/3 * exp(3)",
         "Exercise 12" : "1/4",
         "Exercise 14" : "-1/8 * sqrt(3) + 1/6 * pi",
         "Exercise 15" : "1/4 * pi",
@@ -165,8 +165,8 @@ test_cases = {
         # "Exercise 8" : "-1 + -10 * log(3) + 10 * log(4)", # not solved
         "Exercise 9" : "-atan(2) + atan(3)",
         "Exercise 12" : "1/2 * log(2)",
-        "Exercise 14" : "-(log(2)) + 1 / 2 * log (abs (2 + 2 * exp(2)))",
-        "Exercise 16" : "-1/2 + 1/2 * exp(2) + log(2) + -1/2 * log (abs (2 + 2 * exp(2)))",
+        "Exercise 14" : "-(log(2)) + 1/2 * log (2 + 2 * exp(2))",
+        "Exercise 16" : "-1/2 + 1/2 * exp(2) + log(2) + -1/2 * log (2 + 2 * exp(2))",
         # "Exercise 17" : "-1/2 + log(2)", # proof.py line 397
         # "Exercise 20" : "log(2) + 1/2 * log(abs(2 * exp(2))) + -1/2 * log(abs(4 + 4 * exp(2)))",
         "Exercise 21" : "-1 + 1/4 * pi + exp(1) + -atan(exp(1))",

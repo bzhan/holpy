@@ -5,10 +5,14 @@ from decimal import Decimal
 from fractions import Fraction
 import copy
 
+from logic import basic
 from integral import expr
 from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt, Symbol,\
     VAR, CONST, OP, FUN, match, pi, Const
 from integral.parser import parse_expr
+
+basic.load_theory('transcendentals')
+
 
 class ExprTest(unittest.TestCase):
     def testPrintExpr(self):
@@ -238,6 +242,8 @@ class ExprTest(unittest.TestCase):
             ("sqrt(2 * cos(x) ^ 2)", "sqrt(2) * abs(cos(x))"),
             ("(2 * x^2) ^ (3/2)", "2 * sqrt(2) * abs(x) ^ 3"),
             ("-(11/21) + 2/3 * 0 ^ 6 + 1/7 * 0 ^ 7", "-11/21"),
+            ("abs (2 + exp(2))", "2 + exp(2)"),
+            ("abs (2 - exp(2))", "-2 + exp(2)"),
         ]
 
         for s, res in test_data:
