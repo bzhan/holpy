@@ -16,27 +16,10 @@ from data import real
 from data import set as hol_set
 from logic import auto
 from integral import expr
+from integral.expr import eval_hol_expr, eval_expr
 
 
 LESS, EQUAL, GREATER = range(3)
-
-def eval_hol_expr(t):
-    """Evaluate an HOL term of type real.
-
-    First try the exact evaluation with real_eval. If that fails, fall back
-    to approximate evaluation with real_approx_eval.
-
-    """
-    try:
-        res = real.real_eval(t)
-    except ConvException:
-        res = real.real_approx_eval(t)
-    
-    return res
-
-def eval_expr(e):
-    t = expr.expr_to_holpy(e)
-    return eval_hol_expr(t)
 
 def eval_inequality_expr(t):
     """Evaluate inequality."""

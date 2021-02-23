@@ -13,6 +13,7 @@ from numbers import Number
 from kernel.type import RealType
 from kernel import term
 from kernel.term import TFun
+from logic.conv import ConvException
 from data import real
 from data import set as hol_set
 from integral import parser
@@ -634,6 +635,11 @@ class Expr:
             a = self.args[0].to_const_poly()
             if a.is_fraction():
                 return poly.const_fraction(abs(a.get_fraction()))
+            elif self.args[0].is_constant():
+                if eval_expr(self.args[0]) >= 0:
+                    return a
+                else:
+                    return -a
             else:
                 return poly.const_singleton(self)
 
@@ -1756,3 +1762,21 @@ def holpy_to_expr(t):
         return csc(holpy_to_expr(t.arg))
     else:
         raise NotImplementedError
+
+def eval_hol_expr(t):
+    """Evaluate an HOL term of type real.
+
+    First try the exact evaluation with real_eval. If that fails, fall back
+    to approximate evaluation with real_approx_eval.
+
+    """
+    try:
+        res = real.real_eval(t)
+    except ConvException:
+        res = real.real_approx_eval(t)
+    
+    return res
+
+def eval_expr(e):
+    t = expr_to_holpy(e)
+    return eval_hol_expr(t)
