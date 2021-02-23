@@ -212,27 +212,27 @@ class HalfAngleIdentity(AlgorithmRule):
         for t, loc, _ in sin_cos_expr:
             new_trig = half * sin(Const(2) * t.args[0].args[0])
             e = e.replace_trig(t, new_trig)
-            steps.append(calc.TrigIndentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
+            steps.append(calc.TrigIdentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in cos_sin_expr:
             new_trig = half * sin(Const(2) * t.args[0].args[0])
             e = e.replace_trig(t, new_trig)
-            steps.append(calc.TrigIndentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
+            steps.append(calc.TrigIdentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in sin_power_expr:
             new_trig = half - half * cos(Const(2) * t.args[0].args[0])
             e = e.replace_trig(t, new_trig)
-            steps.append(calc.TrigIndentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
+            steps.append(calc.TrigIdentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in cos_power_expr:
             new_trig = half + half * cos(Const(2) * t.args[0].args[0])
             e = e.replace_trig(t, new_trig)
-            steps.append(calc.TrigIndentityStep(e, "TR7", t, new_trig, _loc+list(loc)))
+            steps.append(calc.TrigIdentityStep(e, "TR7", t, new_trig, _loc+list(loc)))
         for t, loc, _ in y_sin_cos_expr:
             new_trig = half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0])
             e = e.replace_trig(t, new_trig)
-            steps.append(calc.TrigIndentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
+            steps.append(calc.TrigIdentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         for t, loc, _ in y_cos_sin_expr:
             new_trig = half * t.args[0].args[0] * sin(Const(2) * t.args[1].args[0])
             e = e.replace_trig(t, new_trig)
-            steps.append(calc.TrigIndentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
+            steps.append(calc.TrigIdentityStep(e, "TR8", t, new_trig, _loc+list(loc)))
         return e, steps
 
 class TrigIdentity(AlgorithmRule):
@@ -266,20 +266,20 @@ class TrigIdentity(AlgorithmRule):
             sin_coeff = t.args[0]
             body = t.args[1].args[1].args[0].args[0]
             e = e.replace_trig(t, sin_coeff * (cos(body) ** Const(2)))
-            steps.append(calc.TrigIndentityStep(e, "TR5", t, sin_coeff * (cos(body) ** Const(2)), loc)) 
+            steps.append(calc.TrigIdentityStep(e, "TR5", t, sin_coeff * (cos(body) ** Const(2)), loc)) 
         for t, loc in cos_power_expr:
             cos_coeff = t.args[0]
             body = t.args[1].args[1].args[0].args[0]
             e = e.replace_trig(t, cos_coeff * (sin(body) ** Const(2)))
-            steps.append(calc.TrigIndentityStep(e, "TR6", t, cos_coeff * (sin(body) ** Const(2)), loc))
+            steps.append(calc.TrigIdentityStep(e, "TR6", t, cos_coeff * (sin(body) ** Const(2)), loc))
         for t, loc, _ in sin_power1_expr:
             body = t.args[1].args[0].args[0].args[0]
             e = e.replace_trig(t, (cos(body) ** Const(2)))
-            steps.append(calc.TrigIndentityStep(e, "TR5", t, cos(body) ** Const(2), loc)) 
+            steps.append(calc.TrigIdentityStep(e, "TR5", t, cos(body) ** Const(2), loc)) 
         for t, loc, _ in cos_power1_expr:
             body = t.args[1].args[0].args[0].args[0]
             e = e.replace_trig(t, (sin(body) ** Const(2)))
-            steps.append(calc.TrigIndentityStep(e, "TR6", t, sin(body) ** Const(2), loc))
+            steps.append(calc.TrigIdentityStep(e, "TR6", t, sin(body) ** Const(2), loc))
         return e, steps
 
 
@@ -362,19 +362,19 @@ class TrigFunction(HeuristicRule):
 
         for t, loc, _ in tan_expr:
             e = e.replace_trig(t, sin(t.args[0])/cos(t.args[0]))
-            steps.append(calc.TrigSubstitutionStep(e, loc, t, sin(t.args[0])/cos(t.args[0]), "TR2"))          
+            steps.append(calc.TrigIdentityStep(e, "TR2", t, sin(t.args[0])/cos(t.args[0]), loc))          
 
         for t, loc, _ in cot_expr:
             e = e.replace_trig(t, cos(t.args[0])/sin(t.args[0]))
-            steps.append(calc.TrigSubstitutionStep(e, loc, t, cos(t.args[0])/sin(t.args[0]), "TR2"))  
+            steps.append(calc.TrigIndetityStep(e, "TR2", t, cos(t.args[0])/sin(t.args[0]), loc))  
 
         for t, loc, _ in sec_expr:
             e = e.replace_trig(t, Const(1)/cos(t.args[0]))
-            steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/cos(t.args[0]), "TR1"))
+            steps.append(calc.TrigIdentityStep(e, "TR1", t, Const(1)/cos(t.args[0]), loc))
 
         for t, loc, _ in csc_expr:
             e = e.replace_trig(t, Const(1)/sin(t.args[0]))
-            steps.append(calc.TrigSubstitutionStep(e, loc, t, Const(1)/sin(t.args[0]), "TR1"))
+            steps.append(calc.TrigIndetityStep(e, "TR1", t, Const(1)/sin(t.args[0]), loc))
 
         return e, steps
 
@@ -472,13 +472,13 @@ class TrigFunction(HeuristicRule):
         if step1:
             res.append((res1, step1))
 
-        res2, step2 = self.tan_sec(e)
-        if step2:
-            res.append((res2, step2))
+        # res2, step2 = self.tan_sec(e)
+        # if step2:
+        #     res.append((res2, step2))
 
-        res3, step3 = self.cot_csc(e)
-        if step3:
-            res.append((res3, step3))
+        # res3, step3 = self.cot_csc(e)
+        # if step3:
+        #     res.append((res3, step3))
  
         return res
 
@@ -488,7 +488,7 @@ class HeuristicTrigonometricSubstitution(HeuristicRule):
     The substitution rules:
     1) elf{sin(v),cos^2(v)}cos^{2n+1}(v) ==> u = sin(v);
     2) elf{cos(v),sin^2(v)}sin^{2n+1}(v) ==> u = cos(v);
-    3) elf{tan(v),sec^2(v)}              ==> u = tan(v);
+    3) elf{tan(v),sec^2(v)}              ==> u = tan(v);(desparated)
     4) elf{cot(v),csc^2(v)}              ==> u = cot(v);
     5) elf{sec(v),tan^2(v)}tan^{2n+1}(v) ==> u = sec(v);
     6) elf{csc(v),cot^2(v)}              ==> u = csc(v);
@@ -601,11 +601,11 @@ class HeuristicTrigonometricSubstitution(HeuristicRule):
             _, b = is_pat2(e_body)
             result, step = substitution(e, cos(b))
             return [(result, step)]
-        elif is_pat3(e_body)[0]:
-            """Substitute tan(v) by u."""
-            _, b = is_pat3(e_body)
-            result, step = substitution(e, tan(b))
-            return [(result, step)]
+        # elif is_pat3(e_body)[0]:
+        #     """Substitute tan(v) by u."""
+        #     _, b = is_pat3(e_body)
+        #     result, step = substitution(e, tan(b))
+        #     return [(result, step)]
         elif is_pat4(e_body)[0]:
             """Substitute cot(v) by u."""
             _, b = is_pat4(e_body)
@@ -886,7 +886,7 @@ class HeuristicRationalSineCosine(HeuristicRule):
 
 
 heuristic_rules = [
-    # TrigFunction,
+    TrigFunction,
     HeuristicTrigonometricSubstitution,
     HeuristicSubstitution,
     HeuristicIntegrationByParts,

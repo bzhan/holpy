@@ -100,7 +100,7 @@ test_cases = {
 
     "UCDAVIS/Trigonometric": {
         "Exercise 1" : "1/3",
-        # "Exercise 2" : "1/10 * log(2)", # auto.py line 302
+        "Exercise 2" : "-(1 / 5) * log (abs (1 / 2 * sqrt(2)))", # auto.py line 302 # slagle HeuristicTrigonometricSubstitution
         "Exercise 3" : "5/4",
         "Exercise 4" : "1 + 1/2 * pi",
         "Exercise 5" : "3/4 * pi + 3/20 * sin(-pi)",
@@ -268,6 +268,7 @@ class RunSlagle(unittest.TestCase):
                 if item["name"] in test_cases[filename]:
                     steps = slagle_infos(item["name"], item["problem"])
                     target = test_cases[filename][item['name']]
+                    rules.check_item(steps, target)
                     proof.translate_item(steps, target, debug=True)
 
 
