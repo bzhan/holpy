@@ -193,7 +193,7 @@ class ExprTest(unittest.TestCase):
             ("-u/2","-1/2 * u"),
             ("exp(-u/2)", "exp(-1/2 * u)"),
             ("log(exp(2))", "2"),
-            ("log(x^2)", "log(x ^ 2)"),
+            ("log(x^2)", "2 * log(x)"),
             ("sqrt(cos(x) - cos(x)^3)", "sqrt(cos(x) + -(cos(x) ^ 3))"),
             ("sqrt(cos(x) * (1 - cos(x)^2))", "sqrt(cos(x) + -(cos(x) ^ 3))"),
             ("1/2 * u ^ ((-1)) * 2 * u", "1"),

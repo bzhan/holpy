@@ -955,28 +955,28 @@
                     "text": "1/2 * pi + ((INT u:[-1,0]. u * (1 + u ^ 2) ^ -1) + (INT u:[0,1]. u * (1 + u ^ 2) ^ -1))"
                 },
                 {
-                    "_latex_reason": "Substitute \\(v\\) for \\(1 + u ^ 2\\)",
-                    "latex": "\\frac{1}{2} \\pi + (\\int_{1}^{2} \\frac{-\\frac{1}{2}}{1 + -1 + v} \\,\\mathrm{dv}) + {(\\int_{0}^{1} \\frac{u}{1 + u ^ 2} \\,\\mathrm{du})}",
+                    "_latex_reason": "Substitute \\(v\\) for \\(u ^ 2 + 1\\)",
+                    "latex": "\\frac{1}{2} \\pi + (\\int_{1}^{2} \\frac{-\\frac{1}{2}}{v} \\,\\mathrm{dv}) + {(\\int_{0}^{1} \\frac{u}{1 + u ^ 2} \\,\\mathrm{du})}",
                     "location": "1.0",
                     "params": {
-                        "f": "sqrt(v - 1) * (1 + sqrt(v - 1) ^ 2) ^ -1 * (1/2 * (-1 + v) ^ (-1/2))",
-                        "g": "1 + u ^ 2",
+                        "f": "1 / (2 * v)",
+                        "g": "u ^ 2 + 1",
                         "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "1/2 * pi + ((INT v:[1,2]. -1/2 * (1 + (-1 + v)) ^ -1) + (INT u:[0,1]. u * (1 + u ^ 2) ^ -1))"
+                    "text": "1/2 * pi + ((INT v:[1,2]. -1/2 * v ^ -1) + (INT u:[0,1]. u * (1 + u ^ 2) ^ -1))"
                 },
                 {
-                    "_latex_reason": "Substitute \\(v\\) for \\(1 + u ^ 2\\)",
-                    "latex": "\\frac{1}{2} \\pi + (\\int_{1}^{2} \\frac{-\\frac{1}{2}}{1 + -1 + v} \\,\\mathrm{dv}) + {(\\int_{1}^{2} \\frac{\\frac{1}{2}}{1 + -1 + v} \\,\\mathrm{dv})}",
+                    "_latex_reason": "Substitute \\(v\\) for \\(u ^ 2 + 1\\)",
+                    "latex": "\\frac{1}{2} \\pi + (\\int_{1}^{2} \\frac{-\\frac{1}{2}}{v} \\,\\mathrm{dv}) + {(\\int_{1}^{2} \\frac{\\frac{1}{2}}{v} \\,\\mathrm{dv})}",
                     "location": "1.1",
                     "params": {
-                        "f": "sqrt(v - 1) * (1 + sqrt(v - 1) ^ 2) ^ -1 * (1/2 * (-1 + v) ^ (-1/2))",
-                        "g": "1 + u ^ 2",
+                        "f": "1 / (2 * v)",
+                        "g": "u ^ 2 + 1",
                         "var_name": "v"
                     },
                     "reason": "Substitution",
-                    "text": "1/2 * pi + ((INT v:[1,2]. -1/2 * (1 + (-1 + v)) ^ -1) + (INT v:[1,2]. 1/2 * (1 + (-1 + v)) ^ -1))"
+                    "text": "1/2 * pi + ((INT v:[1,2]. -1/2 * v ^ -1) + (INT v:[1,2]. 1/2 * v ^ -1))"
                 },
                 {
                     "latex": "\\frac{1}{2} \\pi",

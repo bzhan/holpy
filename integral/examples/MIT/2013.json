@@ -9,58 +9,53 @@
                     "text": "INT x:[1,exp(1)]. log(x ^ 2) - 2 * log(2 * x)"
                 },
                 {
-                    "latex": "2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} - 2 \\int_{1}^{e} \\log{(2 x)} \\,\\mathrm{dx}",
+                    "latex": "2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} + -2 \\int_{1}^{e} \\log{(2 x)} \\,\\mathrm{dx}",
                     "reason": "Simplification",
-                    "text": "2 * (INT x:[1,exp(1)]. log(x)) - 2 * (INT x:[1,exp(1)]. log(2 * x))"
+                    "text": "2 * (INT x:[1,exp(1)]. log(x)) + -2 * (INT x:[1,exp(1)]. log(2 * x))"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(2 x\\)",
-                    "latex": "2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} - 2 \\int_{2}^{2 e} \\frac{\\log{(u)}}{2} \\,\\mathrm{du}",
+                    "latex": "2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} + -2 \\int_{2}^{2 e} \\frac{\\log{(u)}}{2} \\,\\mathrm{du}",
                     "location": "1.1",
                     "params": {
-                        "f": "1/2 * log(u)",
+                        "f": "log(u) / 2",
                         "g": "2 * x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "2 * (INT x:[1,exp(1)]. log(x)) - 2 * (INT u:[2,2 * exp(1)]. 1/2 * log(u))"
+                    "text": "2 * (INT x:[1,exp(1)]. log(x)) + -2 * (INT u:[2,2 * exp(1)]. 1/2 * log(u))"
                 },
                 {
-                    "latex": "2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} - (\\int_{2}^{2 e} \\log{(u)} \\,\\mathrm{du})",
+                    "latex": "2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} + -(\\int_{2}^{2 e} \\log{(u)} \\,\\mathrm{du})",
                     "reason": "Simplification",
-                    "text": "2 * (INT x:[1,exp(1)]. log(x)) - (INT u:[2,2 * exp(1)]. log(u))"
+                    "text": "2 * (INT x:[1,exp(1)]. log(x)) + -(INT u:[2,2 * exp(1)]. log(u))"
                 },
                 {
                     "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = x\\)",
-                    "latex": "2 ((\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,\\mathrm{dx})) - (\\int_{2}^{2 e} \\log{(u)} \\,\\mathrm{du})",
+                    "latex": "2 ((\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - {(\\int_{1}^{e} 1 \\,\\mathrm{dx})}) + -(\\int_{2}^{2 e} \\log{(u)} \\,\\mathrm{du})",
                     "location": "0.1",
                     "params": {
                         "parts_u": "log(x)",
                         "parts_v": "x"
                     },
                     "reason": "Integrate by parts",
-                    "text": "2 * (([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1)) - (INT u:[2,2 * exp(1)]. log(u))"
-                },
-                {
-                    "latex": "2 - (\\int_{2}^{2 e} \\log{(u)} \\,\\mathrm{du})",
-                    "reason": "Simplification",
-                    "text": "2 - (INT u:[2,2 * exp(1)]. log(u))"
+                    "text": "2 * (([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1)) + -(INT u:[2,2 * exp(1)]. log(u))"
                 },
                 {
                     "_latex_reason": "Integrate by parts, \\(u = \\log{(u)}, v = u\\)",
-                    "latex": "2 - ((\\left. u \\log{(u)} \\right\\vert_{u=2}^{2 e}) - (\\int_{2}^{2 e} 1 \\,\\mathrm{du}))",
-                    "location": "1",
+                    "latex": "2 ((\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - {(\\int_{1}^{e} 1 \\,\\mathrm{dx})}) + -((\\left. u \\log{(u)} \\right\\vert_{u=2}^{2 e}) - {(\\int_{2}^{2 e} 1 \\,\\mathrm{du})})",
+                    "location": "1.0",
                     "params": {
                         "parts_u": "log(u)",
                         "parts_v": "u"
                     },
                     "reason": "Integrate by parts",
-                    "text": "2 - (([u * log(u)]_u=2,2 * exp(1)) - (INT u:[2,2 * exp(1)]. 1))"
+                    "text": "2 * (([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1)) + -(([u * log(u)]_u=2,2 * exp(1)) - (INT u:[2,2 * exp(1)]. 1))"
                 },
                 {
-                    "latex": "2 \\log{(2)} + 2 e + (-2 \\log{(2 e)}) e",
+                    "latex": "(-2 e) \\log{(2)} + 2 \\log{(2)}",
                     "reason": "Simplification",
-                    "text": "2 * log(2) + 2 * exp(1) + -2 * log(2 * exp(1)) * exp(1)"
+                    "text": "-2 * exp(1) * log(2) + 2 * log(2)"
                 }
             ],
             "name": "Exercise 1",
@@ -768,16 +763,16 @@
                     "text": "1/2 + -(INT x:[0,1]. x * (1 + x ^ 2) ^ -1)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(1 + x ^ 2\\)",
-                    "latex": "\\frac{1}{2} + -(\\int_{1}^{2} \\frac{\\frac{1}{2}}{1 + -1 + u} \\,\\mathrm{du})",
+                    "_latex_reason": "Substitute \\(u\\) for \\(x ^ 2 + 1\\)",
+                    "latex": "\\frac{1}{2} + -(\\int_{1}^{2} \\frac{\\frac{1}{2}}{u} \\,\\mathrm{du})",
                     "location": "1.0",
                     "params": {
-                        "f": "sqrt(u - 1) * (1 + sqrt(u - 1) ^ 2) ^ -1 * (1/2 * (-1 + u) ^ (-1/2))",
-                        "g": "1 + x ^ 2",
+                        "f": "1 / (2 * u)",
+                        "g": "x ^ 2 + 1",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "1/2 + -(INT u:[1,2]. 1/2 * (1 + (-1 + u)) ^ -1)"
+                    "text": "1/2 + -(INT u:[1,2]. 1/2 * u ^ -1)"
                 },
                 {
                     "latex": "\\frac{1}{2} + -\\frac{1}{2} \\log{(2)}",

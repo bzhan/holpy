@@ -224,7 +224,7 @@ def integral_substitution():
         })
     try:
         new_problem = rule.eval(problem)
-        new_problem_body = rule.f
+        new_problem_body = str(rule.f)
     except:
         return jsonify({
             'flag': False,
@@ -236,7 +236,7 @@ def integral_substitution():
         'reason': "Substitution",
         'location': data['location'],
         'params': {
-            'f': str(new_problem_body),
+            'f': new_problem_body,
             'g': str(expr),
             'var_name': str(data['var_name'])
         },

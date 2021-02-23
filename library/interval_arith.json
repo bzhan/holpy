@@ -937,6 +937,21 @@
             }
         },
         {
+            "name": "real_power_interval_neg_lopen",
+            "prop": [
+                "p < 0 ",
+                "⟶ a ≥ 0 ",
+                "   ⟶ x ∈ real_lopen_interval a b ⟶ x ^ p ∈ real_ropen_interval (b ^ p) (a ^ p)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "p": "real",
+                "x": "real"
+            }
+        },
+        {
             "name": "log_interval_closed",
             "prop": [
                 "a > 0 ",
@@ -1074,7 +1089,7 @@
             "name": "cos_interval_pos_open",
             "prop": [
                 "a ≥ -pi / 2 ",
-                "⟶ b ≤ pi / 2 ⟶ x ∈ real_open_interval a b ⟶ cos x ∈ real_closed_interval 0 1"
+                "⟶ b ≤ pi / 2 ⟶ x ∈ real_open_interval a b ⟶ cos x ∈ real_lopen_interval 0 1"
             ],
             "ty": "thm",
             "vars": {

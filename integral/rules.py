@@ -260,16 +260,17 @@ class Substitution1(Rule):
         e: Expr, the integral on which to perform substitution.
 
         Returns:
-        A pair of expressions (e', f), where e' is the new integral, and
-        f is one of the parameter used to specify the substitution.
+        The new integral e', and stores in self.f the parameter used to
+        specify the substitution.
 
         """
         var_name = parser.parse_expr(self.var_name)
         var_subst = self.var_subst
         dfx = expr.deriv(e.var, var_subst)
-        # try:
-        #     body = holpy_style(apart(sympy_style(e.body/dfx)))
-        # except:
+        # print(e.body/dfx)
+        # print(holpy_style(apart(sympy_style(e.body/dfx))))
+        # print(holpy_style(sympy_style(e.body/dfx)))
+        # print(var_subst)
         body = holpy_style(sympy_style(e.body/dfx))
         body_subst = body.replace_trig(var_subst, var_name)
         if body_subst == body:
@@ -333,16 +334,24 @@ class UnfoldPower(Rule):
 
 class Equation(Rule):
     """Apply substitution for equal expressions"""
-    def __init__(self, new_expr):
+    def __init__(self, new_expr, denom=None):
         assert isinstance(new_expr, Expr)
         self.new_expr = new_expr
         self.name = "Equation"
+        self.denom = denom
     
     def eval(self, e):
-        if self.new_expr.normalize() != e.normalize():
+        if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
+           expand_multinomial(expr.sympy_style(e.normalize()).simplify()):
             raise AssertionError("Rewriting by equation failed")
-        else:
-            return self.new_expr
+
+        # if self.denom is None:
+        #     if self.new_expr.normalize() != e.normalize():
+        #         raise AssertionError("Rewriting by equation failed")
+        # else:
+        #     if (self.new_expr * self.denom).normalize() != (e * self.denom).normalize():
+        #         raise AssertionError("Rewriting by equation failed")
+        return self.new_expr
 
 class IntegrationByParts(Rule):
     """Apply integration by parts."""
@@ -534,6 +543,7 @@ def check_item(item, target=None, *, debug=False):
                 result = OnLocation(rule, step['location']).eval(current)
             else:
                 result = rule.eval(current)
+            rule.f = parser.parse_expr(str(rule.f))  # trick to eliminate difference in printing
             if rule.f != f:
                 print("Expected f: %s" % f)
                 print("Actual f: %s" % rule.f)
@@ -557,7 +567,10 @@ def check_item(item, target=None, *, debug=False):
 
         elif reason == 'Rewrite':
             rhs = parser.parse_expr(step['params']['rhs'])
-            rule = Equation(rhs)
+            if 'denom' in step['params']:
+                rule = Equation(rhs, parser.parse_expr(step['params']['denom']))
+            else:
+                rule = Equation(rhs)
             if 'location' in step:
                 result = OnLocation(rule, step['location']).eval(current)
             else:

@@ -4942,6 +4942,15 @@
         },
         {
             "name": "exp_log_inv",
+            "prop": "0 < x ⟶ exp (-(of_nat c) * log x) = 1 / x ^ (of_nat::nat ⇒ nat) c",
+            "ty": "thm",
+            "vars": {
+                "c": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "exp_log_inv2",
             "prop": "0 < x ⟶ exp (-1 * log x) = 1 / x",
             "ty": "thm",
             "vars": {
@@ -4950,7 +4959,7 @@
         },
         {
             "name": "exp_log_pow",
-            "prop": "exp (of_nat n * log x) = x ^ (of_nat::nat ⇒ nat) n",
+            "prop": "0 < x ⟶ exp (of_nat n * log x) = x ^ (of_nat::nat ⇒ nat) n",
             "ty": "thm",
             "vars": {
                 "n": "nat",

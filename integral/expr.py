@@ -714,6 +714,8 @@ class Expr:
             a, = self.args
             if a.ty == FUN and a.func_name == "exp":
                 return a.args[0].to_poly()
+            elif a.ty == OP and a.op == "^" and a.args[1].is_constant():
+                return Polynomial([Monomial(a.args[1].to_const_poly(), [(log(a.args[0].normalize()), 1)])])
             else:
                 return poly.singleton(log(a.normalize()))
 

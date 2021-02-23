@@ -659,7 +659,7 @@ def get_bounds_proof(t, var_range):
         assert t.name in var_range, "get_bounds_proof: variable %s not found" % t.name
         return var_range[t.name]
 
-    elif t.is_number():
+    elif t.is_number() or t == real.pi:
         return apply_theorem('const_interval', inst=Inst(x=t))
     
     elif t.is_plus():
@@ -788,7 +788,12 @@ def get_bounds_proof(t, var_range):
                 nonneg_a = auto.auto_solve(real_nonneg(a))
                 pt = apply_theorem(
                     'real_power_interval_neg_open', neg_p, nonneg_a, pt)
+            elif is_mem_lopen(pt):
+                nonneg_a = auto.auto_solve(real_nonneg(a))
+                pt = apply_theorem(
+                    'real_power_interval_neg_lopen', neg_p, nonneg_a, pt)
             else:
+                print(pt)
                 raise NotImplementedError
         else:
             raise NotImplementedError

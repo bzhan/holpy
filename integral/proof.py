@@ -232,14 +232,27 @@ auto.add_global_autos_norm(
     ])
 )
 
+class norm_exp_conv(Conv):
+    """Normalization of an expression exp n."""
+    def get_proof_term(self, t):
+        if not t.is_comb('exp', 1):
+            raise ConvException('norm_log_conv')
+
+        if t.arg.is_plus() and not t.arg.arg1.is_number():
+            return refl(t).on_rhs(rewr_conv('real_exp_add'))
+        
+        return refl(t)
+
+auto.add_global_autos_norm(real.exp, norm_exp_conv())
+
 auto.add_global_autos_norm(
     real.exp,
     auto.norm_rules([
         'real_exp_0',
         'exp_log',
         'exp_log_inv',
+        'exp_log_inv2',
         'exp_log_pow',
-        # 'real_exp_add',
     ])
 )
 
@@ -974,7 +987,7 @@ def translate_item(item, target=None, *, debug=False):
             # Rewrite to another expression
             rhs = parse_expr(step['params']['rhs'])
             rhs = expr_to_holpy(rhs)
-            cv = simplify_rewr_conv(rhs)
+            cv = fraction_rewr_conv(rhs)
 
         elif reason == 'Rewrite fraction':
             # Rewrite by multiplying a denominator
