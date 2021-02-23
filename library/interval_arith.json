@@ -1084,6 +1084,26 @@
             }
         },
         {
+            "name": "atn_interval_closed",
+            "prop": "x ∈ real_closed_interval a b ⟶ atn x ∈ real_closed_interval (atn a) (atn b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "atn_interval_open",
+            "prop": "x ∈ real_open_interval a b ⟶ atn x ∈ real_open_interval (atn a) (atn b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
             "name": "split_interval_closed",
             "prop": [
                 "a ≤ c ",

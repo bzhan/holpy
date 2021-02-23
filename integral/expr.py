@@ -1690,6 +1690,7 @@ def expr_to_holpy(expr):
         elif expr.func_name == 'atan':
             return real.atn(a)
         else:
+            print(expr)
             raise NotImplementedError
     elif expr.is_deriv():
         raise NotImplementedError

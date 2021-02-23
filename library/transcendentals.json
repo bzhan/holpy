@@ -4941,6 +4941,23 @@
             }
         },
         {
+            "name": "exp_log_inv",
+            "prop": "0 < x ⟶ exp (-1 * log x) = 1 / x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "exp_log_pow",
+            "prop": "exp (of_nat n * log x) = x ^ (of_nat::nat ⇒ nat) n",
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],

@@ -106,7 +106,7 @@ test_cases = {
         "Exercise 5" : "3/4 * pi + 3/20 * sin(-pi)",
         # "Exercise 6" : "1 + 3/4 * pi + -2 * log(1/2)", # auto.py line 302
         # "Exercise 7" : "2/3 + -(0 ^ (1/2)) + 1/3 * 0 ^ (3/2)", # auto.py line 161
-        "Exercise 8" : "-1/5 * log(15) + 1/5 * log(20)",
+        "Exercise 8" : "2/5 * log(2) + -(1/5) * log(3)",
         # "Exercise 12" : "-16/3 + 4 * sqrt(2) * sqrt(3)", # inequality.py line 799
         # "Exercise 13" : "-1/4 + -1/2 * log(1/2)", # auto.py line 302
         "Exercise 15" : "-exp(4) + exp(5)", # inequality.py line 875
@@ -137,15 +137,15 @@ test_cases = {
         "Exercise 5" : "1/16 + -5/16 * exp(-4)",
         "Exercise 8" : "-1 + 1/2 * pi",
         "Exercise 9" : "-5/27 * exp(3) + 26/27 * exp(6)",
-        # "Exercise 10" : "1/16 + 3/16 * exp(4) + 1/4 * exp(4) * log(5) + -1/4 * log(5)", # proof.py line 397
+        "Exercise 10" : "1/16 + 3/16 * exp(4) + 1/4 * exp(4) * log(5) + -1/4 * log(5)",
         "Exercise 11" : "-2 + exp(1)",
         "Exercise 12" : "6 + -2 * exp(1)",
-        # "Exercise 13" : "-8/5", # auto.py line 302
+        "Exercise 13" : "-8/5",
         # "Exercise 14" : "1/8", # proof.py line 397
         "Exercise 15" : "2 + -5 * exp(-1)",
-        "Exercise 16" : "1/3", # inequality.py line 875
+        "Exercise 16" : "1/3",
         "Exercise 17" : "-1/2 + 1/32 * pi ^ 2 * sin(1/16 * pi ^ 2) + 1/2 * cos(1/16 * pi ^ 2)",
-        # "Exercise 18" : "-8/135 * sqrt(2) + 5/27 * sqrt(5)", # auto.py line 302
+        "Exercise 18" : "-8/135 * sqrt(2) + 5/27 * sqrt(5)", # auto.py line 302
         # "Exercise 19" : "-5/36 + -1/2 * log(1/9) + 1/2 * log(1/6)", # proof.py line 397
         "Exercise 20" : "1/3 * cos(1) + -1/3 * exp(3) * cos(exp(3)) + -1/3 * sin(1) + 1/3 * sin(exp(3))", # inequality.py line 875
 
@@ -158,19 +158,19 @@ test_cases = {
 
     "UCDAVIS/LogAndArctangent": {
         "Exercise 1" : "3/2 + 3 * log(2)",
-        "Exercise 2" : "-7 * log(5) + 7 * log(6)",
-        # "Exercise 4" : "1/2 * log(1/5) + -1/2 * log(1/4)", # proof.py line 1010
+        "Exercise 2" : "7 * log(2) + 7 * log(3) + -7 * log(5)",
+        "Exercise 4" : "log(2) + -(1/2) * log(5)",
         # "Exercise 5" : "26/3 + -8 * log(3)", # not solved
         # "Exercise 7" : "-log(3) + log(4)", # not solved
         # "Exercise 8" : "-1 + -10 * log(3) + 10 * log(4)", # not solved
         "Exercise 9" : "-atan(2) + atan(3)",
-        "Exercise 12" : "-1/2 * log(2) + 1/2 * log(4)",
-        "Exercise 14" : "-1/2 * log(4) + 1/2 * log(abs(2 + 2 * exp(2)))", # inequality.py line 875
-        # "Exercise 16" : "-1/2 + 1/2 * exp(2) + 1/2 * log(4) + -1/2 * log(abs(2 + 2 * exp(2)))", # inequality.py line 875
+        "Exercise 12" : "1/2 * log(2)",
+        "Exercise 14" : "-(log(2)) + 1 / 2 * log (abs (2 + 2 * exp(2)))",
+        "Exercise 16" : "-1/2 + 1/2 * exp(2) + log(2) + -1/2 * log (abs (2 + 2 * exp(2)))",
         # "Exercise 17" : "-1/2 + log(2)", # proof.py line 397
-        # "Exercise 20" : "-1/2 * log(2) + 1/2 * log(8) + 1/2 * log(abs(2 * exp(2))) + -1/2 * log(abs(4 + 4 * exp(2)))", # # inequality.py line 875
-        # "Exercise 21" : "-1 + 1/4 * pi + exp(1) + -atan(exp(1))", # inequality.py line 875
-        
+        # "Exercise 20" : "log(2) + 1/2 * log(abs(2 * exp(2))) + -1/2 * log(abs(4 + 4 * exp(2)))",
+        "Exercise 21" : "-1 + 1/4 * pi + exp(1) + -atan(exp(1))",
+
         # Exercise 3 Timeout!
         # Exercise 6 Timeout!
         # Exercise 10 Timeout!
@@ -213,10 +213,10 @@ file_names = [
     "MIT/2020",
     "UCDAVIS/usubstitution",
     "UCDAVIS/Exponentials",
-    # "UCDAVIS/Trigonometric",
-    # "UCDAVIS/Byparts",
-    # "UCDAVIS/LogAndArctangent",
-    # "UCDAVIS/PartialFraction",
+    "UCDAVIS/Trigonometric",
+    "UCDAVIS/Byparts",
+    "UCDAVIS/LogAndArctangent",
+    "UCDAVIS/PartialFraction",
 ]
 
 class RunSlagle(unittest.TestCase):

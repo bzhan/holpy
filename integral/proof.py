@@ -237,6 +237,9 @@ auto.add_global_autos_norm(
     auto.norm_rules([
         'real_exp_0',
         'exp_log',
+        'exp_log_inv',
+        'exp_log_pow',
+        # 'real_exp_add',
     ])
 )
 

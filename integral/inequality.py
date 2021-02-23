@@ -892,7 +892,18 @@ def get_bounds_proof(t, var_range):
             raise NotImplementedError
         return norm_mem_interval(pt)
 
+    elif t.head == real.atn:
+        pt = get_bounds_proof(t.arg, var_range)
+        if is_mem_closed(pt):
+            pt = apply_theorem('atn_interval_closed', pt)
+        elif is_mem_open(pt):
+            pt = apply_theorem('atn_interval_open', pt)
+        else:
+            raise NotImplementedError
+        return norm_mem_interval(pt)
+
     else:
+        print("Cannot deal with", t)
         raise NotImplementedError
 
 
