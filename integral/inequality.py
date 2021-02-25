@@ -677,8 +677,11 @@ def get_bounds_proof(t, var_range):
             pt = apply_theorem('add_interval_closed_lopen', pt1, pt2)
         elif is_mem_closed(pt1) and is_mem_ropen(pt2):
             pt = apply_theorem('add_interval_closed_ropen', pt1, pt2)
+        elif is_mem_ropen(pt1) and is_mem_closed(pt2):
+            pt = apply_theorem('add_interval_closed_ropen', pt2, pt1)
+            pt = pt.on_prop(arg1_conv(rewr_conv('real_add_comm')))
         else:
-            raise NotImplementedError
+            raise NotImplementedError('get_bounds: %s, %s' % (pt1, pt2))
         return norm_mem_interval(pt)
 
     elif t.is_uminus():
@@ -714,6 +717,18 @@ def get_bounds_proof(t, var_range):
             if eval_hol_expr(a) >= 0 and eval_hol_expr(c) >= 0 and is_mem_open(pt1) and is_mem_open(pt2):
                 pt = apply_theorem(
                     'mult_interval_pos_pos_open', auto.auto_solve(real_nonneg(a)),
+                    auto.auto_solve(real_nonneg(c)), pt1, pt2)
+            elif eval_hol_expr(a) >= 0 and eval_hol_expr(c) >= 0 and is_mem_closed(pt1) and is_mem_closed(pt2):
+                pt = apply_theorem(
+                    'mult_interval_pos_pos_closed', auto.auto_solve(real_nonneg(a)),
+                    auto.auto_solve(real_nonneg(c)), pt1, pt2)
+            elif eval_hol_expr(a) >= 0 and eval_hol_expr(c) >= 0 and is_mem_lopen(pt1) and is_mem_ropen(pt2):
+                pt = apply_theorem(
+                    'mult_interval_pos_pos_lopen_ropen', auto.auto_solve(real_nonneg(a)),
+                    auto.auto_solve(real_nonneg(c)), pt1, pt2)
+            elif eval_hol_expr(b) <= 0 and eval_hol_expr(c) >= 0 and is_mem_open(pt1) and is_mem_open(pt2):
+                pt = apply_theorem(
+                    'mult_interval_neg_pos_open', auto.auto_solve(real_nonpos(b)),
                     auto.auto_solve(real_nonneg(c)), pt1, pt2)
             else:
                 raise NotImplementedError('get_bounds: %s, %s' % (pt1, pt2))
@@ -924,7 +939,15 @@ class IntervalInequalityMacro(Macro):
         var_range = {var_name: pts[0]}
 
         if goal.is_not() and goal.arg.is_equals():
-            pt1 = get_bounds_proof(goal.arg.arg1, var_range)
+            if expr.is_polynomial(expr.holpy_to_expr(goal.arg.arg1)):
+                factored = expr.expr_to_holpy(expr.factor_polynomial(expr.holpy_to_expr(goal.arg.arg1)))
+                if factored.is_times() and factored != goal.arg.arg1:
+                    eq_pt = auto.auto_solve(Eq(factored, goal.arg.arg1))
+                    pt1 = get_bounds_proof(factored, var_range).on_prop(arg1_conv(rewr_conv(eq_pt)))
+                else:
+                    pt1 = get_bounds_proof(goal.arg.arg1, var_range)
+            else:
+                pt1 = get_bounds_proof(goal.arg.arg1, var_range)
             pt2 = get_bounds_proof(goal.arg.arg, var_range)
             try:
                 pt = combine_interval_bounds(pt1, pt2)

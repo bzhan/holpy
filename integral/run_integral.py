@@ -59,11 +59,11 @@ test_cases = {
         "Exercise 5": "sqrt(3) * pi",
         "Exercise 6": "18 + cos(-3) + -cos(3)",
         "Exercise 7": "log(2)",
-        # "Exercise 8": "5 / 2",
-        # "Exercise 9": None,  # out of range
+        "Exercise 8": "5 / 2",
+        "Exercise 9": "-1",
         "Exercise 10": "1 + log(1 + -exp(-2)) + -log(1 + -exp(-1))",
         "Exercise 11": "1 / 8 * pi",
-        # "Exercise 12": None,  # out of range
+        "Exercise 12": "2 + -2 * cos(-pi)",
         "Exercise 13": "1 + -1/4 * pi",
         # "Exercise 14": None,  # out of range
         "Exercise 15": "24 + -8 * exp(1)",
@@ -211,7 +211,7 @@ test_cases = {
         # "Exercise 10": "-1/8 + -15/4 * log(2) + 3/4 * log(3) + 4/3 * log(5)",
         # "Exercise 11": "53/90 + 2/9 * log(2) + 7/27 * log(5)",  # quotient
         # "Exercise 12": "sqrt(3) + 1/2 * log(3) + -(tan(1/12 * pi) ^ -1) + log(tan(1/12 * pi)) + log(1 + -1/3 * sqrt(3)) + -log(1 + -tan(1/12 * pi))",
-        # "Exercise 13": "1 + 15/2 * log(2) + -9/2 * log(3) + 7/6 * log(5)",  # quotient
+        "Exercise 13": "1 + 15/2 * log(2) + -9/2 * log(3) + 7/6 * log(5)",
         "Exercise 14": "-1/4 * log(-4 + 4 * exp(1)) + 1/4 * log(-4 + 4 * exp(2)) + 1/4 * log(12 + 4 * exp(1)) + -1/4 * log(12 + 4 * exp(2))",
         "Exercise 15": "1 + log(2) + -log(1 + exp(1))",
         "Exercise 16": "1/4 * pi + -atan(2) + 9/2 * log(2) + -3/2 * log(5)",
