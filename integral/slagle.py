@@ -11,6 +11,8 @@ from integral import latex
 import math
 import multiprocessing.pool
 import json
+from sympy.solvers import solveset
+from sympy import Interval
 
 a = Symbol('a', [CONST])
 b = Symbol('b', [CONST])
@@ -28,6 +30,17 @@ linear_pat = [pat0, pat1, pat2, pat4, pat5]
 
 def gen_rand_letter(ex):
     return "u" if ex != "u" else "v"
+
+def has_fun(e):
+    """Return true if e has function."""
+    if e.ty in (CONST, VAR):
+        return False
+    elif e.ty == OP:
+        return any(has_fun(arg) for arg in e.args)
+    elif e.ty == FUN and e.func_name != "sqrt":
+        return True
+    else:
+        return False
 
 class AlgorithmRule:
     def eval(self, e):
@@ -85,6 +98,8 @@ class DividePolynomial(AlgorithmRule):
 
     """
     def eval(self, e):
+        if e.ty != INTEGRAL:
+            return e, None
         e_body = e.body
 
         a = Symbol("a", [CONST, VAR, OP])
@@ -130,6 +145,27 @@ class Linearity(AlgorithmRule):
             return new_e, steps
         else:
             return e, None
+
+class AlgoNonLinearSubstitution(AlgorithmRule):
+    """
+    When there are log and exponential expresion in integral, use this rule.
+    """
+    def eval(self, e):
+        if not (e.body.ty == OP and (e.body.op == "/" or e.body.op == "*" 
+                and e.body.args[1].ty == OP and e.body.args[1].op == "^" and 
+                e.body.args[1].args[1].ty == CONST and e.body.args[1].args[1].val <= -1 )):
+            return e, None
+        if not has_fun(e.body):
+            return e, None
+        heur_e = HeuristicSubstitution().eval(e)
+        if not heur_e:
+            return e, None
+        heur_e, step = heur_e[0]
+        if heur_e.depth < e.depth:
+            return heur_e, step
+        else:
+            return e, None
+        # return e, None
 
 def substitution(integral, subst):
     new_var = gen_rand_letter(integral.var)
@@ -318,6 +354,7 @@ class ElimAbsRule(AlgorithmRule):
 
 # TrigIdentity must execute before HalfAngleIndetity
 algorithm_rules = [
+    AlgoNonLinearSubstitution,
     DividePolynomial,
     LinearSubstitution,
     TrigIdentity,
@@ -366,7 +403,7 @@ class TrigFunction(HeuristicRule):
 
         for t, loc, _ in cot_expr:
             e = e.replace_trig(t, cos(t.args[0])/sin(t.args[0]))
-            steps.append(calc.TrigIndetityStep(e, "TR2", t, cos(t.args[0])/sin(t.args[0]), loc))  
+            steps.append(calc.TrigIdentityStep(e, "TR2", t, cos(t.args[0])/sin(t.args[0]), loc))  
 
         for t, loc, _ in sec_expr:
             e = e.replace_trig(t, Const(1)/cos(t.args[0]))
@@ -374,7 +411,7 @@ class TrigFunction(HeuristicRule):
 
         for t, loc, _ in csc_expr:
             e = e.replace_trig(t, Const(1)/sin(t.args[0]))
-            steps.append(calc.TrigIndetityStep(e, "TR1", t, Const(1)/sin(t.args[0]), loc))
+            steps.append(calc.TrigIdentityStep(e, "TR1", t, Const(1)/sin(t.args[0]), loc))
 
         return e, steps
 
@@ -670,8 +707,8 @@ class HeuristicIntegrationByParts(HeuristicRule):
         res = []        
         factors = decompose_expr_factor(e.body)
         
-        if len(factors) <= 1:
-            return []
+        if len(factors) == 1:
+            factors.append(Const(1))
         
         for i in range(len(factors)):
             h = factors[i]
@@ -970,6 +1007,8 @@ class OrNode(GoalNode):
                 for step in cur_steps:
                     step.prepend_loc(self.loc)
                     algo_steps.append(step)
+            if rule == AlgoNonLinearSubstitution:
+                continue
         
             norm_integral = rules.FullSimplify().eval(cur_integral)
             if norm_integral != cur_integral:
@@ -1086,6 +1125,19 @@ class AndNode(GoalNode):
                 
             return value.normalize()
 
+def is_mono(var, e, lower, upper):
+    """Determine whether an expression is monotonic in the given interval."""
+    e_deriv = deriv(var, e)
+    zeros = solveset(sympy_style(e_deriv), sympy_style(var), Interval(sympy_style(lower), \
+                        sympy_style(upper), left_open=True, right_open=True))
+    return list([holpy_style(z) for z in zeros])
+
+def split_integral(e, points):
+    """"""
+    split_points = [e.lower] + [holpy_style(p) for p in points] + [e.upper]
+    split_integrals = [Integral(e.var, split_points[i], split_points[i+1], e.body) \
+                        for i in range(len(points) + 1)]
+    return sum(split_integrals[1:], split_integrals[0])
 
 def bfs(node):
     q = collections.deque()
@@ -1257,6 +1309,18 @@ def perform_steps(node):
                     "denom": str(step.denom),
                 },
                 "location": str(step.loc)
+            })
+        elif step.reason == "Split region":
+            rule = rules.SplitRegion(step.zero_point)
+            current = rules.OnLocation(rule, loc).eval(current)
+            real_steps.append({
+                "text": str(current),
+                "latex": latex.convert_expr(current),
+                "reason": step.reason,
+                "location": str(step.loc),
+                "params": {
+                    "c": str(step.zero_point)
+                }
             })
         else:
             raise NotImplementedError(step.reason)

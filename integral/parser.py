@@ -10,6 +10,7 @@ from integral import inequality
 
 grammar = r"""
     ?atom: CNAME -> var_expr
+        | "-0" -> neg_zero_expr
         | INT -> int_expr
         | DECIMAL -> decimal_expr
         | "D" CNAME "." expr -> deriv_expr
@@ -56,6 +57,9 @@ class ExprTransformer(Transformer):
     def int_expr(self, n):
         return expr.Const(int(n))
 
+    def neg_zero_expr(self):
+        return expr.Op("-", expr.Const(0))
+
     def decimal_expr(self, n):
         return expr.Const(Decimal(n))
         
@@ -99,7 +103,7 @@ class ExprTransformer(Transformer):
         return expr.Deriv(var, body)
 
     def integral_expr(self, var, lower, upper, body):
-        return expr.Integral(var, lower, upper, body)
+        return expr.Integral(str(var), lower, upper, body)
 
     def eval_at_expr(self, body, var, lower, upper):
         return expr.EvalAt(var, lower, upper, body)

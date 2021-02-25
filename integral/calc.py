@@ -330,3 +330,24 @@ class TrigIdentityStep(IntegrationStep):
             # Else from the integral
             "location": str(self.loc)
         }
+
+class SplitRegionStep(IntegrationStep):
+    def __init__(self, e, loc, zero_point):
+        self.e = e
+        self.loc = loc
+        self.zero_point = zero_point
+        self.reason = "Split region"
+
+    def __str__(self):
+        return "Split region on %s." % self.zero_point
+
+    def info(self):
+        return {
+            "text": str(self.e),
+            "latex": latex.convert_expr(self.e),
+            "reason": self.reason,
+            "location": str(self.loc),
+            "params": {
+                "c": str(self.zero_point)
+            }
+        }

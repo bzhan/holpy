@@ -727,7 +727,7 @@ class Expr:
 
         elif self.ty == FUN and self.func_name == "abs":
             if self.args[0].normalize().ty == CONST:
-                return poly.constant(Const(abs(self.args[0].normalize().val)))
+                return poly.constant(Const(abs(self.args[0].normalize().val)).to_const_poly())
             return poly.singleton(Fun("abs", self.args[0].normalize()))
 
         elif self.ty == EVAL_AT:
@@ -737,7 +737,7 @@ class Expr:
 
         elif self.ty == INTEGRAL:
             if self.lower == self.upper:
-                return poly.constant(Const(0))
+                return poly.constant(Const(0).to_const_poly())
             body = self.body.normalize()
             return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), body))
 
@@ -1419,7 +1419,8 @@ class Fun(Expr):
         if len(args) == 0:
             assert func_name in ["pi", "inf"]
         elif len(args) == 1:
-            assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "csc", "sec", "cot", "asin", "acos", "atan", "acot", "acsc", "asec", "abs"]
+            assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "csc",
+                         "sec", "cot", "asin", "acos", "atan", "acot", "acsc", "asec", "abs"], func_name
         else:
             raise NotImplementedError
 
