@@ -1,0 +1,24 @@
+tongji: Interesting 1
+
+MIT2013: Exercise 13(slagle can solve), Exercise 23(slagle can solve)
+
+MIT2014: Exercise 7(Although can get the result, but it is unsimplified)
+
+MIT2019: Exercise 1(slagle can't solve)
+
+MIT2020: Exercise 7
+
+Trig: Exercise 6, Exercise 7(success, but cos(pi/2) cannot be simplified in the result), Exercise 12, 
+      Exercise 13, Exerise 17, Exercise 25
+      Exercise 11, Exercise 18, Exercise 27
+
+ByParts: Exercise 14(result is unsimplified), Exercise 21, 22, 23(slagle cannot solve but maple could)
+
+LogAndTangent: 
+
+PartialFraction: Exercise 12, 17, 19, 
+
+
+
+Conclusion: Maple sometimes cannot simplify the constant trigonometric function in the result as well as not does 
+well in integration involving trigonometric functions, but Maple treat fractions and integration by parts and Partial Fraction better.
