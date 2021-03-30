@@ -682,58 +682,6 @@ auto.add_global_autos_norm(
         'rpow_sqrt'
     ]))
 
-auto.add_global_autos_norm(
-    greater_eq,
-    auto.norm_rules([
-        'log_ge_zero'
-    ])
-)
-
-auto.add_global_autos_norm(
-    greater,
-    auto.norm_rules([
-        'log_gt_zero'
-    ])
-)
-
-auto.add_global_autos_norm(
-    less_eq,
-    auto.norm_rules([
-        'log_le_zero'
-    ])
-)
-
-auto.add_global_autos_norm(
-    less,
-    auto.norm_rules([
-        'log_lt_zero'
-    ])
-)
-
-auto.add_global_autos(
-    greater_eq,
-    auto.solve_rules([
-        'real_ge_add',
-        'real_ge_mul',
-        'real_ge_divide'
-    ])
-)
-
-auto.add_global_autos(
-    greater,
-    auto.solve_rules([
-        'real_gt_add',
-        'real_gt_mul'
-    ])
-)
-
-auto.add_global_autos_neg(
-    equals,
-    auto.solve_rules([
-        'real_gt_to_neq'
-    ])
-)
-
 def convert_to_poly(t):
     """Convert a term t to polynomial normal form."""
     if t.is_var():

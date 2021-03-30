@@ -1026,6 +1026,21 @@ def holpy_style(s):
     """Transform sympy object to expr."""
     return parser.parse_expr(str(s).replace("**", "^")).replace_trig(Var("E"), Fun("exp", Const(1)))
 
+def factor_polynomial(e):
+    """Factorize a polynomial expr."""
+    return holpy_style(sympy.factor(sympy_style(e)))
+
+def is_polynomial(e):
+    """Detect polynomials in x."""
+    if e.ty in (VAR, CONST):
+        return True
+    elif e.ty == OP and e.op in ('+', '-', '*'):
+        return all(is_polynomial(arg) for arg in e.args)
+    elif e.ty == OP and e.op == '^':
+        return is_polynomial(e.args[0]) and e.args[1].ty == CONST and isinstance(e.args[1].val, int)
+    else:
+        return False
+
 def trig_transform(trig, var, rule_list=None):
     """Compute all possible trig function equal to trig"""
     poss = set()

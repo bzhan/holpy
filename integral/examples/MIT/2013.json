@@ -350,6 +350,30 @@
         },
         {
             "_problem_latex": "\\int_{0}^{1} \\log{(x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\log{(x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. log(x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = x\\)",
+                    "latex": "(\\left. x \\log{(x)} \\right\\vert_{x=0}^{1}) - {(\\int_{0}^{1} 1 \\,\\mathrm{dx})}",
+                    "location": ".",
+                    "params": {
+                        "parts_u": "log(x)",
+                        "parts_v": "x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([x * log(x)]_x=0,1) - (INT x:[0,1]. 1)"
+                },
+                {
+                    "latex": "-1",
+                    "location": ".",
+                    "reason": "Simplification",
+                    "text": "-1"
+                }
+            ],
             "name": "Exercise 9",
             "problem": "INT x:[0, 1]. log(x)"
         },
@@ -489,19 +513,19 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\pi \\sqrt{x}\\)",
-                    "latex": "\\int_{0}^{21 \\pi} \\frac{2 u \\sin{(\\sqrt{u ^ 2})}}{\\sqrt{u ^ 2}} \\,\\mathrm{du}",
+                    "latex": "\\int_{0}^{21 \\pi} 2 \\sin{(u)} \\,\\mathrm{du}",
                     "params": {
-                        "f": "(2 * u * sin(sqrt(u ^ 2))) / sqrt(u ^ 2)",
+                        "f": "2 * sin(u)",
                         "g": "pi * sqrt(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,21 * pi]. (2 * u * sin(sqrt(u ^ 2))) / sqrt(u ^ 2)"
+                    "text": "INT u:[0,21 * pi]. 2 * sin(u)"
                 },
                 {
-                    "latex": "4",
+                    "latex": "2 + -2 \\cos{(-\\pi)}",
                     "reason": "Simplification",
-                    "text": "4"
+                    "text": "2 + -2 * cos(-pi)"
                 }
             ],
             "name": "Exercise 12",

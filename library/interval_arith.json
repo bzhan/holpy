@@ -660,6 +660,60 @@
             }
         },
         {
+            "name": "mult_interval_pos_pos_closed",
+            "prop": [
+                "a ≥ 0 ",
+                "⟶ c ≥ 0 ",
+                "   ⟶ x ∈ real_closed_interval a b ",
+                "      ⟶ y ∈ real_closed_interval c d ⟶ x * y ∈ real_closed_interval (a * c) (b * d)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "mult_interval_pos_pos_lopen_ropen",
+            "prop": [
+                "a ≥ 0 ",
+                "⟶ c ≥ 0 ",
+                "   ⟶ x ∈ real_lopen_interval a b ",
+                "      ⟶ y ∈ real_ropen_interval c d ⟶ x * y ∈ real_open_interval (a * c) (b * d)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "mult_interval_neg_pos_open",
+            "prop": [
+                "b ≤ 0 ",
+                "⟶ c ≥ 0 ",
+                "   ⟶ x ∈ real_open_interval a b ",
+                "      ⟶ y ∈ real_open_interval c d ⟶ x * y ∈ real_open_interval (a * d) (b * c)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
             "name": "mult_interval_pos_closed",
             "prop": [
                 "c ≥ 0 ",
