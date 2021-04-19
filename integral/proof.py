@@ -902,6 +902,7 @@ class location_conv(Conv):
 
 
 def get_at_location(loc, t):
+    print("t: ", t)
     if loc.is_empty():
         return t
     elif t.is_comb("evalat", 3):
@@ -915,8 +916,10 @@ def get_at_location(loc, t):
         if loc.head == 0:
             f = t.args[1]
             body = f.subst_bound(Var(f.var_name, RealType))
+            print("loc: ", loc)
             return get_at_location(loc.rest, body)
         else:
+            print("loc:", loc)
             raise NotImplementedError
     else:
         return get_at_location(loc.rest, t.args[loc.head])
@@ -1062,3 +1065,141 @@ def translate_item(item, target=None, *, debug=False):
         print(pt.rhs)
 
     return pt
+
+def translate_single_item(step, init, *, _loc=None, debug=False):
+    """Translate a single step into holpy proof."""
+    try:
+        init = expr_to_holpy(parse_expr(init))
+        pt = refl(init)
+        if 'location' in step:
+            loc = Location(step['location'])
+        else:
+            loc = Location("")
+
+        if _loc is not None:
+            loc = Location(_loc)
+        print("loc", _loc)
+        reason = step['reason']
+        expected = expr_to_holpy(parse_expr(step['text']))
+        print("step: ", step)
+        print("init: ", init)
+        rewr_loc = get_at_location(loc, pt.rhs)
+        expected_loc = get_at_location(loc, expected)
+
+        if reason == 'Initial':
+            return True
+
+        elif reason == 'Simplification':
+            # Simplify the expression
+            cv = simplify_rewr_conv(expected_loc)
+
+        elif reason == 'Substitution':
+            # Perform substitution u = g(x)
+            assert rewr_loc.is_comb("real_integral", 2), "translate_item: Substitution"
+            f = expr_to_holpy(parse_expr(step['params']['f']))
+            g = expr_to_holpy(parse_expr(step['params']['g']))
+            ori_var = g.get_vars()[0]
+            new_name = step['params']['var_name']
+            new_var = Var(new_name, RealType)
+            f = Lambda(new_var, f)
+            g = Lambda(ori_var, g)
+            cv = substitution(f, g, expected_loc)
+
+        elif reason == 'Substitution inverse':
+            # Perform substitution x = g(u)
+            assert rewr_loc.is_comb("real_integral", 2), "translate_item: Substitution inverse"
+            g = parse_expr(step['params']['g'])
+            new_name = step['params']['var_name']
+            new_var = Var(new_name, RealType)
+            g = Lambda(new_var, expr_to_holpy(g))
+            a = expr_to_holpy(parse_expr(step['params']['a']))
+            b = expr_to_holpy(parse_expr(step['params']['b']))
+            cv = substitution_inverse(g, a, b, expected_loc)
+
+        elif reason == 'Integrate by parts':
+            # Integration by parts using u and v
+            assert rewr_loc.is_comb("real_integral", 2), "translate_item: Integrate by parts"
+            u = expr_to_holpy(parse_expr(step['params']['parts_u']))
+            v = expr_to_holpy(parse_expr(step['params']['parts_v']))
+            ori_var = term.get_vars([u, v])[0]
+            u = Lambda(ori_var, u)
+            v = Lambda(ori_var, v)
+            cv = integrate_by_parts(u, v, expected_loc)
+
+        elif reason == 'Rewrite':
+            # Rewrite to another expression
+            rhs = parse_expr(step['params']['rhs'])
+            rhs = expr_to_holpy(rhs)
+            cv = fraction_rewr_conv(rhs)
+
+        elif reason == 'Rewrite fraction':
+            # Rewrite by multiplying a denominator
+            rhs = parse_expr(step['params']['rhs'])
+            rhs = expr_to_holpy(rhs)
+            cv = fraction_rewr_conv(rhs)
+
+        elif reason == 'Rewrite trigonometric':
+            # Rewrite using a trigonometric identity
+            cv = trig_rewr_conv(step['params']['rule'], expected_loc)
+
+        elif reason == 'Unfold power':
+            # Rewrite x ^ 2 to x * x.
+            cv = rewr_conv('real_pow_2')
+
+        elif reason == 'Split region':
+            # Split region of integration
+            c = parse_expr(step['params']['c'])
+            c = expr_to_holpy(c)
+            cv = split_region_conv(c)
+
+        elif reason == 'Elim abs':
+            # Eliminate absolute value
+            if 'params' in step and 'c' in step['params']:
+                c = parse_expr(step['params']['c'])
+                c = expr_to_holpy(c)
+                cv = then_conv(split_region_conv(c), simplify_rewr_conv(expected_loc))
+            else:
+                cv = simplify_rewr_conv(expected_loc)
+
+        elif reason == 'Solve equation':
+            # Solving equation
+            factor = int(step['params']['factor'])
+            prev_id = int(step['params']['prev_id'])
+            prev_pt = prev_pts[prev_id]
+
+            t1 = Fraction(1, factor+1) * (prev_pt.rhs + factor * prev_pt.rhs)
+            t1_pt = auto.auto_solve(Eq(prev_pt.rhs, t1))
+            t1_pt = t1_pt.on_rhs(arg_conv(arg1_conv(rewr_conv(prev_pt, sym=True))),
+                                    arg_conv(arg1_conv(rewr_conv(pt))), auto.auto_conv())
+            pt = prev_pt.transitive(t1_pt)
+        else:
+            raise NotImplementedError
+
+        # Obtain result on proof side
+        if reason != 'Solve equation':
+            pt = pt.on_rhs(location_conv(loc, cv))
+
+        if reason not in ('Unfold power', 'Split region', 'Solve equation'):
+            assert pt.rhs == expected, "translate_item: unexpected rhs"
+
+        if pt.rhs != expected:
+            eq_pt1 = refl(expected).on_rhs(auto.auto_conv())
+            eq_pt2 = refl(pt.rhs).on_rhs(auto.auto_conv())
+            if eq_pt1.rhs != eq_pt2.rhs:
+                print("Unequal right side.\nExpected: %s\nGot:      %s" % (eq_pt1.rhs, eq_pt2.rhs))
+                raise AssertionError
+            else:
+                pt = pt.transitive(eq_pt2, eq_pt1.symmetric())
+
+        pt = ProofTerm("transitive", None, [pt, ProofTerm.reflexive(expected)])
+
+        if debug:
+            print("= %s" % pt.rhs)
+        # prev_pts.append(pt)
+
+        assert pt.lhs == init, "translate_item: wrong left side."
+        print("momo")
+        return expected == pt.rhs
+    except:
+        print("wowo")
+        return False

@@ -15,17 +15,17 @@
           <b-dropdown-item href="#" v-on:click='save'>Save</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
-          <b-dropdown-item href="#" v-on:click='slagle'>Slagle</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='superSimplify'>Simplify</b-dropdown-item>          
-          <b-dropdown-item href="#" v-on:click='substitution'>Substitution</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='substitution1'>Substitution inverse</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='integrateByParts'>Integrate by parts</b-dropdown-item>          
+          <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='superSimplify'>Simplification</b-dropdown-item>          
+          <b-dropdown-item href="#" v-on:click='substitution'>Forward Substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='substitution1'>Backward Substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='integrateByParts'>Integration by parts</b-dropdown-item>          
           <b-dropdown-item href="#" v-on:click='polynomialDivision'>Rewrite fraction</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Identity</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Identities</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='unfoldPower'>Unfold power</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='split'>Split Integral</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='split'>Splitting an Integral</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='integrateByEquation'>Solving Equations</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='elimAbs'>Eliminate Abs</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -51,7 +51,9 @@
         <span>Step {{index+1}}:&nbsp;&nbsp;</span>
         <MathEquation v-bind:data="'\\(' + step.latex + '\\)'"/>
         <MathEquation class="calc-reason" v-if="'_latex_reason' in step && step._latex_reason !== ''" v-bind:data="step._latex_reason"/>
-        <span class="calc-reason" v-else>{{step.reason}}</span>
+        <span class="calc-reason" v-else>{{step.reason}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <v-icon name="check" style="color:green" v-if="'checked' in step && step.checked === true"></v-icon> 
+        <v-icon name="ban" style="color:red" v-if="'checked' in step && step.checked === false"></v-icon> 
       </div>
     </div>
     <div id="dialog">

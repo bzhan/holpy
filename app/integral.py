@@ -13,6 +13,7 @@ import os
 import integral
 from logic import basic
 from integral import slagle
+from integral import proof
 from app.app import app
 
 basic.load_theory('interval_arith')
@@ -86,11 +87,13 @@ def integral_super_simplify():
                     return problem
         return problem
     problem = simplify(integral.parser.parse_expr(data['problem']))
-    return jsonify({
+    step = {
         'text': str(problem),
         'latex': integral.latex.convert_expr(problem),
-        'reason': "Simplification"
-    })
+        'reason': "Simplification",
+    }
+    step['checked'] = proof.translate_single_item(step, data['problem'])
+    return jsonify(step)
 
 @app.route("/api/integral-elim-abs", methods=["POST"])
 def integral_elim_abs():
@@ -99,15 +102,17 @@ def integral_elim_abs():
     problem = integral.parser.parse_expr(data['problem'])
     if not rule.check_zero_point(problem):
         new_problem = rule.eval(problem)
-        return jsonify({
+        step = {
             'reason': "Elim abs",
             'text': str(new_problem),
             'latex': integral.latex.convert_expr(new_problem),
             'location': data['location']
-        })
+        }
+        step['checked'] = proof.translate_single_item(step, data['problem'])
+        return jsonify(step)
     c = rule.get_zero_point(problem)
     new_problem = rule.eval(problem)
-    return jsonify({
+    step = {
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
         'reason': "Elim abs",
@@ -115,7 +120,9 @@ def integral_elim_abs():
             'c': str(c)
         },
         'location': data['location']
-    })
+    }
+    step['checked'] = proof.translate_single_item(step, data['problem'])
+    return jsonify(step)
 
 @app.route("/api/integral-integrate-by-equation", methods=['POST'])
 def integrate_by_equation():
@@ -192,6 +199,7 @@ def integral_compose_integral():
         'text': str(new_expr),
         'latex': integral.latex.convert_expr(new_expr),
         'reason': reason,
+        'checked': data['problem'][data['index']]['checked']
     }
     if location != "":
         info.update({'location': location})
@@ -244,10 +252,13 @@ def integral_substitution():
             integral.latex.convert_expr(integral.parser.parse_expr(data['var_name'])), integral.latex.convert_expr(expr)
         )
     }
+    print("log: ", log)
+    print("data[problem]", data['problem'])
+    log['checked'] = proof.translate_single_item(log, data['problem'], _loc="")
     return jsonify({
-            'flag': True,
-            'log': log
-        })
+        'flag': True,
+        'log': log
+    })
 
 @app.route("/api/integral-substitution2", methods=['POST'])
 def integral_substitution2():
@@ -278,6 +289,9 @@ def integral_substitution2():
             integral.latex.convert_expr(integral.parser.parse_expr(problem.var)), integral.latex.convert_expr(expr)
         )
     }
+
+    log['checked'] = proof.translate_single_item(log, data['problem'])
+
     return jsonify({
         'flag': True,
         'log': log
@@ -313,7 +327,7 @@ def integral_validate_expr():
                 for t in new_trig_set]
             transform_info = []
             for i in range(len(new_integral_set)):
-                transform_info.append({
+                step = {
                     "reason": "Rewrite trigonometric",
                     'text': str(new_integral_set[i]),
                     'latex': integral.latex.convert_expr(new_integral_set[i]),
@@ -325,7 +339,17 @@ def integral_validate_expr():
                     # If there is only one integral in the full expression, location begins from the body;
                     # Else from the integral
                     "location": location
-                })
+                }
+                print("step: ", step)
+                print("data[problem]", data['problem'])
+                print("dollar_location: ", dollar_location)
+                if dollar_location == "":
+                    rel_loc = "0"
+                else:
+                    rel_loc = "0."+dollar_location
+                step['checked'] = proof.translate_single_item(step, data['problem'], _loc=rel_loc)
+                print(step['text'], step['checked'])
+                transform_info.append(step)
             return jsonify({
                 "flag": True,
                 "content": transform_info
@@ -363,13 +387,18 @@ def integral_validate_power_expr():
             body = problem.body
             body = body.replace_expr(dollar_location, integral.rules.UnfoldPower().eval(select))
             new_integral = integral.expr.Integral(problem.var, problem.lower, problem.upper, body)
-            return jsonify({
+
+            step = {
                 "flag": True,
                 "text": str(new_integral),
                 "latex":  integral.latex.convert_expr(new_integral),
                 "location": location,
                 "reason": "Unfold power"
-            })
+            }
+
+            step['checked'] = proof.translate_single_item(step, data['problem'])
+
+            return jsonify(step)
     except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
         return jsonify({
                 'flag': False
@@ -421,13 +450,22 @@ def integral_rewrite_expr():
             return jsonify({
                 'flag': False
             })
+
+        print("new_expr: ", new_expr)
         new_problem = integral.expr.Integral(problem.var, problem.lower, problem.upper, problem.body.replace_expr(location, new_expr))
+        
+        if location == "":
+            rel_loc = "0"
+        else:
+            rel_loc = "0." + location
+
         if old_expr.ty == integral.expr.OP and old_expr.op == "/" or\
             old_expr.ty == integral.expr.OP and old_expr.op == "*" and\
                 old_expr.args[1].ty == integral.expr.OP and old_expr.args[1].op == "^" and\
                     old_expr.args[1].args[1] == integral.expr.Const(-1):
             denom = old_expr.args[1]
-            return jsonify({
+
+            step = {
                 'flag': True,
                 'text': str(new_problem),
                 'latex': integral.latex.convert_expr(new_problem),
@@ -439,9 +477,15 @@ def integral_rewrite_expr():
                     'denom': str(denom)
                 },
                 "location": data['absolute_location']
-             })
+            }
+
+            print("data[problem]: ", data['problem'])
+
+            step['checked'] = proof.translate_single_item(step, data['problem'], _loc=rel_loc)
+
+            return jsonify(step)
         else:
-            return jsonify({
+            step = {
                 'flag': True,
                 'text': str(new_problem),
                 'latex': integral.latex.convert_expr(new_problem),
@@ -452,7 +496,13 @@ def integral_rewrite_expr():
                     'rhs': data['new_expr']
                 },
                 "location": data['absolute_location']
-            })
+            }
+            print("data[problem]: ", data['problem'])
+            print("absolute_location: ", data['absolute_location'])
+            print("relative_location: ", data['relative_location'])
+            step['checked'] = proof.translate_single_item(step, data['problem'], _loc=rel_loc)
+
+            return jsonify(step)
     except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
         return jsonify({
                 'flag': False
@@ -472,7 +522,8 @@ def integral_split():
         })
     new_integral1 = integral.expr.Integral(problem.var, problem.lower, point, problem.body)
     new_integral2 = integral.expr.Integral(problem.var, point, problem.upper, problem.body)
-    return jsonify({
+    
+    step = {
         "flag": 'success',
         "reason": "Split region",
         "location": data['location'],
@@ -481,7 +532,11 @@ def integral_split():
         },
         "text": str(new_integral1 + new_integral2),
         "latex": integral.latex.convert_expr(new_integral1 + new_integral2) 
-    })
+    }
+    
+    step['checked'] = proof.translate_single_item(step, data['problem'])
+
+    return jsonify(step)
     
 
 @app.route("/api/integral-integrate-by-parts", methods=['POST'])
@@ -523,6 +578,7 @@ def integral_integrate_by_parts():
         ),
         'location': data['location']
     }
+    log['checked'] = proof.translate_single_item(log, data['problem'])
     return jsonify({
         "flag": True,
         "log": log
@@ -571,7 +627,8 @@ def integral_polynomial_division():
         location += ".0"
     else:
         location = "0"
-    return jsonify({
+
+    step = {
         'flag': True,
         'text': str(rhs),
         'latex': integral.latex.convert_expr(rhs),
@@ -580,7 +637,11 @@ def integral_polynomial_division():
         },
         'reason': "Rewrite fraction",
         "location": location
-    })
+    }
+
+    step['checked'] = proof.translate_single_item(step, data['problem'])
+
+    return jsonify(step)
 
 @app.route("/api/integral-save-file", methods=['POST'])
 def integral_save_file():
@@ -606,7 +667,13 @@ def integral_slagle():
         # t = [i.info() for i in node.trace()]
         # return json.dumps(t)
         node = rule.compute_node(problem)
-        return json.dumps(slagle.perform_steps(node))
+        steps = slagle.perform_steps(node)
+        init = problem
+        for step in steps:
+            step['checked'] = proof.translate_single_item(step, init)
+            print(step['checked'])
+            init = step['text']
+        return json.dumps(steps)
     except:
         new_problem = integral.parser.parse_expr(problem)
         return json.dumps([{
