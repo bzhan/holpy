@@ -49,7 +49,7 @@
     <div id="calc">
       <div v-for="(step, index) in cur_calc" :key="index">
         <span>Step {{index+1}}:&nbsp;&nbsp;</span>
-        <MathEquation v-bind:data="'\\(' + step.latex + '\\)'"/>
+        <MathEquation v-bind:data="'\\(' + step.latex + '\\)'" v-on:click.native='displayProof(index)' />
         <MathEquation class="calc-reason" v-if="'_latex_reason' in step && step._latex_reason !== ''" v-bind:data="step._latex_reason"/>
         <span class="calc-reason" v-else>{{step.reason}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <v-icon name="check" style="color:green" v-if="'checked' in step && step.checked === true"></v-icon> 
@@ -157,6 +157,9 @@
         <div style="margin-top:10px">
           <button v-on:click="doIntegrateByEquation">OK</button>
         </div>
+      </div>
+      <div v-if="show_proof_mode === 'proof'">
+        <span>{{proof_term}}</span>
       </div>
       <div v-if="r_query_mode === 'split'">
         <div>
@@ -277,7 +280,10 @@ export default {
       lhs: undefined, //equation left hand side
       split_point: undefined,
       split_success: undefined,
-      integral_str: '', // record the input string of new integral
+      integral_str: '', // record the input string of new integral,
+
+      proof_term: undefined, // store the proof terms for each step
+      show_proof_mode: undefined, // indicate whether show proof
     }
   },
 
@@ -318,6 +324,7 @@ export default {
       this.query_mode = undefined
       this.r_query_mode = undefined
       this.display_integral = undefined
+      this.proof_term = undefined
       this.cur_id = index
       this.take_effect = 0
       if ('calc' in this.content[index]) {
@@ -514,6 +521,7 @@ export default {
         return;
       }
       this.query_mode = 'abs';
+      this.show_proof_mode = undefined
       this.displaySeparateIntegrals_abs();
     },
 
@@ -581,6 +589,7 @@ export default {
     operate: function(index){
       this.clear_input_info()
       this.r_query_mode = this.query_mode
+      this.show_proof_mode = undefined
       // if user want to do substitution,
       // recommend a subst variable.
       if(this.r_query_mode === 'substitution'){
@@ -601,6 +610,7 @@ export default {
         return;
 
         this.query_mode = 'trig'
+        this.show_proof_mode = undefined
         this.displaySeparateIntegrals()
         this.sep_int = []
     },
@@ -621,6 +631,7 @@ export default {
         return;
       this.sep_int = []
       this.query_mode = 'substitution'
+      this.show_proof_mode = undefined
       this.displaySeparateIntegrals()
     },
 
@@ -652,7 +663,8 @@ export default {
       if (this.cur_calc.length === 0)
         return;
       this.sep_int = [];
-      this.query_mode = 'substitution1';
+      this.query_mode = 'substitution1'
+      this.show_proof_mode = undefined
       this.subst_data = {var_name: '', expr: ''};
       this.displaySeparateIntegrals()
     },
@@ -684,7 +696,8 @@ export default {
       if(this.cur_calc.length == 0)
         return;
       this.sep_int = []
-      this.query_mode = 'split';
+      this.query_mode = 'split'
+      this.show_proof_mode = undefined
       this.displaySeparateIntegrals();
     },
 
@@ -712,6 +725,7 @@ export default {
         return;
       this.sep_int = []
       this.query_mode = 'unfoldpower'
+      this.show_proof_mode = undefined
       this.displaySeparateIntegrals()
     },
 
@@ -720,6 +734,7 @@ export default {
         return;
       this.sep_int = []
       this.query_mode = 'byparts'
+      this.show_proof_mode = undefined
       this.displaySeparateIntegrals()
     },
 
@@ -751,6 +766,7 @@ export default {
       if (this.cur_calc.length === 0)
         return;
       this.r_query_mode = "byequation"
+      this.show_proof_mode = undefined
     },
 
     doIntegrateByEquation: async function(){
@@ -796,6 +812,7 @@ export default {
         return;
       this.sep_int = []
       this.query_mode = 'eqsubst'
+      this.show_proof_mode = undefined
       this.displaySeparateIntegrals()
       this.equation_data.fail_reason = undefined
     },
@@ -816,8 +833,14 @@ export default {
       }else{
         this.equation_data.fail_reason = response.data._latex_reason
       }
-    }
+    },
 
+    displayProof: function(index){
+      // Show the selected items proof.
+      this.show_proof_mode = 'proof'
+      this.proof_term = this.cur_calc[index].proof
+      
+    }
 
   },
 

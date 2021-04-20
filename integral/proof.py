@@ -22,6 +22,8 @@ from data.real import pi
 from data.integral import netT
 from integral.expr import Expr, Location, expr_to_holpy, evalat, real_derivative, real_integral
 from integral.parser import parse_expr
+from syntax.settings import settings
+settings.unicode = True
 
 
 # Introduction rules for real_continuous_on
@@ -902,7 +904,6 @@ class location_conv(Conv):
 
 
 def get_at_location(loc, t):
-    print("t: ", t)
     if loc.is_empty():
         return t
     elif t.is_comb("evalat", 3):
@@ -916,10 +917,8 @@ def get_at_location(loc, t):
         if loc.head == 0:
             f = t.args[1]
             body = f.subst_bound(Var(f.var_name, RealType))
-            print("loc: ", loc)
             return get_at_location(loc.rest, body)
         else:
-            print("loc:", loc)
             raise NotImplementedError
     else:
         return get_at_location(loc.rest, t.args[loc.head])
@@ -1198,8 +1197,6 @@ def translate_single_item(step, init, *, _loc=None, debug=False):
         # prev_pts.append(pt)
 
         assert pt.lhs == init, "translate_item: wrong left side."
-        print("momo")
-        return expected == pt.rhs
+        return expected == pt.rhs, str(pt)
     except:
-        print("wowo")
-        return False
+        return False, "No proof!"
