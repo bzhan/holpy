@@ -1,0 +1,157 @@
+{
+    "content": [
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{1}{(3 x + 4) (5 x + 6)} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{1}{(3 x + 4) (5 x + 6)} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. 1 / ((3 * x + 4) * (5 * x + 6))"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\int_{0}^{1} \\frac{5}{2 (5 x + 6)} - \\frac{3}{2 (3 x + 4)} \\,\\mathit{dx}",
+                    "location": "0",
+                    "params": {
+                        "rhs": "5 / (2 * (5 * x + 6)) - 3 / (2 * (3 * x + 4))"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. 1 / ((3 * x + 4) * (5 * x + 6))) = real_integral (real_closed_interval 0 1) (λx. 5 / (2 * (5 * x + 6)) - 3 / (2 * (3 * x + 4))))",
+                    "reason": "Rewrite fraction",
+                    "text": "INT x:[0,1]. 5 / (2 * (5 * x + 6)) - 3 / (2 * (3 * x + 4))"
+                },
+                {
+                    "checked": true,
+                    "latex": "-3 \\int_{0}^{1} \\frac{1}{8 + 6 x} \\,\\mathit{dx} + 5 \\int_{0}^{1} \\frac{1}{12 + 10 x} \\,\\mathit{dx}",
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. 5 / (2 * (5 * x + 6)) - 3 / (2 * (3 * x + 4))) = -3 * real_integral (real_closed_interval 0 1) (λx. (8 + 6 * x) ^ -(1::real)) + 5 * real_integral (real_closed_interval 0 1) (λx. (12 + 10 * x) ^ -(1::real)))",
+                    "reason": "Simplification",
+                    "text": "-3 * (INT x:[0,1]. (8 + 6 * x) ^ -1) + 5 * (INT x:[0,1]. (12 + 10 * x) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(8 + 6 x\\)",
+                    "checked": true,
+                    "latex": "-3 \\int_{8}^{14} \\frac{\\frac{1}{6}}{u} \\,\\mathit{du} + 5 \\int_{0}^{1} \\frac{1}{12 + 10 x} \\,\\mathit{dx}",
+                    "location": "0.1",
+                    "params": {
+                        "f": "(8 + 6 * (u / 6 - 4/3)) ^ -1 * (1/6)",
+                        "g": "8 + 6 * x",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. (8 + 6 * x) ^ -(1::real)) = real_integral (real_closed_interval 8 14) (λu. 1 / 6 * u ^ -(1::real)))",
+                    "reason": "Substitution",
+                    "text": "-3 * (INT u:[8,14]. 1/6 * u ^ -1) + 5 * (INT x:[0,1]. (12 + 10 * x) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(12 + 10 x\\)",
+                    "checked": true,
+                    "latex": "-3 \\int_{8}^{14} \\frac{\\frac{1}{6}}{u} \\,\\mathit{du} + 5 \\int_{12}^{22} \\frac{\\frac{1}{10}}{u} \\,\\mathit{du}",
+                    "location": "1.1",
+                    "params": {
+                        "f": "(12 + 10 * (u / 10 - 6/5)) ^ -1 * (1/10)",
+                        "g": "12 + 10 * x",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. (12 + 10 * x) ^ -(1::real)) = real_integral (real_closed_interval 12 22) (λu. 1 / 10 * u ^ -(1::real)))",
+                    "reason": "Substitution",
+                    "text": "-3 * (INT u:[8,14]. 1/6 * u ^ -1) + 5 * (INT u:[12,22]. 1/10 * u ^ -1)"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\frac{1}{2} \\log{(2)} + -\\frac{1}{2} \\log{(3)} + -\\frac{1}{2} \\log{(7)} + \\frac{1}{2} \\log{(11)}",
+                    "proof": "ProofTerm(⊢ -3 * real_integral (real_closed_interval 8 14) (λx. 1 / 6 * x ^ -(1::real)) + 5 * real_integral (real_closed_interval 12 22) (λx. 1 / 10 * x ^ -(1::real)) = 1 / 2 * log 2 + -(1 / 2) * log 3 + -(1 / 2) * log 7 + 1 / 2 * log 11)",
+                    "reason": "Simplification",
+                    "text": "1/2 * log(2) + -1/2 * log(3) + -1/2 * log(7) + 1/2 * log(11)"
+                }
+            ],
+            "name": "Exercise 1",
+            "problem": "INT x:[0,1]. 1/((3*x+4)*(5*x+6))"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{x}{(3 x + 4) (5 x + 6)} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{x}{(3 x + 4) (5 x + 6)} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. x / ((3 * x + 4) * (5 * x + 6))"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\int_{0}^{1} \\frac{-3}{5 x + 6} + \\frac{2}{3 x + 4} \\,\\mathit{dx}",
+                    "location": "0",
+                    "params": {
+                        "rhs": "-3 / (5 * x + 6) + 2 / (3 * x + 4)"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. x / ((3 * x + 4) * (5 * x + 6))) = real_integral (real_closed_interval 0 1) (λx. -3 / (5 * x + 6) + 2 / (3 * x + 4)))",
+                    "reason": "Rewrite fraction",
+                    "text": "INT x:[0,1]. -3 / (5 * x + 6) + 2 / (3 * x + 4)"
+                },
+                {
+                    "checked": true,
+                    "latex": "2 \\int_{0}^{1} \\frac{1}{4 + 3 x} \\,\\mathit{dx} + -3 \\int_{0}^{1} \\frac{1}{6 + 5 x} \\,\\mathit{dx}",
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. -3 / (5 * x + 6) + 2 / (3 * x + 4)) = 2 * real_integral (real_closed_interval 0 1) (λx. (4 + 3 * x) ^ -(1::real)) + -3 * real_integral (real_closed_interval 0 1) (λx. (6 + 5 * x) ^ -(1::real)))",
+                    "reason": "Simplification",
+                    "text": "2 * (INT x:[0,1]. (4 + 3 * x) ^ -1) + -3 * (INT x:[0,1]. (6 + 5 * x) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(4 + 3 x\\)",
+                    "checked": true,
+                    "latex": "2 \\int_{4}^{7} \\frac{\\frac{1}{3}}{u} \\,\\mathit{du} + -3 \\int_{0}^{1} \\frac{1}{6 + 5 x} \\,\\mathit{dx}",
+                    "location": "0.1",
+                    "params": {
+                        "f": "(4 + 3 * (u / 3 - 4/3)) ^ -1 * (1/3)",
+                        "g": "4 + 3 * x",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. (4 + 3 * x) ^ -(1::real)) = real_integral (real_closed_interval 4 7) (λu. 1 / 3 * u ^ -(1::real)))",
+                    "reason": "Substitution",
+                    "text": "2 * (INT u:[4,7]. 1/3 * u ^ -1) + -3 * (INT x:[0,1]. (6 + 5 * x) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(6 + 5 x\\)",
+                    "checked": true,
+                    "latex": "2 \\int_{4}^{7} \\frac{\\frac{1}{3}}{u} \\,\\mathit{du} + -3 \\int_{6}^{11} \\frac{\\frac{1}{5}}{u} \\,\\mathit{du}",
+                    "location": "1.1",
+                    "params": {
+                        "f": "(6 + 5 * (u / 5 - 6/5)) ^ -1 * (1/5)",
+                        "g": "6 + 5 * x",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. (6 + 5 * x) ^ -(1::real)) = real_integral (real_closed_interval 6 11) (λu. 1 / 5 * u ^ -(1::real)))",
+                    "reason": "Substitution",
+                    "text": "2 * (INT u:[4,7]. 1/3 * u ^ -1) + -3 * (INT u:[6,11]. 1/5 * u ^ -1)"
+                },
+                {
+                    "checked": true,
+                    "latex": "-\\frac{11}{15} \\log{(2)} + \\frac{3}{5} \\log{(3)} + \\frac{2}{3} \\log{(7)} + -\\frac{3}{5} \\log{(11)}",
+                    "proof": "ProofTerm(⊢ 2 * real_integral (real_closed_interval 4 7) (λx. 1 / 3 * x ^ -(1::real)) + -3 * real_integral (real_closed_interval 6 11) (λx. 1 / 5 * x ^ -(1::real)) = -(11 / 15) * log 2 + 3 / 5 * log 3 + 2 / 3 * log 7 + -(3 / 5) * log 11)",
+                    "reason": "Simplification",
+                    "text": "-11/15 * log(2) + 3/5 * log(3) + 2/3 * log(7) + -3/5 * log(11)"
+                }
+            ],
+            "name": "Exercise 2",
+            "problem": "INT x:[0,1]. x/((3*x+4)*(5*x+6))"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{1}{(3 x + 4) ^ 2 (5 x + 6)} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{1}{(3 x + 4) ^ 2 (5 x + 6)} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. 1 / ((3 * x + 4) ^ 2 * (5 * x + 6))"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\int_{0}^{1} \\frac{25}{4 (5 x + 6)} - \\frac{15}{4 (3 x + 4)} - \\frac{3}{2 (3 x + 4) ^ 2} \\,\\mathit{dx}",
+                    "location": "0",
+                    "params": {
+                        "rhs": "25 / (4 * (5 * x + 6)) - 15 / (4 * (3 * x + 4)) - 3 / (2 * (3 * x + 4) ^ 2)"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. 1 / ((3 * x + 4) ^ (2::nat) * (5 * x + 6))) = real_integral (real_closed_interval 0 1) (λx. 25 / (4 * (5 * x + 6)) - 15 / (4 * (3 * x + 4)) - 3 / (2 * (3 * x + 4) ^ (2::nat))))",
+                    "reason": "Rewrite fraction",
+                    "text": "INT x:[0,1]. 25 / (4 * (5 * x + 6)) - 15 / (4 * (3 * x + 4)) - 3 / (2 * (3 * x + 4) ^ 2)"
+                }
+            ],
+            "name": "Exercise 3",
+            "problem": "INT x:[0,1]. 1/((3*x+4)^2*(5*x+6))"
+        }
+    ]
+}

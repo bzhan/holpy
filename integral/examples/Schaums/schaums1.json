@@ -1,0 +1,272 @@
+{
+    "content": [
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{1}{3 x + 4} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{1}{3 x + 4} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. 1 / (3 * x + 4)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(3 x + 4\\)",
+                    "checked": true,
+                    "latex": "\\int_{4}^{7} \\frac{\\frac{1}{3}}{u} \\,\\mathit{du}",
+                    "params": {
+                        "f": "1 / (3 * u)",
+                        "g": "3 * x + 4",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. 1 / (3 * x + 4)) = real_integral (real_closed_interval 4 7) (λu. 1 / 3 * u ^ -(1::real)))",
+                    "reason": "Substitution",
+                    "text": "INT u:[4,7]. 1/3 * u ^ -1"
+                },
+                {
+                    "checked": true,
+                    "latex": "-\\frac{2}{3} \\log{(2)} + \\frac{1}{3} \\log{(7)}",
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 4 7) (λx. 1 / 3 * x ^ -(1::real)) = -(2 / 3) * log 2 + 1 / 3 * log 7)",
+                    "reason": "Simplification",
+                    "text": "-2/3 * log(2) + 1/3 * log(7)"
+                }
+            ],
+            "name": "Exercise 1",
+            "problem": "INT x:[0,1]. 1/(3*x+4)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{x}{3 x + 4} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{x}{3 x + 4} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. x / (3 * x + 4)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(3 x + 4\\)",
+                    "checked": true,
+                    "latex": "\\int_{4}^{7} \\frac{1}{9} + \\frac{-\\frac{4}{9}}{u} \\,\\mathit{du}",
+                    "params": {
+                        "f": "((u / 3 - 4/3) / (3 * (u / 3 - 4/3) + 4)) * (1/3)",
+                        "g": "3 * x + 4",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. x / (3 * x + 4)) = real_integral (real_closed_interval 4 7) (λu. 1 / 9 + -(4 / 9) * u ^ -(1::real)))",
+                    "reason": "Substitution",
+                    "text": "INT u:[4,7]. 1/9 + -4/9 * u ^ -1"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\frac{1}{3} + \\frac{8}{9} \\log{(2)} + -\\frac{4}{9} \\log{(7)}",
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 4 7) (λx. 1 / 9 + -(4 / 9) * x ^ -(1::real)) = 1 / 3 + 8 / 9 * log 2 + -(4 / 9) * log 7)",
+                    "reason": "Simplification",
+                    "text": "1/3 + 8/9 * log(2) + -4/9 * log(7)"
+                }
+            ],
+            "name": "Exercise 2",
+            "problem": "INT x:[0,1]. x/(3*x+4)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{x ^ 2}{3 x + 4} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{x ^ 2}{3 x + 4} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. x ^ 2 / (3 * x + 4)"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\int_{0}^{1} \\frac{x}{3} - \\frac{4}{9} + \\frac{16}{9 (3 x + 4)} \\,\\mathit{dx}",
+                    "location": "0",
+                    "params": {
+                        "rhs": "(x / 3 - 4/9) + 16 / (9 * (3 * x + 4))"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. x ^ (2::nat) / (3 * x + 4)) = real_integral (real_closed_interval 0 1) (λx. x / 3 - 4 / 9 + 16 / (9 * (3 * x + 4))))",
+                    "reason": "Rewrite fraction",
+                    "text": "INT x:[0,1]. (x / 3 - 4/9) + 16 / (9 * (3 * x + 4))"
+                },
+                {
+                    "checked": true,
+                    "latex": "-\\frac{5}{18} + 16 \\int_{0}^{1} \\frac{1}{36 + 27 x} \\,\\mathit{dx}",
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. x / 3 - 4 / 9 + 16 / (9 * (3 * x + 4))) = -(5 / 18) + 16 * real_integral (real_closed_interval 0 1) (λx. (36 + 27 * x) ^ -(1::real)))",
+                    "reason": "Simplification",
+                    "text": "-5/18 + 16 * (INT x:[0,1]. (36 + 27 * x) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(36 + 27 x\\)",
+                    "checked": true,
+                    "latex": "-\\frac{5}{18} + 16 \\int_{36}^{63} \\frac{\\frac{1}{27}}{u} \\,\\mathit{du}",
+                    "location": "1.1",
+                    "params": {
+                        "f": "(36 + 27 * (u / 27 - 4/3)) ^ -1 * (1/27)",
+                        "g": "36 + 27 * x",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. (36 + 27 * x) ^ -(1::real)) = real_integral (real_closed_interval 36 63) (λu. 1 / 27 * u ^ -(1::real)))",
+                    "reason": "Substitution",
+                    "text": "-5/18 + 16 * (INT u:[36,63]. 1/27 * u ^ -1)"
+                },
+                {
+                    "checked": true,
+                    "latex": "-\\frac{5}{18} + -\\frac{32}{27} \\log{(2)} + \\frac{16}{27} \\log{(7)}",
+                    "proof": "ProofTerm(⊢ -(5 / 18) + 16 * real_integral (real_closed_interval 36 63) (λx. 1 / 27 * x ^ -(1::real)) = -(5 / 18) + -(32 / 27) * log 2 + 16 / 27 * log 7)",
+                    "reason": "Simplification",
+                    "text": "-5/18 + -32/27 * log(2) + 16/27 * log(7)"
+                }
+            ],
+            "name": "Exercise 3",
+            "problem": "INT x:[0,1]. x^2/(3*x+4)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{x ^ 3}{3 x + 4} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{x ^ 3}{3 x + 4} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. x ^ 3 / (3 * x + 4)"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\int_{0}^{1} \\frac{1}{3} \\times x ^ 2 - \\frac{1}{9} \\times 4 x + \\frac{16}{27} - \\frac{64}{27 (3 x + 4)} \\,\\mathit{dx}",
+                    "location": "0",
+                    "params": {
+                        "rhs": "((x ^ 2 / 3 - (4 * x) / 9) + 16/27) - 64 / (27 * (3 * x + 4))"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. x ^ (3::nat) / (3 * x + 4)) = real_integral (real_closed_interval 0 1) (λx. x ^ (2::nat) / 3 - 4 * x / 9 + 16 / 27 - 64 / (27 * (3 * x + 4))))",
+                    "reason": "Rewrite fraction",
+                    "text": "INT x:[0,1]. ((x ^ 2 / 3 - (4 * x) / 9) + 16/27) - 64 / (27 * (3 * x + 4))"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\frac{13}{27} + -64 \\int_{0}^{1} \\frac{1}{108 + 81 x} \\,\\mathit{dx}",
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. x ^ (2::nat) / 3 - 4 * x / 9 + 16 / 27 - 64 / (27 * (3 * x + 4))) = 13 / 27 + -64 * real_integral (real_closed_interval 0 1) (λx. (108 + 81 * x) ^ -(1::real)))",
+                    "reason": "Simplification",
+                    "text": "13/27 + -64 * (INT x:[0,1]. (108 + 81 * x) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(108 + 81 x\\)",
+                    "checked": true,
+                    "latex": "\\frac{13}{27} + -64 \\int_{108}^{189} \\frac{\\frac{1}{81}}{u} \\,\\mathit{du}",
+                    "location": "1.1",
+                    "params": {
+                        "f": "(108 + 81 * (u / 81 - 4/3)) ^ -1 * (1/81)",
+                        "g": "108 + 81 * x",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. (108 + 81 * x) ^ -(1::real)) = real_integral (real_closed_interval 108 189) (λu. 1 / 81 * u ^ -(1::real)))",
+                    "reason": "Substitution",
+                    "text": "13/27 + -64 * (INT u:[108,189]. 1/81 * u ^ -1)"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\frac{13}{27} + \\frac{128}{81} \\log{(2)} + -\\frac{64}{81} \\log{(7)}",
+                    "proof": "ProofTerm(⊢ 13 / 27 + -64 * real_integral (real_closed_interval 108 189) (λx. 1 / 81 * x ^ -(1::real)) = 13 / 27 + 128 / 81 * log 2 + -(64 / 81) * log 7)",
+                    "reason": "Simplification",
+                    "text": "13/27 + 128/81 * log(2) + -64/81 * log(7)"
+                }
+            ],
+            "name": "Exercise 4",
+            "problem": "INT x:[0,1]. x^3/(3*x+4)"
+        },
+        {
+            "_problem_latex": "\\int_{1}^{2} \\frac{1}{x (3 x + 4)} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{2} \\frac{1}{x (3 x + 4)} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,2]. 1 / (x * (3 * x + 4))"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\int_{1}^{2} \\frac{-3}{4 (3 x + 4)} + \\frac{1}{4 x} \\,\\mathit{dx}",
+                    "location": "0",
+                    "params": {
+                        "rhs": "-3 / (4 * (3 * x + 4)) + 1 / (4 * x)"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 1 2) (λx. 1 / (x * (3 * x + 4))) = real_integral (real_closed_interval 1 2) (λx. -3 / (4 * (3 * x + 4)) + 1 / (4 * x)))",
+                    "reason": "Rewrite fraction",
+                    "text": "INT x:[1,2]. -3 / (4 * (3 * x + 4)) + 1 / (4 * x)"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\frac{1}{4} \\log{(2)} + -3 \\int_{1}^{2} \\frac{1}{16 + 12 x} \\,\\mathit{dx}",
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 1 2) (λx. -3 / (4 * (3 * x + 4)) + 1 / (4 * x)) = 1 / 4 * log 2 + -3 * real_integral (real_closed_interval 1 2) (λx. (16 + 12 * x) ^ -(1::real)))",
+                    "reason": "Simplification",
+                    "text": "1/4 * log(2) + -3 * (INT x:[1,2]. (16 + 12 * x) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(16 + 12 x\\)",
+                    "checked": true,
+                    "latex": "\\frac{1}{4} \\log{(2)} + -3 \\int_{28}^{40} \\frac{\\frac{1}{12}}{u} \\,\\mathit{du}",
+                    "location": "1.1",
+                    "params": {
+                        "f": "(16 + 12 * (u / 12 - 4/3)) ^ -1 * (1/12)",
+                        "g": "16 + 12 * x",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 1 2) (λx. (16 + 12 * x) ^ -(1::real)) = real_integral (real_closed_interval 28 40) (λu. 1 / 12 * u ^ -(1::real)))",
+                    "reason": "Substitution",
+                    "text": "1/4 * log(2) + -3 * (INT u:[28,40]. 1/12 * u ^ -1)"
+                },
+                {
+                    "checked": true,
+                    "latex": "-\\frac{1}{4} \\log{(5)} + \\frac{1}{4} \\log{(7)}",
+                    "proof": "ProofTerm(⊢ 1 / 4 * log 2 + -3 * real_integral (real_closed_interval 28 40) (λx. 1 / 12 * x ^ -(1::real)) = -(1 / 4) * log 5 + 1 / 4 * log 7)",
+                    "reason": "Simplification",
+                    "text": "-1/4 * log(5) + 1/4 * log(7)"
+                }
+            ],
+            "name": "Exercise 5",
+            "problem": "INT x:[1,2]. 1/(x*(3*x+4))"
+        },
+        {
+            "_problem_latex": "\\int_{1}^{2} \\frac{1}{x ^ 2 (3 x + 4)} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{2} \\frac{1}{x ^ 2 (3 x + 4)} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,2]. 1 / (x ^ 2 * (3 * x + 4))"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\int_{1}^{2} \\frac{9}{16 (3 x + 4)} - \\frac{3}{16 x} + \\frac{1}{4 x ^ 2} \\,\\mathit{dx}",
+                    "location": "0",
+                    "params": {
+                        "rhs": "(9 / (16 * (3 * x + 4)) - 3 / (16 * x)) + 1 / (4 * x ^ 2)"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 1 2) (λx. 1 / (x ^ (2::nat) * (3 * x + 4))) = real_integral (real_closed_interval 1 2) (λx. 9 / (16 * (3 * x + 4)) - 3 / (16 * x) + 1 / (4 * x ^ (2::nat))))",
+                    "reason": "Rewrite fraction",
+                    "text": "INT x:[1,2]. (9 / (16 * (3 * x + 4)) - 3 / (16 * x)) + 1 / (4 * x ^ 2)"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\frac{1}{8} + -\\frac{3}{16} \\log{(2)} + 9 \\int_{1}^{2} \\frac{1}{64 + 48 x} \\,\\mathit{dx}",
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 1 2) (λx. 9 / (16 * (3 * x + 4)) - 3 / (16 * x) + 1 / (4 * x ^ (2::nat))) = 1 / 8 + -(3 / 16) * log 2 + 9 * real_integral (real_closed_interval 1 2) (λx. (64 + 48 * x) ^ -(1::real)))",
+                    "reason": "Simplification",
+                    "text": "1/8 + -3/16 * log(2) + 9 * (INT x:[1,2]. (64 + 48 * x) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(64 + 48 x\\)",
+                    "checked": true,
+                    "latex": "\\frac{1}{8} + -\\frac{3}{16} \\log{(2)} + 9 \\int_{112}^{160} \\frac{\\frac{1}{48}}{u} \\,\\mathit{du}",
+                    "location": "1.1",
+                    "params": {
+                        "f": "(64 + 48 * (u / 48 - 4/3)) ^ -1 * (1/48)",
+                        "g": "64 + 48 * x",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 1 2) (λx. (64 + 48 * x) ^ -(1::real)) = real_integral (real_closed_interval 112 160) (λu. 1 / 48 * u ^ -(1::real)))",
+                    "reason": "Substitution",
+                    "text": "1/8 + -3/16 * log(2) + 9 * (INT u:[112,160]. 1/48 * u ^ -1)"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\frac{1}{8} + \\frac{3}{16} \\log{(5)} + -\\frac{3}{16} \\log{(7)}",
+                    "proof": "ProofTerm(⊢ 1 / 8 + -(3 / 16) * log 2 + 9 * real_integral (real_closed_interval 112 160) (λx. 1 / 48 * x ^ -(1::real)) = 1 / 8 + 3 / 16 * log 5 + -(3 / 16) * log 7)",
+                    "reason": "Simplification",
+                    "text": "1/8 + 3/16 * log(5) + -3/16 * log(7)"
+                }
+            ],
+            "name": "Exercise 6",
+            "problem": "INT x:[1,2]. 1/(x^2*(3*x+4))"
+        }
+    ]
+}

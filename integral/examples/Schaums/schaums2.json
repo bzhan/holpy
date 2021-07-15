@@ -1,0 +1,100 @@
+{
+    "content": [
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{1}{\\sqrt{3 x + 4}} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{1}{\\sqrt{3 x + 4}} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. 1 / sqrt(3 * x + 4)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(3 x + 4\\)",
+                    "checked": true,
+                    "latex": "\\int_{4}^{7} \\frac{\\frac{1}{3}}{\\sqrt{u}} \\,\\mathit{du}",
+                    "params": {
+                        "f": "1 / (3 * sqrt(u))",
+                        "g": "3 * x + 4",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. 1 / sqrt (3 * x + 4)) = real_integral (real_closed_interval 4 7) (λu. 1 / 3 * u ^ -(1 / 2)))",
+                    "reason": "Substitution",
+                    "text": "INT u:[4,7]. 1/3 * u ^ (-1/2)"
+                },
+                {
+                    "checked": true,
+                    "latex": "-\\frac{4}{3} + \\frac{2}{3} \\sqrt{7}",
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 4 7) (λx. 1 / 3 * x ^ -(1 / 2)) = -(4 / 3) + 2 / 3 * sqrt 7)",
+                    "reason": "Simplification",
+                    "text": "-4/3 + 2/3 * sqrt(7)"
+                }
+            ],
+            "name": "Exercise 1",
+            "problem": "INT x:[0,1]. 1/sqrt(3*x+4)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{x}{\\sqrt{3 x + 4}} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{x}{\\sqrt{3 x + 4}} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. x / sqrt(3 * x + 4)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(3 x + 4\\)",
+                    "checked": true,
+                    "latex": "\\int_{4}^{7} \\frac{-\\frac{4}{9}}{\\sqrt{u}} + \\frac{\\sqrt{u}}{9} \\,\\mathit{du}",
+                    "params": {
+                        "f": "((u / 3 - 4/3) / sqrt(3 * (u / 3 - 4/3) + 4)) * (1/3)",
+                        "g": "3 * x + 4",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. x / sqrt (3 * x + 4)) = real_integral (real_closed_interval 4 7) (λu. -(4 / 9) * u ^ -(1 / 2) + 1 / 9 * sqrt u))",
+                    "reason": "Substitution",
+                    "text": "INT u:[4,7]. -4/9 * u ^ (-1/2) + 1/9 * sqrt(u)"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\frac{32}{27} + -\\frac{10}{27} \\sqrt{7}",
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 4 7) (λx. -(4 / 9) * x ^ -(1 / 2) + 1 / 9 * sqrt x) = 32 / 27 + -(10 / 27) * sqrt 7)",
+                    "reason": "Simplification",
+                    "text": "32/27 + -10/27 * sqrt(7)"
+                }
+            ],
+            "name": "Exercise 2",
+            "problem": "INT x:[0,1]. x/sqrt(3*x+4)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{x ^ 2}{\\sqrt{3 x + 4}} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{x ^ 2}{\\sqrt{3 x + 4}} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. x ^ 2 / sqrt(3 * x + 4)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(3 x + 4\\)",
+                    "checked": true,
+                    "latex": "\\int_{4}^{7} \\frac{\\frac{1}{3}}{\\sqrt{u}} (-\\frac{4}{3} + \\frac{u}{3}) ^ 2 \\,\\mathit{du}",
+                    "params": {
+                        "f": "((u / 3 - 4/3) ^ 2 / sqrt(3 * (u / 3 - 4/3) + 4)) * (1/3)",
+                        "g": "3 * x + 4",
+                        "var_name": "u"
+                    },
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 0 1) (λx. x ^ (2::nat) / sqrt (3 * x + 4)) = real_integral (real_closed_interval 4 7) (λu. 1 / 3 * u ^ -(1 / 2) * (-(4 / 3) + 1 / 3 * u) ^ (2::nat)))",
+                    "reason": "Substitution",
+                    "text": "INT u:[4,7]. 1/3 * u ^ (-1/2) * (-4/3 + 1/3 * u) ^ 2"
+                },
+                {
+                    "checked": true,
+                    "latex": "\\frac{1}{3} \\int_{4}^{7} u ^ {-\\frac{1}{2}} (-\\frac{4}{3} + \\frac{u}{3}) ^ 2 \\,\\mathit{du}",
+                    "proof": "ProofTerm(⊢ real_integral (real_closed_interval 4 7) (λx. 1 / 3 * x ^ -(1 / 2) * (-(4 / 3) + 1 / 3 * x) ^ (2::nat)) = 1 / 3 * real_integral (real_closed_interval 4 7) (λu. u ^ -(1 / 2) * (-(4 / 3) + 1 / 3 * u) ^ (2::nat)))",
+                    "reason": "Simplification",
+                    "text": "1/3 * (INT u:[4,7]. u ^ (-1/2) * (-4/3 + 1/3 * u) ^ 2)"
+                }
+            ],
+            "name": "Exercise 3",
+            "problem": "INT x:[0,1]. x^2/sqrt(3*x+4)"
+        }
+    ]
+}
