@@ -347,20 +347,59 @@ export default {
       }
     },
 
+    // set r_query_mode
+    set_r_query_mode: function(name){
+      this.r_query_mode = name
+    },
+
+    // Take one step back
     back: function(){
       this.cur_calc.pop()
       this.clear_separate_integral()
     },
 
+    // Show existing steps in dialog
     backsteps: function(){
-      this.r_query_mode = "select step"
+      this.set_r_query_mode("select step")
     },
 
+    // Save steps into json file
+    save: async function () {
+      if (this.filename === undefined)
+        return;
+
+      if (this.cur_id === undefined)
+        return;
+
+      this.content[this.cur_id].calc = this.cur_calc;
+      const data = {
+        filename: this.filename,
+        content: this.content
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-save-file", JSON.stringify(data))
+
+      if (response.data.status === 'success') {
+          alert("Saved " + this.content[this.cur_id].name)
+      }
+    },
+
+    // Verification of steps
+    verify_step: async function () {
+      const data = {
+        previous_expr: this.cur_calc.at(-2).text,
+        cur_step: this.cur_calc.at(-1)
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/verify-step", JSON.stringify(data))
+      this.cur_calc[this.cur_calc.length-1] = response.data["step"]
+    },
+
+    // Delete the steps after index.
     cutstep: function(index){
       this.cur_calc = this.cur_calc.slice(0, index+1)
       this.r_query_mode = undefined
     },
 
+    // Restart calculation, delete all steps
     restart: async function () {
         this.clear_separate_integral()
         const data = {
@@ -371,11 +410,13 @@ export default {
         this.query_mode = undefined
     },
 
+    // Retrieve the stored calculation
     restore: function () {
       this.cur_calc = Array.from(this.content[this.cur_id].calc)  // create copy
       this.query_mode = undefined
     },
 
+    // Check if the selected part is a valid expression
     validation: async function() {
       let selected = this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionStart, this.$refs.mycloned.selectionEnd);
       let expr_with_dollar = this.sep_int[this.integral_index].body.slice(0, this.$refs.mycloned.selectionStart) + '$' + selected + '$' + this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionEnd);
@@ -457,25 +498,6 @@ export default {
         this.closeIntegral();
       }else{
         this.rewrite_error_flag = true;
-      }
-    },
-
-    save: async function () {
-      if (this.filename === undefined)
-        return;
-
-      if (this.cur_id === undefined)
-        return;
-
-      this.content[this.cur_id].calc = this.cur_calc;
-      const data = {
-        filename: this.filename,
-        content: this.content
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-save-file", JSON.stringify(data))
-
-      if (response.data.status === 'success') {
-          alert("Saved " + this.content[this.cur_id].name)
       }
     },
 
@@ -576,7 +598,8 @@ export default {
         }
         const response = await axios.post("http://127.0.0.1:5000/api/integral-compose-integral", JSON.stringify(data))
         this.cur_calc.push(response.data)        
-      }this.clear_separate_integral();
+      }
+      this.clear_separate_integral();
       this.clear_input_info()
     },
 
@@ -932,6 +955,9 @@ export default {
   padding-top: 10px;
   border-top-style: solid;
   overflow-y: scroll;
+}
+.MathJax_Display {
+  color: rgb(255, 255, 255) !important;
 }
 
 </style>

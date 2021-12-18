@@ -92,7 +92,7 @@ def integral_super_simplify():
         'latex': integral.latex.convert_expr(problem),
         'reason': "Simplification",
     }
-    step['checked'], step['proof'] = proof.translate_single_item(step, data['problem'])
+    step["checked"], step["proof"] = proof.translate_single_item(step, data['problem'])
     return jsonify(step)
 
 @app.route("/api/integral-elim-abs", methods=["POST"])
@@ -108,7 +108,7 @@ def integral_elim_abs():
             'latex': integral.latex.convert_expr(new_problem),
             'location': data['location']
         }
-        step['checked'], step['proof'] = proof.translate_single_item(step, data['problem'])
+
         return jsonify(step)
     c = rule.get_zero_point(problem)
     new_problem = rule.eval(problem)
@@ -121,7 +121,6 @@ def integral_elim_abs():
         },
         'location': data['location']
     }
-    step['checked'], step['proof'] = proof.translate_single_item(step, data['problem'])
     return jsonify(step)
 
 @app.route("/api/integral-integrate-by-equation", methods=['POST'])
@@ -199,8 +198,6 @@ def integral_compose_integral():
         'text': str(new_expr),
         'latex': integral.latex.convert_expr(new_expr),
         'reason': reason,
-        'checked': data['problem'][data['index']]['checked'],
-        'proof': data['problem'][data['index']]['proof']
     }
     if location != "":
         info.update({'location': location})
@@ -212,6 +209,7 @@ def integral_compose_integral():
         info.update({'rhs': rhs})
     if latex_reason:
         info.update({'_latex_reason': latex_reason})
+    info["checked"], info["proof"] = proof.translate_single_item(info, data["cur_calc"])
     return json.dumps(info)
 
 @app.route("/api/integral-substitution", methods=['POST'])
@@ -253,7 +251,6 @@ def integral_substitution():
             integral.latex.convert_expr(integral.parser.parse_expr(data['var_name'])), integral.latex.convert_expr(expr)
         )
     }
-    log['checked'], log['proof'] = proof.translate_single_item(log, data['problem'], _loc="")
     return jsonify({
         'flag': True,
         'log': log
@@ -288,8 +285,6 @@ def integral_substitution2():
             integral.latex.convert_expr(integral.parser.parse_expr(problem.var)), integral.latex.convert_expr(expr)
         )
     }
-
-    log['checked'], log['proof'] = proof.translate_single_item(log, data['problem'])
 
     return jsonify({
         'flag': True,
@@ -343,7 +338,7 @@ def integral_validate_expr():
                     rel_loc = "0"
                 else:
                     rel_loc = "0."+dollar_location
-                step['checked'], step['proof'] = proof.translate_single_item(step, data['problem'], _loc=rel_loc)
+
                 transform_info.append(step)
             return jsonify({
                 "flag": True,
@@ -390,8 +385,6 @@ def integral_validate_power_expr():
                 "location": location,
                 "reason": "Unfold power"
             }
-
-            step['checked'], step['proof'] = proof.translate_single_item(step, data['problem'])
 
             return jsonify(step)
     except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
@@ -473,7 +466,6 @@ def integral_rewrite_expr():
                 "location": data['absolute_location']
             }
 
-            step['checked'], step['proof'] = proof.translate_single_item(step, data['problem'], _loc=rel_loc)
 
             return jsonify(step)
         else:
@@ -489,7 +481,6 @@ def integral_rewrite_expr():
                 },
                 "location": data['absolute_location']
             }
-            step['checked'], step['proof'] = proof.translate_single_item(step, data['problem'], _loc=rel_loc)
 
             return jsonify(step)
     except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
@@ -522,9 +513,6 @@ def integral_split():
         "text": str(new_integral1 + new_integral2),
         "latex": integral.latex.convert_expr(new_integral1 + new_integral2) 
     }
-    
-    step['checked'], step['proof'] = proof.translate_single_item(step, data['problem'])
-
     return jsonify(step)
     
 
@@ -567,7 +555,6 @@ def integral_integrate_by_parts():
         ),
         'location': data['location']
     }
-    log['checked'], log['proof'] = proof.translate_single_item(log, data['problem'])
     return jsonify({
         "flag": True,
         "log": log
@@ -628,8 +615,6 @@ def integral_polynomial_division():
         "location": location
     }
 
-    step['checked'], step['proof'] = proof.translate_single_item(step, data['problem'])
-
     return jsonify(step)
 
 @app.route("/api/integral-save-file", methods=['POST'])
@@ -669,4 +654,14 @@ def integral_slagle():
             'latex': integral.latex.convert_expr(new_problem),
             'reason': "Slagle algorithm can't work"
         }])
-    
+
+
+@app.route("/api/integral-verify-step", methods=['POST'])
+def verify_step():
+    data = json.loads(request.get_data().decode('utf-8'))
+    previous_expr, cur_step = data["previous_expr"], data["cur_step"]
+    cur_step["checked"], cur_step["proof"] = \
+        proof.translate_single_item(cur_step, previous_expr)
+    return jsonify({
+        "step": cur_step
+    })
