@@ -931,6 +931,7 @@ heuristic_rules = [
     HeuristicExpandPower,
     HeuristicTrigSubstitution,
     HeuristicExponentBase,
+    HeuristicRationalSineCosine
 ]
 
 
