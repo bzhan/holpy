@@ -1,22 +1,26 @@
-tongji: Interesting 1
+tongji: Exercise 30, Interesting 1, Exercise 27, Exercise 26, 32/36
 
-MIT2013: Exercise 13(slagle can solve), Exercise 23(slagle can solve)
+MIT2013: Exercise 7, Exercise 13(slagle can solve), Exercise 16, Exercise 20, Exercise 23(slagle can solve), 20/25
 
 MIT2014: Exercise 7(Although can get the result, but it is unsimplified)
 
 MIT2019: Exercise 1(slagle can't solve)
 
-MIT2020: Exercise 7
+MIT2020: Exercise 7 
 
-Trig: Exercise 6, Exercise 7(success, but cos(pi/2) cannot be simplified in the result), Exercise 12, 
+Substitution: 18/18
+
+Exponential: 12/12
+
+Trig: Exercise 2, Exercise 6, Exercise 12, 
       Exercise 13, Exerise 17, Exercise 25
-      Exercise 11, Exercise 18, Exercise 27
+      Exercise 11, Exercise 18, Exercise 27    18/27
 
-ByParts: Exercise 14(result is unsimplified), Exercise 21, 22, 23(slagle cannot solve but maple could)
+ByParts: 23/23
 
-LogAndTangent: 
+LogAndTangent: Exercise 12, 21/22
 
-PartialFraction: Exercise 12, 17, 19, 
+PartialFraction: Exercise 12, 19, 18/20 
 
 
 
