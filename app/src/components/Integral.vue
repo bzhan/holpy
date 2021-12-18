@@ -10,6 +10,7 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Calc" left>
           <b-dropdown-item href="#" v-on:click="back">Back</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="backsteps">Back N Steps</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="restart(cur_id)">Restart</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='restore'>Restore</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='save'>Save</b-dropdown-item>
@@ -171,6 +172,17 @@
             <label v-if="split_success === false" style="color:red">Invalid split.</label>
         </div>
       </div>
+      <div v-if="r_query_mode === 'select step'">
+        <div v-for="(step, index) in cur_calc" :key="index">
+          <span>Step {{index+1}}:</span>
+          <MathEquation
+          v-on:click.native="cutstep(index)"
+          v-bind:data="'\\(' + step.latex + '\\)'"
+          style="cursor:pointer"/>
+          <MathEquation class="calc-reason" v-if="'_latex_reason' in step && step._latex_reason !== ''" v-bind:data="step._latex_reason"/>
+          <span class="calc-reason" v-else>{{step.reason}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+      </div>
     </div>
     <div id="select">
       <div v-if="display_integral === 'separate'">
@@ -293,6 +305,7 @@ export default {
       const response = await axios.post('http://127.0.0.1:5000/api/integral-load-file-list')
       this.file_list = response.data.file_list
       this.content_state = false
+      this.cur_calc = undefined
     },
 
     openFile: async function (file_name) {
@@ -337,6 +350,15 @@ export default {
     back: function(){
       this.cur_calc.pop()
       this.clear_separate_integral()
+    },
+
+    backsteps: function(){
+      this.r_query_mode = "select step"
+    },
+
+    cutstep: function(index){
+      this.cur_calc = this.cur_calc.slice(0, index+1)
+      this.r_query_mode = undefined
     },
 
     restart: async function () {
