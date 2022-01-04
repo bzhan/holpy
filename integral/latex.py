@@ -152,7 +152,10 @@ def convert_expr(e, mode="large"):
             raise NotImplementedError
     elif e.ty == expr.FUN:
         if len(e.args) == 0:
-            return "\\%s" % e.func_name
+            if e.func_name == "inf":
+                return "\\infty"
+            else:
+                return "\\%s" % e.func_name
         elif len(e.args) == 1:
             x, = e.args
             sx = convert_expr(x, mode)
@@ -184,5 +187,9 @@ def convert_expr(e, mode="large"):
         upper = convert_expr(e.upper, mode='short')
         body = convert_expr(e.body, mode)
         return "\\left. %s \\right\\vert_{%s=%s}^{%s}" % (body, e.var, lower, upper)
+    elif e.ty == expr.LIMIT:
+        lim = convert_expr(e.lim, mode="short")
+        body = convert_expr(e.body, mode)
+        return "\\lim\\limits_{%s\\to %s} %s" % (e.var, lim, body)
     else:
         raise NotImplementedError

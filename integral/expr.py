@@ -25,7 +25,7 @@ real_derivative = term.Const('real_derivative', TFun(TFun(RealType, RealType), R
 real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(RealType, RealType), RealType))
 
 
-VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL = range(9)
+VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL, LIMIT = range(10)
 
 op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75
@@ -1017,6 +1017,23 @@ class Expr:
         else:
             raise NotImplementedError
 
+    def has_var(self, var):
+        """Check if var occurs in self"""
+        assert isinstance(var, Expr) and var.ty == VAR, \
+                        "%s is not a var" % var
+        if self.ty in (VAR, CONST):
+            return self == var
+        elif self.ty in (OP, FUN):
+            return any(subexpr.has_var(var) for subexpr in self.args)
+        elif self.ty == DERIV:
+            return self.body.has_var(var)
+        elif self.ty == INTEGRAL:
+            return self.lower.has_var(var) or self.upper.has_var(var) or \
+                self.body.has_var(var)
+        elif self.ty == EVAL_AT:
+            return self.var != str(var) and self.body.has_var(var)
+        else:
+            raise NotImplementedError
 
 def sympy_style(s):
     """Transform expr to sympy object."""
@@ -1463,6 +1480,35 @@ class Fun(Expr):
         else:
             return "Fun(%s)" % self.func_name
 
+class Limit(Expr):
+    """Limit expression.
+    
+    - var: variable which approaches the limit
+    - lim: the limit
+    - e: expression
+    """
+    def __init__(self, var, lim, body):
+        assert isinstance(var, str) and isinstance(lim, Expr) and \
+            lim.is_constant() and isinstance(body, Expr), "Illegal expression."
+        assert body.has_var(Var(var)), "%s does not contain %s" % (var, body)
+        self.ty = LIMIT
+        self.var = var
+        self.lim = lim
+        self.body = body
+        
+    def __eq__(self, other):
+        return other.ty == self.ty and other.var == self.var and \
+            other.lim == self.lim and other.body == self.body
+    
+    def __hash__(self):
+        return hash((LIMIT, self.var, self.lim, self.body))
+
+    def __str__(self):
+        return "LIM {%s -> %s}. %s" % (self.var, self.lim, self.body)
+
+    def __repr__(self):
+        return "Limit(%s, %s, %s)" % (self.var, self.lim, self.body)
+
 def sin(e):
     return Fun("sin", e)
 
@@ -1501,7 +1547,7 @@ def sqrt(e):
 
 pi = Fun("pi")
 E = Fun("exp", Const(1))
-
+inf = Fun("inf")
 
 class Deriv(Expr):
     """Derivative of an expression."""
