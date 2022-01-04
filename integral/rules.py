@@ -506,6 +506,37 @@ class IntegrateByEquation(Rule):
         self.coeff = (-Const(coeff)).normalize()
         return (new_rhs/(Const(1-coeff))).normalize()
 
+class ElimInfInterval(Rule):
+    """Convert improper integral of TYPE 1 (infinite intervals) 
+    to a limit expression."""
+    def __init__(self):
+        self.name = "Improper integral of Type 1"
+
+    def eval(self, e, a=Const(0)):
+        def gen_lim_expr(var, lim, lower, upper):
+            return expr.Limit(new_var, lim, expr.Integral(e.var, lower, upper, e.body))
+        
+        if e.ty != expr.INTEGRAL:
+            return e
+        upper, lower = e.upper, e.lower
+        if upper != expr.inf and lower != -expr.inf:
+            return e
+        
+        new_var = "s" if e.var == "t" else "t"
+        elim_upper_inf = gen_lim_expr(new_var, expr.inf, lower, Var(new_var))
+        elim_lower_inf = gen_lim_expr(new_var, -expr.inf, Var(new_var), upper)
+        if upper == expr.inf and lower != -expr.inf:
+            # return expr.Limit(new_var, expr.inf, expr.Integral(e.var, lower, Var(new_var), e.body))
+            return gen_lim_expr(new_var, expr.inf, lower, Var(new_var))
+        elif upper != expr.inf and lower == -expr.inf:
+            # return expr.Limit(new_var, -expr.inf, expr.Integral(e.var, Var(new_var), upper, e.body))
+            return gen_lim_expr(new_var, -expr.inf, Var(new_var), upper)
+        elif upper == expr.inf and lower == -expr.inf:
+            assert a is not None, "No split point provided"
+            return gen_lim_expr(new_var, -expr.inf, Var(new_var), a) + \
+                gen_lim_expr(new_var, expr.inf, a, Var(new_var))
+        else:
+            raise NotImplementedError
 
 def check_item(item, target=None, *, debug=False):
     """Check application of rules in the item."""

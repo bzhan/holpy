@@ -665,3 +665,16 @@ def verify_step():
     return jsonify({
         "step": cur_step
     })
+
+@app.route("/api/integral-elim-inf", methods=['POST'])
+def integral_elim_inf():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    problem = integral.parser.parse_expr(data["problem"])
+    new_problem = integral.rules.ElimInfInterval().eval(problem)
+    return jsonify({
+        "text": str(new_problem),
+        "latex": integral.latex.convert_expr(new_problem),
+        "location": data["location"],
+        "reason": "Eliminate infinity"
+    })
+    

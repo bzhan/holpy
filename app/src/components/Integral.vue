@@ -28,6 +28,7 @@
           <b-dropdown-item href="#" v-on:click='split'>Splitting an Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='integrateByEquation'>Solving Equations</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='elimAbs'>Eliminate Abs</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='elimInfinity'>Eliminate Infinity</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -224,6 +225,19 @@
           <button v-on:click="closeIntegral">Close</button>
         </div>  
       </div>
+      <div v-if="display_integral === 'eliminf'">
+        <label>Elim Inf</label>
+        <div v-for="(step, index) in sep_int" :key="index">
+          <span>{{index+1}}: </span>
+          <MathEquation
+          v-on:click.native="doElimInfinity(index)"
+          v-bind:data="'\\(' + step.latex + '\\)'"
+          style="cursor:pointer"/>
+        </div>
+        <div style="margin-top:10px">
+          <button v-on:click="closeIntegral">Close</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -256,7 +270,7 @@ export default {
       r_query_mode: undefined, //record query mode
       display_integral: undefined, //display the separate integral
       sep_int: [], //all separate integrals
-      process_index: undefined,
+      process_index: undefined, // used in close integral
       integral_index: undefined, //integral on processing
       take_effect: 0,     //Flag for whether a rule takes effect or close on halfway.
 
@@ -631,6 +645,15 @@ export default {
       this.display_integral = 'abs'
     },
 
+  displaySeparateIntegrals_eliminf: async function(){
+      const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-integrals", JSON.stringify(data))
+      for(var i = 0; i < response.data.length; ++i){
+        this.sep_int.push(response.data[i])
+      }
+      this.display_integral = 'eliminf'
+    },
+
     operate: function(index){
       this.clear_input_info()
       this.r_query_mode = this.query_mode
@@ -878,6 +901,28 @@ export default {
       }else{
         this.equation_data.fail_reason = response.data._latex_reason
       }
+    },
+
+    elimInfinity: function(){
+      this.sep_int = []
+      this.display_integral = 'eliminf'
+      this.show_proof_mode = undefined
+      this.displaySeparateIntegrals_eliminf()
+    },
+
+    doElimInfinity: async function(index) {
+      const data = {
+        problem: this.sep_int[index].text,
+        location: this.sep_int[index].location
+      }
+
+      const responce = await axios.post("http://127.0.0.1:5000/api/integral-elim-inf", JSON.stringify(data))
+
+      this.sep_int[index] = responce.data
+      this.take_effect = 1
+      this.integral_index = undefined
+      this.process_index = index
+      this.closeIntegral()
     },
 
     displayProof: function(index){
