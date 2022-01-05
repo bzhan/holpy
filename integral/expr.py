@@ -3,8 +3,8 @@
 from fractions import Fraction
 import functools, operator
 from collections.abc import Iterable
-import copy
 from sympy import solveset, re, Interval, Eq, Union, EmptySet, pexquo
+from decimal import Decimal
 from sympy.simplify.fu import *
 from sympy.parsing import sympy_parser
 from sympy.ntheory.factor_ import factorint
@@ -251,6 +251,9 @@ class Expr:
     def is_evalat(self):
         return self.ty == EVAL_AT
 
+    def is_limit(self):
+        return self.ty == LIMIT
+
     def is_plus(self):
         return self.ty == OP and self.op == '+'
 
@@ -332,6 +335,8 @@ class Expr:
             return 95
         elif self.ty in (DERIV, INTEGRAL, EVAL_AT):
             return 10
+        elif self.ty == LIMIT:
+            return 5
 
     def __lt__(self, other):
         return self <= other and self != other
@@ -359,6 +364,10 @@ class Expr:
                 return self.upper.get_subexpr(loc.rest)
             else:
                 raise AssertionError("get_subexpr: invalid location")
+        elif self.ty == LIMIT:
+            assert loc.head == 0, "get_subexpr: invalid location"
+            return self.body.get_subexpr(loc.rest)
+                
         else:
             raise NotImplementedError
 
@@ -408,6 +417,9 @@ class Expr:
         elif self.ty == DERIV:      
             assert loc.head == 0, "get_subexpr: invalid location"
             return Deriv(self.var, self.body.replace_expr(loc.rest, new_expr))
+        elif self.ty == LIMIT:
+            assert loc.head == 0, "get_subexpr: invalid location"
+            return Limit(self.var, self.limit, self.body.replace_expr(loc.rest, new_expr))
         else:
             raise NotImplementedError
 
@@ -425,7 +437,7 @@ class Expr:
                 get(exp.lower, loc+".1")
                 get(exp.upper, loc+".2")
                 get(exp.body, loc+".0")
-            elif exp.ty == DERIV:
+            elif exp.ty == DERIV or exp.ty == LIMIT:
                 get(exp.body, loc+".0")
         get(self)
         return location[0]
@@ -644,7 +656,6 @@ class Expr:
                     return -a
             else:
                 return poly.const_singleton(self)
-
         else:
             raise NotImplementedError
 
@@ -741,6 +752,10 @@ class Expr:
             body = self.body.normalize()
             return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), body))
 
+        elif self.ty == LIMIT:
+            body = self.body.normalize()
+            return poly.singleton(Limit(self.var, self.lim, body))
+
         else:
             return poly.singleton(self)
     
@@ -782,16 +797,18 @@ class Expr:
                 return self
 
     def separate_integral(self):
-        """Find all integrals in expr."""
+        """Find all integrals in self."""
         result = []
-        def collect(expr, result):
-            if expr.ty == INTEGRAL:
-                expr.selected = True
+        def collect(p, result):
+            if p.ty == INTEGRAL:
+                p.selected = True
                 loc = self.get_location()
-                result.append([expr, loc])
-            elif expr.ty == OP:
-                for arg in expr.args:
+                result.append([p, loc])
+            elif p.ty == OP:
+                for arg in p.args:
                     collect(arg, result)
+            elif p.ty == LIMIT:
+                collect(p.body, result)
 
         collect(self, result)
         return result
@@ -1031,7 +1048,8 @@ class Expr:
             return self.lower.has_var(var) or self.upper.has_var(var) or \
                 self.body.has_var(var)
         elif self.ty == EVAL_AT:
-            return self.var != str(var) and self.body.has_var(var)
+            return self.var != str(var) and (self.body.has_var(var) or \
+                self.upper.has_var(var) or self.lower.has_var(var))
         else:
             raise NotImplementedError
 
@@ -1376,7 +1394,8 @@ class Const(Expr):
         assert isinstance(val, (int, Decimal, Fraction))
         self.ty = CONST
         if isinstance(val, Decimal):
-            val = Fraction(val)
+            if val != Decimal("inf") and val != Decimal("-inf"):
+                val = Fraction(val)
         self.val = val
 
     def __hash__(self):
@@ -1471,6 +1490,10 @@ class Fun(Expr):
     def __str__(self):
         if len(self.args) > 0:
             return "%s(%s)" % (self.func_name, ",".join(str(arg) for arg in self.args))
+        elif self.func_name == "pi":
+            return "π"
+        elif self.func_name == "inf":
+            return "∞"
         else:
             return self.func_name
 
@@ -1547,7 +1570,7 @@ def sqrt(e):
 
 pi = Fun("pi")
 E = Fun("exp", Const(1))
-inf = Fun("inf")
+inf = Const(Decimal("inf"))
 
 class Deriv(Expr):
     """Derivative of an expression."""

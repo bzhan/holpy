@@ -21,7 +21,7 @@ def collect_pairs(ps):
     """
     res = {}
     for v, c in ps:
-        if v in res:
+        if v in res:            
             res[v] += c
         else:
             res[v] = c
@@ -88,7 +88,9 @@ class ConstantMonomial:
     """
     def __init__(self, coeff, factors):
         """Construct a monomial from coefficient and tuple of factors."""
-        assert isinstance(coeff, (int, Fraction))
+        assert isinstance(coeff, (int, Fraction)) or \
+            coeff == Decimal("inf") or coeff == Decimal("-inf"), \
+                "coeff: %s, factors: %s" % (coeff, factors)
 
         reduced_factors = []
         for n, e in factors:
@@ -125,6 +127,9 @@ class ConstantMonomial:
             return str_factors
         else:
             return str(self.coeff) + " * " + str_factors
+
+    def __repr__(self) -> str:
+        return str(self)
 
     def __le__(self, other):
         if len(self.factors) < len(other.factors):
