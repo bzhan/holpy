@@ -15,7 +15,8 @@ grammar = r"""
         | DECIMAL -> decimal_expr
         | "D" CNAME "." expr -> deriv_expr
         | "pi" -> pi_expr
-        | "inf" -> inf_expr
+        | "inf" -> pos_inf_expr
+        | "-inf" -> neg_inf_expr
         | CNAME "(" expr ("," expr)* ")" -> fun_expr
         | "(" expr ")"
         | "\|" expr "\|" -> abs_expr 
@@ -95,8 +96,11 @@ class ExprTransformer(Transformer):
     def pi_expr(self):
         return expr.pi
 
-    def inf_expr(self):
+    def pos_inf_expr(self):
         return expr.inf
+
+    def neg_inf_expr(self):
+        return expr.neg_inf
 
     def fun_expr(self, func_name, *args):
         return expr.Fun(func_name, *args)
@@ -122,7 +126,7 @@ class ExprTransformer(Transformer):
         return inequality.Interval(e1, e2, left_open=(l == '('), right_open=(r == ')'))
 
     def limit_expr(self, var, lim, body):
-        return expr.Limit(var, lim, body)
+        return expr.Limit(str(var), lim, body)
 
 expr_parser = Lark(grammar, start="expr", parser="lalr", transformer=ExprTransformer())
 interval_parser = Lark(grammar, start="interval", parser="lalr", transformer=ExprTransformer())

@@ -272,6 +272,10 @@ class Expr:
     def is_power(self):
         return self.ty == OP and self.op == '^'
 
+    def is_inf(self):
+        return self.ty == CONST and \
+             (self.val == Decimal("inf") or self.val == Decimal("-inf"))
+
     def __le__(self, other):
         if isinstance(other, (int, Fraction)):
             return False
@@ -472,6 +476,9 @@ class Expr:
                 return self.args[0].is_constant()
         elif self.ty == OP:
             return all(arg.is_constant() for arg in self.args)
+        elif self.ty == LIMIT:
+            body = self.body.replace_trig(Var(self.var), self.lim)
+            return body.is_constant()
         else:
             return False
 
@@ -598,6 +605,10 @@ class Expr:
                             if b not in int_factors:
                                 int_factors[b] = 0
                             int_factors[b] -= e
+                    elif mono.coeff == Decimal("inf"):
+                        return poly.const_fraction(Decimal("inf"))
+                    elif mono.coeff == Decimal("-inf"):
+                        raise ValueError("Log negative infinity!")
                     else:
                         raise NotImplementedError
                     log_ints = []
@@ -656,6 +667,8 @@ class Expr:
                     return -a
             else:
                 return poly.const_singleton(self)
+        elif self.ty == LIMIT:
+            return self.body.replace_trig(Var(self.var), self.lim).to_const_poly()
         else:
             raise NotImplementedError
 
@@ -753,12 +766,36 @@ class Expr:
             return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), body))
 
         elif self.ty == LIMIT:
-            body = self.body.normalize()
-            return poly.singleton(Limit(self.var, self.lim, body))
-
+            return self.to_limit_poly()
         else:
             return poly.singleton(self)
     
+    def to_limit_poly(self):
+        """Convert limit expression to polynomial"""
+        assert self.ty == LIMIT, "%s is not limit experssion" % str(self)
+        b = self.body
+        if self.is_constant():
+            return b.replace_trig(Var(self.var), self.lim).to_poly()
+        elif b.is_plus():
+            return Limit(self.var, self.lim, b.args[0]).to_poly() + \
+                Limit(self.var, self.lim, b.args[1]).to_poly()
+        elif b.is_minus():
+            return Limit(self.var, self.lim, b.args[0]).to_poly() - \
+                Limit(self.var, self.lim, b.args[1]).to_poly()
+        elif b.is_uminus():
+            return Op("-", Limit(self.var, self.lim, b.args[0]).normalize()).to_poly()
+        elif b.is_times():
+            return Limit(self.var, self.lim, b.args[0]).to_poly() * \
+                Limit(self.var, self.lim, b.args[1]).to_poly()
+        elif b.ty == INTEGRAL:
+            return poly.singleton(Limit(self.var, self.lim, self.body.normalize()))
+        elif b.ty == EVAL_AT:
+            upper = b.body.subst(b.var, b.upper)
+            lower = b.body.subst(b.var, b.lower)
+            return Limit(self.var, self.lim, upper - lower).to_poly() 
+        else:
+            raise NotImplementedError(str(self))
+        
     def normalize(self):
         return from_poly(self.to_poly())
 
@@ -793,6 +830,9 @@ class Expr:
             elif self.ty == INTEGRAL:
                 body = self.body.replace_trig(trig_old, trig_new)
                 return Integral(self.var, self.lower, self.upper, body)
+            elif self.ty == LIMIT:
+                body = self.body.replace_trig(trig_old, trig_new)
+                return Limit(self.var, self.lim, body)
             else:
                 return self
 
@@ -1405,7 +1445,12 @@ class Const(Expr):
         return other.ty == CONST and self.val == other.val
 
     def __str__(self):
-        return str(self.val)
+        if self.val == Decimal("inf"):
+            return "inf"
+        elif self.val == Decimal("-inf"):
+            return "-inf"
+        else:
+            return str(self.val)
 
     def __repr__(self):
         return "Const(%s)" % str(self.val)
@@ -1490,10 +1535,6 @@ class Fun(Expr):
     def __str__(self):
         if len(self.args) > 0:
             return "%s(%s)" % (self.func_name, ",".join(str(arg) for arg in self.args))
-        elif self.func_name == "pi":
-            return "π"
-        elif self.func_name == "inf":
-            return "∞"
         else:
             return self.func_name
 
@@ -1571,6 +1612,7 @@ def sqrt(e):
 pi = Fun("pi")
 E = Fun("exp", Const(1))
 inf = Const(Decimal("inf"))
+neg_inf = Const(Decimal("-inf"))
 
 class Deriv(Expr):
     """Derivative of an expression."""

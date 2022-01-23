@@ -159,7 +159,13 @@ class ConstantMonomial:
 
     def __pow__(self, exp):
         # Assume the power is a fraction
-        if isinstance(exp, (int, Fraction)) and int(exp) == exp:
+        if isinstance(self.coeff, Decimal) and self.coeff.is_infinite():
+            x = self.coeff ** exp
+            if isinstance(x, Decimal) and x.is_infinite():
+                return ConstantMonomial(x, [])
+            else:
+                return ConstantMonomial(Fraction(x), [])
+        elif isinstance(exp, (int, Fraction)) and int(exp) == exp:
             return ConstantMonomial(Fraction(self.coeff) ** exp, [(n, e * exp) for n, e in self.factors])
         elif isinstance(exp, Fraction):
             coeff = Fraction(self.coeff)

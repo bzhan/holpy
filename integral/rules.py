@@ -5,7 +5,7 @@ from integral import poly
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
         sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, sin, cos, FUN, decompose_expr_factor
 import functools, operator
-from sympy.parsing import sympy_parser
+from integral import parser
 from sympy import Interval, expand_multinomial, apart
 from sympy.solvers import solvers, solveset
 from integral import parser
@@ -36,7 +36,13 @@ class Simplify(Rule):
         self.name = "Simplify"
     
     def eval(self, e):
-        return e.normalize()
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+        res = e.normalize()
+        if res.is_inf():
+            raise ValueError
+        else:
+            return res
 
 class Linearity(Rule):
     """Applies linearity rules:
@@ -49,6 +55,9 @@ class Linearity(Rule):
         self.name = "Linearity"
     
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
         if e.ty != expr.INTEGRAL:
             return e
 
@@ -93,6 +102,8 @@ class CommonIntegral(Rule):
         self.name = "CommonIntegral"
 
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
         if e.ty != expr.INTEGRAL:
             return e
 
@@ -134,6 +145,9 @@ class CommonDeriv(Rule):
     """Common rules for evaluating a derivative."""
 
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
         if e.ty == expr.DERIV:
             return expr.deriv(e.var, e.body)
         else:
@@ -228,6 +242,9 @@ class FullSimplify(Rule):
         self.name = "FullSimplify"
 
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
         counter = 0
         current = e
         while True:
@@ -266,6 +283,10 @@ class Substitution1(Rule):
         specify the substitution.
 
         """
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
+
         var_name = parser.parse_expr(self.var_name)
         var_subst = self.var_subst
         dfx = expr.deriv(e.var, var_subst)
@@ -310,6 +331,9 @@ class Substitution2(Rule):
         self.name = "Substitution inverse"
 
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
         subst_deriv = expr.deriv(self.var_name, self.var_subst) #dx = d(x(u)) = x'(u) *du
         new_e_body = e.body.replace_trig(expr.holpy_style(str(e.var)), self.var_subst) #replace all x with x(u)
         new_e_body = expr.Op("*", new_e_body, subst_deriv) # g(x) = g(x(u)) * x'(u)
@@ -324,6 +348,9 @@ class UnfoldPower(Rule):
         self.name = "Unfold power"
 
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
         if e.ty == expr.INTEGRAL:
             return Integral(e.var, e.lower, e.upper, e.body.expand())
         else:
@@ -339,6 +366,9 @@ class Equation(Rule):
         self.denom = denom
     
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
         if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
            expand_multinomial(expr.sympy_style(e.normalize()).simplify()):
             raise AssertionError("Rewriting by equation failed")
@@ -360,6 +390,9 @@ class IntegrationByParts(Rule):
         self.name = "Integrate by parts"
 
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
         if e.ty != expr.INTEGRAL:
             return e
         e.body = e.body.normalize()
@@ -380,6 +413,10 @@ class PolynomialDivision(Rule):
         self.name = "Fraction Division"
 
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
+
         if e.ty == OP and e.op != "/" and not (e.ty == OP and e.op == "*" and e.args[1].ty == OP and e.args[1].op == "^"\
             and (e.args[1].args[1].ty == OP and len(e.args[1].args[1]) == 1 or e.args[1].args[1].ty == CONST and e.args[1].args[1].val < 0)):
             return e
@@ -394,6 +431,9 @@ class RewriteTrigonometric(Rule):
         self.rule_name = rule_name
 
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
         rule_fun, _ = expr.trigFun[self.rule_name]
         sympy_result = rule_fun(expr.sympy_style(e))
         result = expr.holpy_style(sympy_result)
@@ -429,6 +469,9 @@ class ElimAbs(Rule):
         return holpy_style(zero_point[0])
 
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
         if e.ty != expr.INTEGRAL:
             return e
 
@@ -452,6 +495,10 @@ class SplitRegion(Rule):
         self.c = c
 
     def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
+        
         if e.ty != expr.INTEGRAL:
             return e
 
@@ -481,6 +528,9 @@ class IntegrateByEquation(Rule):
 
     def eval(self, e):
         """Eliminate the lhs's integral in rhs by solving equation."""
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
         rhs_var = None
         def get_coeff(t):
             nonlocal rhs_var
@@ -515,27 +565,26 @@ class ElimInfInterval(Rule):
         self.name = "Improper integral of Type 1"
 
     def eval(self, e, a=Const(0)):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
         def gen_lim_expr(var, lim, lower, upper):
             return expr.Limit(new_var, lim, expr.Integral(e.var, lower, upper, e.body))
         
         if e.ty != expr.INTEGRAL:
             return e
         upper, lower = e.upper, e.lower
-        if upper != expr.inf and lower != -expr.inf:
+        if upper != expr.inf and lower != expr.neg_inf:
             return e
         
         new_var = "s" if e.var == "t" else "t"
-        elim_upper_inf = gen_lim_expr(new_var, expr.inf, lower, Var(new_var))
-        elim_lower_inf = gen_lim_expr(new_var, -expr.inf, Var(new_var), upper)
-        if upper == expr.inf and lower != -expr.inf:
-            # return expr.Limit(new_var, expr.inf, expr.Integral(e.var, lower, Var(new_var), e.body))
+        if upper == expr.inf and lower != expr.neg_inf:
             return gen_lim_expr(new_var, expr.inf, lower, Var(new_var))
-        elif upper != expr.inf and lower == -expr.inf:
-            # return expr.Limit(new_var, -expr.inf, expr.Integral(e.var, Var(new_var), upper, e.body))
-            return gen_lim_expr(new_var, -expr.inf, Var(new_var), upper)
-        elif upper == expr.inf and lower == -expr.inf:
+        elif upper != expr.inf and lower == expr.neg_inf:
+            return gen_lim_expr(new_var, expr.neg_inf, Var(new_var), upper)
+        elif upper == expr.inf and lower == expr.neg_inf:
             assert a is not None, "No split point provided"
-            return gen_lim_expr(new_var, -expr.inf, Var(new_var), a) + \
+            return gen_lim_expr(new_var, expr.neg_inf, Var(new_var), a) + \
                 gen_lim_expr(new_var, expr.inf, a, Var(new_var))
         else:
             raise NotImplementedError

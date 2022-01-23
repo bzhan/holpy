@@ -11,7 +11,12 @@ def convert_expr(e, mode="large"):
         return e.name
     elif e.ty == expr.CONST:
         if isinstance(e.val, (int, Decimal)):
-            return str(e.val)
+            if e.val == Decimal("inf"):
+                return "\\infty"
+            elif e.val == Decimal("-inf"):
+                return "-\\infty"
+            else:
+                return str(e.val)
         elif isinstance(e.val, Fraction):
             if e.val.denominator == 1:
                 return "%d" % e.val.numerator
@@ -152,10 +157,7 @@ def convert_expr(e, mode="large"):
             raise NotImplementedError
     elif e.ty == expr.FUN:
         if len(e.args) == 0:
-            if e.func_name == "inf":
-                return "\\infty"
-            else:
-                return "\\%s" % e.func_name
+            return "\\%s" % e.func_name
         elif len(e.args) == 1:
             x, = e.args
             sx = convert_expr(x, mode)
@@ -190,6 +192,9 @@ def convert_expr(e, mode="large"):
     elif e.ty == expr.LIMIT:
         lim = convert_expr(e.lim, mode="short")
         body = convert_expr(e.body, mode)
-        return "\\lim\\limits_{%s\\to %s} %s" % (e.var, lim, body)
+        if e.body.ty == expr.OP and len(e.body.args) > 1:
+            return "\\lim\\limits_{%s\\to %s} (\,%s\,)" % (e.var, lim, body)
+        else:
+            return "\\lim\\limits_{%s\\to %s} %s" % (e.var, lim, body)
     else:
         raise NotImplementedError
