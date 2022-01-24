@@ -176,7 +176,7 @@ class OnSubterm(Rule):
         elif e.ty == expr.EVAL_AT:
             return rule.eval(expr.EvalAt(e.var, self.eval(e.lower), self.eval(e.upper), self.eval(e.body)))
         elif e.ty == expr.LIMIT:
-            return rule.eval(expr.Limit(e.var, self.eval(e.lim), self.eval(e.body)))
+            return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body)))
         else:
             raise NotImplementedError
 

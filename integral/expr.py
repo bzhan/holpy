@@ -25,7 +25,7 @@ real_derivative = term.Const('real_derivative', TFun(TFun(RealType, RealType), R
 real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(RealType, RealType), RealType))
 
 
-VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL, LIMIT = range(10)
+VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL, LIMIT, INF = range(11)
 
 op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75
@@ -605,10 +605,6 @@ class Expr:
                             if b not in int_factors:
                                 int_factors[b] = 0
                             int_factors[b] -= e
-                    elif mono.coeff == Decimal("inf"):
-                        return poly.const_fraction(Decimal("inf"))
-                    elif mono.coeff == Decimal("-inf"):
-                        raise ValueError("Log negative infinity!")
                     else:
                         raise NotImplementedError
                     log_ints = []
@@ -766,36 +762,20 @@ class Expr:
             return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), body))
 
         elif self.ty == LIMIT:
-            return self.to_limit_poly()
+            return poly.singleton(Limit(self.var, self.lim, self.body.normalize()))
+        elif self.ty == INF:
+            return poly.singleton(inf)
         else:
             return poly.singleton(self)
-    
-    def to_limit_poly(self):
-        """Convert limit expression to polynomial"""
-        assert self.ty == LIMIT, "%s is not limit experssion" % str(self)
-        b = self.body
-        if self.is_constant():
-            return b.replace_trig(Var(self.var), self.lim).to_poly()
-        elif b.is_plus():
-            return Limit(self.var, self.lim, b.args[0]).to_poly() + \
-                Limit(self.var, self.lim, b.args[1]).to_poly()
-        elif b.is_minus():
-            return Limit(self.var, self.lim, b.args[0]).to_poly() - \
-                Limit(self.var, self.lim, b.args[1]).to_poly()
-        elif b.is_uminus():
-            return Op("-", Limit(self.var, self.lim, b.args[0]).normalize()).to_poly()
-        elif b.is_times():
-            return Limit(self.var, self.lim, b.args[0]).to_poly() * \
-                Limit(self.var, self.lim, b.args[1]).to_poly()
-        elif b.ty == INTEGRAL:
-            return poly.singleton(Limit(self.var, self.lim, self.body.normalize()))
-        elif b.ty == EVAL_AT:
-            upper = b.body.subst(b.var, b.upper)
-            lower = b.body.subst(b.var, b.lower)
-            return Limit(self.var, self.lim, upper - lower).to_poly() 
-        else:
-            raise NotImplementedError(str(self))
-        
+
+    def to_frac_poly(self):
+        """Convert self to fraction poly."""
+        return self.to_poly().to_frac()
+
+    def normalize_frac(self):
+        frac_poly = self.to_frac_poly()
+        return Op("/", from_poly(frac_poly.nm), from_poly(frac_poly.denom))
+
     def normalize(self):
         return from_poly(self.to_poly())
 
@@ -1553,7 +1533,8 @@ class Limit(Expr):
     """
     def __init__(self, var, lim, body):
         assert isinstance(var, str) and isinstance(lim, Expr) and \
-            lim.is_constant() and isinstance(body, Expr), "Illegal expression."
+            isinstance(body, Expr), "Illegal expression: %s %s %s" % \
+                (type(var), type(lim), type(body))
         assert body.has_var(Var(var)), "%s does not contain %s" % (var, body)
         self.ty = LIMIT
         self.var = var
@@ -1572,6 +1553,21 @@ class Limit(Expr):
 
     def __repr__(self):
         return "Limit(%s, %s, %s)" % (self.var, self.lim, self.body)
+
+class Infinity(Expr):
+    """The infinity."""
+    def __init__(self, level=0):
+        self.ty = INF
+        self.level = level
+
+    def __str__(self):
+        return "oo"
+    
+    def __repr__(self):
+        return "Infinity"
+
+    def __hash__(self):
+        return hash((INF, "inf"))
 
 def sin(e):
     return Fun("sin", e)
@@ -1611,8 +1607,8 @@ def sqrt(e):
 
 pi = Fun("pi")
 E = Fun("exp", Const(1))
-inf = Const(Decimal("inf"))
-neg_inf = Const(Decimal("-inf"))
+inf = Infinity()
+neg_inf = -Infinity()
 
 class Deriv(Expr):
     """Derivative of an expression."""

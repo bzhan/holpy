@@ -11,12 +11,7 @@ def convert_expr(e, mode="large"):
         return e.name
     elif e.ty == expr.CONST:
         if isinstance(e.val, (int, Decimal)):
-            if e.val == Decimal("inf"):
-                return "\\infty"
-            elif e.val == Decimal("-inf"):
-                return "-\\infty"
-            else:
-                return str(e.val)
+            return str(e.val)
         elif isinstance(e.val, Fraction):
             if e.val.denominator == 1:
                 return "%d" % e.val.numerator
@@ -29,6 +24,8 @@ def convert_expr(e, mode="large"):
                 return "%d/%d" % (e.val.numerator, e.val.denominator)
         else:
             raise NotImplementedError
+    elif e.ty == expr.INF:
+        return "-\\infty"
     elif e.ty == expr.OP:
         if len(e.args) == 1:
             a, = e.args

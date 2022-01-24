@@ -371,9 +371,34 @@ class Monomial:
     def get_fraction(self):
         return self.coeff.get_fraction()
 
-    def flip(self):
-        """Negate each exponential in factors"""
-        return Monomial(self.coeff, [(i, -j) for i, j in self.factors])
+    def to_frac(self):
+        """Collect factor with positive power and negative power"""
+        pos_facs, neg_facs = [], []
+        print("self", self)
+        for i, j in self.factors:
+            if isinstance(j, Polynomial):
+                if len(j) == 1:
+                    coeff = j.monomials[0].coeff.get_fraction()
+                    if coeff > 0:
+                        pos_facs.append((i, j))
+                    elif coeff < 0:
+                        neg_facs.append((i, -j))
+                    else:
+                        raise ValueError
+                else:
+                    pos_facs.append((i, j))
+            elif isinstance(j, int) or isinstance(j, Fraction):
+                if j > 0:
+                    pos_facs.append((i, j))
+                elif j < 0:
+                    neg_facs.append((i, -j))
+                else:
+                    raise ValueError
+            else:
+                raise TypeError
+        denom = Polynomial([Monomial(1, neg_facs)])
+        nm = Polynomial([Monomial(self.coeff, pos_facs)])
+        return FracPoly(nm, denom)
 
     @property
     def degree(self):
@@ -414,6 +439,9 @@ class Polynomial:
 
     def __repr__(self):
         return "Polynomial(%s)" % str(self)
+
+    def __len__(self):
+        return len(self.monomials)
 
     def __add__(self, other):
         return Polynomial(self.monomials + other.monomials)
@@ -491,9 +519,8 @@ class Polynomial:
 
     def to_frac(self):
         """Convert self to a fraction."""
-        flip_monos = [FracPoly(constant(m.coeff), 
-                Polynomial([Monomial(1, m.factors).flip()])) for m in self.monomials]
-        return sum(flip_monos[1:], flip_monos[0])
+        frac_monos = [m.to_frac() for m in self.monomials]
+        return sum(frac_monos[1:], frac_monos[0])
 
     @property
     def degree(self):

@@ -16,7 +16,6 @@ grammar = r"""
         | "D" CNAME "." expr -> deriv_expr
         | "pi" -> pi_expr
         | "inf" -> pos_inf_expr
-        | "-inf" -> neg_inf_expr
         | CNAME "(" expr ("," expr)* ")" -> fun_expr
         | "(" expr ")"
         | "\|" expr "\|" -> abs_expr 
@@ -98,9 +97,6 @@ class ExprTransformer(Transformer):
 
     def pos_inf_expr(self):
         return expr.inf
-
-    def neg_inf_expr(self):
-        return expr.neg_inf
 
     def fun_expr(self, func_name, *args):
         return expr.Fun(func_name, *args)
