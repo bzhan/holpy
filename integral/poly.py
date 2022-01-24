@@ -21,7 +21,7 @@ def collect_pairs(ps):
     """
     res = {}
     for v, c in ps:
-        if v in res:            
+        if v in res:
             res[v] += c
         else:
             res[v] = c
@@ -88,9 +88,7 @@ class ConstantMonomial:
     """
     def __init__(self, coeff, factors):
         """Construct a monomial from coefficient and tuple of factors."""
-        assert isinstance(coeff, (int, Fraction)) or \
-            coeff == Decimal("inf") or coeff == Decimal("-inf"), \
-                "coeff: %s, factors: %s" % (coeff, factors)
+        assert isinstance(coeff, (int, Fraction))
 
         reduced_factors = []
         for n, e in factors:
@@ -128,9 +126,6 @@ class ConstantMonomial:
         else:
             return str(self.coeff) + " * " + str_factors
 
-    def __repr__(self) -> str:
-        return str(self)
-
     def __le__(self, other):
         if len(self.factors) < len(other.factors):
             return True
@@ -159,13 +154,7 @@ class ConstantMonomial:
 
     def __pow__(self, exp):
         # Assume the power is a fraction
-        if isinstance(self.coeff, Decimal) and self.coeff.is_infinite():
-            x = self.coeff ** exp
-            if isinstance(x, Decimal) and x.is_infinite():
-                return ConstantMonomial(x, [])
-            else:
-                return ConstantMonomial(Fraction(x), [])
-        elif isinstance(exp, (int, Fraction)) and int(exp) == exp:
+        if isinstance(exp, (int, Fraction)) and int(exp) == exp:
             return ConstantMonomial(Fraction(self.coeff) ** exp, [(n, e * exp) for n, e in self.factors])
         elif isinstance(exp, Fraction):
             coeff = Fraction(self.coeff)
@@ -382,6 +371,10 @@ class Monomial:
     def get_fraction(self):
         return self.coeff.get_fraction()
 
+    def flip(self):
+        """Negate each exponential in factors"""
+        return Monomial(self.coeff, [(i, -j) for i, j in self.factors])
+
     @property
     def degree(self):
         if len(self.factors) == 0:
@@ -496,6 +489,12 @@ class Polynomial:
     def is_multivariate(self):
         return not self.is_univariate()
 
+    def to_frac(self):
+        """Convert self to a fraction."""
+        flip_monos = [FracPoly(constant(m.coeff), 
+                Polynomial([Monomial(1, m.factors).flip()])) for m in self.monomials]
+        return sum(flip_monos[1:], flip_monos[0])
+
     @property
     def degree(self):
         return self.monomials[-1].degree
@@ -508,3 +507,32 @@ def constant(c):
     """Polynomial for c (numerical constant)."""
     assert isinstance(c, ConstantPolynomial), "Unexpected constant: %s, type: %s" % (str(c), type(c))
     return Polynomial([Monomial(c, tuple())])
+
+class FracPoly:
+    """A fraction in which both of numerator and denominator are polynomials.
+    """
+    def __init__(self, numerator, denom):
+        assert isinstance(numerator, Polynomial) and isinstance(denom, Polynomial)
+        self.nm = numerator
+        self.denom = denom
+
+    def __str__(self):
+        return "%s / %s" % (self.nm, self.denom)
+
+    def __repr__(self):
+        return "FracPoly(%s)" % str(self)
+
+    def __hash__(self):
+        return hash(("FracPoly", self.nm, self.denom))
+
+    def __add__(self, other):
+        return FracPoly(self.nm * other.denom + other.nm * self.denom, self.denom * other.denom)
+
+    def __sub__(self, other):
+        return FracPoly(self.nm * other.denom - other.nm * self.denom, self.denom * other.denom)
+
+    def __mul__(self, other):
+        return FracPoly(self.nm * other.nm, self.denom * other.denom)
+
+    def __truediv__(self, other):
+        return FracPoly(self.nm * other.denom, self.denom * other.nm)
