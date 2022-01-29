@@ -25,7 +25,7 @@ def convert_expr(e, mode="large"):
         else:
             raise NotImplementedError
     elif e.ty == expr.INF:
-        return "-\\infty"
+        return "\\infty"
     elif e.ty == expr.OP:
         if len(e.args) == 1:
             a, = e.args

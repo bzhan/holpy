@@ -39,7 +39,7 @@ class Simplify(Rule):
         if isinstance(e, str):
             e = parser.parse_expr(e)
         res = e.normalize()
-        if res.is_inf():
+        if isinstance(e, expr.Infinity) and res.is_inf():
             raise ValueError
         else:
             return res
@@ -589,6 +589,8 @@ class ElimInfInterval(Rule):
         else:
             raise NotImplementedError
 
+class ElimLimit(Rule):
+    pass
 def check_item(item, target=None, *, debug=False):
     """Check application of rules in the item."""
     problem = parser.parse_expr(item['problem'])

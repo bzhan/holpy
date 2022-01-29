@@ -101,6 +101,11 @@ class ConstantMonomial:
     def __hash__(self):
         return hash(("CMONO", self.coeff, self.factors))
 
+    def __eq__(self, other):
+        if isinstance(other, (int, Fraction)):
+            return self.is_fraction() and self.get_fraction() == other
+        return isinstance(other, ConstantMonomial) and self.coeff == other.coeff and self.factors == other.factors
+
     def __str__(self):
         def print_pair(n, e):
             if isinstance(n, expr.Expr) and n == expr.E:
@@ -374,7 +379,6 @@ class Monomial:
     def to_frac(self):
         """Collect factor with positive power and negative power"""
         pos_facs, neg_facs = [], []
-        print("self", self)
         for i, j in self.factors:
             if isinstance(j, Polynomial):
                 if len(j) == 1:
@@ -396,8 +400,8 @@ class Monomial:
                     raise ValueError
             else:
                 raise TypeError
-        denom = Polynomial([Monomial(1, neg_facs)])
         nm = Polynomial([Monomial(self.coeff, pos_facs)])
+        denom = Polynomial([Monomial(1, neg_facs)])
         return FracPoly(nm, denom)
 
     @property
@@ -522,6 +526,10 @@ class Polynomial:
         frac_monos = [m.to_frac() for m in self.monomials]
         return sum(frac_monos[1:], frac_monos[0])
 
+    def is_one(self):
+        return len(self.monomials) == 1 and self.monomials[0].is_one()
+
+
     @property
     def degree(self):
         return self.monomials[-1].degree
@@ -553,13 +561,9 @@ class FracPoly:
         return hash(("FracPoly", self.nm, self.denom))
 
     def __add__(self, other):
-        return FracPoly(self.nm * other.denom + other.nm * self.denom, self.denom * other.denom)
-
-    def __sub__(self, other):
-        return FracPoly(self.nm * other.denom - other.nm * self.denom, self.denom * other.denom)
-
-    def __mul__(self, other):
-        return FracPoly(self.nm * other.nm, self.denom * other.denom)
-
-    def __truediv__(self, other):
-        return FracPoly(self.nm * other.denom, self.denom * other.nm)
+        if self.denom == other.denom:
+            return FracPoly(self.nm + other.nm, self.denom)
+        comm_denoms = set(self.denom.monomials) | set(other.denom.monomials)
+        left = set(other.denom.monomials) - set(self.denom.monomials)
+        right = set(self.denom.monomials) - set(other.denom.monomials)
+        return FracPoly(self.nm * Polynomial(list(left)) + other.nm * Polynomial(list(right)), Polynomial(list(comm_denoms)))
