@@ -216,8 +216,15 @@ class ConstantMonomial:
     def __truediv__(self, other):
         inv_factors = tuple((n, -e) for n, e in other.factors)
         if other.coeff in (Decimal("inf"), Decimal("-inf")):
-            inv_factors = ((other.coeff, -1),) + inv_factors
+            inv_factors = ((expr.Const(other.coeff), -1),) + inv_factors
             return ConstantMonomial(self.coeff, self.factors + inv_factors)
+        elif self.coeff in (Decimal("inf"), Decimal("-inf")):
+            if other.coeff < 0:
+                return ConstantMonomial(-self.coeff, self.factors + inv_factors)
+            elif other.coeff > 0:
+                return ConstantMonomial(self.coeff, self.factors + inv_factors)
+            else:
+                raise NotImplementedError
         else:
             return ConstantMonomial(self.coeff * Fraction(1,other.coeff), self.factors + inv_factors)
 
@@ -225,7 +232,7 @@ class ConstantMonomial:
         # Assume the power is a fraction
         if isinstance(exp, (int, Fraction)) and int(exp) == exp:
             if self.coeff in (Decimal("inf"), Decimal("-inf")):
-                return ConstantMonomial(1, [(self.coeff, exp)] + [(n, e * exp) for n, e in self.factors])
+                return ConstantMonomial(1, [(expr.Const(self.coeff), exp)] + [(n, e * exp) for n, e in self.factors])
             else:
                 return ConstantMonomial(Fraction(self.coeff) ** exp, [(n, e * exp) for n, e in self.factors])
         elif isinstance(exp, Fraction):
@@ -246,9 +253,9 @@ class ConstantMonomial:
         """Determine whether self is divergent, return +oo, -oo, const or unknown (0*oo)."""
         def pair_T(i, j):
             """Determine whether i ^ j is divergent."""
-            if isinstance(i, (int, Fraction)):
-                return NON_ZERO
-            elif isinstance(i, Decimal) and i == Decimal("inf"):
+            # if isinstance(i, (int, Fraction)):
+            #     return NON_ZERO
+            if isinstance(i, expr.Const) and i.val == Decimal("inf"):
                 if isinstance(j, (int, Fraction)):
                     if j < 0:
                         return ZERO
@@ -258,7 +265,7 @@ class ConstantMonomial:
                         raise NotImplementedError
                 else:
                     raise NotImplementedError
-            elif isinstance(i, Decimal) and i == Decimal("-inf"):
+            elif isinstance(i, expr.Const) and i.val == Decimal("-inf"):
                 if isinstance(j, (int, Fraction)):
                     if j == -1:
                         return ZERO
@@ -268,7 +275,7 @@ class ConstantMonomial:
                         raise NotImplementedError
                 else:
                     raise NotImplementedError
-            assert isinstance(i, expr.Expr)
+            assert isinstance(i, expr.Expr), "%s %s" % (self, i)
             if i.ty == expr.FUN and i.func_name == "exp":
                 if i.args[0].ty == expr.CONST:
                     i_value = Decimal(i.args[0].val).exp()
@@ -309,7 +316,7 @@ class ConstantMonomial:
             else:
                 return NON_ZERO
 
-        Ts = [pair_T(i, j) for i, j in ((self.coeff, 1), ) + self.factors]
+        Ts = [pair_T(i, j) for i, j in ((expr.Const(self.coeff), 1), ) + self.factors]
         return determine_div(Ts)
 
 class ConstantPolynomial:
