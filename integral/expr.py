@@ -219,7 +219,7 @@ class Expr:
         return Op("-", self)
 
     def size(self):
-        if self.ty in (VAR, CONST, SYMBOL):
+        if self.ty in (VAR, CONST, SYMBOL, INF):
             return 1
         elif self.ty in (OP, FUN):
             return 1 + sum(arg.size() for arg in self.args)
@@ -468,7 +468,7 @@ class Expr:
     
     def is_constant(self):
         """Determine whether expr is a number."""
-        if self.ty == CONST:
+        if self.ty == CONST or self.ty == INF:
             return True
         elif self.ty == VAR:
             return False
@@ -479,9 +479,9 @@ class Expr:
                 return self.args[0].is_constant()
         elif self.ty == OP:
             return all(arg.is_constant() for arg in self.args)
-        elif self.ty == LIMIT:
-            body = self.body.replace_trig(Var(self.var), self.lim)
-            return body.is_constant()
+        # elif self.ty == LIMIT:
+        #     body = self.body.replace_trig(Var(self.var), self.lim)
+        #     return body.is_constant()
         else:
             return False
 
@@ -519,6 +519,9 @@ class Expr:
         elif self.ty == CONST:
             return poly.const_fraction(self.val)
 
+        elif self.ty == INF:
+            return poly.const_singleton(self)
+
         elif self.ty == OP and self.op == '+':
             return self.args[0].to_const_poly() + self.args[1].to_const_poly()
         
@@ -533,6 +536,12 @@ class Expr:
 
         elif self.ty == OP and self.op == '/':
             a, b = self.args[0].to_const_poly(), self.args[1].to_const_poly()
+            if a.T in (poly.ZERO, poly.NON_ZERO) and b.T in (poly.POS_INF, poly.NEG_INF):
+                return poly.const_fraction(0)
+            # elif a.T in (poly.POS_INF, poly.NEG_INF) and b.T in (poly.POS_INF, poly.NEG_INF):
+            #     return poly.const_singleton(self.args[0] / self.args[1])
+            # elif a.T == poly.ZERO and b.T == poly.ZERO:
+            #     return poly.const_singleton(self.args[0] / self.args[1])
             if b.is_monomial():
                 return a / b
             else:
@@ -585,6 +594,8 @@ class Expr:
                 return poly.const_fraction(0)
             elif a.is_monomial():
                 mono = a.get_monomial()
+                if mono.T == poly.POS_INF:
+                    return poly.const_fraction(Decimal("inf"))
                 log_factors = []
                 for n, e in mono.factors:
                     if isinstance(n, (int, Fraction)):
@@ -765,23 +776,15 @@ class Expr:
             return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), body))
 
         elif self.ty == LIMIT:
-            return poly.singleton(Limit(self.var, self.lim, self.body.normalize()))
-        elif self.ty == INF:
-            return poly.singleton(inf)
+            if self.ty == INTEGRAL or self.ty == EVAL_AT:
+                return poly.singleton(Limit(self.var, self.lim, self.body.normalize()))
+            p1 = self.body.replace_trig(Var(self.var), self.lim).to_poly()
+            if p1.T != poly.UNKNOWN:
+                return p1
+            else:
+                return poly.singleton(Limit(self.var, self.lim, self.body.normalize()))
         else:
             return poly.singleton(self)
-
-    def to_frac_poly(self):
-        """Convert self to fraction poly."""
-        return self.to_poly().to_frac()
-
-    def normalize_frac(self):
-        frac_poly = self.to_frac_poly()
-        nm, denom = from_poly(frac_poly.nm), from_poly(frac_poly.denom)
-        if denom.is_constant():
-            return Op("/", nm, denom)
-        else:
-            return Op("/", nm.normalize(), denom.normalize())
 
     def normalize(self):
         return from_poly(self.to_poly())
@@ -1080,12 +1083,6 @@ class Expr:
         else:
             raise NotImplementedError
 
-    def extract_frac(self):
-        """Convert self to fraction form, return numerator and denominator."""
-        frac = self.normalize_frac()
-        return frac.args
-
-
 def sympy_style(s):
     """Transform expr to sympy object."""
     return sympy_parser.parse_expr(str(s).replace("^", "**"))
@@ -1273,6 +1270,13 @@ def from_const_poly(p):
     """Convert a ConstantPolynomial to an expression."""
     if len(p.monomials) == 0:
         return Const(0)
+    assert p.T != UNKNOWN
+    if p.T == poly.POS_INF:
+        return inf
+    elif p.T == poly.NEG_INF:
+        return -inf
+    elif p.T == poly.ZERO:
+        return Const(0)
     else:
         monos = [from_const_mono(m) for m in p.monomials]
         return sum(monos[1:], monos[0])
@@ -1307,6 +1311,8 @@ def from_poly(p):
     """Convert a polynomial to an expression."""
     if len(p.monomials) == 0:
         return Const(0)
+    # elif p.T == poly.POS_INF:
+    #     return inf
     else:
         monos = [from_mono(m) for m in p.monomials]
         return sum(monos[1:], monos[0]) 
@@ -1439,9 +1445,9 @@ class Const(Expr):
 
     def __str__(self):
         if self.val == Decimal("inf"):
-            return "inf"
+            return "oo"
         elif self.val == Decimal("-inf"):
-            return "-inf"
+            return "-oo"
         else:
             return str(self.val)
 
@@ -1506,7 +1512,7 @@ class Fun(Expr):
     def __init__(self, func_name, *args):
         assert isinstance(func_name, str) and all(isinstance(arg, Expr) for arg in args)
         if len(args) == 0:
-            assert func_name in ["pi", "inf"]
+            assert func_name in ["pi"]
         elif len(args) == 1:
             assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "csc",
                          "sec", "cot", "asin", "acos", "atan", "acot", "acsc", "asec", "abs"], func_name
@@ -1577,395 +1583,6 @@ class Limit(Expr):
         else:
             return "Limit(%s, %s, %s, %s)" % (self.var, self.lim, self.body, self.d)
 
-    def to_limit_poly(self):
-        """Convert self to a poly."""
-        bd = self.body
-        if bd.is_constant():
-            return bd.to_poly()
-        elif bd.ty == VAR:
-            if bd.name == self.var:
-                pass
-
-    def gen_lim(self, bd):
-        """Generate a new limit expression which keeps the limit, var, d except bd."""
-        return Limit(self.var, self.lim, bd, self.d)
-
-    def is_ct(self):
-        """Determine whether bd is a constant after substitute var by limit"""
-        bd = self.body.replace_trig(Var(self.var), self.lim)
-        if bd.is_constant():
-            return True
-        elif bd.ty == INF:
-            return False
-        elif bd.ty == VAR:
-            return True
-        elif bd.ty == OP:
-            if len(bd.args) == 1:
-                return self.gen_lim(bd.args[0]).is_ct() or not self.gen_lim(bd.args[0]).is_inf()
-            lim_arg1, lim_arg2 = self.gen_lim(bd.args[0]), self.gen_lim(bd.args[1])
-            if bd.op == "+" or bd.op == "-" or bd.op == "*":
-                if lim_arg1.is_ct() and lim_arg2.is_ct():
-                    return True
-                elif lim_arg1.is_inf():
-                    return False
-                elif lim_arg2.is_inf():
-                    return False
-                else:
-                    raise NotImplementedError
-            elif bd.op == "/":
-                if lim_arg1.is_ct() and lim_arg2.is_ct():
-                    return True
-                elif lim_arg1.is_ct() and lim_arg2.is_inf():
-                    return True
-                elif lim_arg1.is_inf() and lim_arg2.is_ct():
-                    return False
-                else:
-                    res = self.gen_lim(bd).lh()
-                    return self.gen_lim(res).is_ct()
-            # elif bd.op == ""
-
-    def is_pos_inf(self):
-        """Determine whether self is an expression approaching to inf or -inf."""
-        if self.lim != inf and self.lim != neg_inf:
-            return False
-
-        bd, lim = self.body, self.lim
-        if bd.is_constant():
-            return False
-        elif bd.ty == VAR:
-            if bd.name == self.var:
-                if lim == inf:
-                    return True
-                elif lim == neg_inf:
-                    return False
-                else:
-                    raise ValueError
-            else:
-                return False
-        elif bd.ty == OP:
-            args = bd.args
-            if all(not Limit(self.var, self.lim, a).is_inf() for a in bd.args):
-                return False
-            if len(args) == 1: # -e
-                if Limit(self.var, self.lim, bd.args[0]).is_neg_inf():
-                    return True
-                else:
-                    return False
-            assert len(args) == 2
-            if bd.op == "+":
-                if Limit(self.var, self.lim, bd.args[0]).is_pos_inf():
-                    if Limit(self.var, self.lim, bd.args[1]).is_neg_inf():
-                        raise NotImplementedError
-                    else:
-                        return True
-                elif Limit(self.var, self.lim, bd.args[1]).is_pos_inf():
-                    if Limit(self.var, self.lim, bd.args[0]).is_neg_inf():
-                        raise NotImplementedError
-                    else:
-                        return True
-                else:
-                    raise NotImplementedError
-            elif bd.op == "-":
-                if Limit(self.var, self.lim, bd.args[0]).is_pos_inf():
-                    if Limit(self.var, self.lim, bd.args[1]).is_pos_inf():
-                        raise NotImplementedError
-                    else:
-                        return True
-                elif Limit(self.var, self.lim, bd.args[1]).is_neg_inf():
-                    if Limit(self.var, self.lim, bd.args[0]).is_neg_inf():
-                        raise NotImplementedError
-                    else:
-                        return True
-                else:
-                    raise NotImplementedError
-            elif bd.op == "*":
-                if Limit(self.var, self.lim, bd.args[0]).is_pos_inf() and bd.args[1].is_constant():
-                    if bd.args[1].to_const_poly().get_fraction() > 0:
-                        return True
-                    elif bd.args[1].to_const_poly().get_fraction() < 0:
-                        return False
-                    else:
-                        raise NotImplementedError
-                elif Limit(self.var, self.lim, bd.args[1]).is_pos_inf() and bd.args[0].is_constant():
-                    if bd.args[0].to_const_poly().get_fraction() > 0:
-                        return True
-                    elif bd.args[0].to_const_poly().get_fraction() < 0:
-                        return False
-                    else:
-                        raise NotImplementedError
-                elif Limit(self.var, self.lim, bd.args[0]).is_pos_inf() and Limit(self.var, self.lim, bd.args[1]).is_pos_inf() or \
-                    Limit(self.var, self.lim, bd.args[0]).is_neg_inf() and Limit(self.var, self.lim, bd.args[1]).is_neg_inf():
-                    return True
-                elif not Limit(self.var, self.lim, bd.args[0]).is_pos_inf() and not Limit(self.var, self.lim, bd.args[1]).is_pos_inf():
-                    return False
-                else:
-                    nm, denom = bd.extract_frac()
-                    if self.can_apply_lh(nm, denom):
-                        return Limit(self.var, self.lim, Limit(self.var, self.lim, (nm / denom)).lh()).is_pos_inf()
-                    else:
-                        raise NotImplementedError
-            elif bd.op == "^":
-                if Limit(self.var, self.lim, bd.args[0]).is_pos_inf() and bd.args[1].is_inf():
-                    return True
-                if bd.args[0].is_constant() and Limit(self.var, self.lim, bd.args[1]).is_pos_inf():
-                    return bd.args[0].to_const_poly().get_fraction() > 1
-                elif Limit(self.var, self.lim, bd.args[0]).is_pos_inf() and bd.args[1].is_constant():
-                    return bd.args[1].to_const_poly().get_fraction() > 0
-                else:
-                    raise NotImplementedError
-            elif bd.op == "/":
-                pass
-            else:
-                print(bd)
-                raise NotImplementedError
-        elif bd.ty == FUN:
-            fn = bd.func_name
-            if bd.is_trig():
-                return False
-            elif bd.is_inverse_trig():
-                return False
-            elif fn in ("exp", "log", "sqrt"):
-                return Limit(self.var, self.lim, bd.args[0]).is_pos_inf()
-            elif fn == "abs":
-                return Limit(self.var, self.lim, bd.args[0]).is_inf()
-            else:
-                raise NotImplementedError
-        else:
-            raise NotImplementedError
-
-    def is_neg_inf(self):
-        if self.lim != inf and self.lim != neg_inf:
-            return False
-
-        bd, lim = self.body, self.lim
-        if bd.is_constant():
-            return False
-        elif bd.ty == VAR:
-            if bd.name == self.var:
-                if lim == neg_inf:
-                    return True
-                elif lim == inf:
-                    return False
-                else:
-                    raise ValueError
-            else:
-                return False
-        elif bd.ty == OP:
-            if all(not Limit(self.var, self.lim, a).is_inf() for a in bd.args):
-                return False
-            args = bd.args
-            if len(args) == 1: # -e
-                if self.args[0].is_pos_inf():
-                    return True
-                else:
-                    return False
-            assert len(args) == 2
-            if bd.op == "+":
-                if Limit(self.var, self.lim, bd.args[0]).is_neg_inf():
-                    if Limit(self.var, self.lim, bd.args[1]).is_pos_inf():
-                        raise NotImplementedError
-                    else:
-                        return True
-                elif Limit(self.var, self.lim, bd.args[1]).is_neg_inf():
-                    if Limit(self.var, self.lim, bd.args[0]).is_pos_inf():
-                        raise NotImplementedError
-                    else:
-                        return True
-                else:
-                    raise NotImplementedError
-            elif bd.op == "-":
-                if Limit(self.var, self.lim, bd.args[0]).is_neg_inf():
-                    if Limit(self.var, self.lim, bd.args[1]).is_neg_inf():
-                        raise NotImplementedError
-                    else:
-                        return True
-                elif Limit(self.var, self.lim, bd.args[1]).is_pos_inf():
-                    if Limit(self.var, self.lim, bd.args[0]).is_pos_inf():
-                        raise NotImplementedError
-                    else:
-                        return True
-                else:
-                    raise NotImplementedError
-            elif bd.op == "*":
-                if bd.args[0].is_constant():
-                    c =  bd.args[0].to_const_poly().get_fraction()
-                    if c > 0:
-                        if Limit(self.var, self.lim, bd.args[1]).is_neg_inf():
-                            return True
-                        else:
-                            return False
-                    elif c < 0:
-                        if Limit(self.var, self.lim, bd.args[1]).is_pos_inf():
-                            return True
-                        else:
-                            return False
-                    else:
-                        nm, denom = bd.extract_frac()
-                        if self.can_apply_lh(nm, denom):
-                            return Limit(self.var, self.lim, (nm / denom)).lh().is_neg_inf()
-                        else:
-                            raise NotImplementedError
-                elif bd.args[1].is_constant():
-                    c =  bd.args[1].to_const_poly().get_fraction()
-                    if c > 0:
-                        if Limit(self.var, self.lim, bd.args[0]).is_neg_inf():
-                            return True
-                        else:
-                            return False
-                    elif c < 0:
-                        if Limit(self.var, self.lim, bd.args[0]).is_pos_inf():
-                            return True
-                        else:
-                            return False
-                    else:
-                        raise NotImplementedError
-                elif Limit(self.var, self.lim, bd.args[0]).is_pos_inf():
-                    return Limit(self.var, self.lim, bd.args[1]).is_neg_inf()
-                # elif Limit(self.var, self.lim, bd.args[0]).is_neg_inf():
-                #     return not Limit(self.var, self.lim, bd.args[1]).is_neg_inf()
-                # elif Limit(self.var, self.lim, bd.args[1]).is_pos_inf():
-                #     return not Limit(self.var, self.lim, bd.args[0]).is_pos_inf()
-                # elif Limit(self.var, self.lim, bd.args[1]).is_neg_inf():
-                #     return not Limit(self.var, self.lim, bd.args[0]).is_neg_inf()
-                    
-                # elif Limit(self.var, self.lim, bd.args[0]).is_pos_inf() and Limit(self.var, self.lim, bd.args[1]).is_neg_inf() or \
-                #     Limit(self.var, self.lim, bd.args[0]).is_neg_inf() and Limit(self.var, self.lim, bd.args[1]).is_pos_inf():
-                #     return True
-                # elif Limit(self.var, self.lim, bd).is_pos_inf():
-                #     return False
-                else:
-                    raise NotImplementedError
-            elif bd.op == "^":
-                if not bd.args[1].is_constant():
-                    raise NotImplementedError
-                c = bd.args[1].to_const_poly().get_fraction()
-                if Limit(self.var, self.lim, bd.args[0]).is_pos_inf():
-                    return False
-                elif Limit(self.var, self.lim, bd.args[0]).is_neg_inf():
-                    if int(c) == c:
-                        if c % 2 == 0:
-                            return False
-                        elif c % 2 == 1:
-                            return True
-                        else:
-                            raise NotImplementedError
-                    else:
-                        raise NotImplementedError
-                else:
-                    raise NotImplementedError
-            elif bd.op == "/":
-                if self.can_apply_lh(bd.args[0], bd.args[1]):
-                    return Limit(self.var, self.lim, Limit(self.var, self.lim, bd).lh()).is_neg_inf()
-                elif not Limit(self.var, self.lim, bd.args[0]).is_inf() and not Limit(self.var, self.lim, bd.args[1]).is_inf():
-                    return False
-                elif bd.args[1].is_constant():
-                    c = bd.args[1].to_const_poly().get_fraction()
-                    if Limit(self.var, self.lim, bd.args[0]).is_pos_inf() and c < 0:
-                        return True
-                    elif Limit(self.var, self.lim, bd.args[0]).is_neg_inf() and c > 0:
-                        return True
-                    else:
-                        return False
-                elif bd.args[0].is_constant():
-                    if Limit(self.var, self.lim, bd.args[1]).is_inf():
-                        return False
-                    else:
-                        raise NotImplementedError
-                else:
-                    raise NotImplementedError
-            else:
-                raise NotImplementedError
-        elif bd.ty == FUN:
-            fn = bd.func_name
-            if fn == "abs":
-                return False
-            elif fn == "exp":
-                return False
-            elif fn == "log":
-                # if Limit(self.var, self.lim, (Const(1)/bd.args[0])).is_inf():
-                #     return True
-                # else:
-                #     return False
-                if self.lim == inf:
-                    return False
-                b = bd.replace_trig(Var(self.var), self.lim).normalize()
-                if b == Const(0):
-                    return True
-                subst = bd.replace_trig(Var(self.var), self.lim).normalize()
-                return subst == Const(0)
-            else:
-                print(self)
-                raise NotImplementedError
-        else:
-            raise NotImplementedError
-
-    def is_inf(self):
-        return self.is_pos_inf() or self.is_neg_inf()
-
-    def can_apply_lh(self, nm, denom):
-        """Test if the expression satisfies the condition of applying L'Hôpital's rule."""
-        # test if the absolute value of numerator and denominator is approaching inf
-        # if self.lim == inf or self.lim == neg_inf:
-        #     return Limit(self.var, self.lim, nm).is_inf() and Limit(self.var, self.lim, denom).is_inf()
-        # else:
-            # test if the value of numerator and denominator is approaching 0
-        if Limit(self.var, self.lim, nm).is_inf():
-            if Limit(self.var, self.lim, denom).is_inf():
-                return True
-            else:
-                return False
-        elif Limit(self.var, self.lim, denom).is_inf():
-                return False
-        nm_inst = nm.replace_trig(Var(self.var), self.lim).normalize()
-        denom_inst = denom.replace_trig(Var(self.var), self.lim).normalize()
-        if nm_inst == Const(0) and denom_inst == Const(0):
-            return True
-        else:
-            return False
-    
-    def is_const(self):
-        """Determine whether self is a const."""
-        return not self.is_inf()
-
-    def lh(self):
-        """Perform L'Hôpital's rule."""
-        bd = self.body
-        # nm, denom = self.body.extract_frac()
-        if bd.ty != OP:
-            return self
-        
-        if bd.op == "/":
-            nm, denom = bd.args
-        else:
-            nm, denom = bd.extract_frac()
-        
-        assert self.can_apply_lh(nm, denom)
-        while True:
-            nm_d, denom_d = deriv(self.var, nm), deriv(self.var, denom)
-            if not self.can_apply_lh(nm_d, denom_d):
-                # Case 1: 1/oo
-                if Limit(self.var, self.lim, nm_d).is_const() and  Limit(self.var, self.lim, denom_d).is_inf():
-                    return Const(0)
-                # Case 2: oo/1
-                elif Limit(self.var, self.lim, nm_d).is_inf() and  Limit(self.var, self.lim, denom_d).is_const():
-                    if Limit(self.var, self.lim, nm_d).is_pos_inf():
-                        return inf
-                    else:
-                        return neg_inf
-                # Case 3: 1/1
-                elif Limit(self.var, self.lim, nm_d).is_const() and  Limit(self.var, self.lim, denom_d).is_const():
-                    if (self.lim == inf or self.lim == neg_inf) and (nm_d.has_var(Var(self.var)) or denom_d.has_var(Var(self.var))):
-                        nm, denom = (nm_d / denom_d).normalize().extract_frac()
-                        print("nm: %s denom: %s" % (nm, denom))
-                        continue
-                    n = nm_d.replace_trig(Var(self.var), self.lim)
-                    d = denom_d.replace_trig(Var(self.var), self.lim)
-                    return (n / d).normalize()
-                else:
-                    raise NotImplementedError
-
-            nm, denom = nm_d, denom_d
-
 class Infinity(Expr):
     """The infinity."""
     def __init__(self, level=0):
@@ -2018,8 +1635,13 @@ def sqrt(e):
 
 pi = Fun("pi")
 E = Fun("exp", Const(1))
-inf = Infinity()
-neg_inf = -Infinity()
+# inf = Infinity()
+# neg_inf = -Infinity()
+inf = Const(Decimal("inf"))
+neg_inf = Const(Decimal("-inf"))
+
+_inf = Infinity()
+_neg_inf = -Infinity()
 
 class Deriv(Expr):
     """Derivative of an expression."""
@@ -2235,7 +1857,6 @@ def expr_to_holpy(expr):
         elif expr.func_name == 'atan':
             return real.atn(a)
         else:
-            print(expr)
             raise NotImplementedError
     elif expr.is_deriv():
         raise NotImplementedError

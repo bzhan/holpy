@@ -1,0 +1,72 @@
+{
+    "content": [
+        {
+            "_problem_latex": "\\int_{1}^{\\infty} \\frac{1}{x ^ 2} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{\\infty} \\frac{1}{x ^ 2} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,inf]. 1 / x ^ 2"
+                },
+                {
+                    "checked": false,
+                    "latex": "\\lim\\limits_{t\\to \\infty} \\int_{1}^{t} \\frac{1}{x ^ 2} \\,\\mathit{dx}",
+                    "proof": "No proof!",
+                    "reason": "Eliminate infinity",
+                    "text": "LIM {t -> inf}. INT x:[1,t]. 1 / x ^ 2"
+                },
+                {
+                    "checked": false,
+                    "latex": "\\lim\\limits_{t\\to \\infty} (\\,1 + -\\frac{1}{t}\\,)",
+                    "proof": "No proof!",
+                    "reason": "Simplification",
+                    "text": "LIM {t -> oo}. 1 + -(t ^ -1)"
+                }
+            ],
+            "name": "Exercise 1",
+            "problem": "INT x:[1, inf]. 1/x^2"
+        },
+        {
+            "_problem_latex": "\\int_{-\\infty}^{0} x e^{x} \\,\\mathit{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{-\\infty}^{0} x e^{x} \\,\\mathit{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[-inf,0]. x * exp(x)"
+                },
+                {
+                    "checked": false,
+                    "latex": "\\lim\\limits_{t\\to -\\infty} \\int_{t}^{0} x e^{x} \\,\\mathit{dx}",
+                    "proof": "No proof!",
+                    "reason": "Eliminate infinity",
+                    "text": "LIM {t -> -inf}. INT x:[t,0]. x * exp(x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = x, v = e^{x}\\)",
+                    "checked": false,
+                    "latex": "\\lim\\limits_{t\\to -\\infty} (\\,(\\left. x e^{x} \\right\\vert_{x=t}^{0}) - {(\\int_{t}^{0} e^{x} \\,\\mathit{dx})}\\,)",
+                    "location": "0",
+                    "params": {
+                        "parts_u": "x",
+                        "parts_v": "exp(x)"
+                    },
+                    "proof": "No proof!",
+                    "reason": "Integrate by parts",
+                    "text": "LIM {t -> -inf}. ([x * exp(x)]_x=t,0) - (INT x:[t,0]. exp(x))"
+                }
+            ],
+            "name": "Exercise 2",
+            "problem": "INT x:[-inf, 0]. x*exp(x)"
+        },
+        {
+            "_problem_latex": "\\int_{2}^{5} \\frac{1}{\\sqrt{x - 2}} \\,\\mathit{dx}",
+            "name": "Exercise 3",
+            "problem": "INT x:[2, 5]. 1/sqrt(x-2)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\log{(x)} \\,\\mathit{dx}",
+            "name": "Exercise 4",
+            "problem": "INT x:[0, 1]. log(x)"
+        }
+    ]
+}

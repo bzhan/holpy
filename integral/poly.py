@@ -1,14 +1,64 @@
 """Polynomials."""
 
+import operator
+from cmath import exp
 from lark import Lark, Transformer, v_args, exceptions
 from fractions import Fraction
 from decimal import Decimal
 from collections.abc import Iterable
+from numpy import isin
 import sympy
 import math
+import functools
 
 from integral import expr
 
+PINF, NINF, NZR, ZR, UNKNOWN = range(5)
+
+POS_INF = 1
+NON_ZERO = 2
+ZERO = 0
+NEG_INF = -1
+
+"""
+1 : POS_INF
+-1: NEG_INF
+> 1: POS_INF or NON_ZERO
+0 : ZERO or INF * zero
+< -1: NEG_INF
+"""
+
+def determine_div(fs):
+    """Determine the divergence of a given list of factors.
+    
+    There are five possible return values:
+    - +oo
+    - -oo
+    - zero
+    - non-zero
+    - unknown (0 * oo)
+    """
+    i = functools.reduce(operator.mul, fs, 1)
+    if i == 1:
+        return POS_INF
+    elif i <= -1:
+        return NEG_INF
+    elif i > 1:
+        n = 2 ** len(fs)
+        assert i <= n
+        if i < n: # +oo/-oo exists in factors
+            return POS_INF
+        elif i == n: # all factors are constant
+            return NON_ZERO
+        else:
+            raise NotImplementedError
+    elif i == 0:
+        if POS_INF in fs or NEG_INF in fs: # +oo * 0 or -oo * 0
+            return UNKNOWN
+        else:
+            return ZERO
+    else:
+        raise NotImplementedError
 
 def collect_pairs(ps):
     """Reduce a list of pairs by collecting into groups according to
@@ -51,6 +101,8 @@ def reduce_power(n, e):
         else:
             assert Fraction(e).denominator % 2 == 1, 'reduce_power'
             return ((-1, 1),) + tuple((ni, e * ei) for ni, ei in sympy.factorint(-n).items())
+    elif n in (Decimal("inf"), Decimal("-inf")):
+        return ((n, e),)
     else:
         raise NotImplementedError
 
@@ -88,7 +140,9 @@ class ConstantMonomial:
     """
     def __init__(self, coeff, factors):
         """Construct a monomial from coefficient and tuple of factors."""
-        assert isinstance(coeff, (int, Fraction))
+        assert isinstance(coeff, (int, Fraction)) or \
+            coeff == Decimal("inf") or coeff == Decimal("-inf"), \
+                "coeff: %s, factors: %s" % (coeff, factors)
 
         reduced_factors = []
         for n, e in factors:
@@ -131,6 +185,12 @@ class ConstantMonomial:
         else:
             return str(self.coeff) + " * " + str_factors
 
+    def __repr__(self):
+        return "ConstantMonomial(%s)" % str(self)
+
+    def __getitem__(self, i):
+        return self.factors[i]
+
     def __le__(self, other):
         if len(self.factors) < len(other.factors):
             return True
@@ -155,12 +215,19 @@ class ConstantMonomial:
 
     def __truediv__(self, other):
         inv_factors = tuple((n, -e) for n, e in other.factors)
-        return ConstantMonomial(self.coeff * Fraction(1,other.coeff), self.factors + inv_factors)
+        if other.coeff in (Decimal("inf"), Decimal("-inf")):
+            inv_factors = ((other.coeff, -1),) + inv_factors
+            return ConstantMonomial(self.coeff, self.factors + inv_factors)
+        else:
+            return ConstantMonomial(self.coeff * Fraction(1,other.coeff), self.factors + inv_factors)
 
     def __pow__(self, exp):
         # Assume the power is a fraction
         if isinstance(exp, (int, Fraction)) and int(exp) == exp:
-            return ConstantMonomial(Fraction(self.coeff) ** exp, [(n, e * exp) for n, e in self.factors])
+            if self.coeff in (Decimal("inf"), Decimal("-inf")):
+                return ConstantMonomial(1, [(self.coeff, exp)] + [(n, e * exp) for n, e in self.factors])
+            else:
+                return ConstantMonomial(Fraction(self.coeff) ** exp, [(n, e * exp) for n, e in self.factors])
         elif isinstance(exp, Fraction):
             coeff = Fraction(self.coeff)
             num, denom = coeff.numerator, coeff.denominator
@@ -174,6 +241,76 @@ class ConstantMonomial:
     def get_fraction(self):
         return self.coeff
 
+    @property
+    def T(self):
+        """Determine whether self is divergent, return +oo, -oo, const or unknown (0*oo)."""
+        def pair_T(i, j):
+            """Determine whether i ^ j is divergent."""
+            if isinstance(i, (int, Fraction)):
+                return NON_ZERO
+            elif isinstance(i, Decimal) and i == Decimal("inf"):
+                if isinstance(j, (int, Fraction)):
+                    if j < 0:
+                        return ZERO
+                    elif j > 0:
+                        return POS_INF
+                    else:
+                        raise NotImplementedError
+                else:
+                    raise NotImplementedError
+            elif isinstance(i, Decimal) and i == Decimal("-inf"):
+                if isinstance(j, (int, Fraction)):
+                    if j == -1:
+                        return ZERO
+                    elif j == 1:
+                        return NEG_INF
+                    else:
+                        raise NotImplementedError
+                else:
+                    raise NotImplementedError
+            assert isinstance(i, expr.Expr)
+            if i.ty == expr.FUN and i.func_name == "exp":
+                if i.args[0].ty == expr.CONST:
+                    i_value = Decimal(i.args[0].val).exp()
+                    if j == Decimal("inf"):
+                        if i_value >= 0:
+                            return POS_INF
+                        else:
+                            return ZERO
+                    elif j == Decimal("-inf"):
+                        if i_value >= 0:
+                            return ZERO
+                        else:
+                            return POS_INF
+                    else:
+                        return NON_ZERO
+                else:
+                    ap = i.args[0].to_poly()
+                    if ap.T == POS_INF:
+                        return POS_INF
+                    elif ap.T == NEG_INF:
+                        return ZERO
+                    elif ap.T in (ZERO, NON_ZERO):
+                        return NON_ZERO
+                    else:
+                        raise NotImplementedError
+            elif i.ty == expr.FUN and i.func_name == "pi":
+                if j == Decimal("inf"):
+                    return POS_INF
+                elif j == Decimal("-inf"):
+                    return ZERO
+                else:
+                    return NON_ZERO
+            elif i.ty == expr.OP and i.op == "/":
+                a1, a2 = i.args[0].to_const_poly(), i.args[1].to_const_poly()
+                assert a1.T in (POS_INF, NEG_INF) and a2.T in (POS_INF, NEG_INF) \
+                    or a1.T == ZERO and a2.T == ZERO, str(i)
+                return UNKNOWN
+            else:
+                return NON_ZERO
+
+        Ts = [pair_T(i, j) for i, j in ((self.coeff, 1), ) + self.factors]
+        return determine_div(Ts)
 
 class ConstantPolynomial:
     """Represents a sum of constant monomials"""
@@ -186,6 +323,9 @@ class ConstantPolynomial:
             return "0"
         else:
             return " + ".join(str(mono) for mono in self.monomials)
+
+    def __repr__(self) -> str:
+        return "ConstantPolynomial(%s)" % str(self)
 
     def __hash__(self):
         return hash(("CPOLY", self.monomials))
@@ -233,6 +373,9 @@ class ConstantPolynomial:
         else:
             raise ValueError('%s, %s' % (self, exp))
 
+    def __getitem__(self, i):
+        return self.monomials[i]
+
     def is_zero(self):
         return len(self.monomials) == 0
 
@@ -262,6 +405,26 @@ class ConstantPolynomial:
 
     def is_minus_one(self):
         return self.is_fraction() and self.get_fraction() == -1
+
+    @property
+    def T(self):
+        div_m = set([m.T for m in self.monomials])
+        if len(div_m) == 0:
+            return ZERO
+        elif len(div_m) == 1:
+            return next(iter(div_m))
+        elif UNKNOWN in div_m:
+            return UNKNOWN
+        elif POS_INF in div_m and NEG_INF in div_m:
+            return UNKNOWN
+        elif POS_INF in div_m:
+            return POS_INF
+        elif NEG_INF in div_m:
+            return NEG_INF
+        else:
+            raise NotImplementedError
+            
+
 
 def const_singleton(t):
     return ConstantPolynomial([ConstantMonomial(1, [(t, 1)])])
@@ -330,6 +493,9 @@ class Monomial:
 
     def __lt__(self, other):
         return self <= other and self != other
+
+    def __getitem__(self, i):
+        return self.factors[i]
 
     def __mul__(self, other):
         if isinstance(other, (int, Fraction)):
@@ -411,6 +577,13 @@ class Monomial:
         else:
             return self.factors[-1][1]
 
+    @property
+    def T(self):
+        if len(self.factors) == 0:
+            return self.coeff.T
+        else:
+            return UNKNOWN
+
 
 class Polynomial:
     """Represents a polynomial."""
@@ -443,6 +616,9 @@ class Polynomial:
 
     def __repr__(self):
         return "Polynomial(%s)" % str(self)
+
+    def __getitem__(self, i):
+        return self.monomials[i]
 
     def __len__(self):
         return len(self.monomials)
@@ -533,6 +709,15 @@ class Polynomial:
     @property
     def degree(self):
         return self.monomials[-1].degree
+
+    @property
+    def T(self):
+        if len(self) == 0:
+            return NON_ZERO
+        elif len(self) == 1:
+            return self[0].T
+        else:
+            return UNKNOWN
 
 def singleton(s):
     """Polynomial for 1*s^1."""
