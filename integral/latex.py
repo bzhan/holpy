@@ -11,7 +11,12 @@ def convert_expr(e, mode="large"):
         return e.name
     elif e.ty == expr.CONST:
         if isinstance(e.val, (int, Decimal)):
-            return str(e.val)
+            if e.val == Decimal("inf"):
+                return "\\infty"
+            elif e.val == Decimal("-inf"):
+                return "-\\infty"
+            else:
+                return str(e.val)
         elif isinstance(e.val, Fraction):
             if e.val.denominator == 1:
                 return "%d" % e.val.numerator

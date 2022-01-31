@@ -782,7 +782,26 @@ class Expr:
             if p1.T != poly.UNKNOWN:
                 return p1
             else:
-                return poly.singleton(Limit(self.var, self.lim, self.body.normalize()))
+                # Split poly to constant part and unknown part, 
+                # only keep the unknown part in limit expression.
+                ms = self.body.to_poly()
+                pc = [] # store the poly(s) which are constant
+                pu = [] # store the poly(s) which are non-constant
+                for m in ms:
+                    norm_m = from_poly(Polynomial([m])).replace_trig(Var(self.var), self.lim).to_poly()
+                    if norm_m.T in (poly.NON_ZERO, poly.ZERO):
+                        pc.append(from_poly(norm_m))
+                    elif norm_m.T in (poly.POS_INF, poly.NEG_INF, poly.UNKNOWN):
+                        pu.append(from_poly(Polynomial([m])))
+                    else:
+                        raise NotImplementedError
+                if pc:
+                    const_part = sum(pc[1:], pc[0])
+                else:
+                    const_part = Const(0)
+                assert pu
+                unknown_part = sum(pu[1:], pu[0])
+                return const_part.to_poly() + poly.singleton(Limit(self.var, self.lim, unknown_part.normalize()))
         else:
             return poly.singleton(self)
 
@@ -1256,8 +1275,10 @@ def from_const_mono(m):
                 factors.append(sqrt(base))
             else:
                 factors.append(base ** Const(power))
-
-    if len(factors) == 0:
+    
+    if m.T == poly.ZERO:
+        return Const(0)
+    elif len(factors) == 0:
         return Const(m.coeff)
     elif m.coeff == 1:
         return functools.reduce(operator.mul, factors[1:], factors[0])
@@ -1277,6 +1298,9 @@ def from_const_poly(p):
         return -inf
     elif p.T == poly.ZERO:
         return Const(0)
+    elif p.T == poly.NON_ZERO: # All monomials do not contain infinity
+        ps = [from_const_mono(m) for m in p.monomials]
+        return sum(ps[1:], ps[0])
     else:
         monos = [from_const_mono(m) for m in p.monomials]
         return sum(monos[1:], monos[0])

@@ -21,7 +21,9 @@ class ImproperTest(unittest.TestCase):
             ("LIM {x->oo}. exp(x) - log(x)", "LIM {x->oo}. exp(x) + -log(x)"),
             ("LIM {x -> oo}. x/log(x)", "LIM {x -> oo}. x * log(x) ^ -1"),
             ("LIM {x -> oo}. exp(x+2)/x", "LIM {x -> oo}. x ^ -1 * exp(2 + x)"),
-            ("LIM {x -> oo}. x/exp(x+2)", "LIM {x -> oo}. x * exp(-2 + -x)")
+            ("LIM {x -> oo}. x/exp(x+2)", "LIM {x -> oo}. x * exp(-2 + -x)"),
+            ("LIM {t -> -oo}. -1 + -(t * exp(t)) + exp(t)", "-1 + (LIM {t -> -oo}. -(t * exp(t)))")
+            # ("LIM {x -> 1}. 1/(x-1)", "oo")
         ]
         for t, t_res in test_cases:
             t = parse_expr(t)

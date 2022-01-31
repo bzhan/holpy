@@ -429,7 +429,7 @@ class ConstantPolynomial:
         elif NEG_INF in div_m:
             return NEG_INF
         else:
-            raise NotImplementedError
+            return NON_ZERO
             
 
 

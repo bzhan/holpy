@@ -53,6 +53,20 @@
                     "proof": "No proof!",
                     "reason": "Integrate by parts",
                     "text": "LIM {t -> -inf}. ([x * exp(x)]_x=t,0) - (INT x:[t,0]. exp(x))"
+                },
+                {
+                    "checked": false,
+                    "latex": "\\lim\\limits_{t\\to -\\infty} (\\,-1 + -t e^{t} + e^{t}\\,)",
+                    "proof": "No proof!",
+                    "reason": "Simplification",
+                    "text": "LIM {t -> -oo}. -1 + -(t * exp(t)) + exp(t)"
+                },
+                {
+                    "checked": false,
+                    "latex": "-1 + {(\\lim\\limits_{t\\to -\\infty} -t e^{t})}",
+                    "proof": "No proof!",
+                    "reason": "Simplification",
+                    "text": "-1 + (LIM {t -> -oo}. -(t * exp(t)))"
                 }
             ],
             "name": "Exercise 2",
