@@ -3,16 +3,13 @@
 from integral import expr
 from integral import poly
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
-        sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, sin, cos, FUN, decompose_expr_factor
+        sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, DERIV, decompose_expr_factor
 import functools, operator
 from integral import parser
 from sympy import Interval, expand_multinomial, apart
 from sympy.solvers import solvers, solveset
 from integral import parser
 from fractions import Fraction
-import copy
-import random
-import string
 
 class Rule:
     """Represents a rule for integration. It takes an integral
@@ -589,8 +586,63 @@ class ElimInfInterval(Rule):
         else:
             raise NotImplementedError
 
-class ElimLimit(Rule):
-    pass
+class LHopital(Rule):
+    """Apply L'Hoptial rule."""
+    def __init__(self):
+        self.name = "L'Hopital"
+
+    def eval(self, e):
+        if e.ty != LIMIT:
+            return e
+
+        bd = e.body
+        subst_poly = bd.replace_trig(Var(e.var), e.lim).to_poly()
+        if subst_poly.T != poly.UNKNOWN:
+            return e
+        inf_part, zero_part, const_part = [], [], []
+
+        bd_poly = bd.to_poly()
+        if len(bd_poly) != 1:
+            raise NotImplementedError
+        m = bd_poly[0]
+        factors = m.factors
+        for i, j in factors:
+            # mono = poly.Polynomial([poly.Monomial(poly.ConstantPolynomial([poly.ConstantMonomial(1, ((i, j),))]), tuple())])
+            mono = poly.Polynomial([poly.Monomial(1, ((i, j),))])
+            norm_m = expr.from_poly(mono)
+            subst_m = norm_m.replace_trig(Var(e.var), e.lim).to_poly()
+            if subst_m.T == poly.ZERO:
+                zero_part.append((Const(1) / norm_m).normalize())
+            elif subst_m.T in (poly.POS_INF, poly.NEG_INF):
+                inf_part.append(norm_m)
+            elif subst_m.T == poly.NON_ZERO:
+                const_part.append(norm_m)
+            else:
+                print(mono)
+                raise NotImplementedError
+
+        assert inf_part and zero_part
+        inf_expr = functools.reduce(operator.mul, inf_part[1:], inf_part[0])
+        zero_expr = functools.reduce(operator.mul, zero_part[1:], zero_part[0])
+
+        nm_trace = [inf_expr]
+        denom_trace = [zero_expr]
+        while True:
+            nm, denom = nm_trace[-1], denom_trace[-1]
+            nm_deriv, denom_deriv = expr.deriv(e.var, nm), expr.deriv(e.var, denom)
+            nm_subst, denom_subst = nm_deriv.replace_trig(Var(e.var), e.lim), denom_deriv.replace_trig(Var(e.var), e.lim)
+            nm_poly, denom_poly = nm_subst.to_poly(), denom_subst.to_poly()
+            if nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
+                continue
+            elif nm_poly.T in (poly.ZERO, poly.NON_ZERO) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
+                return Const(0)
+            elif nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.ZERO, poly.NON_ZERO):
+                return expr.from_poly(nm_poly)
+            elif nm_poly.T == poly.NON_ZERO and denom_poly.T == poly.NON_ZERO:
+                return (nm_subst / denom_subst).normalize()
+            else:
+                raise NotImplementedError
+
 def check_item(item, target=None, *, debug=False):
     """Check application of rules in the item."""
     problem = parser.parse_expr(item['problem'])

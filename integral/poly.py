@@ -151,6 +151,12 @@ class ConstantMonomial:
         reduced_factors = tuple((i, j) for i, j in collect_pairs(reduced_factors) if j != 0)
         self.factors, coeff2 = extract_frac(reduced_factors)
         self.coeff = coeff * coeff2
+        # if self.coeff == Decimal("inf"):
+        #     self.factors = self.factors + ((expr.Const(self.coeff), 1), )
+        #     self.coeff = 1
+        # elif self.coeff == Decimal("-inf"):
+        #     self.factors = self.factors + ((expr.Const(self.coeff), 1), )
+        #     self.coeff = -1
 
     def __hash__(self):
         return hash(("CMONO", self.coeff, self.factors))
@@ -253,8 +259,9 @@ class ConstantMonomial:
         """Determine whether self is divergent, return +oo, -oo, const or unknown (0*oo)."""
         def pair_T(i, j):
             """Determine whether i ^ j is divergent."""
-            # if isinstance(i, (int, Fraction)):
-            #     return NON_ZERO
+            if isinstance(i, (int, Fraction)) and j not in (Decimal("inf"), Decimal("-inf")):
+                return NON_ZERO
+            assert isinstance(i, expr.Expr), "%s %s %s" % (self, i, type(i))
             if isinstance(i, expr.Const) and i.val == Decimal("inf"):
                 if isinstance(j, (int, Fraction)):
                     if j < 0:
@@ -275,8 +282,7 @@ class ConstantMonomial:
                         raise NotImplementedError
                 else:
                     raise NotImplementedError
-            assert isinstance(i, expr.Expr), "%s %s" % (self, i)
-            if i.ty == expr.FUN and i.func_name == "exp":
+            elif i.ty == expr.FUN and i.func_name == "exp":
                 if i.args[0].ty == expr.CONST:
                     i_value = Decimal(i.args[0].val).exp()
                     if j == Decimal("inf"):

@@ -1,6 +1,6 @@
 from cgi import test
 import unittest
-from integral.rules import FullSimplify
+from integral.rules import FullSimplify, LHopital
 from integral.parser import parse_expr
 from integral.expr import Limit
 
@@ -30,6 +30,19 @@ class ImproperTest(unittest.TestCase):
             t_res = parse_expr(t_res)
             self.assertEqual(t.normalize(), t_res)
             print(t)
+
+    def testLHopital(self):
+        test_cases = [
+            ("LIM {t -> -oo}. -(t * exp(t))", "0")
+        ]
+
+        for t, t_res in test_cases:
+            t = parse_expr(t)
+            t_res = parse_expr(t_res)
+            self.assertEqual(LHopital().eval(t), t_res)
+            print(t)
+
+
     # def test_improper_integration(self):
     #     test_case = [
     #         ("LIM {t -> inf}. INT x:[1,t]. 1 / x ^ 2", "LIM {t -> inf}. 1 + -(t ^ -1)"),
