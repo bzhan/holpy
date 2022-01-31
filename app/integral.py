@@ -164,6 +164,22 @@ def integral_separate_integrals():
         })
     return json.dumps(n)
 
+@app.route("/api/integral-separate-limits", methods=['POST'])
+def integral_separate_limits():
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = integral.parser.parse_expr(data['problem'])
+    integrals = problem.separate_limit()
+    n = []
+    for i, loc in integrals:
+        n.append({
+            "text": str(i),
+            "var_name": i.var,
+            "body": str(i.body),
+            "latex": integral.latex.convert_expr(i),
+            "location": str(loc)
+        })
+    return json.dumps(n)
+
 @app.route("/api/integral-compose-integral", methods=['POST'])
 def integral_compose_integral():
     data = json.loads(request.get_data().decode('utf-8'))
@@ -192,6 +208,55 @@ def integral_compose_integral():
     curr = integral.parser.parse_expr(data['cur_calc'])
     new_expr = curr
     old_integral = curr.separate_integral()
+    for i in range(len(old_integral)):
+        new_expr = new_expr.replace_trig(old_integral[i][0], new_integral[i])
+    info = {
+        'text': str(new_expr),
+        'latex': integral.latex.convert_expr(new_expr),
+        'reason': reason,
+    }
+    if location != "":
+        info.update({'location': location})
+    if params:
+        info.update({'params': params})
+    if denom:
+        info.update({'denom': denom})
+    if rhs:
+        info.update({'rhs': rhs})
+    if latex_reason:
+        info.update({'_latex_reason': latex_reason})
+    info["checked"], info["proof"] = proof.translate_single_item(info, data["cur_calc"])
+    return json.dumps(info)
+
+
+@app.route("/api/integral-compose-limits", methods=['POST'])
+def integral_compose_limits():
+    data = json.loads(request.get_data().decode('utf-8'))
+    new_integral = []
+    latex_reason = ""
+    reason = ""
+    modified_index = int(data['index'])
+    location = ""
+    if 'location' in data['problem'][modified_index]:
+        location = data['problem'][modified_index]['location']
+    denom = ""
+    rhs = ""
+    params = {}
+    for d in data['problem']:
+        new_integral.append(integral.parser.parse_expr(d['text']))
+        if '_latex_reason' in d:
+            latex_reason += d['_latex_reason']
+        if 'reason' in d:
+            reason += d['reason']
+        if 'params' in d:
+            params = d['params']
+        if 'denom' in d:
+            denom = d['denom']
+        if 'rhs' in d:
+            rhs = d['rhs']
+    curr = integral.parser.parse_expr(data['cur_calc'])
+    new_expr = curr
+    old_integral = curr.separate_limit()
     for i in range(len(old_integral)):
         new_expr = new_expr.replace_trig(old_integral[i][0], new_integral[i])
     info = {
@@ -678,3 +743,16 @@ def integral_elim_inf():
         "reason": "Eliminate infinity"
     })
     
+@app.route("/api/integral-lhopital", methods=['POST'])
+def integral_lhopital():
+    print(1233)
+    data = json.loads(request.get_data().decode('UTF-8'))
+    problem = integral.parser.parse_expr(data["problem"])
+    new_problem = integral.rules.LHopital().eval(problem)
+    print("new_problem:", new_problem)
+    return jsonify({
+        "text": str(new_problem),
+        "latex": integral.latex.convert_expr(new_problem),
+        "location": data["location"],
+        "reason": "Eliminate infinity"
+    })

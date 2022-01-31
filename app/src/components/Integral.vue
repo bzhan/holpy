@@ -29,6 +29,7 @@
           <b-dropdown-item href="#" v-on:click='integrateByEquation'>Solving Equations</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='elimAbs'>Eliminate Abs</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='elimInfinity'>Eliminate Infinity</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='lhopital'>L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -236,6 +237,19 @@
         </div>
         <div style="margin-top:10px">
           <button v-on:click="closeIntegral">Close</button>
+        </div>
+      </div>
+      <div v-if="display_integral === 'lhopital'">
+        <label>L'Hopital Rule</label>
+        <div v-for="(step, index) in sep_int" :key="index">
+          <span>{{index+1}}: </span>
+          <MathEquation
+          v-on:click.native="doLhopital(index)"
+          v-bind:data="'\\(' + step.latex + '\\)'"
+          style="cursor:pointer"/>
+        </div>
+        <div style="margin-top:10px">
+          <button v-on:click="closeLimit">Close</button>
         </div>
       </div>
     </div>
@@ -617,6 +631,25 @@ export default {
       this.clear_input_info()
     },
 
+    closeLimit: async function(){
+      //this.clear_separate_integral()
+      var integrals = []
+      for(var i = 0; i < this.sep_int.length; ++i){
+        integrals.push(this.sep_int[i])
+      }
+      if (this.take_effect == 1){
+        const data = {
+          problem: integrals,
+          cur_calc: this.cur_calc[this.cur_calc.length - 1].text,
+          index:  this.process_index
+        }
+        const response = await axios.post("http://127.0.0.1:5000/api/integral-compose-limits", JSON.stringify(data))
+        this.cur_calc.push(response.data)        
+      }
+      this.clear_separate_integral();
+      this.clear_input_info()
+    },
+
     displaySeparateIntegrals: async function(){
       const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
       const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-integrals", JSON.stringify(data))
@@ -930,6 +963,37 @@ export default {
       this.show_proof_mode = 'proof'
       this.proof_term = this.cur_calc[index].proof
       
+    },
+
+    lhopital: function(){
+      this.sep_int = []
+      this.display_integral = 'lhopital'
+      this.show_proof_mode = undefined
+      this.displaySeparateLimit()
+    },
+
+    displaySeparateLimit: async function(){
+      const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-limits", JSON.stringify(data))
+      for(var i = 0; i < response.data.length; ++i){
+        this.sep_int.push(response.data[i])
+      }
+      this.display_integral = 'lhopital'
+    },
+
+    doLhopital: async function(index){
+      const data = {
+        problem: this.sep_int[index].text,
+        location: this.sep_int[index].location
+      }
+
+      const responce = await axios.post("http://127.0.0.1:5000/api/integral-lhopital", JSON.stringify(data))
+
+      this.sep_int[index] = responce.data
+      this.take_effect = 1
+      this.integral_index = undefined
+      this.process_index = index
+      this.closeLimit()
     }
 
   },
