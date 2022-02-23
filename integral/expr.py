@@ -861,6 +861,20 @@ class Expr:
 
         collect(self, result)
         return result
+
+    def separate_limit(self):
+        """Find all limits in self."""
+        result = []
+        def collect(p, result):
+            if p.ty == LIMIT:
+                p.selected = True
+                loc = self.get_location()
+                result.append([p, loc])
+            elif p.ty == OP:
+                for arg in p.args:
+                    collect(arg, result)
+        collect(self, result)
+        return result
     
     def findVar(self):
         """Find variable in expr for substitution's derivation.

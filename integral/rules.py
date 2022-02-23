@@ -3,7 +3,8 @@
 from integral import expr
 from integral import poly
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
-        sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, DERIV, decompose_expr_factor
+        sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, \
+            DERIV, decompose_expr_factor, Deriv
 import functools, operator
 from integral import parser
 from sympy import Interval, expand_multinomial, apart
@@ -607,7 +608,6 @@ class LHopital(Rule):
         m = bd_poly[0]
         factors = m.factors
         for i, j in factors:
-            # mono = poly.Polynomial([poly.Monomial(poly.ConstantPolynomial([poly.ConstantMonomial(1, ((i, j),))]), tuple())])
             mono = poly.Polynomial([poly.Monomial(1, ((i, j),))])
             norm_m = expr.from_poly(mono)
             subst_m = norm_m.replace_trig(Var(e.var), e.lim).to_poly()
@@ -635,10 +635,13 @@ class LHopital(Rule):
             if nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
                 continue
             elif nm_poly.T in (poly.ZERO, poly.NON_ZERO) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
+                print("owowow1")
                 return Const(0)
             elif nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.ZERO, poly.NON_ZERO):
+                print("owowow2")
                 return expr.from_poly(nm_poly)
             elif nm_poly.T == poly.NON_ZERO and denom_poly.T == poly.NON_ZERO:
+                print("owowow3")
                 return (nm_subst / denom_subst).normalize()
             else:
                 raise NotImplementedError

@@ -148,7 +148,7 @@ class Linearity(AlgorithmRule):
 
 class AlgoNonLinearSubstitution(AlgorithmRule):
     """
-    When there are log and exponential expresion in integral, use this rule.
+    When there are log and exponential expression in integral, use this rule.
     """
     def eval(self, e):
         if not (e.body.ty == OP and (e.body.op == "/" or e.body.op == "*" 
