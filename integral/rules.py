@@ -296,7 +296,7 @@ class Substitution1(Rule):
         upper = var_subst.subst(e.var, e.upper).normalize()
         if parser.parse_expr(e.var) not in body_subst.findVar():
             # Substitution is able to clear all x in original integrand
-            print('Substitution: case 1')
+            # print('Substitution: case 1')
             self.f = body_subst
             if sympy_style(lower) <= sympy_style(upper):
                 return Integral(self.var_name, lower, upper, body_subst).normalize()
@@ -304,7 +304,7 @@ class Substitution1(Rule):
                 return Integral(self.var_name, upper, lower, Op("-", body_subst)).normalize()
         else:
             # Substitution is unable to clear x, need to solve for x
-            print('Substitution: case 2')
+            # print('Substitution: case 2')
             gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
             if gu == []:  # sympy can't solve the equation
                 return e
