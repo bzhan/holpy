@@ -29,7 +29,6 @@ class ImproperTest(unittest.TestCase):
             t = parse_expr(t)
             t_res = parse_expr(t_res)
             self.assertEqual(t.normalize(), t_res)
-            print(t)
 
     def testLHopital(self):
         test_cases = [
@@ -40,7 +39,6 @@ class ImproperTest(unittest.TestCase):
             t = parse_expr(t)
             t_res = parse_expr(t_res)
             self.assertEqual(LHopital().eval(t), t_res)
-            print(t)
 
 
     # def test_improper_integration(self):

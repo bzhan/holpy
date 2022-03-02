@@ -160,12 +160,8 @@ class AlgoNonLinearSubstitution(AlgorithmRule):
         heur_e = HeuristicSubstitution().eval(e)
         if not heur_e:
             return e, None
-        heur_e, step = heur_e[0]
-        if heur_e.depth < e.depth:
-            return heur_e, step
         else:
-            return e, None
-        # return e, None
+            return heur_e[0]
 
 def substitution(integral, subst):
     new_var = gen_rand_letter(integral.var)
@@ -900,7 +896,7 @@ class HeuristicRationalSineCosine(HeuristicRule):
             """
             v = Symbol("v", [VAR, OP, FUN])
             pat1 = sin(v)
-            s = find_pattern(e_body, pat1)
+            s = find_pattern(e_body, pat1)[0]
             new_e_body = e_body.replace_trig(s, parse_expr('2*u/(1+u^2)')) * parse_expr('2/(1+u^2)')
             lower = tan(e.lower/2)
             upper = tan(e.upper/2)
@@ -912,7 +908,7 @@ class HeuristicRationalSineCosine(HeuristicRule):
             """
             v = Symbol("v", [VAR, OP, FUN])
             pat1 = sin(v)
-            s = find_pattern(e_body, pat1)
+            s = find_pattern(e_body, pat1)[0]
             new_e_body = e_body.replace_trig(s, parse_expr('(1-u^2)/(1+u^2)')) * parse_expr('2/(1+u^2)')
             lower = tan(e.lower/2)
             upper = tan(e.upper/2)
@@ -931,7 +927,7 @@ heuristic_rules = [
     HeuristicExpandPower,
     HeuristicTrigSubstitution,
     HeuristicExponentBase,
-    HeuristicRationalSineCosine
+    # HeuristicRationalSineCosine
 ]
 
 

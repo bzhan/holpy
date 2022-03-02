@@ -286,9 +286,9 @@ class Substitution1(Rule):
 
 
         var_name = parser.parse_expr(self.var_name)
-        var_subst = self.var_subst.normalize()
+        var_subst = self.var_subst
         dfx = expr.deriv(e.var, var_subst)
-        body = holpy_style(sympy_style(e.body/dfx)).normalize()
+        body = holpy_style(sympy_style(e.body/dfx))
         body_subst = body.replace_trig(var_subst, var_name)
         if body_subst == body:
             body_subst = body.replace_trig(var_subst, var_name)
