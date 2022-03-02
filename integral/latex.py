@@ -185,7 +185,7 @@ def convert_expr(e, mode="large"):
         lower = convert_expr(e.lower, mode='short')
         upper = convert_expr(e.upper, mode='short')
         body = convert_expr(e.body, mode)
-        return "\\int_{%s}^{%s} %s \\,\\mathit{d%s}" % (lower, upper, body, e.var)
+        return "\\int_{%s}^{%s} %s \\,d%s" % (lower, upper, body, e.var)
     elif e.ty == expr.EVAL_AT:
         lower = convert_expr(e.lower, mode='short')
         upper = convert_expr(e.upper, mode='short')

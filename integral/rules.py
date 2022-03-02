@@ -286,9 +286,9 @@ class Substitution1(Rule):
 
 
         var_name = parser.parse_expr(self.var_name)
-        var_subst = self.var_subst
+        var_subst = self.var_subst.normalize()
         dfx = expr.deriv(e.var, var_subst)
-        body = holpy_style(sympy_style(e.body/dfx))
+        body = holpy_style(sympy_style(e.body/dfx)).normalize()
         body_subst = body.replace_trig(var_subst, var_name)
         if body_subst == body:
             body_subst = body.replace_trig(var_subst, var_name)
@@ -364,6 +364,8 @@ class Equation(Rule):
         self.denom = denom
     
     def eval(self, e):
+        if e.ty == INTEGRAL:
+            raise NotImplementedError
         if isinstance(e, str):
             e = parser.parse_expr(e)
 
@@ -528,7 +530,7 @@ class IntegrateByEquation(Rule):
         """Eliminate the lhs's integral in rhs by solving equation."""
         if isinstance(e, str):
             e = parser.parse_expr(e)
-
+        norm_e = e.normalize()
         rhs_var = None
         def get_coeff(t):
             nonlocal rhs_var
@@ -549,10 +551,10 @@ class IntegrateByEquation(Rule):
             else:
                 return 0
 
-        coeff = get_coeff(e)
+        coeff = get_coeff(norm_e)
         if coeff == 0:
             return e
-        new_rhs = (e + (Const(-coeff)*self.lhs.alpha_convert(rhs_var))).normalize()
+        new_rhs = (norm_e + (Const(-coeff)*self.lhs.alpha_convert(rhs_var))).normalize()
         self.coeff = (-Const(coeff)).normalize()
         return (new_rhs/(Const(1-coeff))).normalize()
 
@@ -618,8 +620,7 @@ class LHopital(Rule):
             elif subst_m.T == poly.NON_ZERO:
                 const_part.append(norm_m)
             else:
-                print(mono)
-                raise NotImplementedError
+                raise NotImplementedError(str(mono))
 
         assert inf_part and zero_part
         inf_expr = functools.reduce(operator.mul, inf_part[1:], inf_part[0])
@@ -635,13 +636,10 @@ class LHopital(Rule):
             if nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
                 continue
             elif nm_poly.T in (poly.ZERO, poly.NON_ZERO) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
-                print("owowow1")
                 return Const(0)
             elif nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.ZERO, poly.NON_ZERO):
-                print("owowow2")
                 return expr.from_poly(nm_poly)
             elif nm_poly.T == poly.NON_ZERO and denom_poly.T == poly.NON_ZERO:
-                print("owowow3")
                 return (nm_subst / denom_subst).normalize()
             else:
                 raise NotImplementedError
