@@ -80,16 +80,16 @@ class SlagleTest(unittest.TestCase):
             v_res = parse_expr(v_res)
             self.assertEqual(slagle.ElimAbsRule().eval(v)[0], v_res)
 
-    def testTrigFunction(self):
-        test_data = [
-            ('INT x:[1,2]. $sin(x)^4/cos(x)^4$',
-             ['INT x:[1,2]. tan(x)^4', 'INT x:[1,2]. cot(x)^(-4)'])
-        ]
+    # def testTrigFunction(self):
+    #     test_data = [
+    #         ('INT x:[1,2]. $sin(x)^4/cos(x)^4$',
+    #          ['INT x:[1,2]. tan(x)^4', 'INT x:[1,2]. cot(x)^(-4)'])
+    #     ]
 
-        for v, v_res in test_data:
-            v = parse_expr(v)
-            v_res = [parse_expr(v2) for v2 in v_res]
-            self.assertEqual([r.normalize() for r, _ in slagle.TrigFunction().eval(v)], v_res)
+    #     for v, v_res in test_data:
+    #         v = parse_expr(v)
+    #         v_res = [parse_expr(v2) for v2 in v_res]
+    #         self.assertEqual([r.normalize() for r, _ in slagle.TrigFunction().eval(v)], v_res)
 
     def testHeuristicTrigonometricSubstitution(self):
         test_data = [

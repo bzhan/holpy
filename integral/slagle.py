@@ -505,13 +505,13 @@ class TrigFunction(HeuristicRule):
         if step1:
             res.append((res1, step1))
 
-        # res2, step2 = self.tan_sec(e)
-        # if step2:
-        #     res.append((res2, step2))
+        res2, step2 = self.tan_sec(e)
+        if step2:
+            res.append((res2, step2))
 
-        # res3, step3 = self.cot_csc(e)
-        # if step3:
-        #     res.append((res3, step3))
+        res3, step3 = self.cot_csc(e)
+        if step3:
+            res.append((res3, step3))
  
         return res
 
