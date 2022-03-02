@@ -7,7 +7,7 @@
         },
         {
             "args": [
-                "'a"
+                "a"
             ],
             "name": "topology",
             "ty": "type.ax"
@@ -200,7 +200,7 @@
         },
         {
             "name": "open_union",
-            "num_gaps": 2,
+            "num_gaps": 1,
             "proof": [
                 {
                     "args": "is_topology S",
@@ -230,7 +230,7 @@
                         "0"
                     ],
                     "rule": "rewrite_fact",
-                    "th": "is_topology S ⊢ (∀U. ∀V. U ∈ S ⟶ V ∈ S ⟶ U ∩ V ∈ S) ∧ (∀K. K ⊆ S ⟶ ⋃K ∈ S)"
+                    "th": "is_topology S ⊢ (∀U. ∀V. open_in S U ⟶ open_in S V ⟶ open_in S (U ∪ V)) ∧ (∀K. (∀U. U ∈ K ⟶ open_in S U) ⟶ open_in S (⋃K))"
                 },
                 {
                     "args": "conjD2",
@@ -239,7 +239,7 @@
                         "3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "is_topology S ⊢ ∀K. K ⊆ S ⟶ ⋃K ∈ S"
+                    "th": "is_topology S ⊢ ∀K. (∀U. U ∈ K ⟶ open_in S U) ⟶ open_in S (⋃K)"
                 },
                 {
                     "args": "{U, V}",
@@ -248,99 +248,23 @@
                         "4"
                     ],
                     "rule": "forall_elim_gen",
-                    "th": "is_topology S ⊢ {U, V} ⊆ S ⟶ ⋃({U, V}) ∈ S"
+                    "th": "is_topology S ⊢ (∀U1. U1 ∈ {U, V} ⟶ open_in S U1) ⟶ open_in S (⋃({U, V}))"
                 },
                 {
                     "args": "",
                     "id": "6",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "is_topology S, open_in S U, open_in S V ⊢ ∀x. x ∈ {U, V} ⟶ x ∈ S"
-                },
-                {
-                    "args": "x, 'a set",
-                    "id": "6.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "x ∈ {U, V}",
-                    "id": "6.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ {U, V} ⊢ x ∈ {U, V}"
-                },
-                {
-                    "args": "member_insert",
-                    "id": "6.2",
-                    "prevs": [
-                        "6.1"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "x ∈ {U, V} ⊢ x = U ∨ x ∈ {V}"
-                },
-                {
-                    "args": "",
-                    "id": "6.3",
-                    "prevs": [],
                     "rule": "sorry",
-                    "th": "is_topology S, open_in S U, open_in S V, x ∈ {U, V} ⊢ x ∈ S"
-                },
-                {
-                    "args": "",
-                    "id": "6.4",
-                    "prevs": [
-                        "6.0",
-                        "6.1",
-                        "6.3"
-                    ],
-                    "rule": "intros",
-                    "th": "is_topology S, open_in S U, open_in S V ⊢ ∀x. x ∈ {U, V} ⟶ x ∈ S"
-                },
-                {
-                    "args": "subsetI",
-                    "id": "7",
-                    "prevs": [
-                        "6"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "is_topology S, open_in S U, open_in S V ⊢ {U, V} ⊆ S"
-                },
-                {
-                    "args": "",
-                    "id": "8",
-                    "prevs": [
-                        "5",
-                        "7"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "is_topology S, open_in S U, open_in S V ⊢ ⋃({U, V}) ∈ S"
-                },
-                {
-                    "args": "",
-                    "id": "9",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "is_topology S, open_in S U, open_in S V ⊢ U ∪ V ∈ S"
-                },
-                {
-                    "args": "open_in_def, open_in S (U ∪ V)",
-                    "id": "10",
-                    "prevs": [
-                        "9"
-                    ],
-                    "rule": "rewrite_goal",
                     "th": "is_topology S, open_in S U, open_in S V ⊢ open_in S (U ∪ V)"
                 },
                 {
                     "args": "",
-                    "id": "11",
+                    "id": "7",
                     "prevs": [
                         "0",
                         "1",
                         "2",
-                        "10"
+                        "6"
                     ],
                     "rule": "intros",
                     "th": "⊢ is_topology S ⟶ open_in S U ⟶ open_in S V ⟶ open_in S (U ∪ V)"
@@ -372,47 +296,6 @@
                     "goal_id": "5",
                     "method_name": "forall_elim",
                     "s": "{U,V}"
-                },
-                {
-                    "fact_ids": [
-                        "5"
-                    ],
-                    "goal": "{U,V} ⊆ S",
-                    "goal_id": "6",
-                    "method_name": "cut"
-                },
-                {
-                    "goal_id": "6",
-                    "method_name": "apply_backward_step",
-                    "theorem": "subsetI"
-                },
-                {
-                    "goal_id": "6",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "fact_ids": [
-                        "5",
-                        "7"
-                    ],
-                    "goal_id": "8",
-                    "method_name": "apply_fact"
-                },
-                {
-                    "goal_id": "9",
-                    "method_name": "rewrite_goal",
-                    "sym": "",
-                    "theorem": "open_in_def"
-                },
-                {
-                    "fact_ids": [
-                        "6.1"
-                    ],
-                    "goal_id": "6.2",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "member_insert"
                 }
             ],
             "ty": "thm",
