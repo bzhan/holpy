@@ -172,9 +172,6 @@
             }
         },
         {
-            "attributes": [
-                "hint_backward"
-            ],
             "name": "exI",
             "prop": "P a ⟶ (∃a1. P a1)",
             "ty": "thm.ax",

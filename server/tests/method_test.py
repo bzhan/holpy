@@ -361,7 +361,7 @@ class MethodTest(unittest.TestCase):
             vars={'n': 'nat'},
             concl='0 + n = 0',
             method_name='rewrite_goal',
-            res=['add_comm', 'double_neg', 'eq_add_lcancel_0', 'eq_sym_eq', 'nat_plus_def_1']
+            res=['add_comm', 'eq_add_lcancel_0', 'eq_sym_eq', 'nat_plus_def_1']
         )
 
     def testRewriteGoalThms2(self):
@@ -370,7 +370,7 @@ class MethodTest(unittest.TestCase):
             vars={'f': "nat => nat", 'S': "nat set", 'T': "nat set"},
             concl='image f (image f S) = T',
             method_name='rewrite_goal',
-            res=['double_neg', 'eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
+            res=['eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
         )
 
     def testRewriteGoal(self):
@@ -447,7 +447,7 @@ class MethodTest(unittest.TestCase):
             concl='false',
             method_name='rewrite_fact',
             prevs=[0],
-            res=['add_comm', 'double_neg', 'eq_add_lcancel_0', 'eq_sym_eq', 'nat_plus_def_1']
+            res=['add_comm', 'eq_add_lcancel_0', 'eq_sym_eq', 'nat_plus_def_1']
         )
 
     def testRewriteFactThms2(self):
@@ -458,7 +458,7 @@ class MethodTest(unittest.TestCase):
             concl='false',
             method_name='rewrite_fact',
             prevs=[0],
-            res=['double_neg', 'eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
+            res=['eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
         )
 
     def testRewriteFactThms3(self):

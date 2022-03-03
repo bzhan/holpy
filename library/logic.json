@@ -1394,8 +1394,7 @@
         },
         {
             "attributes": [
-                "hint_rewrite",
-                "hint_rewrite_sym"
+                "hint_rewrite"
             ],
             "name": "double_neg",
             "num_gaps": 0,
