@@ -83,7 +83,7 @@ class SymPyWrapperTest(unittest.TestCase):
 
         vars = {'x': 'real'}
         for expr in test_data:
-            test_macro(self, 'realintegral', 'auto', vars=vars, args=expr, res=expr)
+            test_macro(self, 'interval_arith', 'auto', vars=vars, args=expr, res=expr)
 
 
 if __name__ == "__main__":

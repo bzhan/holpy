@@ -280,7 +280,7 @@ def and_elim(arg1, concl):
     
     for key, value in conj_expr[arg1.prop].items():
         if key == concl:
-            print("!!")
+            # print("!!")
             return value    
 
     pt = arg1
@@ -981,7 +981,7 @@ def not_or_elim(arg1, arg2):
     
     for key, value in disj_expr[arg1.prop].items():
         if key == arg2:
-            print("!!!")
+            # print("!!!")
             return value        
 
     disj = arg2.arg if arg2.is_not() else Not(arg2)
@@ -1058,27 +1058,27 @@ def def_axiom(arg1):
     for reason that prove need propositional logic decision procedure,
     currently use proofterm.sorry
     """
-    # Ts = analyze_type(arg1)
-    # if IntType in Ts:
-    #     pt = refl(arg1).on_rhs(
-    #         top_conv(rewr_conv('int_ite01')),
-    #         bottom_conv(rewr_conv('eq_mean_true')),
-    #         bottom_conv(integer.int_norm_eq()),
-    #         bottom_conv(integer.int_neq_false_conv()),
-    #         proplogic.norm_full()
-    #     )
-    #     pt = pt.symmetric()
-    #     try:
-    #         basic.load_theory('sat')
-    #         pt_cnf = solve_cnf(pt.lhs)
-    #         basic.load_theory('smt')
-    #         return pt.equal_elim(pt_cnf)
-    #     except:
-    #         pass
-    # try:
-    #     return solve_cnf(arg1)
-    # except:
-    return ProofTerm.sorry(Thm([], arg1))
+    Ts = analyze_type(arg1)
+    if IntType in Ts:
+        pt = refl(arg1).on_rhs(
+            top_conv(rewr_conv('int_ite01')),
+            bottom_conv(rewr_conv('eq_mean_true')),
+            bottom_conv(integer.int_norm_eq()),
+            bottom_conv(integer.int_neq_false_conv()),
+            proplogic.norm_full()
+        )
+        pt = pt.symmetric()
+        try:
+            basic.load_theory('sat')
+            pt_cnf = solve_cnf(pt.lhs)
+            basic.load_theory('smt')
+            return pt.equal_elim(pt_cnf)
+        except:
+            pass
+    try:
+        return solve_cnf(arg1)
+    except:
+        return ProofTerm.sorry(Thm([], arg1))
 
 def intro_def(concl):
     """
@@ -1820,12 +1820,12 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     gaps = set()
     time1 = time.perf_counter()
     if assertions:
-        print("start process assertion!")
+        # print("start process assertion!")
         handle_assertion(assertions)
     with open('int_prf1.txt', 'a', encoding='utf-8') as f:
         f.seek(0)
         f.truncate()
-    print("done")
+    # print("done")
     for i in order:
         args = tuple(r[j] for j in net[i])
         # if trace:
@@ -1848,7 +1848,7 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     # conclusion = delete_redundant(r[0], redundant)
     # redundant.clear()
     time2 = time.perf_counter()
-    print("total time: ", time2 - time1)
+    # print("total time: ", time2 - time1)
     # rpt = ProofReport()
     # theory.check_proof(r[0].export(), rpt)
     # print(rpt)

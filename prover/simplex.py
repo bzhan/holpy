@@ -730,7 +730,7 @@ def branch_and_bound(tableau, pts1, pts2):
         except:
             continue
     
-    print("No integer solution!")
+    # print("No integer solution!")
     return T
 
 
@@ -1334,7 +1334,6 @@ class IntegerSimplexMacro(Macro):
         T = branch_and_bound(s, pt_of_int, pt_eqs)
         result = T.branch_and_bound_pt()
         if not isinstance(result, ProofTerm):
-            print("SAT")
             return result
         # P_1, P_2, ... |- false
         pt_0 = result

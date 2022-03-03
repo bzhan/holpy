@@ -77,8 +77,8 @@ class ParserTest(unittest.TestCase):
         T = parser.parse_type(Ts)
         self.assertIsInstance(t, Term)
         self.assertEqual(t.checked_get_type(), T)
-        with global_setting(unicode=False):
-            self.assertEqual(print_term(t), s)
+        # with global_setting(unicode=False):
+        self.assertEqual(print_term(t), s)
 
     def testParseTerm(self):
         test_data = [
@@ -217,7 +217,8 @@ class ParserTest(unittest.TestCase):
         svars = {'P': 'bool'}
 
         for s, Ts in test_data:
-            self.run_test('list', vars=vars, svars=svars, s=s, Ts=Ts)
+            with global_setting(unicode=False):
+                self.run_test('list', vars=vars, svars=svars, s=s, Ts=Ts)
 
     def testParseInt(self):
         test_data = [
@@ -265,7 +266,8 @@ class ParserTest(unittest.TestCase):
 
         vars = {'x': 'real', 'y': 'real', 'n': 'nat'}
         for s, Ts in test_data:
-            self.run_test('real', vars=vars, s=s, Ts=Ts)
+            with global_setting(unicode=False):
+                self.run_test('real', vars=vars, s=s, Ts=Ts)
 
     def testParseFunction(self):
         test_data = [
@@ -277,7 +279,8 @@ class ParserTest(unittest.TestCase):
 
         vars = {'a': "'a", 'b': "'a", 'f': "'a => 'a", 'g': "'b => 'c", 'h': "'a => 'b"}
         for s, Ts in test_data:
-            self.run_test('function', vars=vars, s=s, Ts=Ts)
+            with global_setting(unicode=False):
+                self.run_test('function', vars=vars, s=s, Ts=Ts)
 
     def testParseSet(self):
         test_data = [
@@ -331,7 +334,8 @@ class ParserTest(unittest.TestCase):
         ]
 
         for s, Ts in test_data:
-            self.run_test('function', s=s, Ts=Ts)
+            with global_setting(unicode=False):
+                self.run_test('function', s=s, Ts=Ts)
 
     def testParseTermNoAbs(self):
         test_data = [
@@ -350,7 +354,8 @@ class ParserTest(unittest.TestCase):
 
         vars = {'P': "'a => bool", 'Q': "'a => bool", 'R': "'a => 'a => bool"}
         for s, Ts in test_data:
-            self.run_test('logic_base', vars=vars, s=s, Ts=Ts)
+            with global_setting(unicode=False):
+                self.run_test('logic_base', vars=vars, s=s, Ts=Ts)
 
     def testParseTypedTerm(self):
         test_data = [
@@ -361,7 +366,8 @@ class ParserTest(unittest.TestCase):
         ]
 
         for s, Ts in test_data:
-            self.run_test('list', s=s, Ts=Ts)
+            with global_setting(unicode=False):
+                self.run_test('list', s=s, Ts=Ts)
 
     def testParseTermIsString(self):
         context.set_context('logic_base', vars={'a': "'a"})
