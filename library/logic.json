@@ -237,7 +237,7 @@
                         "0.1.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "A ∨ B, A ⊢ B ∨ A"
+                    "th": "A ⊢ B ∨ A"
                 },
                 {
                     "args": "",
@@ -270,7 +270,7 @@
                         "0.2.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "A ∨ B, B ⊢ B ∨ A"
+                    "th": "B ⊢ B ∨ A"
                 },
                 {
                     "args": "",
@@ -338,7 +338,7 @@
                         "1.1.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "B ∨ A, B ⊢ A ∨ B"
+                    "th": "B ⊢ A ∨ B"
                 },
                 {
                     "args": "",
@@ -371,7 +371,7 @@
                         "1.2.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "B ∨ A, A ⊢ A ∨ B"
+                    "th": "A ⊢ A ∨ B"
                 },
                 {
                     "args": "",
@@ -448,6 +448,9 @@
                     "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
                     "goal_id": "0.1.1",
                     "method_name": "apply_backward_step",
                     "theorem": "disjI2"
@@ -457,6 +460,9 @@
                     "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
                     "goal_id": "0.2.1",
                     "method_name": "apply_backward_step",
                     "theorem": "disjI1"
@@ -478,6 +484,9 @@
                     "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
                     "goal_id": "1.1.1",
                     "method_name": "apply_backward_step",
                     "theorem": "disjI2"
@@ -487,6 +496,9 @@
                     "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
                     "goal_id": "1.2.1",
                     "method_name": "apply_backward_step",
                     "theorem": "disjI1"
