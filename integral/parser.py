@@ -24,8 +24,8 @@ grammar = r"""
         | "INT" CNAME ":[" expr "," expr "]." expr -> integral_expr
         | "[" expr "]_" CNAME "=" expr "," expr -> eval_at_expr
         | "LIM" "{" CNAME "->" expr "}" "." expr -> limit_inf_expr
-        | "LIM" "{" CNAME "->" expr "+" "}" "."  expr -> limit_l_expr
-        | "LIM" "{" CNAME "->" expr "-" "}" "."  expr -> limit_r_expr
+        | "LIM" "{" CNAME "->" expr "-}" "."  expr -> limit_l_expr
+        | "LIM" "{" CNAME "->" expr "+}" "."  expr -> limit_r_expr
 
     ?uminus: "-" uminus -> uminus_expr | atom  // priority 80
 
@@ -99,7 +99,7 @@ class ExprTransformer(Transformer):
         return expr.pi
 
     def pos_inf_expr(self):
-        return expr.inf
+        return expr.inf()
 
     def fun_expr(self, func_name, *args):
         return expr.Fun(func_name, *args)
@@ -128,10 +128,10 @@ class ExprTransformer(Transformer):
         return expr.Limit(str(var), lim, body)
     
     def limit_l_expr(self, var, lim, body):
-        return expr.Limit(str(var), lim, body, d="+")
+        return expr.Limit(str(var), lim, body, "-")
 
     def limit_r_expr(self, var, lim, body):
-        return expr.Limit(str(var), lim, body, d="-")
+        return expr.Limit(str(var), lim, body, "+")
 
 expr_parser = Lark(grammar, start="expr", parser="lalr", transformer=ExprTransformer())
 interval_parser = Lark(grammar, start="interval", parser="lalr", transformer=ExprTransformer())

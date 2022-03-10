@@ -37,10 +37,7 @@ class Simplify(Rule):
         if isinstance(e, str):
             e = parser.parse_expr(e)
         res = e.normalize()
-        if isinstance(e, expr.Infinity) and res.is_inf():
-            raise ValueError
-        else:
-            return res
+        return res
 
 class Linearity(Rule):
     """Applies linearity rules:

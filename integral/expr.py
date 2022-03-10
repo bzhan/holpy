@@ -8,7 +8,6 @@ from decimal import Decimal
 from sympy.simplify.fu import *
 from sympy.parsing import sympy_parser
 from sympy.ntheory.factor_ import factorint
-from numbers import Number
 
 from kernel.type import RealType
 from kernel import term
@@ -468,7 +467,7 @@ class Expr:
     
     def is_constant(self):
         """Determine whether expr is a number."""
-        if self.ty == CONST or self.ty == INF:
+        if self.ty == CONST:
             return True
         elif self.ty == VAR:
             return False
@@ -479,9 +478,6 @@ class Expr:
                 return self.args[0].is_constant()
         elif self.ty == OP:
             return all(arg.is_constant() for arg in self.args)
-        # elif self.ty == LIMIT:
-        #     body = self.body.replace_trig(Var(self.var), self.lim)
-        #     return body.is_constant()
         else:
             return False
 
@@ -536,12 +532,6 @@ class Expr:
 
         elif self.ty == OP and self.op == '/':
             a, b = self.args[0].to_const_poly(), self.args[1].to_const_poly()
-            if a.T in (poly.ZERO, poly.NON_ZERO) and b.T in (poly.POS_INF, poly.NEG_INF):
-                return poly.const_fraction(0)
-            # elif a.T in (poly.POS_INF, poly.NEG_INF) and b.T in (poly.POS_INF, poly.NEG_INF):
-            #     return poly.const_singleton(self.args[0] / self.args[1])
-            # elif a.T == poly.ZERO and b.T == poly.ZERO:
-            #     return poly.const_singleton(self.args[0] / self.args[1])
             if b.is_monomial():
                 return a / b
             else:
@@ -549,7 +539,7 @@ class Expr:
 
         elif self.ty == OP and self.op == '^':
             a, b = self.args[0].to_const_poly(), self.args[1].to_const_poly()
-            if a.is_zero():
+            if a.is_zero() and b.is_fraction() and b.get_fraction() > 0:
                 return poly.const_fraction(0)
             elif a.is_monomial() and b.is_fraction():
                 return a ** b.get_fraction()
@@ -594,8 +584,6 @@ class Expr:
                 return poly.const_fraction(0)
             elif a.is_monomial():
                 mono = a.get_monomial()
-                if mono.T == poly.POS_INF:
-                    return poly.const_fraction(Decimal("inf"))
                 log_factors = []
                 for n, e in mono.factors:
                     if isinstance(n, (int, Fraction)):
@@ -681,6 +669,9 @@ class Expr:
             return self.body.replace_trig(Var(self.var), self.lim).to_const_poly()
         else:
             raise NotImplementedError
+
+    def norm(self):
+        return self.normalize()
 
     def normalize_constant(self):
         return from_const_poly(self.to_const_poly())
@@ -776,32 +767,8 @@ class Expr:
             return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), body))
 
         elif self.ty == LIMIT:
-            if self.ty == INTEGRAL or self.ty == EVAL_AT:
-                return poly.singleton(Limit(self.var, self.lim, self.body.normalize()))
-            p1 = self.body.replace_trig(Var(self.var), self.lim).to_poly()
-            if p1.T != poly.UNKNOWN:
-                return p1
-            else:
-                # Split poly to constant part and unknown part, 
-                # only keep the unknown part in limit expression.
-                ms = self.body.to_poly()
-                pc = [] # store the poly(s) which are constant
-                pu = [] # store the poly(s) which are non-constant
-                for m in ms:
-                    norm_m = from_poly(Polynomial([m])).replace_trig(Var(self.var), self.lim).to_poly()
-                    if norm_m.T in (poly.NON_ZERO, poly.ZERO):
-                        pc.append(from_poly(norm_m))
-                    elif norm_m.T in (poly.POS_INF, poly.NEG_INF, poly.UNKNOWN):
-                        pu.append(from_poly(Polynomial([m])))
-                    else:
-                        raise NotImplementedError
-                if pc:
-                    const_part = sum(pc[1:], pc[0])
-                else:
-                    const_part = Const(0)
-                assert pu
-                unknown_part = sum(pu[1:], pu[0])
-                return const_part.to_poly() + poly.singleton(Limit(self.var, self.lim, unknown_part.normalize()))
+            e = self.lim_to_inf()
+            # p = e.body.replace_trig(Var(self.var), inf).to_poly()
         else:
             return poly.singleton(self)
 
@@ -1290,9 +1257,7 @@ def from_const_mono(m):
             else:
                 factors.append(base ** Const(power))
     
-    if m.T == poly.ZERO:
-        return Const(0)
-    elif len(factors) == 0:
+    if len(factors) == 0:
         return Const(m.coeff)
     elif m.coeff == 1:
         return functools.reduce(operator.mul, factors[1:], factors[0])
@@ -1305,16 +1270,6 @@ def from_const_poly(p):
     """Convert a ConstantPolynomial to an expression."""
     if len(p.monomials) == 0:
         return Const(0)
-    assert p.T != UNKNOWN
-    if p.T == poly.POS_INF:
-        return inf
-    elif p.T == poly.NEG_INF:
-        return -inf
-    elif p.T == poly.ZERO:
-        return Const(0)
-    elif p.T == poly.NON_ZERO: # All monomials do not contain infinity
-        ps = [from_const_mono(m) for m in p.monomials]
-        return sum(ps[1:], ps[0])
     else:
         monos = [from_const_mono(m) for m in p.monomials]
         return sum(monos[1:], monos[0])
@@ -1349,8 +1304,6 @@ def from_poly(p):
     """Convert a polynomial to an expression."""
     if len(p.monomials) == 0:
         return Const(0)
-    # elif p.T == poly.POS_INF:
-    #     return inf
     else:
         monos = [from_mono(m) for m in p.monomials]
         return sum(monos[1:], monos[0]) 
@@ -1471,8 +1424,7 @@ class Const(Expr):
         assert isinstance(val, (int, Decimal, Fraction))
         self.ty = CONST
         if isinstance(val, Decimal):
-            if val != Decimal("inf") and val != Decimal("-inf"):
-                val = Fraction(val)
+            val = Fraction(val)
         self.val = val
 
     def __hash__(self):
@@ -1482,12 +1434,7 @@ class Const(Expr):
         return other.ty == CONST and self.val == other.val
 
     def __str__(self):
-        if self.val == Decimal("inf"):
-            return "oo"
-        elif self.val == Decimal("-inf"):
-            return "-oo"
-        else:
-            return str(self.val)
+        return str(self.val)
 
     def __repr__(self):
         return "Const(%s)" % str(self.val)
@@ -1581,59 +1528,96 @@ class Fun(Expr):
         else:
             return "Fun(%s)" % self.func_name
 
-class Limit(Expr):
-    """Limit expression.
+# class Limit(Expr):
+#     """Limit expression.
     
-    - var: variable which approaches the limit
-    - lim: the limit
-    - body: expression
-    - d: limit side, e.g. 0+, 0-
-    """
-    def __init__(self, var, lim, body, d=None):
-        assert isinstance(var, str) and isinstance(lim, Expr) and \
-            isinstance(body, Expr), "Illegal expression: %s %s %s" % \
-                (type(var), type(lim), type(body))
-        # assert body.has_var(Var(var)), "%s does not contain %s" % (var, body)
-        self.ty = LIMIT
-        self.var = var
-        self.lim = lim
-        self.body = body
-        if d is not None:
-            assert d in ("+", "-") and self.lim != inf and self.lim != neg_inf
-        self.d = d
+#     - var: variable which approaches the limit
+#     - lim: the limit
+#     - body: expression
+#     - dir: limit side
+#     """
+#     def __init__(self, var, lim, body, drt="+"):
+#         assert isinstance(var, str) and isinstance(lim, Const) and \
+#             isinstance(body, Expr), "Illegal expression: %s %s %s" % \
+#                 (type(var), type(lim), type(body))
+#         self.ty = LIMIT
+#         self.var = var
+#         self.lim = lim
+#         self.body = body
+#         if self.lim == inf:
+#             self.drt = "-"
+#         elif self.lim == neg_inf:
+#             self.drt = "+"
+#         else:
+#             self.drt = drt
+
+#     def __eq__(self, other):
+#         c1 = isinstance(other, Limit) and other.ty == self.ty and other.var == self.var and \
+#             other.lim == self.lim and other.body == self.body
+#         if self.lim in (inf, neg_inf):
+#             return c1
+#         else:
+#             return c1 and self.side == other.side
+    
+#     def __hash__(self):
+#         return hash((LIMIT, self.var, self.lim, self.body, self.drt))
+
+#     def __str__(self):
+#         if self.lim in (inf, neg_inf):
+#             return "LIM {%s}. %s" % (self.lim, self.body)
+#         else:
+#             return "LIM {%s%s}. %s" % (self.lim, self.side, self.body)
+
+#     def __repr__(self):
+#         if self.lim in (inf, neg_inf):
+#             return "Limit(%s, %s, %s)" % (self.var, self.lim, self.body)
+#         else:
+#             return "Limit(%s, %s%s, %s)" % (self.var, self.lim, self.side, self.body)
+    
+#     def lim_to_inf(self):
+#         """Convert the limit to oo, e.g. LIM {x -> 0+}. 1/x will be 
+#         converted to LIM {x -> oo}. x.
+
+#         """
+#         lim = self.lim.normalize()
+#         v = Var(self.var)
+#         if lim == inf:
+#             bd = self.body
+#         elif lim == neg_inf:
+#             bd = self.body.replace_trig(v, -self.var)
+#         elif self.drt == "+":
+#             bd = self.body.replace_trig(v, self.lim + 1/v)
+#         elif self.drt == "-":
+#             bd = self.body.replace_trig(v, self.lim - 1/v)
+#         else:
+#             raise NotImplementedError("dir must be + or -.")
         
-    def __eq__(self, other):
-        return isinstance(other, Limit) and other.ty == self.ty and other.var == self.var and \
-            other.lim == self.lim and other.body == self.body and self.d == other.d
-    
-    def __hash__(self):
-        return hash((LIMIT, self.var, self.lim, self.body, self.d))
+#         return Limit(self.var, inf, bd.normalize())
 
-    def __str__(self):
-        if self.d is not None:
-            return "LIM {%s -> %s(%s)}. %s" % (self.var, self.lim, self.d, self.body)
-        else:
-            return "LIM {%s -> %s}. %s" % (self.var, self.lim, self.body)
-
-    def __repr__(self):
-        if self.d is None:
-            return "Limit(%s, %s, %s)" % (self.var, self.lim, self.body)
-        else:
-            return "Limit(%s, %s, %s, %s)" % (self.var, self.lim, self.body, self.d)
-
-class Infinity(Expr):
+class Inf(Expr):
     """The infinity."""
-    def __init__(self, level=0):
+    def __init__(self, t):
+        assert t in (Decimal("inf"), Decimal("-inf"))
         self.ty = INF
+        self.t = t
 
     def __str__(self):
-        return "oo"
-    
+        if self.t == Decimal("inf"):
+            return "oo"
+        else:
+            return "-oo"
+
     def __repr__(self):
-        return "Infinity"
+        return "Inf(%s)" % self.t
 
     def __hash__(self):
-        return hash((INF, "inf"))
+        return hash((INF, self.t))
+
+def inf():
+    return Inf(Decimal("inf"))
+
+def neg_inf():
+    return Inf(Decimal("-inf"))
 
 def sin(e):
     return Fun("sin", e)
@@ -1673,13 +1657,6 @@ def sqrt(e):
 
 pi = Fun("pi")
 E = Fun("exp", Const(1))
-# inf = Infinity()
-# neg_inf = -Infinity()
-inf = Const(Decimal("inf"))
-neg_inf = Const(Decimal("-inf"))
-
-_inf = Infinity()
-_neg_inf = -Infinity()
 
 class Deriv(Expr):
     """Derivative of an expression."""
