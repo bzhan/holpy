@@ -24,7 +24,6 @@ def solve(f):
             "--proof-merge "\
             "--disable-print-success "\
             "--disable-banner "\
-            "--proof-version=2 "\
             "--proof=-"
 
     if platform == "win32":
@@ -34,9 +33,21 @@ def solve(f):
                             shell=True)
 
     output, err = p.communicate()
-    print(output.decode("utf-8"))
+    # print(output.decode("utf-8"))
     return output.decode("utf-8")
     
+def is_sat(f):
+    """Given a smt2 file, use verit to solve it and return True if it is SAT."""
+    if platform == "win32":
+        p = subprocess.Popen("veriT --disable-print-success %s" % f,
+                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    else:
+        p = subprocess.Popen("veriT --disable-print-success %s" % f, 
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    
+    output, _ = p.communicate()
+    res = output.decode('utf-8').split("\r\n")[1]
+    return True if res == "sat" else False
 
 def solve_and_proof(tm):
     """Use veriT to determine whether a logical term is satisfiable."""
@@ -50,23 +61,32 @@ def solve_and_proof(tm):
 
 def proof_rec(file_name):
     """Given a smt2 file, get the proof and reconstruct it."""
-    res = solve(file_name).split("\n")
-    if res[0] in ("sat", "unsat", "unknown"):
-        status, proof_steps = res[0], res[1:-1]
-    elif res[0] == "unsupported":
-        status, proof_steps = res[1], res[2:-1]
-    else:
-        raise NotImplementedError
-    if status in ("sat", "unknown"):
-        print(status)
-        return
-
-    ctx = parser.bind_var(file_name)
+    res = solve(file_name).replace("\r", "").split("\n")
+    ctx = proof_parser.bind_var(file_name)
     proof_parser = parser.term_parser(ctx)
-    parsed_proof_steps = [proof_parser.parse(step) for step in proof_steps]
-    rct = proof.ProofReconstruction(parsed_proof_steps)
-    time1 = time.perf_counter()
-    hol_proof = rct.main()
-    time2 = time.perf_counter()
-    print("total time: ", time2 - time1)
-    return hol_proof
+    steps = []
+    for step in res:
+        if step in ("sat", "unknown", "unsat"):
+            continue
+        steps.append(proof_parser.parse(step))
+    
+    # if res[0] in ("sat", "unsat", "unknown"):
+    #     status, proof_steps = res[0], res[1:-1]
+    # elif res[0] == "unsupported":
+    #     status, proof_steps = res[1], res[2:-1]
+    # else:
+    #     print("res", res)
+    #     raise NotImplementedError(res)
+    # if status in ("sat", "unknown"):
+    #     print(status)
+    #     return
+
+    # ctx = parser.bind_var(file_name)
+    # proof_parser = parser.term_parser(ctx)
+    # parsed_proof_steps = [proof_parser.parse(step) for step in proof_steps]
+    # rct = proof.ProofReconstruction(parsed_proof_steps)
+    # time1 = time.perf_counter()
+    # hol_proof = rct.main()
+    # time2 = time.perf_counter()
+    # # print("total time: ", time2 - time1)
+    # return hol_proof
