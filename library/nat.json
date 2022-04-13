@@ -30,7 +30,7 @@
                         "n"
                     ],
                     "name": "Suc",
-                    "type": "nat => nat"
+                    "type": "nat ⇒ nat"
                 }
             ],
             "name": "nat",
@@ -155,36 +155,36 @@
                     "th": "⊢ ∀n. n + 0 = n ⟶ Suc n + 0 = Suc n"
                 },
                 {
-                    "args": "n, nat",
+                    "args": "m, nat",
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ _VAR n"
+                    "th": "⊢ _VAR m"
                 },
                 {
-                    "args": "n + 0 = n",
+                    "args": "m + 0 = m",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "n + 0 = n ⊢ n + 0 = n"
+                    "th": "m + 0 = m ⊢ m + 0 = m"
                 },
                 {
-                    "args": "Suc (n + 0) = Suc n",
+                    "args": "Suc (m + 0) = Suc m",
                     "id": "1.2",
                     "prevs": [
                         "1.1"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "n + 0 = n ⊢ Suc (n + 0) = Suc n"
+                    "th": "m + 0 = m ⊢ Suc (m + 0) = Suc m"
                 },
                 {
-                    "args": "nat_plus_def_2, Suc n + 0 = Suc n",
+                    "args": "nat_plus_def_2, Suc m + 0 = Suc m",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "n + 0 = n ⊢ Suc n + 0 = Suc n"
+                    "th": "m + 0 = m ⊢ Suc m + 0 = Suc m"
                 },
                 {
                     "args": "",
@@ -195,7 +195,7 @@
                         "1.3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. n + 0 = n ⟶ Suc n + 0 = Suc n"
+                    "th": "⊢ ∀m. m + 0 = m ⟶ Suc m + 0 = Suc m"
                 },
                 {
                     "args": "nat_induct, {P: λx::nat. x + 0 = x, x: x}",
@@ -228,16 +228,18 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "nat_plus_def_1"
                 },
                 {
                     "goal_id": "1",
                     "method_name": "introduction",
-                    "names": "n"
+                    "names": "m"
                 },
                 {
                     "goal_id": "1.2",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "nat_plus_def_2"
                 },
                 {

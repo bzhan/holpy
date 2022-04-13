@@ -734,9 +734,6 @@
             }
         },
         {
-            "attributes": [
-                "hint_backward1"
-            ],
             "name": "contrapositive",
             "num_gaps": 0,
             "proof": [
@@ -1037,9 +1034,6 @@
             }
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "eq_sym_eq",
             "num_gaps": 0,
             "proof": [

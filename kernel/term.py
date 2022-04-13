@@ -415,6 +415,9 @@ class Term():
                 return t
             elif t.is_comb():
                 return Comb(rec(t.fun), rec(t.arg))
+            elif t.is_abs() and t.body.is_comb() and t.body.fun.is_svar() and \
+                t.body.fun.name in inst and t.body.arg == Bound(0) and inst[t.body.fun.name].is_abs():
+                return inst[t.body.fun.name]
             elif t.is_abs():
                 return Abs(t.var_name, t.var_T, rec(t.body))
             elif t.is_bound():
