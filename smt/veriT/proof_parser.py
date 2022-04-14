@@ -21,14 +21,15 @@ def str_to_hol_type(s):
 
 # Grammar of SMT-LIB language
 smt_decl_grammar = r"""
-    ?term: "(declare-fun" CNAME "()" CNAME ")" -> mk_tm
-        | "(declare-fun" CNAME "(" CNAME+ ")" CNAME ")" -> mk_fun
+    VNAME: ("_"|LETTER)("_"|LETTER|DIGIT|"$"|".")*
 
-    VNAME : (CNAME)("$"|CNAME|DIGIT)*
+    ?term: "(declare-fun" VNAME "()" VNAME ")" -> mk_tm
+        | "(declare-fun" VNAME "(" VNAME+ ")" VNAME ")" -> mk_fun
 
     %import common.CNAME
     %import common.INT
     %import common.DIGIT
+    %import common.LETTER
     %import common.DECIMAL
     %import common.WS
     %import common.NUMBER
@@ -54,6 +55,8 @@ def parse_decl(s):
     return decl_parser.parse(s)
 # Grammar of Alethe proof
 veriT_grammar = r"""
+    VNAME: ("_"|LETTER)("_"|LETTER|DIGIT|"$"|".")*
+
     ?proof_command : "(assume" step_id proof_term ")" -> mk_assume
                     | "(step" step_id clause ":rule" CNAME step_annotation? ")" -> mk_step
                     | "(anchor :step" step_id ":args" "(" single_context+ ")" ")" -> mk_anchor
@@ -82,17 +85,16 @@ veriT_grammar = r"""
             | "(" term+ ")" -> mk_app_tm
             | name
 
-    ?step_id : CNAME ("." CNAME)* -> mk_step_id
+    ?step_id : VNAME ("." VNAME)* -> mk_step_id
 
     ?name : "@" CNAME -> ret_annot_tm
             | "?" CNAME -> ret_let_tm
-            | CNAME -> ret_tm
-
-    VNAME : (CNAME)("$"|CNAME|DIGIT)*
+            | VNAME -> ret_tm
 
     %import common.CNAME
     %import common.INT
     %import common.DIGIT
+    %import common.LETTER
     %import common.DECIMAL
     %import common.WS
     %import common.NUMBER
