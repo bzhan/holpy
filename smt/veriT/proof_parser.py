@@ -24,6 +24,8 @@ smt_decl_grammar = r"""
     ?term: "(declare-fun" CNAME "()" CNAME ")" -> mk_tm
         | "(declare-fun" CNAME "(" CNAME+ ")" CNAME ")" -> mk_fun
 
+    VNAME : (CNAME)("$"|CNAME|DIGIT)*
+
     %import common.CNAME
     %import common.INT
     %import common.DIGIT
@@ -80,11 +82,13 @@ veriT_grammar = r"""
             | "(" term+ ")" -> mk_app_tm
             | name
 
+    ?step_id : CNAME ("." CNAME)* -> mk_step_id
+
     ?name : "@" CNAME -> ret_annot_tm
             | "?" CNAME -> ret_let_tm
             | CNAME -> ret_tm
 
-    step_id : CNAME ("." CNAME)* -> mk_step_id
+    VNAME : (CNAME)("$"|CNAME|DIGIT)*
 
     %import common.CNAME
     %import common.INT
