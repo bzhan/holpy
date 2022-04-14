@@ -46,7 +46,7 @@ class ParserTest(unittest.TestCase):
             'QF_UF\\20170829-Rodin\\smt7665342989239969743.smt2',
             'QF_UF\\eq_diamond\\eq_diamond1.smt2',
             'QF_UF\\eq_diamond\\eq_diamond10.smt2',
-            # "QF_UF\\NEQ\\"
+            "QF_UF\\NEQ\\"
         ]
 
         smtlib_path = get_smtlib_path()

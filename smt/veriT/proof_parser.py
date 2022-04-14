@@ -25,18 +25,26 @@ class DeclTransformer(Transformer):
     def __init__(self):
         pass
 
-    def type_str(self, s):
+    def str_to_hol_type(self, s):
+        """Convert string to HOL type."""
         s = str(s)
-        return s.lower() if s in ("Bool", "Real", "Int") else s
+        if s == "Bool":
+            return hol_type.BoolType
+        elif s == "Int":
+            return hol_type.IntType
+        elif s == "Real":
+            return hol_type.RealType
+        else:
+            # All other types are converted to type variables.
+            return hol_type.TVar(s)
 
     def mk_tm(self, name, ty):
         "Make a term: name :: ty"
-        return {name.value: self.type_str(ty)}
+        return {name.value: self.str_to_hol_type(ty)}
 
     def mk_fun(self, name, *args):
-        """Make a function term, which type is arg1 -> ... argn"""
-        T = " => ".join(self.type_str(t) for t in args)
-        return {name.value: T}
+        """Make a function term, which type is arg1 -> ... argn."""
+        return {name.value: hol_type.TFun(*(self.str_to_hol_type(t) for t in args))}
 
 decl_parser = Lark(smt_decl_grammar, start="term", parser="lalr", transformer=DeclTransformer())
 
@@ -90,8 +98,8 @@ class ProofTransformer(Transformer):
     """
     def __init__(self, ctx):
         # context.set_context("verit", vars=ctx)
-        self.ctx = ctx 
-        
+        self.ctx = ctx
+
         # map from annotation to the term
         self.annot_tm = dict()
 
@@ -126,9 +134,10 @@ class ProofTransformer(Transformer):
         #     return self.annot_tm[str(tm)]
         # if str(tm) in self.let_tm:
         #     return self.let_tm[str(tm)]
-        if str(tm) not in self.ctx:
-            raise ValueError(str(tm))      
-        return hol_term.Const(str(tm), hol_type.TConst(self.ctx[str(tm)]))
+        tm = str(tm)
+        if tm not in self.ctx:
+            raise ValueError(tm)      
+        return hol_term.Const(tm, self.ctx[str(tm)])
 
     def mk_distinct_tm(self, *tms):
         neq_tm = []
