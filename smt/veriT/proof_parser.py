@@ -1,6 +1,6 @@
 from lark import Lark, Transformer, v_args, exceptions
 from smt.veriT.command import Assume, Step, Anchor
-from logic import context
+from logic.logic import mk_if
 from kernel import term as hol_term
 from kernel import type as hol_type
 from syntax import parser as hol_parser
@@ -83,6 +83,7 @@ veriT_grammar = r"""
             | "(distinct" term term+ ")" -> mk_distinct_tm
             | "(" term ")" -> mk_par_tm
             | "(" term+ ")" -> mk_app_tm
+            | "(ite" term term term ")" -> mk_ite_tm
             | name
 
     ?step_id : VNAME ("." VNAME)* -> mk_step_id
@@ -196,6 +197,9 @@ class ProofTransformer(Transformer):
 
     def mk_eq_tm(self, *tms):
         return hol_term.Eq(*tms)
+
+    def mk_ite_tm(self, P, x, y):
+        return mk_if(P, x, y)
 
     def mk_step_id(self, *step_id):
         return ''.join(step_id)
