@@ -1,8 +1,4 @@
-import imp
-from multiprocessing.sharedctypes import Value
 from lark import Lark, Transformer, v_args, exceptions
-from numpy import dstack
-from parsimonious import rule
 from smt.veriT.command import Assume, Step
 from logic import context
 from kernel import term as hol_term
