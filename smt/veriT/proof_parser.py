@@ -1,9 +1,22 @@
 from lark import Lark, Transformer, v_args, exceptions
-from smt.veriT.command import Assume, Step
+from smt.veriT.command import Assume, Step, Anchor
 from logic import context
 from kernel import term as hol_term
 from kernel import type as hol_type
 from syntax import parser as hol_parser
+
+def str_to_hol_type(s):
+        """Convert string to HOL type."""
+        s = str(s)
+        if s == "Bool":
+            return hol_type.BoolType
+        elif s == "Int":
+            return hol_type.IntType
+        elif s == "Real":
+            return hol_type.RealType
+        else:
+            # All other types are converted to type variables.
+            return hol_type.TVar(s)
 
 
 # Grammar of SMT-LIB language
@@ -25,26 +38,13 @@ class DeclTransformer(Transformer):
     def __init__(self):
         pass
 
-    def str_to_hol_type(self, s):
-        """Convert string to HOL type."""
-        s = str(s)
-        if s == "Bool":
-            return hol_type.BoolType
-        elif s == "Int":
-            return hol_type.IntType
-        elif s == "Real":
-            return hol_type.RealType
-        else:
-            # All other types are converted to type variables.
-            return hol_type.TVar(s)
-
     def mk_tm(self, name, ty):
         "Make a term: name :: ty"
-        return {name.value: self.str_to_hol_type(ty)}
+        return {name.value: str_to_hol_type(ty)}
 
     def mk_fun(self, name, *args):
         """Make a function term, which type is arg1 -> ... argn."""
-        return {name.value: hol_type.TFun(*(self.str_to_hol_type(t) for t in args))}
+        return {name.value: hol_type.TFun(*(str_to_hol_type(t) for t in args))}
 
 decl_parser = Lark(smt_decl_grammar, start="term", parser="lalr", transformer=DeclTransformer())
 
@@ -52,12 +52,15 @@ def parse_decl(s):
     return decl_parser.parse(s)
 # Grammar of Alethe proof
 veriT_grammar = r"""
-    ?proof_command : "(assume" CNAME proof_term ")" -> mk_assume
-                    | "(step" CNAME clause ":rule" CNAME step_annotation? ")" -> mk_step
+    ?proof_command : "(assume" step_id proof_term ")" -> mk_assume
+                    | "(step" step_id clause ":rule" CNAME step_annotation? ")" -> mk_step
+                    | "(anchor :step" step_id ":args" "(" single_context+ ")" ")" -> mk_anchor
  
     ?clause : "(cl" proof_term* ")" -> mk_clause
     
-    ?step_annotation : ":premises" "(" CNAME+ ")" -> mk_premises
+    ?single_context : "(:=" "(" "?" CNAME CNAME ")" term ")" -> mk_context
+
+    ?step_annotation : ":premises" "(" step_id+ ")" -> mk_premises
 
     ?proof_term : term
 
@@ -81,6 +84,8 @@ veriT_grammar = r"""
             | "?" CNAME -> ret_let_tm
             | CNAME -> ret_tm
 
+    step_id : CNAME ("." CNAME)* -> mk_step_id
+
     %import common.CNAME
     %import common.INT
     %import common.DIGIT
@@ -96,9 +101,9 @@ class ProofTransformer(Transformer):
     
     ctx: map symbols to higher-order terms
     """
-    def __init__(self, ctx):
+    def __init__(self, smt_file_ctx):
         # context.set_context("verit", vars=ctx)
-        self.ctx = ctx
+        self.smt_file_ctx = smt_file_ctx
 
         # map from annotation to the term
         self.annot_tm = dict()
@@ -106,6 +111,16 @@ class ProofTransformer(Transformer):
         # map from local variables to term
         self.let_tm = dict()
 
+        # Proof context: map from variables to terms
+        self.proof_ctx = dict()
+
+    def mk_context(self, var, ty, tm):
+        hol_ty = str_to_hol_type(ty.value)
+        hol_var = hol_term.Const(var.value, hol_ty)
+        self.proof_ctx[hol_var] = tm
+
+    def mk_anchor(self, id, *ctx):
+        return Anchor(str(id), ctx)
 
     def ret_annot_tm(self, name):
         name = "@" + str(name)
@@ -135,9 +150,9 @@ class ProofTransformer(Transformer):
         # if str(tm) in self.let_tm:
         #     return self.let_tm[str(tm)]
         tm = str(tm)
-        if tm not in self.ctx:
+        if tm not in self.smt_file_ctx:
             raise ValueError(tm)      
-        return hol_term.Const(tm, self.ctx[str(tm)])
+        return hol_term.Const(tm, self.smt_file_ctx[str(tm)])
 
     def mk_distinct_tm(self, *tms):
         neq_tm = []
@@ -176,13 +191,16 @@ class ProofTransformer(Transformer):
     def mk_eq_tm(self, *tms):
         return hol_term.Eq(*tms)
 
-    def mk_assume(self, id, tm):
-        return Assume(id, tm)
+    def mk_step_id(self, *step_id):
+        return ''.join(step_id)
 
-    def mk_step(self, id, cl, rule_name, pm=None):
+    def mk_assume(self, assm_id, tm):
+        return Assume(assm_id, tm)
+
+    def mk_step(self, step_id, cl, rule_name, pm=None):
         if pm is not None:
-            pm = [p.value for p in pm]
-        return Step(id, rule_name, cl, pm)
+            pm = [p for p in pm]
+        return Step(step_id, rule_name, cl, pm)
 
     def mk_clause(self, *tm):
         if len(tm) == 0:
@@ -193,5 +211,5 @@ class ProofTransformer(Transformer):
         return pm
 
 def proof_parser(ctx):
-    return Lark(veriT_grammar, start="proof_command", parser="lalr", transformer=ProofTransformer(ctx=ctx))
+    return Lark(veriT_grammar, start="proof_command", parser="lalr", transformer=ProofTransformer(smt_file_ctx=ctx))
 

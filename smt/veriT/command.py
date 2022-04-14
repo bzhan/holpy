@@ -46,3 +46,18 @@ class Step(ProofCommand):
             return "(step %s (cl %s) :rule %s :premises %s)" % \
                 (self.id, cl, self.rule_name, pm)
 
+class Anchor(ProofCommand):
+    """An anchor is a start of a subproof, every anchor
+    has a ":step" annotation to indicate the step which
+    will end the subproof. Anchor can add arguments to the context
+    for the subproof.
+    """
+    def __init__(self, id, ctx=None) -> None:
+        self.id = id
+        self.ctx = ctx
+
+    def __str__(self) -> str:
+        if self.ctx is None:
+            return "(anchor :step %s)" % self.id
+        else:
+            return "(anchor :step %s :args(%s)" % (self.id, self.ctx)
