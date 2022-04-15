@@ -1,4 +1,5 @@
 """Proof reconstruction of verit proof."""
+
 class ProofCommand:
     """The proofs in veriT is a list of proof command.
     Each command has a unique index as the first argument to 
@@ -20,7 +21,7 @@ class Assume(ProofCommand):
         self.pt = pt
 
     def __str__(self):
-        return "(assume %s (%s))" % (self.name, self.pt)
+        return "(assume %s (%s))" % (self.id, self.pt)
 
 class Step(ProofCommand):
     """Step command introduces a derived or tautological formula.

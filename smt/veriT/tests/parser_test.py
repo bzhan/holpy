@@ -98,7 +98,7 @@ class ParserTest(unittest.TestCase):
                 # Solve
                 start_time = time.perf_counter()
                 verit_proof = interface.solve(abs_name)
-                c = proof_rec.bind_var(abs_name)
+                ctx = proof_rec.bind_var(abs_name)
                 solve_time = time.perf_counter() - start_time
 
                 # Optional: write to file
@@ -108,7 +108,7 @@ class ParserTest(unittest.TestCase):
 
                 # Parse
                 start_time = time.perf_counter()
-                test_parse_step(verit_proof, c)
+                test_parse_step(verit_proof, ctx)
                 parse_time = time.perf_counter() - start_time
 
                 if show_time:

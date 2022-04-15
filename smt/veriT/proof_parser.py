@@ -109,10 +109,10 @@ class ProofTransformer(Transformer):
     ctx: map symbols to higher-order terms
     """
     def __init__(self, smt_file_ctx):
-        # context.set_context("verit", vars=ctx)
+        # Context from the SMT problem description file.
         self.smt_file_ctx = smt_file_ctx
 
-        # map from annotation to the term
+        # Map from annotation to the term
         self.annot_tm = dict()
 
         # map from local variables to term
@@ -123,7 +123,7 @@ class ProofTransformer(Transformer):
 
     def mk_context(self, var, ty, tm):
         hol_ty = str_to_hol_type(ty.value)
-        hol_var = hol_term.Const(var.value, hol_ty)
+        hol_var = hol_term.Var(var.value, hol_ty)
         self.proof_ctx[hol_var] = tm
 
     def mk_anchor(self, id, *ctx):
@@ -159,7 +159,7 @@ class ProofTransformer(Transformer):
         tm = str(tm)
         if tm not in self.smt_file_ctx:
             raise ValueError(tm)      
-        return hol_term.Const(tm, self.smt_file_ctx[str(tm)])
+        return hol_term.Var(tm, self.smt_file_ctx[str(tm)])
 
     def mk_distinct_tm(self, *tms):
         neq_tm = []
