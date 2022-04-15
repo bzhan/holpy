@@ -35,6 +35,8 @@ class Step(ProofCommand):
         self.id = id
         self.rule_name = rule_name
         self.cl = cl
+        if pm is None:
+            pm = []
         self.pm = pm
 
     def __str__(self):

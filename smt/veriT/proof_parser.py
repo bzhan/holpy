@@ -213,9 +213,7 @@ class ProofTransformer(Transformer):
         return Step(step_id, rule_name, cl, pm)
 
     def mk_clause(self, *tm):
-        if len(tm) == 0:
-            return hol_term.false
-        return hol_term.Or(*tm)
+        return tm
 
     def mk_premises(self, *pm):
         return pm
