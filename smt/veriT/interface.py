@@ -44,10 +44,15 @@ def is_sat(f):
     else:
         p = subprocess.Popen("veriT --disable-print-success %s" % f, 
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    
-    output, _ = p.communicate()
-    res = output.decode('utf-8').split("\r\n")[1]
-    return True if res == "sat" else False
+
+    try:
+        output, _ = p.communicate(timeout=2)
+        res = output.decode('utf-8').split("\r\n")[1]
+        return True if res == "sat" else False
+    except subprocess.TimeoutExpired:
+        print("Timeout")
+        p.kill()
+        return True
 
 def solve_and_proof(tm):
     """Use veriT to determine whether a logical term is satisfiable."""

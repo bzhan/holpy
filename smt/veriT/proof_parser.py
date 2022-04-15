@@ -21,7 +21,7 @@ def str_to_hol_type(s):
 
 # Grammar of SMT-LIB language
 smt_decl_grammar = r"""
-    VNAME: ("_" | LETTER | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=")("_"|LETTER|DIGIT|"$"|"." | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=")*
+    VNAME: ("_" | LETTER | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=" | ":" | "@")("_"|LETTER|DIGIT|"$"|"." | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=" | ":" | "@")*
 
     ?term: "(declare-fun" VNAME "()" VNAME ")" -> mk_tm
         | "(declare-fun" VNAME "(" VNAME+ ")" VNAME ")" -> mk_fun
