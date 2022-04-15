@@ -21,12 +21,13 @@ def test_parse_step(verit_proof, ctx):
             continue
         k = parser.parse(s)
 
-def test_file(filename, write_file=False, show_time=True):
+def test_file(filename, write_file=False, show_time=True, veriT_only=False):
     """Test a single SMT file.
     
     filename : str - absolute path of the file.
     write_file : bool - whether to write proof to proof.txt.
     show_time : bool - whether to display time taken.
+    veriT_only : bool - only check whether veriT returns unsat.
     
     """
     global smtlib_path
@@ -40,6 +41,10 @@ def test_file(filename, write_file=False, show_time=True):
     if interface.is_sat(abs_name):
         return
     print(repr(filename) + ',')
+
+    # Only check whether veriT returns unsat
+    if veriT_only:
+        return
 
     # Solve
     start_time = time.perf_counter()
@@ -60,7 +65,7 @@ def test_file(filename, write_file=False, show_time=True):
     if show_time:
         print("Solve: %.3f. Parse: %.3f" % (solve_time, parse_time))
 
-def test_path(path):
+def test_path(path, write_file=False, show_time=False, veriT_only=False):
     """Test a directory containing SMT files."""
     global smtlib_path
     if not smtlib_path:
@@ -71,10 +76,10 @@ def test_path(path):
         # Input is a directory
         sub_paths = [path + '\\' + child for child in os.listdir(abs_path)]
         for sub_path in sub_paths:
-            test_path(sub_path)
+            test_path(sub_path, write_file=write_file, show_time=show_time, veriT_only=veriT_only)
     else:
         # Input is a file
-        test_file(path)
+        test_file(path, write_file=write_file, show_time=show_time, veriT_only=veriT_only)
 
 
 class ParserTest(unittest.TestCase): 
@@ -124,13 +129,58 @@ class ParserTest(unittest.TestCase):
 
     def testParseQF_UFLRA(self):
         test_paths = [
-            # 'QF_UFLRA',
             'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.32_1_cilled_true-unreach-call_ok_nondet_linux-3.4-32_1-drivers--i2c--algos--i2c-algo-pca.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c.smt2',
             'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.32_1_cilled_true-unreach-call_ok_nondet_linux-3.4-32_1-drivers--media--video--gspca--gspca_stv0680.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c.smt2',
+            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.43_1a_cilled_true-unreach-call_ok_nondet_linux-43_1a-drivers--atm--adummy.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c.smt2',
+            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.diskperf_true-unreach-call.i.cil.c.smt2',
+            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.email_spec27_product13_true-unreach-call.cil.c.smt2',
+            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.gcd_1_true-unreach-call.i.smt2',
+            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.minepump_spec1_product45_true-unreach-call.cil.c.smt2',
+            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.Problem01_00_true-unreach-call.c.smt2',
+            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.string_true-unreach-call.i.smt2',
+            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.sum03_true-unreach-call_false-termination.i.smt2',
+            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.test_locks_10_true-unreach-call.c.smt2',
+            'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_10_0200_10_14.smt2',
+            'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_20_0400_10_12.smt2',
+            'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_30_0600_10_13.smt2',
+            'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_40_1000_10_18.smt2',
+            'QF_UFLRA\\mathsat\\RandomDecoupled\\pb_real_30_60_45_06.smt2',
+            'QF_UFLRA\\mathsat\\RandomDecoupled\\pb_real_40_80_60_01.smt2',
+            'QF_UFLRA\\mathsat\\RandomDecoupled\\pb_real_50_100_30_07.smt2',
+            'QF_UFLRA\\FFT\\smtlib.624882.smt2',
+            'QF_UFLRA\\FFT\\smtlib.624898.smt2',
+            'QF_UFLRA\\FFT\\smtlib.624916.smt2',
+            'QF_UFLRA\\FFT\\smtlib.626139.smt2',
+            'QF_UFLRA\\FFT\\smtlib.626159.smt2',
+            'QF_UFLRA\\FFT\\smtlib.626179.smt2',
         ]
 
         for path in test_paths:
-            test_path(path)
+            test_path(path, veriT_only=True)
+
+
+    def testParseQF_UFLIA(self):
+        test_paths = [
+            'QF_UFLIA\\mathsat\\EufLaArithmetic\\medium\\medium5.smt2',
+            'QF_UFLIA\\mathsat\\EufLaArithmetic\\medium\\medium6.smt2',
+            'QF_UFLIA\\mathsat\\EufLaArithmetic\\hard\\hard4.smt2',
+            'QF_UFLIA\\mathsat\\EufLaArithmetic\\hard\\hard5.smt2',
+            'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_03.smt2',
+            'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_04.smt2',
+            'QF_UFLIA\\mathsat\\Wisa\\xs-05-06-2-2-5-1.smt2',
+            'QF_UFLIA\\mathsat\\Wisa\\xs-05-07-4-5-1-2.smt2',
+            'QF_UFLIA\\TwoSquares\\smtlib.602033.smt2',
+            'QF_UFLIA\\TwoSquares\\smtlib.602046.smt2',
+            'QF_UFLIA\\TwoSquares\\smtlib.686126.smt2',
+            'QF_UFLIA\\TwoSquares\\smtlib.769286.smt2',
+            'QF_UFLIA\\wisas\\xs_5_10.smt2',
+            'QF_UFLIA\\wisas\\xs_5_15.smt2',
+            'QF_UFLIA\\wisas\\xs_5_5.smt2',
+            'QF_UFLIA\\wisas\\xs_7_12.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path, veriT_only=True)
 
 
 if __name__ == "__main__":
