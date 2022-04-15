@@ -21,7 +21,7 @@ def str_to_hol_type(s):
 
 # Grammar of SMT-LIB language
 smt_decl_grammar = r"""
-    VNAME: ("_"|LETTER)("_"|LETTER|DIGIT|"$"|".")*
+    VNAME: ("_" | LETTER | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=")("_"|LETTER|DIGIT|"$"|"." | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=")*
 
     ?term: "(declare-fun" VNAME "()" VNAME ")" -> mk_tm
         | "(declare-fun" VNAME "(" VNAME+ ")" VNAME ")" -> mk_fun
@@ -55,7 +55,7 @@ def parse_decl(s):
     return decl_parser.parse(s)
 # Grammar of Alethe proof
 veriT_grammar = r"""
-    VNAME: ("_"|LETTER)("_"|LETTER|DIGIT|"$"|".")*
+    VNAME: ("_" | LETTER | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=")("_"|LETTER|DIGIT|"$"|"." | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=")*
 
     ?proof_command : "(assume" step_id proof_term ")" -> mk_assume
                     | "(step" step_id clause ":rule" CNAME step_annotation? ")" -> mk_step
