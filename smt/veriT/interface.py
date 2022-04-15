@@ -32,9 +32,13 @@ def solve(f):
         p = subprocess.Popen("veriT %s %s" % (args, f), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             shell=True)
 
-    output, err = p.communicate()
-    # print(output.decode("utf-8"))
-    return output.decode("utf-8")
+    try:
+        output, _ = p.communicate(timeout=5)
+        return output.decode("utf-8")
+    except subprocess.TimeoutExpired:
+        print("Proof timeout")
+        p.kill()
+        return None
     
 def is_sat(f):
     """Given a smt2 file, use verit to solve it and return True if it is SAT."""

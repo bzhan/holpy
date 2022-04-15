@@ -44,6 +44,8 @@ def test_file(filename, write_file=False, show_time=True, veriT_only=False):
 
     # Only check whether veriT returns unsat
     if veriT_only:
+        # Check proof can be generated as well
+        verit_proof = interface.solve(abs_name)
         return
 
     # Solve
@@ -72,6 +74,11 @@ def test_path(path, write_file=False, show_time=False, veriT_only=False):
         return
 
     abs_path = smtlib_path + path
+
+    if not os.path.exists(abs_path):
+        print("Directory %s not found." % path)
+        return
+
     if os.path.isdir(abs_path):
         # Input is a directory
         sub_paths = [path + '\\' + child for child in os.listdir(abs_path)]
@@ -156,7 +163,7 @@ class ParserTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, veriT_only=True)
+            test_path(path)
 
 
     def testParseQF_UFLIA(self):
@@ -177,6 +184,57 @@ class ParserTest(unittest.TestCase):
             'QF_UFLIA\\wisas\\xs_5_15.smt2',
             'QF_UFLIA\\wisas\\xs_5_5.smt2',
             'QF_UFLIA\\wisas\\xs_7_12.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path, veriT_only=True)
+
+
+    def testParseUF(self):
+        test_paths = [
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_17_00_49_980_1120402.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_52_18_634_983654.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_53_05_211_1033050.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_53_31_362_1064389.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_48_45_757_1043506.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_54_30_307_1349771.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_57_04_292_1481164.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_46_30_200_1001391.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_47_39_480_1078027.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_48_44_767_1147663.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_35_132_1014381.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_53_474_1036287.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_55_00_922_1043783.smt_in.smt2',
+            'UF\\20190906-CLEARSY\\0001\\00145.smt2',
+            'UF\\20190906-CLEARSY\\0011\\00001.smt2',
+            'UF\\20190906-CLEARSY\\0016\\00977.smt2',
+            'UF\\sledgehammer\\Arrow_Order\\smtlib.578262.smt2',
+            'UF\\sledgehammer\\Arrow_Order\\smtlib.617784.smt2',
+            'UF\\sledgehammer\\Arrow_Order\\smtlib.686801.smt2',
+            'UF\\sledgehammer\\FFT\\uf.549548.smt2',
+            'UF\\sledgehammer\\FFT\\uf.600765.smt2',
+            'UF\\sledgehammer\\FFT\\uf.626085.smt2',
+            'UF\\sledgehammer\\Fundamental_Theorem_Algebra\\smtlib.1035245.smt2',
+            'UF\\sledgehammer\\Fundamental_Theorem_Algebra\\uf.1025050.smt2',
+            'UF\\sledgehammer\\Fundamental_Theorem_Algebra\\uf.1061982.smt2',
+            'UF\\sledgehammer\\Hoare\\smtlib.1170876.smt2',
+            'UF\\sledgehammer\\Hoare\\uf.1008477.smt2',
+            'UF\\sledgehammer\\Hoare\\uf.1031408.smt2',
+            'UF\\grasshopper\\instantiated\\concat_check_heap_access_23_4.smt2',
+            'UF\\grasshopper\\instantiated\\concat_invariant_18_4.smt2',
+            'UF\\grasshopper\\instantiated\\dl_filter_postcondition_of_dl_filter_41_1.smt2',
+            'UF\\grasshopper\\uninstantiated\\dl_filter_loop_invariant_40_3.smt2',
+            'UF\\grasshopper\\uninstantiated\\dl_filter_postcondition_of_dl_filter_41_1.smt2',
+            'UF\\grasshopper\\uninstantiated\\dl_insert_check_heap_access_16_4.smt2',
+            'UF\\misc\\list1.smt2',
+            'UF\\misc\\list2.smt2',
+            'UF\\misc\\set10.smt2',
+            'UF\\misc\\set11.smt2',
+            'UF\\wintersteiger\\fmsd13\\fixpoint\\small-bug1-fixpoint-2.smt2',
+            'UF\\wintersteiger\\fmsd13\\fixpoint\\small-bug1-fixpoint-3.smt2',
+            'UF\\wintersteiger\\fmsd13\\fixpoint\\small-bug1-fixpoint-4.smt2',
         ]
 
         for path in test_paths:
