@@ -163,7 +163,7 @@ class ParserTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path)
+            test_path(path, veriT_only=True)
 
 
     def testParseQF_UFLIA(self):
@@ -235,6 +235,68 @@ class ParserTest(unittest.TestCase):
             'UF\\wintersteiger\\fmsd13\\fixpoint\\small-bug1-fixpoint-2.smt2',
             'UF\\wintersteiger\\fmsd13\\fixpoint\\small-bug1-fixpoint-3.smt2',
             'UF\\wintersteiger\\fmsd13\\fixpoint\\small-bug1-fixpoint-4.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path, veriT_only=True)
+
+    def testParseUFLRA(self):
+        test_paths = [
+            'UFLRA\\FFT\\smtlib.620487.smt2',
+            'UFLRA\\FFT\\smtlib.620535.smt2',
+            'UFLRA\\FFT\\smtlib.623417.smt2',
+            'UFLRA\\FFT\\smtlib.623474.smt2',
+            'UFLRA\\FFT\\smtlib.623531.smt2',
+            'UFLRA\\FFT\\smtlib.623597.smt2',
+            'UFLRA\\FFT\\smtlib.627457.smt2',
+            'UFLRA\\FFT\\smtlib.627531.smt2',
+            'UFLRA\\FFT\\smtlib.627605.smt2',
+            'UFLRA\\FFT\\smtlib.627688.smt2',
+            'UFLRA\\misc\\list2.smt2',
+            'UFLRA\\misc\\set16.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path, veriT_only=True)
+
+
+    def testParseUFLIA(self):
+        test_paths = [
+            'UFLIA\\boogie\\AdditiveMethods_AdditiveMethods..ctor.smt2',
+            'UFLIA\\boogie\\AdditiveMethods_AdditiveMethods.M.smt2',
+            'UFLIA\\boogie\\AdditiveMethods_AdditiveMethods.N.smt2',
+            'UFLIA\\boogie\\Array_test3.MyClass.M0_test3.MyClass.array_notnull.smt2',
+            'UFLIA\\boogie\\Array_test3.MyClass.M1_test3.MyClass.array.array_notnull.smt2',
+            'UFLIA\\boogie\\Array_test3.MyClass.M2_test3.MyClass.array2_notnull.smt2',
+            'UFLIA\\check\\bignum_quant.smt2',
+            'UFLIA\\misc\\arr1.smt2',
+            'UFLIA\\misc\\list3.smt2',
+            'UFLIA\\misc\\list4.smt2',
+            'UFLIA\\misc\\list5.smt2',
+            'UFLIA\\misc\\list6.smt2',
+            'UFLIA\\psyco\\191.smt2',
+            'UFLIA\\psyco\\192.smt2',
+            'UFLIA\\RicartAgrawala\\ricart-agrawala1.smt2',
+            'UFLIA\\sexpr\\SES.Atom..ctor_System.String_notnull.smt2',
+            'UFLIA\\sexpr\\SES.Atom.Write_System.IO.TextWriter_notnull.smt2',
+            'UFLIA\\simplify\\javafe.ast.AmbiguousMethodInvocation.29.smt2',
+            'UFLIA\\simplify\\javafe.ast.BinaryExpr.48.smt2',
+            'UFLIA\\simplify\\javafe.ast.BlockStmt.50.smt2',
+            'UFLIA\\simplify2\\front_end_suite\\javafe.ast.AmbiguousMethodInvocation.001.smt2',
+            'UFLIA\\simplify2\\front_end_suite\\javafe.ast.AmbiguousVariableAccess.001.smt2',
+            'UFLIA\\simplify2\\front_end_suite\\javafe.ast.ArrayInit.001.smt2',
+            'UFLIA\\sledgehammer\\Arrow_Order\\smtlib.555057.smt2',
+            'UFLIA\\sledgehammer\\Arrow_Order\\smtlib.555849.smt2',
+            'UFLIA\\sledgehammer\\Arrow_Order\\smtlib.556254.smt2',
+            'UFLIA\\spec_sharp\\textbook-DutchFlag.bpl.1.Partition.smt2',
+            'UFLIA\\spec_sharp\\textbook-Find.bpl.1.Find.smt2',
+            'UFLIA\\spec_sharp\\textbook-Find.bpl.2.Main.smt2',
+            'UFLIA\\tokeneer\\admin\\finishop-1.smt2',
+            'UFLIA\\tokeneer\\admin\\init-1.smt2',
+            'UFLIA\\tokeneer\\admin\\logon-1.smt2',
+            'UFLIA\\tptp\\ARI603=1.smt2',
+            'UFLIA\\tptp\\ARI604=1.smt2',
+            'UFLIA\\tptp\\ARI611=1.smt2',
         ]
 
         for path in test_paths:
