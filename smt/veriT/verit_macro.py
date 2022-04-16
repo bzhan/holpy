@@ -115,20 +115,21 @@ class NotNotMacro(Macro):
         neg_arg, pos_arg = args
         return logic.apply_theorem("neg_neg", concl=Or(neg_arg, pos_arg))
 
+def strip_disj_n(tm, n):
+    """Strip the disjunction into n parts."""
+    if n == 1:
+        return [tm]
+    assert tm.is_disj(), "strip_disj_n: not enough terms"
+    return [tm.arg1] + strip_disj_n(tm.arg, n-1)
+
 def try_resolve(prop1, prop2):
     """Try to resolve two propositions."""
-    prop1_disj = prop1.strip_disj()
-    prop2_disj = prop2.strip_disj()
-    for i in range(len(prop1_disj)):
-        for j in range(len(prop2_disj)):
-            if prop2_disj[j].is_not() and prop2_disj[j].arg == prop1_disj[i]:
-                return i + j, 'left', i, j
-            if prop1_disj[i].is_not() and prop1_disj[i].arg == prop2_disj[j]:
-                return i + j, 'right', i, j                
-            if prop2_disj[j] == Not(prop1):
-                return j, 'left', -1, j
-            if prop1_disj[i] == Not(prop2):
-                return i, 'right', i, -1
+    for i in range(len(prop1)):
+        for j in range(len(prop2)):
+            if prop2[j] == Not(prop1[i]):
+                return 'left', i, j
+            if prop1[i] == Not(prop2[j]):
+                return 'right', i, j                
     return None
 
 def resolve_order(props):
@@ -143,40 +144,39 @@ def resolve_order(props):
     resolves = []
 
     while len(id_remain) > 1:
-        # Find best resolution among all possible pairs.
-        best_resolve = None
+        # Find resolution among all possible pairs.
+        resolve = None
         for i in range(len(id_remain)):
             for j in range(i+1, len(id_remain)):
                 id1 = id_remain[i]
                 id2 = id_remain[j]
                 res = try_resolve(props[id1], props[id2])
-                if res and (not best_resolve or res[0] < best_resolve[0]):
-                    if res[1] == 'left':
-                        best_resolve = (res[0], id1, id2, res[2], res[3])
+                if res:
+                    if res[0] == 'left':
+                        resolve = (id1, id2, res[1], res[2])
                     else:
-                        best_resolve = (res[0], id2, id1, res[3], res[2])
+                        resolve = (id2, id1, res[2], res[1])
                     break
-            if best_resolve:
+            if resolve:
                 break
 
-        if best_resolve is None:
+        if resolve is None:
             raise VeriTException("th_resolution", "cannot find resolution")
 
         # Perform this resolution
-        _, id1, id2, t1, t2 = best_resolve
-        prop1_disj = props[id1].strip_disj()
-        prop2_disj = props[id2].strip_disj()
+        id1, id2, t1, t2 = resolve
+        prop1, prop2 = props[id1], props[id2]
         if t1 == -1:
-            res_list = prop2_disj[:t2] + prop2_disj[t2+1:]
+            res_list = prop2[:t2] + prop2[t2+1:]
         else:
             assert t1 != -1 and t2 != -1
-            res_list = prop1_disj[:t1] + prop1_disj[t1+1:]
-            for t in prop2_disj[:t2] + prop2_disj[t2+1:]:
+            res_list = prop1[:t1] + prop1[t1+1:]
+            for t in prop2[:t2] + prop2[t2+1:]:
                 if t not in res_list:
                     res_list.append(t)
         id_remain.remove(id2)
-        props[id1] = Or(*res_list)
-        resolves.append(best_resolve)
+        props[id1] = res_list
+        resolves.append(resolve)
 
     return resolves, props[id_remain[0]]
 
@@ -189,22 +189,25 @@ class ThResolutionMacro(Macro):
         self.limit = None
         
     def eval(self, args, prevs):
-        prems = [prev.prop for prev in prevs]
-        order, concl = resolve_order(prems)
-        if (concl == false and not args) or \
-           set(concl.strip_disj()) == set(args) or \
-           (len(args) == 1 and set(concl.strip_disj()) == set(args[0].strip_disj())):
-            return Thm([hyp for pt in prevs for hyp in pt.hyps], Or(*args))
+        cl, cl_sizes = args
+        assert len(cl_sizes) == len(prevs)
+        prems = []
+        for cl_size, prev in zip(cl_sizes, prevs):
+            prems.append(strip_disj_n(prev.prop, cl_size))
+
+        order, cl_concl = resolve_order(prems)
+        if set(cl_concl) == set(cl):
+            return Thm([hyp for pt in prevs for hyp in pt.hyps], Or(*cl))
         else:
             print('arg')
-            for arg in args:
+            for arg in cl:
                 print(arg)
             print('prev')
             for prev in prevs:
                 print(prev.prop)
             print(order)
-            print("Computed: ", concl)
-            print("In proof: ", Or(*args))
+            print("Computed: [%s]", ', '.join(str(t) for t in cl_concl))
+            print("In proof: [%s]", ', '.join(str(t) for t in cl))
             raise VeriTException("th_resolution", "unexpected conclusion")
 
     def resolution_two_pt(self, pt1, pt2):
@@ -1197,80 +1200,6 @@ class ACSimpMacro(Macro):
             print("flat", lhs_flat)
             print("rhss", rhs_flat)
             raise VeriTException("ac_simp", "unexpected result")
-def strip_num(tm, num):
-    """Strip the disjunction/conjunction by the provided number, in case of
-    over-strip.
-    """
-    disj = tm
-    atoms = []
-    for i in range(num-1):
-        atoms.append(disj.arg1)
-        disj = disj.arg
-
-    return atoms + [disj]
-
-@register_macro('verit_resolution')
-class VeritResolutionMacro(Macro):
-    def __init__(self):
-        self.level = 1
-        self.sig = None
-        self.limit = 'resolution_right'
-
-    def get_proof_term(self, args, pts):
-
-        # First, find the pair i, j such that B_j = ~A_i or A_i = ~B_j, the
-        # variable side records the side of the positive literal.
-        pt1, pt2 = pts
-        disj1 = strip_num(pt1.prop, args[0])
-        disj2 = strip_num(pt2.prop, args[1])
-        side = None
-        for i, t1 in enumerate(disj1):
-            for j, t2 in enumerate(disj2):
-                if t2 == Not(t1):
-                    side = 'left'
-                    break
-                elif t1 == Not(t2):
-                    side = 'right'
-                    break
-            if side is not None:
-                break
-                
-        assert side is not None, "resolution: literal not found"
-        
-        # If side is wrong, just swap:
-        if side == 'right':
-            return self.get_proof_term([args[1], args[0]], [pt2, pt1])
-        
-        # Move items i and j to the front
-        disj1 = [disj1[i]] + disj1[:i] + disj1[i+1:]
-        disj2 = [disj2[j]] + disj2[:j] + disj2[j+1:]
-        eq_pt1 = logic.imp_disj_iff(Eq(pt1.prop, Or(*disj1)))
-        eq_pt2 = logic.imp_disj_iff(Eq(pt2.prop, Or(*disj2)))
-        pt1 = eq_pt1.equal_elim(pt1)
-        pt2 = eq_pt2.equal_elim(pt2)
-        
-        if len(disj1) > 1 and len(disj2) > 1:
-            pt = logic.apply_theorem('resolution', pt1, pt2)
-        elif len(disj1) > 1 and len(disj2) == 1:
-            pt = logic.apply_theorem('resolution_left', pt1, pt2)
-        elif len(disj1) == 1 and len(disj2) > 1:
-            pt = logic.apply_theorem('resolution_right', pt1, pt2)
-        else:
-            pt = logic.apply_theorem('negE', pt2, pt1)
-
-        # return pt.on_prop(disj_norm())
-        disj_new = set(disj1[1:] + disj2[1:])
-        # eq_pt_norm = logic.imp_disj_iff(Eq(pt.prop, Or(*disj_new)))
-        implies_pt_norm = ProofTerm("imp_disj", Implies(pt.prop, Or(*disj_new)))
-        pt_final = implies_pt_norm.implies_elim(pt)
-        self.arity = len(disj_new)
-        return pt_final.on_prop(conv.top_conv(conv.rewr_conv("double_neg")))
-
-def verit_resolution(pt1, pt2, arity1, arity2):
-    marc = VeritResolutionMacro()
-    pt = marc.get_proof_term([arity1, arity2], [pt1, pt2])
-    return pt, marc.arity
-    # return ProofTerm("verit_resolution", [arity1, arity2], [pt1, pt2])
         
 
 @register_macro("or_pos")

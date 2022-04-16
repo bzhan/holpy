@@ -28,7 +28,13 @@ class ProofReconstruction:
     - steps: a list of parsed proof rules.
     """
     def __init__(self, steps) -> None:
+        # List of steps
         self.steps = steps
+
+        # Dictionary from step id to steps
+        self.steps_dict = dict()
+        for step in self.steps:
+            self.steps_dict[step.id] = step
 
         # map from step id to proof term
         self.pts = dict()
@@ -41,7 +47,11 @@ class ProofReconstruction:
 
     def to_pts(self, ids):
         """ids is a tuple of step name, return their corresponding pts."""
-        return tuple([self.pts[i] for i in ids])
+        return tuple(self.pts[i] for i in ids)
+
+    def get_clause_sizes(self, ids):
+        """Return the list of clause sizes, used in resolution."""
+        return tuple(self.steps_dict[i].get_clause_size() for i in ids)
 
     def validate_step(self, macro_name, args, prevs=None, is_eval=True, is_refl=False):
         if is_refl:
@@ -64,9 +74,9 @@ class ProofReconstruction:
             elif isinstance(step, command.Anchor):
                 self.add_subproof_context(step)
                 continue
-            assert isinstance(step, command.Step), type(step)
+            assert isinstance(step, command.Step)
             rule_name = step.rule_name
-            premises = self.to_pts(step.pm) # Collect the proof terms in premises
+            premises = self.to_pts(step.pm)  # Collect the proof terms in premises
             if rule_name == "not_or":
                 self.pts[step.id] = self.validate_step("verit_not_or", step.cl, premises, is_eval=is_eval)
             elif rule_name == "not_and":
@@ -76,11 +86,8 @@ class ProofReconstruction:
             elif rule_name in ("resolution", "th_resolution"): 
                 # the difference between resolution and th-resolution rule 
                 # is invisible on reconstruction
-                try:
-                    self.pts[step.id] = self.validate_step("verit_th_resolution", step.cl, premises, is_eval=is_eval)
-                except:
-                    self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
-                    step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
+                clause_sizes = self.get_clause_sizes(step.pm)
+                self.pts[step.id] = self.validate_step("verit_th_resolution", (step.cl, clause_sizes), premises, is_eval=is_eval)
             elif rule_name == "implies":
                 self.pts[step.id] = self.validate_step("verit_implies", step.cl, premises, is_eval=is_eval)
             elif rule_name == "and_pos":
