@@ -114,6 +114,71 @@ class NotNotMacro(Macro):
         neg_arg, pos_arg = args
         return logic.apply_theorem("neg_neg", concl=Or(neg_arg, pos_arg))
 
+def try_resolve(prop1, prop2):
+    """Try to resolve two propositions."""
+    prop1_disj = prop1.strip_disj()
+    prop2_disj = prop2.strip_disj()
+    for i in range(len(prop1_disj)):
+        for j in range(len(prop2_disj)):
+            if prop2_disj[j].is_not() and prop2_disj[j].arg == prop1_disj[i]:
+                return i + j, 'left', i, j
+            if prop1_disj[i].is_not() and prop1_disj[i].arg == prop2_disj[j]:
+                return i + j, 'right', i, j                
+            if prop2_disj[j] == Not(prop1):
+                return j, 'left', -1, j
+            if prop1_disj[i] == Not(prop2):
+                return i, 'right', i, -1
+    return None
+
+def resolve_order(props):
+    """Given a list of props, each of which is a clause, find an optimal
+    order of performing resolution on these propositions.
+    
+    """
+    # List of propositions remaining to be resolved
+    id_remain = list(range(len(props)))
+
+    # List of resolution steps
+    resolves = []
+
+    while len(id_remain) > 1:
+        # Find best resolution among all possible pairs.
+        best_resolve = None
+        for i in range(len(id_remain)):
+            for j in range(i+1, len(id_remain)):
+                id1 = id_remain[i]
+                id2 = id_remain[j]
+                res = try_resolve(props[id1], props[id2])
+                if res and (not best_resolve or res[0] < best_resolve[0]):
+                    if res[1] == 'left':
+                        best_resolve = (res[0], id1, id2, res[2], res[3])
+                    else:
+                        best_resolve = (res[0], id2, id1, res[3], res[2])
+                    break
+            if best_resolve:
+                break
+
+        if best_resolve is None:
+            raise VeriTException("th_resolution", "cannot find resolution")
+
+        # Perform this resolution
+        _, id1, id2, t1, t2 = best_resolve
+        prop1_disj = props[id1].strip_disj()
+        prop2_disj = props[id2].strip_disj()
+        if t1 == -1:
+            res_list = prop2_disj[:t2] + prop2_disj[t2+1:]
+        else:
+            assert t1 != -1 and t2 != -1
+            res_list = prop1_disj[:t1] + prop1_disj[t1+1:]
+            for t in prop2_disj[:t2] + prop2_disj[t2+1:]:
+                if t not in res_list:
+                    res_list.append(t)
+        id_remain.remove(id2)
+        props[id1] = Or(*res_list)
+        resolves.append(best_resolve)
+
+    return resolves, props[id_remain[0]]
+
 @register_macro("verit_th_resolution")
 class ThResolutionMacro(Macro):
     """Return the resolution result of multiple proof terms."""
@@ -121,47 +186,25 @@ class ThResolutionMacro(Macro):
         self.level = 1
         self.sig = Term
         self.limit = None
-
-    # def eval(self, args, prevs):
-    #     for pt in prevs:
-    #         print(pt.prop)
-    #     props = [pt.prop for pt in prevs]
-    #     prop_res = props[0]
-    #     disj_atoms = prop_res.strip_disj()
-    #     for prop in props[1:]:
-    #         # print("prop_rs", prop_res)
-    #         # print("prop", prop)
-    #         if prop == Not(prop_res) or prop_res == Not(prop):
-    #             return Thm([hyp for pt in prevs for hyp in pt.hyps], false)
-    #         abandon1, abandon2 = [], []
-    #         for d1 in prop_res.strip_disj():                
-    #             for d2 in prop.strip_disj():
-    #                 if d1 == Not(d2) or d2 == Not(d1):
-    #                     # disj_atoms.remove(d1)
-    #                     # disj_prop.remove(d2)
-    #                     abandon1.append(d1)
-    #                     abandon2.append(d2)
-    #         disjs = [d1 for d1 in prop_res.strip_disj() if d1 not in abandon1] + \
-    #                     [d2 for d2 in prop.strip_disj() if d2 not in abandon2]
-
-    #         # disj_atoms = disj_atoms | disj_prop
-    #         prop_res = Or(*disjs)
-            
-
-    #     if len(args) == 0:
-    #         if len(disj_atoms) == 0:
-    #             return Thm([hyp for pt in prevs for hyp in pt.hyps], false)
-    #         else:
-    #             print("Resolution with following proof terms.")
-    #             for pt in prevs:
-    #                 print(pt)
-    #             print("prop_res", prop_res)
-    #             raise NotImplementedError(disj_atoms, args)
-    #     if Or(*args) == Or(*disjs):
-    #         return Thm([hyp for pt in prevs for hyp in pt.hyps], Or(*args))
-    #     else:
-    #         print("args", Or(*args), "disjs", Or(*disjs))
-    #         raise NotImplementedError
+        
+    def eval(self, args, prevs):
+        prems = [prev.prop for prev in prevs]
+        order, concl = resolve_order(prems)
+        if (concl == false and not args) or \
+           set(concl.strip_disj()) == set(args) or \
+           (len(args) == 1 and set(concl.strip_disj()) == set(args[0].strip_disj())):
+            return Thm([hyp for pt in prevs for hyp in pt.hyps], Or(*args))
+        else:
+            print('arg')
+            for arg in args:
+                print(arg)
+            print('prev')
+            for prev in prevs:
+                print(prev.prop)
+            print(order)
+            print("Computed: ", concl)
+            print("In proof: ", Or(*args))
+            raise VeriTException("th_resolution", "unexpected conclusion")
 
     def resolution_two_pt(self, pt1, pt2):
         disj1 = expand_disj(pt1.prop)

@@ -40,7 +40,8 @@ class Thm():
 
         """
         typecheck.checkinstance('Thm', hyps, [Term], prop, Term)
-        self.hyps = tuple(term_ord.sorted_terms(hyps))
+        # Remove duplication in hyps
+        self.hyps = tuple(set(hyps))
         self.prop = prop
 
     @property
