@@ -124,11 +124,14 @@ class ProofTransformer(Transformer):
 
     def mk_context(self, var, ty, tm):
         hol_ty = str_to_hol_type(ty.value)
-        hol_var = hol_term.Var(var.value, hol_ty)
-        self.proof_ctx[hol_var] = tm
+        var_name = "?" + var.value
+        assert tm.get_type() == hol_ty
+        self.proof_ctx[var_name] = tm
 
     def mk_anchor(self, id, *ctx):
-        return Anchor(str(id), ctx)
+        step = Anchor(str(id), self.proof_ctx)
+        self.proof_ctx = dict()
+        return step
 
     def ret_annot_tm(self, name):
         name = "@" + str(name)
@@ -146,8 +149,7 @@ class ProofTransformer(Transformer):
 
     def mk_let_pair(self, name, tm):
         name = "?" + str(name)
-        
-        self.let_tm[name] = tm
+        self.let_tm[name] = hol_term.Var(name, tm.get_type())
 
     def mk_let_tm(self, *tms):
         return tms[-1]
@@ -173,9 +175,6 @@ class ProofTransformer(Transformer):
         return hol_term.false
 
     def mk_neg_tm(self, tm):
-        # if tm in self.annot_tm:
-        #     tm = self.annot_tm[str(tm)]
-        # print(str(tm))
         return hol_term.Not(tm)
 
     def mk_annot_tm(self, tm, name):

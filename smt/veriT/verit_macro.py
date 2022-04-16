@@ -683,6 +683,7 @@ class EqCongurentPredMacro(Macro):
         """{(not (= x_1 y_1)) ... (not (= x_n y_n)) (not (p x_1 ... x_n)) (p y_1 ... y_n)}
         Special case: (not (= x y)) (not (p x y)) (p y x)
         """
+        goal = Or(*goal)
         elems = goal.strip_disj()
         preds, pred_fun, concl = elems[:-2], elems[-2], elems[-1] 
         if pred_fun.is_not():
@@ -877,7 +878,85 @@ class TransMacro(Macro):
         self.limit = None
 
     def eval(self, args, prevs):
-        pass
+        if len(args) != 1:
+            raise VeriTException("trans", "trans must have a term")
+        arg = args[0]
+        if not arg.is_equals():
+            raise VeriTException("trans", "goal must be an equality")
+
+        if len(prevs) < 2:
+             raise VeriTException("trans", "must have at least two proof terms")
+        
+        if not all(pt.prop.is_equals() for pt in prevs):
+            raise VeriTException("trans", "all props should be equality")        
+
+        cur_eq = prevs[0].prop
+        for prev in prevs[1:]:
+            prev_prop = prev.prop
+            if cur_eq.rhs == prev_prop.lhs:
+                cur_eq = Eq(cur_eq.lhs, prev_prop.rhs)
+            else:
+                raise VeriTException("trans", "cannot connect equalities")
+        
+        if cur_eq == arg:
+            return Thm([], cur_eq)
+        else:
+            raise VeriTException("trans", "unexpected equality")
+
+@register_macro("verit_cong")
+class CongMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs): # contain bugs
+        if len(args) != 1:
+            raise VeriTException("cong", "goal should be a single term.")
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("cong", "goal should be an equality")
+        
+        lhs, rhs = goal.lhs, goal.rhs
+        if lhs.head != rhs.head:
+            raise VeriTException("cong", "head should be same")
+        
+        h, i = lhs.head, 0
+        for arg in lhs.args:
+            if i >= len(prevs):
+                h = h(arg)
+            elif prevs[i].lhs == arg:
+                h = h(prevs[i].rhs)
+                i += 1
+            else:
+                h = h(arg)
+        if h == goal.rhs:
+            return Thm([], goal)
+        else:
+            raise VeriTException("cong", "unexpected result")
+
+@register_macro("verit_refl")
+class ReflMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 2:
+            raise VeriTException("refl", "args should contain two terms")
+        goal, contexts = args
+        if not goal.is_equals():
+            raise VeriTException("refl", "goal should be an equality")
+        if not isinstance(contexts, list):
+            raise VeriTException("refl", "context should be a list of contexts")
+        for ctx in contexts:
+            if str(goal.lhs) in ctx and ctx[str(goal.lhs)] == goal.rhs:
+                return Thm([], goal)
+            if str(goal.rhs) in ctx and ctx[str(goal.rhs)] == goal.lhs:
+                return Thm([], goal)
+        else:
+            raise VeriTException("refl", "either lhs and rhs of goal is not in ctx")
 
 def expand_to_ite(t):
     if t.is_comb():
