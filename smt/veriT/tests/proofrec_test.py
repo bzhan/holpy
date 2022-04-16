@@ -126,12 +126,10 @@ class VeriTProofRecTest(unittest.TestCase):
             'QF_UF\\2018-Goel-hwbench\\QF_UF_eq_sdp_v7_ab_cti_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_exit.1.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_extinction.2.prop1_ab_reg_max.smt2',
-            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_firewire_tree.1.prop1_ab_reg_max.smt2',
             "QF_UF\\TypeSafe\\z3.1184131.smt2",
             "QF_UF\\TypeSafe\\z3.1184147.smt2",
             "QF_UF\\TypeSafe\\z3.1184163.smt2",
             'QF_UF\\eq_diamond\\eq_diamond1.smt2',
-            'QF_UF\\eq_diamond\\eq_diamond10.smt2',
         ]
 
         for path in test_paths:

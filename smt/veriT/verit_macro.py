@@ -834,7 +834,64 @@ class TransMacro(Macro):
         self.limit = None
 
     def eval(self, args, prevs):
-        pass
+        if len(args) != 1:
+            raise VeriTException("trans", "trans must have a term")
+        arg = args[0]
+        if not arg.is_equals():
+            raise VeriTException("trans", "goal must be an equality")
+
+        if len(prevs) < 2:
+             raise VeriTException("trans", "must have at least two proof terms")
+        
+        if not all(pt.prop.is_equals() for pt in prevs):
+            raise VeriTException("trans", "all props should be equality")        
+
+        cur_eq = prevs[0].prop
+        for prev in prevs[1:]:
+            prev_prop = prev.prop
+            if cur_eq.rhs == prev_prop.lhs:
+                cur_eq = Eq(cur_eq.lhs, prev_prop.rhs)
+            else:
+                raise VeriTException("trans", "cannot connect equalities")
+        
+        if cur_eq == arg:
+            return Thm([], cur_eq)
+        else:
+            raise VeriTException("trans", "unexpected equality")
+
+@register_macro("verit_cong")
+class CongMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        if len(args) != 1:
+            raise VeriTException("cong", "goal should be a single term.")
+        arg = args[0]
+        if not arg.is_equals():
+            raise VeriTException("cong", "goal should be an equality")
+        
+        lhs, rhs = arg.lhs, arg.rhs
+        if lhs.head != rhs.head:
+            raise VeriTException("cong", "head should be same")
+        
+        # props = [prev.prop for prev in prevs]
+        # if not all(prop.is_equals() for prop in props):
+        #     raise VeriTException("cong", "prevs should be theorems on equalities")
+        
+        if len(lhs.args) != len(prevs):
+            raise VeriTException("cong", "not enough proof terms about argument equality")
+        h = lhs.head
+        for lhs_arg_i, pt_i, rhs_arg_i in zip(lhs.args, prevs, rhs.args):
+            if not (lhs_arg_i == pt_i.lhs and rhs_arg_i == pt_i.rhs):
+                raise VeriTException("cong", "cannot connect lhs args to rhs args")
+            h = h(pt_i.rhs)
+        if h == arg.rhs:
+            return Thm([], Eq(lhs, h))
+        else:
+            raise VeriTException("cong", "unexpected result")
 
 def expand_to_ite(t):
     if t.is_comb():
