@@ -912,12 +912,6 @@ class CongMacro(Macro):
         self.limit = None
 
     def eval(self, args, prevs): # contain bugs
-        # print("arg")
-        # print(args[0])
-        # print(len(prevs))
-        # print("prevs")
-        # for prev in prevs:
-        #     print(prev.prop)
         if len(args) != 1:
             raise VeriTException("cong", "goal should be a single term.")
         goal = args[0]
@@ -928,22 +922,30 @@ class CongMacro(Macro):
         if lhs.head != rhs.head:
             raise VeriTException("cong", "head should be same")
         
-
+        # Treat | and & as n-ary operator when 
+        # the number of premises are larger than 2
+        if lhs.is_conj() and len(prevs) > 2:
+            l_args, r_args = lhs.strip_conj(), rhs.strip_conj()
+        elif lhs.is_disj() and len(prevs) > 2:
+            l_args, r_args = lhs.strip_disj(), rhs.strip_disj()
+        else:
+            l_args, r_args = lhs.args, rhs.args
         h, i = lhs.head, 0
-        for arg in lhs.args:
+        subst_args = []
+        for arg in l_args:
             if i >= len(prevs):
-                h = h(arg)
+                subst_args.append(arg)
             elif prevs[i].lhs == arg:
-                h = h(prevs[i].rhs)
+                subst_args.append(prevs[i].rhs)
                 i += 1
             elif prevs[i].rhs == arg:
-                h = h(prevs[i].lhs)
+                subst_args.append(prevs[i].lhs)
                 i += 1
             else:
-                h = h(arg)
-        if h == goal.rhs:
+                subst_args.append(arg)
+        if subst_args == r_args:
             return Thm([], goal)
-        elif lhs.is_equals() and h == Eq(rhs.rhs, rhs.lhs):
+        elif lhs.is_equals() and Eq(subst_args[0], subst_args[1]) == Eq(rhs.rhs, rhs.lhs):
             return Thm([], goal)
         else:
             raise VeriTException("cong", "unexpected result")
