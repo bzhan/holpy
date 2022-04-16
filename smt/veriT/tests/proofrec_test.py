@@ -115,7 +115,7 @@ class VeriTProofRecTest(unittest.TestCase):
             'QF_UF\\20170829-Rodin\\smt2325451563592377472.smt2',
             'QF_UF\\20170829-Rodin\\smt249825283571301584.smt2',
             'QF_UF\\20170829-Rodin\\smt2598599073465845145.smt2',
-            # 'QF_UF\\20170829-Rodin\\smt2970577543992530805.smt2',
+            'QF_UF\\20170829-Rodin\\smt2970577543992530805.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_blocks.2.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_bridge.1.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_brp.1.prop1_ab_reg_max.smt2',

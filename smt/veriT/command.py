@@ -23,6 +23,9 @@ class Assume(ProofCommand):
     def __str__(self):
         return "(assume %s (%s))" % (self.id, self.assm)
 
+    def get_clause_size(self) -> int:
+        return 1
+
 class Step(ProofCommand):
     """Step command introduces a derived or tautological formula.
     
@@ -48,6 +51,9 @@ class Step(ProofCommand):
         else:
             return "(step %s (cl %s) :rule %s :premises %s)" % \
                 (self.id, cl, self.rule_name, pm)
+
+    def get_clause_size(self) -> int:
+        return len(self.cl)
 
 class Anchor(ProofCommand):
     """An anchor is a start of a subproof, every anchor
