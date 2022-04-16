@@ -12,6 +12,7 @@ from logic import conv, logic
 from data import integer, real, proplogic
 from data import list as hol_list
 import functools
+from kernel import term_ord
 
 
 class VeriTException(Exception):
@@ -914,6 +915,12 @@ class CongMacro(Macro):
         self.limit = None
 
     def eval(self, args, prevs): # contain bugs
+        # print("arg")
+        # print(args[0])
+        # print(len(prevs))
+        # print("prevs")
+        # for prev in prevs:
+        #     print(prev.prop)
         if len(args) != 1:
             raise VeriTException("cong", "goal should be a single term.")
         goal = args[0]
@@ -924,6 +931,7 @@ class CongMacro(Macro):
         if lhs.head != rhs.head:
             raise VeriTException("cong", "head should be same")
         
+
         h, i = lhs.head, 0
         for arg in lhs.args:
             if i >= len(prevs):
@@ -931,9 +939,14 @@ class CongMacro(Macro):
             elif prevs[i].lhs == arg:
                 h = h(prevs[i].rhs)
                 i += 1
+            elif prevs[i].rhs == arg:
+                h = h(prevs[i].lhs)
+                i += 1
             else:
                 h = h(arg)
         if h == goal.rhs:
+            return Thm([], goal)
+        elif lhs.is_equals() and h == Eq(rhs.rhs, rhs.lhs):
             return Thm([], goal)
         else:
             raise VeriTException("cong", "unexpected result")
@@ -1121,6 +1134,71 @@ class ContractionMacro(Macro):
             raise VeriTException("contraction", "unexpected goal")
         return Thm(prevs[0].hyps, Or(*args))
 
+
+@register_macro("verit_let")
+class LetMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        if len(prevs) > 0:
+            raise NotImplementedError
+        
+        if len(args) != 1:
+            raise VeriTException("let", "must have a single argument")
+        
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("let", "goal should be an equality")
+        if goal.lhs == goal.rhs:
+            return Thm([], goal)
+        else:
+            print(goal.lhs)
+            print(goal.rhs)
+            raise VeriTException("let", "left and right side are not equal")
+
+def flatten_prop(tm):
+    """Unfold a nested proposition formula."""
+    if not tm.is_conj() and not tm.is_disj():
+        return tm
+    elif tm.is_conj():
+        conjs = logic.strip_conj(tm)
+        return And(*term_ord.sorted_terms([flatten_prop(t) for t in conjs]))
+    elif tm.is_disj():
+        disjs = logic.strip_disj(tm)
+        return Or(*term_ord.sorted_terms([flatten_prop(t) for t in disjs]))
+    else:
+        raise NotImplementedError
+        
+
+@register_macro("verit_ac_simp")
+class ACSimpMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("ac_simp", "must have a single goal")
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("ac_simp", "goal should be an equality")
+
+        lhs, rhs = goal.lhs, goal.rhs
+        if lhs.head != rhs.head or not lhs.is_conj() and not lhs.is_disj():
+            raise VeriTException("ac_simp", "lhs and rhs are not both disjunction or conjunction.")
+        rhs_flat = flatten_prop(rhs)
+        lhs_flat = flatten_prop(lhs)
+        if lhs_flat == rhs_flat:
+            return Thm([], goal)
+        else:
+            print("flat", lhs_flat)
+            print("rhss", rhs_flat)
+            raise VeriTException("ac_simp", "unexpected result")
+        
 
 @register_macro("or_pos")
 class OrPosMacro(Macro):

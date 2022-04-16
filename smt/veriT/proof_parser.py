@@ -4,7 +4,7 @@ from logic.logic import mk_if
 from kernel import term as hol_term
 from kernel import type as hol_type
 from data import list as hol_list
-from syntax import parser as hol_parser
+import copy
 
 def str_to_hol_type(s):
         """Convert string to HOL type."""
@@ -64,7 +64,7 @@ veriT_grammar = r"""
  
     ?clause : "(cl" proof_term* ")" -> mk_clause
     
-    ?single_context : "(:=" "(" "?" CNAME CNAME ")" term ")" -> mk_context
+    ?single_context : "(:=" "(" "?" CNAME CNAME ")" term ")" -> add_context
 
     ?step_annotation : ":premises" "(" step_id+ ")" -> mk_premises
 
@@ -120,18 +120,18 @@ class ProofTransformer(Transformer):
         self.let_tm = dict()
 
         # Proof context: map from variables to terms
-        self.proof_ctx = dict()
+        self.proof_ctx = []
 
-    def mk_context(self, var, ty, tm):
+        self.cur_subprf_id = []
+
+    def is_sub_step(self):
+        return self.cur_subprf_id is not None
+
+    def add_context(self, var, ty, tm):
         hol_ty = str_to_hol_type(ty.value)
         var_name = "?" + var.value
         assert tm.get_type() == hol_ty
-        self.proof_ctx[var_name] = tm
-
-    def mk_anchor(self, id, *ctx):
-        step = Anchor(str(id), self.proof_ctx)
-        self.proof_ctx = dict()
-        return step
+        return var_name, tm
 
     def ret_annot_tm(self, name):
         name = "@" + str(name)
@@ -139,6 +139,10 @@ class ProofTransformer(Transformer):
 
     def ret_let_tm(self, name):
         name = "?" + str(name)
+        for ctx in self.proof_ctx:
+            if name in ctx:
+                return hol_term.Var(name, ctx[name].get_type())
+
         return self.let_tm[name]
 
     def mk_par_tm(self, tm):
@@ -155,10 +159,6 @@ class ProofTransformer(Transformer):
         return tms[-1]
 
     def ret_tm(self, tm):
-        # if str(tm) in self.annot_tm:
-        #     return self.annot_tm[str(tm)]
-        # if str(tm) in self.let_tm:
-        #     return self.let_tm[str(tm)]
         tm = str(tm)
         if tm not in self.smt_file_ctx:
             raise ValueError(tm)      
@@ -203,7 +203,23 @@ class ProofTransformer(Transformer):
     def mk_assume(self, assm_id, tm):
         return Assume(assm_id, tm)
 
+    def mk_anchor(self, id, *ctx):
+        new_ctx = {}
+        for var, tm in ctx:
+            new_ctx[var] = tm
+        self.proof_ctx.append(new_ctx)
+        prf_ctx = copy.deepcopy(self.proof_ctx)
+        step = Anchor(str(id), prf_ctx)
+        self.cur_subprf_id.append(str(id))
+        return step
+
     def mk_step(self, step_id, cl, rule_name, pm=None):
+        if len(self.cur_subprf_id) and self.cur_subprf_id[-1] == step_id:
+            self.cur_subprf_id.pop()
+            self.proof_ctx.pop()
+        if not self.cur_subprf_id:
+            assert len(self.proof_ctx) == 0
+
         if pm is not None:
             pm = [p for p in pm]
         return Step(step_id, rule_name, cl, pm)
