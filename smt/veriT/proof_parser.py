@@ -3,6 +3,7 @@ from smt.veriT.command import Assume, Step, Anchor
 from logic.logic import mk_if
 from kernel import term as hol_term
 from kernel import type as hol_type
+from data import list as hol_list
 from syntax import parser as hol_parser
 
 def str_to_hol_type(s):
@@ -162,12 +163,8 @@ class ProofTransformer(Transformer):
         return hol_term.Var(tm, self.smt_file_ctx[str(tm)])
 
     def mk_distinct_tm(self, *tms):
-        neq_tm = []
-        for i in range(len(tms)):
-            for j in range(i+1, len(tms)):
-                neq_tm.append(hol_term.Not(hol_term.Eq(tms[i], tms[j])))
-
-        return hol_term.And(*neq_tm)
+        assert tms  # tms cannot be empty
+        return hol_list.distinct(hol_list.mk_literal_list(tms, tms[0].get_type()))
 
     def mk_true(self):
         return hol_term.true

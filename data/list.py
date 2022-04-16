@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import TVar, TConst, TFun, NatType
+from kernel.type import TVar, TConst, TFun, NatType, BoolType
 from kernel.term import Term, Const
 
 """Utility functions for lists."""
@@ -79,3 +79,8 @@ def nth(xs, n):
     """Returns the term nth xs n."""
     T = xs.get_type().args[0]
     return Const("nth", TFun(ListType(T), NatType, T))(xs, n)
+
+def distinct(xs):
+    """Returns the term distinct xs."""
+    T = xs.get_type().args[0]
+    return Const("distinct", TFun(ListType(T), BoolType))(xs)

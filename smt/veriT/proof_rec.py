@@ -91,6 +91,10 @@ class ProofReconstruction:
                 self.pts[step.id] = self.validate_step("verit_equiv_pos1", step.cl, is_eval=is_eval)
             elif rule_name == "equiv_pos2":
                 self.pts[step.id] = self.validate_step("verit_equiv_pos2", step.cl, is_eval=is_eval)
+            elif rule_name == "distinct_elim":
+                self.pts[step.id] = self.validate_step("verit_distinct_elim", step.cl, is_eval=is_eval)
+            elif rule_name == "and":
+                self.pts[step.id] = self.validate_step("verit_and", step.cl, premises, is_eval=is_eval)                
             # elif rule_name == "and_neg":
             #     self.pts[step.id] = self.validate_step("verit_and_neg", step.cl, is_eval=is_eval)
             else:

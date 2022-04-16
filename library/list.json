@@ -21,7 +21,7 @@
                         "xs"
                     ],
                     "name": "cons",
-                    "type": "'a => 'a list => 'a list"
+                    "type": "'a ⇒ 'a list ⇒ 'a list"
                 }
             ],
             "name": "list",
@@ -1132,6 +1132,32 @@
             "vars": {
                 "xs": "'a list"
             }
+        },
+        {
+            "name": "set",
+            "rules": [
+                {
+                    "prop": "set ([]::'a list) = ∅"
+                },
+                {
+                    "prop": "set (x # xs) = insert x (set xs)"
+                }
+            ],
+            "ty": "def.ind",
+            "type": "'a list ⇒ 'a set"
+        },
+        {
+            "name": "distinct",
+            "rules": [
+                {
+                    "prop": "distinct ([]::'a list) ⟷ true"
+                },
+                {
+                    "prop": "distinct (x # xs) ⟷ ¬(x ∈ set xs) ∧ distinct xs"
+                }
+            ],
+            "ty": "def.ind",
+            "type": "'a list ⇒ bool"
         }
     ],
     "description": "Lists",

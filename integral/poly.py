@@ -1,14 +1,10 @@
 """Polynomials."""
 
-import operator
-from lark import Lark, Transformer, v_args, exceptions
 from fractions import Fraction
 from decimal import Decimal
 from collections.abc import Iterable
-from numpy import isin
 import sympy
 import math
-import functools
 
 from integral import expr
 

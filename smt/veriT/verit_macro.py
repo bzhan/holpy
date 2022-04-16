@@ -7,11 +7,21 @@ from re import L
 from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, Thm
-from kernel.term import Term, Not, Or, Eq, Implies, false, true, IntType, RealType
+from kernel.term import Term, Not, And, Or, Eq, Implies, false, true, IntType, RealType
 from prover.proofrec import int_th_lemma_1_omega, int_th_lemma_1_simplex, real_th_lemma
 from logic import conv, logic
 from data import integer, real, proplogic
+from data import list as hol_list
 import functools
+
+
+class VeriTException(Exception):
+    def __init__(self, rule_name, message):
+        self.rule_name = rule_name
+        self.message = message
+
+    def __str__(self):
+        return "%s: %s" % (self.rule_name, self.message)
 
 
 def expand_disj(t):
@@ -641,6 +651,63 @@ class EqCongurentPredMacro(Macro):
             return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt3])   
 
 
+@register_macro("verit_distinct_elim")
+class DistinctElimMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        if len(args) != 1:
+            raise VeriTException("distinct_elim", "clause must have a single term")
+        arg = args[0]
+        if not arg.is_equals():
+            raise VeriTException("distinct_elim", "goal must be an equality")
+        lhs, rhs = arg.lhs, arg.rhs
+        if not lhs.is_comb("distinct", 1):
+            raise VeriTException("distinct_elim", "lhs is not a distinct predicate")
+
+        distinct_ts = hol_list.dest_literal_list(lhs.arg)
+
+        # Form conjunction of pairs in ts
+        conjs = []
+        for i in range(len(distinct_ts)):
+            for j in range(i+1, len(distinct_ts)):
+                conjs.append(Not(Eq(distinct_ts[i], distinct_ts[j])))
+        expected_rhs = And(*conjs)
+        if rhs != expected_rhs:
+            raise VeriTException("distinct_elim", "incorrect rhs")
+
+        return Thm([], arg)
+    
+    def get_proof_term(self, goal, prevs=None):
+        raise NotImplementedError
+
+
+@register_macro("verit_and")
+class AndMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        if len(args) != 1:
+            raise VeriTException("and", "clause must have a single term")
+        if len(prevs) != 1:
+            raise VeriTException("and", "must have a single premise")
+
+        prem = prevs[0].prop
+        prem_conjs = prem.strip_conj()
+        arg = args[0]
+        if arg not in prem_conjs:
+            raise VeriTException("and", "goal not found in premise")
+        
+        return Thm(prevs[0].hyps, arg)
+
+    def get_proof_term(self, goal, prevs=None):
+        raise NotImplementedError
 
 
 def strip_num(tm, num):
