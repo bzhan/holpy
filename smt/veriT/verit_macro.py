@@ -2,12 +2,10 @@
 Macros used in the proof reconstruction.
 """
 
-from atexit import register
-from re import L
 from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, Thm
-from kernel.term import Term, Not, And, Or, Eq, Implies, false, true, IntType, RealType
+from kernel.term import Term, Not, And, Or, Eq, Implies, false, true, IntType, RealType, BoolType
 from prover.proofrec import int_th_lemma_1_omega, int_th_lemma_1_simplex, real_th_lemma
 from logic import conv, logic
 from data import integer, real, proplogic
@@ -710,6 +708,145 @@ class AndMacro(Macro):
         raise NotImplementedError
 
 
+def expand_to_ite(t):
+    if t.is_comb():
+        # First check whether one of the arguments is a non-constant boolean formula
+        for i, arg in enumerate(t.args):
+            if arg.get_type() == BoolType and arg != true and arg != false:
+                arg_true = t.args[:i] + [true] + t.args[i+1:]
+                arg_false = t.args[:i] + [false] + t.args[i+1:]
+                return logic.mk_if(arg, expand_to_ite(t.head(*arg_true)),
+                                   expand_to_ite(t.head(*arg_false)))
+        # Now it is clear that none of the arguments are non-constant booleans
+        expand_args = [expand_to_ite(arg) for arg in t.args]
+        return t.head(*expand_args)
+    else:
+        return t
+
+@register_macro("verit_bfun_elim")
+class BFunElimMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        if len(args) != 1:
+            raise VeriTException("bfun_elim", "clause must have a single term")
+        if len(prevs) != 1:
+            raise VeriTException("bfun_elim", "must have a single premise")
+
+        arg = args[0]
+        prev = prevs[0].prop
+
+        # Second step: replace every function application with argument of
+        # boolean type with an if-then-else expression.
+        expected_arg = expand_to_ite(prev)
+        if expected_arg != arg:
+            print("Expected:", expected_arg)
+            print("Actual:", arg)
+            raise VeriTException("bfun_elim", "unexpected goal")
+
+        return Thm(prevs[0].hyps, arg)
+
+
+def collect_ite_intro(t):
+    if logic.is_if(t):
+        P, x, y = t.args
+        ite_eq = logic.mk_if(P, Eq(x, t), Eq(y, t))
+        return [ite_eq] + collect_ite_intro(x) + collect_ite_intro(y)
+    elif t.is_comb():
+        res = []
+        for arg in t.args:
+            res.extend(collect_ite_intro(arg))
+        return res
+    else:
+        return []
+
+@register_macro("verit_ite_intro")
+class ITEIntroMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        if len(args) != 1:
+            raise VeriTException("ite_intro", "clause must have a single term")
+        arg = args[0]
+        if not arg.is_equals():
+            raise VeriTException("ite_intro", "goal is not an equality")
+
+        lhs, rhs = arg.lhs, arg.rhs
+        ite_intros = collect_ite_intro(lhs)
+        expected_rhs = And(lhs, *ite_intros)
+        if expected_rhs != rhs:
+            print("Expected:", expected_rhs)
+            print("Actual:", rhs)
+            raise VeriTException("ite_intro", "unexpected goal")
+        return Thm([], arg)
+
+
+@register_macro("verit_ite1")
+class ITE1(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        if len(args) != 2:
+            raise VeriTException("ite1", "clause must have two terms")
+        if len(prevs) != 1:
+            raise VeriTException("ite1", "must have a single premise")
+
+        arg1, arg2 = args
+        prev = prevs[0].prop
+        if not logic.is_if(prev):
+            raise VeriTException("ite1", "premise must be in if-then-else form")
+        if arg1 != prev.args[0] or arg2 != prev.args[2]:
+            raise VeriTException("ite1", "unexpected goal")
+        return Thm(prevs[0].hyps, Or(arg1, arg2))
+
+@register_macro("verit_ite2")
+class ITE2(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        if len(args) != 2:
+            raise VeriTException("ite2", "clause must have two terms")
+        if len(prevs) != 1:
+            raise VeriTException("ite2", "must have a single premise")
+
+        arg1, arg2 = args
+        prev = prevs[0].prop
+        if not logic.is_if(prev):
+            raise VeriTException("ite2", "premise must be in if-then-else form")
+        if arg1 != Not(prev.args[0]) or arg2 != prev.args[1]:
+            raise VeriTException("ite2", "unexpected goal")
+        return Thm(prevs[0].hyps, Or(arg1, arg2))
+
+@register_macro("verit_and_neg")
+class AndNegMacro(Macro):
+    """Prove ~(p1 & p2 & ... & pn) | ~p1 | ... | ~pn"""
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        conj = args[0]
+        neg_disjs = args[1:]
+        neg_conj_args = tuple(Not(arg) for arg in conj.strip_conj())
+        if neg_disjs != neg_conj_args:
+            raise VeriTException("Unexpected goal")
+        return Thm([], Or(*args))
+
+    # def get_proof_term(self, args, prevs):
+
 def strip_num(tm, num):
     """Strip the disjunction/conjunction by the provided number, in case of
     over-strip.
@@ -784,25 +921,6 @@ def verit_resolution(pt1, pt2, arity1, arity2):
     pt = marc.get_proof_term([arity1, arity2], [pt1, pt2])
     return pt, marc.arity
     # return ProofTerm("verit_resolution", [arity1, arity2], [pt1, pt2])
-    
-@register_macro("verit_and_neg")
-class AndNegMacro(Macro):
-    """Prove ~(p1 & p2 & ... & pn) | ~p1 | ... | ~pn"""
-    def __init__(self):
-        self.level = 1
-        self.sig = Term
-        self.limit = None
-
-    def eval(self, args, prevs=None):
-        conj = args[0]
-        neg_disjs = args[1:]
-        disjs = [nd.arg for nd in neg_disjs]
-        if tuple(conj.strip_conj()) == tuple(disjs):
-            return Thm([], Or(*args))
-        else:
-            raise NotImplementedError
-
-    # def get_proof_term(self, args, prevs):
         
 
 @register_macro("or_pos")

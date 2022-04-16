@@ -94,9 +94,17 @@ class ProofReconstruction:
             elif rule_name == "distinct_elim":
                 self.pts[step.id] = self.validate_step("verit_distinct_elim", step.cl, is_eval=is_eval)
             elif rule_name == "and":
-                self.pts[step.id] = self.validate_step("verit_and", step.cl, premises, is_eval=is_eval)                
-            # elif rule_name == "and_neg":
-            #     self.pts[step.id] = self.validate_step("verit_and_neg", step.cl, is_eval=is_eval)
+                self.pts[step.id] = self.validate_step("verit_and", step.cl, premises, is_eval=is_eval)  
+            elif rule_name == "bfun_elim":
+                self.pts[step.id] = self.validate_step("verit_bfun_elim", step.cl, premises, is_eval=is_eval)  
+            elif rule_name == "ite_intro":
+                self.pts[step.id] = self.validate_step("verit_ite_intro", step.cl, is_eval=is_eval)
+            elif rule_name == "ite1":
+                self.pts[step.id] = self.validate_step("verit_ite1", step.cl, premises, is_eval=is_eval)
+            elif rule_name == "ite2":
+                self.pts[step.id] = self.validate_step("verit_ite2", step.cl, premises, is_eval=is_eval)
+            elif rule_name == "and_neg":
+                self.pts[step.id] = self.validate_step("verit_and_neg", step.cl, is_eval=is_eval)
             else:
                 print(rule_name)
                 self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
