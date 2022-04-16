@@ -98,4 +98,9 @@ class ProofReconstruction:
                 self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
                     step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
         
+            if len(step.cl) > 0:
+                assert self.pts[step.id].prop == term.Or(*step.cl)
+            else:
+                assert self.pts[step.id].prop == term.false
+
         return self.pts[self.steps[-1].id]

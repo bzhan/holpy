@@ -207,13 +207,26 @@ class ThResolutionMacro(Macro):
 
     def get_proof_term(self, args, prevs):
         pt_res = prevs[0]
-        for pt in prevs[1:]:
-            if pt_res.prop == Not(pt.prop):
-                pt_res = logic.apply_theorem("negE", pt_res, pt)
-            elif pt.prop == Not(pt_res.prop):
-                pt_res = logic.apply_theorem("negE", pt, pt_res)
+        remain = []
+        for i in range(1, len(prevs)):
+            if pt_res.prop == Not(prevs[i].prop):
+                pt_res = logic.apply_theorem("negE", pt_res, prevs[i])
+            elif prevs[i].prop == Not(pt_res.prop):
+                pt_res = logic.apply_theorem("negE", prevs[i], pt_res)
             else:
-                pt_res = self.resolution_two_pt(pt_res, pt)
+                try:
+                    pt_res = self.resolution_two_pt(pt_res, prevs[i])
+                except:
+                    remain.append(i)
+
+        for i in remain:
+            if pt_res.prop == Not(prevs[i].prop):
+                pt_res = logic.apply_theorem("negE", pt_res, prevs[i])
+            elif prevs[i].prop == Not(pt_res.prop):
+                pt_res = logic.apply_theorem("negE", prevs[i], pt_res)
+            else:
+                pt_res = self.resolution_two_pt(pt_res, prevs[i])
+
         if len(args) == 0: # |- false
             return pt_res
     

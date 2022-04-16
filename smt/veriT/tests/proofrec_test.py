@@ -2,6 +2,8 @@ import unittest
 from smt.veriT import interface, proof_rec, proof_parser
 import time
 import os
+from syntax.settings import settings
+settings.unicode = False
 
 smtlib_path = None
 
@@ -65,8 +67,7 @@ def test_file(filename, show_time=True):
     if show_time:
         print("Solve: %.3f. Parse: %.3f. Validate: (eval) %.3f (get_proof_term) %.3f" 
                     % (solve_time, parse_time, validate_eval_time, validate_get_pt_time))
-    print(pt2)
-    assert pt1.rule != "sorry" and pt2.rule != "sorry"
+
 
 def test_path(path, write_file=False, show_time=True, veriT_only=False):
     """Test a directory containing SMT files."""
@@ -105,19 +106,19 @@ class VeriTProofRecTest(unittest.TestCase):
             'QF_UF\\20170829-Rodin\\smt2598599073465845145.smt2',
             'QF_UF\\20170829-Rodin\\smt2970577543992530805.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_blocks.2.prop1_ab_reg_max.smt2',
-            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_bridge.1.prop1_ab_reg_max.smt2',
+            'QF_UF\\2018-Goel-hwbench\\QF_UF_bridge.1.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_brp.1.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_bug-1_ab_cti_max.smt2',
-            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_cache_coherence_three_ab_reg_max.smt2',
+            'QF_UF\\2018-Goel-hwbench\\QF_UF_cache_coherence_three_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_cambridge.1.prop1_ab_reg_max.smt2',
-            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_collision.1.prop1_ab_reg_max.smt2',
-            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_counter_v_ab_reg_max.smt2',
-            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_cyclic_scheduler.1.prop1_ab_reg_max.smt2',
+            'QF_UF\\2018-Goel-hwbench\\QF_UF_collision.1.prop1_ab_reg_max.smt2',
+            'QF_UF\\2018-Goel-hwbench\\QF_UF_counter_v_ab_reg_max.smt2',
+            'QF_UF\\2018-Goel-hwbench\\QF_UF_cyclic_scheduler.1.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_elevator.1.prop1_ab_reg_max.smt2',
             # 'QF_UF\\2018-Goel-hwbench\\QF_UF_eq_sdp_v7_ab_cti_max.smt2',
-            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_exit.1.prop1_ab_reg_max.smt2',
+            'QF_UF\\2018-Goel-hwbench\\QF_UF_exit.1.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_extinction.2.prop1_ab_reg_max.smt2',
-            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_firewire_tree.1.prop1_ab_reg_max.smt2',
+            'QF_UF\\2018-Goel-hwbench\\QF_UF_firewire_tree.1.prop1_ab_reg_max.smt2',
             "QF_UF\\TypeSafe\\z3.1184131.smt2",
             "QF_UF\\TypeSafe\\z3.1184147.smt2",
             "QF_UF\\TypeSafe\\z3.1184163.smt2",
