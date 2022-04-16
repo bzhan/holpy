@@ -2,6 +2,7 @@
 Macros used in the proof reconstruction.
 """
 
+from atexit import register
 from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, Thm
@@ -589,9 +590,9 @@ class ImpEqToMacro(Macro):
         return Thm([], concl)
     
     def get_proof_term(self, args, prevs):
-        disjs = [tm.arg for arg in args]
+        disjs = [arg.arg for arg in args]
         pt0 = prevs[0]
-        pt1 = functools.reduce(lambda x, y: x.implies_intr(y).on_prop(rewr_conv("imp_disj_eq")), reversed(disjs), pt0)
+        pt1 = functools.reduce(lambda x, y: x.implies_intr(y).on_prop(conv.rewr_conv("imp_disj_eq")), reversed(disjs), pt0)
         return pt1
 
 @register_macro("verit_and_rule")
@@ -730,6 +731,110 @@ class AndMacro(Macro):
     def get_proof_term(self, goal, prevs=None):
         raise NotImplementedError
 
+
+@register_macro("verit_or")
+class OrMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        if len(prevs) != 1:
+            raise VeriTException("or", "must have a single premise")
+
+        prev = prevs[0].prop
+        prev_disjs = prev.strip_disj()
+        if tuple(prev_disjs) != args:
+            raise VeriTException("or", "incorrect conclusion")
+        return Thm(prevs[0].hyps, Or(*args))
+
+@register_macro("verit_false")
+class FalseMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("false", "clause must have a term")
+        arg = args[0]
+        if arg != Not(false):
+            raise VeriTException("false", "goal must be ~false")
+        return Thm([], arg)
+
+@register_macro("verit_not_simplify")
+class NotSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("not_simplify", "clause must have a term")
+        arg = args[0]
+        if not arg.is_equals():
+            raise VeriTException("not_simplify", "goal must be an equality")
+        lhs, rhs = arg.lhs, arg.rhs
+
+        if not lhs.is_not():
+            raise VeriTException("not_simplify", "lhs should be a negation")
+
+        if lhs == Not(false) and rhs == true:
+            return Thm([], arg)
+        elif lhs == Not(true) and rhs == false:
+            return Thm([], arg)
+        elif lhs.is_not():
+            if not lhs == Not(Not(rhs)):
+                raise VeriTException("not_simplify", "lhs should be equal to the double negation of rhs")
+            else:
+                return Thm([], arg)
+        else:
+            raise VeriTException("not_simplify", "negated term should among true, false or negation")
+
+@register_macro("verit_eq_simplify")
+class NotSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("eq_simplify", "clause must have a term")
+        arg = args[0]
+        if not arg.is_equals():
+            raise VeriTException("eq_simplify", "goal must be an equality")
+        lhs, rhs = arg.lhs, arg.rhs
+
+        if lhs.is_equals():
+            if lhs.lhs == lhs.rhs and rhs == true:
+                return Thm([], arg)
+            elif lhs.rhs != lhs.rhs and rhs == false:
+                return Thm([], arg)
+            else:
+                raise VeriTException("eq_simplify", "rhs doesn't obey eq_simplify rule")
+        elif lhs.is_not():
+            if not lhs.arg.is_equals() or lhs.arg.lhs == lhs.arg.rhs:
+                raise VeriTException("eq_simplify", "lhs should be an inequality.")
+            if rhs == false:
+                return Thm([], arg)
+            else:
+                raise VeriTException("eq_simplify", "rhs doesn't obey eq_simplify rule")
+        else:
+            raise VeriTException("eq_simplify", "lhs should be either an equality or an inequality")
+
+@register_macro("verit_trans")
+class TransMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        pass
 
 def expand_to_ite(t):
     if t.is_comb():

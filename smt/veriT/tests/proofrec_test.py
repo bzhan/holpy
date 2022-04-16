@@ -130,6 +130,8 @@ class VeriTProofRecTest(unittest.TestCase):
             "QF_UF\\TypeSafe\\z3.1184131.smt2",
             "QF_UF\\TypeSafe\\z3.1184147.smt2",
             "QF_UF\\TypeSafe\\z3.1184163.smt2",
+            'QF_UF\\eq_diamond\\eq_diamond1.smt2',
+            'QF_UF\\eq_diamond\\eq_diamond10.smt2',
         ]
 
         for path in test_paths:

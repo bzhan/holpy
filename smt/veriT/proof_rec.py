@@ -107,6 +107,14 @@ class ProofReconstruction:
                 self.pts[step.id] = self.validate_step("verit_and_neg", step.cl, is_eval=is_eval)
             elif rule_name == "contraction":
                 self.pts[step.id] = self.validate_step("verit_contraction", step.cl, premises, is_eval=is_eval)
+            elif rule_name == "or":
+                self.pts[step.id] = self.validate_step("verit_or", step.cl, premises, is_eval=is_eval)
+            elif rule_name == "false":
+                self.pts[step.id] = self.validate_step("verit_false", step.cl, is_eval=is_eval)
+            elif rule_name == "not_simplify":
+                self.pts[step.id] = self.validate_step("verit_not_simplify", step.cl, is_eval=is_eval)
+            elif rule_name == "eq_simplify":
+                self.pts[step.id] = self.validate_step("verit_eq_simplify", step.cl, is_eval=is_eval)
             else:
                 print(rule_name)
                 self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
