@@ -182,6 +182,14 @@
                 "x": "real",
                 "y": "real"
             }
+        },
+        {
+            "name": "neg_neg",
+            "prop": "¬¬¬A ∨ A",
+            "ty": "thm",
+            "vars": {
+                "A": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",
