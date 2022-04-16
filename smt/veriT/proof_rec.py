@@ -33,11 +33,11 @@ class ProofReconstruction:
         # map from step id to proof term
         self.pts = dict()
 
-        # a list of contexts
-        self.ctx = []
+        # map from step id to steps
+        self.step_map = {step.id : step for step in self.steps}
 
-        # Current subproof id
-        self.subproof_id = None
+        # # a list of contexts
+        self.ctx = dict()
 
     def to_pts(self, ids):
         """ids is a tuple of step name, return their corresponding pts."""
@@ -54,8 +54,7 @@ class ProofReconstruction:
             return pt
 
     def add_subproof_context(self, step):
-        self.ctx.append(step.ctx)
-        self.subproof_id = step.id
+        self.ctx = step.ctx
 
     def validate(self, is_eval=True):
         for step in self.steps:
@@ -77,7 +76,11 @@ class ProofReconstruction:
             elif rule_name in ("resolution", "th_resolution"): 
                 # the difference between resolution and th-resolution rule 
                 # is invisible on reconstruction
-                self.pts[step.id] = self.validate_step("verit_th_resolution", step.cl, premises, is_eval=is_eval)
+                try:
+                    self.pts[step.id] = self.validate_step("verit_th_resolution", step.cl, premises, is_eval=is_eval)
+                except:
+                    self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
+                    step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
             elif rule_name == "implies":
                 self.pts[step.id] = self.validate_step("verit_implies", step.cl, premises, is_eval=is_eval)
             elif rule_name == "and_pos":
@@ -130,24 +133,27 @@ class ProofReconstruction:
                 self.pts[step.id] = self.validate_step("verit_eq_simplify", step.cl, is_eval=is_eval)
             elif rule_name == "trans":
                 self.pts[step.id] = self.validate_step("verit_trans", step.cl, premises, is_eval=is_eval)
-            # elif rule_name == "cong":
-            #     self.pts[step.id] = self.validate_step("verit_cong", step.cl, premises, is_eval=is_eval)
+            # elif rule_name == "let":
+            #     self.pts[step.id] = self.validate_step("verit_let", step.cl, premises, is_eval=is_eval)
+            elif rule_name == "cong":
+                try:
+                    self.pts[step.id] = self.validate_step("verit_cong", step.cl, premises, is_eval=is_eval)
+                except:
+                    self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
+                    step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
             elif rule_name == "refl":
                 self.pts[step.id] = self.validate_step("verit_refl", step.cl, is_eval=is_eval, is_refl=True)
             elif rule_name == "eq_congruent_pred":
                 self.pts[step.id] = self.validate_step("verit_eq_congurent_pred", step.cl, is_eval=is_eval)
+            elif rule_name == "ac_simp":
+                try:
+                    self.pts[step.id] = self.validate_step("verit_ac_simp", step.cl, is_eval=is_eval)
+                except:
+                    self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
+                    step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
             else:
                 print(rule_name)
                 self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
                     step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
-
-            if step.id == self.subproof_id:
-                self.subproof_id = None
-                self.ctx.pop()
-
-            # if len(step.cl) > 0:
-            #     assert self.pts[step.id].prop == term.Or(*step.cl)
-            # else:
-            #     assert self.pts[step.id].prop == term.false
 
         return self.pts[self.steps[-1].id]
