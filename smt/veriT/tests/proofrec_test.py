@@ -140,7 +140,7 @@ class VeriTProofRecTest(unittest.TestCase):
             # "QF_UF\\NEQ\\NEQ006_size3.smt2",
             # "QF_UF\\PEQ\\PEQ012_size3.smt2",
             "QF_UF\\QG-classification\\loops6\\iso_icl103.smt2",
-            # "QF_UF\\QG-classification\\qg5\\iso_icl054.smt2",
+            "QF_UF\\QG-classification\\qg5\\iso_icl054.smt2",
         ]
 
         profile = False

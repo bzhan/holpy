@@ -149,11 +149,11 @@ class ProofReconstruction:
             elif rule_name == "eq_congruent_pred":
                 self.pts[step.id] = self.validate_step("verit_eq_congurent_pred", step.cl, is_eval=is_eval)
             elif rule_name == "ac_simp":
-                try:
-                    self.pts[step.id] = self.validate_step("verit_ac_simp", step.cl, is_eval=is_eval)
-                except:
-                    self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
-                    step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
+                self.pts[step.id] = self.validate_step("verit_ac_simp", step.cl, is_eval=is_eval)
+            elif rule_name == "and_simplify":
+                self.pts[step.id] = self.validate_step("verit_and_simplify", step.cl, is_eval=is_eval)
+            elif rule_name == "or_simplify":
+                self.pts[step.id] = self.validate_step("verit_or_simplify", step.cl, is_eval=is_eval)
             else:
                 print(rule_name)
                 self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\

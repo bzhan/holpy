@@ -1167,10 +1167,20 @@ def flatten_prop(tm):
         return tm
     elif tm.is_conj():
         conjs = logic.strip_conj(tm)
-        return And(*term_ord.sorted_terms([flatten_prop(t) for t in conjs]))
+        flat_conjs = [flatten_prop(t) for t in conjs]
+        distinct_conjs = []
+        for f in flat_conjs:
+            if f not in distinct_conjs:
+                distinct_conjs.append(f)
+        return And(*term_ord.sorted_terms(distinct_conjs))
     elif tm.is_disj():
         disjs = logic.strip_disj(tm)
-        return Or(*term_ord.sorted_terms([flatten_prop(t) for t in disjs]))
+        flat_disjs = [flatten_prop(t) for t in disjs]
+        distinct_disjs = []
+        for f in flat_disjs:
+            if f not in distinct_disjs:
+                distinct_disjs.append(f)
+        return Or(*term_ord.sorted_terms(distinct_disjs))
     else:
         raise NotImplementedError
         
@@ -1190,7 +1200,9 @@ class ACSimpMacro(Macro):
             raise VeriTException("ac_simp", "goal should be an equality")
 
         lhs, rhs = goal.lhs, goal.rhs
-        if lhs.head != rhs.head or not lhs.is_conj() and not lhs.is_disj():
+        if not lhs.is_conj() and not lhs.is_disj():
+            print(lhs.head, rhs.head)
+            print(goal)
             raise VeriTException("ac_simp", "lhs and rhs are not both disjunction or conjunction.")
         rhs_flat = flatten_prop(rhs)
         lhs_flat = flatten_prop(lhs)
@@ -1201,6 +1213,82 @@ class ACSimpMacro(Macro):
             print("rhss", rhs_flat)
             raise VeriTException("ac_simp", "unexpected result")
         
+@register_macro("verit_and_simplify")
+class AndSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("and_simplify", "must have a single goal")
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("and_simplify", "goal should be an equality")
+
+        lhs_conjs = goal.lhs.strip_conj()
+        # p_1 & .... & p_n <--> false if ?i, j. p_i = ~p_j
+        for i in range(len(lhs_conjs)):
+            for j in range(i+1, len(lhs_conjs)):
+                if Not(lhs_conjs[i]) == lhs_conjs[j] or lhs_conjs[i] == Not(lhs_conjs[j]):
+                    if goal.rhs == false:
+                        return Thm([], goal)
+                    else:
+                        raise VeriTException("and_simplify", "unexpected rhs")
+        elim_true_conj = []
+        for conj in lhs_conjs:
+            if conj != true:
+                elim_true_conj.append(conj)
+        if And(*elim_true_conj) == goal.rhs:
+            return Thm([], goal)
+        if false in lhs_conjs:
+            if goal.rhs == false:
+                return Thm([], goal)
+            else:
+                raise VeriTException("and_simplify", "unexpected rhs")
+        raise VeriTException("and_simplify", "haven't implemented")
+
+@register_macro("verit_or_simplify")
+class OrSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("or_simplify", "must have a single goal")
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("or_simplify", "goal should be an equality")
+
+        lhs_disjs = goal.lhs.strip_disj()
+        # p_1 & .... & p_n <--> false if ?i, j. p_i = ~p_j
+        for i in range(len(lhs_disjs)):
+            for j in range(i+1, len(lhs_disjs)):
+                if Not(lhs_disjs[i]) == lhs_disjs[j] or lhs_disjs[i] == Not(lhs_disjs[j]):
+                    if goal.rhs == true:
+                        return Thm([], goal)
+                    else:
+                        raise VeriTException("or_simplify", "unexpected rhs")
+        
+        # delete redundant false
+        elim_true_disj = []
+        for disj in lhs_disjs:
+            if disj != false:
+                elim_true_disj.append(disj)
+        if Or(*elim_true_disj) == goal.rhs:
+            return Thm([], goal)
+        if true in lhs_disjs:
+            if goal.rhs == true:
+                return Thm([], goal)
+            else:
+                raise VeriTException("or_simplify", "unexpected rhs")
+        print("goal", goal)
+        raise VeriTException("or_simplify", "haven't implemented")
+
+
 
 @register_macro("or_pos")
 class OrPosMacro(Macro):
