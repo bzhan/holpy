@@ -28,7 +28,7 @@ def test_validate_step(verit_proof, is_eval=True):
     recon = proof_rec.ProofReconstruction(verit_proof)
     return recon.validate(is_eval)
 
-def test_file(filename, show_time=True):
+def test_file(filename, show_time=True, test_eval=False, test_proofterm=False):
     """"""
     global smtlib_path
     if not smtlib_path:
@@ -54,22 +54,30 @@ def test_file(filename, show_time=True):
     parse_time = time.perf_counter() - start_time
 
     # Validation by macro.eval
-    start_time = time.perf_counter()
-    pt1 = test_validate_step(steps)
-    validate_eval_time = time.perf_counter() - start_time
+    eval_time_str = ""
+    if test_eval:
+        start_time = time.perf_counter()
+        pt1 = test_validate_step(steps)
+        eval_time = time.perf_counter() - start_time
+        eval_time_str = "Eval: %.3f." % eval_time
+        assert pt1.rule != "sorry"
 
     # Validation by macro.get_proof_term
-    start_time = time.perf_counter()
-    pt2 = test_validate_step(steps, is_eval=False)
-    validate_get_pt_time = time.perf_counter() - start_time
-    
+    proofterm_time_str = ""
+    if test_proofterm:
+        start_time = time.perf_counter()
+        pt2 = test_validate_step(steps, is_eval=False)
+        proofterm_time = time.perf_counter() - start_time
+        proofterm_time_str = "Proofterm: %.3f." % proofterm_time
+        assert pt2.rule != "sorry"
 
+    # Optional: print time
     if show_time:
-        print("Solve: %.3f. Parse: %.3f. Validate: (eval) %.3f (get_proof_term) %.3f" 
-                    % (solve_time, parse_time, validate_eval_time, validate_get_pt_time))
+        print("Solve: %.3f. Parse: %.3f. %s %s"
+                    % (solve_time, parse_time, eval_time_str, proofterm_time_str))
 
 
-def test_path(path, write_file=False, show_time=True, veriT_only=False):
+def test_path(path, show_time=True, test_eval=False, test_proofterm=False):
     """Test a directory containing SMT files."""
     global smtlib_path
     if not smtlib_path:
@@ -85,10 +93,10 @@ def test_path(path, write_file=False, show_time=True, veriT_only=False):
         # Input is a directory
         sub_paths = [path + '\\' + child for child in os.listdir(abs_path)]
         for sub_path in sub_paths:
-            test_path(sub_path, write_file=write_file, show_time=show_time, veriT_only=veriT_only)
+            test_path(sub_path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm)
     else:
         # Input is a file
-        test_file(path, show_time=show_time)
+        test_file(path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm)
 
 
 
@@ -125,4 +133,4 @@ class VeriTProofRecTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path)
+            test_path(path, test_eval=True)
