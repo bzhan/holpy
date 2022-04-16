@@ -443,13 +443,36 @@ class EqTransitive(Macro):
         self.limit = None
 
     def eval(self, args, prevs=None):
-        head, tail = args[0], args[-2]
-        if args[-1].lhs == head.arg.lhs and args[-1].rhs == tail.arg.rhs:
+        if len(args) < 3:
+            raise VeriTException("eq_transitive", "must have at least three disjuncts")
+        prems = []
+        for arg in args[:-1]:
+            if not arg.is_not() or not arg.arg.is_equals():
+                raise VeriTException("eq_transitive", "all but last disjunct must be a negation")
+            prems.append(arg.arg)
+
+        cur_eq = prems[0]
+        for prem in prems[1:]:
+            if cur_eq.lhs == prem.lhs:
+                cur_eq = Eq(cur_eq.rhs, prem.rhs)
+            elif cur_eq.lhs == prem.rhs:
+                cur_eq = Eq(cur_eq.rhs, prem.lhs)
+            elif cur_eq.rhs == prem.lhs:
+                cur_eq = Eq(cur_eq.lhs, prem.rhs)
+            elif cur_eq.rhs == prem.rhs:
+                cur_eq = Eq(cur_eq.lhs, prem.lhs)
+            else:
+                raise VeriTException("eq_transitive", "cannot connect equalities")
+        
+        if not args[-1].is_equals():
+            raise VeriTException("eq_transitive", "last disjunct must be an equality")
+
+        if cur_eq == args[-1]:
             return Thm([], Or(*args))
-        elif args[-1].lhs == head.arg.lhs and args[-1].rhs == tail.arg.lhs:
+        elif cur_eq.lhs == args[-1].rhs and cur_eq.rhs == args[-1].lhs:
             return Thm([], Or(*args))
         else:
-            raise NotImplementedError
+            raise VeriTException("eq_transitive", "unexpected equality")
 
     def get_proof_term(self, args, prevs=None):
         disjs = [tm.arg for tm in args[:-1]]
@@ -846,6 +869,28 @@ class AndNegMacro(Macro):
         return Thm([], Or(*args))
 
     # def get_proof_term(self, args, prevs):
+
+@register_macro("verit_contraction")
+class ContractionMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(prevs) != 1:
+            raise VeriTException("contraction", "must have a single premise")
+
+        prev = prevs[0].prop
+        prev_disjs = prev.strip_disj()
+        distinct_disjs = []
+        for disj in prev_disjs:
+            if disj not in distinct_disjs:
+                distinct_disjs.append(disj)
+        if tuple(distinct_disjs) != args:
+            raise VeriTException("contraction", "unexpected goal")
+        return Thm(prevs[0].hyps, Or(*args))
+
 
 def strip_num(tm, num):
     """Strip the disjunction/conjunction by the provided number, in case of

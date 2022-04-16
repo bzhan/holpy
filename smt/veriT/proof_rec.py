@@ -105,6 +105,8 @@ class ProofReconstruction:
                 self.pts[step.id] = self.validate_step("verit_ite2", step.cl, premises, is_eval=is_eval)
             elif rule_name == "and_neg":
                 self.pts[step.id] = self.validate_step("verit_and_neg", step.cl, is_eval=is_eval)
+            elif rule_name == "contraction":
+                self.pts[step.id] = self.validate_step("verit_contraction", step.cl, premises, is_eval=is_eval)
             else:
                 print(rule_name)
                 self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
