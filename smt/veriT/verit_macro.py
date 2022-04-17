@@ -176,7 +176,7 @@ def resolve_order(props):
                     res_list.append(t)
         id_remain.remove(id2)
         props[id1] = res_list
-        resolves.append(resolve)
+        resolves.append(resolve + (res_list,))
 
     return resolves, props[id_remain[0]]
 
@@ -195,7 +195,7 @@ class ThResolutionMacro(Macro):
         for cl_size, prev in zip(cl_sizes, prevs):
             prems.append(strip_disj_n(prev.prop, cl_size))
 
-        order, cl_concl = resolve_order(prems)
+        _, cl_concl = resolve_order(prems)
         if set(cl_concl) == set(cl):
             return Thm([hyp for pt in prevs for hyp in pt.hyps], Or(*cl))
         else:
@@ -205,93 +205,59 @@ class ThResolutionMacro(Macro):
             print('prev')
             for prev in prevs:
                 print(prev.prop)
-            print(order)
             print("Computed: [%s]", ', '.join(str(t) for t in cl_concl))
             print("In proof: [%s]", ', '.join(str(t) for t in cl))
             raise VeriTException("th_resolution", "unexpected conclusion")
 
-    def resolution_two_pt(self, pt1, pt2):
-        disj1 = expand_disj(pt1.prop)
-        disj2 = expand_disj(pt2.prop)
-        side = None
-        total = False
-        for i, t1 in enumerate(disj1):
-            for j, t2 in enumerate(disj2):
-                if t2 == Not(t1) :
-                    side = 'left'
-                    break
-                elif t1 == Not(t2) or t1 == Not(pt2.prop):
-                    side = 'right'
-                    break
-                elif t2 == Not(pt1.prop):
-                    side = 'left'
-                    total = True
-                elif t1 == Not(pt1.prop):
-                    side = 'right'
-                    total = True
-            if side is not None:
-                break
-                
-        assert side is not None, "resolution: literal not found"
-        
-        # If side is wrong, just swap:
-        if side == 'right':
-            return self.resolution_two_pt(pt2, pt1)
-        
-        # Move items i and j to the front
-        if not total:
-            disj1 = [disj1[i]] + disj1[:i] + disj1[i+1:]
-        disj2 = [disj2[j]] + disj2[:j] + disj2[j+1:]
-        eq_pt1 = logic.imp_disj_iff(Eq(pt1.prop, Or(*disj1)))        
-        eq_pt2 = logic.imp_disj_iff(Eq(pt2.prop, Or(*disj2)))
-        if not total:
-            pt1 = eq_pt1.equal_elim(pt1)
-        pt2 = eq_pt2.equal_elim(pt2)
-        if total:
-            pt = logic.apply_theorem('resolution_right', pt1, pt2)
-        elif len(disj1) > 1 and len(disj2) > 1:
-            pt = logic.apply_theorem('resolution', pt1, pt2)
-        elif len(disj1) > 1 and len(disj2) == 1:
-            pt = logic.apply_theorem('resolution_left', pt1, pt2)
-        elif len(disj1) == 1 and len(disj2) > 1:
-            pt = logic.apply_theorem('resolution_right', pt1, pt2)
-        else:
-            pt = logic.apply_theorem('negE', pt2, pt1)
-
-        return pt.on_prop(logic.disj_norm())
-
-
     def get_proof_term(self, args, prevs):
-        pt_res = prevs[0]
-        remain = []
-        for i in range(1, len(prevs)):
-            if pt_res.prop == Not(prevs[i].prop):
-                pt_res = logic.apply_theorem("negE", pt_res, prevs[i])
-            elif prevs[i].prop == Not(pt_res.prop):
-                pt_res = logic.apply_theorem("negE", prevs[i], pt_res)
+        cl, cl_sizes = args
+        assert len(cl_sizes) == len(prevs)
+        prems = []
+        for cl_size, prev in zip(cl_sizes, prevs):
+            prems.append(strip_disj_n(prev.prop, cl_size))
+
+        # Make a copy of prems, as it needs to be used later
+        resolves, _ = resolve_order(list(prems))
+
+        # Use a list to store intermediate resolvants.
+        prevs = list(prevs)
+
+        for res_step in resolves:
+            id1, id2, t1, t2, res_list = res_step
+            pt1, pt2 = prevs[id1], prevs[id2]
+            prem1, prem2 = prems[id1], prems[id2]
+
+            # First, move t1 and t2 to the left
+            if t1 > 0:
+                disj1 = [prem1[t1]] + prem1[:t1] + prem1[t1+1:]
+                eq_pt1 = logic.imp_disj_iff(Eq(pt1.prop, Or(*disj1)))
+                pt1 = eq_pt1.equal_elim(pt1)
+            if t2 > 0:
+                disj2 = [prem2[t2]] + prem2[:t2] + prem2[t2+1:]
+                eq_pt2 = logic.imp_disj_iff(Eq(pt2.prop, Or(*disj2)))
+                pt2 = eq_pt2.equal_elim(pt2)
+
+            # Apply the resolution theorem
+            if len(prem1) > 1 and len(prem2) > 1:
+                pt = logic.apply_theorem('resolution', pt1, pt2)
+            elif len(prem1) > 1 and len(prem2) == 1:
+                pt = logic.apply_theorem('resolution_left', pt1, pt2)
+            elif len(prem1) == 1 and len(prem2) > 1:
+                pt = logic.apply_theorem('resolution_right', pt1, pt2)
             else:
-                try:
-                    pt_res = self.resolution_two_pt(pt_res, prevs[i])
-                except:
-                    remain.append(i)
+                pt = logic.apply_theorem('negE', pt2, pt1)
 
-        for i in remain:
-            if pt_res.prop == Not(prevs[i].prop):
-                pt_res = logic.apply_theorem("negE", pt_res, prevs[i])
-            elif prevs[i].prop == Not(pt_res.prop):
-                pt_res = logic.apply_theorem("negE", prevs[i], pt_res)
-            else:
-                pt_res = self.resolution_two_pt(pt_res, prevs[i])
-
-        if len(args) == 0: # |- false
-            return pt_res
-    
-        goal = Or(*args)
-        if goal == pt_res.prop:
-            return pt_res
-
-        pt_eq_disj = ProofTerm("imp_disj", Implies(pt_res.prop, goal))
-        return pt_eq_disj.implies_elim(pt_res)
+            # Reorder the result if necessary
+            res = Or(*res_list)
+            if pt.prop != res:
+                eq_pt = logic.imp_disj_iff(Eq(pt.prop, res))
+                pt = eq_pt.equal_elim(pt)
+            
+            prems[id1] = res_list
+            prevs[id1] = pt
+        
+        # Return the result of last step of resolution
+        return prevs[resolves[-1][0]]
 
 
 @register_macro("verit_implies")
