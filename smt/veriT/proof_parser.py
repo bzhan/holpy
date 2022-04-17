@@ -221,10 +221,14 @@ class ProofTransformer(Transformer):
         return tm
 
     def mk_disj_tm(self, *tms):
-        return hol_term.Or(*tms)
+        disj_tm = hol_term.Or(*tms)
+        disj_tm.arity = len(tms)
+        return disj_tm
 
     def mk_conj_tm(self, *tms):
-        return hol_term.And(*tms)
+        conj_tm = hol_term.And(*tms)
+        conj_tm.arity = len(tms)
+        return conj_tm
 
     def mk_impl_tm(self, *tms):
         return hol_term.Implies(*tms)

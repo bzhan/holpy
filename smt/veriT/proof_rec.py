@@ -145,8 +145,12 @@ class ProofReconstruction:
             elif rule_name == "trans":
                 self.pts[step.id] = self.validate_step("verit_trans", step.cl, premises, is_eval=is_eval)
             elif rule_name == "let":
-                print(step.id)
-                self.pts[step.id] = self.validate_step("verit_let", step.cl, premises, is_eval=is_eval, ctx=self.ctx)
+                try:
+                    self.pts[step.id] = self.validate_step("verit_let", step.cl, premises, is_eval=is_eval, ctx=self.ctx)
+                except:
+                    print("Can't prove", step.id)
+                    self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
+                    step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
             elif rule_name == "cong":
                 self.pts[step.id] = self.validate_step("verit_cong", step.cl, premises, is_eval=is_eval)
             elif rule_name == "refl":

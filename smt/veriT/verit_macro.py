@@ -122,6 +122,13 @@ def strip_disj_n(tm, n):
     assert tm.is_disj(), "strip_disj_n: not enough terms"
     return [tm.arg1] + strip_disj_n(tm.arg, n-1)
 
+def strip_conj_n(tm, n):
+    """Strip the conjunction into n parts."""
+    if n == 1:
+        return [tm]
+    assert tm.is_conj(), "strip_disj_n: not enough terms"
+    return [tm.arg1] + strip_conj_n(tm.arg, n-1)
+
 def try_resolve(prop1, prop2):
     """Try to resolve two propositions."""
     for i in range(len(prop1)):
@@ -925,12 +932,14 @@ class CongMacro(Macro):
         if lhs.head != rhs.head:
             raise VeriTException("cong", "head should be same")
         
-        # Treat | and & as n-ary operator when 
+        # Treat | and & as n-ary operators when 
         # the number of premises are larger than 2
-        if lhs.is_conj() and len(prevs) > 2:
-            l_args, r_args = lhs.strip_conj(), rhs.strip_conj()
-        elif lhs.is_disj() and len(prevs) > 2:
-            l_args, r_args = lhs.strip_disj(), rhs.strip_disj()
+        if lhs.is_conj():
+            size = lhs.arity
+            l_args, r_args = strip_conj_n(lhs, size), strip_conj_n(rhs,size)
+        elif lhs.is_disj():
+            size = lhs.arity
+            l_args, r_args = strip_disj_n(lhs, size), strip_disj_n(rhs, size)
         else:
             l_args, r_args = lhs.args, rhs.args
         h, i = lhs.head, 0
