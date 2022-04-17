@@ -222,7 +222,7 @@ class ThResolutionMacro(Macro):
         # Use a list to store intermediate resolvants.
         prevs = list(prevs)
 
-        for res_step in resolves:
+        for i, res_step in enumerate(resolves):
             id1, id2, t1, t2, res_list = res_step
             pt1, pt2 = prevs[id1], prevs[id2]
             prem1, prem2 = prems[id1], prems[id2]
@@ -248,7 +248,10 @@ class ThResolutionMacro(Macro):
                 pt = logic.apply_theorem('negE', pt2, pt1)
 
             # Reorder the result if necessary
-            res = Or(*res_list)
+            if i == len(resolves) - 1:
+                res = Or(*cl)
+            else:
+                res = Or(*res_list)
             if pt.prop != res:
                 eq_pt = logic.imp_disj_iff(Eq(pt.prop, res))
                 pt = eq_pt.equal_elim(pt)
@@ -257,7 +260,7 @@ class ThResolutionMacro(Macro):
             prevs[id1] = pt
         
         # Return the result of last step of resolution
-        return prevs[resolves[-1][0]]
+        return pt
 
 
 @register_macro("verit_implies")

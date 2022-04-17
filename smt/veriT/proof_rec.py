@@ -6,6 +6,7 @@ from smt.veriT.verit_macro import NotOrMacro
 from kernel.proofterm import ProofTerm
 from kernel.thm import Thm
 from kernel import term
+from kernel.term import Or
 from kernel import theory
 from logic import logic
 
@@ -60,7 +61,20 @@ class ProofReconstruction:
             return ProofTerm(macro_name, args, prevs)
         else:
             macro = theory.get_macro(macro_name)
-            pt = macro.get_proof_term(args, prevs)
+            try:
+                pt = macro.get_proof_term(args, prevs)
+                if macro_name == 'verit_th_resolution':
+                    cl = args[0]
+                else:
+                    cl = args
+                if pt.prop != Or(*cl):
+                    print(macro_name)
+                    print("Computed: ", pt.prop)
+                    print("In proof: ", Or(*cl))
+                    raise AssertionError("Unexpected returned theorem")
+            except NotImplementedError:
+                print(macro_name)
+                pt = ProofTerm(macro_name, args, prevs)
             return pt
 
     def add_subproof_context(self, step):
