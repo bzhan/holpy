@@ -33,14 +33,16 @@ class Step(ProofCommand):
             disjunction in SMT-LIB `or` command.
     rule_name : a deduction method.
     pm: the premises of the rule.
+    ctx: current context
     """
-    def __init__(self, id, rule_name, cl, pm=None) -> None:
+    def __init__(self, id, rule_name, cl, pm=None, ctx=dict()) -> None:
         self.id = id
         self.rule_name = rule_name
         self.cl = cl
         if pm is None:
             pm = []
         self.pm = pm
+        self.cur_ctx = ctx
 
     def __str__(self):
         cl = " ".join(str(c) for c in self.cl)

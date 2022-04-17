@@ -190,6 +190,16 @@
             "vars": {
                 "A": "bool"
             }
+        },
+        {
+            "name": "let",
+            "rules": [
+                {
+                    "prop": "let s f = f s"
+                }
+            ],
+            "ty": "def.ind",
+            "type": "'a ⇒ ('a ⇒ 'b) ⇒ 'b"
         }
     ],
     "description": "Schematic verit proof rule.",

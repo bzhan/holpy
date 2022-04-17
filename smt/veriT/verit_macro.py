@@ -966,13 +966,12 @@ class ReflMacro(Macro):
         goal, contexts = args
         if not goal.is_equals():
             raise VeriTException("refl", "goal should be an equality")
-        if not isinstance(contexts, list):
-            raise VeriTException("refl", "context should be a list of contexts")
-        for ctx in contexts:
-            if str(goal.lhs) in ctx and ctx[str(goal.lhs)] == goal.rhs:
-                return Thm([], goal)
-            if str(goal.rhs) in ctx and ctx[str(goal.rhs)] == goal.lhs:
-                return Thm([], goal)
+        if not isinstance(contexts, dict):
+            raise VeriTException("refl", "context should be a mapping")
+        if str(goal.lhs) in contexts and contexts[str(goal.lhs)] == goal.rhs:
+            return Thm([], goal)
+        if str(goal.rhs) in contexts and contexts[str(goal.rhs)] == goal.lhs:
+            return Thm([], goal)
         else:
             raise VeriTException("refl", "either lhs and rhs of goal is not in ctx")
 
@@ -1136,6 +1135,47 @@ class ContractionMacro(Macro):
             raise VeriTException("contraction", "unexpected goal")
         return Thm(prevs[0].hyps, Or(*args))
 
+def let_substitue(tm, ctx):
+    """Substitue all variables in ctx into concrete terms, 
+    and move the all variables at lhs to rhs (sort).
+    """
+    if tm.is_conj():
+        conjs = [let_substitue(conj, ctx) for conj in tm.strip_conj()]
+        return And(*conjs)
+    elif tm.is_disj():
+        disjs = [let_substitue(disj, ctx) for disj in tm.strip_disj()]
+        return Or(*disjs)
+    elif tm.is_equals():
+        lhs, rhs = tm.lhs, tm.rhs
+        if str(lhs) in ctx:
+            return Eq(rhs, ctx[str(lhs)])
+        elif str(rhs) in ctx:
+            return Eq(lhs, ctx[str(rhs)])
+        else:
+            return tm
+    elif tm.is_not():
+        return Not(let_substitue(tm.arg, ctx))
+    elif str(tm) in ctx:
+        return ctx[str(tm)]
+    else:
+        return tm
+
+def compare_sym_tm(tm1, tm2):
+    """Compare tm1 and tm2 with the symmetry property."""
+    if tm1.head != tm2.head:
+        return False
+    elif tm1.is_equals():
+        if tm1.lhs == tm2.lhs and tm1.rhs == tm2.rhs:
+            return True
+        elif tm1.rhs == tm2.lhs and tm1.lhs == tm2.rhs:
+            return True
+        else:
+            return False
+    else:
+        for l_arg, r_arg in zip(tm1.args, tm2.args):
+            if not compare_sym_tm(l_arg, r_arg):
+                return False
+        return True
 
 @register_macro("verit_let")
 class LetMacro(Macro):
@@ -1145,21 +1185,12 @@ class LetMacro(Macro):
         self.limit = None
 
     def eval(self, args, prevs):
-        if len(prevs) > 0:
-            raise NotImplementedError
-        
-        if len(args) != 1:
-            raise VeriTException("let", "must have a single argument")
-        
-        goal = args[0]
-        if not goal.is_equals():
-            raise VeriTException("let", "goal should be an equality")
-        if goal.lhs == goal.rhs:
+        goal, ctx = args
+        beta_lhs = goal.lhs.beta_norm()
+        if compare_sym_tm(let_substitue(beta_lhs, ctx), goal.rhs):
             return Thm([], goal)
         else:
-            print(goal.lhs)
-            print(goal.rhs)
-            raise VeriTException("let", "left and right side are not equal")
+            raise NotImplementedError
 
 def flatten_prop(tm):
     """Unfold a nested proposition formula."""

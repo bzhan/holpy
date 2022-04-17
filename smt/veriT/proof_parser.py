@@ -1,10 +1,18 @@
+from typing import Iterable
 from lark import Lark, Transformer, v_args, exceptions
 from smt.veriT.command import Assume, Step, Anchor
 from logic.logic import mk_if
 from kernel import term as hol_term
 from kernel import type as hol_type
 from data import list as hol_list
-import copy
+
+class VeriTParseException(Exception):
+    def __init__(self, tm_name, message) -> None:
+        self.tm_name = tm_name
+        self.message = message
+    
+    def __str__(self) -> str:
+        return "%s: %s" % (self.tm_name, self.message)
 
 def str_to_hol_type(s):
         """Convert string to HOL type."""
@@ -80,7 +88,7 @@ veriT_grammar = r"""
             | "(=>" term term ")" -> mk_impl_tm
             | "(=" term term ")" -> mk_eq_tm
             | "(!" term ":named" "@" CNAME ")" -> mk_annot_tm
-            | "(let" "(" let_pair+ ")" term ")" -> mk_let_tm
+            | "(let" "(" let_pair* ")" term ")" -> mk_let_tm
             | "(distinct" term term+ ")" -> mk_distinct_tm
             | "(" term ")" -> mk_par_tm
             | "(" term+ ")" -> mk_app_tm
@@ -110,22 +118,24 @@ class ProofTransformer(Transformer):
     ctx: map symbols to higher-order terms
     """
     def __init__(self, smt_file_ctx):
-        # Context from the SMT problem description file.
+        # context derived from .smt2 file.
         self.smt_file_ctx = smt_file_ctx
 
-        # Map from annotation to the term
+        # map from annotation to term
+        # annotation is just syntactic substitution
         self.annot_tm = dict()
 
-        # map from local variables to term
+        # map from local variables to terms
         self.let_tm = dict()
 
-        # Proof context: map from variables to terms
+        # store anchor context
         self.proof_ctx = []
 
-        self.cur_subprf_id = []
+        # Map from step name to its context
+        self.step_ctx = dict()
 
-    def is_sub_step(self):
-        return self.cur_subprf_id is not None
+        # current subproof id
+        self.cur_subprf_id = []
 
     def add_context(self, var, ty, tm):
         hol_ty = str_to_hol_type(ty.value)
@@ -134,16 +144,27 @@ class ProofTransformer(Transformer):
         return var_name, tm
 
     def ret_annot_tm(self, name):
+        """Return the term which is represented by a unique @-prefix name."""
         name = "@" + str(name)
         return self.annot_tm[name]
 
     def ret_let_tm(self, name):
+        """There are two kinds of occursion of ?name in proof.
+        1. let expression : (let (?x 1) ?x + 1)
+        2. anchor context: (:= (?x I) term)
+        
+        We first search ?name in let scope then in context, this is correct
+        since if ?name is not a binding var, the let scope would be empty. 
+        """
         name = "?" + str(name)
+        if len(self.let_tm) > 0 and name in self.let_tm:
+            return self.let_tm[name]
+        
         for ctx in self.proof_ctx:
             if name in ctx:
                 return hol_term.Var(name, ctx[name].get_type())
 
-        return self.let_tm[name]
+        raise VeriTParseException("ret_let_tm", "can't find ?var_name")
 
     def mk_par_tm(self, tm):
         return tm
@@ -152,11 +173,28 @@ class ProofTransformer(Transformer):
         return tms[0](*tms[1:])
 
     def mk_let_pair(self, name, tm):
+        """Make the let scope."""
         name = "?" + str(name)
-        self.let_tm[name] = hol_term.Var(name, tm.get_type())
+        T = tm.get_type()
+        bound_var = hol_term.Var(name, T)
+        self.let_tm[name] = bound_var
+        return bound_var, T, tm
 
     def mk_let_tm(self, *tms):
-        return tms[-1]
+        """Represent the let expression as a lambda term.
+        
+        - bounds: a list of binding pairs
+        - lbd_tm: the function body
+        The let scope will be cleared when the let-expression is closed.
+        """
+        lbd_tm = tms[-1]
+        bounds = tms[:-1]
+        # let (?x a) (?y b) ?x + ?y <--> (% ?y ((% ?x. ?x + ?y) a)) b
+        for var, T, arg in bounds:
+            lbd_tm = hol_term.Comb(hol_term.Abs(str(var), T, lbd_tm), arg)
+        # clear the let scope
+        self.let_tm.clear()
+        return lbd_tm        
 
     def ret_tm(self, tm):
         tm = str(tm)
@@ -201,28 +239,58 @@ class ProofTransformer(Transformer):
         return ''.join(step_id)
 
     def mk_assume(self, assm_id, tm):
-        return Assume(assm_id, tm)
+        assm_step = Assume(assm_id, tm)
+        return assm_step
 
     def mk_anchor(self, id, *ctx):
+        """Every anchor creates a new context."""
         new_ctx = {}
         for var, tm in ctx:
             new_ctx[var] = tm
         self.proof_ctx.append(new_ctx)
-        prf_ctx = copy.deepcopy(self.proof_ctx)
+        prf_ctx = {var_name : tm for ctx in self.proof_ctx for var_name, tm in ctx.items()}
         step = Anchor(str(id), prf_ctx)
         self.cur_subprf_id.append(str(id))
         return step
 
     def mk_step(self, step_id, cl, rule_name, pm=None):
+        # make context of current step
+        # Context created by anchor
+        step_ctx = {var_name:tm for ctx in self.proof_ctx for var_name, tm in ctx.items()}
+        
+        # if current step meets subproof id, pop the last context
         if len(self.cur_subprf_id) and self.cur_subprf_id[-1] == step_id:
             self.cur_subprf_id.pop()
             self.proof_ctx.pop()
-        if not self.cur_subprf_id:
-            assert len(self.proof_ctx) == 0
 
-        if pm is not None:
-            pm = [p for p in pm]
-        return Step(step_id, rule_name, cl, pm)
+        # if there is no anchor context, the step should not be in a subproof
+        assert self.cur_subprf_id or len(self.proof_ctx) == 0
+
+        # Make new step
+        return Step(step_id, rule_name, cl, pm, step_ctx)
+        
+        # If step id meets subproof id, pop the last context after this step
+        
+
+        # if len(self.cur_subprf_id) and self.cur_subprf_id[-1] == step_id:
+        #     new_ctx = {var_name:tm for ctx in self.proof_ctx for var_name, tm in ctx.items()}
+        #     self.cur_subprf_id.pop()
+        #     self.proof_ctx.pop()
+        # else:
+        #     new_ctx = dict()
+        # # Add premises' context
+        # if pm is not None:
+        #     pm = [p for p in pm]
+        #     for p in pm:
+        #         new_ctx.update(self.step_ctx[p])
+        # if not self.cur_subprf_id:
+        #     assert len(self.proof_ctx) == 0
+
+        # # if pm is not None:
+        # #     pm = [p for p in pm]
+        # # insert new context if current step is the end of subproof
+        # step = Step(step_id, rule_name, cl, pm, new_ctx)
+        # self.step_ctx[step_id] = new_ctx
 
     def mk_clause(self, *tm):
         return tm

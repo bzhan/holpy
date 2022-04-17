@@ -45,6 +45,9 @@ class ProofReconstruction:
         # # a list of contexts
         self.ctx = dict()
 
+        # current subproof id
+        self.subprf_id = None
+
     def to_pts(self, ids):
         """ids is a tuple of step name, return their corresponding pts."""
         return tuple(self.pts[i] for i in ids)
@@ -53,8 +56,8 @@ class ProofReconstruction:
         """Return the list of clause sizes, used in resolution."""
         return tuple(self.steps_dict[i].get_clause_size() for i in ids)
 
-    def validate_step(self, macro_name, args, prevs=None, is_eval=True, is_refl=False):
-        if is_refl:
+    def validate_step(self, macro_name, args, prevs=None, is_eval=True, ctx=None):
+        if ctx is not None:
             args = args + (self.ctx,)
         if is_eval:
             return ProofTerm(macro_name, args, prevs)
@@ -65,6 +68,7 @@ class ProofReconstruction:
 
     def add_subproof_context(self, step):
         self.ctx = step.ctx
+        self.subprf_id = step.id
 
     def validate(self, is_eval=True):
         for step in self.steps:
@@ -140,12 +144,13 @@ class ProofReconstruction:
                 self.pts[step.id] = self.validate_step("verit_eq_simplify", step.cl, is_eval=is_eval)
             elif rule_name == "trans":
                 self.pts[step.id] = self.validate_step("verit_trans", step.cl, premises, is_eval=is_eval)
-            # elif rule_name == "let":
-            #     self.pts[step.id] = self.validate_step("verit_let", step.cl, premises, is_eval=is_eval)
+            elif rule_name == "let":
+                print(step.id)
+                self.pts[step.id] = self.validate_step("verit_let", step.cl, premises, is_eval=is_eval, ctx=self.ctx)
             elif rule_name == "cong":
                 self.pts[step.id] = self.validate_step("verit_cong", step.cl, premises, is_eval=is_eval)
             elif rule_name == "refl":
-                self.pts[step.id] = self.validate_step("verit_refl", step.cl, is_eval=is_eval, is_refl=True)
+                self.pts[step.id] = self.validate_step("verit_refl", step.cl, is_eval=is_eval, ctx=step.cur_ctx)
             elif rule_name == "eq_congruent_pred":
                 self.pts[step.id] = self.validate_step("verit_eq_congurent_pred", step.cl, is_eval=is_eval)
             elif rule_name == "ac_simp":
