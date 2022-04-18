@@ -730,6 +730,14 @@ def strip_disj(t):
             return [t]
     return term_ord.sorted_terms(rec(t))
 
+def strip_conj(t):
+    def rec(t):
+        if t.is_conj():
+            return rec(t.arg1) + rec(t.arg)
+        else:
+            return [t]
+    return term_ord.sorted_terms(rec(t))
+
 class disj_norm(Conv):
     """Normalize an disjunction."""
     def get_proof_term(self, t):
