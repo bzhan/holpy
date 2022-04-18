@@ -271,13 +271,7 @@ class ProofTransformer(Transformer):
         - lbd_tm: the function body
         The let scope will be cleared when the let-expression is closed.
         """
-        # lbd_tm = tms[-1]
-        # bounds = tms[:-1]
-        # # let (?x a) (?y b) ?x + ?y <--> (% ?y ((% ?x. ?x + ?y) a)) b
-        # for var, T, arg in bounds:
-        #     lbd_tm = hol_term.Comb(hol_term.Abs(str(var), T, lbd_tm), arg)
-        # # clear the let scope
-        # self.let_tm.clear()
+        self.let_tm.clear()
         return tms[-1]
 
     def mk_distinct_tm(self, *tms):
@@ -328,12 +322,9 @@ class ProofTransformer(Transformer):
     def mk_anchor(self, id, *ctx):
         """Every anchor (with ctx) will create a new context."""
         new_ctx = {}
-        try:
-            for var, tm in ctx:
-                new_ctx[var] = tm
-                new_ctx[str(tm)] = tm
-        except:
-            print("ctx", ctx)
+        for var, tm in ctx:
+            new_ctx[var] = tm
+            new_ctx[str(tm)] = tm
         self.proof_ctx.append(new_ctx)
         prf_ctx = {var_name : tm for ctx in self.proof_ctx for var_name, tm in ctx.items()}
         step = Anchor(str(id), prf_ctx)
