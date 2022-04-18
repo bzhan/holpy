@@ -5,6 +5,7 @@ from logic.logic import mk_if
 from kernel import term as hol_term
 from kernel import type as hol_type
 from data import list as hol_list
+from fractions import Fraction
 
 class VeriTParseException(Exception):
     def __init__(self, tm_name, message) -> None:
@@ -64,7 +65,7 @@ def parse_decl(s):
     return decl_parser.parse(s)
 # Grammar of Alethe proof
 veriT_grammar = r"""
-    VNAME: ("_" | LETTER | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=")("_"|LETTER|DIGIT|"$"|"." | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=")*
+    VNAME: ("_" | LETTER | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=")("_"|LETTER|DIGIT|"$"|"." | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=" | "@")*
 
     ANCHOR_NAME: "?" CNAME | "veriT_" CNAME
 
@@ -97,6 +98,10 @@ veriT_grammar = r"""
             | "(and" term+ ")" -> mk_conj_tm
             | "(=>" term term ")" -> mk_impl_tm
             | "(=" term term ")" -> mk_eq_tm
+            | "(+" term term ")" -> mk_plus_tm
+            | "(-" term term ")" -> mk_minus_tm
+            | "(<" term term ")" -> mk_less_tm
+            | "(>" term term ")" -> mk_greater_tm
             | "(!" term ":named" "@" CNAME ")" -> mk_annot_tm
             | "(let" "(" let_pair* ")" term ")" -> mk_let_tm
             | "(distinct" term term+ ")" -> mk_distinct_tm
@@ -105,6 +110,8 @@ veriT_grammar = r"""
             | "(ite" term term term ")" -> mk_ite_tm
             | "(forall" "(" quant_pair+ ")" term ")" -> mk_forall
             | "(exists" "(" quant_pair+ ")" term ")" -> mk_exists
+            | INT -> mk_int
+            | DECIMAL -> mk_decimal
             | name
 
     ?step_id : VNAME ("." VNAME)* -> mk_step_id
@@ -310,6 +317,24 @@ class ProofTransformer(Transformer):
 
     def mk_ite_tm(self, P, x, y):
         return mk_if(P, x, y)
+
+    def mk_int(self, num):
+        return hol_term.Int(int(num.value))
+
+    def mk_decimal(self, num):
+        return hol_term.Real(Fraction(num.value))
+
+    def mk_plus_tm(self, t1, t2):
+        return t1 + t2
+
+    def mk_minus_tm(self, t1, t2):
+        return t1 - t2
+
+    def mk_less_tm(self, t1, t2):
+        return t1 < t2
+
+    def mk_greater_tm(self, t1, t2):
+        return t1 > t2
 
     def mk_step_id(self, *step_id):
         return ''.join(step_id)
