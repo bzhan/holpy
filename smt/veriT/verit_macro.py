@@ -1163,7 +1163,7 @@ class LetMacro(Macro):
 
     def eval(self, args, prevs):
         goal, ctx = args
-        beta_lhs = goal.lhs.beta_norm()
+        beta_lhs = goal.lhs
         if compare_sym_tm(let_substitute(beta_lhs, ctx), goal.rhs):
             return Thm([], goal)
         else:

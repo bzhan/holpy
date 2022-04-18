@@ -106,39 +106,39 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False):
 
 
 class VeriTProofRecTest(unittest.TestCase):
-    def test_rec_qfuf(self):
+    def test_QF_UF(self):
         test_paths = [
-            'QF_UF\\20170829-Rodin\\smt1300175744189082250.smt2',
-            'QF_UF\\20170829-Rodin\\smt1468783596909311386.smt2',
-            'QF_UF\\20170829-Rodin\\smt2061505268723161891.smt2',
-            'QF_UF\\20170829-Rodin\\smt2080745738819601301.smt2',
-            'QF_UF\\20170829-Rodin\\smt2325451563592377472.smt2',
-            'QF_UF\\20170829-Rodin\\smt249825283571301584.smt2',
-            'QF_UF\\20170829-Rodin\\smt2598599073465845145.smt2',
-            'QF_UF\\20170829-Rodin\\smt2970577543992530805.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_blocks.2.prop1_ab_reg_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_bridge.1.prop1_ab_reg_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_brp.1.prop1_ab_reg_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_bug-1_ab_cti_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_cache_coherence_three_ab_reg_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_cambridge.1.prop1_ab_reg_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_collision.1.prop1_ab_reg_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_counter_v_ab_reg_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_cyclic_scheduler.1.prop1_ab_reg_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_elevator.1.prop1_ab_reg_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_eq_sdp_v7_ab_cti_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_exit.1.prop1_ab_reg_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_extinction.2.prop1_ab_reg_max.smt2',
-            'QF_UF\\2018-Goel-hwbench\\QF_UF_firewire_tree.1.prop1_ab_reg_max.smt2',
-            "QF_UF\\TypeSafe\\z3.1184131.smt2",
-            "QF_UF\\TypeSafe\\z3.1184147.smt2",
-            "QF_UF\\TypeSafe\\z3.1184163.smt2",
-            'QF_UF\\eq_diamond\\eq_diamond1.smt2',
-            'QF_UF\\eq_diamond\\eq_diamond2.smt2',
-            # "QF_UF\\NEQ\\NEQ004_size4.smt2",
-            # "QF_UF\\NEQ\\NEQ004_size5.smt2",
-            # "QF_UF\\NEQ\\NEQ006_size3.smt2",
-            # "QF_UF\\PEQ\\PEQ012_size3.smt2",
+            # 'QF_UF\\20170829-Rodin\\smt1300175744189082250.smt2',
+            # 'QF_UF\\20170829-Rodin\\smt1468783596909311386.smt2',
+            # 'QF_UF\\20170829-Rodin\\smt2061505268723161891.smt2',
+            # 'QF_UF\\20170829-Rodin\\smt2080745738819601301.smt2',
+            # 'QF_UF\\20170829-Rodin\\smt2325451563592377472.smt2',
+            # 'QF_UF\\20170829-Rodin\\smt249825283571301584.smt2',
+            # 'QF_UF\\20170829-Rodin\\smt2598599073465845145.smt2',
+            # 'QF_UF\\20170829-Rodin\\smt2970577543992530805.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_blocks.2.prop1_ab_reg_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_bridge.1.prop1_ab_reg_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_brp.1.prop1_ab_reg_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_bug-1_ab_cti_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_cache_coherence_three_ab_reg_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_cambridge.1.prop1_ab_reg_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_collision.1.prop1_ab_reg_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_counter_v_ab_reg_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_cyclic_scheduler.1.prop1_ab_reg_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_elevator.1.prop1_ab_reg_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_eq_sdp_v7_ab_cti_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_exit.1.prop1_ab_reg_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_extinction.2.prop1_ab_reg_max.smt2',
+            # 'QF_UF\\2018-Goel-hwbench\\QF_UF_firewire_tree.1.prop1_ab_reg_max.smt2',
+            # "QF_UF\\TypeSafe\\z3.1184131.smt2",
+            # "QF_UF\\TypeSafe\\z3.1184147.smt2",
+            # "QF_UF\\TypeSafe\\z3.1184163.smt2",
+            # 'QF_UF\\eq_diamond\\eq_diamond1.smt2',
+            # 'QF_UF\\eq_diamond\\eq_diamond2.smt2',
+            # # "QF_UF\\NEQ\\NEQ004_size4.smt2",
+            # # "QF_UF\\NEQ\\NEQ004_size5.smt2",
+            # # "QF_UF\\NEQ\\NEQ006_size3.smt2",
+            # # "QF_UF\\PEQ\\PEQ012_size3.smt2",
             "QF_UF\\QG-classification\\loops6\\iso_icl103.smt2",
             "QF_UF\\QG-classification\\qg5\\iso_icl054.smt2",
             # 'QF_UF\\SEQ\\SEQ004_size5.smt2',
@@ -163,7 +163,7 @@ class VeriTProofRecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats()
 
-    def test_rec_uf(self):
+    def test_UF(self):
         test_paths = [
             # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
             # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
@@ -180,6 +180,30 @@ class VeriTProofRecTest(unittest.TestCase):
             # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_35_132_1014381.smt_in.smt2',
             # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_53_474_1036287.smt_in.smt2',
             # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_55_00_922_1043783.smt_in.smt2',
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_eval=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats()
+
+    def test_QF_UFLRA(self):
+        test_paths = [
+            # 'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.32_1_cilled_true-unreach-call_ok_nondet_linux-3.4-32_1-drivers--i2c--algos--i2c-algo-pca.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c.smt2',
+            # 'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.32_1_cilled_true-unreach-call_ok_nondet_linux-3.4-32_1-drivers--media--video--gspca--gspca_stv0680.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c.smt2',
+            # 'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.43_1a_cilled_true-unreach-call_ok_nondet_linux-43_1a-drivers--atm--adummy.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c.smt2',
+            # 'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.diskperf_true-unreach-call.i.cil.c.smt2',
+            # 'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.email_spec27_product13_true-unreach-call.cil.c.smt2',
+            # 'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.gcd_1_true-unreach-call.i.smt2',
         ]
 
         profile = False
