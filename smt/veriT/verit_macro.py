@@ -1113,30 +1113,29 @@ class ContractionMacro(Macro):
             raise VeriTException("contraction", "unexpected goal")
         return Thm(prevs[0].hyps, Or(*args))
 
-def let_substitue(tm, ctx):
+def let_substitute(tm, ctx):
     """Substitue all variables in ctx into concrete terms, 
     and move the all variables at lhs to rhs (sort).
     """
-    if tm.is_conj():
-        conjs = [let_substitue(conj, ctx) for conj in tm.strip_conj()]
-        return And(*conjs)
-    elif tm.is_disj():
-        disjs = [let_substitue(disj, ctx) for disj in tm.strip_disj()]
-        return Or(*disjs)
-    elif tm.is_equals():
-        lhs, rhs = tm.lhs, tm.rhs
-        if str(lhs) in ctx:
-            return Eq(rhs, ctx[str(lhs)])
-        elif str(rhs) in ctx:
-            return Eq(lhs, ctx[str(rhs)])
+    if tm.is_var():
+        if str(tm) in ctx:
+            return ctx[str(tm)]
         else:
             return tm
-    elif tm.is_not():
-        return Not(let_substitue(tm.arg, ctx))
-    elif str(tm) in ctx:
-        return ctx[str(tm)]
-    else:
+    elif tm.is_comb():
+        if tm.is_conj():
+            conjs = [let_substitute(conj, ctx) for conj in tm.strip_conj()]
+            return And(*conjs)
+        elif tm.is_disj():
+            disjs = [let_substitute(disj, ctx) for disj in tm.strip_disj()]
+            return Or(*disjs)
+        else:
+            args = [let_substitute(arg, ctx) for arg in tm.args]
+            return tm.head(*args)
+    elif tm.is_const():
         return tm
+    else:
+        raise NotImplementedError
 
 def compare_sym_tm(tm1, tm2):
     """Compare tm1 and tm2 with the symmetry property."""
@@ -1165,10 +1164,14 @@ class LetMacro(Macro):
     def eval(self, args, prevs):
         goal, ctx = args
         beta_lhs = goal.lhs.beta_norm()
-        if compare_sym_tm(let_substitue(beta_lhs, ctx), goal.rhs):
+        if compare_sym_tm(let_substitute(beta_lhs, ctx), goal.rhs):
             return Thm([], goal)
         else:
-            raise NotImplementedError
+            for k, v in ctx.items():
+                print('%s: %s' % (repr(k), repr(v)))
+            print('lhs', let_substitute(beta_lhs, ctx))
+            print('rhs', goal.rhs)
+            raise VeriTException("let", "Unexpected result")
 
 def flatten_prop(tm):
     """Unfold a nested proposition formula."""
