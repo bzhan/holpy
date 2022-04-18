@@ -78,7 +78,8 @@ veriT_grammar = r"""
     ?single_context :  "(:=" "(" ANCHOR_NAME VNAME ")" (term|VNAME) ")" -> add_context
                     | "(" CNAME VNAME ")" -> add_trivial_ctx
 
-    ?step_arg_pair : "(:=" "veriT_"  CNAME VNAME")" -> mk_arg_pair
+    ?step_arg_pair : "(:=" "veriT_"  CNAME VNAME")" -> mk_forall_inst_args
+                   | terms* -> mk_la_generic_args
 
     ?step_annotation : ":premises" "(" step_id+ ")" -> mk_step_premises
                     | ":args" "(" step_arg_pair+ ")" -> mk_step_args
@@ -102,6 +103,8 @@ veriT_grammar = r"""
             | "(-" term term ")" -> mk_minus_tm
             | "(<" term term ")" -> mk_less_tm
             | "(>" term term ")" -> mk_greater_tm
+            | "(<=" term term ")" -> mk_less_eq_tm
+            | "(>=" term term ")" -> mk_greater_eq_tm
             | "(!" term ":named" "@" CNAME ")" -> mk_annot_tm
             | "(let" "(" let_pair* ")" term ")" -> mk_let_tm
             | "(distinct" term term+ ")" -> mk_distinct_tm
@@ -267,9 +270,12 @@ class ProofTransformer(Transformer):
         self.let_tm[name] = bound_var
         return bound_var, T, tm
 
-    def mk_step_args(self, name, tm):
+    def mk_forall_inst_args(self, name, tm):
         assert str(name) in self.verit_ctx  and str(tm) in self.smt_file_ctx
         return self.verit_ctx[str(name)] and self.smt_file_ctx[str(tm)]
+
+    def mk_la_generic_args(self, *tms):
+        return tms
 
     def mk_let_tm(self, *tms):
         """Represent the let expression as a lambda term.
@@ -335,6 +341,12 @@ class ProofTransformer(Transformer):
 
     def mk_greater_tm(self, t1, t2):
         return t1 > t2
+
+    def mk_less_eq_tm(self, t1, t2):
+        return t1 <= t2
+
+    def mk_greater_eq_tm(self, t1, t2):
+        return t1 >= t2
 
     def mk_step_id(self, *step_id):
         return ''.join(step_id)
