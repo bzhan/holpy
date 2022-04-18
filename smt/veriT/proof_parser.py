@@ -79,7 +79,7 @@ veriT_grammar = r"""
                     | "(" CNAME VNAME ")" -> add_trivial_ctx
 
     ?step_arg_pair : "(:=" "veriT_"  CNAME VNAME")" -> mk_forall_inst_args
-                   | terms* -> mk_la_generic_args
+                   | term* -> mk_la_generic_args
 
     ?step_annotation : ":premises" "(" step_id+ ")" -> mk_step_premises
                     | ":args" "(" step_arg_pair+ ")" -> mk_step_args
@@ -101,6 +101,9 @@ veriT_grammar = r"""
             | "(=" term term ")" -> mk_eq_tm
             | "(+" term term ")" -> mk_plus_tm
             | "(-" term term ")" -> mk_minus_tm
+            | "(-" term ")" -> mk_uminus_tm
+            | "(*" term term ")" -> mk_mul_tm
+            | "(div" term term ")" -> mk_div_tm
             | "(<" term term ")" -> mk_less_tm
             | "(>" term term ")" -> mk_greater_tm
             | "(<=" term term ")" -> mk_less_eq_tm
@@ -335,6 +338,15 @@ class ProofTransformer(Transformer):
 
     def mk_minus_tm(self, t1, t2):
         return t1 - t2
+
+    def mk_uminus_tm(self, t1):
+        return -t1
+
+    def mk_mul_tm(self, t1, t2):
+        return t1 * t2
+
+    def mk_div_tm(self, t1, t2):
+        return t1 / t2
 
     def mk_less_tm(self, t1, t2):
         return t1 < t2
