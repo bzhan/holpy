@@ -5,7 +5,7 @@ Macros used in the proof reconstruction.
 from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, Thm
-from kernel.term import Term, Not, And, Or, Eq, Implies, false, true, IntType, RealType, BoolType
+from kernel.term import Term, Not, And, Or, Eq, Implies, false, true, IntType, RealType, BoolType, Int
 from prover.proofrec import int_th_lemma_1_omega, int_th_lemma_1_simplex, real_th_lemma
 from logic import conv, logic
 from data import integer, real, proplogic
@@ -208,14 +208,6 @@ class ThResolutionMacro(Macro):
         if set(cl_concl) == set(cl):
             return Thm([hyp for pt in prevs for hyp in pt.hyps], Or(*cl))
         else:
-            print('arg')
-            for arg in cl:
-                print(arg)
-            print('prev')
-            for prev in prevs:
-                print(prev.prop)
-            print("Computed: [%s]", ', '.join(str(t) for t in cl_concl))
-            print("In proof: [%s]", ', '.join(str(t) for t in cl))
             raise VeriTException("th_resolution", "unexpected conclusion")
 
     def get_proof_term(self, args, prevs):
@@ -1197,10 +1189,6 @@ class LetMacro(Macro):
         if compare_sym_tm(let_substitute(beta_lhs, ctx), goal.rhs):
             return Thm([], goal)
         else:
-            for k, v in ctx.items():
-                print('%s: %s' % (repr(k), repr(v)))
-            print('lhs', let_substitute(beta_lhs, ctx))
-            print('rhs', goal.rhs)
             raise VeriTException("let", "Unexpected result")
 
 def flatten_prop(tm):
@@ -1245,16 +1233,12 @@ class ACSimpMacro(Macro):
 
         lhs, rhs = goal.lhs, goal.rhs
         if not lhs.is_conj() and not lhs.is_disj():
-            print(lhs.head, rhs.head)
-            print(goal)
             raise VeriTException("ac_simp", "lhs and rhs are not both disjunction or conjunction.")
         rhs_flat = flatten_prop(rhs)
         lhs_flat = flatten_prop(lhs)
         if lhs_flat == rhs_flat:
             return Thm([], goal)
         else:
-            print("flat", lhs_flat)
-            print("rhss", rhs_flat)
             raise VeriTException("ac_simp", "unexpected result")
         
 @register_macro("verit_and_simplify")
@@ -1329,10 +1313,244 @@ class OrSimplifyMacro(Macro):
                 return Thm([], goal)
             else:
                 raise VeriTException("or_simplify", "unexpected rhs")
-        print("goal", goal)
         raise VeriTException("or_simplify", "haven't implemented")
 
 
+@register_macro("verit_bool_simplify")
+class BoolSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("bool_simplify", "args should only contain one element")
+        
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("bool_simplify", "goal should be an equality")
+        lhs, rhs = goal.lhs, goal.rhs
+        # case 1: ~(p --> q) <--> (p and ~q)
+        if lhs.is_not() and lhs.arg.is_implies() and rhs.is_conj():
+            l_p, l_q = lhs.arg.args
+            r_p, r_q = rhs.args
+            if l_p == r_p and Not(l_q) == r_q:
+                return Thm([], goal)
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match  ~(p --> q) <--> (p and ~q)")
+        # case 2: ~(p | q) <--> (~p & ~q)
+        elif lhs.is_not() and lhs.arg.is_disj() and rhs.is_conj():
+            l_p, l_q = lhs.arg.args
+            r_p, r_q = rhs.args
+            if Not(l_p) == r_p and Not(l_q) == r_q:
+                return Thm([], goal)
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match ~(p | q) <--> (~p & ~q)")
+        # case 2: ~(p & q) <--> (~p | ~q)
+        elif lhs.is_not() and lhs.arg.is_conj() and rhs.is_disj():
+            l_p, l_q = lhs.arg.args
+            r_p, r_q = rhs.args
+            if Not(l_p) == r_p and Not(l_q) == r_q:
+                return Thm([], goal)
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match ~(p | q) <--> (~p & ~q)")
+        else:
+            raise VeriTException("bool_simplify", "implementation is incomplete")
+
+@register_macro("verit_la_disequality")
+class LADisequalityMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("verit_la_disequality", "args should only contain one element")
+        
+        goal = args[0]
+        if not goal.is_disj():
+            raise VeriTException("verit_la_disequality", "goal should be a disjunction")
+        
+        eq, neg_less_eq, neg_less_eq_sym = goal.strip_disj()
+        if not eq.is_equals() or not neg_less_eq.is_not() or not \
+            neg_less_eq.arg.is_less_eq() or not neg_less_eq_sym.is_not() or not \
+                neg_less_eq_sym.arg.is_less_eq():
+            raise VeriTException("verit_la_disequality", "can't match goal's shape")
+        
+        eq_t1, eq_t2 = eq.args
+        neg_less_eq_t1, neg_less_eq_t2 = neg_less_eq.arg.args
+        neg_less_eq_sym_t1, neg_less_eq_sym_t2 = neg_less_eq_sym.arg.args
+
+        if eq_t1 == neg_less_eq_t1 and eq_t1 == neg_less_eq_sym_t2 and \
+                eq_t2 == neg_less_eq_t2 and eq_t2 == neg_less_eq_sym_t1:
+            return Thm([], goal)
+        else:
+            raise VeriTException("verit_la_disequality", "can't match goal")
+
+
+def split_num_expr(t):
+    summands = integer.strip_plus(t)
+    nums, non_nums = [Int(0)], []
+    for s in summands:
+        if s.is_number():
+            nums.append(s)
+        else:
+            non_nums.append(s)
+
+    const = integer.int_eval(sum(nums[1:], nums[0]))
+    if len(non_nums) == 0: # t is a constant
+        return Int(const)
+    
+    non_nums_sum = sum(non_nums[1:], non_nums[0])
+    if const == 0:
+        return non_nums_sum
+    else:
+        return Int(const) + non_nums_sum
+
+@register_macro("verit_sum_simplify")
+class SumSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("sum_simplify", "args should only contain one element")
+        
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("sum_simplify", "goal should be an equality")
+        
+        lhs, rhs = goal.lhs, goal.rhs
+
+        lhs_simp = split_num_expr(lhs)
+        if lhs_simp == rhs:
+            return Thm([], goal)
+        elif lhs_simp == split_num_expr(rhs):
+            """Verit bugs: QF_UFLIA\\wisas\\xs_5_10.smt2 step t27 rhs side has zero on the right."""
+            return Thm([], goal)
+        else:
+            raise VeriTException("sum_simplify", "unexpected result")
+
+@register_macro("verit_comp_simplify")
+class CompSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("comp_simplify", "args should only contain one element")
+        
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("comp_simplify", "goal should be an equality")
+        
+        lhs, rhs = goal.lhs, goal.rhs
+        # Case 5: a >= b <--> b <= a 
+        if lhs.is_greater_eq():
+            if not rhs.is_less_eq():
+                raise VeriTException("comp_simplify", "rhs should be a less_eq when lhs is greater_eq")
+            l_a, l_b = lhs.args
+            r_a, r_b = rhs.args
+            if l_a == r_b and l_b == r_a:
+                return Thm([], goal)
+            else:
+                raise VeriTException("comp_simplify", "can't match a >= b <--> b <= a")
+        # Case 7: a > b <--> ~(a <= b)
+        elif lhs.is_greater():
+            if not (rhs.is_not() and rhs.arg.is_less_eq()):
+                raise VeriTException("comp_simplify", "rhs should be a less_eq when lhs is greater_eq")
+            l_a, l_b = lhs.args
+            r_a, r_b = rhs.arg.args
+            if l_a == r_a and l_b == r_b:
+                return Thm([], goal)
+            else:
+                print("lhs", lhs, l_a, l_b)
+                print("rhs", rhs, r_a, r_b)
+                raise VeriTException("comp_simplify", "can't match a > b <--> ~(b <= a)")
+        else:
+            print("goal", goal)
+            raise VeriTException("comp_simplify", "implementation is incomplete")
+
+@register_macro("verit_ite_simplify")
+class ITESimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("ite_simplify", "args should only contain one element")
+        
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("ite_simplify", "goal should be an equality")
+        
+        lhs, rhs = goal.lhs, goal.rhs
+
+        if logic.is_if(lhs) and logic.is_if(rhs):
+            l_P, l_then, l_else = lhs.args
+            r_P, r_then, r_else = rhs.args
+            if logic.is_if(l_then): # Case 7: ite P (ite P x y) z <--> ite P x z
+                l_then_P, l_then_then, _ = l_then.args
+                if l_P == l_then_P and l_then_then == r_then and l_else == r_else:
+                    return Thm([], goal)
+                else:
+                    raise VeriTException("ite_simplify", "can't match ite P (ite P x y) z <--> ite P x z")
+            elif logic.is_if(l_else): # Case 8: ite P x (ite P y z) <--> ite P x z
+                l_else_P, _, l_else_else = l_then.args
+                if l_P == l_else_P and l_then == r_then and l_else_else == r_else:
+                    return Thm([], goal)
+                else:
+                    raise VeriTException("ite_simplify", "can't match ite P x (ite P y z) <--> ite P x z")
+            elif l_P == Not(r_P) and l_then == r_else and l_else == r_then:
+                return Thm([], goal)
+            else:
+                raise VeriTException("ite_simplify", "can't match ite P x y <--> ite ~P y x")
+        else:
+            raise VeriTException("ite_simplify", "implementation is incomplete")
+            
+
+@register_macro("verit_minus_simplify")
+class ITESimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("minus_simplify", "args should only contain one element")
+        
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("minus_simplify", "goal should be an equality")
+        
+        lhs, rhs = goal.lhs, goal.rhs
+
+        if not lhs.is_uminus():
+            raise VeriTException("minus_simplify", "lhs should be an uminus term")
+        lhs_neg_tm = lhs.arg
+        if lhs_neg_tm.is_minus():
+            if lhs_neg_tm.arg == rhs:
+                return Thm([], goal)
+            else:
+                raise VeriTException("minus_simplify", "-(-lhs) != lhs")
+        elif lhs_neg_tm.is_number():
+            lhs_num = integer.int_eval(lhs)
+            rhs_num = integer.int_eval(rhs)
+            if  lhs_num == rhs_num:
+                return Thm([], goal)
+            else:
+                raise VeriTException("minus_simplify", "lhs and rhs should be equal after evaluation")
+        else:
+            raise VeriTException("minus_simplify", "unexpected result")
 
 @register_macro("or_pos")
 class OrPosMacro(Macro):

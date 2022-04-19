@@ -172,6 +172,18 @@ class ProofReconstruction:
                 self.pts[step.id] = self.validate_step("verit_and_simplify", step.cl, is_eval=is_eval)
             elif rule_name == "or_simplify":
                 self.pts[step.id] = self.validate_step("verit_or_simplify", step.cl, is_eval=is_eval)
+            elif rule_name == "bool_simplify":
+                self.pts[step.id] = self.validate_step("verit_bool_simplify", step.cl, is_eval=is_eval)
+            elif rule_name == "sum_simplify":
+                self.pts[step.id] = self.validate_step("verit_sum_simplify", step.cl, is_eval=is_eval)
+            elif rule_name == "comp_simplify":
+                self.pts[step.id] = self.validate_step("verit_comp_simplify", step.cl, is_eval=is_eval)
+            elif rule_name == "ite_simplify":
+                self.pts[step.id] = self.validate_step("verit_ite_simplify", step.cl, is_eval=is_eval)
+            elif rule_name == "minus_simplify":
+                self.pts[step.id] = self.validate_step("verit_minus_simplify", step.cl, is_eval=is_eval)
+            elif rule_name == "la_disequality":
+                self.pts[step.id] = self.validate_step("verit_la_disequality", step.cl, is_eval=is_eval)
             else:
                 print(rule_name)
                 self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
