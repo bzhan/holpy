@@ -1241,13 +1241,13 @@ def Exists(*args):
     Here x must be a variable and body is a term possibly depending on x.
     
     """
-    typecheck.checkinstance('Forall', args, [Term])
+    typecheck.checkinstance('Exists', args, [Term])
     if len(args) < 2:
-        raise TermException("Forall: must provide two terms.")
+        raise TermException("Exists: must provide two terms.")
     body = args[-1]
     for x in reversed(args[:-1]):
         if not (x.is_var() or x.is_svar()):
-            raise TermException("Forall: x must be a variable. Got %s" % str(x))
+            raise TermException("Exists: x must be a variable. Got %s" % str(x))
         body = exists(x.T)(Lambda(x, body))
     return body
 
