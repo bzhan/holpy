@@ -2,7 +2,6 @@
 Macros used in the proof reconstruction.
 """
 
-from atexit import register
 from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, Thm
@@ -909,6 +908,8 @@ class CongMacro(Macro):
         elif lhs.is_disj():
             size = lhs.arity
             l_args, r_args = strip_disj_n(lhs, size), strip_disj_n(rhs, size)
+        elif lhs.is_comb("distinct"):
+            l_args, r_args = hol_list.dest_literal_list(lhs.arg), hol_list.dest_literal_list(rhs.arg)
         else:
             l_args, r_args = lhs.args, rhs.args
         h, i = lhs.head, 0
@@ -1201,7 +1202,7 @@ class LetMacro(Macro):
 
 def flatten_prop(tm):
     """Unfold a nested proposition formula."""
-    if not tm.is_conj() and not tm.is_disj():
+    if not tm.is_conj() and not tm.is_disj() and not tm.is_not():
         return tm
     elif tm.is_conj():
         conjs = logic.strip_conj(tm)
@@ -1219,6 +1220,8 @@ def flatten_prop(tm):
             if f not in distinct_disjs:
                 distinct_disjs.append(f)
         return Or(*term_ord.sorted_terms(distinct_disjs))
+    elif tm.is_not():
+        return Not(flatten_prop(tm.arg))
     else:
         raise NotImplementedError
         
