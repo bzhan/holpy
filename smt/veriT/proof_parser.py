@@ -31,10 +31,15 @@ def str_to_hol_type(s):
 
 # Grammar of SMT-LIB language
 smt_decl_grammar = r"""
-    VNAME: ("_" | LETTER | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=" | ":" | "@")("_"|LETTER|DIGIT|"$"|"." | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=" | ":" | "@")*
+    VNAME: (LETTER|"~"|"!"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"/")(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/")*
 
-    ?term: "(declare-fun" VNAME "()" VNAME ")" -> mk_tm
-        | "(declare-fun" VNAME "(" VNAME+ ")" VNAME ")" -> mk_fun
+    QUOTED_VNAME: "|" (LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/"|"("|")"|":"|"["|"]"|"#"|","|" ")* "|"
+
+    ?vname: VNAME -> mk_vname
+        | QUOTED_VNAME -> mk_quoted_vname
+
+    ?term: "(declare-fun" vname "()" vname ")" -> mk_tm
+        | "(declare-fun" vname "(" vname+ ")" vname ")" -> mk_fun
 
     %import common.CNAME
     %import common.INT
@@ -51,13 +56,21 @@ class DeclTransformer(Transformer):
     def __init__(self):
         pass
 
+    def mk_vname(self, name):
+        return str(name)
+
+    def mk_quoted_vname(self, name):
+        name = str(name)
+        assert name[0] == '|' and name[-1] == '|'
+        return name[1:-1]
+
     def mk_tm(self, name, ty):
         "Make a term: name :: ty"
-        return {name.value: str_to_hol_type(ty)}
+        return {name: str_to_hol_type(ty)}
 
     def mk_fun(self, name, *args):
         """Make a function term, which type is arg1 -> ... argn."""
-        return {name.value: hol_type.TFun(*(str_to_hol_type(t) for t in args))}
+        return {name: hol_type.TFun(*(str_to_hol_type(t) for t in args))}
 
 decl_parser = Lark(smt_decl_grammar, start="term", parser="lalr", transformer=DeclTransformer())
 
@@ -65,7 +78,12 @@ def parse_decl(s):
     return decl_parser.parse(s)
 # Grammar of Alethe proof
 veriT_grammar = r"""
-    VNAME: ("_" | LETTER | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=")("_"|LETTER|DIGIT|"$"|"." | "|" | "*" | "+" | "-" | "<" | ">" | "/" | "=" | "@")*
+    VNAME: (LETTER|"~"|"!"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"/")(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/")*
+
+    QUOTED_VNAME: "|"(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/"|"("|")"|":"|"["|"]"|"#"|","|" ")*"|"
+
+    ?vname: VNAME -> mk_vname
+        | QUOTED_VNAME -> mk_quoted_vname
 
     ANCHOR_NAME: "?" CNAME | "veriT_" CNAME
 
@@ -78,10 +96,10 @@ veriT_grammar = r"""
                     | "(anchor :step" step_id ")" -> mk_empty_anchor
     ?clause : "(cl" proof_term* ")" -> mk_clause
     
-    ?single_context :  "(:=" "(" ANCHOR_NAME VNAME ")" (term|VNAME) ")" -> add_context
-                    | "(" CNAME VNAME ")" -> add_trivial_ctx
+    ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (term|vname) ")" -> add_context
+                    | "(" CNAME vname ")" -> add_trivial_ctx
 
-    ?step_arg_pair : "(:=" "veriT_"  CNAME VNAME")" -> mk_forall_inst_args
+    ?step_arg_pair : "(:=" "veriT_"  CNAME vname")" -> mk_forall_inst_args
                    | term* -> mk_la_generic_args
 
     ?step_annotation : ":premises" "(" step_id+ ")" -> mk_step_premises
@@ -92,8 +110,8 @@ veriT_grammar = r"""
 
     ?let_pair : "(" "?" CNAME term ")" -> mk_let_pair
 
-    ?quant_pair : "(" "?" CNAME VNAME ")" -> mk_quant_pair_assume
-                | "(" "veriT_" CNAME VNAME ")" -> mk_quant_pair_step
+    ?quant_pair : "(" "?" CNAME vname ")" -> mk_quant_pair_assume
+                | "(" "veriT_" CNAME vname ")" -> mk_quant_pair_step
 
     ?term :   "true" -> mk_true
             | "false" -> mk_false
@@ -123,11 +141,11 @@ veriT_grammar = r"""
             | DECIMAL -> mk_decimal
             | name
 
-    ?step_id : VNAME ("." VNAME)* -> mk_step_id
+    ?step_id : vname ("." vname)* -> mk_step_id
 
     ?name : "@" CNAME -> ret_annot_tm
             | "?" CNAME -> ret_let_tm
-            | VNAME -> ret_tm
+            | vname -> ret_tm
 
     %import common.CNAME
     %import common.INT
@@ -180,20 +198,28 @@ class ProofTransformer(Transformer):
         the term name (may not occur in previous context)
         """
         
-        hol_ty = str_to_hol_type(ty.value)
+        hol_ty = str_to_hol_type(ty)
         if isinstance(tm_name, hol_term.Term):
             tm = tm_name
         else:
-            tm = hol_term.Var(tm_name.value, hol_ty)
+            tm = hol_term.Var(tm_name, hol_ty)
             self.anchor_ctx[tm_name] = tm
         
-        var_name = var.value
+        var_name = var
             
         assert tm.get_type() == hol_ty
         return var_name, tm
 
     def add_trivial_ctx(self, var, ty):
         return tuple()
+
+    def mk_vname(self, name):
+        return str(name)
+
+    def mk_quoted_vname(self, name):
+        name = str(name)
+        assert name[0] == '|' and name[-1] == '|'
+        return name[1:-1]
 
     def ret_annot_tm(self, name):
         """Return the term which is represented by a unique @-prefix name."""
@@ -331,10 +357,10 @@ class ProofTransformer(Transformer):
         return mk_if(P, x, y)
 
     def mk_int(self, num):
-        return hol_term.Int(int(num.value))
+        return hol_term.Int(int(num))
 
     def mk_decimal(self, num):
-        return hol_term.Real(Fraction(num.value))
+        return hol_term.Real(Fraction(num))
 
     def mk_plus_tm(self, t1, t2):
         return t1 + t2

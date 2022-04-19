@@ -150,13 +150,13 @@ class ParserTest(unittest.TestCase):
             'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.string_true-unreach-call.i.smt2',
             'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.sum03_true-unreach-call_false-termination.i.smt2',
             'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.test_locks_10_true-unreach-call.c.smt2',
-            'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_10_0200_10_14.smt2',
-            'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_20_0400_10_12.smt2',
-            'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_30_0600_10_13.smt2',
-            'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_40_1000_10_18.smt2',
-            'QF_UFLRA\\mathsat\\RandomDecoupled\\pb_real_30_60_45_06.smt2',
-            'QF_UFLRA\\mathsat\\RandomDecoupled\\pb_real_40_80_60_01.smt2',
-            'QF_UFLRA\\mathsat\\RandomDecoupled\\pb_real_50_100_30_07.smt2',
+            # 'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_10_0200_10_14.smt2',
+            # 'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_20_0400_10_12.smt2',
+            # 'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_30_0600_10_13.smt2',
+            # 'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_40_1000_10_18.smt2',
+            # 'QF_UFLRA\\mathsat\\RandomDecoupled\\pb_real_30_60_45_06.smt2',
+            # 'QF_UFLRA\\mathsat\\RandomDecoupled\\pb_real_40_80_60_01.smt2',
+            # 'QF_UFLRA\\mathsat\\RandomDecoupled\\pb_real_50_100_30_07.smt2',
             'QF_UFLRA\\FFT\\smtlib.624882.smt2',
             'QF_UFLRA\\FFT\\smtlib.624898.smt2',
             'QF_UFLRA\\FFT\\smtlib.624916.smt2',
@@ -166,7 +166,7 @@ class ParserTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, veriT_only=False)
+            test_path(path)
 
 
     def testParseQF_UFLIA(self):
@@ -177,8 +177,8 @@ class ParserTest(unittest.TestCase):
             'QF_UFLIA\\mathsat\\EufLaArithmetic\\hard\\hard5.smt2',
             'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_03.smt2',
             'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_04.smt2',
-            'QF_UFLIA\\mathsat\\Wisa\\xs-05-06-2-2-5-1.smt2',
-            'QF_UFLIA\\mathsat\\Wisa\\xs-05-07-4-5-1-2.smt2',
+            'QF_UFLIA\\mathsat\\Wisa\\xs-05-08-4-2-5-4.smt2',
+            'QF_UFLIA\\mathsat\\Wisa\\xs-05-12-1-4-2-1.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.602033.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.602046.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.686126.smt2',
@@ -190,7 +190,7 @@ class ParserTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, veriT_only=False, show_time=True)
+            test_path(path)
 
 
     def testParseUF(self):
@@ -241,7 +241,7 @@ class ParserTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, veriT_only=True)
+            test_path(path)
 
     def testParseUFLRA(self):
         test_paths = [
@@ -260,7 +260,7 @@ class ParserTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, veriT_only=True)
+            test_path(path)
 
 
     def testParseUFLIA(self):
