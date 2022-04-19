@@ -236,10 +236,10 @@ class VeriTProofRecTest(unittest.TestCase):
             'QF_UFLIA\\TwoSquares\\smtlib.602046.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.686126.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.769286.smt2',
-            # 'QF_UFLIA\\wisas\\xs_5_10.smt2',
-            # 'QF_UFLIA\\wisas\\xs_5_15.smt2',
-            # 'QF_UFLIA\\wisas\\xs_5_5.smt2',
-            # 'QF_UFLIA\\wisas\\xs_7_12.smt2',
+            'QF_UFLIA\\wisas\\xs_5_10.smt2',
+            'QF_UFLIA\\wisas\\xs_5_15.smt2',
+            'QF_UFLIA\\wisas\\xs_5_5.smt2',
+            'QF_UFLIA\\wisas\\xs_7_12.smt2',
         ]
 
         profile = False

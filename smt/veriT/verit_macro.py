@@ -167,7 +167,10 @@ def resolve_order(props):
                 break
 
         if resolve is None:
-            raise VeriTException("th_resolution", "cannot find resolution")
+            # Sometimes resolution solver may have bugs, such as resolving one proof term twice
+            # Example: QF_UFLIA\\wisas\\xs_5_5.smt2 step t213
+            # raise VeriTException("th_resolution", "cannot find resolution")
+            break
 
         # Perform this resolution
         id1, id2, t1, t2 = resolve

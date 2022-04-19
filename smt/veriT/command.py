@@ -36,7 +36,7 @@ class Step(ProofCommand):
     args: the arguments of the rule
     ctx: current context
     """
-    def __init__(self, id, rule_name, cl, pm=None, args=None, ctx=dict()) -> None:
+    def __init__(self, id, rule_name, cl, pm=[], args=[], ctx=dict()) -> None:
         self.id = id
         self.rule_name = rule_name
         self.cl = cl
