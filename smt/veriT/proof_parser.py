@@ -120,10 +120,11 @@ veriT_grammar = r"""
             | "(and" term+ ")" -> mk_conj_tm
             | "(=>" term term ")" -> mk_impl_tm
             | "(=" term term ")" -> mk_eq_tm
-            | "(+" term term ")" -> mk_plus_tm
+            | "(+" term* ")" -> mk_plus_tm
             | "(-" term term ")" -> mk_minus_tm
             | "(-" term ")" -> mk_uminus_tm
-            | "(*" term term ")" -> mk_mul_tm
+            | "(*" term* ")" -> mk_mul_tm
+            | "(/" term term ")" -> mk_div_tm
             | "(div" term term ")" -> mk_div_tm
             | "(<" term term ")" -> mk_less_tm
             | "(>" term term ")" -> mk_greater_tm
@@ -362,8 +363,11 @@ class ProofTransformer(Transformer):
     def mk_decimal(self, num):
         return hol_term.Real(Fraction(num))
 
-    def mk_plus_tm(self, t1, t2):
-        return t1 + t2
+    def mk_plus_tm(self, *ts):
+        res = ts[0]
+        for t in ts[1:]:
+            res = res + t
+        return res
 
     def mk_minus_tm(self, t1, t2):
         return t1 - t2
@@ -371,8 +375,11 @@ class ProofTransformer(Transformer):
     def mk_uminus_tm(self, t1):
         return -t1
 
-    def mk_mul_tm(self, t1, t2):
-        return t1 * t2
+    def mk_mul_tm(self, *ts):
+        res = ts[0]
+        for t in ts[1:]:
+            res = res + t
+        return res
 
     def mk_div_tm(self, t1, t2):
         return t1 / t2
