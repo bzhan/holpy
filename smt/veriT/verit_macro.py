@@ -1024,8 +1024,34 @@ class ITEIntroMacro(Macro):
 
         lhs, rhs = arg.lhs, arg.rhs
         ite_intros = collect_ite_intro(lhs)
-        expected_rhs = And(lhs, *ite_intros)
-        if expected_rhs != rhs:
+        ite_intros_distinct = []
+        for ite in ite_intros:
+            if ite not in ite_intros_distinct:
+                ite_intros_distinct.append(ite)
+        expected_ites = rhs.strip_conj()[1:]
+
+        if len(ite_intros_distinct) != len(expected_ites):
+            raise VeriTException("let_intro", "unexpected number of ites")
+
+        # Should consider symmetry of equality
+        for actual_ite, expected_ite in zip(ite_intros_distinct, expected_ites):
+            P, x, y = actual_ite.args
+            Q, a, b = expected_ite.args
+            if P != Q:
+                raise VeriTException("let_intro", "unexpected condition")
+            if x == a and y == b:
+                continue
+            elif Eq(x.rhs, x.lhs) == a and y == b:
+                continue
+            elif x == a and Eq(y.rhs, y.lhs) == b:
+                continue
+            elif Eq(x.rhs, x.lhs) and Eq(y.rhs, y.lhs) == b:
+                continue
+            else:
+                raise VeriTException("let_intro", "unexpected ite")
+
+        expected_rhs = And(lhs, *ite_intros_distinct)
+        if not compare_sym_tm(expected_rhs, rhs):
             print("Expected:", expected_rhs)
             print("Actual:", rhs)
             raise VeriTException("ite_intro", "unexpected goal")
