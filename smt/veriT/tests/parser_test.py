@@ -51,6 +51,9 @@ def test_file(filename, write_file=False, show_time=True, veriT_only=False):
     # Solve
     start_time = time.perf_counter()
     verit_proof = interface.solve(abs_name)
+    if verit_proof is None:
+        return
+
     ctx = proof_rec.bind_var(abs_name)
     solve_time = time.perf_counter() - start_time
 
@@ -163,7 +166,7 @@ class ParserTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, veriT_only=True)
+            test_path(path, veriT_only=False)
 
 
     def testParseQF_UFLIA(self):
@@ -187,7 +190,7 @@ class ParserTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, veriT_only=True)
+            test_path(path, veriT_only=False, show_time=True)
 
 
     def testParseUF(self):

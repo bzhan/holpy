@@ -70,7 +70,10 @@ veriT_grammar = r"""
     ANCHOR_NAME: "?" CNAME | "veriT_" CNAME
 
     ?proof_command : "(assume" step_id proof_term ")" -> mk_assume
-                    | "(step" step_id clause ":rule" CNAME step_annotation? ")" -> mk_step
+                    | "(step" step_id clause ":rule" CNAME ")" -> mk_step
+                    | "(step" step_id clause ":rule" CNAME ":premises" "(" step_id+ ")" ")" -> mk_step_with_premises
+                    | "(step" step_id clause ":rule" CNAME ":args" "(" step_arg_pair+ ")" ")" -> mk_step_with_args
+                    | "(step" step_id clause ":rule" CNAME ":premises" "(" step_id+ ")" ":args" "(" step_arg_pair+ ")" -> mk_step_with_premises_args
                     | "(anchor :step" step_id ":args" "(" single_context+ ")" ")" -> mk_anchor
                     | "(anchor :step" step_id ")" -> mk_empty_anchor
     ?clause : "(cl" proof_term* ")" -> mk_clause
@@ -275,7 +278,7 @@ class ProofTransformer(Transformer):
 
     def mk_forall_inst_args(self, name, tm):
         assert str(name) in self.verit_ctx  and str(tm) in self.smt_file_ctx
-        return self.verit_ctx[str(name)] and self.smt_file_ctx[str(tm)]
+        return self.verit_ctx[str(name)], self.smt_file_ctx[str(tm)]
 
     def mk_la_generic_args(self, *tms):
         return tms
@@ -386,7 +389,7 @@ class ProofTransformer(Transformer):
         self.cur_subprf_id.append(str(id))
         return step
 
-    def mk_step(self, step_id, cl, rule_name, pm=None):
+    def mk_step(self, step_id, cl, rule_name):
         # make context of current step
         # Context created by anchor
         step_ctx = {var_name:tm for ctx in self.proof_ctx for var_name, tm in ctx.items()}
@@ -404,7 +407,36 @@ class ProofTransformer(Transformer):
         self.anchor_ctx.clear()
 
         # Make new step
-        return Step(step_id, rule_name, cl, pm, step_ctx)
+        # if isinstance(pm, str):
+        return Step(step_id, rule_name, cl, ctx=step_ctx)
+
+    def mk_step_with_premises(self, step_id, cl, rule_name, *pm):
+        # make context of current step
+        # Context created by anchor
+        # step_ctx = {var_name:tm for ctx in self.proof_ctx for var_name, tm in ctx.items()}
+        
+        # # if current step meets subproof id, pop the last context
+        # if len(self.cur_subprf_id) and self.cur_subprf_id[-1] == step_id:
+        #     self.cur_subprf_id.pop()
+        #     self.proof_ctx.pop()
+
+        # # if there is no anchor context, the step should not be in a subproof
+        # assert self.cur_subprf_id or len(self.proof_ctx) == 0
+
+        # # clear quantifier context
+        # self.verit_ctx.clear()
+        # self.anchor_ctx.clear()
+
+        # # Make new step
+        # # if isinstance(pm, str):
+        step = self.mk_step(step_id, cl, rule_name)
+        step.pm = pm
+        return step
+
+    def mk_step_with_args(self, step_id, cl, rule_name, args):
+        step = self.mk_step(step_id, cl, rule_name)
+        step.args = args
+        return step
 
     def mk_clause(self, *tm):
         return tm

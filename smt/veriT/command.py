@@ -32,10 +32,11 @@ class Step(ProofCommand):
     cl : a list of proof terms, in order to express (n-ary) 
             disjunction in SMT-LIB `or` command.
     rule_name : a deduction method.
-    pm: the premises of the rule.
+    pm: the premises of the rule
+    args: the arguments of the rule
     ctx: current context
     """
-    def __init__(self, id, rule_name, cl, pm=None, ctx=dict()) -> None:
+    def __init__(self, id, rule_name, cl, pm=None, args=None, ctx=dict()) -> None:
         self.id = id
         self.rule_name = rule_name
         self.cl = cl
@@ -43,16 +44,14 @@ class Step(ProofCommand):
             pm = []
         self.pm = pm
         self.cur_ctx = ctx
+        self.args = args
 
     def __str__(self):
         cl = " ".join(str(c) for c in self.cl)
         pm = " ".join(str(p) for p in self.pm)
-        if self.pm is None:
-            return "(step %s (cl %s) :rule %s)" % \
-                (self.id, cl, self.rule_name)
-        else:
-            return "(step %s (cl %s) :rule %s :premises %s)" % \
-                (self.id, cl, self.rule_name, pm)
+        args = " ".join(str(arg) for arg in self.args)
+        return "(step %s (cl %s) :rule %s :premises (%s) :args (%s))" % \
+                (self.id, cl, self.rule_name, pm, args)
 
     def get_clause_size(self) -> int:
         return len(self.cl)

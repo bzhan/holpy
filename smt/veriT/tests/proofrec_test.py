@@ -48,6 +48,8 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False):
     # Solve
     start_time = time.perf_counter()
     verit_proof = interface.solve(abs_name)
+    if verit_proof is None:
+        return
     ctx = proof_rec.bind_var(abs_name)
     solve_time = time.perf_counter() - start_time
 
@@ -219,3 +221,38 @@ class VeriTProofRecTest(unittest.TestCase):
             p.strip_dirs()
             p.sort_stats('cumtime')
             p.print_stats()
+
+    def test_QF_UFLIA(self):
+        test_paths = [
+            'QF_UFLIA\\mathsat\\EufLaArithmetic\\medium\\medium5.smt2',
+            'QF_UFLIA\\mathsat\\EufLaArithmetic\\medium\\medium6.smt2',
+            'QF_UFLIA\\mathsat\\EufLaArithmetic\\hard\\hard4.smt2',
+            'QF_UFLIA\\mathsat\\EufLaArithmetic\\hard\\hard5.smt2',
+            'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_03.smt2',
+            'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_04.smt2',
+            'QF_UFLIA\\mathsat\\Wisa\\xs-05-06-2-2-5-1.smt2',
+            'QF_UFLIA\\mathsat\\Wisa\\xs-05-07-4-5-1-2.smt2',
+            'QF_UFLIA\\TwoSquares\\smtlib.602033.smt2',
+            'QF_UFLIA\\TwoSquares\\smtlib.602046.smt2',
+            'QF_UFLIA\\TwoSquares\\smtlib.686126.smt2',
+            'QF_UFLIA\\TwoSquares\\smtlib.769286.smt2',
+            # 'QF_UFLIA\\wisas\\xs_5_10.smt2',
+            # 'QF_UFLIA\\wisas\\xs_5_15.smt2',
+            # 'QF_UFLIA\\wisas\\xs_5_5.smt2',
+            # 'QF_UFLIA\\wisas\\xs_7_12.smt2',
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_eval=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats()
+
