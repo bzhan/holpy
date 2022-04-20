@@ -236,7 +236,6 @@ class ProofTransformer(Transformer):
         name = "?" + str(name)
         if len(self.let_tm) > 0 and name in self.let_tm:
             return self.let_tm[name]
-        
         elif len(self.quant_ctx) > 0 and name in self.quant_ctx:
             return self.quant_ctx[name]
         else:
@@ -244,7 +243,9 @@ class ProofTransformer(Transformer):
                 if name in ctx:
                     return hol_term.Var(name, ctx[name].get_type())
 
-        raise VeriTParseException("ret_let_tm", "can't find ?var_name")
+        print('let_tm', self.let_tm)
+        print('quant_ctx', self.quant_ctx)
+        raise VeriTParseException("ret_let_tm", "can't find %s" % str(name))
 
     def ret_tm(self, tm):
         tm = str(tm)
@@ -276,15 +277,21 @@ class ProofTransformer(Transformer):
         return hol_var
 
     def mk_forall(self, *tms):
-        self.quant_ctx.clear()
+        for tm in tms[:-1]:
+            assert tm.name in self.quant_ctx
+            del self.quant_ctx[tm.name]
         return hol_term.Forall(*tms)
 
     def mk_exists(self, *tms):
-        self.quant_ctx.clear()
+        for tm in tms[:-1]:
+            assert tm.name in self.quant_ctx
+            del self.quant_ctx[tm.name]
         return hol_term.Exists(*tms)
 
     def mk_choice(self, *tms):
-        self.quant_ctx.clear()
+        for tm in tms[:-1]:
+            assert tm.name in self.quant_ctx
+            del self.quant_ctx[tm.name]
         return logic.mk_some(*tms)
 
     def mk_let_pair(self, name, tm):
@@ -308,7 +315,9 @@ class ProofTransformer(Transformer):
         - lbd_tm: the function body
         The let scope will be cleared when the let-expression is closed.
         """
-        self.let_tm.clear()
+        for tm in tms[:-1]:
+            assert tm[0].name in self.let_tm
+            del self.let_tm[tm[0].name]
         return tms[-1]
 
     def mk_distinct_tm(self, *tms):
