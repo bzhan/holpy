@@ -383,7 +383,7 @@ class ProofTransformer(Transformer):
     def mk_mul_tm(self, *ts):
         res = ts[0]
         for t in ts[1:]:
-            res = res + t
+            res = res * t
         return res
 
     def mk_div_tm(self, t1, t2):
@@ -444,9 +444,9 @@ class ProofTransformer(Transformer):
             if arg_name == PREMISES:
                 step.pm = arg
             elif arg_name == ARGS:
-                step.args = args
+                step.args = arg
             elif arg_name == DISCHARGE:
-                step.discharge = DISCHARGE
+                step.discharge = arg
             else:
                 raise ValueError(arg_name)
         return step
