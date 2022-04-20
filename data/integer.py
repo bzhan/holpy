@@ -26,6 +26,13 @@ def strip_plus(t):
     else:
         return [t]
 
+def strip_plus_full(t):
+    """Given t1 + ... + tn, return [t1, ..., tn]."""
+    if t.is_plus():
+        return strip_plus_full(t.arg1) + strip_plus_full(t.arg)
+    else:
+        return [t]
+
 def dest_times(t):
     """Given t1 * t2, return (t1, t2)."""
     assert t.is_times(), "dest_times"
