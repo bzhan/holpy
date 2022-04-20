@@ -3,6 +3,8 @@ import time
 from smt.veriT.proof_parser import parse_decl, proof_parser
 from smt.veriT import interface, proof_rec
 import os
+from syntax.settings import settings
+settings.unicode = False
 
 smtlib_path = None
 
@@ -38,7 +40,8 @@ def test_file(filename, write_file=False, show_time=True, veriT_only=False):
         return
 
     abs_name = smtlib_path + filename
-    if interface.is_sat(abs_name):
+    if not interface.is_unsat(abs_name):
+        print('sat / unknown / unsupported')
         return
     print(repr(filename) + ',')
 
@@ -117,7 +120,10 @@ class ParserTest(unittest.TestCase):
             'QF_UF\\2018-Goel-hwbench\\QF_UF_exit.1.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_extinction.2.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_firewire_tree.1.prop1_ab_reg_max.smt2',
-            'QF_UF\\20190906-CLEARSY',
+            'QF_UF\\20190906-CLEARSY\\0000\\00068.smt2',
+            'QF_UF\\20190906-CLEARSY\\0001\\00069.smt2',
+            'QF_UF\\20190906-CLEARSY\\0009\\00122.smt2',
+            'QF_UF\\20190906-CLEARSY\\0022\\00014.smt2',
             'QF_UF\\eq_diamond\\eq_diamond1.smt2',
             'QF_UF\\eq_diamond\\eq_diamond10.smt2',
             "QF_UF\\NEQ\\NEQ004_size4.smt2",
@@ -210,15 +216,14 @@ class ParserTest(unittest.TestCase):
             'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_53_474_1036287.smt_in.smt2',
             'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_55_00_922_1043783.smt_in.smt2',
             'UF\\20190906-CLEARSY\\0001\\00145.smt2',
-            'UF\\20190906-CLEARSY\\0011\\00001.smt2',
-            'UF\\20190906-CLEARSY\\0016\\00977.smt2',
+            'UF\\20190906-CLEARSY\\0009\\00082.smt2',
+            'UF\\20190906-CLEARSY\\0015\\00370.smt2',
             'UF\\sledgehammer\\Arrow_Order\\smtlib.578262.smt2',
             'UF\\sledgehammer\\Arrow_Order\\smtlib.617784.smt2',
             'UF\\sledgehammer\\Arrow_Order\\smtlib.686801.smt2',
             'UF\\sledgehammer\\FFT\\uf.549548.smt2',
             'UF\\sledgehammer\\FFT\\uf.600765.smt2',
             'UF\\sledgehammer\\FFT\\uf.626085.smt2',
-            'UF\\sledgehammer\\Fundamental_Theorem_Algebra\\smtlib.1035245.smt2',
             'UF\\sledgehammer\\Fundamental_Theorem_Algebra\\uf.1025050.smt2',
             'UF\\sledgehammer\\Fundamental_Theorem_Algebra\\uf.1061982.smt2',
             'UF\\sledgehammer\\Hoare\\smtlib.1170876.smt2',
@@ -231,12 +236,8 @@ class ParserTest(unittest.TestCase):
             'UF\\grasshopper\\uninstantiated\\dl_filter_postcondition_of_dl_filter_41_1.smt2',
             'UF\\grasshopper\\uninstantiated\\dl_insert_check_heap_access_16_4.smt2',
             'UF\\misc\\list1.smt2',
-            'UF\\misc\\list2.smt2',
             'UF\\misc\\set10.smt2',
             'UF\\misc\\set11.smt2',
-            'UF\\wintersteiger\\fmsd13\\fixpoint\\small-bug1-fixpoint-2.smt2',
-            'UF\\wintersteiger\\fmsd13\\fixpoint\\small-bug1-fixpoint-3.smt2',
-            'UF\\wintersteiger\\fmsd13\\fixpoint\\small-bug1-fixpoint-4.smt2',
         ]
 
         for path in test_paths:
@@ -254,8 +255,6 @@ class ParserTest(unittest.TestCase):
             'UFLRA\\FFT\\smtlib.627531.smt2',
             'UFLRA\\FFT\\smtlib.627605.smt2',
             'UFLRA\\FFT\\smtlib.627688.smt2',
-            # 'UFLRA\\misc\\list2.smt2', # unsupported
-            'UFLRA\\misc\\set16.smt2',
         ]
 
         for path in test_paths:
@@ -273,11 +272,7 @@ class ParserTest(unittest.TestCase):
             'UFLIA\\check\\bignum_quant.smt2',
             'UFLIA\\misc\\arr1.smt2',
             'UFLIA\\misc\\list3.smt2',
-            'UFLIA\\misc\\list4.smt2',
             'UFLIA\\misc\\list5.smt2',
-            'UFLIA\\misc\\list6.smt2',
-            'UFLIA\\psyco\\191.smt2',
-            'UFLIA\\psyco\\192.smt2',
             'UFLIA\\RicartAgrawala\\ricart-agrawala1.smt2',
             'UFLIA\\sexpr\\SES.Atom..ctor_System.String_notnull.smt2',
             'UFLIA\\sexpr\\SES.Atom.Write_System.IO.TextWriter_notnull.smt2',
@@ -296,13 +291,13 @@ class ParserTest(unittest.TestCase):
             'UFLIA\\tokeneer\\admin\\finishop-1.smt2',
             'UFLIA\\tokeneer\\admin\\init-1.smt2',
             'UFLIA\\tokeneer\\admin\\logon-1.smt2',
-            'UFLIA\\tptp\\ARI603=1.smt2',
             'UFLIA\\tptp\\ARI604=1.smt2',
-            'UFLIA\\tptp\\ARI611=1.smt2',
+            'UFLIA\\tptp\\ARI612=1.smt2',
+            'UFLIA\\tptp\\ARI615=1.smt2',
         ]
 
         for path in test_paths:
-            test_path(path, veriT_only=True)
+            test_path(path)
 
 
 if __name__ == "__main__":

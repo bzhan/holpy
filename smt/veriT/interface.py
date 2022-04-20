@@ -44,8 +44,8 @@ def solve(f, write_file=False):
         p.kill()
         return None
     
-def is_sat(f):
-    """Given a smt2 file, use verit to solve it and return True if it is SAT."""
+def is_unsat(f):
+    """Given a smt2 file, use verit to solve it and return True if it is UNSAT."""
     if platform == "win32":
         p = subprocess.Popen("veriT --disable-print-success %s" % f,
                      stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -56,11 +56,11 @@ def is_sat(f):
     try:
         output, _ = p.communicate(timeout=2)
         res = output.decode('utf-8').split("\r\n")[1]
-        return True if res == "sat" else False
+        return False if res in ("sat", "unknown", "unsupported") else True
     except subprocess.TimeoutExpired:
         print("Timeout")
         p.kill()
-        return True
+        return False
 
 def solve_and_proof(tm):
     """Use veriT to determine whether a logical term is satisfiable."""
@@ -79,27 +79,6 @@ def proof_rec(file_name):
     proof_parser = parser.term_parser(ctx)
     steps = []
     for step in res:
-        if step in ("sat", "unknown", "unsat"):
+        if step in ("sat", "unknown", "unsupported", "unsat"):
             continue
         steps.append(proof_parser.parse(step))
-    
-    # if res[0] in ("sat", "unsat", "unknown"):
-    #     status, proof_steps = res[0], res[1:-1]
-    # elif res[0] == "unsupported":
-    #     status, proof_steps = res[1], res[2:-1]
-    # else:
-    #     print("res", res)
-    #     raise NotImplementedError(res)
-    # if status in ("sat", "unknown"):
-    #     print(status)
-    #     return
-
-    # ctx = parser.bind_var(file_name)
-    # proof_parser = parser.term_parser(ctx)
-    # parsed_proof_steps = [proof_parser.parse(step) for step in proof_steps]
-    # rct = proof.ProofReconstruction(parsed_proof_steps)
-    # time1 = time.perf_counter()
-    # hol_proof = rct.main()
-    # time2 = time.perf_counter()
-    # # print("total time: ", time2 - time1)
-    # return hol_proof

@@ -78,6 +78,7 @@ decl_parser = Lark(smt_decl_grammar, start="term", parser="lalr", transformer=De
 
 def parse_decl(s):
     return decl_parser.parse(s)
+
 # Grammar of Alethe proof
 veriT_grammar = r"""
     VNAME: (LETTER|"~"|"!"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"/")(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/")*
@@ -87,7 +88,7 @@ veriT_grammar = r"""
     ?vname: VNAME -> mk_vname
         | QUOTED_VNAME -> mk_quoted_vname
 
-    ANCHOR_NAME: "?" CNAME | "veriT_" CNAME
+    ANCHOR_NAME: "?" CNAME | CNAME
 
     ?proof_command : "(assume" step_id proof_term ")" -> mk_assume
                     | "(step" step_id clause ":rule" CNAME step_annotation* ")" -> mk_step
@@ -185,7 +186,7 @@ class ProofTransformer(Transformer):
         self.cur_subprf_id = []
 
         # map from quantified variable name to variable
-        self.quant_ctx = dict()
+        self.quant_ctx = []
 
         # map from (quantified) verit_-prefix name to term
         self.verit_ctx = dict()
@@ -234,14 +235,14 @@ class ProofTransformer(Transformer):
         this is correct since if ?name is not a binding var, the let scope would be empty. 
         """
         name = "?" + str(name)
-        if len(self.let_tm) > 0 and name in self.let_tm:
+        if name in self.let_tm:
             return self.let_tm[name]
-        elif len(self.quant_ctx) > 0 and name in self.quant_ctx:
-            return self.quant_ctx[name]
-        else:
-            for ctx in self.proof_ctx:
-                if name in ctx:
-                    return hol_term.Var(name, ctx[name].get_type())
+        for p in reversed(self.quant_ctx):
+            if name == p[0]:
+                return p[1]
+        for ctx in reversed(self.proof_ctx):
+            if name in ctx:
+                return hol_term.Var(name, ctx[name].get_type())
 
         print('let_tm', self.let_tm)
         print('quant_ctx', self.quant_ctx)
@@ -249,14 +250,18 @@ class ProofTransformer(Transformer):
 
     def ret_tm(self, tm):
         tm = str(tm)
-        if tm in self.quant_ctx:
-            return self.quant_ctx[tm]
-        elif tm in self.step_ctx:
+        for p in reversed(self.quant_ctx):
+            if tm == p[0]:
+                return p[1]
+        if tm in self.step_ctx:
             return self.step_ctx[tm]
-        elif tm in self.smt_file_ctx:
+        if tm in self.smt_file_ctx:
             return hol_term.Var(tm, self.smt_file_ctx[str(tm)])
-        else:
-            raise ValueError(tm)
+        for ctx in reversed(self.proof_ctx):
+            if tm in ctx:
+                return hol_term.Var(tm, ctx[tm].get_type())
+        # If not found in all these contexts, raise error
+        raise ValueError(tm)
 
     def mk_par_tm(self, tm):
         return tm
@@ -267,31 +272,31 @@ class ProofTransformer(Transformer):
     def mk_quant_pair_assume(self, var_name, ty):
         var_name = "?" + str(var_name)
         hol_var = hol_term.Var(var_name, str_to_hol_type(str(ty)))
-        self.quant_ctx[var_name] = hol_var
+        self.quant_ctx.append((var_name, hol_var))
         return hol_var
 
     def mk_quant_pair_step(self, var_name, ty):
         var_name = str(var_name)
         hol_var = hol_term.Var(var_name, str_to_hol_type(str(ty)))
-        self.quant_ctx[var_name] = hol_var
+        self.quant_ctx.append((var_name, hol_var))
         return hol_var
 
     def mk_forall(self, *tms):
-        for tm in tms[:-1]:
-            assert tm.name in self.quant_ctx
-            del self.quant_ctx[tm.name]
+        for tm in reversed(tms[:-1]):
+            assert tm.name == self.quant_ctx[-1][0]
+            del self.quant_ctx[-1]
         return hol_term.Forall(*tms)
 
     def mk_exists(self, *tms):
-        for tm in tms[:-1]:
-            assert tm.name in self.quant_ctx
-            del self.quant_ctx[tm.name]
+        for tm in reversed(tms[:-1]):
+            assert tm.name == self.quant_ctx[-1][0]
+            del self.quant_ctx[-1]
         return hol_term.Exists(*tms)
 
     def mk_choice(self, *tms):
-        for tm in tms[:-1]:
-            assert tm.name in self.quant_ctx
-            del self.quant_ctx[tm.name]
+        for tm in reversed(tms[:-1]):
+            assert tm.name == self.quant_ctx[-1][0]
+            del self.quant_ctx[-1]
         return logic.mk_some(*tms)
 
     def mk_let_pair(self, name, tm):
@@ -400,15 +405,13 @@ class ProofTransformer(Transformer):
         return ''.join(step_id)
 
     def mk_assume(self, assm_id, tm):
-        assm_step = Assume(assm_id, tm)
-        self.quant_ctx.clear()
-        return assm_step
+        return Assume(assm_id, tm)
 
     def mk_anchor(self, id, *ctx):
         """Every anchor (with ctx) will create a new context."""
         new_ctx = {}
         for var, tm in ctx:
-            new_ctx[var] = tm
+            new_ctx[str(var)] = tm
             new_ctx[str(tm)] = tm
         self.proof_ctx.append(new_ctx)
         prf_ctx = {var_name : tm for ctx in self.proof_ctx for var_name, tm in ctx.items()}

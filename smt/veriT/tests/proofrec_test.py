@@ -41,7 +41,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False):
         return
 
     abs_name = smtlib_path + filename
-    if interface.is_sat(abs_name):
+    if not interface.is_unsat(abs_name):
         return
     print(repr(filename) + ',')
 
