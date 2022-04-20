@@ -7,6 +7,8 @@ from kernel import type as hol_type
 from data import list as hol_list
 from fractions import Fraction
 
+PREMISES, ARGS, DISCHARGE = range(3)
+
 class VeriTParseException(Exception):
     def __init__(self, tm_name, message) -> None:
         self.tm_name = tm_name
@@ -88,10 +90,7 @@ veriT_grammar = r"""
     ANCHOR_NAME: "?" CNAME | "veriT_" CNAME
 
     ?proof_command : "(assume" step_id proof_term ")" -> mk_assume
-                    | "(step" step_id clause ":rule" CNAME ")" -> mk_step
-                    | "(step" step_id clause ":rule" CNAME ":premises" "(" step_id+ ")" ")" -> mk_step_with_premises
-                    | "(step" step_id clause ":rule" CNAME ":args" "(" step_arg_pair+ ")" ")" -> mk_step_with_args
-                    | "(step" step_id clause ":rule" CNAME ":premises" "(" step_id+ ")" ":args" "(" step_arg_pair+ ")" -> mk_step_with_premises_args
+                    | "(step" step_id clause ":rule" CNAME step_annotation* ")" -> mk_step
                     | "(anchor :step" step_id ":args" "(" single_context+ ")" ")" -> mk_anchor
                     | "(anchor :step" step_id ")" -> mk_empty_anchor
     ?clause : "(cl" proof_term* ")" -> mk_clause
@@ -99,7 +98,7 @@ veriT_grammar = r"""
     ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (term|vname) ")" -> add_context
                     | "(" (ANCHOR_NAME | CNAME) vname ")" -> add_trivial_ctx
 
-    ?step_arg_pair : "(:=" "veriT_"  CNAME term")" -> mk_forall_inst_args
+    ?step_arg_pair : "(:=" CNAME term")" -> mk_forall_inst_args
                    | term* -> mk_la_generic_args
 
     ?step_annotation : ":premises" "(" step_id+ ")" -> mk_step_premises
@@ -111,7 +110,7 @@ veriT_grammar = r"""
     ?let_pair : "(" "?" CNAME term ")" -> mk_let_pair
 
     ?quant_pair : "(" "?" CNAME vname ")" -> mk_quant_pair_assume
-                | "(" "veriT_" CNAME vname ")" -> mk_quant_pair_step
+                | "(" CNAME vname ")" -> mk_quant_pair_step
 
     ?term :   "true" -> mk_true
             | "false" -> mk_false
@@ -226,7 +225,7 @@ class ProofTransformer(Transformer):
         return self.annot_tm[name]
 
     def ret_let_tm(self, name):
-        """There are two kinds of occursion of ?name in proof.
+        """There are three kinds of occursion of ?name in proof.
         1. let expression : (let (?x 1) ?x + 1)
         2. anchor context: (:= (?x I) term)
         3. quantified variable: (forall (?x t). ?x)
@@ -248,16 +247,14 @@ class ProofTransformer(Transformer):
 
     def ret_tm(self, tm):
         tm = str(tm)
-        if tm.startswith("veriT_"):
-            if tm in self.verit_ctx:
-                return self.verit_ctx[tm]
-            elif tm in self.step_ctx:
-                return self.step_ctx[tm]
-            else:
-                raise KeyError(tm)
-        if tm in self.smt_file_ctx:
+        if tm in self.quant_ctx:
+            return self.quant_ctx[tm]
+        elif tm in self.step_ctx:
+            return self.step_ctx[tm]
+        elif tm in self.smt_file_ctx:
             return hol_term.Var(tm, self.smt_file_ctx[str(tm)])
-        raise ValueError(tm)
+        else:
+            raise ValueError(tm)
 
     def mk_par_tm(self, tm):
         return tm
@@ -272,9 +269,9 @@ class ProofTransformer(Transformer):
         return hol_var
 
     def mk_quant_pair_step(self, var_name, ty):
-        var_name = "veriT_" + str(var_name)
+        var_name = str(var_name)
         hol_var = hol_term.Var(var_name, str_to_hol_type(str(ty)))
-        self.verit_ctx[var_name] = hol_var
+        self.quant_ctx[var_name] = hol_var
         return hol_var
 
     def mk_forall(self, *tms):
@@ -410,7 +407,7 @@ class ProofTransformer(Transformer):
         self.cur_subprf_id.append(str(id))
         return step
 
-    def mk_step(self, step_id, cl, rule_name):
+    def mk_step(self, step_id, cl, rule_name, *args):
         # make context of current step
         # Context created by anchor
         step_ctx = {var_name:tm for ctx in self.proof_ctx for var_name, tm in ctx.items()}
@@ -423,33 +420,30 @@ class ProofTransformer(Transformer):
         # if there is no anchor context, the step should not be in a subproof
         assert self.cur_subprf_id or len(self.proof_ctx) == 0
 
-        # clear quantifier context
-        self.verit_ctx.clear()
-
         # Make new step
-        return Step(step_id, rule_name, cl, ctx=step_ctx)
-
-    def mk_step_with_premises(self, step_id, cl, rule_name, *pm):
-        step = self.mk_step(step_id, cl, rule_name)
-        step.pm = pm
-        return step
-
-    def mk_step_with_args(self, step_id, cl, rule_name, args):
-        step = self.mk_step(step_id, cl, rule_name)
-        step.args = args
+        step = Step(step_id, rule_name, cl, ctx=step_ctx)
+        for arg_name, arg in args:
+            if arg_name == PREMISES:
+                step.pm = arg
+            elif arg_name == ARGS:
+                step.args = args
+            elif arg_name == DISCHARGE:
+                step.discharge = DISCHARGE
+            else:
+                raise ValueError(arg_name)
         return step
 
     def mk_clause(self, *tm):
         return tm
 
     def mk_step_premises(self, *pm):
-        return pm
+        return PREMISES, pm
 
     def mk_step_args(self, *args):
-        return args
+        return ARGS, args
 
     def mk_discharge(self, *steps):
-        return steps
+        return DISCHARGE, steps
 
 def proof_parser(ctx):
     return Lark(veriT_grammar, start="proof_command", parser="lalr", transformer=ProofTransformer(smt_file_ctx=ctx))
