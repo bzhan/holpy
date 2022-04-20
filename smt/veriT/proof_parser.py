@@ -97,9 +97,9 @@ veriT_grammar = r"""
     ?clause : "(cl" proof_term* ")" -> mk_clause
     
     ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (term|vname) ")" -> add_context
-                    | "(" CNAME vname ")" -> add_trivial_ctx
+                    | "(" (ANCHOR_NAME | CNAME) vname ")" -> add_trivial_ctx
 
-    ?step_arg_pair : "(:=" "veriT_"  CNAME vname")" -> mk_forall_inst_args
+    ?step_arg_pair : "(:=" "veriT_"  CNAME term")" -> mk_forall_inst_args
                    | term* -> mk_la_generic_args
 
     ?step_annotation : ":premises" "(" step_id+ ")" -> mk_step_premises
@@ -190,8 +190,6 @@ class ProofTransformer(Transformer):
         # map from (quantified) verit_-prefix name to term
         self.verit_ctx = dict()
 
-        # map from anchor variable to term
-        self.anchor_ctx = dict()
 
     def add_context(self, var, ty, tm_name):
         """return the new variables and the assigned term
@@ -204,15 +202,15 @@ class ProofTransformer(Transformer):
             tm = tm_name
         else:
             tm = hol_term.Var(tm_name, hol_ty)
-            self.anchor_ctx[tm_name] = tm
-        
+            self.step_ctx[tm_name] = tm
         var_name = var
             
         assert tm.get_type() == hol_ty
         return var_name, tm
 
-    def add_trivial_ctx(self, var, ty):
-        return tuple()
+    def add_trivial_ctx(self, var_name, ty):
+        var = hol_term.Var(str(var_name), str_to_hol_type(str(ty)))
+        return str(var_name), var
 
     def mk_vname(self, name):
         return str(name)
@@ -253,11 +251,9 @@ class ProofTransformer(Transformer):
         if tm.startswith("veriT_"):
             if tm in self.verit_ctx:
                 return self.verit_ctx[tm]
-            elif tm in self.anchor_ctx:
-                return self.anchor_ctx[tm]
+            elif tm in self.step_ctx:
+                return self.step_ctx[tm]
             else:
-                print(self.verit_ctx)
-                print(self.anchor_ctx)
                 raise KeyError(tm)
         if tm in self.smt_file_ctx:
             return hol_term.Var(tm, self.smt_file_ctx[str(tm)])
@@ -271,29 +267,22 @@ class ProofTransformer(Transformer):
 
     def mk_quant_pair_assume(self, var_name, ty):
         var_name = "?" + str(var_name)
-        hol_var = hol_term.Var(var_name, hol_type.TVar(str(ty)))
+        hol_var = hol_term.Var(var_name, str_to_hol_type(str(ty)))
         self.quant_ctx[var_name] = hol_var
         return hol_var
 
     def mk_quant_pair_step(self, var_name, ty):
         var_name = "veriT_" + str(var_name)
-        hol_var = hol_term.Var(var_name, hol_type.TVar(str(ty)))
+        hol_var = hol_term.Var(var_name, str_to_hol_type(str(ty)))
         self.verit_ctx[var_name] = hol_var
         return hol_var
 
     def mk_forall(self, *tms):
         self.quant_ctx.clear()
         return hol_term.Forall(*tms)
-
     def mk_exists(self, *tms):
         self.quant_ctx.clear()
-        try:
-            return hol_term.Exists(*tms)
-        except:
-            print("tms")
-            for tm in tms:
-                print(repr(tm))
-            raise NotImplementedError
+        return hol_term.Exists(*tms)
 
     def mk_let_pair(self, name, tm):
         """Make the let scope."""
@@ -304,8 +293,7 @@ class ProofTransformer(Transformer):
         return bound_var, T, tm
 
     def mk_forall_inst_args(self, name, tm):
-        assert str(name) in self.verit_ctx  and str(tm) in self.smt_file_ctx
-        return self.verit_ctx[str(name)], self.smt_file_ctx[str(tm)]
+        return str(name), tm
 
     def mk_la_generic_args(self, *tms):
         return tms
@@ -437,31 +425,11 @@ class ProofTransformer(Transformer):
 
         # clear quantifier context
         self.verit_ctx.clear()
-        self.anchor_ctx.clear()
 
         # Make new step
-        # if isinstance(pm, str):
         return Step(step_id, rule_name, cl, ctx=step_ctx)
 
     def mk_step_with_premises(self, step_id, cl, rule_name, *pm):
-        # make context of current step
-        # Context created by anchor
-        # step_ctx = {var_name:tm for ctx in self.proof_ctx for var_name, tm in ctx.items()}
-        
-        # # if current step meets subproof id, pop the last context
-        # if len(self.cur_subprf_id) and self.cur_subprf_id[-1] == step_id:
-        #     self.cur_subprf_id.pop()
-        #     self.proof_ctx.pop()
-
-        # # if there is no anchor context, the step should not be in a subproof
-        # assert self.cur_subprf_id or len(self.proof_ctx) == 0
-
-        # # clear quantifier context
-        # self.verit_ctx.clear()
-        # self.anchor_ctx.clear()
-
-        # # Make new step
-        # # if isinstance(pm, str):
         step = self.mk_step(step_id, cl, rule_name)
         step.pm = pm
         return step

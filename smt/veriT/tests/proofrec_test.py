@@ -107,7 +107,7 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False):
 
 
 
-class VeriTProofRecTest(unittest.TestCase):
+class ProofrecTest(unittest.TestCase):
     def test_QF_UF(self):
         test_paths = [
             'QF_UF\\20170829-Rodin\\smt1300175744189082250.smt2',

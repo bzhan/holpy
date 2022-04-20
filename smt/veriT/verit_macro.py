@@ -1391,7 +1391,7 @@ class LADisequalityMacro(Macro):
 
 
 def split_num_expr(t):
-    summands = integer.strip_plus(t)
+    summands = integer.strip_plus_full(t)
     nums, non_nums = [Int(0)], []
     for s in summands:
         if s.is_number():
