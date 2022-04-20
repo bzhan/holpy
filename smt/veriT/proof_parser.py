@@ -1,7 +1,7 @@
 from typing import Iterable
 from lark import Lark, Transformer, v_args, exceptions
 from smt.veriT.command import Assume, Step, Anchor
-from logic.logic import mk_if
+from logic import logic
 from kernel import term as hol_term
 from kernel import type as hol_type
 from data import list as hol_list
@@ -137,6 +137,7 @@ veriT_grammar = r"""
             | "(ite" term term term ")" -> mk_ite_tm
             | "(forall" "(" quant_pair+ ")" term ")" -> mk_forall
             | "(exists" "(" quant_pair+ ")" term ")" -> mk_exists
+            | "(choice" "(" quant_pair+ ")" term ")" -> mk_choice
             | INT -> mk_int
             | DECIMAL -> mk_decimal
             | name
@@ -277,9 +278,14 @@ class ProofTransformer(Transformer):
     def mk_forall(self, *tms):
         self.quant_ctx.clear()
         return hol_term.Forall(*tms)
+
     def mk_exists(self, *tms):
         self.quant_ctx.clear()
         return hol_term.Exists(*tms)
+
+    def mk_choice(self, *tms):
+        self.quant_ctx.clear()
+        return logic.mk_some(*tms)
 
     def mk_let_pair(self, name, tm):
         """Make the let scope."""
@@ -340,7 +346,7 @@ class ProofTransformer(Transformer):
         return hol_term.Eq(*tms)
 
     def mk_ite_tm(self, P, x, y):
-        return mk_if(P, x, y)
+        return logic.mk_if(P, x, y)
 
     def mk_int(self, num):
         return hol_term.Int(int(num))
