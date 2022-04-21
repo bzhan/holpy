@@ -7,7 +7,8 @@ from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, Thm
 from kernel import term as hol_term
 from kernel import type as hol_type
-from kernel.term import Term, Not, And, Or, Eq, Implies, false, true, IntType, RealType, BoolType, Int
+from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, IntType, \
+    RealType, BoolType, Int, Forall, Exists
 from prover.proofrec import int_th_lemma_1_omega, int_th_lemma_1_simplex, real_th_lemma
 from logic import conv, logic
 from data import integer, real, proplogic
@@ -978,8 +979,82 @@ class ReflMacro(Macro):
         else:
             raise VeriTException("refl", "either lhs and rhs of goal is not in ctx")
 
+def compare_sym_tm(tm1, tm2):
+    """Compare tm1 and tm2 with the symmetry property."""
+    if tm1.is_comb():
+        if not tm2.is_comb() or tm1.head != tm2.head:
+            return False
+        elif tm1.is_equals():
+            if compare_sym_tm(tm1.lhs, tm2.lhs) and compare_sym_tm(tm1.rhs, tm2.rhs):
+                return True
+            elif compare_sym_tm(tm1.rhs, tm2.lhs) and compare_sym_tm(tm1.lhs, tm2.rhs):
+                return True
+            else:
+                return False
+        else:
+            for l_arg, r_arg in zip(tm1.args, tm2.args):
+                if not compare_sym_tm(l_arg, r_arg):
+                    return False
+            return True
+    elif tm1.is_abs():
+        if not tm2.is_abs():
+            return False
+        v1, body1 = tm1.dest_abs()
+        v2, body2 = tm2.dest_abs()
+        return v1 == v2 and compare_sym_tm(body1, body2)
+    else:
+        return tm1 == tm2
+
+def gen_and(t1, t2):
+    """Move conjunction within forall quantifiers."""
+    if t1.is_forall() and t2.is_forall():
+        v1, body1 = t1.arg.dest_abs()
+        v2, body2 = t2.arg.dest_abs()
+        if v1 == v2:
+            return Forall(v1, gen_and(body1, body2))
+        else:
+            return And(t1, t2)
+    else:
+        return And(t1, t2)
+
+def gen_or(t1, t2):
+    """Move disjunction within exists quantifiers."""
+    if t1.is_exists() and t2.is_exists():
+        v1, body1 = t1.arg.dest_abs()
+        v2, body2 = t2.arg.dest_abs()
+        if v1 == v2:
+            return Exists(v1, gen_or(body1, body2))
+        else:
+            return Or(t1, t2)
+    else:
+        return Or(t1, t2)
+
+def quant_bool(t):
+    if t.is_forall():
+        if t.arg.var_T == BoolType:
+            return gen_and(quant_bool(t.arg.subst_bound(false)), quant_bool(t.arg.subst_bound(true)))
+        else:
+            v, body = t.arg.dest_abs()
+            return Forall(v, quant_bool(body))
+    elif t.is_exists():
+        v, body = t.arg.dest_abs()
+        if v.get_type() == BoolType:
+            return gen_or(quant_bool(t.arg.subst_bound(false)), quant_bool(t.arg.subst_bound(true)))
+        else:
+            v, body = t.arg.dest_abs()
+            return Exists(v, quant_bool(body))
+    elif t.is_comb():
+        return t.head(*(quant_bool(arg) for arg in t.args))
+    elif t.is_abs():
+        v, body = t.dest_abs()
+        return Lambda(v, quant_bool(body))
+    else:
+        return t
+
 def expand_to_ite(t):
-    if t.is_comb():
+    if t.is_conj() or t.is_disj() or t.is_implies():
+        return t.head(*(expand_to_ite(arg) for arg in t.args))
+    elif t.is_comb():
         # First check whether one of the arguments is a non-constant boolean formula
         for i, arg in enumerate(t.args):
             if arg.get_type() == BoolType and arg != true and arg != false:
@@ -990,6 +1065,9 @@ def expand_to_ite(t):
         # Now it is clear that none of the arguments are non-constant booleans
         expand_args = [expand_to_ite(arg) for arg in t.args]
         return t.head(*expand_args)
+    elif t.is_abs():
+        v, body = t.dest_abs()
+        return Lambda(v, expand_to_ite(body))
     else:
         return t
 
@@ -1009,10 +1087,13 @@ class BFunElimMacro(Macro):
         arg = args[0]
         prev = prevs[0].prop
 
+        # First step: replace forall and exists over boolean type
+        prev1 = quant_bool(prev)
+
         # Second step: replace every function application with argument of
         # boolean type with an if-then-else expression.
-        expected_arg = expand_to_ite(prev)
-        if expected_arg != arg:
+        expected_arg = expand_to_ite(prev1)
+        if not compare_sym_tm(expected_arg, arg):
             print("Expected:", expected_arg)
             print("Actual:", arg)
             raise VeriTException("bfun_elim", "unexpected goal")
@@ -1201,23 +1282,6 @@ def let_substitute(tm, ctx):
     else:
         print("tm", tm)
         raise NotImplementedError
-
-def compare_sym_tm(tm1, tm2):
-    """Compare tm1 and tm2 with the symmetry property."""
-    if tm1.head != tm2.head:
-        return False
-    elif tm1.is_equals():
-        if compare_sym_tm(tm1.lhs, tm2.lhs) and compare_sym_tm(tm1.rhs, tm2.rhs):
-            return True
-        elif compare_sym_tm(tm1.rhs, tm2.lhs) and compare_sym_tm(tm1.lhs, tm2.rhs):
-            return True
-        else:
-            return False
-    else:
-        for l_arg, r_arg in zip(tm1.args, tm2.args):
-            if not compare_sym_tm(l_arg, r_arg):
-                return False
-        return True
 
 @register_macro("verit_let")
 class LetMacro(Macro):
