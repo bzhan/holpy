@@ -137,10 +137,12 @@ def strip_conj_n(tm, n):
 def try_resolve(prop1, prop2):
     """Try to resolve two propositions."""
     for i in range(len(prop1)):
+        ai, ni = prop1[i]
         for j in range(len(prop2)):
-            if prop2[j] == Not(prop1[i]):
+            aj, nj = prop2[j]
+            if ai == aj and ni + 1 == nj:
                 return 'left', i, j
-            if prop1[i] == Not(prop2[j]):
+            if ai == aj and ni == nj + 1:
                 return 'right', i, j                
     return None
 
@@ -154,6 +156,42 @@ def resolve_order(props):
 
     # List of resolution steps
     resolves = []
+
+    # Mapping from indices to literals
+    id_to_lit = dict()
+
+    # Mapping from literal to index
+    lit_to_id = dict()
+
+    def strip_not(t):
+        if t.is_not():
+            a, n = strip_not(t.arg)
+            return a, n + 1
+        else:
+            return t, 0
+
+    # Find list of literals, ignoring negation. Assign each unique
+    # literal to an index.
+    for prop in props:
+        for t in prop:
+            a, _ = strip_not(t)
+            if a not in lit_to_id:
+                new_id = len(lit_to_id)
+                lit_to_id[a] = new_id
+                id_to_lit[new_id] = a
+    
+    def term_to_id(t):
+        a, n = strip_not(t)
+        return (lit_to_id[a], n)
+
+    for i in range(len(props)):
+        props[i] = [term_to_id(t) for t in props[i]]
+
+    def id_to_term(a, n):
+        if n == 0:
+            return id_to_lit[a]
+        else:
+            return Not(id_to_term(a, n - 1))
 
     while len(id_remain) > 1:
         # Find resolution among all possible pairs.
@@ -191,9 +229,9 @@ def resolve_order(props):
                     res_list.append(t)
         id_remain.remove(id2)
         props[id1] = res_list
-        resolves.append(resolve + (res_list,))
+        resolves.append(resolve + ([id_to_term(a, n) for (a, n) in res_list],))
 
-    return resolves, props[id_remain[0]]
+    return resolves, [id_to_term(a, n) for (a, n) in props[id_remain[0]]]
 
 @register_macro("verit_th_resolution")
 class ThResolutionMacro(Macro):
