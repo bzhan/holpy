@@ -523,7 +523,7 @@ class EqTransitive(Macro):
             pt1 = pt1.implies_intr(disj).on_prop(conv.rewr_conv("imp_disj_eq"))
         return pt1
 
-@register_macro("verit_eq_congurent")
+@register_macro("verit_eq_congruent")
 class EqCongurentMacro(Macro):
     """Given a disj term which pattern is like (not (= x_1 y_1)) ... (not (= x_n y_n)) (= (f x_1 ... x_n) (f y_1 ... y_n)).
     Note: 
@@ -652,7 +652,7 @@ class AndRuleMacro(Macro):
         return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt0])
 
 
-@register_macro("verit_eq_congurent_pred")
+@register_macro("verit_eq_congruent_pred")
 class EqCongurentPredMacro(Macro):
     def __init__(self):
         self.level = 1
@@ -891,6 +891,9 @@ class CongMacro(Macro):
 
     def eval(self, args, prevs): # contain bugs
         if len(args) != 1:
+            print("args")
+            for arg in args:
+                print(arg)
             raise VeriTException("cong", "goal should be a single term.")
         goal = args[0]
         if not goal.is_equals():
@@ -1724,19 +1727,19 @@ class LAGenericMacro(Macro):
         else:
             raise VeriTException("la_generic", "unexpected result: %s, %s" % (lhs_const, rhs_const))
  
-@register_macro("verit_lia_generic")
-class LIAGenericMacro(Macro):
-    def __init__(self):
-        self.level = 1
-        self.sig = Term
-        self.limit = None
+# @register_macro("verit_lia_generic")
+# class LIAGenericMacro(Macro):
+#     def __init__(self):
+#         self.level = 1
+#         self.sig = Term
+#         self.limit = None
 
-    def eval(self, args, prevs=None):
-        print("args")
-        for arg in args:
-            print(arg)
+#     def eval(self, args, prevs=None):
+#         print("args")
+#         for arg in args:
+#             print(arg)
         
-        raise NotImplementedError
+#         raise NotImplementedError
  
 
 @register_macro("or_pos")
