@@ -1596,7 +1596,10 @@ class ITESimplifyMacro(Macro):
             raise VeriTException("minus_simplify", "unexpected result")
 
 def norm_int_expr(t):
-    return integer.int_norm_conv().get_proof_term(t).rhs
+    res = integer.int_norm_conv().eval(t).prop.rhs
+    # This should equal the result of:
+    # res = integer.int_norm_conv().get_proof_term(t).rhs
+    return res
 
 def analyze_args(coeffs):
     """Convert all coeffs to integer."""

@@ -1306,6 +1306,9 @@ def of_int(T):
 def nat_power(T):
     return Const('power', TFun(T, NatType, T))
 
+def int_power(T):
+    return Const('power', TFun(T, IntType, T))
+
 def real_power(T):
     return Const('power', TFun(T, RealType, T))
 
