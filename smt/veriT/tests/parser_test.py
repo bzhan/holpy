@@ -145,17 +145,6 @@ class ParserTest(unittest.TestCase):
 
     def testParseQF_UFLRA(self):
         test_paths = [
-            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.32_1_cilled_true-unreach-call_ok_nondet_linux-3.4-32_1-drivers--i2c--algos--i2c-algo-pca.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c.smt2',
-            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.32_1_cilled_true-unreach-call_ok_nondet_linux-3.4-32_1-drivers--media--video--gspca--gspca_stv0680.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c.smt2',
-            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.43_1a_cilled_true-unreach-call_ok_nondet_linux-43_1a-drivers--atm--adummy.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c.smt2',
-            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.diskperf_true-unreach-call.i.cil.c.smt2',
-            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.email_spec27_product13_true-unreach-call.cil.c.smt2',
-            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.gcd_1_true-unreach-call.i.smt2',
-            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.minepump_spec1_product45_true-unreach-call.cil.c.smt2',
-            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.Problem01_00_true-unreach-call.c.smt2',
-            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.string_true-unreach-call.i.smt2',
-            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.sum03_true-unreach-call_false-termination.i.smt2',
-            'QF_UFLRA\\cpachecker-induction-svcomp14\\cpachecker-induction.test_locks_10_true-unreach-call.c.smt2',
             'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_10_0200_10_14.smt2',
             'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_20_0400_10_12.smt2',
             'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_30_0600_10_13.smt2',
