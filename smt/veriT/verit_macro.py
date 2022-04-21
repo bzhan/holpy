@@ -425,12 +425,22 @@ class VeriTOrNeg(Macro):
         self.sig = Term
         self.limit = None
     def eval(self, args, prevs):
-        disj = args[0]
-        neg_tm = args[1]
-        if neg_tm.arg in expand_disj(disj):
+        if len(args) != 2:
+            raise VeriTException("or_neg", "should only have on argumentt")
+
+        disj_tms, neg_tm = args
+        if not disj_tms.is_disj():
+            raise VeriTException("or_neg", "goal should be a disjunction")
+        
+        # disj = args[0]
+        # neg_tm = args[1]
+        disjs = strip_disj_n(disj_tms, disj_tms.arity)
+        if neg_tm.arg in disjs:
             return Thm([], Or(*args))
         else:
-            raise NotImplementedError
+            print("disjs")
+            
+            raise VeriTException("or_neg", "unexpected result")
 
     def get_proof_term(self, args, prevs):
         pt0 = ProofTerm.reflexive(Or(*args))
@@ -767,7 +777,7 @@ class OrMacro(Macro):
             raise VeriTException("or", "must have a single premise")
 
         prev = prevs[0].prop
-        prev_disjs = prev.strip_disj()
+        prev_disjs = strip_disj_n(prev, len(args))
         if tuple(prev_disjs) != args:
             raise VeriTException("or", "incorrect conclusion")
         return Thm(prevs[0].hyps, Or(*args))
@@ -903,6 +913,9 @@ class CongMacro(Macro):
         if lhs.head != rhs.head:
             raise VeriTException("cong", "head should be same")
         
+        ctx = {prop.lhs : prop.rhs for prop in prevs}
+        # ctx.update({prop.rhs: prop.lhs for prop in prevs})
+
         # Treat | and & as n-ary operators when 
         # the number of premises are larger than 2
         if lhs.is_conj():
@@ -915,25 +928,33 @@ class CongMacro(Macro):
             l_args, r_args = hol_list.dest_literal_list(lhs.arg), hol_list.dest_literal_list(rhs.arg)
         else:
             l_args, r_args = lhs.args, rhs.args
-        h, i = lhs.head, 0
-        subst_args = []
-        for arg in l_args:
-            if i >= len(prevs):
-                subst_args.append(arg)
-            elif prevs[i].lhs == arg:
-                subst_args.append(prevs[i].rhs)
-                i += 1
-            elif prevs[i].rhs == arg:
-                subst_args.append(prevs[i].lhs)
-                i += 1
+        l_args_subst, r_args_subst = [], []
+        for l_arg, r_arg in zip(l_args, r_args):
+            if l_arg in ctx:
+                l_args_subst.append(ctx[l_arg])
             else:
-                subst_args.append(arg)
-        if subst_args == r_args:
+                l_args_subst.append(l_arg)
+            if r_arg in ctx:
+                r_args_subst.append(ctx[r_arg])
+            else:
+                r_args_subst.append(r_arg)
+        if l_args_subst == r_args_subst:
             return Thm([], goal)
-        elif lhs.is_equals() and Eq(subst_args[0], subst_args[1]) == Eq(rhs.rhs, rhs.lhs):
+        elif goal.is_equals() and l_args_subst == list(reversed(r_args_subst)):
             return Thm([], goal)
         else:
-            raise VeriTException("cong", "unexpected result")
+            print("lhs", lhs)
+            print("rhs", rhs)
+            print("prevs")
+            for prev in prevs:
+                print(prev)
+            print("lhs")
+            for l in l_args_subst:
+                print(l)
+            print("rhs")
+            for r in r_args_subst:
+                print(r)    
+            raise VeriTException("cong", "unexpected results")
 
 @register_macro("verit_refl")
 class ReflMacro(Macro):
@@ -1159,12 +1180,26 @@ def let_substitute(tm, ctx):
         elif tm.is_disj():
             disjs = [let_substitute(disj, ctx) for disj in tm.strip_disj()]
             return Or(*disjs)
+        elif tm.is_forall():
+            T = tm.arg.var_T
+            return hol_term.forall(T)(let_substitute(tm.arg, ctx))
+        elif tm.is_exists():
+            T = tm.arg.var_T
+            return hol_term.exists(T)(let_substitute(tm.arg, ctx))
         else:
             args = [let_substitute(arg, ctx) for arg in tm.args]
             return tm.head(*args)
+    elif tm.is_abs():
+        var_name, var_T, body = tm.var_name, tm.var_T, tm.body
+        if var_name in ctx:
+            var_name = ctx[var_name].name
+        return hol_term.Lambda(hol_term.Var(var_name, var_T),let_substitute(body, ctx))
     elif tm.is_const():
         return tm
+    elif tm.is_bound():
+        return tm
     else:
+        print("tm", tm)
         raise NotImplementedError
 
 def compare_sym_tm(tm1, tm2):
@@ -1172,9 +1207,9 @@ def compare_sym_tm(tm1, tm2):
     if tm1.head != tm2.head:
         return False
     elif tm1.is_equals():
-        if tm1.lhs == tm2.lhs and tm1.rhs == tm2.rhs:
+        if compare_sym_tm(tm1.lhs, tm2.lhs) and compare_sym_tm(tm1.rhs, tm2.rhs):
             return True
-        elif tm1.rhs == tm2.lhs and tm1.lhs == tm2.rhs:
+        elif compare_sym_tm(tm1.rhs, tm2.lhs) and compare_sym_tm(tm1.lhs, tm2.rhs):
             return True
         else:
             return False
@@ -1741,6 +1776,235 @@ class LAGenericMacro(Macro):
         
 #         raise NotImplementedError
  
+
+
+@register_macro("verit_connective_def")
+class ConnectiveDefMacro(Macro):
+    """Extension: the alethe document doesn't contain the following equality.
+    
+    ?x. P(x) <--> ~!x. ~P(x)
+    """
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("verit_connective_def", "should only contain one argument")
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("verit_connective_def", "goal should be an equality")
+        
+        lhs, rhs = goal.args
+        if lhs.is_equals():
+            p1, p2 = lhs.args
+            if rhs.is_conj() and rhs.arg1.is_implies() and rhs.arg.is_implies():
+                q1, q2 = rhs.arg1.args
+                o1, o2 = rhs.arg.args
+                if q1 == p1 and o2 == p1 and p2 == q2 and p1 == o2:
+                    return Thm([], goal)
+                else:
+                    raise VeriTException("verit_connective_def", "can't match  (p <--> q) <--> (p --> q) /\ (q --> p)")
+            else:
+                raise VeriTException("verit_connective_def", "can't match (p <--> q) <--> (p --> q) /\ (q --> p)")
+        elif logic.is_if(lhs):
+            p1, p2, p3 = lhs.args
+            if rhs.is_conj() and rhs.arg1.is_implies() and rhs.arg.is_implies():
+                q1, q2 = rhs.arg1.args
+                o1, o2 = rhs.arg.args
+                if q1 == p1 and o1 == Not(p1) and p2 == q2 and o2 == Not(p2):
+                    return Thm([], goal)
+        elif lhs.is_exists():
+            lhs_pred = lhs.arg
+            if rhs.is_not() and rhs.arg.is_forall() and rhs.arg.arg.body == Not(lhs_pred.body):
+                return Thm([], goal)
+            else:
+                raise VeriTException("verit_connective_def", "can't match ?x. P(x) <--> ~!x. ~P(x)")
+        else:
+            # print("lhs", lhs)
+            # print("rhs", rhs)
+            raise VeriTException("verit_connective_def", "unexpected goals")
+
+
+
+@register_macro("verit_bind")
+class BindMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 2:
+            raise VeriTException("verit_bind", "should have two arguments")
+        
+        goal, ctx = args
+        if not goal.is_equals():
+            raise VeriTException("verit_bind", "the first argument should be equality")
+        if not isinstance(ctx, dict):
+            raise VeriTException("verit_bind", "the second argument should be a context")
+
+        lhs, rhs = goal.args
+        if not lhs.is_forall() and not lhs.is_exists():
+            print(ProofTerm("verit_connective_def", args=[Eq(l_subst, r_bd)], prevs=None))
+            raise VeriTException("verit_bind", "bind rules applies to quantifiers")
+
+        if lhs.head() != rhs.head():
+            raise VeriTException("verit_bind", "lhs and rhs should have the same quantifier")
+
+        l_vars, l_bd = lhs.strip_quant()
+        r_vars, r_bd = rhs.strip_quant()
+        if len(l_vars) != len(r_vars):
+            raise VeriTException("verit_bind", "lhs and rhs should have the same number of quantifiers")
+
+        for lv, rv in zip(l_vars, r_vars):
+            if str(lv) not in ctx or ctx[str(lv)] != rv:
+                raise VeriTException("verit_bind", "can't map lhs quantified variables to rhs")
+        l_subst = let_substitute(l_bd, ctx)
+        
+
+        if l_subst == r_bd:
+            return Thm([], goal)
+        # try connective_def conversion
+        pt1 = ProofTerm.assume(l_subst)
+        pt2 = ProofTerm.assume(r_bd)
+        pt3 = pt1.on_prop(
+            conv.top_conv(conv.rewr_conv("exists_forall")),
+        )
+        pt4 = pt1.on_prop(
+            conv.top_conv(conv.rewr_conv("connective_def1"))
+        )
+        pt5 = pt2.on_prop(
+            conv.top_conv(conv.rewr_conv("exists_forall"))
+        )
+        if r_bd == pt4.prop:
+            return Thm([], goal)
+
+        if pt5.prop == pt3.prop:
+            return Thm([], goal)
+
+        if compare_sym_tm(l_subst, r_bd):
+            return Thm([], goal)
+
+        # print("lhs", l_subst)
+        # print()
+        # print("r_bd", r_bd)
+        # print()
+        # print("pt2", pt3.prop)
+        # print()
+        # print("pt5", pt5.prop)
+        # print()
+        raise VeriTException("verit_bind", "unexpected results: %s %s" % (l_subst, r_bd))
+
+@register_macro("verit_forall_inst")
+class ForallInstMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        goal = args[0]
+        if not goal.is_disj():
+            print("goal", goal)
+            print("goal.arg", goal.arg)
+            raise VeriTException("forall_inst", "goal should be a disjunction")
+        neg_tm, inst_tm = goal.args
+        if not neg_tm.is_not() or not neg_tm.arg.is_forall():
+            print("neg_tm", neg_tm)
+            raise VeriTException("forall_inst", "unexpected argument")
+
+        forall_tm = neg_tm.arg
+        for _, var in args[1:]:
+            forall_tm = forall_tm.arg.subst_bound(var)
+        if forall_tm == inst_tm:
+            return Thm([], goal)
+        elif compare_sym_tm(forall_tm, inst_tm):
+            return Thm([], goal)
+        else:
+            print("forall_tm", forall_tm)
+            print("rhs", inst_tm)
+            raise VeriTException("forall_inst", "unexpected result")
+        
+
+@register_macro("verit_implies_pos")
+class ImpliesPosMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if not len(args) == 3:
+            raise VeriTException("implies_pos", "should have three arguments")
+        arg1, arg2, arg3 = args
+        if not (arg1.is_not() and arg1.arg.is_implies() and arg2.is_not()):
+            raise VeriTException("implies_pos", "unexpected arguments")
+        arg1_p1, arg1_p2 = arg1.arg.args
+        arg2_p1 = arg2.arg
+        if arg1_p1 == arg2_p1 and arg1_p2 == arg3:
+            return Thm([], Or(*args))
+        else:
+            raise VeriTException("implies_pos", "unexpected result")
+@register_macro("verit_implies_simplify")
+class ImpliesSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if not len(args) == 1 or not args[0].is_equals() or not args[0].lhs.is_implies():
+            raise VeriTException("implies_simplify", "goal should be an equality and lhs should be an implication")
+        goal = args[0]
+        lhs, rhs = goal.args
+        prem, concl = lhs.args
+        if prem == true and concl == rhs:
+            return Thm([], goal)
+        if concl == false and Not(prem) == rhs:
+            return Thm([], goal)
+        raise NotImplementedError
+
+@register_macro("verit_ite_pos1")
+class ITEPos2Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if not len(args) == 3:
+            raise VeriTException("ite_pos1", "should have three arguments")
+        arg1, arg2, arg3 = args
+        if not (arg1.is_not() and logic.is_if(arg1.arg)):
+            raise VeriTException("ite_pos1", "unexpected arguments")
+        p1, _, p3 = arg1.arg.args
+        if p1 == arg2 and p3 == arg3:
+            return Thm([], Or(*args))
+        else:
+            raise VeriTException("ite_pos1", "unexpected result")
+
+@register_macro("verit_ite_pos2")
+class ITEPos2Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if not len(args) == 3:
+            raise VeriTException("ite_pos2", "should have three arguments")
+        arg1, arg2, arg3 = args
+        if not (arg1.is_not() and logic.is_if(arg1.arg) and arg2.is_not()):
+            raise VeriTException("ite_pos2", "unexpected arguments")
+        p1, p2, p3 = arg1.arg.args
+        q1 = arg2.arg
+        if p1 == q1 and p2 == arg3:
+            return Thm([], Or(*args))
+        else:
+            raise VeriTException("ite_pos2", "unexpected results")
+
 
 @register_macro("or_pos")
 class OrPosMacro(Macro):

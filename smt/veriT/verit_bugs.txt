@@ -1,0 +1,13 @@
+1. 
+file_name: UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_16_59_39_090_1045351.smt_in.smt2
+step: t9 bind
+reason: step t9 uses t9.t1 but doesn't include it in premises
+2.
+file_name: QF_UFLIA\\wisas\\xs_5_5.smt2
+step: t213 resolution
+reason: resolving one proof term for twice
+3.
+file_name: QF_UFLIA\\wisas\\xs_5_10.smt2
+step: t27 sum_simplify
+reason:  rhs side has zero on the right
+4.

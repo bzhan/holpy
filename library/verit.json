@@ -200,6 +200,15 @@
             ],
             "ty": "def.ind",
             "type": "'a ⇒ ('a ⇒ 'b) ⇒ 'b"
+        },
+        {
+            "name": "connective_def1",
+            "prop": "(P ⟷ Q) ⟷ (P ⟶ Q) ∧ (Q ⟶ P)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

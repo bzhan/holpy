@@ -167,21 +167,21 @@ class ProofrecTest(unittest.TestCase):
 
     def test_UF(self):
         test_paths = [
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_17_00_49_980_1120402.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_52_18_634_983654.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_53_05_211_1033050.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_53_31_362_1064389.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_48_45_757_1043506.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_54_30_307_1349771.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_57_04_292_1481164.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_46_30_200_1001391.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_47_39_480_1078027.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_48_44_767_1147663.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_35_132_1014381.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_53_474_1036287.smt_in.smt2',
-            # 'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_55_00_922_1043783.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_17_00_49_980_1120402.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_52_18_634_983654.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_53_05_211_1033050.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_53_31_362_1064389.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_48_45_757_1043506.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_54_30_307_1349771.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_57_04_292_1481164.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_46_30_200_1001391.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_47_39_480_1078027.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_48_44_767_1147663.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_35_132_1014381.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_53_474_1036287.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_55_00_922_1043783.smt_in.smt2',
         ]
 
         profile = False

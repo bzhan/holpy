@@ -78,20 +78,24 @@ class ProofReconstruction:
                     args = step.cl
                     if rule_name == "refl":
                         args += (step.cur_ctx,)
-                    if rule_name == "let":
+                    if rule_name in ("let", "bind"):
                         args += (self.ctx,)
-                    if rule_name == "la_generic":
+                    if rule_name in ("la_generic", "forall_inst"):
                         args += step.args
                     if rule_name in ("resolution", "th_resolution"):
                         args = (step.cl, self.get_clause_sizes(step.pm))
                         macro_name = "verit_th_resolution"
                     if is_eval:
-                        try:
-                            self.pts[step.id] = ProofTerm(macro_name, args, prevs)
-                        except AssertionError:
-                            print(rule_name)
+                        if rule_name == "bind":
                             self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
                                 step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
+                        else:
+                            try:
+                                self.pts[step.id] = ProofTerm(macro_name, args, prevs)
+                            except AssertionError:
+                                print(step.id, rule_name)
+                                self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
+                                    step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
                     else:
                         macro = theory.get_macro(macro_name)
                         try:

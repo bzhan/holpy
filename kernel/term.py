@@ -436,6 +436,36 @@ class Term():
             t = t.fun
         return (t, list(reversed(args)))
 
+    def strip_forall(self):
+        """Given a term !x1 x2 ... xn. body, returns ([x1, x2, ..., xn], body)"""
+        args = []
+        t = self
+        while t.is_forall():
+            body = t.arg
+            v = Var(body.var_name, body.var_T)
+            args.append(v)
+            t = body.subst_bound(v)
+        return args, t
+    
+    def strip_exists(self):
+        """Given a term !x1 x2 ... xn. body, returns ([x1, x2, ..., xn], body)"""
+        args = []
+        t = self
+        while t.is_exists():
+            body = t.arg
+            v = Var(body.var_name, body.var_T)
+            args.append(v)
+            t = body.subst_bound(v)
+        return args, t
+
+    def strip_quant(self):
+        if self.is_exists():
+            return self.strip_exists()
+        elif self.is_forall():
+            return self.strip_forall()
+        else:
+            raise NotImplementedError
+
     @property
     def head(self):
         """Given a term f t1 t2 ... tn, returns f."""
