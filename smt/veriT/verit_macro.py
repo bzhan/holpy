@@ -1017,31 +1017,43 @@ class ReflMacro(Macro):
         else:
             raise VeriTException("refl", "either lhs and rhs of goal is not in ctx")
 
-def compare_sym_tm(tm1, tm2):
-    """Compare tm1 and tm2 with the symmetry property."""
-    if tm1.is_comb():
-        if not tm2.is_comb() or tm1.head != tm2.head:
-            return False
-        elif tm1.is_equals():
-            if compare_sym_tm(tm1.lhs, tm2.lhs) and compare_sym_tm(tm1.rhs, tm2.rhs):
-                return True
-            elif compare_sym_tm(tm1.rhs, tm2.lhs) and compare_sym_tm(tm1.lhs, tm2.rhs):
-                return True
-            else:
+def compare_sym_tm(tm1, tm2, ctx=None):
+    """Compare tm1 and tm2 with the symmetry property.
+    
+    tm1 may contain variables that are in the context, in which case the
+    mapping in the context is compared.
+    
+    """
+    if ctx is None:
+        ctx = dict()
+    
+    def helper(t1, t2):
+        if t1.is_var() and t1.name in ctx:
+            return ctx[t1.name] == t2
+        elif t1.is_comb():
+            if not t2.is_comb() or t1.head != t2.head:
                 return False
-        else:
-            for l_arg, r_arg in zip(tm1.args, tm2.args):
-                if not compare_sym_tm(l_arg, r_arg):
+            elif t1.is_equals():
+                if helper(t1.lhs, t2.lhs) and helper(t1.rhs, t2.rhs):
+                    return True
+                elif helper(t1.rhs, t2.lhs) and helper(t1.lhs, t2.rhs):
+                    return True
+                else:
                     return False
-            return True
-    elif tm1.is_abs():
-        if not tm2.is_abs():
-            return False
-        v1, body1 = tm1.dest_abs()
-        v2, body2 = tm2.dest_abs()
-        return v1 == v2 and compare_sym_tm(body1, body2)
-    else:
-        return tm1 == tm2
+            else:
+                for l_arg, r_arg in zip(t1.args, t2.args):
+                    if not helper(l_arg, r_arg):
+                        return False
+                return True
+        elif t1.is_abs():
+            if not t2.is_abs():
+                return False
+            v1, body1 = t1.dest_abs()
+            v2, body2 = t2.dest_abs()
+            return v1 == v2 and helper(body1, body2)
+        else:
+            return t1 == t2
+    return helper(tm1, tm2)
 
 def gen_and(t1, t2):
     """Move conjunction within forall quantifiers."""
@@ -1331,7 +1343,7 @@ class LetMacro(Macro):
     def eval(self, args, prevs):
         goal, ctx = args
         beta_lhs = goal.lhs
-        if compare_sym_tm(let_substitute(beta_lhs, ctx), goal.rhs):
+        if compare_sym_tm(beta_lhs, goal.rhs, ctx=ctx):
             return Thm([], goal)
         else:
             raise VeriTException("let", "Unexpected result")
