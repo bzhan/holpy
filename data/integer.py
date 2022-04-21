@@ -1,5 +1,5 @@
 from kernel.type import TFun, IntType
-from kernel.term import Var, Int, Eq, Term, equals, Const, less, less_eq, greater, greater_eq, Not
+from kernel.term import Var, Int, Eq, Term, Sum, Prod, equals, Const, less, less_eq, greater, greater_eq, Not, int_power, Nat
 from kernel import term_ord
 from kernel.proofterm import ProofTerm, refl
 from kernel.macro import Macro
@@ -15,6 +15,7 @@ from kernel.thm import Thm
 from syntax.settings import settings
 from math import gcd
 from logic import matcher
+from util import poly
 import functools
 basic.load_theory('real')
 
@@ -98,6 +99,49 @@ class int_eval_conv(Conv):
             return refl(t)
         else:
             return ProofTerm('int_eval', Eq(t, int_eval(t)))
+
+def convert_to_poly(t):
+    """Convert an integer term t to polynomial normal form."""
+    if t.is_var():
+        return poly.singleton(t)
+    elif t.is_number():
+        return poly.constant(t.dest_number())
+    elif t.is_comb('of_nat', 1):
+        return nat.convert_to_poly(t.arg)
+    elif t.is_plus():
+        t1, t2 = t.args
+        return convert_to_poly(t1) + convert_to_poly(t2)
+    elif t.is_minus():
+        t1, t2 = t.args
+        return convert_to_poly(t1) - convert_to_poly(t2)
+    elif t.is_uminus():
+        return -convert_to_poly(t.arg)
+    elif t.is_times():
+        t1, t2 = t.args
+        return convert_to_poly(t1) * convert_to_poly(t2)
+    else:
+        return poly.singleton(t)
+
+def from_mono(m):
+    """Convert a monomial to an integer term."""
+    assert isinstance(m, poly.Monomial), "from_mono: input is not a monomial"
+    factors = []
+    for base, power in m.factors:
+        assert isinstance(base, Term), "from_mono: base is not a Term"
+        baseT = base.get_type()
+        if baseT != IntType:
+            base = Const('of_nat', TFun(baseT, IntType))(base)
+        if power == 1:
+            factors.append(base)
+        else:
+            factors.append(int_power(base, Nat(power)))
+    if m.coeff != 1:
+        factors = [Int(m.coeff)] + factors
+    return Prod(IntType, factors)
+
+def from_poly(p):
+    """Convert a polynomial to a term t."""
+    return Sum(IntType, list(from_mono(m) for m in p.monomials))
 
 class norm_mult_atom(Conv):
     def get_proof_term(self, t):
@@ -320,6 +364,10 @@ class simp_full(Conv):
                 rewr_conv('int_mul_1_l', sym=True))
 
 class int_norm_conv(Conv):
+    def eval(self, t):
+        norm_t = from_poly(convert_to_poly(t))
+        return Thm([], Eq(t, norm_t))
+
     def get_proof_term(self, t):
         return refl(t).on_rhs(
             simp_full(),

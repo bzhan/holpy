@@ -226,19 +226,19 @@ class ProofrecTest(unittest.TestCase):
         test_paths = [
             'QF_UFLIA\\mathsat\\EufLaArithmetic\\medium\\medium5.smt2',
             'QF_UFLIA\\mathsat\\EufLaArithmetic\\medium\\medium6.smt2',
-            # 'QF_UFLIA\\mathsat\\EufLaArithmetic\\hard\\hard4.smt2', # eval 47s (norm_int_expr)
-            # 'QF_UFLIA\\mathsat\\EufLaArithmetic\\hard\\hard5.smt2', # eval 70s (norm_int_expr)
+            'QF_UFLIA\\mathsat\\EufLaArithmetic\\hard\\hard4.smt2',
+            'QF_UFLIA\\mathsat\\EufLaArithmetic\\hard\\hard5.smt2',
             'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_03.smt2', 
             'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_04.smt2',
-            # 'QF_UFLIA\\mathsat\\Wisa\\xs-05-06-2-2-5-1.smt2', # verit Timeout
-            # 'QF_UFLIA\\mathsat\\Wisa\\xs-05-07-4-5-1-2.smt2', # Timeout
+            'QF_UFLIA\\mathsat\\Wisa\\xs-05-08-4-2-5-4.smt2',
+            'QF_UFLIA\\mathsat\\Wisa\\xs-05-12-1-4-2-1.smt2',
+            'QF_UFLIA\\mathsat\\Wisa\\xs-05-16-1-5-4-3.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.602033.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.602046.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.686126.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.769286.smt2',
-            'QF_UFLIA\\wisas\\xs_5_10.smt2',
-            'QF_UFLIA\\wisas\\xs_5_15.smt2',
             'QF_UFLIA\\wisas\\xs_5_5.smt2',
+            'QF_UFLIA\\wisas\\xs_5_15.smt2',
             'QF_UFLIA\\wisas\\xs_7_12.smt2',
         ]
 
