@@ -57,6 +57,10 @@ def test_file(filename, write_file=False, show_time=True, veriT_only=False):
     if verit_proof is None:
         return
 
+    if len(verit_proof) == 0:
+        print('Empty proof')
+        return
+
     ctx = proof_rec.bind_var(abs_name)
     solve_time = time.perf_counter() - start_time
 
@@ -120,10 +124,6 @@ class ParserTest(unittest.TestCase):
             'QF_UF\\2018-Goel-hwbench\\QF_UF_exit.1.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_extinction.2.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_firewire_tree.1.prop1_ab_reg_max.smt2',
-            'QF_UF\\20190906-CLEARSY\\0000\\00068.smt2',
-            'QF_UF\\20190906-CLEARSY\\0001\\00069.smt2',
-            'QF_UF\\20190906-CLEARSY\\0009\\00122.smt2',
-            'QF_UF\\20190906-CLEARSY\\0022\\00014.smt2',
             'QF_UF\\eq_diamond\\eq_diamond1.smt2',
             'QF_UF\\eq_diamond\\eq_diamond10.smt2',
             "QF_UF\\NEQ\\NEQ004_size4.smt2",
