@@ -8,7 +8,7 @@ from kernel.proofterm import ProofTerm, Thm
 from kernel import term as hol_term
 from kernel import type as hol_type
 from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, IntType, \
-    RealType, BoolType, Int, Forall, Exists
+    RealType, BoolType, Int, Forall, Exists, Inst
 from prover.proofrec import int_th_lemma_1_omega, int_th_lemma_1_simplex, real_th_lemma
 from logic import conv, logic
 from data import integer, real, proplogic
@@ -832,6 +832,7 @@ class AndMacro(Macro):
 
 @register_macro("verit_or")
 class OrMacro(Macro):
+    """Deconstructs a proposition A1 \/ ... \/ An into a clause. """
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -846,6 +847,11 @@ class OrMacro(Macro):
         if tuple(prev_disjs) != args:
             raise VeriTException("or", "incorrect conclusion")
         return Thm(prevs[0].hyps, Or(*args))
+
+    def get_proof_term(self, args, prevs):
+        # This requires no proof, as the form of the statement is unchanged
+        return prevs[0]
+
 
 @register_macro("verit_false")
 class FalseMacro(Macro):
@@ -1307,7 +1313,7 @@ class ITE2(Macro):
 
 @register_macro("verit_and_neg")
 class AndNegMacro(Macro):
-    """Prove ~(p1 & p2 & ... & pn) | ~p1 | ... | ~pn"""
+    """Prove (p1 & p2 & ... & pn) | ~p1 | ... | ~pn"""
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -1321,10 +1327,18 @@ class AndNegMacro(Macro):
             raise VeriTException("Unexpected goal")
         return Thm([], Or(*args))
 
-    # def get_proof_term(self, args, prevs):
+    def get_proof_term(self, args, prevs):
+        # First form (p1 & p2 & ... & pn) | ~(p1 & p2 & ... & pn)
+        conj = args[0]
+        conj_pt = logic.apply_theorem('classical', inst=Inst(A=conj))
+
+        # Then apply deMorgan's rule to the right side
+        return conj_pt.on_arg(conv.top_conv(conv.rewr_conv('de_morgan_thm1')))
+
 
 @register_macro("verit_contraction")
 class ContractionMacro(Macro):
+    """Remove duplicate literals in a disjunction."""
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -1343,6 +1357,14 @@ class ContractionMacro(Macro):
         if tuple(distinct_disjs) != args:
             raise VeriTException("contraction", "unexpected goal")
         return Thm(prevs[0].hyps, Or(*args))
+
+    def get_proof_term(self, goal, prevs):
+        prev = prevs[0].prop
+        goal = Or(*goal)
+
+        pt = ProofTerm('imp_disj', Implies(prev, goal))
+        return pt.implies_elim(prevs[0])
+
 
 def let_substitute(tm, ctx):
     """Substitue all variables in ctx into concrete terms, 
