@@ -1863,7 +1863,6 @@ class BindMacro(Macro):
 
         lhs, rhs = goal.args
         if not lhs.is_forall() and not lhs.is_exists():
-            print(ProofTerm("verit_connective_def", args=[Eq(l_subst, r_bd)], prevs=None))
             raise VeriTException("verit_bind", "bind rules applies to quantifiers")
 
         if lhs.head() != rhs.head():
@@ -1881,7 +1880,7 @@ class BindMacro(Macro):
         if prev_lhs == l_bd and prev_rhs == r_bd:
             return Thm([], goal)
         else:
-            raise VeriTException("verit_bind", "unexpected results: %s %s" % (l_subst, r_bd))
+            raise VeriTException("verit_bind", "unexpected result")
 
 @register_macro("verit_forall_inst")
 class ForallInstMacro(Macro):
@@ -2017,70 +2016,98 @@ class SubProofMacro(Macro):
         else:
             raise VeriTException("subproof", "unexpected result")
 
-@register_macro("or_pos")
-class OrPosMacro(Macro):
-    """⊢ ¬(a_1 ∨ ... ∨ a_n) ∨ a_1 ∨ ... ∨ a_n"""
+@register_macro("verit_sko_ex")
+class SkoExMacro(Macro):
     def __init__(self):
         self.level = 1
         self.sig = Term
         self.limit = None
 
-    def eval(self, goal, prevs=None):
-        assert goal.arg1.arg == goal.arg
-        return Thm([], goal)
-
-@register_macro("la_generic")
-class LaGenericMacro(Macro):
-    def __init__(self):
-        self.level = 1
-        self.sig = Term
-        self.limit = None
-
-    def is_constant(self, tm):
-        """Determine whether tm is an inequality only containing constants."""
-        return tm.is_compares() and tm.arg1.is_number() and tm.arg.is_number()
-
-    def real_solver(self, args):
-        refl_pt = conv.refl(args).on_rhs(
-            conv.top_conv(conv.rewr_conv("real_ge_le_same_num")),
-            conv.top_conv(conv.rewr_conv("de_morgan_thm1")),
-            conv.top_conv(real.norm_neg_real_ineq_conv()),
-            conv.top_conv(real.real_simplex_form()),
-            conv.top_conv(real.real_const_compares()),
-            proplogic.norm_full()
-        )
-        if refl_pt.rhs == true:
-            return refl_pt.on_prop(conv.rewr_conv("eq_true", sym=True))
-
-        pt_result = real_th_lemma([refl_pt.rhs])
-        return refl_pt.symmetric().equal_elim(pt_result)
-
-    def int_solver(self, args):
-        refl_pt = conv.refl(args).on_rhs(
-                conv.top_conv(conv.rewr_conv("int_eq_leq_geq")),
-                conv.top_conv(conv.rewr_conv("de_morgan_thm1")),
-                conv.top_conv(integer.int_norm_neg_compares()),
-                conv.top_conv(integer.omega_form_conv()),
-                conv.top_conv(integer.int_const_compares()),
-                proplogic.norm_full()
-        )
-        if refl_pt.rhs == true:
-            return refl_pt.on_prop(conv.rewr_conv("eq_true", sym=True))
-
-        try:
-            pt_result = int_th_lemma_1_simplex(refl_pt.rhs)
-        except:
-            pt_result = int_th_lemma_1_omega(refl_pt.rhs)
-        return refl_pt.symmetric().equal_elim(pt_result)
+    def eval(self, args, prevs):
+        if len(args) != 2:
+            raise VeriTException("sko_ex", "expected two arguments")
+        goal, ctx = args
+        if not goal.is_equals():
+            raise VeriTException("sko_ex", "goal should be an equality")
+        if not isinstance(ctx, dict):
+            raise VeriTException("sko_ex", "the second argument should be a mapping")
         
+        lhs, rhs = goal.args
+        if not lhs.is_exists():
+            raise VeriTException("sko_ex", "lhs should be an exist quantification")
+        
+        if len(prevs) != 1:
+            raise VeriTException("sko_ex", "expected one prev")
 
-    def analyze_type(self, args):
-        tm = args.arg1.arg1 if args.arg1.is_compares() else args.arg1.arg.arg1
-        return tm.get_type()
+        pt = prevs[0]
+        if pt.rhs != rhs:
+            raise VeriTException("sko_ex", "rhs should be equal to pt's rhs")
 
-    def get_proof_term(self, args, prevs=None):
-        T = self.analyze_type(args)
-        if T == IntType:
-            return self.int_solver(args)
+        lhs_abs = lhs.arg
+        x = lhs_abs.var_name
+        if not x in ctx:
+            raise VeriTException("sko_ex", "the skolem variable does not occur in context")
+        sko_tm = ctx[x]
+        if not logic.is_some(sko_tm):
+            raise VeriTException("sko_ex", "%s should be a skolemization term" % str(sko_tm))
+
+        if sko_tm.arg == lhs_abs:
+            return Thm([], goal)
         else:
-            return self.real_solver(args)
+            raise VeriTException("sko_ex", "unexpected result") 
+
+@register_macro("verit_sko_forall")
+class SkoExMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        if len(args) != 2:
+            raise VeriTException("sko_forall", "expected two arguments")
+        goal, ctx = args
+        if not goal.is_equals():
+            raise VeriTException("sko_forall", "goal should be an equality")
+        if not isinstance(ctx, dict):
+            raise VeriTException("sko_forall", "the second argument should be a mapping")
+        
+        lhs, rhs = goal.args
+        if not lhs.is_forall():
+            raise VeriTException("sko_forall", "lhs should be an exist quantification")
+        
+        if len(prevs) != 1:
+            raise VeriTException("sko_forall", "expected one prev")
+
+        pt = prevs[0]
+        if pt.rhs != rhs:
+            raise VeriTException("sko_forall", "rhs should be equal to pt's rhs")
+
+        lhs_abs = lhs.arg
+        x = lhs_abs.var_name
+        if not x in ctx:
+            raise VeriTException("sko_forall", "the skolem variable does not occur in context")
+        sko_tm = ctx[x]
+        if not logic.is_some(sko_tm):
+            raise VeriTException("sko_forall", "%s should be a skolemization term" % str(sko_tm))
+        
+        if sko_tm.arg.body == Not(lhs_abs.body):
+            return Thm([], goal)
+        else:
+            raise VeriTException("sko_ex", "unexpected result")
+
+# @register_macro("verit_onepoint")
+# class OnepointMacro(Macro):
+#     def __init__(self):
+#         self.level = 1
+#         self.sig = Term
+#         self.limit = None
+
+#     def eval(self, args, prevs):
+#         print("goal", args[0])
+#         print("context")
+#         for k, v in args[1].items():
+#             print(k, ":", v)
+#         print("pt", prevs[0])
+
+#         raise NotImplementedError
