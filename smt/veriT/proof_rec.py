@@ -81,61 +81,66 @@ class ProofReconstruction:
                 if not isinstance(self.steps[i+1], command.Anchor) and not isinstance(self.steps[i], command.Anchor):
                     return self.pts[self.steps[i].id]
 
+    def validate_step(self, step, is_eval=True):
+        if isinstance(step, command.Assume):
+            self.pts[step.id] = ProofTerm.assume(step.assm)
+            
+        elif isinstance(step, command.Anchor):
+            self.add_subproof_context(step)
+        else:
+            assert isinstance(step, command.Step)
+            rule_name = step.rule_name
+            macro_name = "verit_" + rule_name
+            prevs = self.to_pts(step.pm)
+            args = step.cl
+            if rule_name == "refl":
+                args += (step.cur_ctx,)
+            if rule_name == "let":
+                args += (self.ctx,)
+            if rule_name in ("bind", "sko_ex", "sko_forall", "onepoint"):
+                args += (self.ctx,)
+                last_prf = self.find_last_subproof(step.id)
+                prevs += (last_prf,)
+            if rule_name in ("la_generic", "forall_inst"):
+                args += step.args
+            if rule_name == "subproof":
+                sub_assms = self.find_local_assms(step.id)
+                last_prf = self.find_last_subproof(step.id)
+                prevs += sub_assms
+                prevs += (last_prf,)
+            if rule_name in ("resolution", "th_resolution"):
+                args = (step.cl, self.get_clause_sizes(step.pm))
+                macro_name = "verit_th_resolution"
+            if is_eval:
+                try:
+                    self.pts[step.id] = ProofTerm(macro_name, args, prevs)
+                except AssertionError:
+                    print(step.id, rule_name)
+                    self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
+                        step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
+            else:
+                macro = theory.get_macro(macro_name)
+                try:
+                    pt = macro.get_proof_term(args, prevs)
+                    if macro_name == 'verit_th_resolution':
+                        cl = args[0]
+                    else:
+                        cl = args
+                    if pt.prop != Or(*cl):
+                        print(macro_name)
+                        print("Computed: ", pt.prop)
+                        print("In proof: ", Or(*cl))
+                        raise AssertionError("Unexpected returned theorem")
+                    else:
+                        self.pts[step.id] = pt
+                except (AssertionError, NotImplementedError):
+                    print(step.id, rule_name)
+                    self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
+                        step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
+
     def validate(self, is_eval=True):
         with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
             for step in self.steps:
-                if isinstance(step, command.Assume):
-                    self.pts[step.id] = ProofTerm.assume(step.assm)
-                    
-                elif isinstance(step, command.Anchor):
-                    self.add_subproof_context(step)
-                else:
-                    assert isinstance(step, command.Step)
-                    rule_name = step.rule_name
-                    macro_name = "verit_" + rule_name
-                    prevs = self.to_pts(step.pm)
-                    args = step.cl
-                    if rule_name == "refl":
-                        args += (step.cur_ctx,)
-                    if rule_name == "let":
-                        args += (self.ctx,)
-                    if rule_name in ("bind", "sko_ex", "sko_forall", "onepoint"):
-                        args += (self.ctx,)
-                        last_prf = self.find_last_subproof(step.id)
-                        prevs += (last_prf,)
-                    if rule_name in ("la_generic", "forall_inst"):
-                        args += step.args
-                    if rule_name == "subproof":
-                        sub_assms = self.find_local_assms(step.id)
-                        last_prf = self.find_last_subproof(step.id)
-                        prevs += sub_assms
-                        prevs += (last_prf,)
-                    if rule_name in ("resolution", "th_resolution"):
-                        args = (step.cl, self.get_clause_sizes(step.pm))
-                        macro_name = "verit_th_resolution"
-                    if is_eval:
-                        try:
-                            self.pts[step.id] = ProofTerm(macro_name, args, prevs)
-                        except AssertionError:
-                            print(step.id, rule_name)
-                            self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
-                                step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
-                    else:
-                        macro = theory.get_macro(macro_name)
-                        try:
-                            pt = macro.get_proof_term(args, prevs)
-                            if macro_name == 'verit_th_resolution':
-                                cl = args[0]
-                            else:
-                                cl = args
-                            if pt.prop != Or(*cl):
-                                print(macro_name)
-                                print("Computed: ", pt.prop)
-                                print("In proof: ", Or(*cl))
-                                raise AssertionError("Unexpected returned theorem")
-                        except NotImplementedError:
-                            print(macro_name)
-                            pt = ProofTerm(macro_name, args, prevs)
-                        return pt
+                self.validate_step(step, is_eval=is_eval)
                 bar()
         return self.pts[self.steps[-1].id]

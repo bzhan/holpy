@@ -27,12 +27,8 @@ def test_parse_step(verit_proof, ctx):
 
     return steps
 
-def test_validate_step(verit_proof, is_eval=True):
-    recon = proof_rec.ProofReconstruction(verit_proof)
-    return recon.validate(is_eval)
-
 def test_file(filename, show_time=True, test_eval=False, test_proofterm=False):
-    """"""
+    """Test a given file under eval or proofterm mode."""
     global smtlib_path
     if not smtlib_path:
         return
@@ -62,19 +58,21 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False):
     eval_time_str = ""
     if test_eval:
         start_time = time.perf_counter()
-        pt1 = test_validate_step(steps)
+        recon = proof_rec.ProofReconstruction(steps)
+        pt = recon.validate(is_eval=True)
         eval_time = time.perf_counter() - start_time
         eval_time_str = "Eval: %.3f." % eval_time
-        # assert pt1.rule != "sorry"
+        assert pt.rule != "sorry"
 
     # Validation by macro.get_proof_term
     proofterm_time_str = ""
     if test_proofterm:
         start_time = time.perf_counter()
-        pt2 = test_validate_step(steps, is_eval=False)
+        recon = proof_rec.ProofReconstruction(steps)
+        pt = recon.validate(is_eval=False)
         proofterm_time = time.perf_counter() - start_time
         proofterm_time_str = "Proofterm: %.3f." % proofterm_time
-        # assert pt2.rule != "sorry"
+        assert pt.rule != "sorry"
 
     # Optional: print time
     if show_time:
@@ -104,9 +102,6 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False):
         test_file(path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm)
 
 
-
-
-
 class ProofrecTest(unittest.TestCase):
     def test_QF_UF(self):
         test_paths = [
@@ -132,19 +127,16 @@ class ProofrecTest(unittest.TestCase):
             'QF_UF\\2018-Goel-hwbench\\QF_UF_exit.1.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_extinction.2.prop1_ab_reg_max.smt2',
             'QF_UF\\2018-Goel-hwbench\\QF_UF_firewire_tree.1.prop1_ab_reg_max.smt2',
-            "QF_UF\\TypeSafe\\z3.1184131.smt2",
-            "QF_UF\\TypeSafe\\z3.1184147.smt2",
-            "QF_UF\\TypeSafe\\z3.1184163.smt2",
             'QF_UF\\eq_diamond\\eq_diamond1.smt2',
-            'QF_UF\\eq_diamond\\eq_diamond2.smt2',
+            'QF_UF\\eq_diamond\\eq_diamond10.smt2',
             "QF_UF\\NEQ\\NEQ004_size4.smt2",
-            # "QF_UF\\NEQ\\NEQ004_size5.smt2",
+            "QF_UF\\NEQ\\NEQ004_size5.smt2",
             "QF_UF\\NEQ\\NEQ006_size3.smt2",
             "QF_UF\\PEQ\\PEQ012_size3.smt2",
             "QF_UF\\QG-classification\\loops6\\iso_icl103.smt2",
             "QF_UF\\QG-classification\\qg5\\iso_icl054.smt2",
             'QF_UF\\SEQ\\SEQ004_size5.smt2',
-            # 'QF_UF\\SEQ\\SEQ004_size6.smt2',
+            'QF_UF\\SEQ\\SEQ004_size6.smt2',
             'QF_UF\\SEQ\\SEQ005_size7.smt2',
             "QF_UF\\TypeSafe\\z3.1184131.smt2",
             "QF_UF\\TypeSafe\\z3.1184147.smt2",
@@ -157,7 +149,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)
