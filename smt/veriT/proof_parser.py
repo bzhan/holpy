@@ -191,6 +191,13 @@ class ProofTransformer(Transformer):
         # map from (quantified) verit_-prefix name to term
         self.verit_ctx = dict()
 
+        # indicate whether we are parsing a real term
+        self.is_real = False
+        for _, T in self.smt_file_ctx.items():
+            if T == hol_type.RealType:
+                self.is_real = True
+                break
+
 
     def add_context(self, var, ty, tm_name):
         """return the new variables and the assigned term
@@ -363,7 +370,10 @@ class ProofTransformer(Transformer):
         return logic.mk_if(P, x, y)
 
     def mk_int(self, num):
-        return hol_term.Int(int(num))
+        if self.is_real:
+            return hol_term.Real(Fraction(num))
+        else:
+            return hol_term.Int(int(num))
 
     def mk_decimal(self, num):
         return hol_term.Real(Fraction(num))
@@ -372,6 +382,7 @@ class ProofTransformer(Transformer):
         res = ts[0]
         for t in ts[1:]:
             res = res + t
+        res.arity = len(ts)
         return res
 
     def mk_minus_tm(self, t1, t2):

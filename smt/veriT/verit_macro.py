@@ -134,6 +134,11 @@ def strip_conj_n(tm, n):
     assert tm.is_conj(), "strip_disj_n: not enough terms"
     return [tm.arg1] + strip_conj_n(tm.arg, n-1)
 
+def strip_plus_n(tm, n):
+    if n == 1:
+        return [tm]
+    return strip_plus_n(tm.arg1, n-1) + [tm.arg]
+
 def try_resolve(prop1, prop2):
     """Try to resolve two propositions."""
     for i in range(len(prop1)):
@@ -770,7 +775,7 @@ class DistinctElimMacro(Macro):
             for j in range(i+1, len(distinct_ts)):
                 conjs.append(Not(Eq(distinct_ts[i], distinct_ts[j])))
         expected_rhs = And(*conjs)
-        if rhs != expected_rhs:
+        if rhs != expected_rhs and not compare_sym_tm(rhs, expected_rhs):
             raise VeriTException("distinct_elim", "incorrect rhs")
 
         return Thm([], arg)
@@ -965,6 +970,8 @@ class CongMacro(Macro):
             l_args, r_args = strip_disj_n(lhs, size), strip_disj_n(rhs, size)
         elif lhs.is_comb("distinct"):
             l_args, r_args = hol_list.dest_literal_list(lhs.arg), hol_list.dest_literal_list(rhs.arg)
+        elif lhs.is_plus():
+            l_args, r_args = strip_plus_n(lhs, lhs.arity), strip_plus_n(rhs, rhs.arity)
         else:
             l_args, r_args = lhs.args, rhs.args
         l_args_subst, r_args_subst = [], []
@@ -992,8 +999,8 @@ class CongMacro(Macro):
                 print(l)
             print("rhs")
             for r in r_args_subst:
-                print(r)    
-            raise VeriTException("cong", "unexpected results")
+                print(r)  
+            raise VeriTException("cong", "unexpected result")
 
 @register_macro("verit_refl")
 class ReflMacro(Macro):
@@ -1674,7 +1681,7 @@ class ITESimplifyMacro(Macro):
             raise VeriTException("ite_simplify", "implementation is incomplete")
             
 
-@register_macro("verit_minus_simplify")
+@register_macro("verit_unary_minus_simplify")
 class ITESimplifyMacro(Macro):
     def __init__(self):
         self.level = 1
@@ -1742,6 +1749,11 @@ class LAGenericMacro(Macro):
         if not isinstance(coeffs, Iterable) or not all(coeff.is_number() for coeff in coeffs):
             print(coeffs)
             raise VeriTException("la_generic", "should supply a list of numbers")
+
+        dis_eq = dis_eqs[0]
+        if dis_eq.is_not():
+            dis_eq = dis_eq.arg
+        assert dis_eq.arg.get_type() == hol_type.IntType
 
         # Step 1: convert each disequality to a greater/greater_eq disequality
         dis_eq_step1 = []
