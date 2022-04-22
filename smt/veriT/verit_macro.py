@@ -906,7 +906,7 @@ class NotSimplifyMacro(Macro):
             raise VeriTException("not_simplify", "negated term should among true, false or negation")
 
 @register_macro("verit_eq_simplify")
-class NotSimplifyMacro(Macro):
+class EqSimplifyMacro(Macro):
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -971,6 +971,17 @@ class TransMacro(Macro):
             return Thm([], cur_eq)
         else:
             raise VeriTException("trans", "unexpected equality")
+
+    def get_proof_term(self, goal, prevs):
+        pt = prevs[0]
+        for prev in prevs[1:]:
+            if pt.rhs == prev.lhs:
+                pt = ProofTerm.transitive(pt, prev)
+            elif pt.rhs == prev.rhs:
+                pt = ProofTerm.transitive(pt, ProofTerm.symmetric(prev))
+            else:
+                raise VeriTException("trans", "cannot connect equalities")
+        return pt
 
 @register_macro("verit_cong")
 class CongMacro(Macro):
