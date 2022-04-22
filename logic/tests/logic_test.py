@@ -237,7 +237,10 @@ class LogicTest(unittest.TestCase):
             ('A & (D & B) & C --> (A & D & C) & (A & B)', True),
             ('C & D --> A', False),
             ('A & B --> A & B & C', False),
-            ('A & B & C --> A & B', True)
+            ('A & B & C --> A & B', True),
+            ('A & true & (B & true) & C & true --> A & B & C', True),
+            ('A & B & C --> A & true & (B & true) & C & true', True),
+            ('A --> true', True),
         ]
 
         vars = {'A': 'bool', 'B': 'bool', 'C': 'bool', 'D': 'bool'}

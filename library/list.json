@@ -1158,6 +1158,356 @@
             ],
             "ty": "def.ind",
             "type": "'a list ⇒ bool"
+        },
+        {
+            "name": "not_member_nil",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬false ⟶ true"
+                },
+                {
+                    "args": "¬false",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬false ⊢ ¬false"
+                },
+                {
+                    "args": "trueI",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬false ⟶ true"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ true ⟶ ¬false"
+                },
+                {
+                    "args": "true",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "true ⊢ true"
+                },
+                {
+                    "args": "false ⟶ false",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ false ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "true ⊢ ¬false"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ true ⟶ ¬false"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬false ⟷ true"
+                },
+                {
+                    "args": "member_empty_simp, ¬(x ∈ ∅) ⟷ true",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(x ∈ ∅) ⟷ true"
+                },
+                {
+                    "args": "set_def_1, ¬(x ∈ set []) ⟷ true",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(x ∈ set []) ⟷ true"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(x ∈ set []) ⟷ true"
+                }
+            ],
+            "prop": "¬(x ∈ set []) ⟷ true",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "set_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_empty_simp"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "'a"
+            }
+        },
+        {
+            "name": "not_member_cons",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(x ∈ set (y # ys)) ⟶ ¬(x = y) ∧ ¬(x ∈ set ys)"
+                },
+                {
+                    "args": "¬(x ∈ set (y # ys))",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ set (y # ys)) ⊢ ¬(x ∈ set (y # ys))"
+                },
+                {
+                    "args": "set_def_2",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x ∈ set (y # ys)) ⊢ ¬(x ∈ insert y (set ys))"
+                },
+                {
+                    "args": "member_insert",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x ∈ set (y # ys)) ⊢ ¬(x = y ∨ x ∈ set ys)"
+                },
+                {
+                    "args": "de_morgan_thm2",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x ∈ set (y # ys)) ⊢ ¬(x = y) ∧ ¬(x ∈ set ys)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(x ∈ set (y # ys)) ⟶ ¬(x = y) ∧ ¬(x ∈ set ys)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(x = y) ∧ ¬(x ∈ set ys) ⟶ ¬(x ∈ set (y # ys))"
+                },
+                {
+                    "args": "¬(x = y) ∧ ¬(x ∈ set ys)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = y) ∧ ¬(x ∈ set ys) ⊢ ¬(x = y) ∧ ¬(x ∈ set ys)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(x = y ∨ x ∈ set ys)",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = y) ∧ ¬(x ∈ set ys) ⊢ ¬(x = y ∨ x ∈ set ys)"
+                },
+                {
+                    "args": "member_insert, ¬(x ∈ insert y (set ys))",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = y) ∧ ¬(x ∈ set ys) ⊢ ¬(x ∈ insert y (set ys))"
+                },
+                {
+                    "args": "set_def_2, ¬(x ∈ set (y # ys))",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = y) ∧ ¬(x ∈ set ys) ⊢ ¬(x ∈ set (y # ys))"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(x = y) ∧ ¬(x ∈ set ys) ⟶ ¬(x ∈ set (y # ys))"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(x ∈ set (y # ys)) ⟷ ¬(x = y) ∧ ¬(x ∈ set ys)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(x ∈ set (y # ys)) ⟷ ¬(x = y) ∧ ¬(x ∈ set ys)"
+                }
+            ],
+            "prop": "¬(x ∈ set (y # ys)) ⟷ ¬(x = y) ∧ ¬(x ∈ set ys)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "set_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "set_def_2"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "'a",
+                "y": "'a",
+                "ys": "'a list"
+            }
         }
     ],
     "description": "Lists",

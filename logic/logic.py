@@ -608,6 +608,8 @@ class imp_conj_macro(Macro):
         def strip(t):
             if t.is_conj():
                 return strip(t.arg1).union(strip(t.arg))
+            elif t == true:
+                return set()
             else:
                 return {t}
 
@@ -625,6 +627,8 @@ class imp_conj_macro(Macro):
             if pt.prop.is_conj():
                 traverse_A(apply_theorem('conjD1', pt))
                 traverse_A(apply_theorem('conjD2', pt))
+            elif pt.prop == true:
+                pass
             else:
                 dct[pt.prop] = pt
 
@@ -634,6 +638,8 @@ class imp_conj_macro(Macro):
                 left = traverse_C(t.arg1)
                 right = traverse_C(t.arg)
                 return apply_theorem('conjI', left, right)
+            elif t == true:
+                return apply_theorem('trueI')
             else:
                 assert t in dct.keys(), 'imp_conj_macro'
                 return dct[t]

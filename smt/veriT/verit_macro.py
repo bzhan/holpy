@@ -82,7 +82,6 @@ class NotAndMacro(Macro):
     def eval(self, args, prevs):
         goal, pt0 = Or(*args), prevs[0]
         conj_atoms = pt0.prop.arg.strip_conj()
-        # disj_atoms = strip_num(goal, len(conj_atoms))
         disj_atoms = goal.strip_disj()
         for i, j in zip(conj_atoms, disj_atoms):
             if Not(i) != j:
@@ -92,11 +91,7 @@ class NotAndMacro(Macro):
 
     def get_proof_term(self, args, prevs):
         goal, pt0 = Or(*args), prevs[0]
-        conj_atoms = pt0.prop.arg.strip_conj()
-        # disj_atoms = strip_num(goal, len(conj_atoms))
         pt1 = pt0.on_prop(conv.top_conv(conv.rewr_conv("de_morgan_thm1")))
-        # while pt1.prop != goal:
-        #     pt1 = pt1.on_rhs(conv.rewr_conv("de_morgan_thm1"), conv.top_conv(conv.rewr_conv("double_neg")))
         if pt1.prop != goal:
             return ProofTerm.sorry(Thm(pt0.hyps, goal))
         return pt1
@@ -752,6 +747,10 @@ class EqCongurentPredMacro(Macro):
 
 @register_macro("verit_distinct_elim")
 class DistinctElimMacro(Macro):
+    """From a theorem of the form distinct [t1, t2, ..., tn], obtain the
+    conjunction of disequalities t1 ~= t2 /\ t1 ~= t3 /\ ...
+    
+    """
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -781,7 +780,15 @@ class DistinctElimMacro(Macro):
         return Thm([], arg)
     
     def get_proof_term(self, goal, prevs=None):
-        raise NotImplementedError
+        goal = Or(*goal)
+        lhs = goal.lhs
+        pt = ProofTerm.reflexive(lhs).on_rhs(conv.top_conv(
+            conv.rewr_conv('distinct_def_1'),
+            conv.rewr_conv('distinct_def_2'),
+            conv.rewr_conv('not_member_nil'),
+            conv.rewr_conv('not_member_cons')))
+        pt_eq = logic.imp_conj_iff(Eq(pt.prop.rhs, goal.rhs))
+        return ProofTerm.transitive(pt, pt_eq)
 
 
 @register_macro("verit_and")
