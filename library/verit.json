@@ -209,6 +209,153 @@
                 "P": "bool",
                 "Q": "bool"
             }
+        },
+        {
+            "name": "verit_ite_intro",
+            "prop": "if P then x = (if P then x else y) else y = (if P then x else y)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
+            "name": "verit_eq_conj",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Q",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Q ⊢ Q"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Q ⊢ P ⟶ P ∧ Q"
+                },
+                {
+                    "args": "P",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P ⊢ P"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P, Q ⊢ P ∧ Q"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "Q ⊢ P ⟶ P ∧ Q"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Q ⊢ P ∧ Q ⟶ P"
+                },
+                {
+                    "args": "P ∧ Q",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P ∧ Q ⊢ P ∧ Q"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P ∧ Q ⊢ P"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "Q ⊢ P ∧ Q ⟶ P"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Q ⊢ P ⟷ P ∧ Q"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ Q ⟶ P ⟷ P ∧ Q"
+                }
+            ],
+            "prop": "Q ⟶ P ⟷ P ∧ Q",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

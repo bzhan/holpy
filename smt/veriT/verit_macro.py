@@ -1187,18 +1187,19 @@ class BFunElimMacro(Macro):
         return Thm(prevs[0].hyps, arg)
 
 
-def collect_ite_intro(t):
-    if logic.is_if(t):
-        P, x, y = t.args
-        ite_eq = logic.mk_if(P, Eq(x, t), Eq(y, t))
-        return [ite_eq] + collect_ite_intro(x) + collect_ite_intro(y)
-    elif t.is_comb():
-        res = []
-        for arg in t.args:
-            res.extend(collect_ite_intro(arg))
-        return res
-    else:
-        return []
+def collect_ite(t):
+    """Return the list of distinct ite terms in t."""
+    res = []
+
+    def helper(t):
+        if logic.is_if(t):
+            if t not in res:
+                res.append(t)
+        if t.is_comb():
+            for arg in t.args:
+                helper(arg)
+    helper(t)
+    return res
 
 @register_macro("verit_ite_intro")
 class ITEIntroMacro(Macro):
@@ -1215,39 +1216,46 @@ class ITEIntroMacro(Macro):
             raise VeriTException("ite_intro", "goal is not an equality")
 
         lhs, rhs = arg.lhs, arg.rhs
-        ite_intros = collect_ite_intro(lhs)
-        ite_intros_distinct = []
-        for ite in ite_intros:
-            if ite not in ite_intros_distinct:
-                ite_intros_distinct.append(ite)
+        ites = collect_ite(lhs)
+        ite_intros = []
+        for t in ites:
+            P, x, y = t.args
+            ite_intros.append(logic.mk_if(P, Eq(x, t), Eq(y, t)))
         expected_ites = rhs.strip_conj()[1:]
 
-        if len(ite_intros_distinct) != len(expected_ites):
+        if len(ite_intros) != len(expected_ites):
             raise VeriTException("let_intro", "unexpected number of ites")
 
-        # Should consider symmetry of equality
-        for actual_ite, expected_ite in zip(ite_intros_distinct, expected_ites):
-            P, x, y = actual_ite.args
-            Q, a, b = expected_ite.args
-            if P != Q:
-                raise VeriTException("let_intro", "unexpected condition")
-            if x == a and y == b:
-                continue
-            elif Eq(x.rhs, x.lhs) == a and y == b:
-                continue
-            elif x == a and Eq(y.rhs, y.lhs) == b:
-                continue
-            elif Eq(x.rhs, x.lhs) and Eq(y.rhs, y.lhs) == b:
-                continue
-            else:
-                raise VeriTException("let_intro", "unexpected ite")
-
-        expected_rhs = And(lhs, *ite_intros_distinct)
+        expected_rhs = And(lhs, *ite_intros)
         if not compare_sym_tm(expected_rhs, rhs):
             print("Expected:", expected_rhs)
             print("Actual:", rhs)
             raise VeriTException("ite_intro", "unexpected goal")
         return Thm([], arg)
+
+    def get_proof_term(self, goal, prevs):
+        # Obtain left side
+        goal = Or(*goal)
+        lhs = goal.lhs
+
+        # Collect list of ite expressions
+        ites = collect_ite(lhs)
+
+        # For each t of the form (if P then x else y), form the theorem
+        # (if P then x = t else y = t).
+        ite_intros = []
+        for t in ites:
+            P, x, y = t.args
+            ite_intros.append(logic.apply_theorem('verit_ite_intro', inst=Inst(P=P, x=x, y=y)))
+
+        # Create the conjunction of these theorems.
+        ite_intros_pt = ite_intros[-1]
+        for pt in reversed(ite_intros[:-1]):
+            ite_intros_pt = logic.apply_theorem('conjI', pt, ite_intros_pt)
+
+        # Finally, obtain the theorem lhs = (lhs & ite_intros)
+        # TODO: take account of symmetry in equalities.
+        return logic.apply_theorem('verit_eq_conj', ite_intros_pt, inst=Inst(P=lhs))
 
 
 @register_macro("verit_ite1")
