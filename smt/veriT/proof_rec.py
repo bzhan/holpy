@@ -3,6 +3,7 @@
 from smt.veriT.proof_parser import decl_parser, proof_parser
 from smt.veriT import command
 from smt.veriT.verit_macro import NotOrMacro
+from smt.veriT import la_generic
 from kernel.proofterm import ProofTerm
 from kernel.thm import Thm
 from kernel import term
