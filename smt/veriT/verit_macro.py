@@ -1952,7 +1952,7 @@ class BindMacro(Macro):
         self.sig = Term
         self.limit = None
 
-    def eval(self, args, prevs=None):
+    def eval(self, args, prevs):
         if len(args) != 2:
             raise VeriTException("verit_bind", "should have two arguments")
         
@@ -1978,41 +1978,11 @@ class BindMacro(Macro):
         for lv, rv in zip(l_vars, r_vars):
             if str(lv) not in ctx or ctx[str(lv)] != rv:
                 raise VeriTException("verit_bind", "can't map lhs quantified variables to rhs")
-        l_subst = let_substitute(l_bd, ctx)
-        
-
-        if l_subst == r_bd:
+        prev_lhs, prev_rhs = prevs[0].prop.args
+        if prev_lhs == l_bd and prev_rhs == r_bd:
             return Thm([], goal)
-        # try connective_def conversion
-        pt1 = ProofTerm.assume(l_subst)
-        pt2 = ProofTerm.assume(r_bd)
-        pt3 = pt1.on_prop(
-            conv.top_conv(conv.rewr_conv("exists_forall")),
-        )
-        pt4 = pt1.on_prop(
-            conv.top_conv(conv.rewr_conv("connective_def1"))
-        )
-        pt5 = pt2.on_prop(
-            conv.top_conv(conv.rewr_conv("exists_forall"))
-        )
-        if r_bd == pt4.prop:
-            return Thm([], goal)
-
-        if pt5.prop == pt3.prop:
-            return Thm([], goal)
-
-        if compare_sym_tm(l_subst, r_bd):
-            return Thm([], goal)
-
-        # print("lhs", l_subst)
-        # print()
-        # print("r_bd", r_bd)
-        # print()
-        # print("pt2", pt3.prop)
-        # print()
-        # print("pt5", pt5.prop)
-        # print()
-        raise VeriTException("verit_bind", "unexpected results: %s %s" % (l_subst, r_bd))
+        else:
+            raise VeriTException("verit_bind", "unexpected results: %s %s" % (l_subst, r_bd))
 
 @register_macro("verit_forall_inst")
 class ForallInstMacro(Macro):
