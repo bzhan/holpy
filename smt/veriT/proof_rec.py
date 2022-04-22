@@ -133,7 +133,7 @@ class ProofReconstruction:
                         raise AssertionError("Unexpected returned theorem")
                     else:
                         self.pts[step.id] = pt
-                except (AssertionError, NotImplementedError):
+                except NotImplementedError as e:
                     print(step.id, rule_name)
                     self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
                         step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))

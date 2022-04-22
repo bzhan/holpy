@@ -786,6 +786,15 @@ class DistinctElimMacro(Macro):
 
 @register_macro("verit_and")
 class AndMacro(Macro):
+    """Take one literal of a conjunct.
+    
+         A1 /\ ... /\ An
+        =================
+               Ai
+        In the implementation, we save time by unwinding the input theorem
+        one conjunct at a time.
+
+    """
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -798,15 +807,27 @@ class AndMacro(Macro):
             raise VeriTException("and", "must have a single premise")
 
         prem = prevs[0].prop
-        prem_conjs = prem.strip_conj()
         arg = args[0]
-        if arg not in prem_conjs:
+        while prem.is_conj():
+            if arg == prem.arg1:
+                return Thm(prevs[0].hyps, arg)
+            prem = prem.arg
+        if arg == prem:
+            return Thm(prevs[0].hyps, arg)
+        else:
             raise VeriTException("and", "goal not found in premise")
-        
-        return Thm(prevs[0].hyps, arg)
 
     def get_proof_term(self, goal, prevs=None):
-        raise NotImplementedError
+        prev = prevs[0]
+        goal = Or(*goal)
+        while prev.prop.is_conj():
+            if goal == prev.prop.arg1:
+                return logic.apply_theorem('conjD1', prev)
+            prev = logic.apply_theorem('conjD2', prev)
+        if goal == prev.prop:
+            return prev
+        else:
+            raise VeriTException("and", "goal not found in premise")
 
 
 @register_macro("verit_or")
@@ -1225,6 +1246,12 @@ class ITEIntroMacro(Macro):
 
 @register_macro("verit_ite1")
 class ITE1(Macro):
+    """Take the else branch of ite.
+
+          if p1 then p2 else p3
+       ===========================
+              p1 \/ p3
+    """
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -1244,8 +1271,17 @@ class ITE1(Macro):
             raise VeriTException("ite1", "unexpected goal")
         return Thm(prevs[0].hyps, Or(arg1, arg2))
 
+    def get_proof_term(self, goal, prevs):
+        return logic.apply_theorem('verit_ite1', prevs[0])
+
 @register_macro("verit_ite2")
 class ITE2(Macro):
+    """Take the then branch of ite.
+
+          if p1 then p2 else p3
+       ===========================
+              ~p1 \/ p2
+    """
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -1264,6 +1300,10 @@ class ITE2(Macro):
         if arg1 != Not(prev.args[0]) or arg2 != prev.args[1]:
             raise VeriTException("ite2", "unexpected goal")
         return Thm(prevs[0].hyps, Or(arg1, arg2))
+
+    def get_proof_term(self, goal, prevs):
+        return logic.apply_theorem('verit_ite2', prevs[0])
+    
 
 @register_macro("verit_and_neg")
 class AndNegMacro(Macro):
