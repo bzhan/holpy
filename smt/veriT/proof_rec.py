@@ -97,9 +97,7 @@ class ProofReconstruction:
                     args = step.cl
                     if rule_name == "refl":
                         args += (step.cur_ctx,)
-                    if rule_name == "let":
-                        args += (self.ctx,)
-                    if rule_name in ("bind", "sko_ex", "sko_forall", "onepoint"):
+                    if rule_name in ("bind", "sko_ex", "sko_forall", "onepoint", "let"):
                         args += (self.ctx,)
                         last_prf = self.find_last_subproof(step.id)
                         prevs += (last_prf,)

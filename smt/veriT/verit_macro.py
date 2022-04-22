@@ -1350,12 +1350,38 @@ class LetMacro(Macro):
         self.limit = None
 
     def eval(self, args, prevs):
-        goal, ctx = args
-        beta_lhs = goal.lhs
-        if compare_sym_tm(beta_lhs, goal.rhs, ctx=ctx):
+        goal, _ = args
+        prop_eq = prevs[:-1]
+        last_step = prevs[-1]
+        ctx = {prop.lhs:prop.rhs for prop in prop_eq}
+        lhs = goal.lhs
+        subst_lhs = let_substitute(lhs, ctx)
+        if subst_lhs == last_step.lhs and goal.rhs == last_step.rhs:
             return Thm([], goal)
         else:
             raise VeriTException("let", "Unexpected result")
+        # print(subst_lhs == last_step.lhs)
+        # raise NotImplementedError
+        # beta_lhs = let_substitute(goal.lhs, ctx=ctx)
+        # print("prevs", prevs[0].lhs)
+        # print("goal", goal.lhs)
+        # prop = prevs[0].prop
+        # print(goal.lhs == prop.lhs)
+        # print(beta_lhs == prop.lhs)
+        # prev_lhs_subst = let_substitute(prop.lhs, ctx)
+        # print("prev", prev_lhs_subst)
+        # print(prev_lhs_subst == beta_lhs)
+        # print()
+        # if compare_sym_tm(beta_lhs, goal.rhs, ctx=ctx):
+        #     return Thm([], goal)
+        # else:
+        #     # print(goal.lhs)
+        #     # print(goal.rhs)
+        #     print("prevs")
+        #     for prev in prevs:
+        #         print(prev.prop)
+        #     raise VeriTException("let", "Unexpected result")
+        
 
 def flatten_prop(tm):
     """Unfold a nested proposition formula."""
@@ -2138,3 +2164,17 @@ class OnepointMacro(Macro):
             return Thm([], goal)
         else:
             raise VeriTException("onepoint", "unexpected result")
+
+# @register_macro("verit_qnt_cnf")
+# class QntCnfMacro(Macro):
+#     def __init__(self):
+#         self.level = 1
+#         self.sig = Term
+#         self.limit = None
+
+#     def eval(self, args, prevs):
+#         print("args")
+#         for arg in args:
+#             print(arg)
+
+#         raise NotImplementedError
