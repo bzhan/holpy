@@ -928,6 +928,8 @@ class TransMacro(Macro):
             prev_prop = prev.prop
             if cur_eq.rhs == prev_prop.lhs:
                 cur_eq = Eq(cur_eq.lhs, prev_prop.rhs)
+            elif cur_eq.rhs == prev_prop.rhs:
+                cur_eq = Eq(cur_eq.lhs, prev_prop.lhs)
             else:
                 raise VeriTException("trans", "cannot connect equalities")
         
@@ -1511,7 +1513,7 @@ class BoolSimplifyMacro(Macro):
                 return Thm([], goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match ~(p | q) <--> (~p & ~q)")
-        # case 2: ~(p & q) <--> (~p | ~q)
+        # case 3: ~(p & q) <--> (~p | ~q)
         elif lhs.is_not() and lhs.arg.is_conj() and rhs.is_disj():
             l_p, l_q = lhs.arg.args
             r_p, r_q = rhs.args
@@ -1519,7 +1521,17 @@ class BoolSimplifyMacro(Macro):
                 return Thm([], goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match ~(p | q) <--> (~p & ~q)")
+        # case 4: (p1 --> p2 --> p3) <--> (q1 & q2) --> q3
+        elif lhs.is_implies() and lhs.arg.is_implies() and rhs.is_implies() and rhs.arg1.is_conj():
+            p1, p2, p3 = lhs.arg1, lhs.arg.arg1, lhs.arg.arg
+            q1, q2, q3 = rhs.arg1.arg1, rhs.arg1.arg, rhs.arg
+            if p1 == q1 and p2 == q2 and p3 == q3:
+                return Thm([], goal)
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match (p1 --> p2 --> p3) <--> (q1 & q2) --> q3")
         else:
+            print("lhs", lhs)
+            print("rhs", rhs)
             raise VeriTException("bool_simplify", "implementation is incomplete")
 
 @register_macro("verit_la_disequality")
@@ -1681,8 +1693,52 @@ class ITESimplifyMacro(Macro):
             raise VeriTException("ite_simplify", "implementation is incomplete")
             
 
+@register_macro("verit_minus_simplify")
+class MinusSimplify(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if not len(args) == 1:
+            raise VeriTException("minus_simplify", "should only have one argument")
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("minus_simplify", "goal should be an equality")
+        
+        lhs, rhs = goal.args
+        T = lhs.get_type()
+        if lhs.is_number() and rhs.is_number(): # bugs in verit, it should be proved by uminus_simplify
+            if T == hol_type.IntType and integer.int_eval(lhs) == integer.int_eval(rhs):
+                return Thm([], goal)
+            elif T == hol_type.RealType and real.real_eval(lhs) == real.real_eval(rhs):
+                return Thm([], goal)
+            else:
+                raise VeriTException("minus_simplify", "unexpected result")
+        elif rhs.is_minus():
+            rhs_arg = rhs.arg
+            # if rhs_arg.is_number() and T == hol_type.IntType and integer.int_eval(rhs_arg) == 0: 
+            if rhs_arg.is_zero():
+                # it is a bug in verit, minus_simplify only can prove t - 0 = t rather than t = t - 0
+                return Thm([], goal)
+            else:
+                print("rhs", repr(rhs_arg))
+                raise VeriTException("minus_simplify", "unexpected result")
+        elif lhs.is_minus() and rhs.is_uminus():
+            l_arg1, l_arg2 = lhs.args
+            r_arg = rhs.arg
+            if l_arg1.is_zero() and l_arg2 == r_arg:
+                return Thm([], goal)
+            else:
+                raise VeriTException("minus_simplify", "unexpected result")
+        print("lhs", lhs)
+        print("rhs", rhs)
+        # if norm_real_expr(lhs) == norm_real_expr(rhs):
+        #     return Thm([], goal)
+        raise NotImplementedError
 @register_macro("verit_unary_minus_simplify")
-class ITESimplifyMacro(Macro):
+class UnaryMinusSimplifyMacro(Macro):
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -1721,6 +1777,9 @@ def norm_int_expr(t):
     # This should equal the result of:
     # res = integer.int_norm_conv().get_proof_term(t).rhs
     return res
+
+def norm_real_expr(t):
+    return real.real_norm_conv().eval(t).prop.rhs
 
 def analyze_args(coeffs):
     """Convert all coeffs to integer."""

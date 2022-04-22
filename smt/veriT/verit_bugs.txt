@@ -13,3 +13,11 @@ reason:  rhs side has zero on the right
 4.
 filename: files in QF_UFLRA\\cpachecker-induction-svcomp14
 problem: output empty proof
+5.
+file_name: QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_10_0200_10_14.smt2
+step: minus_simplify
+problem: -12 == -12 should be proved by uminus_simplify rule rather than minus_simplify rule
+6.
+file_name: QF_UFLRA\\mathsat\\RandomDecoupled\\pb_real_30_60_45_06.smt2
+step: minus_simplify
+problem: -17 * x5 - 16 * x17 ==  -17 * x5 - 16 * x17 - 0
