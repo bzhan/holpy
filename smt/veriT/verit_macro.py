@@ -1041,14 +1041,14 @@ class ReflMacro(Macro):
     def eval(self, args, prevs=None):
         if len(args) != 2:
             raise VeriTException("refl", "args should contain two terms")
-        goal, contexts = args
+        goal, ctxt = args
         if not goal.is_equals():
             raise VeriTException("refl", "goal should be an equality")
-        if not isinstance(contexts, dict):
+        if not isinstance(ctxt, dict):
             raise VeriTException("refl", "context should be a mapping")
-        if str(goal.lhs) in contexts and contexts[str(goal.lhs)] == goal.rhs:
+        if goal.lhs.is_var() and goal.lhs.name in ctxt and ctxt[goal.lhs.name] == goal.rhs:
             return Thm([], goal)
-        if str(goal.rhs) in contexts and contexts[str(goal.rhs)] == goal.lhs:
+        if goal.rhs.is_var() and goal.rhs.name in ctxt and ctxt[goal.rhs.name] == goal.lhs:
             return Thm([], goal)
         else:
             raise VeriTException("refl", "either lhs and rhs of goal is not in ctx")
@@ -1371,8 +1371,8 @@ def let_substitute(tm, ctx):
     and move the all variables at lhs to rhs (sort).
     """
     if tm.is_var():
-        if str(tm) in ctx:
-            return ctx[str(tm)]
+        if tm.name in ctx:
+            return ctx[tm.name]
         else:
             return tm
     elif tm.is_comb():
@@ -1990,7 +1990,7 @@ class BindMacro(Macro):
             raise VeriTException("verit_bind", "lhs and rhs should have the same number of quantifiers")
 
         for lv, rv in zip(l_vars, r_vars):
-            if str(lv) not in ctx or ctx[str(lv)] != rv:
+            if not lv.is_var() or lv.name not in ctx or ctx[lv.name] != rv:
                 raise VeriTException("verit_bind", "can't map lhs quantified variables to rhs")
         prev_lhs, prev_rhs = prevs[0].prop.args
         if prev_lhs == l_bd and prev_rhs == r_bd:
@@ -2182,7 +2182,7 @@ class SkoExMacro(Macro):
             raise VeriTException("sko_ex", "the skolem variable does not occur in context")
         sko_tm = ctx[x]
         if not logic.is_some(sko_tm):
-            raise VeriTException("sko_ex", "%s should be a skolemization term" % str(sko_tm))
+            raise VeriTException("sko_ex", "%s should be a skolemization term" % sko_tm)
 
         if sko_tm.arg == lhs_abs:
             return Thm([], goal)
@@ -2222,7 +2222,7 @@ class SkoExMacro(Macro):
             raise VeriTException("sko_forall", "the skolem variable does not occur in context")
         sko_tm = ctx[x]
         if not logic.is_some(sko_tm):
-            raise VeriTException("sko_forall", "%s should be a skolemization term" % str(sko_tm))
+            raise VeriTException("sko_forall", "%s should be a skolemization term" % sko_tm)
         
         if sko_tm.arg.body == Not(lhs_abs.body):
             return Thm([], goal)
@@ -2255,8 +2255,8 @@ class OnepointMacro(Macro):
         one_val_var = dict()
         remain_var = []
         for v in l_vars:
-            if str(v) in ctx and ctx[str(v)] != v and ctx[str(v)].get_type() == v.get_type():
-                one_val_var[v] = ctx[str(v)]
+            if v.is_var() and v.name in ctx and ctx[v.name] != v and ctx[v.name].get_type() == v.get_type():
+                one_val_var[v] = ctx[v.name]
             else:
                 remain_var.append(v)
         if remain_var != r_vars:
