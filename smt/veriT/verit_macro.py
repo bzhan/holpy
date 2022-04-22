@@ -2123,6 +2123,31 @@ class ITEPos2Macro(Macro):
             raise VeriTException("ite_pos2", "unexpected results")
 
 
+@register_macro("verit_subproof")
+class SubProofMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) <= 1:
+            raise VeriTException("subproof", "should contain more than one args")
+        if len(prevs) == 0:
+            raise VeriTException("subproof", "prevs should have at least one proof term")
+        if len(args) != len(prevs):
+            raise VeriTException("subproof", "args and prevs should have the same number of arguments")
+
+        props = [pt.prop for pt in prevs]
+        input_prop = props[:-1]
+        concl = props[-1]
+        goal_neg_tms = args[:-1]
+        goal_concl = args[-1]
+        if all(g == Not(p) for g, p in zip(goal_neg_tms, input_prop)) and goal_concl == concl:
+            return Thm([], Or(*args))
+        else:
+            raise VeriTException("subproof", "unexpected result")
+
 @register_macro("or_pos")
 class OrPosMacro(Macro):
     """⊢ ¬(a_1 ∨ ... ∨ a_n) ∨ a_1 ∨ ... ∨ a_n"""

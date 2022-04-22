@@ -62,7 +62,25 @@ class ProofReconstruction:
         self.ctx = step.ctx
         self.subprf_id = step.id
 
-    def validate(self, is_eval=True, has_bar=False):
+    def find_local_assms(self, step_id):
+        """Find all assumptions declared in step_id's subproof."""
+        assms = []
+        size = len(step_id.split("."))
+        for step in self.steps:
+            if step.id.startswith(step_id) and\
+                 len(step.id.split(".")) == size + 1 and isinstance(step, command.Assume):
+                assms.append(self.pts[step.id])
+
+        return tuple(assms)
+
+    def find_last_subproof(self, step_id):
+        size = len(step_id.split("."))
+        for i in range(len(self.steps)-1):
+            if self.steps[i+1].id == step_id:
+                if not isinstance(self.steps[i+1], command.Anchor) and not isinstance(self.steps[i], command.Anchor):
+                    return self.pts[self.steps[i].id]
+
+    def validate(self, is_eval=True):
         with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
             for step in self.steps:
                 if isinstance(step, command.Assume):
@@ -78,10 +96,19 @@ class ProofReconstruction:
                     args = step.cl
                     if rule_name == "refl":
                         args += (step.cur_ctx,)
-                    if rule_name in ("let", "bind"):
+                    if rule_name == "let":
                         args += (self.ctx,)
+                    if rule_name == "bind":
+                        args += (self.ctx,)
+                        last_prf = self.find_last_subproof(step.id)
+                        prevs += (last_prf,)
                     if rule_name in ("la_generic", "forall_inst"):
                         args += step.args
+                    if rule_name == "subproof":
+                        sub_assms = self.find_local_assms(step.id)
+                        last_prf = self.find_last_subproof(step.id)
+                        prevs += sub_assms
+                        prevs += (last_prf,)
                     if rule_name in ("resolution", "th_resolution"):
                         args = (step.cl, self.get_clause_sizes(step.pm))
                         macro_name = "verit_th_resolution"
