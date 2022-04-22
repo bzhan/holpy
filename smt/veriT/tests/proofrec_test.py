@@ -254,3 +254,50 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats()
 
+    def test_UFLIA(self):
+        test_paths = [
+            'UFLIA\\boogie\\AdditiveMethods_AdditiveMethods..ctor.smt2',
+            'UFLIA\\boogie\\AdditiveMethods_AdditiveMethods.M.smt2',
+            'UFLIA\\boogie\\AdditiveMethods_AdditiveMethods.N.smt2',
+            'UFLIA\\boogie\\Array_test3.MyClass.M0_test3.MyClass.array_notnull.smt2',
+            'UFLIA\\boogie\\Array_test3.MyClass.M1_test3.MyClass.array.array_notnull.smt2',
+            'UFLIA\\boogie\\Array_test3.MyClass.M2_test3.MyClass.array2_notnull.smt2',
+            'UFLIA\\check\\bignum_quant.smt2',
+            'UFLIA\\misc\\arr1.smt2',
+            'UFLIA\\misc\\list3.smt2',
+            'UFLIA\\misc\\list5.smt2',
+            'UFLIA\\RicartAgrawala\\ricart-agrawala1.smt2',
+            'UFLIA\\sexpr\\SES.Atom..ctor_System.String_notnull.smt2',
+            'UFLIA\\sexpr\\SES.Atom.Write_System.IO.TextWriter_notnull.smt2',
+            'UFLIA\\simplify\\javafe.ast.AmbiguousMethodInvocation.29.smt2',
+            'UFLIA\\simplify\\javafe.ast.BinaryExpr.48.smt2',
+            'UFLIA\\simplify\\javafe.ast.BlockStmt.50.smt2',
+            'UFLIA\\simplify2\\front_end_suite\\javafe.ast.AmbiguousMethodInvocation.001.smt2',
+            'UFLIA\\simplify2\\front_end_suite\\javafe.ast.AmbiguousVariableAccess.001.smt2',
+            'UFLIA\\simplify2\\front_end_suite\\javafe.ast.ArrayInit.001.smt2',
+            'UFLIA\\sledgehammer\\Arrow_Order\\smtlib.555057.smt2',
+            'UFLIA\\sledgehammer\\Arrow_Order\\smtlib.555849.smt2',
+            'UFLIA\\sledgehammer\\Arrow_Order\\smtlib.556254.smt2',
+            'UFLIA\\spec_sharp\\textbook-DutchFlag.bpl.1.Partition.smt2',
+            'UFLIA\\spec_sharp\\textbook-Find.bpl.1.Find.smt2',
+            'UFLIA\\spec_sharp\\textbook-Find.bpl.2.Main.smt2',
+            'UFLIA\\tokeneer\\admin\\finishop-1.smt2',
+            'UFLIA\\tokeneer\\admin\\init-1.smt2',
+            'UFLIA\\tokeneer\\admin\\logon-1.smt2',
+            'UFLIA\\tptp\\ARI604=1.smt2',
+            'UFLIA\\tptp\\ARI612=1.smt2',
+            'UFLIA\\tptp\\ARI615=1.smt2',
+        ]
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_eval=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats()
