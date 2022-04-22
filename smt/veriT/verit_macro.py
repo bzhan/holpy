@@ -1385,7 +1385,7 @@ class LetMacro(Macro):
 
 def flatten_prop(tm):
     """Unfold a nested proposition formula."""
-    if not tm.is_conj() and not tm.is_disj() and not tm.is_not():
+    if not tm.is_conj() and not tm.is_disj() and not tm.is_not() and not tm.is_implies():
         return tm
     elif tm.is_conj():
         conjs = logic.strip_conj(tm)
@@ -1405,6 +1405,9 @@ def flatten_prop(tm):
         return Or(*term_ord.sorted_terms(distinct_disjs))
     elif tm.is_not():
         return Not(flatten_prop(tm.arg))
+    elif tm.is_implies():
+        prem, concl = tm.args
+        return hol_term.Implies(flatten_prop(prem), flatten_prop(concl))
     else:
         raise NotImplementedError
         
@@ -1555,6 +1558,31 @@ class BoolSimplifyMacro(Macro):
                 return Thm([], goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match (p1 --> p2 --> p3) <--> (q1 & q2) --> q3")
+        # case 5: ((p1 --> p2) --> p2) <--> p1 | p2
+        elif lhs.is_implies() and lhs.arg1.is_implies() and rhs.is_disj():
+            p1, p2, p3 = lhs.arg1.arg1, lhs.arg1.arg, lhs.arg
+            # q1, q2, q3 = rhs.arg1.arg1, rhs.arg1.arg, rhs.arg
+            q1, q2 = rhs.args
+            if p1 == q1 and p2 == q2 and p3 == q2:
+                return Thm([], goal)
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match ((p1 --> p2) --> p2) <--> p1 | p2")
+        # case 6: (p1 & (p1 --> p2)) <--> p1 & p2
+        elif lhs.is_conj() and lhs.arg.is_implies() and rhs.is_conj():
+            p1, p2, p3 = lhs.arg1, lhs.arg.arg1, lhs.arg.arg
+            q1, q2 = rhs.args
+            if p1 == p2 and p1 == q1 and p3 == q2:
+                return Thm([], goal)
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match (p1 & (p1 --> p2)) <--> p1 & p2")
+        # case 7: (p1 --> p2) & p1 <--> p1 & p2
+        elif lhs.is_conj() and lhs.arg1.is_implies() and rhs.is_conj():
+            p1, p2, p3 = lhs.arg1.arg1, lhs.arg1.arg, lhs.arg
+            q1, q2 = rhs.args
+            if p1 == p3 and p1 == q1 and p2 == q2:
+                return Thm([], goal)
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match (p1 --> p2) & p1 <--> p1 & p2")
         else:
             print("lhs", lhs)
             print("rhs", rhs)
@@ -1958,6 +1986,7 @@ class ImpliesPosMacro(Macro):
             return Thm([], Or(*args))
         else:
             raise VeriTException("implies_pos", "unexpected result")
+
 @register_macro("verit_implies_simplify")
 class ImpliesSimplifyMacro(Macro):
     def __init__(self):
@@ -1971,11 +2000,27 @@ class ImpliesSimplifyMacro(Macro):
         goal = args[0]
         lhs, rhs = goal.args
         prem, concl = lhs.args
-        if prem == true and concl == rhs:
+        # case 1: (~p1 --> ~p2) <--> (p2 --> p1)
+        if lhs.is_implies() and rhs.is_implies():
+            p1, p2 = lhs.args
+            q1, q2 = rhs.args
+            if p1 == Not(q2) and p2 == Not(q1):
+                return Thm([], goal)
+            else:
+                raise VeriTException("implies_simplify", "can't match (~p1 --> ~p2) <--> (p2 --> p1)")
+        # case 3 (p --> true) --> true
+        elif concl == true and concl == rhs:
             return Thm([], goal)
-        if concl == false and Not(prem) == rhs:
+        # case 4: (p1 --> p1) <--> true
+        elif prem == true and concl == rhs:
             return Thm([], goal)
-        raise NotImplementedError
+        # case 5: (p1 --> false) <--> ~p1
+        elif concl == false and Not(prem) == rhs:
+            return Thm([], goal)
+        else:
+            print("goal", goal)
+            raise VeriTException("implies_simplify", "implementation is incomplete")
+
 
 @register_macro("verit_ite_pos1")
 class ITEPos2Macro(Macro):
