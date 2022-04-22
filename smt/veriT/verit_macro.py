@@ -2096,18 +2096,45 @@ class SkoExMacro(Macro):
         else:
             raise VeriTException("sko_ex", "unexpected result")
 
-# @register_macro("verit_onepoint")
-# class OnepointMacro(Macro):
-#     def __init__(self):
-#         self.level = 1
-#         self.sig = Term
-#         self.limit = None
+@register_macro("verit_onepoint")
+class OnepointMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
 
-#     def eval(self, args, prevs):
-#         print("goal", args[0])
-#         print("context")
-#         for k, v in args[1].items():
-#             print(k, ":", v)
-#         print("pt", prevs[0])
+    def eval(self, args, prevs):
+        goal, ctx = args
+        pt = prevs[0]
+        lhs, rhs = goal.args
 
-#         raise NotImplementedError
+        l_vars, l_bd = lhs.strip_quant()
+        if rhs.is_exists() or rhs.is_forall():
+            r_vars, r_bd = rhs.strip_quant()
+        else:
+            r_vars, r_bd = [], rhs
+        if len(l_vars) < len(r_vars):
+            raise VeriTException("onepoint", "unexpected number of quantified variables")
+
+        if not l_bd == pt.lhs or not r_bd == pt.rhs:
+            raise VeriTException("onepoint", "can't match prevs")
+
+        one_val_var = dict()
+        remain_var = []
+        for v in l_vars:
+            if str(v) in ctx and ctx[str(v)] != v and ctx[str(v)].get_type() == v.get_type():
+                one_val_var[v] = ctx[str(v)]
+            else:
+                remain_var.append(v)
+        if remain_var != r_vars:
+            raise VeriTException("onepoint", "lhs doesn't keep the same variables as rhs")
+
+        subst_lhs = l_bd
+        for v, tm in one_val_var.items():
+            T = tm.get_type()
+            subst_lhs = hol_term.Abs(v.name, T, subst_lhs.abstract_over(v)).subst_bound(tm)
+
+        if compare_sym_tm(subst_lhs, pt.rhs):
+            return Thm([], goal)
+        else:
+            raise VeriTException("onepoint", "unexpected result")
