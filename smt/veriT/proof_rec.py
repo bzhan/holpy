@@ -66,11 +66,11 @@ class ProofReconstruction:
     def find_local_assms(self, step_id):
         """Find all assumptions declared in step_id's subproof."""
         assms = []
-        size = len(step_id.split("."))
         for step in self.steps:
-            if step.id.startswith(step_id) and\
-                 len(step.id.split(".")) == size + 1 and isinstance(step, command.Assume):
-                assms.append(self.pts[step.id])
+            if step.id.startswith(step_id):
+                sub_ids = step.id.split(".")
+                if sub_ids[:-1] == step_id.split(".") and isinstance(step, command.Assume):
+                    assms.append(self.pts[step.id])
 
         return tuple(assms)
 
@@ -96,7 +96,7 @@ class ProofReconstruction:
             if rule_name == "refl":
                 args += (step.cur_ctx,)
             if rule_name in ("bind", "sko_ex", "sko_forall", "onepoint", "let"):
-                args += (self.ctx,)
+                args += (step.cur_ctx,)
                 last_prf = self.find_last_subproof(step.id)
                 prevs += (last_prf,)
             if rule_name in ("la_generic", "forall_inst"):
@@ -139,6 +139,7 @@ class ProofReconstruction:
     def validate(self, is_eval=True):
         with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
             for step in self.steps:
+                # print("step.id", step.id)
                 self.validate_step(step, is_eval=is_eval)
                 bar()
         return self.pts[self.steps[-1].id]

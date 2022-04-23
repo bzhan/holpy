@@ -875,6 +875,9 @@ class FalseMacro(Macro):
             raise VeriTException("false", "goal must be ~false")
         return Thm([], arg)
 
+    def get_proof_term(self, args, prevs=None):
+        return logic.apply_theorem("not_false_res")
+
 @register_macro("verit_not_simplify")
 class NotSimplifyMacro(Macro):
     def __init__(self):
@@ -1448,27 +1451,6 @@ class LetMacro(Macro):
             return Thm([], goal)
         else:
             raise VeriTException("let", "Unexpected result")
-        # print(subst_lhs == last_step.lhs)
-        # raise NotImplementedError
-        # beta_lhs = let_substitute(goal.lhs, ctx=ctx)
-        # print("prevs", prevs[0].lhs)
-        # print("goal", goal.lhs)
-        # prop = prevs[0].prop
-        # print(goal.lhs == prop.lhs)
-        # print(beta_lhs == prop.lhs)
-        # prev_lhs_subst = let_substitute(prop.lhs, ctx)
-        # print("prev", prev_lhs_subst)
-        # print(prev_lhs_subst == beta_lhs)
-        # print()
-        # if compare_sym_tm(beta_lhs, goal.rhs, ctx=ctx):
-        #     return Thm([], goal)
-        # else:
-        #     # print(goal.lhs)
-        #     # print(goal.rhs)
-        #     print("prevs")
-        #     for prev in prevs:
-        #         print(prev.prop)
-        #     raise VeriTException("let", "Unexpected result")
         
 
 def flatten_prop(tm):
@@ -1753,6 +1735,16 @@ class SumSimplifyMacro(Macro):
         else:
             raise VeriTException("sum_simplify", "unexpected result")
 
+def eval_hol_number(tm):
+    assert tm.is_constant()
+    if tm.get_type() == hol_type.IntType:
+        return integer.int_eval(tm)
+    elif tm.get_type() == hol_type.RealType:
+        return real.real_eval(tm)
+    else:
+        raise NotImplementedError
+    
+
 @register_macro("verit_comp_simplify")
 class CompSimplifyMacro(Macro):
     def __init__(self):
@@ -1769,6 +1761,27 @@ class CompSimplifyMacro(Macro):
             raise VeriTException("comp_simplify", "goal should be an equality")
         
         lhs, rhs = goal.lhs, goal.rhs
+        if not lhs.is_compares():
+            raise VeriTException("comp_simplify", "lhs should be a comparison")
+        t1, t2 = lhs.args
+        if t1.is_constant() and t2.is_constant():
+            t1_n, t2_n = eval_hol_number(t1), eval_hol_number(t2)
+            if lhs.is_less():
+                if t1_n < t2_n and rhs == true:
+                    return Thm([], goal)
+                elif t1_n >= t2_n and rhs == false:
+                    return Thm([], goal)
+                else:
+                    raise VeriTException("comp_simplify", "unexpected lhs")
+            elif lhs.is_less_eq():
+                if t1_n <= t2_n and rhs == true:
+                    return Thm([], goal)
+                elif t1_n > t2_n and rhs == false:
+                    return Thm([], goal)
+                else:
+                    raise VeriTException("comp_simplify", "unexpected lhs")
+            else:
+                raise VeriTException("comp_simplify", "lhs should be a less or less_eq term")
         # Case 5: a >= b <--> b <= a 
         if lhs.is_greater_eq():
             if not rhs.is_less_eq():
@@ -1851,7 +1864,7 @@ class MinusSimplify(Macro):
         
         lhs, rhs = goal.args
         T = lhs.get_type()
-        if lhs.is_number() and rhs.is_number(): # bugs in verit, it should be proved by uminus_simplify
+        if lhs.is_constant() and rhs.is_constant(): # bugs in verit, it should be proved by uminus_simplify
             if T == hol_type.IntType and integer.int_eval(lhs) == integer.int_eval(rhs):
                 return Thm([], goal)
             elif T == hol_type.RealType and real.real_eval(lhs) == real.real_eval(rhs):
@@ -1860,7 +1873,6 @@ class MinusSimplify(Macro):
                 raise VeriTException("minus_simplify", "unexpected result")
         elif rhs.is_minus():
             rhs_arg = rhs.arg
-            # if rhs_arg.is_number() and T == hol_type.IntType and integer.int_eval(rhs_arg) == 0: 
             if rhs_arg.is_zero():
                 # it is a bug in verit, minus_simplify only can prove t - 0 = t rather than t = t - 0
                 return Thm([], goal)
@@ -1874,10 +1886,6 @@ class MinusSimplify(Macro):
                 return Thm([], goal)
             else:
                 raise VeriTException("minus_simplify", "unexpected result")
-        print("lhs", lhs)
-        print("rhs", rhs)
-        # if norm_real_expr(lhs) == norm_real_expr(rhs):
-        #     return Thm([], goal)
         raise NotImplementedError
 @register_macro("verit_unary_minus_simplify")
 class UnaryMinusSimplifyMacro(Macro):
@@ -1904,7 +1912,7 @@ class UnaryMinusSimplifyMacro(Macro):
                 return Thm([], goal)
             else:
                 raise VeriTException("minus_simplify", "-(-lhs) != lhs")
-        elif lhs_neg_tm.is_number():
+        elif lhs_neg_tm.is_constant():
             lhs_num = integer.int_eval(lhs)
             rhs_num = integer.int_eval(rhs)
             if  lhs_num == rhs_num:
@@ -2311,3 +2319,127 @@ class OnepointMacro(Macro):
 #             print(arg)
 
 #         raise NotImplementedError
+
+
+@register_macro("verit_equiv_simplify")
+class BoolSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def get_proof_term(self, args, prevs):
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("equiv_simplify", "goal should be an equality")
+        lhs, rhs = goal.args
+        if not goal.is_equals():
+            raise VeriTException("equiv_simplify", "lhs should be an equality")
+        lhs_l, lhs_r = lhs.args
+        if rhs.is_equals() and lhs_l == Not(rhs.lhs) and lhs_r == Not(rhs.rhs):
+            return logic.apply_theorem("verit_equiv_simplify1", concl=goal)
+        if lhs_r == true and lhs_l == rhs:
+            return logic.apply_theorem("verit_equiv_simplify6", concl=goal)
+        elif Not(lhs_l) == rhs and lhs_r == false:
+            return logic.apply_theorem("verit_equiv_simplify8", concl=goal)
+        
+        raise NotImplementedError
+
+@register_macro("verit_not_implies1")
+class NotImplies1Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def get_proof_term(self, args, prevs):
+        goal = args[0]
+        prop = prevs[0].prop
+        if not prop.is_not() or not prop.arg.is_implies():
+            raise VeriTException("not_implie1s", "unexpected prevs")
+
+        if goal != prop.arg.arg1:
+            raise VeriTException("not_implies1", "unexpected argument")
+        
+        return logic.apply_theorem("not_implies1", prevs[0])
+
+@register_macro("verit_not_implies2")
+class NotImplies2Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def get_proof_term(self, args, prevs):
+        goal = args[0]
+        prop = prevs[0].prop
+        if not prop.is_not() or not prop.arg.is_implies():
+            raise VeriTException("not_implies2", "unexpected argument")
+
+        if goal != Not(prop.arg.arg):
+            raise VeriTException("not_implies2", "unexpected argument")
+        
+        return logic.apply_theorem("not_implies2", prevs[0])
+
+@register_macro("verit_implies_neg1")
+class ImpliesNeg1Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def get_proof_term(self, args, prevs=None):
+        if len(args) != 2 or not args[0].is_implies() or args[0].arg1 != args[1]:
+            raise VeriTException("implies_neg1", "unexpected arguments")
+        return logic.apply_theorem("verit_implies_neg1", concl=Or(*args))
+
+@register_macro("verit_implies_neg2")
+class ImpliesNeg1Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def get_proof_term(self, args, prevs=None):
+        if len(args) != 2 or not args[0].is_implies() or Not(args[0].arg) != args[1]:
+            raise VeriTException("implies_neg1", "unexpected arguments")
+        return logic.apply_theorem("verit_implies_neg2", concl=Or(*args))
+
+@register_macro("verit_qnt_simplify")
+class QNTSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1 or not args[0].is_equals():
+            raise VeriTException("qnt_simplify", "unexpected arguments")
+        goal = args[0]
+        lhs, rhs = goal.args
+        if rhs not in (true, false):
+            raise VeriTException("qnf_simplify", "rhs should be true or false")
+
+        if not lhs.is_forall():
+            raise VeriTException("qnf_simplify", "lhs should be a quantification")
+        
+        _, l_bd = lhs.strip_forall()
+        if l_bd == rhs:
+            return Thm([], goal)
+        else:
+            raise VeriTException("qnf_simplify", "unexpected result")
+
+    def get_proof_term(self, args, prevs):
+        goal = args[0]
+        lhs, rhs = goal.args
+        vars, _ = lhs.strip_forall()
+        pt1 = ProofTerm.assume(lhs)
+        for v in vars:
+            pt1 = pt1.forall_elim(v)
+        pt1 = pt1.implies_intr(lhs)
+        pt2 = ProofTerm.assume(rhs)
+        for v in vars:
+            pt2 = pt2.forall_intr(v)
+        pt2 = pt2.implies_intr(rhs)
+        return logic.apply_theorem("iffI", pt1, pt2)
+            
