@@ -21,3 +21,7 @@ problem: -12 == -12 should be proved by uminus_simplify rule rather than minus_s
 file_name: QF_UFLRA\\mathsat\\RandomDecoupled\\pb_real_30_60_45_06.smt2
 step: minus_simplify
 problem: -17 * x5 - 16 * x17 ==  -17 * x5 - 16 * x17 - 0
+7.
+file_name: D:\\smt-lib\\UFLIA\\misc\\arr1.smt2
+step: t44.t28 sk_forall
+problem: the skol
