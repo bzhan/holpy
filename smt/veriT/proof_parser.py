@@ -263,7 +263,7 @@ class ProofTransformer(Transformer):
         if tm in self.step_ctx:
             return self.step_ctx[tm]
         if tm in self.smt_file_ctx:
-            return hol_term.Var(tm, self.smt_file_ctx[str(tm)])
+            return hol_term.Var(tm, self.smt_file_ctx[tm])
         for ctx in reversed(self.proof_ctx):
             if tm in ctx:
                 return hol_term.Var(tm, ctx[tm].get_type())
@@ -427,7 +427,6 @@ class ProofTransformer(Transformer):
         new_ctx = {}
         for var, tm in ctx:
             new_ctx[str(var)] = tm
-            new_ctx[str(tm)] = tm
         self.proof_ctx.append(new_ctx)
         prf_ctx = {var_name : tm for ctx in self.proof_ctx for var_name, tm in ctx.items()}
         step = Anchor(str(id), prf_ctx)

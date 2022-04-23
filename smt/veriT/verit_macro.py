@@ -1470,7 +1470,6 @@ class LetMacro(Macro):
         else:
             raise VeriTException("let", "Unexpected result")
         
-
 def flatten_prop(tm):
     """Unfold a nested proposition formula."""
     if tm.is_conj():
@@ -1499,7 +1498,41 @@ def flatten_prop(tm):
         return hol_term.Forall(x, flatten_prop(body))
     else:
         return tm
-        
+
+def compare_ac(tm1, tm2):
+    if tm1.is_conj():
+        conjs1 = logic.strip_conj(tm1)
+        conjs2 = logic.strip_conj(tm2)
+        if set(conjs1) == set(conjs2):
+            return True
+        if len(conjs1) == len(conjs2) and all(compare_ac(t1, t2) for t1, t2 in zip(conjs1, conjs2)):
+            return True
+        conjs1 = [flatten_prop(t) for t in conjs1]
+        conjs2 = [flatten_prop(t) for t in conjs2]
+        return set(conjs1) == set(conjs2)
+    elif tm1.is_disj():
+        disjs1 = logic.strip_disj(tm1)
+        disjs2 = logic.strip_disj(tm2)
+        if set(disjs1) == set(disjs2):
+            return True
+        if len(disjs1) == len(disjs2) and all(compare_ac(t1, t2) for t1, t2 in zip(disjs1, disjs2)):
+            return True
+        disjs1 = [flatten_prop(t) for t in disjs1]
+        disjs2 = [flatten_prop(t) for t in disjs2]
+        return set(disjs1) == set(disjs2)
+    elif tm1.is_not():
+        return tm2.is_not() and compare_ac(tm1.arg, tm2.arg)
+    elif tm1.is_implies():
+        return tm2.is_implies() and compare_ac(tm1.arg1, tm2.arg1) and compare_ac(tm1.arg, tm2.arg)
+    elif tm1.is_forall():
+        if not tm2.is_forall():
+            return False
+        x1, body1 = tm1.arg.dest_abs()
+        x2, body2 = tm2.arg.dest_abs()
+        return x1 == x2 and compare_ac(body1, body2)
+    else:
+        return tm1 == tm2
+
 
 @register_macro("verit_ac_simp")
 class ACSimpMacro(Macro):
@@ -1518,13 +1551,11 @@ class ACSimpMacro(Macro):
         lhs, rhs = goal.lhs, goal.rhs
         if not lhs.is_conj() and not lhs.is_disj():
             raise VeriTException("ac_simp", "lhs and rhs are not both disjunction or conjunction.")
-        rhs_flat = flatten_prop(rhs)
-        lhs_flat = flatten_prop(lhs)
-        if lhs_flat == rhs_flat:
+        if compare_ac(lhs, rhs):
             return Thm([], goal)
         else:
-            print(lhs_flat)
-            print(rhs_flat)
+            print('lhs:', lhs)
+            print('rhs:', rhs)
             raise VeriTException("ac_simp", "unexpected result")
         
 @register_macro("verit_and_simplify")
