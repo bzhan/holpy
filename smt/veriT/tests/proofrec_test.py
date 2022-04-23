@@ -157,39 +157,6 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats()
 
-    def test_UF(self):
-        test_paths = [
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_17_00_49_980_1120402.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_52_18_634_983654.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_53_05_211_1033050.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_53_31_362_1064389.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_48_45_757_1043506.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_54_30_307_1349771.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_57_04_292_1481164.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_46_30_200_1001391.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_47_39_480_1078027.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_48_44_767_1147663.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_35_132_1014381.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_53_474_1036287.smt_in.smt2',
-            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_55_00_922_1043783.smt_in.smt2',
-        ]
-
-        profile = False
-        if profile:
-            pr = cProfile.Profile()
-            pr.enable()
-
-        for path in test_paths:
-            test_path(path, test_eval=True)
-
-        if profile:
-            p = Stats(pr)
-            p.strip_dirs()
-            p.sort_stats('cumtime')
-            p.print_stats()
-
     def test_QF_UFLRA(self):
         test_paths = [
             'QF_UFLRA\\mathsat\\RandomCoupled\\pb_real_10_0200_10_14.smt2',
@@ -253,6 +220,76 @@ class ProofrecTest(unittest.TestCase):
             p.strip_dirs()
             p.sort_stats('cumtime')
             p.print_stats()
+
+    def test_UF(self):
+        test_paths = [
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_17_00_49_980_1120402.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_52_18_634_983654.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_53_05_211_1033050.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\bindag\\x2015_09_10_16_53_31_362_1064389.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_48_45_757_1043506.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_54_30_307_1349771.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\coinductive_list\\x2015_09_10_16_57_04_292_1481164.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_46_30_200_1001391.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_47_39_480_1078027.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\distro\\gram_lang\\x2015_09_10_16_48_44_767_1147663.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_35_132_1014381.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_54_53_474_1036287.smt_in.smt2',
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\gandl\\bird_tree\\x2015_09_10_16_55_00_922_1043783.smt_in.smt2',
+            'UF\\sledgehammer\\Arrow_Order\\smtlib.578262.smt2',
+            'UF\\sledgehammer\\Arrow_Order\\smtlib.617784.smt2',
+            'UF\\sledgehammer\\Arrow_Order\\smtlib.686801.smt2',
+            'UF\\sledgehammer\\FFT\\uf.549548.smt2',
+            'UF\\sledgehammer\\FFT\\uf.600765.smt2',
+            'UF\\sledgehammer\\FFT\\uf.626085.smt2',
+            'UF\\sledgehammer\\Fundamental_Theorem_Algebra\\uf.1025050.smt2',
+            'UF\\sledgehammer\\Fundamental_Theorem_Algebra\\uf.1061982.smt2',
+            'UF\\sledgehammer\\Hoare\\smtlib.1170876.smt2',
+            'UF\\sledgehammer\\Hoare\\uf.1008477.smt2',
+            'UF\\sledgehammer\\Hoare\\uf.1031408.smt2',
+            'UF\\grasshopper\\instantiated\\concat_check_heap_access_23_4.smt2',
+            'UF\\grasshopper\\instantiated\\concat_invariant_18_4.smt2',
+            'UF\\grasshopper\\instantiated\\dl_filter_postcondition_of_dl_filter_41_1.smt2',
+            'UF\\grasshopper\\uninstantiated\\dl_filter_loop_invariant_40_3.smt2',
+            'UF\\grasshopper\\uninstantiated\\dl_filter_postcondition_of_dl_filter_41_1.smt2',
+            'UF\\grasshopper\\uninstantiated\\dl_insert_check_heap_access_16_4.smt2',
+            'UF\\misc\\list1.smt2',
+            'UF\\misc\\set10.smt2',
+            'UF\\misc\\set11.smt2',
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_eval=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats()
+
+    def test_UFLRA(self):
+        test_paths = [
+            'UFLRA\\FFT\\smtlib.620487.smt2',
+            'UFLRA\\FFT\\smtlib.620535.smt2',
+            'UFLRA\\FFT\\smtlib.623417.smt2',
+            'UFLRA\\FFT\\smtlib.623474.smt2',
+            'UFLRA\\FFT\\smtlib.623531.smt2',
+            'UFLRA\\FFT\\smtlib.623597.smt2',
+            'UFLRA\\FFT\\smtlib.627457.smt2',
+            'UFLRA\\FFT\\smtlib.627531.smt2',
+            'UFLRA\\FFT\\smtlib.627605.smt2',
+            'UFLRA\\FFT\\smtlib.627688.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path, test_eval=True)
 
     def test_UFLIA(self):
         test_paths = [
