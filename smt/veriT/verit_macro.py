@@ -790,9 +790,8 @@ class DistinctElimMacro(Macro):
             for j in range(i+1, len(distinct_ts)):
                 conjs.append(Not(Eq(distinct_ts[i], distinct_ts[j])))
         expected_rhs = And(*conjs)
-        if rhs != expected_rhs and not compare_sym_tm(rhs, expected_rhs):
+        if not compare_sym_tm(rhs, expected_rhs):
             raise VeriTException("distinct_elim", "incorrect rhs")
-
         return Thm([], arg)
     
     def get_proof_term(self, goal, prevs=None):
@@ -1011,9 +1010,6 @@ class CongMacro(Macro):
 
     def eval(self, args, prevs): # contain bugs
         if len(args) != 1:
-            print("args")
-            for arg in args:
-                print(arg)
             raise VeriTException("cong", "goal should be a single term.")
         goal = args[0]
         if not goal.is_equals():
@@ -1115,6 +1111,13 @@ def compare_sym_tm(tm1, tm2, ctx=None):
                     return True
                 else:
                     return False
+            elif t1.is_conj():
+                t1_args = t1.strip_conj()
+                t2_args = t2.strip_conj()
+                for t1_arg, t2_arg in zip(t1_args, t2_args):
+                    if not helper(t1_arg, t2_arg):
+                        return False
+                return True
             else:
                 for l_arg, r_arg in zip(t1.args, t2.args):
                     if not helper(l_arg, r_arg):

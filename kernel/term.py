@@ -510,10 +510,13 @@ class Term():
 
     def strip_conj(self):
         """Given s1 & ... & sn, return [s1, ..., sn]."""
-        if self.is_conj():
-            return [self.arg1] + self.arg.strip_conj()
-        else:
-            return [self]
+        t = self
+        res = []
+        while t.is_conj():
+            res.append(t.arg1)
+            t = t.arg
+        res.append(t)
+        return res
 
     def is_disj(self):
         """Whether t is of the form A | B."""
@@ -521,10 +524,13 @@ class Term():
 
     def strip_disj(self):
         """Given s1 | ... | sn, return [s1, ..., sn]."""
-        if self.is_disj():
-            return [self.arg1] + self.arg.strip_disj()
-        else:
-            return [self]
+        t = self
+        res = []
+        while t.is_disj():
+            res.append(t.arg1)
+            t = t.arg
+        res.append(t)
+        return res
 
     def is_forall(self):
         """Whether self is of the form !x. P x."""
