@@ -1253,8 +1253,8 @@ def Forall(*args):
 
     """
     typecheck.checkinstance('Forall', args, [Term])
-    if len(args) < 2:
-        raise TermException("Forall: must provide two terms.")
+    if len(args) < 1:
+        raise TermException("Forall: must provide one term.")
     body = args[-1]
     for x in reversed(args[:-1]):
         if not (x.is_var() or x.is_svar()):
@@ -1272,8 +1272,8 @@ def Exists(*args):
     
     """
     typecheck.checkinstance('Exists', args, [Term])
-    if len(args) < 2:
-        raise TermException("Exists: must provide two terms.")
+    if len(args) < 1:
+        raise TermException("Exists: must provide one term.")
     body = args[-1]
     for x in reversed(args[:-1]):
         if not (x.is_var() or x.is_svar()):

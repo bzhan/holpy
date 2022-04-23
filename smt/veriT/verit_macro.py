@@ -1096,7 +1096,9 @@ def compare_sym_tm(tm1, tm2, ctx=None):
     
     def helper(t1, t2):
         if t1.is_var() and t1.name in ctx:
-            return ctx[t1.name] == t2
+            return t1 == t2 or ctx[t1.name] == t2
+        elif t2.is_var() and t2.name in ctx:
+            return t1 == t2 or ctx[t2.name] == t1
         elif t1.is_comb():
             if not t2.is_comb() or t1.head != t2.head:
                 return False
@@ -2224,21 +2226,38 @@ class SkoExMacro(Macro):
         if pt.rhs != rhs:
             raise VeriTException("sko_ex", "rhs should be equal to pt's rhs")
 
-        lhs_abs = lhs.arg
-        x = lhs_abs.var_name
-        if not x in ctx:
-            raise VeriTException("sko_ex", "the skolem variable does not occur in context")
-        sko_tm = ctx[x]
-        if not logic.is_some(sko_tm):
-            raise VeriTException("sko_ex", "%s should be a skolemization term" % sko_tm)
+        xs, lhs_body = lhs.strip_exists()
 
-        if sko_tm.arg == lhs_abs:
-            return Thm([], goal)
-        else:
-            raise VeriTException("sko_ex", "unexpected result") 
+        if pt.lhs != lhs_body:
+            print('pt.lhs:', pt.lhs)
+            print('lhs_body:', lhs_body)
+            raise VeriTException("sko_ex", "unexpected form of lhs in goal")
+
+        for i, x in enumerate(xs):
+            if x.name not in ctx:
+                raise VeriTException("sko_ex", "the skolem variable does not occur in context")
+            sko_tm_x = ctx[x.name]
+            if not logic.is_some(sko_tm_x):
+                raise VeriTException("sko_ex", "%s should be a skolemization term" % sko_tm_x)
+            _, sko_tm_x_body = sko_tm_x.arg.dest_abs()
+
+            # Body of skolem term for x should equal lhs_body after adding exists
+            # quantifiers to all ensuing variables.
+            exp_x_body = Exists(*(xs[i+1:] + [lhs_body]))
+            if not compare_sym_tm(sko_tm_x_body, exp_x_body, ctx=ctx):
+                print('sko_tm_body:', sko_tm_x_body)
+                print('exp_x_body:', exp_x_body)
+                raise VeriTException("sko_ex", "unexpected result")
+
+        return Thm([], goal)
 
 @register_macro("verit_sko_forall")
 class SkoExMacro(Macro):
+    """Prove an equality of the form !x1, ..., xn. p <--> q, given fact
+    p <--> q proved under the context
+        x1 -> SOME x1. ~p, ..., xn -> SOME xn. ~p.
+
+    """
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -2264,18 +2283,30 @@ class SkoExMacro(Macro):
         if pt.rhs != rhs:
             raise VeriTException("sko_forall", "rhs should be equal to pt's rhs")
 
-        lhs_abs = lhs.arg
-        x = lhs_abs.var_name
-        if not x in ctx:
-            raise VeriTException("sko_forall", "the skolem variable does not occur in context")
-        sko_tm = ctx[x]
-        if not logic.is_some(sko_tm):
-            raise VeriTException("sko_forall", "%s should be a skolemization term" % sko_tm)
-        
-        if sko_tm.arg.body == Not(lhs_abs.body):
-            return Thm([], goal)
-        else:
-            raise VeriTException("sko_forall", "unexpected result")
+        xs, lhs_body = lhs.strip_forall()
+
+        if pt.lhs != lhs_body:
+            print('pt.lhs:', pt.lhs)
+            print('lhs_body:', lhs_body)
+            raise VeriTException("sko_forall", "unexpected form of lhs in goal")
+
+        for i, x in enumerate(xs):
+            if x.name not in ctx:
+                raise VeriTException("sko_forall", "the skolem variable does not occur in context")
+            sko_tm_x = ctx[x.name]
+            if not logic.is_some(sko_tm_x):
+                raise VeriTException("sko_forall", "%s should be a skolemization term" % sko_tm_x)
+            _, sko_tm_x_body = sko_tm_x.arg.dest_abs()
+
+            # Body of skolem term for x should equal lhs_body after adding forall
+            # quantifiers to all ensuing variables.
+            exp_x_body = Not(Forall(*(xs[i+1:] + [lhs_body])))
+            if not compare_sym_tm(sko_tm_x_body, exp_x_body, ctx=ctx):
+                print('sko_tm_body:', sko_tm_x_body)
+                print('exp_x_body:', exp_x_body)
+                raise VeriTException("sko_forall", "unexpected result")
+
+        return Thm([], goal)
 
 @register_macro("verit_onepoint")
 class OnepointMacro(Macro):
