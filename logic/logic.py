@@ -655,19 +655,6 @@ def imp_conj_iff(goal):
     pt2 = ProofTerm('imp_conj', Implies(goal.rhs, goal.lhs))
     return ProofTerm.equal_intr(pt1, pt2)
 
-class conj_norm(Conv):
-    """Normalize an conjunction."""
-    def get_proof_term(self, t):
-        def strip_conj_all(t):
-            if t.is_conj():
-                return strip_conj_all(t.arg1) + strip_conj_all(t.arg)
-            else:
-                return [t]
-
-        conj_terms = term_ord.sorted_terms(strip_conj_all(t))
-        goal = Eq(t, And(*conj_terms))
-        return imp_conj_iff(goal)
-
 
 @register_macro('imp_disj')
 class imp_disj_macro(Macro):
@@ -729,27 +716,38 @@ def imp_disj_iff(goal):
     return ProofTerm.equal_intr(pt1, pt2)
 
 def strip_disj(t):
-    def rec(t):
+    res = []
+    def helper(t):
         if t.is_disj():
-            return rec(t.arg1) + rec(t.arg)
+            helper(t.arg1)
+            helper(t.arg)
         else:
-            return [t]
-    return term_ord.sorted_terms(rec(t))
+            res.append(t)
+    helper(t)
+    return res
 
 def strip_conj(t):
-    def rec(t):
+    res = []
+    def helper(t):
         if t.is_conj():
-            return rec(t.arg1) + rec(t.arg)
+            helper(t.arg1)
+            helper(t.arg)
         else:
-            return [t]
-    return term_ord.sorted_terms(rec(t))
+            res.append(t)
+    helper(t)
+    return res
 
 class disj_norm(Conv):
     """Normalize an disjunction."""
     def get_proof_term(self, t):
-        goal = Eq(t, Or(*strip_disj(t)))
+        goal = Eq(t, Or(*term_ord.sorted_terms(strip_disj(t))))
         return imp_disj_iff(goal)
 
+class conj_norm(Conv):
+    """Normalize an conjunction."""
+    def get_proof_term(self, t):
+        goal = Eq(t, And(*term_ord.sorted_terms(strip_conj(t))))
+        return imp_conj_iff(goal)
 
 @register_macro('resolution')
 class resolution_macro(Macro):

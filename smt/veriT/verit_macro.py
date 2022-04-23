@@ -1010,7 +1010,7 @@ class CongMacro(Macro):
         self.sig = Term
         self.limit = None
 
-    def eval(self, args, prevs): # contain bugs
+    def eval(self, args, prevs):
         if len(args) != 1:
             raise VeriTException("cong", "goal should be a single term.")
         goal = args[0]
@@ -1021,9 +1021,6 @@ class CongMacro(Macro):
         if lhs.head != rhs.head:
             raise VeriTException("cong", "head should be same")
         
-        ctx = {prop.lhs : prop.rhs for prop in prevs}
-        # ctx.update({prop.rhs: prop.lhs for prop in prevs})
-
         # Treat | and & as n-ary operators when 
         # the number of premises are larger than 2
         if lhs.is_conj():
@@ -1039,14 +1036,21 @@ class CongMacro(Macro):
         else:
             l_args, r_args = lhs.args, rhs.args
 
+        # Form dictionary from terms to equalities
+        prev_dict = dict()
+        for prev in prevs:
+            if prev.lhs not in prev_dict:
+                prev_dict[prev.lhs] = []
+            prev_dict[prev.lhs].append(prev.rhs)
+            if prev.rhs not in prev_dict:
+                prev_dict[prev.rhs] = []
+            prev_dict[prev.rhs].append(prev.lhs)
+
         def compare_arg(t1, t2):
             if t1 == t2:
                 return True
-            for prop in prevs:
-                if prop.lhs == t1 and prop.rhs == t2:
-                    return True
-                if prop.lhs == t2 and prop.rhs == t1:
-                    return True
+            if t1 in prev_dict and t2 in prev_dict[t1]:
+                return True
             return False
 
         if all(compare_arg(t1, t2) for t1, t2 in zip(l_args, r_args)):
@@ -1413,44 +1417,6 @@ class ContractionMacro(Macro):
         return pt.implies_elim(prevs[0])
 
 
-def let_substitute(tm, ctx):
-    """Substitue all variables in ctx into concrete terms, 
-    and move the all variables at lhs to rhs (sort).
-    """
-    if tm.is_var():
-        if tm.name in ctx:
-            return ctx[tm.name]
-        else:
-            return tm
-    elif tm.is_comb():
-        if tm.is_conj():
-            conjs = [let_substitute(conj, ctx) for conj in tm.strip_conj()]
-            return And(*conjs)
-        elif tm.is_disj():
-            disjs = [let_substitute(disj, ctx) for disj in tm.strip_disj()]
-            return Or(*disjs)
-        elif tm.is_forall():
-            T = tm.arg.var_T
-            return hol_term.forall(T)(let_substitute(tm.arg, ctx))
-        elif tm.is_exists():
-            T = tm.arg.var_T
-            return hol_term.exists(T)(let_substitute(tm.arg, ctx))
-        else:
-            args = [let_substitute(arg, ctx) for arg in tm.args]
-            return tm.head(*args)
-    elif tm.is_abs():
-        var_name, var_T, body = tm.var_name, tm.var_T, tm.body
-        if var_name in ctx:
-            var_name = ctx[var_name].name
-        return hol_term.Lambda(hol_term.Var(var_name, var_T),let_substitute(body, ctx))
-    elif tm.is_const():
-        return tm
-    elif tm.is_bound():
-        return tm
-    else:
-        print("tm", tm)
-        raise NotImplementedError
-
 @register_macro("verit_let")
 class LetMacro(Macro):
     def __init__(self):
@@ -1463,9 +1429,7 @@ class LetMacro(Macro):
         prop_eq = prevs[:-1]
         last_step = prevs[-1]
         ctx = {prop.lhs:prop.rhs for prop in prop_eq}
-        lhs = goal.lhs
-        subst_lhs = let_substitute(lhs, ctx)
-        if subst_lhs == last_step.lhs and goal.rhs == last_step.rhs:
+        if compare_sym_tm(goal.lhs, last_step.lhs, ctx=ctx) and goal.rhs == last_step.rhs:
             return Thm([], goal)
         else:
             raise VeriTException("let", "Unexpected result")
