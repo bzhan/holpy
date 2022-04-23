@@ -2640,4 +2640,74 @@ class QNTSimplifyMacro(Macro):
             pt2 = pt2.forall_intr(v)
         pt2 = pt2.implies_intr(rhs)
         return logic.apply_theorem("iffI", pt1, pt2)
-            
+
+@register_macro("verit_qnt_join")
+class QNTJoinMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("qnt_join", "should have only one argument")
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("qnt_join", "goal should be an equality")
+        
+        lhs, rhs = goal.args
+        if lhs != rhs:
+            raise VeriTException("qnt_join", "implementation is incomplete")
+
+        return Thm([], Eq(args[0].lhs, args[0].rhs))
+
+    def get_proof_term(self, args, prevs):
+        return logic.apply_theorem("eq_refl", concl=args[0])
+
+@register_macro("verit_equiv_neg1")
+class EquivNeg1Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 3:
+            raise VeriTException("equiv_neg1", "unexpected number of arguments")
+        
+        eq, p1, p2 = args
+        if not eq.is_equals():
+            raise VeriTException("equiv_neg1", "the first argument should be an equality")
+
+        lhs, rhs = eq.args
+        if p1 == Not(lhs) and p2 == Not(rhs):
+            return Thm([], Or(*args))
+        else:
+            raise VeriTException("equiv_neg1", "unexpected result")
+
+    def get_proof_term(self, args, prevs):
+        return logic.apply_theorem("equiv_neg1", concl=Or(*args))
+
+@register_macro("verit_equiv_neg2")
+class EquivNeg1Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 3:
+            raise VeriTException("equiv_neg2", "unexpected number of arguments")
+        
+        eq, p1, p2 = args
+        if not eq.is_equals():
+            raise VeriTException("equiv_neg2", "the first argument should be an equality")
+
+        lhs, rhs = eq.args
+        if p1 == lhs and p2 == rhs:
+            return Thm([], Or(*args))
+        else:
+            raise VeriTException("equiv_neg2", "unexpected result")
+
+    def get_proof_term(self, args, prevs):
+        return logic.apply_theorem("equiv_neg2", concl=Or(*args))
