@@ -261,6 +261,8 @@ class ThResolutionMacro(Macro):
         _, cl_concl = resolve_order(prems)
         if set(cl_concl) == set(cl):
             return Thm([hyp for pt in prevs for hyp in pt.hyps], Or(*cl))
+        elif len(cl_concl) == 1 and len(cl) == 1 and Not(Not(cl_concl[0])) == cl[0]:
+            return Thm([hyp for pt in prevs for hyp in pt.hyps], Or(*cl))
         else:
             raise VeriTException("th_resolution", "unexpected conclusion")
 
@@ -315,7 +317,11 @@ class ThResolutionMacro(Macro):
             prevs[id1] = pt
         
         # Return the result of last step of resolution
-        return pt
+        if pt.prop == Or(*cl):
+            return pt
+        if Not(Not(pt.prop)) == Or(*cl):
+            return pt.on_prop(conv.rewr_conv('double_neg', sym=True))
+        raise VeriTException('th_resolution', 'unexpected conclusion')
 
 
 @register_macro("verit_implies")
