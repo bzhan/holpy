@@ -833,11 +833,14 @@ class AndMacro(Macro):
         while prem.is_conj():
             if arg == prem.arg1:
                 return Thm(prevs[0].hyps, arg)
+            if arg == prem.arg:
+                return Thm(prevs[0].hyps, arg)
             prem = prem.arg
-        if arg == prem:
-            return Thm(prevs[0].hyps, arg)
-        else:
-            raise VeriTException("and", "goal not found in premise")
+
+        # Not found
+        print('arg', arg)
+        print('prem', prem.prop)
+        raise VeriTException("and", "goal not found in premise")
 
     def get_proof_term(self, goal, prevs=None):
         prev = prevs[0]
@@ -845,11 +848,12 @@ class AndMacro(Macro):
         while prev.prop.is_conj():
             if goal == prev.prop.arg1:
                 return logic.apply_theorem('conjD1', prev)
+            if goal == prev.prop.arg:
+                return logic.apply_theorem('conjD2', prev)
             prev = logic.apply_theorem('conjD2', prev)
-        if goal == prev.prop:
-            return prev
-        else:
-            raise VeriTException("and", "goal not found in premise")
+
+        # Not found
+        raise VeriTException("and", "goal not found in premise")
 
 
 @register_macro("verit_or")
@@ -2042,8 +2046,15 @@ class BindMacro(Macro):
         if lhs.head() != rhs.head():
             raise VeriTException("verit_bind", "lhs and rhs should have the same quantifier")
 
-        l_vars, l_bd = strip_forall_n(lhs, lhs.arity)
-        r_vars, r_bd = strip_forall_n(rhs, rhs.arity)
+        if len(prevs) != 1:
+            raise VeriTException("verit_bind", "should have one premise")
+        prem = prevs[0]
+        if not prem.is_equals():
+            raise VeriTException("verit_bind", "premise should be an equality")
+
+        l_vars, l_bd = lhs.strip_forall(num=len(ctx))
+        r_vars, r_bd = rhs.strip_forall(num=len(ctx))
+
         if len(l_vars) != len(r_vars):
             raise VeriTException("verit_bind", "lhs and rhs should have the same number of quantifiers")
 
@@ -2441,9 +2452,12 @@ class ImpliesNeg1Macro(Macro):
         self.sig = Term
         self.limit = None
 
-    def get_proof_term(self, args, prevs=None):
+    def eval(self, args, prevs):
         if len(args) != 2 or not args[0].is_implies() or args[0].arg1 != args[1]:
             raise VeriTException("implies_neg1", "unexpected arguments")
+        return Thm([], Or(*args))
+
+    def get_proof_term(self, args, prevs=None):
         return logic.apply_theorem("verit_implies_neg1", concl=Or(*args))
 
 @register_macro("verit_implies_neg2")
@@ -2453,9 +2467,12 @@ class ImpliesNeg1Macro(Macro):
         self.sig = Term
         self.limit = None
 
-    def get_proof_term(self, args, prevs=None):
+    def eval(self, args, prevs):
         if len(args) != 2 or not args[0].is_implies() or Not(args[0].arg) != args[1]:
-            raise VeriTException("implies_neg1", "unexpected arguments")
+            raise VeriTException("implies_neg2", "unexpected arguments")
+        return Thm([], Or(*args))
+
+    def get_proof_term(self, args, prevs=None):
         return logic.apply_theorem("verit_implies_neg2", concl=Or(*args))
 
 @register_macro("verit_qnt_simplify")

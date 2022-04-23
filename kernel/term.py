@@ -436,26 +436,30 @@ class Term():
             t = t.fun
         return (t, list(reversed(args)))
 
-    def strip_forall(self):
+    def strip_forall(self, *, num=None):
         """Given a term !x1 x2 ... xn. body, returns ([x1, x2, ..., xn], body)"""
         args = []
         t = self
-        while t.is_forall():
+        while t.is_forall() and (num is None or num > 0):
             body = t.arg
             v = Var(body.var_name, body.var_T)
             args.append(v)
             t = body.subst_bound(v)
+            if num is not None:
+                num -= 1
         return args, t
     
-    def strip_exists(self):
+    def strip_exists(self, *, num=None):
         """Given a term !x1 x2 ... xn. body, returns ([x1, x2, ..., xn], body)"""
         args = []
         t = self
-        while t.is_exists():
+        while t.is_exists() and (num is None or num > 0):
             body = t.arg
             v = Var(body.var_name, body.var_T)
             args.append(v)
             t = body.subst_bound(v)
+            if num is not None:
+                num -= 1
         return args, t
 
     def strip_quant(self):
