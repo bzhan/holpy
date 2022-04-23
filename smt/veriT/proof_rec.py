@@ -109,12 +109,7 @@ class ProofReconstruction:
                 args = (step.cl, self.get_clause_sizes(step.pm))
                 macro_name = "verit_th_resolution"
             if is_eval:
-                try:
-                    self.pts[step.id] = ProofTerm(macro_name, args, prevs)
-                except AssertionError:
-                    print(step.id, rule_name)
-                    self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
-                        step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
+                self.pts[step.id] = ProofTerm(macro_name, args, prevs)
             else:
                 macro = theory.get_macro(macro_name)
                 try:

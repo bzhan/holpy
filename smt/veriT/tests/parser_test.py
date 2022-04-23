@@ -1,7 +1,9 @@
 import unittest
 import time
+
 from smt.veriT.proof_parser import parse_decl, proof_parser
 from smt.veriT import interface, proof_rec
+from smt.veriT import command
 import os
 from syntax.settings import settings
 settings.unicode = False
@@ -21,7 +23,9 @@ def test_parse_step(verit_proof, ctx):
     for s in verit_proof.replace("\r", "").split("\n"):
         if s == "unsat" or s == "":
             continue
-        k = parser.parse(s)
+        step = parser.parse(s)
+        if isinstance(step, command.Step) and step.rule_name == "lia_generic":
+            print('lia_generic')
 
 def test_file(filename, write_file=False, show_time=True, veriT_only=False):
     """Test a single SMT file.
@@ -173,13 +177,11 @@ class ParserTest(unittest.TestCase):
             'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_04.smt2',
             'QF_UFLIA\\mathsat\\Wisa\\xs-05-08-4-2-5-4.smt2',
             'QF_UFLIA\\mathsat\\Wisa\\xs-05-12-1-4-2-1.smt2',
+            'QF_UFLIA\\mathsat\\Wisa\\xs-05-16-1-5-4-3.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.602033.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.602046.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.686126.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.769286.smt2',
-            'QF_UFLIA\\wisas\\xs_5_10.smt2',
-            'QF_UFLIA\\wisas\\xs_5_15.smt2',
-            'QF_UFLIA\\wisas\\xs_5_5.smt2',
             'QF_UFLIA\\wisas\\xs_7_12.smt2',
         ]
 

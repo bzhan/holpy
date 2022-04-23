@@ -149,13 +149,13 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_eval=True)
 
         if profile:
             p = Stats(pr)
             p.strip_dirs()
             p.sort_stats('cumtime')
-            p.print_stats()
+            p.print_stats(50)
 
     def test_QF_UFLRA(self):
         test_paths = [
@@ -185,7 +185,7 @@ class ProofrecTest(unittest.TestCase):
             p = Stats(pr)
             p.strip_dirs()
             p.sort_stats('cumtime')
-            p.print_stats()
+            p.print_stats(50)
 
     def test_QF_UFLIA(self):
         test_paths = [
@@ -193,7 +193,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_UFLIA\\mathsat\\EufLaArithmetic\\medium\\medium6.smt2',
             'QF_UFLIA\\mathsat\\EufLaArithmetic\\hard\\hard4.smt2',
             'QF_UFLIA\\mathsat\\EufLaArithmetic\\hard\\hard5.smt2',
-            'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_03.smt2', 
+            'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_03.smt2',
             'QF_UFLIA\\mathsat\\Hash\\hash_uns_03_04.smt2',
             'QF_UFLIA\\mathsat\\Wisa\\xs-05-08-4-2-5-4.smt2',
             'QF_UFLIA\\mathsat\\Wisa\\xs-05-12-1-4-2-1.smt2',
@@ -202,8 +202,6 @@ class ProofrecTest(unittest.TestCase):
             'QF_UFLIA\\TwoSquares\\smtlib.602046.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.686126.smt2',
             'QF_UFLIA\\TwoSquares\\smtlib.769286.smt2',
-            'QF_UFLIA\\wisas\\xs_5_5.smt2',
-            'QF_UFLIA\\wisas\\xs_5_15.smt2',
             'QF_UFLIA\\wisas\\xs_7_12.smt2',
         ]
 
@@ -219,7 +217,7 @@ class ProofrecTest(unittest.TestCase):
             p = Stats(pr)
             p.strip_dirs()
             p.sort_stats('cumtime')
-            p.print_stats()
+            p.print_stats(50)
 
     def test_UF(self):
         test_paths = [
@@ -272,7 +270,7 @@ class ProofrecTest(unittest.TestCase):
             p = Stats(pr)
             p.strip_dirs()
             p.sort_stats('cumtime')
-            p.print_stats()
+            p.print_stats(50)
 
     def test_UFLRA(self):
         test_paths = [
@@ -337,4 +335,8 @@ class ProofrecTest(unittest.TestCase):
             p = Stats(pr)
             p.strip_dirs()
             p.sort_stats('cumtime')
-            p.print_stats()
+            p.print_stats(50)
+
+
+if __name__ == "__main__":
+    unittest.main()
