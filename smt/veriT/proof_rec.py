@@ -82,11 +82,10 @@ class ProofReconstruction:
                     return self.pts[self.steps[i].id]
 
     def validate_step(self, step, is_eval=True):
+        if isinstance(step, command.Anchor):
+            return
         if isinstance(step, command.Assume):
             self.pts[step.id] = ProofTerm.assume(step.assm)
-            
-        elif isinstance(step, command.Anchor):
-            self.add_subproof_context(step)
         else:
             assert isinstance(step, command.Step)
             rule_name = step.rule_name

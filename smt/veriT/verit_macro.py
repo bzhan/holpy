@@ -134,6 +134,16 @@ def strip_plus_n(tm, n):
         return [tm]
     return strip_plus_n(tm.arg1, n-1) + [tm.arg]
 
+def strip_forall_n(tm, n):
+    args = []
+    while tm.is_forall() and n > 0:
+        body = tm.arg
+        v = hol_term.Var(body.var_name, body.var_T)
+        args.append(v)
+        tm = body.subst_bound(v)
+        n -= 1
+    return args, tm
+
 def try_resolve(prop1, prop2):
     """Try to resolve two propositions."""
     for i in range(len(prop1)):
@@ -1455,9 +1465,7 @@ class LetMacro(Macro):
 
 def flatten_prop(tm):
     """Unfold a nested proposition formula."""
-    if not tm.is_conj() and not tm.is_disj() and not tm.is_not() and not tm.is_implies():
-        return tm
-    elif tm.is_conj():
+    if tm.is_conj():
         conjs = logic.strip_conj(tm)
         flat_conjs = [flatten_prop(t) for t in conjs]
         distinct_conjs = []
@@ -1478,8 +1486,12 @@ def flatten_prop(tm):
     elif tm.is_implies():
         prem, concl = tm.args
         return hol_term.Implies(flatten_prop(prem), flatten_prop(concl))
+    elif tm.is_comb():
+        return flatten_prop(tm.fun)(flatten_prop(tm.arg))
+    elif tm.is_abs():
+        return hol_term.Abs(tm.var_name, tm.var_T, flatten_prop(tm.body))
     else:
-        raise NotImplementedError
+        return tm
         
 
 @register_macro("verit_ac_simp")
@@ -1504,6 +1516,8 @@ class ACSimpMacro(Macro):
         if lhs_flat == rhs_flat:
             return Thm([], goal)
         else:
+            print("lhs", lhs_flat)
+            print("rhs", rhs_flat)
             raise VeriTException("ac_simp", "unexpected result")
         
 @register_macro("verit_and_simplify")
@@ -2018,8 +2032,8 @@ class BindMacro(Macro):
         if lhs.head() != rhs.head():
             raise VeriTException("verit_bind", "lhs and rhs should have the same quantifier")
 
-        l_vars, l_bd = lhs.strip_quant()
-        r_vars, r_bd = rhs.strip_quant()
+        l_vars, l_bd = strip_forall_n(lhs, lhs.arity)
+        r_vars, r_bd = strip_forall_n(rhs, rhs.arity)
         if len(l_vars) != len(r_vars):
             raise VeriTException("verit_bind", "lhs and rhs should have the same number of quantifiers")
 
@@ -2261,7 +2275,7 @@ class SkoExMacro(Macro):
         if sko_tm.arg.body == Not(lhs_abs.body):
             return Thm([], goal)
         else:
-            raise VeriTException("sko_ex", "unexpected result")
+            raise VeriTException("sko_forall", "unexpected result")
 
 @register_macro("verit_onepoint")
 class OnepointMacro(Macro):

@@ -292,13 +292,17 @@ class ProofTransformer(Transformer):
         for tm in reversed(tms[:-1]):
             assert tm.name == self.quant_ctx[-1][0]
             del self.quant_ctx[-1]
-        return hol_term.Forall(*tms)
+        forall_tm = hol_term.Forall(*tms)
+        forall_tm.arity = len(tms) - 1
+        return forall_tm
 
     def mk_exists(self, *tms):
         for tm in reversed(tms[:-1]):
             assert tm.name == self.quant_ctx[-1][0]
             del self.quant_ctx[-1]
-        return hol_term.Exists(*tms)
+        ex_tm = hol_term.Exists(*tms)
+        ex_tm.arity = len(tms) - 1
+        return ex_tm
 
     def mk_choice(self, *tms):
         for tm in reversed(tms[:-1]):
