@@ -50,12 +50,11 @@ def is_unsat(f):
         p = subprocess.Popen("veriT --disable-print-success %s" % f,
                      stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     else:
-        p = subprocess.Popen("veriT --disable-print-success %s" % f, 
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        p = subprocess.Popen("veriT --disable-print-success %s" % f, shell=True, stdout=subprocess.PIPE)
 
     try:
         output, _ = p.communicate(timeout=2)
-        res = output.decode('utf-8').split("\r\n")[1]
+        res = output.decode('UTF-8').split("\n")[1]
         return False if res in ("sat", "unknown", "unsupported") else True
     except subprocess.TimeoutExpired:
         print("Timeout")
