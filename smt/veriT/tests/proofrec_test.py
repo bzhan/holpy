@@ -263,19 +263,19 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA\\boogie\\Array_test3.MyClass.M1_test3.MyClass.array.array_notnull.smt2',
             'UFLIA\\boogie\\Array_test3.MyClass.M2_test3.MyClass.array2_notnull.smt2',
             'UFLIA\\check\\bignum_quant.smt2',
-            # 'UFLIA\\misc\\arr1.smt2',  # bug: sk_forall
+            'UFLIA\\misc\\arr1.smt2',
             'UFLIA\\misc\\list3.smt2',
-            # 'UFLIA\\misc\\list5.smt2', # bug: resolution
+            'UFLIA\\misc\\list5.smt2',
             'UFLIA\\RicartAgrawala\\ricart-agrawala1.smt2',
-            # 'UFLIA\\sexpr\\SES.Atom..ctor_System.String_notnull.smt2', # bug: distinct_elim
+            'UFLIA\\sexpr\\SES.Atom..ctor_System.String_notnull.smt2',
             'UFLIA\\sexpr\\SES.Atom.Write_System.IO.TextWriter_notnull.smt2',
-            # 'UFLIA\\simplify\\javafe.ast.AmbiguousMethodInvocation.29.smt2', # bug: and
+            'UFLIA\\simplify\\javafe.ast.AmbiguousMethodInvocation.29.smt2',
             'UFLIA\\simplify\\javafe.ast.BinaryExpr.48.smt2',
             'UFLIA\\simplify\\javafe.ast.BlockStmt.50.smt2',
-            # 'UFLIA\\simplify2\\front_end_suite\\javafe.ast.AmbiguousMethodInvocation.001.smt2', # bug: distinct_elim
-            # 'UFLIA\\simplify2\\front_end_suite\\javafe.ast.AmbiguousVariableAccess.001.smt2', # bug: distinct_elim
+            'UFLIA\\simplify2\\front_end_suite\\javafe.ast.AmbiguousMethodInvocation.001.smt2',
+            'UFLIA\\simplify2\\front_end_suite\\javafe.ast.AmbiguousVariableAccess.001.smt2',
             'UFLIA\\simplify2\\front_end_suite\\javafe.ast.ArrayInit.001.smt2',
-            # 'UFLIA\\sledgehammer\\Arrow_Order\\smtlib.555057.smt2', # bug: bind
+            'UFLIA\\sledgehammer\\Arrow_Order\\smtlib.555057.smt2',
             'UFLIA\\sledgehammer\\Arrow_Order\\smtlib.555849.smt2',
             'UFLIA\\sledgehammer\\Arrow_Order\\smtlib.556254.smt2',
             'UFLIA\\spec_sharp\\textbook-DutchFlag.bpl.1.Partition.smt2',

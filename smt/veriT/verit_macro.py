@@ -1040,32 +1040,27 @@ class CongMacro(Macro):
             l_args, r_args = strip_plus_n(lhs, lhs.arity), strip_plus_n(rhs, rhs.arity)
         else:
             l_args, r_args = lhs.args, rhs.args
-        l_args_subst, r_args_subst = [], []
-        for l_arg, r_arg in zip(l_args, r_args):
-            if l_arg in ctx:
-                l_args_subst.append(ctx[l_arg])
-            else:
-                l_args_subst.append(l_arg)
-            if r_arg in ctx:
-                r_args_subst.append(ctx[r_arg])
-            else:
-                r_args_subst.append(r_arg)
-        if l_args_subst == r_args_subst:
-            return Thm([], goal)
-        elif goal.is_equals() and l_args_subst == list(reversed(r_args_subst)):
-            return Thm([], goal)
+
+        def compare_arg(t1, t2):
+            if t1 == t2:
+                return True
+            for prop in prevs:
+                if prop.lhs == t1 and prop.rhs == t2:
+                    return True
+                if prop.lhs == t2 and prop.rhs == t1:
+                    return True
+            return False
+
+        if all(compare_arg(t1, t2) for t1, t2 in zip(l_args, r_args)):
+            return Thm([hyp for pt in prevs for hyp in pt.hyps], goal)
+        elif lhs.is_equals() and compare_arg(lhs.lhs, rhs.rhs) and compare_arg(lhs.rhs, rhs.lhs):
+            return Thm([hyp for pt in prevs for hyp in pt.hyps], goal)
         else:
             print("lhs", lhs)
             print("rhs", rhs)
             print("prevs")
             for prev in prevs:
                 print(prev)
-            print("lhs")
-            for l in l_args_subst:
-                print(l)
-            print("rhs")
-            for r in r_args_subst:
-                print(r)  
             raise VeriTException("cong", "unexpected result")
 
 @register_macro("verit_refl")
@@ -1550,25 +1545,36 @@ class AndSimplifyMacro(Macro):
             raise VeriTException("and_simplify", "goal should be an equality")
 
         lhs_conjs = goal.lhs.strip_conj()
-        # p_1 & .... & p_n <--> false if ?i, j. p_i = ~p_j
-        for i in range(len(lhs_conjs)):
-            for j in range(i+1, len(lhs_conjs)):
-                if Not(lhs_conjs[i]) == lhs_conjs[j] or lhs_conjs[i] == Not(lhs_conjs[j]):
-                    if goal.rhs == false:
-                        return Thm([], goal)
 
+        # Case 2: remove true
         elim_true_conj = []
         for conj in lhs_conjs:
             if conj != true:
                 elim_true_conj.append(conj)
         if And(*elim_true_conj) == goal.rhs:
             return Thm([], goal)
-        if false in lhs_conjs:
-            if goal.rhs == false:
-                return Thm([], goal)
-            else:
-                raise VeriTException("and_simplify", "unexpected rhs")
-        raise VeriTException("and_simplify", "haven't implemented")
+
+        # Case 3: remove duplicates
+        nodup_conj = []
+        for conj in lhs_conjs:
+            if conj not in nodup_conj:
+                nodup_conj.append(conj)
+        if And(*nodup_conj) == goal.rhs:
+            return Thm([], goal)
+
+        # Case 4: false appears on the left side, and right side is false.
+        if false in lhs_conjs and goal.rhs == false:
+            return Thm([], goal)
+
+        # Case 5: p_1 & .... & p_n <--> false if ?i, j. p_i = ~p_j
+        for i in range(len(lhs_conjs)):
+            for j in range(i+1, len(lhs_conjs)):
+                if Not(lhs_conjs[i]) == lhs_conjs[j] or lhs_conjs[i] == Not(lhs_conjs[j]):
+                    if goal.rhs == false:
+                        return Thm([], goal)
+
+        print('goal', goal)
+        raise VeriTException("and_simplify", "unexpected rhs")
 
 @register_macro("verit_or_simplify")
 class OrSimplifyMacro(Macro):
@@ -1792,6 +1798,7 @@ class CompSimplifyMacro(Macro):
         if not lhs.is_compares():
             raise VeriTException("comp_simplify", "lhs should be a comparison")
         t1, t2 = lhs.args
+        # Case 1 and 3: numerical constants
         if t1.is_constant() and t2.is_constant():
             t1_n, t2_n = eval_hol_number(t1), eval_hol_number(t2)
             if lhs.is_less():
@@ -1810,6 +1817,12 @@ class CompSimplifyMacro(Macro):
                     raise VeriTException("comp_simplify", "unexpected lhs")
             else:
                 raise VeriTException("comp_simplify", "lhs should be a less or less_eq term")
+        # Case 2: a < a <--> false
+        if lhs.is_less() and lhs.arg1 == lhs.arg and rhs == false:
+            return Thm([], goal)
+        # Case 4: a <= a <--> true
+        if lhs.is_less_eq() and lhs.arg1 == lhs.arg and rhs == true:
+            return Thm([], goal)
         # Case 5: a >= b <--> b <= a 
         if lhs.is_greater_eq():
             if not rhs.is_less_eq():
@@ -1820,6 +1833,18 @@ class CompSimplifyMacro(Macro):
                 return Thm([], goal)
             else:
                 raise VeriTException("comp_simplify", "can't match a >= b <--> b <= a")
+        # Case 6: a < b <--> ~(b <= a)
+        elif lhs.is_less():
+            if not (rhs.is_not() and rhs.arg.is_less_eq()):
+                raise VeriTException("comp_simplify", "rhs should be a less_eq when lhs is greater_eq")
+            l_a, l_b = lhs.args
+            r_a, r_b = rhs.arg.args
+            if l_a == r_b and l_b == r_a:
+                return Thm([], goal)
+            else:
+                print("lhs", lhs, l_a, l_b)
+                print("rhs", rhs, r_a, r_b)
+                raise VeriTException("comp_simplify", "can't match a < b <--> ~(b <= a)")        
         # Case 7: a > b <--> ~(a <= b)
         elif lhs.is_greater():
             if not (rhs.is_not() and rhs.arg.is_less_eq()):
@@ -1831,7 +1856,7 @@ class CompSimplifyMacro(Macro):
             else:
                 print("lhs", lhs, l_a, l_b)
                 print("rhs", rhs, r_a, r_b)
-                raise VeriTException("comp_simplify", "can't match a > b <--> ~(b <= a)")
+                raise VeriTException("comp_simplify", "can't match a > b <--> ~(a <= b)")
         else:
             print("goal", goal)
             raise VeriTException("comp_simplify", "implementation is incomplete")
@@ -2052,8 +2077,12 @@ class BindMacro(Macro):
         if not prem.is_equals():
             raise VeriTException("verit_bind", "premise should be an equality")
 
-        l_vars, l_bd = lhs.strip_forall(num=len(ctx))
-        r_vars, r_bd = rhs.strip_forall(num=len(ctx))
+        if lhs.is_forall():
+            l_vars, l_bd = lhs.strip_forall(num=len(ctx))
+            r_vars, r_bd = rhs.strip_forall(num=len(ctx))
+        else:  # lhs.is_exists()
+            l_vars, l_bd = lhs.strip_exists(num=len(ctx))
+            r_vars, r_bd = rhs.strip_exists(num=len(ctx))
 
         if len(l_vars) != len(r_vars):
             raise VeriTException("verit_bind", "lhs and rhs should have the same number of quantifiers")
@@ -2065,6 +2094,8 @@ class BindMacro(Macro):
         if prev_lhs == l_bd and prev_rhs == r_bd:
             return Thm([], goal)
         else:
+            print('prem', prem)
+            print('goal', goal)
             raise VeriTException("verit_bind", "unexpected result")
 
 @register_macro("verit_forall_inst")
