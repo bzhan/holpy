@@ -1494,10 +1494,9 @@ def flatten_prop(tm):
     elif tm.is_implies():
         prem, concl = tm.args
         return hol_term.Implies(flatten_prop(prem), flatten_prop(concl))
-    elif tm.is_comb():
-        return flatten_prop(tm.fun)(flatten_prop(tm.arg))
-    elif tm.is_abs():
-        return hol_term.Abs(tm.var_name, tm.var_T, flatten_prop(tm.body))
+    elif tm.is_forall():
+        x, body = tm.arg.dest_abs()
+        return hol_term.Forall(x, flatten_prop(body))
     else:
         return tm
         
@@ -1524,8 +1523,8 @@ class ACSimpMacro(Macro):
         if lhs_flat == rhs_flat:
             return Thm([], goal)
         else:
-            print("lhs", lhs_flat)
-            print("rhs", rhs_flat)
+            print(lhs_flat)
+            print(rhs_flat)
             raise VeriTException("ac_simp", "unexpected result")
         
 @register_macro("verit_and_simplify")
