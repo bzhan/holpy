@@ -2,22 +2,20 @@
 Macros used in the proof reconstruction.
 """
 
+import functools
+import itertools
+
 from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, Thm
 from kernel import term as hol_term
 from kernel import type as hol_type
-from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, IntType, \
-    RealType, BoolType, Int, Forall, Exists, Inst
-from prover.proofrec import int_th_lemma_1_omega, int_th_lemma_1_simplex, real_th_lemma
+from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
+    BoolType, Int, Forall, Exists, Inst
 from logic import conv, logic
-from data import integer, real, proplogic
+from data import integer, real
 from data import list as hol_list
-import functools
 from kernel import term_ord
-from collections.abc import Iterable
-from fractions import Fraction
-from math import gcd
 
 
 class VeriTException(Exception):
@@ -2401,19 +2399,118 @@ class OnepointMacro(Macro):
         else:
             raise VeriTException("onepoint", "unexpected result")
 
-# @register_macro("verit_qnt_cnf")
-# class QntCnfMacro(Macro):
-#     def __init__(self):
-#         self.level = 1
-#         self.sig = Term
-#         self.limit = None
 
-#     def eval(self, args, prevs):
-#         print("args")
-#         for arg in args:
-#             print(arg)
+def get_cnf(t):
+    """Obtain the CNF form of t."""
+    if t.is_not():
+        if t.arg.is_not():
+            return get_cnf(t.arg.arg)
+        elif t.arg.is_disj():
+            disjs = t.arg.strip_disj()
+            conjs = [Not(disj) for disj in disjs]
+            return get_cnf(And(*conjs))
+        elif t.arg.is_conj():
+            conjs = t.arg.strip_conj()
+            disjs = [Not(conj) for conj in conjs]
+            return get_cnf(Or(*disjs))
+        elif t.arg.is_implies():
+            # ~(A --> B) becomes A & ~B
+            A, B = t.arg.args
+            return get_cnf(And(A, Not(B)))
+        elif t.arg.is_equals() and t.arg.arg1.get_type() == BoolType:
+            # ~(A <--> B) becomes (A & ~B) | (~A & B)
+            A, B = t.arg.lhs, t.arg.rhs
+            return get_cnf(Or(And(A, Not(B)), And(B, Not(A))))
+        elif logic.is_if(t.arg) and t.arg.args[1].get_type() == BoolType:
+            # ~(if P then Q else R) becomes (P & ~Q) | (~P & R)
+            P, Q, R = t.arg.args
+            return get_cnf(Or(And(P, Not(Q)), And(Not(P), R)))
+        else:
+            return t
+    elif t.is_disj():
+        # To compute CNF form of a disjunction, first compute CNF of
+        # each of the disjuncts.
+        disjs = t.strip_disj()
+        cnf_disjs = [get_cnf(disj) for disj in disjs]
 
-#         raise NotImplementedError
+        # Expand CNF of each disjunct into a conjunction
+        cnf_disj_conjs = []
+        for disj in cnf_disjs:
+            cnf_disj_conjs.append(disj.strip_conj())
+
+        # For each combination, form the corresponding disjunction
+        cnf_res = []
+        for element in itertools.product(*cnf_disj_conjs):
+            cur_disj = []
+            for t in element:
+                cur_disj.extend(t.strip_disj())
+            cnf_res.append(Or(*cur_disj))
+        return And(*cnf_res)
+    elif t.is_conj():
+        # To compute CNF form of a conjunction, first compute CNF of
+        # each of the conjuncts
+        conjs = t.strip_conj()
+        cnf_conjs = [get_cnf(conj) for conj in conjs]
+
+        # Expand CNF of each conjunct into a conjunction
+        cnf_res = []
+        for t in cnf_conjs:
+            cnf_res.extend(t.strip_conj())
+        return And(*cnf_res)
+    elif t.is_implies():
+        # A --> B becomes ~A | B
+        A, B = t.args
+        return get_cnf(Or(Not(A), B))
+    elif t.is_equals() and t.arg.get_type() == BoolType:
+        # A <--> B becomes (~A | B) & (~B | A)
+        A, B = t.lhs, t.rhs
+        return get_cnf(And(Or(Not(A), B), Or(Not(B), A)))
+    elif logic.is_if(t.arg) and t.arg.args[1].get_type() == BoolType:
+        # (if P then Q else R) becomes (~P | Q) & (P | R)
+        P, Q, R = t.args
+        return get_cnf(And(Or(Not(P), Q), Or(P, R)))
+    elif t.is_forall():
+        x, body = t.arg.dest_abs()
+        return get_cnf(body)
+    else:
+        return t
+
+
+@register_macro("verit_qnt_cnf")
+class QntCnfMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+
+        if len(args) != 1:
+            raise VeriTException("qnt_cnt", "clause should contain one term")
+        arg = args[0]
+        if not arg.is_disj() or not arg.arg1.is_not():
+            raise VeriTException("qnt_cnt", "clause should be of the form ~P | Q")
+
+        prem, concl = arg.arg1.arg, arg.arg
+        
+        xs, body = prem.strip_forall()
+        cnf_body = get_cnf(body)
+
+        ys, concl_body = concl.strip_forall()
+
+        cnf_body_conjs = cnf_body.strip_conj()
+        if any(concl_body == t for t in cnf_body_conjs):
+            return Thm([], arg)
+
+        print("args")
+        for arg in args:
+            print(arg)
+        print('cnf_body_conjs')
+        for conj in cnf_body_conjs:
+            print(conj)
+        print('concl_body')
+        print(concl_body)
+        raise NotImplementedError
 
 
 @register_macro("verit_equiv_simplify")
