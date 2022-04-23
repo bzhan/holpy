@@ -97,6 +97,7 @@ veriT_grammar = r"""
     ?clause : "(cl" proof_term* ")" -> mk_clause
     
     ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (term|vname) ")" -> add_context
+                    | "(:=" ANCHOR_NAME (term|vname) ")" -> add_context_without_ty
                     | "(" (ANCHOR_NAME | CNAME) vname ")" -> add_trivial_ctx
 
     ?step_arg_pair : "(:=" CNAME term")" -> mk_forall_inst_args
@@ -215,6 +216,9 @@ class ProofTransformer(Transformer):
             
         assert tm.get_type() == hol_ty
         return var_name, tm
+
+    def mk_context_without_ty(self, var_name, tm):
+        return str(var_name), tm
 
     def add_trivial_ctx(self, var_name, ty):
         var = hol_term.Var(str(var_name), str_to_hol_type(str(ty)))
