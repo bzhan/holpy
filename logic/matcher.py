@@ -84,7 +84,9 @@ def first_order_match(pat, t, inst=None):
         inst = copy(inst)  # do not modify input
 
     typecheck.checkinstance('first_order_match', pat, Term, t, Term, inst, Inst)
-    assert len(t.get_svars()) == 0, "first_order_match: t should not contain patterns."
+
+    # TODO: open this again when checking whether a term is pattern is more efficient.
+    # assert len(t.get_svars()) == 0, "first_order_match: t should not contain patterns."
 
     # Trace of pattern and term, for debugging
     trace = []
@@ -94,7 +96,13 @@ def first_order_match(pat, t, inst=None):
 
     def match(pat, t):
         trace.append((pat, t))
-        if pat.head.is_svar():
+        if pat.is_svar():
+            if pat.head.name not in inst:
+                inst[pat.head.name] = t
+            else:
+                if inst[pat.head.name] != t:
+                    raise MatchException(trace)
+        elif pat.is_comb() and pat.head.is_svar():
             # Case where the head of the function is a variable.
             if pat.head.name not in inst:
                 # If the head variable is not instantiated, check that the
@@ -281,3 +289,25 @@ def first_order_match_list(pats, ts, inst=None):
         inst = first_order_match_list(pats[1:], ts[1:], inst)
         inst = first_order_match(pats[0], ts[0], inst)
         return inst
+
+def is_fo_pattern(t):
+    """Test whether t is a first-order pattern, that is no schematic variables
+    appear in function position.
+    
+    """
+
+    if t.is_abs():
+        return is_fo_pattern(t.body)
+    elif t.is_comb():
+        if t.head.is_svar():
+            return False
+        return all(is_fo_pattern(arg) for arg in t.args)
+    else:
+        return True
+
+def is_fo_pattern_list(ts):
+    """Test whether ts is a list of first-order patterns, that is no schematic variables
+    appear in function position.
+    
+    """
+    return all(is_fo_pattern(t) for t in ts)

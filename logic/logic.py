@@ -257,14 +257,19 @@ class apply_theorem_macro(Macro):
         for stvar in th.prop.get_stvars():
             assert stvar.name in inst.tyinst, "apply_theorem: unmatched type variable %s" % stvar
 
-        As, C = th.prop.subst_norm(inst).strip_implies()
+        # If pats is a first-order pattern, there is no need for beta_norm.
+        if matcher.is_fo_pattern_list(pats):
+            As, C = th.prop.subst(inst).strip_implies()
+        else:
+            As, C = th.prop.subst_norm(inst).strip_implies()
         new_prop = Implies(*(As[len(prevs):] + [C]))
 
         prev_hyps = sum([prev.hyps for prev in prevs], ())
         th = Thm(th.hyps + prev_hyps, new_prop)
 
-        vars = new_prop.get_svars()
-        for v in reversed(vars):
+        # Obtain list of remaining schematic variables
+        remain_svars = [t.subst_type(inst.tyinst) for t in svars if t.name not in inst]
+        for v in reversed(remain_svars):
             th = Thm.forall_intr(v, th)
         return th
 
@@ -291,7 +296,9 @@ class apply_theorem_macro(Macro):
 
         pt = ProofTerm.theorem(name)
         pt = pt.subst_type(inst.tyinst).substitution(inst)
-        if pt.prop.beta_norm() != pt.prop:
+
+        # Apply beta_norm when pats is a first-order pattern.
+        if matcher.is_fo_pattern_list(pats) and pt.prop.beta_norm() != pt.prop:
             pt = pt.on_prop(beta_norm_conv())
         pt = pt.implies_elim(*pts)
 
