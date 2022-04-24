@@ -96,7 +96,7 @@ veriT_grammar = r"""
                     | "(anchor :step" step_id ")" -> mk_empty_anchor
     ?clause : "(cl" proof_term* ")" -> mk_clause
     
-    ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (term|vname) ")" -> add_context
+    ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (ANCHOR_NAME|term|vname) ")" -> add_context
                     | "(" (ANCHOR_NAME | CNAME) vname ")" -> add_trivial_ctx
 
     ?step_arg_pair : "(:=" CNAME term")" -> mk_forall_inst_args
@@ -206,7 +206,12 @@ class ProofTransformer(Transformer):
         """
         
         hol_ty = str_to_hol_type(ty)
-        if isinstance(tm_name, hol_term.Term):
+        
+        if str(tm_name).startswith("?") and str(tm_name) not in self.let_tm:
+            tm = hol_term.Var(tm_name, hol_ty)
+            self.step_ctx[tm_name] = tm
+
+        elif isinstance(tm_name, hol_term.Term):
             tm = tm_name
         else:
             tm = hol_term.Var(tm_name, hol_ty)
