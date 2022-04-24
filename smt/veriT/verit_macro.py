@@ -1792,13 +1792,13 @@ class imp_disj_macro(Macro):
         while A.is_disj():
             l, r = A.args
             if l == false:
-                pts_A.append(logic.apply_theorem("falseE", concl=concl))
+                pts_A.append(logic.apply_theorem("falseE", concl=goal.arg))
             else:
                 assert l in pts_B
                 pts_A.append(pts_B[l])
             if not r.is_disj():
                 if r == false:
-                    pts_A.append(logic.apply_theorem("falseE", concl=concl))
+                    pts_A.append(logic.apply_theorem("falseE", concl=goal.arg))
                 else:
                     assert r in pts_B, str(r)
                     pts_A.append(pts_B[r])
