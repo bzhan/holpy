@@ -1529,7 +1529,7 @@ class LetMacro(Macro):
         self.limit = None
 
     def eval(self, args, prevs):
-        goal, _ = args
+        goal = args[0]
         prop_eq = prevs[:-1]
         last_step = prevs[-1]
         ctx = set()
@@ -1539,7 +1539,18 @@ class LetMacro(Macro):
             return Thm([], goal)
         else:
             raise VeriTException("let", "Unexpected result")
-        
+
+    def get_proof_term(self, args, prevs):
+        goal = args[0]
+        prop_eq = prevs[:-1]
+        last_step = prevs[-1]
+        eqs = dict()
+        for prop in prop_eq:
+            eqs[(prop.lhs, prop.rhs)] = prop
+        pt1 = compare_sym_tm_thm(goal.lhs, last_step.lhs, eqs=eqs)
+        return last_step.on_lhs(conv.replace_conv(pt1.symmetric()))
+
+
 def flatten_prop(tm):
     """Unfold a nested proposition formula."""
     if tm.is_conj():
