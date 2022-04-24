@@ -81,7 +81,7 @@ class ProofReconstruction:
                 if not isinstance(self.steps[i+1], command.Anchor) and not isinstance(self.steps[i], command.Anchor):
                     return self.pts[self.steps[i].id]
 
-    def validate_step(self, step, is_eval=True):
+    def validate_step(self, step, is_eval=True, omit_proofterm=None):
         if isinstance(step, command.Anchor):
             return
         if isinstance(step, command.Assume):
@@ -114,6 +114,8 @@ class ProofReconstruction:
                 macro_name = "verit_th_resolution"
             if is_eval:
                 self.pts[step.id] = ProofTerm(macro_name, args, prevs)
+            elif omit_proofterm and macro_name in omit_proofterm:
+                self.pts[step.id] = ProofTerm(macro_name, args, prevs)
             else:
                 macro = theory.get_macro(macro_name)
                 try:
@@ -136,10 +138,11 @@ class ProofReconstruction:
                     self.pts[step.id] = ProofTerm.sorry(Thm([hyp for step_id in\
                         step.pm for hyp in self.pts[step_id].hyps], clause_to_disj(step.cl)))
 
-    def validate(self, is_eval=True):
+    def validate(self, is_eval=True, step_limit=None, omit_proofterm=None):
         with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
-            for step in self.steps:
-                # print("step.id", step.id)
-                self.validate_step(step, is_eval=is_eval)
+            for i, step in enumerate(self.steps):
+                self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm)
                 bar()
-        return self.pts[self.steps[-1].id]
+                if step_limit and i > step_limit:
+                    break
+        return self.pts[step.id]
