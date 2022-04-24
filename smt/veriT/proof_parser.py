@@ -217,7 +217,7 @@ class ProofTransformer(Transformer):
         assert tm.get_type() == hol_ty
         return var_name, tm
 
-    def mk_context_without_ty(self, var_name, tm):
+    def add_context_without_ty(self, var_name, tm):
         return str(var_name), tm
 
     def add_trivial_ctx(self, var_name, ty):
