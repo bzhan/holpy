@@ -292,17 +292,13 @@ class ProofTransformer(Transformer):
         for tm in reversed(tms[:-1]):
             assert tm.name == self.quant_ctx[-1][0]
             del self.quant_ctx[-1]
-        forall_tm = hol_term.Forall(*tms)
-        forall_tm.arity = len(tms) - 1
-        return forall_tm
+        return hol_term.Forall(*tms)
 
     def mk_exists(self, *tms):
         for tm in reversed(tms[:-1]):
             assert tm.name == self.quant_ctx[-1][0]
             del self.quant_ctx[-1]
-        ex_tm = hol_term.Exists(*tms)
-        ex_tm.arity = len(tms) - 1
-        return ex_tm
+        return hol_term.Exists(*tms)
 
     def mk_choice(self, *tms):
         for tm in reversed(tms[:-1]):
@@ -355,14 +351,10 @@ class ProofTransformer(Transformer):
         return tm
 
     def mk_disj_tm(self, *tms):
-        disj_tm = hol_term.Or(*tms)
-        disj_tm.arity = len(tms)
-        return disj_tm
+        return hol_term.Or(*tms)
 
     def mk_conj_tm(self, *tms):
-        conj_tm = hol_term.And(*tms)
-        conj_tm.arity = len(tms)
-        return conj_tm
+        return hol_term.And(*tms)
 
     def mk_impl_tm(self, *tms):
         return hol_term.Implies(*tms)
@@ -386,7 +378,6 @@ class ProofTransformer(Transformer):
         res = ts[0]
         for t in ts[1:]:
             res = res + t
-        res.arity = len(ts)
         return res
 
     def mk_minus_tm(self, t1, t2):

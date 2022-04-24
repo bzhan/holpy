@@ -482,17 +482,17 @@ class VeriTOrNeg(Macro):
         if len(args) != 2:
             raise VeriTException("or_neg", "should only have on argumentt")
 
-        disj_tms, neg_tm = args
-        if not disj_tms.is_disj():
-            raise VeriTException("or_neg", "goal should be a disjunction")
+        disj_tm, neg_tm = args
+        if not disj_tm.is_disj() or not neg_tm.is_not():
+            raise VeriTException("or_neg", "goal should be of the form (p1 | ... | pn) | ~pk")
         
-        disjs = strip_disj_n(disj_tms, disj_tms.arity)
-        if neg_tm.arg in disjs:
-            return Thm([], Or(*args))
-        else:
-            print("disjs")
-            
-            raise VeriTException("or_neg", "unexpected result")
+        while disj_tm.is_disj():
+            if disj_tm.arg1 == neg_tm.arg:
+                return Thm([], Or(*args))
+            if disj_tm.arg == neg_tm.arg:
+                return Thm([], Or(*args))
+            disj_tm = disj_tm.arg
+        raise VeriTException("or_neg", "unexpected result")
 
     def get_proof_term(self, args, prevs):
         pt0 = ProofTerm.reflexive(Or(*args))
