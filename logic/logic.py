@@ -255,7 +255,7 @@ class apply_theorem_macro(Macro):
 
         # Check that all type variables are instantiated
         for stvar in th.prop.get_stvars():
-            assert stvar in inst.tyinst, "apply_theorem: unmatched type variable %s" % stvar
+            assert stvar.name in inst.tyinst, "apply_theorem: unmatched type variable %s" % stvar
 
         As, C = th.prop.subst_norm(inst).strip_implies()
         new_prop = Implies(*(As[len(prevs):] + [C]))

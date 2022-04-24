@@ -1033,43 +1033,52 @@ class Term():
         return greater(T)(self, other)
 
     def get_svars(self):
+        res = []
+        found = set()
         def rec(t):
             if t.is_svar():
-                return [t]
+                if t not in found:
+                    res.append(t)
+                    found.add(t)
             elif t.is_comb():
-                return rec(t.fun) + rec(t.arg)
+                rec(t.fun)
+                rec(t.arg)
             elif t.is_abs():
-                return rec(t.body)
-            else:
-                return []
-
-        return term_ord.sorted_terms(rec(self))
+                rec(t.body)
+        rec(self)
+        return res
 
     def get_vars(self):
+        res = []
+        found = set()
         def rec(t):
             if t.is_var():
-                return [t]
+                if t not in found:
+                    res.append(t)
+                    found.add(t)
             elif t.is_comb():
-                return rec(t.fun) + rec(t.arg)
+                rec(t.fun)
+                rec(t.arg)
             elif t.is_abs():
-                return rec(t.body)
-            else:
-                return []
-
-        return term_ord.sorted_terms(rec(self))
+                rec(t.body)
+        rec(self)
+        return res
 
     def get_consts(self):
+        res = []
+        found = set()
         def rec(t):
             if t.is_const():
-                return [t]
+                if t not in found:
+                    res.append(t)
+                    found.add(t)
             elif t.is_comb():
-                return rec(t.fun) + rec(t.arg)
+                rec(t.fun)
+                rec(t.arg)
             elif t.is_abs():
-                return rec(t.body)
-            else:
-                return []
-        return term_ord.sorted_terms(rec(self))
-        
+                rec(t.body)
+        rec(self)
+        return res        
 
     def has_var(self):
         if self.is_var():
