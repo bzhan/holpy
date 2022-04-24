@@ -83,7 +83,15 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
 
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
               step_limit=None, omit_proofterm=None):
-    """Test a directory containing SMT files."""
+    """Test a directory containing SMT files.
+    
+    test_eval : bool - test evaluation of steps.
+    test_proofterm : bool - test proof term reconstruction of steps.
+    step_limit : [None, int] - limit on number of steps to test for each file.
+    omit_proofterm : List[str] - list of macro names for which proof term reconstruction
+        is omitted (evaluation is used instead).
+        
+    """
     global smtlib_path
     if not smtlib_path:
         return
@@ -109,42 +117,42 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
 class ProofrecTest(unittest.TestCase):
     def test_QF_UF(self):
         test_paths = [
-            # 'QF_UF/20170829-Rodin/smt1300175744189082250.smt2',
-            # 'QF_UF/20170829-Rodin/smt1468783596909311386.smt2',
-            # 'QF_UF/20170829-Rodin/smt2061505268723161891.smt2',
-            # 'QF_UF/20170829-Rodin/smt2080745738819601301.smt2',
-            # 'QF_UF/20170829-Rodin/smt2325451563592377472.smt2',
-            # 'QF_UF/20170829-Rodin/smt249825283571301584.smt2',
-            # 'QF_UF/20170829-Rodin/smt2598599073465845145.smt2',
-            # 'QF_UF/20170829-Rodin/smt2970577543992530805.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_blocks.2.prop1_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_bridge.1.prop1_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_brp.1.prop1_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_bug-1_ab_cti_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_cache_coherence_three_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_cambridge.1.prop1_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_collision.1.prop1_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_counter_v_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_cyclic_scheduler.1.prop1_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_elevator.1.prop1_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_eq_sdp_v7_ab_cti_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_exit.1.prop1_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_extinction.2.prop1_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_firewire_tree.1.prop1_ab_reg_max.smt2',
-            # 'QF_UF/eq_diamond/eq_diamond1.smt2',
-            # 'QF_UF/eq_diamond/eq_diamond10.smt2',
-            # "QF_UF/NEQ/NEQ004_size4.smt2",
+            'QF_UF/20170829-Rodin/smt1300175744189082250.smt2',
+            'QF_UF/20170829-Rodin/smt1468783596909311386.smt2',
+            'QF_UF/20170829-Rodin/smt2061505268723161891.smt2',
+            'QF_UF/20170829-Rodin/smt2080745738819601301.smt2',
+            'QF_UF/20170829-Rodin/smt2325451563592377472.smt2',
+            'QF_UF/20170829-Rodin/smt249825283571301584.smt2',
+            'QF_UF/20170829-Rodin/smt2598599073465845145.smt2',
+            'QF_UF/20170829-Rodin/smt2970577543992530805.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_blocks.2.prop1_ab_reg_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_bridge.1.prop1_ab_reg_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_brp.1.prop1_ab_reg_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_bug-1_ab_cti_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_cache_coherence_three_ab_reg_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_cambridge.1.prop1_ab_reg_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_collision.1.prop1_ab_reg_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_counter_v_ab_reg_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_cyclic_scheduler.1.prop1_ab_reg_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_elevator.1.prop1_ab_reg_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_eq_sdp_v7_ab_cti_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_exit.1.prop1_ab_reg_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_extinction.2.prop1_ab_reg_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_firewire_tree.1.prop1_ab_reg_max.smt2',
+            'QF_UF/eq_diamond/eq_diamond1.smt2',
+            'QF_UF/eq_diamond/eq_diamond10.smt2',
+            "QF_UF/NEQ/NEQ004_size4.smt2",
             "QF_UF/NEQ/NEQ004_size5.smt2",
-            # "QF_UF/NEQ/NEQ006_size3.smt2",
-            # "QF_UF/PEQ/PEQ012_size3.smt2",
-            # "QF_UF/QG-classification/loops6/iso_icl103.smt2",
-            # "QF_UF/QG-classification/qg5/iso_icl054.smt2",
-            # 'QF_UF/SEQ/SEQ004_size5.smt2',
-            # 'QF_UF/SEQ/SEQ004_size6.smt2',
-            # 'QF_UF/SEQ/SEQ005_size7.smt2',
-            # "QF_UF/TypeSafe/z3.1184131.smt2",
-            # "QF_UF/TypeSafe/z3.1184147.smt2",
-            # "QF_UF/TypeSafe/z3.1184163.smt2",
+            "QF_UF/NEQ/NEQ006_size3.smt2",
+            "QF_UF/PEQ/PEQ012_size3.smt2",
+            "QF_UF/QG-classification/loops6/iso_icl103.smt2",
+            "QF_UF/QG-classification/qg5/iso_icl054.smt2",
+            'QF_UF/SEQ/SEQ004_size5.smt2',
+            'QF_UF/SEQ/SEQ004_size6.smt2',
+            'QF_UF/SEQ/SEQ005_size7.smt2',
+            "QF_UF/TypeSafe/z3.1184131.smt2",
+            "QF_UF/TypeSafe/z3.1184147.smt2",
+            "QF_UF/TypeSafe/z3.1184163.smt2",
         ]
 
         profile = False
@@ -153,7 +161,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, omit_proofterm="verit_th_resolution")
+            test_path(path, test_proofterm=True, omit_proofterm=["verit_th_resolution"])
 
         if profile:
             p = Stats(pr)

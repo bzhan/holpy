@@ -126,6 +126,10 @@ class ProofReconstruction:
                         cl = args[:-1]
                     else:
                         cl = args
+                    if not isinstance(pt, ProofTerm):
+                        print(macro_name)
+                        print("Returned: ", pt)
+                        raise AssertionError("Unexpected type of returned result")
                     if pt.prop != Or(*cl):
                         print(macro_name)
                         print("Computed: ", pt.prop)
