@@ -116,6 +116,8 @@ class ProofReconstruction:
                     pt = macro.get_proof_term(args, prevs)
                     if macro_name == 'verit_th_resolution':
                         cl = args[0]
+                    elif macro_name == "verit_refl":
+                        cl = [args[0]]
                     else:
                         cl = args
                     if pt.prop != Or(*cl):

@@ -16,6 +16,7 @@ from logic import conv, logic
 from data import integer, real
 from data import list as hol_list
 from kernel import term_ord
+from smt.veriT import verit_conv
 
 
 class VeriTException(Exception):
@@ -943,7 +944,7 @@ class EqSimplifyMacro(Macro):
         if lhs.is_equals():
             if lhs.lhs == lhs.rhs and rhs == true:
                 return Thm([], arg)
-            elif lhs.rhs != lhs.rhs and rhs == false:
+            elif lhs.lhs != lhs.rhs and rhs == false:
                 return Thm([], arg)
             else:
                 raise VeriTException("eq_simplify", "rhs doesn't obey eq_simplify rule")
@@ -956,6 +957,16 @@ class EqSimplifyMacro(Macro):
                 raise VeriTException("eq_simplify", "rhs doesn't obey eq_simplify rule")
         else:
             raise VeriTException("eq_simplify", "lhs should be either an equality or an inequality")
+
+    def get_proof_term(self, args, prevs=None):
+        goal = args[0]
+        lhs, rhs = goal.args
+        if lhs.is_equals():
+            if lhs.lhs == lhs.rhs and rhs == true:
+                return logic.apply_theorem("eq_mean_true", concl=goal)
+        
+        raise VeriTException("eq_simplify", "implementation is incomplete")
+
 
 @register_macro("verit_trans")
 class TransMacro(Macro):
@@ -1084,6 +1095,15 @@ class ReflMacro(Macro):
             return Thm([], goal)
         if goal.rhs.is_var() and goal.rhs.name in ctxt and ctxt[goal.rhs.name] == goal.lhs:
             return Thm([], goal)
+        else:
+            raise VeriTException("refl", "either lhs and rhs of goal is not in ctx")
+
+    def get_proof_term(self, args, prevs):
+        goal, ctx = args
+        if goal.lhs.is_var() and goal.lhs.name in ctx and ctx[goal.lhs.name] == goal.rhs:
+            return ProofTerm.assume(Eq(goal.lhs, goal.rhs))
+        elif goal.rhs.is_var() and goal.rhs.name in ctx and ctx[goal.rhs.name] == goal.lhs:
+            return ProofTerm.assume(Eq(goal.lhs, goal.rhs))
         else:
             raise VeriTException("refl", "either lhs and rhs of goal is not in ctx")
 
@@ -1521,7 +1541,59 @@ class ACSimpMacro(Macro):
             print('lhs:', lhs)
             print('rhs:', rhs)
             raise VeriTException("ac_simp", "unexpected result")
-        
+
+@register_macro('verit_imp_conj')
+class imp_conj_macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, ths):
+        def strip(t):
+            if t.is_conj():
+                return strip(t.arg1).union(strip(t.arg))
+            elif t == true:
+                return set()
+            else:
+                return {t}
+
+        As, C = args.strip_implies()
+        assert len(As) == 1, 'imp_conj_macro'
+        assert strip(C).issubset(strip(As[0])), 'imp_conj_macro'
+        return Thm([], args)
+
+    def get_proof_term(self, goal, pts):
+        dct = dict()
+        A = goal.arg1
+        ptA = ProofTerm.assume(A)
+        A_arity = A.arity
+        while ptA.prop.is_conj():
+            pt1 = logic.apply_theorem("conjD1", ptA)
+            pt2 = logic.apply_theorem("conjD2", ptA)
+            if pt1.prop != true:
+                dct[pt1.prop] = pt1
+            ptA = pt2
+        dct[ptA.prop] = ptA
+
+        C = goal.arg
+        ptCs = []
+        while C.is_conj():
+            l, r = C.args
+            if l == true:
+                ptCs.append(logic.apply_theorem("trueI"))
+            else:
+                assert l in dct
+                ptCs.append(dct[l])
+            C = r
+        assert C in dct
+        ptCs.append(dct[C])
+        ptC = ptCs[-1]
+        for pt in reversed(ptCs[:-1]):
+            ptC = logic.apply_theorem(pt, ptC)
+
+        return ptC
+
 @register_macro("verit_and_simplify")
 class AndSimplifyMacro(Macro):
     def __init__(self):
@@ -1567,6 +1639,37 @@ class AndSimplifyMacro(Macro):
 
         print('goal', goal)
         raise VeriTException("and_simplify", "unexpected rhs")
+
+    def get_proof_term(self, args, prevs=None):
+        goal = args[0]
+        lhs, rhs = goal.args
+        if rhs == false:
+            lhs_conjs = lhs.strip_conj()
+            pt_r_l = ProofTerm("falseE", concl=Implies(rhs, lhs)) # false -> anything
+            if false in lhs_conjs:
+                # p_1 & ... & false & ... & p_n --> false
+                pt_l_r = ProofTerm("verit_imp_conj", args=Implies(lhs, rhs))
+                return ProofTerm.equal_intr(pt_l_r, pt_r_l)
+
+            for i in range(len(lhs_conjs)):
+                for j in range(i+1, len(lhs_conjs)):
+                    if Not(lhs_conjs[i]) == lhs_conjs[j]:
+                        # p_1 & ... & p_i & ... & ~p_i & ... p_n --> p_i & ~p_i
+                        pt = ProofTerm("verit_imp_conj", args=Implies(lhs, And(lhs_conjs[i], lhs_conjs[j])))
+                    elif lhs_conjs[i] == Not(lhs_conjs[j]):
+                        # p_1 & ... & p_i & ... & ~p_i & ... p_n --> ~p_i & p_i
+                        pt = ProofTerm("verit_imp_conj", args=Implies(lhs, And(lhs_conjs[j], lhs_conjs[i])))
+                    pt_l_r = ProofTerm("conj_neg_pos", pt)
+                    return ProofTerm.equal_intr(pt_l_r, pt_r_l)
+
+        pt1 = ProofTerm("verit_imp_conj", args=Implies(lhs, rhs))
+        pt2 = ProofTerm("verit_imp_conj", args=Implies(rhs, lhs))
+        if pt1.prop.arg1 == lhs and pt1.prop.arg == rhs:
+            return ProofTerm.equal_intr(pt1, pt2)
+
+        raise VeriTException("and_simplify", "unexpected result")
+
+
 
 @register_macro("verit_or_simplify")
 class OrSimplifyMacro(Macro):
