@@ -117,7 +117,7 @@ class ProofTerm():
         return ProofTerm("variable", (nm, T), [])
 
     @staticmethod
-    def assume(A):
+    def assume(A: Term):
         return ProofTerm("assume", A, [])
 
     @staticmethod

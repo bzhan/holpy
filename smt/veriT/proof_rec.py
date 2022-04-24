@@ -114,8 +114,10 @@ class ProofReconstruction:
                 macro = theory.get_macro(macro_name)
                 try:
                     pt = macro.get_proof_term(args, prevs)
-                    if macro_name == 'verit_th_resolution':
+                    if rule_name in ('resolution', 'th_resolution'):
                         cl = args[0]
+                    elif rule_name in ('refl',):
+                        cl = args[:-1]
                     else:
                         cl = args
                     if pt.prop != Or(*cl):
