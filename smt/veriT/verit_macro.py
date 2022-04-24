@@ -924,6 +924,18 @@ class NotSimplifyMacro(Macro):
         else:
             raise VeriTException("not_simplify", "negated term should among true, false or negation")
 
+    def get_proof_term(self, args, prevs=None):
+        goal = args[0]
+        lhs, rhs = goal.args
+        if lhs == Not(true) and rhs == false:
+            return logic.apply_theorem("verit_not_simplify1")
+        if lhs == Not(false) and rhs == true:
+            return logic.apply_theorem("verit_not_simplify2")
+        elif lhs == Not(Not(rhs)):
+            return logic.apply_theorem("double_neg", concl=goal)
+        else:
+            raise VeriTException("not_simplify", "unexpcected goal")
+
 @register_macro("verit_eq_simplify")
 class EqSimplifyMacro(Macro):
     def __init__(self):

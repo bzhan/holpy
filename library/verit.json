@@ -589,6 +589,18 @@
                 "P": "bool",
                 "Q": "bool"
             }
+        },
+        {
+            "name": "verit_not_simplify1",
+            "prop": "¬true ⟷ false",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "verit_not_simplify2",
+            "prop": "¬false ⟷ true",
+            "ty": "thm",
+            "vars": {}
         }
     ],
     "description": "Schematic verit proof rule.",
