@@ -1637,29 +1637,14 @@ class ACSimpMacro(Macro):
 @register_macro('verit_imp_conj')
 class imp_conj_macro(Macro):
     def __init__(self):
-        self.level = 1
+        self.level = 0
         self.sig = Term
         self.limit = None
-
-    def eval(self, args, ths):
-        def strip(t):
-            if t.is_conj():
-                return strip(t.arg1).union(strip(t.arg))
-            elif t == true:
-                return set()
-            else:
-                return {t}
-
-        As, C = args.strip_implies()
-        assert len(As) == 1, 'imp_conj_macro'
-        assert strip(C).issubset(strip(As[0])), 'imp_conj_macro'
-        return Thm([], args)
 
     def get_proof_term(self, goal, pts):
         dct = dict()
         A = goal.arg1
         ptA = ProofTerm.assume(A)
-        A_arity = A.arity
         while ptA.prop.is_conj():
             pt1 = logic.apply_theorem("conjD1", ptA)
             pt2 = logic.apply_theorem("conjD2", ptA)
@@ -1682,7 +1667,7 @@ class imp_conj_macro(Macro):
         ptCs.append(dct[C])
         ptC = ptCs[-1]
         for pt in reversed(ptCs[:-1]):
-            ptC = logic.apply_theorem(pt, ptC)
+            ptC = logic.apply_theorem("conjI", pt, ptC)
 
         return ptC
 
@@ -1732,36 +1717,96 @@ class AndSimplifyMacro(Macro):
         print('goal', goal)
         raise VeriTException("and_simplify", "unexpected rhs")
 
-    def get_proof_term(self, args, prevs=None):
-        goal = args[0]
-        lhs, rhs = goal.args
-        if rhs == false:
-            lhs_conjs = lhs.strip_conj()
-            pt_r_l = ProofTerm("falseE", concl=Implies(rhs, lhs)) # false -> anything
-            if false in lhs_conjs:
-                # p_1 & ... & false & ... & p_n --> false
-                pt_l_r = ProofTerm("verit_imp_conj", args=Implies(lhs, rhs))
-                return ProofTerm.equal_intr(pt_l_r, pt_r_l)
+    # def get_proof_term(self, args, prevs=None):
+    #     goal = args[0]
+    #     lhs, rhs = goal.args
+    #     if rhs == false:
+    #         lhs_conjs = lhs.strip_conj()
+    #         pt_r_l = ProofTerm("falseE", concl=Implies(rhs, lhs)) # false -> anything
+    #         if false in lhs_conjs:
+    #             # p_1 & ... & false & ... & p_n --> false
+    #             pt_l_r = ProofTerm("verit_imp_conj", args=Implies(lhs, rhs))
+    #             return ProofTerm.equal_intr(pt_l_r, pt_r_l)
 
-            for i in range(len(lhs_conjs)):
-                for j in range(i+1, len(lhs_conjs)):
-                    if Not(lhs_conjs[i]) == lhs_conjs[j]:
-                        # p_1 & ... & p_i & ... & ~p_i & ... p_n --> p_i & ~p_i
-                        pt = ProofTerm("verit_imp_conj", args=Implies(lhs, And(lhs_conjs[i], lhs_conjs[j])))
-                    elif lhs_conjs[i] == Not(lhs_conjs[j]):
-                        # p_1 & ... & p_i & ... & ~p_i & ... p_n --> ~p_i & p_i
-                        pt = ProofTerm("verit_imp_conj", args=Implies(lhs, And(lhs_conjs[j], lhs_conjs[i])))
-                    pt_l_r = ProofTerm("conj_neg_pos", pt)
-                    return ProofTerm.equal_intr(pt_l_r, pt_r_l)
+    #         for i in range(len(lhs_conjs)):
+    #             for j in range(i+1, len(lhs_conjs)):
+    #                 if Not(lhs_conjs[i]) == lhs_conjs[j]:
+    #                     # p_1 & ... & p_i & ... & ~p_i & ... p_n --> p_i & ~p_i
+    #                     pt = ProofTerm("verit_imp_conj", args=Implies(lhs, And(lhs_conjs[i], lhs_conjs[j])))
+    #                 elif lhs_conjs[i] == Not(lhs_conjs[j]):
+    #                     # p_1 & ... & p_i & ... & ~p_i & ... p_n --> ~p_i & p_i
+    #                     pt = ProofTerm("verit_imp_conj", args=Implies(lhs, And(lhs_conjs[j], lhs_conjs[i])))
+    #                 pt_l_r = ProofTerm("conj_neg_pos", pt)
+    #                 return ProofTerm.equal_intr(pt_l_r, pt_r_l)
 
-        pt1 = ProofTerm("verit_imp_conj", args=Implies(lhs, rhs))
-        pt2 = ProofTerm("verit_imp_conj", args=Implies(rhs, lhs))
-        if pt1.prop.arg1 == lhs and pt1.prop.arg == rhs:
-            return ProofTerm.equal_intr(pt1, pt2)
+    #     pt1 = ProofTerm("verit_imp_conj", args=Implies(lhs, rhs))
+    #     pt2 = ProofTerm("verit_imp_conj", args=Implies(rhs, lhs))
+    #     if pt1.prop.arg1 == lhs and pt1.prop.arg == rhs:
+    #         return ProofTerm.equal_intr(pt1, pt2)
 
-        raise VeriTException("and_simplify", "unexpected result")
+    #     raise VeriTException("and_simplify", "unexpected result")
 
 
+
+@register_macro('verit_imp_disj')
+class imp_disj_macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def get_proof_term(self, goal, pts):
+        """Goal is of the form A_1 | ... | A_m --> B_1 | ...| B_n, where
+        {A_1, ..., A_m} is a subset of {B_1, ..., B_n}."""
+
+        # Dictionary from B_i to B_i --> B_1 | ... | B_n
+        pts_B = dict()
+        concl = goal.arg
+        triv_pt = logic.apply_theorem("trivial", concl=concl)
+        if not concl.is_disj():
+            pts_B[concl]= triv_pt
+
+        while concl.is_disj():
+            l, r = concl.args
+            pt1 = logic.apply_theorem("syllogism",\
+                    logic.apply_theorem("disjI1", concl=triv_pt.prop.arg1), triv_pt)
+            pt2 = logic.apply_theorem("syllogism",\
+                    logic.apply_theorem("disjI2", concl=triv_pt.prop.arg1), triv_pt)
+            pts_B[l] = pt1
+            if not r.is_disj():
+                pts_B[r] = pt2
+                break
+            concl = r
+            triv_pt = pt2
+
+        A = goal.arg1
+        pts_A = []
+        if not A.is_disj():
+            assert A in pts_B
+            pts_A = [pts_B[A]]
+        while A.is_disj():
+            l, r = A.args
+            if l == false:
+                pts_A.append(logic.apply_theorem("falseE", concl=concl))
+            else:
+                assert l in pts_B
+                pts_A.append(pts_B[l])
+            if not r.is_disj():
+                if r == false:
+                    pts_A.append(logic.apply_theorem("falseE", concl=concl))
+                else:
+                    assert r in pts_B, str(r)
+                    pts_A.append(pts_B[r])
+                break
+            A = r
+
+        assert isinstance(pts_A[-1], ProofTerm), "not implemented yet"
+        
+        pt_A = pts_A[-1]
+        for pt in reversed(pts_A[:-1]):
+            pt_A = logic.apply_theorem("disjE2", pt, pt_A)
+        
+        return pt_A
 
 @register_macro("verit_or_simplify")
 class OrSimplifyMacro(Macro):
@@ -1800,6 +1845,45 @@ class OrSimplifyMacro(Macro):
             else:
                 raise VeriTException("or_simplify", "unexpected rhs")
         raise VeriTException("or_simplify", "haven't implemented")
+
+    def get_proof_term(self, args, prevs):
+        goal = args[0]
+        lhs, rhs = goal.args
+        if lhs == rhs:
+            return ProofTerm.reflexive(lhs)
+        if not lhs.is_disj() and not rhs.is_disj():
+            raise VeriTException("or_simplify", "unexpected argument")
+        if rhs == true:
+            pt_true = logic.apply_theorem("trueI")
+            pt_l_r = pt_true.implies_intr(lhs)
+            disjs = lhs.strip_disj()
+            if true in disjs:
+                pt_r_l = ProofTerm("verit_imp_disj", args=Implies(true, lhs))
+            else:
+                pair = []
+                for i, disj1 in enumerate(disjs):
+                    for j, disj2 in enumerate(disjs):
+                        if disj1 == Not(disj2):
+                            pair = [disj1, disj2]
+                    if len(pair) > 0:
+                        break
+                pt0 = logic.apply_theorem("or_pos", concl=Or(*pair))
+                pt1 = ProofTerm("verit_imp_disj", args=Implies(Or(*pair), lhs))
+                pt2 = pt0.implies_intr(true)
+                pt_r_l = logic.apply_theorem("syllogism", pt2, pt1)
+
+
+            return ProofTerm.equal_intr(pt_l_r, pt_r_l)
+
+        pt1 = ProofTerm("verit_imp_disj", args=Implies(lhs, rhs))
+        pt2 = ProofTerm("verit_imp_disj", args=Implies(rhs, lhs))
+        if pt1.prop.arg1 == lhs and pt1.prop.arg == rhs:
+            return ProofTerm.equal_intr(pt1, pt2)
+
+
+        raise VeriTException("or_simplify", "unexpected result")
+
+
 
 
 @register_macro("verit_bool_simplify")
