@@ -11,7 +11,7 @@ from kernel.proofterm import ProofTerm, Thm
 from kernel import term as hol_term
 from kernel import type as hol_type
 from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
-    BoolType, Int, Forall, Exists, Inst, conj
+    BoolType, Int, Forall, Exists, Inst, conj, Var
 from logic import conv, logic
 from data import integer, real
 from data import list as hol_list
@@ -477,6 +477,7 @@ class VeriTOrNeg(Macro):
         self.level = 1
         self.sig = Term
         self.limit = None
+
     def eval(self, args, prevs):
         if len(args) != 2:
             raise VeriTException("or_neg", "should only have on argumentt")
@@ -485,8 +486,6 @@ class VeriTOrNeg(Macro):
         if not disj_tms.is_disj():
             raise VeriTException("or_neg", "goal should be a disjunction")
         
-        # disj = args[0]
-        # neg_tm = args[1]
         disjs = strip_disj_n(disj_tms, disj_tms.arity)
         if neg_tm.arg in disjs:
             return Thm([], Or(*args))
@@ -1013,52 +1012,74 @@ class TransMacro(Macro):
                 raise VeriTException("trans", "cannot connect equalities")
         return pt
 
-def compare_sym_tm(tm1, tm2, ctx=None):
-    """Compare tm1 and tm2 with the symmetry property.
-    
-    tm1 may contain variables that are in the context, in which case the
-    mapping in the context is compared.
+def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
+    """Compare tm1 and tm2 up to symmetry of equality and identification
+    of terms in ctx.
+
+    ctx is a set containing pairs (t1, t2) that should be identified. This
+    function does not consider transitivity of term identifications.
     
     """
     if ctx is None:
-        ctx = dict()
+        ctx = set()
     
-    def helper(t1, t2):
-        if t1.is_var() and t1.name in ctx:
-            return t1 == t2 or ctx[t1.name] == t2
-        elif t2.is_var() and t2.name in ctx:
-            return t1 == t2 or ctx[t2.name] == t1
+    def helper(t1, t2, depth):
+        if (t1, t2) in ctx:
+            return True
+        if depth == 0:
+            return t1 == t2
+        if t1.is_var() or t2.is_var():
+            return t1 == t2
         elif t1.is_comb():
             if not t2.is_comb() or t1.head != t2.head:
                 return False
             elif t1.is_equals():
-                if helper(t1.lhs, t2.lhs) and helper(t1.rhs, t2.rhs):
+                if helper(t1.lhs, t2.lhs, depth-1) and helper(t1.rhs, t2.rhs, depth-1):
                     return True
-                elif helper(t1.rhs, t2.lhs) and helper(t1.lhs, t2.rhs):
+                elif helper(t1.rhs, t2.lhs, depth-1) and helper(t1.lhs, t2.rhs, depth-1):
                     return True
                 else:
                     return False
             elif t1.is_conj():
-                t1_args = t1.strip_conj()
-                t2_args = t2.strip_conj()
-                for t1_arg, t2_arg in zip(t1_args, t2_args):
-                    if not helper(t1_arg, t2_arg):
-                        return False
-                return True
+                cur_t1, cur_t2 = t1, t2
+                while cur_t1.is_conj() and cur_t2.is_conj() and helper(cur_t1.arg1, cur_t2.arg1, depth-1):
+                    cur_t1 = cur_t1.arg
+                    cur_t2 = cur_t2.arg
+                    if (cur_t1, cur_t2) in ctx:
+                        return True
+                return helper(cur_t1, cur_t2, depth-1)
+            elif t1.is_disj():
+                cur_t1, cur_t2 = t1, t2
+                while cur_t1.is_disj() and cur_t2.is_disj() and helper(cur_t1.arg1, cur_t2.arg1, depth-1):
+                    cur_t1 = cur_t1.arg
+                    cur_t2 = cur_t2.arg
+                    if (cur_t1, cur_t2) in ctx:
+                        return True
+                return helper(cur_t1, cur_t2, depth-1)
+            elif t1.is_plus():
+                cur_t1, cur_t2 = t1, t2
+                while cur_t1.is_plus() and cur_t2.is_plus() and helper(cur_t1.arg, cur_t2.arg, depth-1):
+                    cur_t1 = cur_t1.arg1
+                    cur_t2 = cur_t2.arg1
+                    if (cur_t1, cur_t2) in ctx:
+                        return True
+                return helper(cur_t1, cur_t2, depth-1)
+            elif t1.is_comb('distinct'):
+                if not t2.is_comb('distinct'):
+                    return False
+                l_args, r_args = hol_list.dest_literal_list(t1.arg), hol_list.dest_literal_list(t2.arg)
+                return all(helper(l_arg, r_arg, depth-1) for l_arg, r_arg in zip(l_args, r_args))
             else:
-                for l_arg, r_arg in zip(t1.args, t2.args):
-                    if not helper(l_arg, r_arg):
-                        return False
-                return True
+                return all(helper(l_arg, r_arg, depth-1) for l_arg, r_arg in zip(t1.args, t2.args))
         elif t1.is_abs():
             if not t2.is_abs():
                 return False
             v1, body1 = t1.dest_abs()
             v2, body2 = t2.dest_abs()
-            return v1 == v2 and helper(body1, body2)
+            return v1 == v2 and helper(body1, body2, depth-1)
         else:
             return t1 == t2
-    return helper(tm1, tm2)
+    return helper(tm1, tm2, depth)
 
 def compare_sym_tm_thm(tm1: Term, tm2: Term, eqs=None):
     """Given two terms and a dictionary from pairs of terms to equality theorems
@@ -1159,41 +1180,12 @@ class CongMacro(Macro):
         if lhs.head != rhs.head:
             raise VeriTException("cong", "head should be same")
         
-        # Treat | and & as n-ary operators when 
-        # the number of premises are larger than 2
-        if lhs.is_conj():
-            size = lhs.arity
-            l_args, r_args = strip_conj_n(lhs, size), strip_conj_n(rhs,size)
-        elif lhs.is_disj():
-            size = lhs.arity
-            l_args, r_args = strip_disj_n(lhs, size), strip_disj_n(rhs, size)
-        elif lhs.is_comb("distinct"):
-            l_args, r_args = hol_list.dest_literal_list(lhs.arg), hol_list.dest_literal_list(rhs.arg)
-        elif lhs.is_plus():
-            l_args, r_args = strip_plus_n(lhs, lhs.arity), strip_plus_n(rhs, rhs.arity)
-        else:
-            l_args, r_args = lhs.args, rhs.args
-
-        # Form dictionary from terms to equalities
-        prev_dict = dict()
+        ctx = set()
         for prev in prevs:
-            if prev.lhs not in prev_dict:
-                prev_dict[prev.lhs] = []
-            prev_dict[prev.lhs].append(prev.rhs)
-            if prev.rhs not in prev_dict:
-                prev_dict[prev.rhs] = []
-            prev_dict[prev.rhs].append(prev.lhs)
+            ctx.add((prev.lhs, prev.rhs))
+            ctx.add((prev.rhs, prev.lhs))
 
-        def compare_arg(t1, t2):
-            if t1 == t2:
-                return True
-            if t1 in prev_dict and t2 in prev_dict[t1]:
-                return True
-            return False
-
-        if all(compare_arg(t1, t2) for t1, t2 in zip(l_args, r_args)):
-            return Thm([hyp for pt in prevs for hyp in pt.hyps], goal)
-        elif lhs.is_equals() and compare_arg(lhs.lhs, rhs.rhs) and compare_arg(lhs.rhs, rhs.lhs):
+        if compare_sym_tm(lhs, rhs, ctx=ctx, depth=1):
             return Thm([hyp for pt in prevs for hyp in pt.hyps], goal)
         else:
             print("lhs", lhs)
@@ -1540,7 +1532,9 @@ class LetMacro(Macro):
         goal, _ = args
         prop_eq = prevs[:-1]
         last_step = prevs[-1]
-        ctx = {prop.lhs:prop.rhs for prop in prop_eq}
+        ctx = set()
+        for prop in prop_eq:
+            ctx.add((prop.lhs, prop.rhs))
         if compare_sym_tm(goal.lhs, last_step.lhs, ctx=ctx) and goal.rhs == last_step.rhs:
             return Thm([], goal)
         else:
@@ -1659,7 +1653,6 @@ class imp_conj_macro(Macro):
         dct = dict()
         A = goal.arg1
         ptA = ProofTerm.assume(A)
-        A_arity = A.arity
         while ptA.prop.is_conj():
             pt1 = logic.apply_theorem("conjD1", ptA)
             pt2 = logic.apply_theorem("conjD2", ptA)
@@ -2470,6 +2463,12 @@ class SkoExMacro(Macro):
             print('lhs_body:', lhs_body)
             raise VeriTException("sko_ex", "unexpected form of lhs in goal")
 
+        eq_ctx = set()
+        for k, v in ctx.items():
+            vT = v.get_type()
+            eq_ctx.add((Var(k, vT), v))
+            eq_ctx.add((v, Var(k, vT)))
+
         for i, x in enumerate(xs):
             if x.name not in ctx:
                 raise VeriTException("sko_ex", "the skolem variable does not occur in context")
@@ -2481,7 +2480,7 @@ class SkoExMacro(Macro):
             # Body of skolem term for x should equal lhs_body after adding exists
             # quantifiers to all ensuing variables.
             exp_x_body = Exists(*(xs[i+1:] + [lhs_body]))
-            if not compare_sym_tm(sko_tm_x_body, exp_x_body, ctx=ctx):
+            if not compare_sym_tm(sko_tm_x_body, exp_x_body, ctx=eq_ctx):
                 print('sko_tm_body:', sko_tm_x_body)
                 print('exp_x_body:', exp_x_body)
                 raise VeriTException("sko_ex", "unexpected result")
@@ -2489,7 +2488,7 @@ class SkoExMacro(Macro):
         return Thm([], goal)
 
 @register_macro("verit_sko_forall")
-class SkoExMacro(Macro):
+class SkoForallMacro(Macro):
     """Prove an equality of the form !x1, ..., xn. p <--> q, given fact
     p <--> q proved under the context
         x1 -> SOME x1. ~p, ..., xn -> SOME xn. ~p.
@@ -2527,6 +2526,12 @@ class SkoExMacro(Macro):
             print('lhs_body:', lhs_body)
             raise VeriTException("sko_forall", "unexpected form of lhs in goal")
 
+        eq_ctx = set()
+        for k, v in ctx.items():
+            vT = v.get_type()
+            eq_ctx.add((Var(k, vT), v))
+            eq_ctx.add((v, Var(k, vT)))
+
         for i, x in enumerate(xs):
             if x.name not in ctx:
                 raise VeriTException("sko_forall", "the skolem variable does not occur in context")
@@ -2538,7 +2543,7 @@ class SkoExMacro(Macro):
             # Body of skolem term for x should equal lhs_body after adding forall
             # quantifiers to all ensuing variables.
             exp_x_body = Not(Forall(*(xs[i+1:] + [lhs_body])))
-            if not compare_sym_tm(sko_tm_x_body, exp_x_body, ctx=ctx):
+            if not compare_sym_tm(sko_tm_x_body, exp_x_body, ctx=eq_ctx):
                 print('sko_tm_body:', sko_tm_x_body)
                 print('exp_x_body:', exp_x_body)
                 raise VeriTException("sko_forall", "unexpected result")
