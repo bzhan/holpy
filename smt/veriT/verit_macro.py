@@ -2310,9 +2310,10 @@ class ConnectiveDefMacro(Macro):
                 o1, o2 = rhs.arg.args
                 if q1 == p1 and o1 == Not(p1) and p2 == q2 and o2 == Not(p2):
                     return Thm([], goal)
-        elif lhs.is_exists():
-            lhs_pred = lhs.arg
-            if rhs.is_not() and rhs.arg.is_forall() and rhs.arg.arg.body == Not(lhs_pred.body):
+        elif lhs.is_exists() and rhs.is_not() and rhs.arg.is_forall():
+            l_var, l_body = lhs.strip_exists()
+            r_var, r_body = rhs.arg.strip_forall()
+            if l_var == r_var and Not(l_body) == r_body:
                 return Thm([], goal)
             else:
                 raise VeriTException("verit_connective_def", "can't match ?x. P(x) <--> ~!x. ~P(x)")
