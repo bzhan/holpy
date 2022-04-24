@@ -11,12 +11,11 @@ from kernel.proofterm import ProofTerm, Thm
 from kernel import term as hol_term
 from kernel import type as hol_type
 from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
-    BoolType, Int, Forall, Exists, Inst
+    BoolType, Int, Forall, Exists, Inst, conj
 from logic import conv, logic
 from data import integer, real
 from data import list as hol_list
 from kernel import term_ord
-from smt.veriT import verit_conv
 
 
 class VeriTException(Exception):
@@ -1014,6 +1013,134 @@ class TransMacro(Macro):
                 raise VeriTException("trans", "cannot connect equalities")
         return pt
 
+def compare_sym_tm(tm1, tm2, ctx=None):
+    """Compare tm1 and tm2 with the symmetry property.
+    
+    tm1 may contain variables that are in the context, in which case the
+    mapping in the context is compared.
+    
+    """
+    if ctx is None:
+        ctx = dict()
+    
+    def helper(t1, t2):
+        if t1.is_var() and t1.name in ctx:
+            return t1 == t2 or ctx[t1.name] == t2
+        elif t2.is_var() and t2.name in ctx:
+            return t1 == t2 or ctx[t2.name] == t1
+        elif t1.is_comb():
+            if not t2.is_comb() or t1.head != t2.head:
+                return False
+            elif t1.is_equals():
+                if helper(t1.lhs, t2.lhs) and helper(t1.rhs, t2.rhs):
+                    return True
+                elif helper(t1.rhs, t2.lhs) and helper(t1.lhs, t2.rhs):
+                    return True
+                else:
+                    return False
+            elif t1.is_conj():
+                t1_args = t1.strip_conj()
+                t2_args = t2.strip_conj()
+                for t1_arg, t2_arg in zip(t1_args, t2_args):
+                    if not helper(t1_arg, t2_arg):
+                        return False
+                return True
+            else:
+                for l_arg, r_arg in zip(t1.args, t2.args):
+                    if not helper(l_arg, r_arg):
+                        return False
+                return True
+        elif t1.is_abs():
+            if not t2.is_abs():
+                return False
+            v1, body1 = t1.dest_abs()
+            v2, body2 = t2.dest_abs()
+            return v1 == v2 and helper(body1, body2)
+        else:
+            return t1 == t2
+    return helper(tm1, tm2)
+
+def compare_sym_tm_thm(tm1: Term, tm2: Term, eqs=None):
+    """Given two terms and a dictionary from pairs of terms to equality theorems
+    relating them, form the equality between the two terms.
+    
+    """
+    if eqs is None:
+        eqs = dict()
+    
+    def helper(t1, t2):
+        """Returns one of the following:
+        
+        None - no equality is found between t1 and t2.
+        pt - t1 and t2 are not the same term, and pt is "t1 = t2".
+        
+        """
+        if (t1, t2) in eqs:
+            return eqs[(t1, t2)]
+        elif t1 == t2:
+            return ProofTerm.reflexive(t1)
+        elif t1.is_comb():
+            if not t2.is_comb() or t1.head != t2.head:
+                return None
+            elif t1.is_equals():
+                # First, the case without exchanging equality
+                lhs_eq = helper(t1.lhs, t2.lhs)
+                rhs_eq = helper(t1.rhs, t2.rhs)
+                if lhs_eq is not None and rhs_eq is not None:
+                    pt = ProofTerm.reflexive(t1)
+                    pt = pt.on_rhs(conv.arg1_conv(conv.replace_conv(lhs_eq)))
+                    pt = pt.on_rhs(conv.arg_conv(conv.replace_conv(rhs_eq)))
+                    return pt
+
+                # Second, the case with exchanging equality                
+                lhs_eq = helper(t1.rhs, t2.lhs)
+                rhs_eq = helper(t1.lhs, t2.rhs)
+                if lhs_eq is not None and rhs_eq is not None:
+                    pt = ProofTerm.reflexive(t1)
+                    pt = pt.on_rhs(conv.rewr_conv("eq_sym_eq"))
+                    pt = pt.on_rhs(conv.arg1_conv(conv.replace_conv(lhs_eq)))
+                    pt = pt.on_rhs(conv.arg_conv(conv.replace_conv(rhs_eq)))
+                    return pt
+
+                # Either case yield equality
+                return None
+            elif t1.is_conj():
+                t1_args = t1.strip_conj()
+                t2_args = t2.strip_conj()
+                pts = []
+                for t1_arg, t2_arg in zip(t1_args, t2_args):
+                    pts.append(helper(t1_arg, t2_arg))
+                if any(pt is None for pt in pts):
+                    return None
+                res = pts[-1]
+                for pt in reversed(pts[:-1]):
+                    res = ProofTerm.reflexive(conj).combination(pt).combination(res)
+                return res
+            else:
+                pts = []
+                for l_arg, r_arg in zip(t1.args, t2.args):
+                    pts.append(helper(l_arg, r_arg))
+                if any(pt is None for pt in pts):
+                    return None
+                res = ProofTerm.reflexive(t1.head)
+                for pt in pts:
+                    res = res.combination(pt)
+                return res
+        elif t1.is_abs():
+            if not t2.is_abs():
+                return None
+            v1, body1 = t1.dest_abs()
+            v2, body2 = t2.dest_abs()
+            pt = helper(body1, body2)
+            if pt is None:
+                return None
+            return ProofTerm.reflexive(t1).on_rhs(
+                conv.abs_conv(conv.replace_conv(pt)))
+        else:
+            return None
+    return helper(tm1, tm2)
+
+
 @register_macro("verit_cong")
 class CongMacro(Macro):
     def __init__(self):
@@ -1076,6 +1203,18 @@ class CongMacro(Macro):
                 print(prev)
             raise VeriTException("cong", "unexpected result")
 
+    def get_proof_term(self, args, prevs):
+        goal = args[0]
+        lhs, rhs = goal.lhs, goal.rhs
+
+        # Form dictionary from terms to proofterms rewriting that term
+        prev_dict = dict()
+        for prev in prevs:
+            prev_dict[(prev.lhs, prev.rhs)] = prev
+            prev_dict[(prev.rhs, prev.lhs)] = prev.symmetric()
+
+        return compare_sym_tm_thm(lhs, rhs, prev_dict)
+
 @register_macro("verit_refl")
 class ReflMacro(Macro):
     def __init__(self):
@@ -1099,60 +1238,13 @@ class ReflMacro(Macro):
             raise VeriTException("refl", "either lhs and rhs of goal is not in ctx")
 
     def get_proof_term(self, args, prevs):
-        goal, ctx = args
-        if goal.lhs.is_var() and goal.lhs.name in ctx and ctx[goal.lhs.name] == goal.rhs:
-            return ProofTerm.assume(Eq(goal.lhs, goal.rhs))
-        elif goal.rhs.is_var() and goal.rhs.name in ctx and ctx[goal.rhs.name] == goal.lhs:
-            return ProofTerm.assume(Eq(goal.lhs, goal.rhs))
+        goal, ctxt = args
+        if goal.lhs.is_var() and goal.lhs.name in ctxt and ctxt[goal.lhs.name] == goal.rhs:
+            return ProofTerm.assume(goal)
+        if goal.rhs.is_var() and goal.rhs.name in ctxt and ctxt[goal.rhs.name] == goal.lhs:
+            return ProofTerm.assume(Eq(goal.rhs, goal.lhs)).symmetric()
         else:
             raise VeriTException("refl", "either lhs and rhs of goal is not in ctx")
-
-def compare_sym_tm(tm1, tm2, ctx=None):
-    """Compare tm1 and tm2 with the symmetry property.
-    
-    tm1 may contain variables that are in the context, in which case the
-    mapping in the context is compared.
-    
-    """
-    if ctx is None:
-        ctx = dict()
-    
-    def helper(t1, t2):
-        if t1.is_var() and t1.name in ctx:
-            return t1 == t2 or ctx[t1.name] == t2
-        elif t2.is_var() and t2.name in ctx:
-            return t1 == t2 or ctx[t2.name] == t1
-        elif t1.is_comb():
-            if not t2.is_comb() or t1.head != t2.head:
-                return False
-            elif t1.is_equals():
-                if helper(t1.lhs, t2.lhs) and helper(t1.rhs, t2.rhs):
-                    return True
-                elif helper(t1.rhs, t2.lhs) and helper(t1.lhs, t2.rhs):
-                    return True
-                else:
-                    return False
-            elif t1.is_conj():
-                t1_args = t1.strip_conj()
-                t2_args = t2.strip_conj()
-                for t1_arg, t2_arg in zip(t1_args, t2_args):
-                    if not helper(t1_arg, t2_arg):
-                        return False
-                return True
-            else:
-                for l_arg, r_arg in zip(t1.args, t2.args):
-                    if not helper(l_arg, r_arg):
-                        return False
-                return True
-        elif t1.is_abs():
-            if not t2.is_abs():
-                return False
-            v1, body1 = t1.dest_abs()
-            v2, body2 = t2.dest_abs()
-            return v1 == v2 and helper(body1, body2)
-        else:
-            return t1 == t2
-    return helper(tm1, tm2)
 
 def gen_and(t1, t2):
     """Move conjunction within forall quantifiers."""
