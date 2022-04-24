@@ -89,12 +89,16 @@ class ProofReconstruction:
         else:
             assert isinstance(step, command.Step)
             rule_name = step.rule_name
+            # print(rule_name)
             macro_name = "verit_" + rule_name
             prevs = self.to_pts(step.pm)
             args = step.cl
             if rule_name == "refl":
                 args += (step.cur_ctx,)
-            if rule_name in ("bind", "sko_ex", "sko_forall", "onepoint", "let"):
+            if rule_name == "let":
+                last_prf = self.find_last_subproof(step.id)
+                prevs += (last_prf,)
+            if rule_name in ("bind", "sko_ex", "sko_forall", "onepoint"):
                 args += (step.cur_ctx,)
                 last_prf = self.find_last_subproof(step.id)
                 prevs += (last_prf,)

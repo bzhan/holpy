@@ -253,13 +253,16 @@ class apply_theorem_macro(Macro):
         ts = [prev_th.prop for prev_th in prevs]
         inst = matcher.first_order_match_list(pats, ts, inst)
 
+        # Check that all type variables are instantiated
+        for stvar in th.prop.get_stvars():
+            assert stvar.name in inst.tyinst, "apply_theorem: unmatched type variable %s" % stvar
+
         As, C = th.prop.subst_norm(inst).strip_implies()
         new_prop = Implies(*(As[len(prevs):] + [C]))
 
         prev_hyps = sum([prev.hyps for prev in prevs], ())
         th = Thm(th.hyps + prev_hyps, new_prop)
 
-        assert len(new_prop.get_stvars()) == 0, "apply_theorem: unmatched type variables."
         vars = new_prop.get_svars()
         for v in reversed(vars):
             th = Thm.forall_intr(v, th)
