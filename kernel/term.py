@@ -1091,17 +1091,22 @@ class Term():
             return False
 
     def get_stvars(self):
+        res = []
         def rec(t):
             if t.is_var() or t.is_const():
-                return t.T.get_stvars()
+                for stvar in t.T.get_stvars():
+                    if stvar not in res:
+                        res.append(stvar)
             elif t.is_comb():
-                return rec(t.fun) + rec(t.arg)
+                rec(t.fun)
+                rec(t.arg)
             elif t.is_abs():
-                return t.var_T.get_stvars() + rec(t.body)
-            else:
-                return []
-
-        return term_ord.sorted_typs(rec(self))
+                for stvar in t.var_T.get_stvars():
+                    if stvar not in res:
+                        res.append(stvar)
+                rec(t.body)
+        rec(self)
+        return res
 
 
 class SVar(Term):
@@ -1160,7 +1165,14 @@ def get_svars(t):
     if isinstance(t, Term):
         return t.get_svars()
     elif isinstance(t, list):
-        return term_ord.sorted_terms(sum([s.get_svars() for s in t], []))
+        found = set()
+        res = []
+        for s in t:
+            for svar in s.get_svars():
+                if svar not in found:
+                    res.append(svar)
+                    found.add(svar)
+        return res
     else:
         raise TypeError
 
@@ -1169,7 +1181,14 @@ def get_vars(t):
     if isinstance(t, Term):
         return t.get_vars()
     elif isinstance(t, list):
-        return term_ord.sorted_terms(sum([s.get_vars() for s in t], []))
+        found = set()
+        res = []
+        for s in t:
+            for var in s.get_vars():
+                if var not in found:
+                    res.append(var)
+                    found.add(var)
+        return res
     else:
         raise TypeError
 
@@ -1178,7 +1197,14 @@ def get_stvars(t):
     if isinstance(t, Term):
         return t.get_stvars()
     elif isinstance(t, list):
-        return term_ord.sorted_typs(sum([s.get_stvars() for s in t], []))
+        found = set()
+        res = []
+        for s in t:
+            for stvar in s.get_stvars():
+                if stvar not in found:
+                    res.append(stvar)
+                    found.add(stvar)
+        return res
     else:
         raise TypeError
 

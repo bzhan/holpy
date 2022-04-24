@@ -300,37 +300,52 @@ class Type():
 
     def get_stvars(self):
         """Return the list of schematic type variables."""
+        res = []
         def collect(T):
             if T.is_stvar():
-                return [T]
+                if T not in res:
+                    res.append(T)
             elif T.is_tvar():
-                return []
+                pass
             else:
-                return sum([collect(arg) for arg in T.args], [])
-
-        return term_ord.sorted_typs(collect(self))
+                for arg in T.args:
+                    collect(arg)
+        collect(self)
+        return res
 
     def get_tvars(self):
         """Return the list of type variables."""
+        res = []
         def collect(T):
-            if T.is_stvar():
-                return []
-            elif T.is_tvar():
-                return [T]
+            if T.is_tvar():
+                if T not in res:
+                    res.append(T)
+            elif T.is_stvar():
+                pass
             else:
-                return sum([collect(arg) for arg in T.args], [])
-
-        return term_ord.sorted_typs(collect(self))
+                for arg in T.args:
+                    collect(arg)
+        collect(self)
+        return res
 
     def get_tsubs(self):
-        """Return the list of types appearing in self."""
+        """Return the list of schematic type variables and type variables
+        appearing in self.
+        
+        """
+        res = []
         def collect(T):
-            if T.is_stvar() or T.is_tvar():
-                return [T]
+            if T.is_tvar():
+                if T not in res:
+                    res.append(T)
+            elif T.is_stvar():
+                if T not in res:
+                    res.append(T)
             else:
-                return sum([collect(arg) for arg in T.args], [T])
-
-        return term_ord.sorted_typs(collect(self))
+                for arg in T.args:
+                    collect(arg)
+        collect(self)
+        return res
 
     def convert_stvar(self):
         if self.is_stvar():
