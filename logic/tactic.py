@@ -101,7 +101,7 @@ class rule(Tactic):
         if goal_Alen > 0:
             As = As[:-goal_Alen]
 
-        pts = prevs + [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(prevs):]]
+        pts = prevs + [ProofTerm.sorry(Thm(A, goal.hyps)) for A in As[len(prevs):]]
 
         # Determine whether it is necessary to provide instantiation
         # to apply_theorem.
@@ -140,7 +140,7 @@ class intros(Tactic):
 
         vars, As, C = logic.strip_all_implies(goal.prop, var_names, svar=False)
         
-        pt = ProofTerm.sorry(Thm(list(goal.hyps) + As, C))
+        pt = ProofTerm.sorry(Thm(C, goal.hyps, tuple(As)))
         ptAs = [ProofTerm.assume(A) for A in As]
         ptVars = [ProofTerm.variable(var.name, var.T) for var in vars]
         return ProofTerm('intros', None, ptVars + ptAs + [pt])
@@ -183,7 +183,7 @@ class rewrite_goal(Tactic):
         if new_goal.is_equals() and new_goal.lhs == new_goal.rhs:
             return ProofTerm(macro_name, args=(th_name, C), prevs=prevs)
         else:
-            new_goal = ProofTerm.sorry(Thm(goal.hyps, new_goal))
+            new_goal = ProofTerm.sorry(Thm(new_goal, goal.hyps))
             assert new_goal.prop != goal.prop, "rewrite: unable to apply theorem"
             return ProofTerm(macro_name, args=(th_name, C), prevs=[new_goal] + prevs)
 
@@ -214,7 +214,7 @@ class rewrite_goal_with_prev(Tactic):
 
         prevs = list(prevs)
         if not new_goal.is_reflexive():
-            prevs.append(ProofTerm.sorry(Thm(goal.hyps, new_goal)))
+            prevs.append(ProofTerm.sorry(Thm(new_goal, goal.hyps)))
         return ProofTerm('rewrite_goal_with_prev', args=C, prevs=prevs)
 
 class apply_prev(Tactic):
@@ -248,7 +248,7 @@ class apply_prev(Tactic):
         inst_As, inst_C = pt.prop.strip_implies()
 
         inst_arg = [inst[new_name] for new_name in new_names]
-        new_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in inst_As[len(prev_pts):]]
+        new_goals = [ProofTerm.sorry(Thm(A, goal.hyps)) for A in inst_As[len(prev_pts):]]
         if set(new_names).issubset({v.name for v in term.get_vars(As)}) and \
            matcher.is_pattern_list(As, []):
             return ProofTerm('apply_fact', args=None, prevs=prevs + new_goals)
@@ -262,8 +262,8 @@ class cases(Tactic):
 
         As = goal.hyps
         C = goal.prop
-        goal1 = ProofTerm.sorry(Thm(goal.hyps, Implies(args, C)))
-        goal2 = ProofTerm.sorry(Thm(goal.hyps, Implies(Not(args), C)))
+        goal1 = ProofTerm.sorry(Thm(Implies(args, C), goal.hyps))
+        goal2 = ProofTerm.sorry(Thm(Implies(Not(args), C), goal.hyps))
         return apply_theorem('classical_cases', goal1, goal2)
 
 class inst_exists_goal(Tactic):
@@ -287,7 +287,7 @@ class intro_imp_tac(Tactic):
             raise TacticException('intro_imp: goal is not implies.')
 
         A, C = goal.prop.args
-        new_goal = ProofTerm.sorry(Thm(list(goal.hyps) + [A], C))
+        new_goal = ProofTerm.sorry(Thm(C, goal.hyps, A))
         return new_goal.implies_intr(A)
 
 class intro_forall_tac(Tactic):
@@ -299,7 +299,7 @@ class intro_forall_tac(Tactic):
             raise TacticException('intro_forall: goal is not forall')
 
         v, body = goal.prop.arg.dest_abs(self.var_name)
-        new_goal = ProofTerm.sorry(Thm(goal.hyps, body))
+        new_goal = ProofTerm.sorry(Thm(body, goal.hyps))
         return new_goal.forall_intr(v)
 
 class assumption(Tactic):
@@ -362,7 +362,7 @@ class rule_tac(Tactic):
             
         pt = ProofTerm.theorem(self.th_name).substitution(inst).on_prop(beta_norm_conv())
         for assum in pt.assums:
-            pt = pt.implies_elim(ProofTerm.sorry(Thm(goal.hyps, assum)))
+            pt = pt.implies_elim(ProofTerm.sorry(Thm(assum, goal.hyps)))
         return pt
 
 
@@ -403,7 +403,7 @@ class elim_tac(Tactic):
         pt = ProofTerm.theorem(self.th_name).substitution(inst).on_prop(beta_norm_conv())
         pt = pt.implies_elim(ProofTerm.assume(cond))
         for assum in pt.assums:
-            pt = pt.implies_elim(ProofTerm.sorry(Thm(goal.hyps, assum)))
+            pt = pt.implies_elim(ProofTerm.sorry(Thm(assum, goal.hyps)))
         return pt
 
 

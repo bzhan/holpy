@@ -77,7 +77,7 @@ class ProofTest(unittest.TestCase):
     def testProof(self):
         prf = Proof(A_to_B, A)
         prf.vars = [A, B]
-        th = Thm([A, A_to_B], B)
+        th = Thm(B, (A, A_to_B))
         prf.add_item(2, "implies_elim", prevs=[0, 1], th=th)
 
         self.assertEqual(len(prf.items), 3)

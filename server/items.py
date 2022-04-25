@@ -207,7 +207,7 @@ class Axiom(Item):
     def get_extension(self):
         assert self.error is None, "get_extension"
         res = []
-        res.append(extension.Theorem(self.name, Thm([], self.prop)))
+        res.append(extension.Theorem(self.name, Thm(self.prop)))
         for attr in self.attributes:
             res.append(extension.Attribute(self.name, attr))
         return res
@@ -361,7 +361,7 @@ class Definition(Item):
         assert self.error is None, "get_extension"
         res = []
         res.append(extension.Constant(self.name, self.type, ref_name=self.cname))
-        res.append(extension.Theorem(self.cname + "_def", Thm([], self.prop)))
+        res.append(extension.Theorem(self.cname + "_def", Thm(self.prop)))
         for attr in self.attributes:
             res.append(extension.Attribute(self.cname + "_def", attr))
         return res
@@ -467,7 +467,7 @@ class Fun(Item):
         res.append(extension.Constant(self.name, self.type, ref_name=self.cname))
         for i, rule in enumerate(self.rules):
             th_name = self.cname + "_def_" + str(i + 1)
-            res.append(extension.Theorem(th_name, Thm([], rule['prop'])))
+            res.append(extension.Theorem(th_name, Thm(rule['prop'])))
             res.append(extension.Attribute(th_name, "hint_rewrite"))
         return res
 
@@ -556,7 +556,7 @@ class Inductive(Item):
         res.append(extension.Constant(self.name, self.type, ref_name=self.cname))
 
         for rule in self.rules:
-            res.append(extension.Theorem(rule['name'], Thm([], rule['prop'])))
+            res.append(extension.Theorem(rule['name'], Thm(rule['prop'])))
             res.append(extension.Attribute(rule['name'], 'hint_backward'))
 
         # Case rule
@@ -579,7 +579,7 @@ class Inductive(Item):
             assums.append(assum)
 
         prop = Implies(*([assum0] + assums + [P]))
-        res.append(extension.Theorem(self.cname + "_cases", Thm([], prop)))
+        res.append(extension.Theorem(self.cname + "_cases", Thm(prop)))
 
         return res
 
@@ -735,7 +735,7 @@ class Datatype(Item):
             rhs = B(*rhs_vars)
             neq = Not(Eq(lhs, rhs))
             th_name = "%s_%s_%s_neq" % (self.name, constr1['name'], constr2['name'])
-            res.append(extension.Theorem(th_name, Thm([], neq)))
+            res.append(extension.Theorem(th_name, Thm(neq)))
 
         # Add injectivity theorems.
         for constr in self.constrs:
@@ -750,7 +750,7 @@ class Datatype(Item):
                 concls = [Eq(var1, var2) for var1, var2 in zip(lhs_vars, rhs_vars)]
                 concl = And(*concls)
                 th_name = "%s_%s_inject" % (self.name, constr['name'])
-                res.append(extension.Theorem(th_name, Thm([], Implies(assum, concl))))
+                res.append(extension.Theorem(th_name, Thm(Implies(assum, concl))))
 
         # Add the inductive theorem.
         tvars = [TVar(targ) for targ in self.args]
@@ -769,7 +769,7 @@ class Datatype(Item):
             ind_assums.append(ind_assum)
         ind_concl = var_P(Var("x", T))
         th_name = self.name + "_induct"
-        res.append(extension.Theorem(th_name, Thm([], Implies(*(ind_assums + [ind_concl])))))
+        res.append(extension.Theorem(th_name, Thm(Implies(*(ind_assums + [ind_concl])))))
         res.append(extension.Attribute(th_name, "var_induct"))
 
         return res

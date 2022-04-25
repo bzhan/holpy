@@ -162,7 +162,8 @@ class ProofReconstruction(object):
         print(step.seq_num, step.proof_name)
         if step.proof_name != "tmp_ite_elim":
             print(step)
-        self.proof[step.seq_num] = ProofTerm.sorry(Thm([hyp for i in step.assms for hyp in self.proof[i].hyps], step.concl))
+        self.proof[step.seq_num] = ProofTerm.sorry(
+            step.concl, *(self.proof[i].hyps for i in step.assms))
 
     def schematic_rule1(self, th_name, pt):
         """

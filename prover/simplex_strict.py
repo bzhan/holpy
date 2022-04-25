@@ -1131,7 +1131,6 @@ class SimplexHOLWrapper:
             upper_bound_pt = self.upper_bound_pts[contr_var]
             upper_bound_value = upper_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('simplex_delta_macro', upper_bound_value < lower_bound_value)
-            # pt_upper_less_lower = ProofTerm.sorry(Thm([], upper_bound_value < lower_bound_value))
             pt_concl = self.elim_aux_vars(apply_theorem('real_comp_contr2', pt_upper_less_lower, pt_comb, upper_bound_pt).on_prop(
                         top_conv(rewr_conv('real_add_lid')), top_conv(rewr_conv('real_zero_minus'))))
             self.unsat[contr_var] = pt_concl
@@ -1176,7 +1175,6 @@ class SimplexHOLWrapper:
             lower_bound_pt = self.lower_bound_pts[contr_var]
             lower_bound_value = lower_bound_pt.prop.arg
             pt_upper_less_lower = ProofTerm('simplex_delta_macro', upper_bound_value < lower_bound_value)
-            # pt_upper_less_lower = ProofTerm.sorry(Thm([], upper_bound_value < lower_bound_value))
             pt_concl = self.elim_aux_vars(apply_theorem('real_comp_contr1', pt_upper_less_lower, lower_bound_pt, pt_comb).on_prop(
                         top_conv(rewr_conv('real_add_lid')), top_conv(rewr_conv('real_zero_minus'))))
             

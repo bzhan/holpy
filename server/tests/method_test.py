@@ -49,7 +49,7 @@ def test_method(self, thy_name, *, vars=None, assms=None, concl, method_name, pr
         return
 
     method.apply_method(state, args)
-    self.assertEqual(state.check_proof(), Thm([], Implies(*(assms + [concl]))))
+    self.assertEqual(state.check_proof(), Thm(Implies(*(assms + [concl]))))
     
     # Compare list of gaps
     if gaps is None:

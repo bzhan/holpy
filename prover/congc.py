@@ -448,7 +448,7 @@ class CongClosureHOL:
                     if (a, b) in self.pts:
                         eq_pt = self.pts[(a, b)]
                     else:
-                        eq_pt = ProofTerm.sorry(Thm([], Eq(self.index[a], self.index[b])))
+                        eq_pt = ProofTerm.sorry(Thm(Eq(self.index[a], self.index[b])))
                 else:
                     _, ((a1, a2), a), ((b1, b2), b) = eq
                     # We already should have:

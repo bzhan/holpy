@@ -52,7 +52,7 @@ class NotOrMacro(Macro):
         disjs = pt0.prop.arg.strip_disj()
         for d in disjs:
             if d == goal.arg:
-                return Thm(pt0.hyps, goal)
+                return Thm(goal, pt0.hyps)
         raise NotImplementedError
 
     def get_proof_term(self, args, prevs):
@@ -85,13 +85,13 @@ class NotAndMacro(Macro):
             if Not(i) != j:
                 raise NotImplementedError(str(i), str(j))
 
-        return Thm(pt0.hyps, goal)
+        return Thm(goal, pt0.hyps)
 
     def get_proof_term(self, args, prevs):
         goal, pt0 = Or(*args), prevs[0]
         pt1 = pt0.on_prop(conv.top_conv(conv.rewr_conv("de_morgan_thm1")))
         if pt1.prop != goal:
-            return ProofTerm.sorry(Thm(pt0.hyps, goal))
+            return ProofTerm.sorry(Thm(goal, pt0.hyps))
         return pt1
 
 @register_macro("verit_not_not")
@@ -105,7 +105,7 @@ class NotNotMacro(Macro):
     def eval(self, args, prevs=None):
         neg_arg, pos_arg = args
         if neg_arg.arg.arg.arg == pos_arg:
-            return Thm([], Or(neg_arg, pos_arg))
+            return Thm(Or(neg_arg, pos_arg))
         else:
             raise NotImplementedError(str(neg_arg), str(pos_arg))
     
@@ -258,9 +258,9 @@ class ThResolutionMacro(Macro):
 
         _, cl_concl = resolve_order(prems)
         if set(cl_concl) == set(cl):
-            return Thm([hyp for pt in prevs for hyp in pt.hyps], Or(*cl))
+            return Thm(Or(*cl), *(pt.hyps for pt in prevs))
         elif len(cl_concl) == 1 and len(cl) == 1 and Not(Not(cl_concl[0])) == cl[0]:
-            return Thm([hyp for pt in prevs for hyp in pt.hyps], Or(*cl))
+            return Thm(Or(*cl), *(pt.hyps for pt in prevs))
         else:
             raise VeriTException("th_resolution", "unexpected conclusion")
 
@@ -335,7 +335,7 @@ class VeritImpliesMacro(Macro):
         goal = Or(*args)
         pt = prevs[0]
         if Or(Not(pt.prop.arg1), pt.prop.arg) == goal:
-            return Thm(pt.hyps, goal)
+            return Thm(goal, pt.hyps)
         else:
             raise NotImplementedError(str(Or(Not(pt.prop.arg1), pt.prop.arg)), str(goal))
 
@@ -355,14 +355,14 @@ class VeriTAndPos(Macro):
         neg_conj, pk = args
         conjs = neg_conj.arg.strip_conj()
         if pk in conjs:
-            return Thm([], Or(neg_conj, pk))
+            return Thm(Or(neg_conj, pk))
         else:
             if not pk.is_conj():
                 raise VeriTException("and_pos", "can't find the positive literal")
             conjs = set(conjs)
             pk = set(pk.strip_conj())
             if conjs.issuperset(pk):
-                return Thm([], Or(*args))
+                return Thm(Or(*args))
             else:
                 raise VeriTException("and_pos", "unexpected result")
 
@@ -386,7 +386,7 @@ class VeriTOrPos(Macro):
             if a != b:
                 raise NotImplementedError(a, b)
         if tuple(disjs) == tuple(args[1:]):
-            return Thm([], Or(*args))
+            return Thm(Or(*args))
         else:
             raise NotImplementedError
     
@@ -408,7 +408,7 @@ class VeriTNotEquiv1(Macro):
         p1, p2 = args
         pt_p1, pt_p2 = pt.prop.arg.arg1, pt.prop.arg.arg
         if p1 == pt_p1 and p2 == pt_p2:
-            return Thm(pt.hyps, Or(p1, p2))
+            return Thm(Or(p1, p2), pt.hyps)
         else:
             raise NotImplementedError
     
@@ -429,7 +429,7 @@ class VeriTNotEquiv1(Macro):
         p1, p2 = args
         pt_p1, pt_p2 = pt.prop.arg.arg1, pt.prop.arg.arg
         if p1.arg == pt_p1 and p2.arg == pt_p2:
-            return Thm(pt.hyps, Or(p1, p2))
+            return Thm(Or(p1, p2), pt.hyps)
         else:
             raise NotImplementedError
     
@@ -450,7 +450,7 @@ class Equiv1Macro(Macro):
         pt = prevs[0]
         p1, p2 = pt.prop.args
         if Not(p1) == args[0] and p2 == args[1]:
-            return Thm(pt.hyps, Or(*args))
+            return Thm(Or(*args), pt.hyps)
         else:
             raise NotImplementedError
     def get_proof_term(self, args, prevs):
@@ -469,7 +469,7 @@ class Equiv1Macro(Macro):
         pt = prevs[0]
         p1, p2 = pt.prop.args
         if p1 == args[0] and Not(p2) == args[1]:
-            return Thm(pt.hyps, Or(*args))
+            return Thm(Or(*args), pt.hyps)
         else:
             raise NotImplementedError
     def get_proof_term(self, args, prevs):
@@ -495,9 +495,9 @@ class VeriTOrNeg(Macro):
         
         while disj_tm.is_disj():
             if disj_tm.arg1 == neg_tm.arg:
-                return Thm([], Or(*args))
+                return Thm(Or(*args))
             if disj_tm.arg == neg_tm.arg:
-                return Thm([], Or(*args))
+                return Thm(Or(*args))
             disj_tm = disj_tm.arg
         raise VeriTException("or_neg", "unexpected result")
 
@@ -518,7 +518,7 @@ class EqReflexive(Macro):
     def eval(self, args, prevs=None):
         goal = args[0]
         if goal.is_equals() and goal.lhs == goal.rhs:
-            return Thm([], goal)
+            return Thm(goal)
         else:
             raise NotImplementedError
 
@@ -560,9 +560,9 @@ class EqTransitive(Macro):
             raise VeriTException("eq_transitive", "last disjunct must be an equality")
 
         if cur_eq == args[-1]:
-            return Thm([], Or(*args))
+            return Thm(Or(*args))
         elif cur_eq.lhs == args[-1].rhs and cur_eq.rhs == args[-1].lhs:
-            return Thm([], Or(*args))
+            return Thm(Or(*args))
         else:
             raise VeriTException("eq_transitive", "unexpected equality")
 
@@ -637,7 +637,7 @@ class EquivPos1(Macro):
         arg1, arg2, arg3 = args
         eq_tm = arg1.arg
         if eq_tm.arg1 == arg2 and Not(eq_tm.arg) == arg3:
-            return Thm([], Or(*args))
+            return Thm(Or(*args))
         else:
             raise NotImplementedError
     
@@ -656,7 +656,7 @@ class EquivPos2(Macro):
         arg1, arg2, arg3 = args
         eq_tm = arg1.arg
         if Not(eq_tm.arg1) == arg2 and eq_tm.arg == arg3:
-            return Thm([], Or(*args))
+            return Thm(Or(*args))
         else:
             raise NotImplementedError
     
@@ -678,7 +678,7 @@ class ImpEqToMacro(Macro):
         # preds, concl = pt.prop.strip_implies()
         concl = Or(*args[:-1], pt.prop)
         assert concl == goal, "%s %s" % (concl, goal)
-        return Thm([], concl)
+        return Thm(concl)
     
     def get_proof_term(self, args, prevs):
         disjs = [arg.arg for arg in args]
@@ -796,7 +796,7 @@ class DistinctElimMacro(Macro):
         expected_rhs = And(*conjs)
         if not compare_sym_tm(rhs, expected_rhs):
             raise VeriTException("distinct_elim", "incorrect rhs")
-        return Thm([], arg)
+        return Thm(arg)
     
     def get_proof_term(self, goal, prevs=None):
         goal = Or(*goal)
@@ -847,9 +847,9 @@ class AndMacro(Macro):
         arg = args[0]
         while prem.is_conj():
             if arg == prem.arg1:
-                return Thm(prevs[0].hyps, arg)
+                return Thm(arg, prevs[0].hyps)
             if arg == prem.arg:
-                return Thm(prevs[0].hyps, arg)
+                return Thm(arg, prevs[0].hyps)
             prem = prem.arg
 
         # Not found
@@ -887,7 +887,7 @@ class OrMacro(Macro):
         prev_disjs = strip_disj_n(prev, len(args))
         if tuple(prev_disjs) != args:
             raise VeriTException("or", "incorrect conclusion")
-        return Thm(prevs[0].hyps, Or(*args))
+        return Thm(Or(*args), prevs[0].hyps)
 
     def get_proof_term(self, args, prevs):
         # This requires no proof, as the form of the statement is unchanged
@@ -907,7 +907,7 @@ class FalseMacro(Macro):
         arg = args[0]
         if arg != Not(false):
             raise VeriTException("false", "goal must be ~false")
-        return Thm([], arg)
+        return Thm(arg)
 
     def get_proof_term(self, args, prevs=None):
         return logic.apply_theorem("not_false_res")
@@ -931,14 +931,14 @@ class NotSimplifyMacro(Macro):
             raise VeriTException("not_simplify", "lhs should be a negation")
 
         if lhs == Not(false) and rhs == true:
-            return Thm([], arg)
+            return Thm(arg)
         elif lhs == Not(true) and rhs == false:
-            return Thm([], arg)
+            return Thm(arg)
         elif lhs.is_not():
             if not lhs == Not(Not(rhs)):
                 raise VeriTException("not_simplify", "lhs should be equal to the double negation of rhs")
             else:
-                return Thm([], arg)
+                return Thm(arg)
         else:
             raise VeriTException("not_simplify", "negated term should among true, false or negation")
 
@@ -971,16 +971,16 @@ class EqSimplifyMacro(Macro):
 
         if lhs.is_equals():
             if lhs.lhs == lhs.rhs and rhs == true:
-                return Thm([], arg)
+                return Thm(arg)
             elif lhs.lhs != lhs.rhs and rhs == false:
-                return Thm([], arg)
+                return Thm(arg)
             else:
                 raise VeriTException("eq_simplify", "rhs doesn't obey eq_simplify rule")
         elif lhs.is_not():
             if not lhs.arg.is_equals() or lhs.arg.lhs == lhs.arg.rhs:
                 raise VeriTException("eq_simplify", "lhs should be an inequality.")
             if rhs == false:
-                return Thm([], arg)
+                return Thm(arg)
             else:
                 raise VeriTException("eq_simplify", "rhs doesn't obey eq_simplify rule")
         else:
@@ -1027,7 +1027,7 @@ class TransMacro(Macro):
                 raise VeriTException("trans", "cannot connect equalities")
         
         if cur_eq == arg:
-            return Thm([], cur_eq)
+            return Thm(cur_eq)
         else:
             raise VeriTException("trans", "unexpected equality")
 
@@ -1271,7 +1271,7 @@ class CongMacro(Macro):
             ctx.add((prev.rhs, prev.lhs))
 
         if compare_sym_tm(lhs, rhs, ctx=ctx, depth=1):
-            return Thm([hyp for pt in prevs for hyp in pt.hyps], goal)
+            return Thm(goal, *(pt.hyps for pt in prevs))
         else:
             print("lhs", lhs)
             print("rhs", rhs)
@@ -1317,9 +1317,9 @@ class ReflMacro(Macro):
         if not isinstance(ctxt, dict):
             raise VeriTException("refl", "context should be a mapping")
         if goal.lhs.is_var() and goal.lhs.name in ctxt and ctxt[goal.lhs.name] == goal.rhs:
-            return Thm([], goal)
+            return Thm(goal)
         if goal.rhs.is_var() and goal.rhs.name in ctxt and ctxt[goal.rhs.name] == goal.lhs:
-            return Thm([], goal)
+            return Thm(goal)
         else:
             raise VeriTException("refl", "either lhs and rhs of goal is not in ctx")
 
@@ -1425,7 +1425,7 @@ class BFunElimMacro(Macro):
             print("Actual:", arg)
             raise VeriTException("bfun_elim", "unexpected goal")
 
-        return Thm(prevs[0].hyps, arg)
+        return Thm(arg, prevs[0].hyps)
 
 
 def collect_ite(t):
@@ -1472,7 +1472,7 @@ class ITEIntroMacro(Macro):
             print("Expected:", expected_rhs)
             print("Actual:", rhs)
             raise VeriTException("ite_intro", "unexpected goal")
-        return Thm([], arg)
+        return Thm(arg)
 
     def get_proof_term(self, goal, prevs):
         # Obtain left side
@@ -1524,7 +1524,7 @@ class ITE1(Macro):
             raise VeriTException("ite1", "premise must be in if-then-else form")
         if arg1 != prev.args[0] or arg2 != prev.args[2]:
             raise VeriTException("ite1", "unexpected goal")
-        return Thm(prevs[0].hyps, Or(arg1, arg2))
+        return Thm(Or(arg1, arg2), prevs[0].hyps)
 
     def get_proof_term(self, goal, prevs):
         return logic.apply_theorem('verit_ite1', prevs[0])
@@ -1554,7 +1554,7 @@ class ITE2(Macro):
             raise VeriTException("ite2", "premise must be in if-then-else form")
         if arg1 != Not(prev.args[0]) or arg2 != prev.args[1]:
             raise VeriTException("ite2", "unexpected goal")
-        return Thm(prevs[0].hyps, Or(arg1, arg2))
+        return Thm(Or(arg1, arg2), prevs[0].hyps)
 
     def get_proof_term(self, goal, prevs):
         return logic.apply_theorem('verit_ite2', prevs[0])
@@ -1574,7 +1574,7 @@ class AndNegMacro(Macro):
         neg_conj_args = tuple(Not(arg) for arg in conj.strip_conj())
         if neg_disjs != neg_conj_args:
             raise VeriTException("Unexpected goal")
-        return Thm([], Or(*args))
+        return Thm(Or(*args))
 
     def get_proof_term(self, args, prevs):
         # First form (p1 & p2 & ... & pn) | ~(p1 & p2 & ... & pn)
@@ -1605,7 +1605,7 @@ class ContractionMacro(Macro):
                 distinct_disjs.append(disj)
         if tuple(distinct_disjs) != args:
             raise VeriTException("contraction", "unexpected goal")
-        return Thm(prevs[0].hyps, Or(*args))
+        return Thm(Or(*args), prevs[0].hyps)
 
     def get_proof_term(self, goal, prevs):
         prev = prevs[0].prop
@@ -1630,7 +1630,7 @@ class LetMacro(Macro):
         for prop in prop_eq:
             ctx.add((prop.lhs, prop.rhs))
         if compare_sym_tm(goal.lhs, last_step.lhs, ctx=ctx) and goal.rhs == last_step.rhs:
-            return Thm([], goal)
+            return Thm(goal)
         else:
             raise VeriTException("let", "Unexpected result")
 
@@ -1783,7 +1783,7 @@ class ACSimpMacro(Macro):
         if not lhs.is_conj() and not lhs.is_disj():
             raise VeriTException("ac_simp", "lhs and rhs are not both disjunction or conjunction.")
         if compare_ac(lhs, rhs):
-            return Thm([], goal)
+            return Thm(goal)
         else:
             print('lhs:', lhs)
             print('rhs:', rhs)
@@ -1859,7 +1859,7 @@ class AndSimplifyMacro(Macro):
             if conj != true:
                 elim_true_conj.append(conj)
         if And(*elim_true_conj) == goal.rhs:
-            return Thm([], goal)
+            return Thm(goal)
 
         # Case 3: remove duplicates
         nodup_conj = []
@@ -1867,18 +1867,18 @@ class AndSimplifyMacro(Macro):
             if conj not in nodup_conj:
                 nodup_conj.append(conj)
         if And(*nodup_conj) == goal.rhs:
-            return Thm([], goal)
+            return Thm(goal)
 
         # Case 4: false appears on the left side, and right side is false.
         if false in lhs_conjs and goal.rhs == false:
-            return Thm([], goal)
+            return Thm(goal)
 
         # Case 5: p_1 & .... & p_n <--> false if ?i, j. p_i = ~p_j
         for i in range(len(lhs_conjs)):
             for j in range(i+1, len(lhs_conjs)):
                 if Not(lhs_conjs[i]) == lhs_conjs[j] or lhs_conjs[i] == Not(lhs_conjs[j]):
                     if goal.rhs == false:
-                        return Thm([], goal)
+                        return Thm(goal)
 
         print('goal', goal)
         raise VeriTException("and_simplify", "unexpected rhs")
@@ -2000,7 +2000,7 @@ class OrSimplifyMacro(Macro):
             for j in range(i+1, len(lhs_disjs)):
                 if Not(lhs_disjs[i]) == lhs_disjs[j] or lhs_disjs[i] == Not(lhs_disjs[j]):
                     if goal.rhs == true:
-                        return Thm([], goal)
+                        return Thm(goal)
                     else:
                         raise VeriTException("or_simplify", "unexpected rhs")
         
@@ -2010,10 +2010,10 @@ class OrSimplifyMacro(Macro):
             if disj != false:
                 elim_true_disj.append(disj)
         if Or(*elim_true_disj) == goal.rhs:
-            return Thm([], goal)
+            return Thm(goal)
         if true in lhs_disjs:
             if goal.rhs == true:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("or_simplify", "unexpected rhs")
         raise VeriTException("or_simplify", "haven't implemented")
@@ -2078,7 +2078,7 @@ class BoolSimplifyMacro(Macro):
             l_p, l_q = lhs.arg.args
             r_p, r_q = rhs.args
             if l_p == r_p and Not(l_q) == r_q:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match  ~(p --> q) <--> (p and ~q)")
         # case 2: ~(p | q) <--> (~p & ~q)
@@ -2086,7 +2086,7 @@ class BoolSimplifyMacro(Macro):
             l_p, l_q = lhs.arg.args
             r_p, r_q = rhs.args
             if Not(l_p) == r_p and Not(l_q) == r_q:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match ~(p | q) <--> (~p & ~q)")
         # case 3: ~(p & q) <--> (~p | ~q)
@@ -2094,7 +2094,7 @@ class BoolSimplifyMacro(Macro):
             l_p, l_q = lhs.arg.args
             r_p, r_q = rhs.args
             if Not(l_p) == r_p and Not(l_q) == r_q:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match ~(p | q) <--> (~p & ~q)")
         # case 4: (p1 --> p2 --> p3) <--> (q1 & q2) --> q3
@@ -2102,7 +2102,7 @@ class BoolSimplifyMacro(Macro):
             p1, p2, p3 = lhs.arg1, lhs.arg.arg1, lhs.arg.arg
             q1, q2, q3 = rhs.arg1.arg1, rhs.arg1.arg, rhs.arg
             if p1 == q1 and p2 == q2 and p3 == q3:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match (p1 --> p2 --> p3) <--> (q1 & q2) --> q3")
         # case 5: ((p1 --> p2) --> p2) <--> p1 | p2
@@ -2111,7 +2111,7 @@ class BoolSimplifyMacro(Macro):
             # q1, q2, q3 = rhs.arg1.arg1, rhs.arg1.arg, rhs.arg
             q1, q2 = rhs.args
             if p1 == q1 and p2 == q2 and p3 == q2:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match ((p1 --> p2) --> p2) <--> p1 | p2")
         # case 6: (p1 & (p1 --> p2)) <--> p1 & p2
@@ -2119,7 +2119,7 @@ class BoolSimplifyMacro(Macro):
             p1, p2, p3 = lhs.arg1, lhs.arg.arg1, lhs.arg.arg
             q1, q2 = rhs.args
             if p1 == p2 and p1 == q1 and p3 == q2:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match (p1 & (p1 --> p2)) <--> p1 & p2")
         # case 7: (p1 --> p2) & p1 <--> p1 & p2
@@ -2127,7 +2127,7 @@ class BoolSimplifyMacro(Macro):
             p1, p2, p3 = lhs.arg1.arg1, lhs.arg1.arg, lhs.arg
             q1, q2 = rhs.args
             if p1 == p3 and p1 == q1 and p2 == q2:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match (p1 --> p2) & p1 <--> p1 & p2")
         else:
@@ -2228,7 +2228,7 @@ class LADisequalityMacro(Macro):
 
         if eq_t1 == neg_less_eq_t1 and eq_t1 == neg_less_eq_sym_t2 and \
                 eq_t2 == neg_less_eq_t2 and eq_t2 == neg_less_eq_sym_t1:
-            return Thm([], goal)
+            return Thm(goal)
         else:
             raise VeriTException("verit_la_disequality", "can't match goal")
 
@@ -2271,10 +2271,10 @@ class SumSimplifyMacro(Macro):
 
         lhs_simp = split_num_expr(lhs)
         if lhs_simp == rhs:
-            return Thm([], goal)
+            return Thm(goal)
         elif lhs_simp == split_num_expr(rhs):
             """Verit bugs: QF_UFLIA\\wisas\\xs_5_10.smt2 step t27 rhs side has zero on the right."""
-            return Thm([], goal)
+            return Thm(goal)
         else:
             raise VeriTException("sum_simplify", "unexpected result")
 
@@ -2312,26 +2312,26 @@ class CompSimplifyMacro(Macro):
             t1_n, t2_n = eval_hol_number(t1), eval_hol_number(t2)
             if lhs.is_less():
                 if t1_n < t2_n and rhs == true:
-                    return Thm([], goal)
+                    return Thm(goal)
                 elif t1_n >= t2_n and rhs == false:
-                    return Thm([], goal)
+                    return Thm(goal)
                 else:
                     raise VeriTException("comp_simplify", "unexpected lhs")
             elif lhs.is_less_eq():
                 if t1_n <= t2_n and rhs == true:
-                    return Thm([], goal)
+                    return Thm(goal)
                 elif t1_n > t2_n and rhs == false:
-                    return Thm([], goal)
+                    return Thm(goal)
                 else:
                     raise VeriTException("comp_simplify", "unexpected lhs")
             else:
                 raise VeriTException("comp_simplify", "lhs should be a less or less_eq term")
         # Case 2: a < a <--> false
         if lhs.is_less() and lhs.arg1 == lhs.arg and rhs == false:
-            return Thm([], goal)
+            return Thm(goal)
         # Case 4: a <= a <--> true
         if lhs.is_less_eq() and lhs.arg1 == lhs.arg and rhs == true:
-            return Thm([], goal)
+            return Thm(goal)
         # Case 5: a >= b <--> b <= a 
         if lhs.is_greater_eq():
             if not rhs.is_less_eq():
@@ -2339,7 +2339,7 @@ class CompSimplifyMacro(Macro):
             l_a, l_b = lhs.args
             r_a, r_b = rhs.args
             if l_a == r_b and l_b == r_a:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("comp_simplify", "can't match a >= b <--> b <= a")
         # Case 6: a < b <--> ~(b <= a)
@@ -2349,7 +2349,7 @@ class CompSimplifyMacro(Macro):
             l_a, l_b = lhs.args
             r_a, r_b = rhs.arg.args
             if l_a == r_b and l_b == r_a:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 print("lhs", lhs, l_a, l_b)
                 print("rhs", rhs, r_a, r_b)
@@ -2361,7 +2361,7 @@ class CompSimplifyMacro(Macro):
             l_a, l_b = lhs.args
             r_a, r_b = rhs.arg.args
             if l_a == r_a and l_b == r_b:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 print("lhs", lhs, l_a, l_b)
                 print("rhs", rhs, r_a, r_b)
@@ -2393,19 +2393,19 @@ class ITESimplifyMacro(Macro):
 
             # Case 4: ite ~P x y <--> ite P y x
             if l_P == Not(r_P) and l_then == r_else and l_else == r_then:
-                return Thm([], goal)
+                return Thm(goal)
             # Case 7: ite P (ite P x y) z <--> ite P x z
             elif logic.is_if(l_then):
                 l_then_P, l_then_then, _ = l_then.args
                 if l_P == l_then_P and l_then_then == r_then and l_else == r_else:
-                    return Thm([], goal)
+                    return Thm(goal)
                 else:
                     raise VeriTException("ite_simplify", "can't match ite P (ite P x y) z <--> ite P x z")
             # Case 8: ite P x (ite P y z) <--> ite P x z
             elif logic.is_if(l_else):
                 l_else_P, _, l_else_else = l_then.args
                 if l_P == l_else_P and l_then == r_then and l_else_else == r_else:
-                    return Thm([], goal)
+                    return Thm(goal)
                 else:
                     raise VeriTException("ite_simplify", "can't match ite P x (ite P y z) <--> ite P x z")
             else:
@@ -2414,31 +2414,31 @@ class ITESimplifyMacro(Macro):
             l_P, l_then, l_else = lhs.args
             # Case 1: ite true x y <--> x (repeat case 5)
             if l_P == true and rhs == l_then:
-                return Thm([], goal)
+                return Thm(goal)
             # Case 2: ite false x y <--> y (repeat case 6)
             elif l_P == false and rhs == l_else:
-                return Thm([], goal)
+                return Thm(goal)
             # Case 3: ite P x x <--> x
             elif l_then == l_else and rhs == l_then:
-                return Thm([], goal)
+                return Thm(goal)
             # Case 9: ite P true false <--> P
             elif l_then == true and l_else == false and rhs == l_P:
-                return Thm([], goal)
+                return Thm(goal)
             # Case 10: ite P false true <--> ~P
             elif l_then == false and l_else == true and rhs == Not(l_P):
-                return Thm([], goal)
+                return Thm(goal)
             # Case 11: ite P true Q <--> P | Q
             elif l_then == true and rhs == Or(l_P, l_else):
-                return Thm([], goal)
+                return Thm(goal)
             # Case 12: ite P Q false <--> P & Q
             elif l_else == false and rhs == And(l_P, l_then):
-                return Thm([], goal)
+                return Thm(goal)
             # Case 13: ite P false Q <--> ~P & Q
             elif l_then == false and rhs == And(Not(l_P, l_else)):
-                return Thm([], goal)
+                return Thm(goal)
             # Case 14: ite P Q true <--> ~P | Q
             elif l_else == true and rhs == Or(Not(l_P), l_then):
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 print("lhs", lhs)
                 print("rhs", rhs)
@@ -2465,16 +2465,16 @@ class MinusSimplify(Macro):
         T = lhs.get_type()
         if lhs.is_constant() and rhs.is_constant(): # bugs in verit, it should be proved by uminus_simplify
             if T == hol_type.IntType and integer.int_eval(lhs) == integer.int_eval(rhs):
-                return Thm([], goal)
+                return Thm(goal)
             elif T == hol_type.RealType and real.real_eval(lhs) == real.real_eval(rhs):
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("minus_simplify", "unexpected result")
         elif rhs.is_minus():
             rhs_arg = rhs.arg
             if rhs_arg.is_zero():
                 # it is a bug in verit, minus_simplify only can prove t - 0 = t rather than t = t - 0
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 print("rhs", repr(rhs_arg))
                 raise VeriTException("minus_simplify", "unexpected result")
@@ -2482,7 +2482,7 @@ class MinusSimplify(Macro):
             l_arg1, l_arg2 = lhs.args
             r_arg = rhs.arg
             if l_arg1.is_zero() and l_arg2 == r_arg:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("minus_simplify", "unexpected result")
         raise NotImplementedError
@@ -2541,14 +2541,14 @@ class UnaryMinusSimplifyMacro(Macro):
         lhs_neg_tm = lhs.arg
         if lhs_neg_tm.is_minus():
             if lhs_neg_tm.arg == rhs:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("minus_simplify", "-(-lhs) != lhs")
         elif lhs_neg_tm.is_constant():
             lhs_num = integer.int_eval(lhs)
             rhs_num = integer.int_eval(rhs)
             if  lhs_num == rhs_num:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("minus_simplify", "lhs and rhs should be equal after evaluation")
         else:
@@ -2601,7 +2601,7 @@ class ConnectiveDefMacro(Macro):
                 q1, q2 = rhs.arg1.args
                 o1, o2 = rhs.arg.args
                 if q1 == p1 and o2 == p1 and p2 == q2 and p1 == o2:
-                    return Thm([], goal)
+                    return Thm(goal)
                 else:
                     raise VeriTException("verit_connective_def", "can't match  (p <--> q) <--> (p --> q) /\ (q --> p)")
             else:
@@ -2612,12 +2612,12 @@ class ConnectiveDefMacro(Macro):
                 q1, q2 = rhs.arg1.args
                 o1, o2 = rhs.arg.args
                 if q1 == p1 and o1 == Not(p1) and p2 == q2 and o2 == Not(p2):
-                    return Thm([], goal)
+                    return Thm(goal)
         elif lhs.is_exists() and rhs.is_not() and rhs.arg.is_forall():
             l_var, l_body = lhs.strip_exists()
             r_var, r_body = rhs.arg.strip_forall()
             if l_var == r_var and Not(l_body) == r_body:
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("verit_connective_def", "can't match ?x. P(x) <--> ~!x. ~P(x)")
         else:
@@ -2672,7 +2672,7 @@ class BindMacro(Macro):
                 raise VeriTException("verit_bind", "can't map lhs quantified variables to rhs")
         prev_lhs, prev_rhs = prevs[0].prop.args
         if prev_lhs == l_bd and prev_rhs == r_bd:
-            return Thm([], goal)
+            return Thm(goal)
         else:
             print('prem', prem)
             print('goal', goal)
@@ -2700,9 +2700,9 @@ class ForallInstMacro(Macro):
         for _, var in args[1:]:
             forall_tm = forall_tm.arg.subst_bound(var)
         if forall_tm == inst_tm:
-            return Thm([], goal)
+            return Thm(goal)
         elif compare_sym_tm(forall_tm, inst_tm):
-            return Thm([], goal)
+            return Thm(goal)
         else:
             print("forall_tm", forall_tm)
             print("rhs", inst_tm)
@@ -2725,7 +2725,7 @@ class ImpliesPosMacro(Macro):
         arg1_p1, arg1_p2 = arg1.arg.args
         arg2_p1 = arg2.arg
         if arg1_p1 == arg2_p1 and arg1_p2 == arg3:
-            return Thm([], Or(*args))
+            return Thm(Or(*args))
         else:
             raise VeriTException("implies_pos", "unexpected result")
 
@@ -2747,18 +2747,18 @@ class ImpliesSimplifyMacro(Macro):
             p1, p2 = lhs.args
             q1, q2 = rhs.args
             if p1 == Not(q2) and p2 == Not(q1):
-                return Thm([], goal)
+                return Thm(goal)
             else:
                 raise VeriTException("implies_simplify", "can't match (~p1 --> ~p2) <--> (p2 --> p1)")
         # case 3 (p --> true) --> true
         elif concl == true and concl == rhs:
-            return Thm([], goal)
+            return Thm(goal)
         # case 4: (p1 --> p1) <--> true
         elif prem == true and concl == rhs:
-            return Thm([], goal)
+            return Thm(goal)
         # case 5: (p1 --> false) <--> ~p1
         elif concl == false and Not(prem) == rhs:
-            return Thm([], goal)
+            return Thm(goal)
         else:
             print("goal", goal)
             raise VeriTException("implies_simplify", "implementation is incomplete")
@@ -2779,7 +2779,7 @@ class ITEPos2Macro(Macro):
             raise VeriTException("ite_pos1", "unexpected arguments")
         p1, _, p3 = arg1.arg.args
         if p1 == arg2 and p3 == arg3:
-            return Thm([], Or(*args))
+            return Thm(Or(*args))
         else:
             raise VeriTException("ite_pos1", "unexpected result")
 
@@ -2799,7 +2799,7 @@ class ITEPos2Macro(Macro):
         p1, p2, p3 = arg1.arg.args
         q1 = arg2.arg
         if p1 == q1 and p2 == arg3:
-            return Thm([], Or(*args))
+            return Thm(Or(*args))
         else:
             raise VeriTException("ite_pos2", "unexpected results")
 
@@ -2825,7 +2825,7 @@ class SubProofMacro(Macro):
         goal_neg_tms = args[:-1]
         goal_concl = args[-1]
         if all(g == Not(p) for g, p in zip(goal_neg_tms, input_prop)) and goal_concl == concl:
-            return Thm([], Or(*args))
+            return Thm(Or(*args))
         else:
             raise VeriTException("subproof", "unexpected result")
 
@@ -2885,7 +2885,7 @@ class SkoExMacro(Macro):
                 print('exp_x_body:', exp_x_body)
                 raise VeriTException("sko_ex", "unexpected result")
 
-        return Thm([], goal)
+        return Thm(goal)
 
 @register_macro("verit_sko_forall")
 class SkoForallMacro(Macro):
@@ -2948,7 +2948,7 @@ class SkoForallMacro(Macro):
                 print('exp_x_body:', exp_x_body)
                 raise VeriTException("sko_forall", "unexpected result")
 
-        return Thm([], goal)
+        return Thm(goal)
 
 @register_macro("verit_onepoint")
 class OnepointMacro(Macro):
@@ -2989,7 +2989,7 @@ class OnepointMacro(Macro):
             subst_lhs = hol_term.Abs(v.name, T, subst_lhs.abstract_over(v)).subst_bound(tm)
 
         if compare_sym_tm(subst_lhs, pt.rhs):
-            return Thm([], goal)
+            return Thm(goal)
         else:
             raise VeriTException("onepoint", "unexpected result")
 
@@ -3094,7 +3094,7 @@ class QntCnfMacro(Macro):
 
         cnf_body_conjs = cnf_body.strip_conj()
         if any(concl_body == t for t in cnf_body_conjs):
-            return Thm([], arg)
+            return Thm(arg)
 
         print("args")
         for arg in args:
@@ -3194,7 +3194,7 @@ class ImpliesNeg1Macro(Macro):
     def eval(self, args, prevs):
         if len(args) != 2 or not args[0].is_implies() or args[0].arg1 != args[1]:
             raise VeriTException("implies_neg1", "unexpected arguments")
-        return Thm([], Or(*args))
+        return Thm(Or(*args))
 
     def get_proof_term(self, args, prevs=None):
         return logic.apply_theorem("verit_implies_neg1", concl=Or(*args))
@@ -3209,7 +3209,7 @@ class ImpliesNeg1Macro(Macro):
     def eval(self, args, prevs):
         if len(args) != 2 or not args[0].is_implies() or Not(args[0].arg) != args[1]:
             raise VeriTException("implies_neg2", "unexpected arguments")
-        return Thm([], Or(*args))
+        return Thm(Or(*args))
 
     def get_proof_term(self, args, prevs=None):
         return logic.apply_theorem("verit_implies_neg2", concl=Or(*args))
@@ -3234,7 +3234,7 @@ class QNTSimplifyMacro(Macro):
         
         _, l_bd = lhs.strip_forall()
         if l_bd == rhs:
-            return Thm([], goal)
+            return Thm(goal)
         else:
             raise VeriTException("qnf_simplify", "unexpected result")
 
@@ -3270,7 +3270,7 @@ class QNTJoinMacro(Macro):
         if lhs != rhs:
             raise VeriTException("qnt_join", "implementation is incomplete")
 
-        return Thm([], Eq(args[0].lhs, args[0].rhs))
+        return Thm(Eq(args[0].lhs, args[0].rhs))
 
     def get_proof_term(self, args, prevs):
         return logic.apply_theorem("eq_refl", concl=args[0])
@@ -3292,7 +3292,7 @@ class EquivNeg1Macro(Macro):
 
         lhs, rhs = eq.args
         if p1 == Not(lhs) and p2 == Not(rhs):
-            return Thm([], Or(*args))
+            return Thm(Or(*args))
         else:
             raise VeriTException("equiv_neg1", "unexpected result")
 
@@ -3316,7 +3316,7 @@ class EquivNeg1Macro(Macro):
 
         lhs, rhs = eq.args
         if p1 == lhs and p2 == rhs:
-            return Thm([], Or(*args))
+            return Thm(Or(*args))
         else:
             raise VeriTException("equiv_neg2", "unexpected result")
 
@@ -3346,7 +3346,7 @@ class LaRwEqMacro(Macro):
         less_eq1, less_eq2 = rhs.args
         # (t = u) <--> (t <= u) & (u <= t)
         if t == less_eq1.arg1 and t == less_eq2.arg and u == less_eq1.arg and u == less_eq2.arg1:
-            return Thm([], goal)
+            return Thm(goal)
         else:
             raise VeriTException("la_rw_eq", "unexpected result")
 

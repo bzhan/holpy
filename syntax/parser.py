@@ -366,7 +366,7 @@ class HOLTransformer(Transformer):
         return interval.mk_interval(m, n)
 
     def thm(self, *args):
-        return Thm(args[:-1], args[-1])
+        return Thm(args[-1], tuple(args[:-1]))
 
     def term_pair(self, name, T):
         return (str(name), T)

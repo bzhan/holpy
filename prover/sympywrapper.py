@@ -189,8 +189,7 @@ class SymPyMacro(Macro):
 
     def eval(self, goal, prevs):
         assert self.can_eval(goal, prevs), "sympy: not solved."
-
-        return Thm(sum([th.hyps for th in prevs], ()), goal)
+        return Thm(goal, *(th.hyps for th in prevs))
 
 
 def sympy_solve(goal, pts):
@@ -199,7 +198,7 @@ def sympy_solve(goal, pts):
 
     macro = SymPyMacro()
     if macro.can_eval(goal, pts):
-        th = Thm(sum([th.hyps for th in pts], ()), goal)
+        th = Thm(goal, *(th.hyps for th in prevs))
         return ProofTerm('sympy', args=goal, prevs=pts, th=th)
     else:
         raise TacticException

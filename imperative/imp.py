@@ -258,7 +258,7 @@ class vcg_tactic(Tactic):
         T = Q.get_type().domain_type()
         pt = vcg_norm(T, goal.prop)
 
-        ptAs = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in pt.assums]
+        ptAs = [ProofTerm.sorry(Thm(A, goal.hyps)) for A in pt.assums]
         return ProofTerm("vcg", goal.prop, ptAs)
 
 

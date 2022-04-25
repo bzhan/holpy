@@ -42,16 +42,16 @@ class ProofTermTest(unittest.TestCase):
 
     def testExport3(self):
         """Case with atoms."""
-        pt1 = ProofTerm.atom(0, Thm([], Eq(x,y)))
-        pt2 = ProofTerm.atom(1, Thm([], Eq(y,z)))
+        pt1 = ProofTerm.atom(0, Thm(Eq(x,y)))
+        pt2 = ProofTerm.atom(1, Thm(Eq(y,z)))
         pt3 = pt1.transitive(pt2)
 
         prf = Proof()
-        prf.add_item(0, rule="sorry", th=Thm([], Eq(x,y)))
-        prf.add_item(1, rule="sorry", th=Thm([], Eq(y,z)))
+        prf.add_item(0, rule="sorry", th=Thm(Eq(x,y)))
+        prf.add_item(1, rule="sorry", th=Thm(Eq(y,z)))
         pt3.export(prf=prf)
 
-        self.assertEqual(theory.check_proof(prf), Thm([], Eq(x,z)))
+        self.assertEqual(theory.check_proof(prf), Thm(Eq(x,z)))
 
 
 if __name__ == "__main__":

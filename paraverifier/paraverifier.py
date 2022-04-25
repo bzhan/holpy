@@ -173,7 +173,7 @@ class ParaSystem():
 
         exts = [
             extension.Constant("inv", TFun(gcl.stateT, BoolType)),
-            extension.Theorem("inv_def", Thm([], prop))
+            extension.Theorem("inv_def", Thm(prop))
         ]
         theory.thy.unchecked_extend(exts)
         # print(printer.print_extensions(exts))
@@ -202,7 +202,7 @@ class ParaSystem():
         transC = Const("trans", TFun(gcl.stateT, gcl.stateT, BoolType))
         s1 = Var("s1", gcl.stateT)
         s2 = Var("s2", gcl.stateT)
-        prop = Thm([], Implies(invC(s1), transC(s1,s2), invC(s2)))
+        prop = Thm(Implies(invC(s1), transC(s1,s2), invC(s2)))
         # print(printer.print_thm(prop))
 
         trans_pt = ProofTerm.assume(transC(s1,s2))
@@ -244,7 +244,7 @@ def load_system(filename):
 
     for i, nm in enumerate(data['states']):
         theory.thy.add_term_sig(nm, NatType)
-        theory.thy.add_theorem(nm + "_def", Thm([], Eq(Const(nm, NatType), Nat(i))))
+        theory.thy.add_theorem(nm + "_def", Thm(Eq(Const(nm, NatType), Nat(i))))
 
     states = [Const(nm, NatType) for nm in data['states']]
 

@@ -210,7 +210,7 @@ class real_eval_macro(Macro):
         assert goal.is_equals(), "real_eval_macro: goal must be an equality"
         assert real_eval(goal.lhs) == real_eval(goal.rhs), "real_eval_macro: two sides are not equal"
 
-        return Thm([], goal)
+        return Thm(goal)
 
 class real_eval_conv(Conv):
     """Simplify all arithmetic operations."""
@@ -759,7 +759,7 @@ class real_norm_macro(Macro):
         assert len(pts) == 0, "real_norm_macro"
         assert self.can_eval(goal), "real_norm_macro"
 
-        return Thm([], goal)
+        return Thm(goal)
 
     def can_eval(self, goal):
         assert isinstance(goal, Term), "real_norm_macro"
@@ -878,19 +878,19 @@ class RealEqMacro(Macro):
         try:
             if goal.is_equals():
                 if real_eval(goal.lhs) == real_eval(goal.rhs):
-                    return Thm([], Eq(goal, true))
+                    return Thm(Eq(goal, true))
                 else:
-                    return Thm([], Eq(goal, false))
+                    return Thm(Eq(goal, false))
             else: # inequations
                 lhs, rhs = real_eval(goal.arg1), real_eval(goal.arg)
                 if goal.is_less():
-                    return Thm([], Eq(goal, true)) if lhs < rhs else Thm([], Eq(goal, false))
+                    return Thm(Eq(goal, true)) if lhs < rhs else Thm(Eq(goal, false))
                 elif goal.is_less_eq():
-                    return Thm([], Eq(goal, true)) if lhs <= rhs else Thm([], Eq(goal, false))
+                    return Thm(Eq(goal, true)) if lhs <= rhs else Thm(Eq(goal, false))
                 elif goal.is_greater():
-                    return Thm([], Eq(goal, true)) if lhs > rhs else Thm([], Eq(goal, false))
+                    return Thm(Eq(goal, true)) if lhs > rhs else Thm(Eq(goal, false))
                 elif goal.is_greater_eq():
-                    return Thm([], Eq(goal, true)) if lhs >= rhs else Thm([], Eq(goal, false))
+                    return Thm(Eq(goal, true)) if lhs >= rhs else Thm(Eq(goal, false))
                 else:
                     raise NotImplementedError
         except:
@@ -1003,7 +1003,7 @@ class RealCompareMacro(Macro):
         elif goal.is_greater_eq():
             assert lhs >= rhs, "%f !>= %f" % (lhs, rhs)
         
-        return Thm([], goal)
+        return Thm(goal)
 
 
 @register_macro('real_const_ineq')
@@ -1025,29 +1025,29 @@ class real_const_ineq_macro(Macro):
         lhs, rhs = real_eval(goal.arg1), real_eval(goal.arg)
         if goal.is_less():
             if lhs < rhs:
-                return Thm([], goal)
+                return Thm(goal)
             else:
-                return Thm([], Not(goal))
+                return Thm(Not(goal))
         elif goal.is_less_eq():
             if lhs <= rhs:
-                return Thm([], goal)
+                return Thm(goal)
             else:
-                return Thm([], Not(goal))
+                return Thm(Not(goal))
         elif goal.is_greater():
             if lhs > rhs:
-                return Thm([], goal)
+                return Thm(goal)
             else:
-                return Thm([], Not(goal))
+                return Thm(Not(goal))
         elif goal.is_greater_eq():
             if lhs >= rhs:
-                return Thm([], goal)
+                return Thm(goal)
             else:
-                return Thm([], Not(goal))
+                return Thm(Not(goal))
         elif goal.is_equals():
             if lhs == rhs:
-                return Thm([], goal)
+                return Thm(goal)
             else:
-                return Thm([], Not(goal))
+                return Thm(Not(goal))
         else:
             raise NotImplementedError
 

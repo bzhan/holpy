@@ -33,8 +33,11 @@ def test_macro(self: unittest.TestCase, thy_name: str, macro: Macro, *,
     context.set_context(thy_name, vars=vars, limit=limit)
 
     macro = theory.global_macros[macro]
-    assms = [parser.parse_term(assm) for assm in assms] if assms is not None else []
-    prev_ths = [Thm([assm], assm) for assm in assms]
+    if assms is not None:
+        assms = tuple(parser.parse_term(assm) for assm in assms)
+    else:
+        assms = tuple()
+    prev_ths = [Thm(assm, assm) for assm in assms]
     prevs = [ProofTerm.assume(assm) for assm in assms]
     args = parser.parse_args(macro.sig, args)
 
@@ -47,13 +50,13 @@ def test_macro(self: unittest.TestCase, thy_name: str, macro: Macro, *,
     res = parser.parse_term(res)
 
     # Check the eval function
-    self.assertEqual(macro.eval(args, prev_ths), Thm(assms, res))
+    self.assertEqual(macro.eval(args, prev_ths), Thm(res, assms))
 
     # Check the proof term
     if not eval_only:
         pt = macro.get_proof_term(args, prevs)
         prf = pt.export()
-        self.assertEqual(theory.check_proof(prf), Thm(assms, res))
+        self.assertEqual(theory.check_proof(prf), Thm(res, assms))
 
 class LogicTest(unittest.TestCase):
     def testGetForallName(self):
@@ -132,10 +135,10 @@ class LogicTest(unittest.TestCase):
         pt1 = ProofTerm.assume(ex_P)
         pt2 = ProofTerm.variable('x', Ta)
         pt3 = ProofTerm.assume(P(x))
-        pt4 = ProofTerm.sorry(Thm([P(x)], C))
+        pt4 = ProofTerm.sorry(Thm(C, P(x)))
         pt4 = ProofTerm('intros', args=[ex_P], prevs=[pt1, pt2, pt3, pt4])
         prf = pt4.export()
-        self.assertEqual(theory.check_proof(prf), Thm([ex_P], C))
+        self.assertEqual(theory.check_proof(prf), Thm(C, ex_P))
 
     def testRewriteGoal(self):
         test_macro(

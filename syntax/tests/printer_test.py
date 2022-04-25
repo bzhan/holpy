@@ -377,7 +377,7 @@ class PrinterTest(unittest.TestCase):
         A = Var('A', BoolType)
         B = Var('B', BoolType)
         A_to_B = Implies(A, B)
-        th = Thm([A, A_to_B], B)
+        th = Thm(B, (A, A_to_B))
         with global_setting(unicode=False, highlight=True):
             res = printer.print_thm(th)
         self.assertEqual(res, [

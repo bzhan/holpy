@@ -106,7 +106,7 @@ class ComTest(unittest.TestCase):
         method.apply_method(state, {
             'method_name': 'z3',
             'goal_id': "0"})
-        self.assertEqual(state.check_proof(no_gaps=True), Thm([], goal))
+        self.assertEqual(state.check_proof(no_gaps=True), Thm(goal))
 
     def testVerify2(self):
         m = Var('m')
@@ -132,7 +132,7 @@ class ComTest(unittest.TestCase):
         method.apply_method(state, {
             'method_name': 'z3',
             'goal_id': "0"})
-        self.assertEqual(state.check_proof(no_gaps=True), Thm([], goal))
+        self.assertEqual(state.check_proof(no_gaps=True), Thm(goal))
 
 
 if __name__ == "__main__":

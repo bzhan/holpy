@@ -401,10 +401,10 @@ class ParserTest(unittest.TestCase):
         B = Var('B', BoolType)
         C = Var('C', BoolType)
         test_data = [
-            ("|- A", Thm([], A)),
-            ("|- A & B", Thm([], And(A, B))),
-            ("A |- B", Thm([A], B)),
-            ("A, B |- C", Thm([A, B], C)),
+            ("|- A", Thm(A)),
+            ("|- A & B", Thm(And(A, B))),
+            ("A |- B", Thm(B, A)),
+            ("A, B |- C", Thm(C, (A, B))),
         ]
 
         context.set_context('logic', vars={'A': 'bool', 'B': 'bool', 'C': 'bool'})
@@ -424,7 +424,7 @@ class ParserTest(unittest.TestCase):
             ({'id': "8", 'rule': "implies_intr", 'args': "conj A B", 'prevs': ["7"], 'th': ""},
              ProofItem(8, "implies_intr", args=And(A, B), prevs=[7])),
             ({'id': "0", 'rule': "sorry", 'args': "", 'prevs': [], 'th': "conj A B |- conj B A"},
-             ProofItem(0, "sorry", th=Thm([And(A, B)], And(B, A)))),
+             ProofItem(0, "sorry", th=Thm(And(B, A), And(A, B)))),
             ({'id': "1", 'rule': "", 'args': "", 'prevs': [], 'th': ""},
              ProofItem(1, "")),
             ({'id': "5", 'rule': "apply_theorem_for", 'args': "disjI1, {A: B, B: A}", 'prevs': [4], 'th': ""},

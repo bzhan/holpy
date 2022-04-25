@@ -180,7 +180,7 @@ class beta_norm_macro(Macro):
     def eval(self, args, ths):
         assert args is None, "beta_norm_macro"
         eq_th = beta_norm_conv().eval(ths[0].prop)
-        return Thm(ths[0].hyps, eq_th.prop.arg)
+        return Thm(eq_th.prop.arg, ths[0].hyps)
 
     def get_proof_term(self, args, pts):
         assert args is None, "beta_norm_macro"
@@ -264,8 +264,7 @@ class apply_theorem_macro(Macro):
             As, C = th.prop.subst_norm(inst).strip_implies()
         new_prop = Implies(*(As[len(prevs):] + [C]))
 
-        prev_hyps = sum([prev.hyps for prev in prevs], ())
-        th = Thm(th.hyps + prev_hyps, new_prop)
+        th = Thm(new_prop, th.hyps, *(prev.hyps for prev in prevs))
 
         # Obtain list of remaining schematic variables
         remain_svars = [t.subst_type(inst.tyinst) for t in svars if t.name not in inst]
@@ -387,7 +386,7 @@ class rewrite_goal_macro(Macro):
 
         # Simply produce the goal
         _, goal = args
-        return Thm(sum([th.hyps for th in ths], ()), goal)
+        return Thm(goal, *(th.hyps for th in ths))
 
     def get_proof_term(self, args, pts):
         assert isinstance(args, tuple) and len(args) == 2 and \
@@ -626,7 +625,7 @@ class imp_conj_macro(Macro):
         As, C = args.strip_implies()
         assert len(As) == 1, 'imp_conj_macro'
         assert strip(C).issubset(strip(As[0])), 'imp_conj_macro'
-        return Thm([], args)
+        return Thm(args)
 
     def get_proof_term(self, goal, pts):
         dct = dict()
@@ -685,7 +684,7 @@ class imp_disj_macro(Macro):
         disjA = set(traverse(A))
         disjB = set(traverse(B))
         assert disjA <= disjB
-        return Thm([], goal)
+        return Thm(goal)
 
     def get_proof_term(self, goal, pts):
         """Goal is of the form A_1 | ... | A_m --> B_1 | ...| B_n, where

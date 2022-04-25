@@ -26,14 +26,17 @@ def test_conv(self, thy_name, cv, *, vars=None, t, t_res=None, failed=None, assm
         self.assertRaises(failed, cv.get_proof_term, t)
         return
 
-    assms = [parser.parse_term(assm) for assm in assms] if assms is not None else []
+    if assms is not None:
+        assms = tuple(parser.parse_term(assm) for assm in assms)
+    else:
+        assms = tuple()
 
     if isinstance(t_res, str):
         t_res = parser.parse_term(t_res)
     assert isinstance(t_res, Term)
 
     res_th = cv.eval(t)
-    expected_th = Thm(assms, Eq(t, t_res))
+    expected_th = Thm(Eq(t, t_res), assms)
     self.assertTrue(res_th.can_prove(expected_th),
         msg="\nExpected: %s\nGot %s" % (printer.print_thm(expected_th), printer.print_thm(res_th)))
     pt = cv.get_proof_term(t)
@@ -101,7 +104,7 @@ class ConvTest(unittest.TestCase):
     def testRewrConv4(self):
         cond = parser.parse_term("(x::nat) <= y")
         test_conv(
-            self, 'nat', rewr_conv("min_simp1", conds=[ProofTerm.sorry(Thm([], cond))]),
+            self, 'nat', rewr_conv("min_simp1", conds=[ProofTerm.sorry(Thm(cond))]),
             vars={"x": "nat", "y": "nat"},
             t="min x y",
             t_res="x"
@@ -110,7 +113,7 @@ class ConvTest(unittest.TestCase):
     def testRewrConv5(self):
         cond = Var('P', BoolType)
         test_conv(
-            self, 'logic_base', rewr_conv('if_P', conds=[ProofTerm.sorry(Thm([], cond))]),
+            self, 'logic_base', rewr_conv('if_P', conds=[ProofTerm.sorry(Thm(cond))]),
             vars={'a': "'a", 'b': "'a", 'P': "bool"},
             t="if P then a else b",
             t_res="a"
@@ -207,7 +210,7 @@ class ConvTest(unittest.TestCase):
     def testTopSweepConv3(self):
         cond = Var('P', BoolType)
         test_conv(
-            self, 'logic_base', top_sweep_conv(rewr_conv('if_P', conds=[ProofTerm.sorry(Thm([], cond))])),
+            self, 'logic_base', top_sweep_conv(rewr_conv('if_P', conds=[ProofTerm.sorry(Thm(cond))])),
             vars={'a': "'a", 'b': "'a", 'P': "bool"},
             t="(if P then a else b) = a",
             t_res="a = a"

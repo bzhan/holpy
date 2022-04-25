@@ -79,7 +79,7 @@ def is_bit1(t):
 class Suc_conv(Conv):
     """Computes Suc of a binary number."""
     def eval(self, t):
-        return Thm([], Eq(t, Binary(t.arg.dest_binary() + 1)))
+        return Thm(Eq(t, Binary(t.arg.dest_binary() + 1)))
 
     def get_proof_term(self, t):
         pt = refl(t)
@@ -95,7 +95,7 @@ class Suc_conv(Conv):
 class add_conv(Conv):
     """Computes the sum of two binary numbers."""
     def eval(self, t):
-        return Thm([], Eq(t, Binary(t.arg1.dest_binary() + t.arg.dest_binary())))
+        return Thm(Eq(t, Binary(t.arg1.dest_binary() + t.arg.dest_binary())))
 
     def get_proof_term(self, t):
         if not (t.is_plus() and t.arg1.is_binary() and t.arg.is_binary()):
@@ -123,7 +123,7 @@ class add_conv(Conv):
 class mult_conv(Conv):
     """Computes the product of two binary numbers."""
     def eval(self, t):
-        return Thm([], Eq(t, Binary(t.arg1.dest_binary() * t.arg.dest_binary())))
+        return Thm(Eq(t, Binary(t.arg1.dest_binary() * t.arg.dest_binary())))
 
     def get_proof_term(self, t):
         n1, n2 = t.arg1, t.arg  # two summands
@@ -183,7 +183,7 @@ def nat_eval(t):
 class nat_conv(Conv):
     """Simplify all arithmetic operations."""
     def eval(self, t):
-        return Thm([], Eq(t, Nat(nat_eval(t))))
+        return Thm(Eq(t, Nat(nat_eval(t))))
 
     def get_proof_term(self, t):
         pt = refl(t)
@@ -221,7 +221,7 @@ class nat_eval_macro(Macro):
         assert goal.is_equals(), "nat_eval_macro: goal must be an equality"
         assert nat_eval(goal.lhs) == nat_eval(goal.rhs), "nat_eval_macro: two sides are not equal"
 
-        return Thm([], goal)
+        return Thm(goal)
 
 class nat_eval_conv(Conv):
     """Simplify all arithmetic operations."""
@@ -509,7 +509,7 @@ class nat_norm_macro(Macro):
     def eval(self, goal, pts):
         # Simply produce the goal.
         assert len(pts) == 0, "nat_norm_macro"
-        return Thm([], goal)
+        return Thm(goal)
 
     def can_eval(self, goal):
         assert isinstance(goal, Term), "nat_norm_macro"
@@ -621,7 +621,7 @@ class nat_const_ineq_macro(Macro):
         assert len(pts) == 0 and self.can_eval(goal), "nat_const_ineq_macro"
 
         # Simply produce the goal.
-        return Thm([], goal)
+        return Thm(goal)
 
     def get_proof_term(self, goal, pts):
         assert len(pts) == 0 and self.can_eval(goal), "nat_const_ineq_macro"
@@ -682,7 +682,7 @@ class nat_const_less_eq_macro(Macro):
         assert len(pts) == 0 and self.can_eval(goal), "nat_const_less_eq_macro"
 
         # Simply produce the goal.
-        return Thm([], goal)
+        return Thm(goal)
 
     def get_proof_term(self, goal, pts):
         assert len(pts) == 0 and self.can_eval(goal), "nat_const_less_eq_macro"

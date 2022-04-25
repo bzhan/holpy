@@ -116,7 +116,7 @@ class CongClosureHOLTest(unittest.TestCase):
                 s = parser.parse_term(s)
                 t = parser.parse_term(t)
                 prf = closure.explain(s, t).export()
-                self.assertEqual(theory.check_proof(prf), Thm([], Eq(s, t)))
+                self.assertEqual(theory.check_proof(prf), Thm(Eq(s, t)))
                 if verbose:
                     print("Proof of %s" % Eq(s, t))
                     print(prf)

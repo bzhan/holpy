@@ -43,11 +43,11 @@ class ExprTest(unittest.TestCase):
             self.assertTrue(macro.can_eval(goal))
 
             # Test eval
-            self.assertEqual(macro.eval(goal, []), Thm([], goal))
+            self.assertEqual(macro.eval(goal, []), Thm(goal))
 
             # Test get_proof_term
             prf = macro.get_proof_term(goal, []).export()
-            self.assertEqual(theory.check_proof(prf), Thm([], goal))
+            self.assertEqual(theory.check_proof(prf), Thm(goal))
 
     def testProveAvalIFail(self):
         s = fun_upd_of_seq(1, 7)

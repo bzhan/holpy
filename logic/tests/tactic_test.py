@@ -19,11 +19,14 @@ class TacticTest(unittest.TestCase):
         """Test a single invocation of a tactic."""
         context.set_context(thy_name, vars=vars)
 
-        assms = [parser.parse_term(prev) for prev in prevs] if prevs is not None else []
+        if prevs is not None:
+            assms = tuple(parser.parse_term(prev) for prev in prevs)
+        else:
+            assms = tuple()
         prf = Proof(*assms)
         prevs = [ProofTerm.atom(i, Thm.assume(assm)) for i, assm in enumerate(assms)]
         goal = parser.parse_term(goal)
-        goal_pt = ProofTerm.sorry(Thm(assms, goal))
+        goal_pt = ProofTerm.sorry(Thm(goal, assms))
 
         # Invoke the tactic to get the proof term
         if failed is not None:
@@ -35,7 +38,7 @@ class TacticTest(unittest.TestCase):
         # Export and check proof
         prefix = ItemID(len(prevs)-1) if len(prevs) > 0 else ItemID(len(prevs))
         prf = pt.export(prefix=prefix, prf=prf, subproof=False)
-        self.assertEqual(theory.check_proof(prf), Thm(assms, goal))
+        self.assertEqual(theory.check_proof(prf), Thm(goal, assms))
 
         # Test agreement of new goals
         new_goals = [parser.parse_term(new_goal)

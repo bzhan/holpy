@@ -453,7 +453,7 @@ class ConstInequalityMacro(Macro):
 
     def eval(self, goal, prevs):
         assert self.can_eval(goal, prevs), "const_inequality: not solved."
-        return Thm([], goal)
+        return Thm(goal)
 
 class const_min_conv(Conv):
     """Evaluate min(a, b), where a and b are constants."""
@@ -917,20 +917,6 @@ class IntervalInequalityMacro(Macro):
         self.level = 1
         self.sig = Term
         self.limit = None
-
-    # def can_eval(self, goal, prevs):
-    #     if len(prevs) == 1:
-    #         # print(goal, ',', prevs[0].prop)
-    #         res = solve_with_interval(goal, prevs[0].prop)
-    #         # print(res)
-    #         return res
-    #     else:
-    #         return False
-
-    # def eval(self, goal, prevs):
-    #     assert self.can_eval(goal, prevs), "interval_inequality: not solved."
-
-    #     return Thm(sum([th.hyps for th in prevs], ()), goal)
 
     def get_proof_term(self, goal, pts):
         assert len(pts) == 1 and hol_set.is_mem(pts[0].prop) and pts[0].prop.arg1.is_var(), \

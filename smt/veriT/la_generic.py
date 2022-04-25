@@ -129,17 +129,17 @@ class LAGenericMacro(Macro):
             lhs, rhs = integer.int_eval(lhs), integer.int_eval(rhs)
             if dis_eq.is_equals():
                 if lhs != rhs:
-                    return Thm([], dis_eqs[0])
+                    return Thm(dis_eqs[0])
                 else:
                     raise VeriTException("la_generic", "unexpected result: %s" % dis_eqs[0])
             elif dis_eq.is_greater():
                 if not lhs > rhs:
-                    return Thm([], dis_eqs[0])
+                    return Thm(dis_eqs[0])
                 else:
                     raise VeriTException("la_generic", "unexpected result: %s" % dis_eqs[0])
             elif dis_eq.is_greater_eq():
                 if not lhs >= rhs:
-                    return Thm([], dis_eqs[0])
+                    return Thm(dis_eqs[0])
                 else:
                     raise VeriTException("la_generic", "unexpected results: %s" % dis_eqs[0])
             else:
@@ -186,6 +186,6 @@ class LAGenericMacro(Macro):
             cond = (rhs_const >= 0)
 
         if cond:
-            return Thm([], hol_term.Or(*args[:-1]))
+            return Thm(hol_term.Or(*args[:-1]))
         else:
             raise VeriTException("la_generic", "unexpected result: %s, %s" % (lhs_const, rhs_const))

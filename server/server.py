@@ -275,7 +275,7 @@ def parse_init_state(prop):
         state.vars.append(Var(nm, T))
     state.prf = Proof(*assums)
     n = len(assums)
-    state.prf.add_item(n, "sorry", th=Thm(assums, concl))
+    state.prf.add_item(n, "sorry", th=Thm(concl, tuple(assums)))
     state.prf.add_item(n + 1, "intros", prevs=range(n+1))
     state.check_proof(compute_only=True)
     return state

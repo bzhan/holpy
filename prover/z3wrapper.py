@@ -268,7 +268,7 @@ class Z3Macro(Macro):
         else:
             print("Warning: Z3 is not installed")
 
-        return Thm(sum([th.hyps for th in prevs], ()), args)
+        return Thm(args, *(th.hyps for th in prevs))
 
     def expand(self, prefix, args, prevs):
         raise NotImplementedError

@@ -86,7 +86,7 @@ class prove_avalI_macro(Macro):
         s, t, n = goal.args
         res = self.get_avalI(s, t)
         assert n == Nat(res), "prove_avalI_macro: wrong result"
-        return Thm([], goal)
+        return Thm(goal)
 
     def can_eval(self, goal):
         assert isinstance(goal, Term), "prove_avalI_macro"

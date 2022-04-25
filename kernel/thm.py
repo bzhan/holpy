@@ -34,30 +34,49 @@ class Thm():
     Proof objects are managed by the Proof module.
 
     """
-    def __init__(self, hyps, prop):
-        """Create a theorem with the given list of hypotheses and
-        proposition.
+    def __init__(self, prop: Term, *hyps):
+        """Create a theorem with the given proposition, followed by a list
+        of hypothesis.
+        
+        Each element of hyps is either a term or a tuple of terms. If it is
+        a tuple, the elements in the tuple are guaranteed to be distinct.
 
         """
-        typecheck.checkinstance('Thm', hyps, [Term], prop, Term)
-        # Remove duplication in hyps
-        self.hyps = tuple(set(hyps))
+        typecheck.checkinstance('Thm', prop, Term)
         self.prop = prop
 
+        # Now we form the tuple of hypothesis
+        self.hyps = tuple()
+        for hyp in hyps:
+            if isinstance(hyp, Term):
+                if not self.hyps:
+                    self.hyps = (hyp,)
+                elif hyp not in self.hyps:
+                    self.hyps = self.hyps + (hyp,)
+            elif isinstance(hyp, tuple):
+                if not self.hyps:
+                    self.hyps = hyp
+                elif hyp == self.hyps:
+                    pass
+                else:
+                    self.hyps = self.hyps + tuple(t for t in hyp if t not in self.hyps)
+            else:
+                raise TypeError('Thm')
+
     @property
-    def assums(self):
+    def assums(self) -> Term:
         return self.prop.strip_implies()[0]
 
     @property
-    def concl(self):
+    def concl(self) -> Term:
         return self.prop.strip_implies()[1]
 
     @property
-    def lhs(self):
+    def lhs(self) -> Term:
         return self.concl.lhs
 
     @property
-    def rhs(self):
+    def rhs(self) -> Term:
         return self.concl.rhs
 
     def __str__(self):
@@ -111,7 +130,7 @@ class Thm():
         A |- A
         """
         assert isinstance(A, Term), "Thm.assume"
-        return Thm([A], A)
+        return Thm(A, A)
     
     @staticmethod
     def implies_intr(A, th):
@@ -121,7 +140,7 @@ class Thm():
         ------------
         |- A --> B
         """
-        return Thm(tuple(t for t in th.hyps if t != A), Implies(A, th.prop))
+        return Thm(Implies(A, th.prop), tuple(t for t in th.hyps if t != A))
 
     @staticmethod
     def implies_elim(th1, th2):
@@ -135,7 +154,7 @@ class Thm():
         if th1.prop.is_implies():
             A, B = th1.prop.args
             if A == th2.prop:
-                return Thm(th1.hyps + th2.hyps, B)
+                return Thm(B, th1.hyps, th2.hyps)
             else:
                 raise InvalidDerivationException("implies_elim: " + str(A) + " != " + str(th2.prop))
         else:
@@ -147,7 +166,7 @@ class Thm():
 
         |- x = x
         """
-        return Thm([], Eq(x, x))
+        return Thm(Eq(x, x))
 
     @staticmethod
     def symmetric(th):
@@ -159,7 +178,7 @@ class Thm():
         """
         if th.is_equals():
             x, y = th.prop.args
-            return Thm(th.hyps, Eq(y, x))
+            return Thm(Eq(y, x), th.hyps)
         else:
             raise InvalidDerivationException("symmetric")
 
@@ -176,7 +195,7 @@ class Thm():
             x, y1 = th1.prop.args
             y2, z = th2.prop.args
             if y1 == y2:
-                return Thm(th1.hyps + th2.hyps, Eq(x, z))
+                return Thm(Eq(x, z), th1.hyps, th2.hyps)
             else:
                 raise InvalidDerivationException("transitive: %s != %s" % (str(y1), str(y2)))
         else:
@@ -196,7 +215,7 @@ class Thm():
             x, y = th2.prop.args
             Tf = f.get_type()
             if Tf.is_fun() and Tf.domain_type() == x.get_type():
-                return Thm(th1.hyps + th2.hyps, Eq(f(x), g(y)))
+                return Thm(Eq(f(x), g(y)), th1.hyps, th2.hyps)
             else:
                 raise InvalidDerivationException("combination")
         else:
@@ -215,7 +234,7 @@ class Thm():
             A1, B1 = th1.prop.args
             B2, A2 = th2.prop.args
             if A1 == A2 and B1 == B2:
-                return Thm(th1.hyps + th2.hyps, Eq(A1, B1))
+                return Thm(Eq(A1, B1), th1.hyps, th2.hyps)
             else:
                 raise InvalidDerivationException("equal_intr")
         else:
@@ -233,7 +252,7 @@ class Thm():
         if th1.is_equals():
             A, B = th1.prop.args
             if A == th2.prop:
-                return Thm(th1.hyps + th2.hyps, B)
+                return Thm(B, th1.hyps, th2.hyps)
             else:
                 raise InvalidDerivationException("equal_elim")
         else:
@@ -250,9 +269,9 @@ class Thm():
         A[s] |- B[s]  where s is substitution on types
 
         """
-        hyps_new = [hyp.subst_type(tyinst) for hyp in th.hyps]
+        hyps_new = tuple(hyp.subst_type(tyinst) for hyp in th.hyps)
         prop_new = th.prop.subst_type(tyinst)
-        return Thm(hyps_new, prop_new)
+        return Thm(prop_new, hyps_new)
 
     @staticmethod
     def substitution(inst, th):
@@ -266,11 +285,11 @@ class Thm():
 
         """
         try:
-            hyps_new = [hyp.subst(inst) for hyp in th.hyps]
+            hyps_new = tuple(hyp.subst(inst) for hyp in th.hyps)
             prop_new = th.prop.subst(inst)
         except term.TermException:
             raise InvalidDerivationException("substitution")
-        return Thm(hyps_new, prop_new)
+        return Thm(prop_new, hyps_new)
 
     @staticmethod
     def beta_conv(t):
@@ -282,7 +301,7 @@ class Thm():
             t_new = t.beta_conv()
         except term.TermException:
             raise InvalidDerivationException("beta_conv")
-        return Thm([], Eq(t, t_new))
+        return Thm(Eq(t, t_new))
 
     @staticmethod
     def abstraction(x, th):
@@ -300,7 +319,7 @@ class Thm():
                 t1_new, t2_new = Lambda(x, t1), Lambda(x, t2)
             except term.TermException:
                 raise InvalidDerivationException("abstraction")
-            return Thm(th.hyps, Eq(t1_new, t2_new))
+            return Thm(Eq(t1_new, t2_new), th.hyps)
         else:
             raise InvalidDerivationException("abstraction")
 
@@ -317,7 +336,7 @@ class Thm():
         elif not (x.is_var() or x.is_svar()):
             raise InvalidDerivationException("forall_intr")
         else:
-            return Thm(th.hyps, Forall(x, th.prop))
+            return Thm(Forall(x, th.prop), th.hyps)
 
     @staticmethod
     def forall_elim(s, th):
@@ -331,7 +350,7 @@ class Thm():
             if th.prop.arg.var_T != s.get_type():
                 raise InvalidDerivationException("forall_elim")
             else:
-                return Thm(th.hyps, th.prop.arg.subst_bound(s))
+                return Thm(th.prop.arg.subst_bound(s), th.hyps)
         else:
             raise InvalidDerivationException("forall_elim")
 
@@ -340,14 +359,14 @@ class Thm():
         """Construct the internal proposition _VAR(v)."""
         if not v.is_var():
             raise InvalidDerivationException("mk_VAR")
-        return Thm([], Const("_VAR", TFun(v.T, BoolType))(v))
+        return Thm(Const("_VAR", TFun(v.T, BoolType))(v))
 
     @staticmethod
     def convert_svar(th):
         """Obtain the version of theorem with SVar."""
         if len(th.hyps) > 0:
             raise InvalidDerivationException("convert_svar")
-        return Thm([], th.prop.convert_svar())
+        return Thm(th.prop.convert_svar())
 
 
 # Table of primitive derivations

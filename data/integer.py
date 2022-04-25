@@ -88,7 +88,7 @@ class int_eval_macro(Macro):
         assert goal.is_equals(), "int_eval_macro: goal must be an equality"
         assert int_eval(goal.lhs) == int_eval(goal.rhs), "int_eval_macro: two sides are not equal"
 
-        return Thm([], goal)
+        return Thm(goal)
 
 class int_eval_conv(Conv):
     def get_proof_term(self, t):
@@ -366,7 +366,7 @@ class simp_full(Conv):
 class int_norm_conv(Conv):
     def eval(self, t):
         norm_t = from_poly(convert_to_poly(t))
-        return Thm([], Eq(t, norm_t))
+        return Thm(Eq(t, norm_t))
 
     def get_proof_term(self, t):
         return refl(t).on_rhs(
@@ -524,29 +524,29 @@ class int_const_ineq_macro(Macro):
         lhs, rhs = int_eval(goal.arg1), int_eval(goal.arg)
         if goal.is_less():
             if lhs < rhs:
-                return Thm([], goal)
+                return Thm(goal)
             else:
-                return Thm([], Not(goal))
+                return Thm(Not(goal))
         elif goal.is_less_eq():
             if lhs <= rhs:
-                return Thm([], goal)
+                return Thm(goal)
             else:
-                return Thm([], Not(goal))
+                return Thm(Not(goal))
         elif goal.is_greater():
             if lhs > rhs:
-                return Thm([], goal)
+                return Thm(goal)
             else:
-                return Thm([], Not(goal))
+                return Thm(Not(goal))
         elif goal.is_greater_eq():
             if lhs >= rhs:
-                return Thm([], goal)
+                return Thm(goal)
             else:
-                return Thm([], Not(goal))
+                return Thm(Not(goal))
         elif goal.is_equals():
             if lhs == rhs:
-                return Thm([], goal)
+                return Thm(goal)
             else:
-                return Thm([], Not(goal))
+                return Thm(Not(goal))
         else:
             raise NotImplementedError
 

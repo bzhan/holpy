@@ -515,7 +515,7 @@ def schematic_rules_rewr(thms, lhs, rhs):
             return pt.substitution(inst2)
         except matcher.MatchException:
             continue
-    return ProofTerm.sorry(Thm([], Eq(lhs, rhs)))
+    return ProofTerm.sorry(Thm(Eq(lhs, rhs)))
 
 def is_ineq(t):
     """determine whether t is an inequality"""
@@ -568,7 +568,7 @@ def compare_lhs_rhs(tm, cvs):
         if norm_rhs_pt.rhs == norm_lhs_pt.rhs:
             return norm_lhs_pt.transitive(norm_rhs_pt.symmetric())
         
-    return ProofTerm.sorry(Thm([], tm))
+    return ProofTerm.sorry(Thm(tm))
 
 def match_pattern(pat, tm):
     """If the schematic pattern can match with term tm, return true, else false"""
@@ -585,7 +585,7 @@ def try_tran_pt(pt1, pt2):
     if pt1.rhs == pt2.lhs:
         return pt1.transitive(pt2)
     else:
-        return ProofTerm.sorry(Thm([], Eq(pt1.lhs, pt2.rhs)))
+        return ProofTerm.sorry(Thm(Eq(pt1.lhs, pt2.rhs)))
 
 def analyze_type(tm):
     """
@@ -659,7 +659,7 @@ def rewrite_int(tm, has_bool=False):
         if pt.rhs == tm.rhs:
             return pt
         else:
-            return ProofTerm.sorry(Thm([], tm))
+            return ProofTerm.sorry(Thm(tm))
     elif tm.lhs.is_compares() and tm.rhs.is_not() and tm.rhs.arg.is_compares():
         pt_elim_neg_sym = refl(tm.rhs).on_rhs(integer.int_norm_neg_compares(), integer.omega_form_conv()).symmetric()
         pt_eq = integer.int_eq_comparison_macro().get_proof_term(Eq(tm.lhs, pt_elim_neg_sym.lhs))
@@ -736,7 +736,7 @@ def rewrite_int_second_level(tm):
         if pt.rule != 'sorry':
             return pt_norm_full.symmetric().equal_elim(pt)
 
-    return ProofTerm.sorry(Thm([], tm))
+    return ProofTerm.sorry(Thm(tm))
 
 def rewrite_by_assertion(tm):
     """
@@ -819,7 +819,7 @@ def rewrite_real_second_level(tm):
         pt = compare_lhs_rhs(tm, arm)
         if pt.rule != 'sorry':
             return pt
-    return ProofTerm.sorry(Thm([], tm))
+    return ProofTerm.sorry(Thm(tm))
 
 def _rewrite(tm):
     with open('library/smt.json', 'r', encoding='utf-8') as f:
@@ -851,7 +851,7 @@ def _rewrite(tm):
         if pt2.rule != 'sorry':
             return pt_asst_lhs.transitive(pt2).transitive(pt_asst_rhs.symmetric())
         else:
-            return ProofTerm.sorry(Thm([], tm))
+            return ProofTerm.sorry(Thm(tm))
     elif IntType not in Ts and RealType not in Ts: # only have bool type variables
         pt1 = rewrite_bool(tm)
         if pt1.rule != 'sorry':
@@ -866,7 +866,7 @@ def _rewrite(tm):
             return schematic_rules_rewr(th_name[:60], tm.lhs, tm.rhs)
 
     else:
-        return ProofTerm.sorry(Thm([], tm))
+        return ProofTerm.sorry(Thm(tm))
 
 # def rewrite(t, z3terms, assertions=[]):
 def rewrite(t):
@@ -878,7 +878,7 @@ def rewrite(t):
     try:
         return _rewrite(t)
     except ConvException:
-        return ProofTerm.sorry(Thm([], t))
+        return ProofTerm.sorry(Thm(t))
 
 def quant_inst(p):
     """
@@ -947,7 +947,7 @@ def mp(arg1, arg2):
     try:
         pt = ProofTerm.equal_elim(arg2, arg1)
     except:
-        pt = ProofTerm.sorry(Thm(arg2.th.hyps + arg1.th.hyps, arg2.prop))
+        pt = ProofTerm.sorry(Thm(arg2.prop, arg2.th.hyps, arg1.th.hyps))
     return pt
 
 def iff_true(arg1, arg2):
@@ -1078,7 +1078,7 @@ def def_axiom(arg1):
     try:
         return solve_cnf(arg1)
     except:
-        return ProofTerm.sorry(Thm([], arg1))
+        return ProofTerm.sorry(Thm(arg1))
 
 def intro_def(concl):
     """
@@ -1251,7 +1251,7 @@ def sk(arg1):
     """
     Skolemization rule, currently have no idea on how to reconstruct it.
     """
-    return ProofTerm.sorry(Thm([], Eq(arg1.lhs, arg1.rhs)))
+    return ProofTerm.sorry(Thm(Eq(arg1.lhs, arg1.rhs)))
 
 
 def real_th_lemma(args):
@@ -1549,9 +1549,6 @@ def th_lemma(args):
         return int_th_lemma(args)
     else:
         raise NotImplementedError
-    # except:
-    #     hyps = [h.prop for h in args[:-1]]
-    #     return ProofTerm.sorry(Thm(hyps, args[-1]))
 
 def hypothesis(prop):
     """

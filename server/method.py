@@ -89,7 +89,7 @@ class cut_method(Method):
                     raise AssertionError('Insert goal: extra variable %s' % v.name)
 
         state.add_line_before(id, 1)
-        state.set_line(id, 'sorry', th=Thm(hyps, C))
+        state.set_line(id, 'sorry', th=Thm(C, hyps))
 
 
 @register_method('cases')
@@ -633,7 +633,7 @@ class exists_elim(Method):
                     break
                 else:
                     state.set_line(id.incr_id(i), item.rule, args=item.args, prevs=item.prevs, \
-                                   th=Thm(list(item.th.hyps) + [body], item.th.prop))
+                                   th=Thm(item.th.prop, item.th.hyps, body))
             i += 1
 
 

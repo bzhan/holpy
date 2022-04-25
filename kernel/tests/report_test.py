@@ -41,7 +41,7 @@ class ReportTest(unittest.TestCase):
 
         id_const = Const("id", TFun(Ta,Ta))
         id_simps = Eq(id_const(x), x)
-        ext_report.add_axiom("id.simps", Thm([], id_simps))
+        ext_report.add_axiom("id.simps", Thm(id_simps))
 
         str_ext_report = "\n".join([
             "Axiom added: 1",
