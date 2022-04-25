@@ -4,6 +4,7 @@ from typing import Dict
 
 from kernel.type import Type
 from kernel.term import Term
+from kernel.thm import Thm
 from kernel.proofterm import ProofTerm
 
 
@@ -31,7 +32,7 @@ class Macro():
         self.level = None
         self.sig = None
 
-    def eval(self, args, prevs):
+    def eval(self, args, prevs) -> Thm:
         """Obtain the result of applying the macro.
         
         Input is the current theory, argument of the proof method, and
@@ -41,7 +42,7 @@ class Macro():
         pts = [ProofTerm.sorry(prev) for prev in prevs]
         return self.get_proof_term(args, pts).th
 
-    def get_proof_term(self, args, prevs):
+    def get_proof_term(self, args, prevs) -> ProofTerm:
         """Obtain the proof term for applying the macro."""
         raise NotImplementedError
 
