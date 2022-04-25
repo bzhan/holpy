@@ -11,7 +11,7 @@ from kernel.proofterm import ProofTerm, Thm
 from kernel import term as hol_term
 from kernel import type as hol_type
 from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
-    BoolType, Int, Forall, Exists, Inst, conj, Var, neg, implies
+    BoolType, Int, Forall, Exists, Inst, conj, disj, Var, neg, implies, plus
 from logic import conv, logic
 from data import integer, real
 from data import list as hol_list
@@ -1104,7 +1104,7 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
             return t1 == t2
     return helper(tm1, tm2, depth)
 
-def compare_sym_tm_thm(tm1: Term, tm2: Term, eqs=None):
+def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1):
     """Given two terms and a dictionary from pairs of terms to equality theorems
     relating them, form the equality between the two terms.
     
@@ -1112,7 +1112,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, eqs=None):
     if eqs is None:
         eqs = dict()
     
-    def helper(t1, t2):
+    def helper(t1, t2, depth):
         """Returns one of the following:
         
         None - no equality is found between t1 and t2.
@@ -1123,22 +1123,24 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, eqs=None):
             return eqs[(t1, t2)]
         elif t1 == t2:
             return ProofTerm.reflexive(t1)
+        elif depth == 0:
+            return None
         elif t1.is_comb():
             if not t2.is_comb() or t1.head != t2.head:
                 return None
             elif t1.is_equals():
                 # First, the case without exchanging equality
-                lhs_eq = helper(t1.lhs, t2.lhs)
-                rhs_eq = helper(t1.rhs, t2.rhs)
+                lhs_eq = helper(t1.lhs, t2.lhs, depth-1)
+                rhs_eq = helper(t1.rhs, t2.rhs, depth-1)
                 if lhs_eq is not None and rhs_eq is not None:
                     pt = ProofTerm.reflexive(t1)
                     pt = pt.on_rhs(conv.arg1_conv(conv.replace_conv(lhs_eq)))
                     pt = pt.on_rhs(conv.arg_conv(conv.replace_conv(rhs_eq)))
                     return pt
 
-                # Second, the case with exchanging equality                
-                lhs_eq = helper(t1.rhs, t2.lhs)
-                rhs_eq = helper(t1.lhs, t2.rhs)
+                # Second, the case with exchanging equality
+                lhs_eq = helper(t1.rhs, t2.lhs, depth-1)
+                rhs_eq = helper(t1.lhs, t2.rhs, depth-1)
                 if lhs_eq is not None and rhs_eq is not None:
                     pt = ProofTerm.reflexive(t1)
                     pt = pt.on_rhs(conv.rewr_conv("eq_sym_eq"))
@@ -1149,21 +1151,74 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, eqs=None):
                 # Either case yield equality
                 return None
             elif t1.is_conj():
-                t1_args = t1.strip_conj()
-                t2_args = t2.strip_conj()
-                pts = []
-                for t1_arg, t2_arg in zip(t1_args, t2_args):
-                    pts.append(helper(t1_arg, t2_arg))
-                if any(pt is None for pt in pts):
+                cur_t1, cur_t2 = t1, t2
+                eq_pts = []
+                while cur_t1.is_conj() and cur_t2.is_conj():
+                    pt = helper(cur_t1.arg1, cur_t2.arg1, depth-1)
+                    if not pt:
+                        break
+                    eq_pts.append(pt)
+                    cur_t1 = cur_t1.arg
+                    cur_t2 = cur_t2.arg
+                    if (cur_t1, cur_t2) in eqs:
+                        break
+                res = helper(cur_t1, cur_t2, depth-1)
+                if res is None:
                     return None
-                res = pts[-1]
-                for pt in reversed(pts[:-1]):
+                for pt in reversed(eq_pts):
                     res = ProofTerm.reflexive(conj).combination(pt).combination(res)
                 return res
+            elif t1.is_disj():
+                cur_t1, cur_t2 = t1, t2
+                eq_pts = []
+                while cur_t1.is_disj() and cur_t2.is_disj():
+                    pt = helper(cur_t1.arg1, cur_t2.arg1, depth-1)
+                    if not pt:
+                        break
+                    eq_pts.append(pt)
+                    cur_t1 = cur_t1.arg
+                    cur_t2 = cur_t2.arg
+                    if (cur_t1, cur_t2) in eqs:
+                        break
+                res = helper(cur_t1, cur_t2, depth-1)
+                if res is None:
+                    return None
+                for pt in reversed(eq_pts):
+                    res = ProofTerm.reflexive(disj).combination(pt).combination(res)
+                return res
+            elif t1.is_plus():
+                cur_t1, cur_t2 = t1, t2
+                eq_pts = []
+                while cur_t1.is_plus() and cur_t2.is_plus():
+                    pt = helper(cur_t1.arg, cur_t2.arg, depth-1)
+                    if not pt:
+                        break
+                    eq_pts.append(pt)
+                    cur_t1 = cur_t1.arg1
+                    cur_t2 = cur_t2.arg1
+                    if (cur_t1, cur_t2) in eqs:
+                        break
+                res = helper(cur_t1, cur_t2, depth-1)
+                T = cur_t1.get_type()
+                if res is None:
+                    return None
+                for pt in reversed(eq_pts):
+                    res = ProofTerm.reflexive(plus(T)).combination(res).combination(pt)
+                return res
+            elif t1.is_comb('distinct'):
+                l_args, r_args = hol_list.dest_literal_list(t1.arg), hol_list.dest_literal_list(t2.arg)
+                pts = []
+                for l_arg, r_arg in zip(l_args, r_args):
+                    pts.append(helper(l_arg, r_arg, depth-1))
+                T = l_args[0].get_type()
+                res = ProofTerm.reflexive(hol_list.nil(T))
+                for pt in reversed(pts):
+                    res = ProofTerm.reflexive(hol_list.cons(T)).combination(pt).combination(res)
+                return ProofTerm.reflexive(t1.head).combination(res)
             else:
                 pts = []
                 for l_arg, r_arg in zip(t1.args, t2.args):
-                    pts.append(helper(l_arg, r_arg))
+                    pts.append(helper(l_arg, r_arg, depth-1))
                 if any(pt is None for pt in pts):
                     return None
                 res = ProofTerm.reflexive(t1.head)
@@ -1175,14 +1230,14 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, eqs=None):
                 return None
             v1, body1 = t1.dest_abs()
             v2, body2 = t2.dest_abs()
-            pt = helper(body1, body2)
+            pt = helper(body1, body2, depth-1)
             if pt is None:
                 return None
             return ProofTerm.reflexive(t1).on_rhs(
                 conv.abs_conv(conv.replace_conv(pt)))
         else:
             return None
-    return helper(tm1, tm2)
+    return helper(tm1, tm2, depth)
 
 
 @register_macro("verit_cong")
@@ -1228,11 +1283,16 @@ class CongMacro(Macro):
             prev_dict[(prev.lhs, prev.rhs)] = prev
             prev_dict[(prev.rhs, prev.lhs)] = prev.symmetric()
 
-        pt = compare_sym_tm_thm(lhs, rhs, prev_dict)
+        pt = compare_sym_tm_thm(lhs, rhs, eqs=prev_dict, depth=1)
         if pt is not None:
             return pt
         # More to add in compare_sym_tm_thm
-        raise NotImplementedError
+        print("lhs:", lhs)
+        print("rhs:", rhs)
+        print("prevs")
+        for prev in prevs:
+            print(prev)
+        raise AssertionError
 
 @register_macro("verit_refl")
 class ReflMacro(Macro):
@@ -1655,7 +1715,7 @@ def compare_ac_thm(tm1, tm2):
                     eqs[(t1, t2)] = compare_ac_thm(t1, t2)
             tm1_eq = logic.imp_conj_iff(Eq(tm1, And(*conjs1)))
             tm2_eq = logic.imp_conj_iff(Eq(tm2, And(*conjs2)))
-            sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs)
+            sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs=eqs)
             return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
         raise NotImplementedError
     elif tm1.is_disj():
@@ -1666,10 +1726,11 @@ def compare_ac_thm(tm1, tm2):
         if len(disjs1) == len(disjs2) and all(compare_ac(t1, t2) for t1, t2 in zip(disjs1, disjs2)):
             eqs = dict()
             for t1, t2 in zip(disjs1, disjs2):
-                eqs[(t1, t2)] = compare_ac_thm(t1, t2)
+                if t1 != t2:
+                    eqs[(t1, t2)] = compare_ac_thm(t1, t2)
             tm1_eq = logic.imp_disj_iff(Eq(tm1, Or(*disjs1)))
             tm2_eq = logic.imp_disj_iff(Eq(tm2, Or(*disjs2)))
-            sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs)
+            sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs=eqs)
             return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
         raise NotImplementedError
     elif tm1.is_not():
