@@ -1809,32 +1809,37 @@ class AndSimplifyMacro(Macro):
         raise VeriTException("and_simplify", "unexpected rhs")
 
     def get_proof_term(self, args, prevs=None):
+        def find_pos_neg_pair(conjs):
+            for i in range(len(conjs)):
+                for j in range(i+1, len(conjs)):
+                    if Not(conjs[i]) == conjs[j]:
+                        # p_1 & ... & p_i & ... & ~p_i & ... p_n --> p_i & ~p_i
+                        return ProofTerm("verit_imp_conj", args=Implies(lhs, And(conjs[i], conjs[j])))
+                    elif conjs[i] == Not(conjs[j]):
+                       # p_1 & ... & p_i & ... & ~p_i & ... p_n --> ~p_i & p_i
+                        return ProofTerm("verit_imp_conj", args=Implies(lhs, And(conjs[j], conjs[i])))
+            return None
+
         goal = args[0]
         lhs, rhs = goal.args
         if rhs == false:
             lhs_conjs = lhs.strip_conj()
-            pt_r_l = ProofTerm("falseE", concl=Implies(rhs, lhs)) # false -> anything
+            pt_r_l = logic.apply_theorem("falseE", concl=lhs) # false -> anything
             if false in lhs_conjs:
                 # p_1 & ... & false & ... & p_n --> false
                 pt_l_r = ProofTerm("verit_imp_conj", args=Implies(lhs, rhs))
                 return ProofTerm.equal_intr(pt_l_r, pt_r_l)
-
-            for i in range(len(lhs_conjs)):
-                for j in range(i+1, len(lhs_conjs)):
-                    if Not(lhs_conjs[i]) == lhs_conjs[j]:
-                        # p_1 & ... & p_i & ... & ~p_i & ... p_n --> p_i & ~p_i
-                        pt = ProofTerm("verit_imp_conj", args=Implies(lhs, And(lhs_conjs[i], lhs_conjs[j])))
-                    elif lhs_conjs[i] == Not(lhs_conjs[j]):
-                        # p_1 & ... & p_i & ... & ~p_i & ... p_n --> ~p_i & p_i
-                        pt = ProofTerm("verit_imp_conj", args=Implies(lhs, And(lhs_conjs[j], lhs_conjs[i])))
-                    pt_l_r = ProofTerm("conj_neg_pos", pt)
-                    return ProofTerm.equal_intr(pt_l_r, pt_r_l)
-            raise AssertionError
-
-        pt1 = ProofTerm("verit_imp_conj", args=Implies(lhs, rhs))
-        pt2 = ProofTerm("verit_imp_conj", args=Implies(rhs, lhs))
-        if pt1.prop.arg1 == lhs and pt1.prop.arg == rhs:
-            return ProofTerm.equal_intr(pt1, pt2)
+            else:
+                pt = find_pos_neg_pair(lhs_conjs)
+                assert pt is not None
+                pt_imp_false = logic.apply_theorem("verit_conj_pos_neg", inst=Inst(P=pt.prop.arg.arg1))
+                pt_l_r = logic.apply_theorem("syllogism", pt, pt_imp_false)
+                return ProofTerm.equal_intr(pt_l_r, pt_r_l)
+        else:
+            pt1 = ProofTerm("verit_imp_conj", args=Implies(lhs, rhs))
+            pt2 = ProofTerm("verit_imp_conj", args=Implies(rhs, lhs))
+            if pt1.prop.arg1 == lhs and pt1.prop.arg == rhs:
+                return ProofTerm.equal_intr(pt1, pt2)
 
         raise VeriTException("and_simplify", "unexpected result")
 

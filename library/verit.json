@@ -719,6 +719,14 @@
             "vars": {
                 "P": "bool"
             }
+        },
+        {
+            "name": "verit_conj_pos_neg",
+            "prop": "P ∧ ¬P ⟶ false",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",
