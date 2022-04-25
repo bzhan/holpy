@@ -2981,17 +2981,34 @@ class BoolSimplifyMacro(Macro):
         if not goal.is_equals():
             raise VeriTException("equiv_simplify", "goal should be an equality")
         lhs, rhs = goal.args
-        if not goal.is_equals():
+        if not lhs.is_equals():
             raise VeriTException("equiv_simplify", "lhs should be an equality")
-        lhs_l, lhs_r = lhs.args
-        if rhs.is_equals() and lhs_l == Not(rhs.lhs) and lhs_r == Not(rhs.rhs):
+        # case 1
+        if rhs.is_equals() and lhs.lhs == Not(rhs.lhs) and lhs.rhs == Not(rhs.rhs):
             return logic.apply_theorem("verit_equiv_simplify1", concl=goal)
-        if lhs_r == true and lhs_l == rhs:
+        # case 2
+        elif lhs.lhs == lhs.rhs and rhs == true:
+            return logic.apply_theorem("verit_equiv_simplify2", concl=goal)
+        # case 3
+        elif Not(lhs.lhs) == lhs.rhs and rhs == false:
+            return logic.apply_theorem("verit_equiv_simplify3", concl=goal)
+        # case 4
+        elif Not(lhs.rhs) == lhs.lhs and rhs == false:
+            return logic.apply_theorem("verit_equiv_simplify4", concl=goal)
+        # case 5
+        elif lhs.lhs == true and lhs.rhs == rhs:
+            return logic.apply_theorem("verit_equiv_simplify5", concl=goal)
+        # case 6
+        elif lhs.rhs == true and lhs.lhs == rhs:
             return logic.apply_theorem("verit_equiv_simplify6", concl=goal)
-        elif Not(lhs_l) == rhs and lhs_r == false:
+        # case 7
+        elif Not(lhs.rhs) == rhs and lhs.lhs == false:
+            return logic.apply_theorem("verit_equiv_simplify7", concl=goal)
+        # case 8
+        elif Not(lhs.lhs) == rhs and lhs.rhs == false:
             return logic.apply_theorem("verit_equiv_simplify8", concl=goal)
-        
-        raise NotImplementedError
+        else:
+            raise VeriTException("equiv_simplify", "unexpected goal")
 
 @register_macro("verit_not_implies1")
 class NotImplies1Macro(Macro):

@@ -358,6 +358,155 @@
             }
         },
         {
+            "name": "verit_implies_neg1",
+            "prop": "(P ⟶ Q) ∨ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_implies_neg2",
+            "prop": "(P ⟶ Q) ∨ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_not_simplify1",
+            "prop": "¬true ⟷ false",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "verit_not_simplify2",
+            "prop": "¬false ⟷ true",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "verit_minus_simplify_3_real",
+            "prop": "t = t - 0",
+            "ty": "thm",
+            "vars": {
+                "t": "real"
+            }
+        },
+        {
+            "name": "verit_minus_simplify_3_int",
+            "prop": "t = t - 0",
+            "ty": "thm",
+            "vars": {
+                "t": "int"
+            }
+        },
+        {
+            "name": "verit_minus_simplify_4_real",
+            "prop": "0 - t = -t",
+            "ty": "thm",
+            "vars": {
+                "t": "real"
+            }
+        },
+        {
+            "name": "verit_minus_simplify_4_int",
+            "prop": "0 - t = -t",
+            "ty": "thm",
+            "vars": {
+                "t": "int"
+            }
+        },
+        {
+            "name": "verit_bool_simplify1",
+            "prop": "¬(P ⟶ Q) ⟷ P ∧ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_bool_simplify4",
+            "prop": "(P ⟶ Q ⟶ R) ⟷ (P ∧ Q ⟶ R)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_bool_simplify5",
+            "prop": "(P ⟶ Q ⟶ Q) ⟷ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_bool_simplify6",
+            "prop": "P ∧ (P ⟶ Q) ⟷ P ∧ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_bool_simplify7",
+            "prop": "(P ⟶ Q) ∧ P ⟷ P ∧ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_equiv_simplify1",
+            "prop": "(¬P ⟷ ¬Q) ⟷ P ⟷ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_equiv_simplify2",
+            "prop": "(P ⟷ P) ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_equiv_simplify3",
+            "prop": "(P ⟷ ¬P) ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_equiv_simplify4",
+            "prop": "(¬P ⟷ P) ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_equiv_simplify5",
+            "prop": "(true ⟷ P) ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
             "name": "verit_equiv_simplify6",
             "num_gaps": 0,
             "proof": [
@@ -556,128 +705,19 @@
             }
         },
         {
-            "name": "verit_equiv_simplify8",
-            "prop": "(P ⟷ false) ⟷ ¬P",
+            "name": "verit_equiv_simplify7",
+            "prop": "(false ⟷ P) ⟷ ¬P",
             "ty": "thm",
             "vars": {
                 "P": "bool"
             }
         },
         {
-            "name": "verit_equiv_simplify1",
-            "prop": "(¬P ⟷ ¬Q) ⟷ P ⟷ Q",
+            "name": "verit_equiv_simplify8",
+            "prop": "(P ⟷ false) ⟷ ¬P",
             "ty": "thm",
             "vars": {
-                "P": "bool",
-                "Q": "bool"
-            }
-        },
-        {
-            "name": "verit_implies_neg1",
-            "prop": "(P ⟶ Q) ∨ P",
-            "ty": "thm",
-            "vars": {
-                "P": "bool",
-                "Q": "bool"
-            }
-        },
-        {
-            "name": "verit_implies_neg2",
-            "prop": "(P ⟶ Q) ∨ ¬Q",
-            "ty": "thm",
-            "vars": {
-                "P": "bool",
-                "Q": "bool"
-            }
-        },
-        {
-            "name": "verit_not_simplify1",
-            "prop": "¬true ⟷ false",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
-            "name": "verit_not_simplify2",
-            "prop": "¬false ⟷ true",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
-            "name": "verit_minus_simplify_3_real",
-            "prop": "t = t - 0",
-            "ty": "thm",
-            "vars": {
-                "t": "real"
-            }
-        },
-        {
-            "name": "verit_minus_simplify_3_int",
-            "prop": "t = t - 0",
-            "ty": "thm",
-            "vars": {
-                "t": "int"
-            }
-        },
-        {
-            "name": "verit_minus_simplify_4_real",
-            "prop": "0 - t = -t",
-            "ty": "thm",
-            "vars": {
-                "t": "real"
-            }
-        },
-        {
-            "name": "verit_minus_simplify_4_int",
-            "prop": "0 - t = -t",
-            "ty": "thm",
-            "vars": {
-                "t": "int"
-            }
-        },
-        {
-            "name": "verit_bool_simplify1",
-            "prop": "¬(P ⟶ Q) ⟷ P ∧ ¬Q",
-            "ty": "thm",
-            "vars": {
-                "P": "bool",
-                "Q": "bool"
-            }
-        },
-        {
-            "name": "verit_bool_simplify4",
-            "prop": "(P ⟶ Q ⟶ R) ⟷ (P ∧ Q ⟶ R)",
-            "ty": "thm",
-            "vars": {
-                "P": "bool",
-                "Q": "bool",
-                "R": "bool"
-            }
-        },
-        {
-            "name": "verit_bool_simplify5",
-            "prop": "(P ⟶ Q ⟶ Q) ⟷ P ∨ Q",
-            "ty": "thm",
-            "vars": {
-                "P": "bool",
-                "Q": "bool"
-            }
-        },
-        {
-            "name": "verit_bool_simplify6",
-            "prop": "P ∧ (P ⟶ Q) ⟷ P ∧ Q",
-            "ty": "thm",
-            "vars": {
-                "P": "bool",
-                "Q": "bool"
-            }
-        },
-        {
-            "name": "verit_bool_simplify7",
-            "prop": "(P ⟶ Q) ∧ P ⟷ P ∧ Q",
-            "ty": "thm",
-            "vars": {
-                "P": "bool",
-                "Q": "bool"
+                "P": "bool"
             }
         }
     ],
