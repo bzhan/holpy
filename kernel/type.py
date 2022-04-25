@@ -335,15 +335,11 @@ class Type():
         """
         res = []
         def collect(T):
-            if T.is_tvar():
-                if T not in res:
-                    res.append(T)
-            elif T.is_stvar():
-                if T not in res:
-                    res.append(T)
-            else:
+            if T.is_tconst():
                 for arg in T.args:
                     collect(arg)
+            if T not in res:
+                res.append(T)
         collect(self)
         return res
 

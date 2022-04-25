@@ -298,7 +298,7 @@ class apply_theorem_macro(Macro):
         pt = pt.subst_type(inst.tyinst).substitution(inst)
 
         # Apply beta_norm when pats is a first-order pattern.
-        if matcher.is_fo_pattern_list(pats) and pt.prop.beta_norm() != pt.prop:
+        if not matcher.is_fo_pattern_list(pats) and pt.prop.beta_norm() != pt.prop:
             pt = pt.on_prop(beta_norm_conv())
         pt = pt.implies_elim(*pts)
 

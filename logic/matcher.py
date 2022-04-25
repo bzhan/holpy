@@ -98,6 +98,10 @@ def first_order_match(pat, t, inst=None):
         trace.append((pat, t))
         if pat.is_svar():
             if pat.head.name not in inst:
+                # If we are in an abstraction, check t does not contain any
+                # bound variables
+                if bd_vars and t.has_vars(bd_vars):
+                    raise MatchException(trace)
                 inst[pat.head.name] = t
             else:
                 if inst[pat.head.name] != t:
@@ -129,10 +133,7 @@ def first_order_match(pat, t, inst=None):
 
                 if heuristic_match:
                     # Heuristic matching: just assign pat.fun to t.fun.
-                    if pat.is_svar():
-                        # t contains bound variables, so match fails
-                        raise MatchException(trace)
-                    elif t.is_comb():
+                    if t.is_comb():
                         try:
                             pat.head.T.match_incr(t.fun.get_type(), inst.tyinst)
                         except TypeMatchException:

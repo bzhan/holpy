@@ -9,6 +9,7 @@ from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.report import ProofReport
 from kernel import theory
+from kernel.macro import Macro
 from kernel.proofterm import ProofTerm
 from logic import logic
 from logic import basic
@@ -26,7 +27,8 @@ d = Var("d", BoolType)
 x = Var("x", Ta)
 y = Var("y", Ta)
 
-def test_macro(self, thy_name, macro, *, vars=None, assms=None, res=None, args="", failed=None,
+def test_macro(self: unittest.TestCase, thy_name: str, macro: Macro, *,
+               vars=None, assms=None, res=None, args="", failed=None,
                limit=None, eval_only=False):
     context.set_context(thy_name, vars=vars, limit=limit)
 

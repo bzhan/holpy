@@ -1090,6 +1090,17 @@ class Term():
         else:
             return False
 
+    def has_vars(self, vs):
+        """Return whether self contains any of the variables in vs."""
+        if self.is_var():
+            return self in vs
+        elif self.is_comb():
+            return self.fun.has_vars(vs) or self.arg.has_vars(vs)
+        elif self.is_abs():
+            return self.body.has_vars(vs)
+        else:
+            return False
+
     def get_stvars(self):
         res = []
         def rec(t):
