@@ -171,10 +171,10 @@ class ProofrecTest(unittest.TestCase):
 
     def test_QF_UFLRA(self):
         test_paths = [
-            'QF_UFLRA/mathsat/RandomCoupled/pb_real_10_0200_10_14.smt2',
-            'QF_UFLRA/mathsat/RandomCoupled/pb_real_20_0400_10_12.smt2',
-            'QF_UFLRA/mathsat/RandomCoupled/pb_real_30_0600_10_13.smt2',
-            'QF_UFLRA/mathsat/RandomDecoupled/pb_real_30_60_45_06.smt2',
+            # 'QF_UFLRA/mathsat/RandomCoupled/pb_real_10_0200_10_14.smt2',
+            # 'QF_UFLRA/mathsat/RandomCoupled/pb_real_20_0400_10_12.smt2',
+            # 'QF_UFLRA/mathsat/RandomCoupled/pb_real_30_0600_10_13.smt2',
+            # 'QF_UFLRA/mathsat/RandomDecoupled/pb_real_30_60_45_06.smt2', # distinct elim
             'QF_UFLRA/mathsat/RandomDecoupled/pb_real_40_80_60_01.smt2',
             'QF_UFLRA/mathsat/RandomDecoupled/pb_real_50_100_30_07.smt2',
             'QF_UFLRA/FFT/smtlib.624882.smt2',
@@ -191,7 +191,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)
@@ -223,7 +223,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)
@@ -264,6 +264,8 @@ class ProofrecTest(unittest.TestCase):
             'UF/sledgehammer/Hoare/uf.1031408.smt2',
             'UF/sledgehammer/StrongNorm/uf.701666.smt2',
             'UF/sledgehammer/TypeSafe/uf.913303.smt2',
+            'UF/sledgehammer/TypeSafe/smtlib.1267524.smt2',
+            'UF/sledgehammer/TwoSquares//uf.680734.smt2',
             'UF/grasshopper/instantiated/concat_check_heap_access_23_4.smt2',
             'UF/grasshopper/instantiated/concat_invariant_18_4.smt2',
             'UF/grasshopper/instantiated/dl_filter_postcondition_of_dl_filter_41_1.smt2',
