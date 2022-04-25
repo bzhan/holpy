@@ -174,16 +174,13 @@ class LAGenericMacro(Macro):
             raise VeriTException("la_generic", 
                 "after multiplying coeffs, both sides should be number")
         lhs_const, rhs_const = eval_const(lhs_sum_norm), eval_const(rhs_sum_norm)
-        if not lhs_const == 0:
-            raise VeriTException("la_generic", 
-                "after multiplying coeffs, lhs should be 0")
         cond = False
         if all(dis_eq.is_equals() for dis_eq in dis_eq_step1):
-            cond = (rhs_const != 0)
+            cond = (rhs_const != lhs_const)
         elif all(dis_eq.is_equals() or dis_eq.is_greater_eq() for dis_eq in dis_eq_step1):
-            cond = (rhs_const > 0) # lhs <= rhs -> check 
+            cond = (rhs_const > lhs_const) # lhs <= rhs -> check 
         else:
-            cond = (rhs_const >= 0)
+            cond = (rhs_const >= lhs_const)
 
         if cond:
             return Thm([], hol_term.Or(*args[:-1]))
