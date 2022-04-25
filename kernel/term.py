@@ -146,8 +146,13 @@ class Term():
         """
         if self.ty != Term.COMB:
             return False
-        elif name is not None:
-            return self.head.is_const(name) and (nargs is None or len(self.args) == nargs)
+        if name is not None:
+            t = self.fun
+            count = 1
+            while t.ty == Term.COMB:
+                t = t.fun
+                count += 1
+            return t.ty == Term.CONST and t.name == name and (nargs is None or count == nargs)
         else:
             return True
 
@@ -164,7 +169,7 @@ class Term():
         in lambda terms.
 
         """
-        def helper(t, bd_vars):
+        def helper(t: Term, bd_vars: list(Term)):
             """bd_vars is the list of names of bound variables."""
             if t.is_svar():
                 return "?" + t.name
@@ -228,7 +233,7 @@ class Term():
             elif self.is_comb():
                 self._hash_val = hash(("COMB", hash(self.fun), hash(self.arg)))
             elif self.is_abs():
-                self._hash_val = hash(("ABS", hash(self.var_name), hash(self.var_T), hash(self.body)))
+                self._hash_val = hash(("ABS", hash(self.var_T), hash(self.body)))
             elif self.is_bound():
                 self._hash_val = hash(("BOUND", self.n))
             else:
@@ -247,14 +252,14 @@ class Term():
 
         if self.ty != other.ty:
             return False
-        elif self.is_svar() or self.is_var() or self.is_const():
+        elif self.ty == Term.SVAR or self.ty == Term.VAR or self.ty == Term.CONST:
             return self.name == other.name and self.T == other.T
-        elif self.is_comb():
+        elif self.ty == Term.COMB:
             return self.fun == other.fun and self.arg == other.arg
-        elif self.is_abs():
+        elif self.ty == Term.ABS:
             # Note the suggested variable name is not important
             return self.var_T == other.var_T and self.body == other.body
-        elif self.is_bound():
+        elif self.ty == Term.BOUND:
             return self.n == other.n
         else:
             raise TypeError

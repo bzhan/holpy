@@ -674,15 +674,9 @@ class imp_disj_macro(Macro):
 
     def eval(self, goal, pts):
         # goal: A --> B
-        def traverse(tm):
-            if not tm.is_disj():
-                return [tm]
-            else:
-                return traverse(tm.arg1) + traverse(tm.arg)
-
         A, B = goal.arg1, goal.arg
-        disjA = set(traverse(A))
-        disjB = set(traverse(B))
+        disjA = set(strip_disj(A))
+        disjB = set(strip_disj(B))
         assert disjA <= disjB
         return Thm(goal)
 
