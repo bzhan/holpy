@@ -11,7 +11,7 @@ from kernel.proofterm import ProofTerm, Thm
 from kernel import term as hol_term
 from kernel import type as hol_type
 from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
-    BoolType, Int, Forall, Exists, Inst, conj, disj, Var, neg, implies
+    BoolType, Int, Forall, Exists, Inst, conj, disj, Var, neg, implies, plus
 from logic import conv, logic
 from data import integer, real
 from data import list as hol_list
@@ -1186,6 +1186,35 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1):
                 for pt in reversed(eq_pts):
                     res = ProofTerm.reflexive(disj).combination(pt).combination(res)
                 return res
+            elif t1.is_plus():
+                cur_t1, cur_t2 = t1, t2
+                eq_pts = []
+                while cur_t1.is_plus() and cur_t2.is_plus():
+                    pt = helper(cur_t1.arg, cur_t2.arg, depth-1)
+                    if not pt:
+                        break
+                    eq_pts.append(pt)
+                    cur_t1 = cur_t1.arg1
+                    cur_t2 = cur_t2.arg1
+                    if (cur_t1, cur_t2) in eqs:
+                        break
+                res = helper(cur_t1, cur_t2, depth-1)
+                T = cur_t1.get_type()
+                if res is None:
+                    return None
+                for pt in reversed(eq_pts):
+                    res = ProofTerm.reflexive(plus(T)).combination(res).combination(pt)
+                return res
+            elif t1.is_comb('distinct'):
+                l_args, r_args = hol_list.dest_literal_list(t1.arg), hol_list.dest_literal_list(t2.arg)
+                pts = []
+                for l_arg, r_arg in zip(l_args, r_args):
+                    pts.append(helper(l_arg, r_arg, depth-1))
+                T = l_args[0].get_type()
+                res = ProofTerm.reflexive(hol_list.nil(T))
+                for pt in reversed(pts):
+                    res = ProofTerm.reflexive(hol_list.cons(T)).combination(pt).combination(res)
+                return ProofTerm.reflexive(t1.head).combination(res)
             else:
                 pts = []
                 for l_arg, r_arg in zip(t1.args, t2.args):
