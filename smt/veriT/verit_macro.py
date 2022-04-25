@@ -3308,3 +3308,48 @@ class EquivNeg1Macro(Macro):
 
     def get_proof_term(self, args, prevs):
         return logic.apply_theorem("equiv_neg2", concl=Or(*args))
+
+
+@register_macro("verit_la_rw_eq")
+class LaRwEqMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if len(args) != 1:
+            raise VeriTException("la_rw_eq", "unexpected number of arguments")
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("la_rw_eq", "goal should be an equality")
+        lhs, rhs = goal.args
+        if not lhs.is_equals():
+            raise VeriTException("la_rw_eq", "lhs should be an equality")
+        t, u = lhs.args
+        if not rhs.is_conj() or not rhs.arg1.is_less_eq() or not rhs.arg.is_less_eq():
+            raise VeriTException("la_rw_eq", "rhs should be a conjunction of two less_eq term")
+        less_eq1, less_eq2 = rhs.args
+        # (t = u) <--> (t <= u) & (u <= t)
+        if t == less_eq1.arg1 and t == less_eq2.arg and u == less_eq1.arg and u == less_eq2.arg1:
+            return Thm([], goal)
+        else:
+            raise VeriTException("la_rw_eq", "unexpected result")
+
+    def get_proof_term(self, args, prevs=None):
+        goal = args[0]
+        lhs, rhs = goal.args
+        t, u = lhs.args
+        less_eq1, less_eq2 = rhs.args
+        T = t.get_type()
+        if T not in (hol_type.IntType, hol_type.RealType):
+            raise VeriTException("la_rw_eq", "unexpected data type")
+
+        # (t = u) <--> (t <= u) & (u <= t)
+        if t == less_eq1.arg1 and t == less_eq2.arg and u == less_eq1.arg and u == less_eq2.arg1:
+            if T == hol_type.IntType:
+                return logic.apply_theorem("verit_lw_rw_eq_real", concl=goal)
+            else:
+                return logic.apply_theorem("verit_lw_rw_eq_int", concl=goal)
+        else:
+            raise VeriTException("la_rw_eq", "unexpected result")

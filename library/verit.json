@@ -175,15 +175,6 @@
             }
         },
         {
-            "name": "tmp_LA_pre_real",
-            "prop": "x = y ⟷ x ≤ y ∧ y ≤ x",
-            "ty": "thm",
-            "vars": {
-                "x": "real",
-                "y": "real"
-            }
-        },
-        {
             "name": "neg_neg",
             "prop": "¬¬¬A ∨ A",
             "ty": "thm",
@@ -726,6 +717,51 @@
             "ty": "thm",
             "vars": {
                 "P": "bool"
+            }
+        },
+        {
+            "name": "verit_lw_rw_eq_real",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_le_antisym, x = y ⟷ x ≤ y ∧ y ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x = y ⟷ x ≤ y ∧ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x = y ⟷ x ≤ y ∧ y ≤ x"
+                }
+            ],
+            "prop": "x = y ⟷ x ≤ y ∧ y ≤ x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_le_antisym"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_lw_rw_eq_int",
+            "prop": "x = y ⟷ x ≤ y ∧ y ≤ x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
             }
         }
     ],
