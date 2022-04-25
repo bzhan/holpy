@@ -218,7 +218,9 @@ class ProofTransformer(Transformer):
         return var_name, tm
 
     def add_trivial_ctx(self, var_name, ty):
-        var = hol_term.Var(str(var_name), str_to_hol_type(str(ty)))
+        var_name = str(var_name)
+        var = hol_term.Var(var_name, str_to_hol_type(str(ty)))
+        self.anchor_ctx[var_name] = var
         return str(var_name), var
 
     def mk_vname(self, name):
@@ -256,6 +258,7 @@ class ProofTransformer(Transformer):
 
         print('let_tm', self.let_tm)
         print('quant_ctx', self.quant_ctx)
+        print("anchor_ctx", self.anchor_ctx)
         raise VeriTParseException("ret_let_tm", "can't find %s" % str(name))
 
     def ret_tm(self, tm):

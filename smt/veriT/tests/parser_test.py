@@ -191,8 +191,6 @@ class ParserTest(unittest.TestCase):
 
     def testParseUF(self):
         test_paths = [
-            "UF/sledgehammer/TypeSafe/smtlib.1267524.smt2",
-            'UF/sledgehammer/TwoSquares//uf.680734.smt2'
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_49_980_1120402.smt_in.smt2',
@@ -220,6 +218,8 @@ class ParserTest(unittest.TestCase):
             'UF/sledgehammer/Hoare/uf.1008477.smt2',
             'UF/sledgehammer/Hoare/uf.1031408.smt2',
             'UF/sledgehammer/StrongNorm/uf.701666.smt2',
+            "UF/sledgehammer/TypeSafe/smtlib.1267524.smt2",
+            'UF/sledgehammer/TwoSquares//uf.680734.smt2',
             'UF/grasshopper/instantiated/concat_check_heap_access_23_4.smt2',
             'UF/grasshopper/instantiated/concat_invariant_18_4.smt2',
             'UF/grasshopper/instantiated/dl_filter_postcondition_of_dl_filter_41_1.smt2',
