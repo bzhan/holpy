@@ -1706,6 +1706,13 @@ def compare_ac(tm1, tm2):
         x1, body1 = tm1.arg.dest_abs()
         x2, body2 = tm2.arg.dest_abs()
         return x1 == x2 and compare_ac(body1, body2)
+    elif logic.is_if(tm1):
+        P1, x1, y1 = tm1.args
+        P2, x2, y2 = tm2.args
+        if x1.get_type() == hol_type.BoolType:
+            return compare_ac(P1, P2) and compare_ac(x1, x2) and compare_ac(y1, y2)
+        else:
+            return compare_ac(P1, P2) and x1 == x2 and y1 == y2
     else:
         return tm1 == tm2
 

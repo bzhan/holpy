@@ -361,6 +361,7 @@ class ProofrecTest(unittest.TestCase):
     def test_QF_IDL(self):
         test_paths = [
             'QF_IDL/planning//plan-40.cvc.smt2',
+            # 'QF_IDL/RTCL/b13_tf_15/ckt_PROP5_tf_15.smt2', # timeout
         ]
         profile = False
         if profile:
