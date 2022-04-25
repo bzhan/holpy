@@ -799,9 +799,20 @@ class DistinctElimMacro(Macro):
             conv.rewr_conv('distinct_def_2'),
             conv.rewr_conv('not_member_nil'),
             conv.rewr_conv('not_member_cons')))
-        pt_eq = logic.imp_conj_iff(Eq(pt.prop.rhs, goal.rhs))
-        return ProofTerm.transitive(pt, pt_eq)
-
+        try:
+            pt_eq = logic.imp_conj_iff(Eq(pt.prop.rhs, goal.rhs))
+            return ProofTerm.transitive(pt, pt_eq)
+        except AssertionError:
+            # Form conjunction of pairs in ts
+            distinct_ts = hol_list.dest_literal_list(lhs.arg)
+            conjs = []
+            for i in range(len(distinct_ts)):
+                for j in range(i+1, len(distinct_ts)):
+                    conjs.append(Not(Eq(distinct_ts[i], distinct_ts[j])))
+            expected_rhs = And(*conjs)
+            pt_eq_expected = logic.imp_conj_iff(Eq(pt.prop.rhs, expected_rhs))
+            pt_sym = compare_sym_tm_thm(expected_rhs, goal.rhs)
+            return ProofTerm.transitive(pt, pt_eq_expected).transitive(pt_sym)
 
 @register_macro("verit_and")
 class AndMacro(Macro):
