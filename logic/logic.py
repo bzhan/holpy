@@ -658,7 +658,7 @@ class imp_conj_macro(Macro):
         traverse_A(ProofTerm.assume(A))
         return traverse_C(goal.arg).implies_intr(A)
 
-def imp_conj_iff(goal):
+def imp_conj_iff(goal: Term):
     """Goal is of the form A_1 & ... & A_m <--> B_1 & ... & B_n, where
     the sets {A_1, ..., A_m} and {B_1, ..., B_n} are equal."""
     pt1 = ProofTerm('imp_conj', Implies(goal.lhs, goal.rhs))
@@ -718,7 +718,7 @@ class imp_disj_macro(Macro):
         traverse_C(triv)
         return traverse_A(goal.arg1)
 
-def imp_disj_iff(goal):
+def imp_disj_iff(goal: Term):
     """Goal is of the form A_1 | ... | A_m <--> B_1 | ... | B_n, where
     the sets {A_1, ..., A_m} and {B_1, ..., B_n} are equal."""
     pt1 = ProofTerm('imp_disj', Implies(goal.lhs, goal.rhs))

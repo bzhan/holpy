@@ -11,7 +11,7 @@ from kernel.proofterm import ProofTerm, Thm
 from kernel import term as hol_term
 from kernel import type as hol_type
 from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
-    BoolType, Int, Forall, Exists, Inst, conj, Var
+    BoolType, Int, Forall, Exists, Inst, conj, Var, neg, implies
 from logic import conv, logic
 from data import integer, real
 from data import list as hol_list
@@ -1217,7 +1217,11 @@ class CongMacro(Macro):
             prev_dict[(prev.lhs, prev.rhs)] = prev
             prev_dict[(prev.rhs, prev.lhs)] = prev.symmetric()
 
-        return compare_sym_tm_thm(lhs, rhs, prev_dict)
+        pt = compare_sym_tm_thm(lhs, rhs, prev_dict)
+        if pt is not None:
+            return pt
+        # More to add in compare_sym_tm_thm
+        raise NotImplementedError
 
 @register_macro("verit_refl")
 class ReflMacro(Macro):
@@ -1593,6 +1597,7 @@ def flatten_prop(tm):
         return tm
 
 def compare_ac(tm1, tm2):
+    """Compare two terms up to AC of conjunction and disjunction."""
     if tm1.is_conj():
         conjs1 = logic.strip_conj(tm1)
         conjs2 = logic.strip_conj(tm2)
@@ -1626,6 +1631,53 @@ def compare_ac(tm1, tm2):
     else:
         return tm1 == tm2
 
+def compare_ac_thm(tm1, tm2):
+    if tm1.is_conj():
+        conjs1 = logic.strip_conj(tm1)
+        conjs2 = logic.strip_conj(tm2)
+        if set(conjs1) == set(conjs2):
+            return logic.imp_conj_iff(Eq(tm1, tm2))
+        if len(conjs1) == len(conjs2) and all(compare_ac(t1, t2) for t1, t2 in zip(conjs1, conjs2)):
+            eqs = dict()
+            for t1, t2 in zip(conjs1, conjs2):
+                if t1 != t2:
+                    eqs[(t1, t2)] = compare_ac_thm(t1, t2)
+            tm1_eq = logic.imp_conj_iff(Eq(tm1, And(*conjs1)))
+            tm2_eq = logic.imp_conj_iff(Eq(tm2, And(*conjs2)))
+            sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs)
+            return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
+        raise NotImplementedError
+    elif tm1.is_disj():
+        disjs1 = logic.strip_disj(tm1)
+        disjs2 = logic.strip_disj(tm2)
+        if set(disjs1) == set(disjs2):
+            return logic.imp_disj_iff(Eq(tm1, tm2))
+        if len(disjs1) == len(disjs2) and all(compare_ac(t1, t2) for t1, t2 in zip(disjs1, disjs2)):
+            eqs = dict()
+            for t1, t2 in zip(disjs1, disjs2):
+                eqs[(t1, t2)] = compare_ac_thm(t1, t2)
+            tm1_eq = logic.imp_disj_iff(Eq(tm1, Or(*disjs1)))
+            tm2_eq = logic.imp_disj_iff(Eq(tm2, Or(*disjs2)))
+            sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs)
+            return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
+        raise NotImplementedError
+    elif tm1.is_not():
+        eq_pt = compare_ac_thm(tm1.arg, tm2.arg)
+        return ProofTerm.reflexive(neg).combination(eq_pt)
+    elif tm1.is_implies():
+        eq_pt1 = compare_ac_thm(tm1.arg1, tm2.arg1)
+        eq_pt2 = compare_ac_thm(tm1.arg, tm2.arg)
+        return ProofTerm.reflexive(implies).combination(eq_pt1).combination(eq_pt2)
+    elif tm1.is_forall():
+        x1, body1 = tm1.arg.dest_abs()
+        x2, body2 = tm2.arg.dest_abs()
+        eq_pt = compare_ac_thm(body1, body2)
+        return ProofTerm.reflexive(tm1).on_rhs(conv.arg_conv(conv.abs_conv(conv.replace_conv(eq_pt))))
+    else:
+        if tm1 != tm2:
+            raise VeriTException("ac_simp", "arguments not equal")
+        return ProofTerm.reflexive(tm1)
+
 
 @register_macro("verit_ac_simp")
 class ACSimpMacro(Macro):
@@ -1650,6 +1702,12 @@ class ACSimpMacro(Macro):
             print('lhs:', lhs)
             print('rhs:', rhs)
             raise VeriTException("ac_simp", "unexpected result")
+    
+    def get_proof_term(self, args, prevs):
+        goal = args[0]
+        lhs, rhs = goal.lhs, goal.rhs
+        return compare_ac_thm(lhs, rhs)
+
 
 @register_macro('verit_imp_conj')
 class imp_conj_macro(Macro):
