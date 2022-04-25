@@ -96,7 +96,7 @@ veriT_grammar = r"""
                     | "(anchor :step" step_id ")" -> mk_empty_anchor
     ?clause : "(cl" proof_term* ")" -> mk_clause
     
-    ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (ANCHOR_NAME|term|vname) ")" -> add_context
+    ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (term|vname) ")" -> add_context
                     | "(" (ANCHOR_NAME | CNAME) vname ")" -> add_trivial_ctx
 
     ?step_arg_pair : "(:=" CNAME term")" -> mk_forall_inst_args
@@ -188,8 +188,8 @@ class ProofTransformer(Transformer):
         # map from quantified variable name to variable
         self.quant_ctx = []
 
-        # map from (quantified) verit_-prefix name to term
-        self.verit_ctx = dict()
+        # map from anchor variable to term
+        self.anchor_ctx = dict()
 
         # indicate whether we are parsing a real term
         self.is_real = False
@@ -206,12 +206,7 @@ class ProofTransformer(Transformer):
         """
         
         hol_ty = str_to_hol_type(ty)
-        
-        if str(tm_name).startswith("?") and str(tm_name) not in self.let_tm:
-            tm = hol_term.Var(tm_name, hol_ty)
-            self.step_ctx[tm_name] = tm
-
-        elif isinstance(tm_name, hol_term.Term):
+        if isinstance(tm_name, hol_term.Term):
             tm = tm_name
         else:
             tm = hol_term.Var(tm_name, hol_ty)
@@ -219,6 +214,7 @@ class ProofTransformer(Transformer):
         var_name = var
             
         assert tm.get_type() == hol_ty
+        self.anchor_ctx[var_name] = hol_term.Var(var_name, hol_ty)
         return var_name, tm
 
     def add_trivial_ctx(self, var_name, ty):
@@ -255,6 +251,8 @@ class ProofTransformer(Transformer):
         for ctx in reversed(self.proof_ctx):
             if name in ctx:
                 return hol_term.Var(name, ctx[name].get_type())
+        if name in self.anchor_ctx:
+            return self.anchor_ctx[name]
 
         print('let_tm', self.let_tm)
         print('quant_ctx', self.quant_ctx)
@@ -427,6 +425,7 @@ class ProofTransformer(Transformer):
         prf_ctx = {var_name : tm for ctx in self.proof_ctx for var_name, tm in ctx.items()}
         step = Anchor(str(id), prf_ctx)
         self.cur_subprf_id.append(str(id))
+        self.anchor_ctx.clear()
         return step
 
     def mk_empty_anchor(self, id):

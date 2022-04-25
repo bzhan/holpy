@@ -191,6 +191,8 @@ class ParserTest(unittest.TestCase):
 
     def testParseUF(self):
         test_paths = [
+            "UF/sledgehammer/TypeSafe/smtlib.1267524.smt2",
+            'UF/sledgehammer/TwoSquares//uf.680734.smt2'
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_49_980_1120402.smt_in.smt2',
