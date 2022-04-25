@@ -633,6 +633,52 @@
             "vars": {
                 "t": "int"
             }
+        },
+        {
+            "name": "verit_bool_simplify1",
+            "prop": "¬(P ⟶ Q) ⟷ P ∧ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_bool_simplify4",
+            "prop": "(P ⟶ Q ⟶ R) ⟷ (P ∧ Q ⟶ R)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_bool_simplify5",
+            "prop": "(P ⟶ Q ⟶ Q) ⟷ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_bool_simplify6",
+            "prop": "P ∧ (P ⟶ Q) ⟷ P ∧ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_bool_simplify7",
+            "prop": "(P ⟶ Q) ∧ P ⟷ P ∧ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

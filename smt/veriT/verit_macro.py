@@ -799,9 +799,20 @@ class DistinctElimMacro(Macro):
             conv.rewr_conv('distinct_def_2'),
             conv.rewr_conv('not_member_nil'),
             conv.rewr_conv('not_member_cons')))
-        pt_eq = logic.imp_conj_iff(Eq(pt.prop.rhs, goal.rhs))
-        return ProofTerm.transitive(pt, pt_eq)
-
+        try:
+            pt_eq = logic.imp_conj_iff(Eq(pt.prop.rhs, goal.rhs))
+            return ProofTerm.transitive(pt, pt_eq)
+        except AssertionError:
+            # Form conjunction of pairs in ts
+            distinct_ts = hol_list.dest_literal_list(lhs.arg)
+            conjs = []
+            for i in range(len(distinct_ts)):
+                for j in range(i+1, len(distinct_ts)):
+                    conjs.append(Not(Eq(distinct_ts[i], distinct_ts[j])))
+            expected_rhs = And(*conjs)
+            pt_eq_expected = logic.imp_conj_iff(Eq(pt.prop.rhs, expected_rhs))
+            pt_sym = compare_sym_tm_thm(expected_rhs, goal.rhs)
+            return ProofTerm.transitive(pt, pt_eq_expected).transitive(pt_sym)
 
 @register_macro("verit_and")
 class AndMacro(Macro):
@@ -1737,9 +1748,14 @@ class imp_conj_macro(Macro):
             else:
                 assert l in dct
                 ptCs.append(dct[l])
+
+            if not r.is_conj():
+                if r == true:
+                    ptCs.append(logic.apply_theorem("trueI"))
+                else:
+                    assert r in dct
+                    ptCs.append(dct[r])
             C = r
-        assert C in dct
-        ptCs.append(dct[C])
         ptC = ptCs[-1]
         for pt in reversed(ptCs[:-1]):
             ptC = logic.apply_theorem("conjI", pt, ptC)
@@ -2032,6 +2048,72 @@ class BoolSimplifyMacro(Macro):
             q1, q2 = rhs.args
             if p1 == p3 and p1 == q1 and p2 == q2:
                 return Thm([], goal)
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match (p1 --> p2) & p1 <--> p1 & p2")
+        else:
+            print("lhs", lhs)
+            print("rhs", rhs)
+            raise VeriTException("bool_simplify", "implementation is incomplete")
+
+    def get_proof_term(self, args, prevs):
+        goal = args[0]
+
+        lhs, rhs = goal.lhs, goal.rhs
+        # case 1: ~(p --> q) <--> (p and ~q)
+        if lhs.is_not() and lhs.arg.is_implies() and rhs.is_conj():
+            l_p, l_q = lhs.arg.args
+            r_p, r_q = rhs.args
+            if l_p == r_p and Not(l_q) == r_q:
+                return logic.apply_theorem("verit_bool_simplify1", inst=Inst(P=l_p, Q=l_q))
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match  ~(p --> q) <--> (p and ~q)")
+        # case 2: ~(p | q) <--> (~p & ~q)
+        elif lhs.is_not() and lhs.arg.is_disj() and rhs.is_conj():
+            l_p, l_q = lhs.arg.args
+            r_p, r_q = rhs.args
+            if Not(l_p) == r_p and Not(l_q) == r_q:
+                return logic.apply_theorem("de_morgan_thm2", inst=Inst(A=l_p, B=l_q))
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match ~(p | q) <--> (~p & ~q)")
+        # case 3: ~(p & q) <--> (~p | ~q)
+        elif lhs.is_not() and lhs.arg.is_conj() and rhs.is_disj():
+            l_p, l_q = lhs.arg.args
+            r_p, r_q = rhs.args
+            if Not(l_p) == r_p and Not(l_q) == r_q:
+                return logic.apply_theorem("de_morgan_thm1", inst=Inst(A=l_p, B=l_q))
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match ~(p | q) <--> (~p & ~q)")
+        # case 4: (p1 --> p2 --> p3) <--> (q1 & q2) --> q3
+        elif lhs.is_implies() and lhs.arg.is_implies() and rhs.is_implies() and rhs.arg1.is_conj():
+            p1, p2, p3 = lhs.arg1, lhs.arg.arg1, lhs.arg.arg
+            q1, q2, q3 = rhs.arg1.arg1, rhs.arg1.arg, rhs.arg
+            if p1 == q1 and p2 == q2 and p3 == q3:
+                return logic.apply_theorem("verit_bool_simplify4", inst=Inst(P=p1, Q=p2, R=p3))
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match (p1 --> p2 --> p3) <--> (q1 & q2) --> q3")
+        # case 5: ((p1 --> p2) --> p2) <--> p1 | p2
+        elif lhs.is_implies() and lhs.arg1.is_implies() and rhs.is_disj():
+            p1, p2, p3 = lhs.arg1.arg1, lhs.arg1.arg, lhs.arg
+            # q1, q2, q3 = rhs.arg1.arg1, rhs.arg1.arg, rhs.arg
+            q1, q2 = rhs.args
+            if p1 == q1 and p2 == q2 and p3 == q2:
+                return logic.apply_theorem("verit_bool_simplify5", inst=Inst(P=p1, Q=p2))
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match ((p1 --> p2) --> p2) <--> p1 | p2")
+        # case 6: (p1 & (p1 --> p2)) <--> p1 & p2
+        elif lhs.is_conj() and lhs.arg.is_implies() and rhs.is_conj():
+            p1, p2, p3 = lhs.arg1, lhs.arg.arg1, lhs.arg.arg
+            q1, q2 = rhs.args
+            if p1 == p2 and p1 == q1 and p3 == q2:
+                return logic.apply_theorem("verit_bool_simplify6", inst=Inst(P=p1, Q=q2))
+            else:
+                raise VeriTException("bool_simplify", "goal cannot match (p1 & (p1 --> p2)) <--> p1 & p2")
+        # case 7: (p1 --> p2) & p1 <--> p1 & p2
+        elif lhs.is_conj() and lhs.arg1.is_implies() and rhs.is_conj():
+            p1, p2, p3 = lhs.arg1.arg1, lhs.arg1.arg, lhs.arg
+            q1, q2 = rhs.args
+            if p1 == p3 and p1 == q1 and p2 == q2:
+                return logic.apply_theorem("verit_bool_simplify7", inst=Inst(P=p1, Q=p2))
             else:
                 raise VeriTException("bool_simplify", "goal cannot match (p1 --> p2) & p1 <--> p1 & p2")
         else:
