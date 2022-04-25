@@ -2229,6 +2229,39 @@ class MinusSimplify(Macro):
             else:
                 raise VeriTException("minus_simplify", "unexpected result")
         raise NotImplementedError
+
+    def get_proof_term(self, args, prevs=None):
+        goal = args[0]
+        lhs, rhs = goal.args
+        T = lhs.get_type()
+        if T not in (hol_type.IntType, hol_type.RealType):
+            raise VeriTException("minus_simplify", "unexpected numerical data type")
+        if lhs.is_constant() and rhs.is_constant():
+            if T == hol_type.IntType:
+                macro_name = "int_eval"
+            elif T == hol_type.RealType:
+                macro_name = "real_eval"
+                return ProofTerm("real_eval", goal)
+            return ProofTerm(macro_name, goal=Eq(lhs, rhs), prevs=[])
+        elif rhs.is_minus():
+            if rhs.arg.is_zero() and rhs.arg1 == lhs:
+                if T == hol_type.RealType:
+                    return logic.apply_theorem("verit_minus_simplify_3_real", inst=Inst(t=rhs.arg1))
+                elif T == hol_type.IntType:
+                    return logic.apply_theorem("verit_minus_simplify_3_int", inst=Inst(t=rhs.arg1))
+            else:
+                raise VeriTException("minus_simplify", "unexpected result")
+        elif lhs.is_minus() and rhs.is_uminus():
+            l_arg1, l_arg2 = lhs.args
+            r_arg = rhs.arg
+            if l_arg1.is_zero() and l_arg2 == r_arg:
+                if T == hol_type.RealType:
+                    return logic.apply_theorem("verit_minus_simplify_4_real", inst=Inst(t=l_arg2))
+                elif T == hol_type.IntType:
+                    return logic.apply_theorem("verit_minus_simplify_4_int", inst=Inst(t=l_arg2))
+            else:
+                raise VeriTException("minus_simplify", "unexpected result")
+        raise NotImplementedError
 @register_macro("verit_unary_minus_simplify")
 class UnaryMinusSimplifyMacro(Macro):
     def __init__(self):

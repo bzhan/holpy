@@ -601,6 +601,38 @@
             "prop": "¬false ⟷ true",
             "ty": "thm",
             "vars": {}
+        },
+        {
+            "name": "verit_minus_simplify_3_real",
+            "prop": "t = t - 0",
+            "ty": "thm",
+            "vars": {
+                "t": "real"
+            }
+        },
+        {
+            "name": "verit_minus_simplify_3_int",
+            "prop": "t = t - 0",
+            "ty": "thm",
+            "vars": {
+                "t": "int"
+            }
+        },
+        {
+            "name": "verit_minus_simplify_4_real",
+            "prop": "0 - t = -t",
+            "ty": "thm",
+            "vars": {
+                "t": "real"
+            }
+        },
+        {
+            "name": "verit_minus_simplify_4_int",
+            "prop": "0 - t = -t",
+            "ty": "thm",
+            "vars": {
+                "t": "int"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",
