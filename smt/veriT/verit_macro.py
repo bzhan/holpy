@@ -2802,7 +2802,7 @@ def get_cnf(t):
         # A <--> B becomes (~A | B) & (~B | A)
         A, B = t.lhs, t.rhs
         return get_cnf(And(Or(Not(A), B), Or(Not(B), A)))
-    elif logic.is_if(t.arg) and t.arg.args[1].get_type() == BoolType:
+    elif logic.is_if(t) and t.args[1].get_type() == BoolType:
         # (if P then Q else R) becomes (~P | Q) & (P | R)
         P, Q, R = t.args
         return get_cnf(And(Or(Not(P), Q), Or(P, R)))
