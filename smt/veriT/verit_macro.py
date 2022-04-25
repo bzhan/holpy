@@ -357,7 +357,14 @@ class VeriTAndPos(Macro):
         if pk in conjs:
             return Thm([], Or(neg_conj, pk))
         else:
-            raise NotImplementedError
+            if not pk.is_conj():
+                raise VeriTException("and_pos", "can't find the positive literal")
+            conjs = set(conjs)
+            pk = set(pk.strip_conj())
+            if conjs.issuperset(pk):
+                return Thm([], Or(*args))
+            else:
+                raise VeriTException("and_pos", "unexpected result")
 
     def get_proof_term(self, args, prevs=None):
         pt0 = ProofTerm("imp_conj", Implies(args[0].arg, args[1]))
