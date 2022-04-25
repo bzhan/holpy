@@ -6,6 +6,18 @@ Implementation of higher-order logic in Python.
 
 See README file in the [`integral`](integral/) directory.
 
+### Unit tests
+
+Unit tests for the backend are located in files of the form ```*/tests/*_test.py```.
+
+Run all unit tests on Windows:
+
+```python -m unittest discover -p *_test.py```
+
+On Linux:
+
+```python3 -m unittest */tests/*_test.py```
+
 ### Installation and usage:
 
 This project requires Python 3.5 or greater and npm:
@@ -45,8 +57,6 @@ In your browser the user interface is at page `localhost:8080`.
 To see statistics for the search functionality on a collection of lemmas, use:
 
 ```python -m server.collect_stat```
-
-Unit tests for the backend are located in files of the form ```*/tests/*_test.py```.
 
 ### Directory structure:
 
