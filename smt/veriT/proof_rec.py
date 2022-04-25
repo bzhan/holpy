@@ -140,7 +140,7 @@ class ProofReconstruction:
                 except NotImplementedError as e:
                     print(step.id, rule_name)
                     self.pts[step.id] = ProofTerm.sorry(
-                        clause_to_disj(step.cl), Thm(*(self.pts[step_id].hyps for step_id in self.pm)))
+                        Thm(clause_to_disj(step.cl), *(self.pts[step_id].hyps for step_id in step.pm)))
 
     def validate(self, is_eval=True, step_limit=None, omit_proofterm=None):
         with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
