@@ -266,7 +266,7 @@ class ProofrecTest(unittest.TestCase):
             'UF/sledgehammer/TypeSafe/uf.913303.smt2',
             'UF/sledgehammer/TypeSafe/smtlib.1267524.smt2',
             'UF/sledgehammer/TwoSquares//uf.680734.smt2',
-            'UF/sledgehammer/TwoSquares//uf.725943.smt2', # bug
+            'UF/sledgehammer/TwoSquares//uf.725943.smt2',
             'UF/grasshopper/instantiated/concat_check_heap_access_23_4.smt2',
             'UF/grasshopper/instantiated/concat_invariant_18_4.smt2',
             'UF/grasshopper/instantiated/dl_filter_postcondition_of_dl_filter_41_1.smt2',
