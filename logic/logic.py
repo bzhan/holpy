@@ -257,8 +257,8 @@ class apply_theorem_macro(Macro):
         for stvar in th.prop.get_stvars():
             assert stvar.name in inst.tyinst, "apply_theorem: unmatched type variable %s" % stvar
 
-        # If pats is a first-order pattern, there is no need for beta_norm.
-        if matcher.is_fo_pattern_list(pats):
+        # If theorem is a first-order pattern, there is no need for beta_norm.
+        if matcher.is_fo_pattern(th.prop):
             As, C = th.prop.subst(inst).strip_implies()
         else:
             As, C = th.prop.subst_norm(inst).strip_implies()
@@ -297,8 +297,8 @@ class apply_theorem_macro(Macro):
         pt = ProofTerm.theorem(name)
         pt = pt.subst_type(inst.tyinst).substitution(inst)
 
-        # Apply beta_norm when pats is a first-order pattern.
-        if not matcher.is_fo_pattern_list(pats) and pt.prop.beta_norm() != pt.prop:
+        # Apply beta_norm when theorem is a first-order pattern.
+        if not matcher.is_fo_pattern(th.prop):
             pt = pt.on_prop(beta_norm_conv())
         pt = pt.implies_elim(*pts)
 
