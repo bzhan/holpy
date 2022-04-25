@@ -2170,24 +2170,61 @@ class ITESimplifyMacro(Macro):
         if logic.is_if(lhs) and logic.is_if(rhs):
             l_P, l_then, l_else = lhs.args
             r_P, r_then, r_else = rhs.args
-            if logic.is_if(l_then): # Case 7: ite P (ite P x y) z <--> ite P x z
+
+            # Case 4: ite ~P x y <--> ite P y x
+            if l_P == Not(r_P) and l_then == r_else and l_else == r_then:
+                return Thm([], goal)
+            # Case 7: ite P (ite P x y) z <--> ite P x z
+            elif logic.is_if(l_then):
                 l_then_P, l_then_then, _ = l_then.args
                 if l_P == l_then_P and l_then_then == r_then and l_else == r_else:
                     return Thm([], goal)
                 else:
                     raise VeriTException("ite_simplify", "can't match ite P (ite P x y) z <--> ite P x z")
-            elif logic.is_if(l_else): # Case 8: ite P x (ite P y z) <--> ite P x z
+            # Case 8: ite P x (ite P y z) <--> ite P x z
+            elif logic.is_if(l_else):
                 l_else_P, _, l_else_else = l_then.args
                 if l_P == l_else_P and l_then == r_then and l_else_else == r_else:
                     return Thm([], goal)
                 else:
                     raise VeriTException("ite_simplify", "can't match ite P x (ite P y z) <--> ite P x z")
-            elif l_P == Not(r_P) and l_then == r_else and l_else == r_then:
+            else:
+                raise VeriTException("ite_simplify", "cannot match")
+        elif logic.is_if(lhs):
+            l_P, l_then, l_else = lhs.args
+            # Case 1: ite true x y <--> x (repeat case 5)
+            if l_P == true and rhs == l_then:
+                return Thm([], goal)
+            # Case 2: ite false x y <--> y (repeat case 6)
+            elif l_P == false and rhs == l_else:
+                return Thm([], goal)
+            # Case 3: ite P x x <--> x
+            elif l_then == l_else and rhs == l_then:
+                return Thm([], goal)
+            # Case 9: ite P true false <--> P
+            elif l_then == true and l_else == false and rhs == l_P:
+                return Thm([], goal)
+            # Case 10: ite P false true <--> ~P
+            elif l_then == false and l_else == true and rhs == Not(l_P):
+                return Thm([], goal)
+            # Case 11: ite P true Q <--> P | Q
+            elif l_then == true and rhs == Or(l_P, l_else):
+                return Thm([], goal)
+            # Case 12: ite P Q false <--> P & Q
+            elif l_else == false and rhs == And(l_P, l_then):
+                return Thm([], goal)
+            # Case 13: ite P false Q <--> ~P & Q
+            elif l_then == false and rhs == And(Not(l_P, l_else)):
+                return Thm([], goal)
+            # Case 14: ite P Q true <--> ~P | Q
+            elif l_else == true and rhs == Or(Not(l_P), l_then):
                 return Thm([], goal)
             else:
-                raise VeriTException("ite_simplify", "can't match ite P x y <--> ite ~P y x")
+                print("lhs", lhs)
+                print("rhs", rhs)
+                raise VeriTException("ite_simplify", "cannot match")
         else:
-            raise VeriTException("ite_simplify", "implementation is incomplete")
+            raise VeriTException("ite_complete", "left side of equality must be if statement")
             
 
 @register_macro("verit_minus_simplify")
