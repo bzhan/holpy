@@ -1690,9 +1690,14 @@ class imp_conj_macro(Macro):
             else:
                 assert l in dct
                 ptCs.append(dct[l])
+
+            if not r.is_conj():
+                if r == true:
+                    ptCs.append(logic.apply_theorem("trueI"))
+                else:
+                    assert r in dct
+                    ptCs.append(dct[r])
             C = r
-        assert C in dct
-        ptCs.append(dct[C])
         ptC = ptCs[-1]
         for pt in reversed(ptCs[:-1]):
             ptC = logic.apply_theorem("conjI", pt, ptC)
