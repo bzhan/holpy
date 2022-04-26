@@ -172,11 +172,11 @@ def resolve_order(props):
     lit_to_id = dict()
 
     def strip_not(t):
-        if t.is_not():
-            a, n = strip_not(t.arg)
-            return a, n + 1
-        else:
-            return t, 0
+        count = 0
+        while t.is_not():
+            count += 1
+            t = t.arg
+        return t, count
 
     # Find list of literals, ignoring negation. Assign each unique
     # literal to an index.

@@ -225,15 +225,22 @@ class Term():
     def __hash__(self):
         if not hasattr(self, "_hash_val"):
             if self.is_svar():
-                self._hash_val = hash(("SVAR", self.name, hash(self.T)))
+                self._hash_val = hash(("SVAR", self.name, self.T))
             elif self.is_var():
-                self._hash_val = hash(("VAR", self.name, hash(self.T)))
+                self._hash_val = hash(("VAR", self.name, self.T))
             elif self.is_const():
-                self._hash_val = hash(("CONST", self.name, hash(self.T)))
+                self._hash_val = hash(("CONST", self.name, self.T))
             elif self.is_comb():
-                self._hash_val = hash(("COMB", hash(self.fun), hash(self.arg)))
+                if self.is_conj():
+                    ts = self.strip_conj()
+                    self._hash_val = hash(("CONJ", tuple(ts)))
+                elif self.is_disj():
+                    ts = self.strip_disj()
+                    self._hash_val = hash(("DISJ", tuple(ts)))
+                else:
+                    self._hash_val = hash(("COMB", self.fun, self.arg))
             elif self.is_abs():
-                self._hash_val = hash(("ABS", hash(self.var_T), hash(self.body)))
+                self._hash_val = hash(("ABS", self.var_T, self.body))
             elif self.is_bound():
                 self._hash_val = hash(("BOUND", self.n))
             else:
