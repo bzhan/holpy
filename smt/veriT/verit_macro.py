@@ -2792,6 +2792,9 @@ class ITEPos2Macro(Macro):
         else:
             raise VeriTException("ite_pos1", "unexpected result")
 
+    def get_proof_term(self, args, prevs=None):
+        return logic.apply_theorem("verit_ite_pos1", concl=Or(*args))
+
 @register_macro("verit_ite_pos2")
 class ITEPos2Macro(Macro):
     def __init__(self):
@@ -2811,6 +2814,53 @@ class ITEPos2Macro(Macro):
             return Thm(Or(*args))
         else:
             raise VeriTException("ite_pos2", "unexpected results")
+
+    def get_proof_term(self, args, prevs=None):
+        return logic.apply_theorem("verit_ite_pos2", concl=Or(*args))
+
+@register_macro("verit_ite_neg1")
+class ITEPos2Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if not len(args) == 3:
+            raise VeriTException("ite_neg1", "should have three arguments")
+        arg1, arg2, arg3 = args
+        if not logic.is_if(arg1) or not arg3.is_not():
+            raise VeriTException("ite_neg1", "unexpected arguments")
+        p1, _, p3 = arg1.args
+        if p1 == arg2 and Not(p3) == arg3:
+            return Thm(Or(*args))
+        else:
+            raise VeriTException("ite_neg1", "unexpected result")
+
+    def get_proof_term(self, args, prevs=None):
+        return logic.apply_theorem("verit_ite_neg1", concl=Or(*args))
+
+@register_macro("verit_ite_neg2")
+class ITEPos2Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None):
+        if not len(args) == 3:
+            raise VeriTException("ite_neg2", "should have three arguments")
+        arg1, arg2, arg3 = args
+        if not logic.is_if(arg1) or not arg2.is_not() or not arg3.is_not():
+            raise VeriTException("ite_neg2", "unexpected arguments")
+        p1, p2, _ = arg1.args
+        if p1 == Not(arg1) and p2 == Not(arg2):
+            return Thm(Or(*args))
+        else:
+            raise VeriTException("ite_neg2", "unexpected results")
+
+    def get_proof_term(self, args, prevs=None):
+        return logic.apply_theorem("verit_ite_neg2", concl=Or(*args))
 
 
 @register_macro("verit_subproof")

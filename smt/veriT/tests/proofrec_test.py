@@ -137,6 +137,8 @@ class ProofrecTest(unittest.TestCase):
             'QF_UF/2018-Goel-hwbench/QF_UF_bug-1_ab_cti_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_cache_coherence_three_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_cambridge.1.prop1_ab_reg_max.smt2',
+            # 'QF_UF/2018-Goel-hwbench/QF_UF_sokoban.3.prop1_ab_br_max.smt2', # th_resolution: loop
+            'QF_UF/2018-Goel-hwbench/QF_UF_h_Vlunc_ab_cti_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_collision.1.prop1_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_counter_v_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_cyclic_scheduler.1.prop1_ab_reg_max.smt2',
