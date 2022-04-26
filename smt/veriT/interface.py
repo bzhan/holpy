@@ -26,40 +26,32 @@ def solve(f, write_file=False):
             "--disable-banner "\
             "--proof=-"
 
-    if platform == "win32":
-        p = subprocess.Popen("veriT %s %s" % (args, f), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    else:
-        p = subprocess.Popen("veriT %s %s" % (args, f), stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            shell=True)
-
-    try:
-        output, _ = p.communicate(timeout=5)
-        proof = output.decode('utf-8')
-        if write_file:
-            with open("proof.txt", "w") as f:
-                f.write(proof)
-        return proof
-    except subprocess.TimeoutExpired:
-        print("Proof timeout")
-        p.kill()
-        return None
+    with subprocess.Popen("veriT %s %s" % (args, f),
+                          stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True) as p:
+        try:
+            output, _ = p.communicate(timeout=5)
+            proof = output.decode('utf-8')
+            if write_file:
+                with open("proof.txt", "w") as f:
+                    f.write(proof)
+            return proof
+        except subprocess.TimeoutExpired:
+            print("Proof timeout")
+            return None
     
 def is_unsat(f):
     """Given a smt2 file, use verit to solve it and return True if it is UNSAT."""
-    if platform == "win32":
-        p = subprocess.Popen("veriT --disable-print-success %s" % f,
-                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    else:
-        p = subprocess.Popen("veriT --disable-print-success %s" % f, shell=True, stdout=subprocess.PIPE)
+    args = "--disable-print-success"
 
-    try:
-        output, _ = p.communicate(timeout=2)
-        res = output.decode('UTF-8').split("\n")[1]
-        return False if res in ("sat", "unknown", "unsupported") else True
-    except subprocess.TimeoutExpired:
-        print("Timeout")
-        p.kill()
-        return False
+    with subprocess.Popen("veriT %s %s" % (args, f),
+                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True) as p:
+        try:
+            output, _ = p.communicate(timeout=2)
+            res = output.decode('UTF-8').split("\n")[1].strip()
+            return False if res in ("sat", "unknown", "unsupported") else True
+        except subprocess.TimeoutExpired:
+            print("Timeout")
+            return False
 
 def solve_and_proof(tm):
     """Use veriT to determine whether a logical term is satisfiable."""
