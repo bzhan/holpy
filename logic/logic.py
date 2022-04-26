@@ -613,19 +613,13 @@ class imp_conj_macro(Macro):
         self.sig = Term
         self.limit = None
 
-    def eval(self, args, ths):
-        def strip(t):
-            if t.is_conj():
-                return strip(t.arg1).union(strip(t.arg))
-            elif t == true:
-                return set()
-            else:
-                return {t}
-
-        As, C = args.strip_implies()
-        assert len(As) == 1, 'imp_conj_macro'
-        assert strip(C).issubset(strip(As[0])), 'imp_conj_macro'
-        return Thm(args)
+    def eval(self, goal, ths):
+        # goal: A --> B
+        A, B = goal.arg1, goal.arg
+        conjA = set(strip_conj(A)) - {true}
+        conjB = set(strip_conj(B)) - {true}
+        assert conjB <= conjA, "imp_conj: subset relation does not hold"
+        return Thm(goal)
 
     def get_proof_term(self, goal, pts):
         dct = dict()
@@ -677,7 +671,7 @@ class imp_disj_macro(Macro):
         A, B = goal.arg1, goal.arg
         disjA = set(strip_disj(A))
         disjB = set(strip_disj(B))
-        assert disjA <= disjB
+        assert disjA <= disjB, "imp_disj: subset relation does not hold"
         return Thm(goal)
 
     def get_proof_term(self, goal, pts):
@@ -722,8 +716,9 @@ def strip_disj(t):
     res = []
     def helper(t):
         if t.is_disj():
-            helper(t.arg1)
-            helper(t.arg)
+            ts = t.strip_disj()
+            for sub_t in ts:
+                helper(sub_t)
         else:
             res.append(t)
     helper(t)
@@ -733,8 +728,9 @@ def strip_conj(t):
     res = []
     def helper(t):
         if t.is_conj():
-            helper(t.arg1)
-            helper(t.arg)
+            ts = t.strip_conj()
+            for sub_t in ts:
+                helper(sub_t)
         else:
             res.append(t)
     helper(t)
