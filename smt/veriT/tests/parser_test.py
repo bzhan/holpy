@@ -47,17 +47,11 @@ def test_file(filename, write_file=False, show_time=True, veriT_only=False):
     if not interface.is_unsat(abs_name):
         print('sat / unknown / unsupported')
         return
-    print(repr(filename) + ',')
-
-    # Only check whether veriT returns unsat
-    if veriT_only:
-        # Check proof can be generated as well
-        verit_proof = interface.solve(abs_name)
-        return
 
     # Solve
     start_time = time.perf_counter()
     verit_proof = interface.solve(abs_name)
+    solve_time = time.perf_counter() - start_time
     if verit_proof is None:
         return
 
@@ -65,16 +59,21 @@ def test_file(filename, write_file=False, show_time=True, veriT_only=False):
         print('Empty proof')
         return
 
-    ctx = proof_rec.bind_var(abs_name)
-    solve_time = time.perf_counter() - start_time
+    # All veriT jobs finished. Output file name. 
+    print(repr(filename) + ',')
 
     # Optional: write to file
     if write_file:
         with open('proof.txt', 'w') as f:
             f.write(verit_proof)
 
+    # Only check whether veriT finishes
+    if veriT_only:
+        return
+
     # Parse
     start_time = time.perf_counter()
+    ctx = proof_rec.bind_var(abs_name)
     test_parse_step(verit_proof, ctx)
     parse_time = time.perf_counter() - start_time
 
@@ -289,6 +288,52 @@ class ParserTest(unittest.TestCase):
 
         for path in test_paths:
             test_path(path)
+
+    def testParseQF_RDL(self):
+        test_paths = [
+            'QF_RDL/check/bignum_rdl2.smt2',
+            'QF_RDL/sal/fischer3-mutex-1.smt2',
+            'QF_RDL/sal/fischer3-mutex-10.smt2',
+            'QF_RDL/sal/fischer6-mutex-2.smt2',
+            'QF_RDL/sal/fischer6-mutex-3.smt2',
+            'QF_RDL/sal/fischer6-mutex-4.smt2',
+            'QF_RDL/scheduling/abz5_1000.smt2',
+            'QF_RDL/scheduling/orb01_900.smt2',
+            'QF_RDL/scheduling/orb05_800.smt2',
+            'QF_RDL/skdmxa/skdmxa-3x3-5.smt2',
+            'QF_RDL/skdmxa2/skdmxa-3x3-5.base.cvc.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path)
+
+    def testParseQF_AUFLIA(self):
+        test_paths = [
+            'QF_AUFLIA/20170829-Rodin/smt101358492275879472.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt1048206973303286471.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt1076382332286802622.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt9116345646566616227.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt957085527369554317.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt971450140125177067.smt2',
+            'QF_AUFLIA/cvc/add4.smt2',
+            'QF_AUFLIA/cvc/add5.smt2',
+            'QF_AUFLIA/cvc/add6.smt2',
+            'QF_AUFLIA/cvc/fb_var_33_6.smt2',
+            'QF_AUFLIA/cvc/pp-invariant.smt2',
+            'QF_AUFLIA/cvc/pp-pc-s2i.smt2',
+            'QF_AUFLIA/cvc/read6.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_nf_ai_00002_001.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_nf_ai_00003_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_nf_ai_00008_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_sf_ai_00002_001.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_sf_ai_00003_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_sf_ai_00008_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_001.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t3_pp_sf_ai_00005_001.cvc.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path, veriT_only=True)
 
 
 if __name__ == "__main__":

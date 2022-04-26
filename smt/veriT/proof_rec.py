@@ -140,6 +140,10 @@ class ProofReconstruction:
                     Thm(term.Or(*step.cl), *(self.pts[step_id].hyps for step_id in step.pm)))
 
         # Check proof term
+        if self.pts[step.id] is None:
+            print(macro_name)
+            raise AssertionError("Returned theorem is None")
+
         if self.pts[step.id].prop != Or(*step.cl):
             print(macro_name)
             print("Computed: ", self.pts[step.id].prop)
