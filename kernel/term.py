@@ -232,11 +232,25 @@ class Term():
                 self._hash_val = hash(("CONST", self.name, self.T))
             elif self.is_comb():
                 if self.is_conj():
-                    ts = self.strip_conj()
-                    self._hash_val = hash(("CONJ", tuple(ts)))
+                    t = self
+                    tlist = [t]
+                    while t.is_conj():
+                        t = t.arg
+                        tlist.append(t)
+                    hash(tlist[-1])
+                    for t in reversed(tlist[:-1]):
+                        if not hasattr(t, "_hash_val"):
+                            t._hash_val = hash(("CONJ", t.arg1, t.arg))
                 elif self.is_disj():
-                    ts = self.strip_disj()
-                    self._hash_val = hash(("DISJ", tuple(ts)))
+                    t = self
+                    tlist = [t]
+                    while t.is_disj():
+                        t = t.arg
+                        tlist.append(t)
+                    hash(tlist[-1])
+                    for t in reversed(tlist[:-1]):
+                        if not hasattr(t, "_hash_val"):
+                            t._hash_val = hash(("DISJ", t.arg1, t.arg))
                 else:
                     self._hash_val = hash(("COMB", self.fun, self.arg))
             elif self.is_abs():

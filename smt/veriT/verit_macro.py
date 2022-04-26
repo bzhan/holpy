@@ -872,11 +872,12 @@ class AndMacro(Macro):
 
 def verit_and_all(pt, ts):
     res = dict()
+    ts_set = set(ts)
     while pt.prop.is_conj():
-        if pt.prop.arg1 in ts:
+        if pt.prop.arg1 in ts_set:
             res[pt.prop.arg1] = logic.apply_theorem('conjD1', pt)
         pt = logic.apply_theorem('conjD2', pt)
-        if pt.prop in ts:
+        if pt.prop in ts_set:
             res[pt.prop] = pt
     return [res[t] for t in ts]
 
@@ -1438,7 +1439,7 @@ class BFunElimMacro(Macro):
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal = args[0]
-        
+        raise NotImplementedError
 
 
 def collect_ite(t):
