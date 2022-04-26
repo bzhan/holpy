@@ -1427,6 +1427,10 @@ class BFunElimMacro(Macro):
 
         return Thm(arg, prevs[0].hyps)
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        
+
 
 def collect_ite(t):
     """Return the list of distinct ite terms in t."""
@@ -2845,7 +2849,7 @@ class ITEPos2Macro(Macro):
         if not logic.is_if(arg1) or not arg2.is_not() or not arg3.is_not():
             raise VeriTException("ite_neg2", "unexpected arguments")
         p1, p2, _ = arg1.args
-        if p1 == Not(arg1) and p2 == Not(arg2):
+        if Not(p1) == arg2 and Not(p2) == arg3:
             return Thm(Or(*args))
         else:
             raise VeriTException("ite_neg2", "unexpected results")
