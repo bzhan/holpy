@@ -870,6 +870,15 @@ class AndMacro(Macro):
         # Not found
         raise VeriTException("and", "goal not found in premise")
 
+def verit_and_all(pt, ts):
+    res = dict()
+    while pt.prop.is_conj():
+        if pt.prop.arg1 in ts:
+            res[pt.prop.arg1] = logic.apply_theorem('conjD1', pt)
+        pt = logic.apply_theorem('conjD2', pt)
+        if pt.prop in ts:
+            res[pt.prop] = pt
+    return [res[t] for t in ts]
 
 @register_macro("verit_or")
 class OrMacro(Macro):

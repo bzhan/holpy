@@ -2,7 +2,7 @@
 
 from smt.veriT.proof_parser import decl_parser, proof_parser
 from smt.veriT import command
-from smt.veriT.verit_macro import NotOrMacro
+from smt.veriT.verit_macro import NotOrMacro, verit_and_all
 from smt.veriT import la_generic
 from kernel.proofterm import ProofTerm
 from kernel.thm import Thm
@@ -21,9 +21,6 @@ def bind_var(file_name):
                 tm = decl_parser.parse(s.strip())
                 ctx.update(tm)
     return ctx
-
-def clause_to_disj(cls):
-    return term.Or(*cls)
 
 class ProofReconstruction:
     """Verit proof reconstruction.
@@ -82,65 +79,72 @@ class ProofReconstruction:
                     return self.pts[self.steps[i].id]
 
     def validate_step(self, step, is_eval=True, omit_proofterm=None):
+        if omit_proofterm is None:
+            omit_proofterm = []
+
         if isinstance(step, command.Anchor):
             return
         if isinstance(step, command.Assume):
             self.pts[step.id] = ProofTerm.assume(step.assm)
+            return
+
+        assert isinstance(step, command.Step)
+        rule_name = step.rule_name
+        # print(rule_name)
+        macro_name = "verit_" + rule_name
+        prevs = self.to_pts(step.pm)
+        args = step.cl
+        if rule_name == "refl":
+            args += (step.cur_ctx,)
+        elif rule_name == "let":
+            last_prf = self.find_last_subproof(step.id)
+            prevs += (last_prf,)
+        elif rule_name in ("bind", "sko_ex", "sko_forall", "onepoint"):
+            args += (step.cur_ctx,)
+            last_prf = self.find_last_subproof(step.id)
+            prevs += (last_prf,)
+        elif rule_name in ("la_generic", "forall_inst"):
+            args += step.args
+        elif rule_name == "subproof":
+            sub_assms = self.find_local_assms(step.id)
+            last_prf = self.find_last_subproof(step.id)
+            prevs += sub_assms
+            prevs += (last_prf,)
+        elif rule_name in ("resolution", "th_resolution"):
+            args = (step.cl, self.get_clause_sizes(step.pm))
+            macro_name = "verit_th_resolution"
+
+        # Evaluation case
+        if is_eval or macro_name in omit_proofterm:
+            self.pts[step.id] = ProofTerm(macro_name, args, prevs)
+            return
+        
+        # Proofterm case
+        if macro_name == "verit_and":
+            if step.id not in self.pts:
+                goal_to_id = dict()
+                for st in self.steps:
+                    if isinstance(st, command.Step) and st.rule_name == "and" and st.pm == step.pm:
+                        goal_to_id[Or(*st.cl)] = st.id
+                pts = verit_and_all(prevs[0], goal_to_id.keys())
+                for pt in pts:
+                    cur_id = goal_to_id[pt.prop]
+                    self.pts[cur_id] = pt
         else:
-            assert isinstance(step, command.Step)
-            rule_name = step.rule_name
-            # print(rule_name)
-            macro_name = "verit_" + rule_name
-            prevs = self.to_pts(step.pm)
-            args = step.cl
-            if rule_name == "refl":
-                args += (step.cur_ctx,)
-            if rule_name == "let":
-                last_prf = self.find_last_subproof(step.id)
-                prevs += (last_prf,)
-            if rule_name in ("bind", "sko_ex", "sko_forall", "onepoint"):
-                args += (step.cur_ctx,)
-                last_prf = self.find_last_subproof(step.id)
-                prevs += (last_prf,)
-            if rule_name in ("la_generic", "forall_inst"):
-                args += step.args
-            if rule_name == "subproof":
-                sub_assms = self.find_local_assms(step.id)
-                last_prf = self.find_last_subproof(step.id)
-                prevs += sub_assms
-                prevs += (last_prf,)
-            if rule_name in ("resolution", "th_resolution"):
-                args = (step.cl, self.get_clause_sizes(step.pm))
-                macro_name = "verit_th_resolution"
-            if is_eval:
-                self.pts[step.id] = ProofTerm(macro_name, args, prevs)
-            elif omit_proofterm and macro_name in omit_proofterm:
-                self.pts[step.id] = ProofTerm(macro_name, args, prevs)
-            else:
-                macro = theory.get_macro(macro_name)
-                try:
-                    pt = macro.get_proof_term(args, prevs)
-                    if rule_name in ('resolution', 'th_resolution'):
-                        cl = args[0]
-                    elif rule_name in ('refl',):
-                        cl = args[:-1]
-                    else:
-                        cl = args
-                    if not isinstance(pt, ProofTerm):
-                        print(macro_name)
-                        print("Returned: ", pt)
-                        raise AssertionError("Unexpected type of returned result")
-                    if pt.prop != Or(*cl):
-                        print(macro_name)
-                        print("Computed: ", pt.prop)
-                        print("In proof: ", Or(*cl))
-                        raise AssertionError("Unexpected returned theorem")
-                    else:
-                        self.pts[step.id] = pt
-                except NotImplementedError as e:
-                    print(step.id, rule_name)
-                    self.pts[step.id] = ProofTerm.sorry(
-                        Thm(clause_to_disj(step.cl), *(self.pts[step_id].hyps for step_id in step.pm)))
+            macro = theory.get_macro(macro_name)
+            try:
+                self.pts[step.id] = macro.get_proof_term(args, prevs)
+            except NotImplementedError as e:
+                print(step.id, rule_name)
+                self.pts[step.id] = ProofTerm.sorry(
+                    Thm(term.Or(*step.cl), *(self.pts[step_id].hyps for step_id in step.pm)))
+
+        # Check proof term
+        if self.pts[step.id].prop != Or(*step.cl):
+            print(macro_name)
+            print("Computed: ", self.pts[step.id].prop)
+            print("In proof: ", Or(*step.cl))
+            raise AssertionError("Unexpected returned theorem")
 
     def validate(self, is_eval=True, step_limit=None, omit_proofterm=None):
         with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
