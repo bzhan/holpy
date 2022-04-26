@@ -59,7 +59,8 @@ class Thm():
                 elif hyp == self.hyps:
                     pass
                 else:
-                    self.hyps = self.hyps + tuple(t for t in hyp if t not in self.hyps)
+                    hyp_set = set(self.hyps)
+                    self.hyps = self.hyps + tuple(t for t in hyp if t not in hyp_set)
             else:
                 raise TypeError('Thm')
 
