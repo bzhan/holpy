@@ -28,7 +28,7 @@ def test_parse_step(verit_proof, ctx):
     return steps
 
 def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
-              step_limit=None, omit_proofterm=None):
+              write_file=False, step_limit=None, omit_proofterm=None):
     """Test a given file under eval or proofterm mode."""
     global smtlib_path
     if not smtlib_path:
@@ -49,6 +49,11 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         return
     ctx = proof_rec.bind_var(abs_name)
     solve_time = time.perf_counter() - start_time
+
+    # Optional: write to file
+    if write_file:
+        with open('proof.txt', 'w') as f:
+            f.write(verit_proof)
 
     # Parse
     start_time = time.perf_counter()
@@ -82,11 +87,12 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
 
 
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
-              step_limit=None, omit_proofterm=None):
+              write_file=False, step_limit=None, omit_proofterm=None):
     """Test a directory containing SMT files.
     
     test_eval : bool - test evaluation of steps.
     test_proofterm : bool - test proof term reconstruction of steps.
+    write_file : bool - whether to write proof to proof.txt.
     step_limit : [None, int] - limit on number of steps to test for each file.
     omit_proofterm : List[str] - list of macro names for which proof term reconstruction
         is omitted (evaluation is used instead).
@@ -107,11 +113,11 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         sub_paths = [path + '/' + child for child in os.listdir(abs_path)]
         for sub_path in sub_paths:
             test_path(sub_path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm,
-                      step_limit=step_limit, omit_proofterm=omit_proofterm)
+                      write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm)
     else:
         # Input is a file
         test_file(path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm,
-                  step_limit=step_limit, omit_proofterm=omit_proofterm)
+                  write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm)
 
 
 class ProofrecTest(unittest.TestCase):
@@ -131,7 +137,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_UF/2018-Goel-hwbench/QF_UF_bug-1_ab_cti_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_cache_coherence_three_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_cambridge.1.prop1_ab_reg_max.smt2',
-            # 'QF_UF/2018-Goel-hwbench/QF_UF_sokoban.3.prop1_ab_br_max.smt2', # th_resolution: loop
+            'QF_UF/2018-Goel-hwbench/QF_UF_sokoban.3.prop1_ab_br_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_h_Vlunc_ab_cti_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_collision.1.prop1_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_counter_v_ab_reg_max.smt2',
@@ -163,7 +169,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, omit_proofterm=["verit_th_resolution"])
+            test_path(path, test_eval=True)
 
         if profile:
             p = Stats(pr)
@@ -286,7 +292,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)

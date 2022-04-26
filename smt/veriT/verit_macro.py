@@ -172,11 +172,11 @@ def resolve_order(props):
     lit_to_id = dict()
 
     def strip_not(t):
-        if t.is_not():
-            a, n = strip_not(t.arg)
-            return a, n + 1
-        else:
-            return t, 0
+        count = 0
+        while t.is_not():
+            count += 1
+            t = t.arg
+        return t, count
 
     # Find list of literals, ignoring negation. Assign each unique
     # literal to an index.
@@ -870,6 +870,15 @@ class AndMacro(Macro):
         # Not found
         raise VeriTException("and", "goal not found in premise")
 
+def verit_and_all(pt, ts):
+    res = dict()
+    while pt.prop.is_conj():
+        if pt.prop.arg1 in ts:
+            res[pt.prop.arg1] = logic.apply_theorem('conjD1', pt)
+        pt = logic.apply_theorem('conjD2', pt)
+        if pt.prop in ts:
+            res[pt.prop] = pt
+    return [res[t] for t in ts]
 
 @register_macro("verit_or")
 class OrMacro(Macro):
