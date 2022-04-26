@@ -763,6 +763,46 @@
                 "x": "int",
                 "y": "int"
             }
+        },
+        {
+            "name": "verit_ite_pos1",
+            "prop": "¬(if P then Q else R) ∨ P ∨ R",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_pos2",
+            "prop": "¬(if P then Q else R) ∨ ¬P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_neg1",
+            "prop": "(if P then Q else R) ∨ P ∨ ¬R",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_neg2",
+            "prop": "(if P then Q else R) ∨ ¬P ∨ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",
