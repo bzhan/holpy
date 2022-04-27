@@ -6,7 +6,7 @@ import z3
 import subprocess
 from prover import z3wrapper
 from smt.veriT import parser, proof
-from sys import platform
+import os
 import time
 
 class SATException(Exception):
@@ -38,11 +38,16 @@ def solve(f, write_file=False, timeout=5):
                     f.write(proof)
             return proof
         except subprocess.TimeoutExpired:
-            p.terminate()
-            p.wait()
-            p.kill()
-            print("Proof timeout")
-            return None
+            # Kill process
+            if os.name == "nt": # Windows
+                subprocess.call(['taskkill', '/F', '/T', '/PID', str(p.pid)])
+                return None
+            else: # Linux
+                p.terminate()
+                p.wait()
+                p.kill()
+                print("Proof timeout")
+                return None
     
 def is_unsat(f, timeout=2):
     """Given a smt2 file, use verit to solve it and return True if it is UNSAT."""
@@ -55,11 +60,16 @@ def is_unsat(f, timeout=2):
             res = output.decode('UTF-8').split("\n")[1].strip()
             return False if res in ("sat", "unknown", "unsupported") else True
         except subprocess.TimeoutExpired:
-            p.terminate()
-            p.wait()
-            p.kill()
-            print("UNSAT checking is timeout!")
-            return False
+            # Kill process
+            if os.name == "nt": # Windows
+                subprocess.call(['taskkill', '/F', '/T', '/PID', str(p.pid)])
+                return False
+            else: # Linux
+                p.terminate()
+                p.wait()
+                p.kill()
+                print("UNSAT checking is timeout!")
+                return False
 
 def solve_and_proof(tm):
     """Use veriT to determine whether a logical term is satisfiable."""
