@@ -30,6 +30,8 @@ def solve(f, write_file=False, timeout=5):
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True) as p:
         try:
             output, _ = p.communicate(timeout=timeout)
+            if output == b'':
+                return None
             proof = output.decode('utf-8')
             if write_file:
                 with open("proof.txt", "w") as f:
