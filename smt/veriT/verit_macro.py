@@ -1508,6 +1508,9 @@ class ITEIntroMacro(Macro):
             raise VeriTException("ite_intro", "goal is not an equality")
 
         lhs, rhs = arg.lhs, arg.rhs
+        if lhs == rhs: # bugs in verit
+            return Thm(args[0])
+
         ites = collect_ite(lhs)
         ite_intros = []
         for t in ites:
@@ -2490,7 +2493,7 @@ class ITESimplifyMacro(Macro):
             elif l_else == false and rhs == And(l_P, l_then):
                 return Thm(goal)
             # Case 13: ite P false Q <--> ~P & Q
-            elif l_then == false and rhs == And(Not(l_P, l_else)):
+            elif l_then == false and rhs == And(Not(l_P), l_else):
                 return Thm(goal)
             # Case 14: ite P Q true <--> ~P | Q
             elif l_else == true and rhs == Or(Not(l_P), l_then):
