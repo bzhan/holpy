@@ -38,6 +38,8 @@ def solve(f, write_file=False, timeout=5):
                     f.write(proof)
             return proof
         except subprocess.TimeoutExpired:
+            p.terminate()
+            p.wait()
             p.kill()
             print("Proof timeout")
             return None
@@ -53,7 +55,10 @@ def is_unsat(f, timeout=2):
             res = output.decode('UTF-8').split("\n")[1].strip()
             return False if res in ("sat", "unknown", "unsupported") else True
         except subprocess.TimeoutExpired:
-            print("Timeout")
+            p.terminate()
+            p.wait()
+            p.kill()
+            print("UNSAT checking is timeout!")
             return False
 
 def solve_and_proof(tm):

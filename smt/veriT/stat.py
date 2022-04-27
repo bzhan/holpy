@@ -144,7 +144,7 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
 
     _, file_names = run_fast_scandir(abs_path, ['.smt2'])
 
-    with concurrent.futures.ProcessPoolExecutor() as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
         res = executor.map(test_file, file_names, repeat(show_time),\
                         repeat(test_eval))
     return res
