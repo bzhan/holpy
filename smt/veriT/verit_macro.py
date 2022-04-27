@@ -2056,18 +2056,23 @@ class OrSimplifyMacro(Macro):
                         raise VeriTException("or_simplify", "unexpected rhs")
         
         # delete redundant false
-        elim_true_disj = []
+        elim_false_disj = []
         for disj in lhs_disjs:
             if disj != false:
-                elim_true_disj.append(disj)
-        if Or(*elim_true_disj) == goal.rhs:
+                elim_false_disj.append(disj)
+        if Or(*elim_false_disj) == goal.rhs:
             return Thm(goal)
-        if true in lhs_disjs:
-            if goal.rhs == true:
+        
+        if set(lhs_disjs) == set(goal.rhs.strip_disj()):
+            return Thm(goal)
+
+        if true in lhs_disjs and goal.rhs == true:
                 return Thm(goal)
-            else:
-                raise VeriTException("or_simplify", "unexpected rhs")
-        raise VeriTException("or_simplify", "haven't implemented")
+            # else:
+            #     #  ~(p3 c_0) | ~(p4 c_1) | ~(p1 c_0 c_1) | true | true <--> ~(p3 c_0) | ~(p4 c_1) | ~(p1 c_0 c_1) | true
+            #     print("goal", goal)
+            #     raise VeriTException("or_simplify", "unexpected rhs")
+        raise VeriTException("or_simplify", "unexpected goal")
 
     def get_proof_term(self, args, prevs):
         goal = args[0]
