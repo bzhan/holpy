@@ -134,7 +134,7 @@ def analyze_args(coeffs):
     # compute the lcm of denoms
     lcm = 1
     for d in denoms:
-        lcm = lcm * d / math.gcd(lcm, d)
+        lcm = int(lcm * d / math.gcd(lcm, d))
     return [int(lcm) * c for c in coeffs]
 
 @register_macro("verit_la_generic")
