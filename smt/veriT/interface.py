@@ -17,7 +17,7 @@ class SATException(Exception):
     def __str__(self):
         return self.msg
 
-def solve(f, write_file=False):
+def solve(f, write_file=False, timeout=5):
     """Use veriT solver to solve a smt2 file"""
     args = "--proof-prune "\
             "--proof-with-sharing "\
@@ -29,7 +29,7 @@ def solve(f, write_file=False):
     with subprocess.Popen("veriT %s %s" % (args, f),
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True) as p:
         try:
-            output, _ = p.communicate(timeout=5)
+            output, _ = p.communicate(timeout=timeout)
             proof = output.decode('utf-8')
             if write_file:
                 with open("proof.txt", "w") as f:
@@ -39,14 +39,14 @@ def solve(f, write_file=False):
             print("Proof timeout")
             return None
     
-def is_unsat(f):
+def is_unsat(f, timeout=2):
     """Given a smt2 file, use verit to solve it and return True if it is UNSAT."""
     args = "--disable-print-success"
 
     with subprocess.Popen("veriT %s %s" % (args, f),
                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True) as p:
         try:
-            output, _ = p.communicate(timeout=2)
+            output, _ = p.communicate(timeout=timeout)
             res = output.decode('UTF-8').split("\n")[1].strip()
             return False if res in ("sat", "unknown", "unsupported") else True
         except subprocess.TimeoutExpired:
