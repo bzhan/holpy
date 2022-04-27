@@ -145,8 +145,9 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
     _, file_names = run_fast_scandir(abs_path, ['.smt2'])
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
-        res = executor.map(test_file, file_names, repeat(show_time),\
-                        repeat(test_eval))
+        res = executor.map(test_file, file_names, repeat(show_time),
+                        repeat(test_eval), repeat(test_proofterm), repeat(step_limit),
+                            repeat(omit_proofterm), repeat(solve_timeout), repeat(eval_timeout))
     return res
 
 def run_fast_scandir(dir, ext):    # dir: str, ext: list
@@ -173,14 +174,14 @@ def run_fast_scandir(dir, ext):    # dir: str, ext: list
 if __name__ == "__main__":
     folder_name = str(sys.argv[1])
     solve_timeout = 10
-    eval_timeout  = 120
+    eval_timeout  = 180
     if len(sys.argv) == 3:
         solve_timeout = int(sys.argv[2])
     elif len(sys.argv) == 4:
         solve_timeout = int(sys.argv[2])
         eval_timeout  = int(sys.argv[3])
     
-    stats = test_path(folder_name, test_eval=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout)
+    stats = test_path(folder_name, test_eval=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
     print("stats", stats)
 
     if not os.path.isdir('./smt/veriT/stastics'):
