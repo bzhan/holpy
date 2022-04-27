@@ -38,6 +38,7 @@ def solve(f, write_file=False, timeout=5):
                     f.write(proof)
             return proof
         except subprocess.TimeoutExpired:
+            p.kill()
             print("Proof timeout")
             return None
     

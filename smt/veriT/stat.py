@@ -142,20 +142,29 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         print("Directory %s not found." % path)
         return
 
-    # if os.path.isdir(abs_path):
-        # Input is a directory
-    sub_paths = [path + '/' + child for child in os.listdir(abs_path)]
-    # Check if abs_path is the lowest subpath
-    if all(not os.path.isdir(sub_path) for sub_path in sub_paths):
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            res = list(executor.map(test_file, sub_paths, repeat(show_time),\
-                        repeat(test_eval)))
-            return res
-    else:
-        for sub_path in sub_paths:
-            stats += test_path(sub_path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm,
-                    step_limit=step_limit, omit_proofterm=omit_proofterm)
-        return stats
+    _, file_names = run_fast_scandir(abs_path, ['.smt2'])
+
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        res = executor.map(test_file, file_names, repeat(show_time),\
+                        repeat(test_eval))
+    return res
+
+def run_fast_scandir(dir, ext):    # dir: str, ext: list
+    subfolders, files = [], []
+
+    for f in os.scandir(dir):
+        if f.is_dir():
+            subfolders.append(f.path)
+        if f.is_file():
+            if os.path.splitext(f.name)[1].lower() in ext:
+                files.append(f.path)
+
+
+    for dir in list(subfolders):
+        sf, f = run_fast_scandir(dir, ext)
+        subfolders.extend(sf)
+        files.extend(f)
+    return subfolders, files
 
 # Parameters
 # 1. folder name

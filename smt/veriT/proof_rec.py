@@ -157,4 +157,8 @@ class ProofReconstruction:
                 bar()
                 if step_limit and i > step_limit:
                     break
-        return self.pts[step.id]
+        try:
+            return self.pts[step.id]
+        except:
+            print(self.steps)
+            raise NotImplementedError
