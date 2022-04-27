@@ -1760,6 +1760,12 @@ def compare_ac(tm1, tm2):
         x1, body1 = tm1.arg.dest_abs()
         x2, body2 = tm2.arg.dest_abs()
         return x1 == x2 and compare_ac(body1, body2)
+    elif tm1.is_exists():
+        if not tm2.is_exists():
+            return False
+        x1, body1 = tm1.arg.dest_abs()
+        x2, body2 = tm2.arg.dest_abs()
+        return x1 == x2 and compare_ac(body1, body2)
     elif logic.is_if(tm1):
         P1, x1, y1 = tm1.args
         P2, x2, y2 = tm2.args
@@ -2809,6 +2815,9 @@ class ImpliesSimplifyMacro(Macro):
                 return Thm(goal)
             else:
                 raise VeriTException("implies_simplify", "can't match (~p1 --> ~p2) <--> (p2 --> p1)")
+        # case 2: (false --> P) <--> true
+        elif prem == false and rhs ==  true:
+            return Thm(goal)
         # case 3 (p --> true) --> true
         elif concl == true and concl == rhs:
             return Thm(goal)
@@ -2818,9 +2827,23 @@ class ImpliesSimplifyMacro(Macro):
         # case 5: (p1 --> false) <--> ~p1
         elif concl == false and Not(prem) == rhs:
             return Thm(goal)
+        # case 6: (P --> P) <--> true
+        elif prem == concl and rhs == true:
+            return Thm(goal)
+        # case 7: (~P --> P) <--> P
+        elif prem == Not(concl) and rhs == concl:
+            return Thm(goal)
+        # case 8: (P --> ~P) <--> ~P
+        elif concl == Not(prem) and rhs == concl:
+            return Thm(goal)
+        # case 9: (P --> Q) --> Q <--> P | Q
+        elif prem.is_implies() and rhs.is_disj() and prem.arg1.is_implies() \
+                and prem.arg1.arg1 == rhs.arg1 and prem.arg1.arg == prem.arg \
+                    and prem.arg == rhs.arg:
+            return Thm(goal)
         else:
             print("goal", goal)
-            raise VeriTException("implies_simplify", "implementation is incomplete")
+            raise VeriTException("implies_simplify", "unexpected goal")
 
 
 @register_macro("verit_ite_pos1")
@@ -3476,3 +3499,42 @@ class LaRwEqMacro(Macro):
                 return logic.apply_theorem("verit_lw_rw_eq_int", concl=goal)
         else:
             raise VeriTException("la_rw_eq", "unexpected result")
+
+@register_macro("verit_qnt_rm_unused")
+class QntRmUnusedMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None) -> Thm:
+        if not len(args) == 1 or not args[0].is_equals():
+            raise VeriTException("qnt_rm_unused", "argument should be an equality term")
+        
+        goal = args[0]
+        lhs, rhs = goal.args
+        if not lhs.is_forall() and not lhs.is_forall():
+            raise VeriTException("qnt_rm_unused", "lhs should have a quantifier")
+        l_vars, l_bd = lhs.strip_quant()
+        if rhs.is_forall() or rhs.is_exists():
+            r_vars, r_bd = rhs.strip_quant()
+        else:
+            r_vars, r_bd = [], rhs
+        free_vars = []
+        if l_bd != r_bd:
+            print("lhs", lhs)
+            print("rhs", rhs)
+            raise VeriTException("qnt_rm_unused", "lhs and rhs body are not equal")
+        
+        for l in l_vars:
+            if l not in r_vars:
+                if r_bd.occurs_var(l):
+                    raise VeriTException("qnt_rm_unused", "a free variable was removed")
+            else:
+                free_vars.append(l)
+
+        if free_vars != r_vars:
+            raise VeriTException("qnt_rm_unused", "after removing unused vars in lhs, \
+                                    lhs and rhs still have different quantified variables")
+        
+        return Thm(goal)        
