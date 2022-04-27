@@ -169,7 +169,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)
@@ -199,7 +199,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_eval=True)
 
         if profile:
             p = Stats(pr)
@@ -231,7 +231,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_eval=True)
 
         if profile:
             p = Stats(pr)

@@ -7,12 +7,14 @@ import itertools
 
 from kernel.macro import Macro
 from kernel.theory import register_macro
-from kernel.proofterm import ProofTerm, Thm
+from kernel.proofterm import ProofTerm, Thm, refl
 from kernel import term as hol_term
 from kernel import type as hol_type
 from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
     BoolType, Int, Forall, Exists, Inst, conj, disj, Var, neg, implies, plus
 from logic import conv, logic
+from logic.conv import try_conv, rewr_conv, arg_conv,\
+         top_conv, arg1_conv, replace_conv, abs_conv, Conv, bottom_conv
 from data import integer, real
 from data import list as hol_list
 from kernel import term_ord
@@ -57,7 +59,7 @@ class NotOrMacro(Macro):
 
     def get_proof_term(self, args, prevs):
         goal, pt0 = args[0], prevs[0]
-        pt1 = pt0.on_prop(conv.rewr_conv("de_morgan_thm2"))
+        pt1 = pt0.on_prop(rewr_conv("de_morgan_thm2"))
         pt2 = pt1
         while pt2.prop != goal:
             pt_l = logic.apply_theorem("conjD1", pt2)
@@ -65,7 +67,7 @@ class NotOrMacro(Macro):
             if pt_l.prop == goal:
                 pt2 = pt_l
                 break
-            pt2 = pt_r.on_prop(conv.try_conv(conv.rewr_conv("de_morgan_thm2")))
+            pt2 = pt_r.on_prop(try_conv(rewr_conv("de_morgan_thm2")))
             
         return pt2
 
@@ -89,7 +91,7 @@ class NotAndMacro(Macro):
 
     def get_proof_term(self, args, prevs):
         goal, pt0 = Or(*args), prevs[0]
-        pt1 = pt0.on_prop(conv.top_conv(conv.rewr_conv("de_morgan_thm1")))
+        pt1 = pt0.on_prop(top_conv(rewr_conv("de_morgan_thm1")))
         if pt1.prop != goal:
             return ProofTerm.sorry(Thm(goal, pt0.hyps))
         return pt1
@@ -318,7 +320,7 @@ class ThResolutionMacro(Macro):
         if pt.prop == Or(*cl):
             return pt
         if Not(Not(pt.prop)) == Or(*cl):
-            return pt.on_prop(conv.rewr_conv('double_neg', sym=True))
+            return pt.on_prop(rewr_conv('double_neg', sym=True))
         raise VeriTException('th_resolution', 'unexpected conclusion')
 
 
@@ -340,7 +342,7 @@ class VeritImpliesMacro(Macro):
             raise NotImplementedError(str(Or(Not(pt.prop.arg1), pt.prop.arg)), str(goal))
 
     def get_proof_term(self, args, prevs):
-        return prevs[0].on_prop(conv.rewr_conv("imp_disj_eq"))
+        return prevs[0].on_prop(rewr_conv("imp_disj_eq"))
 
 @register_macro("verit_and_pos")
 class VeriTAndPos(Macro):
@@ -368,7 +370,7 @@ class VeriTAndPos(Macro):
 
     def get_proof_term(self, args, prevs=None):
         pt0 = ProofTerm("imp_conj", Implies(args[0].arg, args[1]))
-        pt1 = pt0.on_prop(conv.rewr_conv("disj_conv_imp", sym=True))
+        pt1 = pt0.on_prop(rewr_conv("disj_conv_imp", sym=True))
         return pt1
 
 @register_macro("verit_or_pos")
@@ -392,7 +394,7 @@ class VeriTOrPos(Macro):
     
     def get_proof_term(self, args, prevs=None):
         pt0 = ProofTerm("imp_disj", Implies(args[0].arg, args[0].arg))
-        pt1 = pt0.on_prop(conv.rewr_conv("disj_conv_imp", sym=True))
+        pt1 = pt0.on_prop(rewr_conv("disj_conv_imp", sym=True))
         return pt1
 
 @register_macro("verit_not_equiv1")
@@ -503,7 +505,7 @@ class VeriTOrNeg(Macro):
 
     def get_proof_term(self, args, prevs):
         pt0 = ProofTerm.reflexive(Or(*args))
-        pt1 = pt0.on_rhs(conv.rewr_conv("disj_comm"), conv.rewr_conv("disj_conv_imp"))
+        pt1 = pt0.on_rhs(rewr_conv("disj_comm"), rewr_conv("disj_conv_imp"))
         pt2 = ProofTerm("imp_disj", pt1.prop.rhs)
         pt3 = pt1.symmetric().equal_elim(pt2)
         return pt3
@@ -589,7 +591,7 @@ class EqTransitive(Macro):
         assert pt0.prop == args[-1], "%s \n %s" % (str(pt0.prop), str(args[-1]))
         pt1 = pt0
         for disj in reversed(disjs):
-            pt1 = pt1.implies_intr(disj).on_prop(conv.rewr_conv("imp_disj_eq"))
+            pt1 = pt1.implies_intr(disj).on_prop(rewr_conv("imp_disj_eq"))
         return pt1
 
 @register_macro("verit_eq_congruent")
@@ -683,7 +685,7 @@ class ImpEqToMacro(Macro):
     def get_proof_term(self, args, prevs):
         disjs = [arg.arg for arg in args]
         pt0 = prevs[0]
-        pt1 = functools.reduce(lambda x, y: x.implies_intr(y).on_prop(conv.rewr_conv("imp_disj_eq")), reversed(disjs), pt0)
+        pt1 = functools.reduce(lambda x, y: x.implies_intr(y).on_prop(rewr_conv("imp_disj_eq")), reversed(disjs), pt0)
         return pt1
 
 @register_macro("verit_and_rule")
@@ -760,7 +762,7 @@ class EqCongurentPredMacro(Macro):
             pt2 = logic.apply_theorem("eq_implies1", pt1).implies_elim(ProofTerm.assume(pred_fun.arg))
             return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt2])
         else:
-            pt2 = pt1.on_prop(conv.rewr_conv("neg_iff_both_sides"))
+            pt2 = pt1.on_prop(rewr_conv("neg_iff_both_sides"))
             pt3 = logic.apply_theorem("eq_implies1", pt2).implies_elim(ProofTerm.assume(Not(pred_fun)))
             return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt3])   
 
@@ -801,11 +803,11 @@ class DistinctElimMacro(Macro):
     def get_proof_term(self, goal, prevs=None):
         goal = Or(*goal)
         lhs = goal.lhs
-        pt = ProofTerm.reflexive(lhs).on_rhs(conv.top_conv(
-            conv.rewr_conv('distinct_def_1'),
-            conv.rewr_conv('distinct_def_2'),
-            conv.rewr_conv('not_member_nil'),
-            conv.rewr_conv('not_member_cons')))
+        pt = ProofTerm.reflexive(lhs).on_rhs(top_conv(
+            rewr_conv('distinct_def_1'),
+            rewr_conv('distinct_def_2'),
+            rewr_conv('not_member_nil'),
+            rewr_conv('not_member_cons')))
         try:
             pt_eq = logic.imp_conj_iff(Eq(pt.prop.rhs, goal.rhs))
             return ProofTerm.transitive(pt, pt_eq)
@@ -1151,8 +1153,8 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1):
                 rhs_eq = helper(t1.rhs, t2.rhs, depth-1)
                 if lhs_eq is not None and rhs_eq is not None:
                     pt = ProofTerm.reflexive(t1)
-                    pt = pt.on_rhs(conv.arg1_conv(conv.replace_conv(lhs_eq)))
-                    pt = pt.on_rhs(conv.arg_conv(conv.replace_conv(rhs_eq)))
+                    pt = pt.on_rhs(arg1_conv(replace_conv(lhs_eq)))
+                    pt = pt.on_rhs(arg_conv(replace_conv(rhs_eq)))
                     return pt
 
                 # Second, the case with exchanging equality
@@ -1160,9 +1162,9 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1):
                 rhs_eq = helper(t1.lhs, t2.rhs, depth-1)
                 if lhs_eq is not None and rhs_eq is not None:
                     pt = ProofTerm.reflexive(t1)
-                    pt = pt.on_rhs(conv.rewr_conv("eq_sym_eq"))
-                    pt = pt.on_rhs(conv.arg1_conv(conv.replace_conv(lhs_eq)))
-                    pt = pt.on_rhs(conv.arg_conv(conv.replace_conv(rhs_eq)))
+                    pt = pt.on_rhs(rewr_conv("eq_sym_eq"))
+                    pt = pt.on_rhs(arg1_conv(replace_conv(lhs_eq)))
+                    pt = pt.on_rhs(arg_conv(replace_conv(rhs_eq)))
                     return pt
 
                 # Either case yield equality
@@ -1251,7 +1253,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1):
             if pt is None:
                 return None
             return ProofTerm.reflexive(t1).on_rhs(
-                conv.abs_conv(conv.replace_conv(pt)))
+                abs_conv(replace_conv(pt)))
         else:
             return None
     return helper(tm1, tm2, depth)
@@ -1408,6 +1410,37 @@ def expand_to_ite(t):
     else:
         return t
 
+class expand_ite_conv(Conv):
+    """convert the function which has boolean non-constant argument
+    to an ite term.
+
+    Example: f x P y <--> ite P (f x true y) (f x false y)
+    """
+    def get_proof_term(self, t):
+        if t.get_type().is_fun():
+            return refl(t)
+        if t.is_conj() or t.is_disj() or t.is_implies():
+            return refl(t)
+        elif t.is_comb():
+            head_pt = refl(t.head)
+            for i, arg in enumerate(t.args):
+                head_pt = head_pt.combination(refl(arg))
+                if arg.get_type() == BoolType and arg != true and arg != false:
+                    pt = head_pt.on_rhs(
+                        rewr_conv("verit_bfun_elim")
+                    )
+                    for arg_j in t.args[i+1:]:
+                        pt = pt.combination(refl(arg_j)).on_rhs(
+                            rewr_conv("verit_ite_apply")
+                        )
+                    return pt
+            return head_pt
+        elif t.is_abs():
+            return refl(t).on_rhs(abs_conv(self))
+        else:
+            return refl(t)
+           
+
 @register_macro("verit_bfun_elim")
 class BFunElimMacro(Macro):
     def __init__(self):
@@ -1438,9 +1471,13 @@ class BFunElimMacro(Macro):
         return Thm(arg, prevs[0].hyps)
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
-        goal = args[0]
-        raise NotImplementedError
-
+        pt = prevs[0]
+        pt1 = pt.on_prop(
+            top_conv(rewr_conv('verit_bfun_elim_exists')),
+            top_conv(rewr_conv('verit_bfun_elim_forall')),
+            bottom_conv(expand_ite_conv())
+        )
+        return pt1
 
 def collect_ite(t):
     """Return the list of distinct ite terms in t."""
@@ -1596,7 +1633,7 @@ class AndNegMacro(Macro):
         conj_pt = logic.apply_theorem('classical', inst=Inst(A=conj))
 
         # Then apply deMorgan's rule to the right side
-        return conj_pt.on_arg(conv.top_conv(conv.rewr_conv('de_morgan_thm1')))
+        return conj_pt.on_arg(top_conv(rewr_conv('de_morgan_thm1')))
 
 
 @register_macro("verit_contraction")
@@ -1656,7 +1693,7 @@ class LetMacro(Macro):
         for prop in prop_eq:
             eqs[(prop.lhs, prop.rhs)] = prop
         pt1 = compare_sym_tm_thm(goal.lhs, last_step.lhs, eqs=eqs)
-        return last_step.on_lhs(conv.replace_conv(pt1.symmetric()))
+        return last_step.on_lhs(replace_conv(pt1.symmetric()))
 
 
 def flatten_prop(tm):
@@ -1772,7 +1809,7 @@ def compare_ac_thm(tm1, tm2):
         x1, body1 = tm1.arg.dest_abs()
         x2, body2 = tm2.arg.dest_abs()
         eq_pt = compare_ac_thm(body1, body2)
-        return ProofTerm.reflexive(tm1).on_rhs(conv.arg_conv(conv.abs_conv(conv.replace_conv(eq_pt))))
+        return ProofTerm.reflexive(tm1).on_rhs(arg_conv(abs_conv(replace_conv(eq_pt))))
     else:
         if tm1 != tm2:
             raise VeriTException("ac_simp", "arguments not equal")

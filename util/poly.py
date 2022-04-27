@@ -34,7 +34,7 @@ def collect_pairs(ps):
             res[v] += c
         else:
             res[v] = c
-    return tuple([(k, v) for k, v in res.items() if v != 0])
+    return tuple(sorted([(k, v) for k, v in res.items() if v != 0], key=cmp_to_key(compare_fst)))
 
 class Monomial:
     """Represents a monomial."""

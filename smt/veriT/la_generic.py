@@ -1,3 +1,7 @@
+import math
+from fractions import Fraction
+from decimal import Decimal
+
 from kernel import term as hol_term
 from kernel import type as hol_type
 from collections.abc import Iterable
@@ -7,13 +11,117 @@ from data import integer
 from kernel.thm import Thm
 from kernel.macro import Macro
 from kernel.theory import register_macro
-import math
+from logic import logic
 
 def norm_int_expr(t):
-    return integer.int_norm_conv().eval(t).prop.rhs
-
+    return from_int_la(to_la(t))
+    
 def norm_real_expr(t):
-    return real.real_norm_conv().eval(t).prop.rhs
+    return from_real_la(to_la(t))
+
+
+def collect_pairs(ps):
+    """Reduce a list of pairs by collecting into groups according to
+    first components, and adding the second component for each group.
+
+    It is assumed that the first components are hashable.
+
+    e.g. [("x", 1), ("y", 2), ("x", 3)] => [("x", 4), ("y", 2)]
+
+    """
+    res = {}
+    for v, c in ps:
+        if v in res:
+            res[v] += c
+        else:
+            res[v] = c
+    return tuple([(k, v) for k, v in res.items() if v != 0])
+
+def eval_hol_number(tm):
+    assert tm.is_number()
+    if tm.get_type() == hol_type.IntType:
+        return integer.int_eval(tm)
+    elif tm.get_type() == hol_type.RealType:
+        return real.real_eval(tm)
+    else:
+        raise NotImplementedError
+
+
+class LinearArith:
+    """Representation of a linear arithmetic expression, 
+    - const: the constant part
+    - lps: pairs of linear multiplication, e.g. 3 * x + 2 * y = [(x, 3), (y, 2)]    
+    """
+    def __init__(self, const=0, lps=tuple()) -> None:
+        assert isinstance(const, (int, Fraction, Decimal))
+        assert isinstance(lps, Iterable) and\
+             all(isinstance(c, (int, Fraction, Decimal)) for _, c in lps)
+        self.const = const
+        self.lps = collect_pairs(tuple(lps))
+
+    def __str__(self) -> str:
+        if len(self.lps) == 0:
+            return str(self.const)
+        
+        return "%s + %s" % (self.const, " + ".join("%s * %s" % (c, v) for v, c in self.lps))
+    
+    def __eq__(self, other) -> bool:
+        return self.const == other.const and self.lps == other.lps
+
+    def __add__(self, other):
+        return LinearArith(self.const+other.const, self.lps+other.lps)
+    
+    def __neg__(self):
+        return LinearArith(-self.const, [(v, -c) for v, c in self.lps])
+
+    def __sub__(self, other):
+        return self + -other
+
+    def __rmul__(self, other):
+        assert isinstance(other, (int, Fraction, Decimal))
+        return LinearArith(other * self.const, [(v, other * c) for v, c in self.lps])
+
+    def __len__(self):
+        return len(self.lps)
+
+def to_la(tm: hol_term.Term) -> LinearArith:
+    if tm.is_number():
+        return LinearArith(const=eval_hol_number(tm))
+    elif tm.is_var():
+        return LinearArith(lps=((tm, 1),))
+    if tm.is_plus():
+        return to_la(tm.arg1) + to_la(tm.arg)
+    elif tm.is_uminus():
+        return -to_la(tm.arg1)
+    elif tm.is_minus():
+        return to_la(tm.arg1) - to_la(tm.arg)
+    elif tm.is_times():
+        assert tm.arg1.is_number()
+        return eval_hol_number(tm.arg1) * to_la(tm.arg)
+    else: 
+        return LinearArith(const=1, lps=((tm, 1),))
+
+def from_int_la(la: LinearArith) -> hol_term.Term:
+    hol_const = hol_term.Int(la.const)
+    if len(la) == 0:
+        return hol_const
+    
+    hol_pairs = [hol_term.Int(i) * v if i != 1 else v for v, i in la.lps]
+
+    return hol_const + sum(hol_pairs[1:], hol_pairs[0])
+
+
+def from_real_la(la):
+    hol_const = hol_term.Real(la.const)
+    if len(la) == 0:
+        return hol_const
+    
+    hol_pairs = [hol_term.Real(i) * v if i != 1 else v for v, i in la.lps]
+
+    return hol_const + sum(hol_pairs[1:], hol_pairs[0])
+
+
+
 
 def analyze_args(coeffs):
     """Convert all coeffs to integer."""
@@ -94,8 +202,8 @@ class LAGenericMacro(Macro):
         # Step 2: move terms on rhs to left, move constants on lhs to right
         dis_eq_step2 = [] # left <> right ---> left - right <> 0
         for dis_eq in dis_eq_step1:
-            norm_lhs = norm_int_expr(dis_eq.arg1 - dis_eq.arg)
-            
+            norm_lhs = norm(dis_eq.arg1 - dis_eq.arg)
+
             sum_tms = integer.strip_plus(norm_lhs)
             left_most_tm = sum_tms[0]
             if not left_most_tm.is_number():

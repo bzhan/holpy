@@ -803,6 +803,71 @@
                 "Q": "bool",
                 "R": "bool"
             }
+        },
+        {
+            "name": "verit_bfun_elim_exists",
+            "prop": "(∃x. t x) ⟷ t false ∨ t true",
+            "ty": "thm",
+            "vars": {
+                "t": "bool ⇒ bool",
+                "x": "bool"
+            }
+        },
+        {
+            "name": "verit_bfun_elim_forall",
+            "prop": "(∀x. t x) ⟷ t false ∧ t true",
+            "ty": "thm",
+            "vars": {
+                "t": "bool ⇒ bool",
+                "x": "bool"
+            }
+        },
+        {
+            "name": "verit_bfun_elim",
+            "prop": "f t = (if t then f true else f false)",
+            "ty": "thm",
+            "vars": {
+                "f": "bool ⇒ 'a",
+                "t": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_apply",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "cond_rator, (if P then f else g) x = (if P then f x else g x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if P then f else g) x = (if P then f x else g x)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (if P then f else g) x = (if P then f x else g x)"
+                }
+            ],
+            "prop": "(if P then f else g) x = (if P then f x else g x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cond_rator"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "f": "'a ⇒ 'b",
+                "g": "'a ⇒ 'b",
+                "x": "'a"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

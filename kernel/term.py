@@ -169,7 +169,7 @@ class Term():
         in lambda terms.
 
         """
-        def helper(t: Term, bd_vars: list(Term)):
+        def helper(t: Term, bd_vars):
             """bd_vars is the list of names of bound variables."""
             if t.is_svar():
                 return "?" + t.name
