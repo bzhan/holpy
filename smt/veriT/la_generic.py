@@ -38,7 +38,7 @@ def collect_pairs(ps):
     return tuple([(k, v) for k, v in res.items() if v != 0])
 
 def eval_hol_number(tm):
-    assert tm.is_number()
+    assert tm.is_constant()
     if tm.get_type() == hol_type.IntType:
         return integer.int_eval(tm)
     elif tm.get_type() == hol_type.RealType:
@@ -85,7 +85,7 @@ class LinearArith:
         return len(self.lps)
 
 def to_la(tm: hol_term.Term) -> LinearArith:
-    if tm.is_number():
+    if tm.is_constant():
         return LinearArith(const=eval_hol_number(tm))
     elif tm.is_var():
         return LinearArith(lps=((tm, 1),))
@@ -96,7 +96,7 @@ def to_la(tm: hol_term.Term) -> LinearArith:
     elif tm.is_minus():
         return to_la(tm.arg1) - to_la(tm.arg)
     elif tm.is_times():
-        assert tm.arg1.is_number()
+        assert tm.arg1.is_constant()
         return eval_hol_number(tm.arg1) * to_la(tm.arg)
     else: 
         return LinearArith(const=1, lps=((tm, 1),))

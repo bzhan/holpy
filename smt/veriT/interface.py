@@ -49,7 +49,7 @@ def solve(f, write_file=False, timeout=5):
                 print("Proof timeout")
                 return None
     
-def is_unsat(f, timeout=2):
+def is_unsat(f, timeout=10):
     """Given a smt2 file, use verit to solve it and return True if it is UNSAT."""
     args = "--disable-print-success"
 
