@@ -1035,6 +1035,10 @@ class TransMacro(Macro):
                 cur_eq = Eq(cur_eq.lhs, prev_prop.rhs)
             elif cur_eq.rhs == prev_prop.rhs:
                 cur_eq = Eq(cur_eq.lhs, prev_prop.lhs)
+            elif cur_eq.lhs == prev_prop.lhs:
+                cur_eq = Eq(cur_eq.rhs, prev_prop.rhs)
+            elif cur_eq.lhs == prev_prop.rhs:
+                cur_eq = Eq(cur_eq.rhs, prev_prop.lhs)
             else:
                 raise VeriTException("trans", "cannot connect equalities")
         
@@ -2389,8 +2393,6 @@ class CompSimplifyMacro(Macro):
                     return Thm(goal)
                 else:
                     raise VeriTException("comp_simplify", "unexpected lhs")
-            else:
-                raise VeriTException("comp_simplify", "lhs should be a less or less_eq term")
         # Case 2: a < a <--> false
         if lhs.is_less() and lhs.arg1 == lhs.arg and rhs == false:
             return Thm(goal)

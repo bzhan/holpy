@@ -341,6 +341,8 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/simplify2/front_end_suite/javafe.ast.AmbiguousMethodInvocation.001.smt2',
             'UFLIA/simplify2/front_end_suite/javafe.ast.AmbiguousVariableAccess.001.smt2',
             'UFLIA/simplify2/front_end_suite/javafe.ast.ArrayInit.001.smt2',
+            'UFLIA/simplify2/front_end_suite/javafe.ast.CatchClauseVec.001.smt2',
+            'UFLIA/simplify2/front_end_suite/javafe.ast.ThrowStmt.004.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555057.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555849.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.556254.smt2',
