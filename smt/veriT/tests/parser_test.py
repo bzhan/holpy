@@ -23,6 +23,7 @@ def test_parse_step(verit_proof, ctx):
     for s in verit_proof.replace("\r", "").split("\n"):
         if s == "unsat" or s == "":
             continue
+        # print(s)
         step = parser.parse(s)
         if isinstance(step, command.Step) and step.rule_name == "lia_generic":
             print('lia_generic')
@@ -254,6 +255,7 @@ class ParserTest(unittest.TestCase):
 
     def testParseUFLIA(self):
         test_paths = [
+            '/UFLIA/boogie/QuantifierVisibilityInvariant_C..ctor_System.Int32.smt2',
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods..ctor.smt2',
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods.M.smt2',
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods.N.smt2',

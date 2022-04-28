@@ -88,7 +88,7 @@ veriT_grammar = r"""
     ?vname: VNAME -> mk_vname
         | QUOTED_VNAME -> mk_quoted_vname
 
-    ANCHOR_NAME: "?" CNAME | CNAME
+    ANCHOR_NAME: "?" VNAME | CNAME
 
     ?proof_command : "(assume" step_id proof_term ")" -> mk_assume
                     | "(step" step_id clause ":rule" CNAME step_annotation* ")" -> mk_step
@@ -97,7 +97,7 @@ veriT_grammar = r"""
     ?clause : "(cl" proof_term* ")" -> mk_clause
     
     ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (term|vname) ")" -> add_context
-                    | "(" (ANCHOR_NAME | CNAME) vname ")" -> add_trivial_ctx
+                    | "(" ANCHOR_NAME vname ")" -> add_trivial_ctx
 
     ?step_arg_pair : "(:=" CNAME term")" -> mk_forall_inst_args
                    | term* -> mk_la_generic_args
@@ -110,7 +110,7 @@ veriT_grammar = r"""
 
     ?let_pair : "(" "?" CNAME term ")" -> mk_let_pair
 
-    ?quant_pair : "(" "?" CNAME vname ")" -> mk_quant_pair_assume
+    ?quant_pair : "(" "?" vname vname ")" -> mk_quant_pair_assume
                 | "(" CNAME vname ")" -> mk_quant_pair_step
 
     ?term :   "true" -> mk_true
@@ -146,7 +146,7 @@ veriT_grammar = r"""
     ?step_id : vname ("." vname)* -> mk_step_id
 
     ?name : "@" CNAME -> ret_annot_tm
-            | "?" CNAME -> ret_let_tm
+            | "?" vname -> ret_let_tm
             | vname -> ret_tm
 
     %import common.CNAME
