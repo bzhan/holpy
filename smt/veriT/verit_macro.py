@@ -1951,6 +1951,8 @@ class AndSimplifyMacro(Macro):
                 if Not(lhs_conjs[i]) == lhs_conjs[j] or lhs_conjs[i] == Not(lhs_conjs[j]):
                     if goal.rhs == false:
                         return Thm(goal)
+                elif lhs_conjs[i] == Not(And(*lhs_conjs[j:])) and goal.rhs == false:
+                    return Thm(goal)
 
         print('goal', goal)
         raise VeriTException("and_simplify", "unexpected rhs")
