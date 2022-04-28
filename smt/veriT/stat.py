@@ -96,7 +96,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
             with TO(seconds=eval_timeout):
                 try:
                     pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm)
-                except VeriTException as e:
+                except (VeriTException, AssertionError) as e:
                     return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e))]                   
         except TimeoutError:
             return [filename, solve_time_str, parse_time_str, 'TO']
