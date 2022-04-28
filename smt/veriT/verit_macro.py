@@ -18,6 +18,8 @@ from logic.conv import try_conv, rewr_conv, arg_conv,\
 from data import integer, real
 from data import list as hol_list
 from kernel import term_ord
+import operator
+import functools
 
 
 class VeriTException(Exception):
@@ -1038,12 +1040,15 @@ class TransMacro(Macro):
             elif cur_eq.lhs == prev_prop.lhs:
                 cur_eq = Eq(cur_eq.rhs, prev_prop.rhs)
             elif cur_eq.lhs == prev_prop.rhs:
-                cur_eq = Eq(cur_eq.rhs, prev_prop.lhs)
+                cur_eq = Eq(prev_prop.lhs, cur_eq.rhs)
             else:
-                raise VeriTException("trans", "cannot connect equalities")
+                raise VeriTException("trans", "cannot connect equalities\n props: %s\n goal:%s" %\
+                         ("\n".join(str(prop) for prop in prevs), str(args[0])))
         
-        if compare_sym_tm(cur_eq, arg):
-            return Thm(cur_eq)
+        if cur_eq == arg:
+            return Thm(arg, tuple([hyp for pt in prevs for hyp in pt.hyps]))
+        elif Eq(cur_eq.rhs, cur_eq.lhs) == arg:
+            return Thm(arg, tuple([hyp for pt in prevs for hyp in pt.hyps]))
         else:
             raise VeriTException("trans", "unexpected equality")
 
@@ -1109,7 +1114,10 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     cur_t2 = cur_t2.arg1
                     if (cur_t1, cur_t2) in ctx:
                         return True
-                return helper(cur_t1, cur_t2, depth-1)
+                if cur_t1 == t1 and cur_t2 == t2:
+                    return False
+                else:
+                    return helper(cur_t1, cur_t2, depth-1)
             elif t1.is_comb('distinct'):
                 if not t2.is_comb('distinct'):
                     return False
@@ -1943,6 +1951,8 @@ class AndSimplifyMacro(Macro):
                 if Not(lhs_conjs[i]) == lhs_conjs[j] or lhs_conjs[i] == Not(lhs_conjs[j]):
                     if goal.rhs == false:
                         return Thm(goal)
+                elif lhs_conjs[i] == Not(And(*lhs_conjs[j:])) and goal.rhs == false:
+                    return Thm(goal)
 
         print('goal', goal)
         raise VeriTException("and_simplify", "unexpected rhs")
@@ -3543,3 +3553,61 @@ class QntRmUnusedMacro(Macro):
                                     lhs and rhs still have different quantified variables")
         
         return Thm(goal)        
+
+
+@register_macro("verit_prod_simplify")
+class ProdSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None) -> Thm:
+        if len(args) != 1 or not args[0].is_equals():
+            raise VeriTException("prod_simplify", "argument should be an equality")
+        
+        goal = args[0]
+        lhs, rhs = goal.args
+
+        if not lhs.is_times() and not rhs.is_times():
+            raise VeriTException("prod_simplify", "neither side of equality is product")
+
+        if not lhs.is_times() and rhs.is_times():
+            lhs, rhs = rhs, lhs
+
+        T = lhs.get_type()
+        if T == hol_type.IntType:
+            hol_eval = integer.int_eval
+        elif T == hol_type.RealType:
+            hol_eval = real.real_eval
+        else:
+            raise VeriTException("prod_simplify", "unsupported data type")
+
+        lhs_prods = integer.strip_times(lhs)
+        # case 1: t1 * t2 * ... * tn = u if all ti are constants and u is the product
+        if all(p.is_number() for p in lhs_prods) and rhs.is_number():
+            if hol_eval(lhs) == hol_eval(rhs):
+                return Thm(goal)
+
+        # case 2: t1 * t2 * ... * tn = 0 if any ti is zero
+        if rhs.is_zero() and any(p.is_zero() for p in lhs_prods):
+            return Thm(goal)
+
+        if not rhs.is_times():
+            raise VeriTException("prod_simplify", "rhs should be a product")
+
+        rhs_prods = integer.strip_times(rhs)
+
+        lhs_consts = [hol_eval(p) for p in lhs_prods if p.is_number()]
+        lhs_c = operator.mul(lhs_consts[1:], lhs_consts[0])
+        lhs_tms = [p for p in lhs_prods if not p.is_number()]
+        
+        if rhs_prods[0].is_number():
+            rhs_c = hol_eval(rhs_prods[0])
+            if lhs_c == rhs_c and lhs_tms == rhs_prods[1:]:
+                return Thm(goal)
+        elif lhs_c == 1 and lhs_tms == rhs_prods:
+            return Thm(goal)
+        else:
+            print("goal", goal)
+            raise VeriTException("prod_simplify", "unexpected result")
