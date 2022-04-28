@@ -115,9 +115,9 @@ veriT_grammar = r"""
 
     ?term :   "true" -> mk_true
             | "false" -> mk_false
-            | "(not" term ")" -> mk_neg_tm
-            | "(or" term+ ")" -> mk_disj_tm
-            | "(and" term+ ")" -> mk_conj_tm
+            | "(not " term ")" -> mk_neg_tm
+            | "(or " term+ ")" -> mk_disj_tm
+            | "(and " term+ ")" -> mk_conj_tm
             | "(=>" term term ")" -> mk_impl_tm
             | "(=" term term ")" -> mk_eq_tm
             | "(+" term* ")" -> mk_plus_tm
@@ -125,20 +125,20 @@ veriT_grammar = r"""
             | "(-" term ")" -> mk_uminus_tm
             | "(*" term* ")" -> mk_mul_tm
             | "(/" term term ")" -> mk_div_tm
-            | "(div" term term ")" -> mk_div_tm
+            | "(div " term term ")" -> mk_div_tm
             | "(<" term term ")" -> mk_less_tm
             | "(>" term term ")" -> mk_greater_tm
             | "(<=" term term ")" -> mk_less_eq_tm
             | "(>=" term term ")" -> mk_greater_eq_tm
             | "(!" term ":named" "@" CNAME ")" -> mk_annot_tm
-            | "(let" "(" let_pair* ")" term ")" -> mk_let_tm
-            | "(distinct" term term+ ")" -> mk_distinct_tm
+            | "(let " "(" let_pair* ")" term ")" -> mk_let_tm
+            | "(distinct " term term+ ")" -> mk_distinct_tm
             | "(" term ")" -> mk_par_tm
             | "(" term+ ")" -> mk_app_tm
-            | "(ite" term term term ")" -> mk_ite_tm
-            | "(forall" "(" quant_pair+ ")" term ")" -> mk_forall
-            | "(exists" "(" quant_pair+ ")" term ")" -> mk_exists
-            | "(choice" "(" quant_pair+ ")" term ")" -> mk_choice
+            | "(ite " term term term ")" -> mk_ite_tm
+            | "(forall " "(" quant_pair+ ")" term ")" -> mk_forall
+            | "(exists " "(" quant_pair+ ")" term ")" -> mk_exists
+            | "(choice " "(" quant_pair+ ")" term ")" -> mk_choice
             | INT -> mk_int
             | DECIMAL -> mk_decimal
             | name

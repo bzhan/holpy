@@ -205,6 +205,7 @@ class ParserTest(unittest.TestCase):
             'UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_54_35_132_1014381.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_54_53_474_1036287.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_55_00_922_1043783.smt_in.smt2',
+            'UF/20201221-induction-by-reflection-schoisswohl/reflectiveConjecture/currying-0.smt2',
             'UF/sledgehammer/Arrow_Order/smtlib.578262.smt2',
             'UF/sledgehammer/Arrow_Order/smtlib.617784.smt2',
             'UF/sledgehammer/Arrow_Order/smtlib.686801.smt2',
