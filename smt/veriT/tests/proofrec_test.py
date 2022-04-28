@@ -351,6 +351,13 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555057.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555849.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.556254.smt2',
+            'UFLIA/sledgehammer/FFT/smtlib.935892.smt2',
+            'UFLIA/sledgehammer/TwoSquares/smtlib.871354.smt2',
+            # 'UFLIA/sledgehammer/TwoSquares/smtlib.832972.smt2', # ite_intro
+            # 'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438328.smt2', # resolution
+            # 'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438517.smt2', # resolution
+            # 'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437253.smt2', # resolution
+            # 'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437948.smt2', # resolution
             'UFLIA/spec_sharp/textbook-DutchFlag.bpl.1.Partition.smt2',
             'UFLIA/spec_sharp/textbook-Find.bpl.1.Find.smt2',
             'UFLIA/spec_sharp/textbook-Find.bpl.2.Main.smt2',
@@ -360,6 +367,7 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/tptp/ARI604=1.smt2',
             'UFLIA/tptp/ARI612=1.smt2',
             'UFLIA/tptp/ARI615=1.smt2',
+
         ]
         profile = False
         if profile:

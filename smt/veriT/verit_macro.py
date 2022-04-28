@@ -1531,6 +1531,17 @@ class ITEIntroMacro(Macro):
         expected_ites = rhs.strip_conj()[1:]
 
         if len(ite_intros) != len(expected_ites):
+            print("lhs", lhs)
+            print("rhs", rhs)
+            print()
+            print("ite_intro")
+            for ite in ite_intros:
+                print(ite)
+            print( )
+            print("expected")
+            for ite in expected_ites:
+                print(ite)
+            print()
             raise VeriTException("let_intro", "unexpected number of ites")
 
         expected_rhs = And(lhs, *ite_intros)
@@ -2550,22 +2561,19 @@ class MinusSimplify(Macro):
                 return Thm(goal)
             else:
                 raise VeriTException("minus_simplify", "unexpected result")
-        elif rhs.is_minus():
-            rhs_arg = rhs.arg
-            if rhs_arg.is_zero():
-                # it is a bug in verit, minus_simplify only can prove t - 0 = t rather than t = t - 0
-                return Thm(goal)
-            else:
-                print("rhs", repr(rhs_arg))
-                raise VeriTException("minus_simplify", "unexpected result")
-        elif lhs.is_minus() and rhs.is_uminus():
-            l_arg1, l_arg2 = lhs.args
-            r_arg = rhs.arg
-            if l_arg1.is_zero() and l_arg2 == r_arg:
-                return Thm(goal)
-            else:
-                raise VeriTException("minus_simplify", "unexpected result")
-        raise NotImplementedError
+        if not lhs.is_minus() and rhs.is_minus():
+            lhs, rhs = rhs, lhs
+
+        if lhs.is_minus() and lhs.arg1 == lhs.arg and rhs.is_zero():
+            return Thm(goal)
+        elif lhs.is_minus() and lhs.arg.is_zero() and lhs.arg1 == rhs:
+            return Thm(goal)
+        elif lhs.is_minus() and lhs.arg1.is_zero() and rhs.is_uminus() and rhs.arg == lhs.arg:
+            return Thm(goal)
+        elif rhs.is_uminus() and rhs.arg.is_uminus() and rhs.arg.arg == lhs: # bugs in veriT, f = --f
+            return Thm(goal)
+        print("goal", goal)
+        raise VeriTException("minus_simplify", "unexpected result")
 
     def get_proof_term(self, args, prevs=None):
         goal = args[0]
@@ -3593,15 +3601,11 @@ class ProdSimplifyMacro(Macro):
         if rhs.is_zero() and any(p.is_zero() for p in lhs_prods):
             return Thm(goal)
 
-        if not rhs.is_times():
-            raise VeriTException("prod_simplify", "rhs should be a product")
-
         rhs_prods = integer.strip_times(rhs)
-
         lhs_consts = [hol_eval(p) for p in lhs_prods if p.is_number()]
-        lhs_c = operator.mul(lhs_consts[1:], lhs_consts[0])
+        lhs_c = functools.reduce(operator.mul, lhs_consts[1:], lhs_consts[0])
         lhs_tms = [p for p in lhs_prods if not p.is_number()]
-        
+
         if rhs_prods[0].is_number():
             rhs_c = hol_eval(rhs_prods[0])
             if lhs_c == rhs_c and lhs_tms == rhs_prods[1:]:
