@@ -403,6 +403,24 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
+    def test_QF_RDL(self):
+        test_paths = [
+            'QF_RDL/skdmxa/skdmxa-3x3-5.smt2' # ac_simp
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_eval=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
 
 if __name__ == "__main__":
     unittest.main()

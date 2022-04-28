@@ -284,6 +284,7 @@ class ParserTest(unittest.TestCase):
             'UFLIA/tokeneer/admin/finishop-1.smt2',
             'UFLIA/tokeneer/admin/init-1.smt2',
             'UFLIA/tokeneer/admin/logon-1.smt2',
+            # 'UFLIA/tokeneer/userentry/progress-4.smt2',
             'UFLIA/tptp/ARI604=1.smt2',
             'UFLIA/tptp/ARI612=1.smt2',
             'UFLIA/tptp/ARI615=1.smt2',
