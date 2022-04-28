@@ -1109,7 +1109,10 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     cur_t2 = cur_t2.arg1
                     if (cur_t1, cur_t2) in ctx:
                         return True
-                return helper(cur_t1, cur_t2, depth-1)
+                if cur_t1 == t1 and cur_t2 == t2:
+                    return False
+                else:
+                    return helper(cur_t1, cur_t2, depth-1)
             elif t1.is_comb('distinct'):
                 if not t2.is_comb('distinct'):
                     return False
@@ -3543,3 +3546,16 @@ class QntRmUnusedMacro(Macro):
                                     lhs and rhs still have different quantified variables")
         
         return Thm(goal)        
+
+
+@register_macro("verit_lia_generic")
+class ProdSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs) -> Thm:
+        return Thm(Or(*args), tuple([hyp for pt in prevs for hyp in pt.hyps]))
+
+
