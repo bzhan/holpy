@@ -11,6 +11,7 @@ import concurrent.futures
 from itertools import repeat
 
 from smt.veriT import interface, proof_rec, proof_parser
+from smt.veriT.verit_macro import VeriTException
 from syntax.settings import settings
 settings.unicode = False
 
@@ -93,7 +94,10 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         recon = proof_rec.ProofReconstruction(steps)
         try:
             with TO(seconds=eval_timeout):
-                pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm)
+                try:
+                    pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm)
+                except VeriTException as e:
+                    return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e))]                   
         except TimeoutError:
             return [filename, solve_time_str, parse_time_str, 'TO']
         eval_time = time.perf_counter() - start_time

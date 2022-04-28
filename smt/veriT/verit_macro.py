@@ -1038,7 +1038,7 @@ class TransMacro(Macro):
             else:
                 raise VeriTException("trans", "cannot connect equalities")
         
-        if cur_eq == arg:
+        if compare_sym_tm(cur_eq, arg):
             return Thm(cur_eq)
         else:
             raise VeriTException("trans", "unexpected equality")
@@ -2442,6 +2442,65 @@ class ITESimplifyMacro(Macro):
         self.sig = Term
         self.limit = None
 
+    def compare_ite(self, ite1, ite2):
+        if logic.is_if(ite1) and logic.is_if(ite2):
+            l_P, l_then, l_else = ite1.args
+            r_P, r_then, r_else = ite2.args
+
+            # Case 4: ite ~P x y <--> ite P y x
+            if l_P == Not(r_P) and l_then == r_else and l_else == r_then:
+                return True
+            # Case 7: ite P (ite P x y) z <--> ite P x z
+            elif logic.is_if(l_then):
+                l_then_P, l_then_then, _ = l_then.args
+                if l_P == l_then_P and l_then_then == r_then and l_else == r_else:
+                    return True
+                else:
+                    return False
+            # Case 8: ite P x (ite P y z) <--> ite P x z
+            elif logic.is_if(l_else):
+                l_else_P, _, l_else_else = l_else.args
+                if l_P == l_else_P and l_then == r_then and l_else_else == r_else:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        elif logic.is_if(ite1):
+            l_P, l_then, l_else = ite1.args
+            # Case 1: ite true x y <--> x (repeat case 5)
+            if l_P == true and ite2 == l_then:
+                return True
+            # Case 2: ite false x y <--> y (repeat case 6)
+            elif l_P == false and ite2 == l_else:
+                return True
+            # Case 3: ite P x x <--> x
+            elif l_then == l_else and ite2 == l_then:
+                return True
+            # Case 9: ite P true false <--> P
+            elif l_then == true and l_else == false and ite2 == l_P:
+                return True
+            # Case 10: ite P false true <--> ~P
+            elif l_then == false and l_else == true and ite2 == Not(l_P):
+                return True
+            # Case 11: ite P true Q <--> P | Q
+            elif l_then == true and ite2 == Or(l_P, l_else):
+                return True
+            # Case 12: ite P Q false <--> P & Q
+            elif l_else == false and ite2 == And(l_P, l_then):
+                return True
+            # Case 13: ite P false Q <--> ~P & Q
+            elif l_then == false and ite2 == And(Not(l_P), l_else):
+                return True
+            # Case 14: ite P Q true <--> ~P | Q
+            elif l_else == true and ite2 == Or(Not(l_P), l_then):
+                return True
+            else:
+                return False
+        else:
+            return False
+            
+
     def eval(self, args, prevs=None):
         if len(args) != 1:
             raise VeriTException("ite_simplify", "args should only contain one element")
@@ -2451,66 +2510,10 @@ class ITESimplifyMacro(Macro):
             raise VeriTException("ite_simplify", "goal should be an equality")
         
         lhs, rhs = goal.lhs, goal.rhs
-
-        if logic.is_if(lhs) and logic.is_if(rhs):
-            l_P, l_then, l_else = lhs.args
-            r_P, r_then, r_else = rhs.args
-
-            # Case 4: ite ~P x y <--> ite P y x
-            if l_P == Not(r_P) and l_then == r_else and l_else == r_then:
-                return Thm(goal)
-            # Case 7: ite P (ite P x y) z <--> ite P x z
-            elif logic.is_if(l_then):
-                l_then_P, l_then_then, _ = l_then.args
-                if l_P == l_then_P and l_then_then == r_then and l_else == r_else:
-                    return Thm(goal)
-                else:
-                    raise VeriTException("ite_simplify", "can't match ite P (ite P x y) z <--> ite P x z")
-            # Case 8: ite P x (ite P y z) <--> ite P x z
-            elif logic.is_if(l_else):
-                l_else_P, _, l_else_else = l_then.args
-                if l_P == l_else_P and l_then == r_then and l_else_else == r_else:
-                    return Thm(goal)
-                else:
-                    raise VeriTException("ite_simplify", "can't match ite P x (ite P y z) <--> ite P x z")
-            else:
-                raise VeriTException("ite_simplify", "cannot match")
-        elif logic.is_if(lhs):
-            l_P, l_then, l_else = lhs.args
-            # Case 1: ite true x y <--> x (repeat case 5)
-            if l_P == true and rhs == l_then:
-                return Thm(goal)
-            # Case 2: ite false x y <--> y (repeat case 6)
-            elif l_P == false and rhs == l_else:
-                return Thm(goal)
-            # Case 3: ite P x x <--> x
-            elif l_then == l_else and rhs == l_then:
-                return Thm(goal)
-            # Case 9: ite P true false <--> P
-            elif l_then == true and l_else == false and rhs == l_P:
-                return Thm(goal)
-            # Case 10: ite P false true <--> ~P
-            elif l_then == false and l_else == true and rhs == Not(l_P):
-                return Thm(goal)
-            # Case 11: ite P true Q <--> P | Q
-            elif l_then == true and rhs == Or(l_P, l_else):
-                return Thm(goal)
-            # Case 12: ite P Q false <--> P & Q
-            elif l_else == false and rhs == And(l_P, l_then):
-                return Thm(goal)
-            # Case 13: ite P false Q <--> ~P & Q
-            elif l_then == false and rhs == And(Not(l_P), l_else):
-                return Thm(goal)
-            # Case 14: ite P Q true <--> ~P | Q
-            elif l_else == true and rhs == Or(Not(l_P), l_then):
-                return Thm(goal)
-            else:
-                print("lhs", lhs)
-                print("rhs", rhs)
-                raise VeriTException("ite_simplify", "cannot match")
+        if self.compare_ite(lhs, rhs) or self.compare_ite(rhs, lhs):
+            return Thm(goal)
         else:
-            raise VeriTException("ite_complete", "left side of equality must be if statement")
-            
+            raise VeriTException("ite_complete", "unexpected result")
 
 @register_macro("verit_minus_simplify")
 class MinusSimplify(Macro):
@@ -3513,7 +3516,7 @@ class QntRmUnusedMacro(Macro):
         
         goal = args[0]
         lhs, rhs = goal.args
-        if not lhs.is_forall() and not lhs.is_forall():
+        if not lhs.is_forall() and not lhs.is_exists():
             raise VeriTException("qnt_rm_unused", "lhs should have a quantifier")
         l_vars, l_bd = lhs.strip_quant()
         if rhs.is_forall() or rhs.is_exists():

@@ -92,7 +92,7 @@ def to_la(tm: hol_term.Term) -> LinearArith:
     if tm.is_plus():
         return to_la(tm.arg1) + to_la(tm.arg)
     elif tm.is_uminus():
-        return -to_la(tm.arg1)
+        return -to_la(tm.arg)
     elif tm.is_minus():
         return to_la(tm.arg1) - to_la(tm.arg)
     elif tm.is_times():

@@ -266,8 +266,10 @@ class ProofrecTest(unittest.TestCase):
             'UF/sledgehammer/FFT/uf.549548.smt2',
             'UF/sledgehammer/FFT/uf.600765.smt2',
             'UF/sledgehammer/FFT/uf.626085.smt2',
+            'UF/sledgehammer/FFT/uf.552859.smt2',
             'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1025050.smt2',
             'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1061982.smt2',
+            # 'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1384400.smt2', # bugs: th_resolution: unexpected conclusion
             'UF/sledgehammer/Hoare/smtlib.1170876.smt2',
             'UF/sledgehammer/Hoare/uf.1008477.smt2',
             'UF/sledgehammer/Hoare/uf.1031408.smt2',
@@ -293,7 +295,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_eval=True)
 
         if profile:
             p = Stats(pr)
