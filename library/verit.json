@@ -868,6 +868,104 @@
                 "g": "'a ⇒ 'b",
                 "x": "'a"
             }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_int1",
+            "prop": "¬(x > y) ⟷ ¬(y < x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_eq_int1",
+            "prop": "¬(x ≥ y) ⟷ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_int2",
+            "prop": "¬(x > y) ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_eq_int2",
+            "prop": "¬(x ≥ y) ⟷ x < y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "imp_false_false",
+            "prop": "(P ⟶ false) ⟷ ¬P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "zero_eq_mul_const",
+            "prop": "m = n ⟷ c * m = c * n",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_equals",
+            "prop": "x = y ⟶ a = b ⟶ x + a = y + b",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "add_eq_with_ge",
+            "prop": "x = y ⟶ a ≥ b ⟶ x + a ≥ y + b",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "add_ge_with_eq",
+            "prop": "x ≥ y ⟶ a = b ⟶ x + a ≥ y + b",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "add_ge_with_ge",
+            "prop": "x ≥ y ⟶ a ≥ b ⟶ x + a ≥ y + b",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "x": "int",
+                "y": "int"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

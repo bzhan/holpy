@@ -1247,7 +1247,7 @@
         },
         {
             "name": "int_pos_mul_greater_eq",
-            "prop": "c > 0 ⟶ m ≤ n ⟶ c * m ≥ c * n",
+            "prop": "c > 0 ⟶ m ≥ n ⟶ c * m ≥ c * n",
             "ty": "thm",
             "vars": {
                 "c": "int",
