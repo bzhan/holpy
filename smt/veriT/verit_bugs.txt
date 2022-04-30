@@ -35,3 +35,7 @@ problem: expected rhs has no extra conjuncts.
 file_name: UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438328.smt2
 step t292 (th_resolution)
 problem: repeated clauses hindering resolution getting correct result.
+10.
+file_name: UF/sledgehammer/Arrow_Order/smtlib.617784.smt2
+step 31 (bind)
+problem: suspected variable name conflict

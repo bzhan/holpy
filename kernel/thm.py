@@ -313,7 +313,7 @@ class Thm():
         A |- (%x. t1) = (%x. t2)  where x does not occur in A.
         """
         if any(hyp.occurs_var(x) for hyp in th.hyps):
-            raise InvalidDerivationException("abstraction")
+            raise InvalidDerivationException("abstraction: variable occurs in assmptions")
         elif th.is_equals():
             t1, t2 = th.prop.args
             try:

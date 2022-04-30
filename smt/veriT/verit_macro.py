@@ -15,7 +15,7 @@ from kernel import type as hol_type
 from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
     BoolType, Int, Forall, Exists, Inst, conj, disj, Var, neg, implies, plus
 from logic import conv, logic
-from logic.conv import try_conv, rewr_conv, arg_conv,\
+from logic.conv import ConvException, try_conv, rewr_conv, arg_conv,\
          top_conv, arg1_conv, replace_conv, abs_conv, Conv, bottom_conv, beta_norm_conv
 from data import integer, real
 from data import list as hol_list
@@ -326,7 +326,9 @@ class ThResolutionMacro(Macro):
                 res = Or(*cl)
             else:
                 res = Or(*res_list)
-            if pt.prop != res:
+            if Not(Not(pt.prop)) == res:
+                pt = pt.on_prop(rewr_conv('double_neg', sym=True))
+            elif pt.prop != res:
                 eq_pt = logic.imp_disj_iff(Eq(pt.prop, res))
                 pt = eq_pt.equal_elim(pt)
             
@@ -1770,7 +1772,8 @@ class LetMacro(Macro):
         for prop in prop_eq:
             eqs[(prop.lhs, prop.rhs)] = prop
         pt1 = compare_sym_tm_thm(goal.lhs, last_step.lhs, eqs=eqs)
-        return last_step.on_lhs(replace_conv(pt1.symmetric()))
+        res = last_step.on_lhs(replace_conv(pt1.symmetric()))
+        return res
 
 
 def flatten_prop(tm):
@@ -2630,7 +2633,7 @@ class ITESimplifyMacro(Macro):
         else:
             return False
             
-    def compare_ite_thm(self, ite1, ite2):
+    def compare_ite_thm(self, ite1, ite2) -> ProofTerm:
         goal = Eq(ite1, ite2)
         if logic.is_if(ite1) and logic.is_if(ite2):
             l_P, l_then, l_else = ite1.args
@@ -2709,10 +2712,10 @@ class ITESimplifyMacro(Macro):
         pt_lhs_rhs = self.compare_ite_thm(lhs, rhs)
         if pt_lhs_rhs is not None and pt_lhs_rhs.prop == goal:
             return pt_lhs_rhs
-        pt_rhs_lhs = self.compare_ite_true(rhs, lhs)
+        pt_rhs_lhs = self.compare_ite_thm(rhs, lhs)
 
         if pt_rhs_lhs is not None and pt_rhs_lhs.symmetric().prop == goal:
-            return pt_rhs_lhs
+            return pt_rhs_lhs.symmetric()
         else:
             raise VeriTException("ite_complete", "unexpected result")
 
@@ -2950,11 +2953,18 @@ class BindMacro(Macro):
         eq_pts = dict()
         for k, v in ctx.items():
             T = v.get_type()
-            eq_pts[(Var(k, T), v)] = ProofTerm.assume(Eq(Var(k, T), v))
+            if Var(k, T) != v:
+                eq_pts[(Var(k, T), v)] = ProofTerm.assume(Eq(Var(k, T), v))
 
         prem = prevs[0]
         eq_pts[(prem.lhs, prem.rhs)] = prem
-        pt = compare_sym_tm_thm(lhs, rhs, eqs=eq_pts)
+        try:
+            pt = compare_sym_tm_thm(lhs, rhs, eqs=eq_pts)
+        except ConvException as e:
+            if e.str == 'abs_conv':
+                raise NotImplementedError
+            else:
+                raise e
 
         if pt is not None:
             res = ProofTerm("transitive", None, [pt, ProofTerm.reflexive(rhs)])
