@@ -915,7 +915,7 @@
         },
         {
             "name": "zero_eq_mul_const",
-            "prop": "m = n ⟷ c * m = c * n",
+            "prop": "m = n ⟶ c * m = c * n",
             "ty": "thm",
             "vars": {
                 "c": "int",
@@ -1276,6 +1276,114 @@
                 "P": "'a ⇒ bool",
                 "Q": "'a ⇒ bool",
                 "a": "'a"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_real1",
+            "prop": "¬(x > y) ⟷ ¬(y < x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_eq_real1",
+            "prop": "¬(x ≥ y) ⟷ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_real2",
+            "prop": "¬(x > y) ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_eq_real2",
+            "prop": "¬(x ≥ y) ⟷ x < y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_greater_eq_mul_const",
+            "prop": "c > 0 ⟶ x ≥ 0 ⟶ c * x ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "verit_real_greater_mul_const",
+            "prop": "c > 0 ⟶ x > 0 ⟶ c * x > 0",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_eq_eq",
+            "prop": "x = 0 ⟶ y = 0 ⟶ x + y = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_eq_gt",
+            "prop": "x = 0 ⟶ y > 0 ⟶ x + y > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_eq_ge",
+            "prop": "x = 0 ⟶ y ≥ 0 ⟶ x + y ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_gt_gt",
+            "prop": "x > 0 ⟶ y > 0 ⟶ x + y > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_gt_ge",
+            "prop": "x > 0 ⟶ y ≥ 0 ⟶ x + y > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_ge_ge",
+            "prop": "x ≥ 0 ⟶ y ≥ 0 ⟶ x + y ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
             }
         }
     ],

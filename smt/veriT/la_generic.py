@@ -14,7 +14,7 @@ from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, refl
 from logic import logic
 from logic.conv import rewr_conv, arg1_conv, binop_conv, replace_conv, top_conv
-from smt.veriT.verit_conv import norm_lia_conv, const_prod_lia_conv, verit_norm_lia_greater_eq
+from smt.veriT import verit_conv
 
 def norm_int_expr(t):
     return from_int_la(to_la(t))
@@ -149,7 +149,7 @@ class LAGenericMacro(Macro):
         self.sig = hol_term.Term
         self.limit = None
 
-    def eval(self, args, prevs=None) -> Thm:
+    def eval1(self, args, prevs=None) -> Thm:
         dis_eqs, coeffs = args[:-1], args[-1]
         if not isinstance(coeffs, Iterable) or not all(coeff.is_number() for coeff in coeffs):
             print(coeffs)
@@ -365,11 +365,11 @@ class LAGenericMacro(Macro):
         step2_pts = []
         for step1_pt in step1_pts:
             if step1_pt.prop.is_greater():
-                pt_minus = step1_pt.on_prop(rewr_conv("int_gt"), arg1_conv(norm_lia_conv()))
+                pt_minus = step1_pt.on_prop(rewr_conv("int_gt"), arg1_conv(verit_conv.norm_lia_conv()))
             elif step1_pt.prop.is_greater_eq():
-                pt_minus = step1_pt.on_prop(rewr_conv("int_geq"), arg1_conv(norm_lia_conv()))
+                pt_minus = step1_pt.on_prop(rewr_conv("int_geq"), arg1_conv(verit_conv.norm_lia_conv()))
             elif step1_pt.prop.is_equals():
-                pt_minus = step1_pt.on_prop(rewr_conv("int_eq_move_left"), arg1_conv(norm_lia_conv()))
+                pt_minus = step1_pt.on_prop(rewr_conv("int_eq_move_left"), arg1_conv(verit_conv.norm_lia_conv()))
             else:
                 raise VeriTException('la_generic', 'unexpected type of disequality (less, less_eq)')
             step2_pts.append(pt_minus)
@@ -399,7 +399,7 @@ class LAGenericMacro(Macro):
         step3_pts = []
         for step2_pt in step2_pts:
             if step2_pt.prop.is_greater():
-                step3_pts.append(step2_pt.on_prop(verit_norm_lia_greater_eq()))
+                step3_pts.append(step2_pt.on_prop(verit_conv.verit_norm_lia_greater_eq()))
             else:
                 step3_pts.append(step2_pt)
 
@@ -413,15 +413,15 @@ class LAGenericMacro(Macro):
         for step3_pt, c in zip(step3_pts, coeffs):
             if step3_pt.prop.is_equals():
                 # print("step3_pt", step3_pt)
-                pt1 = logic.apply_theorem("zero_eq_mul_const", inst=hol_term.Inst(c=c, m=step3_pt.lhs, n=step3_pt.rhs)).equal_elim(step3_pt)
-                pt2 = pt1.on_prop(binop_conv(const_prod_lia_conv()))
+                pt1 = logic.apply_theorem("zero_eq_mul_const", inst=hol_term.Inst(c=c, m=step3_pt.lhs, n=step3_pt.rhs)).implies_elim(step3_pt)
+                pt2 = pt1.on_prop(binop_conv(verit_conv.const_prod_lia_conv()))
                 step4_pts.append(pt2)
                 # pt = step3_pt.on_prop(rewr_conv("zero_eq_mul_const"), binop_conv(const_prod_lia_conv()))
             else:
                 abs_c = abs(eval_hol_number(c))
                 pt_abs = ProofTerm("int_const_ineq", hol_term.greater(hol_type.IntType)(hol_term.Int(abs_c), hol_term.Int(0)))
                 pt = logic.apply_theorem('int_pos_mul_greater_eq', pt_abs, step3_pt)
-                step4_pts.append(pt.on_prop(binop_conv(const_prod_lia_conv())))
+                step4_pts.append(pt.on_prop(binop_conv(verit_conv.const_prod_lia_conv())))
         
         # print("step4")
         # for pt in step4_pts:
@@ -446,7 +446,7 @@ class LAGenericMacro(Macro):
             # print("pt     ", pt)
             # print("pt_final", pt_final)
             pt_final = pt.implies_elim(pt_final).implies_elim(step4_pt)
-            pt_final = pt_final.on_prop(binop_conv(norm_lia_conv()))
+            pt_final = pt_final.on_prop(binop_conv(verit_conv.norm_lia_conv()))
 
         # print("pt_final", pt_final)
         # print()
@@ -480,6 +480,202 @@ class LAGenericMacro(Macro):
             print(pt_false)
             raise VeriTException("la_generic", "unexpected result")
 
+    def get_proof_term_real(self, dis_eqs, coeffs) -> ProofTerm:
+        # store the assumed negated disequalities
+        step1_pts = []
+        # store the equality proof terms which convert the 
+        # negated disequalities to original equalities
+        step1_neg_conv_pts = []
+        for dis_eq in dis_eqs:
+            if dis_eq.is_equals():
+                raise VeriTException("la_generic", "clause can't contain any equality")
+            # For the reason that all disequalities we met are either less or less_eq, 
+            # for simplicity of implementation, we will do some aggressive checking
+            if dis_eq.is_not():
+                dis_eq_bd = dis_eq.arg
+                if not dis_eq_bd.is_compares() and not dis_eq_bd.is_equals():
+                    raise VeriTException("la_generic", "non-equality should contain a comparison")
+                T = dis_eq_bd.arg.get_type()
+                if dis_eq_bd.is_greater() or dis_eq_bd.is_greater_eq():
+                    raise VeriTException("la_generic", "all disequalities are either less or less_eq")
+                if dis_eq_bd.is_equals():
+                    step1_pts.append(ProofTerm.assume(dis_eq_bd))
+                    pt1 = refl(dis_eq)
+                    step1_neg_conv_pts.append(pt1)            
+                elif dis_eq_bd.is_less():
+                    g = hol_term.greater(T)(dis_eq_bd.arg, dis_eq_bd.arg1)
+                    step1_pts.append(ProofTerm.assume(g))
+                    pt = logic.apply_theorem('verit_la_generic_neg_greater_real1', 
+                                inst=hol_term.Inst(x=g.arg1, y=g.arg))
+                    step1_neg_conv_pts.append(pt)
+                elif dis_eq_bd.is_less_eq():
+                    ge = hol_term.greater_eq(T)(dis_eq_bd.arg, dis_eq_bd.arg1)
+                    step1_pts.append(ProofTerm.assume(ge))
+                    pt = logic.apply_theorem('verit_la_generic_neg_greater_eq_real1',
+                                inst=hol_term.Inst(x=ge.arg1, y=ge.arg))
+                    step1_neg_conv_pts.append(pt)
+                else:
+                    raise VeriTException("la_generic", "unexpected disequality")
+            else:
+                dis_eq_bd = dis_eq
+                T = dis_eq_bd.arg.get_type()
+                if dis_eq_bd.is_greater() or dis_eq_bd.is_greater_eq():
+                    raise VeriTException("la_generic", "all disequalities are either less or less_eq")
+                if dis_eq_bd.is_less():
+                    ge = hol_term.greater_eq(T)(dis_eq_bd.arg1, dis_eq_bd.arg)
+                    step1_pts.append(ProofTerm.assume(hol_term.greater_eq(T)(dis_eq_bd.arg1, dis_eq_bd.arg)))
+                    pt = logic.apply_theorem('verit_la_generic_neg_greater_eq_real2', 
+                                    inst=hol_term.Inst(x=ge.arg1, y=ge.arg))
+                    step1_neg_conv_pts.append(pt)
+                elif dis_eq_bd.is_less_eq():
+                    g = hol_term.greater(T)(dis_eq_bd.arg1, dis_eq_bd.arg)
+                    step1_pts.append(ProofTerm.assume(g))
+                    pt = logic.apply_theorem('verit_la_generic_neg_greater_real2', 
+                                    inst=hol_term.Inst(x=g.arg1, y=g.arg))
+                    step1_neg_conv_pts.append(pt)
+                else:
+                    print(dis_eq_bd)
+                    raise VeriTException("la_generic", "unexpected disequality")
+        # print("step1")
+        # for pt in step1_pts:
+        #     print("pt", pt)
+        # print()
+        # step 2: move terms on rhs to left, move constants on lhs to right
+        step2_pts = []
+        for step1_pt in step1_pts:
+            if step1_pt.prop.is_greater():
+                pt_minus = step1_pt.on_prop(rewr_conv("real_gt_sub"), arg1_conv(verit_conv.norm_lra_conv()))
+            elif step1_pt.prop.is_greater_eq():
+                pt_minus = step1_pt.on_prop(rewr_conv("real_geq_sub"), arg1_conv(verit_conv.norm_lra_conv()))
+            elif step1_pt.prop.is_equals():
+                pt_minus = step1_pt.on_prop(rewr_conv("real_sub_0", sym=True), arg1_conv(verit_conv.norm_lra_conv()))
+            else:
+                raise VeriTException('la_generic', 'unexpected type of disequality (less, less_eq)')
+            step2_pts.append(pt_minus)
+        
+        # print("step2")
+        # for pt in step2_pts:
+        #     print("pt", pt)
+        # print()
+
+        if len(step2_pts) == 1:
+            pt = step2_pts[0]
+            if not pt.prop.arg1.is_constant() or not pt.prop.arg.is_constant():
+                raise VeriTException("la_generic", "unexpected result")
+            if pt.prop.is_compares():
+                pt1 = real.norm_neg_real_ineq_conv().get_proof_term(hol_term.Not(pt.prop))
+                pt2 = ProofTerm("real_const_eq", args=pt1.rhs)
+
+                pt_false = pt1.symmetric().equal_elim(pt2).on_prop(rewr_conv('eq_false')).equal_elim(pt)
+            else:
+                pt2 = ProofTerm("real_const_ineq", args=pt.prop)
+                pt_false = pt2.on_prop(rewr_conv('eq_false')).equal_elim(pt)
+            pt_imp_false = pt_false.implies_intr(pt_false.hyps[0]).on_prop(rewr_conv('imp_false_false'))
+            pt_res = pt_imp_false.on_prop(replace_conv(step1_neg_conv_pts[0]))
+            return pt_res
+        
+
+        # multiply two sides with coeff
+        step3_pts = []
+        for step2_pt, c in zip(step2_pts, coeffs):
+            if step2_pt.prop.is_equals():
+                pt1 = logic.apply_theorem("real_eq_zero_mul_const", inst=hol_term.Inst(c=c, x=step2_pt.prop.arg1)).implies_elim(step2_pt)
+                pt2 = pt1.on_prop(binop_conv(verit_conv.const_prod_lra_conv()))
+                step3_pts.append(pt2)
+                # pt = step3_pt.on_prop(rewr_conv("zero_eq_mul_const"), binop_conv(const_prod_lia_conv()))
+            elif step2_pt.prop.is_greater_eq():
+                abs_c = abs(eval_hol_number(c))
+                pt_abs = ProofTerm("real_const_ineq", hol_term.greater(T)(hol_term.Real(abs_c), hol_term.Real(0)))
+                pt = logic.apply_theorem('verit_real_greater_eq_mul_const', pt_abs, step2_pt)
+                step3_pts.append(pt.on_prop(binop_conv(verit_conv.const_prod_lra_conv())))
+            elif step2_pt.prop.is_greater():
+                abs_c = abs(eval_hol_number(c))
+                pt_abs = ProofTerm("real_const_ineq", hol_term.greater(T)(hol_term.Real(abs_c), hol_term.Real(0)))
+                pt = logic.apply_theorem('verit_real_greater_mul_const', pt_abs, step2_pt)
+                step3_pts.append(pt.on_prop(binop_conv(verit_conv.const_prod_lra_conv())))
+            else:
+                raise VeriTException("la_generic", "unexpected form of disequality")
+        
+            
+        
+        # print("step3")
+        # for pt in step3_pts:
+        #     print(pt)
+        # print()
+        # step4: add
+        pt_dct = {pt.prop: pt for pt in step3_pts}
+        pt_final = step3_pts[0]
+        for step3_pt in step3_pts[1:]:
+            # print("input", step3_pt.prop)
+            if pt_final.prop.is_equals() and step3_pt.prop.is_equals():
+                pt = logic.apply_theorem('verit_real_add_eq_eq',
+                         concl=hol_term.Eq(pt_final.prop.arg1 + step3_pt.prop.arg1, hol_term.Real(0)))
+            elif pt_final.prop.is_equals() and step3_pt.prop.is_greater_eq():
+                pt = logic.apply_theorem('verit_real_add_eq_ge',
+                         concl=hol_term.greater_eq(T)(pt_final.prop.arg1 + step3_pt.prop.arg1, hol_term.Real(0)))
+            elif pt_final.prop.is_equals() and step3_pt.prop.is_greater():
+                pt = logic.apply_theorem('verit_real_add_eq_gt',
+                         concl=hol_term.greater(T)(pt_final.prop.arg1 + step3_pt.prop.arg1, hol_term.Real(0)))
+            if pt_final.prop.is_greater() and step3_pt.prop.is_equals():
+                pt = logic.apply_theorem('verit_real_add_eq_gt',
+                         concl=hol_term.greater(T)(step3_pt.prop.arg1 + pt_final.prop.arg1, hol_term.Real(0)))
+            elif pt_final.prop.is_greater() and step3_pt.prop.is_greater():
+                pt = logic.apply_theorem('verit_real_add_gt_gt',
+                         concl=hol_term.greater(T)(pt_final.prop.arg1 + step3_pt.prop.arg1, hol_term.Real(0)))
+            elif pt_final.prop.is_greater() and step3_pt.prop.is_greater_eq():
+                pt = logic.apply_theorem('verit_real_add_gt_ge',
+                         concl=hol_term.greater(T)(pt_final.prop.arg1 + step3_pt.prop.arg1, hol_term.Real(0)))
+            elif pt_final.prop.is_greater_eq() and step3_pt.prop.is_equals():
+                pt = logic.apply_theorem('verit_real_add_eq_ge',
+                         concl=hol_term.greater_eq(T)(step3_pt.prop.arg1 + pt_final.prop.arg1, hol_term.Real(0)))
+            elif pt_final.prop.is_greater_eq() and step3_pt.prop.is_greater():
+                pt = logic.apply_theorem('verit_real_add_gt_ge',
+                         concl=hol_term.greater(T)(step3_pt.prop.arg1 + pt_final.prop.arg1, hol_term.Real(0)))
+            elif pt_final.prop.is_greater_eq() and step3_pt.prop.is_greater_eq():
+                pt = logic.apply_theorem('verit_real_add_ge_ge',
+                         concl=hol_term.greater_eq(T)(pt_final.prop.arg1 + step3_pt.prop.arg1, hol_term.Real(0)))
+            assms, _ = pt.prop.strip_implies()
+            for assm in assms:
+                pt = pt.implies_elim(pt_dct[assm])
+            pt_final = pt.on_prop(arg1_conv(verit_conv.norm_lra_conv()))
+            pt_dct[pt_final.prop] = pt_final
+        #     print("pt_final", pt_final.prop)
+        #     print()
+
+        # print("pt_final", pt_final)
+        # print()
+        if not pt_final.prop.is_compares() or not pt_final.prop.arg1.is_number() or not pt_final.prop.arg.is_number():
+            raise VeriTException("la_generic", "unexpected result %s" % pt_final)
+        
+        # pt_const_compare = integer.int_const_compares().get_proof_term(pt_final.prop)
+        pt_const_compare = ProofTerm("real_const_eq", pt_final.prop)
+        pt_false = pt_const_compare.equal_elim(pt_final)
+
+        # print('equals')
+        # for pt in step1_neg_conv_pts:
+        #     print(pt)
+        # print()
+
+        # print(pt_false)
+
+        for pt in reversed(step1_neg_conv_pts):
+            pt_false = pt_false.implies_intr(pt.lhs.arg)
+        
+        # while pt_false.prop.arg != hol_term.false:
+        #     pt_false = pt_false.on_prop()
+        pt_false = pt_false.on_prop(top_conv(rewr_conv('disj_conv_imp', sym=True))).on_prop(top_conv(rewr_conv('disj_false_right')))
+        
+        for pt in step1_neg_conv_pts:
+            pt_false = pt_false.on_prop(top_conv(replace_conv(pt)))
+    
+        # print("pt_false", pt_false)
+        if pt_false.prop == hol_term.Or(*dis_eqs):
+            return pt_false
+        else:
+            print(pt_false)
+            raise VeriTException("la_generic", "unexpected result")
+
+
     def get_proof_term(self, args, prevs) -> ProofTerm:
         # print("goal", hol_term.Or(*args[:-1]))
         # print("coeff", args[-1])
@@ -490,4 +686,7 @@ class LAGenericMacro(Macro):
         T = dis_eq.arg.get_type()
         if T == hol_type.IntType:
             return self.get_proof_term_int(dis_eqs, coeffs)
-        
+        elif T == hol_type.RealType:
+            return self.get_proof_term_real(dis_eqs, coeffs)
+        else:
+            raise NotImplementedError
