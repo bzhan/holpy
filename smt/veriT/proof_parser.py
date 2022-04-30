@@ -35,7 +35,7 @@ def str_to_hol_type(s):
 smt_decl_grammar = r"""
     VNAME: (LETTER|"~"|"!"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"/")(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/")*
 
-    QUOTED_VNAME: "|" (LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/"|"("|")"|":"|"["|"]"|"#"|","|" ")* "|"
+    QUOTED_VNAME: "|" (LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/"|"("|")"|":"|"["|"]"|"#"|","|"'"|" ")* "|"
 
     ?vname: VNAME -> mk_vname
         | QUOTED_VNAME -> mk_quoted_vname
@@ -83,7 +83,7 @@ def parse_decl(s):
 veriT_grammar = r"""
     VNAME: (LETTER|"~"|"!"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"/")(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/")*
 
-    QUOTED_VNAME: "|"(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/"|"("|")"|":"|"["|"]"|"#"|","|" ")*"|"
+    QUOTED_VNAME: "|"(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/"|"("|")"|":"|"["|"]"|"#"|","|"'"|" ")*"|"
 
     ?vname: VNAME -> mk_vname
         | QUOTED_VNAME -> mk_quoted_vname
@@ -94,7 +94,9 @@ veriT_grammar = r"""
                     | "(step" step_id clause ":rule" CNAME step_annotation* ")" -> mk_step
                     | "(anchor :step" step_id ":args" "(" single_context+ ")" ")" -> mk_anchor
                     | "(anchor :step" step_id ")" -> mk_empty_anchor
-    ?clause : "(cl" proof_term* ")" -> mk_clause
+
+    ?clause : "(cl " proof_term* ")" -> mk_clause
+            | "(cl)" -> mk_empty_clause
     
     ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (term|vname) ")" -> add_context
                     | "(" ANCHOR_NAME vname ")" -> add_trivial_ctx
@@ -465,6 +467,9 @@ class ProofTransformer(Transformer):
 
     def mk_clause(self, *tm):
         return tm
+
+    def mk_empty_clause(self):
+        return tuple()
 
     def mk_step_premises(self, *pm):
         return PREMISES, pm
