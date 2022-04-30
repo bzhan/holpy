@@ -2,7 +2,6 @@ import math
 from fractions import Fraction
 from decimal import Decimal
 
-from kernel.term_ord import fast_compare
 from kernel import term as hol_term
 from kernel import type as hol_type
 from collections.abc import Iterable
@@ -14,8 +13,8 @@ from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, refl
 from logic import logic
-from logic.conv import Conv, rewr_conv, ConvException,\
-     arg1_conv, arg_conv, binop_conv, replace_conv, top_conv
+from logic.conv import rewr_conv, arg1_conv, binop_conv, replace_conv, top_conv
+from smt.veriT.verit_conv import norm_lia_conv, const_prod_lia_conv, verit_norm_lia_greater_eq
 
 def norm_int_expr(t):
     return from_int_la(to_la(t))
@@ -141,146 +140,7 @@ def analyze_args(coeffs):
         lcm = int(lcm * d / math.gcd(lcm, d))
     return [int(lcm) * c for c in coeffs]
 
-def compare_atom(tm1, tm2):
-    return fast_compare(tm1.arg, tm2.arg)
 
-class int_norm_add_atom_conv(Conv):
-    """Normalize the expression (c + a_1 * x_1 + ... + a_n * x_n) + atom
-    an atom is either a number n or a linear term a * x
-    """
-    def get_proof_term(self, t):
-        pt = refl(t)
-        if t.arg.is_zero():
-            return pt.on_rhs(rewr_conv("int_add_0_right"))
-        elif t.arg1.is_zero():
-            return pt.on_rhs(rewr_conv("int_add_0_left"))
-        if not t.arg.is_number() and not t.arg.is_times():
-            pt = pt.on_rhs(arg_conv(rewr_conv("int_mul_1_l", sym=True))) 
-        if t.is_constant():
-            return pt.on_rhs(integer.int_eval_conv())
-        if t.arg1.is_times(): # a * x + atom
-            if t.arg.is_number(): # a * x + c
-                return pt.on_rhs(rewr_conv("int_add_comm"))
-            elif t.arg.is_times(): # a * x + b * y
-                cp = compare_atom(t.arg1, t.arg)
-                if cp == 0: # a * x + b * x
-                    pt1 = pt.on_rhs(
-                        rewr_conv("int_mul_add_distr_r", sym=True),
-                        arg1_conv(integer.int_eval_conv())
-                    )
-                    if pt1.rhs.arg1.is_zero():
-                        return pt1.on_rhs(rewr_conv('int_mul_0_l'))
-                    else:
-                        return pt1
-                elif cp > 0:
-                    return pt.on_rhs(rewr_conv("int_add_comm"))
-                else:
-                    return pt
-            else:
-                raise ConvException
-        elif t.arg1.is_plus():
-            if t.arg.is_number():
-                return pt.on_rhs(integer.swap_add_r(), arg1_conv(self))
-            elif t.arg.is_times():
-                try:
-                    cp = compare_atom(t.arg1.arg, t.arg)
-                except:
-                    print("t     ", t)
-                    print("t.arg1", t.arg1)
-                    print("t.arg ", t.arg)
-                    raise NotImplementedError
-                if cp > 0:
-                    return pt.on_rhs(integer.swap_add_r(), arg1_conv(self))
-                elif cp == 0:
-                    pt1 = pt.on_rhs(
-                        rewr_conv("int_add_assoc", sym=True), 
-                        arg_conv(rewr_conv("int_mul_add_distr_r", sym=True)),
-                        arg_conv(arg1_conv(integer.int_eval_conv())))
-                    if pt1.rhs.arg.arg1.is_zero():
-                        return pt1.on_rhs(arg_conv(rewr_conv('int_mul_0_l')), rewr_conv('int_add_0_right'))
-                    else:
-                        return pt1
-                else:
-                    return pt
-            else:
-                raise ConvException
-        else:
-            return pt
-
-class norm_add_lia_conv(Conv):
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
-        pt = refl(t)
-        if t.is_constant():
-            return pt.on_rhs(integer.int_eval_conv())
-        elif t.arg1.is_zero():
-            return pt.on_rhs(rewr_conv("int_add_0_left"))
-        elif t.arg.is_zero():
-            return pt.on_rhs(rewr_conv("int_add_0_right"))
-        elif t.arg.is_plus():
-            return pt.on_rhs(
-                rewr_conv('int_add_assoc'),
-                arg1_conv(self),
-                int_norm_add_atom_conv()
-            )
-        else:
-            return pt.on_rhs(int_norm_add_atom_conv())
-
-
-
-class norm_lia_conv(Conv):
-    def get_proof_term(self, t):
-        pt = refl(t)
-        if t.is_constant():
-            return pt.on_rhs(integer.int_eval_conv())
-        elif t.is_plus():
-            return pt.on_rhs(binop_conv(self), norm_add_lia_conv())
-        elif t.is_minus():
-            return pt.on_rhs(binop_conv(self), 
-                rewr_conv("add_opp_r", sym=True), arg_conv(neg_lia_conv()), self)
-        elif t.is_times():
-            return pt
-        else:
-            return pt.on_rhs(rewr_conv('int_mul_1_l', sym=True))
-
-class neg_lia_conv(Conv):
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
-        pt = refl(t)
-        if not t.is_uminus():
-            return pt
-        if t.arg.is_constant():
-            return pt.on_rhs(integer.int_eval_conv())
-        elif t.arg.is_times():
-            return pt.on_rhs(rewr_conv("mul_opp_l", sym=True))
-        elif t.arg.is_plus():
-            return pt.on_rhs(rewr_conv('opp_add_distr'), binop_conv(self), norm_lia_conv())
-        else:
-            return pt.on_rhs(rewr_conv('int_poly_neg1'))        
-
-
-class const_prod_lia_conv(Conv):
-    def get_proof_term(self, t):
-        pt = refl(t)
-        if t.is_constant():
-            return pt.on_rhs(integer.int_eval_conv())
-        if not t.is_times() or not t.arg1.is_number():
-            return pt
-        if t.arg1.is_zero():
-            return pt.on_rhs(rewr_conv('int_mul_0_l'))
-        elif t.arg.is_zero():
-            return pt.on_rhs(rewr_conv('int_mul_0_r'))
-        elif t.arg.is_plus():
-            return pt.on_rhs(rewr_conv('int_mul_add_distr_l'), binop_conv(self))
-        elif t.arg.is_times():
-            return pt.on_rhs(rewr_conv('int_mult_assoc'), arg1_conv(integer.int_eval_conv()))
-        else:
-            return pt
-
-class verit_norm_lia_greater_eq(Conv):
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
-        if t.is_greater() and t.arg.is_zero():
-            return refl(t).on_rhs(rewr_conv('int_great_to_geq'))
-        else:
-            return refl(t)
 
 @register_macro("verit_la_generic")
 class LAGenericMacro(Macro):
@@ -630,3 +490,4 @@ class LAGenericMacro(Macro):
         T = dis_eq.arg.get_type()
         if T == hol_type.IntType:
             return self.get_proof_term_int(dis_eqs, coeffs)
+        

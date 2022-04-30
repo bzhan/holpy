@@ -20,7 +20,7 @@ from data import list as hol_list
 from kernel import term_ord
 import operator
 import functools
-
+from smt.veriT.verit_conv import simp_lia_conv
 
 class VeriTException(Exception):
     def __init__(self, rule_name, message):
@@ -2322,6 +2322,13 @@ class LADisequalityMacro(Macro):
         else:
             raise VeriTException("verit_la_disequality", "can't match goal")
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        pt = logic.apply_theorem('verit_la_disequality_int', concl=goal)
+        if pt.prop == goal:
+            return pt
+        else:
+            raise VeriTException("verit_la_disequality", "can't match goal")
 
 def split_num_expr(t):
     summands = integer.strip_plus_full(t)
@@ -2365,6 +2372,20 @@ class SumSimplifyMacro(Macro):
         elif lhs_simp == split_num_expr(rhs):
             """Verit bugs: QF_UFLIA\\wisas\\xs_5_10.smt2 step t27 rhs side has zero on the right."""
             return Thm(goal)
+        else:
+            raise VeriTException("sum_simplify", "unexpected result")
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        
+        pt_lhs_simp = refl(goal.lhs).on_rhs(simp_lia_conv())
+        if pt_lhs_simp.rhs == goal.rhs:
+            return pt_lhs_simp
+
+        # try to normalize rhs        
+        pt_rhs_simp = refl(goal.rhs).on_rhs(simp_lia_conv())
+        if pt_rhs_simp.rhs == pt_lhs_simp.rhs:
+            return pt_lhs_simp.transitive(pt_rhs_simp.symmetric())
         else:
             raise VeriTException("sum_simplify", "unexpected result")
 
@@ -2458,6 +2479,37 @@ class CompSimplifyMacro(Macro):
             print("goal", goal)
             raise VeriTException("comp_simplify", "implementation is incomplete")
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        lhs, rhs = goal.args
+        l_t1, l_t2 = lhs.args
+        # case 1 and 3: compare constants
+        if l_t1.is_number() and l_t2.is_number():
+            pt = ProofTerm('int_const_ineq', lhs, [])
+        # case 2: x < x ⟷ false
+        elif lhs.is_less() and l_t1 == l_t2 and rhs == false:
+            pt = logic.apply_theorem('verit_comp_simplify2', concl=goal)
+        # case 4: x ≤ x ⟷ true
+        elif lhs.is_less_eq() and l_t1 == l_t2 and rhs == true:
+            pt = logic.apply_theorem('verit_comp_simplify4', concl=goal)
+        # case 5: x ≥ y ⟷ y ≤ x
+        elif lhs.is_greater_eq() and rhs.is_less_eq():
+            pt = logic.apply_theorem('verit_comp_simplify5', concl=goal)
+        # case 6: x < y ⟷ ¬(y ≤ x)
+        elif lhs.is_less() and rhs.is_not() and rhs.arg.is_less_eq():
+            pt = logic.apply_theorem('verit_comp_simplify6', concl=goal)
+        # case 7: x > y ⟷ ¬(x ≤ y)
+        elif lhs.is_greater() and rhs.is_not() and rhs.arg.is_less_eq():
+            pt = logic.apply_theorem('verit_comp_simplify7', concl=goal)
+        else:
+            raise VeriTException("comp_simplify", "unexpected cases")
+        if pt.prop == goal:
+            return pt
+        else:
+            print("goal", goal)
+            print("pt  ", pt)
+            raise VeriTException("comp_simplify", "unexpected result")
+
 @register_macro("verit_ite_simplify")
 class ITESimplifyMacro(Macro):
     def __init__(self):
@@ -2523,6 +2575,64 @@ class ITESimplifyMacro(Macro):
         else:
             return False
             
+    def compare_ite_thm(self, ite1, ite2):
+        goal = Eq(ite1, ite2)
+        if logic.is_if(ite1) and logic.is_if(ite2):
+            l_P, l_then, l_else = ite1.args
+            r_P, r_then, r_else = ite2.args
+
+            # Case 4: ite ~P x y <--> ite P y x
+            if l_P == Not(r_P) and l_then == r_else and l_else == r_then:
+                return logic.apply_theorem('verit_ite_simplify4', concl=goal)
+            # Case 7: ite P (ite P x y) z <--> ite P x z
+            elif logic.is_if(l_then):
+                l_then_P, l_then_then, _ = l_then.args
+                if l_P == l_then_P and l_then_then == r_then and l_else == r_else:
+                    return logic.apply_theorem('verit_ite_simplify7', concl=goal)
+                else:
+                    return None
+            # Case 8: ite P x (ite P y z) <--> ite P x z
+            elif logic.is_if(l_else):
+                l_else_P, _, l_else_else = l_else.args
+                if l_P == l_else_P and l_then == r_then and l_else_else == r_else:
+                    return logic.apply_theorem('verit_ite_simplify8', concl=goal)
+                else:
+                    return None
+            else:
+                return None
+        elif logic.is_if(ite1):
+            l_P, l_then, l_else = ite1.args
+            # Case 1: ite true x y <--> x (repeat case 5)
+            if l_P == true and ite2 == l_then:
+                return logic.apply_theorem('verit_ite_simplify1', concl=goal)
+            # Case 2: ite false x y <--> y (repeat case 6)
+            elif l_P == false and ite2 == l_else:
+                return logic.apply_theorem('verit_ite_simplify2', concl=goal)
+            # Case 3: ite P x x <--> x
+            elif l_then == l_else and ite2 == l_then:
+                return logic.apply_theorem('verit_ite_simplify3', concl=goal)
+            # Case 9: ite P true false <--> P
+            elif l_then == true and l_else == false and ite2 == l_P:
+                return logic.apply_theorem('verit_ite_simplify9', concl=goal)
+            # Case 10: ite P false true <--> ~P
+            elif l_then == false and l_else == true and ite2 == Not(l_P):
+                return logic.apply_theorem('verit_ite_simplify10', concl=goal)
+            # Case 11: ite P true Q <--> P | Q
+            elif l_then == true and ite2 == Or(l_P, l_else):
+                return logic.apply_theorem('verit_ite_simplify11', concl=goal)
+            # Case 12: ite P Q false <--> P & Q
+            elif l_else == false and ite2 == And(l_P, l_then):
+                return logic.apply_theorem('verit_ite_simplify12', concl=goal)
+            # Case 13: ite P false Q <--> ~P & Q
+            elif l_then == false and ite2 == And(Not(l_P), l_else):
+                return logic.apply_theorem('verit_ite_simplify13', concl=goal)
+            # Case 14: ite P Q true <--> ~P | Q
+            elif l_else == true and ite2 == Or(Not(l_P), l_then):
+                return logic.apply_theorem('verit_ite_simplify14', concl=goal)
+            else:
+                return None
+        else:
+            return None
 
     def eval(self, args, prevs=None):
         if len(args) != 1:
@@ -2535,6 +2645,19 @@ class ITESimplifyMacro(Macro):
         lhs, rhs = goal.lhs, goal.rhs
         if self.compare_ite(lhs, rhs) or self.compare_ite(rhs, lhs):
             return Thm(goal)
+        else:
+            raise VeriTException("ite_complete", "unexpected result")
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        lhs, rhs = goal.lhs, goal.rhs
+        pt_lhs_rhs = self.compare_ite_thm(lhs, rhs)
+        if pt_lhs_rhs is not None and pt_lhs_rhs.prop == goal:
+            return pt_lhs_rhs
+        pt_rhs_lhs = self.compare_ite_true(rhs, lhs)
+
+        if pt_rhs_lhs is not None and pt_rhs_lhs.symmetric().prop == goal:
+            return pt_rhs_lhs
         else:
             raise VeriTException("ite_complete", "unexpected result")
 
@@ -2587,7 +2710,7 @@ class MinusSimplify(Macro):
             elif T == hol_type.RealType:
                 macro_name = "real_eval"
                 return ProofTerm("real_eval", goal)
-            return ProofTerm(macro_name, goal=Eq(lhs, rhs), prevs=[])
+            return ProofTerm(macro_name, Eq(lhs, rhs))
         elif rhs.is_minus():
             if rhs.arg.is_zero() and rhs.arg1 == lhs:
                 if T == hol_type.RealType:

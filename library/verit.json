@@ -966,6 +966,224 @@
                 "x": "int",
                 "y": "int"
             }
+        },
+        {
+            "name": "verit_comp_simplify2",
+            "prop": "x < x ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "verit_comp_simplify4",
+            "prop": "x ≤ x ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_comp_simplify5",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "greater_eq_def, x ≥ y ⟷ y ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ≥ y ⟷ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ≥ y ⟷ y ≤ x"
+                }
+            ],
+            "prop": "x ≥ y ⟷ y ≤ x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "greater_eq_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_comp_simplify6",
+            "prop": "x < y ⟷ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_comp_simplify7",
+            "prop": "x > y ⟷ ¬(x ≤ y)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_la_disequality_int",
+            "prop": "x = y ∨ ¬(x ≤ y) ∨ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_ite_simplify1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "if_true, (if true then t1 else t2) = t1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if true then t1 else t2) = t1"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (if true then t1 else t2) = t1"
+                }
+            ],
+            "prop": "(if true then t1 else t2) = t1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_true"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "t1": "'a",
+                "t2": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify2",
+            "prop": "(if false then t1 else t2) = t2",
+            "ty": "thm",
+            "vars": {
+                "t1": "'a",
+                "t2": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify3",
+            "prop": "(if P then t else t) = t",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "t": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify4",
+            "prop": "(if ¬P then t1 else t2) = (if P then t2 else t1)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "t1": "'a",
+                "t2": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify7",
+            "prop": "(if P then if P then t1 else t2 else t3) = (if P then t1 else t3)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "t1": "'a",
+                "t2": "'a",
+                "t3": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify8",
+            "prop": "(if P then t1 else if P then t2 else t3) = (if P then t1 else t3)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "t1": "'a",
+                "t2": "'a",
+                "t3": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify9",
+            "prop": "(if P then true else false) ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_simplify10",
+            "prop": "(if P then false else true) ⟷ ¬P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_simplify11",
+            "prop": "(if P then true else Q) ⟷ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_simplify12",
+            "prop": "(if P then Q else false) ⟷ P ∧ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_simplify13",
+            "prop": "(if P then false else Q) ⟷ ¬P ∧ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_simplify14",
+            "prop": "(if P then Q else true) ⟷ ¬P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",
