@@ -1184,6 +1184,89 @@
                 "P": "bool",
                 "Q": "bool"
             }
+        },
+        {
+            "name": "verit_imp_simplify1",
+            "prop": "(¬P ⟶ ¬Q) ⟷ (Q ⟶ P)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify2",
+            "prop": "(false ⟶ P) ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify3",
+            "prop": "(P ⟶ true) ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify4",
+            "prop": "(true ⟶ P) ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify5",
+            "prop": "(P ⟶ false) ⟷ ¬P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify6",
+            "prop": "(P ⟶ P) ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify7",
+            "prop": "(¬P ⟶ P) ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify8",
+            "prop": "(P ⟶ ¬P) ⟷ ¬P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify9",
+            "prop": "((P ⟶ Q) ⟶ Q) ⟷ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_implies_pos",
+            "prop": "¬(P ⟶ Q) ∨ ¬P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

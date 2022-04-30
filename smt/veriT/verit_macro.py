@@ -1659,7 +1659,12 @@ class AndNegMacro(Macro):
         conj_pt = logic.apply_theorem('classical', inst=Inst(A=conj))
 
         # Then apply deMorgan's rule to the right side
-        return conj_pt.on_arg(top_conv(rewr_conv('de_morgan_thm1')))
+        pt = conj_pt.on_prop(arg_conv(top_conv(rewr_conv('de_morgan_thm1'))))
+        if pt.prop == Or(*args):
+            return pt
+        else:
+            raise VeriTException("and_neg", "unexpected result")
+        
 
 
 @register_macro("verit_contraction")
@@ -2940,6 +2945,10 @@ class ImpliesPosMacro(Macro):
         else:
             raise VeriTException("implies_pos", "unexpected result")
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        return logic.apply_theorem('verit_implies_pos', concl=Or(*args))
+        
+
 @register_macro("verit_implies_simplify")
 class ImpliesSimplifyMacro(Macro):
     def __init__(self):
@@ -2987,6 +2996,48 @@ class ImpliesSimplifyMacro(Macro):
                 and prem.arg1.arg1 == rhs.arg1 and prem.arg1.arg == prem.arg \
                     and prem.arg == rhs.arg:
             return Thm(goal)
+        else:
+            print("goal", goal)
+            raise VeriTException("implies_simplify", "unexpected goal")
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        lhs, rhs = goal.args
+        prem, concl = lhs.args
+        # case 1: (~p1 --> ~p2) <--> (p2 --> p1)
+        if lhs.is_implies() and rhs.is_implies():
+            p1, p2 = lhs.args
+            q1, q2 = rhs.args
+            if p1 == Not(q2) and p2 == Not(q1):
+                return logic.apply_theorem('verit_imp_simplify1', concl=goal)
+            else:
+                raise VeriTException("implies_simplify", "can't match (~p1 --> ~p2) <--> (p2 --> p1)")
+        # case 2: (false --> P) <--> true
+        elif prem == false and rhs ==  true:
+            return logic.apply_theorem('verit_imp_simplify2', concl=goal)
+        # case 3 (p --> true) --> true
+        elif concl == true and concl == rhs:
+            return logic.apply_theorem('verit_imp_simplify3', concl=goal)
+        # case 4: (p1 --> p1) <--> true
+        elif prem == true and concl == rhs:
+            return logic.apply_theorem('verit_imp_simplify4', concl=goal)
+        # case 5: (p1 --> false) <--> ~p1
+        elif concl == false and Not(prem) == rhs:
+            return logic.apply_theorem('verit_imp_simplify5', concl=goal)
+        # case 6: (P --> P) <--> true
+        elif prem == concl and rhs == true:
+            return logic.apply_theorem('verit_imp_simplify6', concl=goal)
+        # case 7: (~P --> P) <--> P
+        elif prem == Not(concl) and rhs == concl:
+            return logic.apply_theorem('verit_imp_simplify7', concl=goal)
+        # case 8: (P --> ~P) <--> ~P
+        elif concl == Not(prem) and rhs == concl:
+            return logic.apply_theorem('verit_imp_simplify8', concl=goal)
+        # case 9: (P --> Q) --> Q <--> P | Q
+        elif prem.is_implies() and rhs.is_disj() and prem.arg1.is_implies() \
+                and prem.arg1.arg1 == rhs.arg1 and prem.arg1.arg == prem.arg \
+                    and prem.arg == rhs.arg:
+            return logic.apply_theorem('verit_imp_simplify9', concl=goal)
         else:
             print("goal", goal)
             raise VeriTException("implies_simplify", "unexpected goal")
