@@ -150,13 +150,12 @@ class int_norm_add_atom_conv(Conv):
     """
     def get_proof_term(self, t):
         pt = refl(t)
-
         if t.arg.is_zero():
             return pt.on_rhs(rewr_conv("int_add_0_right"))
         elif t.arg1.is_zero():
             return pt.on_rhs(rewr_conv("int_add_0_left"))
         if not t.arg.is_number() and not t.arg.is_times():
-            pt = pt.on_rhs(arg_conv(rewr_conv("int_mul_1_l", sym=True)))
+            pt = pt.on_rhs(arg_conv(rewr_conv("int_mul_1_l", sym=True))) 
         if t.is_constant():
             return pt.on_rhs(integer.int_eval_conv())
         if t.arg1.is_times(): # a * x + atom
@@ -170,8 +169,6 @@ class int_norm_add_atom_conv(Conv):
                         arg1_conv(integer.int_eval_conv())
                     )
                     if pt1.rhs.arg1.is_zero():
-                        # print("pt1", pt1)
-                        # print()
                         return pt1.on_rhs(rewr_conv('int_mul_0_l'))
                     else:
                         return pt1
@@ -184,7 +181,7 @@ class int_norm_add_atom_conv(Conv):
         elif t.arg1.is_plus():
             if t.arg.is_number():
                 return pt.on_rhs(integer.swap_add_r(), arg1_conv(self))
-            else:
+            elif t.arg.is_times():
                 try:
                     cp = compare_atom(t.arg1.arg, t.arg)
                 except:
@@ -205,6 +202,8 @@ class int_norm_add_atom_conv(Conv):
                         return pt1
                 else:
                     return pt
+            else:
+                raise ConvException
         else:
             return pt
 
@@ -238,9 +237,10 @@ class norm_lia_conv(Conv):
         elif t.is_minus():
             return pt.on_rhs(binop_conv(self), 
                 rewr_conv("add_opp_r", sym=True), arg_conv(neg_lia_conv()), self)
-        else:
+        elif t.is_times():
             return pt
-            # return pt.on_rhs(rewr_conv('int_mul_1_l', sym=True))
+        else:
+            return pt.on_rhs(rewr_conv('int_mul_1_l', sym=True))
 
 class neg_lia_conv(Conv):
     def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
@@ -281,19 +281,6 @@ class verit_norm_lia_greater_eq(Conv):
             return refl(t).on_rhs(rewr_conv('int_great_to_geq'))
         else:
             return refl(t)
-
-@register_macro("verit_compare_const")
-class CompareConstMacro(Macro):
-    def __init__(self):
-        self.level = 1
-        self.sig = hol_term.Term
-        self.limit = None
-
-    def eval1(self, args, prevs=None) -> Thm:
-        if not len(args) == 1 or not args[0].is_compares():
-            raise VeriTException("compare_const", "args should only have one term")
-
-        goal = args[0]
 
 @register_macro("verit_la_generic")
 class LAGenericMacro(Macro):
@@ -454,7 +441,7 @@ class LAGenericMacro(Macro):
             raise VeriTException("la_generic", "unexpected result: %s, %s" % (lhs_const, rhs_const))
 
     def get_proof_term_int(self, dis_eqs, coeffs) -> ProofTerm:
-        
+        coeffs = analyze_args(coeffs)
         # store the assumed negated disequalities
         step1_pts = []
         # store the equality proof terms which convert the 
