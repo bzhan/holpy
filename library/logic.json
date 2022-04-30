@@ -7938,6 +7938,12 @@
                 "A": "bool",
                 "B": "bool"
             }
+        },
+        {
+            "name": "Let",
+            "prop": "Let s f = f s",
+            "ty": "def",
+            "type": "'a ⇒ ('a ⇒ 'b) ⇒ 'b"
         }
     ],
     "description": "Basic results in logic",

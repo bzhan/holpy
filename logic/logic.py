@@ -131,6 +131,13 @@ def strip_exists(t, names):
     else:
         return ([], t)
 
+def mk_let(x: Term, t: Term, body: Term) -> Term:
+    """Construct the term (let x = t in body). """
+    assert x.is_var(), "mk_let"
+    T = body.get_type()
+    let_t = Const("Let", TFun(x.T, TFun(x.T, T), T))
+    return let_t(t, Lambda(x, body))
+
 """Normalization rules for logic."""
 
 class norm_bool_expr(Conv):
