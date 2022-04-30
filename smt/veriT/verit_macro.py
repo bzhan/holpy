@@ -4,6 +4,8 @@ Macros used in the proof reconstruction.
 
 import functools
 import itertools
+import operator
+from typing import Optional
 
 from kernel.macro import Macro
 from kernel.theory import register_macro
@@ -18,10 +20,8 @@ from logic.conv import try_conv, rewr_conv, arg_conv,\
 from data import integer, real
 from data import list as hol_list
 from kernel import term_ord
-import operator
-import functools
-from typing import Optional
-from smt.veriT.verit_conv import simp_lia_conv
+from smt.veriT import verit_conv
+
 
 class VeriTException(Exception):
     def __init__(self, rule_name, message):
@@ -1694,10 +1694,12 @@ class AndNegMacro(Macro):
         conj_pt = logic.apply_theorem('classical', inst=Inst(A=conj))
 
         # Then apply deMorgan's rule to the right side
-        pt = conj_pt.on_prop(arg_conv(top_conv(rewr_conv('de_morgan_thm1'))))
+        pt = conj_pt.on_prop(arg_conv(verit_conv.deMorgan_conj_conv()))
         if pt.prop == Or(*args):
             return pt
         else:
+            print('Obtained', pt.prop)
+            print('Expected', Or(*args))
             raise VeriTException("and_neg", "unexpected result")
         
 
@@ -2418,12 +2420,12 @@ class SumSimplifyMacro(Macro):
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal = args[0]
         
-        pt_lhs_simp = refl(goal.lhs).on_rhs(simp_lia_conv())
+        pt_lhs_simp = refl(goal.lhs).on_rhs(verit_conv.simp_lia_conv())
         if pt_lhs_simp.rhs == goal.rhs:
             return pt_lhs_simp
 
         # try to normalize rhs        
-        pt_rhs_simp = refl(goal.rhs).on_rhs(simp_lia_conv())
+        pt_rhs_simp = refl(goal.rhs).on_rhs(verit_conv.simp_lia_conv())
         if pt_rhs_simp.rhs == pt_lhs_simp.rhs:
             return pt_lhs_simp.transitive(pt_rhs_simp.symmetric())
         else:

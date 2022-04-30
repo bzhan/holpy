@@ -159,3 +159,9 @@ class verit_norm_lia_greater_eq(Conv):
             return refl(t)
 
 
+class deMorgan_conj_conv(Conv):
+    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+        if t.is_not() and t.arg.is_conj():
+            return refl(t).on_rhs(rewr_conv('de_morgan_thm1'), arg_conv(deMorgan_conj_conv()))
+        else:
+            return refl(t)
