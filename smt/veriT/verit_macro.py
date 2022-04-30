@@ -1968,6 +1968,8 @@ class imp_conj_macro(Macro):
                     assert r in dct
                     ptCs.append(dct[r])
             C = r
+        if len(ptCs) == 0:
+            ptCs = [dct[goal.arg]]
         ptC = ptCs[-1]
         for pt in reversed(ptCs[:-1]):
             ptC = logic.apply_theorem("conjI", pt, ptC)
