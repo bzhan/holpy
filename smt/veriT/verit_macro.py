@@ -16,7 +16,7 @@ from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
     BoolType, Int, Forall, Exists, Inst, conj, disj, Var, neg, implies, plus
 from logic import conv, logic
 from logic.conv import try_conv, rewr_conv, arg_conv,\
-         top_conv, arg1_conv, replace_conv, abs_conv, Conv, bottom_conv
+         top_conv, arg1_conv, replace_conv, abs_conv, Conv, bottom_conv, beta_norm_conv
 from data import integer, real
 from data import list as hol_list
 from kernel import term_ord
@@ -1501,9 +1501,18 @@ class BFunElimMacro(Macro):
         pt1 = pt.on_prop(
             top_conv(rewr_conv('verit_bfun_elim_exists')),
             top_conv(rewr_conv('verit_bfun_elim_forall')),
+            try_conv(beta_norm_conv()),
+            try_conv(rewr_conv('verit_forall_conj')),
+            try_conv(beta_norm_conv()),
             bottom_conv(expand_ite_conv())
         )
-        return pt1
+        if pt1.prop == args[0]:
+            return pt1
+        pt2 = compare_sym_tm_thm(pt1.prop, args[0], depth=-1)
+        if pt2 is not None:
+            return pt2.equal_elim(pt1)
+        else:
+            raise AssertionError
 
 def collect_ite(t: Term):
     """Return the list of distinct ite terms in t."""
