@@ -31,3 +31,7 @@ step t183 (ite_intro)
 problem: expected rhs has fewer conjuncts.
 step t201 (ite_intro)
 problem: expected rhs has no extra conjuncts.
+9.
+file_name: UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438328.smt2
+step t292 (th_resolution)
+problem: repeated clauses hindering resolution getting correct result.

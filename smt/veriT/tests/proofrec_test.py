@@ -346,18 +346,18 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/simplify2/front_end_suite/javafe.ast.Identifier.005.smt2',
             'UFLIA/simplify2/front_end_suite/javafe.tc.Types.002.smt2',
             'UFLIA/simplify2/front_end_suite/javafe.util.StackVector.005.smt2',
-            'UFLIA/simplify2/front_end_suite/javafe.util.StackVector.005.smt2'
-            'UFLIA/simplify2/front_end_suite/javafe.ast.FormalParaDeclVec.015.smt2'
+            'UFLIA/simplify2/front_end_suite/javafe.util.StackVector.005.smt2',
+            'UFLIA/simplify2/front_end_suite/javafe.ast.FormalParaDeclVec.015.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555057.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555849.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.556254.smt2',
             'UFLIA/sledgehammer/FFT/smtlib.935892.smt2',
             'UFLIA/sledgehammer/TwoSquares/smtlib.871354.smt2',
-            # 'UFLIA/sledgehammer/TwoSquares/smtlib.832972.smt2', # ite_intro
-            # 'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438328.smt2', # resolution
-            # 'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438517.smt2', # resolution
-            # 'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437253.smt2', # resolution
-            # 'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437948.smt2', # resolution
+            'UFLIA/sledgehammer/TwoSquares/smtlib.832972.smt2',
+            'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438328.smt2',
+            'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438517.smt2',
+            'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437253.smt2',
+            'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437948.smt2',
             'UFLIA/spec_sharp/textbook-DutchFlag.bpl.1.Partition.smt2',
             'UFLIA/spec_sharp/textbook-Find.bpl.1.Find.smt2',
             'UFLIA/spec_sharp/textbook-Find.bpl.2.Main.smt2',

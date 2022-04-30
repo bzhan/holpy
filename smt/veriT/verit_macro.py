@@ -164,9 +164,6 @@ def resolve_order(props):
     order of performing resolution on these propositions.
     
     """
-    # List of propositions remaining to be resolved
-    id_remain = list(range(len(props)))
-
     # List of resolution steps
     resolves = []
 
@@ -199,6 +196,13 @@ def resolve_order(props):
 
     for i in range(len(props)):
         props[i] = [term_to_id(t) for t in props[i]]
+
+    # List of propositions remaining to be resolved.
+    # Clear repeated props that are immediately next to each other.
+    id_remain = []
+    for i, prop in enumerate(props):
+        if i == 0 or tuple(prop) != tuple(props[i-1]):
+            id_remain.append(i)
 
     def id_to_term(a, n):
         if n == 0:
