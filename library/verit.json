@@ -431,7 +431,7 @@
         },
         {
             "name": "verit_bool_simplify5",
-            "prop": "(P ⟶ Q ⟶ Q) ⟷ P ∨ Q",
+            "prop": "((P ⟶ Q) ⟶ Q) ⟷ P ∨ Q",
             "ty": "thm",
             "vars": {
                 "P": "bool",
