@@ -1275,12 +1275,11 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
             if not t2.is_abs():
                 return None
             v1, body1 = t1.dest_abs()
-            v2, body2 = t2.dest_abs()
+            v2, body2 = t2.dest_abs(var_name=v1.name)
             pt = helper(body1, body2, depth-1)
             if pt is None:
                 return None
-            return ProofTerm.reflexive(t1).on_rhs(
-                abs_conv(replace_conv(pt)))
+            return ProofTerm.reflexive(t1).on_rhs(abs_conv(replace_conv(pt)))
         else:
             return None
     return helper(tm1, tm2, depth)
@@ -2933,6 +2932,31 @@ class BindMacro(Macro):
             print('prem', prem)
             print('goal', goal)
             raise VeriTException("verit_bind", "unexpected result")
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal, ctx = args
+        lhs, rhs = goal.lhs, goal.rhs
+        eq_pts = dict()
+        for k, v in ctx.items():
+            T = v.get_type()
+            eq_pts[(Var(k, T), v)] = ProofTerm.assume(Eq(Var(k, T), v))
+
+        prem = prevs[0]
+        eq_pts[(prem.lhs, prem.rhs)] = prem
+        pt = compare_sym_tm_thm(lhs, rhs, eqs=eq_pts)
+
+        if pt is not None:
+            res = ProofTerm("transitive", None, [pt, ProofTerm.reflexive(rhs)])
+            return res
+
+        print(lhs)
+        print(rhs)
+        for k, v in ctx.items():
+            print(k, v)
+        prem = prevs[0]
+        print(prem.th)
+        raise AssertionError
+
 
 @register_macro("verit_forall_inst")
 class ForallInstMacro(Macro):
