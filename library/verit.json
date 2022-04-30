@@ -1267,6 +1267,16 @@
                 "P": "bool",
                 "Q": "bool"
             }
+        },
+        {
+            "name": "verit_forall_conj",
+            "prop": "(∀a. P a) ∧ (∀a. Q a) ⟷ (∀a. P a ∧ Q a)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "'a ⇒ bool",
+                "a": "'a"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",
