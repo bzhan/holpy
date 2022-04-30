@@ -149,7 +149,7 @@ class ProofTerm():
             return pt2
         return ProofTerm("equal_elim", None, [self, pt2])
 
-    def implies_intr(self, A):
+    def implies_intr(self, A: Term):
         return ProofTerm("implies_intr", A, [self])
 
     def implies_elim(self, *pts):
@@ -181,10 +181,10 @@ class ProofTerm():
     def abstraction(self, x):
         return ProofTerm("abstraction", x, [self])
 
-    def forall_intr(self, x):
+    def forall_intr(self, x: Term):
         return ProofTerm("forall_intr", x, [self])
 
-    def forall_elim(self, s):
+    def forall_elim(self, s: Term):
         return ProofTerm("forall_elim", s, [self])
 
     @staticmethod

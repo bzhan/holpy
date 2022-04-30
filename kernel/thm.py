@@ -349,11 +349,11 @@ class Thm():
         """
         if th.prop.is_forall():
             if th.prop.arg.var_T != s.get_type():
-                raise InvalidDerivationException("forall_elim")
+                raise InvalidDerivationException("forall_elim: type is not equal")
             else:
                 return Thm(th.prop.arg.subst_bound(s), th.hyps)
         else:
-            raise InvalidDerivationException("forall_elim")
+            raise InvalidDerivationException("forall_elim: input is not forall statement")
 
     @staticmethod
     def mk_VAR(v):

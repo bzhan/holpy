@@ -1505,11 +1505,11 @@ class BFunElimMacro(Macro):
         )
         return pt1
 
-def collect_ite(t):
+def collect_ite(t: Term):
     """Return the list of distinct ite terms in t."""
     res = []
 
-    def helper(t):
+    def helper(t: Term):
         if logic.is_if(t):
             if t not in res:
                 res.append(t)
@@ -2989,7 +2989,19 @@ class ForallInstMacro(Macro):
             print("forall_tm", forall_tm)
             print("rhs", inst_tm)
             raise VeriTException("forall_inst", "unexpected result")
-        
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        forall_tm, inst_tm = goal.arg1.arg, goal.arg
+        pt = ProofTerm.assume(forall_tm)
+        for _, var in args[1:]:
+            pt = pt.forall_elim(var)
+        pt = pt.implies_intr(forall_tm).on_prop(rewr_conv('imp_disj_eq'))
+        if pt.prop == goal:
+            return pt
+        else:
+            eq_pt = compare_sym_tm_thm(pt.prop, goal)
+            return eq_pt.equal_elim(pt)
 
 @register_macro("verit_implies_pos")
 class ImpliesPosMacro(Macro):
@@ -3223,6 +3235,13 @@ class SubProofMacro(Macro):
             return Thm(Or(*args))
         else:
             raise VeriTException("subproof", "unexpected result")
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        pt = prevs[-1]
+        for prev in reversed(prevs[:-1]):
+            pt = pt.implies_intr(prev.prop).on_prop(rewr_conv('imp_disj_eq'))
+        return pt
+
 
 @register_macro("verit_sko_ex")
 class SkoExMacro(Macro):
