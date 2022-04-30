@@ -2275,7 +2275,7 @@ class BoolSimplifyMacro(Macro):
             l_p, l_q = lhs.arg.args
             r_p, r_q = rhs.args
             if l_p == r_p and Not(l_q) == r_q:
-                return logic.apply_theorem("verit_bool_simplify1", inst=Inst(P=l_p, Q=l_q))
+                return logic.apply_theorem("verit_bool_simplify1", concl=goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match  ~(p --> q) <--> (p and ~q)")
         # case 2: ~(p | q) <--> (~p & ~q)
@@ -2283,7 +2283,7 @@ class BoolSimplifyMacro(Macro):
             l_p, l_q = lhs.arg.args
             r_p, r_q = rhs.args
             if Not(l_p) == r_p and Not(l_q) == r_q:
-                return logic.apply_theorem("de_morgan_thm2", inst=Inst(A=l_p, B=l_q))
+                return logic.apply_theorem("de_morgan_thm2", concl=goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match ~(p | q) <--> (~p & ~q)")
         # case 3: ~(p & q) <--> (~p | ~q)
@@ -2291,7 +2291,7 @@ class BoolSimplifyMacro(Macro):
             l_p, l_q = lhs.arg.args
             r_p, r_q = rhs.args
             if Not(l_p) == r_p and Not(l_q) == r_q:
-                return logic.apply_theorem("de_morgan_thm1", inst=Inst(A=l_p, B=l_q))
+                return logic.apply_theorem("de_morgan_thm1", concl=goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match ~(p | q) <--> (~p & ~q)")
         # case 4: (p1 --> p2 --> p3) <--> (q1 & q2) --> q3
@@ -2299,7 +2299,7 @@ class BoolSimplifyMacro(Macro):
             p1, p2, p3 = lhs.arg1, lhs.arg.arg1, lhs.arg.arg
             q1, q2, q3 = rhs.arg1.arg1, rhs.arg1.arg, rhs.arg
             if p1 == q1 and p2 == q2 and p3 == q3:
-                return logic.apply_theorem("verit_bool_simplify4", inst=Inst(P=p1, Q=p2, R=p3))
+                return logic.apply_theorem("verit_bool_simplify4", concl=goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match (p1 --> p2 --> p3) <--> (q1 & q2) --> q3")
         # case 5: ((p1 --> p2) --> p2) <--> p1 | p2
@@ -2308,7 +2308,7 @@ class BoolSimplifyMacro(Macro):
             # q1, q2, q3 = rhs.arg1.arg1, rhs.arg1.arg, rhs.arg
             q1, q2 = rhs.args
             if p1 == q1 and p2 == q2 and p3 == q2:
-                return logic.apply_theorem("verit_bool_simplify5", inst=Inst(P=p1, Q=p2))
+                return logic.apply_theorem("verit_bool_simplify5", concl=goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match ((p1 --> p2) --> p2) <--> p1 | p2")
         # case 6: (p1 & (p1 --> p2)) <--> p1 & p2
@@ -2316,7 +2316,7 @@ class BoolSimplifyMacro(Macro):
             p1, p2, p3 = lhs.arg1, lhs.arg.arg1, lhs.arg.arg
             q1, q2 = rhs.args
             if p1 == p2 and p1 == q1 and p3 == q2:
-                return logic.apply_theorem("verit_bool_simplify6", inst=Inst(P=p1, Q=q2))
+                return logic.apply_theorem("verit_bool_simplify6", concl=goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match (p1 & (p1 --> p2)) <--> p1 & p2")
         # case 7: (p1 --> p2) & p1 <--> p1 & p2
@@ -2324,7 +2324,7 @@ class BoolSimplifyMacro(Macro):
             p1, p2, p3 = lhs.arg1.arg1, lhs.arg1.arg, lhs.arg
             q1, q2 = rhs.args
             if p1 == p3 and p1 == q1 and p2 == q2:
-                return logic.apply_theorem("verit_bool_simplify7", inst=Inst(P=p1, Q=p2))
+                return logic.apply_theorem("verit_bool_simplify7", concl=goal)
             else:
                 raise VeriTException("bool_simplify", "goal cannot match (p1 --> p2) & p1 <--> p1 & p2")
         else:
