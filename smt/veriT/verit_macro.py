@@ -1530,26 +1530,26 @@ class ITEIntroMacro(Macro):
             ite_intros.append(logic.mk_if(P, Eq(x, t), Eq(y, t)))
         expected_ites = rhs.strip_conj()[1:]
 
-        if len(ite_intros) != len(expected_ites):
-            print("lhs", lhs)
-            print("rhs", rhs)
-            print()
-            print("ite_intro")
-            for ite in ite_intros:
-                print(ite)
-            print( )
-            print("expected")
-            for ite in expected_ites:
-                print(ite)
-            print()
-            raise VeriTException("let_intro", "unexpected number of ites")
+        # Sometimes the expected result has fewer conjuncts
+        if set(expected_ites) <= set(ite_intros):
+            return Thm(arg)
 
         expected_rhs = And(lhs, *ite_intros)
-        if not compare_sym_tm(expected_rhs, rhs):
-            print("Expected:", expected_rhs)
-            print("Actual:", rhs)
-            raise VeriTException("ite_intro", "unexpected goal")
-        return Thm(arg)
+        if compare_sym_tm(expected_rhs, rhs):
+            return Thm(arg)
+
+        print("lhs", lhs)
+        print("rhs", rhs)
+        print()
+        print("ite_intro")
+        for ite in ite_intros:
+            print(ite)
+        print()
+        print("expected")
+        for ite in expected_ites:
+            print(ite)
+        print()
+        raise VeriTException("let_intro", "unexpected goal")
 
     def get_proof_term(self, goal, prevs):
         # Obtain left side
@@ -2490,7 +2490,11 @@ class CompSimplifyMacro(Macro):
         l_t1, l_t2 = lhs.args
         # case 1 and 3: compare constants
         if l_t1.is_number() and l_t2.is_number():
-            pt = ProofTerm('int_const_ineq', lhs, [])
+            pt = ProofTerm('int_const_ineq', lhs)
+            if pt.prop.is_not():
+                return pt.on_prop(rewr_conv("eq_false"))
+            else:
+                return pt.on_prop(rewr_conv("eq_true"))
         # case 2: x < x ⟷ false
         elif lhs.is_less() and l_t1 == l_t2 and rhs == false:
             pt = logic.apply_theorem('verit_comp_simplify2', concl=goal)
