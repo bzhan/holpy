@@ -95,7 +95,17 @@ class norm_lia_conv(Conv):
             return pt.on_rhs(binop_conv(self), 
                 rewr_conv("add_opp_r", sym=True), arg_conv(neg_lia_conv()), self)
         elif t.is_times():
-            return pt
+            if not t.arg1.is_number():
+                return pt
+            if t.arg.is_uminus(): # c * (-x)
+                return pt.on_rhs(
+                    rewr_conv('mul_opp_comm', sym=True),
+                    arg1_conv(integer.int_eval_conv())
+                )
+            else:
+                return pt
+        elif t.is_uminus():
+            return pt.on_rhs(rewr_conv('int_poly_neg1'))
         else:
             return pt.on_rhs(rewr_conv('int_mul_1_l', sym=True))
 

@@ -25,3 +25,9 @@ problem: -17 * x5 - 16 * x17 ==  -17 * x5 - 16 * x17 - 0
 file_name: UFLIA\\misc\\list5.smt2
 step: t140 (resolution)
 problem: extra double negation in the result.
+8.
+file_name: UFLIA/sledgehammer/TwoSquares/smtlib.832972.smt2
+step t183 (ite_intro)
+problem: expected rhs has fewer conjuncts.
+step t201 (ite_intro)
+problem: expected rhs has no extra conjuncts.

@@ -20,6 +20,7 @@ from data import list as hol_list
 from kernel import term_ord
 import operator
 import functools
+from typing import Optional
 from smt.veriT.verit_conv import simp_lia_conv
 
 class VeriTException(Exception):
@@ -263,9 +264,19 @@ class ThResolutionMacro(Macro):
         _, cl_concl = resolve_order(prems)
         if set(cl_concl) == set(cl):
             return Thm(Or(*cl), *(pt.hyps for pt in prevs))
+        # Sometimes the expected goal is ~~A while resolve_order returns A.
         elif len(cl_concl) == 1 and len(cl) == 1 and Not(Not(cl_concl[0])) == cl[0]:
             return Thm(Or(*cl), *(pt.hyps for pt in prevs))
         else:
+            print('prev')
+            for prev in prevs:
+                print(prev)
+            print('cl_concl')
+            for t in cl_concl:
+                print(t)
+            print('cl')
+            for t in cl:
+                print(t)
             raise VeriTException("th_resolution", "unexpected conclusion")
 
     def get_proof_term(self, args, prevs):
@@ -1135,7 +1146,7 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
             return t1 == t2
     return helper(tm1, tm2, depth)
 
-def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1):
+def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[ProofTerm]:
     """Given two terms and a dictionary from pairs of terms to equality theorems
     relating them, form the equality between the two terms.
     
@@ -1549,12 +1560,12 @@ class ITEIntroMacro(Macro):
         for ite in expected_ites:
             print(ite)
         print()
-        raise VeriTException("let_intro", "unexpected goal")
+        raise VeriTException("ite_intro", "unexpected goal")
 
     def get_proof_term(self, goal, prevs):
         # Obtain left side
         goal = Or(*goal)
-        lhs = goal.lhs
+        lhs, rhs = goal.lhs, goal.rhs
 
         # Collect list of ite expressions
         ites = collect_ite(lhs)
@@ -1566,13 +1577,34 @@ class ITEIntroMacro(Macro):
             P, x, y = t.args
             ite_intros.append(logic.apply_theorem('verit_ite_intro', inst=Inst(P=P, x=x, y=y)))
 
+        expected_ites = rhs.strip_conj()[1:]
+
+        # Sometimes there is no extra conjunct in rhs.
+        if len(expected_ites) == 0 and lhs == rhs:
+            return ProofTerm.reflexive(lhs)
+
+        # Each element of expected_ites should be equal (according to compare_sym_tm)
+        # to one of ite_intros
+        expected_res = []
+
+        def find_ite(ite):
+            for ite2 in ite_intros:
+                if ite == ite2.prop:
+                    return ite2                    
+                eq_pt = compare_sym_tm_thm(ite2.prop, ite, depth=1)
+                if eq_pt:
+                    return eq_pt.equal_elim(ite2)
+            raise VeriTException("ite_intro", "cannot find conjunct in goal")
+
+        for i, ite in enumerate(expected_ites):
+            expected_res.append(find_ite(ite))
+            
         # Create the conjunction of these theorems.
-        ite_intros_pt = ite_intros[-1]
-        for pt in reversed(ite_intros[:-1]):
+        ite_intros_pt = expected_res[-1]
+        for pt in reversed(expected_res[:-1]):
             ite_intros_pt = logic.apply_theorem('conjI', pt, ite_intros_pt)
 
         # Finally, obtain the theorem lhs = (lhs & ite_intros)
-        # TODO: take account of symmetry in equalities.
         return logic.apply_theorem('verit_eq_conj', ite_intros_pt, inst=Inst(P=lhs))
 
 
