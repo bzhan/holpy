@@ -1115,7 +1115,10 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     cur_t2 = cur_t2.arg
                     if (cur_t1, cur_t2) in ctx:
                         return True
-                return helper(cur_t1, cur_t2, depth-1)
+                if cur_t1 == t1 and cur_t2 == t2:
+                    return False
+                else:
+                    return helper(cur_t1, cur_t2, depth-1)
             elif t1.is_disj():
                 cur_t1, cur_t2 = t1, t2
                 while cur_t1.is_disj() and cur_t2.is_disj() and helper(cur_t1.arg1, cur_t2.arg1, depth-1):
@@ -1123,7 +1126,10 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     cur_t2 = cur_t2.arg
                     if (cur_t1, cur_t2) in ctx:
                         return True
-                return helper(cur_t1, cur_t2, depth-1)
+                if cur_t1 == t1 and cur_t2 == t2:
+                    return False
+                else:
+                    return helper(cur_t1, cur_t2, depth-1)
             elif t1.is_plus():
                 cur_t1, cur_t2 = t1, t2
                 while cur_t1.is_plus() and cur_t2.is_plus() and helper(cur_t1.arg, cur_t2.arg, depth-1):

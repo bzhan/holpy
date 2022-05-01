@@ -424,7 +424,8 @@ class ProofrecTest(unittest.TestCase):
 
     def test_QF_LRA(self):
         test_paths = [
-            'QF_LRA/meti-tarski'
+            'QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2',
+            'QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2',
         ]
 
         profile = False
@@ -433,7 +434,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_eval=True, write_file=True, omit_proofterm=['verit_th_resolution'])
 
         if profile:
             p = Stats(pr)
