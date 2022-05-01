@@ -1832,38 +1832,45 @@ class LetMacro(Macro):
         return Thm(goal, remain_hyps)
 
     def get_proof_term(self, args, prevs):
-        raise NotImplementedError
         goal = args[0]
         prop_eq = prevs[:-1]
         last_step = prevs[-1]
         eqs = dict()
         for prop in prop_eq:
             eqs[(prop.lhs, prop.rhs)] = prop
-            if prop.lhs.is_not():
-                prop2 = ProofTerm.reflexive(hol_term.neg).combination(prop)
-                prop2 = prop2.on_lhs(rewr_conv('double_neg')).on_rhs(try_conv(rewr_conv('double_neg')))
-                eqs[(prop2.lhs, prop2.rhs)] = prop2
+        
+        let_eqs = []
+        body = goal.lhs
+        while body != last_step.lhs and logic.is_let(body):
+            x, t, body = logic.dest_let(body)
+            let_eqs.append((x, t))
 
-        # print('goal.lhs')
-        # print(goal.lhs)
-        # print('last_step.lhs')
-        # print(last_step.lhs)
-        eq_pt = ProofTerm.reflexive(goal.lhs)
-        # print(eq_pt.rhs)
-        # print(logic.is_let(eq_pt.rhs))
-        while logic.is_let(eq_pt.rhs):
-            eq_pt = eq_pt.on_rhs(rewr_conv('Let_def'), beta_conv())
-        pt1 = compare_sym_tm_thm(eq_pt.rhs, goal.rhs, eqs=eqs)
-        if pt1 is None:
-            print('lhs', goal.lhs)
-            print('eq_pt', eq_pt.rhs)
-            print('rhs', goal.rhs)
-            print('last', last_step.th)
-            for t1, t2 in eqs:
-                print('%s #=# %s' % (t1, t2))
-            raise AssertionError
-        else:
-            return ProofTerm.transitive(eq_pt, pt1)
+        # Start from last_step, which is body == goal.rhs, successively
+        # introduce hypothesis of the form x = s, where either s = t or
+        # (t, s) is in eqs.
+        cur_pt = last_step
+        for x, t in reversed(let_eqs):
+            found_hyp = Eq(x, t)
+            for hyp_eq in last_step.hyps:
+                if hyp_eq.is_equals() and hyp_eq.lhs == x and (t == hyp_eq.rhs or (t, hyp_eq.rhs) in eqs):
+                    found_hyp = hyp_eq
+                    break
+            # Save u for later
+            u = cur_pt.lhs
+            # Introduce x = s as an assumption
+            cur_pt = cur_pt.implies_intr(found_hyp)
+            # Replace x with t globally
+            cur_pt = cur_pt.forall_intr(found_hyp.lhs).forall_elim(t)
+            # Discharge t = s using either eqs or using reflexivity
+            if found_hyp.rhs == t:
+                cur_pt = cur_pt.implies_elim(ProofTerm.reflexive(t))
+            else:
+                cur_pt = cur_pt.implies_elim(eqs[(t, found_hyp.rhs)])
+            # Now the left side is u[t/x], rewrite it from let x = t in u.
+            let_pt = ProofTerm.reflexive(logic.mk_let(x, t, u)).on_rhs(rewr_conv('Let_def'), beta_conv())
+            # Finally combine using transitivity
+            cur_pt = ProofTerm.transitive(let_pt, cur_pt)
+        return cur_pt
 
 
 def flatten_prop(tm):
@@ -3096,10 +3103,10 @@ class ConnectiveDefMacro(Macro):
 
     def eval(self, args, prevs=None):
         if len(args) != 1:
-            raise VeriTException("verit_connective_def", "should only contain one argument")
+            raise VeriTException("connective_def", "should only contain one argument")
         goal = args[0]
         if not goal.is_equals():
-            raise VeriTException("verit_connective_def", "goal should be an equality")
+            raise VeriTException("connective_def", "goal should be an equality")
         
         lhs, rhs = goal.args
         if lhs.is_equals():
@@ -3110,9 +3117,9 @@ class ConnectiveDefMacro(Macro):
                 if q1 == p1 and o2 == p1 and p2 == q2 and p1 == o2:
                     return Thm(goal)
                 else:
-                    raise VeriTException("verit_connective_def", "can't match  (p <--> q) <--> (p --> q) /\ (q --> p)")
+                    raise VeriTException("connective_def", "can't match  (p <--> q) <--> (p --> q) /\ (q --> p)")
             else:
-                raise VeriTException("verit_connective_def", "can't match (p <--> q) <--> (p --> q) /\ (q --> p)")
+                raise VeriTException("connective_def", "can't match (p <--> q) <--> (p --> q) /\ (q --> p)")
         elif logic.is_if(lhs):
             p1, p2, p3 = lhs.args
             if rhs.is_conj() and rhs.arg1.is_implies() and rhs.arg.is_implies():
@@ -3126,11 +3133,11 @@ class ConnectiveDefMacro(Macro):
             if l_var == r_var and Not(l_body) == r_body:
                 return Thm(goal)
             else:
-                raise VeriTException("verit_connective_def", "can't match ?x. P(x) <--> ~!x. ~P(x)")
+                raise VeriTException("connective_def", "can't match ?x. P(x) <--> ~!x. ~P(x)")
         else:
             # print("lhs", lhs)
             # print("rhs", rhs)
-            raise VeriTException("verit_connective_def", "unexpected goals")
+            raise VeriTException("connective_def", "unexpected goals")
 
 
 
@@ -3143,26 +3150,26 @@ class BindMacro(Macro):
 
     def eval(self, args, prevs):
         if len(args) != 2:
-            raise VeriTException("verit_bind", "should have two arguments")
+            raise VeriTException("bind", "should have two arguments")
         
         goal, ctx = args
         if not goal.is_equals():
-            raise VeriTException("verit_bind", "the first argument should be equality")
+            raise VeriTException("bind", "the first argument should be equality")
         if not isinstance(ctx, dict):
-            raise VeriTException("verit_bind", "the second argument should be a context")
+            raise VeriTException("bind", "the second argument should be a context")
 
         lhs, rhs = goal.args
         if not lhs.is_forall() and not lhs.is_exists():
-            raise VeriTException("verit_bind", "bind rules applies to quantifiers")
+            raise VeriTException("bind", "bind rules applies to quantifiers")
 
         if lhs.head() != rhs.head():
-            raise VeriTException("verit_bind", "lhs and rhs should have the same quantifier")
+            raise VeriTException("bind", "lhs and rhs should have the same quantifier")
 
         if len(prevs) != 1:
-            raise VeriTException("verit_bind", "should have one premise")
+            raise VeriTException("bind", "should have one premise")
         prem = prevs[0]
         if not prem.is_equals():
-            raise VeriTException("verit_bind", "premise should be an equality")
+            raise VeriTException("bind", "premise should be an equality")
 
         if lhs.is_forall():
             l_vars, l_bd = lhs.strip_forall(num=len(ctx))
@@ -3172,18 +3179,18 @@ class BindMacro(Macro):
             r_vars, r_bd = rhs.strip_exists(num=len(ctx))
 
         if len(l_vars) != len(r_vars):
-            raise VeriTException("verit_bind", "lhs and rhs should have the same number of quantifiers")
+            raise VeriTException("bind", "lhs and rhs should have the same number of quantifiers")
 
         for lv, rv in zip(l_vars, r_vars):
             if not lv.is_var() or lv.name not in ctx or ctx[lv.name] != rv:
-                raise VeriTException("verit_bind", "can't map lhs quantified variables to rhs")
+                raise VeriTException("bind", "can't map lhs quantified variables to rhs")
         prev_lhs, prev_rhs = prevs[0].prop.args
         if prev_lhs == l_bd and prev_rhs == r_bd:
             return Thm(goal)
         else:
             print('prem', prem)
             print('goal', goal)
-            raise VeriTException("verit_bind", "unexpected result")
+            raise VeriTException("bind", "unexpected result")
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal, ctx = args
@@ -3214,7 +3221,7 @@ class BindMacro(Macro):
             print(k, v)
         prem = prevs[0]
         print(prem.th)
-        raise AssertionError
+        raise VeriTException("bind", "unexpected result")
 
 
 @register_macro("verit_forall_inst")
