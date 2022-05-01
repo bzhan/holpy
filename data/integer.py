@@ -41,6 +41,15 @@ def strip_times(t):
     else:
         return [t]
 
+
+def strip_times_full(t):
+    """Given t1 * t2 * ... * tn, return [t1, ..., tn]."""
+    if t.is_times():
+        return strip_times_full(t.arg1) + strip_times_full(t.arg)
+    else:
+        return [t]
+
+
 def dest_times(t):
     """Given t1 * t2, return (t1, t2)."""
     assert t.is_times(), "dest_times"

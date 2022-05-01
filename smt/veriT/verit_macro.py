@@ -3871,7 +3871,7 @@ class ProdSimplifyMacro(Macro):
         else:
             raise VeriTException("prod_simplify", "unsupported data type")
 
-        lhs_prods = integer.strip_times(lhs)
+        lhs_prods = integer.strip_times_full(lhs)
         # case 1: t1 * t2 * ... * tn = u if all ti are constants and u is the product
         if all(p.is_number() for p in lhs_prods) and rhs.is_number():
             if hol_eval(lhs) == hol_eval(rhs):
@@ -3881,20 +3881,21 @@ class ProdSimplifyMacro(Macro):
         if rhs.is_zero() and any(p.is_zero() for p in lhs_prods):
             return Thm(goal)
 
-        rhs_prods = integer.strip_times(rhs)
+        rhs_prods = integer.strip_times_full(rhs)
         lhs_consts = [hol_eval(p) for p in lhs_prods if p.is_number()]
+        assert len(lhs_consts) > 0
         lhs_c = functools.reduce(operator.mul, lhs_consts[1:], lhs_consts[0])
+        rhs_consts = [hol_eval(p) for p in rhs_prods if p.is_number()]
+        if len(rhs_consts) > 0:
+            rhs_c = functools.reduce(operator.mul, rhs_consts[1:], rhs_consts[0])
+        else:
+            rhs_c = 1
         lhs_tms = [p for p in lhs_prods if not p.is_number()]
-
-        if rhs_prods[0].is_number():
-            rhs_c = hol_eval(rhs_prods[0])
-            if lhs_c == rhs_c and lhs_tms == rhs_prods[1:]:
-                return Thm(goal)
-        elif lhs_c == 1 and lhs_tms == rhs_prods:
+        rhs_tms = [p for p in rhs_prods if not p.is_number()]
+        if lhs_c == rhs_c and lhs_tms == rhs_tms:
             return Thm(goal)
         else:
-            print("goal", goal)
-            raise VeriTException("prod_simplify", "unexpected result")
+            raise VeriTException('prod_simplify', 'unexpected result')
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal = args[0]
