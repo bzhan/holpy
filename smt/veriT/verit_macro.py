@@ -1069,16 +1069,26 @@ class TransMacro(Macro):
         else:
             raise VeriTException("trans", "unexpected equality")
 
-    def get_proof_term(self, goal, prevs):
+    def get_proof_term(self, args, prevs):
         pt = prevs[0]
+        goal = args[0]
         for prev in prevs[1:]:
             if pt.rhs == prev.lhs:
                 pt = ProofTerm.transitive(pt, prev)
             elif pt.rhs == prev.rhs:
                 pt = ProofTerm.transitive(pt, ProofTerm.symmetric(prev))
+            elif pt.lhs == prev.lhs:
+                pt = pt.symmetric().transitive(prev)
+            elif pt.lhs == prev.rhs:
+                pt = prev.transitive(pt)
             else:
                 raise VeriTException("trans", "cannot connect equalities")
-        return pt
+        if pt.prop == goal:
+            return pt
+        if pt.prop == Eq(goal.rhs, goal.lhs):
+            return pt.symmetric()
+        else:
+            raise VeriTException("trans", "unexpected result")
 
 def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
     """Compare tm1 and tm2 up to symmetry of equality and identification
@@ -2619,13 +2629,15 @@ class CompSimplifyMacro(Macro):
             if T == hol_type.IntType:
                 pt = ProofTerm('int_const_ineq', lhs)
                 if pt.prop.is_not():
-                    return pt.on_prop(rewr_conv("eq_false"))
+                    pt = pt.on_prop(rewr_conv("eq_false"))
                 else:
-                    return pt.on_prop(rewr_conv("eq_true"))
+                    pt = pt.on_prop(rewr_conv("eq_true"))
             else:
-                return ProofTerm('real_const_eq', lhs)
+                pt = ProofTerm('real_const_eq', lhs)
+            if pt.prop == goal:
+                return pt
         # case 2: x < x ⟷ false
-        elif lhs.is_less() and l_t1 == l_t2 and rhs == false:
+        if lhs.is_less() and l_t1 == l_t2 and rhs == false:
             if T == hol_type.IntType:
                 pt = logic.apply_theorem('verit_comp_simplify2', concl=goal)
             else:
