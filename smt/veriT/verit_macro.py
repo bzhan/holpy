@@ -1602,6 +1602,7 @@ class ITEIntroMacro(Macro):
 
         # Collect list of ite expressions
         ites = collect_ite(lhs)
+        
 
         # For each t of the form (if P then x else y), form the theorem
         # (if P then x = t else y = t).
@@ -1624,7 +1625,7 @@ class ITEIntroMacro(Macro):
             for ite2 in ite_intros:
                 if ite == ite2.prop:
                     return ite2                    
-                eq_pt = compare_sym_tm_thm(ite2.prop, ite, depth=1)
+                eq_pt = compare_sym_tm_thm(ite2.prop, ite, depth=3) # symmetric in ite
                 if eq_pt:
                     return eq_pt.equal_elim(ite2)
             raise VeriTException("ite_intro", "cannot find conjunct in goal")
@@ -2824,7 +2825,7 @@ class MinusSimplify(Macro):
         
         if self.compare_tm(rhs, lhs):
             return Thm(goal)
-            
+
         print("goal", goal)
         raise VeriTException("minus_simplify", "unexpected result")
 
