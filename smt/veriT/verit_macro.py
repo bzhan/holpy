@@ -13,7 +13,7 @@ from kernel.proofterm import ProofTerm, Thm, refl
 from kernel import term as hol_term
 from kernel import type as hol_type
 from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
-    BoolType, Int, Forall, Exists, Inst, conj, disj, Var, neg, implies, plus
+    BoolType, Int, Forall, Exists, Inst, conj, disj, Var, neg, implies, plus, IntType, RealType
 from logic import conv, logic
 from logic.conv import ConvException, try_conv, rewr_conv, arg_conv,\
          top_conv, arg1_conv, replace_conv, abs_conv, Conv, bottom_conv, beta_norm_conv
@@ -2872,6 +2872,26 @@ class MinusSimplify(Macro):
         else:
             return False
 
+    def compare_tm_thm(self, lhs, rhs):
+        T = lhs.get_type()
+        if lhs.arg1 == lhs.arg and rhs.is_zero():
+            if T == hol_type.IntType:
+                return logic.apply_theorem('sub_diag', concl=Eq(lhs, rhs))
+            else:
+                return logic.apply_theorem('real_sub_refl', concl=Eq(lhs, rhs))
+        if lhs.arg1 == rhs and lhs.arg.is_zero():
+            if T == hol_type.IntType:
+                return logic.apply_theorem('int_sub_n_0', concl=Eq(lhs, rhs))
+            else:
+                return logic.apply_theorem('real_sub_rzero', concl=Eq(lhs, rhs))
+        elif rhs.is_uminus() and rhs.arg == lhs.arg and lhs.arg1.is_zero():
+            if T == hol_type.IntType:
+                return logic.apply_theorem('sub_0_l', concl=Eq(lhs, rhs))
+            else:
+                return logic.apply_theorem('real_zero_minus', concl=Eq(lhs, rhs))
+        else:
+            return None
+
     def eval(self, args, prevs=None):
         if not len(args) == 1:
             raise VeriTException("minus_simplify", "should only have one argument")
@@ -2911,25 +2931,23 @@ class MinusSimplify(Macro):
                 macro_name = "real_eval"
                 return ProofTerm("real_eval", goal)
             return ProofTerm(macro_name, Eq(lhs, rhs))
-        elif rhs.is_minus():
-            if rhs.arg.is_zero() and rhs.arg1 == lhs:
-                if T == hol_type.RealType:
-                    return logic.apply_theorem("verit_minus_simplify_3_real", inst=Inst(t=rhs.arg1))
-                elif T == hol_type.IntType:
-                    return logic.apply_theorem("verit_minus_simplify_3_int", inst=Inst(t=rhs.arg1))
-            else:
-                raise VeriTException("minus_simplify", "unexpected result")
-        elif lhs.is_minus() and rhs.is_uminus():
-            l_arg1, l_arg2 = lhs.args
-            r_arg = rhs.arg
-            if l_arg1.is_zero() and l_arg2 == r_arg:
-                if T == hol_type.RealType:
-                    return logic.apply_theorem("verit_minus_simplify_4_real", inst=Inst(t=l_arg2))
-                elif T == hol_type.IntType:
-                    return logic.apply_theorem("verit_minus_simplify_4_int", inst=Inst(t=l_arg2))
-            else:
-                raise VeriTException("minus_simplify", "unexpected result")
-        raise NotImplementedError
+
+        if rhs.is_uminus() and rhs.arg.is_uminus() and rhs.arg.arg == lhs:
+            if T == hol_type.IntType:
+                return logic.apply_theorem('opp_involutive', concl=Eq(rhs, lhs)).symmetric()
+            if T == hol_type.RealType:
+                return logic.apply_theorem('real_neg_neg', concl=Eq(rhs, lhs)).symmetric()
+
+        if lhs.is_minus():
+            pt = self.compare_tm_thm(lhs, rhs)
+            if pt is not None and pt.prop == goal:
+                return pt
+        if rhs.is_minus():
+            pt = self.compare_tm_thm(rhs, lhs)
+            if pt is not None and pt.prop == Eq(rhs, lhs):
+                return pt.symmetric()
+        print("goal", goal)
+        raise VeriTException("minus_simplify", "unexpected result")
 @register_macro("verit_unary_minus_simplify")
 class UnaryMinusSimplifyMacro(Macro):
     def __init__(self):
