@@ -14,9 +14,9 @@ from kernel import term as hol_term
 from kernel import type as hol_type
 from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
     BoolType, Int, Forall, Exists, Inst, conj, disj, Var, neg, implies, plus, IntType, RealType
-from logic import conv, logic
+from logic import logic
 from logic.conv import ConvException, try_conv, rewr_conv, arg_conv,\
-         top_conv, arg1_conv, replace_conv, abs_conv, Conv, bottom_conv, beta_norm_conv
+         top_conv, arg1_conv, replace_conv, abs_conv, Conv, bottom_conv, beta_conv, beta_norm_conv
 from data import integer, real
 from data import list as hol_list
 from kernel import term_ord
@@ -1801,21 +1801,69 @@ class LetMacro(Macro):
         ctx = set()
         for prop in prop_eq:
             ctx.add((prop.lhs, prop.rhs))
-        if compare_sym_tm(goal.lhs, last_step.lhs, ctx=ctx) and goal.rhs == last_step.rhs:
-            return Thm(goal)
-        else:
-            raise VeriTException("let", "Unexpected result")
+
+        body = goal.lhs
+        let_eqs = []
+        while body != last_step.lhs and logic.is_let(body):
+            x, t, body = logic.dest_let(body)
+            let_eqs.append((x, t))
+
+        # body should equal to the left side of last_step
+        if body != last_step.lhs:
+            print('body:', body)
+            print('last_step.lhs:', last_step.lhs)
+            raise VeriTException("let", "left side does not equal body of let term")
+
+        if goal.rhs != last_step.rhs:
+            raise VeriTException("let", "right side does not equal")
+
+        # For each x_i = t_i in let_eqs, check if there exists s_i
+        # such that x_i = s_i is in the hypothesis of last_step, and
+        # either s_i = t_i, or t_i = s_i is one of prop_eq. These hypotheses
+        # are removed
+        removed_hyps = set()
+        for x, t in let_eqs:
+            for hyp_eq in last_step.hyps:
+                if hyp_eq.is_equals() and hyp_eq.lhs == x and (t == hyp_eq.rhs or (t, hyp_eq.rhs) in ctx):
+                    removed_hyps.add(hyp_eq)
+                    break
+
+        remain_hyps = tuple(hyp for hyp in last_step.hyps if hyp not in removed_hyps)
+        return Thm(goal, remain_hyps)
 
     def get_proof_term(self, args, prevs):
+        raise NotImplementedError
         goal = args[0]
         prop_eq = prevs[:-1]
         last_step = prevs[-1]
         eqs = dict()
         for prop in prop_eq:
             eqs[(prop.lhs, prop.rhs)] = prop
-        pt1 = compare_sym_tm_thm(goal.lhs, last_step.lhs, eqs=eqs)
-        res = last_step.on_lhs(replace_conv(pt1.symmetric()))
-        return res
+            if prop.lhs.is_not():
+                prop2 = ProofTerm.reflexive(hol_term.neg).combination(prop)
+                prop2 = prop2.on_lhs(rewr_conv('double_neg')).on_rhs(try_conv(rewr_conv('double_neg')))
+                eqs[(prop2.lhs, prop2.rhs)] = prop2
+
+        # print('goal.lhs')
+        # print(goal.lhs)
+        # print('last_step.lhs')
+        # print(last_step.lhs)
+        eq_pt = ProofTerm.reflexive(goal.lhs)
+        # print(eq_pt.rhs)
+        # print(logic.is_let(eq_pt.rhs))
+        while logic.is_let(eq_pt.rhs):
+            eq_pt = eq_pt.on_rhs(rewr_conv('Let_def'), beta_conv())
+        pt1 = compare_sym_tm_thm(eq_pt.rhs, goal.rhs, eqs=eqs)
+        if pt1 is None:
+            print('lhs', goal.lhs)
+            print('eq_pt', eq_pt.rhs)
+            print('rhs', goal.rhs)
+            print('last', last_step.th)
+            for t1, t2 in eqs:
+                print('%s #=# %s' % (t1, t2))
+            raise AssertionError
+        else:
+            return ProofTerm.transitive(eq_pt, pt1)
 
 
 def flatten_prop(tm):

@@ -339,12 +339,11 @@ class ProofTransformer(Transformer):
         for tm in tms[:-1]:
             assert tm[0].name in self.let_tm
             del self.let_tm[tm[0].name]
-        # res = tms[-1]
-        # for p in reversed(tms[:-1]):
-        #     v, _, t = p
-        #     res = logic.mk_let(v, t, res)
-        # return res
-        return tms[-1]
+        res = tms[-1]
+        for p in reversed(tms[:-1]):
+            v, _, t = p
+            res = logic.mk_let(v, t, res)
+        return res
 
     def mk_distinct_tm(self, *tms):
         assert tms  # tms cannot be empty
