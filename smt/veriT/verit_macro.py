@@ -1983,21 +1983,30 @@ class imp_conj_macro(Macro):
         self.sig = Term
         self.limit = None
 
-    def get_proof_term(self, goal, pts):
+    def get_proof_term(self, goal, pts, num=None):
         dct = dict()
         A = goal.arg1
         ptA = ProofTerm.assume(A)
+        if num is not None:
+            rhs_conjs = strip_conj_n(goal.arg, num)
+        else:
+            rhs_conjs = goal.arg.strip_conj()
         while ptA.prop.is_conj():
             pt1 = logic.apply_theorem("conjD1", ptA)
             pt2 = logic.apply_theorem("conjD2", ptA)
             if pt1.prop != true:
                 dct[pt1.prop] = pt1
+            if pt2.prop in rhs_conjs:
+                dct[pt2.prop] = pt2
+                break
             ptA = pt2
         dct[ptA.prop] = ptA
 
         C = goal.arg
         ptCs = []
-        while C.is_conj():
+        if C in dct:
+            ptCs.append(dct[C])
+        while C.is_conj() and C not in dct:
             l, r = C.args
             if l == true:
                 ptCs.append(logic.apply_theorem("trueI"))
@@ -2011,6 +2020,9 @@ class imp_conj_macro(Macro):
                 else:
                     assert r in dct
                     ptCs.append(dct[r])
+            elif r in dct:
+                ptCs.append(dct[r])
+                break
             C = r
         if len(ptCs) == 0:
             ptCs = [dct[goal.arg]]
@@ -2078,6 +2090,10 @@ class AndSimplifyMacro(Macro):
                     elif conjs[i] == Not(conjs[j]):
                        # p_1 & ... & p_i & ... & ~p_i & ... p_n --> ~p_i & p_i
                         return ProofTerm("verit_imp_conj", args=Implies(lhs, And(conjs[j], conjs[i])))
+                    elif Not(conjs[i]) == And(*conjs[j:]):
+                        return ProofTerm("verit_imp_conj", args=Implies(lhs, And(conjs[i], And(*conjs[j:]))))
+                    elif conjs[i] == Not(And(*conjs[j:])):
+                        return ProofTerm("verit_imp_conj", args=Implies(lhs, And(And(*conjs[j:]), conjs[i])))
             return None
 
         goal = args[0]
