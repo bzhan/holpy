@@ -1799,9 +1799,17 @@ def flatten_prop(tm):
     elif tm.is_implies():
         prem, concl = tm.args
         return hol_term.Implies(flatten_prop(prem), flatten_prop(concl))
+    elif tm.is_equals():
+        lhs, rhs = tm.args
+        return Eq(flatten_prop(lhs), flatten_prop(rhs))
     elif tm.is_forall():
         x, body = tm.arg.dest_abs()
         return hol_term.Forall(x, flatten_prop(body))
+    elif logic.is_if(tm):
+        P, x, y = tm.args
+        return logic.mk_if(flatten_prop(P), flatten_prop(x), flatten_prop(y))
+    elif tm.is_comb():
+        return tm.head(*(flatten_prop(arg) for arg in tm.args))
     else:
         return tm
 
@@ -4036,4 +4044,17 @@ class DivSimplifyMacro(Macro):
             return pt
         
         raise VeriTException('div_simplify', "unexpected result")
-        
+
+@register_macro('verit_la_tautology')
+class LATautologyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None) -> Thm:
+        coeffs = tuple([[hol_term.Int(1)]])
+        return ProofTerm('verit_la_generic', args+coeffs)
+        # raise AssertionError
+
+    
