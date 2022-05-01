@@ -426,10 +426,11 @@ class ProofrecTest(unittest.TestCase):
         test_paths = [
             'QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2',
             'QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2',
-            # 'QF_LRA/spider_benchmarks/current_frame.induction.smt2', # ite_intro
+            'QF_LRA/spider_benchmarks/current_frame.induction.smt2',
             'QF_LRA/sc/sc-10.base.cvc.smt2',
-            # 'QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2' # ite_intro
-            # 'QF_LRA/tta_startup/simple_startup_10nodes.synchro.induct.smt2',
+            'QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2',
+            'QF_LRA/tta_startup/simple_startup_10nodes.synchro.induct.smt2',
+            'QF_LRA/uart//uart-10.base.cvc.smt2',
         ]
 
         profile = False
@@ -438,7 +439,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True, write_file=True, omit_proofterm=['verit_th_resolution', 'verit_ite_intro'])
+            test_path(path, test_eval=True)
 
         if profile:
             p = Stats(pr)

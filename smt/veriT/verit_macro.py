@@ -1562,7 +1562,20 @@ class ITEIntroMacro(Macro):
         expected_ites = rhs.strip_conj()[1:]
 
         # Sometimes the expected result has fewer conjuncts
-        if set(expected_ites) <= set(ite_intros):
+        expected_set = set(expected_ites)
+        intros_set = set(ite_intros)
+        if expected_set <= intros_set:
+            return Thm(arg)
+
+        def can_find_ite(ite, ite_set):
+            if ite in ite_set:
+                return True
+            for sym_ite in ite_set:
+                if compare_sym_tm(ite, sym_ite):
+                    return True
+            return False
+        
+        if all(can_find_ite(ite, intros_set) for ite in expected_set):
             return Thm(arg)
 
         expected_rhs = And(lhs, *ite_intros)
