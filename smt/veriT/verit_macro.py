@@ -1641,7 +1641,7 @@ class ITEIntroMacro(Macro):
             for ite2 in ite_intros:
                 if ite == ite2.prop:
                     return ite2                    
-                eq_pt = compare_sym_tm_thm(ite2.prop, ite, depth=3) # symmetric in ite
+                eq_pt = compare_sym_tm_thm(ite2.prop, ite) # symmetric in ite
                 if eq_pt:
                     return eq_pt.equal_elim(ite2)
             raise VeriTException("ite_intro", "cannot find conjunct in goal")
@@ -1747,7 +1747,7 @@ class AndNegMacro(Macro):
         conj_pt = logic.apply_theorem('classical', inst=Inst(A=conj))
 
         # Then apply deMorgan's rule to the right side
-        pt = conj_pt.on_prop(arg_conv(verit_conv.deMorgan_conj_conv()))
+        pt = conj_pt.on_prop(arg_conv(verit_conv.deMorgan_conj_conv(rm=args[-1].arg)))
         if pt.prop == Or(*args):
             return pt
         else:
@@ -1929,6 +1929,8 @@ def compare_ac(tm1, tm2):
         return tm2.is_not() and compare_ac(tm1.arg, tm2.arg)
     elif tm1.is_implies():
         return tm2.is_implies() and compare_ac(tm1.arg1, tm2.arg1) and compare_ac(tm1.arg, tm2.arg)
+    elif tm1.is_equals():
+        return compare_ac(tm1.arg1, tm2.arg1) and compare_ac(tm1.arg, tm2.arg)
     elif tm1.is_forall():
         if not tm2.is_forall():
             return False
@@ -1944,10 +1946,11 @@ def compare_ac(tm1, tm2):
     elif logic.is_if(tm1):
         P1, x1, y1 = tm1.args
         P2, x2, y2 = tm2.args
-        if x1.get_type() == hol_type.BoolType:
-            return compare_ac(P1, P2) and compare_ac(x1, x2) and compare_ac(y1, y2)
-        else:
-            return compare_ac(P1, P2) and x1 == x2 and y1 == y2
+        return compare_ac(P1, P2) and compare_ac(x1, x2) and compare_ac(y1, y2)
+    elif tm1.is_plus():
+        return compare_ac(tm1.arg1, tm2.arg1) and compare_ac(tm1.arg, tm2.arg)
+    elif tm1.is_times():
+        return compare_ac(tm1.arg1, tm2.arg1) and compare_ac(tm1.arg, tm2.arg)
     else:
         return tm1 == tm2
 
@@ -1966,6 +1969,7 @@ def compare_ac_thm(tm1, tm2):
             tm2_eq = logic.imp_conj_iff(Eq(tm2, And(*conjs2)))
             sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs=eqs)
             return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
+
         raise NotImplementedError
     elif tm1.is_disj():
         disjs1 = logic.strip_disj(tm1)
@@ -1981,6 +1985,7 @@ def compare_ac_thm(tm1, tm2):
             tm2_eq = logic.imp_disj_iff(Eq(tm2, Or(*disjs2)))
             sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs=eqs)
             return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
+
         raise NotImplementedError
     elif tm1.is_not():
         eq_pt = compare_ac_thm(tm1.arg, tm2.arg)
@@ -1989,13 +1994,38 @@ def compare_ac_thm(tm1, tm2):
         eq_pt1 = compare_ac_thm(tm1.arg1, tm2.arg1)
         eq_pt2 = compare_ac_thm(tm1.arg, tm2.arg)
         return ProofTerm.reflexive(implies).combination(eq_pt1).combination(eq_pt2)
+    elif tm1.is_equals():
+        eq_pt1 = compare_ac_thm(tm1.lhs, tm2.lhs)
+        eq_pt2 = compare_ac_thm(tm1.rhs, tm2.rhs)
+        return ProofTerm.reflexive(tm1.head).combination(eq_pt1).combination(eq_pt2)
     elif tm1.is_forall():
         x1, body1 = tm1.arg.dest_abs()
         x2, body2 = tm2.arg.dest_abs()
         eq_pt = compare_ac_thm(body1, body2)
         return ProofTerm.reflexive(tm1).on_rhs(arg_conv(abs_conv(replace_conv(eq_pt))))
+    elif logic.is_if(tm1):
+        P1, x1, y1 = tm1.args
+        P2, x2, y2 = tm2.args
+        eq_P1_P2 = compare_ac_thm(P1, P2)
+        eq_x1_x2 = compare_ac_thm(x1, x2)
+        eq_y1_y2 = compare_ac_thm(y1, y2)
+        return ProofTerm.reflexive(tm1.head).combination(eq_P1_P2).combination(eq_x1_x2).combination(eq_y1_y2)
+    elif tm1.is_plus():
+        x1, y1 = tm1.args
+        x2, y2 = tm2.args
+        eq_x1_x2 = compare_ac_thm(x1, x2)
+        eq_y1_y2 = compare_ac_thm(y1, y2)
+        return ProofTerm.reflexive(tm1.head).combination(eq_x1_x2).combination(eq_y1_y2)
+    elif tm1.is_times():
+        x1, y1 = tm1.args
+        x2, y2 = tm2.args
+        eq_x1_x2 = compare_ac_thm(x1, x2)
+        eq_y1_y2 = compare_ac_thm(y1, y2)
+        return ProofTerm.reflexive(tm1.head).combination(eq_x1_x2).combination(eq_y1_y2)
     else:
         if tm1 != tm2:
+            print("tm1", tm1)
+            print("tm2", tm2)
             raise VeriTException("ac_simp", "arguments not equal")
         return ProofTerm.reflexive(tm1)
 
@@ -4248,6 +4278,9 @@ class XORPos1Macro(Macro):
 
         raise VeriTException('xor_pos1', "unexpected result")
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        return logic.apply_theorem('verit_xor_pos1', concl=Or(*args))
+
 @register_macro('verit_xor_pos2')
 class XORPos2Macro(Macro):
     def __init__(self):
@@ -4271,7 +4304,8 @@ class XORPos2Macro(Macro):
 
         raise VeriTException('xor_pos2', "unexpected result")
 
-
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        return logic.apply_theorem('verit_xor_pos2', concl=Or(*args))
 @register_macro('verit_xor_neg1')
 class XORNeg1Macro(Macro):
     def __init__(self):
@@ -4294,6 +4328,9 @@ class XORNeg1Macro(Macro):
 
         raise VeriTException('xor_neg1', "unexpected result")
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        return logic.apply_theorem('verit_xor_neg1', concl=Or(*args))
+
 @register_macro('verit_xor_neg2')
 class XORNeg2Macro(Macro):
     def __init__(self):
@@ -4315,3 +4352,6 @@ class XORNeg2Macro(Macro):
             return Thm(Or(*args))
 
         raise VeriTException('xor_neg2', "unexpected result")
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        return logic.apply_theorem('verit_xor_neg2', concl=Or(*args))

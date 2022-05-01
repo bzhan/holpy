@@ -1438,6 +1438,42 @@
                 "x": "real",
                 "y": "real"
             }
+        },
+        {
+            "name": "verit_xor_pos1",
+            "prop": "¬(xor P Q) ∨ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_xor_pos2",
+            "prop": "¬(xor P Q) ∨ ¬P ∨ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_xor_neg1",
+            "prop": "xor P Q ∨ P ∨ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_xor_neg2",
+            "prop": "xor P Q ∨ ¬P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

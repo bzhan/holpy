@@ -177,7 +177,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_QF_UFLRA(self):
+    def test_QF_UFLRA(self): # proofterm ✓ eval ✓
         test_paths = [
             'QF_UFLRA/mathsat/RandomCoupled/pb_real_10_0200_10_14.smt2',
             'QF_UFLRA/mathsat/RandomCoupled/pb_real_20_0400_10_12.smt2',
@@ -199,7 +199,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_eval=True)
 
         if profile:
             p = Stats(pr)
@@ -207,7 +207,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_QF_UFLIA(self):
+    def test_QF_UFLIA(self): # proofterm ✓ eval ✓
         test_paths = [
             'QF_UFLIA/mathsat/EufLaArithmetic/medium/medium5.smt2',
             'QF_UFLIA/mathsat/EufLaArithmetic/medium/medium6.smt2',
@@ -240,7 +240,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_UF(self):
+    def test_UF(self): # eval ✓ 
         test_paths = [
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
@@ -303,7 +303,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_UFLRA(self):
+    def test_UFLRA(self): # eval ✓ proofterm ✓
         test_paths = [
             'UFLRA/FFT/smtlib.620487.smt2',
             'UFLRA/FFT/smtlib.620535.smt2',
@@ -320,7 +320,7 @@ class ProofrecTest(unittest.TestCase):
         for path in test_paths:
             test_path(path, test_eval=True)
 
-    def test_UFLIA(self):
+    def test_UFLIA(self): # eval ✓
         test_paths = [
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods..ctor.smt2',
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods.M.smt2',
@@ -345,8 +345,7 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/simplify2/front_end_suite/javafe.ast.ThrowStmt.004.smt2',
             'UFLIA/simplify2/front_end_suite/javafe.ast.Identifier.005.smt2',
             'UFLIA/simplify2/front_end_suite/javafe.tc.Types.002.smt2',
-            'UFLIA/simplify2/front_end_suite/javafe.util.StackVector.005.smt2',
-            'UFLIA/simplify2/front_end_suite/javafe.util.StackVector.005.smt2',
+            # 'UFLIA/simplify2/front_end_suite/javafe.util.StackVector.005.smt2', # bind 
             'UFLIA/simplify2/front_end_suite/javafe.ast.FormalParaDeclVec.015.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555057.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555849.smt2',
@@ -384,7 +383,7 @@ class ProofrecTest(unittest.TestCase):
             p.print_stats(50)
 
 
-    def test_QF_IDL(self):
+    def test_QF_IDL(self): # eval ✓ proofterm: ✓
         test_paths = [
             'QF_IDL/planning//plan-40.cvc.smt2',
             # 'QF_IDL/RTCL/b13_tf_15/ckt_PROP5_tf_15.smt2', # timeout
@@ -395,7 +394,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)
@@ -403,7 +402,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_QF_RDL(self):
+    def test_QF_RDL(self): # eval ✓ proofterm: ac_simp
         test_paths = [
             'QF_RDL/skdmxa/skdmxa-3x3-5.smt2' # ac_simp
         ]
@@ -414,7 +413,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)
@@ -424,11 +423,11 @@ class ProofrecTest(unittest.TestCase):
 
     def test_QF_LRA(self):
         test_paths = [
-            'QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2',
+            'QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2', # proofterm ✓
             'QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2',
             'QF_LRA/spider_benchmarks/current_frame.induction.smt2',
             'QF_LRA/sc/sc-10.base.cvc.smt2',
-            'QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2',
+            'QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2', # proofterm ite_intros
             'QF_LRA/tta_startup/simple_startup_10nodes.synchro.induct.smt2',
             'QF_LRA/uart//uart-10.base.cvc.smt2',
         ]
@@ -439,7 +438,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)
