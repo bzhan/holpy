@@ -165,6 +165,16 @@ class deMorgan_conj_conv(Conv):
         else:
             return refl(t)
 
+class imp_false_conv(Conv):
+    """Prove t_1 -> t_2 -> .. -> t_n --> false <--> ~t_1 | ~t_2 | ... | ~t_n"""
+    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+        if t.is_implies():
+            if t.arg == hol_term.false:
+                return refl(t).on_rhs(rewr_conv('disj_conv_imp', sym=True), rewr_conv('disj_false_right'))
+            else:
+                return refl(t).on_rhs(rewr_conv('disj_conv_imp', sym=True), arg_conv(self))
+        else:
+            return refl(t)
 
 class real_norm_add_atom_conv(Conv):
     """Normalize the expression (c + a_1 * x_1 + ... + a_n * x_n) + atom

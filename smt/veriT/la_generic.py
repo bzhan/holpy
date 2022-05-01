@@ -466,10 +466,8 @@ class LAGenericMacro(Macro):
         for pt in reversed(step1_neg_conv_pts):
             pt_false = pt_false.implies_intr(pt.lhs.arg)
         
-        # while pt_false.prop.arg != hol_term.false:
-        #     pt_false = pt_false.on_prop()
-        pt_false = pt_false.on_prop(top_conv(rewr_conv('disj_conv_imp', sym=True))).on_prop(top_conv(rewr_conv('disj_false_right')))
-        
+        pt_false = pt_false.on_prop(verit_conv.imp_false_conv())
+
         for pt in step1_neg_conv_pts:
             pt_false = pt_false.on_prop(top_conv(replace_conv(pt)))
     
@@ -477,7 +475,6 @@ class LAGenericMacro(Macro):
         if pt_false.prop == hol_term.Or(*dis_eqs):
             return pt_false
         else:
-            print(pt_false)
             raise VeriTException("la_generic", "unexpected result")
 
     def get_proof_term_real(self, dis_eqs, coeffs) -> ProofTerm:
@@ -661,10 +658,8 @@ class LAGenericMacro(Macro):
         for pt in reversed(step1_neg_conv_pts):
             pt_false = pt_false.implies_intr(pt.lhs.arg)
         
-        # while pt_false.prop.arg != hol_term.false:
-        #     pt_false = pt_false.on_prop()
-        pt_false = pt_false.on_prop(top_conv(rewr_conv('disj_conv_imp', sym=True))).on_prop(top_conv(rewr_conv('disj_false_right')))
-        
+
+        pt_false = pt_false.on_prop(verit_conv.imp_false_conv())        
         for pt in step1_neg_conv_pts:
             pt_false = pt_false.on_prop(top_conv(replace_conv(pt)))
     
