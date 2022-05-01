@@ -2122,8 +2122,11 @@ class imp_disj_macro(Macro):
         triv_pt = logic.apply_theorem("trivial", concl=concl)
         if not concl.is_disj():
             pts_B[concl]= triv_pt
+        prem_disjs = goal.arg1.strip_disj()
+        if concl in prem_disjs:
+            pts_B[concl] = triv_pt
 
-        while concl.is_disj():
+        while concl.is_disj() and concl not in prem_disjs:
             l, r = concl.args
             pt1 = logic.apply_theorem("syllogism",\
                     logic.apply_theorem("disjI1", concl=triv_pt.prop.arg1), triv_pt)
@@ -2141,7 +2144,9 @@ class imp_disj_macro(Macro):
         if not A.is_disj():
             assert A in pts_B
             pts_A = [pts_B[A]]
-        while A.is_disj():
+        if A in pts_B:
+            pts_A = [pts_B[A]]
+        while A.is_disj() and A not in pts_B:
             l, r = A.args
             if l == false:
                 pts_A.append(logic.apply_theorem("falseE", concl=goal.arg))
