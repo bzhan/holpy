@@ -2790,6 +2790,18 @@ class MinusSimplify(Macro):
         self.sig = Term
         self.limit = None
 
+    def compare_tm(self, lhs, rhs):
+        if lhs.is_minus() and lhs.arg1 == lhs.arg and rhs.is_zero():
+            return True
+        elif lhs.is_minus() and lhs.arg.is_zero() and lhs.arg1 == rhs:
+            return True
+        elif lhs.is_minus() and lhs.arg1.is_zero() and rhs.is_uminus() and rhs.arg == lhs.arg:
+            return True
+        elif rhs.is_uminus() and rhs.arg.is_uminus() and rhs.arg.arg == lhs: # bugs in veriT, f = --f
+            return True
+        else:
+            return False
+
     def eval(self, args, prevs=None):
         if not len(args) == 1:
             raise VeriTException("minus_simplify", "should only have one argument")
@@ -2806,17 +2818,13 @@ class MinusSimplify(Macro):
                 return Thm(goal)
             else:
                 raise VeriTException("minus_simplify", "unexpected result")
-        if not lhs.is_minus() and rhs.is_minus():
-            lhs, rhs = rhs, lhs
 
-        if lhs.is_minus() and lhs.arg1 == lhs.arg and rhs.is_zero():
+        if self.compare_tm(lhs, rhs):
             return Thm(goal)
-        elif lhs.is_minus() and lhs.arg.is_zero() and lhs.arg1 == rhs:
+        
+        if self.compare_tm(rhs, lhs):
             return Thm(goal)
-        elif lhs.is_minus() and lhs.arg1.is_zero() and rhs.is_uminus() and rhs.arg == lhs.arg:
-            return Thm(goal)
-        elif rhs.is_uminus() and rhs.arg.is_uminus() and rhs.arg.arg == lhs: # bugs in veriT, f = --f
-            return Thm(goal)
+            
         print("goal", goal)
         raise VeriTException("minus_simplify", "unexpected result")
 
