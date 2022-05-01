@@ -255,7 +255,7 @@ class norm_lra_conv(Conv):
                 rewr_conv("real_poly_neg2"), arg_conv(rewr_conv('real_poly_neg1', sym=True)), 
                 arg_conv(neg_lra_conv()), self)
         elif t.is_times():
-            if not t.arg1.is_number():
+            if not t.arg1.is_constant():
                 return pt
             if t.arg.is_uminus(): # c * (-x)
                 return pt.on_rhs(
@@ -270,6 +270,8 @@ class norm_lra_conv(Conv):
                 )
             elif t.arg.is_minus():
                 return pt.on_rhs(arg_conv(self), self)
+            elif t.arg.is_times() and t.arg.arg1.is_constant():
+                return pt.on_rhs(rewr_conv('real_mult_assoc'), arg1_conv(real.real_eval_conv()), self)
             else:
                 return pt
         elif t.is_uminus():

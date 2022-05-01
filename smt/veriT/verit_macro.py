@@ -2386,7 +2386,7 @@ class LADisequalityMacro(Macro):
         else:
             raise VeriTException("verit_la_disequality", "can't match goal")
 
-def split_num_expr(t):
+def int_split_num_expr(t):
     summands = integer.strip_plus_full(t)
     nums, non_nums = [Int(0)], []
     for s in summands:
@@ -2404,6 +2404,35 @@ def split_num_expr(t):
         return non_nums_sum
     else:
         return Int(const) + non_nums_sum
+
+def real_split_num_expr(t):
+    summands = integer.strip_plus_full(t)
+    nums, non_nums = [hol_term.Real(0)], []
+    for s in summands:
+        if s.is_number():
+            nums.append(s)
+        else:
+            non_nums.append(s)
+
+    const = real.real_eval(sum(nums[1:], nums[0]))
+    if len(non_nums) == 0: # t is a constant
+        return hol_term.Real(const)
+    
+    non_nums_sum = sum(non_nums[1:], non_nums[0])
+    if const == 0:
+        return non_nums_sum
+    else:
+        return hol_term.Real(const) + non_nums_sum
+
+
+def split_num_expr(t):
+    T = t.get_type()
+    if T == hol_type.IntType:
+        return int_split_num_expr(t)
+    elif T == hol_type.RealType:
+        return real_split_num_expr(t)
+    else:
+        raise AssertionError
 
 @register_macro("verit_sum_simplify")
 class SumSimplifyMacro(Macro):

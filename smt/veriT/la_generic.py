@@ -149,7 +149,7 @@ class LAGenericMacro(Macro):
         self.sig = hol_term.Term
         self.limit = None
 
-    def eval1(self, args, prevs=None) -> Thm:
+    def eval(self, args, prevs=None) -> Thm:
         dis_eqs, coeffs = args[:-1], args[-1]
         if not isinstance(coeffs, Iterable) or not all(coeff.is_number() for coeff in coeffs):
             print(coeffs)
