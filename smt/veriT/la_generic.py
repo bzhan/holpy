@@ -561,7 +561,7 @@ class LAGenericMacro(Macro):
                 raise VeriTException("la_generic", "unexpected result")
             if pt.prop.is_compares():
                 pt1 = real.norm_neg_real_ineq_conv().get_proof_term(hol_term.Not(pt.prop))
-                pt2 = ProofTerm("real_const_eq", args=pt1.rhs)
+                pt2 = ProofTerm("real_const_eq", args=pt1.rhs).on_prop(rewr_conv('eq_true',sym=True))
 
                 pt_false = pt1.symmetric().equal_elim(pt2).on_prop(rewr_conv('eq_false')).equal_elim(pt)
             else:
