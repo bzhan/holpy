@@ -4061,6 +4061,94 @@ class LATautologyMacro(Macro):
     def eval(self, args, prevs=None) -> Thm:
         coeffs = tuple([[hol_term.Int(1)]])
         return ProofTerm('verit_la_generic', args+coeffs)
-        # raise AssertionError
 
-    
+
+@register_macro('verit_xor_pos1')
+class XORPos1Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None) -> Thm:
+        # prove ~(xor t1 t2) | t1 | t2
+        if len(args) != 3:
+            raise VeriTException('xor_pos1', "should have three arguments")
+        
+        P, Q, R = args
+        if not P.is_not() or not logic.is_xor(P.arg):
+            raise VeriTException('xor_pos1', "arguments can't match goal")
+        
+        P_t1, P_t2 = P.arg.args
+        if P_t1 == Q and P_t2 == R:
+            return Thm(Or(*args))
+
+        raise VeriTException('xor_pos1', "unexpected result")
+
+@register_macro('verit_xor_pos2')
+class XORPos2Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None) -> Thm:
+        # prove ~(xor t1 t2) | ~t1 | ~t2
+        if len(args) != 3:
+            raise VeriTException('xor_pos2', "should have three arguments")
+        
+        P, Q, R = args
+        if not P.is_not() or not logic.is_xor(P.arg) or not \
+            Q.is_not() or not R.is_not():
+            raise VeriTException('xor_pos2', "arguments can't match goal")
+        
+        P_t1, P_t2 = P.arg.args
+        if Not(P_t1) == Q and Not(P_t2) == R:
+            return Thm(Or(*args))
+
+        raise VeriTException('xor_pos2', "unexpected result")
+
+
+@register_macro('verit_xor_neg1')
+class XORNeg1Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None) -> Thm:
+        # prove (xor t1 t2) | t1 | ~t2
+        if len(args) != 3:
+            raise VeriTException('xor_neg1', "should have three arguments")
+        
+        P, Q, R = args
+        if not logic.is_xor(P) or not R.is_not():
+            raise VeriTException('xor_neg1', "arguments can't match goal")
+        
+        P_t1, P_t2 = P.args
+        if P_t1 == Q and Not(P_t2) == R:
+            return Thm(Or(*args))
+
+        raise VeriTException('xor_neg1', "unexpected result")
+
+@register_macro('verit_xor_neg2')
+class XORNeg2Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None) -> Thm:
+        # prove (xor t1 t2) | ~t1 | t2
+        if len(args) != 3:
+            raise VeriTException('xor_neg2', "should have three arguments")
+        
+        P, Q, R = args
+        if not logic.is_xor(P) or not Q.is_not():
+            raise VeriTException('xor_neg2', "arguments can't match goal")
+        
+        P_t1, P_t2 = P.args
+        if Not(P_t1) == Q and P_t2 == R:
+            return Thm(Or(*args))
+
+        raise VeriTException('xor_neg2', "unexpected result")

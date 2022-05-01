@@ -138,6 +138,13 @@ def mk_let(x: Term, t: Term, body: Term) -> Term:
     let_t = Const("Let", TFun(x.T, TFun(x.T, T), T))
     return let_t(t, Lambda(x, body))
 
+def mk_xor(x: Term, y: Term) -> Term:
+    assert x.get_type() == BoolType and y.get_type() == BoolType
+    return Const("xor", TFun(BoolType, BoolType, BoolType))(x, y)
+
+def is_xor(t):
+    return t.is_comb('xor', 2)
+
 """Normalization rules for logic."""
 
 class norm_bool_expr(Conv):

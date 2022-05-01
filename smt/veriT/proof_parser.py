@@ -135,6 +135,7 @@ veriT_grammar = r"""
             | "(!" term ":named" "@" CNAME ")" -> mk_annot_tm
             | "(let " "(" let_pair* ")" term ")" -> mk_let_tm
             | "(distinct " term term+ ")" -> mk_distinct_tm
+            | "(xor " term term ")" -> mk_xor_tm
             | "(" term ")" -> mk_par_tm
             | "(" term+ ")" -> mk_app_tm
             | "(ite " term term term ")" -> mk_ite_tm
@@ -348,6 +349,9 @@ class ProofTransformer(Transformer):
     def mk_distinct_tm(self, *tms):
         assert tms  # tms cannot be empty
         return hol_list.distinct(hol_list.mk_literal_list(tms, tms[0].get_type()))
+
+    def mk_xor_tm(self, tm1, tm2):
+        return logic.mk_xor(tm1, tm2)
 
     def mk_true(self):
         return hol_term.true

@@ -426,6 +426,8 @@ class ProofrecTest(unittest.TestCase):
         test_paths = [
             'QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2',
             'QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2',
+            # 'QF_LRA/spider_benchmarks/current_frame.induction.smt2', # ite_intros
+            'QF_LRA/sc/sc-10.base.cvc.smt2'
         ]
 
         profile = False

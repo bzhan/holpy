@@ -7944,6 +7944,12 @@
             "prop": "Let s f = f s",
             "ty": "def",
             "type": "'a ⇒ ('a ⇒ 'b) ⇒ 'b"
+        },
+        {
+            "name": "xor",
+            "prop": "xor A B ⟷ A ∧ ¬B ∨ ¬A ∧ B",
+            "ty": "def",
+            "type": "bool ⇒ bool ⇒ bool"
         }
     ],
     "description": "Basic results in logic",
