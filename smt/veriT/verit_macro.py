@@ -1700,9 +1700,15 @@ class AndNegMacro(Macro):
     def eval(self, args, prevs=None):
         conj = args[0]
         neg_disjs = args[1:]
-        neg_conj_args = tuple(Not(arg) for arg in conj.strip_conj())
-        if neg_disjs != neg_conj_args:
-            raise VeriTException("Unexpected goal")
+        expected_conj = []
+        while conj.is_conj():
+            expected_conj.append(Not(conj.arg1))
+            if Not(conj.arg) == args[-1]:
+                expected_conj.append(Not(conj.arg))
+                break
+            conj = conj.arg
+        if neg_disjs != tuple(expected_conj):
+            raise VeriTException("and_neg", "Unexpected goal")
         return Thm(Or(*args))
 
     def get_proof_term(self, args, prevs):
