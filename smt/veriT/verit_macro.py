@@ -1226,6 +1226,8 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     cur_t2 = cur_t2.arg
                     if (cur_t1, cur_t2) in eqs:
                         break
+                if cur_t1 == t1 and cur_t2 == t2 and depth < 0: # avoid non-termination
+                    return None
                 res = helper(cur_t1, cur_t2, depth-1)
                 if res is None:
                     return None
@@ -1244,6 +1246,8 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     cur_t2 = cur_t2.arg
                     if (cur_t1, cur_t2) in eqs:
                         break
+                if cur_t1 == t1 and cur_t2 == t2 and depth < 0: # avoid non-termination
+                    return None
                 res = helper(cur_t1, cur_t2, depth-1)
                 if res is None:
                     return None
@@ -1262,6 +1266,8 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     cur_t2 = cur_t2.arg1
                     if (cur_t1, cur_t2) in eqs:
                         break
+                if cur_t1 == t1 and cur_t2 == t2:
+                    return None
                 res = helper(cur_t1, cur_t2, depth-1)
                 T = cur_t1.get_type()
                 if res is None:
