@@ -2414,10 +2414,16 @@ class LADisequalityMacro(Macro):
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal = args[0]
-        pt = logic.apply_theorem('verit_la_disequality_int', concl=goal)
+        T = goal.arg1.lhs.get_type()
+        if T == hol_type.IntType:
+            pt = logic.apply_theorem('verit_la_disequality_int', concl=goal)
+
+        if T == hol_type.RealType:
+            pt = logic.apply_theorem('verit_la_disequality_real', concl=goal)
+
         if pt.prop == goal:
             return pt
-        else:
+        else:        
             raise VeriTException("verit_la_disequality", "can't match goal")
 
 def int_split_num_expr(t):
@@ -2496,13 +2502,17 @@ class SumSimplifyMacro(Macro):
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal = args[0]
-        
-        pt_lhs_simp = refl(goal.lhs).on_rhs(verit_conv.simp_lia_conv())
+        T = goal.lhs.get_type()
+        if T == hol_type.RealType:
+            simp_conv = verit_conv.simp_lra_conv()
+        else:
+            simp_conv = verit_conv.simp_lia_conv()
+        pt_lhs_simp = refl(goal.lhs).on_rhs(simp_conv)
         if pt_lhs_simp.rhs == goal.rhs:
             return pt_lhs_simp
 
         # try to normalize rhs        
-        pt_rhs_simp = refl(goal.rhs).on_rhs(verit_conv.simp_lia_conv())
+        pt_rhs_simp = refl(goal.rhs).on_rhs(simp_conv)
         if pt_rhs_simp.rhs == pt_lhs_simp.rhs:
             return pt_lhs_simp.transitive(pt_rhs_simp.symmetric())
         else:
@@ -2602,28 +2612,48 @@ class CompSimplifyMacro(Macro):
         goal = args[0]
         lhs, rhs = goal.args
         l_t1, l_t2 = lhs.args
+        T = l_t1.get_type()
+        assert T in (hol_type.IntType, hol_type.RealType)
         # case 1 and 3: compare constants
         if l_t1.is_number() and l_t2.is_number():
-            pt = ProofTerm('int_const_ineq', lhs)
-            if pt.prop.is_not():
-                return pt.on_prop(rewr_conv("eq_false"))
+            if T == hol_type.IntType:
+                pt = ProofTerm('int_const_ineq', lhs)
+                if pt.prop.is_not():
+                    return pt.on_prop(rewr_conv("eq_false"))
+                else:
+                    return pt.on_prop(rewr_conv("eq_true"))
             else:
-                return pt.on_prop(rewr_conv("eq_true"))
+                return ProofTerm('real_const_eq', lhs)
         # case 2: x < x ⟷ false
         elif lhs.is_less() and l_t1 == l_t2 and rhs == false:
-            pt = logic.apply_theorem('verit_comp_simplify2', concl=goal)
+            if T == hol_type.IntType:
+                pt = logic.apply_theorem('verit_comp_simplify2', concl=goal)
+            else:
+                pt = logic.apply_theorem('verit_comp_simplify2_real', concl=goal)
         # case 4: x ≤ x ⟷ true
         elif lhs.is_less_eq() and l_t1 == l_t2 and rhs == true:
-            pt = logic.apply_theorem('verit_comp_simplify4', concl=goal)
+            if T == hol_type.IntType:
+                pt = logic.apply_theorem('verit_comp_simplify4', concl=goal)
+            else:
+                pt = logic.apply_theorem('verit_comp_simplify4_real', concl=goal)
         # case 5: x ≥ y ⟷ y ≤ x
         elif lhs.is_greater_eq() and rhs.is_less_eq():
-            pt = logic.apply_theorem('verit_comp_simplify5', concl=goal)
+            if T == hol_type.IntType:
+                pt = logic.apply_theorem('verit_comp_simplify5', concl=goal)
+            else:
+                pt = logic.apply_theorem('verit_comp_simplify5_real', concl=goal)
         # case 6: x < y ⟷ ¬(y ≤ x)
         elif lhs.is_less() and rhs.is_not() and rhs.arg.is_less_eq():
-            pt = logic.apply_theorem('verit_comp_simplify6', concl=goal)
+            if T == hol_type.IntType:
+                pt = logic.apply_theorem('verit_comp_simplify6', concl=goal)
+            else:
+                pt = logic.apply_theorem('verit_comp_simplify6_real', concl=goal)
         # case 7: x > y ⟷ ¬(x ≤ y)
         elif lhs.is_greater() and rhs.is_not() and rhs.arg.is_less_eq():
-            pt = logic.apply_theorem('verit_comp_simplify7', concl=goal)
+            if T == hol_type.IntType:
+                pt = logic.apply_theorem('verit_comp_simplify7', concl=goal)
+            else:
+                pt = logic.apply_theorem('verit_comp_simplify7_real', concl=goal)
         else:
             raise VeriTException("comp_simplify", "unexpected cases")
         if pt.prop == goal:
