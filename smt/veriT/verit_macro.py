@@ -3797,9 +3797,9 @@ class LaRwEqMacro(Macro):
         # (t = u) <--> (t <= u) & (u <= t)
         if t == less_eq1.arg1 and t == less_eq2.arg and u == less_eq1.arg and u == less_eq2.arg1:
             if T == hol_type.IntType:
-                return logic.apply_theorem("verit_lw_rw_eq_real", concl=goal)
-            else:
                 return logic.apply_theorem("verit_lw_rw_eq_int", concl=goal)
+            else:
+                return logic.apply_theorem("verit_lw_rw_eq_real", concl=goal)
         else:
             raise VeriTException("la_rw_eq", "unexpected result")
 
@@ -3895,3 +3895,115 @@ class ProdSimplifyMacro(Macro):
         else:
             print("goal", goal)
             raise VeriTException("prod_simplify", "unexpected result")
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        lhs, rhs = goal.args
+
+        if not lhs.is_times() and rhs.is_times():
+            lhs, rhs = rhs, lhs
+
+        T = lhs.get_type()
+        if T == hol_type.IntType:
+            eval_conv = integer.int_eval_conv()
+            norm_conv = integer.int_norm_conv()
+        elif T == hol_type.RealType:
+            eval_conv = real.real_eval_conv()
+            norm_conv = real.real_norm_conv()
+        else:
+            raise VeriTException("prod_simplify", "unsupported data type")
+
+        if lhs.is_constant() and rhs.is_constant():
+            pt = refl(lhs).on_rhs(eval_conv)
+            if pt.prop == goal:
+                return pt
+            elif pt.symmetric().prop == goal:
+                return pt.symmetric()
+            else:
+                raise VeriTException('prod_simplify', "unexpected result")
+
+        pt_lhs = refl(lhs).on_rhs(norm_conv)
+        pt_rhs = refl(rhs).on_rhs(norm_conv)
+        if pt_lhs.rhs == pt_rhs.rhs:
+            pt_eq = pt_lhs.transitive(pt_rhs.symmetric())
+            if pt_eq.prop == goal:
+                return pt_eq
+            elif pt_eq.symmetric().prop == goal:
+                return pt_eq.symmetric()
+            else:
+                raise VeriTException('prod_simplify', "unexpected result")
+
+        print("goal", goal)
+        raise AssertionError
+
+
+@register_macro('verit_div_simplify')
+class DivSimplifyMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs=None) -> Thm:
+        if len(args) != 1 or not args[0].is_equals() or not args[0].lhs.is_divides():
+            raise VeriTException('div_simplify', "goal should be an equality whose lhs is a division")
+
+        goal = args[0]
+        lhs, rhs = goal.args
+        # case 1: t / t <--> 1
+        if lhs.arg1 == lhs.arg and rhs.is_one():
+            return Thm(goal)
+        # case 2: t / 1 <--> t
+        if lhs.arg1 == rhs and lhs.arg.is_one():
+            return Thm(goal)
+        if not lhs.is_constant() or not rhs.is_constant():
+            raise VeriTException('div_simplify', "both lhs and rhs should be constants")
+        T = lhs.get_type()
+        if T == hol_type.IntType:
+            rhs_val = integer.int_eval(rhs)
+            lhs_num = integer.int_eval(lhs.arg1)
+            lhs_denom = integer.int_eval(lhs.arg)
+            if lhs_num // lhs_denom == rhs_val:
+                return Thm(goal)
+            else:
+                raise VeriTException('div_simplify', "integer division error")
+        elif T == hol_type.RealType:
+            lhs_val = real.real_eval(lhs)
+            rhs_val = real.real_eval(rhs)
+            if lhs_val == rhs_val:
+                return Thm(goal)
+            else:
+                raise VeriTException('div_simplify', "real number division error")
+        else:
+            raise VeriTException('div_simplify', 'unspported number type')
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        lhs, rhs = goal.args
+        T = lhs.get_type()
+        if T == hol_type.IntType:
+            raise VeriTException('div_simplify', "integer division is not supported now")
+
+        denom = lhs.arg
+        pt_denom = ProofTerm('real_const_eq', 
+                    Eq(denom, hol_term.Real(0))).on_prop(rewr_conv('eq_false', sym=True))
+        # case 1: t / t <--> 1
+        # note: should check zero division
+        if lhs.arg1 == lhs.arg and rhs.is_one():
+            pt = logic.apply_theorem('real_div_refl', pt_denom)
+            if pt.prop == goal:
+                return pt
+            else:
+                raise VeriTException('div_simplify', "unexpected result")
+        # case 2: t / 1 <--> t
+        elif lhs.arg1 == rhs and lhs.arg.is_one():
+            return logic.apply_theorem('real_div_1', concl=goal)
+        
+
+
+        pt = refl(lhs).on_rhs(real.real_eval_conv())
+        if pt.prop == goal:
+            return pt
+        
+        raise VeriTException('div_simplify', "unexpected result")
+        
