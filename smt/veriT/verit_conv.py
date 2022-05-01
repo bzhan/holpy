@@ -159,9 +159,14 @@ class verit_norm_lia_greater_eq(Conv):
 
 
 class deMorgan_conj_conv(Conv):
+    def __init__(self, rm=None) -> None:
+        self.rm = rm # rm is the right-most conjunction
     def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
         if t.is_not() and t.arg.is_conj():
-            return refl(t).on_rhs(rewr_conv('de_morgan_thm1'), arg_conv(deMorgan_conj_conv()))
+            if self.rm is not None and self.rm == t.arg:
+                return refl(t)
+            else:
+                return refl(t).on_rhs(rewr_conv('de_morgan_thm1'), arg_conv(deMorgan_conj_conv(rm=self.rm)))
         else:
             return refl(t)
 
