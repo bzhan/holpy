@@ -104,6 +104,9 @@ def convert(t, var_names, assms, to_real, ctx):
         elif logic.is_if(t):
             b, t1, t2 = t.args
             return z3.If(rec(b), rec(t1), rec(t2), ctx)
+        elif logic.is_xor(t):
+            t1, t2 = t.args
+            return z3.Or(z3.And(rec(t1), z3.Not(rec(t2))), z3.And(z3.Not(rec(t1)), rec(t2)), ctx)
         elif t.is_not():
             return z3.Not(rec(t.arg), ctx)
         elif t.is_plus():
