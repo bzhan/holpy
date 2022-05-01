@@ -4200,6 +4200,9 @@ class XORPos1Macro(Macro):
 
         raise VeriTException('xor_pos1', "unexpected result")
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        return logic.apply_theorem('verit_xor_pos1', concl=Or(*args))
+
 @register_macro('verit_xor_pos2')
 class XORPos2Macro(Macro):
     def __init__(self):
@@ -4223,7 +4226,8 @@ class XORPos2Macro(Macro):
 
         raise VeriTException('xor_pos2', "unexpected result")
 
-
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        return logic.apply_theorem('verit_xor_pos2', concl=Or(*args))
 @register_macro('verit_xor_neg1')
 class XORNeg1Macro(Macro):
     def __init__(self):
@@ -4246,6 +4250,9 @@ class XORNeg1Macro(Macro):
 
         raise VeriTException('xor_neg1', "unexpected result")
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        return logic.apply_theorem('verit_xor_neg1', concl=Or(*args))
+
 @register_macro('verit_xor_neg2')
 class XORNeg2Macro(Macro):
     def __init__(self):
@@ -4267,3 +4274,6 @@ class XORNeg2Macro(Macro):
             return Thm(Or(*args))
 
         raise VeriTException('xor_neg2', "unexpected result")
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        return logic.apply_theorem('verit_xor_neg2', concl=Or(*args))
