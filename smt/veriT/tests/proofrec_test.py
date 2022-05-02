@@ -421,13 +421,13 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_QF_LRA(self):
+    def test_QF_LRA(self): # proofterm ✓ eval ✓
         test_paths = [
-            'QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2', # proofterm ✓
+            'QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2',
             'QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2',
             'QF_LRA/spider_benchmarks/current_frame.induction.smt2',
             'QF_LRA/sc/sc-10.base.cvc.smt2',
-            'QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2', # proofterm ite_intros
+            'QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2', 
             'QF_LRA/tta_startup/simple_startup_10nodes.synchro.induct.smt2',
             'QF_LRA/uart//uart-10.base.cvc.smt2',
         ]
@@ -446,7 +446,44 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    
+    def test_QF_AUFLIA(self): # eval ✓ proofterm ×
+        test_paths = [
+            'QF_AUFLIA/20170829-Rodin/smt101358492275879472.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt1048206973303286471.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt1076382332286802622.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt9116345646566616227.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt957085527369554317.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt971450140125177067.smt2',
+            'QF_AUFLIA/cvc/add4.smt2',
+            'QF_AUFLIA/cvc/add5.smt2',
+            'QF_AUFLIA/cvc/add6.smt2',
+            'QF_AUFLIA/cvc/fb_var_33_6.smt2',
+            # # 'QF_AUFLIA/cvc/pp-invariant.smt2', # proofterm ite_intro
+            'QF_AUFLIA/cvc/pp-pc-s2i.smt2',
+            'QF_AUFLIA/cvc/read6.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_nf_ai_00002_001.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_nf_ai_00003_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_nf_ai_00008_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_sf_ai_00002_001.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_sf_ai_00003_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_sf_ai_00008_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_001.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t3_pp_sf_ai_00005_001.cvc.smt2',
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_eval=True, write_file=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
 
 if __name__ == "__main__":
     unittest.main()

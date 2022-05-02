@@ -1070,8 +1070,7 @@ class TransMacro(Macro):
             elif cur_eq.lhs == prev_prop.rhs:
                 cur_eq = Eq(prev_prop.lhs, cur_eq.rhs)
             else:
-                raise VeriTException("trans", "cannot connect equalities\n props: %s\n goal:%s" %\
-                         ("\n".join(str(prop) for prop in prevs), str(args[0])))
+                continue # verit bugs
         
         if cur_eq == arg:
             return Thm(arg, tuple([hyp for pt in prevs for hyp in pt.hyps]))
@@ -1093,7 +1092,7 @@ class TransMacro(Macro):
             elif pt.lhs == prev.rhs:
                 pt = prev.transitive(pt)
             else:
-                raise VeriTException("trans", "cannot connect equalities")
+                continue # verit bugs: not all premises could be chains for transition
         if pt.prop == goal:
             return pt
         if pt.prop == Eq(goal.rhs, goal.lhs):
@@ -1976,8 +1975,21 @@ def compare_ac_thm(tm1, tm2):
     if tm1.is_conj():
         conjs1 = logic.strip_conj(tm1)
         conjs2 = logic.strip_conj(tm2)
-        if set(conjs1) == set(conjs2):
+        conjs1_set = set(conjs1)
+        conjs2_set = set(conjs2)
+
+        if conjs1_set == conjs2_set:
             return logic.imp_conj_iff(Eq(tm1, tm2))
+
+        # remove the repeated conjuncts in conjs1_set
+        if len(conjs1) != len(conjs2) and len(conjs1_set) == len(conjs2_set):
+            conjs1_unique = []
+            for conj1 in conjs1:
+                if conj1 not in conjs1_unique:
+                    conjs1_unique.append(conj1)
+            assert len(conjs1_unique) == len(conjs2)
+            conjs1 = conjs1_unique
+        
         if len(conjs1) == len(conjs2) and all(compare_ac(t1, t2) for t1, t2 in zip(conjs1, conjs2)):
             eqs = dict()
             for t1, t2 in zip(conjs1, conjs2):
@@ -1987,8 +1999,7 @@ def compare_ac_thm(tm1, tm2):
             tm2_eq = logic.imp_conj_iff(Eq(tm2, And(*conjs2)))
             sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs=eqs)
             return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
-
-        raise NotImplementedError
+        raise AssertionError
     elif tm1.is_disj():
         disjs1 = logic.strip_disj(tm1)
         disjs2 = logic.strip_disj(tm2)
@@ -2858,6 +2869,9 @@ class ITESimplifyMacro(Macro):
             # Case 14: ite P Q true <--> ~P | Q
             elif l_else == true and ite2 == Or(Not(l_P), l_then):
                 return True
+            # case 15: ite ~P Q true <--> P | Q
+            elif l_else == true and l_P.is_not() and ite2 == Or(l_P.arg, l_then):
+                return True
             else:
                 return False
         else:
@@ -2917,6 +2931,9 @@ class ITESimplifyMacro(Macro):
             # Case 14: ite P Q true <--> ~P | Q
             elif l_else == true and ite2 == Or(Not(l_P), l_then):
                 return logic.apply_theorem('verit_ite_simplify14', concl=goal)
+            # case 15: ite ~P Q true <--> P | Q
+            elif l_else == true and l_P.is_not() and ite2 == Or(l_P.arg, l_then):
+                return logic.apply_theorem('verit_ite_simplify15', concl=goal)
             else:
                 return None
         else:
@@ -2934,7 +2951,7 @@ class ITESimplifyMacro(Macro):
         if self.compare_ite(lhs, rhs) or self.compare_ite(rhs, lhs):
             return Thm(goal)
         else:
-            raise VeriTException("ite_complete", "unexpected result")
+            raise VeriTException("ite_simplify", "unexpected result")
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal = args[0]
@@ -2947,7 +2964,8 @@ class ITESimplifyMacro(Macro):
         if pt_rhs_lhs is not None and pt_rhs_lhs.symmetric().prop == goal:
             return pt_rhs_lhs.symmetric()
         else:
-            raise VeriTException("ite_complete", "unexpected result")
+            print("goal", goal)
+            raise VeriTException("ite_simplify", "unexpected result")
 
 @register_macro("verit_minus_simplify")
 class MinusSimplify(Macro):
@@ -3131,12 +3149,12 @@ class ConnectiveDefMacro(Macro):
                     raise VeriTException("connective_def", "can't match  (p <--> q) <--> (p --> q) /\ (q --> p)")
             else:
                 raise VeriTException("connective_def", "can't match (p <--> q) <--> (p --> q) /\ (q --> p)")
-        elif logic.is_if(lhs):
-            p1, p2, p3 = lhs.args
+        elif logic.is_if(lhs): # alethe document has typos
+            p1, p2, p3 = lhs.args # if p1 then p2 else p3
             if rhs.is_conj() and rhs.arg1.is_implies() and rhs.arg.is_implies():
-                q1, q2 = rhs.arg1.args
-                o1, o2 = rhs.arg.args
-                if q1 == p1 and o1 == Not(p1) and p2 == q2 and o2 == Not(p2):
+                q1, q2 = rhs.arg1.args # p1 --> p2
+                o1, o2 = rhs.arg.args # ~p1 --> p3
+                if q1 == p1 and o1 == Not(p1) and p2 == q2 and o2 == p3:
                     return Thm(goal)
         elif lhs.is_exists() and rhs.is_not() and rhs.arg.is_forall():
             l_var, l_body = lhs.strip_exists()
@@ -3149,9 +3167,20 @@ class ConnectiveDefMacro(Macro):
             # print("lhs", lhs)
             # print("rhs", rhs)
             raise VeriTException("connective_def", "unexpected goals")
-
-
-
+    
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        if logic.is_xor(goal.lhs):
+            return logic.apply_theorem('verit_connective_def1', concl=goal)
+        elif goal.lhs.is_equals():
+            return logic.apply_theorem('verit_connective_def2', concl=goal)
+        elif logic.is_if(goal.lhs):
+            return logic.apply_theorem('verit_connective_def3', concl=goal)
+        elif goal.lhs.is_exists():
+            pt = refl(goal.lhs).on_rhs(verit_conv.exists_forall_conv())
+            if pt.prop == goal:
+                return pt
+        raise VeriTException("connective_def", "unexpected goal")
 @register_macro("verit_bind")
 class BindMacro(Macro):
     def __init__(self):
@@ -4365,18 +4394,6 @@ class DivSimplifyMacro(Macro):
             return pt
         
         raise VeriTException('div_simplify', "unexpected result")
-
-@register_macro('verit_la_tautology')
-class LATautologyMacro(Macro):
-    def __init__(self):
-        self.level = 1
-        self.sig = Term
-        self.limit = None
-
-    def eval(self, args, prevs=None) -> Thm:
-        coeffs = tuple([[hol_term.Int(1)]])
-        return ProofTerm('verit_la_generic', args+coeffs)
-
 
 @register_macro('verit_xor_pos1')
 class XORPos1Macro(Macro):

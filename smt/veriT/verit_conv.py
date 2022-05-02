@@ -1,4 +1,5 @@
-from logic.conv import Conv, rewr_conv, ConvException, arg1_conv, arg_conv, binop_conv, top_conv, abs_conv
+from logic.conv import Conv, rewr_conv, ConvException, \
+    arg1_conv, arg_conv, binop_conv, top_conv, beta_conv, abs_conv, try_conv
 from data import integer, real
 from kernel.term_ord import fast_compare
 from kernel import term as hol_term
@@ -45,7 +46,7 @@ class int_norm_add_atom_conv(Conv):
                 raise ConvException
         elif t.arg1.is_plus():
             if t.arg.is_number():
-                return pt.on_rhs(integer.swap_add_r(), arg1_conv(self))
+                return pt.on_rhs(integer.swap_add_r(), arg1_conv(self), try_conv(rewr_conv('int_add_0_left')))
             elif t.arg.is_times():
                 cp = compare_atom(t.arg1.arg, t.arg)
                 if cp > 0:
@@ -243,7 +244,7 @@ class real_norm_add_atom_conv(Conv):
                 raise ConvException
         elif t.arg1.is_plus():
             if t.arg.is_number():
-                return pt.on_rhs(real.swap_add_r(), arg1_conv(self))
+                return pt.on_rhs(real.swap_add_r(), arg1_conv(self), try_conv(rewr_conv('real_add_lid')))
             elif t.arg.is_times():
                 cp = compare_atom(t.arg1.arg, t.arg)
                 if cp > 0:
@@ -448,3 +449,20 @@ class cnf_conv(Conv):
             return pt.on_rhs(arg_conv(abs_conv(self)))
         else:
             return pt
+
+
+class exists_forall_conv(Conv):
+    """Prove the equivalence between ?x1 x2 ... xn. P x1 x2 ... xn and
+    ~!x1 x2 ... xn. ~P x1 x2 ... xn."""
+    def get_proof_term(self, t):
+        print("t", t)
+        if not t.is_exists():
+            return refl(t)
+        
+        pt1 = refl(t).on_rhs(rewr_conv('verit_connective_def4'))
+        pt2 = pt1.on_rhs(arg_conv(arg_conv(abs_conv(arg_conv(try_conv(beta_conv()))))))
+        if not t.arg.body.is_exists():
+            return pt2
+        pt3 = pt2.on_rhs(arg_conv(arg_conv(abs_conv(arg_conv(self)))))
+        pt4 = pt3.on_rhs(arg_conv(arg_conv(abs_conv(rewr_conv('double_neg')))))
+        return pt4

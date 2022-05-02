@@ -337,7 +337,7 @@ class ParserTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, veriT_only=True)
+            test_path(path)
 
 
 if __name__ == "__main__":

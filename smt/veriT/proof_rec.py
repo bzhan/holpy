@@ -113,6 +113,9 @@ class ProofReconstruction:
         elif rule_name in ("resolution", "th_resolution"):
             args = (step.cl, self.get_clause_sizes(step.pm))
             macro_name = "verit_th_resolution"
+        elif rule_name == "la_tautology":
+            macro_name = "verit_la_generic"
+            args += tuple([[]])
 
         # Evaluation case
         if is_eval or macro_name in omit_proofterm:
