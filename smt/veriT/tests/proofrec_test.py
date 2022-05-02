@@ -225,7 +225,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_UFLIA/TwoSquares/smtlib.602046.smt2',
             'QF_UFLIA/TwoSquares/smtlib.686126.smt2',
             'QF_UFLIA/TwoSquares/smtlib.769286.smt2',
-            'QF_UFLIA/TwoSquares//smtlib.686091.smt2',
+            'QF_UFLIA/TwoSquares/smtlib.686091.smt2',
             'QF_UFLIA/wisas/xs_7_12.smt2',
         ]
 
@@ -243,14 +243,14 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_UF(self): # eval ✓ 
+    def test_UF(self): # eval ✓ proofterm ✓
         test_paths = [
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_49_980_1120402.smt_in.smt2',
-            "UF/20170428-Barrett//cdt-cade2015/nada/afp/lmirror/x2015_09_10_16_47_35_530_1067960.smt_in.smt2",
-            "UF/20170428-Barrett//cdt-cade2015/nada/afp/lmirror/x2015_09_10_16_47_27_202_1060941.smt_in.smt2",
-            "UF/20170428-Barrett//cdt-cade2015/nada/afp/huffman/x2015_09_10_16_49_30_501_1188113.smt_in.smt2",
+            "UF/20170428-Barrett/cdt-cade2015/nada/afp/lmirror/x2015_09_10_16_47_35_530_1067960.smt_in.smt2",
+            "UF/20170428-Barrett/cdt-cade2015/nada/afp/lmirror/x2015_09_10_16_47_27_202_1060941.smt_in.smt2",
+            "UF/20170428-Barrett/cdt-cade2015/nada/afp/huffman/x2015_09_10_16_49_30_501_1188113.smt_in.smt2",
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_52_18_634_983654.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_53_05_211_1033050.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_53_31_362_1064389.smt_in.smt2',
@@ -279,8 +279,8 @@ class ProofrecTest(unittest.TestCase):
             'UF/sledgehammer/StrongNorm/uf.701666.smt2',
             'UF/sledgehammer/TypeSafe/uf.913303.smt2',
             'UF/sledgehammer/TypeSafe/smtlib.1267524.smt2',
-            'UF/sledgehammer/TwoSquares//uf.680734.smt2',
-            'UF/sledgehammer/TwoSquares//uf.725943.smt2',
+            'UF/sledgehammer/TwoSquares/uf.680734.smt2',
+            'UF/sledgehammer/TwoSquares/uf.725943.smt2',
             'UF/grasshopper/instantiated/concat_check_heap_access_23_4.smt2',
             'UF/grasshopper/instantiated/concat_invariant_18_4.smt2',
             'UF/grasshopper/instantiated/dl_filter_postcondition_of_dl_filter_41_1.smt2',
@@ -388,7 +388,7 @@ class ProofrecTest(unittest.TestCase):
 
     def test_QF_IDL(self): # eval ✓ proofterm: ✓
         test_paths = [
-            'QF_IDL/planning//plan-40.cvc.smt2',
+            'QF_IDL/planning/plan-40.cvc.smt2',
             # 'QF_IDL/RTCL/b13_tf_15/ckt_PROP5_tf_15.smt2', # timeout
         ]
         profile = False
@@ -407,7 +407,7 @@ class ProofrecTest(unittest.TestCase):
 
     def test_QF_RDL(self): # eval ✓ proofterm: ac_simp
         test_paths = [
-            'QF_RDL/skdmxa/skdmxa-3x3-5.smt2' # ac_simp
+            # 'QF_RDL/skdmxa/skdmxa-3x3-5.smt2' # ac_simp
         ]
 
         profile = False
@@ -432,7 +432,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_LRA/sc/sc-10.base.cvc.smt2',
             'QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2', 
             'QF_LRA/tta_startup/simple_startup_10nodes.synchro.induct.smt2',
-            'QF_LRA/uart//uart-10.base.cvc.smt2',
+            'QF_LRA/uart/uart-10.base.cvc.smt2',
         ]
 
         profile = False
@@ -489,7 +489,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_AUFLIA(self):
+    def test_AUFLIA(self): # eval ✓ proofterm ✓
         test_paths = [
             'AUFLIA/20170829-Rodin/smt1002232729905089644.smt2',
             'AUFLIA/20170829-Rodin/smt1005619206308662052.smt2',
@@ -509,7 +509,7 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt1828334434025716862.smt2',
             'AUFLIA/20170829-Rodin/smt1829029808963281215.smt2',
             # 'AUFLIA/20170829-Rodin/smt1882594910272367920.smt2', # proofterm bind
-            'AUFLIA/20170829-Rodin/smt1883437689668062427.smt2'
+            'AUFLIA/20170829-Rodin/smt1883437689668062427.smt2',
             'AUFLIA/20170829-Rodin/smt2022486099146293362.smt2',
             'AUFLIA/20170829-Rodin/smt2025463987927880021.smt2',
             'AUFLIA/20170829-Rodin/smt2027035001350841448.smt2',
