@@ -688,7 +688,7 @@ class imp_conj_macro(Macro):
         traverse_A(ProofTerm.assume(A))
         return traverse_C(goal.arg).implies_intr(A)
 
-def imp_conj_iff(goal: Term):
+def imp_conj_iff(goal: Term) -> ProofTerm:
     """Goal is of the form A_1 & ... & A_m <--> B_1 & ... & B_n, where
     the sets {A_1, ..., A_m} and {B_1, ..., B_n} are equal."""
     pt1 = ProofTerm('imp_conj', Implies(goal.lhs, goal.rhs))

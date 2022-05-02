@@ -1,8 +1,11 @@
+"""Some conversions for veriT proof reconstruction."""
+
 from logic.conv import Conv, rewr_conv, ConvException, \
-    arg1_conv, arg_conv, binop_conv, top_conv, beta_conv, abs_conv, try_conv
+    arg1_conv, arg_conv, binop_conv, top_conv, beta_conv, abs_conv, try_conv, replace_conv
 from data import integer, real
 from kernel.term_ord import fast_compare
 from kernel import term as hol_term
+from kernel.term import Term
 from kernel.proofterm import refl, ProofTerm
 from logic import logic
 
@@ -68,7 +71,7 @@ class int_norm_add_atom_conv(Conv):
             return pt
 
 class norm_add_lia_conv(Conv):
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+    def get_proof_term(self, t: Term) -> ProofTerm:
         pt = refl(t)
         if t.is_constant():
             return pt.on_rhs(integer.int_eval_conv())
@@ -122,7 +125,7 @@ class norm_lia_conv(Conv):
             return pt.on_rhs(rewr_conv('int_mul_1_l', sym=True))
 
 class neg_lia_conv(Conv):
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+    def get_proof_term(self, t: Term) -> ProofTerm:
         pt = refl(t)
         if not t.is_uminus():
             return pt
@@ -137,7 +140,7 @@ class neg_lia_conv(Conv):
 
 class simp_lia_conv(Conv):
     """rewrite 0 + lia -> lia, rewrite 1 * x -> x"""
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+    def get_proof_term(self, t: Term) -> ProofTerm:
         return refl(t).on_rhs(
             norm_lia_conv(),
             top_conv(rewr_conv('int_mul_1_l'))
@@ -163,7 +166,7 @@ class const_prod_lia_conv(Conv):
             return pt
 
 class verit_norm_lia_greater_eq(Conv):
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+    def get_proof_term(self, t: Term) -> ProofTerm:
         if t.is_greater() and t.arg.is_zero():
             return refl(t).on_rhs(rewr_conv('int_great_to_geq'))
         else:
@@ -179,7 +182,7 @@ class deMorgan_conj_conv(Conv):
     def __init__(self, rm=None):
         self.rm = rm  # rm is the right-most conjunction
 
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+    def get_proof_term(self, t: Term) -> ProofTerm:
         if t.is_not() and t.arg.is_conj():
             if self.rm is not None and self.rm == t.arg:
                 return refl(t)
@@ -197,7 +200,7 @@ class deMorgan_disj_conv(Conv):
     def __init__(self, rm=None):
         self.rm = rm  # rm is the right-most disjunction
     
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+    def get_proof_term(self, t: Term) -> ProofTerm:
         if t.is_not() and t.arg.is_disj():
             if self.rm is not None and self.rm == t.arg:
                 return refl(t)
@@ -208,7 +211,7 @@ class deMorgan_disj_conv(Conv):
 
 class imp_false_conv(Conv):
     """Prove t_1 -> t_2 -> .. -> t_n --> false <--> ~t_1 | ~t_2 | ... | ~t_n"""
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+    def get_proof_term(self, t: Term) -> ProofTerm:
         if t.is_implies():
             if t.arg == hol_term.false:
                 return refl(t).on_rhs(rewr_conv('disj_conv_imp', sym=True), rewr_conv('disj_false_right'))
@@ -275,7 +278,7 @@ class real_norm_add_atom_conv(Conv):
             return pt
 
 class norm_add_lra_conv(Conv):
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+    def get_proof_term(self, t: Term) -> ProofTerm:
         pt = refl(t)
         if t.is_constant():
             return pt.on_rhs(real.real_eval_conv())
@@ -331,7 +334,7 @@ class norm_lra_conv(Conv):
             return pt.on_rhs(rewr_conv('real_mul_lid', sym=True))
 
 class neg_lra_conv(Conv):
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+    def get_proof_term(self, t: Term) -> ProofTerm:
         pt = refl(t)
         if not t.is_uminus():
             return pt
@@ -346,7 +349,7 @@ class neg_lra_conv(Conv):
 
 class simp_lra_conv(Conv):
     """rewrite 0 + lra -> lra, rewrite 1 * x -> x"""
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+    def get_proof_term(self, t: Term) -> ProofTerm:
         return refl(t).on_rhs(
             norm_lra_conv(),
             top_conv(rewr_conv('real_mul_lid'))
@@ -428,7 +431,7 @@ class combine_disj_cnf(Conv):
 
 class cnf_conv(Conv):
     """Rewriting to CNF form"""
-    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+    def get_proof_term(self, t: Term) -> ProofTerm:
         pt = refl(t)
         if t.is_not():
             if t.arg.is_not():
@@ -490,3 +493,59 @@ class exists_forall_conv(Conv):
         pt3 = pt2.on_rhs(arg_conv(arg_conv(abs_conv(arg_conv(self)))))
         pt4 = pt3.on_rhs(arg_conv(arg_conv(abs_conv(rewr_conv('double_neg')))))
         return pt4
+
+def forall_reorder_iff(lhs: Term, xs2) -> ProofTerm:
+    xs1, body = lhs.strip_forall()
+    rhs = hol_term.Forall(*(xs2 + [body]))
+
+    # Form lhs --> rhs
+    pt = ProofTerm.assume(lhs)
+    for x in xs1:
+        pt = pt.forall_elim(x)
+    for x in reversed(xs2):
+        pt = pt.forall_intr(x)
+    imp1 = pt.implies_intr(lhs)
+
+    # Form rhs --> lhs
+    pt = ProofTerm.assume(rhs)
+    for x in xs2:
+        pt = pt.forall_elim(x)
+    for x in reversed(xs1):
+        pt = pt.forall_intr(x)
+    imp2 = pt.implies_intr(rhs)
+
+    return ProofTerm.equal_intr(imp1, imp2)
+
+class onepoint_forall_conv1(Conv):
+    def get_proof_term(self, t):
+        assert t.is_forall()
+        x, body = t.arg.dest_abs()
+
+        # First rewrite the body recursively, if necessary
+        if body.is_forall():
+            pt = refl(t).on_rhs(arg_conv(abs_conv(self)))
+        else:
+            pt = refl(t)
+        _, body = pt.rhs.arg.dest_abs()
+        
+        # The body should be in the form P1 & ... & Pn --> Q,. Look for
+        # x = a among the Pi's.
+        assert body.is_implies()
+        conjs = body.arg1.strip_conj()
+        found = None
+        for i, conj in enumerate(conjs):
+            if conj.is_equals() and conj.lhs == x:
+                found = i
+                break
+        assert found is not None
+
+        # Swap Pi to the front
+        conjs_alt = [conjs[found]] + conjs[:found] + conjs[found+1:]
+        eq_pt = logic.imp_conj_iff(hol_term.Eq(hol_term.And(*conjs), hol_term.And(*conjs_alt)))
+        if len(conjs) == 1:
+            th_name = "verit_onepoint_forall1"
+        else:
+            th_name = "verit_onepoint_forall2"
+        return pt.on_rhs(
+            arg_conv(abs_conv(arg1_conv(replace_conv(eq_pt)))),
+            rewr_conv(th_name))

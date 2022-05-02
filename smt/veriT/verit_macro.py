@@ -3760,6 +3760,89 @@ class SkoForallMacro(Macro):
         return pt
 
 
+def check_onepoint(goal, ctx):
+    """Check the validity of goal for the onepoint rule. If check passes,
+    return information needed to reconstruct the proof.
+    
+    """
+    lhs, rhs = goal.args
+
+    # Deconstruct quantifiers at lhs and rhs
+    if lhs.is_forall():
+        is_forall = True
+        l_vars, l_bd = lhs.strip_forall()
+        r_vars, r_bd = rhs.strip_forall()
+    elif lhs.is_exists():
+        is_forall = False
+        l_vars, l_bd = lhs.strip_exists()
+        r_vars, r_bd = rhs.strip_exists()
+    else:
+        raise VeriTException("onepoint", "left side is not forall or exists")
+
+    if len(l_vars) < len(r_vars):
+        raise VeriTException("onepoint", "unexpected number of quantified variables")
+
+    # Discover variables with one value
+    one_val_var = dict()
+    remain_var = []
+    for v in l_vars:
+        if v.is_var() and v.name in ctx and ctx[v.name] != v and ctx[v.name].get_type() == v.get_type():
+            one_val_var[v] = ctx[v.name]
+        else:
+            remain_var.append(v)
+    if remain_var != r_vars:
+        raise VeriTException("onepoint", "lhs doesn't keep the same variables as rhs")
+
+    # Substituting left side by the equations must yield the right side
+    subst_lhs = l_bd
+    for v, tm in one_val_var.items():
+        T = tm.get_type()
+        subst_lhs = hol_term.Abs(v.name, T, subst_lhs.abstract_over(v)).subst_bound(tm)
+
+    if not compare_sym_tm(subst_lhs, r_bd):
+        raise VeriTException("onepoint", "unexpected result")
+
+    # For each variable with one value, check for corresponding equality
+    # in the body of lhs.
+    if is_forall:
+        # body must be in implies form, with each equation in the premise
+        if l_bd.is_implies():
+            conjs = l_bd.arg1.strip_conj()
+            for v, t in one_val_var.items():
+                if Eq(v, t) in conjs:
+                    pass
+                elif Eq(t, v) in conjs:
+                    i = conjs.index(Eq(t, v))
+                    conjs[i] = Eq(v, t)
+                else:
+                    raise VeriTException("onepoint", "forall - equation not found")
+            return "FORALL-IMPLIES", conjs + [l_bd.arg], one_val_var, remain_var
+        elif l_bd.is_disj():
+            disjs = l_bd.strip_disj()
+            for v, t in one_val_var.items():
+                if Not(Eq(v, t)) in disjs:
+                    pass
+                elif Not(Eq(t, v)) in disjs:
+                    i = disjs.index(Not(Eq(t, v)))
+                    disjs[i] = Not(Eq(v, t))
+                else:
+                    raise VeriTException("onepoint", "forall - equation not found")
+            return "FORALL-DISJ", disjs, one_val_var, remain_var
+        else:
+            raise VeriTException("onepoint", "forall - body is neither implies nor disjunction")
+    else:
+        # body must be in conjunction form, with each equation as a conjunct
+        conjs = l_bd.strip_conj()
+        for v, t in one_val_var.items():
+            if Eq(v, t) in conjs:
+                pass
+            elif Eq(t, v) in conjs:
+                i = conjs.index(Eq(t, v))
+                conjs[i] = Eq(v, t)
+            else:
+                raise VeriTException("onepoint", "exists - equation not found")
+        return "EXISTS-CONJ", conjs, one_val_var, remain_var
+
 @register_macro("verit_onepoint")
 class OnepointMacro(Macro):
     def __init__(self):
@@ -3770,75 +3853,42 @@ class OnepointMacro(Macro):
     def eval(self, args, prevs):
         print('onepoint')
         goal, ctx = args
-        pt = prevs[0]
-        lhs, rhs = goal.args
-
-        if lhs.is_forall():
-            is_forall = True
-            l_vars, l_bd = lhs.strip_forall()
-            r_vars, r_bd = rhs.strip_forall()
-        elif lhs.is_exists():
-            is_forall = False
-            l_vars, l_bd = lhs.strip_exists()
-            r_vars, r_bd = rhs.strip_exists()
-        else:
-            raise VeriTException("onepoint", "left side is not forall or exists")
-
-        if len(l_vars) < len(r_vars):
-            raise VeriTException("onepoint", "unexpected number of quantified variables")
-
-        if not l_bd == pt.lhs or not r_bd == pt.rhs:
-            raise VeriTException("onepoint", "can't match prevs")
-
-        one_val_var = dict()
-        remain_var = []
-        for v in l_vars:
-            if v.is_var() and v.name in ctx and ctx[v.name] != v and ctx[v.name].get_type() == v.get_type():
-                one_val_var[v] = ctx[v.name]
-            else:
-                remain_var.append(v)
-        if remain_var != r_vars:
-            raise VeriTException("onepoint", "lhs doesn't keep the same variables as rhs")
-
-        if is_forall:
-            # body must be in implies form, with each equation in the premise
-            if l_bd.is_implies():
-                conjs = l_bd.arg1.strip_conj()
-                for v, t in one_val_var.items():
-                    if not (Eq(v, t) in conjs or Eq(t, v) in conjs):
-                        raise VeriTException("onepoint", "forall - equation not found")
-            elif l_bd.is_disj():
-                disjs = l_bd.strip_disj()
-                for v, t in one_val_var.items():
-                    if not (Not(Eq(v, t)) in disjs or Not(Eq(t, v)) in disjs):
-                        raise VeriTException("onepoint", "forall - equation not found")
-            else:
-                raise VeriTException("onepoint", "forall - body is neither implies nor disjunction")
-        else:
-            # body must be in conjunction form, with each equation as a conjunct
-            conjs = l_bd.strip_conj()
-            for v, t in one_val_var.items():
-                if not (Eq(v, t) in conjs or Eq(t, v) in conjs):
-                    raise VeriTException("onepoint", "exists - equation not found")
-
-        subst_lhs = l_bd
-        for v, tm in one_val_var.items():
-            T = tm.get_type()
-            subst_lhs = hol_term.Abs(v.name, T, subst_lhs.abstract_over(v)).subst_bound(tm)
-
-        if compare_sym_tm(subst_lhs, pt.rhs):
-            return Thm(goal)
-        else:
-            raise VeriTException("onepoint", "unexpected result")
+        check_onepoint(goal, ctx)
+        return Thm(goal)
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal, ctx = args
-        pt = prevs[0]
-        print('goal')
-        print(goal)
-        print('pt')
-        print(pt.th)
-        raise AssertionError
+        onepoint_type, info, one_val_var, remain_var = check_onepoint(goal, ctx)
+        one_val_var = tuple(one_val_var.items())
+        if onepoint_type == "FORALL-IMPLIES":
+            cur_t = Implies(And(*info[:-1]), info[-1])
+            for x, _ in one_val_var:
+                cur_t = Forall(x, cur_t)
+            pt = ProofTerm.reflexive(cur_t).on_rhs(verit_conv.onepoint_forall_conv1())
+            for x in remain_var:
+                pt = ProofTerm.reflexive(hol_term.forall(x.T)).combination(pt.abstraction(x))
+            
+            goal_lhs_xs, _ = goal.lhs.strip_forall()
+            eq_lhs = verit_conv.forall_reorder_iff(pt.lhs, goal_lhs_xs)
+            goal_rhs_xs, _ = goal.rhs.strip_forall()
+            eq_rhs = verit_conv.forall_reorder_iff(pt.rhs, goal_rhs_xs)
+            pt = pt.on_lhs(replace_conv(eq_lhs)).on_rhs(replace_conv(eq_rhs))
+            eq_pt = compare_sym_tm_thm(pt.prop, goal)
+            if eq_pt is None:
+                # print('pt')
+                # print(pt.th)
+                # print('goal')
+                # print(goal)
+                raise NotImplementedError
+            print('onepoint pass')
+            return eq_pt.equal_elim(pt)
+        elif onepoint_type == "FORALL-DISJ":
+            raise NotImplementedError
+        elif onepoint_type == "EXISTS-CONJ":
+            raise NotImplementedError
+        else:
+            raise VeriTException("onepoint", "unrecognized type")
+
 
 def get_cnf(t: Term) -> Term:
     """Obtain the CNF form of t."""

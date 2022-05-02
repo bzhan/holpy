@@ -1612,6 +1612,43 @@
             }
         },
         {
+            "name": "verit_onepoint_forall1",
+            "prop": "(∀x. x = t ⟶ P x) ⟷ (t = t ⟶ P t)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "t": "'a"
+            }
+        },
+        {
+            "name": "verit_onepoint_forall2",
+            "prop": "(∀x. x = t ∧ Q x ⟶ P x) ⟷ (t = t ∧ Q t ⟶ P t)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "'a ⇒ bool",
+                "t": "'a"
+            }
+        },
+        {
+            "name": "verit_onepoint_forall3",
+            "prop": "(∀x. ¬(x = t) ∨ P x) ⟷ ¬(t = t) ∨ P t",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "t": "'a"
+            }
+        },
+        {
+            "name": "verit_onepoint_exists",
+            "prop": "(∃x. x = t ∧ P x) ⟷ t = t ∧ P t",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "t": "'a"
+            }
+        },
+        {
             "name": "store",
             "prop": "store array i v = (λj. if j = i then v else array j)",
             "ty": "def",
