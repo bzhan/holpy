@@ -607,20 +607,37 @@ class Term():
         """Increase loose bound variables in self by inc."""
         def rec(t, lev):
             if t.is_svar() or t.is_var() or t.is_const():
-                return t
+                return None
             elif t.is_comb():
-                return Comb(rec(t.fun, lev), rec(t.arg, lev))
+                fun_t = rec(t.fun, lev)
+                arg_t = rec(t.arg, lev)
+                if fun_t is None and arg_t is None:
+                    return None
+                else:
+                    if fun_t is None:
+                        fun_t = t.fun
+                    if arg_t is None:
+                        arg_t = t.arg
+                    return Comb(fun_t, arg_t)
             elif t.is_abs():
-                return Abs(t.var_name, t.var_T, rec(t.body, lev+1))
+                body_t = rec(t.body, lev+1)
+                if body_t is None:
+                    return None
+                else:
+                    return Abs(t.var_name, t.var_T, body_t)
             elif t.is_bound():
                 if t.n >= lev:
                     return Bound(t.n + inc)
                 else:
-                    return t
+                    return None
             else:
                 raise TypeError
 
-        return rec(self, 0)
+        res = rec(self, 0)
+        if res is None:
+            return self
+        else:
+            return res
 
     def subst_bound(self, t: Term) -> Term:
         """Given an Abs(x,T,body), substitute x for t in the body. t should
@@ -630,24 +647,41 @@ class Term():
 
         def rec(s, n):
             if s.is_svar() or s.is_var() or s.is_const():
-                return s
+                return None
             elif s.is_comb():
-                return Comb(rec(s.fun, n), rec(s.arg, n))
+                fun_s = rec(s.fun, n)
+                arg_s = rec(s.arg, n)
+                if fun_s is None and arg_s is None:
+                    return None
+                else:
+                    if fun_s is None:
+                        fun_s = s.fun
+                    if arg_s is None:
+                        arg_s = s.arg
+                    return Comb(fun_s, arg_s)
             elif s.is_abs():
-                return Abs(s.var_name, s.var_T, rec(s.body, n+1))
+                body_s = rec(s.body, n+1)
+                if body_s is None:
+                    return None
+                else:
+                    return Abs(s.var_name, s.var_T, body_s)
             elif s.is_bound():
                 if s.n == n:
                     return t.incr_boundvars(n)
                 elif s.n > n:  # Bound outside
                     return Bound(s.n - 1)
                 else:  # Locally bound
-                    return s
+                    return None
             else:
                 raise TypeError
 
         if self.is_abs():
             # Perform the substitution. Note t may be a bound variable itself.
-            return rec(self.body, 0)
+            res = rec(self.body, 0)
+            if res is None:
+                return self.body
+            else:
+                return res
         else:
             raise TermException("subst_bound: input is not an abstraction.")
 
@@ -716,7 +750,7 @@ class Term():
                     else:
                         return Bound(n)
                 else:
-                    return s
+                    return None
             elif s.is_var():
                 if t.is_var() and s.name == t.name:
                     if s.T != t.T:
@@ -724,20 +758,37 @@ class Term():
                     else:
                         return Bound(n)
                 else:
-                    return s
+                    return None
             elif s.is_const():
-                return s
+                return None
             elif s.is_comb():
-                return Comb(rec(s.fun, n), rec(s.arg, n))
+                fun_s = rec(s.fun, n)
+                arg_s = rec(s.arg, n)
+                if fun_s is None and arg_s is None:
+                    return None
+                else:
+                    if fun_s is None:
+                        fun_s = s.fun
+                    if arg_s is None:
+                        arg_s = s.arg
+                    return Comb(fun_s, arg_s)
             elif s.is_abs():
-                return Abs(s.var_name, s.var_T, rec(s.body, n+1))
+                body_s = rec(s.body, n+1)
+                if body_s is None:
+                    return None
+                else:
+                    return Abs(s.var_name, s.var_T, body_s)
             elif s.is_bound():
-                return s
+                return None
             else:
                 raise TypeError
 
         if t.is_var() or t.is_svar():
-            return rec(self, 0)
+            res = rec(self, 0)
+            if res is None:
+                return self
+            else:
+                return rec(self, 0)
         else:
             raise TermException("abstract_over: t is not a variable.")
 

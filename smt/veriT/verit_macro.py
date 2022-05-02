@@ -1876,12 +1876,15 @@ class LetMacro(Macro):
         # introduce hypothesis of the form x = s, where either s = t or
         # (t, s) is in eqs.
         cur_pt = last_step
+        var_map = dict()
+        for hyp in last_step.hyps:
+            if hyp.is_equals() and hyp.lhs.is_var():
+                var_map[hyp.lhs] = hyp.rhs
+
         for x, t in reversed(let_eqs):
             found_hyp = Eq(x, t)
-            for hyp_eq in last_step.hyps:
-                if hyp_eq.is_equals() and hyp_eq.lhs == x and (t == hyp_eq.rhs or (t, hyp_eq.rhs) in eqs):
-                    found_hyp = hyp_eq
-                    break
+            if x in var_map:
+                found_hyp = Eq(x, var_map[x])
             # Save u for later
             u = cur_pt.lhs
             # Introduce x = s as an assumption
@@ -1894,7 +1897,7 @@ class LetMacro(Macro):
             else:
                 cur_pt = cur_pt.implies_elim(eqs[(t, found_hyp.rhs)])
             # Now the left side is u[t/x], rewrite it from let x = t in u.
-            let_pt = ProofTerm.reflexive(logic.mk_let(x, t, u)).on_rhs(rewr_conv('Let_def'))
+            let_pt = ProofTerm.theorem('Let_def').substitution(Inst(s=t, f=Lambda(x, u))).on_rhs(beta_conv())
             # Finally combine using transitivity
             cur_pt = ProofTerm.transitive(let_pt, cur_pt)
         return cur_pt

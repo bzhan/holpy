@@ -124,7 +124,7 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
 
 
 class ProofrecTest(unittest.TestCase):
-    def test_QF_UF(self):
+    def test_QF_UF(self): # proofterm ✓ eval ✓
         test_paths = [
             'QF_UF/20170829-Rodin/smt1300175744189082250.smt2',
             'QF_UF/20170829-Rodin/smt1468783596909311386.smt2',
@@ -202,7 +202,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)
@@ -235,7 +235,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)
@@ -321,7 +321,7 @@ class ProofrecTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
     def test_UFLIA(self): # eval ✓
         test_paths = [
@@ -369,7 +369,6 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/tptp/ARI604=1.smt2',
             'UFLIA/tptp/ARI612=1.smt2',
             'UFLIA/tptp/ARI615=1.smt2',
-
         ]
         profile = False
         if profile:
@@ -457,7 +456,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_AUFLIA/20170829-Rodin/smt9116345646566616227.smt2',
             'QF_AUFLIA/20170829-Rodin/smt957085527369554317.smt2',
             'QF_AUFLIA/20170829-Rodin/smt971450140125177067.smt2',
-            'QF_AUFLIA/20170829-Rodin/smt1656603882241727713.smt2'
+            'QF_AUFLIA/20170829-Rodin/smt1656603882241727713.smt2',
             'QF_AUFLIA/cvc/add4.smt2',
             'QF_AUFLIA/cvc/add5.smt2',
             'QF_AUFLIA/cvc/add6.smt2',
