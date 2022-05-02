@@ -3203,13 +3203,7 @@ class BindMacro(Macro):
 
         prem = prevs[0]
         eq_pts[(prem.lhs, prem.rhs)] = prem
-        try:
-            pt = compare_sym_tm_thm(lhs, rhs, eqs=eq_pts)
-        except ConvException as e:
-            if e.str == 'abs_conv':
-                raise NotImplementedError
-            else:
-                raise e
+        pt = compare_sym_tm_thm(lhs, rhs, eqs=eq_pts)
 
         if pt is not None:
             res = ProofTerm("transitive", None, [pt, ProofTerm.reflexive(rhs)])
@@ -3565,6 +3559,44 @@ class SkoExMacro(Macro):
 
         return Thm(goal)
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal, ctx = args
+        lhs, rhs = goal.args
+        xs, lhs_body = lhs.strip_exists()
+
+        pt = prevs[0]
+
+        eqs = dict()
+        for hyp in pt.hyps:
+            if hyp.is_equals():
+                eqs[(hyp.lhs, hyp.rhs)] = ProofTerm.assume(hyp)
+
+        for x in reversed(xs):
+            # Obtain equality for x
+            found_hyp = None
+            for hyp in pt.hyps:
+                if hyp.is_equals() and hyp.lhs == x:
+                    found_hyp = hyp
+                    break
+            if found_hyp is None:
+                raise VeriTException("sko_ex", "hypothesis not found")
+            del eqs[(found_hyp.lhs, found_hyp.rhs)]
+            # t has the form SOME x. P x
+            t = found_hyp.rhs
+            # Save left side as P
+            P = Lambda(x, pt.lhs)
+            # Introduce assumption x = t, then replace x by t 
+            pt = pt.implies_intr(found_hyp).forall_intr(x).forall_elim(t)
+            # Discharge assumption t = t using reflexivity
+            pt = pt.implies_elim(ProofTerm.reflexive(t))
+            # Rewrite using P (SOME x. P x) <--> (EX x. P x), may need to use some of
+            # the other equality hypotheses.
+            Some_eq = logic.apply_theorem('verit_some_eq_ex', inst=Inst(P=P))
+            eq_pt = compare_sym_tm_thm(Some_eq.lhs, pt.lhs, eqs=eqs)
+            pt = ProofTerm.transitive(Some_eq.symmetric(), eq_pt, pt)
+        return pt
+
+
 @register_macro("verit_sko_forall")
 class SkoForallMacro(Macro):
     """Prove an equality of the form !x1, ..., xn. p <--> q, given fact
@@ -3627,6 +3659,44 @@ class SkoForallMacro(Macro):
                 raise VeriTException("sko_forall", "unexpected result")
 
         return Thm(goal)
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal, ctx = args
+        lhs, rhs = goal.args
+        xs, lhs_body = lhs.strip_forall()
+
+        pt = prevs[0]
+
+        eqs = dict()
+        for hyp in pt.hyps:
+            if hyp.is_equals():
+                eqs[(hyp.lhs, hyp.rhs)] = ProofTerm.assume(hyp)
+
+        for x in reversed(xs):
+            # Obtain equality for x
+            found_hyp = None
+            for hyp in pt.hyps:
+                if hyp.is_equals() and hyp.lhs == x:
+                    found_hyp = hyp
+                    break
+            if found_hyp is None:
+                raise VeriTException("sko_all", "hypothesis not found")
+            del eqs[(found_hyp.lhs, found_hyp.rhs)]
+            # t has the form SOME x. ~P x.
+            t = found_hyp.rhs
+            # Save left side as P
+            P = Lambda(x, pt.lhs)
+            # Introduce assumption x = t, then replace x by t 
+            pt = pt.implies_intr(found_hyp).forall_intr(x).forall_elim(t)
+            # Discharge assumption t = t using reflexivity
+            pt = pt.implies_elim(ProofTerm.reflexive(t))
+            # Rewrite using P (SOME x. ~P x) <--> (ALL x. P x), may need to use some of
+            # the other equality hypotheses.
+            Some_eq = logic.apply_theorem('verit_some_neg_eq_all', inst=Inst(P=P))
+            eq_pt = compare_sym_tm_thm(Some_eq.lhs, pt.lhs, eqs=eqs)
+            pt = ProofTerm.transitive(Some_eq.symmetric(), eq_pt, pt)
+        return pt
+
 
 @register_macro("verit_onepoint")
 class OnepointMacro(Macro):
