@@ -454,6 +454,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_AUFLIA/20170829-Rodin/smt9116345646566616227.smt2',
             'QF_AUFLIA/20170829-Rodin/smt957085527369554317.smt2',
             'QF_AUFLIA/20170829-Rodin/smt971450140125177067.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt1656603882241727713.smt2'
             'QF_AUFLIA/cvc/add4.smt2',
             'QF_AUFLIA/cvc/add5.smt2',
             'QF_AUFLIA/cvc/add6.smt2',
@@ -469,6 +470,47 @@ class ProofrecTest(unittest.TestCase):
             'QF_AUFLIA/swap/swap_t1_pp_sf_ai_00008_003.cvc.smt2',
             'QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_001.cvc.smt2',
             'QF_AUFLIA/swap/swap_t3_pp_sf_ai_00005_001.cvc.smt2',
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
+
+    def test_AUFLIA(self):
+        test_paths = [
+            'AUFLIA/20170829-Rodin/smt1002232729905089644.smt2',
+            'AUFLIA/20170829-Rodin/smt1005619206308662052.smt2',
+            'AUFLIA/20170829-Rodin/smt1041855950602319657.smt2',
+            'AUFLIA/20170829-Rodin/smt1056800823907916951.smt2',
+            'AUFLIA/20170829-Rodin/smt1092100299585472351.smt2',
+            'AUFLIA/20170829-Rodin/smt1119354235255245041.smt2',
+            'AUFLIA/20170829-Rodin/smt121642227126350719.smt2',
+            'AUFLIA/20170829-Rodin/smt1218456647866960210.smt2',
+            'AUFLIA/20170829-Rodin/smt1238392701218460929.smt2',
+            'AUFLIA/20170829-Rodin/smt1548357652033660278.smt2',
+            'AUFLIA/20170829-Rodin/smt1551255090000261050.smt2',
+            'AUFLIA/20170829-Rodin/smt1553283421285438203.smt2',
+            'AUFLIA/20170829-Rodin/smt1638875703304617187.smt2',
+            'AUFLIA/20170829-Rodin/smt1643313206004053741.smt2',
+            'AUFLIA/20170829-Rodin/smt1643358356540277150.smt2',
+            'AUFLIA/20170829-Rodin/smt1828334434025716862.smt2',
+            'AUFLIA/20170829-Rodin/smt1829029808963281215.smt2',
+            # 'AUFLIA/20170829-Rodin/smt1882594910272367920.smt2', # proofterm bind
+            'AUFLIA/20170829-Rodin/smt1883437689668062427.smt2'
+            'AUFLIA/20170829-Rodin/smt2022486099146293362.smt2',
+            'AUFLIA/20170829-Rodin/smt2025463987927880021.smt2',
+            'AUFLIA/20170829-Rodin/smt2027035001350841448.smt2',
+            'AUFLIA/misc/set1.smt2',
         ]
 
         profile = False
