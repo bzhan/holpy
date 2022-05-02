@@ -1620,9 +1620,9 @@ class ITEIntroMacro(Macro):
         print()
         raise VeriTException("ite_intro", "unexpected goal")
 
-    def get_proof_term(self, goal, prevs):
+    def get_proof_term(self, args, prevs):
         # Obtain left side
-        goal = Or(*goal)
+        goal = args[0]
         lhs, rhs = goal.lhs, goal.rhs
 
         # Collect list of ite expressions
@@ -1664,8 +1664,11 @@ class ITEIntroMacro(Macro):
             ite_intros_pt = logic.apply_theorem('conjI', pt, ite_intros_pt)
 
         # Finally, obtain the theorem lhs = (lhs & ite_intros)
-        return logic.apply_theorem('verit_eq_conj', ite_intros_pt, inst=Inst(P=lhs))
-
+        pt = logic.apply_theorem('verit_eq_conj', ite_intros_pt, inst=Inst(P=lhs))
+        if goal.lhs == goal.rhs.arg1:
+            return pt
+        # Special case: lhs = (lhs' & ite_intros), equalities in lhs' are reordered
+        return pt.on_rhs(arg1_conv(replace_conv(compare_sym_tm_thm(lhs, rhs.arg1))))
 
 @register_macro("verit_ite1")
 class ITE1(Macro):
