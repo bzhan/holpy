@@ -1,12 +1,12 @@
 # Author: Bohua Zhan
 
+from __future__ import annotations
 from collections import UserDict
 from copy import copy
 import math
 from fractions import Fraction
 
 from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType, TyInst, TypeMatchException
-from kernel import term_ord
 from util import typecheck
 from util import name
 
@@ -117,14 +117,14 @@ class Term():
         # Now copy the content of t onto self
         self.__dict__.update(t.__dict__)
 
-    def is_svar(self):
+    def is_svar(self) -> bool:
         return self.ty == Term.SVAR
 
-    def is_var(self):
+    def is_var(self) -> bool:
         """Return whether the term is a variable."""
         return self.ty == Term.VAR
 
-    def is_const(self, name=None):
+    def is_const(self, name=None) -> bool:
         """Return whether the term is a constant.
 
         name : optional str
@@ -136,7 +136,7 @@ class Term():
         else:
             return name is None or self.name == name
 
-    def is_comb(self, name=None, nargs=None):
+    def is_comb(self, name=None, nargs=None) -> bool:
         """Return whether the term is a combination.
 
         name : optional str
@@ -159,15 +159,15 @@ class Term():
         else:
             return True
 
-    def is_abs(self):
+    def is_abs(self) -> bool:
         """Return whether the term is an abstraction."""
         return self.ty == Term.ABS
 
-    def is_bound(self):
+    def is_bound(self) -> bool:
         """Return whether the term is a bound variable."""
         return self.ty == Term.BOUND
 
-    def print_basic(self):
+    def print_basic(self) -> str:
         """Basic printing function for terms. Note we do not yet handle collision
         in lambda terms.
 
@@ -315,7 +315,7 @@ class Term():
             res = Comb(res, arg)
         return res
 
-    def size(self):
+    def size(self) -> int:
         """Return the size of the term."""
         if self.is_svar() or self.is_var() or self.is_const():
             return 1
@@ -328,9 +328,9 @@ class Term():
         else:
             raise TypeError
     
-    def get_type(self):
+    def get_type(self) -> Type:
         """Returns type of the term with minimal type checking."""
-        def rec(t, bd_vars):
+        def rec(t: Term, bd_vars):
             """Helper function. bd_vars is the list of types of the bound variables."""
             if t.is_svar() or t.is_var() or t.is_const():
                 return t.T
@@ -352,7 +352,7 @@ class Term():
 
         return rec(self, [])
 
-    def is_open(self):
+    def is_open(self) -> bool:
         """Whether t is an open term."""
         def rec(t, n):
             if t.is_svar() or t.is_var() or t.is_const():
@@ -367,7 +367,7 @@ class Term():
                 raise TypeError
         return rec(self, 0)
 
-    def subst_type(self, tyinst=None, **kwargs):
+    def subst_type(self, tyinst=None, **kwargs) -> Term:
         """Perform substitution on type variables.
         
         Parameters
@@ -393,7 +393,7 @@ class Term():
         else:
             raise TypeError
 
-    def subst_type_inplace(self, tyinst):
+    def subst_type_inplace(self, tyinst) -> Term:
         """Perform substitution on type variables."""
         typecheck.checkinstance('subst_type_inplace', tyinst, TyInst)
         if hasattr(self, "_hash_val"):
@@ -411,7 +411,7 @@ class Term():
         else:
             raise TypeError
 
-    def subst(self, inst=None, **kwargs):
+    def subst(self, inst=None, **kwargs) -> Term:
         """Perform substitution on term variables.
 
         Parameters
@@ -504,7 +504,7 @@ class Term():
             raise NotImplementedError
 
     @property
-    def head(self):
+    def head(self) -> Term:
         """Given a term f t1 t2 ... tn, returns f."""
         t = self
         while t.is_comb():
@@ -516,20 +516,20 @@ class Term():
         """Given a term f t1 t2 ... tn, return the list [t1, ..., tn]."""
         return self.strip_comb()[1]
 
-    def is_binop(self):
+    def is_binop(self) -> bool:
         """Whether self is of the form f t1 t2."""
         return len(self.args) == 2
 
     @property
-    def arg1(self):
+    def arg1(self) -> Term:
         """Given a term f a b, return a."""
         return self.fun.arg
 
-    def is_not(self):
+    def is_not(self) -> bool:
         """Whether self is of form ~A."""
         return self.is_comb('neg', 1)
 
-    def is_implies(self):
+    def is_implies(self) -> bool:
         """Whether self is of the form A --> B."""
         return self.is_comb('implies', 2)
 
@@ -541,7 +541,7 @@ class Term():
         else:
             return ([], self)
 
-    def is_conj(self):
+    def is_conj(self) -> bool:
         """Whether t is of the form A & B."""
         return self.is_comb('conj', 2)
 
@@ -555,7 +555,7 @@ class Term():
         res.append(t)
         return res
 
-    def is_disj(self):
+    def is_disj(self) -> bool:
         """Whether t is of the form A | B."""
         return self.is_comb('disj', 2)
 
@@ -569,37 +569,37 @@ class Term():
         res.append(t)
         return res
 
-    def is_forall(self):
+    def is_forall(self) -> bool:
         """Whether self is of the form !x. P x."""
         return self.is_comb('all', 1)
 
-    def is_exists(self):
+    def is_exists(self) -> bool:
         """Whether self is of the form ?x. P x."""
         return self.is_comb('exists', 1)
 
-    def is_equals(self):
+    def is_equals(self) -> bool:
         """Whether self is of the form A = B."""
         return self.is_comb('equals', 2)
 
-    def is_compares(self):
+    def is_compares(self) -> bool:
         """Whether self is of the form A <(=) B or A >(=) B"""
         return self.is_less() or self.is_less_eq() or self.is_greater() or self.is_greater_eq()
 
-    def is_reflexive(self):
+    def is_reflexive(self) -> bool:
         """Whether self is of the form A = A."""
         return self.is_equals() and self.arg1 == self.arg
 
-    def is_VAR(self):
+    def is_VAR(self) -> bool:
         """Whether self is of the form _VAR v."""
         return self.is_comb('_VAR', 1) and self.arg.is_var()
 
     @property
-    def lhs(self):
+    def lhs(self) -> Term:
         assert self.is_equals(), "lhs: not an equality."
         return self.arg1
 
     @property
-    def rhs(self):
+    def rhs(self) -> Term:
         assert self.is_equals(), "rhs: not an equality."
         return self.arg
 
@@ -622,7 +622,7 @@ class Term():
 
         return rec(self, 0)
 
-    def subst_bound(self, t):
+    def subst_bound(self, t: Term) -> Term:
         """Given an Abs(x,T,body), substitute x for t in the body. t should
         have type T.
 
@@ -651,7 +651,7 @@ class Term():
         else:
             raise TermException("subst_bound: input is not an abstraction.")
 
-    def beta_conv(self):
+    def beta_conv(self) -> Term:
         """Beta-conversion: given a term of the form (%x. t1) t2, return the
         term t1[t2/x] which is beta-equivalent.
 
@@ -661,7 +661,7 @@ class Term():
         else:
             raise TermException("beta_conv: input is not in the form (%x. t1) t2.")
 
-    def beta_norm(self):
+    def beta_norm(self) -> Term:
         """Normalize self using beta-conversion."""
         if self.is_svar() or self.is_var() or self.is_const() or self.is_bound():
             return self
@@ -677,7 +677,7 @@ class Term():
         else:
             raise TypeError
 
-    def subst_norm(self, inst=None, **kwargs):
+    def subst_norm(self, inst=None, **kwargs) -> Term:
         """Substitute using the given instantiation, then normalize with
         respect to beta-conversion.
 
@@ -686,7 +686,7 @@ class Term():
             inst = Inst(**kwargs)
         return self.subst(inst).beta_norm()
 
-    def occurs_var(self, t):
+    def occurs_var(self, t: Term) -> Term:
         """Whether the variable t occurs in self."""
         if self.is_svar():
             return False
@@ -703,7 +703,7 @@ class Term():
         else:
             raise TypeError    
 
-    def abstract_over(self, t):
+    def abstract_over(self, t: Term) -> Term:
         """Abstract over the variable t. The result is ready to become
         the body of an Abs term.
         
@@ -741,7 +741,7 @@ class Term():
         else:
             raise TermException("abstract_over: t is not a variable.")
 
-    def checked_get_type(self):
+    def checked_get_type(self) -> Type:
         """Perform type-checking and return the type of self."""
         def rec(t, bd_vars):
             if t.is_svar() or t.is_var() or t.is_const():
@@ -768,7 +768,7 @@ class Term():
                 raise TypeError
         return rec(self, [])
 
-    def convert_svar(self):
+    def convert_svar(self) -> Term:
         if self.is_svar():
             raise TermException("convert_svar: term already contains SVar.")
         elif self.is_var():
