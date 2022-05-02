@@ -389,7 +389,7 @@ class rewr_conv(Conv):
 
         assert pt.th.is_equals(), "rewr_conv: wrong result."
 
-        if pt.th.prop.lhs != t:
+        if not matcher.is_fo_pattern(self.eq_pt.prop):
             pt = pt.on_prop(beta_norm_conv())
 
         if pt.th.prop.lhs != t:

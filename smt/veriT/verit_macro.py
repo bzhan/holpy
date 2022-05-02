@@ -1879,7 +1879,7 @@ class LetMacro(Macro):
             else:
                 cur_pt = cur_pt.implies_elim(eqs[(t, found_hyp.rhs)])
             # Now the left side is u[t/x], rewrite it from let x = t in u.
-            let_pt = ProofTerm.reflexive(logic.mk_let(x, t, u)).on_rhs(rewr_conv('Let_def'), beta_conv())
+            let_pt = ProofTerm.reflexive(logic.mk_let(x, t, u)).on_rhs(rewr_conv('Let_def'))
             # Finally combine using transitivity
             cur_pt = ProofTerm.transitive(let_pt, cur_pt)
         return cur_pt
@@ -3921,6 +3921,13 @@ class QntCnfMacro(Macro):
         try:
             concl_pt = verit_and_single(prem_pt, concl)
         except VeriTException:
+            # print('prem')
+            # print(prem)
+            # print('clauses')
+            # for clause in prem_pt.prop.strip_conj():
+            #     print(clause)
+            print('concl')
+            print(concl)
             raise NotImplementedError
 
         # Re-introduce the forall quantifiers

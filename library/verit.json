@@ -1576,6 +1576,42 @@
             }
         },
         {
+            "name": "verit_qnt_conj1",
+            "prop": "(∀x. P x) ∧ Q ⟷ (∀x. P x ∧ Q)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_qnt_conj2",
+            "prop": "P ∧ (∀x. Q x) ⟷ (∀x. P ∧ Q x)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "'a ⇒ bool"
+            }
+        },
+        {
+            "name": "verit_qnt_disj1",
+            "prop": "(∀x. P x) ∨ Q ⟷ (∀x. P x ∨ Q)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_qnt_disj2",
+            "prop": "P ∨ (∀x. Q x) ⟷ (∀x. P ∨ Q x)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "'a ⇒ bool"
+            }
+        },
+        {
             "name": "store",
             "prop": "store array i v = (λj. if j = i then v else array j)",
             "ty": "def",

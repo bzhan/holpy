@@ -383,6 +383,17 @@ class combine_clause(Conv):
         else:
             return refl(t)
 
+class combine_conj_cnf(Conv):
+    """Rewrite (s_1 /\ s_2 ... /\ s_m) /\ (t_1 /\ t_2 ... /\ t_n) <-->
+               s_1 /\ s_2 ... /\ s_m /\ t_1 /\ t_2 ... /\ t_n.
+    
+    """
+    def get_proof_term(self, t):
+        if t.arg1.is_conj():
+            return refl(t).on_rhs(rewr_conv('conj_assoc', sym=True), arg_conv(self))
+        else:
+            return refl(t)
+
 class combine_clause_cnf(Conv):
     """Rewrite s \/ (t_1 /\ t_2 ... /\ t_n) <-->
                (s \/ t_1) /\ (s \/ t_2) /\ ... /\ (s \/ t_n).
@@ -410,20 +421,10 @@ class combine_disj_cnf(Conv):
             return refl(t).on_rhs(
                 rewr_conv('disj_conj_distribL2'),
                 arg1_conv(combine_clause_cnf()),
-                arg_conv(self))
+                arg_conv(self),
+                combine_conj_cnf())
         else:
             return refl(t).on_rhs(combine_clause_cnf())
-
-class combine_conj_cnf(Conv):
-    """Rewrite (s_1 /\ s_2 ... /\ s_m) /\ (t_1 /\ t_2 ... /\ t_n) <-->
-               s_1 /\ s_2 ... /\ s_m /\ t_1 /\ t_2 ... /\ t_n.
-    
-    """
-    def get_proof_term(self, t):
-        if t.arg1.is_conj():
-            return refl(t).on_rhs(rewr_conv('conj_assoc', sym=True), arg_conv(self))
-        else:
-            return refl(t)
 
 class cnf_conv(Conv):
     """Rewriting to CNF form"""
@@ -445,9 +446,19 @@ class cnf_conv(Conv):
             else:
                 return pt
         elif t.is_disj():
-            return pt.on_rhs(binop_conv(self), combine_disj_cnf())
+            if t.arg1.is_forall():
+                return pt.on_rhs(rewr_conv('verit_qnt_disj1'), self)
+            elif t.arg.is_forall():
+                return pt.on_rhs(rewr_conv("verit_qnt_disj2"), self)
+            else:
+                return pt.on_rhs(binop_conv(self), combine_disj_cnf())
         elif t.is_conj():
-            return pt.on_rhs(binop_conv(self), combine_conj_cnf())
+            if t.arg1.is_forall():
+                return pt.on_rhs(rewr_conv('verit_qnt_conj1'), self)
+            elif t.arg.is_forall():
+                return pt.on_rhs(rewr_conv("verit_qnt_conj2"), self)
+            else:
+                return pt.on_rhs(binop_conv(self), combine_conj_cnf())
         elif t.is_implies():
             return pt.on_rhs(rewr_conv('disj_conv_imp', sym=True), self)
         elif t.is_equals() and t.arg1.get_type() == hol_term.BoolType:
