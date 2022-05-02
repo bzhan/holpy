@@ -1059,8 +1059,7 @@ class TransMacro(Macro):
             elif cur_eq.lhs == prev_prop.rhs:
                 cur_eq = Eq(prev_prop.lhs, cur_eq.rhs)
             else:
-                raise VeriTException("trans", "cannot connect equalities\n props: %s\n goal:%s" %\
-                         ("\n".join(str(prop) for prop in prevs), str(args[0])))
+                continue # verit bugs
         
         if cur_eq == arg:
             return Thm(arg, tuple([hyp for pt in prevs for hyp in pt.hyps]))
@@ -2858,6 +2857,9 @@ class ITESimplifyMacro(Macro):
                 return True
             # Case 14: ite P Q true <--> ~P | Q
             elif l_else == true and ite2 == Or(Not(l_P), l_then):
+                return True
+            # case 15: ite ~P Q true <--> P | Q
+            elif l_else == true and l_P.is_not() and ite2 == Or(l_P.arg, l_then):
                 return True
             else:
                 return False
