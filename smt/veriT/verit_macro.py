@@ -3768,15 +3768,22 @@ class OnepointMacro(Macro):
         self.limit = None
 
     def eval(self, args, prevs):
+        print('onepoint')
         goal, ctx = args
         pt = prevs[0]
         lhs, rhs = goal.args
 
-        l_vars, l_bd = lhs.strip_quant()
-        if rhs.is_exists() or rhs.is_forall():
-            r_vars, r_bd = rhs.strip_quant()
+        if lhs.is_forall():
+            is_forall = True
+            l_vars, l_bd = lhs.strip_forall()
+            r_vars, r_bd = rhs.strip_forall()
+        elif lhs.is_exists():
+            is_forall = False
+            l_vars, l_bd = lhs.strip_exists()
+            r_vars, r_bd = rhs.strip_exists()
         else:
-            r_vars, r_bd = [], rhs
+            raise VeriTException("onepoint", "left side is not forall or exists")
+
         if len(l_vars) < len(r_vars):
             raise VeriTException("onepoint", "unexpected number of quantified variables")
 
@@ -3793,6 +3800,27 @@ class OnepointMacro(Macro):
         if remain_var != r_vars:
             raise VeriTException("onepoint", "lhs doesn't keep the same variables as rhs")
 
+        if is_forall:
+            # body must be in implies form, with each equation in the premise
+            if l_bd.is_implies():
+                conjs = l_bd.arg1.strip_conj()
+                for v, t in one_val_var.items():
+                    if not (Eq(v, t) in conjs or Eq(t, v) in conjs):
+                        raise VeriTException("onepoint", "forall - equation not found")
+            elif l_bd.is_disj():
+                disjs = l_bd.strip_disj()
+                for v, t in one_val_var.items():
+                    if not (Not(Eq(v, t)) in disjs or Not(Eq(t, v)) in disjs):
+                        raise VeriTException("onepoint", "forall - equation not found")
+            else:
+                raise VeriTException("onepoint", "forall - body is neither implies nor disjunction")
+        else:
+            # body must be in conjunction form, with each equation as a conjunct
+            conjs = l_bd.strip_conj()
+            for v, t in one_val_var.items():
+                if not (Eq(v, t) in conjs or Eq(t, v) in conjs):
+                    raise VeriTException("onepoint", "exists - equation not found")
+
         subst_lhs = l_bd
         for v, tm in one_val_var.items():
             T = tm.get_type()
@@ -3803,6 +3831,14 @@ class OnepointMacro(Macro):
         else:
             raise VeriTException("onepoint", "unexpected result")
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal, ctx = args
+        pt = prevs[0]
+        print('goal')
+        print(goal)
+        print('pt')
+        print(pt.th)
+        raise AssertionError
 
 def get_cnf(t: Term) -> Term:
     """Obtain the CNF form of t."""
