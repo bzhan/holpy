@@ -1,8 +1,10 @@
-from logic.conv import Conv, rewr_conv, ConvException, arg1_conv, arg_conv, binop_conv, top_conv
+from logic.conv import Conv, rewr_conv, ConvException, arg1_conv, arg_conv, binop_conv, top_conv, abs_conv
 from data import integer, real
 from kernel.term_ord import fast_compare
 from kernel import term as hol_term
 from kernel.proofterm import refl, ProofTerm
+from logic import logic
+
 
 def compare_atom(tm1, tm2):
     return fast_compare(tm1.arg, tm2.arg)
@@ -159,14 +161,38 @@ class verit_norm_lia_greater_eq(Conv):
 
 
 class deMorgan_conj_conv(Conv):
-    def __init__(self, rm=None) -> None:
-        self.rm = rm # rm is the right-most conjunction
+    """Prove ~(t_1 /\ t_2 /\ ... /\ t_n) <--> ~t_1 \/ ~t_2 \/ ... \/ ~t_n.
+    
+    If rm is set, stop expanding conjunction when t_n becomes rm.
+    
+    """
+    def __init__(self, rm=None):
+        self.rm = rm  # rm is the right-most conjunction
+
     def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
         if t.is_not() and t.arg.is_conj():
             if self.rm is not None and self.rm == t.arg:
                 return refl(t)
             else:
-                return refl(t).on_rhs(rewr_conv('de_morgan_thm1'), arg_conv(deMorgan_conj_conv(rm=self.rm)))
+                return refl(t).on_rhs(rewr_conv('de_morgan_thm1'), arg_conv(self))
+        else:
+            return refl(t)
+
+class deMorgan_disj_conv(Conv):
+    """Prove ~(t_1 \/ t_2 \/ ... \/ t_n) <--> ~t_1 /\ ~t_2 /\ ... /\ ~t_n.
+    
+    If rm is set, stop expanding disjunction when t_n becomes rm.
+
+    """
+    def __init__(self, rm=None):
+        self.rm = rm  # rm is the right-most disjunction
+    
+    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+        if t.is_not() and t.arg.is_disj():
+            if self.rm is not None and self.rm == t.arg:
+                return refl(t)
+            else:
+                return refl(t).on_rhs(rewr_conv('de_morgan_thm2'), arg_conv(self))
         else:
             return refl(t)
 
@@ -332,5 +358,93 @@ class const_prod_lra_conv(Conv):
             return pt.on_rhs(rewr_conv('real_add_ldistrib'), binop_conv(self))
         elif t.arg.is_times():
             return pt.on_rhs(rewr_conv('real_mult_assoc'), arg1_conv(real.real_eval_conv()))
+        else:
+            return pt
+
+
+class combine_clause(Conv):
+    """Rewrite (s_1 \/ s_2 ... \/ s_m) \/ (t_1 \/ t_2 ... \/ t_n) <-->
+               s_1 \/ s_2 ... \/ s_m \/ t_1 \/ t_2 ... \/ t_n.
+               
+    """
+    def get_proof_term(self, t):
+        if t.arg1.is_disj():
+            return refl(t).on_rhs(rewr_conv('disj_assoc_eq', sym=True), arg_conv(self))
+        else:
+            return refl(t)
+
+class combine_clause_cnf(Conv):
+    """Rewrite s \/ (t_1 /\ t_2 ... /\ t_n) <-->
+               (s \/ t_1) /\ (s \/ t_2) /\ ... /\ (s \/ t_n).
+    Note s and each t_1, ... t_n are clauses, and clauses are combined
+    on disjunction.
+    
+    """
+    def get_proof_term(self, t):
+        if t.arg.is_conj():
+            return refl(t).on_rhs(
+                rewr_conv('disj_conj_distribL1'),
+                arg1_conv(combine_clause()),
+                arg_conv(self))
+        else:
+            return refl(t).on_rhs(combine_clause())
+
+class combine_disj_cnf(Conv):
+    """Rewrite (s_1 /\ s_2 ... /\ s_m) \/ (t_1 /\ t_2 ... /\ t_n) <-->
+               (s_1 \/ t_1) /\ (s_1 \/ t_2) /\ ... /\ (s_m \/ t_n).
+    Note each s_i and t_j are clauses, and clauses are combined on disjunction.
+    
+    """
+    def get_proof_term(self, t):
+        if t.arg1.is_conj():
+            return refl(t).on_rhs(
+                rewr_conv('disj_conj_distrib2'),
+                arg1_conv(combine_clause_cnf()),
+                arg_conv(self))
+        else:
+            return refl(t).on_rhs(combine_clause_cnf())
+
+class combine_conj_cnf(Conv):
+    """Rewrite (s_1 /\ s_2 ... /\ s_m) /\ (t_1 /\ t_2 ... /\ t_n) <-->
+               s_1 /\ s_2 ... /\ s_m /\ t_1 /\ t_2 ... /\ t_n.
+    
+    """
+    def get_proof_term(self, t):
+        if t.arg1.is_conj():
+            return refl(t).on_rhs(rewr_conv('conj_assoc', sym=True), arg_conv(self))
+        else:
+            return refl(t)
+
+class cnf_conv(Conv):
+    """Rewriting to CNF form"""
+    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+        pt = refl(t)
+        if t.is_not():
+            if t.arg.is_not():
+                return pt.on_rhs(rewr_conv('double_neg'), self)
+            elif t.arg.is_disj():
+                return pt.on_rhs(deMorgan_disj_conv(), self)
+            elif t.arg.is_conj():
+                return pt.on_rhs(deMorgan_conj_conv(), self)
+            elif t.arg.is_implies():
+                return pt.on_rhs(rewr_conv('not_imp'))
+            elif t.arg.is_equals() and t.arg.arg1.get_type() == hol_term.BoolType:
+                raise NotImplementedError
+            elif logic.is_if(t.arg) and t.arg.args[1].get_type() == hol_term.BoolType:
+                raise NotImplementedError
+            else:
+                return pt
+        elif t.is_disj():
+            return pt.on_rhs(binop_conv(self), combine_disj_cnf())
+        elif t.is_conj():
+            return pt.on_rhs(binop_conv(self), combine_conj_cnf())
+        elif t.is_implies():
+            return pt.on_rhs(rewr_conv('disj_conv_imp', sym=True), self)
+        elif t.is_equals() and t.arg1.get_type() == hol_term.BoolType:
+            raise NotImplementedError
+        elif logic.is_if(t) and t.args[1].get_type() == hol_term.BoolType:
+            raise NotImplementedError
+        elif t.is_forall():
+            return pt.on_rhs(arg_conv(abs_conv(self)))
         else:
             return pt

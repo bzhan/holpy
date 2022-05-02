@@ -894,13 +894,24 @@ class AndMacro(Macro):
 def verit_and_all(pt, ts):
     res = dict()
     ts_set = set(ts)
+    if pt.prop in ts_set:
+        res[pt.prop] = pt
     while pt.prop.is_conj():
         if pt.prop.arg1 in ts_set:
             res[pt.prop.arg1] = logic.apply_theorem('conjD1', pt)
         pt = logic.apply_theorem('conjD2', pt)
         if pt.prop in ts_set:
             res[pt.prop] = pt
-    return [res[t] for t in ts]
+    res_list = []
+    for t in ts:
+        if t not in res:
+            print(t)
+            raise VeriTException("and", "conclusion not found")
+        res_list.append(res[t])
+    return res_list
+
+def verit_and_single(pt, t):
+    return verit_and_all(pt, [t])[0]
 
 @register_macro("verit_or")
 class OrMacro(Macro):
@@ -3742,16 +3753,19 @@ class OnepointMacro(Macro):
             raise VeriTException("onepoint", "unexpected result")
 
 
-def get_cnf(t):
+def get_cnf(t: Term) -> Term:
     """Obtain the CNF form of t."""
     if t.is_not():
         if t.arg.is_not():
+            # ~~A becomes A
             return get_cnf(t.arg.arg)
         elif t.arg.is_disj():
+            # ~(A1 \/ ... \/ An) becomes ~A1 /\ ... /\ ~An
             disjs = t.arg.strip_disj()
             conjs = [Not(disj) for disj in disjs]
             return get_cnf(And(*conjs))
         elif t.arg.is_conj():
+            # ~(A1 /\ ... /\ An) becomes ~A1 \/ ... \/ ~An
             conjs = t.arg.strip_conj()
             disjs = [Not(conj) for conj in conjs]
             return get_cnf(Or(*disjs))
@@ -3826,7 +3840,6 @@ class QntCnfMacro(Macro):
         self.limit = None
 
     def eval(self, args, prevs):
-
         if len(args) != 1:
             raise VeriTException("qnt_cnt", "clause should contain one term")
         arg = args[0]
@@ -3853,6 +3866,38 @@ class QntCnfMacro(Macro):
         print('concl_body')
         print(concl_body)
         raise NotImplementedError
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        prem, concl = goal.arg1.arg, goal.arg
+
+        # Obtain the CNF form of premise in the form prem |- CNF(prem)
+        prem_pt = ProofTerm.assume(prem).on_prop(verit_conv.cnf_conv())
+
+        # Next, clear the forall quantifiers and find the required conjunct
+        while prem_pt.prop.is_forall():
+            x, _ = prem_pt.prop.arg.dest_abs()
+            prem_pt = prem_pt.forall_elim(x)
+        
+        # The conclusion is also cleared of forall quantifiers, collecting the
+        # quantified variables
+        xs = []
+        while concl.is_forall():
+            x, concl = concl.arg.dest_abs()
+            xs.append(x)
+
+        # Now find the conclusion among the clauses of prem_pt
+        try:
+            concl_pt = verit_and_single(prem_pt, concl)
+        except VeriTException:
+            raise NotImplementedError
+
+        # Re-introduce the forall quantifiers
+        for x in reversed(xs):
+            concl_pt = concl_pt.forall_intr(x)
+        
+        # Finally, form the implication prem -> concl and rewrite to ~prem \/ concl
+        return concl_pt.implies_intr(prem).on_prop(rewr_conv('disj_conv_imp', sym=True))
 
 
 @register_macro("verit_equiv_simplify")
