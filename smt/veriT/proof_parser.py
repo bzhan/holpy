@@ -217,7 +217,7 @@ class ProofTransformer(Transformer):
         var is the variable name, ty is its type, tm_name is
         the term name (may not occur in previous context)
         """
-        
+
         hol_ty = str_to_hol_type(ty)
         if isinstance(tm_name, hol_term.Term):
             tm = tm_name
@@ -392,13 +392,16 @@ class ProofTransformer(Transformer):
         return logic.mk_if(P, x, y)
 
     def mk_store(self, arr, i, v):
-        # TODO: generate fresh bound variable from a term
-        j = hol_term.Var('id_'+str(i), i.get_type())
-        ite_tm = logic.mk_if(hol_term.Eq(j, i), v, arr(j))
-        return hol_term.Lambda(j, ite_tm)
+        arr_ty = arr.get_type()
+        idx_ty = i.get_type()
+        val_ty = v.get_type()
+        store_tm = hol_term.Const("store", hol_term.TFun(arr_ty, idx_ty, val_ty, arr_ty))
+        return store_tm(arr, i, v)
 
     def mk_select(self, f, arg):
-        return f(arg)
+        fun_ty = f.get_type()
+        arg_ty = arg.get_type()
+        return hol_term.Const("select", hol_term.TFun(fun_ty, arg_ty, fun_ty.args[1]))(f, arg)
 
     def mk_int(self, num):
         if self.is_real:
