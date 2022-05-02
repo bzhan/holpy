@@ -129,16 +129,21 @@ def from_real_la(la):
 def analyze_args(coeffs):
     """Convert all coeffs to integer."""
     denoms = []
+    _coeffs = []
     for coeff in coeffs:
         if coeff.is_comb("real_divide"): # fraction coeff
             denoms.append(integer.int_eval(coeff.arg))
+            _coeffs.append(integer.int_eval(coeff.arg1)/integer.int_eval(coeff.arg))
+        else:
+            _coeffs.append(integer.int_eval(coeff))
+
     if len(denoms) == 0:
         return coeffs
     # compute the lcm of denoms
     lcm = 1
     for d in denoms:
         lcm = int(lcm * d / math.gcd(lcm, d))
-    return [int(lcm) * c for c in coeffs]
+    return [hol_term.Int(int(lcm * c)) for c in _coeffs]
 
 
 
@@ -151,7 +156,7 @@ class LAGenericMacro(Macro):
 
     def eval(self, args, prevs=None) -> Thm:
         dis_eqs, coeffs = args[:-1], args[-1]
-        if not isinstance(coeffs, Iterable) or not all(coeff.is_number() for coeff in coeffs):
+        if not isinstance(coeffs, Iterable) or not all(coeff.is_constant() for coeff in coeffs):
             print(coeffs)
             raise VeriTException("la_generic", "should supply a list of numbers")
 
