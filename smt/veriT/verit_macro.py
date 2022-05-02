@@ -3851,7 +3851,6 @@ class OnepointMacro(Macro):
         self.limit = None
 
     def eval(self, args, prevs):
-        print('onepoint')
         goal, ctx = args
         check_onepoint(goal, ctx)
         return Thm(goal)
@@ -3875,17 +3874,48 @@ class OnepointMacro(Macro):
             pt = pt.on_lhs(replace_conv(eq_lhs)).on_rhs(replace_conv(eq_rhs))
             eq_pt = compare_sym_tm_thm(pt.prop, goal)
             if eq_pt is None:
-                # print('pt')
-                # print(pt.th)
-                # print('goal')
-                # print(goal)
-                raise NotImplementedError
-            print('onepoint pass')
+                print('pt', pt.th)
+                print('goal', goal)
+                raise AssertionError
             return eq_pt.equal_elim(pt)
         elif onepoint_type == "FORALL-DISJ":
-            raise NotImplementedError
+            cur_t = Or(*info)
+            for x, _ in one_val_var:
+                cur_t = Forall(x, cur_t)
+            pt = ProofTerm.reflexive(cur_t).on_rhs(verit_conv.onepoint_forall_conv2())
+            for x in remain_var:
+                pt = ProofTerm.reflexive(hol_term.forall(x.T)).combination(pt.abstraction(x))
+            
+            goal_lhs_xs, _ = goal.lhs.strip_forall()
+            eq_lhs = verit_conv.forall_reorder_iff(pt.lhs, goal_lhs_xs)
+            goal_rhs_xs, _ = goal.rhs.strip_forall()
+            eq_rhs = verit_conv.forall_reorder_iff(pt.rhs, goal_rhs_xs)
+            pt = pt.on_lhs(replace_conv(eq_lhs)).on_rhs(replace_conv(eq_rhs))
+            eq_pt = compare_sym_tm_thm(pt.prop, goal)
+            if eq_pt is None:
+                print('pt', pt.th)
+                print('goal', goal)
+                raise AssertionError
+            return eq_pt.equal_elim(pt)
         elif onepoint_type == "EXISTS-CONJ":
-            raise NotImplementedError
+            cur_t = And(*info)
+            for x, _ in one_val_var:
+                cur_t = Exists(x, cur_t)
+            pt = ProofTerm.reflexive(cur_t).on_rhs(verit_conv.onepoint_exists_conv())
+            for x in remain_var:
+                pt = ProofTerm.reflexive(hol_term.exists(x.T)).combination(pt.abstraction(x))
+            
+            goal_lhs_xs, _ = goal.lhs.strip_exists()
+            eq_lhs = verit_conv.exists_reorder_iff(pt.lhs, goal_lhs_xs)
+            goal_rhs_xs, _ = goal.rhs.strip_exists()
+            eq_rhs = verit_conv.exists_reorder_iff(pt.rhs, goal_rhs_xs)
+            pt = pt.on_lhs(replace_conv(eq_lhs)).on_rhs(replace_conv(eq_rhs))
+            eq_pt = compare_sym_tm_thm(pt.prop, goal)
+            if eq_pt is None:
+                print('pt', pt.th)
+                print('goal', goal)
+                raise AssertionError
+            return eq_pt.equal_elim(pt)
         else:
             raise VeriTException("onepoint", "unrecognized type")
 

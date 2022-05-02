@@ -160,22 +160,22 @@ class abs_conv(Conv):
         except InvalidDerivationException:
             raise ConvException("abs_conv")
 
-def try_conv(cv):
+def try_conv(cv: Conv) -> Conv:
     return else_conv(cv, all_conv())
 
-def comb_conv(cv):
+def comb_conv(cv: Conv) -> Conv:
     return combination_conv(cv, cv)
 
-def arg_conv(cv):
+def arg_conv(cv: Conv) -> Conv:
     return combination_conv(all_conv(), cv)
 
-def fun_conv(cv):
+def fun_conv(cv: Conv) -> Conv:
     return combination_conv(cv, all_conv())
 
-def arg1_conv(cv):
+def arg1_conv(cv: Conv) -> Conv:
     return fun_conv(arg_conv(cv))
 
-def binop_conv(cv):
+def binop_conv(cv: Conv) -> Conv:
     return combination_conv(arg_conv(cv), cv)
 
 def every_conv(*args):
@@ -406,7 +406,7 @@ class replace_conv(Conv):
         if t == self.pt.prop.lhs:
             return self.pt
         else:
-            raise ConvException
+            raise ConvException('replace_conv: unexpected lhs')
 
 def has_rewrite(th, t, *, sym=False, conds=None):
     """Returns whether a rewrite is possible on a subterm of t.

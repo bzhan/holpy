@@ -516,6 +516,26 @@ def forall_reorder_iff(lhs: Term, xs2) -> ProofTerm:
 
     return ProofTerm.equal_intr(imp1, imp2)
 
+class not_exists_conv(Conv):
+    def get_proof_term(self, t):
+        if t.is_not() and t.arg.is_exists():
+            return refl(t).on_rhs(rewr_conv('not_exists'), arg_conv(abs_conv(self)))
+        else:
+            return refl(t)
+
+def exists_reorder_iff(lhs: Term, xs2) -> ProofTerm:
+    _, body = lhs.strip_exists()
+    rhs = hol_term.Exists(*(xs2 + [body]))
+
+    # Form ~lhs <--> ~rhs
+    lhs_pt = refl(hol_term.Not(lhs)).on_rhs(not_exists_conv())
+    rhs_pt = refl(hol_term.Not(rhs)).on_rhs(not_exists_conv())
+    eq_pt = forall_reorder_iff(lhs_pt.rhs, xs2)
+    pt = ProofTerm.transitive(lhs_pt, eq_pt, rhs_pt.symmetric())
+
+    # Return lhs <--> rhs
+    return ProofTerm.reflexive(hol_term.neg).combination(pt).on_prop(binop_conv(rewr_conv('double_neg')))
+
 class onepoint_forall_conv1(Conv):
     def get_proof_term(self, t):
         assert t.is_forall()
@@ -542,10 +562,91 @@ class onepoint_forall_conv1(Conv):
         # Swap Pi to the front
         conjs_alt = [conjs[found]] + conjs[:found] + conjs[found+1:]
         eq_pt = logic.imp_conj_iff(hol_term.Eq(hol_term.And(*conjs), hol_term.And(*conjs_alt)))
+        pt = pt.on_rhs(arg_conv(abs_conv(arg1_conv(replace_conv(eq_pt)))))
+
+        # Apply theorem
         if len(conjs) == 1:
-            th_name = "verit_onepoint_forall1"
+            pt = pt.on_rhs(rewr_conv("verit_onepoint_forall1"))
         else:
-            th_name = "verit_onepoint_forall2"
-        return pt.on_rhs(
-            arg_conv(abs_conv(arg1_conv(replace_conv(eq_pt)))),
-            rewr_conv(th_name))
+            pt = pt.on_rhs(rewr_conv("verit_onepoint_forall2"))
+
+        # Move Pi back to its original position
+        conjs = pt.rhs.arg1.strip_conj()
+        conjs_alt = conjs[1:found+1] + [conjs[0]] + conjs[found+1:]
+        eq_pt = logic.imp_conj_iff(hol_term.Eq(hol_term.And(*conjs), hol_term.And(*conjs_alt)))
+        pt = pt.on_rhs(arg1_conv(replace_conv(eq_pt)))
+        return pt
+
+class onepoint_forall_conv2(Conv):
+    def get_proof_term(self, t):
+        assert t.is_forall()
+        x, body = t.arg.dest_abs()
+
+        # First rewrite the body recursively, if necessary
+        if body.is_forall():
+            pt = refl(t).on_rhs(arg_conv(abs_conv(self)))
+        else:
+            pt = refl(t)
+        _, body = pt.rhs.arg.dest_abs()
+        
+        # The body should be in the form P1 | ... | Pn,. Look for
+        # ~x = a among the Pi's.
+        disjs = body.strip_disj()
+        found = None
+        for i, disj in enumerate(disjs):
+            if disj.is_not() and disj.arg.is_equals() and disj.arg.lhs == x:
+                found = i
+                break
+        assert found is not None
+
+        # Swap Pi to the front
+        disjs_alt = [disjs[found]] + disjs[:found] + disjs[found+1:]
+        eq_pt = logic.imp_disj_iff(hol_term.Eq(hol_term.Or(*disjs), hol_term.Or(*disjs_alt)))
+        pt = pt.on_rhs(arg_conv(abs_conv(replace_conv(eq_pt))))
+
+        # Apply theorem
+        pt = pt.on_rhs(rewr_conv("verit_onepoint_forall3"))
+
+        # Move Pi back to its original position
+        disjs = pt.rhs.strip_disj()
+        disjs_alt = disjs[1:found+1] + [disjs[0]] + disjs[found+1:]
+        eq_pt = logic.imp_disj_iff(hol_term.Eq(hol_term.Or(*disjs), hol_term.Or(*disjs_alt)))
+        pt = pt.on_rhs(replace_conv(eq_pt))
+        return pt
+
+class onepoint_exists_conv(Conv):
+    def get_proof_term(self, t):
+        assert t.is_exists()
+        x, body = t.arg.dest_abs()
+
+        # First rewrite the body recursively, if necessary
+        if body.is_exists():
+            pt = refl(t).on_rhs(arg_conv(abs_conv(self)))
+        else:
+            pt = refl(t)
+        _, body = pt.rhs.arg.dest_abs()
+        
+        # The body should be in the form P1 & ... & Pn,. Look for
+        # x = a among the Pi's.
+        conjs = body.strip_conj()
+        found = None
+        for i, conj in enumerate(conjs):
+            if conj.is_equals() and conj.lhs == x:
+                found = i
+                break
+        assert found is not None
+
+        # Swap Pi to the front
+        conjs_alt = [conjs[found]] + conjs[:found] + conjs[found+1:]
+        eq_pt = logic.imp_conj_iff(hol_term.Eq(hol_term.And(*conjs), hol_term.And(*conjs_alt)))
+        pt = pt.on_rhs(arg_conv(abs_conv(replace_conv(eq_pt))))
+
+        # Apply theorem
+        pt = pt.on_rhs(rewr_conv("verit_onepoint_exists"))
+
+        # Move Pi back to its original position
+        conjs = pt.rhs.strip_conj()
+        conjs_alt = conjs[1:found+1] + [conjs[0]] + conjs[found+1:]
+        eq_pt = logic.imp_conj_iff(hol_term.Eq(hol_term.And(*conjs), hol_term.And(*conjs_alt)))
+        pt = pt.on_rhs(replace_conv(eq_pt))
+        return pt
