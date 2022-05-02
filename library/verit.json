@@ -1527,6 +1527,18 @@
                 "P": "'a ⇒ bool",
                 "a": "'a"
             }
+        },
+        {
+            "name": "store",
+            "prop": "store array i v = (λj. if j = i then v else array j)",
+            "ty": "def",
+            "type": "('a ⇒ 'b) ⇒ 'a ⇒ 'b ⇒ 'a ⇒ 'b"
+        },
+        {
+            "name": "select",
+            "prop": "select f a = f a",
+            "ty": "def",
+            "type": "('a ⇒ 'b) ⇒ 'a ⇒ 'b"
         }
     ],
     "description": "Schematic verit proof rule.",

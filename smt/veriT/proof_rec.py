@@ -7,7 +7,7 @@ from smt.veriT import la_generic
 from kernel.proofterm import ProofTerm
 from kernel.thm import Thm
 from kernel import term
-from kernel.term import Or, Int
+from kernel.term import Or
 from kernel import theory
 from logic import logic
 from alive_progress import alive_bar

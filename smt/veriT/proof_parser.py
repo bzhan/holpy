@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Union
 from lark import Lark, Transformer, v_args, exceptions
 from smt.veriT.command import Assume, Step, Anchor
 from logic import logic
@@ -17,8 +17,10 @@ class VeriTParseException(Exception):
     def __str__(self) -> str:
         return "%s: %s" % (self.tm_name, self.message)
 
-def str_to_hol_type(s):
+def str_to_hol_type(s: Union[hol_type.Type, str]) -> hol_type.Type:
         """Convert string to HOL type."""
+        if isinstance(s, hol_type.Type):
+            return s
         s = str(s)
         if s == "Bool":
             return hol_type.BoolType
@@ -26,6 +28,8 @@ def str_to_hol_type(s):
             return hol_type.IntType
         elif s == "Real":
             return hol_type.RealType
+        elif s == "ArrayIntInt":
+            return hol_type.TFun(hol_type.IntType, hol_type.IntType)
         else:
             # All other types are converted to type variables.
             return hol_type.TVar(s)
@@ -39,6 +43,7 @@ smt_decl_grammar = r"""
 
     ?vname: VNAME -> mk_vname
         | QUOTED_VNAME -> mk_quoted_vname
+        | "(Array " VNAME VNAME ")" -> mk_array
 
     ?term: "(declare-fun" vname "()" vname ")" -> mk_tm
         | "(declare-fun" vname "(" vname+ ")" vname ")" -> mk_fun
@@ -73,6 +78,9 @@ class DeclTransformer(Transformer):
     def mk_fun(self, name, *args):
         """Make a function term, which type is arg1 -> ... argn."""
         return {name: hol_type.TFun(*(str_to_hol_type(t) for t in args))}
+
+    def mk_array(self, domain, codomain):
+        return hol_type.TFun(str_to_hol_type(domain), str_to_hol_type(codomain))
 
 decl_parser = Lark(smt_decl_grammar, start="term", parser="lalr", transformer=DeclTransformer())
 
@@ -136,6 +144,8 @@ veriT_grammar = r"""
             | "(let " "(" let_pair* ")" term ")" -> mk_let_tm
             | "(distinct " term term+ ")" -> mk_distinct_tm
             | "(xor " term term ")" -> mk_xor_tm
+            | "(store " term term term ")" -> mk_store
+            | "(select " term term ")" -> mk_select
             | "(" term ")" -> mk_par_tm
             | "(" term+ ")" -> mk_app_tm
             | "(ite " term term term ")" -> mk_ite_tm
@@ -380,6 +390,15 @@ class ProofTransformer(Transformer):
 
     def mk_ite_tm(self, P, x, y):
         return logic.mk_if(P, x, y)
+
+    def mk_store(self, arr, i, v):
+        # TODO: generate fresh bound variable from a term
+        j = hol_term.Var('id_'+str(i), i.get_type())
+        ite_tm = logic.mk_if(hol_term.Eq(j, i), v, arr(j))
+        return hol_term.Lambda(j, ite_tm)
+
+    def mk_select(self, f, arg):
+        return f(arg)
 
     def mk_int(self, num):
         if self.is_real:
