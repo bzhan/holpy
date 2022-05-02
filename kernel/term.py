@@ -32,21 +32,24 @@ class Inst(UserDict):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tyinst = TyInst()
+        self.abs_name_inst = dict()
 
     def __str__(self):
         res = ''
         if self.tyinst:
             res = str(self.tyinst) + ', '
         res += ', '.join('%s := %s' % (nm, t) for nm, t in self.items())
+        res += ', '.join('%s -> %s' % (nm, nm2) for nm, nm2 in self.abs_name_inst.items())
         return res
 
     def __copy__(self):
         res = Inst(self)
         res.tyinst = copy(self.tyinst)
+        res.abs_name_inst = copy(self.abs_name_inst)
         return res
 
     def __bool__(self):
-        return bool(self.tyinst) or bool(self.keys())
+        return bool(self.tyinst) or bool(self.keys()) or bool(self.abs_name_inst)
 
 
 """Default parser for terms. If None, Term() is unable to parse string."""
@@ -445,7 +448,11 @@ class Term():
                 t.body.fun.name in inst and t.body.arg == Bound(0) and inst[t.body.fun.name].is_abs():
                 return inst[t.body.fun.name]
             elif t.is_abs():
-                return Abs(t.var_name, t.var_T, rec(t.body))
+                if t.var_name in inst.abs_name_inst:
+                    var_name = inst.abs_name_inst[t.var_name]
+                else:
+                    var_name = t.var_name
+                return Abs(var_name, t.var_T, rec(t.body))
             elif t.is_bound():
                 return t
             else:
