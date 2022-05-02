@@ -47,6 +47,9 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     verit_proof = interface.solve(abs_name)
     if verit_proof is None:
         return
+    if verit_proof == "unknown\r\n":
+        print("unknown proof")
+        return
     ctx = proof_rec.bind_var(abs_name)
     solve_time = time.perf_counter() - start_time
 

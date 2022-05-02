@@ -59,6 +59,9 @@ def test_file(filename, write_file=False, show_time=True, veriT_only=False):
     if len(verit_proof) == 0:
         print('Empty proof')
         return
+    if verit_proof == "unknown\r\n":
+        print("unknown proof")
+        return
 
     # All veriT jobs finished. Output file name. 
     print(repr(filename) + ',')
@@ -338,6 +341,35 @@ class ParserTest(unittest.TestCase):
 
         for path in test_paths:
             test_path(path)
+        
+    def testParseAUFLIA(self):
+        test_paths = [
+            'AUFLIA/20170829-Rodin/smt1002232729905089644.smt2',
+            'AUFLIA/20170829-Rodin/smt1005619206308662052.smt2',
+            'AUFLIA/20170829-Rodin/smt1041855950602319657.smt2',
+            'AUFLIA/20170829-Rodin/smt1056800823907916951.smt2',
+            'AUFLIA/20170829-Rodin/smt1092100299585472351.smt2',
+            'AUFLIA/20170829-Rodin/smt1119354235255245041.smt2',
+            'AUFLIA/20170829-Rodin/smt121642227126350719.smt2',
+            'AUFLIA/20170829-Rodin/smt1218456647866960210.smt2',
+            'AUFLIA/20170829-Rodin/smt1238392701218460929.smt2',
+            'AUFLIA/20170829-Rodin/smt1548357652033660278.smt2',
+            'AUFLIA/20170829-Rodin/smt1551255090000261050.smt2',
+            'AUFLIA/20170829-Rodin/smt1553283421285438203.smt2',
+            'AUFLIA/20170829-Rodin/smt1638875703304617187.smt2',
+            'AUFLIA/20170829-Rodin/smt1643313206004053741.smt2',
+            'AUFLIA/20170829-Rodin/smt1643358356540277150.smt2',
+            'AUFLIA/20170829-Rodin/smt1828334434025716862.smt2',
+            'AUFLIA/20170829-Rodin/smt1829029808963281215.smt2',
+            'AUFLIA/20170829-Rodin/smt1882594910272367920.smt2',
+            'AUFLIA/20170829-Rodin/smt1883437689668062427.smt2'
+            'AUFLIA/20170829-Rodin/smt2022486099146293362.smt2',
+            'AUFLIA/20170829-Rodin/smt2025463987927880021.smt2',
+            'AUFLIA/20170829-Rodin/smt2027035001350841448.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path, write_file=True)
 
 
 if __name__ == "__main__":

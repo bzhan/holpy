@@ -1033,8 +1033,23 @@ class EqSimplifyMacro(Macro):
         if lhs.is_equals():
             if lhs.lhs == lhs.rhs and rhs == true:
                 return logic.apply_theorem("eq_mean_true", concl=goal)
+
+        if lhs.is_equals() and lhs.lhs.is_constant() and lhs.rhs.is_constant() and rhs == false:
+            T = lhs.lhs.get_type()
+            if T == hol_type.IntType:
+                pt = ProofTerm('int_const_ineq', lhs).on_prop(rewr_conv('eq_false'))
+                if pt.prop == goal:
+                    return pt
+            if T == hol_type.RealType:
+                pt = ProofTerm('real_const_eq', lhs).on_prop(rewr_conv('eq_false'))
+                if pt.prop == goal:
+                    return pt
+
+        if lhs.is_not() and lhs.arg.is_equals() and lhs.arg.lhs.is_constant()\
+                 and lhs.arg.lhs == lhs.arg.rhs and rhs == false:
+            return logic.apply_theorem('verit_eq_simplify', concl=goal)
         
-        raise VeriTException("eq_simplify", "implementation is incomplete")
+        raise VeriTException("eq_simplify", "unexpected result")
 
 
 @register_macro("verit_trans")
@@ -2459,7 +2474,7 @@ class BoolSimplifyMacro(Macro):
         else:
             print("lhs", lhs)
             print("rhs", rhs)
-            raise VeriTException("bool_simplify", "implementation is incomplete")
+            raise VeriTException("bool_simplify", "unexpected result")
 
     def get_proof_term(self, args, prevs):
         goal = args[0]
@@ -2525,7 +2540,7 @@ class BoolSimplifyMacro(Macro):
         else:
             print("lhs", lhs)
             print("rhs", rhs)
-            raise VeriTException("bool_simplify", "implementation is incomplete")
+            raise VeriTException("bool_simplify", "unexpected result")
 
 @register_macro("verit_la_disequality")
 class LADisequalityMacro(Macro):
@@ -2752,7 +2767,7 @@ class CompSimplifyMacro(Macro):
                 raise VeriTException("comp_simplify", "can't match a > b <--> ~(a <= b)")
         else:
             print("goal", goal)
-            raise VeriTException("comp_simplify", "implementation is incomplete")
+            raise VeriTException("comp_simplify", "unexpected result")
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal = args[0]
@@ -3099,27 +3114,32 @@ class UnaryMinusSimplifyMacro(Macro):
         else:
             raise VeriTException("minus_simplify", "unexpected result")
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        lhs, rhs = goal.lhs, goal.rhs
+        T = lhs.get_type()
 
+        # case 1: --t = t
+        if lhs.is_uminus() and lhs.arg.is_uminus() and lhs.arg.arg == rhs:
+            if T == hol_type.IntType:
+                return logic.apply_theorem("opp_involutive", concl=goal)
+            if T == hol_type.RealType:
+                return logic.apply_theorem("real_neg_neg", concl=goal)
 
+        # case 2: -t = u
+        if lhs.is_uminus() and lhs.is_constant() and rhs.is_constant():
+            if T == hol_type.IntType:
+                pt_lhs = refl(lhs).on_rhs(integer.int_eval_conv())
+                pt_rhs = refl(rhs).on_rhs(integer.int_eval_conv())
+                if pt_lhs.rhs == pt_rhs.rhs:
+                    return pt_lhs.transitive(pt_rhs.symmetric())
+            if T == hol_type.RealType:
+                pt_lhs = refl(lhs).on_rhs(real.real_eval_conv())
+                pt_rhs = refl(rhs).on_rhs(real.real_eval_conv())
+                if pt_lhs.rhs == pt_rhs.rhs:
+                    return pt_lhs.transitive(pt_rhs.symmetric())
 
-    
-
- 
-# @register_macro("verit_lia_generic")
-# class LIAGenericMacro(Macro):
-#     def __init__(self):
-#         self.level = 1
-#         self.sig = Term
-#         self.limit = None
-
-#     def eval(self, args, prevs=None):
-#         print("args")
-#         for arg in args:
-#             print(arg)
-        
-#         raise NotImplementedError
- 
-
+        raise VeriTException("uminus_simplify", "unexpected result")
 
 @register_macro("verit_connective_def")
 class ConnectiveDefMacro(Macro):

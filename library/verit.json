@@ -1622,6 +1622,14 @@
             "prop": "select f a = f a",
             "ty": "def",
             "type": "('a ⇒ 'b) ⇒ 'a ⇒ 'b"
+        },
+        {
+            "name": "verit_eq_simplify",
+            "prop": "¬(t = t) ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "t": "'a"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",
