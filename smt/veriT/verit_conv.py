@@ -44,7 +44,7 @@ class int_norm_add_atom_conv(Conv):
                 raise ConvException
         elif t.arg1.is_plus():
             if t.arg.is_number():
-                return pt.on_rhs(integer.swap_add_r(), arg1_conv(self))
+                return pt.on_rhs(integer.swap_add_r(), arg1_conv(self), try_conv(rewr_conv('int_add_0_left')))
             elif t.arg.is_times():
                 cp = compare_atom(t.arg1.arg, t.arg)
                 if cp > 0:
@@ -218,7 +218,7 @@ class real_norm_add_atom_conv(Conv):
                 raise ConvException
         elif t.arg1.is_plus():
             if t.arg.is_number():
-                return pt.on_rhs(real.swap_add_r(), arg1_conv(self))
+                return pt.on_rhs(real.swap_add_r(), arg1_conv(self), try_conv(rewr_conv('real_add_lid')))
             elif t.arg.is_times():
                 cp = compare_atom(t.arg1.arg, t.arg)
                 if cp > 0:
