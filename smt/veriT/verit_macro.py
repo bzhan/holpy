@@ -1082,7 +1082,7 @@ class TransMacro(Macro):
             elif pt.lhs == prev.rhs:
                 pt = prev.transitive(pt)
             else:
-                raise VeriTException("trans", "cannot connect equalities")
+                continue # verit bugs: not all premises could be chains for transition
         if pt.prop == goal:
             return pt
         if pt.prop == Eq(goal.rhs, goal.lhs):
@@ -2918,6 +2918,9 @@ class ITESimplifyMacro(Macro):
             # Case 14: ite P Q true <--> ~P | Q
             elif l_else == true and ite2 == Or(Not(l_P), l_then):
                 return logic.apply_theorem('verit_ite_simplify14', concl=goal)
+            # case 15: ite ~P Q true <--> P | Q
+            elif l_else == true and l_P.is_not() and ite2 == Or(l_P.arg, l_then):
+                return logic.apply_theorem('verit_ite_simplify15', concl=goal)
             else:
                 return None
         else:
@@ -2935,7 +2938,7 @@ class ITESimplifyMacro(Macro):
         if self.compare_ite(lhs, rhs) or self.compare_ite(rhs, lhs):
             return Thm(goal)
         else:
-            raise VeriTException("ite_complete", "unexpected result")
+            raise VeriTException("ite_simplify", "unexpected result")
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal = args[0]
@@ -2948,7 +2951,8 @@ class ITESimplifyMacro(Macro):
         if pt_rhs_lhs is not None and pt_rhs_lhs.symmetric().prop == goal:
             return pt_rhs_lhs.symmetric()
         else:
-            raise VeriTException("ite_complete", "unexpected result")
+            print("goal", goal)
+            raise VeriTException("ite_simplify", "unexpected result")
 
 @register_macro("verit_minus_simplify")
 class MinusSimplify(Macro):

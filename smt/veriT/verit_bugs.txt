@@ -39,3 +39,16 @@ problem: repeated clauses hindering resolution getting correct result.
 file_name: UF/sledgehammer/Arrow_Order/smtlib.617784.smt2
 step 31 (bind)
 problem: suspected variable name conflict
+11.
+file_name: QF_AUFLIA/cvc/add5.smt2
+step 213 (ite_simplify)
+problem: `if ~P then Q else true <--> P | Q` is not included in the ite_simplify rule
+step 214 (trans)
+(step t211 (cl (= @p_411 (! (ite @p_449 @p_590 true) :named @p_591))) :rule cong :premises (t44 t210))
+
+(step t212 (cl (= (not @p_449) @p_447)) :rule not_simplify)
+
+(step t213 (cl (= @p_591 (! (or @p_447 @p_590) :named @p_592))) :rule ite_simplify)
+
+(step t214 (cl (= @p_411 @p_592)) :rule trans :premises (t211 t212 t213))
+problem: to obtain p_411 = p_592, we should connect t211's rhs with t213's lhs, t212 is not supposed to be added in premises.

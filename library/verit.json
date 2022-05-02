@@ -1230,6 +1230,15 @@
             }
         },
         {
+            "name": "verit_ite_simplify15",
+            "prop": "(if ¬P then Q else true) ⟷ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
             "name": "verit_imp_simplify1",
             "prop": "(¬P ⟶ ¬Q) ⟷ (Q ⟶ P)",
             "ty": "thm",
