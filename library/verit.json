@@ -1490,6 +1490,43 @@
             "vars": {
                 "P": "'a ⇒ bool"
             }
+        },
+        {
+            "name": "verit_connective_def1",
+            "prop": "xor P Q ⟷ ¬P ∧ Q ∨ P ∧ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_connective_def2",
+            "prop": "(P ⟷ Q) ⟷ (P ⟶ Q) ∧ (Q ⟶ P)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_connective_def3",
+            "prop": "(if P then Q else R) ⟷ (P ⟶ Q) ∧ (¬P ⟶ R)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_connective_def4",
+            "prop": "(∃a. P a) ⟷ ¬(∀a. ¬(P a))",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "a": "'a"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

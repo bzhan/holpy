@@ -3132,12 +3132,12 @@ class ConnectiveDefMacro(Macro):
                     raise VeriTException("connective_def", "can't match  (p <--> q) <--> (p --> q) /\ (q --> p)")
             else:
                 raise VeriTException("connective_def", "can't match (p <--> q) <--> (p --> q) /\ (q --> p)")
-        elif logic.is_if(lhs):
-            p1, p2, p3 = lhs.args
+        elif logic.is_if(lhs): # alethe document has typos
+            p1, p2, p3 = lhs.args # if p1 then p2 else p3
             if rhs.is_conj() and rhs.arg1.is_implies() and rhs.arg.is_implies():
-                q1, q2 = rhs.arg1.args
-                o1, o2 = rhs.arg.args
-                if q1 == p1 and o1 == Not(p1) and p2 == q2 and o2 == Not(p2):
+                q1, q2 = rhs.arg1.args # p1 --> p2
+                o1, o2 = rhs.arg.args # ~p1 --> p3
+                if q1 == p1 and o1 == Not(p1) and p2 == q2 and o2 == p3:
                     return Thm(goal)
         elif lhs.is_exists() and rhs.is_not() and rhs.arg.is_forall():
             l_var, l_body = lhs.strip_exists()
@@ -3150,9 +3150,20 @@ class ConnectiveDefMacro(Macro):
             # print("lhs", lhs)
             # print("rhs", rhs)
             raise VeriTException("connective_def", "unexpected goals")
-
-
-
+    
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        if logic.is_xor(goal.lhs):
+            return logic.apply_theorem('verit_connective_def1', concl=goal)
+        elif goal.lhs.is_equals():
+            return logic.apply_theorem('verit_connective_def2', concl=goal)
+        elif logic.is_if(goal.lhs):
+            return logic.apply_theorem('verit_connective_def3', concl=goal)
+        elif goal.lhs.is_exists():
+            pt = refl(goal.lhs).on_rhs(verit_conv.exists_forall_conv())
+            if pt.prop == goal:
+                return pt
+        raise VeriTException("connective_def", "unexpected goal")
 @register_macro("verit_bind")
 class BindMacro(Macro):
     def __init__(self):

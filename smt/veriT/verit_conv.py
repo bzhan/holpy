@@ -1,4 +1,5 @@
-from logic.conv import Conv, rewr_conv, ConvException, arg1_conv, arg_conv, binop_conv, top_conv
+from logic.conv import Conv, rewr_conv, ConvException, \
+    arg1_conv, arg_conv, binop_conv, top_conv, beta_conv, abs_conv, try_conv
 from data import integer, real
 from kernel.term_ord import fast_compare
 from kernel import term as hol_term
@@ -334,3 +335,19 @@ class const_prod_lra_conv(Conv):
             return pt.on_rhs(rewr_conv('real_mult_assoc'), arg1_conv(real.real_eval_conv()))
         else:
             return pt
+
+class exists_forall_conv(Conv):
+    """Prove the equivalence between ?x1 x2 ... xn. P x1 x2 ... xn and
+    ~!x1 x2 ... xn. ~P x1 x2 ... xn."""
+    def get_proof_term(self, t):
+        print("t", t)
+        if not t.is_exists():
+            return refl(t)
+        
+        pt1 = refl(t).on_rhs(rewr_conv('verit_connective_def4'))
+        pt2 = pt1.on_rhs(arg_conv(arg_conv(abs_conv(arg_conv(try_conv(beta_conv()))))))
+        if not t.arg.body.is_exists():
+            return pt2
+        pt3 = pt2.on_rhs(arg_conv(arg_conv(abs_conv(arg_conv(self)))))
+        pt4 = pt3.on_rhs(arg_conv(arg_conv(abs_conv(rewr_conv('double_neg')))))
+        return pt4
