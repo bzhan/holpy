@@ -446,19 +446,21 @@ class cnf_conv(Conv):
             else:
                 return pt
         elif t.is_disj():
-            if t.arg1.is_forall():
+            pt = pt.on_rhs(binop_conv(self))
+            if pt.rhs.arg1.is_forall():
                 return pt.on_rhs(rewr_conv('verit_qnt_disj1'), self)
-            elif t.arg.is_forall():
+            elif pt.rhs.arg.is_forall():
                 return pt.on_rhs(rewr_conv("verit_qnt_disj2"), self)
             else:
-                return pt.on_rhs(binop_conv(self), combine_disj_cnf())
+                return pt.on_rhs(combine_disj_cnf())
         elif t.is_conj():
-            if t.arg1.is_forall():
+            pt = pt.on_rhs(binop_conv(self))
+            if pt.rhs.arg1.is_forall():
                 return pt.on_rhs(rewr_conv('verit_qnt_conj1'), self)
-            elif t.arg.is_forall():
+            elif pt.rhs.arg.is_forall():
                 return pt.on_rhs(rewr_conv("verit_qnt_conj2"), self)
             else:
-                return pt.on_rhs(binop_conv(self), combine_conj_cnf())
+                return pt.on_rhs(combine_conj_cnf())
         elif t.is_implies():
             return pt.on_rhs(rewr_conv('disj_conv_imp', sym=True), self)
         elif t.is_equals() and t.arg1.get_type() == hol_term.BoolType:

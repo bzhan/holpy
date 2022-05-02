@@ -3948,7 +3948,7 @@ class QntCnfMacro(Macro):
             #     print(clause)
             print('concl')
             print(concl)
-            raise NotImplementedError
+            raise AssertionError
 
         # Re-introduce the forall quantifiers
         for x in reversed(xs):
