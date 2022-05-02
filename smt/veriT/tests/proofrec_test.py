@@ -421,13 +421,13 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_QF_LRA(self):
+    def test_QF_LRA(self): # proofterm ✓ eval ✓
         test_paths = [
-            'QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2', # proofterm ✓
+            'QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2',
             'QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2',
             'QF_LRA/spider_benchmarks/current_frame.induction.smt2',
             'QF_LRA/sc/sc-10.base.cvc.smt2',
-            'QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2', # proofterm ite_intros
+            'QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2', 
             'QF_LRA/tta_startup/simple_startup_10nodes.synchro.induct.smt2',
             'QF_LRA/uart//uart-10.base.cvc.smt2',
         ]

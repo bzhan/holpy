@@ -1965,8 +1965,21 @@ def compare_ac_thm(tm1, tm2):
     if tm1.is_conj():
         conjs1 = logic.strip_conj(tm1)
         conjs2 = logic.strip_conj(tm2)
-        if set(conjs1) == set(conjs2):
+        conjs1_set = set(conjs1)
+        conjs2_set = set(conjs2)
+
+        if conjs1_set == conjs2_set:
             return logic.imp_conj_iff(Eq(tm1, tm2))
+
+        # remove the repeated conjuncts in conjs1_set
+        if len(conjs1) != len(conjs2) and len(conjs1_set) == len(conjs2_set):
+            conjs1_unique = []
+            for conj1 in conjs1:
+                if conj1 not in conjs1_unique:
+                    conjs1_unique.append(conj1)
+            assert len(conjs1_unique) == len(conjs2)
+            conjs1 = conjs1_unique
+        
         if len(conjs1) == len(conjs2) and all(compare_ac(t1, t2) for t1, t2 in zip(conjs1, conjs2)):
             eqs = dict()
             for t1, t2 in zip(conjs1, conjs2):
@@ -1976,8 +1989,7 @@ def compare_ac_thm(tm1, tm2):
             tm2_eq = logic.imp_conj_iff(Eq(tm2, And(*conjs2)))
             sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs=eqs)
             return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
-
-        raise NotImplementedError
+        raise AssertionError
     elif tm1.is_disj():
         disjs1 = logic.strip_disj(tm1)
         disjs2 = logic.strip_disj(tm2)
