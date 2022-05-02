@@ -452,10 +452,12 @@ class cnf_conv(Conv):
 
 
 class exists_forall_conv(Conv):
-    """Prove the equivalence between ?x1 x2 ... xn. P x1 x2 ... xn and
-    ~!x1 x2 ... xn. ~P x1 x2 ... xn."""
+    """Prove the equivalence between
+        EX x_1 x_2 ... x_n. P x_1 x_2 ... x_n
+    and ~ALL x_1 x_2 ... x_n. ~P x_1 x_2 ... x_n.
+    
+    """
     def get_proof_term(self, t):
-        print("t", t)
         if not t.is_exists():
             return refl(t)
         
