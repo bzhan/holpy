@@ -4344,18 +4344,6 @@ class DivSimplifyMacro(Macro):
         
         raise VeriTException('div_simplify', "unexpected result")
 
-@register_macro('verit_la_tautology')
-class LATautologyMacro(Macro):
-    def __init__(self):
-        self.level = 1
-        self.sig = Term
-        self.limit = None
-
-    def eval(self, args, prevs=None) -> Thm:
-        coeffs = tuple([[hol_term.Int(1)]])
-        return ProofTerm('verit_la_generic', args+coeffs)
-
-
 @register_macro('verit_xor_pos1')
 class XORPos1Macro(Macro):
     def __init__(self):

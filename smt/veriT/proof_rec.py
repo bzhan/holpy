@@ -7,7 +7,7 @@ from smt.veriT import la_generic
 from kernel.proofterm import ProofTerm
 from kernel.thm import Thm
 from kernel import term
-from kernel.term import Or
+from kernel.term import Or, Int
 from kernel import theory
 from logic import logic
 from alive_progress import alive_bar
@@ -113,6 +113,9 @@ class ProofReconstruction:
         elif rule_name in ("resolution", "th_resolution"):
             args = (step.cl, self.get_clause_sizes(step.pm))
             macro_name = "verit_th_resolution"
+        elif rule_name == "la_tautology":
+            macro_name = "verit_la_generic"
+            args += tuple([[]])
 
         # Evaluation case
         if is_eval or macro_name in omit_proofterm:
