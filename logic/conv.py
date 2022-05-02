@@ -350,7 +350,10 @@ class rewr_conv(Conv):
         # and self.sym. Decompose into self.As and self.C.
         if self.eq_pt is None:
             if isinstance(self.pt, str):
-                self.eq_pt = ProofTerm.theorem(self.pt)
+                try:
+                    self.eq_pt = ProofTerm.theorem(self.pt)
+                except theory.TheoryException:
+                    raise ConvException("rewr_conv: theorem %s not found" % self.pt)
             else:
                 self.eq_pt = self.pt
 

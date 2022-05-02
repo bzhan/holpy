@@ -905,7 +905,6 @@ def verit_and_all(pt, ts):
     res_list = []
     for t in ts:
         if t not in res:
-            print(t)
             raise VeriTException("and", "conclusion not found")
         res_list.append(res[t])
     return res_list

@@ -399,7 +399,7 @@ class combine_disj_cnf(Conv):
     def get_proof_term(self, t):
         if t.arg1.is_conj():
             return refl(t).on_rhs(
-                rewr_conv('disj_conj_distrib2'),
+                rewr_conv('disj_conj_distribL2'),
                 arg1_conv(combine_clause_cnf()),
                 arg_conv(self))
         else:
@@ -428,11 +428,11 @@ class cnf_conv(Conv):
             elif t.arg.is_conj():
                 return pt.on_rhs(deMorgan_conj_conv(), self)
             elif t.arg.is_implies():
-                return pt.on_rhs(rewr_conv('not_imp'))
+                return pt.on_rhs(rewr_conv('not_imp'), self)
             elif t.arg.is_equals() and t.arg.arg1.get_type() == hol_term.BoolType:
-                raise NotImplementedError
+                return pt.on_rhs(rewr_conv('verit_not_iff_eq'), self)
             elif logic.is_if(t.arg) and t.arg.args[1].get_type() == hol_term.BoolType:
-                raise NotImplementedError
+                return pt.on_rhs(rewr_conv('verit_not_ite_eq'), self)
             else:
                 return pt
         elif t.is_disj():
@@ -442,9 +442,9 @@ class cnf_conv(Conv):
         elif t.is_implies():
             return pt.on_rhs(rewr_conv('disj_conv_imp', sym=True), self)
         elif t.is_equals() and t.arg1.get_type() == hol_term.BoolType:
-            raise NotImplementedError
+            return pt.on_rhs(rewr_conv('verit_iff_eq'), self)
         elif logic.is_if(t) and t.args[1].get_type() == hol_term.BoolType:
-            raise NotImplementedError
+            return pt.on_rhs(rewr_conv('verit_ite_eq'), self)
         elif t.is_forall():
             return pt.on_rhs(arg_conv(abs_conv(self)))
         else:

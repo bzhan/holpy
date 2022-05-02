@@ -1538,6 +1538,44 @@
             }
         },
         {
+            "name": "verit_not_iff_eq",
+            "prop": "¬(A ⟷ B) ⟷ A ∧ ¬B ∨ ¬A ∧ B",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
+            "name": "verit_iff_eq",
+            "prop": "(A ⟷ B) ⟷ (¬A ∨ B) ∧ (¬B ∨ A)",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
+            "name": "verit_not_ite_eq",
+            "prop": "¬(if P then Q else R) ⟷ P ∧ ¬Q ∨ ¬P ∧ R",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_eq",
+            "prop": "(if P then Q else R) ⟷ (¬P ∨ Q) ∧ (P ∨ R)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
             "name": "store",
             "prop": "store array i v = (λj. if j = i then v else array j)",
             "ty": "def",
