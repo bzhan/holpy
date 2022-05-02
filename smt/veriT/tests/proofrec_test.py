@@ -446,7 +446,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_QF_AUFLIA(self): # eval ✓ proofterm ×
+    def test_QF_AUFLIA(self): # eval ✓ proofterm ✓
         test_paths = [
             'QF_AUFLIA/20170829-Rodin/smt101358492275879472.smt2',
             'QF_AUFLIA/20170829-Rodin/smt1048206973303286471.smt2',
@@ -458,7 +458,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_AUFLIA/cvc/add5.smt2',
             'QF_AUFLIA/cvc/add6.smt2',
             'QF_AUFLIA/cvc/fb_var_33_6.smt2',
-            # # 'QF_AUFLIA/cvc/pp-invariant.smt2', # proofterm ite_intro
+            'QF_AUFLIA/cvc/pp-invariant.smt2',
             'QF_AUFLIA/cvc/pp-pc-s2i.smt2',
             'QF_AUFLIA/cvc/read6.smt2',
             'QF_AUFLIA/swap/swap_t1_pp_nf_ai_00002_001.cvc.smt2',
@@ -477,7 +477,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True, write_file=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)
