@@ -94,7 +94,7 @@ class NotAndMacro(Macro):
 
     def get_proof_term(self, args, prevs):
         goal, pt0 = Or(*args), prevs[0]
-        pt1 = pt0.on_prop(top_conv(rewr_conv("de_morgan_thm1")))
+        pt1 = pt0.on_prop(verit_conv.deMorgan_conj_conv())
         if pt1.prop != goal:
             return ProofTerm.sorry(Thm(goal, pt0.hyps))
         return pt1
@@ -3835,23 +3835,31 @@ def check_onepoint(goal, ctx):
         if l_bd.is_implies():
             conjs = l_bd.arg1.strip_conj()
             for v, t in one_val_var.items():
-                if Eq(v, t) in conjs:
-                    pass
-                elif Eq(t, v) in conjs:
-                    i = conjs.index(Eq(t, v))
-                    conjs[i] = Eq(v, t)
-                else:
+                found = False
+                for i, conj in enumerate(conjs):
+                    if conj.is_equals() and conj.lhs == v:
+                        found = True
+                        break
+                    if conj.is_equals() and conj.rhs == v:
+                        found = True
+                        conjs[i] = Eq(conj.rhs, conj.lhs)
+                        break
+                if not found:
                     raise VeriTException("onepoint", "forall - equation not found")
             return "FORALL-IMPLIES", conjs + [l_bd.arg], one_val_var, remain_var
         elif l_bd.is_disj():
             disjs = l_bd.strip_disj()
             for v, t in one_val_var.items():
-                if Not(Eq(v, t)) in disjs:
-                    pass
-                elif Not(Eq(t, v)) in disjs:
-                    i = disjs.index(Not(Eq(t, v)))
-                    disjs[i] = Not(Eq(v, t))
-                else:
+                found = False
+                for i, disj in enumerate(disjs):
+                    if disj.is_not() and disj.arg.is_equals() and disj.arg.lhs == v:
+                        found = True
+                        break
+                    if disj.is_not() and disj.arg.is_equals() and disj.arg.rhs == v:
+                        found = True
+                        disjs[i] = Not(Eq(disj.arg.rhs, disj.arg.lhs))
+                        break
+                if not found:
                     raise VeriTException("onepoint", "forall - equation not found")
             return "FORALL-DISJ", disjs, one_val_var, remain_var
         else:
@@ -3860,12 +3868,15 @@ def check_onepoint(goal, ctx):
         # body must be in conjunction form, with each equation as a conjunct
         conjs = l_bd.strip_conj()
         for v, t in one_val_var.items():
-            if Eq(v, t) in conjs:
-                pass
-            elif Eq(t, v) in conjs:
-                i = conjs.index(Eq(t, v))
-                conjs[i] = Eq(v, t)
-            else:
+            for i, conj in enumerate(conjs):
+                if conj.is_equals() and conj.lhs == v:
+                    found = True
+                    break
+                if conj.is_equals() and conj.rhs == v:
+                    found = True
+                    conjs[i] = Eq(conj.rhs, conj.lhs)
+                    break
+            if not found:
                 raise VeriTException("onepoint", "exists - equation not found")
         return "EXISTS-CONJ", conjs, one_val_var, remain_var
 
