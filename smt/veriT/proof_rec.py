@@ -51,6 +51,9 @@ class ProofReconstruction:
         # assumption
         self.assms = set()
 
+        # indicate current anchor id, if the step is not in an anchor, it should be None
+        self.anchor_id = None
+
     def to_pts(self, ids):
         """ids is a tuple of step name, return their corresponding pts."""
         return tuple(self.pts[i] for i in ids)
@@ -84,13 +87,18 @@ class ProofReconstruction:
     def validate_step(self, step, is_eval=True, omit_proofterm=None):
         if omit_proofterm is None:
             omit_proofterm = []
+        
+        if self.anchor_id is not None and step.id == self.anchor_id:
+            self.anchor_id = None
 
         if isinstance(step, command.Anchor):
+            self.anchor_id = step.id
             return
         if isinstance(step, command.Assume):
             pt_assm = ProofTerm.assume(step.assm)
             self.pts[step.id] = pt_assm
-            self.assms.add(pt_assm.prop)
+            if self.anchor_id is None:
+                self.assms.add(pt_assm.prop)
             return
 
         assert isinstance(step, command.Step)
