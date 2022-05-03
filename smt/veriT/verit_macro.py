@@ -1885,26 +1885,38 @@ class LetMacro(Macro):
             if hyp.is_equals() and hyp.lhs.is_var():
                 var_map[hyp.lhs] = hyp.rhs
 
+        inst = Inst()
+        # Introduce x = s as an assumption
+        for x, t, _ in let_eqs:
+            found_hyp = Eq(x, t)
+            if x in var_map:
+                found_hyp = Eq(x, var_map[x])
+            cur_pt = cur_pt.implies_intr(found_hyp)
+            inst.var_inst[x.name] = t
+
+        # Replace x with t globally
+        cur_pt = cur_pt.substitution(inst)
+
+        # Discharge t = s using either eqs or using reflexivity
         for x, t, let_abs in reversed(let_eqs):
             found_hyp = Eq(x, t)
             if x in var_map:
                 found_hyp = Eq(x, var_map[x])
-            # Save u for later
-            u = cur_pt.lhs
-            # Introduce x = s as an assumption
-            cur_pt = cur_pt.implies_intr(found_hyp)
-            # Replace x with t globally
-            cur_pt = cur_pt.forall_intr(found_hyp.lhs).forall_elim(t)
-            # Discharge t = s using either eqs or using reflexivity
             if found_hyp.rhs == t:
                 cur_pt = cur_pt.implies_elim(ProofTerm.reflexive(t))
             else:
                 cur_pt = cur_pt.implies_elim(eqs[(t, found_hyp.rhs)])
-            # Now the left side is u[t/x], rewrite it from let x = t in u.
-            let_pt = ProofTerm.theorem('Let_def').substitution(Inst(s=t, f=let_abs)).on_rhs(beta_conv())
-            # Finally combine using transitivity
-            cur_pt = ProofTerm.transitive(let_pt, cur_pt)
-        return cur_pt
+
+        # Now the left side is u[t/x], rewrite it from let x = t in u.
+        let_pt = ProofTerm.reflexive(goal.lhs)
+        for x, t, let_abs in let_eqs:
+            t = let_pt.rhs.arg1
+            let_abs = let_pt.rhs.arg
+            eq_pt = ProofTerm.theorem('Let_def').substitution(Inst(s=t, f=let_abs)).on_rhs(beta_conv())
+            let_pt = ProofTerm.transitive(let_pt, eq_pt)
+
+        # Finally combine using transitivity
+        return ProofTerm.transitive(let_pt, cur_pt)
 
 
 def flatten_prop(tm):

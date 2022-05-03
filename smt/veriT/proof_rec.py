@@ -174,7 +174,7 @@ class ProofReconstruction:
                 if step_limit and i > step_limit:
                     break
 
-        if set(self.pts[step.id].hyps) != self.assms:
+        if not step_limit and set(self.pts[step.id].hyps) != self.assms:
             print("Computed hyps")
             for hyp in self.pts[step.id].hyps:
                 print(hyp)

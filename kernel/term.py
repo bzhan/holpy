@@ -32,24 +32,27 @@ class Inst(UserDict):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tyinst = TyInst()
+        self.var_inst = dict()
         self.abs_name_inst = dict()
 
     def __str__(self):
         res = ''
         if self.tyinst:
             res = str(self.tyinst) + ', '
-        res += ', '.join('%s := %s' % (nm, t) for nm, t in self.items())
+        res += ', '.join('?%s := %s' % (nm, t) for nm, t in self.items())
+        res += ', '.join('%s := %s' % (nm, t) for nm, t in self.var_inst.items())
         res += ', '.join('%s -> %s' % (nm, nm2) for nm, nm2 in self.abs_name_inst.items())
         return res
 
     def __copy__(self):
         res = Inst(self)
         res.tyinst = copy(self.tyinst)
+        res.var_inst = copy(self.var_inst)
         res.abs_name_inst = copy(self.abs_name_inst)
         return res
 
     def __bool__(self):
-        return bool(self.tyinst) or bool(self.keys()) or bool(self.abs_name_inst)
+        return bool(self.tyinst) or bool(self.keys()) or bool(self.var_inst) or bool(self.abs_name_inst)
 
 
 """Default parser for terms. If None, Term() is unable to parse string."""
@@ -424,7 +427,7 @@ class Term():
             inst = Inst(**kwargs)
 
         # First match type variables.
-        svars = get_svars(self)
+        svars = self.get_svars()
         for v in svars:
             if v.name in inst:
                 try:
@@ -440,25 +443,39 @@ class Term():
                     return inst[t.name]
                 else:
                     return t
-            elif t.is_var() or t.is_const():
+            elif t.is_var():
+                if t.name in inst.var_inst:
+                    return inst.var_inst[t.name]
+                else:
+                    return t
+            elif t.is_const():
                 return t
             elif t.is_comb():
-                return Comb(rec(t.fun), rec(t.arg))
-            elif t.is_abs() and t.body.is_comb() and t.body.fun.is_svar() and \
-                t.body.fun.name in inst and t.body.arg == Bound(0) and inst[t.body.fun.name].is_abs():
-                return inst[t.body.fun.name]
+                fun_t = rec(t.fun)
+                arg_t = rec(t.arg)
+                if id(fun_t) == id(t.fun) and id(arg_t) == id(t.arg):
+                    return t
+                else:
+                    return Comb(fun_t, arg_t)
             elif t.is_abs():
                 if t.var_name in inst.abs_name_inst:
                     var_name = inst.abs_name_inst[t.var_name]
                 else:
                     var_name = t.var_name
-                return Abs(var_name, t.var_T, rec(t.body))
+                body_t = rec(t.body)
+                if id(body_t) == id(t.body) and var_name == t.var_name:
+                    return t
+                else:
+                    return Abs(var_name, t.var_T, body_t)
             elif t.is_bound():
                 return t
             else:
                 raise TypeError
 
-        return rec(self.subst_type(inst.tyinst))
+        t = self
+        if inst.tyinst:
+            t = self.subst_type(inst.tyinst)
+        return rec(t)
 
     def strip_comb(self):
         """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
