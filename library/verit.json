@@ -1667,6 +1667,22 @@
             "vars": {
                 "t": "'a"
             }
+        },
+        {
+            "name": "verit_rm_unused_forall",
+            "prop": "(∀x::'a. P) ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_rm_unused_exists",
+            "prop": "(∃x::'a. P) ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

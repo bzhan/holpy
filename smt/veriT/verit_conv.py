@@ -650,3 +650,20 @@ class onepoint_exists_conv(Conv):
         eq_pt = logic.imp_conj_iff(hol_term.Eq(hol_term.And(*conjs), hol_term.And(*conjs_alt)))
         pt = pt.on_rhs(replace_conv(eq_pt))
         return pt
+
+
+class qnt_rm_unsed_conv(Conv):
+    def get_proof_term(self, t):
+        pt = refl(t)
+        if not t.is_forall() and not t.is_exists():
+            return pt
+
+        vars, bd = t.strip_quant()
+        v = vars[0]
+        if not bd.occurs_var(v): # v is not a free variable
+            if t.is_forall():
+                return pt.on_rhs(rewr_conv('verit_rm_unused_forall'), self)
+            elif t.is_exists():
+                return pt.on_rhs(rewr_conv('verit_rm_unused_exists'), self)
+        else:
+            return pt

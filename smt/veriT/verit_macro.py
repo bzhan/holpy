@@ -4377,8 +4377,14 @@ class QntRmUnusedMacro(Macro):
             raise VeriTException("qnt_rm_unused", "after removing unused vars in lhs, \
                                     lhs and rhs still have different quantified variables")
         
-        return Thm(goal)        
+        return Thm(goal)    
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        pt = refl(goal.lhs).on_rhs(verit_conv.qnt_rm_unsed_conv())
+        if pt.prop == goal:
+            return pt
+        raise VeriTException("qnt_rm_unused", "unexpected result %s" % goal)
 
 @register_macro("verit_prod_simplify")
 class ProdSimplifyMacro(Macro):

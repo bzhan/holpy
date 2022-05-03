@@ -530,8 +530,13 @@ class ProofrecTest(unittest.TestCase):
             p.print_stats(50)
     def test_LRA(self):
         test_paths = [
-            # 'LRA/scholl-smt08/RND'
-            'LRA/scholl-smt08/RND/RND_3_15.smt2', # qnt_rm_unused
+            'LRA/scholl-smt08/RND/RND_3_15.smt2',
+            'LRA/scholl-smt08/RND/RND_3_19.smt2',
+            'LRA/scholl-smt08/RND/RND_3_28.smt2',
+            'LRA/scholl-smt08/RND/RND_3_9.smt2',
+            'LRA/scholl-smt08/RND/RND_4_12.smt2',
+            'LRA/scholl-smt08/RND/RND_4_2.smt2',
+            'LRA/scholl-smt08/RND/RND_4_7.smt2',
         ]
         profile = False
         if profile:
@@ -539,7 +544,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_eval=True)
 
         if profile:
             p = Stats(pr)
