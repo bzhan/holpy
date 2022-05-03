@@ -93,6 +93,8 @@ veriT_grammar = r"""
 
     QUOTED_VNAME: "|"(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/"|"("|")"|":"|"["|"]"|"#"|","|"'"|" ")*"|"
 
+    ?at_name : "@" CNAME -> mk_at_name
+
     ?vname: VNAME -> mk_vname
         | QUOTED_VNAME -> mk_quoted_vname
     
@@ -141,7 +143,7 @@ veriT_grammar = r"""
             | "(>" term term ")" -> mk_greater_tm
             | "(<=" term term ")" -> mk_less_eq_tm
             | "(>=" term term ")" -> mk_greater_eq_tm
-            | "(!" term ":named" "@" CNAME ")" -> mk_annot_tm
+            | "(! " term ":named" (at_name|CNAME) ")" -> mk_annot_tm
             | "(let " "(" let_pair* ")" term ")" -> mk_let_tm
             | "(distinct " term term+ ")" -> mk_distinct_tm
             | "(xor " term term ")" -> mk_xor_tm
@@ -153,6 +155,7 @@ veriT_grammar = r"""
             | "(forall " "(" quant_pair+ ")" term ")" -> mk_forall
             | "(exists " "(" quant_pair+ ")" term ")" -> mk_exists
             | "(choice " "(" quant_pair+ ")" term ")" -> mk_choice
+            | "(! " term (":pattern " term)+ ")" -> mk_pat_term
             | INT -> mk_int
             | DECIMAL -> mk_decimal
             | name
@@ -162,6 +165,11 @@ veriT_grammar = r"""
     ?name : "@" CNAME -> ret_annot_tm
             | qname -> ret_let_tm
             | vname -> ret_tm
+
+
+    ?smt_term : term -> mk_smt_term
+
+    ?smt_file_assert : "(assert " smt_term ")" -> mk_assertion
 
     %import common.CNAME
     %import common.INT
@@ -372,7 +380,7 @@ class ProofTransformer(Transformer):
         return hol_term.Not(tm)
 
     def mk_annot_tm(self, tm, name):
-        name = "@" + str(name)
+        name = str(name)
         self.annot_tm[name] = tm
         return tm
 
@@ -510,6 +518,21 @@ class ProofTransformer(Transformer):
     def mk_discharge(self, *steps):
         return DISCHARGE, steps
 
+    def mk_assertion(self, tm):
+        return tm
+
+    def mk_smt_term(self, tm):
+        return tm
+
+    def mk_pat_term(self, tm, *pat):
+        return tm
+
+    def mk_at_name(self, name):
+        return "@"+str(name)
+
+
 def proof_parser(ctx):
     return Lark(veriT_grammar, start="proof_command", parser="lalr", transformer=ProofTransformer(smt_file_ctx=ctx))
 
+def smt_assertion_parser(ctx):
+    return Lark(veriT_grammar, start="smt_file_assert", parser="lalr", transformer=ProofTransformer(smt_file_ctx=ctx))

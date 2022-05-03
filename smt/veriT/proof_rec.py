@@ -1,8 +1,9 @@
 """Proof reconstruction."""
+import re
 
-from smt.veriT.proof_parser import decl_parser, proof_parser
+from smt.veriT.proof_parser import decl_parser, proof_parser, smt_assertion_parser
 from smt.veriT import command
-from smt.veriT.verit_macro import NotOrMacro, verit_and_all
+from smt.veriT.verit_macro import NotOrMacro, verit_and_all, compare_sym_tm
 from smt.veriT import la_generic
 from kernel.proofterm import ProofTerm
 from kernel.thm import Thm
@@ -12,7 +13,7 @@ from kernel import theory
 from logic import logic
 from alive_progress import alive_bar
 
-def bind_var(file_name):
+def bind_var(file_name: str) -> dict:
     """Convert the declaration in context to higher-order types and terms."""
     ctx = dict()
     with open(file_name, "r") as f:
@@ -22,12 +23,55 @@ def bind_var(file_name):
                 ctx.update(tm)
     return ctx
 
+def matched_paras(s: str) -> bool:
+    """check whether the parentheses in s are balanced"""
+    count = 0
+    for i in s:
+        if i == "(":
+            count += 1
+        elif i == ")":
+            count -= 1
+        if count < 0:
+            return False
+    return count == 0
+
+def get_complete_line(file_name: str) -> list:
+    """given a text file, return lines with balanced parentheses"""
+    with open(file_name, "r") as f:
+        complete_lines = []
+        s = ""
+        for line in f.readlines():
+            s += line
+            if matched_paras(s):
+                complete_lines.append(s)
+                s = ""
+        return complete_lines
+
+def get_assertions(file_name: str) -> set:
+    """return the assertions declared in file_name.smt2"""
+    ctx = bind_var(file_name)
+    parser = smt_assertion_parser(ctx)
+    assertions = set()
+    lines = get_complete_line(file_name)
+    for s in lines:
+        if s.startswith("(assert"):
+            l = re.sub("\s{4,}"," ", s.replace("\n", ""))
+            if l.startswith("(assert"):
+                asst = parser.parse(l)
+                assertions.add(asst)
+            else:
+                print("l", l)
+                print("s", s)
+                raise AssertionError
+
+    return assertions
+
 class ProofReconstruction:
     """Verit proof reconstruction.
     
     - steps: a list of parsed proof rules.
     """
-    def __init__(self, steps) -> None:
+    def __init__(self, steps, smt_assertions=set()) -> None:
         # List of steps
         self.steps = steps
 
@@ -53,6 +97,9 @@ class ProofReconstruction:
 
         # indicate current anchor id, if the step is not in an anchor, it should be None
         self.anchor_id = None
+
+        # store the original assertions declared in .smt2 file
+        self.smt_assertions = smt_assertions
 
     def to_pts(self, ids):
         """ids is a tuple of step name, return their corresponding pts."""
@@ -174,15 +221,28 @@ class ProofReconstruction:
                 if step_limit and i > step_limit:
                     break
 
-        if set(self.pts[step.id].hyps) != self.assms:
-            print("Computed hyps")
+        # check hypothesis consistency
+        def check_consistency(hyp):
+            if hyp in self.smt_assertions:
+                return True
+            for smt_asst in self.smt_assertions:
+                if compare_sym_tm(hyp, smt_asst):
+                    return True
+            return False
+
+        if not set(self.pts[step.id].hyps) <= self.assms:
+            print("not compatible with assertions given by veriT proof")
+
+        if self.smt_assertions and not all(check_consistency(hyp) for hyp in self.pts[step.id].hyps):
+            print("not compatible with assertions given by SMT file")
+            print("different hyps")
             for hyp in self.pts[step.id].hyps:
-                print(hyp)
+                if not check_consistency(hyp):
+                    print(hyp)
             print()
-            print("Proof hyps")
-            for hyp in self.assms:
-                print(hyp)
-            print()
+            print("smt assertion")
+            for ass in self.smt_assertions:
+                print(ass)
             raise AssertionError
         try:
             return self.pts[step.id]

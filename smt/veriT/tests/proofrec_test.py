@@ -29,7 +29,7 @@ def test_parse_step(verit_proof, ctx):
     return steps
 
 def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
-              write_file=False, step_limit=None, omit_proofterm=None):
+              write_file=False, step_limit=None, omit_proofterm=None, parse_assertion=False):
     """Test a given file under eval or proofterm mode."""
     global smtlib_path
     if not smtlib_path:
@@ -42,6 +42,11 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     if not interface.is_unsat(abs_name):
         return
     print(repr(filename) + ',')
+
+    if parse_assertion:
+        assts = proof_rec.get_assertions(abs_name)
+    else:
+        assts = set()
 
     # Solve
     start_time = time.perf_counter()
@@ -68,7 +73,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     eval_time_str = ""
     if test_eval:
         start_time = time.perf_counter()
-        recon = proof_rec.ProofReconstruction(steps)
+        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm)
         eval_time = time.perf_counter() - start_time
         eval_time_str = "Eval: %.3f." % eval_time
@@ -78,7 +83,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     proofterm_time_str = ""
     if test_proofterm:
         start_time = time.perf_counter()
-        recon = proof_rec.ProofReconstruction(steps)
+        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm)
         proofterm_time = time.perf_counter() - start_time
         proofterm_time_str = "Proofterm: %.3f." % proofterm_time
@@ -91,7 +96,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
 
 
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
-              write_file=False, step_limit=None, omit_proofterm=None):
+              write_file=False, step_limit=None, omit_proofterm=None, parse_assertion=False):
     """Test a directory containing SMT files.
     
     test_eval : bool - test evaluation of steps.
@@ -117,11 +122,11 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         sub_paths = [path + '/' + child for child in os.listdir(abs_path)]
         for sub_path in sub_paths:
             test_path(sub_path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm,
-                      write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm)
+                      write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm, parse_assertion=parse_assertion)
     else:
         # Input is a file
         test_file(path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm,
-                  write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm)
+                  write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm, parse_assertion=parse_assertion)
 
 
 class ProofrecTest(unittest.TestCase):
@@ -173,7 +178,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -203,7 +208,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -236,7 +241,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -287,7 +292,7 @@ class ProofrecTest(unittest.TestCase):
             'UF/grasshopper/instantiated/dl_filter_postcondition_of_dl_filter_41_1.smt2',
             'UF/grasshopper/uninstantiated/dl_filter_loop_invariant_40_3.smt2',
             'UF/grasshopper/uninstantiated/dl_filter_postcondition_of_dl_filter_41_1.smt2',
-            'UF/grasshopper/uninstantiated/dl_insert_check_heap_access_16_4.smt2',
+            'UF/grasshopper/uninstantiated/dl_insert_check_heap_access_16_4.smt2', 
             'UF/misc/list1.smt2',
             'UF/misc/set10.smt2',
             'UF/misc/set11.smt2',
@@ -299,7 +304,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -322,7 +327,7 @@ class ProofrecTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
     def test_UFLIA(self): # eval ✓
         test_paths = [
@@ -377,7 +382,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -397,7 +402,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -416,7 +421,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -441,7 +446,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -481,7 +486,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -522,7 +527,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -546,7 +551,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -569,7 +574,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=False, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
