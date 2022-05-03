@@ -646,7 +646,7 @@ class LAGenericMacro(Macro):
 
         # print("pt_final", pt_final)
         # print()
-        if not pt_final.prop.is_compares() or not pt_final.prop.arg1.is_number() or not pt_final.prop.arg.is_number():
+        if not pt_final.prop.arg1.is_constant() or not pt_final.prop.arg.is_constant():
             raise VeriTException("la_generic", "unexpected result %s" % pt_final)
         
         # pt_const_compare = integer.int_const_compares().get_proof_term(pt_final.prop)
