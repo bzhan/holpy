@@ -348,7 +348,7 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/simplify2/front_end_suite/javafe.ast.ThrowStmt.004.smt2',
             'UFLIA/simplify2/front_end_suite/javafe.ast.Identifier.005.smt2',
             'UFLIA/simplify2/front_end_suite/javafe.tc.Types.002.smt2',
-            # 'UFLIA/simplify2/front_end_suite/javafe.util.StackVector.005.smt2', # bind 
+            'UFLIA/simplify2/front_end_suite/javafe.util.StackVector.005.smt2',
             'UFLIA/simplify2/front_end_suite/javafe.ast.FormalParaDeclVec.015.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555057.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555849.smt2',
@@ -507,7 +507,7 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt1643358356540277150.smt2',
             'AUFLIA/20170829-Rodin/smt1828334434025716862.smt2',
             'AUFLIA/20170829-Rodin/smt1829029808963281215.smt2',
-            # 'AUFLIA/20170829-Rodin/smt1882594910272367920.smt2', # proofterm bind
+            'AUFLIA/20170829-Rodin/smt1882594910272367920.smt2',
             'AUFLIA/20170829-Rodin/smt1883437689668062427.smt2',
             'AUFLIA/20170829-Rodin/smt2022486099146293362.smt2',
             'AUFLIA/20170829-Rodin/smt2025463987927880021.smt2',

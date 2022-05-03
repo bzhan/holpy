@@ -1209,6 +1209,8 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
         """
         if (t1, t2) in eqs:
             return eqs[(t1, t2)]
+        elif (t2, t1) in eqs:
+            return eqs[(t2, t1)].symmetric()
         elif t1 == t2:
             return ProofTerm.reflexive(t1)
         elif depth == 0:
@@ -1322,12 +1324,12 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
         elif t1.is_abs():
             if not t2.is_abs():
                 return None
-            v1, body1 = t1.dest_abs()
-            v2, body2 = t2.dest_abs(var_name=v1.name)
-            pt = helper(body1, body2, depth-1)
+            v2, body2 = t2.dest_abs()
+            _, body1 = t1.dest_abs(var_name=v2.name)
+            pt = helper(body2, body1, depth-1)
             if pt is None:
                 return None
-            return ProofTerm.reflexive(t1).on_rhs(abs_conv(replace_conv(pt)))
+            return ProofTerm.reflexive(t2).on_rhs(abs_conv(replace_conv(pt))).symmetric()
         else:
             return None
     return helper(tm1, tm2, depth)
@@ -1374,12 +1376,11 @@ class CongMacro(Macro):
         prev_dict = dict()
         for prev in prevs:
             prev_dict[(prev.lhs, prev.rhs)] = prev
-            prev_dict[(prev.rhs, prev.lhs)] = prev.symmetric()
 
         pt = compare_sym_tm_thm(lhs, rhs, eqs=prev_dict, depth=1)
         if pt is not None:
             return pt
-        # More to add in compare_sym_tm_thm
+
         print("lhs:", lhs)
         print("rhs:", rhs)
         print("prevs")
@@ -3206,6 +3207,7 @@ class ConnectiveDefMacro(Macro):
             if pt.prop == goal:
                 return pt
         raise VeriTException("connective_def", "unexpected goal")
+
 @register_macro("verit_bind")
 class BindMacro(Macro):
     def __init__(self):
@@ -3271,7 +3273,7 @@ class BindMacro(Macro):
         pt = compare_sym_tm_thm(lhs, rhs, eqs=eq_pts)
 
         if pt is not None:
-            res = ProofTerm("transitive", None, [pt, ProofTerm.reflexive(rhs)])
+            res = ProofTerm("transitive", None, [ProofTerm.reflexive(lhs), pt])
             return res
 
         print(lhs)
