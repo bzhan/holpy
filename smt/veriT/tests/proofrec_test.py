@@ -529,7 +529,8 @@ class ProofrecTest(unittest.TestCase):
             p.strip_dirs()
             p.sort_stats('cumtime')
             p.print_stats(50)
-    def test_LRA(self):
+
+    def test_LRA(self): # eval ✓ proofterm ✓
         test_paths = [
             'LRA/scholl-smt08/RND/RND_3_15.smt2',
             'LRA/scholl-smt08/RND/RND_3_19.smt2',
@@ -545,7 +546,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True)
 
         if profile:
             p = Stats(pr)
@@ -553,12 +554,13 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_LIA(self):
+    def test_LIA(self): # eval ✓ proofterm ✓
         test_paths = [
             'LIA/UltimateAutomizer/MADWiFi-encode_ie_ok_true-unreach-call.i_17.smt2',
             'LIA/UltimateAutomizer/Primes_true-unreach-call.c_678.smt2',
             'LIA/UltimateAutomizer/recHanoi03_true-unreach-call_true-termination.c_2175.smt2',
             'LIA/UltimateAutomizer/recHanoi03_true-unreach-call_true-termination.c_557.smt2',
+            'LIA/tptp/NUM865=1.smt2',
         ]
 
         profile = False
@@ -574,6 +576,7 @@ class ProofrecTest(unittest.TestCase):
             p.strip_dirs()
             p.sort_stats('cumtime')
             p.print_stats(50)
+
 
 if __name__ == "__main__":
     unittest.main()
