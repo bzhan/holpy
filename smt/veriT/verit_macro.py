@@ -1128,6 +1128,8 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
     def helper(t1, t2, depth):
         if (t1, t2) in ctx:
             return True
+        if (t2, t1) in ctx:
+            return True
         if depth == 0:
             return t1 == t2
         if t1.is_var() or t2.is_var():
@@ -3239,38 +3241,58 @@ class BindMacro(Macro):
         if not prem.is_equals():
             raise VeriTException("bind", "premise should be an equality")
 
+        l_vars, l_bd = [], lhs
+        r_vars, r_bd = [], rhs
         if lhs.is_forall():
-            l_vars, l_bd = lhs.strip_forall(num=len(ctx))
-            r_vars, r_bd = rhs.strip_forall(num=len(ctx))
+            while l_bd.is_forall() and l_bd != prem.lhs:
+                x, l_bd = l_bd.arg.dest_abs()
+                l_vars.append(x)
+            while r_bd.is_forall() and r_bd != prem.rhs:
+                x, r_bd = r_bd.arg.dest_abs()
+                r_vars.append(x)
         else:  # lhs.is_exists()
-            l_vars, l_bd = lhs.strip_exists(num=len(ctx))
-            r_vars, r_bd = rhs.strip_exists(num=len(ctx))
+            while l_bd.is_exists() and l_bd != prem.lhs:
+                x, l_bd = l_bd.arg.dest_abs()
+                l_vars.append(x)
+            while r_bd.is_exists() and r_bd != prem.rhs:
+                x, r_bd = r_bd.arg.dest_abs()
+                r_vars.append(x)
+
+        if not (prem.lhs == l_bd and prem.rhs == r_bd):
+            print('prem', prem)
+            print('goal', goal)
+            raise VeriTException("bind", "unexpected result")
 
         if len(l_vars) != len(r_vars):
             raise VeriTException("bind", "lhs and rhs should have the same number of quantifiers")
 
         for lv, rv in zip(l_vars, r_vars):
             if not lv.is_var() or lv.name not in ctx or ctx[lv.name] != rv:
+                print('prem', prem)
+                print('goal', goal)
                 raise VeriTException("bind", "can't map lhs quantified variables to rhs")
-        prev_lhs, prev_rhs = prevs[0].prop.args
-        if prev_lhs == l_bd and prev_rhs == r_bd:
-            return Thm(goal)
-        else:
-            print('prem', prem)
-            print('goal', goal)
-            raise VeriTException("bind", "unexpected result")
+
+        return Thm(goal)
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal, ctx = args
         lhs, rhs = goal.lhs, goal.rhs
-        eq_pts = dict()
-        for k, v in ctx.items():
-            T = v.get_type()
-            if Var(k, T) != v:
-                eq_pts[(Var(k, T), v)] = ProofTerm.assume(Eq(Var(k, T), v))
 
         prem = prevs[0]
+
+        # The hypotheses that can be used include those in hyps of prem, whose
+        # left side does not appear in the quantifiers of goal.lhs.
+        if lhs.is_forall():
+            l_vars, _ = lhs.strip_forall()
+        else:  # lhs.is_exists()
+            l_vars, _ = lhs.strip_exists()
+
+        eq_pts = dict()
         eq_pts[(prem.lhs, prem.rhs)] = prem
+        for hyp in prem.hyps:
+            if hyp.is_equals() and hyp.lhs not in l_vars:
+                eq_pts[(hyp.lhs, hyp.rhs)] = ProofTerm.assume(hyp)
+
         pt = compare_sym_tm_thm(lhs, rhs, eqs=eq_pts)
 
         if pt is not None:
@@ -3607,7 +3629,6 @@ class SkoExMacro(Macro):
         for k, v in ctx.items():
             vT = v.get_type()
             eq_ctx.add((Var(k, vT), v))
-            eq_ctx.add((v, Var(k, vT)))
 
         for i, x in enumerate(xs):
             if x.name not in ctx:
@@ -3708,7 +3729,6 @@ class SkoForallMacro(Macro):
         for k, v in ctx.items():
             vT = v.get_type()
             eq_ctx.add((Var(k, vT), v))
-            eq_ctx.add((v, Var(k, vT)))
 
         for i, x in enumerate(xs):
             if x.name not in ctx:
