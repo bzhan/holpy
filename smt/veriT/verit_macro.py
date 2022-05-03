@@ -2048,7 +2048,7 @@ def compare_ac_thm(tm1, tm2):
         eq_pt1 = compare_ac_thm(tm1.lhs, tm2.lhs)
         eq_pt2 = compare_ac_thm(tm1.rhs, tm2.rhs)
         return ProofTerm.reflexive(tm1.head).combination(eq_pt1).combination(eq_pt2)
-    elif tm1.is_forall():
+    elif tm1.is_forall() or tm1.is_exists():
         x1, body1 = tm1.arg.dest_abs()
         x2, body2 = tm2.arg.dest_abs()
         eq_pt = compare_ac_thm(body1, body2)
