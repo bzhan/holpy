@@ -21,6 +21,7 @@ def test_parse_step(verit_proof, ctx):
     parser = proof_parser.proof_parser(ctx)
     steps = []
     for s in verit_proof.replace("\r", "").split("\n"):
+        # print(s)
         if s == "unsat" or s == "":
             continue
         steps.append(parser.parse(s))
@@ -551,5 +552,28 @@ class ProofrecTest(unittest.TestCase):
             p.strip_dirs()
             p.sort_stats('cumtime')
             p.print_stats(50)
+
+    def test_LIA(self):
+        test_paths = [
+            'LIA/UltimateAutomizer/MADWiFi-encode_ie_ok_true-unreach-call.i_17.smt2',
+            'LIA/UltimateAutomizer/Primes_true-unreach-call.c_678.smt2',
+            'LIA/UltimateAutomizer/recHanoi03_true-unreach-call_true-termination.c_2175.smt2',
+            'LIA/UltimateAutomizer/recHanoi03_true-unreach-call_true-termination.c_557.smt2',
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
+
 if __name__ == "__main__":
     unittest.main()

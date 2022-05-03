@@ -369,8 +369,34 @@ class ParserTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, write_file=True)
+            test_path(path)
 
+
+    def testParseLIA(self):
+        test_paths = [
+            'LIA/UltimateAutomizer/MADWiFi-encode_ie_ok_true-unreach-call.i_17.smt2',
+            'LIA/UltimateAutomizer/Primes_true-unreach-call.c_678.smt2',
+            'LIA/UltimateAutomizer/recHanoi03_true-unreach-call_true-termination.c_2175.smt2',
+            'LIA/UltimateAutomizer/recHanoi03_true-unreach-call_true-termination.c_557.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path)
+
+
+    def testParseLRA(self):
+        test_paths = [
+            'LRA/scholl-smt08/RND/RND_3_15.smt2',
+            'LRA/scholl-smt08/RND/RND_3_19.smt2',
+            'LRA/scholl-smt08/RND/RND_3_28.smt2',
+            'LRA/scholl-smt08/RND/RND_3_9.smt2',
+            'LRA/scholl-smt08/RND/RND_4_12.smt2',
+            'LRA/scholl-smt08/RND/RND_4_2.smt2',
+            'LRA/scholl-smt08/RND/RND_4_7.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path)
 
 if __name__ == "__main__":
     unittest.main()

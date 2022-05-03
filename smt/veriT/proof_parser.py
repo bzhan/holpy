@@ -95,8 +95,10 @@ veriT_grammar = r"""
 
     ?vname: VNAME -> mk_vname
         | QUOTED_VNAME -> mk_quoted_vname
+    
+    ?qname: "?" VNAME -> mk_qname
 
-    ANCHOR_NAME: "?" VNAME | CNAME
+    ?anchor_name: qname | vname
 
     ?proof_command : "(assume" step_id proof_term ")" -> mk_assume
                     | "(step" step_id clause ":rule" CNAME step_annotation* ")" -> mk_step
@@ -106,8 +108,8 @@ veriT_grammar = r"""
     ?clause : "(cl " proof_term* ")" -> mk_clause
             | "(cl)" -> mk_empty_clause
     
-    ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (term|vname) ")" -> add_context
-                    | "(" ANCHOR_NAME vname ")" -> add_trivial_ctx
+    ?single_context :  "(:=" "(" anchor_name vname ")" (term|vname) ")" -> add_context
+                    | "(" anchor_name vname ")" -> add_trivial_ctx
 
     ?step_arg_pair : "(:=" CNAME term")" -> mk_forall_inst_args
                    | term* -> mk_la_generic_args
@@ -118,10 +120,9 @@ veriT_grammar = r"""
 
     ?proof_term : term
 
-    ?let_pair : "(" "?" CNAME term ")" -> mk_let_pair
+    ?let_pair : "(" (vname|qname) term ")" -> mk_let_pair
 
-    ?quant_pair : "(" "?" vname vname ")" -> mk_quant_pair_assume
-                | "(" CNAME vname ")" -> mk_quant_pair_step
+    ?quant_pair : "(" (qname|vname) vname ")" -> mk_quant_pair
 
     ?term :   "true" -> mk_true
             | "false" -> mk_false
@@ -159,7 +160,7 @@ veriT_grammar = r"""
     ?step_id : vname ("." vname)* -> mk_step_id
 
     ?name : "@" CNAME -> ret_annot_tm
-            | "?" vname -> ret_let_tm
+            | qname -> ret_let_tm
             | vname -> ret_tm
 
     %import common.CNAME
@@ -238,6 +239,9 @@ class ProofTransformer(Transformer):
 
     def mk_vname(self, name):
         return str(name)
+    
+    def mk_qname(self, name):
+        return "?" + str(name)
 
     def mk_quoted_vname(self, name):
         name = str(name)
@@ -257,7 +261,7 @@ class ProofTransformer(Transformer):
         We first search ?name in let scope then in quantified variables, then in context, 
         this is correct since if ?name is not a binding var, the let scope would be empty. 
         """
-        name = "?" + str(name)
+        name = str(name)
         if name in self.let_tm:
             return self.let_tm[name]
         for p in reversed(self.quant_ctx):
@@ -286,6 +290,8 @@ class ProofTransformer(Transformer):
         for ctx in reversed(self.proof_ctx):
             if tm in ctx:
                 return hol_term.Var(tm, ctx[tm].get_type())
+        if tm in self.let_tm:
+            return self.let_tm[tm]
         # If not found in all these contexts, raise error
         raise ValueError(tm)
 
@@ -295,13 +301,7 @@ class ProofTransformer(Transformer):
     def mk_app_tm(self, *tms):
         return tms[0](*tms[1:])
 
-    def mk_quant_pair_assume(self, var_name, ty):
-        var_name = "?" + str(var_name)
-        hol_var = hol_term.Var(var_name, str_to_hol_type(str(ty)))
-        self.quant_ctx.append((var_name, hol_var))
-        return hol_var
-
-    def mk_quant_pair_step(self, var_name, ty):
+    def mk_quant_pair(self, var_name, ty):
         var_name = str(var_name)
         hol_var = hol_term.Var(var_name, str_to_hol_type(str(ty)))
         self.quant_ctx.append((var_name, hol_var))
@@ -327,7 +327,7 @@ class ProofTransformer(Transformer):
 
     def mk_let_pair(self, name, tm):
         """Make the let scope."""
-        name = "?" + str(name)
+        name = str(name)
         T = tm.get_type()
         bound_var = hol_term.Var(name, T)
         self.let_tm[name] = bound_var
