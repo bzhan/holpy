@@ -94,7 +94,7 @@ class NotAndMacro(Macro):
 
     def get_proof_term(self, args, prevs):
         goal, pt0 = Or(*args), prevs[0]
-        pt1 = pt0.on_prop(top_conv(rewr_conv("de_morgan_thm1")))
+        pt1 = pt0.on_prop(verit_conv.deMorgan_conj_conv())
         if pt1.prop != goal:
             return ProofTerm.sorry(Thm(goal, pt0.hyps))
         return pt1
