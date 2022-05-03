@@ -48,6 +48,9 @@ class ProofReconstruction:
         # current subproof id
         self.subprf_id = None
 
+        # assumption
+        self.assms = set()
+
     def to_pts(self, ids):
         """ids is a tuple of step name, return their corresponding pts."""
         return tuple(self.pts[i] for i in ids)
@@ -85,7 +88,9 @@ class ProofReconstruction:
         if isinstance(step, command.Anchor):
             return
         if isinstance(step, command.Assume):
-            self.pts[step.id] = ProofTerm.assume(step.assm)
+            pt_assm = ProofTerm.assume(step.assm)
+            self.pts[step.id] = pt_assm
+            self.assms.add(pt_assm.prop)
             return
 
         assert isinstance(step, command.Step)
@@ -160,6 +165,17 @@ class ProofReconstruction:
                 bar()
                 if step_limit and i > step_limit:
                     break
+
+        if set(self.pts[step.id].hyps) != self.assms:
+            print("Computed hyps")
+            for hyp in self.pts[step.id].hyps:
+                print(hyp)
+            print()
+            print("Proof hyps")
+            for hyp in self.assms:
+                print(hyp)
+            print()
+            raise AssertionError
         try:
             return self.pts[step.id]
         except:
