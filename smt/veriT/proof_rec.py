@@ -166,6 +166,26 @@ class ProofReconstruction:
             print("In proof: ", Or(*step.cl))
             raise AssertionError("Unexpected returned theorem")
 
+        # Compare with eval
+        eval_pt = ProofTerm(macro_name, args, prevs)
+        if not set(self.pts[step.id].hyps) <= set(eval_pt.hyps):
+            print(macro_name)
+            print("Proofterm hyps:")
+            for hyp in self.pts[step.id].hyps:
+                print(hyp)
+            print("Eval hyps:")
+            for hyp in eval_pt.hyps:
+                print(hyp)
+            raise AssertionError("Disagreement between eval and proof term: hyps")
+        if self.pts[step.id].prop != eval_pt.prop:
+            print(macro_name)
+            print("Proofterm prop:")
+            print(self.pts[step.id].prop)
+            print("Eval prop:")
+            print(eval_pt.prop)
+            raise AssertionError("Disagreement between eval and proof term: prop")
+
+
     def validate(self, is_eval=True, step_limit=None, omit_proofterm=None):
         with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
             for i, step in enumerate(self.steps):

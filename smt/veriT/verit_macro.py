@@ -1406,9 +1406,9 @@ class ReflMacro(Macro):
         if not isinstance(ctxt, dict):
             raise VeriTException("refl", "context should be a mapping")
         if goal.lhs.is_var() and goal.lhs.name in ctxt and ctxt[goal.lhs.name] == goal.rhs:
-            return Thm(goal)
+            return Thm(goal, goal)
         if goal.rhs.is_var() and goal.rhs.name in ctxt and ctxt[goal.rhs.name] == goal.lhs:
-            return Thm(goal)
+            return Thm(goal, Eq(goal.rhs, goal.lhs))
         else:
             raise VeriTException("refl", "either lhs and rhs of goal is not in ctx")
 
@@ -1833,10 +1833,10 @@ class LetMacro(Macro):
             ctx.add((prop.lhs, prop.rhs))
 
         body = goal.lhs
-        let_eqs = []
+        xs = []
         while body != last_step.lhs and logic.is_let(body):
-            x, t, body = logic.dest_let(body)
-            let_eqs.append((x, t))
+            x, _, body = logic.dest_let(body)
+            xs.append(x)
 
         # body should equal to the left side of last_step
         if body != last_step.lhs:
@@ -1847,19 +1847,11 @@ class LetMacro(Macro):
         if goal.rhs != last_step.rhs:
             raise VeriTException("let", "right side does not equal")
 
-        # For each x_i = t_i in let_eqs, check if there exists s_i
-        # such that x_i = s_i is in the hypothesis of last_step, and
-        # either s_i = t_i, or t_i = s_i is one of prop_eq. These hypotheses
-        # are removed
-        removed_hyps = set()
-        for x, t in let_eqs:
-            for hyp_eq in last_step.hyps:
-                if hyp_eq.is_equals() and hyp_eq.lhs == x and (t == hyp_eq.rhs or (t, hyp_eq.rhs) in ctx):
-                    removed_hyps.add(hyp_eq)
-                    break
-
-        remain_hyps = tuple(hyp for hyp in last_step.hyps if hyp not in removed_hyps)
-        return Thm(goal, remain_hyps)
+        remain_hyps = []
+        for hyp in last_step.hyps:
+            if not (hyp.is_equals() and hyp.lhs in xs):
+                remain_hyps.append(hyp)
+        return Thm(goal, tuple(remain_hyps), *(prop.hyps for prop in prevs[:-1]))
 
     def get_proof_term(self, args, prevs):
         goal = args[0]
@@ -1872,9 +1864,8 @@ class LetMacro(Macro):
         let_eqs = []
         body = goal.lhs
         while body != last_step.lhs and logic.is_let(body):
-            x, t, let_body = logic.dest_let(body)
-            let_eqs.append((x, t, body.arg))
-            body = let_body
+            x, t, body = logic.dest_let(body)
+            let_eqs.append((x, t))
 
         # Start from last_step, which is body == goal.rhs, successively
         # introduce hypothesis of the form x = s, where either s = t or
@@ -1887,7 +1878,7 @@ class LetMacro(Macro):
 
         inst = Inst()
         # Introduce x = s as an assumption
-        for x, t, _ in let_eqs:
+        for x, t in let_eqs:
             found_hyp = Eq(x, t)
             if x in var_map:
                 found_hyp = Eq(x, var_map[x])
@@ -1898,7 +1889,7 @@ class LetMacro(Macro):
         cur_pt = cur_pt.substitution(inst)
 
         # Discharge t = s using either eqs or using reflexivity
-        for x, t, let_abs in reversed(let_eqs):
+        for x, t in reversed(let_eqs):
             found_hyp = Eq(x, t)
             if x in var_map:
                 found_hyp = Eq(x, var_map[x])
@@ -1909,9 +1900,8 @@ class LetMacro(Macro):
 
         # Now the left side is u[t/x], rewrite it from let x = t in u.
         let_pt = ProofTerm.reflexive(goal.lhs)
-        for x, t, let_abs in let_eqs:
-            t = let_pt.rhs.arg1
-            let_abs = let_pt.rhs.arg
+        for _ in range(len(let_eqs)):
+            t, let_abs = let_pt.rhs.args
             eq_pt = ProofTerm.theorem('Let_def').substitution(Inst(s=t, f=let_abs)).on_rhs(beta_conv())
             let_pt = ProofTerm.transitive(let_pt, eq_pt)
 
@@ -3284,7 +3274,12 @@ class BindMacro(Macro):
                 print('goal', goal)
                 raise VeriTException("bind", "can't map lhs quantified variables to rhs")
 
-        return Thm(goal)
+        remain_hyps = []
+        for hyp in prem.hyps:
+            if not (hyp.is_equals() and hyp.lhs in l_vars):
+                remain_hyps.append(hyp)
+
+        return Thm(goal, tuple(remain_hyps))
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal, ctx = args
@@ -3658,7 +3653,11 @@ class SkoExMacro(Macro):
                 print('exp_x_body:', exp_x_body)
                 raise VeriTException("sko_ex", "unexpected result")
 
-        return Thm(goal)
+        remain_hyps = []
+        for hyp in prevs[0].hyps:
+            if not (hyp.is_equals() and hyp.lhs in xs):
+                remain_hyps.append(hyp)
+        return Thm(goal, tuple(remain_hyps))
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal, ctx = args
@@ -3758,7 +3757,11 @@ class SkoForallMacro(Macro):
                 print('exp_x_body:', exp_x_body)
                 raise VeriTException("sko_forall", "unexpected result")
 
-        return Thm(goal)
+        remain_hyps = []
+        for hyp in prevs[0].hyps:
+            if not (hyp.is_equals() and hyp.lhs in xs):
+                remain_hyps.append(hyp)
+        return Thm(goal, tuple(remain_hyps))
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal, ctx = args
