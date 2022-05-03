@@ -1870,8 +1870,9 @@ class LetMacro(Macro):
         let_eqs = []
         body = goal.lhs
         while body != last_step.lhs and logic.is_let(body):
-            x, t, body = logic.dest_let(body)
-            let_eqs.append((x, t))
+            x, t, let_body = logic.dest_let(body)
+            let_eqs.append((x, t, body.arg))
+            body = let_body
 
         # Start from last_step, which is body == goal.rhs, successively
         # introduce hypothesis of the form x = s, where either s = t or
@@ -1882,7 +1883,7 @@ class LetMacro(Macro):
             if hyp.is_equals() and hyp.lhs.is_var():
                 var_map[hyp.lhs] = hyp.rhs
 
-        for x, t in reversed(let_eqs):
+        for x, t, let_abs in reversed(let_eqs):
             found_hyp = Eq(x, t)
             if x in var_map:
                 found_hyp = Eq(x, var_map[x])
@@ -1898,7 +1899,7 @@ class LetMacro(Macro):
             else:
                 cur_pt = cur_pt.implies_elim(eqs[(t, found_hyp.rhs)])
             # Now the left side is u[t/x], rewrite it from let x = t in u.
-            let_pt = ProofTerm.theorem('Let_def').substitution(Inst(s=t, f=Lambda(x, u))).on_rhs(beta_conv())
+            let_pt = ProofTerm.theorem('Let_def').substitution(Inst(s=t, f=let_abs)).on_rhs(beta_conv())
             # Finally combine using transitivity
             cur_pt = ProofTerm.transitive(let_pt, cur_pt)
         return cur_pt
