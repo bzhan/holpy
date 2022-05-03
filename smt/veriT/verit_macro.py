@@ -822,11 +822,7 @@ class DistinctElimMacro(Macro):
     def get_proof_term(self, goal, prevs=None):
         goal = Or(*goal)
         lhs = goal.lhs
-        pt = ProofTerm.reflexive(lhs).on_rhs(top_conv(
-            rewr_conv('distinct_def_1'),
-            rewr_conv('distinct_def_2'),
-            rewr_conv('not_member_nil'),
-            rewr_conv('not_member_cons')))
+        pt = ProofTerm.reflexive(lhs).on_rhs(verit_conv.distinct_conv())
         try:
             pt_eq = logic.imp_conj_iff(Eq(pt.prop.rhs, goal.rhs))
             return ProofTerm.transitive(pt, pt_eq)
