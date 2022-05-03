@@ -3,6 +3,7 @@
 from logic.conv import Conv, rewr_conv, ConvException, \
     arg1_conv, arg_conv, binop_conv, top_conv, beta_conv, abs_conv, try_conv, replace_conv
 from data import integer, real
+from data import list as hol_list
 from kernel.term_ord import fast_compare
 from kernel import term as hol_term
 from kernel.term import Term
@@ -667,3 +668,25 @@ class qnt_rm_unsed_conv(Conv):
                 return pt.on_rhs(rewr_conv('verit_rm_unused_exists'), self)
         else:
             return pt
+
+class not_member_conv(Conv):
+    def get_proof_term(self, t):
+        # t is of the form ¬(x ∈ set xs)
+        xs = t.arg.arg.arg
+        if hol_list.is_nil(xs):
+            return refl(t).on_rhs(rewr_conv('not_member_nil'))
+        elif hol_list.is_cons(xs):
+            return refl(t).on_rhs(rewr_conv('not_member_cons'), arg_conv(self))
+        else:
+            return refl(t)
+
+class distinct_conv(Conv):
+    def get_proof_term(self, t):
+        # t is of the form distinct xs
+        xs = t.arg
+        if hol_list.is_nil(xs):
+            return refl(t).on_rhs(rewr_conv('distinct_def_1'))
+        elif hol_list.is_cons(xs):
+            return refl(t).on_rhs(rewr_conv('distinct_def_2'), arg1_conv(not_member_conv()), arg_conv(self))
+        else:
+            return refl(t)

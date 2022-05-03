@@ -62,7 +62,7 @@ class Thm():
                     hyp_set = set(self.hyps)
                     self.hyps = self.hyps + tuple(t for t in hyp if t not in hyp_set)
             else:
-                raise TypeError('Thm')
+                raise TypeError('Thm: each hyp argument is either Term or tuple')
 
     @property
     def assums(self) -> Term:
