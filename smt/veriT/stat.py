@@ -69,23 +69,26 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     stastic.append(filename)
     abs_name = smtlib_path + filename
     if not interface.is_unsat(abs_name, timeout=solve_timeout):
-        return [filename, 'TO', 'TO', 'TO']
+        return [filename, 'SAT/TO', '', '', '']
     print(repr(filename) + ',')
 
     # Solve
     start_time = time.perf_counter()
     verit_proof = interface.solve(abs_name, timeout=solve_timeout)
     if verit_proof is None:
-        return [filename, 'TO', 'TO', 'TO']
+        return [filename, 'NO PROOF', '', '', '']
     ctx = proof_rec.bind_var(abs_name)
     solve_time = time.perf_counter() - start_time
     solve_time_str = "%.3f" % solve_time
 
     # Parse
     start_time = time.perf_counter()
-    steps = test_parse_step(verit_proof, ctx)
+    try:
+        steps = test_parse_step(verit_proof, ctx)
+    except:
+        return [filename, solve_time_str, 'PARSING ERROR', '', '']
     parse_time = time.perf_counter() - start_time
-    parse_time_str = "%.3f" % parse_time
+    parse_time_str = "%.3f" % parse_time    
 
     # Validation by macro.eval
     eval_time_str = ""
@@ -96,8 +99,8 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
             with TO(seconds=eval_timeout):
                 try:
                     pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm)
-                except (VeriTException, AssertionError) as e:
-                    return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e))]                   
+                except (VeriTException, AssertionError, NotImplementedError) as e:
+                    return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)]                   
         except TimeoutError:
             return [filename, solve_time_str, parse_time_str, 'TO']
         eval_time = time.perf_counter() - start_time
@@ -105,7 +108,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         assert pt.rule != "sorry"
 
     if not test_proofterm:
-        return [filename, solve_time_str, parse_time_str, eval_time_str]
+        return [filename, solve_time_str, parse_time_str, eval_time_str, len(steps)]
 
     # Validation by macro.get_proof_term
     proofterm_time_str = ""
@@ -120,7 +123,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     # Optional: print time
     if show_time:
         print("Solve: %.3f. Parse: %.3f. %s %s"
-                    % (solve_time, parse_time, eval_time_str, proofterm_time_str))
+                    % (solve_time, parse_time, eval_time_str, proofterm_time_str, len(steps)))
     
 
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
@@ -185,15 +188,17 @@ if __name__ == "__main__":
         solve_timeout = int(sys.argv[2])
         eval_timeout  = int(sys.argv[3])
     
+    start_time = time.perf_counter()
     stats = test_path(folder_name, test_eval=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
     print("stats", stats)
-
+    end_time = time.perf_counter()
     if not os.path.isdir('./smt/veriT/stastics'):
         os.mkdir('./smt/veriT/stastics')
 
-    csv_name = folder_name.split("/")[-1]
-    headers = ['filename', 'Solve', 'Parse', 'Eval']
+    csv_name = folder_name.replace('/', '.')
+    headers = ['filename', 'Solve', 'Parse', 'Eval', 'Steps']
     with open('./smt/veriT/stastics/%s.csv' % csv_name, 'w') as f:
         f_csv = csv.writer(f)
         f_csv.writerow(headers)
         f_csv.writerows(stats)
+        f_csv.writerow(["%.3f" % (end_time - start_time)])
