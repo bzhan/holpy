@@ -106,7 +106,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                 except Exception as e:
                     return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)]                   
         except TimeoutError:
-            return [filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)']
+            return [filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps)]
         eval_time = time.perf_counter() - start_time
         eval_time_str = "Eval: %.3f" % eval_time
         assert pt.rule != "sorry"
@@ -120,9 +120,13 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         start_time = time.perf_counter()
         recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         try:
-            pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
+            with TO(seconds=eval_timeout):
+                try:
+                    pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
+                except Exception as e:
+                    return [filename, solve_time_str, parse_time_str, 'Error: %s %s' % (str(filename), str(e)), len(steps)]
         except TimeoutError:
-            return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)']
+            return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)]
         proofterm_time = time.perf_counter() - start_time
         proofterm_time_str = "Proofterm: %.3f" % proofterm_time
         assert pt.rule != "sorry"

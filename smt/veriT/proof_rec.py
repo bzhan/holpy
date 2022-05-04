@@ -1,5 +1,6 @@
 """Proof reconstruction."""
 import re
+import resource
 
 from smt.veriT.proof_parser import decl_parser, proof_parser, smt_assertion_parser
 from smt.veriT import command
@@ -12,6 +13,7 @@ from kernel.term import Or
 from kernel import theory
 from logic import logic
 from alive_progress import alive_bar
+
 
 def bind_var(file_name: str) -> dict:
     """Convert the declaration in context to higher-order types and terms."""
@@ -72,6 +74,9 @@ class ProofReconstruction:
     - steps: a list of parsed proof rules.
     """
     def __init__(self, steps, smt_assertions=set()) -> None:
+        # set maximum memory usage as 8GB
+        _, hard = resource.getrlimit(resource.RLIMIT_AS)
+        resource.setrlimit(resource.RLIMIT_AS, (8589934592, hard))
         # List of steps
         self.steps = steps
 

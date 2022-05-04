@@ -1,0 +1,36 @@
+filename,Solve,Parse,ProofTerm,Steps
+../smt-lib/QF_UF/20170829-Rodin/smt6739662804326223632.smt2,0.028,0.349,Proofterm: 0.042,16
+../smt-lib/QF_UF/20170829-Rodin/smt7452810379672948208.smt2,0.028,0.341,Proofterm: 0.040,16
+../smt-lib/QF_UF/20170829-Rodin/smt4057580428149921510.smt2,0.025,0.345,Proofterm: 0.107,18
+../smt-lib/QF_UF/20170829-Rodin/smt4480564921249140261.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt7665342989239969743.smt2,0.019,0.335,Proofterm: 0.021,9
+../smt-lib/QF_UF/20170829-Rodin/smt1300175744189082250.smt2,0.034,0.317,Proofterm: 0.003,3
+../smt-lib/QF_UF/20170829-Rodin/smt834303034702425531.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt3166111930664231918.smt2,0.022,0.329,Proofterm: 0.015,8
+../smt-lib/QF_UF/20170829-Rodin/smt7632939434921259240.smt2,0.022,0.331,Proofterm: 0.040,13
+../smt-lib/QF_UF/20170829-Rodin/smt6109211130895037835.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt5832055835117075398.smt2,0.022,0.314,Proofterm: 0.003,3
+../smt-lib/QF_UF/20170829-Rodin/smt5801285361354912971.smt2,0.034,0.357,Proofterm: 0.037,16
+../smt-lib/QF_UF/20170829-Rodin/smt5144869669709662262.smt2,0.022,0.341,Proofterm: 0.032,11
+../smt-lib/QF_UF/20170829-Rodin/smt2061505268723161891.smt2,0.022,0.346,Proofterm: 0.042,16
+../smt-lib/QF_UF/20170829-Rodin/smt2325451563592377472.smt2,0.030,0.390,Proofterm: 0.190,28
+../smt-lib/QF_UF/20170829-Rodin/smt3534838651727683253.smt2,0.017,0.357,Proofterm: 0.035,10
+../smt-lib/QF_UF/20170829-Rodin/smt862177804180920815.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt2598599073465845145.smt2,0.029,0.331,Proofterm: 0.040,13
+../smt-lib/QF_UF/20170829-Rodin/smt3809952321495040629.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt2831655880469397696.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt4027072204816894856.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt3248576982810563470.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt2080745738819601301.smt2,0.029,0.344,Proofterm: 0.024,10
+../smt-lib/QF_UF/20170829-Rodin/smt3232867547761696161.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt3508124013603727984.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt3910673230463462036.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt1468783596909311386.smt2,0.033,0.331,Proofterm: 0.014,7
+../smt-lib/QF_UF/20170829-Rodin/smt2970577543992530805.smt2,0.032,0.332,Proofterm: 0.119,27
+../smt-lib/QF_UF/20170829-Rodin/smt6377531776677660648.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt8855268942650190404.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt249825283571301584.smt2,0.058,0.344,Proofterm: 0.051,10
+../smt-lib/QF_UF/20170829-Rodin/smt4458073420585573738.smt2,0.067,0.348,Proofterm: 0.046,10
+../smt-lib/QF_UF/20170829-Rodin/smt4241633917533372498.smt2,sat,,,
+../smt-lib/QF_UF/20170829-Rodin/smt5490086717622526120.smt2,0.045,0.370,Proofterm: 0.116,18
+../smt-lib/QF_UF/PEQ/PEQ019_size6.smt2,24.454,110.981,Error: ../smt-lib/QF_UF/PEQ/PEQ019_size6.smt2 Timeout,670745
