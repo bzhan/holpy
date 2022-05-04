@@ -58,7 +58,7 @@ class NotOrMacro(Macro):
         for d in disjs:
             if d == goal.arg:
                 return Thm(goal, pt0.hyps)
-        raise NotImplementedError
+        raise VeriTException("not_or", "unexpected result")
 
     def get_proof_term(self, args, prevs):
         goal, pt0 = args[0], prevs[0]
@@ -88,7 +88,7 @@ class NotAndMacro(Macro):
         disj_atoms = goal.strip_disj()
         for i, j in zip(conj_atoms, disj_atoms):
             if Not(i) != j:
-                raise NotImplementedError(str(i), str(j))
+                raise VeriTException("not_and", "unexpected goal: %s" % goal)
 
         return Thm(goal, pt0.hyps)
 
@@ -96,7 +96,7 @@ class NotAndMacro(Macro):
         goal, pt0 = Or(*args), prevs[0]
         pt1 = pt0.on_prop(verit_conv.deMorgan_conj_conv())
         if pt1.prop != goal:
-            return ProofTerm.sorry(Thm(goal, pt0.hyps))
+            raise VeriTException("not_and", "unexpected goal: %s" % goal)
         return pt1
 
 @register_macro("verit_not_not")
@@ -112,11 +112,14 @@ class NotNotMacro(Macro):
         if neg_arg.arg.arg.arg == pos_arg:
             return Thm(Or(neg_arg, pos_arg))
         else:
-            raise NotImplementedError(str(neg_arg), str(pos_arg))
+            raise VeriTException("not_not", "unexpected goal: %s" % Or(*args))
     
     def get_proof_term(self, args, prevs=None):
         neg_arg, pos_arg = args
-        return logic.apply_theorem("neg_neg", concl=Or(neg_arg, pos_arg))
+        pt = logic.apply_theorem("neg_neg", concl=Or(neg_arg, pos_arg))
+        if pt.prop != Or(*args):
+            raise VeriTException("not_not", "unexpected goal: %s" % Or(*args))
+        return pt
 
 def strip_disj_n(tm, n):
     """Strip the disjunction into n parts."""
@@ -358,7 +361,7 @@ class VeritImpliesMacro(Macro):
         if Or(Not(pt.prop.arg1), pt.prop.arg) == goal:
             return Thm(goal, pt.hyps)
         else:
-            raise NotImplementedError(str(Or(Not(pt.prop.arg1), pt.prop.arg)), str(goal))
+            raise VeriTException("implies", "unexpected goal %s" % goal)
 
     def get_proof_term(self, args, prevs):
         return prevs[0].on_prop(rewr_conv("imp_disj_eq"))
@@ -405,16 +408,18 @@ class VeriTOrPos(Macro):
         disjs = neg_disj.arg.strip_disj()
         for a, b in zip(disjs, args[1:]):
             if a != b:
-                raise NotImplementedError(a, b)
+                raise VeriTException("or_pos", "unexpected goal: %s" % Or(*args))
         if tuple(disjs) == tuple(args[1:]):
             return Thm(Or(*args))
         else:
-            raise NotImplementedError
+            raise VeriTException("or_pos", "unexpected goal: %s" % Or(*args))
     
     def get_proof_term(self, args, prevs=None):
         pt0 = ProofTerm("imp_disj", Implies(args[0].arg, args[0].arg))
         pt1 = pt0.on_prop(rewr_conv("disj_conv_imp", sym=True))
-        return pt1
+        if pt1.prop == Or(*args):
+            return pt1
+        raise VeriTException("or_pos", "unexpected goal: %s" % Or(*args))
 
 @register_macro("verit_not_equiv1")
 class VeriTNotEquiv1(Macro):
@@ -431,11 +436,15 @@ class VeriTNotEquiv1(Macro):
         if p1 == pt_p1 and p2 == pt_p2:
             return Thm(Or(p1, p2), pt.hyps)
         else:
-            raise NotImplementedError
+            raise VeriTException("not_equiv1", "unexpected goal: %s" % Or(*args))
     
-    def get_proof_term(self, args, prevs):
+    def get_proof_term(self, args, prevs) -> ProofTerm:
         pt = prevs[0]
-        return logic.apply_theorem("not_equiv1", pt)
+        pt1 = logic.apply_theorem("not_equiv1", pt)
+        if pt1.prop != Or(*args):
+            raise VeriTException("not_equiv1", "unexpected goal: %s" % Or(*args))
+        else:
+            return pt1
 
 @register_macro("verit_not_equiv2")
 class VeriTNotEquiv1(Macro):
@@ -452,11 +461,15 @@ class VeriTNotEquiv1(Macro):
         if p1.arg == pt_p1 and p2.arg == pt_p2:
             return Thm(Or(p1, p2), pt.hyps)
         else:
-            raise NotImplementedError
+            raise VeriTException("not_equiv2", "unexpected goal %s" % Or(*args))
     
-    def get_proof_term(self, args, prevs):
+    def get_proof_term(self, args, prevs) -> ProofTerm:
         pt = prevs[0]
-        return logic.apply_theorem("not_equiv2", pt)
+        pt1 = logic.apply_theorem("not_equiv2", pt)
+        if pt1.prop != Or(*args):
+            raise VeriTException("not_equiv2", "unexpected goal %s" % Or(*args))
+        else:
+            return pt1
 
 
 @register_macro("verit_equiv1")
@@ -473,10 +486,14 @@ class Equiv1Macro(Macro):
         if Not(p1) == args[0] and p2 == args[1]:
             return Thm(Or(*args), pt.hyps)
         else:
-            raise NotImplementedError
+            raise VeriTException("equiv1", "unexpected result")
     def get_proof_term(self, args, prevs):
         pt = prevs[0]
-        return logic.apply_theorem("equiv1", pt)
+        pt1 = logic.apply_theorem("equiv1", pt)
+        if pt1.prop != Or(*args):
+            raise VeriTException("equiv1", "unexpected goal %s" % Or(*args))
+        else:
+            return pt1
 
 @register_macro("verit_equiv2")
 class Equiv1Macro(Macro):
@@ -492,10 +509,15 @@ class Equiv1Macro(Macro):
         if p1 == args[0] and Not(p2) == args[1]:
             return Thm(Or(*args), pt.hyps)
         else:
-            raise NotImplementedError
+            raise VeriTException("equiv1", "unexpected result")
     def get_proof_term(self, args, prevs):
         pt = prevs[0]
-        return logic.apply_theorem("equiv2", pt)
+        pt1 = logic.apply_theorem("equiv2", pt)
+        if pt1.prop != Or(*args):
+            raise VeriTException("equiv2", "unexpected goal %s" % Or(*args))
+        else:
+            return pt1
+
 
 
 @register_macro("verit_or_neg")
@@ -541,11 +563,14 @@ class EqReflexive(Macro):
         if goal.is_equals() and goal.lhs == goal.rhs:
             return Thm(goal)
         else:
-            raise NotImplementedError
+            raise VeriTException("eq_reflexive", "unexpected goal %s" % goal)
 
-    def get_proof_term(self, args, prevs=None):
+    def get_proof_term(self, args, prevs=None) -> ProofTerm:
         goal = args[0]
-        return ProofTerm.reflexive(goal.lhs)
+        pt = ProofTerm.reflexive(goal.lhs)
+        if pt.prop != goal:
+            raise VeriTException("eq_reflexive", "unexpected goal %s" % goal)
+        return pt
 
 
 @register_macro("verit_eq_transitive")
@@ -602,7 +627,7 @@ class EqTransitive(Macro):
                 pt0 = pt0.transitive(pt1.symmetric())
             
             else:
-                raise NotImplementedError(str(pt0.prop), str(pt1.prop))
+                raise VeriTException("eq_transitive", "unexpected equality")
         
         if pt0.symmetric().prop == args[-1]:
             pt0 = pt0.symmetric() 
@@ -660,7 +685,7 @@ class EquivPos1(Macro):
         if eq_tm.arg1 == arg2 and Not(eq_tm.arg) == arg3:
             return Thm(Or(*args))
         else:
-            raise NotImplementedError
+            raise VeriTException("equiv_pos1", "unexpected goal %s" % Or(*args))
     
     def get_proof_term(self, args, prevs):
         return logic.apply_theorem("equiv_pos1", concl = Or(*args))
@@ -679,7 +704,7 @@ class EquivPos2(Macro):
         if Not(eq_tm.arg1) == arg2 and eq_tm.arg == arg3:
             return Thm(Or(*args))
         else:
-            raise NotImplementedError
+            raise VeriTException("equiv_pos2", "unexpected goal %s" % Or(*args))
     
     def get_proof_term(self, args, prevs):
         return logic.apply_theorem("equiv_pos2", concl = Or(*args))
@@ -732,12 +757,13 @@ class AndRuleMacro(Macro):
                 pt0 = pt0.transitive(pt1.symmetric())
             
             else:
-                raise NotImplementedError(str(pt0.prop), str(pt1.prop))
+                raise VeriTException("imp_to_or", "unexpected prevs: %s %s" % (str(pt0.prop), str(pt1.prop)))
         
         if pt0.symmetric().prop == elems[-1]:
             pt0 = pt0.symmetric() 
 
-        assert pt0.prop == elems[-1], "%s \n %s" % (str(pt0.prop), str(goal.strip_disj()[-1]))
+        if pt0.prop != elems[-1]:
+            raise VeriTException("imp_to_or", "%s \n %s" % (str(pt0.prop), str(goal.strip_disj()[-1])))
         
         return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt0])
 
@@ -775,7 +801,7 @@ class EqCongurentPredMacro(Macro):
             elif arg[0] == pred[1] and pred[0] == arg[1]:
                 pt_args_assms.append(ProofTerm.assume(Eq(pred[0], pred[1])).symmetric())
             else:
-                raise NotImplementedError
+                raise VeriTException("eq_congruent_pred", "unexpected goal")
         pt1 = functools.reduce(lambda x, y: x.combination(y), pt_args_assms, pt0)
         if pred_fun.is_not():
             pt2 = logic.apply_theorem("eq_implies1", pt1).implies_elim(ProofTerm.assume(pred_fun.arg))
