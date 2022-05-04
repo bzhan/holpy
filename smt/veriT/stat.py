@@ -68,8 +68,9 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         return
     stastic.append(filename)
     abs_name = smtlib_path + filename
-    if not interface.is_unsat(abs_name, timeout=solve_timeout):
-        return [filename, 'SAT/TO', '', '', '']
+    unsat, res = interface.is_unsat(abs_name, timeout=solve_timeout)
+    if not unsat:
+        return [filename, str(res), '', '', '']
     print(repr(filename) + ',')
 
     # Solve
@@ -99,7 +100,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
             with TO(seconds=eval_timeout):
                 try:
                     pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm)
-                except (VeriTException, AssertionError, NotImplementedError) as e:
+                except Exception as e:
                     return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)]                   
         except TimeoutError:
             return [filename, solve_time_str, parse_time_str, 'TO']

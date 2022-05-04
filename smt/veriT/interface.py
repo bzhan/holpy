@@ -58,7 +58,7 @@ def is_unsat(f, timeout=10):
         try:
             output, _ = p.communicate(timeout=timeout)
             res = output.decode('UTF-8').split("\n")[1].strip()
-            return False if res in ("sat", "unknown", "unsupported") else True
+            return False if res in ("sat", "unknown", "unsupported") else True, res
         except subprocess.TimeoutExpired:
             # Kill process
             if os.name == "nt": # Windows
