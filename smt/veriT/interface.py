@@ -5,7 +5,6 @@ VeriT Interface.
 import z3
 import subprocess
 from prover import z3wrapper
-from smt.veriT import parser, proof
 import os
 import time
 
@@ -87,23 +86,3 @@ def is_unsat(f, timeout=10):
                 print("UNSAT checking is timeout!")
                 return False, "UNSAT checking is timeout!"
 
-def solve_and_proof(tm):
-    """Use veriT to determine whether a logical term is satisfiable."""
-    s = z3wrapper.solve_core(z3.Solver(ctx=z3.Context()) ,tm, False)
-    with open("proof.smt2", "a") as f:
-        f.seek(0)
-        f.truncate()
-        f.write("(set-logic LRA)\n" + s.to_smt2())
-
-    proof_rec("proof.smt2")
-
-def proof_rec(file_name):
-    """Given a smt2 file, get the proof and reconstruct it."""
-    res = solve(file_name).replace("\r", "").split("\n")
-    ctx = proof_parser.bind_var(file_name)
-    proof_parser = parser.term_parser(ctx)
-    steps = []
-    for step in res:
-        if step in ("sat", "unknown", "unsupported", "unsat"):
-            continue
-        steps.append(proof_parser.parse(step))
