@@ -1146,11 +1146,13 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
     """
     if ctx is None:
         ctx = set()
-    
+    cache = set()
     def helper(t1, t2, depth):
         if (t1, t2) in ctx:
             return True
         if (t2, t1) in ctx:
+            return True
+        if (t1, t2) in cache:
             return True
         if depth == 0:
             return t1 == t2
@@ -1161,8 +1163,10 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                 return False
             elif t1.is_equals():
                 if helper(t1.lhs, t2.lhs, depth-1) and helper(t1.rhs, t2.rhs, depth-1):
+                    cache.add((t1, t2))
                     return True
                 elif helper(t1.rhs, t2.lhs, depth-1) and helper(t1.lhs, t2.rhs, depth-1):
+                    cache.add((t1, t2))
                     return True
                 else:
                     return False
@@ -1172,6 +1176,7 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     cur_t1 = cur_t1.arg
                     cur_t2 = cur_t2.arg
                     if (cur_t1, cur_t2) in ctx:
+                        cache.add((t1, t2))
                         return True
                 if cur_t1 == t1 and cur_t2 == t2:
                     return False
@@ -1183,6 +1188,7 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     cur_t1 = cur_t1.arg
                     cur_t2 = cur_t2.arg
                     if (cur_t1, cur_t2) in ctx:
+                        cache.add((t1, t2))
                         return True
                 if cur_t1 == t1 and cur_t2 == t2:
                     return False
@@ -1194,6 +1200,7 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     cur_t1 = cur_t1.arg1
                     cur_t2 = cur_t2.arg1
                     if (cur_t1, cur_t2) in ctx:
+                        cache.add((t1, t2))
                         return True
                 if cur_t1 == t1 and cur_t2 == t2:
                     return False
@@ -1203,15 +1210,24 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                 if not t2.is_comb('distinct'):
                     return False
                 l_args, r_args = hol_list.dest_literal_list(t1.arg), hol_list.dest_literal_list(t2.arg)
-                return all(helper(l_arg, r_arg, depth-1) for l_arg, r_arg in zip(l_args, r_args))
+                res = all(helper(l_arg, r_arg, depth-1) for l_arg, r_arg in zip(l_args, r_args))
+                if res:
+                    cache.add((t1, t2))
+                return res
             else:
-                return all(helper(l_arg, r_arg, depth-1) for l_arg, r_arg in zip(t1.args, t2.args))
+                res = all(helper(l_arg, r_arg, depth-1) for l_arg, r_arg in zip(t1.args, t2.args))
+                if res:
+                    cache.add((t1, t2))
+                return res
         elif t1.is_abs():
             if not t2.is_abs():
                 return False
             v1, body1 = t1.dest_abs()
             v2, body2 = t2.dest_abs()
-            return v1 == v2 and helper(body1, body2, depth-1)
+            res = (v1 == v2 and helper(body1, body2, depth-1))
+            if res:
+                cache.add((t1, t2))
+            return res
         else:
             return t1 == t2
     return helper(tm1, tm2, depth)
@@ -3870,7 +3886,10 @@ def check_onepoint(goal, ctx):
     if is_forall:
         # body must be in implies form, with each equation in the premise
         if l_bd.is_implies():
-            conjs = l_bd.arg1.strip_conj()
+            assms, concl = l_bd.strip_implies()
+            conjs = []
+            for assm in assms:
+                conjs.extend(assm.strip_conj())
             for v, t in one_val_var.items():
                 found = False
                 for i, conj in enumerate(conjs):
@@ -3881,6 +3900,12 @@ def check_onepoint(goal, ctx):
                         found = True
                         conjs[i] = Eq(conj.rhs, conj.lhs)
                         break
+                if concl.is_not() and concl.arg.is_equals() and concl.arg.lhs == v:
+                    found = True
+                    break
+                if concl.is_not() and concl.arg.is_equals() and concl.arg.rhs == v:
+                    found = True
+                    break
                 if not found:
                     raise VeriTException("onepoint", "forall - equation not found")
             return "FORALL-IMPLIES", conjs + [l_bd.arg], one_val_var, remain_var
@@ -3899,6 +3924,21 @@ def check_onepoint(goal, ctx):
                 if not found:
                     raise VeriTException("onepoint", "forall - equation not found")
             return "FORALL-DISJ", disjs, one_val_var, remain_var
+        elif l_bd.is_not() and l_bd.arg.is_conj():
+            conjs = l_bd.arg.strip_conj()
+            for v, t in one_val_var.items():
+                found = False
+                for i, conj in enumerate(conjs):
+                    if conj.is_equals() and conj.lhs == v:
+                        found = True
+                        break
+                    if conj.is_equals() and conj.rhs == v:
+                        found = True
+                        conjs[i] = Eq(conj.rhs, conj.lhs)
+                        break
+                if not found:
+                    raise VeriTException("onepoint", "forall - equation not found")
+            return "FORALL-NOT_CONJ", conjs, one_val_var, remain_var
         else:
             raise VeriTException("onepoint", "forall - body is neither implies nor disjunction")
     else:
