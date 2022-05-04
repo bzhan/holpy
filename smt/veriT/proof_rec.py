@@ -235,13 +235,18 @@ class ProofReconstruction:
             raise AssertionError("Disagreement between eval and proof term: prop")
 
 
-    def validate(self, is_eval=True, step_limit=None, omit_proofterm=None):
-        with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
-            for i, step in enumerate(self.steps):
-                self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm)
-                bar()
-                if step_limit and i > step_limit:
-                    break
+    def validate(self, is_eval=True, step_limit=None, omit_proofterm=None, with_bar=True):
+        if with_bar:
+            with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
+                for i, step in enumerate(self.steps):
+                    self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm)
+                    bar()
+                    if step_limit and i > step_limit:
+                        break
+        for i, step in enumerate(self.steps):
+            self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm)
+            if step_limit and i > step_limit:
+                break
 
         # check hypothesis consistency
         def check_consistency(hyp):
