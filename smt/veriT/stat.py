@@ -72,6 +72,8 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         return [filename, str(res), '', '', '']
     print(repr(filename) + ',')
 
+    assts = proof_rec.get_assertions(filename)
+
     # Solve
     start_time = time.perf_counter()
     verit_proof = interface.solve(filename, timeout=solve_timeout)
@@ -94,7 +96,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     eval_time_str = ""
     if test_eval:
         start_time = time.perf_counter()
-        recon = proof_rec.ProofReconstruction(steps)
+        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         try:
             with TO(seconds=eval_timeout):
                 try:
@@ -114,7 +116,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     proofterm_time_str = ""
     if test_proofterm:
         start_time = time.perf_counter()
-        recon = proof_rec.ProofReconstruction(steps)
+        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         try:
             pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
         except TimeoutError:
@@ -123,11 +125,8 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         proofterm_time_str = "Proofterm: %.3f" % proofterm_time
         assert pt.rule != "sorry"
 
-    # Optional: print time
-    if show_time:
-        print("Solve: %.3f. Parse: %.3f. %s %s"
-                    % (solve_time, parse_time, eval_time_str, proofterm_time_str, len(steps)))
-    
+    if test_proofterm:
+        return [filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps)]
 
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
               step_limit=None, omit_proofterm=None, solve_timeout=10, eval_timeout=120):
