@@ -28,7 +28,7 @@ def test_parse_step(verit_proof, ctx):
         if isinstance(step, command.Step) and step.rule_name == "lia_generic":
             print('lia_generic')
 
-def test_file(filename, write_file=False, show_time=True, veriT_only=False):
+def test_file(filename, write_file=False, show_time=True, veriT_only=False, parse_assertion=False):
     """Test a single SMT file.
     
     filename : str - absolute path of the file.
@@ -49,6 +49,12 @@ def test_file(filename, write_file=False, show_time=True, veriT_only=False):
         print('sat / unknown / unsupported')
         return
 
+    
+    if parse_assertion:
+        assts = proof_rec.get_assertions(abs_name)
+    else:
+        assts = set()
+
     # Solve
     start_time = time.perf_counter()
     verit_proof = interface.solve(abs_name)
@@ -58,6 +64,9 @@ def test_file(filename, write_file=False, show_time=True, veriT_only=False):
 
     if len(verit_proof) == 0:
         print('Empty proof')
+        return
+    if verit_proof == "unknown\r\n":
+        print("unknown proof")
         return
 
     # All veriT jobs finished. Output file name. 
@@ -72,6 +81,7 @@ def test_file(filename, write_file=False, show_time=True, veriT_only=False):
     if veriT_only:
         return
 
+
     # Parse
     start_time = time.perf_counter()
     ctx = proof_rec.bind_var(abs_name)
@@ -81,7 +91,7 @@ def test_file(filename, write_file=False, show_time=True, veriT_only=False):
     if show_time:
         print("Solve: %.3f. Parse: %.3f" % (solve_time, parse_time))
 
-def test_path(path, write_file=False, show_time=False, veriT_only=False):
+def test_path(path, write_file=False, show_time=False, veriT_only=False, parse_assertion=False):
     """Test a directory containing SMT files."""
     global smtlib_path
     if not smtlib_path:
@@ -97,10 +107,10 @@ def test_path(path, write_file=False, show_time=False, veriT_only=False):
         # Input is a directory
         sub_paths = [path + '/' + child for child in os.listdir(abs_path)]
         for sub_path in sub_paths:
-            test_path(sub_path, write_file=write_file, show_time=show_time, veriT_only=veriT_only)
+            test_path(sub_path, write_file=write_file, show_time=show_time, veriT_only=veriT_only, parse_assertion=parse_assertion)
     else:
         # Input is a file
-        test_file(path, write_file=write_file, show_time=show_time, veriT_only=veriT_only)
+        test_file(path, write_file=write_file, show_time=show_time, veriT_only=veriT_only, parse_assertion=parse_assertion)
 
 
 class ParserTest(unittest.TestCase): 
@@ -255,7 +265,7 @@ class ParserTest(unittest.TestCase):
 
     def testParseUFLIA(self):
         test_paths = [
-            '/UFLIA/boogie/QuantifierVisibilityInvariant_C..ctor_System.Int32.smt2',
+            'UFLIA/boogie/QuantifierVisibilityInvariant_C..ctor_System.Int32.smt2',
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods..ctor.smt2',
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods.M.smt2',
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods.N.smt2',
@@ -284,6 +294,7 @@ class ParserTest(unittest.TestCase):
             'UFLIA/tokeneer/admin/finishop-1.smt2',
             'UFLIA/tokeneer/admin/init-1.smt2',
             'UFLIA/tokeneer/admin/logon-1.smt2',
+            'UFLIA/tokeneer/userentry/progress-4.smt2',
             'UFLIA/tptp/ARI604=1.smt2',
             'UFLIA/tptp/ARI612=1.smt2',
             'UFLIA/tptp/ARI615=1.smt2',
@@ -336,8 +347,88 @@ class ParserTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, veriT_only=True)
+            test_path(path)
+        
+    def testParseAUFLIA(self):
+        test_paths = [
+            'AUFLIA/20170829-Rodin/smt1002232729905089644.smt2',
+            'AUFLIA/20170829-Rodin/smt1005619206308662052.smt2',
+            'AUFLIA/20170829-Rodin/smt1041855950602319657.smt2',
+            'AUFLIA/20170829-Rodin/smt1056800823907916951.smt2',
+            'AUFLIA/20170829-Rodin/smt1092100299585472351.smt2',
+            'AUFLIA/20170829-Rodin/smt1119354235255245041.smt2',
+            'AUFLIA/20170829-Rodin/smt121642227126350719.smt2',
+            'AUFLIA/20170829-Rodin/smt1218456647866960210.smt2',
+            'AUFLIA/20170829-Rodin/smt1238392701218460929.smt2',
+            'AUFLIA/20170829-Rodin/smt1548357652033660278.smt2',
+            'AUFLIA/20170829-Rodin/smt1551255090000261050.smt2',
+            'AUFLIA/20170829-Rodin/smt1553283421285438203.smt2',
+            'AUFLIA/20170829-Rodin/smt1638875703304617187.smt2',
+            'AUFLIA/20170829-Rodin/smt1643313206004053741.smt2',
+            'AUFLIA/20170829-Rodin/smt1643358356540277150.smt2',
+            'AUFLIA/20170829-Rodin/smt1828334434025716862.smt2',
+            'AUFLIA/20170829-Rodin/smt1829029808963281215.smt2',
+            'AUFLIA/20170829-Rodin/smt1882594910272367920.smt2',
+            'AUFLIA/20170829-Rodin/smt1883437689668062427.smt2'
+            'AUFLIA/20170829-Rodin/smt2022486099146293362.smt2',
+            'AUFLIA/20170829-Rodin/smt2025463987927880021.smt2',
+            'AUFLIA/20170829-Rodin/smt2027035001350841448.smt2',
+        ]
 
+        for path in test_paths:
+            test_path(path)
+
+
+    def testParseLIA(self):
+        test_paths = [
+            'LIA/UltimateAutomizer/MADWiFi-encode_ie_ok_true-unreach-call.i_17.smt2',
+            'LIA/UltimateAutomizer/Primes_true-unreach-call.c_678.smt2',
+            'LIA/UltimateAutomizer/recHanoi03_true-unreach-call_true-termination.c_2175.smt2',
+            'LIA/UltimateAutomizer/recHanoi03_true-unreach-call_true-termination.c_557.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path)
+
+
+    def testParseLRA(self):
+        test_paths = [
+            'LRA/scholl-smt08/RND/RND_3_15.smt2',
+            'LRA/scholl-smt08/RND/RND_3_19.smt2',
+            'LRA/scholl-smt08/RND/RND_3_28.smt2',
+            'LRA/scholl-smt08/RND/RND_3_9.smt2',
+            'LRA/scholl-smt08/RND/RND_4_12.smt2',
+            'LRA/scholl-smt08/RND/RND_4_2.smt2',
+            'LRA/scholl-smt08/RND/RND_4_7.smt2',
+        ]
+
+        for path in test_paths:
+            test_path(path)
+
+    def testParseSMTAssertions(self):
+        test_paths = [
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_49_980_1120402.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_52_18_634_983654.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_53_05_211_1033050.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_53_31_362_1064389.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_48_45_757_1043506.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_54_30_307_1349771.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_57_04_292_1481164.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_46_30_200_1001391.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_47_39_480_1078027.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_48_44_767_1147663.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_54_35_132_1014381.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_54_53_474_1036287.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_55_00_922_1043783.smt_in.smt2',
+            'UF/20201221-induction-by-reflection-schoisswohl/reflectiveConjecture/currying-0.smt2',
+            'UF/grasshopper/instantiated/concat_check_heap_access_23_4.smt2',
+            'UFLIA/boogie/AdditiveMethods_AdditiveMethods..ctor.smt2',
+            'LIA/UltimateAutomizer/MADWiFi-encode_ie_ok_true-unreach-call.i_17.smt2',
+        ]
+        for path in test_paths:
+            test_path(path, parse_assertion=True)
 
 if __name__ == "__main__":
     unittest.main()

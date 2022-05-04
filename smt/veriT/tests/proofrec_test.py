@@ -21,6 +21,7 @@ def test_parse_step(verit_proof, ctx):
     parser = proof_parser.proof_parser(ctx)
     steps = []
     for s in verit_proof.replace("\r", "").split("\n"):
+        # print(s)
         if s == "unsat" or s == "":
             continue
         steps.append(parser.parse(s))
@@ -28,7 +29,7 @@ def test_parse_step(verit_proof, ctx):
     return steps
 
 def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
-              write_file=False, step_limit=None, omit_proofterm=None):
+              write_file=False, step_limit=None, omit_proofterm=None, parse_assertion=False):
     """Test a given file under eval or proofterm mode."""
     global smtlib_path
     if not smtlib_path:
@@ -42,10 +43,18 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         return
     print(repr(filename) + ',')
 
+    if parse_assertion:
+        assts = proof_rec.get_assertions(abs_name)
+    else:
+        assts = set()
+
     # Solve
     start_time = time.perf_counter()
     verit_proof = interface.solve(abs_name)
     if verit_proof is None:
+        return
+    if verit_proof == "unknown\r\n":
+        print("unknown proof")
         return
     ctx = proof_rec.bind_var(abs_name)
     solve_time = time.perf_counter() - start_time
@@ -64,7 +73,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     eval_time_str = ""
     if test_eval:
         start_time = time.perf_counter()
-        recon = proof_rec.ProofReconstruction(steps)
+        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm)
         eval_time = time.perf_counter() - start_time
         eval_time_str = "Eval: %.3f." % eval_time
@@ -74,7 +83,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     proofterm_time_str = ""
     if test_proofterm:
         start_time = time.perf_counter()
-        recon = proof_rec.ProofReconstruction(steps)
+        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm)
         proofterm_time = time.perf_counter() - start_time
         proofterm_time_str = "Proofterm: %.3f." % proofterm_time
@@ -87,7 +96,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
 
 
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
-              write_file=False, step_limit=None, omit_proofterm=None):
+              write_file=False, step_limit=None, omit_proofterm=None, parse_assertion=False):
     """Test a directory containing SMT files.
     
     test_eval : bool - test evaluation of steps.
@@ -113,15 +122,15 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         sub_paths = [path + '/' + child for child in os.listdir(abs_path)]
         for sub_path in sub_paths:
             test_path(sub_path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm,
-                      write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm)
+                      write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm, parse_assertion=parse_assertion)
     else:
         # Input is a file
         test_file(path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm,
-                  write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm)
+                  write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm, parse_assertion=parse_assertion)
 
 
 class ProofrecTest(unittest.TestCase):
-    def test_QF_UF(self):
+    def test_QF_UF(self): # proofterm ✓ eval ✓
         test_paths = [
             'QF_UF/20170829-Rodin/smt1300175744189082250.smt2',
             'QF_UF/20170829-Rodin/smt1468783596909311386.smt2',
@@ -169,7 +178,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -177,7 +186,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_QF_UFLRA(self):
+    def test_QF_UFLRA(self): # proofterm ✓ eval ✓
         test_paths = [
             'QF_UFLRA/mathsat/RandomCoupled/pb_real_10_0200_10_14.smt2',
             'QF_UFLRA/mathsat/RandomCoupled/pb_real_20_0400_10_12.smt2',
@@ -199,7 +208,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -207,7 +216,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_QF_UFLIA(self):
+    def test_QF_UFLIA(self): # proofterm ✓ eval ✓
         test_paths = [
             'QF_UFLIA/mathsat/EufLaArithmetic/medium/medium5.smt2',
             'QF_UFLIA/mathsat/EufLaArithmetic/medium/medium6.smt2',
@@ -222,7 +231,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_UFLIA/TwoSquares/smtlib.602046.smt2',
             'QF_UFLIA/TwoSquares/smtlib.686126.smt2',
             'QF_UFLIA/TwoSquares/smtlib.769286.smt2',
-            'QF_UFLIA/TwoSquares//smtlib.686091.smt2',
+            'QF_UFLIA/TwoSquares/smtlib.686091.smt2',
             'QF_UFLIA/wisas/xs_7_12.smt2',
         ]
 
@@ -232,7 +241,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -240,14 +249,14 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_UF(self):
+    def test_UF(self): # eval ✓ proofterm ✓
         test_paths = [
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_49_980_1120402.smt_in.smt2',
-            "UF/20170428-Barrett//cdt-cade2015/nada/afp/lmirror/x2015_09_10_16_47_35_530_1067960.smt_in.smt2",
-            "UF/20170428-Barrett//cdt-cade2015/nada/afp/lmirror/x2015_09_10_16_47_27_202_1060941.smt_in.smt2",
-            "UF/20170428-Barrett//cdt-cade2015/nada/afp/huffman/x2015_09_10_16_49_30_501_1188113.smt_in.smt2",
+            "UF/20170428-Barrett/cdt-cade2015/nada/afp/lmirror/x2015_09_10_16_47_35_530_1067960.smt_in.smt2",
+            "UF/20170428-Barrett/cdt-cade2015/nada/afp/lmirror/x2015_09_10_16_47_27_202_1060941.smt_in.smt2",
+            "UF/20170428-Barrett/cdt-cade2015/nada/afp/huffman/x2015_09_10_16_49_30_501_1188113.smt_in.smt2",
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_52_18_634_983654.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_53_05_211_1033050.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_53_31_362_1064389.smt_in.smt2',
@@ -269,21 +278,21 @@ class ProofrecTest(unittest.TestCase):
             'UF/sledgehammer/FFT/uf.552859.smt2',
             'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1025050.smt2',
             'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1061982.smt2',
-            # 'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1384400.smt2', # bugs: th_resolution: unexpected conclusion
+            'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1384400.smt2',
             'UF/sledgehammer/Hoare/smtlib.1170876.smt2',
             'UF/sledgehammer/Hoare/uf.1008477.smt2',
             'UF/sledgehammer/Hoare/uf.1031408.smt2',
             'UF/sledgehammer/StrongNorm/uf.701666.smt2',
             'UF/sledgehammer/TypeSafe/uf.913303.smt2',
             'UF/sledgehammer/TypeSafe/smtlib.1267524.smt2',
-            'UF/sledgehammer/TwoSquares//uf.680734.smt2',
-            'UF/sledgehammer/TwoSquares//uf.725943.smt2',
+            'UF/sledgehammer/TwoSquares/uf.680734.smt2',
+            'UF/sledgehammer/TwoSquares/uf.725943.smt2',
             'UF/grasshopper/instantiated/concat_check_heap_access_23_4.smt2',
             'UF/grasshopper/instantiated/concat_invariant_18_4.smt2',
             'UF/grasshopper/instantiated/dl_filter_postcondition_of_dl_filter_41_1.smt2',
             'UF/grasshopper/uninstantiated/dl_filter_loop_invariant_40_3.smt2',
             'UF/grasshopper/uninstantiated/dl_filter_postcondition_of_dl_filter_41_1.smt2',
-            'UF/grasshopper/uninstantiated/dl_insert_check_heap_access_16_4.smt2',
+            'UF/grasshopper/uninstantiated/dl_insert_check_heap_access_16_4.smt2', 
             'UF/misc/list1.smt2',
             'UF/misc/set10.smt2',
             'UF/misc/set11.smt2',
@@ -295,7 +304,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -303,7 +312,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_UFLRA(self):
+    def test_UFLRA(self): # eval ✓ proofterm ✓
         test_paths = [
             'UFLRA/FFT/smtlib.620487.smt2',
             'UFLRA/FFT/smtlib.620535.smt2',
@@ -318,9 +327,9 @@ class ProofrecTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
-    def test_UFLIA(self):
+    def test_UFLIA(self): # eval ✓
         test_paths = [
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods..ctor.smt2',
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods.M.smt2',
@@ -346,11 +355,17 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/simplify2/front_end_suite/javafe.ast.Identifier.005.smt2',
             'UFLIA/simplify2/front_end_suite/javafe.tc.Types.002.smt2',
             'UFLIA/simplify2/front_end_suite/javafe.util.StackVector.005.smt2',
-            'UFLIA/simplify2/front_end_suite/javafe.util.StackVector.005.smt2'
-            'UFLIA/simplify2/front_end_suite/javafe.ast.FormalParaDeclVec.015.smt2'
+            'UFLIA/simplify2/front_end_suite/javafe.ast.FormalParaDeclVec.015.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555057.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.555849.smt2',
             'UFLIA/sledgehammer/Arrow_Order/smtlib.556254.smt2',
+            'UFLIA/sledgehammer/FFT/smtlib.935892.smt2',
+            'UFLIA/sledgehammer/TwoSquares/smtlib.871354.smt2',
+            'UFLIA/sledgehammer/TwoSquares/smtlib.832972.smt2',
+            'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438328.smt2',
+            'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438517.smt2',
+            'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437253.smt2',
+            'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437948.smt2',
             'UFLIA/spec_sharp/textbook-DutchFlag.bpl.1.Partition.smt2',
             'UFLIA/spec_sharp/textbook-Find.bpl.1.Find.smt2',
             'UFLIA/spec_sharp/textbook-Find.bpl.2.Main.smt2',
@@ -367,7 +382,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -376,9 +391,9 @@ class ProofrecTest(unittest.TestCase):
             p.print_stats(50)
 
 
-    def test_QF_IDL(self):
+    def test_QF_IDL(self): # eval ✓ proofterm: ✓
         test_paths = [
-            'QF_IDL/planning//plan-40.cvc.smt2',
+            'QF_IDL/planning/plan-40.cvc.smt2',
             # 'QF_IDL/RTCL/b13_tf_15/ckt_PROP5_tf_15.smt2', # timeout
         ]
         profile = False
@@ -387,7 +402,179 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
+
+    def test_QF_RDL(self): # eval ✓ proofterm: ac_simp
+        test_paths = [
+            # 'QF_RDL/skdmxa/skdmxa-3x3-5.smt2' # ac_simp
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=True, parse_assertion=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
+
+    def test_QF_LRA(self): # proofterm ✓ eval ✓
+        test_paths = [
+            'QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2',
+            'QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2',
+            'QF_LRA/spider_benchmarks/current_frame.induction.smt2',
+            'QF_LRA/sc/sc-10.base.cvc.smt2',
+            'QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2', 
+            'QF_LRA/tta_startup/simple_startup_10nodes.synchro.induct.smt2',
+            'QF_LRA/uart/uart-10.base.cvc.smt2',
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=True, parse_assertion=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
+
+    def test_QF_AUFLIA(self): # eval ✓ proofterm ✓
+        test_paths = [
+            'QF_AUFLIA/20170829-Rodin/smt101358492275879472.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt1048206973303286471.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt1076382332286802622.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt9116345646566616227.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt957085527369554317.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt971450140125177067.smt2',
+            'QF_AUFLIA/20170829-Rodin/smt1656603882241727713.smt2',
+            'QF_AUFLIA/cvc/add4.smt2',
+            'QF_AUFLIA/cvc/add5.smt2',
+            'QF_AUFLIA/cvc/add6.smt2',
+            'QF_AUFLIA/cvc/fb_var_33_6.smt2',
+            'QF_AUFLIA/cvc/pp-invariant.smt2',
+            'QF_AUFLIA/cvc/pp-pc-s2i.smt2',
+            'QF_AUFLIA/cvc/read6.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_nf_ai_00002_001.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_nf_ai_00003_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_nf_ai_00008_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_sf_ai_00002_001.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_sf_ai_00003_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t1_pp_sf_ai_00008_003.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_001.cvc.smt2',
+            'QF_AUFLIA/swap/swap_t3_pp_sf_ai_00005_001.cvc.smt2',
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=True, parse_assertion=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
+
+    def test_AUFLIA(self): # eval ✓ proofterm ✓
+        test_paths = [
+            'AUFLIA/20170829-Rodin/smt1002232729905089644.smt2',
+            'AUFLIA/20170829-Rodin/smt1005619206308662052.smt2',
+            'AUFLIA/20170829-Rodin/smt1041855950602319657.smt2',
+            'AUFLIA/20170829-Rodin/smt1056800823907916951.smt2',
+            'AUFLIA/20170829-Rodin/smt1092100299585472351.smt2',
+            'AUFLIA/20170829-Rodin/smt1119354235255245041.smt2',
+            'AUFLIA/20170829-Rodin/smt121642227126350719.smt2',
+            'AUFLIA/20170829-Rodin/smt1218456647866960210.smt2',
+            'AUFLIA/20170829-Rodin/smt1238392701218460929.smt2',
+            'AUFLIA/20170829-Rodin/smt1548357652033660278.smt2',
+            'AUFLIA/20170829-Rodin/smt1551255090000261050.smt2',
+            'AUFLIA/20170829-Rodin/smt1553283421285438203.smt2',
+            'AUFLIA/20170829-Rodin/smt1638875703304617187.smt2',
+            'AUFLIA/20170829-Rodin/smt1643313206004053741.smt2',
+            'AUFLIA/20170829-Rodin/smt1643358356540277150.smt2',
+            'AUFLIA/20170829-Rodin/smt1828334434025716862.smt2',
+            'AUFLIA/20170829-Rodin/smt1829029808963281215.smt2',
+            'AUFLIA/20170829-Rodin/smt1882594910272367920.smt2',
+            'AUFLIA/20170829-Rodin/smt1883437689668062427.smt2',
+            'AUFLIA/20170829-Rodin/smt2022486099146293362.smt2',
+            'AUFLIA/20170829-Rodin/smt2025463987927880021.smt2',
+            'AUFLIA/20170829-Rodin/smt2027035001350841448.smt2',
+            'AUFLIA/misc/set1.smt2',
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=True, parse_assertion=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
+
+    def test_LRA(self): # eval ✓ proofterm ✓
+        test_paths = [
+            'LRA/scholl-smt08/RND/RND_3_15.smt2',
+            'LRA/scholl-smt08/RND/RND_3_19.smt2',
+            'LRA/scholl-smt08/RND/RND_3_28.smt2',
+            'LRA/scholl-smt08/RND/RND_3_9.smt2',
+            'LRA/scholl-smt08/RND/RND_4_12.smt2',
+            'LRA/scholl-smt08/RND/RND_4_2.smt2',
+            'LRA/scholl-smt08/RND/RND_4_7.smt2',
+        ]
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=True, parse_assertion=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
+
+    def test_LIA(self): # eval ✓ proofterm ✓
+        test_paths = [
+            'LIA/UltimateAutomizer/MADWiFi-encode_ie_ok_true-unreach-call.i_17.smt2',
+            'LIA/UltimateAutomizer/Primes_true-unreach-call.c_678.smt2',
+            'LIA/UltimateAutomizer/recHanoi03_true-unreach-call_true-termination.c_2175.smt2',
+            'LIA/UltimateAutomizer/recHanoi03_true-unreach-call_true-termination.c_557.smt2',
+            'LIA/tptp/NUM865=1.smt2',
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=False, parse_assertion=True)
 
         if profile:
             p = Stats(pr)

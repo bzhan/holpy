@@ -62,7 +62,7 @@ class Thm():
                     hyp_set = set(self.hyps)
                     self.hyps = self.hyps + tuple(t for t in hyp if t not in hyp_set)
             else:
-                raise TypeError('Thm')
+                raise TypeError('Thm: each hyp argument is either Term or tuple')
 
     @property
     def assums(self) -> Term:
@@ -313,7 +313,7 @@ class Thm():
         A |- (%x. t1) = (%x. t2)  where x does not occur in A.
         """
         if any(hyp.occurs_var(x) for hyp in th.hyps):
-            raise InvalidDerivationException("abstraction")
+            raise InvalidDerivationException("abstraction: variable occurs in assmptions")
         elif th.is_equals():
             t1, t2 = th.prop.args
             try:
@@ -349,11 +349,11 @@ class Thm():
         """
         if th.prop.is_forall():
             if th.prop.arg.var_T != s.get_type():
-                raise InvalidDerivationException("forall_elim")
+                raise InvalidDerivationException("forall_elim: type is not equal")
             else:
                 return Thm(th.prop.arg.subst_bound(s), th.hyps)
         else:
-            raise InvalidDerivationException("forall_elim")
+            raise InvalidDerivationException("forall_elim: input is not forall statement")
 
     @staticmethod
     def mk_VAR(v):

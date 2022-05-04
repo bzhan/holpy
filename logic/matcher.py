@@ -222,6 +222,7 @@ def first_order_match(pat, t, inst=None):
                 except TypeMatchException:
                     raise MatchException(trace)
                 T = pat.var_T.subst(inst.tyinst)
+                inst.abs_name_inst[pat.var_name] = t.var_name
 
                 var_names = [v.name for v in pat.body.get_vars() + t.body.get_vars()]
                 nm = name.get_variant_name(pat.var_name, var_names)
@@ -291,7 +292,7 @@ def first_order_match_list(pats, ts, inst=None):
         inst = first_order_match(pats[0], ts[0], inst)
         return inst
 
-def is_fo_pattern(t):
+def is_fo_pattern(t: Term):
     """Test whether t is a first-order pattern, that is no schematic variables
     appear in function position.
     

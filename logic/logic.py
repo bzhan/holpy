@@ -131,6 +131,43 @@ def strip_exists(t, names):
     else:
         return ([], t)
 
+def is_let(t: Term) -> Term:
+    return t.is_comb('Let', 2)
+
+def mk_let(x: Term, t: Term, body: Term) -> Term:
+    """Construct the term (let x = t in body). """
+    assert x.is_var(), "mk_let"
+    T = body.get_type()
+    let_t = Const("Let", TFun(x.T, TFun(x.T, T), T))
+    return let_t(t, Lambda(x, body))
+
+def dest_let(t: Term):
+    """Given a term of the form (let x = t in body), return (x, t, body). """
+    x, body = t.arg.dest_abs()
+    return (x, t.arg1, body)
+
+def strip_let(t: Term):
+    """Given a term of the form
+
+        let x1 = t1 ... xn = tn in body
+
+    return the list of pairs (x1, t1), ... (xn, tn) together with body.
+
+    """
+    res_list = []
+    while is_let(t):
+        x, body = t.arg.dest_abs()
+        res_list.append((x, t.arg1))
+        t = body
+    return (res_list, t)
+
+def mk_xor(x: Term, y: Term) -> Term:
+    assert x.get_type() == BoolType and y.get_type() == BoolType
+    return Const("xor", TFun(BoolType, BoolType, BoolType))(x, y)
+
+def is_xor(t: Term):
+    return t.is_comb('xor', 2)
+
 """Normalization rules for logic."""
 
 class norm_bool_expr(Conv):
@@ -651,7 +688,7 @@ class imp_conj_macro(Macro):
         traverse_A(ProofTerm.assume(A))
         return traverse_C(goal.arg).implies_intr(A)
 
-def imp_conj_iff(goal: Term):
+def imp_conj_iff(goal: Term) -> ProofTerm:
     """Goal is of the form A_1 & ... & A_m <--> B_1 & ... & B_n, where
     the sets {A_1, ..., A_m} and {B_1, ..., B_n} are equal."""
     pt1 = ProofTerm('imp_conj', Implies(goal.lhs, goal.rhs))

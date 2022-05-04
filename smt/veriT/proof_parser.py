@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Union
 from lark import Lark, Transformer, v_args, exceptions
 from smt.veriT.command import Assume, Step, Anchor
 from logic import logic
@@ -17,8 +17,10 @@ class VeriTParseException(Exception):
     def __str__(self) -> str:
         return "%s: %s" % (self.tm_name, self.message)
 
-def str_to_hol_type(s):
+def str_to_hol_type(s: Union[hol_type.Type, str]) -> hol_type.Type:
         """Convert string to HOL type."""
+        if isinstance(s, hol_type.Type):
+            return s
         s = str(s)
         if s == "Bool":
             return hol_type.BoolType
@@ -26,6 +28,8 @@ def str_to_hol_type(s):
             return hol_type.IntType
         elif s == "Real":
             return hol_type.RealType
+        elif s == "ArrayIntInt":
+            return hol_type.TFun(hol_type.IntType, hol_type.IntType)
         else:
             # All other types are converted to type variables.
             return hol_type.TVar(s)
@@ -35,10 +39,11 @@ def str_to_hol_type(s):
 smt_decl_grammar = r"""
     VNAME: (LETTER|"~"|"!"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"/")(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/")*
 
-    QUOTED_VNAME: "|" (LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/"|"("|")"|":"|"["|"]"|"#"|","|" ")* "|"
+    QUOTED_VNAME: "|" (LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/"|"("|")"|":"|"["|"]"|"#"|","|"'"|" ")* "|"
 
     ?vname: VNAME -> mk_vname
         | QUOTED_VNAME -> mk_quoted_vname
+        | "(Array " VNAME VNAME ")" -> mk_array
 
     ?term: "(declare-fun" vname "()" vname ")" -> mk_tm
         | "(declare-fun" vname "(" vname+ ")" vname ")" -> mk_fun
@@ -74,6 +79,9 @@ class DeclTransformer(Transformer):
         """Make a function term, which type is arg1 -> ... argn."""
         return {name: hol_type.TFun(*(str_to_hol_type(t) for t in args))}
 
+    def mk_array(self, domain, codomain):
+        return hol_type.TFun(str_to_hol_type(domain), str_to_hol_type(codomain))
+
 decl_parser = Lark(smt_decl_grammar, start="term", parser="lalr", transformer=DeclTransformer())
 
 def parse_decl(s):
@@ -83,21 +91,27 @@ def parse_decl(s):
 veriT_grammar = r"""
     VNAME: (LETTER|"~"|"!"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"/")(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/")*
 
-    QUOTED_VNAME: "|"(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/"|"("|")"|":"|"["|"]"|"#"|","|" ")*"|"
+    QUOTED_VNAME: "|"(LETTER|DIGIT|"~"|"!"|"@"|"$"|"%"|"^"|"&"|"*"|"_"|"-"|"+"|"="|"<"|">"|"."|"?"|"/"|"("|")"|":"|"["|"]"|"#"|","|"'"|" ")*"|"
+
+    ?at_name : "@" CNAME -> mk_at_name
 
     ?vname: VNAME -> mk_vname
         | QUOTED_VNAME -> mk_quoted_vname
+    
+    ?qname: "?" VNAME -> mk_qname
 
-    ANCHOR_NAME: "?" VNAME | CNAME
+    ?anchor_name: qname | vname
 
     ?proof_command : "(assume" step_id proof_term ")" -> mk_assume
                     | "(step" step_id clause ":rule" CNAME step_annotation* ")" -> mk_step
                     | "(anchor :step" step_id ":args" "(" single_context+ ")" ")" -> mk_anchor
                     | "(anchor :step" step_id ")" -> mk_empty_anchor
-    ?clause : "(cl" proof_term* ")" -> mk_clause
+
+    ?clause : "(cl " proof_term* ")" -> mk_clause
+            | "(cl)" -> mk_empty_clause
     
-    ?single_context :  "(:=" "(" ANCHOR_NAME vname ")" (term|vname) ")" -> add_context
-                    | "(" ANCHOR_NAME vname ")" -> add_trivial_ctx
+    ?single_context :  "(:=" "(" anchor_name vname ")" (term|vname) ")" -> add_context
+                    | "(" anchor_name vname ")" -> add_trivial_ctx
 
     ?step_arg_pair : "(:=" CNAME term")" -> mk_forall_inst_args
                    | term* -> mk_la_generic_args
@@ -108,10 +122,9 @@ veriT_grammar = r"""
 
     ?proof_term : term
 
-    ?let_pair : "(" "?" CNAME term ")" -> mk_let_pair
+    ?let_pair : "(" (vname|qname) term ")" -> mk_let_pair
 
-    ?quant_pair : "(" "?" vname vname ")" -> mk_quant_pair_assume
-                | "(" CNAME vname ")" -> mk_quant_pair_step
+    ?quant_pair : "(" (qname|vname) vname ")" -> mk_quant_pair
 
     ?term :   "true" -> mk_true
             | "false" -> mk_false
@@ -130,15 +143,19 @@ veriT_grammar = r"""
             | "(>" term term ")" -> mk_greater_tm
             | "(<=" term term ")" -> mk_less_eq_tm
             | "(>=" term term ")" -> mk_greater_eq_tm
-            | "(!" term ":named" "@" CNAME ")" -> mk_annot_tm
+            | "(! " term ":named" (at_name|CNAME) ")" -> mk_annot_tm
             | "(let " "(" let_pair* ")" term ")" -> mk_let_tm
             | "(distinct " term term+ ")" -> mk_distinct_tm
+            | "(xor " term term ")" -> mk_xor_tm
+            | "(store " term term term ")" -> mk_store
+            | "(select " term term ")" -> mk_select
             | "(" term ")" -> mk_par_tm
             | "(" term+ ")" -> mk_app_tm
             | "(ite " term term term ")" -> mk_ite_tm
             | "(forall " "(" quant_pair+ ")" term ")" -> mk_forall
             | "(exists " "(" quant_pair+ ")" term ")" -> mk_exists
             | "(choice " "(" quant_pair+ ")" term ")" -> mk_choice
+            | "(! " term (":pattern " term)+ ")" -> mk_pat_term
             | INT -> mk_int
             | DECIMAL -> mk_decimal
             | name
@@ -146,8 +163,13 @@ veriT_grammar = r"""
     ?step_id : vname ("." vname)* -> mk_step_id
 
     ?name : "@" CNAME -> ret_annot_tm
-            | "?" vname -> ret_let_tm
+            | qname -> ret_let_tm
             | vname -> ret_tm
+
+
+    ?smt_term : term -> mk_smt_term
+
+    ?smt_file_assert : "(assert " smt_term ")" -> mk_assertion
 
     %import common.CNAME
     %import common.INT
@@ -204,7 +226,7 @@ class ProofTransformer(Transformer):
         var is the variable name, ty is its type, tm_name is
         the term name (may not occur in previous context)
         """
-        
+
         hol_ty = str_to_hol_type(ty)
         if isinstance(tm_name, hol_term.Term):
             tm = tm_name
@@ -225,6 +247,9 @@ class ProofTransformer(Transformer):
 
     def mk_vname(self, name):
         return str(name)
+    
+    def mk_qname(self, name):
+        return "?" + str(name)
 
     def mk_quoted_vname(self, name):
         name = str(name)
@@ -244,7 +269,7 @@ class ProofTransformer(Transformer):
         We first search ?name in let scope then in quantified variables, then in context, 
         this is correct since if ?name is not a binding var, the let scope would be empty. 
         """
-        name = "?" + str(name)
+        name = str(name)
         if name in self.let_tm:
             return self.let_tm[name]
         for p in reversed(self.quant_ctx):
@@ -273,6 +298,8 @@ class ProofTransformer(Transformer):
         for ctx in reversed(self.proof_ctx):
             if tm in ctx:
                 return hol_term.Var(tm, ctx[tm].get_type())
+        if tm in self.let_tm:
+            return self.let_tm[tm]
         # If not found in all these contexts, raise error
         raise ValueError(tm)
 
@@ -282,13 +309,7 @@ class ProofTransformer(Transformer):
     def mk_app_tm(self, *tms):
         return tms[0](*tms[1:])
 
-    def mk_quant_pair_assume(self, var_name, ty):
-        var_name = "?" + str(var_name)
-        hol_var = hol_term.Var(var_name, str_to_hol_type(str(ty)))
-        self.quant_ctx.append((var_name, hol_var))
-        return hol_var
-
-    def mk_quant_pair_step(self, var_name, ty):
+    def mk_quant_pair(self, var_name, ty):
         var_name = str(var_name)
         hol_var = hol_term.Var(var_name, str_to_hol_type(str(ty)))
         self.quant_ctx.append((var_name, hol_var))
@@ -314,7 +335,7 @@ class ProofTransformer(Transformer):
 
     def mk_let_pair(self, name, tm):
         """Make the let scope."""
-        name = "?" + str(name)
+        name = str(name)
         T = tm.get_type()
         bound_var = hol_term.Var(name, T)
         self.let_tm[name] = bound_var
@@ -336,11 +357,18 @@ class ProofTransformer(Transformer):
         for tm in tms[:-1]:
             assert tm[0].name in self.let_tm
             del self.let_tm[tm[0].name]
-        return tms[-1]
+        res = tms[-1]
+        for p in reversed(tms[:-1]):
+            v, _, t = p
+            res = logic.mk_let(v, t, res)
+        return res
 
     def mk_distinct_tm(self, *tms):
         assert tms  # tms cannot be empty
         return hol_list.distinct(hol_list.mk_literal_list(tms, tms[0].get_type()))
+
+    def mk_xor_tm(self, tm1, tm2):
+        return logic.mk_xor(tm1, tm2)
 
     def mk_true(self):
         return hol_term.true
@@ -352,7 +380,7 @@ class ProofTransformer(Transformer):
         return hol_term.Not(tm)
 
     def mk_annot_tm(self, tm, name):
-        name = "@" + str(name)
+        name = str(name)
         self.annot_tm[name] = tm
         return tm
 
@@ -370,6 +398,18 @@ class ProofTransformer(Transformer):
 
     def mk_ite_tm(self, P, x, y):
         return logic.mk_if(P, x, y)
+
+    def mk_store(self, arr, i, v):
+        arr_ty = arr.get_type()
+        idx_ty = i.get_type()
+        val_ty = v.get_type()
+        store_tm = hol_term.Const("store", hol_term.TFun(arr_ty, idx_ty, val_ty, arr_ty))
+        return store_tm(arr, i, v)
+
+    def mk_select(self, f, arg):
+        fun_ty = f.get_type()
+        arg_ty = arg.get_type()
+        return hol_term.Const("select", hol_term.TFun(fun_ty, arg_ty, fun_ty.args[1]))(f, arg)
 
     def mk_int(self, num):
         if self.is_real:
@@ -466,6 +506,9 @@ class ProofTransformer(Transformer):
     def mk_clause(self, *tm):
         return tm
 
+    def mk_empty_clause(self):
+        return tuple()
+
     def mk_step_premises(self, *pm):
         return PREMISES, pm
 
@@ -475,6 +518,21 @@ class ProofTransformer(Transformer):
     def mk_discharge(self, *steps):
         return DISCHARGE, steps
 
+    def mk_assertion(self, tm):
+        return tm
+
+    def mk_smt_term(self, tm):
+        return tm
+
+    def mk_pat_term(self, tm, *pat):
+        return tm
+
+    def mk_at_name(self, name):
+        return "@"+str(name)
+
+
 def proof_parser(ctx):
     return Lark(veriT_grammar, start="proof_command", parser="lalr", transformer=ProofTransformer(smt_file_ctx=ctx))
 
+def smt_assertion_parser(ctx):
+    return Lark(veriT_grammar, start="smt_file_assert", parser="lalr", transformer=ProofTransformer(smt_file_ctx=ctx))

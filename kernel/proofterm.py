@@ -1,5 +1,7 @@
 # Author: Bohua Zhan
 
+from __future__ import annotations
+
 from kernel.term import Term, Var, Inst
 from kernel.type import TyInst
 from kernel.thm import Thm, primitive_deriv
@@ -78,7 +80,7 @@ class ProofTerm():
         return self.th.hyps
 
     @property
-    def prop(self):
+    def prop(self) -> Term:
         """Propositions of a proof term."""
         return self.th.prop
 
@@ -88,24 +90,24 @@ class ProofTerm():
         return self.th.assums
 
     @property
-    def concl(self):
+    def concl(self) -> Term:
         """Conclusion of the proposition of a proof term."""
         return self.th.concl
 
     @property
-    def lhs(self):
+    def lhs(self) -> Term:
         """Left side of the equality of a proof term."""
         return self.th.concl.lhs
 
     @property
-    def rhs(self):
+    def rhs(self) -> Term:
         """Right side of the equality of a proof term."""
         return self.th.concl.rhs
 
-    def is_equals(self):
+    def is_equals(self) -> bool:
         return self.prop.is_equals()
 
-    def is_reflexive(self):
+    def is_reflexive(self) -> bool:
         return self.prop.is_reflexive()
 
     @staticmethod
@@ -117,17 +119,17 @@ class ProofTerm():
         return ProofTerm("variable", (nm, T), [])
 
     @staticmethod
-    def assume(A: Term):
+    def assume(A: Term) -> ProofTerm:
         return ProofTerm("assume", A, [])
 
     @staticmethod
-    def reflexive(x):
+    def reflexive(x: Term) -> ProofTerm:
         return ProofTerm("reflexive", x, [])
 
-    def symmetric(self):
+    def symmetric(self) -> ProofTerm:
         return ProofTerm("symmetric", None, [self])
 
-    def transitive(self, *pts):
+    def transitive(self, *pts) -> ProofTerm:
         pt = self
         for eq_pt in pts:
             if pt.prop.is_reflexive():
@@ -138,27 +140,27 @@ class ProofTerm():
                 pt = ProofTerm("transitive", None, [pt, eq_pt])
         return pt
 
-    def combination(self, pt2):
+    def combination(self, pt2: ProofTerm) -> ProofTerm:
         return ProofTerm("combination", None, [self, pt2])
 
-    def equal_intr(self, pt2):
+    def equal_intr(self, pt2: ProofTerm) -> ProofTerm:
         return ProofTerm("equal_intr", None, [self, pt2])
 
-    def equal_elim(self, pt2):
+    def equal_elim(self, pt2: ProofTerm) -> ProofTerm:
         if self.is_reflexive():
             return pt2
         return ProofTerm("equal_elim", None, [self, pt2])
 
-    def implies_intr(self, A):
+    def implies_intr(self, A: Term) -> ProofTerm:
         return ProofTerm("implies_intr", A, [self])
 
-    def implies_elim(self, *pts):
+    def implies_elim(self, *pts) -> ProofTerm:
         pt = self
         for assum_pt in pts:
             pt = ProofTerm("implies_elim", None, [pt, assum_pt])
         return pt
 
-    def subst_type(self, tyinst=None, **kwargs):
+    def subst_type(self, tyinst=None, **kwargs) -> ProofTerm:
         if tyinst is None:
             tyinst = TyInst(**kwargs)
         if tyinst:
@@ -166,7 +168,7 @@ class ProofTerm():
         else:
             return self
 
-    def substitution(self, inst=None, **kwargs):
+    def substitution(self, inst=None, **kwargs) -> ProofTerm:
         if inst is None:
             inst = Inst(**kwargs)
         if inst:
@@ -175,24 +177,24 @@ class ProofTerm():
             return self
 
     @staticmethod
-    def beta_conv(x):
+    def beta_conv(x: Term) -> ProofTerm:
         return ProofTerm("beta_conv", x, [])
 
-    def abstraction(self, x):
+    def abstraction(self, x: Term) -> ProofTerm:
         return ProofTerm("abstraction", x, [self])
 
-    def forall_intr(self, x):
+    def forall_intr(self, x: Term) -> ProofTerm:
         return ProofTerm("forall_intr", x, [self])
 
-    def forall_elim(self, s):
+    def forall_elim(self, s: Term) -> ProofTerm:
         return ProofTerm("forall_elim", s, [self])
 
     @staticmethod
-    def theorem(th_name):
+    def theorem(th_name: str) -> ProofTerm:
         return ProofTerm("theorem", th_name, [])
 
     @staticmethod
-    def sorry(th):
+    def sorry(th: Thm) -> ProofTerm:
         typecheck.checkinstance('sorry', th, Thm)
         return ProofTerm("sorry", None, [], th)
 

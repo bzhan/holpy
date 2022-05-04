@@ -431,7 +431,7 @@
         },
         {
             "name": "verit_bool_simplify5",
-            "prop": "(P ⟶ Q ⟶ Q) ⟷ P ∨ Q",
+            "prop": "((P ⟶ Q) ⟶ Q) ⟷ P ∨ Q",
             "ty": "thm",
             "vars": {
                 "P": "bool",
@@ -867,6 +867,821 @@
                 "f": "'a ⇒ 'b",
                 "g": "'a ⇒ 'b",
                 "x": "'a"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_int1",
+            "prop": "¬(x > y) ⟷ ¬(y < x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_eq_int1",
+            "prop": "¬(x ≥ y) ⟷ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_int2",
+            "prop": "¬(x > y) ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_eq_int2",
+            "prop": "¬(x ≥ y) ⟷ x < y",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "imp_false_false",
+            "prop": "(P ⟶ false) ⟷ ¬P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "zero_eq_mul_const",
+            "prop": "m = n ⟶ c * m = c * n",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_equals",
+            "prop": "x = y ⟶ a = b ⟶ x + a = y + b",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "add_eq_with_ge",
+            "prop": "x = y ⟶ a ≥ b ⟶ x + a ≥ y + b",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "add_ge_with_eq",
+            "prop": "x ≥ y ⟶ a = b ⟶ x + a ≥ y + b",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "add_ge_with_ge",
+            "prop": "x ≥ y ⟶ a ≥ b ⟶ x + a ≥ y + b",
+            "ty": "thm",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_comp_simplify2",
+            "prop": "x < x ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "x": "int"
+            }
+        },
+        {
+            "name": "verit_comp_simplify4",
+            "prop": "x ≤ x ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_comp_simplify5",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "greater_eq_def, x ≥ y ⟷ y ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ≥ y ⟷ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ≥ y ⟷ y ≤ x"
+                }
+            ],
+            "prop": "x ≥ y ⟷ y ≤ x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "greater_eq_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_comp_simplify6",
+            "prop": "x < y ⟷ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_comp_simplify7",
+            "prop": "x > y ⟷ ¬(x ≤ y)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_comp_simplify2_real",
+            "prop": "x < x ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "verit_comp_simplify4_real",
+            "prop": "x ≤ x ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_comp_simplify5_real",
+            "prop": "x ≥ y ⟷ y ≤ x",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_comp_simplify6_real",
+            "prop": "x < y ⟷ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_comp_simplify7_real",
+            "prop": "x > y ⟷ ¬(x ≤ y)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_la_disequality_int",
+            "prop": "x = y ∨ ¬(x ≤ y) ∨ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "verit_ite_simplify1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "if_true, (if true then t1 else t2) = t1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if true then t1 else t2) = t1"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (if true then t1 else t2) = t1"
+                }
+            ],
+            "prop": "(if true then t1 else t2) = t1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_true"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "t1": "'a",
+                "t2": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify2",
+            "prop": "(if false then t1 else t2) = t2",
+            "ty": "thm",
+            "vars": {
+                "t1": "'a",
+                "t2": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify3",
+            "prop": "(if P then t else t) = t",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "t": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify4",
+            "prop": "(if ¬P then t1 else t2) = (if P then t2 else t1)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "t1": "'a",
+                "t2": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify7",
+            "prop": "(if P then if P then t1 else t2 else t3) = (if P then t1 else t3)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "t1": "'a",
+                "t2": "'a",
+                "t3": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify8",
+            "prop": "(if P then t1 else if P then t2 else t3) = (if P then t1 else t3)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "t1": "'a",
+                "t2": "'a",
+                "t3": "'a"
+            }
+        },
+        {
+            "name": "verit_ite_simplify9",
+            "prop": "(if P then true else false) ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_simplify10",
+            "prop": "(if P then false else true) ⟷ ¬P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_simplify11",
+            "prop": "(if P then true else Q) ⟷ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_simplify12",
+            "prop": "(if P then Q else false) ⟷ P ∧ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_simplify13",
+            "prop": "(if P then false else Q) ⟷ ¬P ∧ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_simplify14",
+            "prop": "(if P then Q else true) ⟷ ¬P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_simplify15",
+            "prop": "(if ¬P then Q else true) ⟷ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify1",
+            "prop": "(¬P ⟶ ¬Q) ⟷ (Q ⟶ P)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify2",
+            "prop": "(false ⟶ P) ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify3",
+            "prop": "(P ⟶ true) ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify4",
+            "prop": "(true ⟶ P) ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify5",
+            "prop": "(P ⟶ false) ⟷ ¬P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify6",
+            "prop": "(P ⟶ P) ⟷ true",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify7",
+            "prop": "(¬P ⟶ P) ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify8",
+            "prop": "(P ⟶ ¬P) ⟷ ¬P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_imp_simplify9",
+            "prop": "((P ⟶ Q) ⟶ Q) ⟷ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_implies_pos",
+            "prop": "¬(P ⟶ Q) ∨ ¬P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_forall_conj",
+            "prop": "(∀a. P a) ∧ (∀a. Q a) ⟷ (∀a. P a ∧ Q a)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "'a ⇒ bool",
+                "a": "'a"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_real1",
+            "prop": "¬(x > y) ⟷ ¬(y < x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_eq_real1",
+            "prop": "¬(x ≥ y) ⟷ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_real2",
+            "prop": "¬(x > y) ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_la_generic_neg_greater_eq_real2",
+            "prop": "¬(x ≥ y) ⟷ x < y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_greater_eq_mul_const",
+            "prop": "c > 0 ⟶ x ≥ 0 ⟶ c * x ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "verit_real_greater_mul_const",
+            "prop": "c > 0 ⟶ x > 0 ⟶ c * x > 0",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_eq_eq",
+            "prop": "x = 0 ⟶ y = 0 ⟶ x + y = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_eq_gt",
+            "prop": "x = 0 ⟶ y > 0 ⟶ x + y > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_eq_ge",
+            "prop": "x = 0 ⟶ y ≥ 0 ⟶ x + y ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_gt_gt",
+            "prop": "x > 0 ⟶ y > 0 ⟶ x + y > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_gt_ge",
+            "prop": "x > 0 ⟶ y ≥ 0 ⟶ x + y > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_real_add_ge_ge",
+            "prop": "x ≥ 0 ⟶ y ≥ 0 ⟶ x + y ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_la_disequality_real",
+            "prop": "x = y ∨ ¬(x ≤ y) ∨ ¬(y ≤ x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "verit_xor_pos1",
+            "prop": "¬(xor P Q) ∨ P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_xor_pos2",
+            "prop": "¬(xor P Q) ∨ ¬P ∨ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_xor_neg1",
+            "prop": "xor P Q ∨ P ∨ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_xor_neg2",
+            "prop": "xor P Q ∨ ¬P ∨ Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_some_eq_ex",
+            "prop": "P (SOME x. P x) ⟷ (∃x. P x)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool"
+            }
+        },
+        {
+            "name": "verit_some_neg_eq_all",
+            "prop": "P (SOME x. ¬(P x)) ⟷ (∀x. P x)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool"
+            }
+        },
+        {
+            "name": "verit_connective_def1",
+            "prop": "xor P Q ⟷ ¬P ∧ Q ∨ P ∧ ¬Q",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_connective_def2",
+            "prop": "(P ⟷ Q) ⟷ (P ⟶ Q) ∧ (Q ⟶ P)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_connective_def3",
+            "prop": "(if P then Q else R) ⟷ (P ⟶ Q) ∧ (¬P ⟶ R)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_connective_def4",
+            "prop": "(∃a. P a) ⟷ ¬(∀a. ¬(P a))",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "a": "'a"
+            }
+        },
+        {
+            "name": "verit_not_iff_eq",
+            "prop": "¬(A ⟷ B) ⟷ A ∧ ¬B ∨ ¬A ∧ B",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
+            "name": "verit_iff_eq",
+            "prop": "(A ⟷ B) ⟷ (¬A ∨ B) ∧ (¬B ∨ A)",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
+            "name": "verit_not_ite_eq",
+            "prop": "¬(if P then Q else R) ⟷ P ∧ ¬Q ∨ ¬P ∧ R",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_ite_eq",
+            "prop": "(if P then Q else R) ⟷ (¬P ∨ Q) ∧ (P ∨ R)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "verit_qnt_conj1",
+            "prop": "(∀x. P x) ∧ Q ⟷ (∀x. P x ∧ Q)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_qnt_conj2",
+            "prop": "P ∧ (∀x. Q x) ⟷ (∀x. P ∧ Q x)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "'a ⇒ bool"
+            }
+        },
+        {
+            "name": "verit_qnt_disj1",
+            "prop": "(∀x. P x) ∨ Q ⟷ (∀x. P x ∨ Q)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "bool"
+            }
+        },
+        {
+            "name": "verit_qnt_disj2",
+            "prop": "P ∨ (∀x. Q x) ⟷ (∀x. P ∨ Q x)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "'a ⇒ bool"
+            }
+        },
+        {
+            "name": "verit_onepoint_forall1",
+            "prop": "(∀x. x = t ⟶ P x) ⟷ (t = t ⟶ P t)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "t": "'a"
+            }
+        },
+        {
+            "name": "verit_onepoint_forall2",
+            "prop": "(∀x. x = t ∧ Q x ⟶ P x) ⟷ (t = t ∧ Q t ⟶ P t)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "'a ⇒ bool",
+                "t": "'a"
+            }
+        },
+        {
+            "name": "verit_onepoint_forall3",
+            "prop": "(∀x. ¬(x = t) ∨ P x) ⟷ ¬(t = t) ∨ P t",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "t": "'a"
+            }
+        },
+        {
+            "name": "verit_onepoint_exists",
+            "prop": "(∃x. x = t ∧ P x) ⟷ t = t ∧ P t",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "t": "'a"
+            }
+        },
+        {
+            "name": "store",
+            "prop": "store array i v = (λj. if j = i then v else array j)",
+            "ty": "def",
+            "type": "('a ⇒ 'b) ⇒ 'a ⇒ 'b ⇒ 'a ⇒ 'b"
+        },
+        {
+            "name": "select",
+            "prop": "select f a = f a",
+            "ty": "def",
+            "type": "('a ⇒ 'b) ⇒ 'a ⇒ 'b"
+        },
+        {
+            "name": "verit_eq_simplify",
+            "prop": "¬(t = t) ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "t": "'a"
+            }
+        },
+        {
+            "name": "verit_rm_unused_forall",
+            "prop": "(∀x::'a. P) ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "name": "verit_rm_unused_exists",
+            "prop": "(∃x::'a. P) ⟷ P",
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
             }
         }
     ],

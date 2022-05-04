@@ -1,8 +1,9 @@
 """Proof reconstruction."""
+import re
 
-from smt.veriT.proof_parser import decl_parser, proof_parser
+from smt.veriT.proof_parser import decl_parser, proof_parser, smt_assertion_parser
 from smt.veriT import command
-from smt.veriT.verit_macro import NotOrMacro, verit_and_all
+from smt.veriT.verit_macro import NotOrMacro, verit_and_all, compare_sym_tm
 from smt.veriT import la_generic
 from kernel.proofterm import ProofTerm
 from kernel.thm import Thm
@@ -12,7 +13,7 @@ from kernel import theory
 from logic import logic
 from alive_progress import alive_bar
 
-def bind_var(file_name):
+def bind_var(file_name: str) -> dict:
     """Convert the declaration in context to higher-order types and terms."""
     ctx = dict()
     with open(file_name, "r") as f:
@@ -22,12 +23,55 @@ def bind_var(file_name):
                 ctx.update(tm)
     return ctx
 
+def matched_paras(s: str) -> bool:
+    """check whether the parentheses in s are balanced"""
+    count = 0
+    for i in s:
+        if i == "(":
+            count += 1
+        elif i == ")":
+            count -= 1
+        if count < 0:
+            return False
+    return count == 0
+
+def get_complete_line(file_name: str) -> list:
+    """given a text file, return lines with balanced parentheses"""
+    with open(file_name, "r") as f:
+        complete_lines = []
+        s = ""
+        for line in f.readlines():
+            s += line
+            if matched_paras(s):
+                complete_lines.append(s)
+                s = ""
+        return complete_lines
+
+def get_assertions(file_name: str) -> set:
+    """return the assertions declared in file_name.smt2"""
+    ctx = bind_var(file_name)
+    parser = smt_assertion_parser(ctx)
+    assertions = set()
+    lines = get_complete_line(file_name)
+    for s in lines:
+        if s.startswith("(assert"):
+            l = re.sub("\s{4,}"," ", s.replace("\n", ""))
+            if l.startswith("(assert"):
+                asst = parser.parse(l)
+                assertions.add(asst)
+            else:
+                print("l", l)
+                print("s", s)
+                raise AssertionError
+
+    return assertions
+
 class ProofReconstruction:
     """Verit proof reconstruction.
     
     - steps: a list of parsed proof rules.
     """
-    def __init__(self, steps) -> None:
+    def __init__(self, steps, smt_assertions=set()) -> None:
         # List of steps
         self.steps = steps
 
@@ -47,6 +91,15 @@ class ProofReconstruction:
 
         # current subproof id
         self.subprf_id = None
+
+        # assumption
+        self.assms = set()
+
+        # indicate current anchor id, if the step is not in an anchor, it should be None
+        self.anchor_id = None
+
+        # store the original assertions declared in .smt2 file
+        self.smt_assertions = smt_assertions
 
     def to_pts(self, ids):
         """ids is a tuple of step name, return their corresponding pts."""
@@ -81,11 +134,18 @@ class ProofReconstruction:
     def validate_step(self, step, is_eval=True, omit_proofterm=None):
         if omit_proofterm is None:
             omit_proofterm = []
+        
+        if self.anchor_id is not None and step.id == self.anchor_id:
+            self.anchor_id = None
 
         if isinstance(step, command.Anchor):
+            self.anchor_id = step.id
             return
         if isinstance(step, command.Assume):
-            self.pts[step.id] = ProofTerm.assume(step.assm)
+            pt_assm = ProofTerm.assume(step.assm)
+            self.pts[step.id] = pt_assm
+            if self.anchor_id is None:
+                self.assms.add(pt_assm.prop)
             return
 
         assert isinstance(step, command.Step)
@@ -113,6 +173,9 @@ class ProofReconstruction:
         elif rule_name in ("resolution", "th_resolution"):
             args = (step.cl, self.get_clause_sizes(step.pm))
             macro_name = "verit_th_resolution"
+        elif rule_name == "la_tautology":
+            macro_name = "verit_la_generic"
+            args += tuple([[]])
 
         # Evaluation case
         if is_eval or macro_name in omit_proofterm:
@@ -150,6 +213,26 @@ class ProofReconstruction:
             print("In proof: ", Or(*step.cl))
             raise AssertionError("Unexpected returned theorem")
 
+        # Compare with eval
+        eval_pt = ProofTerm(macro_name, args, prevs)
+        if not set(self.pts[step.id].hyps) <= set(eval_pt.hyps):
+            print(macro_name)
+            print("Proofterm hyps:")
+            for hyp in self.pts[step.id].hyps:
+                print(hyp)
+            print("Eval hyps:")
+            for hyp in eval_pt.hyps:
+                print(hyp)
+            raise AssertionError("Disagreement between eval and proof term: hyps")
+        if self.pts[step.id].prop != eval_pt.prop:
+            print(macro_name)
+            print("Proofterm prop:")
+            print(self.pts[step.id].prop)
+            print("Eval prop:")
+            print(eval_pt.prop)
+            raise AssertionError("Disagreement between eval and proof term: prop")
+
+
     def validate(self, is_eval=True, step_limit=None, omit_proofterm=None):
         with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
             for i, step in enumerate(self.steps):
@@ -157,6 +240,30 @@ class ProofReconstruction:
                 bar()
                 if step_limit and i > step_limit:
                     break
+
+        # check hypothesis consistency
+        def check_consistency(hyp):
+            if hyp in self.smt_assertions:
+                return True
+            for smt_asst in self.smt_assertions:
+                if compare_sym_tm(hyp, smt_asst):
+                    return True
+            return False
+
+        if not set(self.pts[step.id].hyps) <= self.assms:
+            print("not compatible with assertions given by veriT proof")
+
+        if self.smt_assertions and not all(check_consistency(hyp) for hyp in self.pts[step.id].hyps):
+            print("not compatible with assertions given by SMT file")
+            print("different hyps")
+            for hyp in self.pts[step.id].hyps:
+                if not check_consistency(hyp):
+                    print(hyp)
+            print()
+            print("smt assertion")
+            for ass in self.smt_assertions:
+                print(ass)
+            raise AssertionError
         try:
             return self.pts[step.id]
         except:

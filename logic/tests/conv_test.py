@@ -14,7 +14,8 @@ from syntax import parser, printer
 from logic import context
 
 
-def test_conv(self, thy_name, cv, *, vars=None, t, t_res=None, failed=None, assms=None, limit=None):
+def test_conv(self: unittest.TestCase, thy_name: str, cv: conv.Conv, *,
+              vars=None, t: Term, t_res=None, failed=None, assms=None, limit=None):
     context.set_context(thy_name, vars=vars, limit=limit)
 
     if isinstance(t, str):
@@ -133,6 +134,14 @@ class ConvTest(unittest.TestCase):
             vars={'f': "'a => 'b"},
             t="%x. f x",
             t_res="f"
+        )
+    
+    def testRewrConv8(self):
+        test_conv(
+            self, 'logic', rewr_conv('not_all'),
+            vars={'P': "'a => bool"},
+            t="~(!a. P a)",
+            t_res="(?a. ~(P a))"
         )
 
     def testEtaConv(self):

@@ -160,22 +160,22 @@ class abs_conv(Conv):
         except InvalidDerivationException:
             raise ConvException("abs_conv")
 
-def try_conv(cv):
+def try_conv(cv: Conv) -> Conv:
     return else_conv(cv, all_conv())
 
-def comb_conv(cv):
+def comb_conv(cv: Conv) -> Conv:
     return combination_conv(cv, cv)
 
-def arg_conv(cv):
+def arg_conv(cv: Conv) -> Conv:
     return combination_conv(all_conv(), cv)
 
-def fun_conv(cv):
+def fun_conv(cv: Conv) -> Conv:
     return combination_conv(cv, all_conv())
 
-def arg1_conv(cv):
+def arg1_conv(cv: Conv) -> Conv:
     return fun_conv(arg_conv(cv))
 
-def binop_conv(cv):
+def binop_conv(cv: Conv) -> Conv:
     return combination_conv(arg_conv(cv), cv)
 
 def every_conv(*args):
@@ -350,7 +350,10 @@ class rewr_conv(Conv):
         # and self.sym. Decompose into self.As and self.C.
         if self.eq_pt is None:
             if isinstance(self.pt, str):
-                self.eq_pt = ProofTerm.theorem(self.pt)
+                try:
+                    self.eq_pt = ProofTerm.theorem(self.pt)
+                except theory.TheoryException:
+                    raise ConvException("rewr_conv: theorem %s not found" % self.pt)
             else:
                 self.eq_pt = self.pt
 
@@ -386,7 +389,7 @@ class rewr_conv(Conv):
 
         assert pt.th.is_equals(), "rewr_conv: wrong result."
 
-        if pt.th.prop.lhs != t:
+        if not matcher.is_fo_pattern(self.eq_pt.prop):
             pt = pt.on_prop(beta_norm_conv())
 
         if pt.th.prop.lhs != t:
@@ -403,7 +406,7 @@ class replace_conv(Conv):
         if t == self.pt.prop.lhs:
             return self.pt
         else:
-            raise ConvException
+            raise ConvException('replace_conv: unexpected lhs')
 
 def has_rewrite(th, t, *, sym=False, conds=None):
     """Returns whether a rewrite is possible on a subterm of t.
