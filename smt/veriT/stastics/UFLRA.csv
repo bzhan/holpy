@@ -1,0 +1,17 @@
+filename,Solve,Parse,Eval,Steps
+../smt-lib/UFLRA/misc/set14.smt2,UNSAT checking is timeout!,,,
+../smt-lib/UFLRA/misc/set19.smt2,UNSAT checking is timeout!,,,
+../smt-lib/UFLRA/misc/set9.smt2,UNSAT checking is timeout!,,,
+../smt-lib/UFLRA/misc/set16.smt2,unsupported,,,
+../smt-lib/UFLRA/misc/list2.smt2,unsupported,,,
+../smt-lib/UFLRA/FFT/smtlib.623474.smt2,0.104,0.733,Eval: 0.046,59
+../smt-lib/UFLRA/FFT/smtlib.620535.smt2,0.106,0.545,Eval: 0.057,47
+../smt-lib/UFLRA/FFT/smtlib.623531.smt2,0.103,0.645,Eval: 0.041,59
+../smt-lib/UFLRA/FFT/smtlib.623597.smt2,0.081,0.680,Eval: 0.046,85
+../smt-lib/UFLRA/FFT/smtlib.627531.smt2,0.099,0.591,Eval: 0.035,59
+../smt-lib/UFLRA/FFT/smtlib.620487.smt2,0.092,0.566,Eval: 0.067,47
+../smt-lib/UFLRA/FFT/smtlib.623417.smt2,0.087,0.590,Eval: 0.036,59
+../smt-lib/UFLRA/FFT/smtlib.627457.smt2,0.105,0.572,Eval: 0.035,59
+../smt-lib/UFLRA/FFT/smtlib.627605.smt2,0.088,0.612,Eval: 0.037,59
+../smt-lib/UFLRA/FFT/smtlib.627688.smt2,0.104,0.574,Eval: 0.045,90
+Total time: 123.439
