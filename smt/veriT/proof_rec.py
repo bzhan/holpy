@@ -176,6 +176,8 @@ class ProofReconstruction:
         elif rule_name == "la_tautology":
             macro_name = "verit_la_generic"
             args += tuple([[]])
+        elif rule_name == "lia_generic":
+            raise AssertionError("currently lia_generic is not supported")
 
         # Evaluation case
         if is_eval or macro_name in omit_proofterm:
@@ -233,13 +235,18 @@ class ProofReconstruction:
             raise AssertionError("Disagreement between eval and proof term: prop")
 
 
-    def validate(self, is_eval=True, step_limit=None, omit_proofterm=None):
-        with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
-            for i, step in enumerate(self.steps):
-                self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm)
-                bar()
-                if step_limit and i > step_limit:
-                    break
+    def validate(self, is_eval=True, step_limit=None, omit_proofterm=None, with_bar=True):
+        if with_bar:
+            with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
+                for i, step in enumerate(self.steps):
+                    self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm)
+                    bar()
+                    if step_limit and i > step_limit:
+                        break
+        for i, step in enumerate(self.steps):
+            self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm)
+            if step_limit and i > step_limit:
+                break
 
         # check hypothesis consistency
         def check_consistency(hyp):
@@ -251,21 +258,12 @@ class ProofReconstruction:
             return False
 
         if not set(self.pts[step.id].hyps) <= self.assms:
-            print("not compatible with assertions given by veriT proof")
+            raise AssertionError("not compatible with assertions given by veriT proof")
 
         if self.smt_assertions and not all(check_consistency(hyp) for hyp in self.pts[step.id].hyps):
-            print("not compatible with assertions given by SMT file")
-            print("different hyps")
-            for hyp in self.pts[step.id].hyps:
-                if not check_consistency(hyp):
-                    print(hyp)
-            print()
-            print("smt assertion")
-            for ass in self.smt_assertions:
-                print(ass)
-            raise AssertionError
+            raise AssertionError("not compatible with assertions given by SMT file")
         try:
             return self.pts[step.id]
         except:
             print(self.steps)
-            raise NotImplementedError
+            raise AssertionError("can't find the last proof")

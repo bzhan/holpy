@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pypy3 -m smt.veriT.stat $1
+pypy3 -m smt.veriT.stat $*
