@@ -9,6 +9,9 @@ from kernel import term as hol_term
 from kernel.term import Term
 from kernel.proofterm import refl, ProofTerm
 from logic import logic
+from logic import basic
+
+basic.load_theory("verit")
 
 
 def compare_atom(tm1, tm2):
