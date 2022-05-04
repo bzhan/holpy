@@ -257,7 +257,7 @@ class Term():
                     for t in reversed(tlist[:-1]):
                         if not hasattr(t, "_hash_val"):
                             t._hash_val = hash(("DISJ", t.arg1, t.arg))
-                elif self.is_let():
+                elif self.is_let() and self.arg.is_abs():
                     t = self
                     tlist = [t]
                     while t.is_let() and t.arg.is_abs():

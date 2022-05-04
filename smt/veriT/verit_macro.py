@@ -1498,14 +1498,18 @@ def gen_or(t1, t2):
 def quant_bool(t):
     if t.is_forall():
         if t.arg.var_T == BoolType:
-            return gen_and(quant_bool(t.arg.subst_bound(false)), quant_bool(t.arg.subst_bound(true)))
+            new_conj = quant_bool(gen_and(t.arg.subst_bound(false), t.arg.subst_bound(true)))
+            conjs = [conj for conjs in new_conj.strip_conj() for conj in conjs.strip_conj()]
+            return And(*conjs)
         else:
             v, body = t.arg.dest_abs()
             return Forall(v, quant_bool(body))
     elif t.is_exists():
         v, body = t.arg.dest_abs()
         if v.get_type() == BoolType:
-            return gen_or(quant_bool(t.arg.subst_bound(false)), quant_bool(t.arg.subst_bound(true)))
+            new_disj = quant_bool(gen_or(t.arg.subst_bound(false), t.arg.subst_bound(true)))
+            disjs = [disj for disjs in new_disj.strip_disj() for disj in disjs.strip_disj()]
+            return Or(*disjs)
         else:
             v, body = t.arg.dest_abs()
             return Exists(v, quant_bool(body))
@@ -1523,7 +1527,7 @@ def expand_to_ite(t):
     elif t.is_comb():
         # First check whether one of the arguments is a non-constant boolean formula
         for i, arg in enumerate(t.args):
-            if arg.get_type() == BoolType and arg != true and arg != false:
+            if arg.get_type() == BoolType and len(arg.get_vars()) != 0 and all(a.get_type() == BoolType for a in arg.get_vars()):
                 arg_true = t.args[:i] + [true] + t.args[i+1:]
                 arg_false = t.args[:i] + [false] + t.args[i+1:]
                 return logic.mk_if(arg, expand_to_ite(t.head(*arg_true)),
@@ -1552,7 +1556,7 @@ class expand_ite_conv(Conv):
             head_pt = refl(t.head)
             for i, arg in enumerate(t.args):
                 head_pt = head_pt.combination(refl(arg))
-                if arg.get_type() == BoolType and arg != true and arg != false:
+                if arg.get_type() == BoolType and len(arg.get_vars()) != 0 and all(a.get_type() == BoolType for a in arg.get_vars()):
                     pt = head_pt.on_rhs(
                         rewr_conv("verit_bfun_elim")
                     )
@@ -1590,7 +1594,7 @@ class BFunElimMacro(Macro):
         # Second step: replace every function application with argument of
         # boolean type with an if-then-else expression.
         expected_arg = expand_to_ite(prev1)
-        if not compare_sym_tm(expected_arg, arg):
+        if not compare_sym_tm(expected_arg, arg) and not compare_sym_tm(Not(Not(expected_arg)), arg):
             print("Expected:", expected_arg)
             print("Actual:", arg)
             raise VeriTException("bfun_elim", "unexpected goal")
@@ -1599,20 +1603,18 @@ class BFunElimMacro(Macro):
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         pt = prevs[0]
-        pt1 = pt.on_prop(
-            top_conv(rewr_conv('verit_bfun_elim_exists')),
-            top_conv(rewr_conv('verit_bfun_elim_forall')),
-            try_conv(beta_norm_conv()),
-            try_conv(rewr_conv('verit_forall_conj')),
-            try_conv(beta_norm_conv()),
-            bottom_conv(expand_ite_conv())
-        )
+        pt1 = pt.on_prop(top_conv(verit_conv.bfun_elim_conv()), bottom_conv(expand_ite_conv()))
         if pt1.prop == args[0]:
             return pt1
+        if Not(Not(pt1.prop)) == args[0]:
+            return pt1.on_prop(rewr_conv("double_neg", sym=True)) # verit bug
         pt2 = compare_sym_tm_thm(pt1.prop, args[0], depth=-1)
         if pt2 is not None:
             return pt2.equal_elim(pt1)
         else:
+            print("goal", args[0])
+            print("pt ", prevs[0].prop)
+            print("pt1", pt1.prop)
             raise AssertionError
 
 def collect_ite(t: Term):

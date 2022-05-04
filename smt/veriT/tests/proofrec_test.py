@@ -3,10 +3,13 @@ import time
 import os
 from pstats import Stats
 import cProfile
+import sys
 
 from smt.veriT import interface, proof_rec, proof_parser
 from syntax.settings import settings
 settings.unicode = False
+
+sys.setrecursionlimit(5000)
 
 smtlib_path = None
 
@@ -525,9 +528,22 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt2022486099146293362.smt2',
             'AUFLIA/20170829-Rodin/smt2025463987927880021.smt2',
             'AUFLIA/20170829-Rodin/smt2027035001350841448.smt2',
-            'AUFLIA/20170829-Rodin/smt2885702086782097441.smt2',  # onepoint
-            'AUFLIA/20170829-Rodin/smt8020508299917860570.smt2',  # onepoint
-            'AUFLIA/20170829-Rodin/smt1053503323401967250.smt2',  # onepoint
+            # 'AUFLIA/20170829-Rodin/smt2885702086782097441.smt2',  # onepoint
+            # 'AUFLIA/20170829-Rodin/smt8020508299917860570.smt2',  # onepoint
+            # 'AUFLIA/20170829-Rodin/smt1053503323401967250.smt2',  # onepoint
+            'AUFLIA/20170829-Rodin/smt2972435604341125203.smt2',
+            'AUFLIA/20170829-Rodin/smt2020844136539587643.smt2',
+            'AUFLIA/20170829-Rodin/smt7430161103589433024.smt2',
+            'AUFLIA/20170829-Rodin/smt6884874971925634308.smt2',
+            'AUFLIA/20170829-Rodin/smt962592699688307113.smt2',
+            'AUFLIA/20170829-Rodin/smt5692365801843027532.smt2',
+            'AUFLIA/20170829-Rodin/smt1077199842095303803.smt2',
+            'AUFLIA/20170829-Rodin/smt8260763450980098018.smt2',
+            'AUFLIA/20170829-Rodin/smt1220722083703635536.smt2',
+            'AUFLIA/20170829-Rodin/smt2020844136539587643.smt2',
+            'AUFLIA/20170829-Rodin/smt7351897299178954133.smt2',
+            'AUFLIA/20170829-Rodin/smt4213031790546145760.smt2',
+            'AUFLIA/20170829-Rodin/smt4473657298807368490.smt2'
             'AUFLIA/misc/set1.smt2',
         ]
 
@@ -537,7 +553,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -591,6 +607,14 @@ class ProofrecTest(unittest.TestCase):
             p.strip_dirs()
             p.sort_stats('cumtime')
             p.print_stats(50)
+
+    def test_MAX_RECURSION(self):
+        test_paths = [
+            # "QF_UFLRA/mathsat/RandomCoupled/pb_real_20_0500_10_25.smt2",
+            "AUFLIA/20170829-Rodin/smt2972435604341125203.smt2"
+        ]
+        for path in test_paths:
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
 
 if __name__ == "__main__":

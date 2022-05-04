@@ -1,11 +1,12 @@
 """Some conversions for veriT proof reconstruction."""
 
 from logic.conv import Conv, rewr_conv, ConvException, \
-    arg1_conv, arg_conv, binop_conv, top_conv, beta_conv, abs_conv, try_conv, replace_conv
+    arg1_conv, arg_conv, binop_conv, top_conv, beta_conv, abs_conv, try_conv, replace_conv, beta_norm_conv
 from data import integer, real
 from data import list as hol_list
 from kernel.term_ord import fast_compare
 from kernel import term as hol_term
+from kernel.type import BoolType
 from kernel.term import Term
 from kernel.proofterm import refl, ProofTerm
 from logic import logic
@@ -693,3 +694,56 @@ class distinct_conv(Conv):
             return refl(t).on_rhs(rewr_conv('distinct_def_2'), arg1_conv(not_member_conv()), arg_conv(self))
         else:
             return refl(t)
+
+
+class forall_conj_conv(Conv):
+    def get_proof_term(self, t):
+        pt = refl(t)
+
+class forall_elim_conv(Conv):
+    def get_proof_term(self, t):
+        pt = refl(t)
+        if not t.is_forall() or t.arg.var_T != BoolType:
+            return pt
+        
+        _, body = t.arg.dest_abs()
+        pt1 = pt.on_rhs(rewr_conv("verit_bfun_elim_forall"), try_conv(beta_norm_conv()))
+        if body.is_forall():
+            pt2 = pt1.on_rhs(top_conv(rewr_conv("verit_forall_conj")), try_conv(beta_norm_conv()))
+            if body.arg.var_T == BoolType:
+                return pt2.on_rhs(forall_elim_conv(), rewr_conv("conj_assoc", sym=True))
+            else:
+                return pt2
+        else:
+            return pt1
+
+class exists_elim_conv(Conv):
+    def get_proof_term(self, t):
+        pt = refl(t)
+        if not t.is_exists() or t.arg.var_T != BoolType:
+            return pt
+        
+        _, body = t.arg.dest_abs()
+        pt1 = pt.on_rhs(rewr_conv("verit_bfun_elim_exists"), try_conv(beta_norm_conv()))
+        if body.is_exists():
+            pt2 = pt1.on_rhs(top_conv(rewr_conv("verit_exists_disj")), try_conv(beta_norm_conv()))
+            if body.arg.var_T == BoolType:
+                return pt2.on_rhs(exists_elim_conv(), rewr_conv("disj_assoc_eq", sym=True))
+            else:
+                return pt2
+        else:
+            return pt1
+
+class bfun_elim_conv(Conv):
+    def get_proof_term(self, t):
+        pt = refl(t)
+        if not t.is_forall() and not t.is_exists():
+            return pt
+        if t.arg.var_T != BoolType:
+            return pt
+        if t.is_forall():
+            return pt.on_rhs(forall_elim_conv())
+        elif t.is_exists():
+            return pt.on_rhs(exists_elim_conv())
+        else:
+            return pt

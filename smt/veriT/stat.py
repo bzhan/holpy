@@ -15,6 +15,8 @@ from smt.veriT.verit_macro import VeriTException
 from syntax.settings import settings
 settings.unicode = False
 
+sys.setrecursionlimit(5000)
+
 smtlib_path = None
 
 try:

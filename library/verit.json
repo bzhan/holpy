@@ -1332,6 +1332,16 @@
             }
         },
         {
+            "name": "verit_exists_disj",
+            "prop": "(∃a. P a) ∨ (∃a. Q a) ⟷ (∃a. P a ∨ Q a)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "'a ⇒ bool",
+                "a": "'a"
+            }
+        },
+        {
             "name": "verit_la_generic_neg_greater_real1",
             "prop": "¬(x > y) ⟷ ¬(y < x)",
             "ty": "thm",
