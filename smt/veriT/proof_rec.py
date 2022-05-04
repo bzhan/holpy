@@ -243,10 +243,11 @@ class ProofReconstruction:
                     bar()
                     if step_limit and i > step_limit:
                         break
-        for i, step in enumerate(self.steps):
-            self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm)
-            if step_limit and i > step_limit:
-                break
+        else:
+            for i, step in enumerate(self.steps):
+                self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm)
+                if step_limit and i > step_limit:
+                    break
 
         # check hypothesis consistency
         def check_consistency(hyp):

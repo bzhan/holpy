@@ -13,7 +13,7 @@ from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, refl
 from logic import logic
-from logic.conv import rewr_conv, arg1_conv, binop_conv, replace_conv, top_conv
+from logic.conv import rewr_conv, arg1_conv, binop_conv, replace_conv, top_conv, arg_conv
 from smt.veriT import verit_conv
 
 def norm_int_expr(t):
@@ -102,7 +102,7 @@ def to_la(tm: hol_term.Term) -> LinearArith:
         assert tm.arg1.is_constant()
         return eval_hol_number(tm.arg1) * to_la(tm.arg)
     else: 
-        return LinearArith(const=1, lps=((tm, 1),))
+        return LinearArith(const=0, lps=((tm, 1),))
 
 def from_int_la(la: LinearArith) -> hol_term.Term:
     hol_const = hol_term.Int(la.const)
@@ -145,6 +145,39 @@ def analyze_args(coeffs):
         lcm = int(lcm * d / math.gcd(lcm, d))
     return [hol_term.Int(int(lcm * c)) for c in _coeffs]
 
+
+@register_macro("verit_norm_lia")
+class NormLIAMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = hol_term.Term
+        self.limit = None
+
+    def eval(self, args, prevs=None) -> Thm:
+        goal = args[0]
+        return Thm(hol_term.Eq(goal, from_int_la(to_la(goal))))
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        return verit_conv.norm_lia_conv().get_proof_term(goal)
+
+
+
+
+@register_macro("verit_norm_lra")
+class NormLRAMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = hol_term.Term
+        self.limit = None
+
+    def eval(self, args, prevs=None) -> Thm:
+        goal = args[0]
+        return Thm(hol_term.Eq(goal, from_real_la(to_la(goal))))
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        goal = args[0]
+        return verit_conv.norm_lra_conv().get_proof_term(goal)
 
 
 @register_macro("verit_la_generic")
@@ -370,14 +403,19 @@ class LAGenericMacro(Macro):
         step2_pts = []
         for step1_pt in step1_pts:
             if step1_pt.prop.is_greater():
-                pt_minus = step1_pt.on_prop(rewr_conv("int_gt"), arg1_conv(verit_conv.norm_lia_conv()))
+                # pt_minus = step1_pt.on_prop(rewr_conv("int_gt"), arg1_conv(verit_conv.norm_lia_conv()))
+                pt_minus = step1_pt.on_prop(rewr_conv("int_gt"))
             elif step1_pt.prop.is_greater_eq():
-                pt_minus = step1_pt.on_prop(rewr_conv("int_geq"), arg1_conv(verit_conv.norm_lia_conv()))
+                # pt_minus = step1_pt.on_prop(rewr_conv("int_geq"), arg1_conv(verit_conv.norm_lia_conv()))
+                pt_minus = step1_pt.on_prop(rewr_conv("int_geq"))
             elif step1_pt.prop.is_equals():
-                pt_minus = step1_pt.on_prop(rewr_conv("int_eq_move_left"), arg1_conv(verit_conv.norm_lia_conv()))
+                # pt_minus = step1_pt.on_prop(rewr_conv("int_eq_move_left"), arg1_conv(verit_conv.norm_lia_conv()))
+                pt_minus = step1_pt.on_prop(rewr_conv("int_eq_move_left"))
             else:
                 raise VeriTException('la_generic', 'unexpected type of disequality (less, less_eq)')
-            step2_pts.append(pt_minus)
+            # step2_pts.append(pt_minus)
+            pt_eq = ProofTerm("verit_norm_lia", [pt_minus.prop.arg1])
+            step2_pts.append(pt_minus.on_prop(arg1_conv(replace_conv(pt_eq))))
         
         # print("step2")
         # for pt in step2_pts:
@@ -419,14 +457,19 @@ class LAGenericMacro(Macro):
             if step3_pt.prop.is_equals():
                 # print("step3_pt", step3_pt)
                 pt1 = logic.apply_theorem("zero_eq_mul_const", inst=hol_term.Inst(c=c, m=step3_pt.lhs, n=step3_pt.rhs)).implies_elim(step3_pt)
-                pt2 = pt1.on_prop(binop_conv(verit_conv.const_prod_lia_conv()))
+                pt_eq1 = ProofTerm("verit_norm_lia", [pt1.prop.arg1])
+                pt_eq2 = ProofTerm("verit_norm_lia", [pt1.prop.arg])
+                # pt2 = pt1.on_prop(binop_conv(verit_conv.const_prod_lia_conv()))
+                pt2 = pt1.on_prop(arg1_conv(replace_conv(pt_eq1)), arg_conv(replace_conv(pt_eq2)))
                 step4_pts.append(pt2)
                 # pt = step3_pt.on_prop(rewr_conv("zero_eq_mul_const"), binop_conv(const_prod_lia_conv()))
             else:
                 abs_c = abs(eval_hol_number(c))
                 pt_abs = ProofTerm("int_const_ineq", hol_term.greater(hol_type.IntType)(hol_term.Int(abs_c), hol_term.Int(0)))
                 pt = logic.apply_theorem('int_pos_mul_greater_eq', pt_abs, step3_pt)
-                step4_pts.append(pt.on_prop(binop_conv(verit_conv.const_prod_lia_conv())))
+                pt_eq1 = ProofTerm("verit_norm_lia", [pt.prop.arg1])
+                pt_eq2 = ProofTerm("verit_norm_lia", [pt.prop.arg])
+                step4_pts.append(pt.on_prop(arg1_conv(replace_conv(pt_eq1)), arg_conv(replace_conv(pt_eq2))))
         
         # print("step4")
         # for pt in step4_pts:
@@ -451,7 +494,9 @@ class LAGenericMacro(Macro):
             # print("pt     ", pt)
             # print("pt_final", pt_final)
             pt_final = pt.implies_elim(pt_final).implies_elim(step4_pt)
-            pt_final = pt_final.on_prop(binop_conv(verit_conv.norm_lia_conv()))
+            pt_eq1 = ProofTerm("verit_norm_lia", [pt_final.prop.arg1])
+            pt_eq2 = ProofTerm("verit_norm_lia", [pt_final.prop.arg])
+            pt_final = pt_final.on_prop(arg1_conv(replace_conv(pt_eq1)), arg_conv(replace_conv(pt_eq2)))
 
         # print("pt_final", pt_final)
         # print()
@@ -470,11 +515,10 @@ class LAGenericMacro(Macro):
         # print(pt_false)
         for pt in reversed(step1_neg_conv_pts):
             pt_false = pt_false.implies_intr(pt.lhs.arg)
-        
-        pt_false = pt_false.on_prop(verit_conv.imp_false_conv())
-
-        for pt in step1_neg_conv_pts:
-            pt_false = pt_false.on_prop(top_conv(replace_conv(pt)))
+            if pt_false.prop.arg == hol_term.false:
+                pt_false = pt_false.on_prop(rewr_conv("imp_false_false"), replace_conv(pt))
+            else:
+                pt_false = pt_false.on_prop(rewr_conv("imp_disj_eq"), arg1_conv(replace_conv(pt)))
     
         # print("pt_false", pt_false)
         if pt_false.prop == hol_term.Or(*dis_eqs):
@@ -546,14 +590,18 @@ class LAGenericMacro(Macro):
         step2_pts = []
         for step1_pt in step1_pts:
             if step1_pt.prop.is_greater():
-                pt_minus = step1_pt.on_prop(rewr_conv("real_gt_sub"), arg1_conv(verit_conv.norm_lra_conv()))
+                # pt_minus = step1_pt.on_prop(rewr_conv("real_gt_sub"), arg1_conv(verit_conv.norm_lra_conv()))
+                pt_minus = step1_pt.on_prop(rewr_conv("real_gt_sub"))
             elif step1_pt.prop.is_greater_eq():
-                pt_minus = step1_pt.on_prop(rewr_conv("real_geq_sub"), arg1_conv(verit_conv.norm_lra_conv()))
+                # pt_minus = step1_pt.on_prop(rewr_conv("real_geq_sub"), arg1_conv(verit_conv.norm_lra_conv()))
+                pt_minus = step1_pt.on_prop(rewr_conv("real_geq_sub"))
             elif step1_pt.prop.is_equals():
-                pt_minus = step1_pt.on_prop(rewr_conv("real_sub_0", sym=True), arg1_conv(verit_conv.norm_lra_conv()))
+                # pt_minus = step1_pt.on_prop(rewr_conv("real_sub_0", sym=True), arg1_conv(verit_conv.norm_lra_conv()))
+                pt_minus = step1_pt.on_prop(rewr_conv("real_sub_0", sym=True))
             else:
                 raise VeriTException('la_generic', 'unexpected type of disequality (less, less_eq)')
-            step2_pts.append(pt_minus)
+            pt_eq = ProofTerm("verit_norm_lra", [pt_minus.prop.arg1])
+            step2_pts.append(pt_minus.on_prop(arg1_conv(replace_conv(pt_eq))))
         
         # print("step2")
         # for pt in step2_pts:
@@ -582,19 +630,26 @@ class LAGenericMacro(Macro):
         for step2_pt, c in zip(step2_pts, coeffs):
             if step2_pt.prop.is_equals():
                 pt1 = logic.apply_theorem("real_eq_zero_mul_const", inst=hol_term.Inst(c=c, x=step2_pt.prop.arg1)).implies_elim(step2_pt)
-                pt2 = pt1.on_prop(binop_conv(verit_conv.const_prod_lra_conv()))
+                pt_arg1_eq = ProofTerm("verit_norm_lra", [pt1.prop.arg1])
+                pt_arg_eq = ProofTerm("verit_norm_lra", [pt1.prop.arg])                
+                # pt2 = pt1.on_prop(binop_conv(verit_conv.const_prod_lra_conv()))
+                pt2 = pt1.on_prop(arg1_conv(replace_conv(pt_arg1_eq)), arg_conv(replace_conv(pt_arg_eq)))
                 step3_pts.append(pt2)
                 # pt = step3_pt.on_prop(rewr_conv("zero_eq_mul_const"), binop_conv(const_prod_lia_conv()))
             elif step2_pt.prop.is_greater_eq():
                 abs_c = abs(eval_hol_number(c))
                 pt_abs = ProofTerm("real_const_ineq", hol_term.greater(T)(hol_term.Real(abs_c), hol_term.Real(0)))
                 pt = logic.apply_theorem('verit_real_greater_eq_mul_const', pt_abs, step2_pt)
-                step3_pts.append(pt.on_prop(binop_conv(verit_conv.const_prod_lra_conv())))
+                pt_arg1_eq = ProofTerm("verit_norm_lra", [pt.prop.arg1])
+                pt_arg_eq = ProofTerm("verit_norm_lra", [pt.prop.arg])  
+                step3_pts.append(pt.on_prop(arg1_conv(replace_conv(pt_arg1_eq)), arg_conv(replace_conv(pt_arg_eq))))
             elif step2_pt.prop.is_greater():
                 abs_c = abs(eval_hol_number(c))
                 pt_abs = ProofTerm("real_const_ineq", hol_term.greater(T)(hol_term.Real(abs_c), hol_term.Real(0)))
                 pt = logic.apply_theorem('verit_real_greater_mul_const', pt_abs, step2_pt)
-                step3_pts.append(pt.on_prop(binop_conv(verit_conv.const_prod_lra_conv())))
+                pt_arg1_eq = ProofTerm("verit_norm_lra", [pt.prop.arg1])
+                pt_arg_eq = ProofTerm("verit_norm_lra", [pt.prop.arg])  
+                step3_pts.append(pt.on_prop(arg1_conv(replace_conv(pt_arg1_eq)), arg_conv(replace_conv(pt_arg_eq))))
             else:
                 raise VeriTException("la_generic", "unexpected form of disequality")
         
@@ -608,7 +663,6 @@ class LAGenericMacro(Macro):
         pt_dct = {pt.prop: pt for pt in step3_pts}
         pt_final = step3_pts[0]
         for step3_pt in step3_pts[1:]:
-            # print("input", step3_pt.prop)
             if pt_final.prop.is_equals() and step3_pt.prop.is_equals():
                 pt = logic.apply_theorem('verit_real_add_eq_eq',
                          concl=hol_term.Eq(pt_final.prop.arg1 + step3_pt.prop.arg1, hol_term.Real(0)))
@@ -639,12 +693,16 @@ class LAGenericMacro(Macro):
             assms, _ = pt.prop.strip_implies()
             for assm in assms:
                 pt = pt.implies_elim(pt_dct[assm])
-            pt_final = pt.on_prop(arg1_conv(verit_conv.norm_lra_conv()))
+            pt_eq = ProofTerm("verit_norm_lra", [pt.prop.arg1])
+            pt_final = pt.on_prop(arg1_conv(replace_conv(pt_eq)))
+            # pt_final = pt.on_prop(arg1_conv(verit_conv.norm_lra_conv()))
             pt_dct[pt_final.prop] = pt_final
-        #     print("pt_final", pt_final.prop)
-        #     print()
+            # print("pt_final ", pt_final.prop)
+            # print()
 
-        # print("pt_final", pt_final)
+        # print()
+        # print("pt_final ", pt_final)
+        # print("pt_final1", pt_final)
         # print()
         if not pt_final.prop.arg1.is_constant() or not pt_final.prop.arg.is_constant():
             raise VeriTException("la_generic", "unexpected result %s" % pt_final)
@@ -662,13 +720,12 @@ class LAGenericMacro(Macro):
 
         for pt in reversed(step1_neg_conv_pts):
             pt_false = pt_false.implies_intr(pt.lhs.arg)
+            if pt_false.prop.arg == hol_term.false:
+                pt_false = pt_false.on_prop(rewr_conv("imp_false_false"), replace_conv(pt))
+            else:
+                pt_false = pt_false.on_prop(rewr_conv("imp_disj_eq"), arg1_conv(replace_conv(pt)))
         
 
-        pt_false = pt_false.on_prop(verit_conv.imp_false_conv())        
-        for pt in step1_neg_conv_pts:
-            pt_false = pt_false.on_prop(top_conv(replace_conv(pt)))
-    
-        # print("pt_false", pt_false)
         if pt_false.prop == hol_term.Or(*dis_eqs):
             return pt_false
         else:
