@@ -45,7 +45,7 @@ def solve(f, write_file=False, timeout=5):
                 p.terminate()
                 p.wait()
                 p.kill()
-                print("Proof extraction from veriT is timeout")
+                print("Proof extraction from veriT is timeout (veriT)")
                 return None
 
 def check_sat_from_file(filename: str) -> str:
@@ -83,6 +83,6 @@ def is_unsat(f, timeout=10):
                 p.terminate()
                 p.wait()
                 p.kill()
-                print("UNSAT checking is timeout!")
-                return False, "UNSAT checking is timeout!"
+                print("UNSAT checking is timeout! (veriT)")
+                return False, "UNSAT checking is timeout! (veriT)"
 

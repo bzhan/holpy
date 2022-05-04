@@ -77,7 +77,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     start_time = time.perf_counter()
     verit_proof = interface.solve(abs_name, timeout=solve_timeout)
     if verit_proof is None:
-        return [filename, 'NO PROOF', '', '', '']
+        return [filename, 'NO PROOF (veriT)', '', '', '']
     ctx = proof_rec.bind_var(abs_name)
     solve_time = time.perf_counter() - start_time
     solve_time_str = "%.3f" % solve_time
@@ -87,7 +87,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     try:
         steps = test_parse_step(verit_proof, ctx)
     except:
-        return [filename, solve_time_str, 'PARSING ERROR', '', '']
+        return [filename, solve_time_str, 'PARSING ERROR (HolPy)', '', '']
     parse_time = time.perf_counter() - start_time
     parse_time_str = "%.3f" % parse_time    
 
@@ -103,7 +103,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                 except Exception as e:
                     return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)]                   
         except TimeoutError:
-            return [filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout!']
+            return [filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)']
         eval_time = time.perf_counter() - start_time
         eval_time_str = "Eval: %.3f" % eval_time
         assert pt.rule != "sorry"
@@ -119,7 +119,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         try:
             pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
         except TimeoutError:
-            return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout!']
+            return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)']
         proofterm_time = time.perf_counter() - start_time
         proofterm_time_str = "Proofterm: %.3f" % proofterm_time
         assert pt.rule != "sorry"
@@ -191,7 +191,9 @@ if __name__ == "__main__":
     if len(sys.argv) == 3:
         if sys.argv[2] == "--proofterm":
             test_eval = False
-
+        elif sys.argv[2] == "--eval":
+            test_eval = True
+        
     if len(sys.argv) == 4:
         solve_timeout = int(sys.argv[3])
     elif len(sys.argv) == 5:
