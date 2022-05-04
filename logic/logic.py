@@ -131,36 +131,6 @@ def strip_exists(t, names):
     else:
         return ([], t)
 
-def is_let(t: Term) -> Term:
-    return t.is_comb('Let', 2)
-
-def mk_let(x: Term, t: Term, body: Term) -> Term:
-    """Construct the term (let x = t in body). """
-    assert x.is_var(), "mk_let"
-    T = body.get_type()
-    let_t = Const("Let", TFun(x.T, TFun(x.T, T), T))
-    return let_t(t, Lambda(x, body))
-
-def dest_let(t: Term):
-    """Given a term of the form (let x = t in body), return (x, t, body). """
-    x, body = t.arg.dest_abs()
-    return (x, t.arg1, body)
-
-def strip_let(t: Term):
-    """Given a term of the form
-
-        let x1 = t1 ... xn = tn in body
-
-    return the list of pairs (x1, t1), ... (xn, tn) together with body.
-
-    """
-    res_list = []
-    while is_let(t):
-        x, body = t.arg.dest_abs()
-        res_list.append((x, t.arg1))
-        t = body
-    return (res_list, t)
-
 def mk_xor(x: Term, y: Term) -> Term:
     assert x.get_type() == BoolType and y.get_type() == BoolType
     return Const("xor", TFun(BoolType, BoolType, BoolType))(x, y)

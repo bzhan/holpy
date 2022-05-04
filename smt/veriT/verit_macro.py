@@ -1206,6 +1206,18 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     return False
                 else:
                     return helper(cur_t1, cur_t2, depth-1)
+            elif t1.is_let():
+                cur_t1, cur_t2 = t1, t2
+                while cur_t1.is_let() and cur_t2.is_let() and helper(cur_t1.arg1, cur_t2.arg1, depth-1):
+                    v1, _, cur_t1 = cur_t1.dest_let()
+                    v2, _, cur_t2 = cur_t2.dest_let()
+                    if (cur_t1, cur_t2) in ctx:
+                        cache.add((t1, t2))
+                        return True
+                if cur_t1 == t1 and cur_t2 == t2:
+                    return False
+                else:
+                    return helper(cur_t1, cur_t2, depth-1)
             elif t1.is_comb('distinct'):
                 if not t2.is_comb('distinct'):
                     return False
@@ -1872,8 +1884,8 @@ class LetMacro(Macro):
 
         body = goal.lhs
         xs = []
-        while body != last_step.lhs and logic.is_let(body):
-            x, _, body = logic.dest_let(body)
+        while body != last_step.lhs and body.is_let():
+            x, _, body = body.dest_let()
             xs.append(x)
 
         # body should equal to the left side of last_step
@@ -1901,8 +1913,8 @@ class LetMacro(Macro):
         
         let_eqs = []
         body = goal.lhs
-        while body != last_step.lhs and logic.is_let(body):
-            x, t, body = logic.dest_let(body)
+        while body != last_step.lhs and body.is_let():
+            x, t, body = body.dest_let()
             let_eqs.append((x, t))
 
         # Start from last_step, which is body == goal.rhs, successively

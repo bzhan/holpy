@@ -360,7 +360,7 @@ class ProofTransformer(Transformer):
         res = tms[-1]
         for p in reversed(tms[:-1]):
             v, _, t = p
-            res = logic.mk_let(v, t, res)
+            res = hol_term.Let(v, t, res)
         return res
 
     def mk_distinct_tm(self, *tms):

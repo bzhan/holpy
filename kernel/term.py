@@ -257,6 +257,16 @@ class Term():
                     for t in reversed(tlist[:-1]):
                         if not hasattr(t, "_hash_val"):
                             t._hash_val = hash(("DISJ", t.arg1, t.arg))
+                elif self.is_let():
+                    t = self
+                    tlist = [t]
+                    while t.is_let() and t.arg.is_abs():
+                        t = t.arg.body
+                        tlist.append(t)
+                    hash(tlist[-1])
+                    for t in reversed(tlist[:-1]):
+                        if not hasattr(t, "_hash_val"):
+                            t._hash_val = hash(("LET", t.arg1, t.arg.var_T, t.arg.body))
                 else:
                     self._hash_val = hash(("COMB", self.fun, self.arg))
             elif self.is_abs():
@@ -593,6 +603,31 @@ class Term():
     def is_exists(self) -> bool:
         """Whether self is of the form ?x. P x."""
         return self.is_comb('exists', 1)
+
+    def is_let(self) -> bool:
+        """Whether self is of the form (let x = t in body)."""
+        return self.is_comb('Let', 2)
+
+    def dest_let(self):
+        """Given a term of the form (let x = t in body), return (x, t, body). """
+        x, body = self.arg.dest_abs()
+        return (x, self.arg1, body)
+
+    def strip_let(self):
+        """Given a term of the form
+
+            let x1 = t1 ... xn = tn in body
+
+        return the list of pairs (x1, t1), ... (xn, tn) together with body.
+
+        """
+        res_list = []
+        t = self
+        while t.is_let():
+            x, body = t.arg.dest_abs()
+            res_list.append((x, t.arg1))
+            t = body
+        return (res_list, t)
 
     def is_equals(self) -> bool:
         """Whether self is of the form A = B."""
@@ -1412,6 +1447,13 @@ def Exists(*args):
             raise TermException("Exists: x must be a variable. Got %s" % str(x))
         body = exists(x.T)(Lambda(x, body))
     return body
+
+def Let(x: Term, t: Term, body: Term) -> Term:
+    """Construct the term (let x = t in body). """
+    assert x.is_var(), "Let"
+    T = body.get_type()
+    let_t = Const("Let", TFun(x.T, TFun(x.T, T), T))
+    return let_t(t, Lambda(x, body))
 
 
 def plus(T):
