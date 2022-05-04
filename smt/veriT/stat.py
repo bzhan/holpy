@@ -67,18 +67,17 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     if filename[-4:] != 'smt2':
         return
     stastic.append(filename)
-    abs_name = smtlib_path + filename
-    unsat, res = interface.is_unsat(abs_name, timeout=solve_timeout)
+    unsat, res = interface.is_unsat(filename, timeout=solve_timeout)
     if not unsat:
         return [filename, str(res), '', '', '']
     print(repr(filename) + ',')
 
     # Solve
     start_time = time.perf_counter()
-    verit_proof = interface.solve(abs_name, timeout=solve_timeout)
+    verit_proof = interface.solve(filename, timeout=solve_timeout)
     if verit_proof is None:
         return [filename, 'NO PROOF (veriT)', '', '', '']
-    ctx = proof_rec.bind_var(abs_name)
+    ctx = proof_rec.bind_var(filename)
     solve_time = time.perf_counter() - start_time
     solve_time_str = "%.3f" % solve_time
 
@@ -209,13 +208,22 @@ if __name__ == "__main__":
     end_time = time.perf_counter()
     if not os.path.isdir('./smt/veriT/stastics'):
         os.mkdir('./smt/veriT/stastics')
+    if not os.path.isdir('./smt/veriT/stastics/eval'):
+        os.mkdir('./smt/veriT/stastics/eval')
+    if not os.path.isdir('./smt/veriT/stastics/proofterm'):
+        os.mkdir('./smt/veriT/stastics/proofterm')
+    
+    
 
     csv_name = folder_name.replace('/', '.')
     if test_eval:
         headers = ['filename', 'Solve', 'Parse', 'Eval', 'Steps']
+        res_file_name = './smt/veriT/stastics/eval/%s.csv' % csv_name
     else:
-        headers = ['filename', 'Solve', 'Parse', 'ProofTerm', 'Steps']        
-    with open('./smt/veriT/stastics/%s.csv' % csv_name, 'w') as f:
+        headers = ['filename', 'Solve', 'Parse', 'ProofTerm', 'Steps']
+        res_file_name = './smt/veriT/stastics/proofterm/%s.csv' % csv_name
+
+    with open(res_file_name, 'w') as f:
         f_csv = csv.writer(f)
         f_csv.writerow(headers)
         f_csv.writerows(stats)

@@ -62,7 +62,7 @@ def check_sat_from_file(filename: str) -> str:
                 break
     return "none"
  
-def is_unsat(f, timeout=10):
+def is_unsat(f, timeout=10) -> tuple:
     """Given a smt2 file, use verit to solve it and return True if it is UNSAT."""
     args = "--disable-print-success"
     res = check_sat_from_file(f)
@@ -72,13 +72,16 @@ def is_unsat(f, timeout=10):
                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True) as p:
         try:
             output, _ = p.communicate(timeout=timeout)
-            res = output.decode('UTF-8').split("\n")[1].strip()
+            output = output.decode('UTF-8').split("\n")
+            if output == [""]:
+                return False, "unknown"
+            res = output[1].strip()
             return False if res in ("sat", "unknown", "unsupported") else True, res
         except subprocess.TimeoutExpired:
             # Kill process
             if os.name == "nt": # Windows
                 subprocess.call(['taskkill', '/F', '/T', '/PID', str(p.pid)])
-                return False
+                return False, "UNSAT checking is timeout! (veriT)"
             else: # Linux
                 p.terminate()
                 p.wait()
