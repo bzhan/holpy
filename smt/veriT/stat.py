@@ -104,40 +104,31 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     # Parse
     start_time = time.perf_counter()
     try:
-        steps = test_parse_step(verit_proof, ctx)
-    except Exception as e:
-        return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
+        with TO(seconds=eval_timeout):
+            try:
+                steps = test_parse_step(verit_proof, ctx)
+            except Exception as e:
+                return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
+    except TimeoutError:
+        print("%s PARSING TIMEOUT" % filename)
+        return [filename, solve_time_str, 'PARSING TIMEOUT (HolPy) %s' % e, '', '']
+    
     parse_time = time.perf_counter() - start_time
     parse_time_str = "%.3f" % parse_time    
 
     # Validation by macro.eval
     eval_time_str = ""
     if test_eval:
+        start_time = time.perf_counter()
+        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         try:
-            with TO(seconds=eval_timeout):
-                # parse
-                start_time = time.perf_counter()
-                parse_finish = False
-                try:
-                    steps = test_parse_step(verit_proof, ctx)
-                except Exception as e:
-                    return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
-                parse_time = time.perf_counter() - start_time
-                parse_time_str = "%.3f" % parse_time
-                parse_finish = True
-                # solve 
-                start_time = time.perf_counter()
-                recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
+            with TO(seconds=eval_timeout-parse_time):
                 try:
                     pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                 except Exception as e:
                     return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)]                   
         except TimeoutError:
-            if not parse_finish:
-                print("%s Parsing timeout" % filename)
-                return [filename, solve_time_str, 'Parsing is timeout (HolPy)', '', len(steps)]
-            else:
-                return [filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps)]
+            return [filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps)]
         eval_time = time.perf_counter() - start_time
         eval_time_str = "Eval: %.3f" % eval_time
         assert pt.rule != "sorry"
@@ -149,31 +140,16 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     # Validation by macro.get_proof_term
     proofterm_time_str = ""
     if test_proofterm:
+        start_time = time.perf_counter()
+        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         try:
-            with TO(seconds=eval_timeout):
-                # parse
-                start_time = time.perf_counter()
-                parse_finish = False
-                try:
-                    steps = test_parse_step(verit_proof, ctx)
-                except Exception as e:
-                    return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
-                parse_time = time.perf_counter() - start_time
-                parse_time_str = "%.3f" % parse_time
-                parse_finish = True
-                start_time = time.perf_counter()
-                recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
+            with TO(seconds=eval_timeout-parse_time):
                 try:
                     pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                 except Exception as e:
-                    return [filename, solve_time_str, parse_time_str, 'Error: %s %s' % (str(filename), str(e)), len(steps)]    
+                    return [filename, solve_time_str, parse_time_str, 'Error: %s %s' % (str(filename), str(e)), len(steps)]
         except TimeoutError:
-            if not parse_finish:
-                print("%s Parsing timeout" % filename)
-                return [filename, solve_time_str, "Parsing is timeout (HolPy)", '', len(steps)]
-            else:
-                return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)]
-        
+            return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)]
         proofterm_time = time.perf_counter() - start_time
         proofterm_time_str = "Proofterm: %.3f" % proofterm_time
         assert pt.rule != "sorry"
@@ -215,12 +191,11 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
                     file_names.append(smtlib_path+row[0])
     else:
         _, file_names = run_fast_scandir(abs_path, ['.smt2'])
-
+    print("start")
     with concurrent.futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
         res = executor.map(test_file, file_names, repeat(show_time),
                         repeat(test_eval), repeat(test_proofterm), repeat(step_limit),
                             repeat(omit_proofterm), repeat(solve_timeout), repeat(eval_timeout))
-
     return res
 
 def run_fast_scandir(dir, ext):    # dir: str, ext: list
