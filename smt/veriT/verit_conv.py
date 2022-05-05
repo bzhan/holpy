@@ -576,7 +576,10 @@ class onepoint_forall_conv(Conv):
             pt = pt.on_rhs(arg_conv(abs_conv(arg1_conv(arg_conv(rewr_conv('eq_sym_eq'))))))
 
         # Apply theorem
-        pt = pt.on_rhs(rewr_conv("verit_onepoint_forall"))
+        if len(disjs) > 1:
+            pt = pt.on_rhs(rewr_conv("verit_onepoint_forall"))
+        else:
+            pt = pt.on_rhs(rewr_conv("verit_onepoint_forall_single"))
 
         # Move Pi back to its original position
         disjs = pt.rhs.strip_disj()
@@ -613,7 +616,10 @@ class onepoint_exists_conv(Conv):
         pt = pt.on_rhs(arg_conv(abs_conv(replace_conv(eq_pt))))
 
         # Apply theorem
-        pt = pt.on_rhs(rewr_conv("verit_onepoint_exists"))
+        if len(conjs) > 1:
+            pt = pt.on_rhs(rewr_conv("verit_onepoint_exists"))
+        else:
+            pt = pt.on_rhs(rewr_conv("verit_onepoint_exists_single"))
 
         # Move Pi back to its original position
         conjs = pt.rhs.strip_conj()

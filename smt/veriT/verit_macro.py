@@ -197,8 +197,21 @@ def resolve_order(props):
         a, n = strip_not(t)
         return (lit_to_id[a], n)
 
+    def id_to_term(a, n):
+        if n == 0:
+            return id_to_lit[a]
+        else:
+            return Not(id_to_term(a, n - 1))
+
     for i in range(len(props)):
         props[i] = [term_to_id(t) for t in props[i]]
+        if len(props[i]) != len(set(props[i])):
+            tmp = []
+            for prop in props[i]:
+                if prop not in tmp:
+                    tmp.append(prop)
+            props[i] = tmp
+            resolves.append((i, -1, 0, 0, [id_to_term(a, n) for (a, n) in props[i]]))
 
     # List of propositions remaining to be resolved.
     # Clear repeated props that are immediately next to each other.
@@ -206,12 +219,6 @@ def resolve_order(props):
     for i, prop in enumerate(props):
         if i == 0 or tuple(prop) != tuple(props[i-1]):
             id_remain.append(i)
-
-    def id_to_term(a, n):
-        if n == 0:
-            return id_to_lit[a]
-        else:
-            return Not(id_to_term(a, n - 1))
 
     while len(id_remain) > 1:
         # Find resolution among all possible pairs.
@@ -239,14 +246,10 @@ def resolve_order(props):
         # Perform this resolution
         id1, id2, t1, t2 = resolve
         prop1, prop2 = props[id1], props[id2]
-        if t1 == -1:
-            res_list = prop2[:t2] + prop2[t2+1:]
-        else:
-            assert t1 != -1 and t2 != -1
-            res_list = prop1[:t1] + prop1[t1+1:]
-            for t in prop2[:t2] + prop2[t2+1:]:
-                if t not in res_list:
-                    res_list.append(t)
+        res_list = prop1[:t1] + prop1[t1+1:]
+        for t in prop2[:t2] + prop2[t2+1:]:
+            if t not in res_list:
+                res_list.append(t)
         id_remain.remove(id2)
         props[id1] = res_list
         resolves.append(resolve + ([id_to_term(a, n) for (a, n) in res_list],))
@@ -309,6 +312,14 @@ class ThResolutionMacro(Macro):
 
         for i, res_step in enumerate(resolves):
             id1, id2, t1, t2, res_list = res_step
+
+            # Special move for simplifying id1
+            if id2 == -1:
+                pt = prevs[id1]
+                prems[id1] = res_list
+                prevs[id1] = logic.imp_disj_iff(Eq(pt.prop, Or(*res_list))).equal_elim(pt)
+                continue
+
             pt1, pt2 = prevs[id1], prevs[id2]
             prem1, prem2 = prems[id1], prems[id2]
 
