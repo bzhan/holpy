@@ -1631,11 +1631,27 @@
             }
         },
         {
+            "name": "verit_onepoint_forall_single",
+            "prop": "(∀x. ¬(x = t)) ⟷ ¬(t = t)",
+            "ty": "thm",
+            "vars": {
+                "t": "'a"
+            }
+        },
+        {
             "name": "verit_onepoint_exists",
             "prop": "(∃x. x = t ∧ P x) ⟷ t = t ∧ P t",
             "ty": "thm",
             "vars": {
                 "P": "'a ⇒ bool",
+                "t": "'a"
+            }
+        },
+        {
+            "name": "verit_onepoint_exists_single",
+            "prop": "(∃x. x = t) ⟷ t = t",
+            "ty": "thm",
+            "vars": {
                 "t": "'a"
             }
         },
