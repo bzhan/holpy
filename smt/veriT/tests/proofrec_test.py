@@ -585,6 +585,12 @@ class ProofrecTest(unittest.TestCase):
             'LRA/scholl-smt08/RND/RND_4_12.smt2',
             'LRA/scholl-smt08/RND/RND_4_2.smt2',
             'LRA/scholl-smt08/RND/RND_4_7.smt2',
+            'LRA/keymaera/intersection-example-simple.proof-node6512.smt2',
+            'LRA/keymaera/intersection-example-simple.proof-node47049.smt2',
+            'LRA/keymaera/intersection-example-simple.proof-node684031.smt2',
+            'LRA/keymaera/intersection-example-simple.proof-node403143.smt2',
+            'LRA/keymaera/intersection-example-simple.proof-node62694.smt2',
+            'LRA/scholl-smt08/RND/RND_4_30.smt2'
         ]
         profile = False
         if profile:

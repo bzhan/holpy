@@ -1079,11 +1079,11 @@ class EqSimplifyMacro(Macro):
         if lhs.is_equals() and lhs.lhs.is_constant() and lhs.rhs.is_constant() and rhs == false:
             T = lhs.lhs.get_type()
             if T == hol_type.IntType:
-                pt = ProofTerm('int_const_ineq', lhs).on_prop(rewr_conv('eq_false'))
+                pt = ProofTerm('int_const_ineq', lhs)
                 if pt.prop == goal:
                     return pt
             if T == hol_type.RealType:
-                pt = ProofTerm('real_const_eq', lhs).on_prop(rewr_conv('eq_false'))
+                pt = ProofTerm('real_const_eq', lhs)
                 if pt.prop == goal:
                     return pt
 
@@ -4353,13 +4353,13 @@ class QNTSimplifyMacro(Macro):
             raise VeriTException("qnt_simplify", "unexpected arguments")
         goal = args[0]
         lhs, rhs = goal.args
-        if rhs not in (true, false):
+        if any(v.get_type() == BoolType for v in rhs.get_vars()):
             raise VeriTException("qnf_simplify", "rhs should be true or false")
 
-        if not lhs.is_forall():
+        if not lhs.is_forall() and not lhs.is_exists():
             raise VeriTException("qnf_simplify", "lhs should be a quantification")
         
-        _, l_bd = lhs.strip_forall()
+        _, l_bd = lhs.strip_quant()
         if l_bd == rhs:
             return Thm(goal)
         else:
@@ -4368,16 +4368,10 @@ class QNTSimplifyMacro(Macro):
     def get_proof_term(self, args, prevs):
         goal = args[0]
         lhs, rhs = goal.args
-        vars, _ = lhs.strip_forall()
-        pt1 = ProofTerm.assume(lhs)
-        for v in vars:
-            pt1 = pt1.forall_elim(v)
-        pt1 = pt1.implies_intr(lhs)
-        pt2 = ProofTerm.assume(rhs)
-        for v in vars:
-            pt2 = pt2.forall_intr(v)
-        pt2 = pt2.implies_intr(rhs)
-        return logic.apply_theorem("iffI", pt1, pt2)
+        pt = refl(lhs).on_rhs(verit_conv.qnt_rm_unsed_conv())
+        if pt.prop == goal:
+            return pt
+        raise VeriTException("qnt_simplify", "unexpected result")
 
 @register_macro("verit_qnt_join")
 class QNTJoinMacro(Macro):
