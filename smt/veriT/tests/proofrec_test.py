@@ -266,7 +266,7 @@ class ProofrecTest(unittest.TestCase):
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_48_45_757_1043506.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_54_30_307_1349771.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_57_04_292_1481164.smt_in.smt2',
-            'UF/20170428-Barrett/cdt-cade2015/nada/afp/huffman/x2015_09_10_16_51_19_087_1305640.smt_in.smt2',  # onepoint
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/huffman/x2015_09_10_16_51_19_087_1305640.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_46_30_200_1001391.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_47_39_480_1078027.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_48_44_767_1147663.smt_in.smt2',
@@ -280,21 +280,21 @@ class ProofrecTest(unittest.TestCase):
             'UF/sledgehammer/FFT/uf.600765.smt2',
             'UF/sledgehammer/FFT/uf.626085.smt2',
             'UF/sledgehammer/FFT/uf.552859.smt2',
-            'UF/sledgehammer/FFT/uf.605329.smt2',  # onepoint
+            'UF/sledgehammer/FFT/uf.605329.smt2',
             'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1025050.smt2',
             'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1061982.smt2',
             'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1384400.smt2',
             'UF/sledgehammer/Hoare/smtlib.1170876.smt2',
             'UF/sledgehammer/Hoare/uf.1008477.smt2',
             'UF/sledgehammer/Hoare/uf.1031408.smt2',
-            # 'UF/sledgehammer/NS_Shared/smtlib.678332.smt2',  # onepoint
-            'UF/sledgehammer/QEpres/uf.1039338.smt2',  # onepoint
+            'UF/sledgehammer/NS_Shared/smtlib.678332.smt2',
+            'UF/sledgehammer/QEpres/uf.1039338.smt2',
             'UF/sledgehammer/StrongNorm/uf.701666.smt2',
             'UF/sledgehammer/TypeSafe/uf.913303.smt2',
             'UF/sledgehammer/TypeSafe/smtlib.1267524.smt2',
             'UF/sledgehammer/TwoSquares/uf.680734.smt2',
             'UF/sledgehammer/TwoSquares/uf.725943.smt2',
-            'UF/sledgehammer/TwoSquares/uf.757144.smt2',  # onepoint
+            'UF/sledgehammer/TwoSquares/uf.757144.smt2',
             'UF/grasshopper/instantiated/concat_check_heap_access_23_4.smt2',
             'UF/grasshopper/instantiated/concat_invariant_18_4.smt2',
             'UF/grasshopper/instantiated/dl_filter_postcondition_of_dl_filter_41_1.smt2',
@@ -374,8 +374,8 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438517.smt2',
             'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437253.smt2',
             'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437948.smt2',
-            'UFLIA/sledgehammer/Hoare/smtlib.750663.smt2',  # onepoint
-            'UFLIA/sledgehammer/QEpres/smtlib.1113749.smt2',  # onepoint
+            'UFLIA/sledgehammer/Hoare/smtlib.750663.smt2',
+            'UFLIA/sledgehammer/QEpres/smtlib.1113749.smt2',
             'UFLIA/spec_sharp/textbook-DutchFlag.bpl.1.Partition.smt2',
             'UFLIA/spec_sharp/textbook-Find.bpl.1.Find.smt2',
             'UFLIA/spec_sharp/textbook-Find.bpl.2.Main.smt2',
@@ -504,7 +504,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_AUFLIA(self): # eval ✓
+    def test_AUFLIA(self): # eval ✓ proofterm ✓
         test_paths = [
             'AUFLIA/20170829-Rodin/smt1002232729905089644.smt2',
             'AUFLIA/20170829-Rodin/smt1005619206308662052.smt2',
@@ -528,9 +528,9 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt2022486099146293362.smt2',
             'AUFLIA/20170829-Rodin/smt2025463987927880021.smt2',
             'AUFLIA/20170829-Rodin/smt2027035001350841448.smt2',
-            'AUFLIA/20170829-Rodin/smt2885702086782097441.smt2',  # onepoint
-            'AUFLIA/20170829-Rodin/smt8020508299917860570.smt2',  # onepoint
-            'AUFLIA/20170829-Rodin/smt1053503323401967250.smt2',  # onepoint
+            'AUFLIA/20170829-Rodin/smt2885702086782097441.smt2',
+            'AUFLIA/20170829-Rodin/smt8020508299917860570.smt2',
+            'AUFLIA/20170829-Rodin/smt1053503323401967250.smt2',
             'AUFLIA/20170829-Rodin/smt2972435604341125203.smt2',
             'AUFLIA/20170829-Rodin/smt2020844136539587643.smt2',
             'AUFLIA/20170829-Rodin/smt7430161103589433024.smt2',

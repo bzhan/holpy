@@ -1252,6 +1252,8 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
     if eqs is None:
         eqs = dict()
     
+    cache = dict()
+
     def helper(t1, t2, depth):
         """Returns one of the following:
         
@@ -1263,6 +1265,8 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
             return eqs[(t1, t2)]
         elif (t2, t1) in eqs:
             return eqs[(t2, t1)].symmetric()
+        elif (t1, t2) in cache:
+            return cache[(t1, t2)]
         elif t1 == t2:
             return ProofTerm.reflexive(t1)
         elif depth == 0:
@@ -1278,6 +1282,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     pt = ProofTerm.reflexive(t1)
                     pt = pt.on_rhs(arg1_conv(replace_conv(lhs_eq)))
                     pt = pt.on_rhs(arg_conv(replace_conv(rhs_eq)))
+                    cache[(t1, t2)] = pt
                     return pt
 
                 # Second, the case with exchanging equality
@@ -1288,6 +1293,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     pt = pt.on_rhs(rewr_conv("eq_sym_eq"))
                     pt = pt.on_rhs(arg1_conv(replace_conv(lhs_eq)))
                     pt = pt.on_rhs(arg_conv(replace_conv(rhs_eq)))
+                    cache[(t1, t2)] = pt
                     return pt
 
                 # Either case yield equality
@@ -1311,6 +1317,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     return None
                 for pt in reversed(eq_pts):
                     res = ProofTerm.reflexive(conj).combination(pt).combination(res)
+                cache[(t1, t2)] = res
                 return res
             elif t1.is_disj():
                 cur_t1, cur_t2 = t1, t2
@@ -1331,6 +1338,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     return None
                 for pt in reversed(eq_pts):
                     res = ProofTerm.reflexive(disj).combination(pt).combination(res)
+                cache[(t1, t2)] = res
                 return res
             elif t1.is_plus():
                 cur_t1, cur_t2 = t1, t2
@@ -1352,6 +1360,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     return None
                 for pt in reversed(eq_pts):
                     res = ProofTerm.reflexive(plus(T)).combination(res).combination(pt)
+                cache[(t1, t2)] = res
                 return res
             elif t1.is_comb('distinct'):
                 l_args, r_args = hol_list.dest_literal_list(t1.arg), hol_list.dest_literal_list(t2.arg)
@@ -1362,7 +1371,9 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                 res = ProofTerm.reflexive(hol_list.nil(T))
                 for pt in reversed(pts):
                     res = ProofTerm.reflexive(hol_list.cons(T)).combination(pt).combination(res)
-                return ProofTerm.reflexive(t1.head).combination(res)
+                res = ProofTerm.reflexive(t1.head).combination(res)
+                cache[(t1, t2)] = res
+                return res
             else:
                 pts = []
                 for l_arg, r_arg in zip(t1.args, t2.args):
@@ -1372,6 +1383,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                 res = ProofTerm.reflexive(t1.head)
                 for pt in pts:
                     res = res.combination(pt)
+                cache[(t1, t2)] = res
                 return res
         elif t1.is_abs():
             if not t2.is_abs():
@@ -1381,7 +1393,9 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
             pt = helper(body2, body1, depth-1)
             if pt is None:
                 return None
-            return ProofTerm.reflexive(t2).on_rhs(abs_conv(replace_conv(pt))).symmetric()
+            res = ProofTerm.reflexive(t2).on_rhs(abs_conv(replace_conv(pt))).symmetric()
+            cache[(t1, t2)] = res
+            return res
         else:
             return None
     return helper(tm1, tm2, depth)
