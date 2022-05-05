@@ -670,10 +670,28 @@ class EqCongurentMacro(Macro):
         self.level = 1
         self.sig = Term
         self.limit = None
-    
+
+    def eval(self, args, prevs=None):
+        if len(args) < 2:
+            raise VeriTException("eq_congurent", "unexpected arguments")
+        if not all(arg.is_not() and arg.arg.is_equals() for arg in args[:-1]):
+            raise VeriTException("eq_congruent", "all arguments except the last should be negation of equality")
+        if not args[-1].is_equals() or not args[-1].lhs.is_comb() or not args[-1].rhs.is_comb() or args[-1].lhs.head != args[-1].rhs.head:
+            raise VeriTException("eq_congruent", "the last argument should be an equality and two sides should be function")
+        preds, concl = args[:-1], args[-1]
+        # args_pair = [(i, j) for i, j in zip(concl.lhs.strip_comb()[1], concl.rhs.strip_comb()[1])]
+        # eq_pair = [(i, j) for i, j in ]
+        preds_eq = [(tm.arg.lhs, tm.arg.rhs) for tm in preds]
+        concl_eq = [(i, j) for i, j in zip(concl.lhs.strip_comb()[1], concl.rhs.strip_comb()[1])]
+        if len(preds_eq) != len(concl_eq):
+            raise VeriTException("eq_congruent", "the number of arguments is not equal")
+        for (i, j), (m, n) in zip(preds_eq, concl_eq):
+            if (i, j) != (m, n) and (i, j) != (n, m):
+                raise VeriTException("eq_congruent", "arguments are not equal")
+        
+        return Thm(Or(*args))
+
     def get_proof_term(self, args, prevs=None):
-        # goal = Or(*goal)
-        # elems = goal.strip_disj()
         elems = list(args)
         preds, concl = elems[:-1], elems[-1]
         args_pair = [(i, j) for i, j in zip(concl.lhs.strip_comb()[1], concl.rhs.strip_comb()[1])]
@@ -752,41 +770,6 @@ class ImpEqToMacro(Macro):
         pt1 = functools.reduce(lambda x, y: x.implies_intr(y).on_prop(rewr_conv("imp_disj_eq")), reversed(disjs), pt0)
         return pt1
 
-@register_macro("verit_and_rule")
-class AndRuleMacro(Macro):
-    """Given a disj term which pattern is like not (= x_1 x_2)) | ... | not (= x_{n-1} x_n) | (= x_1 x_n)."""
-    def __init__(self):
-        self.level = 1
-        self.sig = Term
-        self.limit = None
-
-    def get_proof_term(self, goal, prevs=None):
-        elems = goal.strip_disj()
-        
-        disjs = [tm.arg for tm in elems[:-1]]
-        disj_pts = [ProofTerm.assume(disj) for disj in disjs]
-        pt0 = disj_pts[0]
-        for pt1 in disj_pts[1:]:
-            if pt1.lhs == pt0.rhs:
-                pt0 = pt0.transitive(pt1)
-            elif pt1.lhs == pt0.lhs:
-                pt0 = pt0.symmetric().transitive(pt1)
-            elif pt1.rhs == pt0.lhs:
-                pt0 = pt0.symmetric().transitive(pt1.symmetric())
-            elif pt1.rhs == pt0.rhs:
-                pt0 = pt0.transitive(pt1.symmetric())
-            
-            else:
-                raise VeriTException("imp_to_or", "unexpected prevs: %s %s" % (str(pt0.prop), str(pt1.prop)))
-        
-        if pt0.symmetric().prop == elems[-1]:
-            pt0 = pt0.symmetric() 
-
-        if pt0.prop != elems[-1]:
-            raise VeriTException("imp_to_or", "%s \n %s" % (str(pt0.prop), str(goal.strip_disj()[-1])))
-        
-        return ProofTerm("imp_to_or", elems[:-1]+[goal], prevs=[pt0])
-
 
 @register_macro("verit_eq_congruent_pred")
 class EqCongurentPredMacro(Macro):
@@ -794,6 +777,39 @@ class EqCongurentPredMacro(Macro):
         self.level = 1
         self.sig = Term
         self.limit = None
+
+    def eval(self, args, prevs) -> Thm:
+        if len(args) < 3:
+            raise VeriTException("eq_congruent_pred", "there should be at least three arguments")
+        if args[-2].is_not() and args[-1].is_not() or not args[-2].is_not() and not args[-1].is_not():
+            raise VeriTException("eq_congruent_pred", "one of the last two argument should be a negation and the other is not")
+        if args[-2].is_not() and args[-2].arg.head != args[-1].head:
+            raise VeriTException("eq_congruent_pred", "the last two arguments should have the same head")
+        if args[-1].is_not() and args[-1].arg.head != args[-2].head:
+            raise VeriTException("eq_congruent_pred", "the last two arguments should have the same head")
+
+        goal = Or(*args)
+        elems = goal.strip_disj()
+        preds, pred_fun, concl = elems[:-2], elems[-2], elems[-1] 
+        if pred_fun.is_not():
+            args_pair = [(i, j) for i, j in zip(pred_fun.arg.strip_comb()[1], concl.strip_comb()[1])]
+        else:
+            args_pair = [(i, j) for i, j in zip(pred_fun.strip_comb()[1], concl.arg.strip_comb()[1])]
+        if len(preds) > 1:
+            preds_pair = [(i.arg.lhs, i.arg.rhs) for i in preds]
+        else:
+            preds_pair = [(preds[0].arg.lhs, preds[0].arg.rhs), (preds[0].arg.lhs, preds[0].arg.rhs)]
+
+        for arg, pred in zip(args_pair, preds_pair):
+            if arg == pred:
+                continue
+            elif arg[0] == pred[1] and pred[0] == arg[1]:
+                continue
+            else:
+                raise VeriTException("eq_congruent_pred", "unexpected goal")    
+        
+        return Thm(Or(*args))
+
     def get_proof_term(self, goal, prevs=None):
         """{(not (= x_1 y_1)) ... (not (= x_n y_n)) (not (p x_1 ... x_n)) (p y_1 ... y_n)}
         Special case: (not (= x y)) (not (p x y)) (p y x)
@@ -1090,7 +1106,7 @@ class EqSimplifyMacro(Macro):
         if lhs.is_not() and lhs.arg.is_equals() and lhs.arg.lhs.is_constant()\
                  and lhs.arg.lhs == lhs.arg.rhs and rhs == false:
             return logic.apply_theorem('verit_eq_simplify', concl=goal)
-        
+
         raise VeriTException("eq_simplify", "unexpected result")
 
 
