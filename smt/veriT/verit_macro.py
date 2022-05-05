@@ -3765,8 +3765,12 @@ class SkoExMacro(Macro):
             pt = pt.implies_elim(ProofTerm.reflexive(t))
             # Rewrite using P (SOME x. P x) <--> (EX x. P x), may need to use some of
             # the other equality hypotheses.
-            Some_eq = logic.apply_theorem('verit_some_eq_ex', inst=Inst(P=P))
+            inst = Inst(P=P)
+            inst.abs_name_inst['x'] = x.name
+            Some_eq = logic.apply_theorem('verit_some_eq_ex', inst=inst)
             eq_pt = compare_sym_tm_thm(Some_eq.lhs, pt.lhs, eqs=eqs)
+            if eq_pt is None:
+                raise VeriTException("sko_ex", "Unexpected result")
             pt = ProofTerm.transitive(Some_eq.symmetric(), eq_pt, pt)
         return pt
 
@@ -3871,8 +3875,12 @@ class SkoForallMacro(Macro):
             pt = pt.implies_elim(ProofTerm.reflexive(t))
             # Rewrite using P (SOME x. ~P x) <--> (ALL x. P x), may need to use some of
             # the other equality hypotheses.
-            Some_eq = logic.apply_theorem('verit_some_neg_eq_all', inst=Inst(P=P))
+            inst = Inst(P=P)
+            inst.abs_name_inst['x'] = x.name
+            Some_eq = logic.apply_theorem('verit_some_neg_eq_all', inst=inst)
             eq_pt = compare_sym_tm_thm(Some_eq.lhs, pt.lhs, eqs=eqs)
+            if eq_pt is None:
+                raise VeriTException("sko_forall", "Unexpected result")
             pt = ProofTerm.transitive(Some_eq.symmetric(), eq_pt, pt)
         return pt
 

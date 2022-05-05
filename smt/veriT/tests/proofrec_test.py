@@ -539,6 +539,7 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt2022486099146293362.smt2',
             'AUFLIA/20170829-Rodin/smt2025463987927880021.smt2',
             'AUFLIA/20170829-Rodin/smt2027035001350841448.smt2',
+            'AUFLIA/20170829-Rodin/smt2283324634047097920.smt2',
             'AUFLIA/20170829-Rodin/smt2885702086782097441.smt2',
             'AUFLIA/20170829-Rodin/smt8020508299917860570.smt2',
             'AUFLIA/20170829-Rodin/smt1053503323401967250.smt2',
