@@ -264,6 +264,10 @@ class ThResolutionMacro(Macro):
     def eval(self, args, prevs):
         cl, cl_sizes = args
         assert len(cl_sizes) == len(prevs)
+
+        if len(prevs) == 1 and prevs[0].prop == Not(true) and len(cl) == 0:
+            return Thm(Or(*cl), *(pt.hyps for pt in prevs))
+
         prems = []
         for cl_size, prev in zip(cl_sizes, prevs):
             prems.append(strip_disj_n(prev.prop, cl_size))
@@ -289,6 +293,10 @@ class ThResolutionMacro(Macro):
     def get_proof_term(self, args, prevs):
         cl, cl_sizes = args
         assert len(cl_sizes) == len(prevs)
+
+        if len(prevs) == 1 and prevs[0].prop == Not(true) and len(cl) == 0:
+            return prevs[0].on_prop(rewr_conv('verit_not_simplify1'))
+
         prems = []
         for cl_size, prev in zip(cl_sizes, prevs):
             prems.append(strip_disj_n(prev.prop, cl_size))
@@ -1152,21 +1160,21 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
             return True
         if (t2, t1) in ctx:
             return True
-        if (t1, t2) in cache:
-            return True
         if depth == 0:
             return t1 == t2
         if t1.is_var() or t2.is_var():
             return t1 == t2
+        elif (t1._id, t2._id) in cache:
+            return True
         elif t1.is_comb():
             if not t2.is_comb() or t1.head != t2.head:
                 return False
             elif t1.is_equals():
                 if helper(t1.lhs, t2.lhs, depth-1) and helper(t1.rhs, t2.rhs, depth-1):
-                    cache.add((t1, t2))
+                    cache.add((t1._id, t2._id))
                     return True
                 elif helper(t1.rhs, t2.lhs, depth-1) and helper(t1.lhs, t2.rhs, depth-1):
-                    cache.add((t1, t2))
+                    cache.add((t1._id, t2._id))
                     return True
                 else:
                     return False
@@ -1176,7 +1184,7 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     cur_t1 = cur_t1.arg
                     cur_t2 = cur_t2.arg
                     if (cur_t1, cur_t2) in ctx:
-                        cache.add((t1, t2))
+                        cache.add((t1._id, t2._id))
                         return True
                 if cur_t1 == t1 and cur_t2 == t2:
                     return False
@@ -1188,7 +1196,7 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     cur_t1 = cur_t1.arg
                     cur_t2 = cur_t2.arg
                     if (cur_t1, cur_t2) in ctx:
-                        cache.add((t1, t2))
+                        cache.add((t1._id, t2._id))
                         return True
                 if cur_t1 == t1 and cur_t2 == t2:
                     return False
@@ -1200,7 +1208,7 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     cur_t1 = cur_t1.arg1
                     cur_t2 = cur_t2.arg1
                     if (cur_t1, cur_t2) in ctx:
-                        cache.add((t1, t2))
+                        cache.add((t1._id, t2._id))
                         return True
                 if cur_t1 == t1 and cur_t2 == t2:
                     return False
@@ -1212,7 +1220,7 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                     v1, _, cur_t1 = cur_t1.dest_let()
                     v2, _, cur_t2 = cur_t2.dest_let()
                     if (cur_t1, cur_t2) in ctx:
-                        cache.add((t1, t2))
+                        cache.add((t1._id, t2._id))
                         return True
                 if cur_t1 == t1 and cur_t2 == t2:
                     return False
@@ -1224,12 +1232,12 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
                 l_args, r_args = hol_list.dest_literal_list(t1.arg), hol_list.dest_literal_list(t2.arg)
                 res = all(helper(l_arg, r_arg, depth-1) for l_arg, r_arg in zip(l_args, r_args))
                 if res:
-                    cache.add((t1, t2))
+                    cache.add((t1._id, t2._id))
                 return res
             else:
                 res = all(helper(l_arg, r_arg, depth-1) for l_arg, r_arg in zip(t1.args, t2.args))
                 if res:
-                    cache.add((t1, t2))
+                    cache.add((t1._id, t2._id))
                 return res
         elif t1.is_abs():
             if not t2.is_abs():
@@ -1238,7 +1246,7 @@ def compare_sym_tm(tm1, tm2, *, ctx=None, depth=-1):
             v2, body2 = t2.dest_abs()
             res = (v1 == v2 and helper(body1, body2, depth-1))
             if res:
-                cache.add((t1, t2))
+                cache.add((t1._id, t2._id))
             return res
         else:
             return t1 == t2
@@ -1265,12 +1273,12 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
             return eqs[(t1, t2)]
         elif (t2, t1) in eqs:
             return eqs[(t2, t1)].symmetric()
-        elif (t1, t2) in cache:
-            return cache[(t1, t2)]
         elif t1 == t2:
             return ProofTerm.reflexive(t1)
         elif depth == 0:
             return None
+        elif (t1._id, t2._id) in cache:
+            return cache[(t1._id, t2._id)]
         elif t1.is_comb():
             if not t2.is_comb() or t1.head != t2.head:
                 return None
@@ -1282,7 +1290,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     pt = ProofTerm.reflexive(t1)
                     pt = pt.on_rhs(arg1_conv(replace_conv(lhs_eq)))
                     pt = pt.on_rhs(arg_conv(replace_conv(rhs_eq)))
-                    cache[(t1, t2)] = pt
+                    cache[(t1._id, t2._id)] = pt
                     return pt
 
                 # Second, the case with exchanging equality
@@ -1293,7 +1301,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     pt = pt.on_rhs(rewr_conv("eq_sym_eq"))
                     pt = pt.on_rhs(arg1_conv(replace_conv(lhs_eq)))
                     pt = pt.on_rhs(arg_conv(replace_conv(rhs_eq)))
-                    cache[(t1, t2)] = pt
+                    cache[(t1._id, t2._id)] = pt
                     return pt
 
                 # Either case yield equality
@@ -1317,7 +1325,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     return None
                 for pt in reversed(eq_pts):
                     res = ProofTerm.reflexive(conj).combination(pt).combination(res)
-                cache[(t1, t2)] = res
+                cache[(t1._id, t2._id)] = res
                 return res
             elif t1.is_disj():
                 cur_t1, cur_t2 = t1, t2
@@ -1338,7 +1346,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     return None
                 for pt in reversed(eq_pts):
                     res = ProofTerm.reflexive(disj).combination(pt).combination(res)
-                cache[(t1, t2)] = res
+                cache[(t1._id, t2._id)] = res
                 return res
             elif t1.is_plus():
                 cur_t1, cur_t2 = t1, t2
@@ -1360,7 +1368,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                     return None
                 for pt in reversed(eq_pts):
                     res = ProofTerm.reflexive(plus(T)).combination(res).combination(pt)
-                cache[(t1, t2)] = res
+                cache[(t1._id, t2._id)] = res
                 return res
             elif t1.is_comb('distinct'):
                 l_args, r_args = hol_list.dest_literal_list(t1.arg), hol_list.dest_literal_list(t2.arg)
@@ -1372,7 +1380,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                 for pt in reversed(pts):
                     res = ProofTerm.reflexive(hol_list.cons(T)).combination(pt).combination(res)
                 res = ProofTerm.reflexive(t1.head).combination(res)
-                cache[(t1, t2)] = res
+                cache[(t1._id, t2._id)] = res
                 return res
             else:
                 pts = []
@@ -1383,7 +1391,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                 res = ProofTerm.reflexive(t1.head)
                 for pt in pts:
                     res = res.combination(pt)
-                cache[(t1, t2)] = res
+                cache[(t1._id, t2._id)] = res
                 return res
         elif t1.is_abs():
             if not t2.is_abs():
@@ -1394,7 +1402,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
             if pt is None:
                 return None
             res = ProofTerm.reflexive(t2).on_rhs(abs_conv(replace_conv(pt))).symmetric()
-            cache[(t1, t2)] = res
+            cache[(t1._id, t2._id)] = res
             return res
         else:
             return None
@@ -3749,8 +3757,10 @@ class SkoExMacro(Macro):
             t = found_hyp.rhs
             # Save left side as P
             P = Lambda(x, pt.lhs)
-            # Introduce assumption x = t, then replace x by t 
-            pt = pt.implies_intr(found_hyp).forall_intr(x).forall_elim(t)
+            # Introduce assumption x = t, then replace x by t
+            inst = Inst()
+            inst.var_inst[x.name] = t
+            pt = pt.implies_intr(found_hyp).substitution(inst)
             # Discharge assumption t = t using reflexivity
             pt = pt.implies_elim(ProofTerm.reflexive(t))
             # Rewrite using P (SOME x. P x) <--> (EX x. P x), may need to use some of
@@ -3853,8 +3863,10 @@ class SkoForallMacro(Macro):
             t = found_hyp.rhs
             # Save left side as P
             P = Lambda(x, pt.lhs)
-            # Introduce assumption x = t, then replace x by t 
-            pt = pt.implies_intr(found_hyp).forall_intr(x).forall_elim(t)
+            # Introduce assumption x = t, then replace x by t
+            inst = Inst()
+            inst.var_inst[x.name] = t
+            pt = pt.implies_intr(found_hyp).substitution(inst)
             # Discharge assumption t = t using reflexivity
             pt = pt.implies_elim(ProofTerm.reflexive(t))
             # Rewrite using P (SOME x. ~P x) <--> (ALL x. P x), may need to use some of
