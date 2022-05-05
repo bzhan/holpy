@@ -271,6 +271,11 @@ class ThResolutionMacro(Macro):
         if len(prevs) == 1 and prevs[0].prop == Not(true) and len(cl) == 0:
             return Thm(Or(*cl), *(pt.hyps for pt in prevs))
 
+        if len(prevs) == 2 and prevs[1].is_equals() and prevs[1].lhs.is_not() and \
+            prevs[1].lhs.arg.is_not() and prevs[1].lhs.arg.arg == prevs[0].prop and \
+            len(cl) == 1 and cl[0] == prevs[1].rhs:
+            return Thm(Or(*cl), *(pt.hyps for pt in prevs))
+
         prems = []
         for cl_size, prev in zip(cl_sizes, prevs):
             prems.append(strip_disj_n(prev.prop, cl_size))
@@ -297,8 +302,15 @@ class ThResolutionMacro(Macro):
         cl, cl_sizes = args
         assert len(cl_sizes) == len(prevs)
 
+        # Special case: from ~true, get false (empty clause)
         if len(prevs) == 1 and prevs[0].prop == Not(true) and len(cl) == 0:
             return prevs[0].on_prop(rewr_conv('verit_not_simplify1'))
+
+        # Special case: from A, ~~A <--> B, get B
+        if len(prevs) == 2 and prevs[1].is_equals() and prevs[1].lhs.is_not() and \
+            prevs[1].lhs.arg.is_not() and prevs[1].lhs.arg.arg == prevs[0].prop and \
+            len(cl) == 1 and cl[0] == prevs[1].rhs:
+            return prevs[1].on_lhs(rewr_conv('double_neg')).equal_elim(prevs[0])
 
         prems = []
         for cl_size, prev in zip(cl_sizes, prevs):
@@ -306,6 +318,15 @@ class ThResolutionMacro(Macro):
 
         # Make a copy of prems, as it needs to be used later
         resolves, _ = resolve_order(list(prems))
+
+        if len(resolves) == 0:
+            print('prev')
+            for prev in prevs:
+                print(prev)
+            print('cl')
+            for t in cl:
+                print(t)
+            raise AssertionError
 
         # Use a list to store intermediate resolvants.
         prevs = list(prevs)
@@ -1997,8 +2018,12 @@ class LetMacro(Macro):
                 found_hyp = Eq(x, var_map[x])
             if found_hyp.rhs == t:
                 cur_pt = cur_pt.implies_elim(ProofTerm.reflexive(t))
-            else:
+            elif (t, found_hyp.rhs) in eqs:
                 cur_pt = cur_pt.implies_elim(eqs[(t, found_hyp.rhs)])
+            elif (found_hyp.rhs, t) in eqs:
+                cur_pt = cur_pt.implies_elim(eqs[(found_hyp.rhs, t)].symmetric())
+            else:
+                raise VeriTException("let", "Unable to find %s = %s in eqs" % (t, found_hyp.rhs))
 
         # Now the left side is u[t/x], rewrite it from let x = t in u.
         let_pt = ProofTerm.reflexive(goal.lhs)
