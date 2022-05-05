@@ -629,6 +629,38 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
+    def test_UF_DEBUG(self):
+        test_paths = [                
+            'UF/sledgehammer/TwoSquares/uf.611567.smt2',
+            'UF/sledgehammer/TwoSquares/uf.603183.smt2',
+            'UF/sledgehammer/TwoSquares/uf.618437.smt2',
+            'UF/sledgehammer/TwoSquares/uf.602601.smt2',
+            'UF/sledgehammer/TwoSquares/uf.739998.smt2',
+            'UF/sledgehammer/NS_Shared/uf.712214.smt2',
+            'UF/sledgehammer/QEpres/uf.716503.smt2',
+            'UF/sledgehammer/QEpres/uf.717211.smt2',
+            'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.903234.smt2',
+            'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.590503.smt2',
+            'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.734512.smt2',
+            'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.560771.smt2',
+            'UF/sledgehammer/Hoare/uf.828950.smt2',
+            'UF/sledgehammer/Hoare/uf.655433.smt2',
+            'UF/sledgehammer/Hoare/uf.1150909.smt2',
+            'UF/sledgehammer/Arrow_Order/uf.836907.smt2',
+        ]
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=True, parse_assertion=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
 
 if __name__ == "__main__":
     unittest.main()
