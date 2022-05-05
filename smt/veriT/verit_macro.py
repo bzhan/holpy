@@ -588,14 +588,14 @@ class EqTransitive(Macro):
             if not arg.is_not() or not arg.arg.is_equals():
                 raise VeriTException("eq_transitive", "all but last disjunct must be a negation")
             prems.append(arg.arg)
-
         cur_eq = prems[0]
+        goal = args[-1]
+        if cur_eq.lhs not in (goal.lhs, goal.rhs) and cur_eq.rhs not in (goal.lhs, goal.rhs):
+            raise VeriTException("eq_transitive", "unexpected argument")
+        if cur_eq.lhs not in (goal.lhs, goal.rhs) and cur_eq.rhs in (goal.lhs, goal.rhs):
+            cur_eq = Eq(cur_eq.rhs, cur_eq.lhs)
         for prem in prems[1:]:
-            if cur_eq.lhs == prem.lhs:
-                cur_eq = Eq(cur_eq.rhs, prem.rhs)
-            elif cur_eq.lhs == prem.rhs:
-                cur_eq = Eq(cur_eq.rhs, prem.lhs)
-            elif cur_eq.rhs == prem.lhs:
+            if cur_eq.rhs == prem.lhs:
                 cur_eq = Eq(cur_eq.lhs, prem.rhs)
             elif cur_eq.rhs == prem.rhs:
                 cur_eq = Eq(cur_eq.lhs, prem.lhs)
@@ -616,26 +616,27 @@ class EqTransitive(Macro):
         disjs = [tm.arg for tm in args[:-1]]
         disj_pts = [ProofTerm.assume(disj) for disj in disjs]
         pt0 = disj_pts[0]
+        # invariant: the final equality's lhs or rhs should not be lost during transition
+        goal = args[-1]
+        if pt0.lhs not in (goal.lhs, goal.rhs) and pt0.rhs not in (goal.lhs, goal.rhs):
+            raise VeriTException("eq_transitive", "unexpected argument")
+        if pt0.lhs not in (goal.lhs, goal.rhs) and pt0.rhs in (goal.lhs, goal.rhs):
+            pt0 = pt0.symmetric()
         for pt1 in disj_pts[1:]: # bugs in verit
-            if pt1.lhs == pt0.rhs:
+            if pt0.rhs == pt1.lhs:
                 pt0 = pt0.transitive(pt1)
-            elif pt1.lhs == pt0.lhs:
-                pt0 = pt0.symmetric().transitive(pt1)
-            elif pt1.rhs == pt0.lhs:
-                pt0 = pt0.symmetric().transitive(pt1.symmetric())
-            elif pt1.rhs == pt0.rhs:
+            elif pt0.rhs == pt1.rhs:
                 pt0 = pt0.transitive(pt1.symmetric())
-            
             else:
                 raise VeriTException("eq_transitive", "unexpected equality")
-        
         if pt0.symmetric().prop == args[-1]:
             pt0 = pt0.symmetric() 
-
         assert pt0.prop == args[-1], "%s \n %s" % (str(pt0.prop), str(args[-1]))
         pt1 = pt0
         for disj in reversed(disjs):
             pt1 = pt1.implies_intr(disj).on_prop(rewr_conv("imp_disj_eq"))
+        if pt1.prop != Or(*args):
+            raise VeriTException("eq_transitive", "unexpected result")
         return pt1
 
 @register_macro("verit_eq_congruent")
