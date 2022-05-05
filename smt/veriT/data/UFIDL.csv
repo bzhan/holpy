@@ -1,0 +1,71 @@
+FILENAME,STATUS
+../smt-lib/UFIDL/sledgehammer/TypeSafe/smtlib.976292.smt2,UN-UNSAT
+UFIDL/sledgehammer/TypeSafe/smtlib.675311.smt2,NO PROOF
+../smt-lib/UFIDL/sledgehammer/TypeSafe/smtlib.683530.smt2,UN-UNSAT
+../smt-lib/UFIDL/sledgehammer/TypeSafe/smtlib.976791.smt2,UN-UNSAT
+../smt-lib/UFIDL/sledgehammer/TypeSafe/smtlib.962381.smt2,UN-UNSAT
+../smt-lib/UFIDL/sledgehammer/TypeSafe/smtlib.968906.smt2,UN-UNSAT
+../smt-lib/UFIDL/sledgehammer/TypeSafe/smtlib.697341.smt2,UN-UNSAT
+UFIDL/sledgehammer/QEpres/smtlib.858765.smt2,NO PROOF
+UFIDL/sledgehammer/QEpres/smtlib.858929.smt2,NO PROOF
+../smt-lib/UFIDL/sledgehammer/QEpres/smtlib.858843.smt2,UN-UNSAT
+../smt-lib/UFIDL/sledgehammer/QEpres/smtlib.858852.smt2,UN-UNSAT
+../smt-lib/UFIDL/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1308248.smt2,UN-UNSAT
+UFIDL/RicartAgrawala/ricart-agrawala6.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala3.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala10.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala7.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala11.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala8.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala12.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala2.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala0.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala4.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala13.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala5.smt2,NO PROOF
+UFIDL/RicartAgrawala/ricart-agrawala9.smt2,NO PROOF
+UFIDL/boogie/Arrays_P1-noinfer.smt2,NO PROOF
+UFIDL/boogie/Arrays_Skip0-noinfer.smt2,NO PROOF
+UFIDL/boogie/Arrays_Q1-noinfer.smt2,NO PROOF
+UFIDL/boogie/FormulaTerm_less-noinfer_2.smt2,NO PROOF
+UFIDL/boogie/Arrays_Skip1-noinfer.smt2,NO PROOF
+UFIDL/boogie/Old_SwapElems-noinfer.smt2,NO PROOF
+../smt-lib/UFIDL/boogie/Call_DifferentFormalNames-noinfer_2.smt2,UN-UNSAT
+../smt-lib/UFIDL/boogie/Call_DifferentFormalNames-noinfer_3.smt2,UN-UNSAT
+UFIDL/boogie/heapsucc0_M-infer_eh-vc_local.smt2,NO PROOF
+UFIDL/boogie/Call_DifferentFormalNames-noinfer_1.smt2,NO PROOF
+UFIDL/boogie/heapsucc1_M-infer_eh-vc_local.smt2,NO PROOF
+UFIDL/boogie/loop0_M-infer_e-vc_local.smt2,NO PROOF
+UFIDL/boogie/UnreachableBlocks_P-vc_nested.smt2,NO PROOF
+UFIDL/boogie/AssumeEnsures_Caller0-noinfer.smt2,NO PROOF
+UFIDL/boogie/equiv2_M-infer_e-vc_local.smt2,NO PROOF
+UFIDL/boogie/FormulaTerm_less-noinfer_1.smt2,NO PROOF
+UFIDL/boogie/Passification_UnreachableBlock-noinfer.smt2,NO PROOF
+UFIDL/boogie/FormulaTerm_LESS-noinfer_3.smt2,NO PROOF
+../smt-lib/UFIDL/boogie/Call_Foo-noinfer.smt2,UN-UNSAT
+UFIDL/boogie/equiv3_M-infer_e-vc_local.smt2,NO PROOF
+UFIDL/boogie/False_Test2-noinfer.smt2,NO PROOF
+UFIDL/boogie/Call_DifferentFormalNames-noinfer.smt2,NO PROOF
+UFIDL/boogie/NestedVC_P-vc_nested.smt2,NO PROOF
+UFIDL/boogie/FormulaTerm_or-noinfer.smt2,NO PROOF
+UFIDL/boogie/UnreachableBlocks_Q-vc_nested.smt2,NO PROOF
+UFIDL/boogie/False_Test1-noinfer.smt2,NO PROOF
+UFIDL/boogie/Passification_Loop-noinfer.smt2,NO PROOF
+../smt-lib/UFIDL/boogie/NestedVC_Q-vc_nested.smt2,UN-UNSAT
+UFIDL/boogie/UnreachableBlocks_R-vc_nested.smt2,NO PROOF
+UFIDL/Burns/burns9.smt2,NO PROOF
+UFIDL/Burns/burns13.smt2,NO PROOF
+UFIDL/Burns/burns2.smt2,NO PROOF
+UFIDL/Burns/burns12.smt2,NO PROOF
+UFIDL/Burns/burns0.smt2,NO PROOF
+UFIDL/Burns/burns8.smt2,NO PROOF
+UFIDL/Burns/burns7.smt2,NO PROOF
+UFIDL/Burns/burns4.smt2,NO PROOF
+UFIDL/Burns/burns6.smt2,NO PROOF
+UFIDL/Burns/burns10.smt2,NO PROOF
+UFIDL/Burns/burns3.smt2,NO PROOF
+UFIDL/Burns/burns5.smt2,NO PROOF
+UFIDL/Burns/burns1.smt2,NO PROOF
+UFIDL/Burns/burns11.smt2,NO PROOF
+TOTAL TIME 120.896
+TIMESTAMP 2022-05-05 18:03:46
