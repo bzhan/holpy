@@ -316,7 +316,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, write_file=True, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -387,17 +387,15 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/tokeneer/admin/finishop-1.smt2',
             'UFLIA/tokeneer/admin/init-1.smt2',
             'UFLIA/tokeneer/admin/logon-1.smt2',
+            'UFLIA/tokeneer/admin/opisavailable-4.smt2',
+            'UFLIA/tokeneer/admin/opisavailable-27.smt2',
+            'UFLIA/tokeneer/certificatestore/updatestore-19.smt2',
+            'UFLIA/tokeneer/certificatestore/updatestore-18.smt2',
+            'UFLIA/tokeneer/configdata/validatefile/readaccesspolicy-6.smt2',
+            'UFLIA/tokeneer/configdata/validatefile/readclass-5.smt2',
             'UFLIA/tptp/ARI604=1.smt2',
             'UFLIA/tptp/ARI612=1.smt2',
             'UFLIA/tptp/ARI615=1.smt2',
-
-            # resolution bug
-            # 'UFLIA/tokeneer/admin/opisavailable-4.smt2',
-            # 'UFLIA/tokeneer/admin/opisavailable-27.smt2',
-            # 'UFLIA/tokeneer/certificatestore/updatestore-19.smt2',
-            # 'UFLIA/tokeneer/certificatestore/updatestore-18.smt2'
-            # 'UFLIA/tokeneer/configdata/validatefile/readaccesspolicy-6.smt2'
-            # 'UFLIA/tokeneer/configdata/validatefile/readclass-5.smt2'
         ]
         profile = False
         if profile:
@@ -405,7 +403,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True,write_file=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -614,7 +612,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=False, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)

@@ -284,7 +284,7 @@ class Term():
         """
         assert isinstance(other, Term), "cannot compare Term with %s" % str(type(other))
 
-        if id(self) == id(other):
+        if self._id == other._id:
             return True
 
         if self.ty != other.ty:
@@ -446,6 +446,9 @@ class Term():
                 except TypeMatchException:
                     raise TermException("subst: type " + str(v.T) + " cannot match " + str(inst_T))
 
+        # Cache for rec function
+        cache = dict()
+
         # Now apply substitution recursively.
         def rec(t):
             if t.is_svar():
@@ -460,25 +463,31 @@ class Term():
                     return t
             elif t.is_const():
                 return t
+            elif t.is_bound():
+                return t
+            elif t._id in cache:
+                return cache[t._id]
             elif t.is_comb():
                 fun_t = rec(t.fun)
                 arg_t = rec(t.arg)
-                if id(fun_t) == id(t.fun) and id(arg_t) == id(t.arg):
-                    return t
+                if fun_t._id == t.fun._id and arg_t._id == t.arg._id:
+                    res = t
                 else:
-                    return Comb(fun_t, arg_t)
+                    res = Comb(fun_t, arg_t)
+                cache[t._id] = res
+                return res
             elif t.is_abs():
                 if t.var_name in inst.abs_name_inst:
                     var_name = inst.abs_name_inst[t.var_name]
                 else:
                     var_name = t.var_name
                 body_t = rec(t.body)
-                if id(body_t) == id(t.body) and var_name == t.var_name:
-                    return t
+                if body_t._id == t.body._id and var_name == t.var_name:
+                    res = t
                 else:
-                    return Abs(var_name, t.var_T, body_t)
-            elif t.is_bound():
-                return t
+                    res = Abs(var_name, t.var_T, body_t)
+                cache[t._id] = res
+                return res
             else:
                 raise TypeError
 
@@ -663,13 +672,13 @@ class Term():
             elif t.is_comb():
                 fun_t = rec(t.fun, lev)
                 arg_t = rec(t.arg, lev)
-                if id(fun_t) == id(t.fun) and id(arg_t) == id(t.arg):
+                if fun_t._id == t.fun._id and arg_t._id == t.arg._id:
                     return t
                 else:
                     return Comb(fun_t, arg_t)
             elif t.is_abs():
                 body_t = rec(t.body, lev+1)
-                if id(body_t) == id(t.body):
+                if body_t._id == t.body._id:
                     return t
                 else:
                     return Abs(t.var_name, t.var_T, body_t)
@@ -688,29 +697,41 @@ class Term():
         have type T.
 
         """
+        is_open = t.is_open()
+        cache = dict()
         def rec(s, n):
             if s.is_svar() or s.is_var() or s.is_const():
                 return s
-            elif s.is_comb():
-                fun_s = rec(s.fun, n)
-                arg_s = rec(s.arg, n)
-                if id(fun_s) == id(s.fun) and id(arg_s) == id(s.arg):
-                    return s
-                else:
-                    return Comb(fun_s, arg_s)
-            elif s.is_abs():
-                body_s = rec(s.body, n+1)
-                if id(body_s) == id(s.body):
-                    return s
-                else:
-                    return Abs(s.var_name, s.var_T, body_s)
-            elif s.is_bound():
+            if s.is_bound():
                 if s.n == n:
-                    return t.incr_boundvars(n)
+                    if is_open:
+                        return t.incr_boundvars(n)
+                    else:
+                        return t
                 elif s.n > n:  # Bound outside
                     return Bound(s.n - 1)
                 else:  # Locally bound
                     return s
+            id_s = s._id
+            if (id_s, n) in cache:
+                return cache[(id_s, n)]
+            if s.is_comb():
+                fun_s = rec(s.fun, n)
+                arg_s = rec(s.arg, n)
+                if fun_s._id == s.fun._id and arg_s._id == s.arg._id:
+                    res = s
+                else:
+                    res = Comb(fun_s, arg_s)
+                cache[(id_s, n)] = res
+                return res
+            elif s.is_abs():
+                body_s = rec(s.body, n+1)
+                if body_s._id == s.body._id:
+                    res = s
+                else:
+                    res = Abs(s.var_name, s.var_T, body_s)
+                cache[(id_s, n)] = res
+                return res
             else:
                 raise TypeError
 
@@ -799,13 +820,13 @@ class Term():
             elif s.is_comb():
                 fun_s = rec(s.fun, n)
                 arg_s = rec(s.arg, n)
-                if id(fun_s) == id(s.fun) and id(arg_s) == id(s.arg):
+                if fun_s._id == s.fun._id and arg_s._id == s.arg._id:
                     return s
                 else:
                     return Comb(fun_s, arg_s)
             elif s.is_abs():
                 body_s = rec(s.body, n+1)
-                if id(body_s) == id(s.body):
+                if body_s._id == s.body._id:
                     return s
                 else:
                     return Abs(s.var_name, s.var_T, body_s)
@@ -1237,6 +1258,7 @@ class SVar(Term):
         self.ty = Term.SVAR
         self.name = name
         self.T = T
+        self._id = id(self)
 
 class Var(Term):
     """Variable, specified by name and type."""
@@ -1244,6 +1266,7 @@ class Var(Term):
         self.ty = Term.VAR
         self.name = name
         self.T = T
+        self._id = id(self)
 
 class Const(Term):
     """Constant, specified by name and type."""
@@ -1251,6 +1274,7 @@ class Const(Term):
         self.ty = Term.CONST
         self.name = name
         self.T = T
+        self._id = id(self)
 
 class Comb(Term):
     """Combination."""
@@ -1258,6 +1282,7 @@ class Comb(Term):
         self.ty = Term.COMB
         self.fun = fun
         self.arg = arg
+        self._id = id(self)
 
 class Abs(Term):
     """Abstraction. The input to Abs is the list x1, T1, ..., xn, Tn, body.
@@ -1275,12 +1300,15 @@ class Abs(Term):
                 self.body = args[2]
             else:
                 self.body = Abs(*args[2:])
+            self._id = id(self)
 
 class Bound(Term):
     """Bound variable, with de Bruijn index n."""
     def __init__(self, n):
         self.ty = Term.BOUND
         self.n = n
+        self._size = 1
+        self._id = id(self)
 
 def get_svars(t):
     """Returns list of schematic variables in a term or a list of terms."""
