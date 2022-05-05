@@ -193,6 +193,7 @@ class ProofrecTest(unittest.TestCase):
         test_paths = [
             'QF_UFLRA/mathsat/RandomCoupled/pb_real_10_0200_10_14.smt2',
             'QF_UFLRA/mathsat/RandomCoupled/pb_real_20_0400_10_12.smt2',
+            "QF_UFLRA/mathsat/RandomCoupled/pb_real_20_0500_10_25.smt2",
             'QF_UFLRA/mathsat/RandomCoupled/pb_real_30_0600_10_13.smt2',
             'QF_UFLRA/mathsat/RandomDecoupled/pb_real_30_60_45_06.smt2',
             'QF_UFLRA/mathsat/RandomDecoupled/pb_real_40_80_60_01.smt2',
@@ -607,14 +608,6 @@ class ProofrecTest(unittest.TestCase):
             p.strip_dirs()
             p.sort_stats('cumtime')
             p.print_stats(50)
-
-    def test_MAX_RECURSION(self):
-        test_paths = [
-            # "QF_UFLRA/mathsat/RandomCoupled/pb_real_20_0500_10_25.smt2",
-            "AUFLIA/20170829-Rodin/smt2972435604341125203.smt2"
-        ]
-        for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
 
 
 if __name__ == "__main__":
