@@ -3912,7 +3912,6 @@ def check_onepoint(goal, ctx):
                         break
                     if conj.is_equals() and conj.rhs == v:
                         found = True
-                        conjs[i] = Eq(conj.rhs, conj.lhs)
                         break
                 if concl.is_not() and concl.arg.is_equals() and concl.arg.lhs == v:
                     found = True
@@ -3922,7 +3921,7 @@ def check_onepoint(goal, ctx):
                     break
                 if not found:
                     raise VeriTException("onepoint", "forall - equation not found")
-            return "FORALL-IMPLIES", conjs + [l_bd.arg], one_val_var, remain_var
+            return "FORALL-DISJ", l_bd, one_val_var, remain_var
         elif l_bd.is_disj():
             disjs = l_bd.strip_disj()
             for v, t in one_val_var.items():
@@ -3933,11 +3932,10 @@ def check_onepoint(goal, ctx):
                         break
                     if disj.is_not() and disj.arg.is_equals() and disj.arg.rhs == v:
                         found = True
-                        disjs[i] = Not(Eq(disj.arg.rhs, disj.arg.lhs))
                         break
                 if not found:
                     raise VeriTException("onepoint", "forall - equation not found")
-            return "FORALL-DISJ", disjs, one_val_var, remain_var
+            return "FORALL-DISJ", l_bd, one_val_var, remain_var
         elif l_bd.is_not() and l_bd.arg.is_conj():
             conjs = l_bd.arg.strip_conj()
             for v, t in one_val_var.items():
@@ -3948,11 +3946,10 @@ def check_onepoint(goal, ctx):
                         break
                     if conj.is_equals() and conj.rhs == v:
                         found = True
-                        conjs[i] = Eq(conj.rhs, conj.lhs)
                         break
                 if not found:
                     raise VeriTException("onepoint", "forall - equation not found")
-            return "FORALL-NOT_CONJ", conjs, one_val_var, remain_var
+            return "FORALL-DISJ", l_bd, one_val_var, remain_var
         else:
             raise VeriTException("onepoint", "forall - body is neither implies nor disjunction")
     else:
@@ -3987,39 +3984,30 @@ class OnepointMacro(Macro):
         goal, ctx = args
         onepoint_type, info, one_val_var, remain_var = check_onepoint(goal, ctx)
         one_val_var = tuple(one_val_var.items())
-        if onepoint_type == "FORALL-IMPLIES":
-            cur_t = Implies(And(*info[:-1]), info[-1])
+        if onepoint_type == "FORALL-DISJ":
+            cur_t_eq = ProofTerm.reflexive(info).on_rhs(verit_conv.norm_to_disj_conv())
+            cur_t = cur_t_eq.rhs
             for x, _ in one_val_var:
                 cur_t = Forall(x, cur_t)
-            pt = ProofTerm.reflexive(cur_t).on_rhs(verit_conv.onepoint_forall_conv1())
+            pt = ProofTerm.reflexive(cur_t).on_rhs(verit_conv.onepoint_forall_conv())
             for x in remain_var:
                 pt = ProofTerm.reflexive(hol_term.forall(x.T)).combination(pt.abstraction(x))
             
+            # Reorder the foralls 
             goal_lhs_xs, _ = goal.lhs.strip_forall()
             eq_lhs = verit_conv.forall_reorder_iff(pt.lhs, goal_lhs_xs)
-            goal_rhs_xs, _ = goal.rhs.strip_forall()
+            goal_rhs_xs, goal_rhs = goal.rhs.strip_forall()
             eq_rhs = verit_conv.forall_reorder_iff(pt.rhs, goal_rhs_xs)
             pt = pt.on_lhs(replace_conv(eq_lhs)).on_rhs(replace_conv(eq_rhs))
-            eq_pt = compare_sym_tm_thm(pt.prop, goal)
-            if eq_pt is None:
-                print('pt', pt.th)
-                print('goal', goal)
-                raise AssertionError
-            return eq_pt.equal_elim(pt)
-        elif onepoint_type == "FORALL-DISJ":
-            cur_t = Or(*info)
-            for x, _ in one_val_var:
-                cur_t = Forall(x, cur_t)
-            pt = ProofTerm.reflexive(cur_t).on_rhs(verit_conv.onepoint_forall_conv2())
-            for x in remain_var:
-                pt = ProofTerm.reflexive(hol_term.forall(x.T)).combination(pt.abstraction(x))
-            
-            goal_lhs_xs, _ = goal.lhs.strip_forall()
-            eq_lhs = verit_conv.forall_reorder_iff(pt.lhs, goal_lhs_xs)
-            goal_rhs_xs, _ = goal.rhs.strip_forall()
-            eq_rhs = verit_conv.forall_reorder_iff(pt.rhs, goal_rhs_xs)
-            pt = pt.on_lhs(replace_conv(eq_lhs)).on_rhs(replace_conv(eq_rhs))
-            eq_pt = compare_sym_tm_thm(pt.prop, goal)
+
+            goal_rhs_eq = ProofTerm.reflexive(goal_rhs).on_rhs(verit_conv.norm_to_disj_conv())
+            _, pt_rhs = pt.rhs.strip_forall()
+            goal_rhs_eq2 = compare_sym_tm_thm(goal_rhs_eq.rhs, pt_rhs)
+            goal_rhs_eq = ProofTerm.transitive(goal_rhs_eq, goal_rhs_eq2)
+            eqs = dict()
+            eqs[(cur_t_eq.lhs, cur_t_eq.rhs)] = cur_t_eq
+            eqs[(goal_rhs_eq.lhs, goal_rhs_eq.rhs)] = goal_rhs_eq
+            eq_pt = compare_sym_tm_thm(pt.prop, goal, eqs=eqs)
             if eq_pt is None:
                 print('pt', pt.th)
                 print('goal', goal)

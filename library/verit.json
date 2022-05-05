@@ -1622,26 +1622,7 @@
             }
         },
         {
-            "name": "verit_onepoint_forall1",
-            "prop": "(∀x. x = t ⟶ P x) ⟷ (t = t ⟶ P t)",
-            "ty": "thm",
-            "vars": {
-                "P": "'a ⇒ bool",
-                "t": "'a"
-            }
-        },
-        {
-            "name": "verit_onepoint_forall2",
-            "prop": "(∀x. x = t ∧ Q x ⟶ P x) ⟷ (t = t ∧ Q t ⟶ P t)",
-            "ty": "thm",
-            "vars": {
-                "P": "'a ⇒ bool",
-                "Q": "'a ⇒ bool",
-                "t": "'a"
-            }
-        },
-        {
-            "name": "verit_onepoint_forall3",
+            "name": "verit_onepoint_forall",
             "prop": "(∀x. ¬(x = t) ∨ P x) ⟷ ¬(t = t) ∨ P t",
             "ty": "thm",
             "vars": {

@@ -287,7 +287,7 @@ class ProofrecTest(unittest.TestCase):
             'UF/sledgehammer/Hoare/smtlib.1170876.smt2',
             'UF/sledgehammer/Hoare/uf.1008477.smt2',
             'UF/sledgehammer/Hoare/uf.1031408.smt2',
-            'UF/sledgehammer/NS_Shared/smtlib.678332.smt2',  # onepoint
+            # 'UF/sledgehammer/NS_Shared/smtlib.678332.smt2',  # onepoint
             'UF/sledgehammer/QEpres/uf.1039338.smt2',  # onepoint
             'UF/sledgehammer/StrongNorm/uf.701666.smt2',
             'UF/sledgehammer/TypeSafe/uf.913303.smt2',
@@ -312,7 +312,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -392,7 +392,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -528,9 +528,9 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt2022486099146293362.smt2',
             'AUFLIA/20170829-Rodin/smt2025463987927880021.smt2',
             'AUFLIA/20170829-Rodin/smt2027035001350841448.smt2',
-            # 'AUFLIA/20170829-Rodin/smt2885702086782097441.smt2',  # onepoint
-            # 'AUFLIA/20170829-Rodin/smt8020508299917860570.smt2',  # onepoint
-            # 'AUFLIA/20170829-Rodin/smt1053503323401967250.smt2',  # onepoint
+            'AUFLIA/20170829-Rodin/smt2885702086782097441.smt2',  # onepoint
+            'AUFLIA/20170829-Rodin/smt8020508299917860570.smt2',  # onepoint
+            'AUFLIA/20170829-Rodin/smt1053503323401967250.smt2',  # onepoint
             'AUFLIA/20170829-Rodin/smt2972435604341125203.smt2',
             'AUFLIA/20170829-Rodin/smt2020844136539587643.smt2',
             'AUFLIA/20170829-Rodin/smt7430161103589433024.smt2',
@@ -543,7 +543,7 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt2020844136539587643.smt2',
             'AUFLIA/20170829-Rodin/smt7351897299178954133.smt2',
             'AUFLIA/20170829-Rodin/smt4213031790546145760.smt2',
-            'AUFLIA/20170829-Rodin/smt4473657298807368490.smt2'
+            'AUFLIA/20170829-Rodin/smt4473657298807368490.smt2',
             'AUFLIA/misc/set1.smt2',
         ]
 
