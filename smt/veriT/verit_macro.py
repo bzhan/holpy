@@ -1079,7 +1079,7 @@ class EqSimplifyMacro(Macro):
         if lhs.is_equals() and lhs.lhs.is_constant() and lhs.rhs.is_constant() and rhs == false:
             T = lhs.lhs.get_type()
             if T == hol_type.IntType:
-                pt = ProofTerm('int_const_ineq', lhs)
+                pt = ProofTerm('int_const_ineq', lhs).on_prop(rewr_conv("eq_false"))
                 if pt.prop == goal:
                     return pt
             if T == hol_type.RealType:

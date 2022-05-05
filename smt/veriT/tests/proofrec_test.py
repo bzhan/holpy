@@ -412,43 +412,43 @@ class ProofrecTest(unittest.TestCase):
             p.print_stats(50)
 
 
-    def test_QF_IDL(self): # eval ✓ proofterm: ✓
-        test_paths = [
-            'QF_IDL/planning/plan-40.cvc.smt2',
-            # 'QF_IDL/RTCL/b13_tf_15/ckt_PROP5_tf_15.smt2', # timeout
-        ]
-        profile = False
-        if profile:
-            pr = cProfile.Profile()
-            pr.enable()
+    # def test_QF_IDL(self): # eval ✓ proofterm: ✓
+    #     test_paths = [
+    #         'QF_IDL/planning/plan-40.cvc.smt2',
+    #         # 'QF_IDL/RTCL/b13_tf_15/ckt_PROP5_tf_15.smt2', # timeout
+    #     ]
+    #     profile = False
+    #     if profile:
+    #         pr = cProfile.Profile()
+    #         pr.enable()
 
-        for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+    #     for path in test_paths:
+    #         test_path(path, test_proofterm=True, parse_assertion=True)
 
-        if profile:
-            p = Stats(pr)
-            p.strip_dirs()
-            p.sort_stats('cumtime')
-            p.print_stats(50)
+    #     if profile:
+    #         p = Stats(pr)
+    #         p.strip_dirs()
+    #         p.sort_stats('cumtime')
+    #         p.print_stats(50)
 
-    def test_QF_RDL(self): # eval ✓ proofterm: ac_simp
-        test_paths = [
-            # 'QF_RDL/skdmxa/skdmxa-3x3-5.smt2' # ac_simp
-        ]
+    # def test_QF_RDL(self): # eval ✓ proofterm: ac_simp
+    #     test_paths = [
+    #         # 'QF_RDL/skdmxa/skdmxa-3x3-5.smt2' # ac_simp
+    #     ]
 
-        profile = False
-        if profile:
-            pr = cProfile.Profile()
-            pr.enable()
+    #     profile = False
+    #     if profile:
+    #         pr = cProfile.Profile()
+    #         pr.enable()
 
-        for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+    #     for path in test_paths:
+    #         test_path(path, test_proofterm=True, parse_assertion=True)
 
-        if profile:
-            p = Stats(pr)
-            p.strip_dirs()
-            p.sort_stats('cumtime')
-            p.print_stats(50)
+    #     if profile:
+    #         p = Stats(pr)
+    #         p.strip_dirs()
+    #         p.sort_stats('cumtime')
+    #         p.print_stats(50)
 
     def test_QF_LRA(self): # proofterm ✓ eval ✓
         test_paths = [
