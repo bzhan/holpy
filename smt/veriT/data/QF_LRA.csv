@@ -1,0 +1,1756 @@
+FILENAME,STATUS
+QF_LRA/DTP-Scheduling/constraints-tempo-width-4.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-7.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking20.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-70.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-8.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-6.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-20.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A03.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-20.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-06.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-50.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-20.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A80.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking10.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-40.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-7.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-8.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A10.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A04.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-09.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A40.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-9.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-matrix5x5.pddl.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking21.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-40.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking14.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A07.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A05.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-matrix7x7.pddl.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking13.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking03.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-30.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-matrix3x3.pddl.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-3.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A06.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A09.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking05.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-70.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking11.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-05.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-03.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-5.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-40.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-100.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking22.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking06.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A30.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-08.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking12.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-10.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking01.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-10.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A60.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-matrix1x1.pddl.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking19.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-1.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-30.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-matrix2x2.pddl.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-90.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A20.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-10.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-6.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking18.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking17.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A70.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-temporal-machine-shop-2-3-A08.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-07.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking07.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-4.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-60.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-9.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-5.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking04.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking23.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-3.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking09.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking15.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-matrix4x4.pddl.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-matrix6x6.pddl.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-matrix8x8.pddl.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking08.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-2.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-50.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-80.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-2.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-width-30.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking02.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-cooking16.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-04.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tms-2-3-light-60.smt2,UN-UNSAT
+QF_LRA/DTP-Scheduling/constraints-tempo-depth-150.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/problem/sqrt-problem-Melquiond2-chunk-0027.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/problem/sqrt-problem-Melquiond2-chunk-0051.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/problem/sqrt-problem-Melquiond2-chunk-0048.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/problem/12vars3/sqrt-problem-12vars3-chunk-0018.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0069.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0100.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0004.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0009.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0126.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0006.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0108.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0068.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0061.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0065.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0106.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0080.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0059.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0016.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0105.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0101.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0107.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0011.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0064.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0103.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0058.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0062.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0098.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0015.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0120.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0067.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0066.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0082.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0012.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0091.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0014.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0008.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0092.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0122.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0707.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0037.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0415.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0716.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0010.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0012.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0029.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0035.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0011.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0033.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0417.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0096.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0102.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0050.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0115.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0057.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0041.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0037.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0038.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0034.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0054.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0018.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0090.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0047.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0045.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0032.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0098.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0040.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0061.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0042.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0117.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0020.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0052.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0056.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0145.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0033.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0071.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0039.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0088.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0089.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0019.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0058.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0099.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0027.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0051.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0044.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0097.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0114.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0144.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0103.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0017.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0147.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0046.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0060.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0043.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0021.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0035.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0022.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0036.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0031.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0048.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0026.smt2,UN-UNSAT
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0059.smt2,RETURN PROOF
+QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0095.smt2,UN-UNSAT
+QF_LRA/meti-tarski/log/fun-ineq/log-fun-ineq-g-chunk-0010.smt2,RETURN PROOF
+QF_LRA/meti-tarski/log/fun-ineq/log-fun-ineq-g-chunk-0038.smt2,RETURN PROOF
+QF_LRA/meti-tarski/asin/8/asin-8-chunk-0032.smt2,UN-UNSAT
+QF_LRA/meti-tarski/asin/8/asin-8-chunk-0030.smt2,UN-UNSAT
+QF_LRA/meti-tarski/asin/8/vars4/asin-8-vars4-chunk-0023.smt2,UN-UNSAT
+QF_LRA/meti-tarski/asin/8/vars4/asin-8-vars4-chunk-0022.smt2,RETURN PROOF
+QF_LRA/meti-tarski/Arthan/1A/Arthan1A-chunk-0015.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Arthan/1A/Arthan1A-chunk-0016.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0022.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0013.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0014.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0012.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0010.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0051.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0024.smt2,RETURN PROOF
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0006.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0019.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0035.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0011.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0018.smt2,RETURN PROOF
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0020.smt2,RETURN PROOF
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0017.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0008.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0034.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0015.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0023.smt2,RETURN PROOF
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0005.smt2,UN-UNSAT
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0016.smt2,RETURN PROOF
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0025.smt2,RETURN PROOF
+QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0053.smt2,UN-UNSAT
+QF_LRA/meti-tarski/CMOS/CMOS-opamp-chunk-0015.smt2,UN-UNSAT
+QF_LRA/meti-tarski/CMOS/CMOS-opamp-chunk-0010.smt2,UN-UNSAT
+QF_LRA/meti-tarski/CMOS/CMOS-opamp-chunk-0013.smt2,UN-UNSAT
+QF_LRA/meti-tarski/CMOS/CMOS-opamp-chunk-0005.smt2,UN-UNSAT
+QF_LRA/meti-tarski/CMOS/CMOS-opamp-chunk-0007.smt2,UN-UNSAT
+QF_LRA/meti-tarski/CMOS/CMOS-opamp-chunk-0012.smt2,UN-UNSAT
+QF_LRA/meti-tarski/CMOS/CMOS-opamp-chunk-0016.smt2,UN-UNSAT
+QF_LRA/meti-tarski/CMOS/CMOS-opamp-chunk-0024.smt2,RETURN PROOF
+QF_LRA/meti-tarski/CMOS/CMOS-opamp-chunk-0008.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/1/atan-problem-1-chunk-0031.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/1/atan-problem-1-chunk-0030.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/1/atan-problem-1-chunk-0015.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/1/atan-problem-1-chunk-0014.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/1/weak/atan-problem-1-weak-chunk-0019.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/1/weak/atan-problem-1-weak-chunk-0021.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak/atan-problem-2-weak-chunk-0200.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak/atan-problem-2-weak-chunk-0203.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0034.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0031.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0017.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0116.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0084.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0009.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0118.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0035.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0109.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0107.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0062.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0106.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0030.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0005.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0126.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0036.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0127.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0060.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0016.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0014.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0059.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0121.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0026.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0132.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0038.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0033.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0076.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0004.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0032.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0081.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0129.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0119.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0052.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0104.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0051.smt2,UN-UNSAT
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0039.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0131.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0037.smt2,RETURN PROOF
+QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0054.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0072.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0048.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0045.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0041.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0006.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0058.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0047.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0073.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0059.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0037.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0035.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0060.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0074.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0036.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0043.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0040.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0046.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0071.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0057.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0039.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0042.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0038.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0044.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0043.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0081.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0052.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0100.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0054.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0044.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0049.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0045.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0048.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0065.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0080.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0012.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0098.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0082.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0068.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0047.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0099.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0083.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0056.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0067.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0050.smt2,RETURN PROOF
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0051.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0046.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0097.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0055.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0053.smt2,UN-UNSAT
+QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0066.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0046.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0063.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0037.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0006.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0026.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0048.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0008.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0071.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0065.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0049.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0012.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0005.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0036.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0061.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0070.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0069.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0016.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0052.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0013.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0041.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0019.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0014.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0030.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0040.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0004.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0032.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0009.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0024.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0011.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0107.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0040.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0064.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0059.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0023.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0029.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0035.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0006.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0065.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0051.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0092.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0094.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0020.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0039.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0026.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0089.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0038.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0011.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0056.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0049.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0069.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0033.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0007.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0074.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0068.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0062.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0046.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0022.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0055.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0025.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0005.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0031.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0095.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0047.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0012.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0032.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0008.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0066.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0024.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0099.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0067.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0014.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0050.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0013.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0009.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0052.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0037.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0010.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0082.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0034.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0016.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0021.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0070.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0004.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0044.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0043.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0018.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0053.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0045.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0036.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0054.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0063.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0041.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0058.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0057.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0043.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0038.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0067.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0037.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0032.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0074.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0006.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0048.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0071.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0007.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0031.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0028.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0035.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0014.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0042.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0041.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0010.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0040.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0018.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0005.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0047.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0027.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0072.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0053.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0026.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0008.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0034.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0090.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0013.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0012.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0033.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0039.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0021.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0004.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0069.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0011.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0009.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0036.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0020.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0016.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0022.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0030.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0042.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0030.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0023.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0011.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0037.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0032.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0036.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0042.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0032.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0030.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0036.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0023.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0021.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0010.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0014.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0037.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0012.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0011.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0018.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0008.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0009.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0017.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/cos/sin-cos-346-b-chunk-0009.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/cos/sin-cos-346-b-chunk-0008.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/cos/sin-cos-346-b-chunk-0137.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/344/4/sin-344-4-chunk-0017.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/344/4/sin-344-4-chunk-0016.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/344/4/sin-344-4-chunk-0020.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/344/3/sin-344-3-weak-chunk-0016.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/344/3/sin-344-3-chunk-0016.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/344/3/sin-344-3-weak-chunk-0012.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/344/3/sin-344-3-weak-chunk-0013.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/344/3/sin-344-3-weak-chunk-0029.smt2,UN-UNSAT
+QF_LRA/meti-tarski/sin/344/3/sin-344-3-chunk-0013.smt2,RETURN PROOF
+QF_LRA/meti-tarski/sin/344/3/sin-344-3-chunk-0012.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/U/Chua-1-VC1-U-chunk-0059.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/U/Chua-1-VC1-U-chunk-0071.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/U/Chua-1-VC1-U-chunk-0045.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/U/Chua-1-VC1-U-chunk-0037.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/U/Chua-1-VC1-U-chunk-0035.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0011.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0005.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0155.smt2,RETURN PROOF
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0109.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0058.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0156.smt2,RETURN PROOF
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0006.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0113.smt2,RETURN PROOF
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0142.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0028.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0010.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0013.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0023.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0008.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0042.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0012.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0128.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0112.smt2,RETURN PROOF
+QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0043.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0023.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0155.smt2,RETURN PROOF
+QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0156.smt2,RETURN PROOF
+QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0128.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0028.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0142.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0108.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0057.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0042.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0056.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0005.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0006.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0010.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0008.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0030.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0012.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0011.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0013.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0035.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/VC2/L/Chua-1-VC2-L-chunk-0069.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/U/Chua-1-IL-U-chunk-0030.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/U/Chua-1-IL-U-chunk-0069.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/U/Chua-1-IL-U-chunk-0056.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/U/Chua-1-IL-U-chunk-0035.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/U/Chua-1-IL-U-chunk-0042.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0012.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0028.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0011.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0108.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0156.smt2,RETURN PROOF
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0013.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0005.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0023.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0112.smt2,RETURN PROOF
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0155.smt2,RETURN PROOF
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0128.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0043.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0010.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0006.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0057.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0142.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0008.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/VC1/L/Chua-2-VC1-L-chunk-0046.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/VC1/L/Chua-2-VC1-L-chunk-0051.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/VC1/L/Chua-2-VC1-L-chunk-0082.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/VC1/L/Chua-2-VC1-L-chunk-0087.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/VC1/L/Chua-2-VC1-L-chunk-0080.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/VC2/L/Chua-2-VC2-L-chunk-0026.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/VC2/L/Chua-2-VC2-L-chunk-0048.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/VC2/L/Chua-2-VC2-L-chunk-0031.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/IL/L/Chua-2-IL-L-chunk-0030.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/IL/L/Chua-2-IL-L-chunk-0035.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/IL/L/Chua-2-IL-L-chunk-0071.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/IL/L/Chua-2-IL-L-chunk-0066.smt2,UN-UNSAT
+QF_LRA/meti-tarski/Chua/2/IL/L/Chua-2-IL-L-chunk-0064.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration1_Loop_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration3_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration6_Loop_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/sort.t2.c_Iteration5_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/wrong_loop.t2.c_Iteration3_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/toeplz.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_6-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration9_Loop_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration6_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_3-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/eric.t2.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration1_Loop_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ex11.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.c.i.ludcmp.pl.t2.fixed.t2.c_Iteration9_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/collatz.t2.c_Iteration3_Lasso_7-phaseTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/CooperatingT2/consts1.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/matrixsqrt.t2.c_Iteration12_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/polyrank6.t2.c_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/magic.t2.c_Iteration12_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/matrixsqrt.t2.c_Iteration12_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/heidy7-simple.t2.c_Iteration2_Lasso_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/disj_nightmare.t2.c_Iteration1_Loop_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/elmhes.t2.c_Iteration4_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.t2.c_Iteration7_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/elmhes.c.i.elmhes.pl.t2.fixed.t2.c_Iteration5_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.c.i.ludcmp.pl.t2.fixed.t2.c_Iteration8_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration7_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/elmhes.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/smagillc-fail.t2.c_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/selectSort.t2.c_Iteration3_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-43.t2.c_Iteration4_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration1_Loop_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/polyrank4.t2.c_Iteration8_Loop_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/sumit.t2.c_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.c.i.ludcmp.pl.t2.fixed.t2.c_Iteration10_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-46.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration1_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/mc91test.t2.c_Iteration6_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration1_Loop_4-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/elmhes.c.i.elmhes.pl.t2.fixed.t2.c_Iteration4_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration1_Loop_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration3_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration8_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/elmhes.c.i.elmhes.pl.t2.fixed.t2.c_Iteration5_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/fun4.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration1_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration1_Loop_4-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_4-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/dropbuf.t2.c_Iteration3_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration8_Loop_4-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/disj_nightmare.t2.c_Iteration1_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sumit.t2.c_Iteration2_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/loop3.t2.c_Iteration25_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration7_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.t2.c_Iteration9_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/fir.t2.c_Iteration4_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Lasso_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration6_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-43.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/eric.t2.c_Iteration1_Lasso_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/broydn.c.i.broydn.pl.t2.fixed.t2.c_Iteration8_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration7_Loop_5-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/ndes.t2.c_Iteration3_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration8_Loop_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/elmhes.t2.c_Iteration5_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/toeplz.c.i.toeplz.pl.t2.fixed.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration9_Loop_4-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-46.t2.c_Iteration2_Lasso_6-phaseTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/CooperatingT2/sumit.t2.c_Iteration2_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sumit.t2.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/collatz.t2.c_Iteration3_Loop_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/ndes.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/heidy7.t2.c_Iteration2_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration6_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration3_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration8_Loop_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/collatz.t2.c_Iteration1_Loop_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration3_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-43.t2.c_Iteration4_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration9_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration9_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration9_Loop_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/curious4.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.c.i.ludcmp.pl.t2.fixed.t2.c_Iteration8_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration9_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_7-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-43.t2.c_Iteration5_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-55.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.t2.c_Iteration8_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration1_Loop_4-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/selectSort.t2.c_Iteration3_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/elmhes.c.i.elmhes.pl.t2.nor.t2.rlgfixed.t2.c_Iteration5_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration1_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/janne_complex.t2.c_Iteration3_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.t2.c_Iteration9_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/fir.t2.c_Iteration4_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-46.t2.c_Iteration2_Lasso_7-phaseTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/CooperatingT2/ex11.t2.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration6_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sumit.t2.c_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-43.t2.c_Iteration5_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/eric.t2.c_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/fir.t2.c_Iteration4_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.t2.c_Iteration7_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_3-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/elmhes.t2.c_Iteration5_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration8_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/eric.t2.c_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-55.t2.c_Iteration3_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/wrong_loop.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration6_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/polyrank4.t2.c_Iteration10_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/byron-2.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-46.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/magic.t2.c_Iteration23_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.t2.c_Iteration8_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ex11.t2.c_Iteration1_Lasso_2-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/bubbleSort.t2.c_Iteration3_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/eric2.t2.c_Iteration3_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/dropbuf.t2.c_Iteration3_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/toeplz.t2.c_Iteration2_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ndes.t2.c_Iteration3_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.t2.c_Iteration9_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/eric.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/eric.t2.c_Iteration1_Loop_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/ndes.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/toeplz.c.i.toeplz.pl.t2.fixed.t2.c_Iteration2_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/toeplz.c.i.toeplz.pl.t2.fixed.t2.c_Iteration9_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/afagp-fail.t2.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/efegp.t2.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration9_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration7_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration3_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/agafp.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/efegp.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.t2.c_Iteration8_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/janne_complex.t2.c_Iteration3_Lasso_2-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/magic.t2.c_Iteration12_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/disj_nightmare.t2.c_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration7_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-55.t2.c_Iteration3_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Lasso_4-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration8_Loop_4-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_4-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/toeplz.c.i.toeplz.pl.t2.fixed.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration1_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/toeplz.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.c.i.ludcmp.pl.t2.fixed.t2.c_Iteration10_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration3_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ex11.t2.c_Iteration1_Lasso_7-phaseTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/CooperatingT2/janne_complex.t2.c_Iteration3_Lasso_6-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sumit.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-46.t2.c_Iteration2_Lasso_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/queens.t2.c_Iteration19_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.c.i.ludcmp.pl.t2.fixed.t2.c_Iteration10_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/afagp-fail.t2.c_Iteration1_Lasso_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.c.i.ludcmp.pl.t2.fixed.t2.c_Iteration9_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/disj_nightmare.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/ludcmp.c.i.ludcmp.pl.t2.fixed.t2.c_Iteration9_Loop_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/bsort100.t2.c_Iteration13_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/firewire.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Loop_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/disj_nightmare.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/byron-2.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration8_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/hongyi1.t2.c_Iteration9_Loop_4-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/fun4.t2.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration1_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/disj_nightmare.t2.c_Iteration2_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sumit.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/janne_complex.t2.c_Iteration3_Lasso_3-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/sumit.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-43.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/toeplz.t2.c_Iteration9_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Loop_3-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sumit.t2.c_Iteration2_Loop_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/elmhes.c.i.elmhes.pl.t2.fixed.t2.c_Iteration4_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/p-55.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/brp_withassume.t2.c_Iteration8_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/janne_complex.t2.c_Iteration3_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration3_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration6_Loop_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/CooperatingT2/afagp-fail.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/SyntaxSupportDivision1.bpl_Iteration1_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Collatz.bpl_Iteration1_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled100.bpl_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/OpposedDisjuncts.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled100.bpl_Iteration1_Loop_3-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/Ultimate/Damaskus.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled250.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled250.bpl_Iteration1_Lasso_7-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled100.bpl_Iteration1_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/Lobnya-Boolean-Reordered.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/Gulwani.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled75.bpl_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Loop_6-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/simple-scaled250.bpl_Iteration1_Lasso_5-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Loop_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/BradleyMannaSipma-2005ICALP-Fig1-deterministic.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/SyntaxSupportDivision1.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/GcdNew.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled75.bpl_Iteration1_Loop_4-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/Ultimate/Lobnya-Boolean-Reordered.bpl_Iteration1_Loop_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled50.bpl_Iteration1_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled50.bpl_Iteration1_Loop_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Gcd_havoc.bpl_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/bound-scaled600.bpl_Iteration1_Loop_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled75.bpl_Iteration1_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/2013POPL-BenAmGen-Ex3.20.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/Ultimate/Gulwani.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/GcdNew.bpl_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/NonTerminationDifficult.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/SanDiego.bpl_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled50.bpl_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/MenloPark.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/MenloPark.bpl_Iteration1_Lasso_3-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/bound-scaled400.bpl_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled100.bpl_Iteration1_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/bound-scaled600.bpl_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/OpposedDisjuncts.bpl_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/bound-scaled200.bpl_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/bound-scaled200.bpl_Iteration1_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/BenAmram-2010LMCS-Ex2.3.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled50.bpl_Iteration1_Loop_3-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/Ultimate/GulwaniResetBranchOnly.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_7-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Collatz.bpl_Iteration1_Loop_5-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/bound-scaled600.bpl_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/SyntaxSupportDisjunction1.bpl_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_6-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/SyntaxSupportDivision1.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/OpposedDisjuncts.bpl_Iteration1_Loop_7-phaseTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled100.bpl_Iteration1_Loop_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/GulwaniResetBranchOnly.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled75.bpl_Iteration1_Loop_3-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/Ultimate/Cairo2.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Damaskus.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Gcd_havoc.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/Madrid.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/2013POPL-BenAmGen-Ex3.20.bpl_Iteration1_Loop_4-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_4-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/TelAviv-AmirMinimum.bpl_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/CooperatingT2_consts1.bpl_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Collatz.bpl_Iteration1_Loop_2-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/CooperatingT2_consts1.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/GcdNew.bpl_Iteration1_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/NoriSharma-2013FSE-Fig7.bpl_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/GcdNew.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/OpposedDisjuncts.bpl_Iteration1_Lasso_2-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Loop_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled100.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Loop_5-phaseTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/Ultimate/simple-scaled250.bpl_Iteration1_Lasso_6-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/SyntaxSupportDivision1.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Gcd_havoc.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/2013POPL-BenAmGen-Ex4.2.bpl_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/CooperatingT2_consts1.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/GcdNew.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/BradleyMannaSipma-2005ICALP-Fig1-deterministic.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_3-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled250.bpl_Iteration1_Lasso_4-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled75.bpl_Iteration1_Loop_4-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled100.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled250.bpl_Iteration1_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/OpposedDisjuncts.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled50.bpl_Iteration1_Loop_4-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Lasso_5-phaseTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/Ultimate/Gcd_havoc.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled250.bpl_Iteration1_Lasso_3-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Collatz.bpl_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_5-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Collatz.bpl_Iteration1_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/OpposedDisjuncts.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/SyntaxSupportBooleans5.bpl_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/SyntaxSupportDivision1.bpl_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/BenAmram-2010LMCS-Ex2.3.bpl_Iteration1_Loop_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/GulwaniResetBranchOnly.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Gcd.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled100.bpl_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/2013POPL-BenAmGen-Ex4.2.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Gcd.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled200.bpl_Iteration1_Lasso_4-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/OpposedDisjuncts.bpl_Iteration1_Lasso_5-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/Ultimate/yPositive-SIscaled100.bpl_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/Gothenburg.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/TelAviv-AmirMinimum.bpl_Iteration1_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled250.bpl_Iteration1_Lasso_4-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/bound-scaled400.bpl_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/simple-scaled100.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/bound-scaled200.bpl_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/Ultimate/MenloPark.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/GulwaniJainKoskinen-2009PLDI-Fig1_true-termination.c_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig7_true-termination.c_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_7-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Loop_4-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/SV-COMP/CookSeeZuleger-2013TACAS-Fig7b_true-termination.c_Iteration1_Loop_3-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/TelAviv-Amir-Minimum_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/joey_false-termination.c_Iteration2_Loop_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/joey_false-termination.c_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/Ben-Amram-2010LMCS-Ex2.3_true-termination.c_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/joey_false-termination.c_Iteration2_Loop_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Loop_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Lasso_4-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/Masse_true-termination.c_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_4-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex2_true-termination.c_Iteration1_Loop_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/GulwaniJainKoskinen-2009PLDI-Fig1_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_6-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/Ben-Amram-2010LMCS-Ex2.3_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_3-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_2-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005CAV-Fig1_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_4-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/KroeningSharyginaTsitovichWintersteiger-2010CAV-Fig1_true-termination.c_Iteration1_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex6_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/CookSeeZuleger-2013TACAS-Fig7a_true-termination.c_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/KroeningSharyginaTsitovichWintersteiger-2010CAV-Fig1_true-termination.c_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_4-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/GulwaniJainKoskinen-2009PLDI-Fig1_true-termination.c_Iteration1_Lasso_7-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/min_rf_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005CAV-Fig1_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_6-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/Masse_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Lasso_2-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/GulwaniJainKoskinen-2009PLDI-Fig1_true-termination.c_Iteration1_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/TelAviv-Amir-Minimum_true-termination.c_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex6_true-termination.c_Iteration2_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/CookSeeZuleger-2013TACAS-Fig3_true-termination.c_Iteration1_Loop_4-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex6_true-termination.c_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Lasso_5-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Loop_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/HarrisLalNoriRajamani-2010SAS-Fig1_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex2_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/TelAviv-Amir-Minimum_true-termination.c_Iteration1_Lasso_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,NO PROOF
+QF_LRA/LassoRanker/SV-COMP/GulwaniJainKoskinen-2009PLDI-Fig1_true-termination.c_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/KroeningSharyginaTsitovichWintersteiger-2010CAV-Fig1_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/TelAviv-Amir-Minimum_true-termination.c_Iteration1_Loop_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex1_true-termination.c_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/TelAviv-Amir-Minimum_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/GulwaniJainKoskinen-2009PLDI-Fig1_true-termination.c_Iteration1_Lasso_5-nestedTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/min_rf_true-termination.c_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/GulwaniJainKoskinen-2009PLDI-Fig1_true-termination.c_Iteration1_Lasso_4-lexTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/TelAviv-Amir-Minimum_true-termination.c_Iteration1_Loop_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/KroeningSharyginaTsitovichWintersteiger-2010CAV-Fig1_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005CAV-Fig1_true-termination.c_Iteration1_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/Masse_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005CAV-Fig1_true-termination.c_Iteration1_Lasso_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_2-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/CookSeeZuleger-2013TACAS-Fig7a_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Lasso_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/GulwaniJainKoskinen-2009PLDI-Fig1_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/Masse_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/CookSeeZuleger-2013TACAS-Fig3_true-termination.c_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/Ben-Amram-2010LMCS-Ex2.3_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Loop_6-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005CAV-Fig1_true-termination.c_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/GulwaniJainKoskinen-2009PLDI-Fig1_true-termination.c_Iteration1_Lasso_6-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/Ben-Amram-2010LMCS-Ex2.3_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/GulwaniJainKoskinen-2009PLDI-Fig1_true-termination.c_Iteration1_Lasso_2-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Loop_5-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_3-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_3-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/TelAviv-Amir-Minimum_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Loop_7-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/CookSeeZuleger-2013TACAS-Fig3_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/min_rf_true-termination.c_Iteration1_Loop_6-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_5-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/aviad_true-termination.c_Iteration1_Loop_5-nestedTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Lasso_5-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Loop_7-phaseTemplate.smt2,RETURN PROOF
+QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex6_true-termination.c_Iteration2_Lasso_6-phaseTemplate.smt2,UN-UNSAT
+QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,RETURN PROOF
+QF_LRA/miplib/pk1-11.smt2,UN-UNSAT
+QF_LRA/miplib/vpm2-10.smt2,NO PROOF
+QF_LRA/miplib/danoint-65.smt2,UN-UNSAT
+QF_LRA/miplib/pp08a-12000.smt2,UN-UNSAT
+QF_LRA/miplib/opt1217--6.smt2,UN-UNSAT
+QF_LRA/miplib/danoint-30.smt2,RETURN PROOF
+QF_LRA/miplib/vpm2-20.smt2,UN-UNSAT
+QF_LRA/miplib/fixnet-3000.smt2,UN-UNSAT
+QF_LRA/miplib/fixnet-5000.smt2,UN-UNSAT
+QF_LRA/miplib/vpm2-5.smt2,RETURN PROOF
+QF_LRA/miplib/pp08a-3000.smt2,RETURN PROOF
+QF_LRA/miplib/pp08a-11000.smt2,UN-UNSAT
+QF_LRA/miplib/opt1217--27.smt2,UN-UNSAT
+QF_LRA/miplib/opt1217--57.smt2,UN-UNSAT
+QF_LRA/miplib/pp08a-7349.smt2,UN-UNSAT
+QF_LRA/miplib/danoint-66.smt2,UN-UNSAT
+QF_LRA/miplib/danoint-50.smt2,RETURN PROOF
+QF_LRA/miplib/pp08a-2000.smt2,RETURN PROOF
+QF_LRA/miplib/pk1--1.smt2,RETURN PROOF
+QF_LRA/miplib/pk1-0.smt2,UN-UNSAT
+QF_LRA/miplib/opt1217--37.smt2,UN-UNSAT
+QF_LRA/miplib/pp08a-5000.smt2,UN-UNSAT
+QF_LRA/miplib/opt1217--17.smt2,UN-UNSAT
+QF_LRA/miplib/pk1-50.smt2,UN-UNSAT
+QF_LRA/miplib/opt1217--11.smt2,UN-UNSAT
+QF_LRA/miplib/fixnet-1000.smt2,RETURN PROOF
+QF_LRA/miplib/vpm2-13.75.smt2,UN-UNSAT
+QF_LRA/miplib/vpm2-30.smt2,UN-UNSAT
+QF_LRA/miplib/pp08a-4000.smt2,NO PROOF
+QF_LRA/miplib/danoint-266.smt2,UN-UNSAT
+QF_LRA/miplib/pp08a-1000.smt2,RETURN PROOF
+QF_LRA/miplib/fixnet-7000.smt2,UN-UNSAT
+QF_LRA/miplib/vpm2-0.smt2,RETURN PROOF
+QF_LRA/miplib/pp08a-9000.smt2,UN-UNSAT
+QF_LRA/miplib/pp08a-7350.smt2,UN-UNSAT
+QF_LRA/miplib/pk1-20.smt2,UN-UNSAT
+QF_LRA/miplib/pp08a-10000.smt2,UN-UNSAT
+QF_LRA/miplib/opt1217--16.smt2,UN-UNSAT
+QF_LRA/miplib/opt1217--1.smt2,UN-UNSAT
+QF_LRA/miplib/pk1-100.smt2,UN-UNSAT
+QF_LRA/miplib/danoint-166.smt2,UN-UNSAT
+QF_LRA/miplib/fixnet-3983.smt2,UN-UNSAT
+QF_LRA/tropical-matrix/constraint-199552.smt2,UN-UNSAT
+QF_LRA/tropical-matrix/constraint-413064.smt2,UN-UNSAT
+QF_LRA/tropical-matrix/constraint-556101.smt2,UN-UNSAT
+QF_LRA/tropical-matrix/constraint-223827.smt2,UN-UNSAT
+QF_LRA/tropical-matrix/constraint-251380.smt2,UN-UNSAT
+QF_LRA/tropical-matrix/constraint-330061.smt2,UN-UNSAT
+QF_LRA/tropical-matrix/constraint-269735.smt2,UN-UNSAT
+QF_LRA/tropical-matrix/constraint-436218.smt2,UN-UNSAT
+QF_LRA/tropical-matrix/constraint-1007893.smt2,UN-UNSAT
+QF_LRA/tropical-matrix/constraint-343414.smt2,UN-UNSAT
+QF_LRA/sc/sc-27.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-27.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-14.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-28.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-40.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-23.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-31.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-22.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-16.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-33.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-6.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-39.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-40.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-38.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-35.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-30.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-18.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-11.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-13.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-25.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-39.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-34.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-8.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-33.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-34.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-5.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-10.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-36.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-14.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-32.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-13.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-26.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-30.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-9.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-35.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-8.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-31.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-38.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-23.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-18.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-8.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-6.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-10.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-31.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-34.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-15.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-37.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-26.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-20.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-25.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-40.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-21.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-22.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-38.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-12.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-30.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-29.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-39.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-17.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-26.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-15.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-6.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-36.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-9.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-20.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-7.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-10.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-9.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-8.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-11.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-29.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-17.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-32.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-37.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-16.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-14.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-37.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-21.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-20.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-13.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-18.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-27.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-32.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-27.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-24.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-37.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-14.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-30.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-19.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-22.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-35.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-7.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-11.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-12.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-33.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-28.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-38.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-29.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-6.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-40.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-5.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-32.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-20.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-24.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-12.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-19.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-25.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-36.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-28.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-33.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-25.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-21.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-11.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-17.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-9.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-29.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-15.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-19.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-13.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-10.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-21.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-24.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-31.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-15.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-19.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-35.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-5.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-7.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-5.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-7.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-23.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-36.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-16.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-34.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-18.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-39.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-26.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-16.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-17.base.cvc.smt2,RETURN PROOF
+QF_LRA/sc/sc-22.induction.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-23.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-28.induction3.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-12.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/sc/sc-24.induction2.cvc.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_9nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_9nodes.abstract.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_14nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_9nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_12nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_11nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_10nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_9nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_5nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_12nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_8nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_5nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_6nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_5nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_7nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_15nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_14nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_6nodes.abstract.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_7nodes.abstract.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_4nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_6nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_15nodes.abstract.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_3nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_14nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_5nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_7nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_6nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_7nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_11nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_11nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_4nodes.abstract.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_15nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_3nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_3nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_14nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_12nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_6nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_3nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_8nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_10nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_15nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_8nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_5nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_10nodes.abstract.induct.smt2,NO PROOF
+QF_LRA/tta_startup/simple_startup_9nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_7nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_5nodes.abstract.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_11nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_8nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_10nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_12nodes.abstract.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_7nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_15nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_9nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_4nodes.synchro.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_10nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_6nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_4nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_4nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_4nodes.bug.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_11nodes.abstract.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_11nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_3nodes.abstract.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_12nodes.missing.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_14nodes.abstract.induct.smt2,UN-UNSAT
+QF_LRA/tta_startup/simple_startup_3nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_8nodes.abstract.induct.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_12nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_14nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_8nodes.abstract.base.smt2,RETURN PROOF
+QF_LRA/tta_startup/simple_startup_15nodes.synchro.base.smt2,RETURN PROOF
+QF_LRA/TM/p5-driverlogNumeric_s8.smt2,UN-UNSAT
+QF_LRA/TM/p2-zenonumeric_s6.smt2,UN-UNSAT
+QF_LRA/TM/p6-zenonumeric_s9.smt2,UN-UNSAT
+QF_LRA/TM/p5-zenonumeric_s7.smt2,UN-UNSAT
+QF_LRA/TM/p-3-bucket_s10.smt2,UN-UNSAT
+QF_LRA/TM/p6-zenonumeric_s7.smt2,UN-UNSAT
+QF_LRA/TM/p7-driverlogNumeric_s7.smt2,UN-UNSAT
+QF_LRA/TM/p-2-bucket_s11.smt2,UN-UNSAT
+QF_LRA/TM/p-DepotsNum_s8.msat.smt2,UN-UNSAT
+QF_LRA/TM/p6-zenonumeric_s5.smt2,UN-UNSAT
+QF_LRA/TM/p-1-bucket_s9.smt2,UN-UNSAT
+QF_LRA/TM/p5-zenonumeric_s5.smt2,UN-UNSAT
+QF_LRA/TM/p-0-bucket_s10.smt2,UN-UNSAT
+QF_LRA/TM/p6-driverlogNumeric_s5.smt2,UN-UNSAT
+QF_LRA/TM/p4-zenonumeric_s5.smt2,UN-UNSAT
+QF_LRA/TM/p3-driverlogNumeric_s8.smt2,UN-UNSAT
+QF_LRA/TM/p-driverlogNumeric_s7.smt2,UN-UNSAT
+QF_LRA/TM/p4-driverlogNumeric_s8.smt2,UN-UNSAT
+QF_LRA/TM/p7-zenonumeric_s6.smt2,UN-UNSAT
+QF_LRA/TM/p2-driverlogNumeric_s10.smt2,UN-UNSAT
+QF_LRA/TM/p-0-bucket_s13.smt2,UN-UNSAT
+QF_LRA/TM/p7-driverlogNumeric_s8.smt2,UN-UNSAT
+QF_LRA/TM/p3-zenonumeric_s5.smt2,UN-UNSAT
+QF_LRA/TM/p-0-bucket_s7.smt2,UN-UNSAT
+QF_LRA/TM/p5-driverlogNumeric_s9.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-11.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-5.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-16.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-1.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-3.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-18.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-20.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-14.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-10.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-15.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-2.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-13.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-9.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-4.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-6.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-7.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-12.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-8.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-17.smt2,RETURN PROOF
+QF_LRA/sal/gasburner/gasburner-prop3-19.smt2,RETURN PROOF
+QF_LRA/sal/carpark/Carpark2-ausgabe-8.smt2,UN-UNSAT
+QF_LRA/sal/carpark/Carpark2-t1-1.smt2,RETURN PROOF
+QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2,RETURN PROOF
+QF_LRA/sal/carpark/Carpark2-ausgabe-5.smt2,RETURN PROOF
+QF_LRA/sal/carpark/Carpark2-ausgabe-2.smt2,RETURN PROOF
+QF_LRA/sal/carpark/Carpark2-ausgabe-4.smt2,RETURN PROOF
+QF_LRA/sal/carpark/Carpark2-ausgabe-7.smt2,RETURN PROOF
+QF_LRA/sal/carpark/Carpark2-t1-4.smt2,UN-UNSAT
+QF_LRA/sal/carpark/Carpark2-t1-3.smt2,RETURN PROOF
+QF_LRA/sal/carpark/Carpark2-t1-2.smt2,RETURN PROOF
+QF_LRA/sal/carpark/Carpark2-ausgabe-3.smt2,RETURN PROOF
+QF_LRA/sal/carpark/Carpark2-ausgabe-6.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-3.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-10.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-16.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-13.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-1.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-11.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-15.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-14.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-8.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-19.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-7.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-20.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-17.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-4.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-2.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-12.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-9.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-5.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-6.smt2,RETURN PROOF
+QF_LRA/sal/pursuit/pursuit-safety-18.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-17.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-safe2-4.smt2,UN-UNSAT
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-16.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-8.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-safe-3.smt2,UN-UNSAT
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-4.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-1.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-19.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-7.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-5.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-safe2-2.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-11.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-safe2-1.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-9.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-12.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-safe-1.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-safe2-3.smt2,UN-UNSAT
+QF_LRA/sal/windowreal/windowreal-safe-2.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-18.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-safe-4.smt2,UN-UNSAT
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-10.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-3.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-15.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-2.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-20.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-13.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-6.smt2,RETURN PROOF
+QF_LRA/sal/windowreal/windowreal-no_t_deadlock-14.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-nosafe-6.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-7.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-nosafe-7.smt2,UN-UNSAT
+QF_LRA/sal/tgc/tgc_io-safe-14.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-13.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-nosafe-3.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-1.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-5.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-12.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-3.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-19.smt2,UN-UNSAT
+QF_LRA/sal/tgc/tgc_io-safe-18.smt2,UN-UNSAT
+QF_LRA/sal/tgc/tgc_io-safe-16.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-17.smt2,UN-UNSAT
+QF_LRA/sal/tgc/tgc_io-safe-15.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-11.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-6.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-4.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-8.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-2.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-nosafe-1.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-20.smt2,UN-UNSAT
+QF_LRA/sal/tgc/tgc_io-nosafe-4.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-10.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-safe-9.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-nosafe-5.smt2,RETURN PROOF
+QF_LRA/sal/tgc/tgc_io-nosafe-2.smt2,RETURN PROOF
+QF_LRA/latendresse/ecoliFBAyicesTest-63875-64.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliMILPglycerolYices3-60000.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliFBAyicesTest-3875-4.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliMILPglycerolYices3-90000.smt2,UN-UNSAT
+QF_LRA/latendresse/shewanella-compact2.smt2,UN-UNSAT
+QF_LRA/latendresse/shewanella-compact2b.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliMILPglycerolYices3-300000.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliFBAyicesTest-15875-16.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliMILPglycerolYices3-80000.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliMILPglycerolYices3-100000.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliFBAyicesTest-1875-2.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliFBAyicesTest-31875-32.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliFBAyicesTest-750.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliFBAyicesTest-875.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliMILPglycerolYices3-70000.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliMILPglycerolYices3-5000.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliMILPglycerolYices3-50000.smt2,UN-UNSAT
+QF_LRA/latendresse/ecoliFBAyicesTest-500.smt2,UN-UNSAT
+QF_LRA/uart/uart-20.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-8.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-9.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-35.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-7.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-24.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-33.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-26.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-19.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-36.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-18.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-9.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-37.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-5.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-24.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-17.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-32.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-6.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-10.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-29.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-20.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-25.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-27.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-27.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-26.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-13.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-40.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-5.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-36.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-34.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-14.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-21.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-12.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-7.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-28.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-14.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-19.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-38.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-31.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-10.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-22.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-15.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-18.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-32.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-17.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-39.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-34.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-16.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-6.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-23.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-38.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-39.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-30.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-20-with-lemmas.induction.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-16.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-23.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-12.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-25.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-28.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-29.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-37.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-13.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-40.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-21.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-30.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-15.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-8.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-33.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-22.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-35.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-11.induction.cvc.smt2,UN-UNSAT
+QF_LRA/uart/uart-11.base.cvc.smt2,RETURN PROOF
+QF_LRA/uart/uart-31.induction.cvc.smt2,UN-UNSAT
+QF_LRA/spider_benchmarks/mode_cntrl.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/fs_init_no_op_accs.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/fs_no_op_accs.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/pd_no_op_accs.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/pd_finish.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/fs_window.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/op_seen_less2.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/sc_init_frame_gap.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/op_seen_less2.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/current_frame.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/op_seen_more1.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/pd_finish.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/reint_to_least.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/pd_init_op_accs.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/no_op_accs.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/pd_not_fs_seen.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/fs_no_op_accs.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/synched.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/pd_init_op_accs.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/bad_echos_ascend.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/pd_not_sc_seen.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/good_frame_update.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/fs_not_sc_seen.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/bad_echos_ascend.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/good_frame_update.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/no_op_accs.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/frame_prop.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/fs_frame_gap.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/op_seen_more1.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/reint_to_least.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/pd_not_sc_seen.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/synched.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/mode_cntrl.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/frame_prop.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/fs_init_no_op_accs.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/pd_no_op_accs.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/sc_init_frame_gap.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/fs_not_sc_seen.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/pd_not_fs_seen.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/fs_window.induction.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/fs_frame_gap.base.smt2,RETURN PROOF
+QF_LRA/spider_benchmarks/current_frame.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_5clocks.worst_case_skew.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_9clocks.main_invar.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_9clocks.main_invar.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_4clocks.worst_case_skew.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_6clocks.worst_case_skew.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_2clocks.main_invar.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_3clocks.worst_case_skew.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_8clocks.main_invar.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_5clocks.worst_case_skew.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_2clocks.worst_case_skew.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_2clocks.main_invar.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_9clocks.worst_case_skew.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_5clocks.main_invar.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_5clocks.main_invar.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_10clocks.main_invar.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_4clocks.worst_case_skew.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_8clocks.main_invar.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_4clocks.main_invar.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_4clocks.main_invar.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_9clocks.worst_case_skew.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_10clocks.worst_case_skew.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_6clocks.worst_case_skew.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_7clocks.worst_case_skew.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_3clocks.worst_case_skew.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_7clocks.worst_case_skew.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_10clocks.main_invar.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_7clocks.main_invar.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_8clocks.worst_case_skew.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_2clocks.worst_case_skew.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_7clocks.main_invar.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_6clocks.main_invar.induct.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_6clocks.main_invar.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_3clocks.main_invar.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_10clocks.worst_case_skew.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_8clocks.worst_case_skew.base.smt2,RETURN PROOF
+QF_LRA/clock_synchro/clocksynchro_3clocks.main_invar.induct.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_05.i_3_2_2.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_functions1.i_3_5_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_init5_ground.i_3_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_sorting_bubblesort_ground.i_4_3_3.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_copyInitSum2_ground.i_3_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_maxInArray_ground.i_3_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_simple4.i_3_4_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_copy5_ground.i_3_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_init9_ground.i_3_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_init1_ground.i_3_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_jain_5.i_2_4_3.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_copyInitSum3_ground.i_3_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_init6_ground.i_3_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_const1.i_3_6_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_init7_ground.i_3_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_04.i_3_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_copy7_ground.i_3_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_gr2006.c.i_4_4_3.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_copy1_ground.i_3_2_2.bpl_11.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_relax.i_11_7_4.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_gj2007.c.i_4_3_3.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_sorting_bubblesort_ground.i_4_3_3.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_allDiff2_ground.i_4_4_3.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_compareModified_ground.i_4_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_strcpy_original.i_3_3_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_partial_init_ground.i_3_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_06.i_3_2_2.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_overflow1.i_3_8_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_simple1.i_3_6_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_sanfoundry_10_ground.i_6_3_3.bpl_13.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_copy4_ground.i_3_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_up_down.i_3_11_2.bpl_13.smt2,NO PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_copy3_ground.i_3_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_2.i_3_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_strcmp_ground.i_4_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_sum60.i_5_6_5.bpl_5.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_hhk2008.c.i_3_3_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_array_single_elem_init.i_4_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_array_monotonic.i_3_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_running.i_4_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_password_ground.i_4_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_06.i_3_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_04.i_3_2_2.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_array1.i_3_2_2.bpl_11.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_fragtest_simple.i_4_5_4.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_nested9.i_5_6_6.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_avg60.i_5_5_4.bpl_5.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_hhk2008.c.i_3_3_2.bpl_8.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_05.i_3_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_01.i_3_2_2.bpl_11.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_copyInit_ground.i_3_2_2.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_overflow1.i_3_8_2.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_gr2006.c.i_4_4_3.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_half_2.i_3_6_2.bpl_7.smt2,RETURN PROOF
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_array_ptr_single_elem_init.i_4_2_2.bpl_7.smt2,UN-UNSAT
+QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_gj2007.c.i_4_3_3.bpl_11.smt2,UN-UNSAT
+QF_LRA/check/bignum_lra1.smt2,UN-UNSAT
+QF_LRA/check/bignum_lra2.smt2,RETURN PROOF
+QF_LRA/2019-ezsmt/robotics/2_1.smt2,NO PROOF
+QF_LRA/2019-ezsmt/robotics/2_4.smt2,NO PROOF
+QF_LRA/2019-ezsmt/robotics/4_4.smt2,NO PROOF
+QF_LRA/2019-ezsmt/robotics/3_4.smt2,NO PROOF
+QF_LRA/2019-ezsmt/robotics/1_3.smt2,NO PROOF
+QF_LRA/2019-ezsmt/robotics/2_3.smt2,NO PROOF
+QF_LRA/2019-ezsmt/robotics/4_3.smt2,NO PROOF
+QF_LRA/2019-ezsmt/robotics/1_1.smt2,NO PROOF
+QF_LRA/2019-ezsmt/robotics/3_1.smt2,NO PROOF
+QF_LRA/2019-ezsmt/robotics/4_1.smt2,NO PROOF
+QF_LRA/2019-ezsmt/robotics/3_3.smt2,NO PROOF
+QF_LRA/2019-ezsmt/robotics/1_4.smt2,NO PROOF
+QF_LRA/2019-ezsmt/blending/21.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/8.smt2,NO PROOF
+QF_LRA/2019-ezsmt/blending/18.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/27.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/29.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/24.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/2.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/26.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/19.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/11.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/3.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/28.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/12.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/15.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/4.smt2,NO PROOF
+QF_LRA/2019-ezsmt/blending/10.smt2,NO PROOF
+QF_LRA/2019-ezsmt/blending/5.smt2,NO PROOF
+QF_LRA/2019-ezsmt/blending/16.smt2,NO PROOF
+QF_LRA/2019-ezsmt/blending/20.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/25.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/1.smt2,NO PROOF
+QF_LRA/2019-ezsmt/blending/6.smt2,NO PROOF
+QF_LRA/2019-ezsmt/blending/22.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/7.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/23.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/9.smt2,NO PROOF
+QF_LRA/2019-ezsmt/blending/14.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/input01.txt.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/blending/13.smt2,NO PROOF
+QF_LRA/2019-ezsmt/blending/17.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0092-labyrinth-17-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0110-labyrinth-16-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0159-labyrinth-20-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0206-labyrinth-20-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0084-labyrinth-17-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0143-labyrinth-14-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0036-labyrinth-17-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0100-labyrinth-17-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0067-labyrinth-18-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0028-labyrinth-12-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0150-labyrinth-16-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0011-labyrinth-12-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0165-labyrinth-13-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0059-labyrinth-13-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0043-labyrinth-13-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0018-labyrinth-11-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0198-labyrinth-19-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0132-labyrinth-12-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0175-labyrinth-15-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0075-labyrinth-13-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0003-labyrinth-11-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/Labyrinth/SCC_Strong/0051-labyrinth-12-0.smt2,NO PROOF
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_80_340_1159656267_16.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_70_300_1155482584_7.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/tsp_rand_70_300_1155482584_12.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_70_300_1155482584_8.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/tsp_rand_70_300_1155482584_14.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/tsp_rand_70_300_1155482584_11.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_80_340_1159656267_15.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_70_300_1155482584_9.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_70_300_1155482584_0.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_80_340_1159656267_4.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/tsp_rand_70_300_1155482584_9.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/dom_rand_70_300_1155482584_3.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_80_340_1159656267_11.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_80_340_1159656267_17.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/tsp_rand_70_300_1155482584_7.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_70_300_1155482584_11.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_70_300_1155482584_3.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_70_300_1155482584_12.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_70_300_1155482584_4.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_70_300_1155482584_14.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_80_340_1159656267_13.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_70_300_1155482584_5.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/tsp_rand_70_300_1155482584_8.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_80_340_1159656267_18.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_80_340_1159656267_0.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/tsp_rand_70_300_1155482584_5.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_80_340_1159656267_6.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/tsp_rand_70_300_1155482584_4.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/tsp_rand_70_300_1155482584_0.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/travellingSalesperson/rand_80_340_1159656267_10.lp.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/routingMax/SCC_strong/p50.56.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/routingMin/SCC_strong/d90.7.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/routingMin/SCC_strong/d40.5.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/routingMin/SCC_strong/d50.9.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/routingMin/SCC_strong/d110.6.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/routingMin/SCC_strong/d70.3.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/routingMin/SCC_strong/d130.1.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/routingMin/SCC_strong/d100.3.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/routingMin/SCC_strong/d80.3.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/routingMin/SCC_strong/d120.7.smt2,UN-UNSAT
+QF_LRA/2019-ezsmt/routingMin/SCC_strong/d60.2.smt2,UN-UNSAT
+QF_LRA/keymaera/water_tank-node23593.smt2,RETURN PROOF
+QF_LRA/keymaera/square_root_zuse-node902.smt2,RETURN PROOF
+QF_LRA/keymaera/water_tank-node5964.smt2,RETURN PROOF
+QF_LRA/keymaera/water_tank-node21443.smt2,RETURN PROOF
+QF_LRA/keymaera/intersection-example-onelane.proof-node846.smt2,RETURN PROOF
+QF_LRA/keymaera/simple_example_2-node2074.smt2,RETURN PROOF
+QF_LRA/keymaera/bouncing-ball-simple-node1629.smt2,RETURN PROOF
+QF_LRA/keymaera/water_tank-node28718.smt2,RETURN PROOF
+QF_LRA/keymaera/bouncing-ball-inv-node1935.smt2,RETURN PROOF
+QF_LRA/keymaera/bouncing-ball-simple-node1628.smt2,RETURN PROOF
+QF_LRA/keymaera/water_tank-node28604.smt2,RETURN PROOF
+QF_LRA/keymaera/division_dijkstra-node701.smt2,RETURN PROOF
+QF_LRA/keymaera/simple_example_1-node2318.smt2,RETURN PROOF
+QF_LRA/keymaera/water_tank-node15243.smt2,RETURN PROOF
+QF_LRA/keymaera/intersection-example-simple.proof-node634.smt2,RETURN PROOF
+QF_LRA/keymaera/simple_example_2-node2406.smt2,RETURN PROOF
+QF_LRA/keymaera/bouncing-ball-inv-node1886.smt2,RETURN PROOF
+QF_LRA/keymaera/water_tank-node17126.smt2,RETURN PROOF
+QF_LRA/keymaera/integer_cubic_root_knuth-node1362.smt2,RETURN PROOF
+QF_LRA/keymaera/intersection-example-simple.proof-node606.smt2,RETURN PROOF
+QF_LRA/keymaera/water_tank-node4029.smt2,RETURN PROOF
+TOTAL TIME 760.828
+TIMESTAMP 2022-05-05 19:21:51

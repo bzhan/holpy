@@ -4,6 +4,7 @@ Script for running a folder of smt files as well as store the stastics in a .csv
 Usage: python -m stat FOLDER_NAME
 """
 import time
+from datetime import datetime
 import os
 import sys
 import csv
@@ -58,8 +59,21 @@ def test_parse_step(verit_proof, ctx):
 
     return steps
 
+
+def test_proof(filename, solve_timeout=120):
+    """note: sys.getsizeof(verit_proof) failed in pypy3, so we can't get the proof size now"""
+    print(filename)
+    unsat, res = interface.is_unsat(filename, timeout=solve_timeout)
+    if not unsat:
+        return [filename[11:], 'UN-UNSAT']
+    verit_proof = interface.solve(filename, timeout=solve_timeout)
+    if verit_proof is None:
+        return [filename[11:], 'NO PROOF']
+    else:
+        return [filename[11:], "RETURN PROOF"]
+
 def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
-              step_limit=None, omit_proofterm=None, solve_timeout=10, eval_timeout=60):
+              step_limit=None, omit_proofterm=None, solve_timeout=120, eval_timeout=300):
     """Test a given file under eval or proofterm mode."""
     stastic = []
     global smtlib_path
@@ -112,6 +126,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         assert pt.rule != "sorry"
 
     if not test_proofterm:
+        print([filename, solve_time_str, parse_time_str, eval_time_str, len(steps)])
         return [filename, solve_time_str, parse_time_str, eval_time_str, len(steps)]
 
     # Validation by macro.get_proof_term
@@ -132,6 +147,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         assert pt.rule != "sorry"
 
     if test_proofterm:
+        print([filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps)])
         return [filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps)]
 
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
@@ -157,7 +173,16 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         print("Directory %s not found." % path)
         return
 
-    _, file_names = run_fast_scandir(abs_path, ['.smt2'])
+    file_names = []
+    if os.path.isfile("./smt/veriT/data/%s.csv" % path):
+        with open("./smt/veriT/data/%s.csv" % path) as f:
+            f_csv = csv.reader(f)
+            headers = next(f_csv)
+            for row in f_csv:
+                if len(row) == 2 and "RETURN PROOF" == row[-1]:
+                    file_names.append(smtlib_path+row[0])
+    else:
+        _, file_names = run_fast_scandir(abs_path, ['.smt2'])
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
         res = executor.map(test_file, file_names, repeat(show_time),
@@ -182,6 +207,36 @@ def run_fast_scandir(dir, ext):    # dir: str, ext: list
         files.extend(f)
     return subfolders, files
 
+def test_path_proof(path, solve_timeout=120):
+    global smtlib_path
+    if not smtlib_path:
+        return
+
+    abs_path = smtlib_path + path
+
+    stats = []
+
+    if not os.path.exists(abs_path):
+        print("Directory %s not found." % path)
+        return
+
+    _, file_names = run_fast_scandir(abs_path, ['.smt2'])
+    time1 = time.perf_counter()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
+        res = executor.map(test_proof, file_names, repeat(solve_timeout))
+    time2 = time.perf_counter()
+    csv_name = path.replace('/', '.')
+    if not os.path.isdir("./smt/veriT/data"):
+        os.mkdir("./smt/veriT/data")
+    file_name = "./smt/veriT/data/%s.csv" % csv_name
+    with open(file_name, 'w') as f:
+        f_csv = csv.writer(f)
+        f_csv.writerow(['FILENAME', 'STATUS'])
+        f_csv.writerows(res)
+        f_csv.writerow(["TOTAL TIME %.3f" % (time2 - time1)])
+        f_csv.writerow(["TIMESTAMP %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+    return res
+
 # Parameters
 # 1. folder name
 # 2. eval (--eval) or get_proof_term (--proofterm)
@@ -192,44 +247,51 @@ if __name__ == "__main__":
     solve_timeout = 120
     eval_timeout  = 300
     test_eval = True # test eval as default, test proofterm if it is false
+    find_proof = False
     if len(sys.argv) == 3:
         if sys.argv[2] == "--proofterm":
             test_eval = False
         elif sys.argv[2] == "--eval":
             test_eval = True
+        elif sys.argv[2] == "--find-proof":
+            find_proof = True
+
+    if find_proof:
+        test_path_proof(folder_name, solve_timeout=120)
+    else:
+        if len(sys.argv) == 4:
+            solve_timeout = int(sys.argv[3])
+        elif len(sys.argv) == 5:
+            solve_timeout = int(sys.argv[3])
+            eval_timeout  = int(sys.argv[4])
         
-    if len(sys.argv) == 4:
-        solve_timeout = int(sys.argv[3])
-    elif len(sys.argv) == 5:
-        solve_timeout = int(sys.argv[3])
-        eval_timeout  = int(sys.argv[4])
-    
-    start_time = time.perf_counter()
-    if test_eval:
-        stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
-    else:
-        stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
-    print("stats", stats)
-    end_time = time.perf_counter()
-    if not os.path.isdir('./smt/veriT/stastics'):
-        os.mkdir('./smt/veriT/stastics')
-    if not os.path.isdir('./smt/veriT/stastics/eval'):
-        os.mkdir('./smt/veriT/stastics/eval')
-    if not os.path.isdir('./smt/veriT/stastics/proofterm'):
-        os.mkdir('./smt/veriT/stastics/proofterm')
-    
-    
+        start_time = time.perf_counter()
+        if test_eval:
+            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
+        else:
+            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
+        end_time = time.perf_counter()
+        print("stats", stats)
+        if not os.path.isdir('./smt/veriT/stastics'):
+            os.mkdir('./smt/veriT/stastics')
+        if not os.path.isdir('./smt/veriT/stastics/eval'):
+            os.mkdir('./smt/veriT/stastics/eval')
+        if not os.path.isdir('./smt/veriT/stastics/proofterm'):
+            os.mkdir('./smt/veriT/stastics/proofterm')
+        
+        
 
-    csv_name = folder_name.replace('/', '.')
-    if test_eval:
-        headers = ['filename', 'Solve', 'Parse', 'Eval', 'Steps']
-        res_file_name = './smt/veriT/stastics/eval/%s.csv' % csv_name
-    else:
-        headers = ['filename', 'Solve', 'Parse', 'ProofTerm', 'Steps']
-        res_file_name = './smt/veriT/stastics/proofterm/%s.csv' % csv_name
+        csv_name = folder_name.replace('/', '.')
+        if test_eval:
+            headers = ['filename', 'Solve', 'Parse', 'Eval', 'Steps']
+            res_file_name = './smt/veriT/stastics/eval/%s.csv' % csv_name
+        else:
+            headers = ['filename', 'Solve', 'Parse', 'ProofTerm', 'Steps']
+            res_file_name = './smt/veriT/stastics/proofterm/%s.csv' % csv_name
 
-    with open(res_file_name, 'w') as f:
-        f_csv = csv.writer(f)
-        f_csv.writerow(headers)
-        f_csv.writerows(stats)
-        f_csv.writerow(["Total time: %.3f" % (end_time - start_time)])
+        with open(res_file_name, 'w') as f:
+            f_csv = csv.writer(f)
+            f_csv.writerow(headers)
+            f_csv.writerows(stats)
+            f_csv.writerow(["Total time: %.3f" % (end_time - start_time)])
+            f_csv.writerow([datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
