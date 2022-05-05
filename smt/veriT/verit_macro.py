@@ -3400,8 +3400,9 @@ class ForallInstMacro(Macro):
             raise VeriTException("forall_inst", "unexpected argument")
 
         forall_tm = neg_tm.arg
-        for _, var in args[1:]:
-            forall_tm = forall_tm.arg.subst_bound(var)
+        dct = {k: v for k, v in args[1:]}
+        while forall_tm.is_forall():
+            forall_tm = forall_tm.arg.subst_bound(dct[forall_tm.arg.var_name])
         if forall_tm == inst_tm:
             return Thm(goal)
         elif compare_sym_tm(forall_tm, inst_tm):
@@ -3415,8 +3416,9 @@ class ForallInstMacro(Macro):
         goal = args[0]
         forall_tm, inst_tm = goal.arg1.arg, goal.arg
         pt = ProofTerm.assume(forall_tm)
-        for _, var in args[1:]:
-            pt = pt.forall_elim(var)
+        dct = {k: v for k, v in args[1:]}
+        while pt.prop.is_forall():
+            pt = pt.forall_elim(dct[pt.prop.arg.var_name])        
         pt = pt.implies_intr(forall_tm).on_prop(rewr_conv('imp_disj_eq'))
         if pt.prop == goal:
             return pt

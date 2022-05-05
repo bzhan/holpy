@@ -1,6 +1,6 @@
 """Proof reconstruction."""
 import re
-import resource
+import os
 
 from smt.veriT.proof_parser import decl_parser, proof_parser, smt_assertion_parser
 from smt.veriT import command
@@ -75,8 +75,10 @@ class ProofReconstruction:
     """
     def __init__(self, steps, smt_assertions=set()) -> None:
         # set maximum memory usage as 8GB
-        _, hard = resource.getrlimit(resource.RLIMIT_AS)
-        resource.setrlimit(resource.RLIMIT_AS, (8589934592, hard))
+        if os.name == 'posix':
+            import resource
+            _, hard = resource.getrlimit(resource.RLIMIT_AS)
+            resource.setrlimit(resource.RLIMIT_AS, (8589934592, hard))
         # List of steps
         self.steps = steps
 
