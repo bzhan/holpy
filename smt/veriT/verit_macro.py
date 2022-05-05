@@ -264,6 +264,10 @@ class ThResolutionMacro(Macro):
     def eval(self, args, prevs):
         cl, cl_sizes = args
         assert len(cl_sizes) == len(prevs)
+
+        if len(prevs) == 1 and prevs[0].prop == Not(true) and len(cl) == 0:
+            return Thm(Or(*cl), *(pt.hyps for pt in prevs))
+
         prems = []
         for cl_size, prev in zip(cl_sizes, prevs):
             prems.append(strip_disj_n(prev.prop, cl_size))
@@ -289,6 +293,10 @@ class ThResolutionMacro(Macro):
     def get_proof_term(self, args, prevs):
         cl, cl_sizes = args
         assert len(cl_sizes) == len(prevs)
+
+        if len(prevs) == 1 and prevs[0].prop == Not(true) and len(cl) == 0:
+            return prevs[0].on_prop(rewr_conv('verit_not_simplify1'))
+
         prems = []
         for cl_size, prev in zip(cl_sizes, prevs):
             prems.append(strip_disj_n(prev.prop, cl_size))
