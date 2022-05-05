@@ -1,0 +1,41 @@
+filename,Solve,Parse,ProofTerm,Steps
+../smt-lib/QF_UF/SEQ/SEQ035_size5.smt2,6.843,27.352,Error: ../smt-lib/QF_UF/SEQ/SEQ035_size5.smt2 Timeout,176504
+../smt-lib/QF_UF/SEQ/SEQ004_size6.smt2,0.599,38.047,Error: ../smt-lib/QF_UF/SEQ/SEQ004_size6.smt2 Timeout,15955
+../smt-lib/QF_UF/SEQ/SEQ038_size7.smt2,0.598,7.476,Proofterm: 61.321,8376
+../smt-lib/QF_UF/SEQ/SEQ011_size3.smt2,0.359,18.490,Proofterm: 134.093,14224
+../smt-lib/QF_UF/SEQ/SEQ013_size5.smt2,5.519,19.927,Proofterm: 260.775,84020
+../smt-lib/QF_UF/SEQ/SEQ017_size5.smt2,0.253,6.554,Proofterm: 28.089,4291
+../smt-lib/QF_UF/SEQ/SEQ015_size3.smt2,1.535,7.949,Proofterm: 53.679,20987
+../smt-lib/QF_UF/SEQ/SEQ009_size9.smt2,19.698,96.217,Error: ../smt-lib/QF_UF/SEQ/SEQ009_size9.smt2 Timeout,200406
+../smt-lib/QF_UF/SEQ/SEQ004_size5.smt2,0.311,13.407,Proofterm: 107.868,8218
+../smt-lib/QF_UF/SEQ/SEQ018_size6.smt2,7.051,49.938,Error: ../smt-lib/QF_UF/SEQ/SEQ018_size6.smt2 Timeout,188365
+../smt-lib/QF_UF/SEQ/SEQ015_size2.smt2,0.335,2.716,Proofterm: 5.643,735
+../smt-lib/QF_UF/SEQ/SEQ038_size9.smt2,2.939,20.261,Proofterm: 186.156,22080
+../smt-lib/QF_UF/SEQ/SEQ050_size2.smt2,0.335,3.273,Proofterm: 7.584,756
+../smt-lib/QF_UF/SEQ/SEQ032_size2.smt2,0.183,2.332,Proofterm: 3.521,383
+../smt-lib/QF_UF/SEQ/SEQ010_size6.smt2,20.432,37.869,Error: ../smt-lib/QF_UF/SEQ/SEQ010_size6.smt2 Timeout,141511
+../smt-lib/QF_UF/SEQ/SEQ026_size5.smt2,30.050,117.212,Error: ../smt-lib/QF_UF/SEQ/SEQ026_size5.smt2 Timeout,323848
+../smt-lib/QF_UF/SEQ/SEQ035_size4.smt2,1.760,9.583,Proofterm: 71.914,35793
+../smt-lib/QF_UF/SEQ/SEQ009_size8.smt2,3.185,16.564,Error: ../smt-lib/QF_UF/SEQ/SEQ009_size8.smt2 Timeout,36353
+../smt-lib/QF_UF/SEQ/SEQ011_size2.smt2,0.553,4.466,Proofterm: 20.124,3265
+../smt-lib/QF_UF/SEQ/SEQ032_size3.smt2,1.423,5.741,Proofterm: 30.521,8853
+../smt-lib/QF_UF/SEQ/SEQ009_size7.smt2,0.518,6.104,Proofterm: 94.034,8771
+../smt-lib/QF_UF/SEQ/SEQ013_size4.smt2,1.403,10.799,Proofterm: 87.520,27641
+../smt-lib/QF_UF/SEQ/SEQ042_size3.smt2,2.520,4.226,Proofterm: 39.709,8829
+../smt-lib/QF_UF/SEQ/SEQ020_size3.smt2,0.862,21.720,Error: ../smt-lib/QF_UF/SEQ/SEQ020_size3.smt2 ,15515
+../smt-lib/QF_UF/SEQ/SEQ010_size9.smt2,1.025,18.883,Proofterm: 158.336,16694
+../smt-lib/QF_UF/SEQ/SEQ026_size4.smt2,12.643,29.432,Proofterm: 291.742,91548
+../smt-lib/QF_UF/SEQ/SEQ017_size4.smt2,0.389,7.479,Proofterm: 50.088,13372
+../smt-lib/QF_UF/SEQ/SEQ005_size6.smt2,4.258,29.408,Error: ../smt-lib/QF_UF/SEQ/SEQ005_size6.smt2 Timeout,107517
+../smt-lib/QF_UF/SEQ/SEQ005_size9.smt2,2.909,29.816,Proofterm: 259.391,21646
+../smt-lib/QF_UF/SEQ/SEQ020_size2.smt2,1.556,3.880,Error: ../smt-lib/QF_UF/SEQ/SEQ020_size2.smt2 ,3551
+../smt-lib/QF_UF/SEQ/SEQ038_size6.smt2,13.836,79.713,Error: ../smt-lib/QF_UF/SEQ/SEQ038_size6.smt2 Timeout,341703
+../smt-lib/QF_UF/SEQ/SEQ050_size3.smt2,0.494,5.072,Proofterm: 31.488,7998
+../smt-lib/QF_UF/SEQ/SEQ042_size2.smt2,0.377,3.500,Proofterm: 8.952,1117
+../smt-lib/QF_UF/SEQ/SEQ019_size5.smt2,0.295,4.633,Proofterm: 28.021,5079
+../smt-lib/QF_UF/SEQ/SEQ018_size7.smt2,0.444,8.548,Proofterm: 62.909,8253
+../smt-lib/QF_UF/SEQ/SEQ005_size7.smt2,1.331,10.681,Proofterm: 104.728,14040
+../smt-lib/QF_UF/SEQ/SEQ019_size4.smt2,0.161,4.964,Proofterm: 26.647,5217
+../smt-lib/QF_UF/SEQ/SEQ010_size7.smt2,0.630,6.688,Proofterm: 63.829,8252
+Total time: 469.666
+2022-05-06 00:15:02
