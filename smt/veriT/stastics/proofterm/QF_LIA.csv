@@ -1,969 +1,116 @@
 filename,Solve,Parse,ProofTerm,Steps
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_12.smt2,0.057,0.876,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_12.smt2 currently lia_generic is not supported,92
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_14.smt2,0.061,0.904,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_14.smt2 currently lia_generic is not supported,106
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_18.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_4.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_10.smt2,0.041,0.764,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_10.smt2 currently lia_generic is not supported,78
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_5.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_11.smt2,0.061,0.838,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_11.smt2 currently lia_generic is not supported,89
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_13.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_9.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_6.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_15.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_19.smt2,0.112,0.640,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_19.smt2 currently lia_generic is not supported,145
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_14.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_9.smt2,0.060,0.803,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_9.smt2 currently lia_generic is not supported,71
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_16.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_3.smt2,0.036,0.328,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_3.smt2 currently lia_generic is not supported,29
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_7.smt2,0.044,0.601,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_7.smt2 currently lia_generic is not supported,57
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_12.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_16.smt2,0.168,0.831,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_16.smt2 currently lia_generic is not supported,132
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_19.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_7.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_4.smt2,0.037,0.286,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_4.smt2 currently lia_generic is not supported,36
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_5.smt2,0.044,0.467,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_5.smt2 currently lia_generic is not supported,43
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_20.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_13.smt2,0.050,0.895,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_13.smt2 currently lia_generic is not supported,99
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_17.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_8.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_8.smt2,0.043,0.654,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_8.smt2 currently lia_generic is not supported,64
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_6.smt2,0.044,0.539,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_6.smt2 currently lia_generic is not supported,50
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_3.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_15.smt2,0.058,2.012,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_15.smt2 currently lia_generic is not supported,117
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_17.smt2,0.069,0.796,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_17.smt2 currently lia_generic is not supported,135
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_20.smt2,0.065,1.641,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_20.smt2 currently lia_generic is not supported,148
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_10.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_11.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_sat_2.smt2,sat,,,
-../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_18.smt2,0.055,1.882,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_18.smt2 currently lia_generic is not supported,134
-../smt-lib/QF_LIA/miplib2003/mzzv11.sat.smt2,sat,,,
-../smt-lib/QF_LIA/miplib2003/manna81.sat.smt2,sat,,,
-../smt-lib/QF_LIA/miplib2003/stp3d.sat.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/miplib2003/disctom.sat.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/miplib2003/fast0507.sat.smt2,sat,,,
-../smt-lib/QF_LIA/miplib2003/p2756.sat.smt2,sat,,,
-../smt-lib/QF_LIA/miplib2003/protfold.sat.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/miplib2003/ds.sat.smt2,sat,,,
-../smt-lib/QF_LIA/miplib2003/seymour.sat.smt2,sat,,,
-../smt-lib/QF_LIA/miplib2003/air04.sat.smt2,sat,,,
-../smt-lib/QF_LIA/miplib2003/mzzv42z.sat.smt2,sat,,,
-../smt-lib/QF_LIA/miplib2003/nw04.sat.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/miplib2003/harp2.sat.smt2,sat,,,
-../smt-lib/QF_LIA/miplib2003/cap6000.sat.smt2,sat,,,
-../smt-lib/QF_LIA/miplib2003/air05.sat.smt2,sat,,,
-../smt-lib/QF_LIA/miplib2003/sp97ar.sat.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage17.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage7.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage8.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage10.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage9.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage13.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage21.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage3.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage6.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage2.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage22.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage15.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage0.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage12.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage16.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage4.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage19.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage24.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage14.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage11.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage18.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage23.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage20.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage5.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd075v83c/unbd-sage1.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage17.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage7.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage8.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage10.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage9.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage13.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage21.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage3.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage6.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage2.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage22.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage15.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage0.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage12.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage16.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage4.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage19.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage24.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage14.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage11.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage18.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage23.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage20.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage5.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd010v15c/unbd-sage1.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage17.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage7.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage8.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage10.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage9.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage13.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage21.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage3.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage6.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage2.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage22.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage15.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage0.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage12.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage16.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage4.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage19.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage24.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage14.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage11.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage18.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage23.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage20.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage5.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd025v30c/unbd-sage1.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage17.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage7.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage8.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage10.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage9.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage13.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage21.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage3.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage6.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage2.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage22.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage15.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage0.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage12.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage16.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage4.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage19.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage24.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage14.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage11.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage18.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage23.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage20.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage5.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd100v110c/unbd-sage1.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage17.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage7.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage8.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage10.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage9.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage13.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage21.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage3.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage6.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage2.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage22.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage15.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage0.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage12.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage16.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage4.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage19.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage24.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage14.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage11.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage18.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage23.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage20.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage5.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/unbd-sage/unbd050v55c/unbd-sage1.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-10/c10_problem__005.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-10/c10_problem__002.smt2.slack.smt2,0.331,2.288,Proofterm: 3.623,140
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-10/c10_problem__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-10/c10_problem__006.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-10/c10_problem__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-10/c10_problem__003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-100/c100_problem__005.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-100/c100_problem__006.smt2.slack.smt2,0.115,2.404,Proofterm: 4.232,193
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-100/c100_problem__004.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-100/c100_problem__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-100/c100_problem__003.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-70/c70_problem__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-70/c70_problem__003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-70/c70_problem__005.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-70/c70_problem__002.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-70/c70_problem__004.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-90/c90_problem__003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-90/c90_problem__004.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-90/c90_problem__006.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-90/c90_problem__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-90/c90_problem__005.smt2.slack.smt2,0.159,2.033,Proofterm: 4.234,190
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-20/c20_problem__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-20/c20_problem__005.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-20/c20_problem__004.smt2.slack.smt2,0.165,2.651,Proofterm: 3.398,156
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-20/c20_problem__002.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-20/c20_problem__003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-80/c80_problem__003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-80/c80_problem__002.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-80/c80_problem__004.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-80/c80_problem__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-80/c80_problem__005.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-30/c30_problem__002.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-30/c30_problem__004.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-30/c30_problem__005.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-30/c30_problem__006.smt2.slack.smt2,0.085,2.041,Proofterm: 2.916,157
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-30/c30_problem__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-50/c50_problem__006.smt2.slack.smt2,0.381,2.098,Proofterm: 3.568,182
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-50/c50_problem__002.smt2.slack.smt2,0.255,2.341,Proofterm: 3.322,183
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-50/c50_problem__005.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-50/c50_problem__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-50/c50_problem__004.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-40/c40_problem__005.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-40/c40_problem__002.smt2.slack.smt2,0.099,2.587,Proofterm: 3.409,170
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-40/c40_problem__004.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-40/c40_problem__006.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-40/c40_problem__003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-60/c60_problem__004.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-60/c60_problem__006.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-60/c60_problem__002.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-60/c60_problem__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-60/c60_problem__003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__023.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__024.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__025.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__026.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__017.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__032.smt2.slack.smt2,0.433,2.279,Proofterm: 4.311,182
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__022.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__027.smt2.slack.smt2,0.144,1.748,Proofterm: 5.165,180
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__021.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__022.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__029.smt2.slack.smt2,0.177,1.924,Proofterm: 4.767,184
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__027.smt2.slack.smt2,0.121,1.567,Proofterm: 4.067,168
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__030.smt2.slack.smt2,0.621,4.850,Proofterm: 4.068,184
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__034.smt2.slack.smt2,0.212,4.016,Proofterm: 3.815,180
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__024.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__018.smt2.slack.smt2,0.358,3.791,Proofterm: 5.080,176
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__016.smt2.slack.smt2,0.432,3.820,Proofterm: 5.078,184
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__021.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__017.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__028.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__025.smt2.slack.smt2,0.228,3.739,Proofterm: 4.774,178
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__032.smt2.slack.smt2,0.234,3.927,Proofterm: 4.715,186
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__031.smt2.slack.smt2,0.125,3.878,Proofterm: 5.102,178
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__029.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__033.smt2.slack.smt2,0.218,3.848,Proofterm: 4.821,170
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__026.smt2.slack.smt2,0.126,3.544,Proofterm: 5.157,178
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__030.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__033.smt2.slack.smt2,0.306,3.305,Proofterm: 4.609,181
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__016.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__035.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__035.smt2.slack.smt2,0.233,2.908,Proofterm: 4.984,180
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__014.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__028.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__023.smt2.slack.smt2,0.137,3.099,Proofterm: 5.198,183
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__034.smt2.slack.smt2,0.352,3.088,Proofterm: 4.065,171
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__031.smt2.slack.smt2,0.174,2.408,Proofterm: 5.542,181
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__033.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__029.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__016.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__021.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__033.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__022.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__017.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__035.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__030.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__024.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__032.smt2.slack.smt2,0.192,2.812,Proofterm: 5.334,285
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__027.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__029.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__024.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__031.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__016.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__030.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__035.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__022.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__031.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__021.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__034.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__028.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__017.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__026.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__028.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__025.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__026.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__027.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__032.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__034.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__013.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__025.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem_2__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__023.smt2.slack.smt2,0.105,3.480,Proofterm: 2.937,130
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__016.smt2.slack.smt2,0.149,2.873,Proofterm: 4.786,130
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__017.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__022.smt2.slack.smt2,0.435,2.328,Proofterm: 4.831,132
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__025.smt2.slack.smt2,0.109,2.080,Proofterm: 3.146,117
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__021.smt2.slack.smt2,0.118,2.790,Proofterm: 3.691,133
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__022.smt2.slack.smt2,0.110,1.946,Proofterm: 6.396,132
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__019.smt2.slack.smt2,0.104,2.340,Proofterm: 5.089,136
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__024.smt2.slack.smt2,0.126,2.950,Proofterm: 4.151,133
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__011.smt2.slack.smt2,0.095,2.129,Proofterm: 5.629,138
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__020.smt2.slack.smt2,0.102,2.289,Proofterm: 3.612,128
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__017.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__021.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__016.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__025.smt2.slack.smt2,8.399,1.792,Error: ../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__025.smt2.slack.smt2 currently lia_generic is not supported,274
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__024.smt2.slack.smt2,0.154,4.208,Proofterm: 4.020,136
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__020.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__016.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__033.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__025.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__032.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__021.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__031.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__030.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__034.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__029.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__022.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__030.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__027.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__028.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__035.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__033.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__028.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__026.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__024.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__024.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__032.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__021.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__029.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__025.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__016.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__011.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__031.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__017.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__035.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__017.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__027.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__019.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__022.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__034.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__026.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem_2__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/35-vars/v35_problem__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__032.smt2.slack.smt2,0.058,1.530,Proofterm: 1.932,70
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__021.smt2.slack.smt2,0.075,2.067,Proofterm: 1.526,70
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__035.smt2.slack.smt2,0.062,1.550,Proofterm: 2.346,65
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__016.smt2.slack.smt2,0.086,1.701,Proofterm: 2.737,85
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__020.smt2.slack.smt2,0.121,2.542,Proofterm: 1.854,72
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__033.smt2.slack.smt2,0.069,1.355,Proofterm: 1.783,68
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__022.smt2.slack.smt2,0.105,1.720,Proofterm: 2.693,80
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__025.smt2.slack.smt2,0.084,2.652,Proofterm: 2.642,82
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__022.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__027.smt2.slack.smt2,0.091,1.731,Proofterm: 2.028,72
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__024.smt2.slack.smt2,0.071,1.793,Proofterm: 2.249,88
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__021.smt2.slack.smt2,0.131,1.840,Proofterm: 3.486,86
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__016.smt2.slack.smt2,0.080,2.434,Proofterm: 2.481,84
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__026.smt2.slack.smt2,0.083,1.813,Proofterm: 1.934,68
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__030.smt2.slack.smt2,0.110,2.295,Proofterm: 2.443,90
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__025.smt2.slack.smt2,0.093,3.849,Proofterm: 3.047,88
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__029.smt2.slack.smt2,0.093,2.883,Proofterm: 1.644,45
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__035.smt2.slack.smt2,0.124,2.529,Proofterm: 2.583,88
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__028.smt2.slack.smt2,0.092,2.514,Proofterm: 1.981,82
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__031.smt2.slack.smt2,0.086,1.987,Proofterm: 1.811,79
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__031.smt2.slack.smt2,0.089,2.463,Proofterm: 1.909,69
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__029.smt2.slack.smt2,0.062,1.964,Proofterm: 1.992,86
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__019.smt2.slack.smt2,0.096,1.757,Proofterm: 1.604,76
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__028.smt2.slack.smt2,0.327,1.943,Proofterm: 2.008,67
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__026.smt2.slack.smt2,0.067,1.520,Proofterm: 1.564,85
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__017.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__030.smt2.slack.smt2,0.093,2.306,Proofterm: 1.737,86
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__027.smt2.slack.smt2,0.137,2.253,Proofterm: 2.365,91
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__024.smt2.slack.smt2,0.095,2.190,Proofterm: 2.817,88
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__017.smt2.slack.smt2,0.080,1.874,Proofterm: 2.054,86
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__034.smt2.slack.smt2,0.051,2.094,Proofterm: 2.734,88
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__032.smt2.slack.smt2,0.100,2.530,Proofterm: 2.637,83
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__034.smt2.slack.smt2,0.109,1.219,Proofterm: 0.871,51
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__012.smt2.slack.smt2,0.065,1.288,Proofterm: 0.842,52
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__029.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__034.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__024.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__032.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__034.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__022.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__027.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__021.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__026.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__017.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__016.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__026.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__029.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__024.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__033.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__031.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__021.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__028.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__025.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__022.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__032.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__031.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__033.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__028.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__025.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__030.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__016.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__027.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__035.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__017.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__035.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/45-vars/v45_problem_2__030.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__033.smt2.slack.smt2,0.167,1.131,Proofterm: 2.528,233
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__028.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__028.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__021.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__022.smt2.slack.smt2,0.994,1.369,Error: ../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__022.smt2.slack.smt2 currently lia_generic is not supported,396
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__029.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__021.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__033.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__030.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__027.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__029.smt2.slack.smt2,0.160,1.506,Proofterm: 2.812,226
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__026.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__019.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__031.smt2.slack.smt2,1.322,1.945,Error: ../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__031.smt2.slack.smt2 currently lia_generic is not supported,389
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__024.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__032.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__016.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__030.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__035.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__032.smt2.slack.smt2,0.255,1.231,Proofterm: 2.229,223
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__024.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__022.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__017.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__031.smt2.slack.smt2,0.186,1.155,Proofterm: 2.469,230
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__016.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__026.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__025.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__014.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__017.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__034.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__034.smt2.slack.smt2,0.149,1.244,Proofterm: 2.622,226
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__035.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__025.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__027.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__003.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__028.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__015.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__031.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__015.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__001.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__017.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__027.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__022.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__025.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__032.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__034.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__012.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__028.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__026.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__017.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__029.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__020.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__002.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__030.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__013.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__032.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__014.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__034.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__010.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__007.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__029.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__026.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__005.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__031.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__033.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__018.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__033.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__004.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__027.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__023.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__012.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__030.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__020.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__009.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__024.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__025.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__016.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__018.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__035.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__006.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__022.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__035.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__008.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__011.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__021.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__019.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__021.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem__024.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/40-vars/v40_problem_2__016.smt2.slack.smt2,sat,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_009.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_020.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_008.smt2.slack.smt2,0.072,0.704,Proofterm: 1.534,191
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_008.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_012.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_003.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_013.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_015.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_009.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_011.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_007.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_002.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_014.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_016.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_002.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_002.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_006.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_004.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_005.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_004.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_005.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_008.smt2.slack.smt2,0.069,1.523,Proofterm: 2.968,174
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_001.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_004.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_013.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_006.smt2.slack.smt2,0.070,0.909,Proofterm: 2.044,191
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_014.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_018.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_001.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_012.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_014.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_001.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_011.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_019.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_010.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_015.smt2.slack.smt2,0.076,1.702,Proofterm: 3.122,172
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_005.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_010.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_012.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_016.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_017.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_009.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_010.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_007.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_006.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_007.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_013.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_02_016.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_015.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_009.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_008.smt2.slack.smt2,0.057,1.308,Proofterm: 2.804,125
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_008.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_013.smt2.slack.smt2,0.059,0.728,Proofterm: 0.452,46
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_009.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_011.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_007.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_002.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_002.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_002.smt2.slack.smt2,0.057,1.324,Proofterm: 2.112,116
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_006.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_004.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_005.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_004.smt2.slack.smt2,0.043,0.395,Proofterm: 0.523,103
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_005.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_008.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_001.smt2.slack.smt2,0.049,0.640,Proofterm: 0.818,116
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_004.smt2.slack.smt2,0.066,1.411,Proofterm: 2.443,133
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_013.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_006.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_014.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_001.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_012.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_014.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_001.smt2.slack.smt2,0.071,0.755,Proofterm: 1.597,136
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_011.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_005.smt2.slack.smt2,0.313,1.196,Proofterm: 1.673,103
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_010.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_012.smt2.slack.smt2,0.070,1.479,Proofterm: 2.498,136
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_003.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_010.smt2.slack.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_006.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_007.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_008.smt2.slack.smt2,unknown,,,
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_009.smt2.slack.smt2,0.054,0.662,Proofterm: 1.258,75
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_001.smt2.slack.smt2,0.054,0.425,Proofterm: 0.327,75
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_01_001.smt2.slack.smt2,0.066,0.477,Proofterm: 0.621,27
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_010.smt2.slack.smt2,0.047,0.499,Proofterm: 0.346,41
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_005.smt2.slack.smt2,0.050,0.534,Proofterm: 0.468,68
-../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_003.smt2.slack.smt2,0.082,0.339,Proofterm: 0.146,41
-../smt-lib/QF_LIA/tropical-matrix/constraint-368069.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-479884.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-906586.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1635444.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-687179.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1270163.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-495763.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-527358.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-2085483.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-416752.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-285271.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1265513.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-221609.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1290859.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-505409.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-3956027.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-737829.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-319990.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-679470.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1285151.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-3427750.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1361831.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-495717.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1682901.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-901996.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-244431.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-178902.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-916807.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-283008.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1333327.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-496502.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-515686.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-570196.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-794687.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-861420.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-394532.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-735583.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-278378.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1345233.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-3055292.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-343499.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-705295.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1015084.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-762853.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1452366.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-2121292.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-497601.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-989891.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-603294.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-396616.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1908553.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-703279.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-715402.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-2876125.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-851594.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-299856.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-187292.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-917322.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-696340.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-645855.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-247831.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-463860.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-255468.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-329386.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-390915.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1791895.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1268455.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-321761.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-983194.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-645054.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1262176.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-651478.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-413904.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-496324.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-2465898.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-373262.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-206132.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-740637.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-523123.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1330141.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-269353.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-729964.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-658040.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-642278.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-2783581.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-2061672.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-170961.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-704423.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-797738.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1072007.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-369883.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1270998.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-556171.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1495125.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-4033959.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1915015.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-2306960.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1206577.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-614657.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-2186643.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1192684.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-517804.smt2,sat,,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-649834.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-758897.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1138192.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-579281.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-1317230.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/QF_LIA/tropical-matrix/constraint-526870.smt2,sat,,,
-../smt-lib/QF_LIA/fft/Sz256_6616.smt2,UNSAT checking is timeout! (veriT),,,
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_12.smt2,0.182,9.292,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_12.smt2 currently lia_generic is not supported,92
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_14.smt2,0.186,11.098,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_14.smt2 currently lia_generic is not supported,106
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_10.smt2,0.174,6.614,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_10.smt2 currently lia_generic is not supported,78
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_11.smt2,0.292,7.716,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_11.smt2 currently lia_generic is not supported,89
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_19.smt2,0.175,13.958,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_19.smt2 currently lia_generic is not supported,145
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_9.smt2,0.195,3.826,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_9.smt2 currently lia_generic is not supported,71
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_3.smt2,0.059,1.738,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_3.smt2 currently lia_generic is not supported,29
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_7.smt2,0.054,3.258,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_7.smt2 currently lia_generic is not supported,57
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_16.smt2,0.145,11.524,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_16.smt2 currently lia_generic is not supported,132
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_4.smt2,0.055,1.002,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_4.smt2 currently lia_generic is not supported,36
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_5.smt2,0.061,2.101,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_5.smt2 currently lia_generic is not supported,43
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_13.smt2,0.060,7.673,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_13.smt2 currently lia_generic is not supported,99
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_8.smt2,0.079,3.630,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_8.smt2 currently lia_generic is not supported,64
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_6.smt2,0.046,1.948,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_6.smt2 currently lia_generic is not supported,50
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_15.smt2,0.086,10.314,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_15.smt2 currently lia_generic is not supported,117
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_17.smt2,0.080,9.950,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_17.smt2 currently lia_generic is not supported,135
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_20.smt2,0.281,14.503,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_20.smt2 currently lia_generic is not supported,148
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_18.smt2,0.093,10.067,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_18.smt2 currently lia_generic is not supported,134
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-10/c10_problem__002.smt2.slack.smt2,0.052,7.727,Proofterm: 17.743,140
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-100/c100_problem__006.smt2.slack.smt2,0.069,9.958,Proofterm: 19.090,193
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-90/c90_problem__005.smt2.slack.smt2,0.172,11.604,Proofterm: 18.270,190
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-20/c20_problem__004.smt2.slack.smt2,0.141,10.512,Proofterm: 15.969,156
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-30/c30_problem__006.smt2.slack.smt2,0.088,9.199,Proofterm: 14.175,157
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-50/c50_problem__006.smt2.slack.smt2,0.198,11.318,Proofterm: 16.267,182
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-50/c50_problem__002.smt2.slack.smt2,0.186,10.363,Proofterm: 20.689,183
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-40/c40_problem__002.smt2.slack.smt2,0.103,10.948,Proofterm: 15.750,170
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__032.smt2.slack.smt2,0.172,7.797,Proofterm: 22.776,182
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__027.smt2.slack.smt2,0.234,10.827,Proofterm: 22.084,180
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__029.smt2.slack.smt2,0.383,9.853,Proofterm: 22.386,184
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__027.smt2.slack.smt2,0.203,7.526,Proofterm: 22.451,168
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__030.smt2.slack.smt2,0.260,10.033,Proofterm: 23.369,184
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__034.smt2.slack.smt2,0.261,9.303,Proofterm: 24.990,180
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__018.smt2.slack.smt2,0.132,9.904,Proofterm: 20.038,176
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__016.smt2.slack.smt2,0.081,9.135,Proofterm: 18.194,184
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__025.smt2.slack.smt2,0.434,9.826,Proofterm: 18.878,178
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__032.smt2.slack.smt2,0.190,9.771,Proofterm: 23.475,186
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__031.smt2.slack.smt2,0.420,9.655,Proofterm: 20.807,178
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__033.smt2.slack.smt2,0.174,9.355,Proofterm: 18.035,170
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__026.smt2.slack.smt2,0.208,10.130,Proofterm: 21.358,178
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__033.smt2.slack.smt2,0.221,7.527,Proofterm: 18.131,181
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__035.smt2.slack.smt2,0.517,9.623,Proofterm: 16.912,180
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__023.smt2.slack.smt2,0.380,9.018,Proofterm: 19.282,183
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__034.smt2.slack.smt2,0.297,7.372,Proofterm: 19.206,171
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__031.smt2.slack.smt2,0.298,9.928,Proofterm: 17.771,181
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__032.smt2.slack.smt2,0.451,9.367,Proofterm: 26.094,285
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__023.smt2.slack.smt2,0.132,6.840,Proofterm: 14.313,130
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__016.smt2.slack.smt2,0.070,6.426,Proofterm: 13.706,130
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__022.smt2.slack.smt2,0.219,7.461,Proofterm: 15.684,132
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__025.smt2.slack.smt2,0.120,6.477,Proofterm: 13.683,117
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__021.smt2.slack.smt2,0.240,7.794,Proofterm: 17.238,133
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__022.smt2.slack.smt2,0.138,7.161,Proofterm: 12.491,132
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__019.smt2.slack.smt2,0.175,6.383,Proofterm: 13.156,136
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__024.smt2.slack.smt2,0.294,6.940,Proofterm: 14.494,133
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__011.smt2.slack.smt2,0.098,6.775,Proofterm: 14.515,138
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__020.smt2.slack.smt2,0.077,6.630,Proofterm: 11.255,128
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__025.smt2.slack.smt2,4.779,10.192,Error: ../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__025.smt2.slack.smt2 currently lia_generic is not supported,274
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__024.smt2.slack.smt2,0.480,7.962,Proofterm: 13.140,136
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__032.smt2.slack.smt2,0.074,3.883,Proofterm: 7.189,70
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__021.smt2.slack.smt2,0.093,3.380,Proofterm: 6.700,70
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__035.smt2.slack.smt2,0.098,3.340,Proofterm: 6.303,65
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__016.smt2.slack.smt2,0.196,2.817,Proofterm: 7.164,85
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__020.smt2.slack.smt2,0.315,2.953,Proofterm: 6.413,72
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__033.smt2.slack.smt2,0.130,3.628,Proofterm: 6.458,68
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__022.smt2.slack.smt2,0.320,4.506,Proofterm: 7.556,80
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__025.smt2.slack.smt2,0.127,5.256,Proofterm: 5.891,82
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__027.smt2.slack.smt2,0.307,3.993,Proofterm: 5.782,72
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__024.smt2.slack.smt2,0.417,4.019,Proofterm: 6.154,88
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__021.smt2.slack.smt2,0.084,3.532,Proofterm: 6.836,86
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__016.smt2.slack.smt2,0.319,3.178,Proofterm: 7.724,84
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__026.smt2.slack.smt2,0.102,2.793,Proofterm: 4.803,68
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__030.smt2.slack.smt2,0.112,4.966,Proofterm: 7.385,90
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__025.smt2.slack.smt2,0.100,3.600,Proofterm: 6.390,88
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__029.smt2.slack.smt2,0.087,2.459,Proofterm: 3.660,45
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__035.smt2.slack.smt2,0.125,4.049,Proofterm: 6.984,88
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__028.smt2.slack.smt2,0.089,4.382,Proofterm: 7.177,82
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__031.smt2.slack.smt2,0.088,5.328,Proofterm: 4.733,79
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__031.smt2.slack.smt2,0.200,4.007,Proofterm: 6.029,69
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__029.smt2.slack.smt2,0.080,5.693,Proofterm: 7.610,86
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__019.smt2.slack.smt2,0.393,3.694,Proofterm: 6.766,76
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__028.smt2.slack.smt2,0.072,4.081,Proofterm: 5.289,67
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__026.smt2.slack.smt2,0.172,5.728,Proofterm: 6.025,85
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__030.smt2.slack.smt2,0.111,5.599,Proofterm: 6.858,86
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__027.smt2.slack.smt2,0.265,5.309,Proofterm: 4.825,91
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__024.smt2.slack.smt2,0.463,3.107,Proofterm: 7.492,88
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__017.smt2.slack.smt2,0.361,4.679,Proofterm: 7.152,86
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__034.smt2.slack.smt2,0.164,5.728,Proofterm: 6.139,88
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__032.smt2.slack.smt2,0.330,5.162,Proofterm: 5.056,83
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__034.smt2.slack.smt2,0.079,2.765,Proofterm: 3.652,51
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__012.smt2.slack.smt2,0.131,2.943,Proofterm: 4.278,52
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__033.smt2.slack.smt2,0.864,7.279,Proofterm: 18.062,233
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__022.smt2.slack.smt2,0.671,7.687,Error: ../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__022.smt2.slack.smt2 currently lia_generic is not supported,396
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__029.smt2.slack.smt2,0.181,8.148,Proofterm: 15.991,226
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__031.smt2.slack.smt2,1.018,8.686,Error: ../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__031.smt2.slack.smt2 currently lia_generic is not supported,389
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__032.smt2.slack.smt2,0.261,5.157,Proofterm: 16.317,223
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__031.smt2.slack.smt2,0.382,6.473,Proofterm: 16.210,230
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__034.smt2.slack.smt2,0.182,6.880,Proofterm: 17.063,226
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_008.smt2.slack.smt2,0.349,6.664,Proofterm: 14.094,191
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_008.smt2.slack.smt2,0.226,5.927,Proofterm: 11.600,174
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_006.smt2.slack.smt2,0.170,6.164,Proofterm: 13.935,191
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_015.smt2.slack.smt2,0.128,6.180,Proofterm: 12.250,172
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_008.smt2.slack.smt2,0.134,5.899,Proofterm: 9.811,125
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_013.smt2.slack.smt2,0.103,2.546,Proofterm: 3.695,46
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_002.smt2.slack.smt2,0.070,5.472,Proofterm: 8.195,116
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_004.smt2.slack.smt2,0.068,4.482,Proofterm: 6.723,103
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_001.smt2.slack.smt2,0.059,5.641,Proofterm: 7.872,116
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_004.smt2.slack.smt2,0.081,5.857,Proofterm: 10.997,133
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_001.smt2.slack.smt2,0.086,6.204,Proofterm: 10.101,136
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_005.smt2.slack.smt2,0.088,6.088,Proofterm: 6.646,103
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_012.smt2.slack.smt2,0.124,5.668,Proofterm: 8.332,136
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_009.smt2.slack.smt2,0.227,2.908,Proofterm: 4.882,75
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_001.smt2.slack.smt2,0.287,5.305,Proofterm: 4.364,75
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_01_001.smt2.slack.smt2,0.057,2.348,Proofterm: 1.459,27
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_010.smt2.slack.smt2,0.303,2.671,Proofterm: 2.989,41
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_005.smt2.slack.smt2,0.293,2.665,Proofterm: 4.442,68
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_003.smt2.slack.smt2,0.302,2.755,Proofterm: 2.713,41

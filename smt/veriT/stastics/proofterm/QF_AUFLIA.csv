@@ -1,1305 +1,262 @@
 filename,Solve,Parse,ProofTerm,Steps
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1630796854449618649.smt2,0.040,0.589,Proofterm: 0.228,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4507590573018277494.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7405460456682932921.smt2,0.046,0.569,Proofterm: 1.988,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7092645672798492791.smt2,0.033,1.371,Proofterm: 1.269,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8011955704126474321.smt2,0.037,1.361,Proofterm: 1.256,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7271452269704952934.smt2,0.068,1.943,Proofterm: 0.835,23
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8618877835758306362.smt2,0.062,0.433,Proofterm: 0.084,14
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1048206973303286471.smt2,0.073,0.460,Proofterm: 1.916,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1946805393457691034.smt2,0.063,0.584,Proofterm: 1.693,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt373337730591991193.smt2,0.084,1.169,Proofterm: 1.118,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6334367605951226396.smt2,0.084,0.377,Proofterm: 0.203,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3758766264560852005.smt2,0.076,0.320,Proofterm: 1.602,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6534511334474546878.smt2,0.088,1.043,Proofterm: 1.581,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1829682051084319908.smt2,0.085,0.484,Proofterm: 1.888,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4296070423334654308.smt2,0.092,0.748,Proofterm: 0.079,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5732050528631778495.smt2,0.101,0.458,Proofterm: 0.067,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4909910871814089418.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2187227346843288353.smt2,0.090,1.249,Proofterm: 1.216,6
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6642385862663943481.smt2,0.104,0.393,Proofterm: 0.019,3
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1789157312273459318.smt2,0.097,0.567,Proofterm: 1.242,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2106860836086514151.smt2,0.105,0.638,Proofterm: 0.162,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5994810375074922742.smt2,0.082,0.575,Proofterm: 1.593,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4552940212595976610.smt2,0.118,0.545,Proofterm: 1.123,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8247715440196289156.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7178509395836479705.smt2,0.100,0.746,Proofterm: 1.511,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1232146482622696854.smt2,0.090,0.557,Proofterm: 0.601,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7359050099439661129.smt2,0.099,1.167,Proofterm: 1.008,8
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2931782982977550988.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2748958072806976140.smt2,0.095,0.409,Proofterm: 0.092,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt616279233519394183.smt2,0.108,2.173,Proofterm: 0.379,27
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6071472468091070475.smt2,0.119,1.897,Proofterm: 0.145,3
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7218190703470801014.smt2,0.098,1.355,Proofterm: 1.067,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7811725335601850819.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5192927862320386454.smt2,0.100,1.786,Proofterm: 0.751,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8513434858697749825.smt2,0.098,1.200,Proofterm: 0.766,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3004264733300706548.smt2,0.111,1.361,Proofterm: 0.865,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt9116345646566616227.smt2,0.115,1.253,Proofterm: 0.906,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4574461499410346282.smt2,0.124,1.957,Proofterm: 0.363,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6879946163714078134.smt2,0.107,1.214,Proofterm: 1.083,13
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt862348610184470396.smt2,0.125,1.451,Proofterm: 0.689,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6150185324016898914.smt2,0.101,1.331,Proofterm: 1.044,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6513374120730325283.smt2,0.142,0.965,Proofterm: 0.935,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4514744799427321218.smt2,0.103,1.175,Proofterm: 1.149,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2946635118515808081.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt52509716184046872.smt2,0.117,0.436,Proofterm: 0.328,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6608232286625221829.smt2,0.100,0.394,Proofterm: 0.149,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1656968675425225632.smt2,0.111,0.873,Proofterm: 0.197,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6900099572485246069.smt2,0.118,0.973,Proofterm: 1.133,8
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7034109130135749243.smt2,0.090,0.446,Proofterm: 0.243,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2524590214650541314.smt2,0.129,1.808,Proofterm: 0.374,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5066516013081219368.smt2,0.098,1.757,Proofterm: 0.616,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt407122468318533822.smt2,0.107,1.422,Proofterm: 0.868,25
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5563843641339295592.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt971450140125177067.smt2,0.116,2.061,Proofterm: 0.351,13
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2960554548505310231.smt2,0.123,1.202,Proofterm: 0.837,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6614798558121277247.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt101358492275879472.smt2,0.104,0.908,Proofterm: 0.452,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3899959149727363456.smt2,0.102,1.219,Proofterm: 0.774,23
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4037084432145914526.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2561449432101481323.smt2,0.162,2.396,Proofterm: 0.488,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt498171090311845791.smt2,0.139,1.221,Proofterm: 0.801,28
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1676069739265740399.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8228927933959930295.smt2,0.131,0.544,Proofterm: 0.111,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5361404349484649674.smt2,0.169,1.216,Proofterm: 0.630,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4132343230757244602.smt2,0.164,1.962,Proofterm: 0.180,8
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1284056365933344272.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7565714320681306474.smt2,0.188,0.700,Proofterm: 0.905,8
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8077224534801305670.smt2,0.165,0.788,Proofterm: 1.025,13
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2897810692389626239.smt2,0.167,0.978,Proofterm: 0.955,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3136064081515784448.smt2,0.143,1.218,Proofterm: 0.738,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1656603882241727713.smt2,0.148,0.986,Proofterm: 0.985,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2621433222940787538.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3010346108910513369.smt2,0.122,1.207,Proofterm: 0.777,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7782311372861729448.smt2,0.202,1.198,Proofterm: 0.778,18
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6876078461802558953.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt672151100080778092.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1491157424836014881.smt2,0.190,0.707,Proofterm: 0.572,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5385891397487700209.smt2,0.168,1.942,Proofterm: 0.144,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1766380371263919774.smt2,0.173,0.835,Proofterm: 0.738,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4537035296062250448.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4503191635050547935.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8422912073068378811.smt2,0.144,1.068,Proofterm: 0.716,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4134543687752878794.smt2,0.187,1.059,Proofterm: 0.567,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1286129643722180277.smt2,0.146,1.225,Proofterm: 0.634,19
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3764635514138113797.smt2,0.196,1.048,Proofterm: 0.658,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8755060589107111188.smt2,0.145,1.549,Proofterm: 0.115,14
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1529145317830911829.smt2,0.223,1.318,Proofterm: 0.314,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4315728387069939040.smt2,0.185,1.685,Proofterm: 0.299,26
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8139752062040253806.smt2,0.143,1.875,Proofterm: 0.285,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt676738985188385144.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1355996306873782731.smt2,0.185,0.910,Proofterm: 0.426,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2782844312644070087.smt2,0.225,0.714,Proofterm: 0.706,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3489543249285628273.smt2,0.152,1.588,Proofterm: 0.487,24
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8078846980698793773.smt2,0.186,1.918,Proofterm: 0.108,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6557511902038258587.smt2,0.238,1.455,Proofterm: 0.229,7
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5438568486190973361.smt2,0.242,1.641,Proofterm: 0.238,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7809753410478836385.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6985556550088020826.smt2,0.211,1.675,Proofterm: 0.199,8
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1803124073673899816.smt2,0.184,1.766,Proofterm: 0.135,14
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt793638039879708422.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4754789943944392049.smt2,0.194,1.201,Proofterm: 0.224,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4596042264305301650.smt2,0.218,1.011,Proofterm: 0.415,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1823835542615668089.smt2,0.179,0.539,Proofterm: 0.401,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1611612768507250801.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt770795137149803982.smt2,0.198,0.503,Proofterm: 0.014,3
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3796329264322518882.smt2,0.229,1.270,Proofterm: 0.157,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3341546682240303433.smt2,0.206,0.801,Proofterm: 0.460,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3728766622780732153.smt2,0.235,1.498,Proofterm: 0.385,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3587125020666388275.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1495354633285877311.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1525565934219293349.smt2,0.195,0.934,Proofterm: 0.259,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8814225796421462573.smt2,0.192,1.452,Proofterm: 0.057,3
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7175394277113951989.smt2,0.198,0.702,Proofterm: 0.775,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8233570541221801360.smt2,0.197,1.212,Proofterm: 0.284,6
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8135394236603703050.smt2,0.196,1.191,Proofterm: 0.137,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt599099718845180000.smt2,0.214,1.785,Proofterm: 0.090,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5469619136922200125.smt2,0.212,1.579,Proofterm: 0.187,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt424770915908526889.smt2,0.247,0.701,Proofterm: 0.572,26
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3523843011010396885.smt2,0.238,1.223,Proofterm: 0.237,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2677767669072326293.smt2,0.276,0.859,Proofterm: 0.394,5
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7534652473557877715.smt2,0.194,0.755,Proofterm: 0.732,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3499861634082508558.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6161395833903900850.smt2,0.268,0.594,Proofterm: 0.707,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2349554521575265533.smt2,0.168,1.541,Proofterm: 0.333,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7909578851601176589.smt2,0.223,0.977,Proofterm: 0.476,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5029315679561572039.smt2,0.168,0.842,Proofterm: 0.603,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt65467803538243106.smt2,0.179,0.830,Proofterm: 0.460,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1989795988797382439.smt2,0.237,0.792,Proofterm: 0.603,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1272323520518114421.smt2,0.250,1.145,Proofterm: 0.206,17
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5410124224885464815.smt2,0.222,0.681,Proofterm: 0.339,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8875471975092501873.smt2,0.161,0.710,Proofterm: 0.128,3
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3227222663221958379.smt2,0.239,0.751,Proofterm: 0.491,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2561940327326492283.smt2,0.200,1.230,Proofterm: 0.214,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7033469606705066791.smt2,0.235,0.978,Proofterm: 0.241,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8591958557635707797.smt2,0.197,0.880,Proofterm: 0.813,26
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1782466548403316802.smt2,0.198,1.129,Proofterm: 0.143,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt436905341138176170.smt2,0.227,0.653,Proofterm: 0.415,17
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8908367221374111203.smt2,0.207,0.834,Proofterm: 0.377,17
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2638042934975705528.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1269517447706381031.smt2,0.192,1.084,Proofterm: 0.433,20
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4572245676070776514.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3698555390396458023.smt2,0.176,0.929,Proofterm: 0.320,6
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4625083610563501181.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt182987599385075282.smt2,0.169,1.110,Proofterm: 0.184,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3708937932107853478.smt2,0.162,1.229,Proofterm: 0.198,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2093842384271029720.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt194092121051256533.smt2,0.155,0.973,Proofterm: 0.449,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt215465074793711162.smt2,0.182,0.992,Proofterm: 0.269,26
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8289280324694207722.smt2,0.179,0.973,Proofterm: 0.209,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1524375163231819094.smt2,0.206,0.908,Proofterm: 0.443,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6736572510318727716.smt2,0.225,1.002,Proofterm: 0.366,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt9014840936023401544.smt2,0.184,0.811,Proofterm: 0.240,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2256856461941224445.smt2,0.135,0.877,Proofterm: 0.306,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3905221720212478447.smt2,0.184,0.934,Proofterm: 0.264,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6721808556525809116.smt2,0.182,0.869,Proofterm: 0.020,3
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3439443866029601711.smt2,0.173,0.650,Proofterm: 0.195,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5963100064704668089.smt2,0.178,1.250,Proofterm: 0.379,18
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3411894737991763499.smt2,0.142,1.034,Proofterm: 0.184,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6683355899000363898.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1076382332286802622.smt2,0.178,0.663,Proofterm: 0.157,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7960645538533115809.smt2,0.162,1.123,Proofterm: 0.224,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8108887928342549384.smt2,0.153,0.972,Proofterm: 0.164,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5641415969807714253.smt2,0.147,0.961,Proofterm: 0.078,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4504006725135742977.smt2,0.172,0.746,Proofterm: 0.411,26
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7523130558871236757.smt2,0.142,0.904,Proofterm: 0.185,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7358386960044497066.smt2,0.168,1.018,Proofterm: 0.379,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt393108595912720571.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3444773566975549937.smt2,0.216,0.651,Proofterm: 0.180,18
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1441273869767862168.smt2,0.152,0.971,Proofterm: 0.334,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4953135282161464900.smt2,0.143,0.988,Proofterm: 0.177,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2016035095367711249.smt2,0.165,0.792,Proofterm: 0.440,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6481616554623030076.smt2,0.178,0.771,Proofterm: 0.227,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1816060575230669721.smt2,0.135,0.659,Proofterm: 0.849,30
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4507059480007023557.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2468388263826893998.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4181015227210656643.smt2,0.147,0.911,Proofterm: 0.363,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8701917448127671974.smt2,0.168,0.942,Proofterm: 0.154,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt593896481169620861.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4885496405062058007.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5695631438254231329.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2905633022829326820.smt2,0.144,0.989,Proofterm: 0.196,13
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8706308851182253950.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1171825036458049994.smt2,0.152,0.756,Proofterm: 0.453,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7726411424237190229.smt2,0.192,0.494,Proofterm: 0.310,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5283357161187483598.smt2,0.200,0.934,Proofterm: 0.229,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6818634933433425749.smt2,0.131,0.587,Proofterm: 0.366,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt377028722021915405.smt2,0.131,0.608,Proofterm: 0.302,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6977760194528203096.smt2,0.138,1.057,Proofterm: 0.298,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4277905976004114414.smt2,0.190,0.801,Proofterm: 0.093,7
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6111014224437564259.smt2,0.148,0.810,Proofterm: 0.313,28
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8987693239582237306.smt2,0.170,0.684,Proofterm: 0.279,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt342752384921269204.smt2,0.177,0.925,Proofterm: 0.215,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt893324914284709225.smt2,0.137,0.914,Proofterm: 0.147,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4215517483378047775.smt2,0.166,0.882,Proofterm: 0.112,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4417655513178192608.smt2,0.192,0.833,Proofterm: 0.292,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt275238204253440021.smt2,0.180,0.622,Proofterm: 0.312,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2384827473142460326.smt2,0.170,1.009,Proofterm: 0.312,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2427263037432339916.smt2,0.168,0.719,Proofterm: 0.334,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1364854746565558653.smt2,0.163,0.951,Proofterm: 0.275,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7273354942600505220.smt2,0.148,0.789,Proofterm: 0.337,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7618872707393860004.smt2,0.162,0.910,Proofterm: 0.220,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6493885507856928851.smt2,0.150,0.654,Proofterm: 0.157,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2033088614343642251.smt2,0.142,0.872,Proofterm: 0.544,23
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6931994702471017916.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt362130990708396776.smt2,0.160,0.589,Proofterm: 0.255,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5720223571793459860.smt2,0.149,0.796,Proofterm: 0.142,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1523369924372993649.smt2,0.170,0.602,Proofterm: 0.240,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1042633846661310290.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5369852344916049416.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5776021850984479403.smt2,0.177,0.680,Proofterm: 0.273,26
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3620633566921225648.smt2,0.109,0.841,Proofterm: 0.189,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3502153459994386289.smt2,0.144,0.887,Proofterm: 0.262,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2367064203144307817.smt2,0.178,0.872,Proofterm: 0.411,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3275743009640726251.smt2,0.175,0.764,Proofterm: 0.203,17
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4053218693677797575.smt2,0.126,0.963,Proofterm: 0.093,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4697568481354341164.smt2,0.156,1.061,Proofterm: 0.899,58
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3093696166632615469.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5562411513078936721.smt2,0.149,0.875,Proofterm: 0.128,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5905287966985476080.smt2,0.126,0.537,Proofterm: 0.360,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7092553497391582906.smt2,0.146,0.769,Proofterm: 0.132,14
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8579077759948482627.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1329906230419089873.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4735237723456590332.smt2,0.133,0.843,Proofterm: 0.359,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1880986003611271595.smt2,0.131,0.799,Proofterm: 0.153,17
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1162898569824201421.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6281226815274613658.smt2,0.142,0.460,Proofterm: 0.012,3
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7916933981353194815.smt2,0.180,0.521,Proofterm: 0.321,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8855116929086333489.smt2,0.127,0.546,Proofterm: 0.521,20
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3580158146100843999.smt2,0.142,0.894,Proofterm: 0.159,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2360244902319652454.smt2,0.124,0.532,Proofterm: 0.292,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7147939896033940408.smt2,0.127,0.775,Proofterm: 0.148,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3150137541310906277.smt2,0.116,0.730,Proofterm: 0.089,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8833779138211845249.smt2,0.150,0.558,Proofterm: 0.157,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4160855460817203141.smt2,0.128,0.707,Proofterm: 0.193,17
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3372199210070462891.smt2,0.143,0.892,Proofterm: 0.235,25
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7788503754068870422.smt2,0.153,0.667,Proofterm: 0.412,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt166278749308099823.smt2,0.132,0.732,Proofterm: 0.171,6
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4238401262965072047.smt2,0.131,0.805,Proofterm: 0.535,23
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2180380275580545420.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8974883641230246788.smt2,0.122,0.492,Proofterm: 0.259,12
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5047342450357881159.smt2,0.131,0.500,Proofterm: 0.125,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt9111281160760624293.smt2,0.127,0.818,Proofterm: 0.202,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8778954223442726272.smt2,0.152,0.752,Proofterm: 0.181,6
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8654111885011073106.smt2,0.128,0.683,Proofterm: 0.143,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4069305995038800906.smt2,0.108,0.714,Proofterm: 0.066,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3809310795425240370.smt2,0.129,0.483,Proofterm: 0.077,14
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt957085527369554317.smt2,0.106,0.433,Proofterm: 0.072,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5743509124567723052.smt2,0.130,0.737,Proofterm: 0.184,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4300906401518735495.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8106154715414218129.smt2,0.107,0.727,Proofterm: 0.246,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7585830350792253192.smt2,0.125,0.484,Proofterm: 0.240,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4601349962451502646.smt2,0.102,0.494,Proofterm: 0.388,22
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6395525940490892471.smt2,0.121,0.734,Proofterm: 0.224,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3440074116434092548.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3038087770311212541.smt2,0.125,0.759,Proofterm: 0.120,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2190929513395224328.smt2,0.103,0.716,Proofterm: 0.136,17
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5901762799217475108.smt2,0.169,0.856,Proofterm: 0.075,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7006792903852855302.smt2,0.185,1.678,Proofterm: 0.749,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt9065296178149417744.smt2,0.126,1.348,Proofterm: 0.163,5
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7725713132450845498.smt2,0.137,1.345,Proofterm: 0.265,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4955949051970003181.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt570363212685114932.smt2,0.138,1.407,Proofterm: 0.181,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2438845199361275753.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2843347168814075751.smt2,0.102,0.961,Proofterm: 0.101,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5759472278662243112.smt2,0.138,1.429,Proofterm: 0.525,18
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2282925904598514077.smt2,0.100,1.359,Proofterm: 0.071,7
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt9106017864656048635.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2010137000504826137.smt2,0.091,1.140,Proofterm: 0.152,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5657856502894956631.smt2,0.110,1.474,Proofterm: 0.186,16
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8644563128435345329.smt2,0.096,0.937,Proofterm: 0.124,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3487051362416095263.smt2,0.101,0.921,Proofterm: 0.192,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5863666924611184171.smt2,0.163,1.151,Proofterm: 0.215,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5103224205058501184.smt2,0.119,1.210,Proofterm: 0.260,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3204289262029909600.smt2,0.091,1.042,Proofterm: 0.340,10
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6946123632041025678.smt2,0.065,1.169,Proofterm: 0.414,25
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4266255760697615431.smt2,0.106,1.307,Proofterm: 0.287,18
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6416286979991758948.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6231400525874152157.smt2,0.087,0.923,Proofterm: 0.182,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3405277169006856699.smt2,0.144,1.219,Proofterm: 0.191,5
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt3160966959479480483.smt2,0.102,0.958,Proofterm: 0.146,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt4697298586713226690.smt2,0.101,0.892,Proofterm: 0.157,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8129085571079473607.smt2,0.086,0.936,Proofterm: 0.138,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt7740554476252106281.smt2,0.090,1.107,Proofterm: 0.079,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2445729392550066586.smt2,0.094,0.838,Proofterm: 0.146,17
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5584401144276258491.smt2,0.087,0.731,Proofterm: 0.095,4
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt615792926171406937.smt2,0.118,0.901,Proofterm: 0.200,14
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2922685147464036249.smt2,0.088,0.863,Proofterm: 0.232,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8504464876204807071.smt2,0.110,0.811,Proofterm: 0.124,11
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6456719111248078638.smt2,0.094,0.859,Proofterm: 0.221,29
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt1026703085055728276.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt2264998853780541334.smt2,0.088,0.914,Proofterm: 0.269,25
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt6433635961432197699.smt2,0.090,0.580,Proofterm: 0.480,30
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt8792219215910766754.smt2,0.185,0.884,Proofterm: 0.202,15
-../smt-lib/QF_AUFLIA/20170829-Rodin/smt5491752019313122314.smt2,0.085,0.810,Proofterm: 0.053,15
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00009_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00003_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00005_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00008_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00007_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00004_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00009_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00002_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00004_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00006_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00009_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00006_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00007_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00003_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00002_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00004_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00007_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00005_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00008_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00008_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00007_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00009_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00006_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00003_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00003_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00005_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00005_001.cvc.smt2,0.094,0.753,Proofterm: 0.044,11
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00002_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00009_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00008_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00007_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00003_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00002_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00008_003.cvc.smt2,0.075,0.674,Proofterm: 0.886,91
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00002_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00008_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00008_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00003_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00005_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00007_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00005_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00006_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00005_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00004_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00004_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00004_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00005_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00004_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00005_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00006_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00006_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00009_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00006_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00008_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00008_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00008_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00005_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00004_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00005_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00008_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00008_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00007_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00007_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00008_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00007_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00006_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00002_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00002_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00004_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00006_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00005_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00005_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00004_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00007_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00006_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00006_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00006_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00003_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00009_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00003_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00005_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00004_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00003_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00005_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00004_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00003_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00004_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00007_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00008_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00009_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00004_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00009_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00007_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00009_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00008_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00007_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00004_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00009_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00008_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00008_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00007_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00006_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00005_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00003_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00005_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00006_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00007_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00008_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00008_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00002_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00004_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00006_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00006_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00008_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00003_003.cvc.smt2,0.056,0.574,Proofterm: 0.194,46
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00009_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00002_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00003_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00007_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00009_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00007_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00004_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00008_003.cvc.smt2,0.074,0.430,Proofterm: 0.030,11
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00006_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00008_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00003_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00007_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00003_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00008_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00007_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00006_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00007_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00007_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00002_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00006_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_001.cvc.smt2,0.060,0.649,Proofterm: 0.351,70
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00003_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00009_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00004_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00005_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00003_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00003_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00005_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00004_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00002_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00007_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00006_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00007_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00004_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00003_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00009_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00002_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00008_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00003_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00009_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00004_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00003_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00009_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00008_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00009_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00009_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00009_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00009_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00003_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00003_003.cvc.smt2,0.080,0.418,Proofterm: 0.039,11
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00004_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00004_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00006_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00009_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00004_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00005_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00007_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00007_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00004_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00007_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00007_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00002_001.cvc.smt2,0.098,0.360,Proofterm: 0.138,43
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00002_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00009_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00006_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00005_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00004_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00006_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00004_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00005_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00009_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00009_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00005_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00008_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00007_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00008_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00003_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00009_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00009_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00006_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00007_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00004_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00005_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00005_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00008_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00005_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00004_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00009_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00004_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00002_001.cvc.smt2,0.062,0.363,Proofterm: 0.029,11
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00006_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00003_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00006_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00006_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00009_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00009_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00006_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00003_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00004_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00002_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00004_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00006_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00002_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00009_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00007_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00009_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00009_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00004_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00007_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00002_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00008_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00004_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00005_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00009_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00006_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00009_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00003_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00003_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00004_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00009_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00007_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00002_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00008_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_nf_ai_00007_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00008_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00002_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00008_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00008_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00006_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00006_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00006_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00008_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00007_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00003_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00008_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00007_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00004_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t1_pp_sf_ai_00006_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_nf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00005_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00008_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_invalid_t3_pp_sf_ai_00003_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00006_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00006_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00007_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_nf_ni_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_nf_ni_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_nf_ni_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_nf_ni_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_nf_ni_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_nf_ni_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_nf_ni_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_nf_ni_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_nf_ni_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_nf_ni_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00030_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00040_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00040_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00050_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00060_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00010_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00020_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00050_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_nf_ni_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00040_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00020_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00050_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00020_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00050_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00040_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00050_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00030_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_sf_ni_00040_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_nf_ni_00030_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00060_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_sf_ni_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00020_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00010_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00040_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00060_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00010_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ai_00010_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00020_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00010_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00050_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ni_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00030_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t2_np_nf_ni_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00010_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ai_00050_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00040_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ai_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00040_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_nf_ai_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_nf_ni_00060_002.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_np_sf_ni_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00030_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ni_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ni_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00060_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00060_005.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00020_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00010_003.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00050_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_np_sf_ni_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ni_00060_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00020_006.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00040_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ai_00010_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_nf_ai_00030_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t3_pp_sf_ai_00020_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_pp_sf_ai_00020_007.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_nf_ni_00030_008.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_invalid_t1_np_sf_ni_00060_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t1_pp_sf_ni_00030_004.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_nf_ni_00050_009.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_np_nf_ni_00060_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storecomm/storecomm_t3_pp_sf_ni_00030_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t1_pp_sf_ai_00004_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t3_pp_nf_ai_00008_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_nf_ai_00002_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t1_pp_nf_ai_00002_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t3_pp_sf_ai_00009_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_sf_ai_00006_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t3_pp_nf_ai_00008_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t3_pp_sf_ai_00004_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t1_pp_nf_ai_00003_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_sf_ai_00007_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t1_pp_nf_ai_00001_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t1_pp_sf_ai_00007_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t3_pp_sf_ai_00003_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t3_pp_sf_ai_00008_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t3_pp_nf_ai_00004_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t3_pp_sf_ai_00002_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t3_pp_sf_ai_00002_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_sf_ai_00005_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t1_pp_nf_ai_00006_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_nf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_nf_ai_00005_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t3_pp_sf_ai_00003_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t3_pp_sf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_sf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_sf_ai_00009_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_nf_ai_00004_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t3_pp_nf_ai_00007_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_nf_ai_00007_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t1_pp_nf_ai_00005_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t1_pp_sf_ai_00001_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t3_pp_nf_ai_00003_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t3_pp_nf_ai_00009_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_nf_ai_00006_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t3_pp_sf_ai_00005_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t1_pp_sf_ai_00006_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t1_pp_nf_ai_00010_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_invalid_t1_pp_sf_ai_00008_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/storeinv/storeinv_t1_pp_nf_ai_00009_001.cvc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/array_benchmarks/misc/pipeline-invalid.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/dlx-dmem.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/add4.smt2,0.058,0.805,Proofterm: 3.262,897
-../smt-lib/QF_AUFLIA/cvc/fb_var_33_6.smt2,0.068,0.904,Proofterm: 3.341,1039
-../smt-lib/QF_AUFLIA/cvc/pp-pc-s2i.smt2,0.068,0.713,Proofterm: 1.443,475
-../smt-lib/QF_AUFLIA/cvc/pp-dmem.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/pp-invariant.smt2,0.111,1.062,Proofterm: 4.294,1214
-../smt-lib/QF_AUFLIA/cvc/add5.smt2,0.062,0.897,Proofterm: 2.881,856
-../smt-lib/QF_AUFLIA/cvc/fb_var_5_12.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/dlx-regfile.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/pp-TakenBranch-s2e.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/fb_var_6_12.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/fb_var_27_8.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/pp-regfile.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/fb_var_12_11.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/read7.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/dlx-pc.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/cvc/add6.smt2,0.056,0.931,Proofterm: 3.051,897
-../smt-lib/QF_AUFLIA/cvc/read6.smt2,0.059,0.889,Proofterm: 2.319,722
-../smt-lib/QF_AUFLIA/cvc/read8.smt2,unknown,,,
-../smt-lib/QF_AUFLIA/check/array_incompleteness1.smt2,unknown,,,
-Total time: 11.873
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1630796854449618649.smt2,0.046,0.341,Proofterm: 0.123,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7405460456682932921.smt2,0.034,0.339,Proofterm: 0.158,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7092645672798492791.smt2,0.031,0.355,Proofterm: 0.153,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8011955704126474321.smt2,0.044,0.437,Proofterm: 0.168,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7271452269704952934.smt2,0.040,0.346,Proofterm: 0.148,23
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8618877835758306362.smt2,0.028,0.314,Proofterm: 0.051,14
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1048206973303286471.smt2,0.044,0.397,Proofterm: 0.215,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1946805393457691034.smt2,0.039,0.414,Proofterm: 0.179,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt373337730591991193.smt2,0.033,0.364,Proofterm: 0.107,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6334367605951226396.smt2,0.028,0.397,Proofterm: 0.139,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3758766264560852005.smt2,0.044,0.385,Proofterm: 0.197,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6534511334474546878.smt2,0.037,0.381,Proofterm: 0.168,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1829682051084319908.smt2,0.034,0.374,Proofterm: 0.154,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4296070423334654308.smt2,0.037,0.383,Proofterm: 0.052,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5732050528631778495.smt2,0.035,0.369,Proofterm: 0.054,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2187227346843288353.smt2,0.039,0.386,Proofterm: 0.107,6
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6642385862663943481.smt2,0.037,0.320,Proofterm: 0.003,3
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1789157312273459318.smt2,0.036,0.371,Proofterm: 0.181,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2106860836086514151.smt2,0.043,0.387,Proofterm: 0.110,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5994810375074922742.smt2,0.028,0.393,Proofterm: 0.110,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4552940212595976610.smt2,0.034,0.356,Proofterm: 0.105,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7178509395836479705.smt2,0.031,0.430,Proofterm: 0.139,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1232146482622696854.smt2,0.022,0.350,Proofterm: 0.098,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7359050099439661129.smt2,0.032,0.377,Proofterm: 0.064,8
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2748958072806976140.smt2,0.032,0.353,Proofterm: 0.063,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt616279233519394183.smt2,0.031,0.379,Proofterm: 0.130,27
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6071472468091070475.smt2,0.034,0.382,Proofterm: 0.019,3
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7218190703470801014.smt2,0.035,0.392,Proofterm: 0.098,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5192927862320386454.smt2,0.043,0.375,Proofterm: 0.211,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8513434858697749825.smt2,0.036,0.412,Proofterm: 0.061,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3004264733300706548.smt2,0.023,0.359,Proofterm: 0.056,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt9116345646566616227.smt2,0.036,0.352,Proofterm: 0.128,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4574461499410346282.smt2,0.036,0.323,Proofterm: 0.092,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6879946163714078134.smt2,0.035,0.371,Proofterm: 0.128,13
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt862348610184470396.smt2,0.042,0.341,Proofterm: 0.053,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6150185324016898914.smt2,0.040,0.391,Proofterm: 0.180,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6513374120730325283.smt2,0.031,0.416,Proofterm: 0.116,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4514744799427321218.smt2,0.040,0.375,Proofterm: 0.134,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt52509716184046872.smt2,0.049,0.393,Proofterm: 0.159,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6608232286625221829.smt2,0.033,0.398,Proofterm: 0.149,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1656968675425225632.smt2,0.032,0.352,Proofterm: 0.046,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6900099572485246069.smt2,0.049,0.363,Proofterm: 0.089,8
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7034109130135749243.smt2,0.041,0.381,Proofterm: 0.075,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2524590214650541314.smt2,0.045,0.379,Proofterm: 0.099,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5066516013081219368.smt2,0.033,0.389,Proofterm: 0.131,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt407122468318533822.smt2,0.033,0.403,Proofterm: 0.184,25
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt971450140125177067.smt2,0.034,0.410,Proofterm: 0.097,13
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2960554548505310231.smt2,0.032,0.383,Proofterm: 0.103,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt101358492275879472.smt2,0.048,0.363,Proofterm: 0.048,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3899959149727363456.smt2,0.044,0.444,Proofterm: 0.110,23
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2561449432101481323.smt2,0.045,0.446,Proofterm: 0.185,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt498171090311845791.smt2,0.041,0.370,Proofterm: 0.137,28
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8228927933959930295.smt2,0.037,0.432,Proofterm: 0.080,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5361404349484649674.smt2,0.044,0.386,Proofterm: 0.111,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4132343230757244602.smt2,0.044,0.418,Proofterm: 0.059,8
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7565714320681306474.smt2,0.042,0.367,Proofterm: 0.103,8
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8077224534801305670.smt2,0.033,0.375,Proofterm: 0.123,13
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2897810692389626239.smt2,0.039,0.418,Proofterm: 0.106,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3136064081515784448.smt2,0.054,0.381,Proofterm: 0.128,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1656603882241727713.smt2,0.058,0.422,Proofterm: 0.236,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3010346108910513369.smt2,0.041,0.421,Proofterm: 0.205,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7782311372861729448.smt2,0.054,0.418,Proofterm: 0.181,18
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1491157424836014881.smt2,0.060,0.370,Proofterm: 0.046,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5385891397487700209.smt2,0.054,0.367,Proofterm: 0.067,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1766380371263919774.smt2,0.041,0.420,Proofterm: 0.082,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8422912073068378811.smt2,0.069,0.365,Proofterm: 0.134,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4134543687752878794.smt2,0.044,0.368,Proofterm: 0.097,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1286129643722180277.smt2,0.040,0.440,Proofterm: 0.150,19
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3764635514138113797.smt2,0.052,0.405,Proofterm: 0.165,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8755060589107111188.smt2,0.052,0.393,Proofterm: 0.042,14
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1529145317830911829.smt2,0.049,0.394,Proofterm: 0.136,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4315728387069939040.smt2,0.042,0.409,Proofterm: 0.122,26
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8139752062040253806.smt2,0.031,0.456,Proofterm: 0.185,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1355996306873782731.smt2,0.029,0.427,Proofterm: 0.093,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2782844312644070087.smt2,0.046,0.400,Proofterm: 0.133,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3489543249285628273.smt2,0.037,0.378,Proofterm: 0.246,24
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8078846980698793773.smt2,0.040,0.353,Proofterm: 0.052,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6557511902038258587.smt2,0.038,0.360,Proofterm: 0.153,7
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5438568486190973361.smt2,0.061,0.407,Proofterm: 0.124,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6985556550088020826.smt2,0.050,0.366,Proofterm: 0.048,8
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1803124073673899816.smt2,0.041,0.277,Proofterm: 0.047,14
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4754789943944392049.smt2,0.043,0.265,Proofterm: 0.049,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4596042264305301650.smt2,0.052,0.298,Proofterm: 0.045,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1823835542615668089.smt2,0.033,0.264,Proofterm: 0.067,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt770795137149803982.smt2,0.033,0.251,Proofterm: 0.003,3
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3796329264322518882.smt2,0.046,0.286,Proofterm: 0.111,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3341546682240303433.smt2,0.070,0.352,Proofterm: 0.068,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3728766622780732153.smt2,0.058,0.268,Proofterm: 0.118,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1525565934219293349.smt2,0.054,0.384,Proofterm: 0.099,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8814225796421462573.smt2,0.046,0.356,Proofterm: 0.019,3
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7175394277113951989.smt2,0.036,0.315,Proofterm: 0.155,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8233570541221801360.smt2,0.062,0.382,Proofterm: 0.153,6
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8135394236603703050.smt2,0.035,0.268,Proofterm: 0.035,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt599099718845180000.smt2,0.052,0.285,Proofterm: 0.029,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5469619136922200125.smt2,0.043,0.352,Proofterm: 0.105,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt424770915908526889.smt2,0.052,0.376,Proofterm: 0.139,26
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3523843011010396885.smt2,0.045,0.317,Proofterm: 0.098,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2677767669072326293.smt2,0.051,0.375,Proofterm: 0.136,5
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7534652473557877715.smt2,0.051,0.340,Proofterm: 0.146,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6161395833903900850.smt2,0.041,0.333,Proofterm: 0.105,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2349554521575265533.smt2,0.070,0.331,Proofterm: 0.177,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7909578851601176589.smt2,0.041,0.400,Proofterm: 0.126,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5029315679561572039.smt2,0.034,0.338,Proofterm: 0.139,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt65467803538243106.smt2,0.035,0.353,Proofterm: 0.112,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1989795988797382439.smt2,0.045,0.264,Proofterm: 0.143,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1272323520518114421.smt2,0.057,0.334,Proofterm: 0.097,17
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5410124224885464815.smt2,0.039,0.365,Proofterm: 0.071,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8875471975092501873.smt2,0.040,0.336,Proofterm: 0.021,3
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3227222663221958379.smt2,0.043,0.400,Proofterm: 0.108,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2561940327326492283.smt2,0.038,0.280,Proofterm: 0.128,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7033469606705066791.smt2,0.046,0.340,Proofterm: 0.069,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8591958557635707797.smt2,0.045,0.336,Proofterm: 0.351,26
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1782466548403316802.smt2,0.042,0.325,Proofterm: 0.083,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt436905341138176170.smt2,0.041,0.305,Proofterm: 0.080,17
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8908367221374111203.smt2,0.036,0.352,Proofterm: 0.074,17
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1269517447706381031.smt2,0.036,0.330,Proofterm: 0.267,20
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3698555390396458023.smt2,0.036,0.305,Proofterm: 0.121,6
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt182987599385075282.smt2,0.039,0.324,Proofterm: 0.079,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3708937932107853478.smt2,0.059,0.377,Proofterm: 0.168,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt194092121051256533.smt2,0.066,0.343,Proofterm: 0.169,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt215465074793711162.smt2,0.040,0.365,Proofterm: 0.106,26
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8289280324694207722.smt2,0.043,0.325,Proofterm: 0.130,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1524375163231819094.smt2,0.039,0.372,Proofterm: 0.188,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6736572510318727716.smt2,0.048,0.340,Proofterm: 0.166,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt9014840936023401544.smt2,0.043,0.293,Proofterm: 0.039,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2256856461941224445.smt2,0.040,0.316,Proofterm: 0.134,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3905221720212478447.smt2,0.064,0.347,Proofterm: 0.133,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6721808556525809116.smt2,0.043,0.296,Proofterm: 0.003,3
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3439443866029601711.smt2,0.040,0.308,Proofterm: 0.041,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5963100064704668089.smt2,0.047,0.359,Proofterm: 0.202,18
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3411894737991763499.smt2,0.071,0.335,Proofterm: 0.102,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1076382332286802622.smt2,0.051,0.345,Proofterm: 0.044,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7960645538533115809.smt2,0.072,0.325,Proofterm: 0.159,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8108887928342549384.smt2,0.046,0.270,Proofterm: 0.068,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5641415969807714253.smt2,0.042,0.341,Proofterm: 0.031,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4504006725135742977.smt2,0.041,0.349,Proofterm: 0.104,26
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7523130558871236757.smt2,0.033,0.325,Proofterm: 0.073,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7358386960044497066.smt2,0.068,0.334,Proofterm: 0.165,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3444773566975549937.smt2,0.046,0.370,Proofterm: 0.061,18
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1441273869767862168.smt2,0.076,0.321,Proofterm: 0.142,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4953135282161464900.smt2,0.042,0.342,Proofterm: 0.152,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2016035095367711249.smt2,0.051,0.302,Proofterm: 0.130,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6481616554623030076.smt2,0.046,0.357,Proofterm: 0.084,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1816060575230669721.smt2,0.068,0.391,Proofterm: 0.307,30
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4181015227210656643.smt2,0.053,0.346,Proofterm: 0.156,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8701917448127671974.smt2,0.052,0.317,Proofterm: 0.064,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2905633022829326820.smt2,0.044,0.348,Proofterm: 0.140,13
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1171825036458049994.smt2,0.053,0.326,Proofterm: 0.118,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7726411424237190229.smt2,0.056,0.312,Proofterm: 0.102,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5283357161187483598.smt2,0.070,0.315,Proofterm: 0.096,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6818634933433425749.smt2,0.045,0.328,Proofterm: 0.107,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt377028722021915405.smt2,0.044,0.337,Proofterm: 0.105,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6977760194528203096.smt2,0.077,0.316,Proofterm: 0.139,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4277905976004114414.smt2,0.050,0.367,Proofterm: 0.026,7
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6111014224437564259.smt2,0.041,0.369,Proofterm: 0.118,28
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8987693239582237306.smt2,0.057,0.356,Proofterm: 0.102,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt342752384921269204.smt2,0.052,0.316,Proofterm: 0.086,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt893324914284709225.smt2,0.044,0.335,Proofterm: 0.060,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4215517483378047775.smt2,0.059,0.364,Proofterm: 0.046,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4417655513178192608.smt2,0.052,0.351,Proofterm: 0.183,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt275238204253440021.smt2,0.046,0.330,Proofterm: 0.123,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2384827473142460326.smt2,0.044,0.336,Proofterm: 0.187,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2427263037432339916.smt2,0.040,0.316,Proofterm: 0.203,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1364854746565558653.smt2,0.049,0.215,Proofterm: 0.126,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7273354942600505220.smt2,0.037,0.258,Proofterm: 0.149,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7618872707393860004.smt2,0.067,0.250,Proofterm: 0.090,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6493885507856928851.smt2,0.049,0.242,Proofterm: 0.054,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2033088614343642251.smt2,0.039,0.316,Proofterm: 0.310,23
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt362130990708396776.smt2,0.052,0.278,Proofterm: 0.117,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5720223571793459860.smt2,0.050,0.254,Proofterm: 0.048,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1523369924372993649.smt2,0.044,0.293,Proofterm: 0.068,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5776021850984479403.smt2,0.052,0.290,Proofterm: 0.092,26
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3620633566921225648.smt2,0.042,0.408,Proofterm: 0.120,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3502153459994386289.smt2,0.051,0.289,Proofterm: 0.169,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2367064203144307817.smt2,0.051,0.272,Proofterm: 0.208,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3275743009640726251.smt2,0.037,0.286,Proofterm: 0.077,17
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4053218693677797575.smt2,0.047,0.274,Proofterm: 0.055,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4697568481354341164.smt2,0.038,0.388,Proofterm: 0.306,58
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5562411513078936721.smt2,0.047,0.292,Proofterm: 0.045,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5905287966985476080.smt2,0.035,0.270,Proofterm: 0.118,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7092553497391582906.smt2,0.049,0.299,Proofterm: 0.033,14
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4735237723456590332.smt2,0.053,0.334,Proofterm: 0.213,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt1880986003611271595.smt2,0.048,0.278,Proofterm: 0.063,17
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6281226815274613658.smt2,0.053,0.294,Proofterm: 0.004,3
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7916933981353194815.smt2,0.062,0.292,Proofterm: 0.097,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8855116929086333489.smt2,0.049,0.310,Proofterm: 0.208,20
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3580158146100843999.smt2,0.047,0.286,Proofterm: 0.098,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2360244902319652454.smt2,0.043,0.265,Proofterm: 0.114,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7147939896033940408.smt2,0.051,0.280,Proofterm: 0.047,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3150137541310906277.smt2,0.057,0.295,Proofterm: 0.024,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8833779138211845249.smt2,0.050,0.298,Proofterm: 0.039,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4160855460817203141.smt2,0.046,0.326,Proofterm: 0.094,17
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3372199210070462891.smt2,0.052,0.301,Proofterm: 0.168,25
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7788503754068870422.smt2,0.049,0.294,Proofterm: 0.150,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt166278749308099823.smt2,0.040,0.299,Proofterm: 0.097,6
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4238401262965072047.smt2,0.048,0.334,Proofterm: 0.286,23
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8974883641230246788.smt2,0.038,0.283,Proofterm: 0.092,12
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5047342450357881159.smt2,0.045,0.320,Proofterm: 0.034,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt9111281160760624293.smt2,0.041,0.289,Proofterm: 0.081,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8778954223442726272.smt2,0.045,0.298,Proofterm: 0.117,6
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8654111885011073106.smt2,0.047,0.340,Proofterm: 0.052,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4069305995038800906.smt2,0.038,0.354,Proofterm: 0.032,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3809310795425240370.smt2,0.036,0.254,Proofterm: 0.038,14
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt957085527369554317.smt2,0.047,0.265,Proofterm: 0.034,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5743509124567723052.smt2,0.046,0.299,Proofterm: 0.107,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8106154715414218129.smt2,0.035,0.273,Proofterm: 0.151,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7585830350792253192.smt2,0.053,0.284,Proofterm: 0.097,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4601349962451502646.smt2,0.048,0.324,Proofterm: 0.078,22
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6395525940490892471.smt2,0.052,0.347,Proofterm: 0.083,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3038087770311212541.smt2,0.047,0.248,Proofterm: 0.063,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2190929513395224328.smt2,0.048,0.303,Proofterm: 0.047,17
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5901762799217475108.smt2,0.041,0.250,Proofterm: 0.030,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7006792903852855302.smt2,0.038,0.310,Proofterm: 0.099,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt9065296178149417744.smt2,0.040,0.327,Proofterm: 0.083,5
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7725713132450845498.smt2,0.061,0.329,Proofterm: 0.053,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt570363212685114932.smt2,0.044,0.316,Proofterm: 0.085,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2843347168814075751.smt2,0.040,0.310,Proofterm: 0.028,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5759472278662243112.smt2,0.035,0.329,Proofterm: 0.085,18
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2282925904598514077.smt2,0.051,0.259,Proofterm: 0.016,7
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2010137000504826137.smt2,0.040,0.299,Proofterm: 0.074,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5657856502894956631.smt2,0.041,0.288,Proofterm: 0.068,16
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8644563128435345329.smt2,0.052,0.253,Proofterm: 0.072,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3487051362416095263.smt2,0.040,0.304,Proofterm: 0.083,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5863666924611184171.smt2,0.040,0.281,Proofterm: 0.041,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5103224205058501184.smt2,0.035,0.296,Proofterm: 0.070,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3204289262029909600.smt2,0.037,0.288,Proofterm: 0.130,10
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6946123632041025678.smt2,0.050,0.371,Proofterm: 0.170,25
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4266255760697615431.smt2,0.042,0.383,Proofterm: 0.081,18
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6231400525874152157.smt2,0.035,0.334,Proofterm: 0.100,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3405277169006856699.smt2,0.049,0.301,Proofterm: 0.046,5
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt3160966959479480483.smt2,0.050,0.351,Proofterm: 0.021,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt4697298586713226690.smt2,0.037,0.339,Proofterm: 0.024,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8129085571079473607.smt2,0.030,0.332,Proofterm: 0.028,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt7740554476252106281.smt2,0.049,0.307,Proofterm: 0.020,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2445729392550066586.smt2,0.052,0.318,Proofterm: 0.045,17
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5584401144276258491.smt2,0.045,0.283,Proofterm: 0.026,4
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt615792926171406937.smt2,0.058,0.358,Proofterm: 0.069,14
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2922685147464036249.smt2,0.046,0.293,Proofterm: 0.077,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8504464876204807071.smt2,0.051,0.238,Proofterm: 0.048,11
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6456719111248078638.smt2,0.045,0.232,Proofterm: 0.096,29
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt2264998853780541334.smt2,0.035,0.203,Proofterm: 0.082,25
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt6433635961432197699.smt2,0.035,0.226,Proofterm: 0.144,30
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt8792219215910766754.smt2,0.045,0.241,Proofterm: 0.091,15
+../smt-lib/QF_AUFLIA/20170829-Rodin/smt5491752019313122314.smt2,0.031,0.151,Proofterm: 0.018,15
+../smt-lib/QF_AUFLIA/swap/swap_t3_pp_sf_ai_00005_001.cvc.smt2,0.045,0.138,Proofterm: 0.013,11
+../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00008_003.cvc.smt2,0.030,0.267,Proofterm: 0.413,91
+../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00003_003.cvc.smt2,0.030,0.256,Proofterm: 0.084,46
+../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00008_003.cvc.smt2,0.049,0.123,Proofterm: 0.015,11
+../smt-lib/QF_AUFLIA/swap/swap_t3_pp_nf_ai_00005_001.cvc.smt2,0.026,0.286,Proofterm: 0.128,70
+../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00003_003.cvc.smt2,0.029,0.169,Proofterm: 0.013,11
+../smt-lib/QF_AUFLIA/swap/swap_t1_pp_nf_ai_00002_001.cvc.smt2,0.025,0.174,Proofterm: 0.075,43
+../smt-lib/QF_AUFLIA/swap/swap_t1_pp_sf_ai_00002_001.cvc.smt2,0.031,0.153,Proofterm: 0.012,11
+../smt-lib/QF_AUFLIA/cvc/add4.smt2,0.041,0.628,Proofterm: 2.386,897
+../smt-lib/QF_AUFLIA/cvc/fb_var_33_6.smt2,0.039,0.684,Proofterm: 2.724,1039
+../smt-lib/QF_AUFLIA/cvc/pp-pc-s2i.smt2,0.041,0.561,Proofterm: 1.084,475
+../smt-lib/QF_AUFLIA/cvc/pp-invariant.smt2,0.056,0.965,Proofterm: 3.557,1214
+../smt-lib/QF_AUFLIA/cvc/add5.smt2,0.039,0.712,Proofterm: 2.460,856
+../smt-lib/QF_AUFLIA/cvc/add6.smt2,0.034,0.706,Proofterm: 2.147,897
+../smt-lib/QF_AUFLIA/cvc/read6.smt2,0.038,0.668,Proofterm: 2.049,722
+Total time: 7.994
+2022-05-05 20:52:13

@@ -1,17 +1,13 @@
 filename,Solve,Parse,ProofTerm,Steps
-../smt-lib/UFLRA/misc/set14.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/UFLRA/misc/set19.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/UFLRA/misc/set9.smt2,UNSAT checking is timeout! (veriT),,,
-../smt-lib/UFLRA/misc/set16.smt2,unsupported,,,
-../smt-lib/UFLRA/misc/list2.smt2,unsupported,,,
-../smt-lib/UFLRA/FFT/smtlib.623474.smt2,0.031,0.353,Proofterm: 0.172,59
-../smt-lib/UFLRA/FFT/smtlib.620535.smt2,0.035,0.339,Proofterm: 0.193,47
-../smt-lib/UFLRA/FFT/smtlib.623531.smt2,0.034,0.317,Proofterm: 0.147,59
-../smt-lib/UFLRA/FFT/smtlib.623597.smt2,0.040,0.405,Proofterm: 0.254,85
-../smt-lib/UFLRA/FFT/smtlib.627531.smt2,0.032,0.327,Proofterm: 0.171,59
-../smt-lib/UFLRA/FFT/smtlib.620487.smt2,0.033,0.269,Proofterm: 0.165,47
-../smt-lib/UFLRA/FFT/smtlib.623417.smt2,0.035,0.330,Proofterm: 0.137,59
-../smt-lib/UFLRA/FFT/smtlib.627457.smt2,0.030,0.298,Proofterm: 0.182,59
-../smt-lib/UFLRA/FFT/smtlib.627605.smt2,0.033,0.289,Proofterm: 0.175,59
-../smt-lib/UFLRA/FFT/smtlib.627688.smt2,0.030,0.292,Proofterm: 0.189,90
-Total time: 121.832
+../smt-lib/UFLRA/FFT/smtlib.623474.smt2,0.019,0.218,Proofterm: 0.128,59
+../smt-lib/UFLRA/FFT/smtlib.620535.smt2,0.020,0.227,Proofterm: 0.149,47
+../smt-lib/UFLRA/FFT/smtlib.623531.smt2,0.016,0.221,Proofterm: 0.122,59
+../smt-lib/UFLRA/FFT/smtlib.623597.smt2,0.020,0.258,Proofterm: 0.164,85
+../smt-lib/UFLRA/FFT/smtlib.627531.smt2,0.018,0.282,Proofterm: 0.139,59
+../smt-lib/UFLRA/FFT/smtlib.620487.smt2,0.025,0.243,Proofterm: 0.152,47
+../smt-lib/UFLRA/FFT/smtlib.623417.smt2,0.022,0.285,Proofterm: 0.128,59
+../smt-lib/UFLRA/FFT/smtlib.627457.smt2,0.023,0.224,Proofterm: 0.131,59
+../smt-lib/UFLRA/FFT/smtlib.627605.smt2,0.022,0.218,Proofterm: 0.128,59
+../smt-lib/UFLRA/FFT/smtlib.627688.smt2,0.023,0.252,Proofterm: 0.164,90
+Total time: 1.234
+2022-05-05 21:13:24
