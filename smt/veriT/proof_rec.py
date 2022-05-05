@@ -256,6 +256,10 @@ class ProofReconstruction:
                 if step_limit and i > step_limit:
                     break
 
+        # Skip consistency checks if step limit is specified.
+        if step_limit:
+            return self.pts[step.id]
+
         # check hypothesis consistency
         def check_consistency(hyp):
             if hyp in self.smt_assertions:

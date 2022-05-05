@@ -60,3 +60,7 @@ problem: f15 = (if true then f15 else f3 (f12 (f13 f14 f15) f6) f15)
 file_name: LRA/keymaera/intersection-example-simple.proof-node6512.smt2
 rule: qnt_simplify
 problem: qnt_simplify is applied to an existential quantifier, but in the document, it can only be applied to forall quantifier.
+14.
+file_name: UF/sledgehammer/Fundamental_Theorem_Algebra/uf.560771.smt2
+rule: th_resolution
+problem: input is of the form A, ~~A <--> B.
