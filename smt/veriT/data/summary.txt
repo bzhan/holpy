@@ -9,7 +9,7 @@
     QF_LRA       550
     QF_RDL        85
      QF_UF      4175
-  QF_UFIDL         0
+  QF_UFIDL       271
   QF_UFLIA       171
   QF_UFLRA       415
         UF      2853
@@ -17,4 +17,4 @@
      UFLIA      7168
      UFLRA        10
 --------------------
-     Total     19710
+     Total     19981
