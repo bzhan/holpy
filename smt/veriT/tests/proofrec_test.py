@@ -349,6 +349,7 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/boogie/Array_test3.MyClass.M0_test3.MyClass.array_notnull.smt2',
             'UFLIA/boogie/Array_test3.MyClass.M1_test3.MyClass.array.array_notnull.smt2',
             'UFLIA/boogie/Array_test3.MyClass.M2_test3.MyClass.array2_notnull.smt2',
+            'UFLIA/boogie/Change773_Test2.Foo.smt2',
             'UFLIA/check/bignum_quant.smt2',
             'UFLIA/misc/arr1.smt2',
             'UFLIA/misc/list3.smt2',
@@ -389,6 +390,14 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/tptp/ARI604=1.smt2',
             'UFLIA/tptp/ARI612=1.smt2',
             'UFLIA/tptp/ARI615=1.smt2',
+
+            # resolution bug
+            # 'UFLIA/tokeneer/admin/opisavailable-4.smt2',
+            # 'UFLIA/tokeneer/admin/opisavailable-27.smt2',
+            # 'UFLIA/tokeneer/certificatestore/updatestore-19.smt2',
+            # 'UFLIA/tokeneer/certificatestore/updatestore-18.smt2'
+            # 'UFLIA/tokeneer/configdata/validatefile/readaccesspolicy-6.smt2'
+            # 'UFLIA/tokeneer/configdata/validatefile/readclass-5.smt2'
         ]
         profile = False
         if profile:
@@ -396,7 +405,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True,write_file=True)
 
         if profile:
             p = Stats(pr)

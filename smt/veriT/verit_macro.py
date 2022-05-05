@@ -3469,10 +3469,8 @@ class ImpliesSimplifyMacro(Macro):
             q1, q2 = rhs.args
             if p1 == Not(q2) and p2 == Not(q1):
                 return Thm(goal)
-            else:
-                raise VeriTException("implies_simplify", "can't match (~p1 --> ~p2) <--> (p2 --> p1)")
         # case 2: (false --> P) <--> true
-        elif prem == false and rhs ==  true:
+        if prem == false and rhs ==  true:
             return Thm(goal)
         # case 3 (p --> true) --> true
         elif concl == true and concl == rhs:
@@ -3511,10 +3509,8 @@ class ImpliesSimplifyMacro(Macro):
             q1, q2 = rhs.args
             if p1 == Not(q2) and p2 == Not(q1):
                 return logic.apply_theorem('verit_imp_simplify1', concl=goal)
-            else:
-                raise VeriTException("implies_simplify", "can't match (~p1 --> ~p2) <--> (p2 --> p1)")
         # case 2: (false --> P) <--> true
-        elif prem == false and rhs ==  true:
+        if prem == false and rhs ==  true:
             return logic.apply_theorem('verit_imp_simplify2', concl=goal)
         # case 3 (p --> true) --> true
         elif concl == true and concl == rhs:
