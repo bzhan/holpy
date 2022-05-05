@@ -532,12 +532,18 @@ class Term():
         return args, t
 
     def strip_quant(self):
-        if self.is_exists():
-            return self.strip_exists()
-        elif self.is_forall():
-            return self.strip_forall()
-        else:
-            raise NotImplementedError
+        def helper(tm, quant_vars):
+            if tm.is_forall():
+                vars, bd = tm.strip_forall()
+                quant_vars += vars
+                return helper(bd, quant_vars)
+            elif tm.is_exists():
+                vars, bd = tm.strip_exists()
+                quant_vars += vars
+                return helper(bd, quant_vars)
+            else:
+                return quant_vars, tm
+        return helper(self, [])
 
     @property
     def head(self) -> Term:
