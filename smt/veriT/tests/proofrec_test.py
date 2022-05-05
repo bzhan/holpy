@@ -280,22 +280,35 @@ class ProofrecTest(unittest.TestCase):
             'UF/sledgehammer/Arrow_Order/smtlib.578262.smt2',
             'UF/sledgehammer/Arrow_Order/smtlib.617784.smt2',
             'UF/sledgehammer/Arrow_Order/smtlib.686801.smt2',
+            'UF/sledgehammer/Arrow_Order/uf.836907.smt2',
             'UF/sledgehammer/FFT/uf.549548.smt2',
             'UF/sledgehammer/FFT/uf.600765.smt2',
             'UF/sledgehammer/FFT/uf.626085.smt2',
             'UF/sledgehammer/FFT/uf.552859.smt2',
             'UF/sledgehammer/FFT/uf.605329.smt2',
+            'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.560771.smt2',
+            'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.590503.smt2',
+            'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.734512.smt2',
             'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1025050.smt2',
             'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1061982.smt2',
             'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.1384400.smt2',
             'UF/sledgehammer/Hoare/smtlib.1170876.smt2',
+            'UF/sledgehammer/Hoare/uf.655433.smt2',
             'UF/sledgehammer/Hoare/uf.1008477.smt2',
             'UF/sledgehammer/Hoare/uf.1031408.smt2',
+            'UF/sledgehammer/Hoare/uf.1150909.smt2',
             'UF/sledgehammer/NS_Shared/smtlib.678332.smt2',
+            'UF/sledgehammer/NS_Shared/uf.712214.smt2',
             'UF/sledgehammer/QEpres/uf.1039338.smt2',
+            'UF/sledgehammer/QEpres/uf.716503.smt2',
+            'UF/sledgehammer/QEpres/uf.717211.smt2',
             'UF/sledgehammer/StrongNorm/uf.701666.smt2',
             'UF/sledgehammer/TypeSafe/uf.913303.smt2',
             'UF/sledgehammer/TypeSafe/smtlib.1267524.smt2',
+            'UF/sledgehammer/TwoSquares/uf.611567.smt2',
+            'UF/sledgehammer/TwoSquares/uf.603183.smt2',
+            'UF/sledgehammer/TwoSquares/uf.618437.smt2',
+            'UF/sledgehammer/TwoSquares/uf.739998.smt2',
             'UF/sledgehammer/TwoSquares/uf.680734.smt2',
             'UF/sledgehammer/TwoSquares/uf.725943.smt2',
             'UF/sledgehammer/TwoSquares/uf.757144.smt2',
@@ -412,43 +425,43 @@ class ProofrecTest(unittest.TestCase):
             p.print_stats(50)
 
 
-    def test_QF_IDL(self): # eval ✓ proofterm: ✓
-        test_paths = [
-            'QF_IDL/planning/plan-40.cvc.smt2',
-            # 'QF_IDL/RTCL/b13_tf_15/ckt_PROP5_tf_15.smt2', # timeout
-        ]
-        profile = False
-        if profile:
-            pr = cProfile.Profile()
-            pr.enable()
+    # def test_QF_IDL(self): # eval ✓ proofterm: ✓
+    #     test_paths = [
+    #         'QF_IDL/planning/plan-40.cvc.smt2',
+    #         # 'QF_IDL/RTCL/b13_tf_15/ckt_PROP5_tf_15.smt2', # timeout
+    #     ]
+    #     profile = False
+    #     if profile:
+    #         pr = cProfile.Profile()
+    #         pr.enable()
 
-        for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+    #     for path in test_paths:
+    #         test_path(path, test_proofterm=True, parse_assertion=True)
 
-        if profile:
-            p = Stats(pr)
-            p.strip_dirs()
-            p.sort_stats('cumtime')
-            p.print_stats(50)
+    #     if profile:
+    #         p = Stats(pr)
+    #         p.strip_dirs()
+    #         p.sort_stats('cumtime')
+    #         p.print_stats(50)
 
-    def test_QF_RDL(self): # eval ✓ proofterm: ac_simp
-        test_paths = [
-            # 'QF_RDL/skdmxa/skdmxa-3x3-5.smt2' # ac_simp
-        ]
+    # def test_QF_RDL(self): # eval ✓ proofterm: ac_simp
+    #     test_paths = [
+    #         # 'QF_RDL/skdmxa/skdmxa-3x3-5.smt2' # ac_simp
+    #     ]
 
-        profile = False
-        if profile:
-            pr = cProfile.Profile()
-            pr.enable()
+    #     profile = False
+    #     if profile:
+    #         pr = cProfile.Profile()
+    #         pr.enable()
 
-        for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+    #     for path in test_paths:
+    #         test_path(path, test_proofterm=True, parse_assertion=True)
 
-        if profile:
-            p = Stats(pr)
-            p.strip_dirs()
-            p.sort_stats('cumtime')
-            p.print_stats(50)
+    #     if profile:
+    #         p = Stats(pr)
+    #         p.strip_dirs()
+    #         p.sort_stats('cumtime')
+    #         p.print_stats(50)
 
     def test_QF_LRA(self): # proofterm ✓ eval ✓
         test_paths = [
@@ -539,6 +552,7 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt2022486099146293362.smt2',
             'AUFLIA/20170829-Rodin/smt2025463987927880021.smt2',
             'AUFLIA/20170829-Rodin/smt2027035001350841448.smt2',
+            'AUFLIA/20170829-Rodin/smt2283324634047097920.smt2',
             'AUFLIA/20170829-Rodin/smt2885702086782097441.smt2',
             'AUFLIA/20170829-Rodin/smt8020508299917860570.smt2',
             'AUFLIA/20170829-Rodin/smt1053503323401967250.smt2',
@@ -555,6 +569,9 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt7351897299178954133.smt2',
             'AUFLIA/20170829-Rodin/smt4213031790546145760.smt2',
             'AUFLIA/20170829-Rodin/smt4473657298807368490.smt2',
+            # 'AUFLIA/20170829-Rodin/smt5586736073099019802.smt2', # resolution
+            'AUFLIA/20170829-Rodin/smt1524510508476207618.smt2',
+            'AUFLIA/20170829-Rodin/smt3939123684161216825.smt2',
             'AUFLIA/misc/set1.smt2',
         ]
 
@@ -581,6 +598,12 @@ class ProofrecTest(unittest.TestCase):
             'LRA/scholl-smt08/RND/RND_4_12.smt2',
             'LRA/scholl-smt08/RND/RND_4_2.smt2',
             'LRA/scholl-smt08/RND/RND_4_7.smt2',
+            'LRA/keymaera/intersection-example-simple.proof-node6512.smt2',
+            'LRA/keymaera/intersection-example-simple.proof-node47049.smt2',
+            'LRA/keymaera/intersection-example-simple.proof-node684031.smt2',
+            'LRA/keymaera/intersection-example-simple.proof-node403143.smt2',
+            'LRA/keymaera/intersection-example-simple.proof-node62694.smt2',
+            'LRA/scholl-smt08/RND/RND_4_30.smt2'
         ]
         profile = False
         if profile:
@@ -619,6 +642,25 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
+    def test_UF_DEBUG(self):
+        test_paths = [                
+            # 'UF/sledgehammer/TwoSquares/uf.602601.smt2',
+            # 'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.903234.smt2',
+            # 'UF/sledgehammer/Hoare/uf.828950.smt2',
+        ]
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=True, parse_assertion=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
 
 if __name__ == "__main__":
     unittest.main()

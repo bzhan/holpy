@@ -53,7 +53,10 @@ step 214 (trans)
 (step t214 (cl (= @p_411 @p_592)) :rule trans :premises (t211 t212 t213))
 problem: to obtain p_411 = p_592, we should connect t211's rhs with t213's lhs, t212 is not supposed to be added in premises.
 12.
-8.
 file_name: UF/sledgehammer/Fundamental_Theorem_Algebra
 rule: ite_simplify
 problem: f15 = (if true then f15 else f3 (f12 (f13 f14 f15) f6) f15)
+13.
+file_name: LRA/keymaera/intersection-example-simple.proof-node6512.smt2
+rule: qnt_simplify
+problem: qnt_simplify is applied to an existential quantifier, but in the document, it can only be applied to forall quantifier.

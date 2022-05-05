@@ -197,8 +197,21 @@ def resolve_order(props):
         a, n = strip_not(t)
         return (lit_to_id[a], n)
 
+    def id_to_term(a, n):
+        if n == 0:
+            return id_to_lit[a]
+        else:
+            return Not(id_to_term(a, n - 1))
+
     for i in range(len(props)):
         props[i] = [term_to_id(t) for t in props[i]]
+        if len(props[i]) != len(set(props[i])):
+            tmp = []
+            for prop in props[i]:
+                if prop not in tmp:
+                    tmp.append(prop)
+            props[i] = tmp
+            resolves.append((i, -1, 0, 0, [id_to_term(a, n) for (a, n) in props[i]]))
 
     # List of propositions remaining to be resolved.
     # Clear repeated props that are immediately next to each other.
@@ -206,12 +219,6 @@ def resolve_order(props):
     for i, prop in enumerate(props):
         if i == 0 or tuple(prop) != tuple(props[i-1]):
             id_remain.append(i)
-
-    def id_to_term(a, n):
-        if n == 0:
-            return id_to_lit[a]
-        else:
-            return Not(id_to_term(a, n - 1))
 
     while len(id_remain) > 1:
         # Find resolution among all possible pairs.
@@ -239,14 +246,10 @@ def resolve_order(props):
         # Perform this resolution
         id1, id2, t1, t2 = resolve
         prop1, prop2 = props[id1], props[id2]
-        if t1 == -1:
-            res_list = prop2[:t2] + prop2[t2+1:]
-        else:
-            assert t1 != -1 and t2 != -1
-            res_list = prop1[:t1] + prop1[t1+1:]
-            for t in prop2[:t2] + prop2[t2+1:]:
-                if t not in res_list:
-                    res_list.append(t)
+        res_list = prop1[:t1] + prop1[t1+1:]
+        for t in prop2[:t2] + prop2[t2+1:]:
+            if t not in res_list:
+                res_list.append(t)
         id_remain.remove(id2)
         props[id1] = res_list
         resolves.append(resolve + ([id_to_term(a, n) for (a, n) in res_list],))
@@ -266,6 +269,11 @@ class ThResolutionMacro(Macro):
         assert len(cl_sizes) == len(prevs)
 
         if len(prevs) == 1 and prevs[0].prop == Not(true) and len(cl) == 0:
+            return Thm(Or(*cl), *(pt.hyps for pt in prevs))
+
+        if len(prevs) == 2 and prevs[1].is_equals() and prevs[1].lhs.is_not() and \
+            prevs[1].lhs.arg.is_not() and prevs[1].lhs.arg.arg == prevs[0].prop and \
+            len(cl) == 1 and cl[0] == prevs[1].rhs:
             return Thm(Or(*cl), *(pt.hyps for pt in prevs))
 
         prems = []
@@ -294,8 +302,15 @@ class ThResolutionMacro(Macro):
         cl, cl_sizes = args
         assert len(cl_sizes) == len(prevs)
 
+        # Special case: from ~true, get false (empty clause)
         if len(prevs) == 1 and prevs[0].prop == Not(true) and len(cl) == 0:
             return prevs[0].on_prop(rewr_conv('verit_not_simplify1'))
+
+        # Special case: from A, ~~A <--> B, get B
+        if len(prevs) == 2 and prevs[1].is_equals() and prevs[1].lhs.is_not() and \
+            prevs[1].lhs.arg.is_not() and prevs[1].lhs.arg.arg == prevs[0].prop and \
+            len(cl) == 1 and cl[0] == prevs[1].rhs:
+            return prevs[1].on_lhs(rewr_conv('double_neg')).equal_elim(prevs[0])
 
         prems = []
         for cl_size, prev in zip(cl_sizes, prevs):
@@ -304,11 +319,28 @@ class ThResolutionMacro(Macro):
         # Make a copy of prems, as it needs to be used later
         resolves, _ = resolve_order(list(prems))
 
+        if len(resolves) == 0:
+            print('prev')
+            for prev in prevs:
+                print(prev)
+            print('cl')
+            for t in cl:
+                print(t)
+            raise AssertionError
+
         # Use a list to store intermediate resolvants.
         prevs = list(prevs)
 
         for i, res_step in enumerate(resolves):
             id1, id2, t1, t2, res_list = res_step
+
+            # Special move for simplifying id1
+            if id2 == -1:
+                pt = prevs[id1]
+                prems[id1] = res_list
+                prevs[id1] = logic.imp_disj_iff(Eq(pt.prop, Or(*res_list))).equal_elim(pt)
+                continue
+
             pt1, pt2 = prevs[id1], prevs[id2]
             prem1, prem2 = prems[id1], prems[id2]
 
@@ -596,14 +628,14 @@ class EqTransitive(Macro):
             if not arg.is_not() or not arg.arg.is_equals():
                 raise VeriTException("eq_transitive", "all but last disjunct must be a negation")
             prems.append(arg.arg)
-
         cur_eq = prems[0]
+        goal = args[-1]
+        if cur_eq.lhs not in (goal.lhs, goal.rhs) and cur_eq.rhs not in (goal.lhs, goal.rhs):
+            raise VeriTException("eq_transitive", "unexpected argument")
+        if cur_eq.lhs not in (goal.lhs, goal.rhs) and cur_eq.rhs in (goal.lhs, goal.rhs):
+            cur_eq = Eq(cur_eq.rhs, cur_eq.lhs)
         for prem in prems[1:]:
-            if cur_eq.lhs == prem.lhs:
-                cur_eq = Eq(cur_eq.rhs, prem.rhs)
-            elif cur_eq.lhs == prem.rhs:
-                cur_eq = Eq(cur_eq.rhs, prem.lhs)
-            elif cur_eq.rhs == prem.lhs:
+            if cur_eq.rhs == prem.lhs:
                 cur_eq = Eq(cur_eq.lhs, prem.rhs)
             elif cur_eq.rhs == prem.rhs:
                 cur_eq = Eq(cur_eq.lhs, prem.lhs)
@@ -624,26 +656,27 @@ class EqTransitive(Macro):
         disjs = [tm.arg for tm in args[:-1]]
         disj_pts = [ProofTerm.assume(disj) for disj in disjs]
         pt0 = disj_pts[0]
+        # invariant: the final equality's lhs or rhs should not be lost during transition
+        goal = args[-1]
+        if pt0.lhs not in (goal.lhs, goal.rhs) and pt0.rhs not in (goal.lhs, goal.rhs):
+            raise VeriTException("eq_transitive", "unexpected argument")
+        if pt0.lhs not in (goal.lhs, goal.rhs) and pt0.rhs in (goal.lhs, goal.rhs):
+            pt0 = pt0.symmetric()
         for pt1 in disj_pts[1:]: # bugs in verit
-            if pt1.lhs == pt0.rhs:
+            if pt0.rhs == pt1.lhs:
                 pt0 = pt0.transitive(pt1)
-            elif pt1.lhs == pt0.lhs:
-                pt0 = pt0.symmetric().transitive(pt1)
-            elif pt1.rhs == pt0.lhs:
-                pt0 = pt0.symmetric().transitive(pt1.symmetric())
-            elif pt1.rhs == pt0.rhs:
+            elif pt0.rhs == pt1.rhs:
                 pt0 = pt0.transitive(pt1.symmetric())
-            
             else:
                 raise VeriTException("eq_transitive", "unexpected equality")
-        
         if pt0.symmetric().prop == args[-1]:
             pt0 = pt0.symmetric() 
-
         assert pt0.prop == args[-1], "%s \n %s" % (str(pt0.prop), str(args[-1]))
         pt1 = pt0
         for disj in reversed(disjs):
             pt1 = pt1.implies_intr(disj).on_prop(rewr_conv("imp_disj_eq"))
+        if pt1.prop != Or(*args):
+            raise VeriTException("eq_transitive", "unexpected result")
         return pt1
 
 @register_macro("verit_eq_congruent")
@@ -1067,11 +1100,11 @@ class EqSimplifyMacro(Macro):
         if lhs.is_equals() and lhs.lhs.is_constant() and lhs.rhs.is_constant() and rhs == false:
             T = lhs.lhs.get_type()
             if T == hol_type.IntType:
-                pt = ProofTerm('int_const_ineq', lhs).on_prop(rewr_conv('eq_false'))
+                pt = ProofTerm('int_const_ineq', lhs).on_prop(rewr_conv("eq_false"))
                 if pt.prop == goal:
                     return pt
             if T == hol_type.RealType:
-                pt = ProofTerm('real_const_eq', lhs).on_prop(rewr_conv('eq_false'))
+                pt = ProofTerm('real_const_eq', lhs)
                 if pt.prop == goal:
                     return pt
 
@@ -1969,8 +2002,12 @@ class LetMacro(Macro):
                 found_hyp = Eq(x, var_map[x])
             if found_hyp.rhs == t:
                 cur_pt = cur_pt.implies_elim(ProofTerm.reflexive(t))
-            else:
+            elif (t, found_hyp.rhs) in eqs:
                 cur_pt = cur_pt.implies_elim(eqs[(t, found_hyp.rhs)])
+            elif (found_hyp.rhs, t) in eqs:
+                cur_pt = cur_pt.implies_elim(eqs[(found_hyp.rhs, t)].symmetric())
+            else:
+                raise VeriTException("let", "Unable to find %s = %s in eqs" % (t, found_hyp.rhs))
 
         # Now the left side is u[t/x], rewrite it from let x = t in u.
         let_pt = ProofTerm.reflexive(goal.lhs)
@@ -3765,8 +3802,12 @@ class SkoExMacro(Macro):
             pt = pt.implies_elim(ProofTerm.reflexive(t))
             # Rewrite using P (SOME x. P x) <--> (EX x. P x), may need to use some of
             # the other equality hypotheses.
-            Some_eq = logic.apply_theorem('verit_some_eq_ex', inst=Inst(P=P))
+            inst = Inst(P=P)
+            inst.abs_name_inst['x'] = x.name
+            Some_eq = logic.apply_theorem('verit_some_eq_ex', inst=inst)
             eq_pt = compare_sym_tm_thm(Some_eq.lhs, pt.lhs, eqs=eqs)
+            if eq_pt is None:
+                raise VeriTException("sko_ex", "Unexpected result")
             pt = ProofTerm.transitive(Some_eq.symmetric(), eq_pt, pt)
         return pt
 
@@ -3871,8 +3912,12 @@ class SkoForallMacro(Macro):
             pt = pt.implies_elim(ProofTerm.reflexive(t))
             # Rewrite using P (SOME x. ~P x) <--> (ALL x. P x), may need to use some of
             # the other equality hypotheses.
-            Some_eq = logic.apply_theorem('verit_some_neg_eq_all', inst=Inst(P=P))
+            inst = Inst(P=P)
+            inst.abs_name_inst['x'] = x.name
+            Some_eq = logic.apply_theorem('verit_some_neg_eq_all', inst=inst)
             eq_pt = compare_sym_tm_thm(Some_eq.lhs, pt.lhs, eqs=eqs)
+            if eq_pt is None:
+                raise VeriTException("sko_forall", "Unexpected result")
             pt = ProofTerm.transitive(Some_eq.symmetric(), eq_pt, pt)
         return pt
 
@@ -4333,13 +4378,13 @@ class QNTSimplifyMacro(Macro):
             raise VeriTException("qnt_simplify", "unexpected arguments")
         goal = args[0]
         lhs, rhs = goal.args
-        if rhs not in (true, false):
+        if any(v.get_type() == BoolType for v in rhs.get_vars()):
             raise VeriTException("qnf_simplify", "rhs should be true or false")
 
-        if not lhs.is_forall():
+        if not lhs.is_forall() and not lhs.is_exists():
             raise VeriTException("qnf_simplify", "lhs should be a quantification")
         
-        _, l_bd = lhs.strip_forall()
+        _, l_bd = lhs.strip_quant()
         if l_bd == rhs:
             return Thm(goal)
         else:
@@ -4348,16 +4393,10 @@ class QNTSimplifyMacro(Macro):
     def get_proof_term(self, args, prevs):
         goal = args[0]
         lhs, rhs = goal.args
-        vars, _ = lhs.strip_forall()
-        pt1 = ProofTerm.assume(lhs)
-        for v in vars:
-            pt1 = pt1.forall_elim(v)
-        pt1 = pt1.implies_intr(lhs)
-        pt2 = ProofTerm.assume(rhs)
-        for v in vars:
-            pt2 = pt2.forall_intr(v)
-        pt2 = pt2.implies_intr(rhs)
-        return logic.apply_theorem("iffI", pt1, pt2)
+        pt = refl(lhs).on_rhs(verit_conv.qnt_rm_unsed_conv())
+        if pt.prop == goal:
+            return pt
+        raise VeriTException("qnt_simplify", "unexpected result")
 
 @register_macro("verit_qnt_join")
 class QNTJoinMacro(Macro):

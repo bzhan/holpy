@@ -103,8 +103,8 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     start_time = time.perf_counter()
     try:
         steps = test_parse_step(verit_proof, ctx)
-    except:
-        return [filename, solve_time_str, 'PARSING ERROR (HolPy)', '', '']
+    except Exception as e:
+        return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
     parse_time = time.perf_counter() - start_time
     parse_time_str = "%.3f" % parse_time    
 
