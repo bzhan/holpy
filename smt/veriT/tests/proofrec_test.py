@@ -267,7 +267,10 @@ class ProofrecTest(unittest.TestCase):
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_48_45_757_1043506.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_54_30_307_1349771.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_57_04_292_1481164.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_56_13_740_1441286.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_17_07_59_177_2281818.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/huffman/x2015_09_10_16_51_19_087_1305640.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_52_48_322_1388593.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_46_30_200_1001391.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_47_39_480_1078027.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_48_44_767_1147663.smt_in.smt2',
@@ -313,7 +316,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, write_file=True, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)
@@ -346,6 +349,7 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/boogie/Array_test3.MyClass.M0_test3.MyClass.array_notnull.smt2',
             'UFLIA/boogie/Array_test3.MyClass.M1_test3.MyClass.array.array_notnull.smt2',
             'UFLIA/boogie/Array_test3.MyClass.M2_test3.MyClass.array2_notnull.smt2',
+            'UFLIA/boogie/Change773_Test2.Foo.smt2',
             'UFLIA/check/bignum_quant.smt2',
             'UFLIA/misc/arr1.smt2',
             'UFLIA/misc/list3.smt2',
@@ -386,6 +390,14 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/tptp/ARI604=1.smt2',
             'UFLIA/tptp/ARI612=1.smt2',
             'UFLIA/tptp/ARI615=1.smt2',
+
+            # resolution bug
+            # 'UFLIA/tokeneer/admin/opisavailable-4.smt2',
+            # 'UFLIA/tokeneer/admin/opisavailable-27.smt2',
+            # 'UFLIA/tokeneer/certificatestore/updatestore-19.smt2',
+            # 'UFLIA/tokeneer/certificatestore/updatestore-18.smt2'
+            # 'UFLIA/tokeneer/configdata/validatefile/readaccesspolicy-6.smt2'
+            # 'UFLIA/tokeneer/configdata/validatefile/readclass-5.smt2'
         ]
         profile = False
         if profile:
@@ -393,7 +405,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True,write_file=True)
 
         if profile:
             p = Stats(pr)
