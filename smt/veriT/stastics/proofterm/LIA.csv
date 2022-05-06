@@ -1,5 +1,0 @@
-filename,Solve,Parse,ProofTerm,Steps
-../smt-lib/LIA/tptp/NUM889=1.smt2,0.047,0.450,Proofterm: 0.120,30
-../smt-lib/LIA/tptp/NUM865=1.smt2,0.055,2.230,Proofterm: 1.159,141
-../smt-lib/LIA/tptp/ARI572=1.smt2,0.052,0.649,Proofterm: 4.704,70
-../smt-lib/LIA/tptp/NUM895=1.smt2,0.098,3.788,Proofterm: 1.788,82

@@ -92,7 +92,7 @@ def test_file(filename, verit_proof, test_eval=False):
 if __name__ == "__main__":
     filename = sys.argv[1]
     test_eval = sys.argv[3]
-    if test_eval == "false":
+    if test_eval == "False":
         test_eval = False
     else:
         test_eval = True

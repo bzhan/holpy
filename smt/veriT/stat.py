@@ -101,10 +101,10 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         f.write(verit_proof)
 
     try:
-        with subprocess.Popen("pypy3 -m smt.veriT.stastics.validate_file '%s' \"%s\" 'false'" % (filename, proof_file_name), 
+        with subprocess.Popen("pypy3 -m smt.veriT.stastics.validate_file '%s' \"%s\" '%s'" % (filename, proof_file_name, str(test_eval)), 
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True) as p:
             try:
-                output,err_message = p.communicate(timeout=120)
+                output,err_message = p.communicate(timeout=eval_timeout)
                 output = output.decode('UTF-8')
                 # print("output", repr(output))
                 if err_message != b'':
@@ -285,8 +285,11 @@ if __name__ == "__main__":
         else:
             headers = ['filename', 'Solve', 'Parse', 'ProofTerm', 'Steps']
             res_file_name = './smt/veriT/stastics/proofterm/%s.csv' % csv_name
-        if test_eval:
-            res_file_name = './smt/veriT/stastics/eval/full.csv'
+        if test_full:
+            if test_eval:
+                res_file_name = './smt/veriT/stastics/eval/SMT.csv'
+            else:
+                res_file_name = './smt/veriT/stastics/proofterm/SMT.csv'
 
         with open(res_file_name, 'w') as f:
             f_csv = csv.writer(f)
