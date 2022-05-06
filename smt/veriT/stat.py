@@ -10,8 +10,7 @@ import sys
 import csv
 import concurrent.futures
 from itertools import repeat
-import functools
-import errno
+import shutil
 import subprocess
 
 from smt.veriT import interface, proof_rec, proof_parser
@@ -60,6 +59,13 @@ def test_proof(filename, solve_timeout=120):
     else:
         return [filename[11:], "RETURN PROOF"]
 
+def remove_file(filename):
+    if os.path.isfile(filename):
+        try:
+            os.remove(filename)
+        except FileNotFoundError:
+            return
+
 def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
               step_limit=None, omit_proofterm=None, solve_timeout=120, eval_timeout=300):
     """Test a given file under eval or proofterm mode."""
@@ -103,7 +109,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                 # print("output", repr(output))
                 print("error", err_message)
                 print("output", [p for p in output[:-2].split(",")])
-                os.remove(proof_file_name)
+                remove_file(proof_file_name)
                 return [p for p in output[:-2].split(",")]
             except subprocess.TimeoutExpired:
                 # Kill process
@@ -114,12 +120,13 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                     p.terminate()
                     p.wait()
                     p.kill()
-                    os.remove(proof_file_name)
+                    print([filename, solve_time_str, 'TIMEOUT', 'TIMEOUT', ''])
+                    remove_file(proof_file_name)
                     return [filename, solve_time_str, 'TIMEOUT', 'TIMEOUT', '']
     except OSError:
         print("pypy3 -m smt.veriT.stastics.validate_file '%s' '%s' 'false'" % (filename, verit_proof))
-        os.remove(proof_file_name)
         return [filename, solve_time_str, 'OS ERROR', 'OS_ERROR', '']
+
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
               step_limit=None, omit_proofterm=None, solve_timeout=120, eval_timeout=300):
     """Test a directory containing SMT files.
@@ -161,9 +168,8 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         res = executor.map(test_file, file_names, repeat(show_time),
                         repeat(test_eval), repeat(test_proofterm), repeat(step_limit),
-                            repeat(omit_proofterm), repeat(120), repeat(120))
+                            repeat(omit_proofterm), repeat(solve_timeout), repeat(eval_timeout))
     print("end")
-    os.rmdir("./smt/veriT/proof")
     return res
 
 def run_fast_scandir(dir, ext):    # dir: str, ext: list
@@ -247,9 +253,9 @@ if __name__ == "__main__":
         
         start_time = time.perf_counter()
         if test_eval:
-            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
+            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout)
         else:
-            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
+            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout)
         end_time = time.perf_counter()
         print("stats", stats)
         if not os.path.isdir('./smt/veriT/stastics'):

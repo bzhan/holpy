@@ -44,7 +44,8 @@ def test_file(filename, verit_proof, test_eval=False):
         # print([filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', ''])
     
     parse_time = time.perf_counter() - start_time
-    parse_time_str = "%.3f" % parse_time    
+    parse_time_str = "%.3f" % parse_time
+  
     assts = proof_rec.get_assertions(filename)
     # Validation by macro.eval
     eval_time_str = ""
