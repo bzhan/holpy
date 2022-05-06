@@ -10,13 +10,15 @@ import sys
 import csv
 import concurrent.futures
 from itertools import repeat
+import threading
 
 from smt.veriT import interface, proof_rec, proof_parser
 from smt.veriT.verit_macro import VeriTException
 from syntax.settings import settings
 settings.unicode = False
 
-sys.setrecursionlimit(5000)
+csv_writer_lock = threading.Lock()
+sys.setrecursionlimit(10000)
 
 smtlib_path = None
 
@@ -102,9 +104,15 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     # Parse
     start_time = time.perf_counter()
     try:
-        steps = test_parse_step(verit_proof, ctx)
-    except Exception as e:
-        return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
+        with TO(seconds=eval_timeout):
+            try:
+                steps = test_parse_step(verit_proof, ctx)
+            except Exception as e:
+                return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
+    except TimeoutError:
+        print("%s PARSING TIMEOUT" % filename)
+        return [filename, solve_time_str, 'PARSING TIMEOUT (HolPy) %s' % e, '', '']
+    
     parse_time = time.perf_counter() - start_time
     parse_time_str = "%.3f" % parse_time    
 
@@ -114,7 +122,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         start_time = time.perf_counter()
         recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         try:
-            with TO(seconds=eval_timeout):
+            with TO(seconds=eval_timeout-parse_time):
                 try:
                     pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                 except Exception as e:
@@ -135,7 +143,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         start_time = time.perf_counter()
         recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         try:
-            with TO(seconds=eval_timeout):
+            with TO(seconds=eval_timeout-parse_time):
                 try:
                     pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                 except Exception as e:
@@ -183,7 +191,7 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
                     file_names.append(smtlib_path+row[0])
     else:
         _, file_names = run_fast_scandir(abs_path, ['.smt2'])
-
+    print("start")
     with concurrent.futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
         res = executor.map(test_file, file_names, repeat(show_time),
                         repeat(test_eval), repeat(test_proofterm), repeat(step_limit),

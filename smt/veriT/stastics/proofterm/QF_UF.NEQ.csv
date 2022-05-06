@@ -1,0 +1,24 @@
+filename,Solve,Parse,ProofTerm,Steps
+../smt-lib/QF_UF/NEQ/NEQ004_size7.smt2,42.355,188.429,Error: ../smt-lib/QF_UF/NEQ/NEQ004_size7.smt2 Timeout,946181
+../smt-lib/QF_UF/NEQ/NEQ006_size3.smt2,0.231,5.654,Proofterm: 37.772,11704
+../smt-lib/QF_UF/NEQ/NEQ016_size6.smt2,4.783,24.179,Proofterm: 157.117,208569
+../smt-lib/QF_UF/NEQ/NEQ027_size8.smt2,6.172,630.552,Error: ../smt-lib/QF_UF/NEQ/NEQ027_size8.smt2 Timeout,101097
+../smt-lib/QF_UF/NEQ/NEQ046_size3.smt2,0.628,46.355,Error: ../smt-lib/QF_UF/NEQ/NEQ046_size3.smt2 Timeout,15914
+../smt-lib/QF_UF/NEQ/NEQ032_size4.smt2,0.559,6.343,Proofterm: 61.262,26990
+../smt-lib/QF_UF/NEQ/NEQ015_size5.smt2,20.461,1057.096,Error: ../smt-lib/QF_UF/NEQ/NEQ015_size5.smt2 Timeout,91144
+../smt-lib/QF_UF/NEQ/NEQ046_size4.smt2,3.515,270.840,Error: ../smt-lib/QF_UF/NEQ/NEQ046_size4.smt2 Timeout,43006
+../smt-lib/QF_UF/NEQ/NEQ048_size7.smt2,14.839,78.904,Error: ../smt-lib/QF_UF/NEQ/NEQ048_size7.smt2 Timeout,456709
+../smt-lib/QF_UF/NEQ/NEQ023_size6.smt2,34.832,75.871,Error: ../smt-lib/QF_UF/NEQ/NEQ023_size6.smt2 Timeout,210972
+../smt-lib/QF_UF/NEQ/NEQ033_size5.smt2,3.169,132.981,Error: ../smt-lib/QF_UF/NEQ/NEQ033_size5.smt2 Timeout,42561
+../smt-lib/QF_UF/NEQ/NEQ046_size5.smt2,13.042,1273.731,Error: ../smt-lib/QF_UF/NEQ/NEQ046_size5.smt2 maximum recursion depth exceeded,96703
+../smt-lib/QF_UF/NEQ/NEQ031_size9.smt2,22.839,729.452,Error: ../smt-lib/QF_UF/NEQ/NEQ031_size9.smt2 Timeout,235935
+../smt-lib/QF_UF/NEQ/NEQ031_size7.smt2,2.732,224.398,Error: ../smt-lib/QF_UF/NEQ/NEQ031_size7.smt2 Timeout,58197
+../smt-lib/QF_UF/NEQ/NEQ023_size5.smt2,0.327,5.775,Proofterm: 58.847,11480
+../smt-lib/QF_UF/NEQ/NEQ041_size8.smt2,28.254,82.426,Error: ../smt-lib/QF_UF/NEQ/NEQ041_size8.smt2 Timeout,322215
+../smt-lib/QF_UF/NEQ/NEQ006_size4.smt2,3.284,22.262,Error: ../smt-lib/QF_UF/NEQ/NEQ006_size4.smt2 Timeout,74371
+../smt-lib/QF_UF/NEQ/NEQ033_size6.smt2,7.252,314.574,Error: ../smt-lib/QF_UF/NEQ/NEQ033_size6.smt2 Timeout,72713
+../smt-lib/QF_UF/NEQ/NEQ004_size6.smt2,7.102,33.789,Error: ../smt-lib/QF_UF/NEQ/NEQ004_size6.smt2 Timeout,241493
+../smt-lib/QF_UF/NEQ/NEQ015_size3.smt2,0.921,32.425,Proofterm: 287.192,14398
+../smt-lib/QF_UF/NEQ/NEQ027_size9.smt2,21.558,795.244,Error: ../smt-lib/QF_UF/NEQ/NEQ027_size9.smt2 Timeout,207254
+../smt-lib/QF_UF/NEQ/NEQ004_size5.smt2,1.074,8.390,Proofterm: 111.639,48628
+../smt-lib/QF_UF/NEQ/NEQ041_size6.smt2,0.151,4.059,Proofterm: 27.132,7804

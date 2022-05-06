@@ -1,0 +1,22 @@
+filename,Solve,Parse,ProofTerm,Steps
+../smt-lib/QF_UF/eq_diamond/eq_diamond16.smt2,4.933,32.063,Error: ../smt-lib/QF_UF/eq_diamond/eq_diamond16.smt2 Timeout,98791
+../smt-lib/QF_UF/eq_diamond/eq_diamond14.smt2,1.187,8.631,Proofterm: 171.512,24846
+../smt-lib/QF_UF/eq_diamond/eq_diamond3.smt2,0.096,0.754,Proofterm: 0.400,31
+../smt-lib/QF_UF/eq_diamond/eq_diamond2.smt2,0.094,1.004,Proofterm: 0.165,16
+../smt-lib/QF_UF/eq_diamond/eq_diamond8.smt2,0.149,1.665,Proofterm: 8.681,472
+../smt-lib/QF_UF/eq_diamond/eq_diamond7.smt2,0.138,1.185,Proofterm: 5.698,260
+../smt-lib/QF_UF/eq_diamond/eq_diamond4.smt2,0.121,0.958,Proofterm: 1.044,52
+../smt-lib/QF_UF/eq_diamond/eq_diamond9.smt2,0.152,1.709,Proofterm: 13.971,888
+../smt-lib/QF_UF/eq_diamond/eq_diamond12.smt2,0.363,3.367,Proofterm: 32.839,6396
+../smt-lib/QF_UF/eq_diamond/eq_diamond17.smt2,14.971,62.588,Error: ../smt-lib/QF_UF/eq_diamond/eq_diamond17.smt2 Timeout,197116
+../smt-lib/QF_UF/eq_diamond/eq_diamond13.smt2,0.429,5.377,Proofterm: 81.640,12523
+../smt-lib/QF_UF/eq_diamond/eq_diamond19.smt2,NO PROOF (veriT),,,
+../smt-lib/QF_UF/eq_diamond/eq_diamond10.smt2,0.156,2.856,Proofterm: 21.077,1652
+../smt-lib/QF_UF/eq_diamond/eq_diamond6.smt2,0.127,0.952,Proofterm: 3.107,152
+../smt-lib/QF_UF/eq_diamond/eq_diamond1.smt2,0.075,0.578,Proofterm: 0.058,11
+../smt-lib/QF_UF/eq_diamond/eq_diamond11.smt2,0.156,3.379,Proofterm: 27.291,3250
+../smt-lib/QF_UF/eq_diamond/eq_diamond15.smt2,2.056,16.633,Error: ../smt-lib/QF_UF/eq_diamond/eq_diamond15.smt2 Timeout,49495
+../smt-lib/QF_UF/eq_diamond/eq_diamond18.smt2,44.985,138.986,Error: ../smt-lib/QF_UF/eq_diamond/eq_diamond18.smt2 Timeout,394059
+../smt-lib/QF_UF/eq_diamond/eq_diamond5.smt2,0.107,0.751,Proofterm: 1.659,90
+Total time: 490.144
+2022-05-06 00:04:31
