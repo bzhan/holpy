@@ -3025,6 +3025,9 @@ class ITESimplifyMacro(Macro):
             # case 15: ite ~P Q true <--> P | Q
             elif l_else == true and l_P.is_not() and ite2 == Or(l_P.arg, l_then):
                 return True
+            # case 16: ite ~P false Q <--> P & Q (verit bug)
+            elif l_then == false and l_P.is_not() and ite2 == And(l_P.arg, l_else):
+                return True
             else:
                 return False
         else:
@@ -3087,6 +3090,9 @@ class ITESimplifyMacro(Macro):
             # case 15: ite ~P Q true <--> P | Q
             elif l_else == true and l_P.is_not() and ite2 == Or(l_P.arg, l_then):
                 return logic.apply_theorem('verit_ite_simplify15', concl=goal)
+            # Case 16: ite ~P false Q <--> P & Q
+            elif l_then == false and l_P.is_not() and ite2 == And(l_P.arg, l_else):
+                return logic.apply_theorem('verit_ite_simplify16', concl=goal)
             else:
                 return None
         else:

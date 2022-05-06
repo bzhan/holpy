@@ -64,3 +64,7 @@ problem: qnt_simplify is applied to an existential quantifier, but in the docume
 file_name: UF/sledgehammer/Fundamental_Theorem_Algebra/uf.560771.smt2
 rule: th_resolution
 problem: input is of the form A, ~~A <--> B.
+15.
+file_name: QF_LIA/calypto/problem-004353.cvc.1.smt2
+rule: ite_simplify
+problem: `ite ~P false Q <--> P & Q` is not included in `ite_simplify` rule
