@@ -60,13 +60,13 @@ def check_sat_from_file(filename: str) -> str:
                 return "unsat"
             elif line.startswith("(declare"):
                 break
-    return "none"
+    return "Proof extraction from veriT is timeout (veriT)"
  
 def is_unsat(f, timeout=10) -> tuple:
     """Given a smt2 file, use verit to solve it and return True if it is UNSAT."""
     args = "--disable-print-success"
     res = check_sat_from_file(f)
-    if res in ("sat", "unknown"):
+    if res in ("sat", "unknown", "none"):
         return False, res
     with subprocess.Popen("veriT %s %s" % (args, f),
                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True) as p:

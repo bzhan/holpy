@@ -72,12 +72,13 @@ def test_file(filename, verit_proof, test_eval=False):
 
         try:
             pt = recon.validate(is_eval=False, with_bar=False)
+            assert pt.rule != "sorry"
         except Exception as e:
             # print([filename, solve_time_str, parse_time_str, 'Error: %s %s' % (str(filename), str(e)), len(steps)])
             print("%s, %s, %s, %s, %s" % (filename, solve_time_str, parse_time_str, 'Error: %s %s' % (str(filename), str(e)), len(steps)))
         proofterm_time = time.perf_counter() - start_time
         proofterm_time_str = "Proofterm: %.3f" % proofterm_time
-        assert pt.rule != "sorry"
+        
 
     if not test_eval:
         print("%s, %s, %s, %s, %s" % (filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps)))

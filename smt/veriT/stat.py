@@ -107,7 +107,8 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                 output,err_message = p.communicate(timeout=120)
                 output = output.decode('UTF-8')
                 # print("output", repr(output))
-                print("error", err_message)
+                if err_message != b'':
+                    print("error", err_message)
                 print("output", [p for p in output[:-2].split(",")])
                 remove_file(proof_file_name)
                 return [p for p in output[:-2].split(",")]
@@ -128,7 +129,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         return [filename, solve_time_str, 'OS ERROR', 'OS_ERROR', '']
 
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
-              step_limit=None, omit_proofterm=None, solve_timeout=120, eval_timeout=300):
+              step_limit=None, omit_proofterm=None, solve_timeout=120, eval_timeout=300, test_full=False):
     """Test a directory containing SMT files.
     
     test_eval : bool - test evaluation of steps.
@@ -136,7 +137,7 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
     step_limit : [None, int] - limit on number of steps to test for each file.
     omit_proofterm : List[str] - list of macro names for which proof term reconstruction
         is omitted (evaluation is used instead).
-        
+    test_full: bool - whether test all smt2 files
     """
     global smtlib_path
     if not smtlib_path:
@@ -151,10 +152,15 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         return
 
     file_names = []
-    if os.path.isfile("./smt/veriT/data/%s.csv" % path):
+    if test_full:
+        print("test full")
+        with open("./smt/veriT/data/test_files.txt") as f:
+            file_names = [smtlib_path+file_name[:-1] for file_name in f.readlines()]
+            # print(file_names)
+    elif os.path.isfile("./smt/veriT/data/%s.csv" % path):
         with open("./smt/veriT/data/%s.csv" % path) as f:
             f_csv = csv.reader(f)
-            headers = next(f_csv)
+            _ = next(f_csv)
             for row in f_csv:
                 if len(row) == 2 and "RETURN PROOF" == row[-1]:
                     file_names.append(smtlib_path+row[0])
@@ -164,7 +170,10 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         max_workers = os.cpu_count()
     else:
         max_workers = len(file_names)
+    if max_workers == 0:
+        max_workers = 1
     print("start at %s" %  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    print("file numbers", len(file_names))
     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         res = executor.map(test_file, file_names, repeat(show_time),
                         repeat(test_eval), repeat(test_proofterm), repeat(step_limit),
@@ -234,6 +243,7 @@ if __name__ == "__main__":
     eval_timeout  = 300
     test_eval = True # test eval as default, test proofterm if it is false
     find_proof = False
+    test_full = False
     if len(sys.argv) == 3:
         if sys.argv[2] == "--proofterm":
             test_eval = False
@@ -241,7 +251,9 @@ if __name__ == "__main__":
             test_eval = True
         elif sys.argv[2] == "--find-proof":
             find_proof = True
-
+    if folder_name == "--full":
+        test_full = True
+        folder_name = "QF_UF"
     if find_proof:
         test_path_proof(folder_name, solve_timeout=120)
     else:
@@ -253,9 +265,9 @@ if __name__ == "__main__":
         
         start_time = time.perf_counter()
         if test_eval:
-            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout)
+            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_full=test_full)
         else:
-            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout)
+            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_full=test_full)
         end_time = time.perf_counter()
         print("stats", stats)
         if not os.path.isdir('./smt/veriT/stastics'):
@@ -266,7 +278,6 @@ if __name__ == "__main__":
             os.mkdir('./smt/veriT/stastics/proofterm')
         
         
-
         csv_name = folder_name.replace('/', '.')
         if test_eval:
             headers = ['filename', 'Solve', 'Parse', 'Eval', 'Steps']
@@ -274,6 +285,8 @@ if __name__ == "__main__":
         else:
             headers = ['filename', 'Solve', 'Parse', 'ProofTerm', 'Steps']
             res_file_name = './smt/veriT/stastics/proofterm/%s.csv' % csv_name
+        if test_eval:
+            res_file_name = './smt/veriT/stastics/eval/full.csv'
 
         with open(res_file_name, 'w') as f:
             f_csv = csv.writer(f)
