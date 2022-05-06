@@ -10,14 +10,14 @@ import sys
 import csv
 import concurrent.futures
 from itertools import repeat
-import threading
+import functools
+import errno
 
 from smt.veriT import interface, proof_rec, proof_parser
 from smt.veriT.verit_macro import VeriTException
 from syntax.settings import settings
 settings.unicode = False
 
-csv_writer_lock = threading.Lock()
 sys.setrecursionlimit(10000)
 
 smtlib_path = None
@@ -33,7 +33,11 @@ import signal
 
 class TO:
     def __init__(self, seconds=1, error_message='Timeout'):
-        self.seconds = seconds
+        if seconds <= 1:
+            self.seconds =  1
+        else:
+            self.seconds = int(seconds)
+        print("seconds", self.seconds)
         self.error_message = error_message
     def handle_timeout(self, signum, frame):
         raise TimeoutError(self.error_message)
@@ -42,6 +46,28 @@ class TO:
         signal.alarm(self.seconds)
     def __exit__(self, type, value, traceback):
         signal.alarm(0)
+
+class TimeoutError(Exception):
+    pass
+
+def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
+    def decorator(func):
+        def _handle_timeout(signum, frame):
+            raise TimeoutError(error_message)
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            signal.signal(signal.SIGALRM, _handle_timeout)
+            signal.alarm(seconds)
+            try:
+                result = func(*args, **kwargs)
+            finally:
+                signal.alarm(0)
+            return result
+
+        return wrapper
+
+    return decorator
 
 
 try:
@@ -96,31 +122,36 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     start_time = time.perf_counter()
     verit_proof = interface.solve(filename, timeout=solve_timeout)
     if verit_proof is None:
+        print([filename, 'NO PROOF (veriT)', '', '', ''])
         return [filename, 'NO PROOF (veriT)', '', '', '']
     ctx = proof_rec.bind_var(filename)
     solve_time = time.perf_counter() - start_time
     solve_time_str = "%.3f" % solve_time
 
     # Parse
-    start_time = time.perf_counter()
-    try:
+    try: # timeout error
         with TO(seconds=eval_timeout):
-            try:
+            try: # parsing error
                 steps = test_parse_step(verit_proof, ctx)
             except Exception as e:
+                print([filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', ''])
                 return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
-    except TimeoutError:
-        print("%s PARSING TIMEOUT" % filename)
-        return [filename, solve_time_str, 'PARSING TIMEOUT (HolPy) %s' % e, '', '']
+    except TimeoutError: # should consider timeout error as well as other unexpected error
+        print("%s PARSING TIMEOUT %s" % (filename, str(e)))
+        return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
     
     parse_time = time.perf_counter() - start_time
     parse_time_str = "%.3f" % parse_time    
+    if parse_time > eval_timeout:
+        print([filename, solve_time_str, 'PARSING TIMEOUT (HolPy)', '', ''])
+        return [filename, solve_time_str, 'PARSING TIMEOUT (HolPy)', '', '']
 
     # Validation by macro.eval
     eval_time_str = ""
     if test_eval:
         start_time = time.perf_counter()
         recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
+        print(eval_timeout-parse_time)
         try:
             with TO(seconds=eval_timeout-parse_time):
                 try:
@@ -128,6 +159,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                 except Exception as e:
                     return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)]                   
         except TimeoutError:
+            print([filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps)])
             return [filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps)]
         eval_time = time.perf_counter() - start_time
         eval_time_str = "Eval: %.3f" % eval_time
@@ -145,11 +177,17 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         try:
             with TO(seconds=eval_timeout-parse_time):
                 try:
-                    pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
+                    pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=True)
                 except Exception as e:
                     return [filename, solve_time_str, parse_time_str, 'Error: %s %s' % (str(filename), str(e)), len(steps)]
-        except TimeoutError:
-            return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)]
+        except TimeoutError : # maybe other error?
+            print("%s proof reconstruction timeout %s" % (filename, str(e)))
+            if isinstance(e, TimeoutError):
+                print([filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)])
+                return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)]
+            else:
+                print([filename, solve_time_str, parse_time_str, 'Proof reconstruction failed %s' % str(e), len(steps)])
+                return [filename, solve_time_str, parse_time_str, 'Proof reconstruction failed %s' % str(e), len(steps)]
         proofterm_time = time.perf_counter() - start_time
         proofterm_time_str = "Proofterm: %.3f" % proofterm_time
         assert pt.rule != "sorry"
@@ -191,11 +229,16 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
                     file_names.append(smtlib_path+row[0])
     else:
         _, file_names = run_fast_scandir(abs_path, ['.smt2'])
-    print("start")
-    with concurrent.futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
+    if len(file_names) > os.cpu_count():
+        max_workers = os.cpu_count()
+    else:
+        max_workers = len(file_names)
+    print("start at %s" %  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         res = executor.map(test_file, file_names, repeat(show_time),
                         repeat(test_eval), repeat(test_proofterm), repeat(step_limit),
-                            repeat(omit_proofterm), repeat(solve_timeout), repeat(eval_timeout))
+                            repeat(omit_proofterm), repeat(5), repeat(5))
+    print("end")
     return res
 
 def run_fast_scandir(dir, ext):    # dir: str, ext: list
@@ -230,7 +273,11 @@ def test_path_proof(path, solve_timeout=120):
 
     _, file_names = run_fast_scandir(abs_path, ['.smt2'])
     time1 = time.perf_counter()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
+    if len(file_names) > os.cpu_count():
+        max_workers = os.cpu_count()
+    else:
+        max_workers = len(file_names)
+    with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         res = executor.map(test_proof, file_names, repeat(solve_timeout))
     time2 = time.perf_counter()
     csv_name = path.replace('/', '.')
