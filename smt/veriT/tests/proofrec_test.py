@@ -662,5 +662,27 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
+    def test_QF_LIA(self):
+        test_paths = [
+            # 'QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2',
+            # 'QF_LIA/rings/ring_2exp10_9vars_0ite_unsat.smt2'
+            # 'QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2'
+            'QF_LIA/rings_preprocessed/ring_2exp4_7vars_2ite_unsat.smt2'
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_eval=True, parse_assertion=True, write_file=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
+
 if __name__ == "__main__":
     unittest.main()
