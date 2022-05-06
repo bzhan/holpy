@@ -1,0 +1,9 @@
+FILENAME,STATUS
+QF_LIA/nec-smt/small/checkpass_pwd/prp-8-18.smt2,RETURN PROOF
+QF_LIA/nec-smt/small/checkpass_pwd/prp-7-18.smt2,RETURN PROOF
+QF_LIA/nec-smt/med/checkpass_pwd/prp-8-20.smt2,RETURN PROOF
+QF_LIA/nec-smt/med/checkpass_pwd/prp-7-20.smt2,RETURN PROOF
+QF_LIA/check/bignum_lia1.smt2,RETURN PROOF
+QF_LIA/check/int_incompleteness2.smt2,RETURN PROOF
+QF_LIA/check/int_incompleteness1.smt2,RETURN PROOF
+QF_LIA/check/int_incompleteness3.smt2,RETURN PROOF
