@@ -1,30 +1,30 @@
 filename,Solve,Parse,ProofTerm,Steps
-../smt-lib/QF_UF/PEQ/PEQ019_size6.smt2,21.245,88.071,Error: ../smt-lib/QF_UF/PEQ/PEQ019_size6.smt2 Timeout,670745
-../smt-lib/QF_UF/PEQ/PEQ011_size7.smt2,68.225,253.258,Error: ../smt-lib/QF_UF/PEQ/PEQ011_size7.smt2 Timeout,2022332
-../smt-lib/QF_UF/PEQ/PEQ019_size5.smt2,0.934,8.733,Proofterm: 78.633,53515
-../smt-lib/QF_UF/PEQ/PEQ002_size5.smt2,3.699,16.652,Proofterm: 131.392,107972
-../smt-lib/QF_UF/PEQ/PEQ003_size7.smt2,3.502,9.112,Proofterm: 164.901,113327
-../smt-lib/QF_UF/PEQ/PEQ002_size6.smt2,52.312,181.097,Error: ../smt-lib/QF_UF/PEQ/PEQ002_size6.smt2 Timeout,1273177
-../smt-lib/QF_UF/PEQ/PEQ013_size6.smt2,23.757,120.687,Error: ../smt-lib/QF_UF/PEQ/PEQ013_size6.smt2 Timeout,664758
-../smt-lib/QF_UF/PEQ/PEQ012_size4.smt2,2.199,11.179,Proofterm: 152.859,115492
-../smt-lib/QF_UF/PEQ/PEQ010_size6.smt2,0.801,2.531,Proofterm: 38.886,18711
-../smt-lib/QF_UF/PEQ/PEQ003_size8.smt2,26.676,58.897,Error: ../smt-lib/QF_UF/PEQ/PEQ003_size8.smt2 Timeout,450845
-../smt-lib/QF_UF/PEQ/PEQ016_size4.smt2,2.267,10.999,Proofterm: 132.914,106950
-../smt-lib/QF_UF/PEQ/PEQ004_size7.smt2,0.435,7.027,Proofterm: 98.408,11923
-../smt-lib/QF_UF/PEQ/PEQ010_size7.smt2,3.844,10.764,Proofterm: 241.481,64113
-../smt-lib/QF_UF/PEQ/PEQ014_size8.smt2,1.858,9.584,Proofterm: 208.999,40124
-../smt-lib/QF_UF/PEQ/PEQ018_size4.smt2,0.501,2.592,Proofterm: 28.310,38123
-../smt-lib/QF_UF/PEQ/PEQ020_size5.smt2,1.438,7.957,Proofterm: 67.577,70506
-../smt-lib/QF_UF/PEQ/PEQ012_size5.smt2,29.020,95.869,Error: ../smt-lib/QF_UF/PEQ/PEQ012_size5.smt2 Timeout,676765
-../smt-lib/QF_UF/PEQ/PEQ011_size5.smt2,0.683,3.976,Proofterm: 33.408,46355
-../smt-lib/QF_UF/PEQ/PEQ018_size5.smt2,7.885,40.538,Error: ../smt-lib/QF_UF/PEQ/PEQ018_size5.smt2 Timeout,362669
-../smt-lib/QF_UF/PEQ/PEQ016_size5.smt2,48.548,183.727,Error: ../smt-lib/QF_UF/PEQ/PEQ016_size5.smt2 Timeout,868894
-../smt-lib/QF_UF/PEQ/PEQ004_size9.smt2,2.107,44.317,Error: ../smt-lib/QF_UF/PEQ/PEQ004_size9.smt2 Timeout,24814
-../smt-lib/QF_UF/PEQ/PEQ011_size6.smt2,12.182,67.419,Error: ../smt-lib/QF_UF/PEQ/PEQ011_size6.smt2 Timeout,511276
-../smt-lib/QF_UF/PEQ/PEQ019_size4.smt2,0.165,1.531,Proofterm: 13.317,13282
-../smt-lib/QF_UF/PEQ/PEQ010_size5.smt2,0.268,2.074,Proofterm: 20.629,17624
-../smt-lib/QF_UF/PEQ/PEQ004_size6.smt2,0.763,5.323,Proofterm: 100.578,49941
-../smt-lib/QF_UF/PEQ/PEQ012_size3.smt2,0.134,1.490,Proofterm: 20.231,9542
-../smt-lib/QF_UF/PEQ/PEQ013_size5.smt2,1.109,6.042,Proofterm: 47.022,40436
-Total time: 698.193
-2022-05-05 13:03:00
+../smt-lib/QF_UF/PEQ/PEQ019_size6.smt2,11.913,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ011_size7.smt2,45.133,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ019_size5.smt2,0.758,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ002_size5.smt2,1.990,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ003_size7.smt2,2.692,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ002_size6.smt2,33.787,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ013_size6.smt2,16.319,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ012_size4.smt2,1.543,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ010_size6.smt2,0.658,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ003_size8.smt2,19.784,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ016_size4.smt2,1.702,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ004_size7.smt2,0.304,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ010_size7.smt2,2.791,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ014_size8.smt2,1.332,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ018_size4.smt2,0.387,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ020_size5.smt2,0.866,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ012_size5.smt2,17.907,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ011_size5.smt2,0.623,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ018_size5.smt2,5.125,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ016_size5.smt2,29.795,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ004_size9.smt2,1.403,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ011_size6.smt2,7.715,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ019_size4.smt2,0.156,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ010_size5.smt2,0.244,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ004_size6.smt2,0.677,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ012_size3.smt2,0.075,TIMEOUT,TIMEOUT,
+../smt-lib/QF_UF/PEQ/PEQ013_size5.smt2,0.891,TIMEOUT,TIMEOUT,
+Total time: 323.276
+2022-05-06 14:29:50
