@@ -348,5 +348,9 @@ if __name__ == "__main__":
             f_csv = csv.writer(f)
             f_csv.writerow(headers)
             f_csv.writerows(stats)
+            if test_eval:
+                f_csv.writerow(['Solve timeout: %s' % solve_timeout, 'Eval timeout: %s' % eval_timeout])
+            else:
+                f_csv.writerow(['Solve timeout: %s' % solve_timeout, 'ProofTerm timeout: %s' % eval_timeout])
             f_csv.writerow(["Total time: %.3f" % (end_time - start_time)])
             f_csv.writerow([datetime.now().strftime('%Y-%m-%d %H:%M:%S')])

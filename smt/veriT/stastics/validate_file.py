@@ -54,12 +54,12 @@ def test_file(filename, verit_proof, test_eval=False):
         recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
         try:
             pt = recon.validate(is_eval=True, with_bar=False)
+            assert pt.rule != "sorry"
         except Exception as e:
             print("%s, %s, %s, %s, %s" % (filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)))
             # print([filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)])                   
         eval_time = time.perf_counter() - start_time
         eval_time_str = "Eval: %.3f" % eval_time
-        assert pt.rule != "sorry"
 
     if test_eval:
         print([filename, solve_time_str, parse_time_str, eval_time_str, len(steps)])
