@@ -37,7 +37,6 @@ class TO:
             self.seconds =  1
         else:
             self.seconds = int(seconds)
-        print("seconds", self.seconds)
         self.error_message = error_message
     def handle_timeout(self, signum, frame):
         raise TimeoutError(self.error_message)
@@ -116,7 +115,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         return [filename, str(res), '', '', '']
     print(repr(filename) + ',')
 
-    assts = proof_rec.get_assertions(filename)
+    # assts = proof_rec.get_assertions(filename) 
 
     # Solve
     start_time = time.perf_counter()
@@ -124,10 +123,20 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     if verit_proof is None:
         print([filename, 'NO PROOF (veriT)', '', '', ''])
         return [filename, 'NO PROOF (veriT)', '', '', '']
-    ctx = proof_rec.bind_var(filename)
+    if verit_proof.strip() == "unknown":
+        print("%s unknown proof" % filename)
+        return [filename, 'UNKNOWN PROOF (veriT)', '', '', '']
     solve_time = time.perf_counter() - start_time
     solve_time_str = "%.3f" % solve_time
 
+
+
+    start_time = time.perf_counter()
+    try:
+        ctx = proof_rec.bind_var(filename)
+    except Exception as e:
+        print([filename, solve_time_str, "PARSER ERROR %s" % str(e), '', ''])
+        return [filename, solve_time_str, "PARSER ERROR %s" % str(e), '', '']
     # Parse
     try: # timeout error
         with TO(seconds=eval_timeout):
@@ -136,9 +145,9 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
             except Exception as e:
                 print([filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', ''])
                 return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
-    except TimeoutError: # should consider timeout error as well as other unexpected error
+    except Exception as e: # should consider timeout error as well as other unexpected error
         print("%s PARSING TIMEOUT %s" % (filename, str(e)))
-        return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
+        return [filename, solve_time_str, 'PARSING ERROR %s (HolPy)' % e, '', '']
     
     parse_time = time.perf_counter() - start_time
     parse_time_str = "%.3f" % parse_time    
@@ -150,8 +159,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     eval_time_str = ""
     if test_eval:
         start_time = time.perf_counter()
-        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
-        print(eval_timeout-parse_time)
+        recon = proof_rec.ProofReconstruction(steps)
         try:
             with TO(seconds=eval_timeout-parse_time):
                 try:
@@ -164,8 +172,6 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         eval_time = time.perf_counter() - start_time
         eval_time_str = "Eval: %.3f" % eval_time
         assert pt.rule != "sorry"
-
-    if not test_proofterm:
         print([filename, solve_time_str, parse_time_str, eval_time_str, len(steps)])
         return [filename, solve_time_str, parse_time_str, eval_time_str, len(steps)]
 
@@ -173,11 +179,12 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     proofterm_time_str = ""
     if test_proofterm:
         start_time = time.perf_counter()
-        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
+        recon = proof_rec.ProofReconstruction(steps)
         try:
             with TO(seconds=eval_timeout-parse_time):
                 try:
                     pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=True)
+                    assert pt.rule != "sorry"
                 except Exception as e:
                     return [filename, solve_time_str, parse_time_str, 'Error: %s %s' % (str(filename), str(e)), len(steps)]
         except TimeoutError : # maybe other error?
@@ -190,9 +197,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                 return [filename, solve_time_str, parse_time_str, 'Proof reconstruction failed %s' % str(e), len(steps)]
         proofterm_time = time.perf_counter() - start_time
         proofterm_time_str = "Proofterm: %.3f" % proofterm_time
-        assert pt.rule != "sorry"
 
-    if test_proofterm:
         print([filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps)])
         return [filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps)]
 
@@ -215,12 +220,16 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
 
     stats = []
 
-    if not os.path.exists(abs_path):
+    if path != "" and not os.path.exists(abs_path):
         print("Directory %s not found." % path)
         return
 
-    file_names = []
-    if os.path.isfile("./smt/veriT/data/%s.csv" % path):
+    if path == "":
+        print("test full")
+        with open("./smt/veriT/data/test_files.txt") as f:
+            file_names = [smtlib_path+file_name[:-1] for file_name in f.readlines()]
+    elif os.path.isfile("./smt/veriT/data/%s.csv" % path):
+        file_names = []
         with open("./smt/veriT/data/%s.csv" % path) as f:
             f_csv = csv.reader(f)
             headers = next(f_csv)
@@ -237,7 +246,7 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         res = executor.map(test_file, file_names, repeat(show_time),
                         repeat(test_eval), repeat(test_proofterm), repeat(step_limit),
-                            repeat(omit_proofterm), repeat(5), repeat(5))
+                            repeat(omit_proofterm), repeat(solve_timeout), repeat(eval_timeout))
     print("end")
     return res
 
@@ -292,6 +301,8 @@ def test_path_proof(path, solve_timeout=120):
         f_csv.writerow(["TIMESTAMP %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
     return res
 
+
+
 # Parameters
 # 1. folder name
 # 2. eval (--eval) or get_proof_term (--proofterm)
@@ -303,6 +314,7 @@ if __name__ == "__main__":
     eval_timeout  = 300
     test_eval = True # test eval as default, test proofterm if it is false
     find_proof = False
+    test_full = False
     if len(sys.argv) == 3:
         if sys.argv[2] == "--proofterm":
             test_eval = False
@@ -310,10 +322,26 @@ if __name__ == "__main__":
             test_eval = True
         elif sys.argv[2] == "--find-proof":
             find_proof = True
-
+    if sys.argv[1] == "--SMT-LIB":
+        test_full = True
+        assert len(sys.argv) == 3
+        last_arg = sys.argv[-1]
+        assert last_arg in ("--eval", "--proof-term")
+        if last_arg == "--eval":
+            test_eval = True
+        else:
+            test_eval = False
+    print()
+    for arg in sys.argv:
+        print(arg)
+    print("test_full %s" % test_full)
+    print("folder")
+    start_time = time.perf_counter()
     if find_proof:
         test_path_proof(folder_name, solve_timeout=120)
-    else:
+    elif test_full:
+        stats = test_path("", test_eval=test_eval, test_proofterm=not test_eval, solve_timeout=solve_timeout, eval_timeout=eval_timeout)
+    elif not test_full:
         if len(sys.argv) == 4:
             solve_timeout = int(sys.argv[3])
         elif len(sys.argv) == 5:
@@ -322,35 +350,39 @@ if __name__ == "__main__":
         
         start_time = time.perf_counter()
         if test_eval:
-            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
+            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout)
         else:
-            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
-        end_time = time.perf_counter()
-        print("stats", stats)
-        if not os.path.isdir('./smt/veriT/stastics'):
-            os.mkdir('./smt/veriT/stastics')
-        if not os.path.isdir('./smt/veriT/stastics/eval'):
-            os.mkdir('./smt/veriT/stastics/eval')
-        if not os.path.isdir('./smt/veriT/stastics/proofterm'):
-            os.mkdir('./smt/veriT/stastics/proofterm')
-        
-        
-
+            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout)
+    
+    end_time = time.perf_counter()
+    print("stats", stats)
+    if not os.path.isdir('./smt/veriT/stastics'):
+        os.mkdir('./smt/veriT/stastics')
+    if test_eval and not os.path.isdir('./smt/veriT/stastics/eval'):
+        os.mkdir('./smt/veriT/stastics/eval')
+    if not test_eval and not os.path.isdir('./smt/veriT/stastics/proofterm'):
+        os.mkdir('./smt/veriT/stastics/proofterm')
+    
+    if test_full:
+        csv_name = "SMT-LIB"
+    else:
         csv_name = folder_name.replace('/', '.')
-        if test_eval:
-            headers = ['filename', 'Solve', 'Parse', 'Eval', 'Steps']
-            res_file_name = './smt/veriT/stastics/eval/%s.csv' % csv_name
-        else:
-            headers = ['filename', 'Solve', 'Parse', 'ProofTerm', 'Steps']
-            res_file_name = './smt/veriT/stastics/proofterm/%s.csv' % csv_name
+    
+    if test_eval:
+        headers = ['filename', 'Solve', 'Parse', 'Eval', 'Steps']
+        res_file_name = './smt/veriT/stastics/eval/%s.csv' % csv_name
+    else:
+        headers = ['filename', 'Solve', 'Parse', 'ProofTerm', 'Steps']
+        res_file_name = './smt/veriT/stastics/proofterm/%s.csv' % csv_name
 
-        with open(res_file_name, 'w') as f:
-            f_csv = csv.writer(f)
-            f_csv.writerow(headers)
-            f_csv.writerows(stats)
-            if test_eval:
-                f_csv.writerow(['Solve timeout: %s' % solve_timeout, 'Eval timeout: %s' % eval_timeout])
-            else:
-                f_csv.writerow(['Solve timeout: %s' % solve_timeout, 'ProofTerm timeout: %s' % eval_timeout])
-            f_csv.writerow(["Total time: %.3f" % (end_time - start_time)])
-            f_csv.writerow([datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+    with open(res_file_name, 'w') as f:
+        f_csv = csv.writer(f)
+        f_csv.writerow(headers)
+        f_csv.writerows(stats)
+        # TODO: record the MAXRECURSION
+        if test_eval:
+            f_csv.writerow(['Solve timeout: %s' % solve_timeout, 'Eval timeout: %s' % eval_timeout])
+        else:
+            f_csv.writerow(['Solve timeout: %s' % solve_timeout, 'ProofTerm timeout: %s' % eval_timeout])
+        f_csv.writerow(["Total time: %.3f" % (end_time - start_time)])
+        f_csv.writerow([datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
