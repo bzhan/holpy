@@ -21,7 +21,12 @@ def bind_var(file_name: str) -> dict:
     with open(file_name, "r") as f:
         for s in f.readlines():
             if s.strip().startswith("(declare-fun"):
-                tm = decl_parser.parse(s.strip())
+                try:
+                    tm = decl_parser.parse(s.strip())
+                except: # (declare ...)(assert ...)
+                    assert ")(assert" in s
+                    tm = decl_parser.parse(s.replace(")(assert", ") (assert").split(") (assert")[0] + ")")
+                    
                 ctx.update(tm)
     return ctx
 
