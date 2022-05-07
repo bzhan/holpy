@@ -10,8 +10,8 @@ import sys
 import csv
 import concurrent.futures
 from itertools import repeat
-import shutil
-import subprocess
+import functools
+import errno
 
 from smt.veriT import interface, proof_rec, proof_parser
 from smt.veriT.verit_macro import VeriTException
@@ -29,6 +29,47 @@ except FileNotFoundError:
     print("File smtlib_path.txt should be present in the smt/veriT/tests/ directory,")
     print("containing the path to the smtlib folder.")
 
+import signal
+
+class TO:
+    def __init__(self, seconds=1, error_message='Timeout'):
+        if seconds <= 1:
+            self.seconds =  1
+        else:
+            self.seconds = int(seconds)
+        print("seconds", self.seconds)
+        self.error_message = error_message
+    def handle_timeout(self, signum, frame):
+        raise TimeoutError(self.error_message)
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.handle_timeout)
+        signal.alarm(self.seconds)
+    def __exit__(self, type, value, traceback):
+        signal.alarm(0)
+
+class TimeoutError(Exception):
+    pass
+
+def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
+    def decorator(func):
+        def _handle_timeout(signum, frame):
+            raise TimeoutError(error_message)
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            signal.signal(signal.SIGALRM, _handle_timeout)
+            signal.alarm(seconds)
+            try:
+                result = func(*args, **kwargs)
+            finally:
+                signal.alarm(0)
+            return result
+
+        return wrapper
+
+    return decorator
+
+
 try:
     with open('smt/veriT/tests/smtlib_path.txt', 'r') as f:
         smtlib_path = f.readline().strip()
@@ -44,7 +85,7 @@ def test_parse_step(verit_proof, ctx):
             continue
         steps.append(parser.parse(s))
 
-    return steps, len(steps)
+    return steps
 
 
 def test_proof(filename, solve_timeout=120):
@@ -59,77 +100,104 @@ def test_proof(filename, solve_timeout=120):
     else:
         return [filename[11:], "RETURN PROOF"]
 
-def remove_file(filename):
-    if os.path.isfile(filename):
-        try:
-            os.remove(filename)
-        except FileNotFoundError:
-            return
-
 def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
               step_limit=None, omit_proofterm=None, solve_timeout=120, eval_timeout=300):
     """Test a given file under eval or proofterm mode."""
-
+    stastic = []
     global smtlib_path
     if not smtlib_path:
         return
 
     if filename[-4:] != 'smt2':
         return
-
+    stastic.append(filename)
     unsat, res = interface.is_unsat(filename, timeout=solve_timeout)
     if not unsat:
         return [filename, str(res), '', '', '']
     print(repr(filename) + ',')
+
+    assts = proof_rec.get_assertions(filename)
 
     # Solve
     start_time = time.perf_counter()
     verit_proof = interface.solve(filename, timeout=solve_timeout)
     if verit_proof is None:
         print([filename, 'NO PROOF (veriT)', '', '', ''])
-        return [filename, 'NO PROOF (veriT)', '', '', '']    
-
+        return [filename, 'NO PROOF (veriT)', '', '', '']
+    ctx = proof_rec.bind_var(filename)
     solve_time = time.perf_counter() - start_time
     solve_time_str = "%.3f" % solve_time
 
-    # write proof to a file
-    if not os.path.isdir("./smt/veriT/proof"):
-        os.mkdir("./smt/veriT/proof")
+    # Parse
+    try: # timeout error
+        with TO(seconds=eval_timeout):
+            try: # parsing error
+                steps = test_parse_step(verit_proof, ctx)
+            except Exception as e:
+                print([filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', ''])
+                return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
+    except TimeoutError: # should consider timeout error as well as other unexpected error
+        print("%s PARSING TIMEOUT %s" % (filename, str(e)))
+        return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
+    
+    parse_time = time.perf_counter() - start_time
+    parse_time_str = "%.3f" % parse_time    
+    if parse_time > eval_timeout:
+        print([filename, solve_time_str, 'PARSING TIMEOUT (HolPy)', '', ''])
+        return [filename, solve_time_str, 'PARSING TIMEOUT (HolPy)', '', '']
 
-    proof_file_name = "./smt/veriT/proof/%s" % (filename.replace("/", "."))
-    with open(proof_file_name, "w") as f:
-        f.write(verit_proof)
+    # Validation by macro.eval
+    eval_time_str = ""
+    if test_eval:
+        start_time = time.perf_counter()
+        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
+        print(eval_timeout-parse_time)
+        try:
+            with TO(seconds=eval_timeout-parse_time):
+                try:
+                    pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
+                except Exception as e:
+                    return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)]                   
+        except TimeoutError:
+            print([filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps)])
+            return [filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps)]
+        eval_time = time.perf_counter() - start_time
+        eval_time_str = "Eval: %.3f" % eval_time
+        assert pt.rule != "sorry"
 
-    try:
-        with subprocess.Popen("pypy3 -m smt.veriT.stastics.validate_file '%s' \"%s\" '%s'" % (filename, proof_file_name, str(test_eval)), 
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True) as p:
-            try:
-                output,err_message = p.communicate(timeout=eval_timeout)
-                output = output.decode('UTF-8')
-                # print("output", repr(output))
-                if err_message != b'':
-                    print("error", err_message)
-                print("output", [p for p in output[:-2].split(",")])
-                remove_file(proof_file_name)
-                return [p for p in output[:-2].split(",")]
-            except subprocess.TimeoutExpired:
-                # Kill process
-                if os.name == "nt": # Windows
-                    subprocess.call(['taskkill', '/F', '/T', '/PID', str(p.pid)])
-                    return [filename, solve_time_str, 'TIMEOUT', 'TIMEOUT', step_size]
-                else: # Linux
-                    p.terminate()
-                    p.wait()
-                    p.kill()
-                    print([filename, solve_time_str, 'TIMEOUT', 'TIMEOUT', ''])
-                    remove_file(proof_file_name)
-                    return [filename, solve_time_str, 'TIMEOUT', 'TIMEOUT', '']
-    except OSError:
-        print("pypy3 -m smt.veriT.stastics.validate_file '%s' '%s' 'false'" % (filename, verit_proof))
-        return [filename, solve_time_str, 'OS ERROR', 'OS_ERROR', '']
+    if not test_proofterm:
+        print([filename, solve_time_str, parse_time_str, eval_time_str, len(steps)])
+        return [filename, solve_time_str, parse_time_str, eval_time_str, len(steps)]
+
+    # Validation by macro.get_proof_term
+    proofterm_time_str = ""
+    if test_proofterm:
+        start_time = time.perf_counter()
+        recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
+        try:
+            with TO(seconds=eval_timeout-parse_time):
+                try:
+                    pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=True)
+                except Exception as e:
+                    return [filename, solve_time_str, parse_time_str, 'Error: %s %s' % (str(filename), str(e)), len(steps)]
+        except TimeoutError : # maybe other error?
+            print("%s proof reconstruction timeout %s" % (filename, str(e)))
+            if isinstance(e, TimeoutError):
+                print([filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)])
+                return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)]
+            else:
+                print([filename, solve_time_str, parse_time_str, 'Proof reconstruction failed %s' % str(e), len(steps)])
+                return [filename, solve_time_str, parse_time_str, 'Proof reconstruction failed %s' % str(e), len(steps)]
+        proofterm_time = time.perf_counter() - start_time
+        proofterm_time_str = "Proofterm: %.3f" % proofterm_time
+        assert pt.rule != "sorry"
+
+    if test_proofterm:
+        print([filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps)])
+        return [filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps)]
 
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
-              step_limit=None, omit_proofterm=None, solve_timeout=120, eval_timeout=300, test_full=False):
+              step_limit=None, omit_proofterm=None, solve_timeout=10, eval_timeout=120):
     """Test a directory containing SMT files.
     
     test_eval : bool - test evaluation of steps.
@@ -137,7 +205,7 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
     step_limit : [None, int] - limit on number of steps to test for each file.
     omit_proofterm : List[str] - list of macro names for which proof term reconstruction
         is omitted (evaluation is used instead).
-    test_full: bool - whether test all smt2 files
+        
     """
     global smtlib_path
     if not smtlib_path:
@@ -152,15 +220,10 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         return
 
     file_names = []
-    if test_full:
-        print("test full")
-        with open("./smt/veriT/data/test_files.txt") as f:
-            file_names = [smtlib_path+file_name[:-1] for file_name in f.readlines()]
-            # print(file_names)
-    elif os.path.isfile("./smt/veriT/data/%s.csv" % path):
+    if os.path.isfile("./smt/veriT/data/%s.csv" % path):
         with open("./smt/veriT/data/%s.csv" % path) as f:
             f_csv = csv.reader(f)
-            _ = next(f_csv)
+            headers = next(f_csv)
             for row in f_csv:
                 if len(row) == 2 and "RETURN PROOF" == row[-1]:
                     file_names.append(smtlib_path+row[0])
@@ -170,14 +233,11 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         max_workers = os.cpu_count()
     else:
         max_workers = len(file_names)
-    if max_workers == 0:
-        max_workers = 1
     print("start at %s" %  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    print("file numbers", len(file_names))
     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         res = executor.map(test_file, file_names, repeat(show_time),
                         repeat(test_eval), repeat(test_proofterm), repeat(step_limit),
-                            repeat(omit_proofterm), repeat(solve_timeout), repeat(eval_timeout))
+                            repeat(omit_proofterm), repeat(5), repeat(5))
     print("end")
     return res
 
@@ -243,7 +303,6 @@ if __name__ == "__main__":
     eval_timeout  = 300
     test_eval = True # test eval as default, test proofterm if it is false
     find_proof = False
-    test_full = False
     if len(sys.argv) == 3:
         if sys.argv[2] == "--proofterm":
             test_eval = False
@@ -251,9 +310,7 @@ if __name__ == "__main__":
             test_eval = True
         elif sys.argv[2] == "--find-proof":
             find_proof = True
-    if folder_name == "--full":
-        test_full = True
-        folder_name = "QF_UF"
+
     if find_proof:
         test_path_proof(folder_name, solve_timeout=120)
     else:
@@ -265,9 +322,9 @@ if __name__ == "__main__":
         
         start_time = time.perf_counter()
         if test_eval:
-            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_full=test_full)
+            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
         else:
-            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_full=test_full)
+            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, omit_proofterm=['th_resolution'])
         end_time = time.perf_counter()
         print("stats", stats)
         if not os.path.isdir('./smt/veriT/stastics'):
@@ -278,6 +335,7 @@ if __name__ == "__main__":
             os.mkdir('./smt/veriT/stastics/proofterm')
         
         
+
         csv_name = folder_name.replace('/', '.')
         if test_eval:
             headers = ['filename', 'Solve', 'Parse', 'Eval', 'Steps']
@@ -285,11 +343,6 @@ if __name__ == "__main__":
         else:
             headers = ['filename', 'Solve', 'Parse', 'ProofTerm', 'Steps']
             res_file_name = './smt/veriT/stastics/proofterm/%s.csv' % csv_name
-        if test_full:
-            if test_eval:
-                res_file_name = './smt/veriT/stastics/eval/SMT.csv'
-            else:
-                res_file_name = './smt/veriT/stastics/proofterm/SMT.csv'
 
         with open(res_file_name, 'w') as f:
             f_csv = csv.writer(f)
