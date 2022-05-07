@@ -104,15 +104,21 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         with subprocess.Popen("pypy3 -m smt.veriT.stastics.validate_file '%s' \"%s\" '%s'" % (filename, proof_file_name, str(test_eval)), 
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True) as p:
             try:
+                print("eval_timeout", eval_timeout)
                 output,err_message = p.communicate(timeout=eval_timeout)
                 output = output.decode('UTF-8')
+                err_message = err_message.decode('UTF-8')
                 # print("output", repr(output))
-                if err_message != b'':
+                if err_message != '':
                     print("error", err_message)
                 print("output", [p for p in output[:-2].split(",")])
+
                 remove_file(proof_file_name)
-                return [p for p in output[:-2].split(",")]
-            except subprocess.TimeoutExpired:
+                res = [p for p in output[:-2].split(",")]
+                if err_message != '':
+                    res[-1] += err_message
+                return res
+            except Exception as e:
                 # Kill process
                 if os.name == "nt": # Windows
                     subprocess.call(['taskkill', '/F', '/T', '/PID', str(p.pid)])
@@ -121,9 +127,9 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                     p.terminate()
                     p.wait()
                     p.kill()
-                    print([filename, solve_time_str, 'TIMEOUT', 'TIMEOUT', ''])
+                    print([filename, solve_time_str, 'TIMEOUT', str(e), ''])
                     remove_file(proof_file_name)
-                    return [filename, solve_time_str, 'TIMEOUT', 'TIMEOUT', '']
+                    return [filename, solve_time_str, 'TIMEOUT', str(e), '']
     except OSError:
         print("pypy3 -m smt.veriT.stastics.validate_file '%s' '%s' 'false'" % (filename, verit_proof))
         return [filename, solve_time_str, 'OS ERROR', 'OS_ERROR', '']
@@ -295,5 +301,9 @@ if __name__ == "__main__":
             f_csv = csv.writer(f)
             f_csv.writerow(headers)
             f_csv.writerows(stats)
+            if test_eval:
+                f_csv.writerow(['Solve timeout: %s' % solve_timeout, 'Eval timeout: %s' % eval_timeout])
+            else:
+                f_csv.writerow(['Solve timeout: %s' % solve_timeout, 'ProofTerm timeout: %s' % eval_timeout])
             f_csv.writerow(["Total time: %.3f" % (end_time - start_time)])
             f_csv.writerow([datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
