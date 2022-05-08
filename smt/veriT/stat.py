@@ -130,16 +130,27 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     solve_time_str = "%.3f" % solve_time
 
 
-
+    total_time = 60
     start_time = time.perf_counter()
     try:
-        ctx = proof_rec.bind_var(filename)
+        with TO(seconds=total_time):
+            try:
+                ctx = proof_rec.bind_var(filename)
+            except Exception as e:
+                print([filename, solve_time_str, "BIND_VAR %s (HolPy)" % str(e), '', ''])
+                return [filename, solve_time_str, "BIND_VAR %s (HolPy)" % str(e), '', '']
     except Exception as e:
         print([filename, solve_time_str, "PARSER ERROR %s" % str(e), '', ''])
         return [filename, solve_time_str, "PARSER ERROR %s" % str(e), '', '']
+    end_time = time.perf_counter()
+    total_time -= (end_time - start_time)
+    if total_time < 0:
+        print([filename, solve_time_str, "TIMEOUT", "TIMEOUT", '', ''])
+        return [filename, solve_time_str, "TIMEOUT", "TIMEOUT", '', '']
     # Parse
+    start_time  = time.perf_counter()
     try: # timeout error
-        with TO(seconds=eval_timeout):
+        with TO(seconds=total_time):
             try: # parsing error
                 steps = test_parse_step(verit_proof, ctx)
             except Exception as e:
@@ -148,20 +159,19 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     except Exception as e: # should consider timeout error as well as other unexpected error
         print("%s PARSING TIMEOUT %s" % (filename, str(e)))
         return [filename, solve_time_str, 'PARSING ERROR %s (HolPy)' % e, '', '']
-    
     parse_time = time.perf_counter() - start_time
-    parse_time_str = "%.3f" % parse_time    
-    if parse_time > eval_timeout:
+    parse_time_str = "%.3f" % parse_time
+    if parse_time > total_time:
         print([filename, solve_time_str, 'PARSING TIMEOUT (HolPy)', '', ''])
         return [filename, solve_time_str, 'PARSING TIMEOUT (HolPy)', '', '']
-
+    total_time -= parse_time
     # Validation by macro.eval
     eval_time_str = ""
     if test_eval:
         start_time = time.perf_counter()
         recon = proof_rec.ProofReconstruction(steps)
         try:
-            with TO(seconds=eval_timeout-parse_time):
+            with TO(seconds=total_time):
                 try:
                     pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                 except Exception as e:
@@ -181,9 +191,10 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         start_time = time.perf_counter()
         recon = proof_rec.ProofReconstruction(steps)
         try:
-            with TO(seconds=eval_timeout-parse_time):
+            with TO(seconds=total_time):
                 try:
-                    pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=True)
+                    print("TOTAL TIME %.3f" % total_time)
+                    pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                     assert pt.rule != "sorry"
                 except Exception as e:
                     return [filename, solve_time_str, parse_time_str, 'Error: %s %s' % (str(filename), str(e)), len(steps)]
@@ -326,7 +337,7 @@ if __name__ == "__main__":
         test_full = True
         assert len(sys.argv) == 3
         last_arg = sys.argv[-1]
-        assert last_arg in ("--eval", "--proof-term")
+        assert last_arg in ("--eval", "--proofterm")
         if last_arg == "--eval":
             test_eval = True
         else:
