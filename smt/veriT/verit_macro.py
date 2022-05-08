@@ -4288,6 +4288,44 @@ class BoolSimplifyMacro(Macro):
         self.sig = Term
         self.limit = None
 
+    def eval(self, args, prevs) -> Thm:
+        if len(args) != 1:
+            raise VeriTException("equiv_simplify", "unexpected argument")
+        goal = args[0]
+        if not goal.is_equals():
+            raise VeriTException("equiv_simplify", "goal should be an equality")
+        lhs, rhs = goal.args
+        if not lhs.is_equals():
+            raise VeriTException("equiv_simplify", "lhs should be an equality")
+        # case 1
+        if rhs.is_equals() and lhs.lhs == Not(rhs.lhs) and lhs.rhs == Not(rhs.rhs):
+            return Thm(goal)
+        # case 2
+        elif lhs.lhs == lhs.rhs and rhs == true:
+            return Thm(goal)
+        # case 3
+        elif Not(lhs.lhs) == lhs.rhs and rhs == false:
+            return Thm(goal)
+        # case 4
+        elif Not(lhs.rhs) == lhs.lhs and rhs == false:
+            return Thm(goal)
+        # case 5
+        elif lhs.lhs == true and lhs.rhs == rhs:
+            return Thm(goal)
+        # case 6
+        elif lhs.rhs == true and lhs.lhs == rhs:
+            return Thm(goal)
+        # case 7
+        elif Not(lhs.rhs) == rhs and lhs.lhs == false:
+            return Thm(goal)
+        # case 8
+        elif Not(lhs.lhs) == rhs and lhs.rhs == false:
+            return Thm(goal)
+        else:
+            raise VeriTException("equiv_simplify", "unexpected goal")
+
+        
+
     def get_proof_term(self, args, prevs):
         goal = args[0]
         if not goal.is_equals():
@@ -4329,6 +4367,19 @@ class NotImplies1Macro(Macro):
         self.sig = Term
         self.limit = None
 
+    def eval(self, args, prevs) -> Thm:
+        if len(args) != 1 or len(prevs) != 1:
+            raise VeriTException("not_implies1", "unexpected number of arguments and prevs")
+        goal = args[0]
+        prop = prevs[0].prop
+        if not prop.is_not() or not prop.arg.is_implies():
+            raise VeriTException("not_implies1", "unexpected prevs")
+
+        if goal != prop.arg.arg1:
+            raise VeriTException("not_implies1", "unexpected argument")
+        
+        return Thm(goal)
+
     def get_proof_term(self, args, prevs):
         goal = args[0]
         prop = prevs[0].prop
@@ -4347,6 +4398,18 @@ class NotImplies2Macro(Macro):
         self.sig = Term
         self.limit = None
 
+    def eval(self, args, prevs) -> Thm:
+        if len(args) != 1 or len(prevs) != 1:
+            raise VeriTException("not_implies2", "unexpected number of arguments and prevs")
+        goal = args[0]
+        prop = prevs[0].prop
+        if not prop.is_not() or not prop.arg.is_implies():
+            raise VeriTException("not_implies2", "unexpected argument")
+
+        if goal != Not(prop.arg.arg):
+            raise VeriTException("not_implies2", "unexpected argument")
+        
+        return Thm(goal)
     def get_proof_term(self, args, prevs):
         goal = args[0]
         prop = prevs[0].prop
