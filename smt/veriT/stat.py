@@ -112,7 +112,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     stastic.append(filename)
     unsat, res = interface.is_unsat(filename, timeout=solve_timeout)
     if not unsat:
-        return [filename, str(res), '', '', '']
+        return [filename, str(res), '', '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
     print(repr(filename) + ',')
 
     # assts = proof_rec.get_assertions(filename) 
@@ -122,10 +122,10 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     verit_proof = interface.solve(filename, timeout=solve_timeout)
     if verit_proof is None:
         print([filename, 'NO PROOF (veriT)', '', '', ''])
-        return [filename, 'NO PROOF (veriT)', '', '', '']
+        return [filename, 'NO PROOF (veriT)', '', '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
     if verit_proof.strip() == "unknown":
         print("%s unknown proof" % filename)
-        return [filename, 'UNKNOWN PROOF (veriT)', '', '', '']
+        return [filename, 'UNKNOWN PROOF (veriT)', '', '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
     solve_time = time.perf_counter() - start_time
     solve_time_str = "%.3f" % solve_time
 
@@ -138,15 +138,15 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                 ctx = proof_rec.bind_var(filename)
             except Exception as e:
                 print([filename, solve_time_str, "BIND_VAR %s (HolPy)" % str(e), '', ''])
-                return [filename, solve_time_str, "BIND_VAR %s (HolPy)" % str(e), '', '']
+                return [filename, solve_time_str, "BIND_VAR %s (HolPy)" % str(e), '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
     except Exception as e:
         print([filename, solve_time_str, "PARSER ERROR %s" % str(e), '', ''])
-        return [filename, solve_time_str, "PARSER ERROR %s" % str(e), '', '']
+        return [filename, solve_time_str, "PARSER ERROR %s" % str(e), '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
     end_time = time.perf_counter()
     total_time -= (end_time - start_time)
     if total_time < 0:
         print([filename, solve_time_str, "TIMEOUT", "TIMEOUT", '', ''])
-        return [filename, solve_time_str, "TIMEOUT", "TIMEOUT", '', '']
+        return [filename, solve_time_str, "TIMEOUT", "TIMEOUT", '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
     # Parse
     start_time  = time.perf_counter()
     try: # timeout error
@@ -155,7 +155,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                 steps = test_parse_step(verit_proof, ctx)
             except Exception as e:
                 print([filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', ''])
-                return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '']
+                return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
     except Exception as e: # should consider timeout error as well as other unexpected error
         print("%s PARSING TIMEOUT %s" % (filename, str(e)))
         return [filename, solve_time_str, 'PARSING ERROR %s (HolPy)' % e, '', '']
@@ -163,7 +163,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     parse_time_str = "%.3f" % parse_time
     if parse_time > total_time:
         print([filename, solve_time_str, 'PARSING TIMEOUT (HolPy)', '', ''])
-        return [filename, solve_time_str, 'PARSING TIMEOUT (HolPy)', '', '']
+        return [filename, solve_time_str, 'PARSING TIMEOUT (HolPy)', '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
     total_time -= parse_time
     # Validation by macro.eval
     eval_time_str = ""
@@ -175,15 +175,16 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                 try:
                     pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                 except Exception as e:
-                    return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)]                   
+                    print([filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)])
+                    return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]                   
         except TimeoutError:
             print([filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps)])
-            return [filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps)]
+            return [filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
         eval_time = time.perf_counter() - start_time
         eval_time_str = "Eval: %.3f" % eval_time
         assert pt.rule != "sorry"
         print([filename, solve_time_str, parse_time_str, eval_time_str, len(steps)])
-        return [filename, solve_time_str, parse_time_str, eval_time_str, len(steps)]
+        return [filename, solve_time_str, parse_time_str, eval_time_str, len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
 
     # Validation by macro.get_proof_term
     proofterm_time_str = ""
@@ -197,20 +198,21 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
                     pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                     assert pt.rule != "sorry"
                 except Exception as e:
-                    return [filename, solve_time_str, parse_time_str, 'Error: %s %s' % (str(filename), str(e)), len(steps)]
+                    print([filename, solve_time_str, parse_time_str, 'Error: %s %s %s' % (str(filename), str(e), time.perf_counter() - start_time), len(steps)])
+                    return [filename, solve_time_str, parse_time_str, 'Error: %s %s %s' % (str(filename), str(e), time.perf_counter() - start_time), len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
         except (RecursionError,Exception) as e: # maybe other error?
             print("%s proof reconstruction timeout %s" % (filename, str(e)))
             if isinstance(e, TimeoutError):
                 print([filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)])
-                return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)]
+                return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
             else:
                 print([filename, solve_time_str, parse_time_str, 'Proof reconstruction failed %s' % str(e), len(steps)])
-                return [filename, solve_time_str, parse_time_str, 'Proof reconstruction failed %s' % str(e), len(steps)]
+                return [filename, solve_time_str, parse_time_str, 'Proof reconstruction failed %s' % str(e), len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
         proofterm_time = time.perf_counter() - start_time
         proofterm_time_str = "Proofterm: %.3f" % proofterm_time
 
         print([filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps)])
-        return [filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps)]
+        return [filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
 
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
               step_limit=None, omit_proofterm=None, solve_timeout=10, eval_timeout=120):
