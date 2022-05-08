@@ -191,14 +191,14 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         start_time = time.perf_counter()
         recon = proof_rec.ProofReconstruction(steps)
         try:
-            with TO(seconds=total_time):
+            with TO(seconds=300):
                 try:
                     print("TOTAL TIME %.3f" % total_time)
                     pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                     assert pt.rule != "sorry"
                 except Exception as e:
                     return [filename, solve_time_str, parse_time_str, 'Error: %s %s' % (str(filename), str(e)), len(steps)]
-        except TimeoutError : # maybe other error?
+        except (RecursionError,Exception) as e: # maybe other error?
             print("%s proof reconstruction timeout %s" % (filename, str(e)))
             if isinstance(e, TimeoutError):
                 print([filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)])
