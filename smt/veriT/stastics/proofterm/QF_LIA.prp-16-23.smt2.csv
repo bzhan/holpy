@@ -1,0 +1,5 @@
+filename,Solve,Parse,ProofTerm,Steps
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-16-23.smt2,3.867,2.093,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-16-23.smt2 Timeout 300.2659564270871,10011,2022-05-08 12:32:28
+Solve timeout: 120,ProofTerm timeout: 300
+Total time: 310.470
+2022-05-08 12:32:28
