@@ -1468,7 +1468,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                 return None
             v2, body2 = t2.dest_abs()
             _, body1 = t1.dest_abs(var_name=v2.name)
-            pt = helper(body2, body1, depth-1)
+            pt = helper(body1, body2, depth-1).symmetric()
             if pt is None:
                 return None
             res = ProofTerm.reflexive(t2).on_rhs(abs_conv(replace_conv(pt))).symmetric()

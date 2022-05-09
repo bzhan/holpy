@@ -570,6 +570,9 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt7351897299178954133.smt2',
             'AUFLIA/20170829-Rodin/smt4213031790546145760.smt2',
             'AUFLIA/20170829-Rodin/smt4473657298807368490.smt2',
+            'AUFLIA/20170829-Rodin/smt28921856381296720.smt2',
+            'AUFLIA/20170829-Rodin/smt3504742795329872706.smt2',
+            'AUFLIA/20170829-Rodin/smt7175126839151094124.smt2',
             # 'AUFLIA/20170829-Rodin/smt5586736073099019802.smt2', # resolution
             'AUFLIA/20170829-Rodin/smt1524510508476207618.smt2',
             'AUFLIA/20170829-Rodin/smt3939123684161216825.smt2',
@@ -604,7 +607,7 @@ class ProofrecTest(unittest.TestCase):
             'LRA/keymaera/intersection-example-simple.proof-node684031.smt2',
             'LRA/keymaera/intersection-example-simple.proof-node403143.smt2',
             'LRA/keymaera/intersection-example-simple.proof-node62694.smt2',
-            'LRA/scholl-smt08/RND/RND_4_30.smt2'
+            'LRA/scholl-smt08/RND/RND_4_30.smt2',
         ]
         profile = False
         if profile:
