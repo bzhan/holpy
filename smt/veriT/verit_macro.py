@@ -3777,7 +3777,10 @@ class SkoExMacro(Macro):
         if pt.rhs != rhs:
             raise VeriTException("sko_ex", "rhs should be equal to pt's rhs")
 
-        xs, lhs_body = lhs.strip_exists()
+        xs, lhs_body = [], lhs
+        while lhs_body.is_exists() and pt.lhs != lhs_body:
+            x, lhs_body = lhs_body.arg.dest_abs()
+            xs.append(x)
 
         if pt.lhs != lhs_body:
             print('pt.lhs:', pt.lhs)
@@ -3814,9 +3817,12 @@ class SkoExMacro(Macro):
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal, ctx = args
         lhs, rhs = goal.args
-        xs, lhs_body = lhs.strip_exists()
-
         pt = prevs[0]
+
+        xs, lhs_body = [], lhs
+        while lhs_body.is_exists() and pt.lhs != lhs_body:
+            x, lhs_body = lhs_body.arg.dest_abs()
+            xs.append(x)
 
         eqs = dict()
         for hyp in pt.hyps:
@@ -3887,7 +3893,10 @@ class SkoForallMacro(Macro):
         if pt.rhs != rhs:
             raise VeriTException("sko_forall", "rhs should be equal to pt's rhs")
 
-        xs, lhs_body = lhs.strip_forall()
+        xs, lhs_body = [], lhs
+        while lhs_body.is_forall() and pt.lhs != lhs_body:
+            x, lhs_body = lhs_body.arg.dest_abs()
+            xs.append(x)
 
         if pt.lhs != lhs_body:
             print('pt.lhs:', pt.lhs)
@@ -3924,9 +3933,12 @@ class SkoForallMacro(Macro):
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal, ctx = args
         lhs, rhs = goal.args
-        xs, lhs_body = lhs.strip_forall()
-
         pt = prevs[0]
+
+        xs, lhs_body = [], lhs
+        while lhs_body.is_forall() and pt.lhs != lhs_body:
+            x, lhs_body = lhs_body.arg.dest_abs()
+            xs.append(x)
 
         eqs = dict()
         for hyp in pt.hyps:
