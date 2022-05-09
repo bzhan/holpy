@@ -147,6 +147,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_UF/2018-Goel-hwbench/QF_UF_bridge.1.prop1_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_brp.1.prop1_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_bug-1_ab_cti_max.smt2',
+            'QF_UF/2018-Goel-hwbench/QF_UF_h_TicTacToe_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_cache_coherence_three_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_cambridge.1.prop1_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_sokoban.3.prop1_ab_br_max.smt2',
@@ -667,7 +668,8 @@ class ProofrecTest(unittest.TestCase):
             # 'QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2',
             # 'QF_LIA/rings/ring_2exp10_9vars_0ite_unsat.smt2'
             # 'QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2'
-            'QF_LIA/rings_preprocessed/ring_2exp4_7vars_2ite_unsat.smt2'
+            # 'QF_LIA/rings_preprocessed/ring_2exp4_7vars_2ite_unsat.smt2'
+            # 'QF_UFIDL/pete2/c8idw.smt2',
         ]
 
         profile = False
@@ -676,7 +678,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True, parse_assertion=True, write_file=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, write_file=True)
 
         if profile:
             p = Stats(pr)
