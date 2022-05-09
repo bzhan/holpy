@@ -31,7 +31,7 @@ def solve(f, write_file=False, timeout=5):
             output, _ = p.communicate(timeout=timeout)
             if output == b'':
                 return None
-            proof = output.decode('utf-8')
+            proof = output.decode('UTF-8')
             if write_file:
                 with open("proof.txt", "w") as f:
                     f.write(proof)

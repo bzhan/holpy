@@ -1,0 +1,991 @@
+filename,Solve,Parse,ProofTerm,Steps
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_12.smt2,0.027,1.396,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_12.smt2 currently lia_generic is not supported 0.5122275570174679,92,2022-05-08 12:06:54
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_14.smt2,0.028,1.396,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_14.smt2 currently lia_generic is not supported 0.579498223029077,106,2022-05-08 12:06:55
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_10.smt2,0.021,1.001,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_10.smt2 currently lia_generic is not supported 0.6641501869307831,78,2022-05-08 12:06:54
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_11.smt2,0.024,1.341,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_11.smt2 currently lia_generic is not supported 0.49515881994739175,89,2022-05-08 12:06:54
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_19.smt2,0.118,1.825,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_19.smt2 currently lia_generic is not supported 0.6267406590050086,145,2022-05-08 12:06:55
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_9.smt2,0.022,0.708,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_9.smt2 currently lia_generic is not supported 0.8647462889784947,71,2022-05-08 12:06:54
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_3.smt2,0.018,0.472,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_3.smt2 currently lia_generic is not supported 0.11717959900852293,29,2022-05-08 12:06:53
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_7.smt2,0.020,0.590,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_7.smt2 currently lia_generic is not supported 0.6409768690355122,57,2022-05-08 12:06:54
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_16.smt2,0.032,1.556,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_16.smt2 currently lia_generic is not supported 0.6777869110228494,132,2022-05-08 12:06:55
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_4.smt2,0.017,0.469,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_4.smt2 currently lia_generic is not supported 0.12873744999524206,36,2022-05-08 12:06:53
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_5.smt2,0.017,0.513,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_5.smt2 currently lia_generic is not supported 0.27220500900875777,43,2022-05-08 12:06:53
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_13.smt2,0.027,1.286,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_13.smt2 currently lia_generic is not supported 0.5527212909655645,99,2022-05-08 12:06:54
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_8.smt2,0.018,0.647,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_8.smt2 currently lia_generic is not supported 0.7498431800631806,64,2022-05-08 12:06:54
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_6.smt2,0.018,0.548,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_6.smt2 currently lia_generic is not supported 0.3549298340221867,50,2022-05-08 12:06:53
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_15.smt2,0.031,1.452,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_15.smt2 currently lia_generic is not supported 0.6151524510933086,117,2022-05-08 12:06:55
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_17.smt2,0.037,1.753,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_17.smt2 currently lia_generic is not supported 0.6246847580187023,135,2022-05-08 12:06:55
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_20.smt2,0.034,1.739,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_20.smt2 currently lia_generic is not supported 0.6293135720770806,148,2022-05-08 12:06:55
+../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_18.smt2,0.033,1.798,Error: ../smt-lib/QF_LIA/prime-cone/prime_cone_unsat_18.smt2 currently lia_generic is not supported 0.6176855299854651,134,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-10/c10_problem__002.smt2.slack.smt2,0.024,1.502,Proofterm: 1.987,140,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-100/c100_problem__006.smt2.slack.smt2,0.033,1.733,Proofterm: 2.445,193,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-90/c90_problem__005.smt2.slack.smt2,0.025,1.753,Proofterm: 2.223,190,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-20/c20_problem__004.smt2.slack.smt2,0.025,1.491,Proofterm: 1.513,156,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-30/c30_problem__006.smt2.slack.smt2,0.025,1.561,Proofterm: 1.646,157,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-50/c50_problem__006.smt2.slack.smt2,0.026,1.561,Proofterm: 2.103,182,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-50/c50_problem__002.smt2.slack.smt2,0.025,1.513,Proofterm: 2.160,183,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/coef-size/smt/size-40/c40_problem__002.smt2.slack.smt2,0.024,1.477,Proofterm: 1.906,170,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__032.smt2.slack.smt2,0.073,1.611,Proofterm: 2.403,182,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__027.smt2.slack.smt2,0.058,1.502,Proofterm: 2.492,180,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__029.smt2.slack.smt2,0.074,1.549,Proofterm: 2.657,184,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__027.smt2.slack.smt2,0.053,1.483,Proofterm: 2.829,168,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__030.smt2.slack.smt2,0.056,1.694,Proofterm: 2.666,184,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__034.smt2.slack.smt2,0.086,1.768,Proofterm: 2.680,180,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__018.smt2.slack.smt2,0.049,1.624,Proofterm: 2.667,176,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__016.smt2.slack.smt2,0.040,1.570,Proofterm: 2.546,184,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__025.smt2.slack.smt2,0.065,1.568,Proofterm: 2.149,178,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__032.smt2.slack.smt2,0.059,1.551,Proofterm: 2.396,186,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__031.smt2.slack.smt2,0.060,1.584,Proofterm: 2.575,178,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__033.smt2.slack.smt2,0.063,1.545,Proofterm: 2.700,170,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__026.smt2.slack.smt2,0.066,1.552,Proofterm: 2.539,178,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__033.smt2.slack.smt2,0.081,1.652,Proofterm: 2.580,181,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__035.smt2.slack.smt2,0.068,1.638,Proofterm: 2.906,180,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem__023.smt2.slack.smt2,0.056,1.475,Proofterm: 2.643,183,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__034.smt2.slack.smt2,0.054,1.776,Proofterm: 2.641,171,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/20-vars/v20_problem_2__031.smt2.slack.smt2,0.070,1.740,Proofterm: 2.688,181,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/30-vars/v30_problem__032.smt2.slack.smt2,0.088,1.927,Proofterm: 3.957,285,2022-05-08 12:06:59
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__023.smt2.slack.smt2,0.038,1.232,Proofterm: 1.737,130,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__016.smt2.slack.smt2,0.040,1.302,Proofterm: 2.089,130,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__022.smt2.slack.smt2,0.033,1.206,Proofterm: 2.372,132,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__025.smt2.slack.smt2,0.037,0.823,Proofterm: 2.507,117,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__021.smt2.slack.smt2,0.043,1.300,Proofterm: 2.117,133,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__022.smt2.slack.smt2,0.036,1.223,Proofterm: 2.163,132,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__019.smt2.slack.smt2,0.034,1.336,Proofterm: 2.167,136,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem__024.smt2.slack.smt2,0.036,1.372,Proofterm: 2.051,133,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__011.smt2.slack.smt2,0.032,1.424,Proofterm: 2.136,138,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__020.smt2.slack.smt2,0.038,1.219,Proofterm: 2.067,128,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__025.smt2.slack.smt2,7.182,1.823,Error: ../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__025.smt2.slack.smt2 currently lia_generic is not supported 1.1535403210436925,274,2022-05-08 12:07:10
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/15-vars/v15_problem_2__024.smt2.slack.smt2,0.034,1.410,Proofterm: 2.169,136,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__032.smt2.slack.smt2,0.027,0.621,Proofterm: 1.685,70,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__021.smt2.slack.smt2,0.028,0.667,Proofterm: 1.696,70,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__035.smt2.slack.smt2,0.025,0.654,Proofterm: 1.283,65,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__016.smt2.slack.smt2,0.024,0.687,Proofterm: 1.867,85,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__020.smt2.slack.smt2,0.025,0.601,Proofterm: 1.448,72,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__033.smt2.slack.smt2,0.026,0.742,Proofterm: 1.645,68,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__022.smt2.slack.smt2,0.025,0.790,Proofterm: 1.789,80,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__025.smt2.slack.smt2,0.026,0.686,Proofterm: 1.816,82,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__027.smt2.slack.smt2,0.026,0.680,Proofterm: 1.492,72,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__024.smt2.slack.smt2,0.024,0.796,Proofterm: 1.658,88,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__021.smt2.slack.smt2,0.024,0.661,Proofterm: 1.910,86,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__016.smt2.slack.smt2,0.024,0.794,Proofterm: 1.712,84,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__026.smt2.slack.smt2,0.027,0.730,Proofterm: 1.454,68,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__030.smt2.slack.smt2,0.025,0.746,Proofterm: 1.987,90,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__025.smt2.slack.smt2,0.025,0.754,Proofterm: 1.857,88,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__029.smt2.slack.smt2,0.026,0.596,Proofterm: 1.137,45,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__035.smt2.slack.smt2,0.025,0.894,Proofterm: 1.913,88,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__028.smt2.slack.smt2,0.027,0.834,Proofterm: 2.056,82,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__031.smt2.slack.smt2,0.027,0.883,Proofterm: 1.768,79,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__031.smt2.slack.smt2,0.025,0.856,Proofterm: 1.640,69,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__029.smt2.slack.smt2,0.029,0.774,Proofterm: 1.754,86,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__019.smt2.slack.smt2,0.027,0.707,Proofterm: 1.695,76,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__028.smt2.slack.smt2,0.033,0.740,Proofterm: 1.487,67,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__026.smt2.slack.smt2,0.041,0.695,Proofterm: 1.921,85,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__030.smt2.slack.smt2,0.042,0.881,Proofterm: 1.954,86,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__027.smt2.slack.smt2,0.030,0.842,Proofterm: 2.169,91,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__024.smt2.slack.smt2,0.026,0.729,Proofterm: 1.905,88,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__017.smt2.slack.smt2,0.026,0.801,Proofterm: 1.700,86,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__034.smt2.slack.smt2,0.027,0.809,Proofterm: 1.941,88,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__032.smt2.slack.smt2,0.029,0.816,Proofterm: 1.795,83,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem__034.smt2.slack.smt2,0.030,0.543,Proofterm: 1.277,51,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/10-vars/v10_problem_2__012.smt2.slack.smt2,0.027,0.737,Proofterm: 1.227,52,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__033.smt2.slack.smt2,0.097,1.991,Proofterm: 3.307,233,2022-05-08 12:06:58
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__022.smt2.slack.smt2,0.997,2.001,Error: ../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__022.smt2.slack.smt2 currently lia_generic is not supported 1.359278031042777,396,2022-05-08 12:06:58
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__029.smt2.slack.smt2,0.075,1.969,Proofterm: 3.075,226,2022-05-08 12:06:58
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__031.smt2.slack.smt2,1.127,1.843,Error: ../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__031.smt2.slack.smt2 currently lia_generic is not supported 1.2135446809697896,389,2022-05-08 12:06:58
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__032.smt2.slack.smt2,0.098,2.029,Proofterm: 3.192,223,2022-05-08 12:06:58
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem_2__031.smt2.slack.smt2,0.094,1.902,Proofterm: 3.356,230,2022-05-08 12:06:58
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/CAV_2009_benchmarks/smt/25-vars/v25_problem__034.smt2.slack.smt2,0.084,2.129,Proofterm: 3.419,226,2022-05-08 12:06:59
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_008.smt2.slack.smt2,0.033,1.826,Proofterm: 2.831,191,2022-05-08 12:06:58
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_008.smt2.slack.smt2,0.031,1.739,Proofterm: 2.648,174,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_03_006.smt2.slack.smt2,0.037,1.794,Proofterm: 2.521,191,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/20-vars/cut_lemma_01_015.smt2.slack.smt2,0.031,1.878,Proofterm: 2.526,172,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_008.smt2.slack.smt2,0.029,1.413,Proofterm: 2.115,125,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_013.smt2.slack.smt2,0.026,0.677,Proofterm: 1.228,46,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_002.smt2.slack.smt2,0.030,1.022,Proofterm: 2.283,116,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_004.smt2.slack.smt2,0.030,0.972,Proofterm: 1.842,103,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_001.smt2.slack.smt2,0.030,1.146,Proofterm: 2.407,116,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_004.smt2.slack.smt2,0.028,1.373,Proofterm: 2.394,133,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_03_001.smt2.slack.smt2,0.030,1.246,Proofterm: 2.088,136,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_02_005.smt2.slack.smt2,0.029,0.940,Proofterm: 1.992,103,2022-05-08 12:06:56
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/15-vars/cut_lemma_01_012.smt2.slack.smt2,0.029,1.765,Proofterm: 2.268,136,2022-05-08 12:06:57
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_009.smt2.slack.smt2,0.030,0.941,Proofterm: 1.552,75,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_001.smt2.slack.smt2,0.030,0.849,Proofterm: 1.522,75,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_01_001.smt2.slack.smt2,0.027,0.639,Proofterm: 0.421,27,2022-05-08 12:06:54
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_010.smt2.slack.smt2,0.030,0.592,Proofterm: 1.023,41,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_005.smt2.slack.smt2,0.029,0.887,Proofterm: 1.483,68,2022-05-08 12:06:55
+../smt-lib/QF_LIA/20180326-Bromberger/more_slacked/cut_lemmas/10-vars/cut_lemma_02_003.smt2.slack.smt2,0.028,0.736,Proofterm: 1.066,41,2022-05-08 12:06:55
+../smt-lib/QF_LIA/fft/Sz64_1159.smt2,0.098,4.563,Proofterm: 72.684,2754,2022-05-08 12:08:10
+../smt-lib/QF_LIA/fft/Sz32_455.smt2,0.420,6.438,Proofterm: 160.442,6239,2022-05-08 12:09:40
+../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_4.msat.smt2,0.098,3.815,Error: ../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_4.msat.smt2 currently lia_generic is not supported 10.46686392405536,2285,2022-05-08 12:07:07
+../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_6.msat.smt2,1.489,9.144,Error: ../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_6.msat.smt2 currently lia_generic is not supported 13.890793206985109,22686,2022-05-08 12:07:18
+../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_8.msat.smt2,114.897,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:09:55
+../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_5.msat.smt2,0.327,4.752,Error: ../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_5.msat.smt2 currently lia_generic is not supported 15.636423157062382,6562,2022-05-08 12:07:14
+../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_2.msat.smt2,0.039,2.667,Proofterm: 9.803,571,2022-05-08 12:07:05
+../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_7.msat.smt2,9.482,27.972,Error: ../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_7.msat.smt2 currently lia_generic is not supported 24.770600595977157,84439,2022-05-08 12:07:57
+../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_3.msat.smt2,0.043,3.123,Error: ../smt-lib/QF_LIA/CIRC/simplebitadder/SIMPLEBITADDER_COMPOSE_3.msat.smt2 currently lia_generic is not supported 17.88894989306573,1022,2022-05-08 12:07:14
+../smt-lib/QF_LIA/CIRC/multiplier/MULTIPLIER_5.msat.smt2,0.380,4.472,Proofterm: 192.194,5669,2022-05-08 12:10:10
+../smt-lib/QF_LIA/CIRC/multiplier/MULTIPLIER_7.msat.smt2,12.856,37.067,Error: ../smt-lib/QF_LIA/CIRC/multiplier/MULTIPLIER_7.msat.smt2 Timeout 300.14216418995056,86190,2022-05-08 12:12:46
+../smt-lib/QF_LIA/CIRC/multiplier/MULTIPLIER_4.msat.smt2,0.091,3.778,Proofterm: 69.046,1681,2022-05-08 12:08:06
+../smt-lib/QF_LIA/CIRC/multiplier/MULTIPLIER_8.msat.smt2,97.320,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:09:56
+../smt-lib/QF_LIA/CIRC/multiplier/MULTIPLIER_6.msat.smt2,1.592,10.812,Error: ../smt-lib/QF_LIA/CIRC/multiplier/MULTIPLIER_6.msat.smt2 Timeout 300.0260751270689,21467,2022-05-08 12:12:06
+../smt-lib/QF_LIA/CIRC/multiplier/MULTIPLIER_3.msat.smt2,0.034,2.569,Proofterm: 17.926,622,2022-05-08 12:07:14
+../smt-lib/QF_LIA/CIRC/multiplier/MULTIPLIER_2.msat.smt2,0.031,2.186,Proofterm: 8.112,292,2022-05-08 12:07:03
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-3.smt2,0.043,0.493,Proofterm: 0.529,21,2022-05-08 12:06:54
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-6.smt2,0.039,0.857,Proofterm: 1.568,36,2022-05-08 12:06:56
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-11.smt2,0.038,0.974,Proofterm: 2.448,61,2022-05-08 12:06:57
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-8.smt2,0.039,0.769,Proofterm: 1.697,46,2022-05-08 12:06:56
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-13.smt2,0.039,0.983,Proofterm: 2.782,71,2022-05-08 12:06:57
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-2.smt2,0.038,0.602,Proofterm: 0.356,16,2022-05-08 12:06:54
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-17.smt2,0.047,1.421,Proofterm: 3.343,91,2022-05-08 12:06:58
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-9.smt2,0.045,0.908,Proofterm: 2.015,51,2022-05-08 12:06:56
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-15.smt2,0.037,1.387,Proofterm: 2.658,81,2022-05-08 12:06:57
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-20.smt2,0.061,1.590,Proofterm: 5.008,106,2022-05-08 12:07:00
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-16.smt2,0.035,1.362,Proofterm: 2.711,86,2022-05-08 12:06:57
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-4.smt2,0.037,0.640,Proofterm: 1.023,26,2022-05-08 12:06:55
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-5.smt2,0.043,0.765,Proofterm: 1.401,31,2022-05-08 12:06:55
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-18.smt2,0.052,1.463,Proofterm: 3.907,96,2022-05-08 12:06:59
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-19.smt2,0.050,1.725,Proofterm: 5.096,101,2022-05-08 12:07:00
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-10.smt2,0.045,1.049,Proofterm: 2.190,56,2022-05-08 12:06:56
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-12.smt2,0.046,0.977,Proofterm: 2.491,66,2022-05-08 12:06:57
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-7.smt2,0.041,0.772,Proofterm: 1.400,41,2022-05-08 12:06:55
+../smt-lib/QF_LIA/pidgeons/pigeon-hole-14.smt2,0.045,1.332,Proofterm: 2.566,76,2022-05-08 12:06:57
+../smt-lib/QF_LIA/dillig/25-31.smt2,0.194,3.675,Error: ../smt-lib/QF_LIA/dillig/25-31.smt2 currently lia_generic is not supported 10.864173074951395,2941,2022-05-08 12:07:08
+../smt-lib/QF_LIA/dillig/25-22.smt2,0.112,4.021,Error: ../smt-lib/QF_LIA/dillig/25-22.smt2 currently lia_generic is not supported 10.001225886982866,2389,2022-05-08 12:07:07
+../smt-lib/QF_LIA/dillig/20-14.smt2,2.961,3.203,Error: ../smt-lib/QF_LIA/dillig/20-14.smt2 currently lia_generic is not supported 7.272727724048309,1488,2022-05-08 12:07:10
+../smt-lib/QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2,UNKNOWN PROOF (veriT),,,,2022-05-08 12:07:18
+../smt-lib/QF_LIA/rings/ring_2exp10_9vars_0ite_unsat.smt2,0.068,3.288,Error: ../smt-lib/QF_LIA/rings/ring_2exp10_9vars_0ite_unsat.smt2 la_generic: unexpected result 7.938133179908618,908,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings/ring_2exp16_3vars_1ite_unsat.smt2,0.293,2.448,Error: ../smt-lib/QF_LIA/rings/ring_2exp16_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.496954497997649,427,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp14_4vars_0ite_unsat.smt2,0.048,2.418,Error: ../smt-lib/QF_LIA/rings/ring_2exp14_4vars_0ite_unsat.smt2 la_generic: unexpected result 3.589355687960051,363,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp6_4vars_2ite_unsat.smt2,1.126,3.644,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_4vars_2ite_unsat.smt2 currently lia_generic is not supported 4.986443282919936,581,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings/ring_2exp4_6vars_3ite_unsat.smt2,54.113,41.574,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_6vars_3ite_unsat.smt2 currently lia_generic is not supported 5.34176804299932,6378,2022-05-08 12:09:13
+../smt-lib/QF_LIA/rings/ring_2exp4_6vars_2ite_unsat.smt2,62.392,49.086,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_6vars_2ite_unsat.smt2 currently lia_generic is not supported 3.2715001640608534,1068,2022-05-08 12:09:46
+../smt-lib/QF_LIA/rings/ring_2exp8_3vars_0ite_unsat.smt2,0.041,2.027,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_3vars_0ite_unsat.smt2 la_generic: unexpected result 2.8800819920143113,254,2022-05-08 12:06:58
+../smt-lib/QF_LIA/rings/ring_2exp14_6vars_0ite_unsat.smt2,0.061,2.841,Error: ../smt-lib/QF_LIA/rings/ring_2exp14_6vars_0ite_unsat.smt2 la_generic: unexpected result 6.167920146021061,581,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings/ring_2exp6_5vars_0ite_unsat.smt2,0.041,2.453,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_5vars_0ite_unsat.smt2 la_generic: unexpected result 4.260826030978933,472,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp6_3vars_0ite_unsat.smt2,0.040,2.053,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_3vars_0ite_unsat.smt2 la_generic: unexpected result 2.4402232780121267,254,2022-05-08 12:06:58
+../smt-lib/QF_LIA/rings/ring_2exp4_5vars_3ite_unsat.smt2,10.611,14.863,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_5vars_3ite_unsat.smt2 currently lia_generic is not supported 7.080053420038894,2260,2022-05-08 12:07:33
+../smt-lib/QF_LIA/rings/ring_2exp8_8vars_0ite_unsat.smt2,0.057,3.331,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_8vars_0ite_unsat.smt2 la_generic: unexpected result 7.966536271036603,799,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings/ring_2exp12_3vars_2ite_unsat.smt2,0.202,2.274,Error: ../smt-lib/QF_LIA/rings/ring_2exp12_3vars_2ite_unsat.smt2 currently lia_generic is not supported 3.8986727619776502,453,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp8_6vars_0ite_unsat.smt2,0.051,2.713,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_6vars_0ite_unsat.smt2 la_generic: unexpected result 5.049834380974062,581,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings/ring_2exp16_3vars_0ite_unsat.smt2,0.041,2.097,Error: ../smt-lib/QF_LIA/rings/ring_2exp16_3vars_0ite_unsat.smt2 la_generic: unexpected result 3.1760257929563522,254,2022-05-08 12:06:58
+../smt-lib/QF_LIA/rings/ring_2exp16_4vars_0ite_unsat.smt2,0.047,2.422,Error: ../smt-lib/QF_LIA/rings/ring_2exp16_4vars_0ite_unsat.smt2 la_generic: unexpected result 3.5167008619755507,363,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp4_3vars_1ite_unsat.smt2,0.056,2.373,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.749394959071651,420,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp16_9vars_0ite_unsat.smt2,0.067,3.222,Error: ../smt-lib/QF_LIA/rings/ring_2exp16_9vars_0ite_unsat.smt2 la_generic: unexpected result 8.466440610936843,908,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings/ring_2exp4_5vars_2ite_unsat.smt2,13.445,16.114,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_5vars_2ite_unsat.smt2 currently lia_generic is not supported 6.039781671948731,835,2022-05-08 12:07:43
+../smt-lib/QF_LIA/rings/ring_2exp10_3vars_2ite_unsat.smt2,0.072,2.563,Error: ../smt-lib/QF_LIA/rings/ring_2exp10_3vars_2ite_unsat.smt2 currently lia_generic is not supported 3.6219138590386137,476,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp12_3vars_1ite_unsat.smt2,0.340,2.390,Error: ../smt-lib/QF_LIA/rings/ring_2exp12_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.5562951100291684,455,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp6_8vars_0ite_unsat.smt2,0.063,3.093,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_8vars_0ite_unsat.smt2 la_generic: unexpected result 7.475865371059626,799,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings/ring_2exp12_6vars_0ite_unsat.smt2,0.053,2.394,Error: ../smt-lib/QF_LIA/rings/ring_2exp12_6vars_0ite_unsat.smt2 la_generic: unexpected result 4.8663701539626345,581,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings/ring_2exp10_4vars_2ite_unsat.smt2,58.759,9.885,Error: ../smt-lib/QF_LIA/rings/ring_2exp10_4vars_2ite_unsat.smt2 currently lia_generic is not supported 2.929362704977393,1233,2022-05-08 12:09:18
+../smt-lib/QF_LIA/rings/ring_2exp12_3vars_0ite_unsat.smt2,0.042,1.601,Error: ../smt-lib/QF_LIA/rings/ring_2exp12_3vars_0ite_unsat.smt2 la_generic: unexpected result 2.942976886057295,254,2022-05-08 12:06:58
+../smt-lib/QF_LIA/rings/ring_2exp4_7vars_0ite_unsat.smt2,0.056,2.682,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_7vars_0ite_unsat.smt2 la_generic: unexpected result 6.092428194009699,690,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings/ring_2exp6_4vars_1ite_unsat.smt2,1.211,3.519,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_4vars_1ite_unsat.smt2 currently lia_generic is not supported 4.274871135014109,670,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings/ring_2exp16_7vars_0ite_unsat.smt2,0.058,2.808,Error: ../smt-lib/QF_LIA/rings/ring_2exp16_7vars_0ite_unsat.smt2 la_generic: unexpected result 5.8582111719297245,690,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings/ring_2exp16_6vars_0ite_unsat.smt2,0.056,2.736,Error: ../smt-lib/QF_LIA/rings/ring_2exp16_6vars_0ite_unsat.smt2 la_generic: unexpected result 6.025473888032138,581,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings/ring_2exp8_5vars_0ite_unsat.smt2,0.051,2.556,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_5vars_0ite_unsat.smt2 la_generic: unexpected result 4.730948482989334,472,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings/ring_2exp8_4vars_0ite_unsat.smt2,0.043,2.366,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_4vars_0ite_unsat.smt2 la_generic: unexpected result 3.463492032024078,363,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp10_8vars_0ite_unsat.smt2,0.062,3.092,Error: ../smt-lib/QF_LIA/rings/ring_2exp10_8vars_0ite_unsat.smt2 la_generic: unexpected result 7.006820547976531,799,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings/ring_2exp4_3vars_0ite_unsat.smt2,0.038,2.027,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_3vars_0ite_unsat.smt2 la_generic: unexpected result 2.5525310619268566,254,2022-05-08 12:06:58
+../smt-lib/QF_LIA/rings/ring_2exp8_7vars_0ite_unsat.smt2,0.055,2.982,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_7vars_0ite_unsat.smt2 la_generic: unexpected result 5.7177029949380085,690,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings/ring_2exp14_8vars_0ite_unsat.smt2,0.073,3.284,Error: ../smt-lib/QF_LIA/rings/ring_2exp14_8vars_0ite_unsat.smt2 la_generic: unexpected result 7.366361950989813,799,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings/ring_2exp10_7vars_0ite_unsat.smt2,0.056,2.965,Error: ../smt-lib/QF_LIA/rings/ring_2exp10_7vars_0ite_unsat.smt2 la_generic: unexpected result 6.6250146579695866,690,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings/ring_2exp6_4vars_3ite_unsat.smt2,0.930,3.483,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_4vars_3ite_unsat.smt2 currently lia_generic is not supported 5.323934520944022,1019,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings/ring_2exp4_6vars_1ite_unsat.smt2,51.074,43.932,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_6vars_1ite_unsat.smt2 la_generic: unexpected result 3.6457310270052403,9316,2022-05-08 12:09:12
+../smt-lib/QF_LIA/rings/ring_2exp10_3vars_0ite_unsat.smt2,0.047,2.091,Error: ../smt-lib/QF_LIA/rings/ring_2exp10_3vars_0ite_unsat.smt2 la_generic: unexpected result 2.56092511897441,254,2022-05-08 12:06:58
+../smt-lib/QF_LIA/rings/ring_2exp6_3vars_2ite_unsat.smt2,0.056,2.428,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_3vars_2ite_unsat.smt2 currently lia_generic is not supported 3.786060460959561,476,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp14_3vars_0ite_unsat.smt2,0.045,2.056,Error: ../smt-lib/QF_LIA/rings/ring_2exp14_3vars_0ite_unsat.smt2 la_generic: unexpected result 3.0835855200421065,254,2022-05-08 12:06:58
+../smt-lib/QF_LIA/rings/ring_2exp10_6vars_0ite_unsat.smt2,0.055,2.782,Error: ../smt-lib/QF_LIA/rings/ring_2exp10_6vars_0ite_unsat.smt2 la_generic: unexpected result 5.048643714049831,581,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings/ring_2exp4_6vars_0ite_unsat.smt2,0.056,2.943,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_6vars_0ite_unsat.smt2 la_generic: unexpected result 5.620143715990707,581,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings/ring_2exp6_9vars_0ite_unsat.smt2,0.071,2.983,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_9vars_0ite_unsat.smt2 la_generic: unexpected result 7.05626674904488,908,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings/ring_2exp6_7vars_0ite_unsat.smt2,0.055,2.817,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_7vars_0ite_unsat.smt2 la_generic: unexpected result 5.428233525017276,690,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings/ring_2exp16_5vars_0ite_unsat.smt2,0.050,2.521,Error: ../smt-lib/QF_LIA/rings/ring_2exp16_5vars_0ite_unsat.smt2 la_generic: unexpected result 4.333089067018591,472,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp14_9vars_0ite_unsat.smt2,0.068,3.515,Error: ../smt-lib/QF_LIA/rings/ring_2exp14_9vars_0ite_unsat.smt2 la_generic: unexpected result 9.10414208797738,908,2022-05-08 12:07:06
+../smt-lib/QF_LIA/rings/ring_2exp14_5vars_0ite_unsat.smt2,0.050,2.570,Error: ../smt-lib/QF_LIA/rings/ring_2exp14_5vars_0ite_unsat.smt2 la_generic: unexpected result 4.866912884986959,472,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings/ring_2exp4_9vars_0ite_unsat.smt2,0.063,3.265,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_9vars_0ite_unsat.smt2 la_generic: unexpected result 7.717159728053957,908,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings/ring_2exp4_4vars_2ite_unsat.smt2,0.739,2.659,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_4vars_2ite_unsat.smt2 currently lia_generic is not supported 4.280927567044273,581,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings/ring_2exp4_5vars_4ite_unsat.smt2,13.469,20.393,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_5vars_4ite_unsat.smt2 currently lia_generic is not supported 7.76543466700241,4146,2022-05-08 12:07:45
+../smt-lib/QF_LIA/rings/ring_2exp12_9vars_0ite_unsat.smt2,0.071,3.302,Error: ../smt-lib/QF_LIA/rings/ring_2exp12_9vars_0ite_unsat.smt2 la_generic: unexpected result 7.976480385987088,908,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings/ring_2exp4_3vars_2ite_unsat.smt2,0.057,2.416,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_3vars_2ite_unsat.smt2 currently lia_generic is not supported 3.865324398037046,476,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp12_4vars_0ite_unsat.smt2,0.047,2.393,Error: ../smt-lib/QF_LIA/rings/ring_2exp12_4vars_0ite_unsat.smt2 la_generic: unexpected result 3.35808789904695,363,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp4_6vars_5ite_unsat.smt2,71.862,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:10:00
+../smt-lib/QF_LIA/rings/ring_2exp16_4vars_3ite_unsat.smt2,16.811,4.313,Error: ../smt-lib/QF_LIA/rings/ring_2exp16_4vars_3ite_unsat.smt2 currently lia_generic is not supported 7.161314398050308,1684,2022-05-08 12:07:38
+../smt-lib/QF_LIA/rings/ring_2exp8_3vars_1ite_unsat.smt2,0.263,2.331,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.449614800978452,420,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp16_3vars_2ite_unsat.smt2,0.169,2.389,Error: ../smt-lib/QF_LIA/rings/ring_2exp16_3vars_2ite_unsat.smt2 currently lia_generic is not supported 4.022523378022015,480,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp4_8vars_0ite_unsat.smt2,0.086,3.103,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_8vars_0ite_unsat.smt2 la_generic: unexpected result 6.938897997955792,799,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings/ring_2exp8_3vars_2ite_unsat.smt2,0.061,2.370,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_3vars_2ite_unsat.smt2 currently lia_generic is not supported 3.662989146076143,476,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp4_4vars_3ite_unsat.smt2,0.538,3.141,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_4vars_3ite_unsat.smt2 currently lia_generic is not supported 5.2574095639865845,1018,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings/ring_2exp10_3vars_1ite_unsat.smt2,0.236,2.618,Error: ../smt-lib/QF_LIA/rings/ring_2exp10_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.6887060140725225,683,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp4_5vars_0ite_unsat.smt2,0.071,2.476,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_5vars_0ite_unsat.smt2 la_generic: unexpected result 4.302230502013117,472,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp4_4vars_0ite_unsat.smt2,0.054,2.468,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_4vars_0ite_unsat.smt2 la_generic: unexpected result 3.3224332600366324,363,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp14_4vars_3ite_unsat.smt2,UNKNOWN PROOF (veriT),,,,2022-05-08 12:07:53
+../smt-lib/QF_LIA/rings/ring_2exp10_5vars_0ite_unsat.smt2,0.073,2.672,Error: ../smt-lib/QF_LIA/rings/ring_2exp10_5vars_0ite_unsat.smt2 la_generic: unexpected result 4.1297714749816805,472,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp6_4vars_0ite_unsat.smt2,0.058,2.211,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_4vars_0ite_unsat.smt2 la_generic: unexpected result 3.2113050729967654,363,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp14_3vars_2ite_unsat.smt2,0.225,2.246,Error: ../smt-lib/QF_LIA/rings/ring_2exp14_3vars_2ite_unsat.smt2 currently lia_generic is not supported 3.9594106370350346,453,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp12_8vars_0ite_unsat.smt2,0.064,3.103,Error: ../smt-lib/QF_LIA/rings/ring_2exp12_8vars_0ite_unsat.smt2 la_generic: unexpected result 7.4326873160898685,799,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings/ring_2exp10_4vars_0ite_unsat.smt2,0.057,2.249,Error: ../smt-lib/QF_LIA/rings/ring_2exp10_4vars_0ite_unsat.smt2 la_generic: unexpected result 3.399413823033683,363,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp6_6vars_0ite_unsat.smt2,0.078,2.630,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_6vars_0ite_unsat.smt2 la_generic: unexpected result 5.641526319086552,581,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings/ring_2exp12_5vars_0ite_unsat.smt2,0.070,2.316,Error: ../smt-lib/QF_LIA/rings/ring_2exp12_5vars_0ite_unsat.smt2 la_generic: unexpected result 3.9957667940761894,472,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp14_4vars_1ite_unsat.smt2,UNKNOWN PROOF (veriT),,,,2022-05-08 12:07:28
+../smt-lib/QF_LIA/rings/ring_2exp8_9vars_0ite_unsat.smt2,0.081,3.480,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_9vars_0ite_unsat.smt2 la_generic: unexpected result 8.766798514989205,908,2022-05-08 12:07:06
+../smt-lib/QF_LIA/rings/ring_2exp12_7vars_0ite_unsat.smt2,0.076,3.022,Error: ../smt-lib/QF_LIA/rings/ring_2exp12_7vars_0ite_unsat.smt2 la_generic: unexpected result 6.685163555899635,690,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings/ring_2exp4_4vars_1ite_unsat.smt2,0.620,2.714,Error: ../smt-lib/QF_LIA/rings/ring_2exp4_4vars_1ite_unsat.smt2 currently lia_generic is not supported 3.9979492999846116,682,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings/ring_2exp6_3vars_1ite_unsat.smt2,0.099,2.167,Error: ../smt-lib/QF_LIA/rings/ring_2exp6_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.2928869388997555,420,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings/ring_2exp16_8vars_0ite_unsat.smt2,0.077,3.018,Error: ../smt-lib/QF_LIA/rings/ring_2exp16_8vars_0ite_unsat.smt2 la_generic: unexpected result 7.293727304087952,799,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings/ring_2exp14_7vars_0ite_unsat.smt2,0.076,2.813,Error: ../smt-lib/QF_LIA/rings/ring_2exp14_7vars_0ite_unsat.smt2 la_generic: unexpected result 6.106654405943118,690,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings/ring_2exp8_4vars_3ite_unsat.smt2,3.615,7.401,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_4vars_3ite_unsat.smt2 currently lia_generic is not supported 4.706580147030763,1018,2022-05-08 12:07:12
+../smt-lib/QF_LIA/rings/ring_2exp8_4vars_2ite_unsat.smt2,4.533,7.968,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_4vars_2ite_unsat.smt2 currently lia_generic is not supported 4.616198019008152,581,2022-05-08 12:07:15
+../smt-lib/QF_LIA/rings/ring_2exp14_3vars_1ite_unsat.smt2,0.357,2.283,Error: ../smt-lib/QF_LIA/rings/ring_2exp14_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.5832048489246517,455,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings/ring_2exp8_4vars_1ite_unsat.smt2,3.757,7.090,Error: ../smt-lib/QF_LIA/rings/ring_2exp8_4vars_1ite_unsat.smt2 currently lia_generic is not supported 4.16266298701521,666,2022-05-08 12:07:12
+../smt-lib/QF_LIA/wisa/wisa2.smt2,1.669,7.650,Proofterm: 134.603,9800,2022-05-08 12:09:18
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-4-19.smt2,0.230,4.951,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-4-19.smt2 Timeout 300.0157336720731,3585,2022-05-08 12:11:59
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-16-23.smt2,13.783,7.279,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-16-23.smt2 Timeout 899.1856115540722,10011,2022-05-08 12:22:29
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-6-23.smt2,14.431,6.584,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-6-23.smt2 Timeout 300.01589986495674,10357,2022-05-08 12:12:26
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-21.smt2,1.072,5.513,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-21.smt2 Timeout 300.1049808759708,4049,2022-05-08 12:12:03
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-2-17.smt2,0.136,4.337,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-2-17.smt2 Timeout 921.8138238589745,2037,2022-05-08 12:22:20
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-18.smt2,0.160,4.606,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-18.smt2 Timeout 300.0082285470562,2730,2022-05-08 12:11:58
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-21.smt2,1.295,4.984,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-21.smt2 Timeout 300.03350308490917,4090,2022-05-08 12:12:02
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-20.smt2,1.472,4.744,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-20.smt2 Timeout 300.00820669007953,4639,2022-05-08 12:12:01
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-23.smt2,11.854,6.349,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-23.smt2 Timeout 331.8470304440707,6509,2022-05-08 12:12:49
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-2-19.smt2,0.209,4.677,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-2-19.smt2 Timeout 300.0079800289823,3129,2022-05-08 12:11:58
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-19.smt2,0.163,4.658,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-19.smt2 Timeout 1290.341869614902,2473,2022-05-08 12:28:29
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-22.smt2,5.609,5.356,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-22.smt2 Timeout 300.04810020898003,5086,2022-05-08 12:12:08
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-20.smt2,1.162,4.637,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-20.smt2 Timeout 300.0083428459475,3191,2022-05-08 12:12:00
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-6-22.smt2,9.256,5.889,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-6-22.smt2 Timeout 300.0239899290027,7487,2022-05-08 12:12:15
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-4-21.smt2,4.812,5.039,Error: ../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-4-21.smt2 Timeout 300.0088628770318,5184,2022-05-08 12:12:06
+../smt-lib/QF_LIA/nec-smt/small/checkpass_pwd/prp-8-18.smt2,16.884,7.142,Error: ../smt-lib/QF_LIA/nec-smt/small/checkpass_pwd/prp-8-18.smt2 Timeout 303.1644399809884,10285,2022-05-08 12:12:37
+../smt-lib/QF_LIA/nec-smt/small/checkpass_pwd/prp-7-18.smt2,13.662,6.489,Error: ../smt-lib/QF_LIA/nec-smt/small/checkpass_pwd/prp-7-18.smt2 Timeout 300.0143703960348,9545,2022-05-08 12:12:27
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-19-26.smt2,53.332,9.339,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-19-26.smt2 Timeout 300.0234878771007,18716,2022-05-08 12:13:59
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-26.smt2,26.138,10.424,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-26.smt2 Timeout 300.0180797020439,10256,2022-05-08 12:13:05
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-24.smt2,23.247,8.399,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-24.smt2 Timeout 878.9964742359007,13029,2022-05-08 12:22:27
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-16-25.smt2,41.927,9.307,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-16-25.smt2 Timeout 300.01765388203785,11740,2022-05-08 12:13:25
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-27.smt2,35.797,11.718,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-27.smt2 Timeout 474.24415793898515,11856,2022-05-08 12:16:14
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-27.smt2,38.670,8.629,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-27.smt2 Timeout 300.0235706260428,12669,2022-05-08 12:13:30
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-22-28.smt2,47.882,7.303,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-22-28.smt2 Timeout 300.018661690061,15314,2022-05-08 12:13:56
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-25.smt2,16.434,9.991,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-25.smt2 Timeout 300.62543247197755,9156,2022-05-08 12:12:37
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-28.smt2,48.258,7.711,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-28.smt2 Timeout 300.0164968309691,13294,2022-05-08 12:14:00
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-24.smt2,13.717,9.801,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-24.smt2 Timeout 300.039342661039,7452,2022-05-08 12:12:28
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-25.smt2,23.771,8.725,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-25.smt2 Timeout 300.0416660569608,8804,2022-05-08 12:12:41
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-6-25.smt2,32.076,9.142,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-6-25.smt2 Timeout 300.02523767598905,14016,2022-05-08 12:13:11
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-6-26.smt2,54.972,5.154,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-6-26.smt2 Timeout 300.01574461197015,12786,2022-05-08 12:13:52
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-26.smt2,30.993,9.665,Error: ../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-26.smt2 Timeout 862.4064525270369,10394,2022-05-08 12:22:24
+../smt-lib/QF_LIA/nec-smt/med/checkpass_pwd/prp-8-20.smt2,48.596,6.733,Error: ../smt-lib/QF_LIA/nec-smt/med/checkpass_pwd/prp-8-20.smt2 Timeout 300.0149062440032,12169,2022-05-08 12:13:35
+../smt-lib/QF_LIA/nec-smt/med/checkpass_pwd/prp-7-20.smt2,53.080,5.354,Error: ../smt-lib/QF_LIA/nec-smt/med/checkpass_pwd/prp-7-20.smt2 Timeout 300.02306729299016,15315,2022-05-08 12:13:43
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_4vars_3ite_unsat.smt2,16.808,4.198,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_4vars_3ite_unsat.smt2 currently lia_generic is not supported 5.266971897915937,2387,2022-05-08 12:07:31
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_9vars_0ite_unsat.smt2,0.086,3.268,Proofterm: 12.650,1509,2022-05-08 12:07:11
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_3vars_1ite_unsat.smt2,0.175,1.558,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.308683585957624,465,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_4vars_0ite_unsat.smt2,0.048,1.484,Proofterm: 4.733,461,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_4vars_2ite_unsat.smt2,1.003,3.573,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_4vars_2ite_unsat.smt2 currently lia_generic is not supported 4.903718788991682,1240,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_6vars_2ite_unsat.smt2,6.129,8.379,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_6vars_2ite_unsat.smt2 currently lia_generic is not supported 8.281899497029372,1059,2022-05-08 12:07:27
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_3vars_0ite_unsat.smt2,0.042,1.316,Proofterm: 3.100,291,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_7vars_3ite_unsat.smt2,4.423,7.967,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_7vars_3ite_unsat.smt2 currently lia_generic is not supported 9.748296385048889,1277,2022-05-08 12:07:54
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_6vars_0ite_unsat.smt2,0.102,2.774,Proofterm: 7.127,843,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_8vars_2ite_unsat.smt2,9.705,10.943,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_8vars_2ite_unsat.smt2 currently lia_generic is not supported 10.440691640018485,1531,2022-05-08 12:07:36
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_5vars_0ite_unsat.smt2,0.068,2.233,Proofterm: 6.234,642,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_3vars_0ite_unsat.smt2,0.056,1.122,Proofterm: 2.751,291,2022-05-08 12:06:59
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_5vars_3ite_unsat.smt2,8.677,12.361,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_5vars_3ite_unsat.smt2 currently lia_generic is not supported 5.80766906903591,1857,2022-05-08 12:07:25
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_8vars_0ite_unsat.smt2,0.062,2.471,Proofterm: 9.464,1280,2022-05-08 12:07:07
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_3vars_2ite_unsat.smt2,0.264,1.750,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_3vars_2ite_unsat.smt2 currently lia_generic is not supported 3.232051631086506,654,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_6vars_0ite_unsat.smt2,0.043,2.553,Proofterm: 7.561,843,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_3vars_0ite_unsat.smt2,0.049,1.176,Proofterm: 3.558,291,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_4vars_0ite_unsat.smt2,0.058,1.975,Proofterm: 4.987,461,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_3vars_1ite_unsat.smt2,0.067,2.178,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_3vars_1ite_unsat.smt2 currently lia_generic is not supported 2.9554015519097447,421,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_9vars_0ite_unsat.smt2,0.089,3.234,Proofterm: 12.579,1509,2022-05-08 12:07:11
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_9vars_1ite_unsat.smt2,0.106,3.449,Proofterm: 12.798,1595,2022-05-08 12:07:12
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_5vars_2ite_unsat.smt2,11.889,14.897,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_5vars_2ite_unsat.smt2 currently lia_generic is not supported 6.615688474033959,878,2022-05-08 12:07:34
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_3vars_2ite_unsat.smt2,0.085,2.279,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_3vars_2ite_unsat.smt2 currently lia_generic is not supported 3.5333948810584843,782,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_3vars_1ite_unsat.smt2,0.238,2.119,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.1340122079709545,476,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_4vars_1ite_unsat.smt2,5.885,3.007,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_4vars_1ite_unsat.smt2 currently lia_generic is not supported 4.659572078031488,1442,2022-05-08 12:07:14
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_8vars_0ite_unsat.smt2,0.063,2.816,Proofterm: 9.768,1278,2022-05-08 12:07:08
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_6vars_0ite_unsat.smt2,0.044,2.378,Proofterm: 7.069,843,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_4vars_2ite_unsat.smt2,51.534,14.823,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_4vars_2ite_unsat.smt2 currently lia_generic is not supported 4.927416655002162,1202,2022-05-08 12:08:09
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_3vars_0ite_unsat.smt2,0.033,1.242,Proofterm: 3.262,291,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_7vars_0ite_unsat.smt2,0.049,2.857,Proofterm: 8.760,1059,2022-05-08 12:07:07
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_4vars_1ite_unsat.smt2,0.548,2.640,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_4vars_1ite_unsat.smt2 currently lia_generic is not supported 4.687261097948067,1071,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_7vars_0ite_unsat.smt2,0.058,2.843,Proofterm: 9.299,1061,2022-05-08 12:07:08
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_6vars_0ite_unsat.smt2,0.060,2.089,Proofterm: 6.319,843,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_5vars_0ite_unsat.smt2,0.037,2.243,Proofterm: 6.029,642,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_4vars_0ite_unsat.smt2,0.042,1.909,Proofterm: 4.658,461,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_8vars_0ite_unsat.smt2,0.053,2.925,Proofterm: 10.394,1280,2022-05-08 12:07:09
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_3vars_0ite_unsat.smt2,0.039,1.301,Proofterm: 3.416,291,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_8vars_5ite_unsat.smt2,22.623,29.417,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_8vars_5ite_unsat.smt2 currently lia_generic is not supported 11.408191123045981,1681,2022-05-08 12:08:16
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_7vars_0ite_unsat.smt2,0.058,2.729,Proofterm: 8.994,1061,2022-05-08 12:07:07
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_8vars_0ite_unsat.smt2,0.093,2.774,Proofterm: 10.130,1280,2022-05-08 12:07:09
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_7vars_0ite_unsat.smt2,0.055,2.723,Proofterm: 8.746,1061,2022-05-08 12:07:07
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_8vars_1ite_unsat.smt2,0.081,3.287,Proofterm: 11.322,1349,2022-05-08 12:07:10
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_4vars_3ite_unsat.smt2,1.685,4.841,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_4vars_3ite_unsat.smt2 currently lia_generic is not supported 5.0821000669384375,1181,2022-05-08 12:07:08
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_6vars_1ite_unsat.smt2,0.052,2.594,Proofterm: 6.535,899,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_3vars_0ite_unsat.smt2,0.054,1.274,Proofterm: 3.226,291,2022-05-08 12:07:00
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_3vars_2ite_unsat.smt2,0.062,1.889,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_3vars_2ite_unsat.smt2 currently lia_generic is not supported 2.913997631985694,780,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_3vars_0ite_unsat.smt2,0.073,1.828,Proofterm: 3.744,291,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_6vars_0ite_unsat.smt2,0.059,2.100,Proofterm: 5.963,843,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_6vars_0ite_unsat.smt2,0.059,2.148,Proofterm: 6.504,833,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_9vars_0ite_unsat.smt2,0.060,2.777,Proofterm: 9.954,1509,2022-05-08 12:07:09
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_7vars_0ite_unsat.smt2,0.076,2.678,Proofterm: 8.767,1047,2022-05-08 12:07:07
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_5vars_1ite_unsat.smt2,2.755,5.740,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_5vars_1ite_unsat.smt2 currently lia_generic is not supported 4.7251720720669255,822,2022-05-08 12:07:10
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_5vars_0ite_unsat.smt2,0.090,2.201,Proofterm: 5.749,642,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_9vars_0ite_unsat.smt2,0.087,3.070,Proofterm: 13.394,1509,2022-05-08 12:07:13
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_8vars_1ite_unsat.smt2,0.078,2.620,Proofterm: 8.293,1338,2022-05-08 12:07:07
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_5vars_0ite_unsat.smt2,0.046,1.957,Proofterm: 5.180,642,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_9vars_0ite_unsat.smt2,0.115,3.071,Proofterm: 11.799,1506,2022-05-08 12:07:11
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_9vars_5ite_unsat.smt2,76.613,54.427,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_9vars_5ite_unsat.smt2 currently lia_generic is not supported 5.884809185983613,4997,2022-05-08 12:09:34
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_4vars_2ite_unsat.smt2,0.459,2.887,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_4vars_2ite_unsat.smt2 currently lia_generic is not supported 4.798364347894676,1148,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_5vars_4ite_unsat.smt2,7.866,12.380,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_5vars_4ite_unsat.smt2 currently lia_generic is not supported 7.572738611954264,4217,2022-05-08 12:07:28
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_9vars_0ite_unsat.smt2,0.118,3.520,Proofterm: 11.369,1509,2022-05-08 12:07:11
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_3vars_2ite_unsat.smt2,0.057,2.093,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_3vars_2ite_unsat.smt2 currently lia_generic is not supported 3.379092628019862,780,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_4vars_1ite_unsat.smt2,11.165,5.810,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_4vars_1ite_unsat.smt2 currently lia_generic is not supported 4.756810279097408,982,2022-05-08 12:07:31
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_4vars_0ite_unsat.smt2,0.062,1.715,Proofterm: 3.966,461,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_9vars_4ite_unsat.smt2,50.053,39.277,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_9vars_4ite_unsat.smt2 currently lia_generic is not supported 6.576074508950114,1961,2022-05-08 12:08:58
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_4vars_2ite_unsat.smt2,UNKNOWN PROOF (veriT),,,,2022-05-08 12:07:12
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_4vars_3ite_unsat.smt2,UNKNOWN PROOF (veriT),,,,2022-05-08 12:07:14
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_8vars_3ite_unsat.smt2,18.267,19.800,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_8vars_3ite_unsat.smt2 currently lia_generic is not supported 12.648315318045206,1487,2022-05-08 12:07:58
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_9vars_2ite_unsat.smt2,30.431,31.163,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_9vars_2ite_unsat.smt2 currently lia_generic is not supported 10.599128594971262,1805,2022-05-08 12:08:33
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_3vars_1ite_unsat.smt2,0.093,1.585,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.009660698939115,421,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_3vars_2ite_unsat.smt2,0.155,2.252,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_3vars_2ite_unsat.smt2 currently lia_generic is not supported 4.07359954493586,774,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_8vars_0ite_unsat.smt2,0.075,2.051,Proofterm: 6.742,1260,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_3vars_2ite_unsat.smt2,0.070,2.129,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_3vars_2ite_unsat.smt2 currently lia_generic is not supported 3.515849527087994,780,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_4vars_3ite_unsat.smt2,0.490,2.554,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_4vars_3ite_unsat.smt2 currently lia_generic is not supported 5.025967070017941,1187,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_3vars_1ite_unsat.smt2,0.317,1.819,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.3079203539527953,486,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_7vars_1ite_unsat.smt2,0.064,1.913,Proofterm: 7.215,1130,2022-05-08 12:07:06
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_5vars_0ite_unsat.smt2,0.070,2.245,Proofterm: 5.398,628,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_4vars_0ite_unsat.smt2,0.059,1.285,Proofterm: 3.281,461,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_4vars_1ite_unsat.smt2,UNKNOWN PROOF (veriT),,,,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_4vars_2ite_unsat.smt2,UNKNOWN PROOF (veriT),,,,2022-05-08 12:07:12
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_4vars_3ite_unsat.smt2,UNKNOWN PROOF (veriT),,,,2022-05-08 12:07:12
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_5vars_0ite_unsat.smt2,0.049,1.874,Proofterm: 6.229,642,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_4vars_0ite_unsat.smt2,0.070,1.599,Proofterm: 4.008,461,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_3vars_2ite_unsat.smt2,0.253,1.369,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_3vars_2ite_unsat.smt2 currently lia_generic is not supported 2.8965631839819252,654,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_8vars_0ite_unsat.smt2,0.081,2.438,Proofterm: 9.074,1280,2022-05-08 12:07:09
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp10_4vars_0ite_unsat.smt2,0.060,1.550,Proofterm: 4.449,461,2022-05-08 12:07:03
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_6vars_0ite_unsat.smt2,0.070,2.199,Proofterm: 7.622,843,2022-05-08 12:07:07
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_5vars_0ite_unsat.smt2,0.067,1.764,Proofterm: 5.563,642,2022-05-08 12:07:04
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_4vars_1ite_unsat.smt2,5.572,2.548,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_4vars_1ite_unsat.smt2 currently lia_generic is not supported 4.426903730025515,1433,2022-05-08 12:07:14
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_7vars_2ite_unsat.smt2,9.460,10.678,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_7vars_2ite_unsat.smt2 currently lia_generic is not supported 8.439998332993127,1310,2022-05-08 12:07:34
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_9vars_0ite_unsat.smt2,0.078,3.030,Proofterm: 10.353,1495,2022-05-08 12:07:11
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp12_7vars_0ite_unsat.smt2,0.060,2.219,Proofterm: 7.392,1061,2022-05-08 12:07:07
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_5vars_1ite_unsat.smt2,38.102,37.644,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_5vars_1ite_unsat.smt2 currently lia_generic is not supported 2.9722643850836903,838,2022-05-08 12:08:45
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_4vars_1ite_unsat.smt2,0.349,2.695,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_4vars_1ite_unsat.smt2 currently lia_generic is not supported 4.923916294006631,1814,2022-05-08 12:07:05
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_3vars_1ite_unsat.smt2,0.050,1.256,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp6_3vars_1ite_unsat.smt2 currently lia_generic is not supported 2.593256236985326,421,2022-05-08 12:07:01
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp16_8vars_0ite_unsat.smt2,0.109,2.719,Proofterm: 10.518,1280,2022-05-08 12:07:11
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp4_9vars_1ite_unsat.smt2,0.090,2.970,Proofterm: 10.409,1592,2022-05-08 12:07:11
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_7vars_0ite_unsat.smt2,0.059,2.390,Proofterm: 7.788,1061,2022-05-08 12:07:07
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_4vars_3ite_unsat.smt2,5.803,9.000,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_4vars_3ite_unsat.smt2 currently lia_generic is not supported 5.6456809270894155,1181,2022-05-08 12:07:22
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_4vars_2ite_unsat.smt2,2.398,5.283,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_4vars_2ite_unsat.smt2 currently lia_generic is not supported 4.848630145890638,1240,2022-05-08 12:07:10
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_3vars_1ite_unsat.smt2,0.238,1.458,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp14_3vars_1ite_unsat.smt2 currently lia_generic is not supported 3.288655135082081,476,2022-05-08 12:07:02
+../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_4vars_1ite_unsat.smt2,1.532,4.278,Error: ../smt-lib/QF_LIA/rings_preprocessed/ring_2exp8_4vars_1ite_unsat.smt2 currently lia_generic is not supported 4.903896620031446,1071,2022-05-08 12:07:09
+../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-10/problem__002.smt2,0.043,1.405,Proofterm: 5.959,341,2022-05-08 12:07:05
+../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-10/problem__003.smt2,0.137,1.439,Error: ../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-10/problem__003.smt2 currently lia_generic is not supported 4.813524719909765,358,2022-05-08 12:07:04
+../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-100/problem__006.smt2,0.048,1.240,Proofterm: 2.588,269,2022-05-08 12:07:01
+../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-90/problem__005.smt2,0.051,0.984,Proofterm: 1.757,254,2022-05-08 12:07:00
+../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-20/problem__004.smt2,0.076,1.076,Proofterm: 4.610,313,2022-05-08 12:07:04
+../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-30/problem__006.smt2,0.049,1.141,Proofterm: 3.272,281,2022-05-08 12:07:02
+../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-50/problem__002.smt2,0.055,1.090,Proofterm: 2.454,251,2022-05-08 12:07:02
+../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-50/problem__006.smt2,0.044,1.354,Proofterm: 3.458,270,2022-05-08 12:07:03
+../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-40/problem__002.smt2,0.067,1.069,"Error: ../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-40/problem__002.smt2 la_generic: unexpected result ProofTerm(-17 >= 10 * x9 + -1 * x8 + -22 * x2 + -10 * x7 + -31 * x1 + 21 * x0 + -27 * x2 + x6 + -12 * x5 + -17 * x5, -32 >= 30 * x5 + -25 * x8 + 7 * x5 + -15 * x4 + 26 * x9 + -35 * x5 + 13 * x7 + x6 + -33 * x8 + 11 * x1, -25 >= 7 * x7 + 27 * x9 + 13 * x6 + -29 * x1 + -20 * x2 + 35 * x1 + -15 * x3 + -1 * x8 + 31 * x1 + 23 * x1, -31 >= 4 * x8 + -35 * x0 + 33 * x8 + -34 * x4 + 36 * x2 + -20 * x4 + 35 * x0 + -14 * x7 + -35 * x8 + 8 * x0, 12 >= 14 * x0 + 24 * x3 + 29 * x6 + 17 * x8 + 10 * x9 + -25 * x4 + 31 * x4 + x4 + 26 * x6 + -36 * x0, 20 >= 34 * x4 + -9 * x1 + 5 * x4 + -35 * x1 + -14 * x0 + -28 * x0 + 24 * x1 + -19 * x3 + -27 * x6 + 17 * x4, 15 >= 23 * x1 + 34 * x8 + -37 * x4 + -15 * x9 + 29 * x9 + 5 * x5 + -3 * x6 + -23 * x5 + 20 * x0, -18 >= 37 * x3 + 7 * x5 + -3 * x9 + 23 * x6 + -4 * x6 + -39 * x6 + -5 * x2 + -13 * x7 + 9 * x7 + 31 * x4, -2 >= 33 * x5 + 19 * x0 + 20 * x7 + -36 * x9 + -34 * x1 + -30 * x9 + 25 * x2 + 14 * x6 + -22 * x7 + 6 * x7, -24 >= 29 * x5 + 7 * x2 + -16 * x4 + -27 * x1 + 29 * x4 + -3 * x6 + -11 * x1 + -20 * x4 + 27 * x1, 15 >= 28 * x2 + -25 * x5 + 38 * x0 + -3 * x7 + 35 * x1 + 35 * x8 + -14 * x8 + -20 * x6 + -18 * x2 + -3 * x6 |- -618810249680300638 + (2 * x8 + 36 * x2 + -14 * x7 + 8 * x0 + -54 * x4) >= 0) 3.981554807978682",287,2022-05-08 12:07:03
+../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-60/problem__004.smt2,0.057,1.968,Error: ../smt-lib/QF_LIA/CAV_2009_benchmarks/coef-size/smt/size-60/problem__004.smt2 currently lia_generic is not supported 1.9533983319997787,250,2022-05-08 12:07:02
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem_2__031.smt2,0.102,2.308,Proofterm: 11.117,1393,2022-05-08 12:07:12
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__016.smt2,0.066,1.664,Proofterm: 8.574,1003,2022-05-08 12:07:08
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__034.smt2,0.103,2.184,Proofterm: 11.005,1393,2022-05-08 12:07:11
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem_2__034.smt2,0.096,2.079,Proofterm: 10.145,1393,2022-05-08 12:07:11
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__031.smt2,0.083,2.074,Proofterm: 10.349,1393,2022-05-08 12:07:11
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem_2__023.smt2,0.189,2.039,Error: ../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem_2__023.smt2 currently lia_generic is not supported 9.707566251978278,1145,2022-05-08 12:07:11
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__033.smt2,0.100,1.919,Proofterm: 10.081,1393,2022-05-08 12:07:11
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__027.smt2,0.119,2.163,Proofterm: 9.576,1263,2022-05-08 12:07:11
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem_2__030.smt2,0.092,2.000,Proofterm: 9.535,1262,2022-05-08 12:07:10
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem_2__033.smt2,0.146,1.723,Proofterm: 10.048,1393,2022-05-08 12:07:11
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem_2__032.smt2,0.065,1.876,Proofterm: 9.588,1392,2022-05-08 12:07:10
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem_2__026.smt2,0.115,2.072,Proofterm: 9.259,1263,2022-05-08 12:07:10
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__029.smt2,0.116,2.180,Proofterm: 9.799,1263,2022-05-08 12:07:11
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__023.smt2,0.070,1.654,Proofterm: 8.376,1133,2022-05-08 12:07:09
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__035.smt2,0.119,2.252,Proofterm: 11.099,1393,2022-05-08 12:07:13
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem_2__027.smt2,0.075,1.617,Proofterm: 8.953,1263,2022-05-08 12:07:10
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__018.smt2,0.064,1.522,Proofterm: 7.322,1003,2022-05-08 12:07:08
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__032.smt2,0.064,1.699,Proofterm: 8.599,1393,2022-05-08 12:07:10
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__014.smt2,3.892,1.694,Error: ../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__014.smt2 currently lia_generic is not supported 9.0114182169782,882,2022-05-08 12:07:18
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/20-vars/problem__025.smt2,0.077,1.619,Proofterm: 9.059,1133,2022-05-08 12:07:10
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/30-vars/problem__032.smt2,0.151,2.373,Proofterm: 15.797,1933,2022-05-08 12:07:18
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem_2__024.smt2,0.044,1.489,Proofterm: 7.549,808,2022-05-08 12:07:09
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem__016.smt2,0.052,1.445,Proofterm: 6.556,703,2022-05-08 12:07:08
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem_2__025.smt2,0.091,1.523,Error: ../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem_2__025.smt2 currently lia_generic is not supported 6.609211619012058,814,2022-05-08 12:07:08
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem__024.smt2,0.057,1.898,Proofterm: 7.078,808,2022-05-08 12:07:09
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem_2__020.smt2,0.074,1.492,Proofterm: 6.287,703,2022-05-08 12:07:07
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem_2__019.smt2,0.091,1.520,Proofterm: 5.980,703,2022-05-08 12:07:07
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem__023.smt2,0.071,1.498,Proofterm: 6.767,808,2022-05-08 12:07:08
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem_2__021.smt2,0.071,1.518,Proofterm: 7.712,808,2022-05-08 12:07:09
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem__022.smt2,0.079,1.170,Proofterm: 6.132,808,2022-05-08 12:07:07
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem_2__011.smt2,0.051,1.975,Proofterm: 6.483,598,2022-05-08 12:07:08
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem_2__022.smt2,0.057,1.601,Proofterm: 7.259,808,2022-05-08 12:07:09
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/15-vars/problem__025.smt2,0.033,1.047,Proofterm: 6.028,807,2022-05-08 12:07:07
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__031.smt2,0.033,0.878,Proofterm: 3.399,612,2022-05-08 12:07:04
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__024.smt2,0.051,0.744,Proofterm: 2.817,448,2022-05-08 12:07:04
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__030.smt2,0.049,1.050,Proofterm: 3.925,533,2022-05-08 12:07:05
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__026.smt2,0.076,0.982,Proofterm: 4.008,532,2022-05-08 12:07:05
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__020.smt2,0.078,1.537,Proofterm: 4.027,369,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__011.smt2,0.055,1.017,Proofterm: 2.506,279,2022-05-08 12:07:04
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__016.smt2,0.073,1.026,Proofterm: 3.252,371,2022-05-08 12:07:04
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__034.smt2,0.049,1.587,Proofterm: 5.820,607,2022-05-08 12:07:08
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__025.smt2,0.047,0.924,Proofterm: 5.129,453,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__034.smt2,0.070,1.051,Proofterm: 5.621,612,2022-05-08 12:07:07
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__031.smt2,0.037,0.897,Proofterm: 4.997,611,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__033.smt2,0.055,1.536,Proofterm: 4.726,604,2022-05-08 12:07:07
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__027.smt2,0.072,0.995,Proofterm: 3.407,528,2022-05-08 12:07:05
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__024.smt2,0.060,0.961,Proofterm: 3.647,453,2022-05-08 12:07:05
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__030.smt2,0.043,0.872,Proofterm: 4.126,531,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__012.smt2,0.056,0.538,Proofterm: 2.063,286,2022-05-08 12:07:03
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__004.smt2,0.056,0.829,Proofterm: 1.254,106,2022-05-08 12:07:03
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__033.smt2,0.041,0.738,Proofterm: 3.653,613,2022-05-08 12:07:05
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__029.smt2,0.052,0.934,Proofterm: 4.424,527,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__028.smt2,0.046,0.982,Proofterm: 4.012,533,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__032.smt2,0.044,1.000,Proofterm: 5.112,611,2022-05-08 12:07:07
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__026.smt2,0.067,1.136,Proofterm: 3.667,529,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__019.smt2,0.038,0.649,Proofterm: 2.574,365,2022-05-08 12:07:04
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__029.smt2,0.064,1.124,Proofterm: 3.344,528,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__035.smt2,0.057,0.909,Proofterm: 4.041,611,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__021.smt2,0.039,1.155,Proofterm: 3.395,448,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__035.smt2,0.054,0.819,Proofterm: 4.529,613,2022-05-08 12:07:07
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__022.smt2,0.041,0.841,Proofterm: 3.986,450,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__021.smt2,0.063,0.954,Proofterm: 3.642,451,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__027.smt2,0.056,0.801,Proofterm: 3.125,531,2022-05-08 12:07:05
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__032.smt2,0.060,0.998,Proofterm: 4.487,610,2022-05-08 12:07:07
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__017.smt2,0.049,1.115,Proofterm: 3.549,372,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__028.smt2,0.034,0.853,Proofterm: 3.487,530,2022-05-08 12:07:06
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__016.smt2,0.103,0.717,Proofterm: 2.919,371,2022-05-08 12:07:05
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem__025.smt2,0.034,0.623,Proofterm: 2.981,453,2022-05-08 12:07:05
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/25-vars/problem_2__031.smt2,0.100,1.932,Proofterm: 12.838,1663,2022-05-08 12:07:17
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/25-vars/problem__034.smt2,0.118,1.764,Proofterm: 12.944,1663,2022-05-08 12:07:17
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/25-vars/problem__031.smt2,0.123,2.132,Error: ../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/25-vars/problem__031.smt2 currently lia_generic is not supported 11.98861199489329,1667,2022-05-08 12:07:16
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/25-vars/problem_2__033.smt2,0.087,1.626,Proofterm: 9.662,1663,2022-05-08 12:07:14
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/25-vars/problem_2__029.smt2,0.072,1.436,Proofterm: 9.835,1508,2022-05-08 12:07:13
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/25-vars/problem__022.smt2,0.096,1.403,Error: ../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/25-vars/problem__022.smt2 currently lia_generic is not supported 7.620317874941975,1359,2022-05-08 12:07:11
+../smt-lib/QF_LIA/CAV_2009_benchmarks/smt/25-vars/problem__032.smt2,0.112,2.140,Proofterm: 11.874,1663,2022-05-08 12:07:16
+../smt-lib/QF_LIA/pb2010/normalized-j9028_2-unsat.smt2,3.879,0.481,Proofterm: 0.878,107,2022-05-08 12:07:09
+../smt-lib/QF_LIA/pb2010/normalized-j602_7-unsat.smt2,3.239,0.612,Proofterm: 2.448,364,2022-05-08 12:07:10
+../smt-lib/QF_LIA/pb2010/normalized-j12015_3-unsat.smt2,6.688,0.462,Proofterm: 1.030,143,2022-05-08 12:07:13
+../smt-lib/QF_LIA/pb2010/normalized-j9048_1-unsat.smt2,4.650,0.437,Proofterm: 0.674,125,2022-05-08 12:07:10
+../smt-lib/QF_LIA/pb2010/normalized-j9012_2-unsat.smt2,3.236,0.447,Proofterm: 0.825,116,2022-05-08 12:07:08
+../smt-lib/QF_LIA/pb2010/normalized-j9015_10-unsat.smt2,3.707,0.578,Proofterm: 0.719,125,2022-05-08 12:07:09
+../smt-lib/QF_LIA/pb2010/normalized-j6010_2-unsat.smt2,1.462,0.499,Proofterm: 0.500,71,2022-05-08 12:07:06
+../smt-lib/QF_LIA/pb2010/normalized-j6030_9-unsat.smt2,3.229,0.515,Proofterm: 0.829,134,2022-05-08 12:07:08
+../smt-lib/QF_LIA/pb2010/normalized-j308_1-unsat.smt2,0.439,0.397,Proofterm: 0.248,53,2022-05-08 12:07:04
+../smt-lib/QF_LIA/pb2010/normalized-j1205_1-unsat.smt2,7.804,0.467,Proofterm: 0.792,143,2022-05-08 12:07:14
+../smt-lib/QF_LIA/pb2010/normalized-j9014_1-unsat.smt2,4.591,0.428,Proofterm: 0.516,107,2022-05-08 12:07:10
+../smt-lib/QF_LIA/pb2010/normalized-j9039_3-unsat.smt2,5.325,0.358,Proofterm: 0.659,107,2022-05-08 12:07:11
+../smt-lib/QF_LIA/pb2010/normalized-j606_1-unsat.smt2,1.447,0.468,Proofterm: 0.262,62,2022-05-08 12:07:06
+../smt-lib/QF_LIA/pb2010/normalized-j907_8-unsat.smt2,2.411,0.399,Proofterm: 0.785,98,2022-05-08 12:07:08
+../smt-lib/QF_LIA/pb2010/normalized-j903_10-unsat.smt2,2.796,0.486,Proofterm: 0.671,107,2022-05-08 12:07:08
+../smt-lib/QF_LIA/pb2010/normalized-j9010_6-unsat.smt2,4.918,0.476,Proofterm: 1.259,152,2022-05-08 12:07:11
+../smt-lib/QF_LIA/pb2010/normalized-j6027_4-unsat.smt2,1.465,0.403,Proofterm: 0.434,80,2022-05-08 12:07:06
+../smt-lib/QF_LIA/pb2010/normalized-j12023_3-unsat.smt2,9.372,0.542,Proofterm: 1.143,134,2022-05-08 12:07:16
+../smt-lib/QF_LIA/pb2010/normalized-j6033_2-unsat.smt2,3.536,0.488,Proofterm: 1.250,125,2022-05-08 12:07:10
+../smt-lib/QF_LIA/pb2010/normalized-j9035_1-unsat.smt2,18.312,1.022,Proofterm: 4.614,474,2022-05-08 12:07:31
+../smt-lib/QF_LIA/pb2010/normalized-j603_2-unsat.smt2,1.668,0.362,Proofterm: 0.327,80,2022-05-08 12:07:07
+../smt-lib/QF_LIA/pb2010/normalized-j12013_1-unsat.smt2,11.851,0.419,Proofterm: 0.781,161,2022-05-08 12:07:19
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_003.smt2,1.558,1.316,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_003.smt2 currently lia_generic is not supported 2.238671476021409,353,2022-05-08 12:07:10
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_017.smt2,2.541,1.517,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_017.smt2 currently lia_generic is not supported 2.46160450798925,416,2022-05-08 12:07:12
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_004.smt2,6.774,1.435,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_004.smt2 currently lia_generic is not supported 1.7675857790745795,350,2022-05-08 12:07:20
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_012.smt2,0.067,0.727,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_012.smt2 currently lia_generic is not supported 1.2783095790073276,337,2022-05-08 12:07:06
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_001.smt2,3.822,1.473,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_001.smt2 currently lia_generic is not supported 2.676209997967817,422,2022-05-08 12:07:15
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_006.smt2,0.337,0.858,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_006.smt2 currently lia_generic is not supported 1.6713478420861065,346,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_009.smt2,0.241,1.019,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_009.smt2 currently lia_generic is not supported 2.3979025699663907,341,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_018.smt2,2.512,1.608,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_018.smt2 currently lia_generic is not supported 1.8492467830656096,412,2022-05-08 12:07:12
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_005.smt2,1.975,0.799,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_005.smt2 currently lia_generic is not supported 1.824541290057823,347,2022-05-08 12:07:10
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_012.smt2,3.029,1.279,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_012.smt2 currently lia_generic is not supported 1.636220144922845,393,2022-05-08 12:07:13
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_004.smt2,0.854,0.858,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_004.smt2 currently lia_generic is not supported 1.5986276649637148,341,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_016.smt2,29.743,2.969,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_016.smt2 currently lia_generic is not supported 2.1632052719360217,416,2022-05-08 12:08:10
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_013.smt2,0.375,0.560,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_013.smt2 currently lia_generic is not supported 0.872363748960197,345,2022-05-08 12:07:06
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_003.smt2,2.958,1.343,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_003.smt2 currently lia_generic is not supported 2.1322915649507195,345,2022-05-08 12:07:13
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_015.smt2,4.061,1.431,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_015.smt2 currently lia_generic is not supported 1.6621781110297889,350,2022-05-08 12:07:15
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_013.smt2,0.420,0.888,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_013.smt2 currently lia_generic is not supported 1.5392580380430445,343,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_019.smt2,2.673,1.161,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_019.smt2 currently lia_generic is not supported 1.8320273460121825,419,2022-05-08 12:07:12
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_015.smt2,2.549,0.875,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_015.smt2 currently lia_generic is not supported 1.7136671680491418,405,2022-05-08 12:07:12
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_016.smt2,0.947,1.048,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_016.smt2 currently lia_generic is not supported 1.2932111679110676,347,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_002.smt2,0.551,0.881,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_002.smt2 currently lia_generic is not supported 2.0811311609577388,347,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_020.smt2,17.873,2.380,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_020.smt2 currently lia_generic is not supported 1.596213588025421,405,2022-05-08 12:07:44
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_011.smt2,0.407,1.498,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_011.smt2 currently lia_generic is not supported 1.4815061850240454,345,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_014.smt2,0.211,0.751,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_014.smt2 currently lia_generic is not supported 1.9010719959624112,331,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_006.smt2,0.060,1.058,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_006.smt2 la_generic: unexpected result 1.9773227699333802,397,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_015.smt2,0.043,0.660,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_015.smt2 la_generic: unexpected result 2.659305747016333,329,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_014.smt2,8.508,1.578,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_014.smt2 currently lia_generic is not supported 1.8501754939788952,403,2022-05-08 12:07:25
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_004.smt2,5.379,1.263,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_004.smt2 currently lia_generic is not supported 2.906024608993903,413,2022-05-08 12:07:20
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_010.smt2,47.995,3.781,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_010.smt2 currently lia_generic is not supported 1.0125152610708028,356,2022-05-08 12:08:58
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_009.smt2,0.844,0.774,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_009.smt2 currently lia_generic is not supported 1.579659219016321,355,2022-05-08 12:07:09
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_007.smt2,0.186,0.811,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_007.smt2 currently lia_generic is not supported 2.011933765024878,320,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_002.smt2,12.052,1.735,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_002.smt2 currently lia_generic is not supported 2.019041797029786,415,2022-05-08 12:07:34
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_010.smt2,0.721,1.076,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_010.smt2 currently lia_generic is not supported 2.1806377780158073,413,2022-05-08 12:07:09
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_008.smt2,0.071,0.842,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_008.smt2 la_generic: unexpected result 2.5113064859760925,392,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_007.smt2,4.535,1.194,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_007.smt2 currently lia_generic is not supported 2.2646345410030335,422,2022-05-08 12:07:17
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_005.smt2,4.152,1.034,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_005.smt2 currently lia_generic is not supported 2.952451106044464,411,2022-05-08 12:07:17
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_003.smt2,1.864,1.187,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_003.smt2 currently lia_generic is not supported 1.4581538829952478,405,2022-05-08 12:07:11
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_016.smt2,0.268,0.708,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_016.smt2 currently lia_generic is not supported 1.2184144019847736,333,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_005.smt2,3.626,0.940,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_005.smt2 currently lia_generic is not supported 2.077653190935962,331,2022-05-08 12:07:15
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_007.smt2,3.428,1.386,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_007.smt2 currently lia_generic is not supported 1.9797209179960191,347,2022-05-08 12:07:15
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_012.smt2,52.360,4.312,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_012.smt2 currently lia_generic is not supported 0.6618078330066055,355,2022-05-08 12:09:04
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_008.smt2,0.878,1.207,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_008.smt2 currently lia_generic is not supported 1.3111343960044906,349,2022-05-08 12:07:09
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_001.smt2,17.195,2.307,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_001.smt2 currently lia_generic is not supported 1.7437923159450293,340,2022-05-08 12:07:42
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_011.smt2,0.932,1.151,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_03_011.smt2 currently lia_generic is not supported 1.5067194339353591,402,2022-05-08 12:07:09
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_008.smt2,0.057,0.765,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_01_008.smt2 la_generic: unexpected result 1.6781921630026773,311,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_002.smt2,0.826,1.196,Error: ../smt-lib/QF_LIA/cut_lemmas/20-vars/cut_lemma_02_002.smt2 currently lia_generic is not supported 1.4007194810546935,355,2022-05-08 12:07:09
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_010.smt2,0.287,1.016,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_010.smt2 currently lia_generic is not supported 1.1021616599755362,281,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_02_004.smt2,0.050,0.546,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_02_004.smt2 la_generic: unexpected result 1.6780367229366675,237,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_012.smt2,0.065,0.461,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_012.smt2 la_generic: unexpected result 1.2832306259078905,282,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_02_001.smt2,0.042,0.918,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_02_001.smt2 la_generic: unexpected result 1.221532671013847,240,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_001.smt2,0.050,0.468,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_001.smt2 la_generic: unexpected result 0.6236696580890566,197,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_009.smt2,0.051,0.613,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_009.smt2 currently lia_generic is not supported 1.1920089629711583,282,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_02_005.smt2,0.053,0.390,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_02_005.smt2 la_generic: unexpected result 1.0945883020758629,209,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_012.smt2,0.159,0.573,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_012.smt2 currently lia_generic is not supported 0.9253749210620299,216,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_004.smt2,0.133,0.605,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_004.smt2 currently lia_generic is not supported 0.9641500239958987,277,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_013.smt2,0.028,0.564,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_013.smt2 la_generic: unexpected result 0.3303187369601801,104,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_006.smt2,0.131,0.546,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_006.smt2 currently lia_generic is not supported 0.8041652649408206,284,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_003.smt2,0.090,0.723,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_003.smt2 currently lia_generic is not supported 1.1747547710547224,248,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_013.smt2,0.072,0.676,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_013.smt2 currently lia_generic is not supported 1.2354485749965534,289,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_002.smt2,0.078,0.892,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_002.smt2 currently lia_generic is not supported 2.1026652560103685,294,2022-05-08 12:07:09
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_011.smt2,0.072,0.693,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_011.smt2 currently lia_generic is not supported 0.9568470289232209,269,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_014.smt2,0.253,0.515,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_014.smt2 currently lia_generic is not supported 0.9416730119846761,286,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_006.smt2,0.143,1.149,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_006.smt2 currently lia_generic is not supported 0.9720572850201279,211,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_014.smt2,0.064,0.611,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_014.smt2 currently lia_generic is not supported 0.7795929710846394,203,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_004.smt2,0.053,0.507,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_004.smt2 la_generic: unexpected result 1.0850621160352603,196,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_02_009.smt2,0.049,0.494,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_02_009.smt2 currently lia_generic is not supported 1.3805517109576613,245,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_007.smt2,0.069,0.544,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_007.smt2 currently lia_generic is not supported 0.8263132940046489,280,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_010.smt2,0.159,0.661,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_010.smt2 currently lia_generic is not supported 0.6613808179972693,203,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_008.smt2,0.063,0.729,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_008.smt2 la_generic: unexpected result 0.6592187610222027,176,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_007.smt2,0.058,0.436,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_007.smt2 currently lia_generic is not supported 1.3422212870791554,209,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_005.smt2,0.089,0.526,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_005.smt2 currently lia_generic is not supported 0.6156604679999873,213,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_003.smt2,0.073,0.601,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_003.smt2 currently lia_generic is not supported 0.99257167999167,222,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_005.smt2,0.669,0.868,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_005.smt2 currently lia_generic is not supported 0.9934560470283031,275,2022-05-08 12:07:09
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_001.smt2,0.044,0.596,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_001.smt2 currently lia_generic is not supported 0.7404470379697159,274,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_011.smt2,0.071,0.527,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_03_011.smt2 currently lia_generic is not supported 0.5730727929621935,197,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_008.smt2,0.063,0.733,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_01_008.smt2 currently lia_generic is not supported 0.9473862850572914,276,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_02_002.smt2,0.027,0.554,Error: ../smt-lib/QF_LIA/cut_lemmas/15-vars/cut_lemma_02_002.smt2 la_generic: unexpected result 1.4083717960165814,237,2022-05-08 12:07:09
+../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_02_003.smt2,0.037,0.384,Error: ../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_02_003.smt2 la_generic: unexpected result 0.18467648595105857,92,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_02_001.smt2,0.027,0.357,Error: ../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_02_001.smt2 la_generic: unexpected result 0.4021069479640573,96,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_02_005.smt2,0.054,0.438,Error: ../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_02_005.smt2 la_generic: unexpected result 0.4049414679175243,94,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_02_010.smt2,0.034,0.354,Error: ../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_02_010.smt2 la_generic: unexpected result 0.25493357505183667,90,2022-05-08 12:07:07
+../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_02_009.smt2,0.042,0.402,Error: ../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_02_009.smt2 la_generic: unexpected result 0.3174977730959654,103,2022-05-08 12:07:08
+../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_01_001.smt2,0.077,0.430,Error: ../smt-lib/QF_LIA/cut_lemmas/10-vars/cut_lemma_01_001.smt2 la_generic: unexpected result 0.14522368100006133,33,2022-05-08 12:07:07
+../smt-lib/QF_LIA/mathsat/FISCHER9-3-fair.smt2,1.535,33.658,Error: ../smt-lib/QF_LIA/mathsat/FISCHER9-3-fair.smt2 Timeout 300.0352858060505,13139,2022-05-08 12:12:42
+../smt-lib/QF_LIA/mathsat/FISCHER11-6-fair.smt2,7.321,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:14
+../smt-lib/QF_LIA/mathsat/FISCHER9-7-fair.smt2,6.704,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:13
+../smt-lib/QF_LIA/mathsat/FISCHER11-10-fair.smt2,21.295,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:28
+../smt-lib/QF_LIA/mathsat/FISCHER8-9-fair.smt2,9.024,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:16
+../smt-lib/QF_LIA/mathsat/FISCHER8-2-fair.smt2,0.625,11.291,Proofterm: 167.165,7936,2022-05-08 12:10:06
+../smt-lib/QF_LIA/mathsat/FISCHER8-4-fair.smt2,1.966,31.969,Error: ../smt-lib/QF_LIA/mathsat/FISCHER8-4-fair.smt2 Timeout 300.07344104896765,15784,2022-05-08 12:12:41
+../smt-lib/QF_LIA/mathsat/FISCHER5-6-fair.smt2,1.620,35.238,Error: ../smt-lib/QF_LIA/mathsat/FISCHER5-6-fair.smt2 Timeout 300.0585883730091,14838,2022-05-08 12:12:44
+../smt-lib/QF_LIA/mathsat/FISCHER7-4-fair.smt2,1.432,34.474,Error: ../smt-lib/QF_LIA/mathsat/FISCHER7-4-fair.smt2 Timeout 300.0218858809676,13755,2022-05-08 12:12:43
+../smt-lib/QF_LIA/mathsat/FISCHER4-6-fair.smt2,1.089,24.467,Proofterm: 251.974,12153,2022-05-08 12:11:45
+../smt-lib/QF_LIA/mathsat/FISCHER1-3-fair.smt2,0.080,1.497,Proofterm: 7.370,1464,2022-05-08 12:07:16
+../smt-lib/QF_LIA/mathsat/FISCHER8-3-fair.smt2,1.106,24.921,Proofterm: 263.815,11711,2022-05-08 12:11:57
+../smt-lib/QF_LIA/mathsat/FISCHER7-6-fair.smt2,3.323,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:10
+../smt-lib/QF_LIA/mathsat/FISCHER6-3-fair.smt2,0.694,10.634,Proofterm: 157.767,8671,2022-05-08 12:09:57
+../smt-lib/QF_LIA/mathsat/FISCHER6-10-fair.smt2,6.237,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:13
+../smt-lib/QF_LIA/mathsat/FISCHER5-8-fair.smt2,2.727,50.104,Error: ../smt-lib/QF_LIA/mathsat/FISCHER5-8-fair.smt2 Timeout 300.03588224295527,20650,2022-05-08 12:13:01
+../smt-lib/QF_LIA/mathsat/FISCHER3-5-fair.smt2,0.462,6.648,Proofterm: 113.984,7389,2022-05-08 12:09:09
+../smt-lib/QF_LIA/mathsat/FISCHER2-2-fair.smt2,0.095,1.521,Proofterm: 12.321,1980,2022-05-08 12:07:21
+../smt-lib/QF_LIA/mathsat/FISCHER9-10-fair.smt2,14.044,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:22
+../smt-lib/QF_LIA/mathsat/FISCHER2-6-fair.smt2,0.321,7.149,Proofterm: 103.633,5951,2022-05-08 12:08:59
+../smt-lib/QF_LIA/mathsat/FISCHER2-5-fair.smt2,0.404,5.292,Proofterm: 73.614,4954,2022-05-08 12:08:27
+../smt-lib/QF_LIA/mathsat/FISCHER11-11-fair.smt2,28.664,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:37
+../smt-lib/QF_LIA/mathsat/FISCHER8-5-fair.smt2,2.815,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:10
+../smt-lib/QF_LIA/mathsat/FISCHER8-7-fair.smt2,5.353,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:12
+../smt-lib/QF_LIA/mathsat/FISCHER10-12-fair.smt2,41.943,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:51
+../smt-lib/QF_LIA/mathsat/FISCHER11-3-fair.smt2,2.236,37.996,Error: ../smt-lib/QF_LIA/mathsat/FISCHER11-3-fair.smt2 Timeout 300.040615128004,16157,2022-05-08 12:12:48
+../smt-lib/QF_LIA/mathsat/FISCHER6-5-fair.smt2,1.665,37.020,Error: ../smt-lib/QF_LIA/mathsat/FISCHER6-5-fair.smt2 Timeout 300.0411174990004,14777,2022-05-08 12:12:46
+../smt-lib/QF_LIA/mathsat/FISCHER6-7-fair.smt2,3.096,52.325,Error: ../smt-lib/QF_LIA/mathsat/FISCHER6-7-fair.smt2 Timeout 300.06111380807124,20963,2022-05-08 12:13:03
+../smt-lib/QF_LIA/mathsat/FISCHER10-7-fair.smt2,8.103,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:15
+../smt-lib/QF_LIA/mathsat/FISCHER8-11-fair.smt2,15.771,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:23
+../smt-lib/QF_LIA/mathsat/FISCHER5-2-fair.smt2,0.261,4.122,Proofterm: 77.439,4891,2022-05-08 12:08:29
+../smt-lib/QF_LIA/mathsat/FISCHER9-11-fair.smt2,20.717,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:29
+../smt-lib/QF_LIA/mathsat/FISCHER4-2-fair.smt2,0.185,3.450,Proofterm: 50.610,3933,2022-05-08 12:08:02
+../smt-lib/QF_LIA/mathsat/FISCHER11-5-fair.smt2,5.644,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:13
+../smt-lib/QF_LIA/mathsat/FISCHER1-5-fair.smt2,0.095,2.052,Proofterm: 16.845,2392,2022-05-08 12:07:27
+../smt-lib/QF_LIA/mathsat/FISCHER7-9-fair.smt2,6.471,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:14
+../smt-lib/QF_LIA/mathsat/FISCHER6-2-fair.smt2,0.409,5.969,Proofterm: 99.306,5924,2022-05-08 12:08:53
+../smt-lib/QF_LIA/mathsat/FISCHER4-8-fair.smt2,1.868,41.908,Error: ../smt-lib/QF_LIA/mathsat/FISCHER4-8-fair.smt2 Timeout 300.0707461470738,16876,2022-05-08 12:12:52
+../smt-lib/QF_LIA/mathsat/FISCHER7-2-fair.smt2,0.468,9.796,Proofterm: 142.008,6926,2022-05-08 12:09:40
+../smt-lib/QF_LIA/mathsat/FISCHER5-5-fair.smt2,1.328,26.464,Proofterm: 270.372,12474,2022-05-08 12:12:06
+../smt-lib/QF_LIA/mathsat/FISCHER7-7-fair.smt2,4.254,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:11
+../smt-lib/QF_LIA/mathsat/FISCHER4-4-fair.smt2,0.531,9.060,Proofterm: 135.093,7665,2022-05-08 12:09:33
+../smt-lib/QF_LIA/mathsat/FISCHER10-11-fair.smt2,23.357,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:32
+../smt-lib/QF_LIA/mathsat/FISCHER10-6-fair.smt2,5.847,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:13
+../smt-lib/QF_LIA/mathsat/FISCHER7-3-fair.smt2,0.945,21.853,Proofterm: 216.496,10127,2022-05-08 12:11:07
+../smt-lib/QF_LIA/mathsat/FISCHER9-5-fair.smt2,3.876,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:11
+../smt-lib/QF_LIA/mathsat/FISCHER10-10-fair.smt2,17.659,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:26
+../smt-lib/QF_LIA/mathsat/FISCHER8-6-fair.smt2,4.018,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:11
+../smt-lib/QF_LIA/mathsat/FISCHER10-2-fair.smt2,0.891,21.114,Proofterm: 223.380,9966,2022-05-08 12:11:13
+../smt-lib/QF_LIA/mathsat/FISCHER9-2-fair.smt2,0.949,15.572,Proofterm: 201.227,8987,2022-05-08 12:10:46
+../smt-lib/QF_LIA/mathsat/FISCHER8-8-fair.smt2,7.177,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:14
+../smt-lib/QF_LIA/mathsat/FISCHER3-6-fair.smt2,0.638,15.261,Proofterm: 171.191,8806,2022-05-08 12:10:15
+../smt-lib/QF_LIA/mathsat/FISCHER6-4-fair.smt2,1.065,26.211,Proofterm: 263.037,11827,2022-05-08 12:11:58
+../smt-lib/QF_LIA/mathsat/FISCHER10-3-fair.smt2,1.854,30.172,Error: ../smt-lib/QF_LIA/mathsat/FISCHER10-3-fair.smt2 Timeout 300.24065549694933,14736,2022-05-08 12:12:40
+../smt-lib/QF_LIA/mathsat/FISCHER11-2-fair.smt2,1.236,28.236,Proofterm: 262.299,11027,2022-05-08 12:12:00
+../smt-lib/QF_LIA/mathsat/FISCHER6-6-fair.smt2,2.262,56.733,Error: ../smt-lib/QF_LIA/mathsat/FISCHER6-6-fair.smt2 Timeout 300.10492317099124,17782,2022-05-08 12:13:07
+../smt-lib/QF_LIA/mathsat/FISCHER11-4-fair.smt2,3.725,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:11
+../smt-lib/QF_LIA/mathsat/FISCHER5-3-fair.smt2,0.511,10.888,Proofterm: 139.412,7253,2022-05-08 12:09:39
+../smt-lib/QF_LIA/mathsat/FISCHER6-8-fair.smt2,3.600,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:11
+../smt-lib/QF_LIA/mathsat/FISCHER10-4-fair.smt2,3.218,56.610,Error: ../smt-lib/QF_LIA/mathsat/FISCHER10-4-fair.smt2 Timeout 300.0548329000594,19941,2022-05-08 12:13:08
+../smt-lib/QF_LIA/mathsat/FISCHER2-3-fair.smt2,0.132,1.873,Proofterm: 22.565,2935,2022-05-08 12:07:33
+../smt-lib/QF_LIA/mathsat/FISCHER1-4-fair.smt2,0.140,1.804,Proofterm: 12.137,1923,2022-05-08 12:07:22
+../smt-lib/QF_LIA/mathsat/FISCHER9-12-fair.smt2,33.795,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:43
+../smt-lib/QF_LIA/mathsat/FISCHER11-7-fair.smt2,9.491,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:17
+../smt-lib/QF_LIA/mathsat/FISCHER11-9-fair.smt2,17.168,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:25
+../smt-lib/QF_LIA/mathsat/FISCHER8-12-fair.smt2,26.972,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:37
+../smt-lib/QF_LIA/mathsat/FISCHER3-4-fair.smt2,0.339,6.634,Proofterm: 106.543,5871,2022-05-08 12:09:02
+../smt-lib/QF_LIA/mathsat/FISCHER6-9-fair.smt2,5.336,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:13
+../smt-lib/QF_LIA/mathsat/FISCHER9-4-fair.smt2,2.361,40.604,Error: ../smt-lib/QF_LIA/mathsat/FISCHER9-4-fair.smt2 Timeout 300.03394562599715,17726,2022-05-08 12:12:51
+../smt-lib/QF_LIA/mathsat/FISCHER9-9-fair.smt2,11.168,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:19
+../smt-lib/QF_LIA/mathsat/FISCHER8-10-fair.smt2,11.850,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:20
+../smt-lib/QF_LIA/mathsat/FISCHER4-5-fair.smt2,0.783,17.927,Proofterm: 205.209,9724,2022-05-08 12:10:52
+../smt-lib/QF_LIA/mathsat/FISCHER9-6-fair.smt2,4.661,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:12
+../smt-lib/QF_LIA/mathsat/FISCHER7-5-fair.smt2,2.102,53.469,Error: ../smt-lib/QF_LIA/mathsat/FISCHER7-5-fair.smt2 Timeout 300.06344368797727,17455,2022-05-08 12:13:04
+../smt-lib/QF_LIA/mathsat/FISCHER1-2-fair.smt2,0.060,1.177,Proofterm: 3.781,1014,2022-05-08 12:07:13
+../smt-lib/QF_LIA/mathsat/FISCHER1-6-fair.smt2,0.116,2.931,Proofterm: 34.121,2819,2022-05-08 12:07:46
+../smt-lib/QF_LIA/mathsat/FISCHER10-5-fair.smt2,4.522,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:12
+../smt-lib/QF_LIA/mathsat/FISCHER5-9-fair.smt2,3.649,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:12
+../smt-lib/QF_LIA/mathsat/FISCHER2-4-fair.smt2,0.202,4.307,Proofterm: 49.423,3894,2022-05-08 12:08:03
+../smt-lib/QF_LIA/mathsat/FISCHER7-8-fair.smt2,5.273,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:13
+../smt-lib/QF_LIA/mathsat/FISCHER7-10-fair.smt2,9.142,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:18
+../smt-lib/QF_LIA/mathsat/FISCHER11-8-fair.smt2,13.064,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:21
+../smt-lib/QF_LIA/mathsat/FISCHER9-8-fair.smt2,8.204,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:17
+../smt-lib/QF_LIA/mathsat/FISCHER3-7-fair.smt2,0.797,13.220,Proofterm: 175.788,11074,2022-05-08 12:10:19
+../smt-lib/QF_LIA/mathsat/FISCHER4-7-fair.smt2,1.390,26.280,Proofterm: 275.115,14102,2022-05-08 12:12:12
+../smt-lib/QF_LIA/mathsat/FISCHER3-2-fair.smt2,0.177,2.805,Proofterm: 37.666,2962,2022-05-08 12:07:49
+../smt-lib/QF_LIA/mathsat/FISCHER11-12-fair.smt2,46.172,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:57
+../smt-lib/QF_LIA/mathsat/FISCHER7-11-fair.smt2,11.847,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:21
+../smt-lib/QF_LIA/mathsat/FISCHER10-9-fair.smt2,13.171,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:22
+../smt-lib/QF_LIA/mathsat/FISCHER10-8-fair.smt2,11.222,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:20
+../smt-lib/QF_LIA/mathsat/FISCHER5-7-fair.smt2,2.152,52.334,Error: ../smt-lib/QF_LIA/mathsat/FISCHER5-7-fair.smt2 Timeout 300.1667620460503,17834,2022-05-08 12:13:04
+../smt-lib/QF_LIA/mathsat/FISCHER5-4-fair.smt2,0.794,18.813,Proofterm: 208.586,9822,2022-05-08 12:10:58
+../smt-lib/QF_LIA/mathsat/FISCHER4-3-fair.smt2,0.311,7.022,Proofterm: 104.223,5789,2022-05-08 12:09:01
+../smt-lib/QF_LIA/mathsat/FISCHER3-3-fair.smt2,0.214,4.803,Proofterm: 79.460,4385,2022-05-08 12:08:34
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1224.smt2,0.428,1.901,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1224.smt2 Timeout 300.01054109900724,3434,2022-05-08 12:12:12
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2127.smt2,0.167,2.778,Proofterm: 28.901,1723,2022-05-08 12:07:42
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1219.smt2,0.431,1.991,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1219.smt2 Timeout 300.0062676509842,3428,2022-05-08 12:12:12
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1233.smt2,0.434,2.570,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1233.smt2 Timeout 300.00713200797327,3444,2022-05-08 12:12:13
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2122.smt2,0.146,3.416,Proofterm: 21.697,1704,2022-05-08 12:07:35
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1229.smt2,0.373,2.944,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1229.smt2 Timeout 300.00774863397237,3440,2022-05-08 12:12:13
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2124.smt2,0.156,1.901,Proofterm: 19.770,1709,2022-05-08 12:07:32
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1213.smt2,0.435,2.119,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1213.smt2 Timeout 300.0028718690155,3420,2022-05-08 12:12:13
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1212.smt2,0.451,2.780,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1212.smt2 Timeout 300.00828311999794,3417,2022-05-08 12:12:13
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2130.smt2,0.176,2.386,Proofterm: 23.775,1744,2022-05-08 12:07:37
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2126.smt2,0.173,3.578,Proofterm: 36.001,1721,2022-05-08 12:07:50
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1243.smt2,0.445,3.429,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1243.smt2 Timeout 300.009621625999,3456,2022-05-08 12:12:14
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1223.smt2,0.392,2.849,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1223.smt2 Timeout 300.0115760299377,3432,2022-05-08 12:12:14
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2140.smt2,0.158,1.963,Proofterm: 59.851,1603,2022-05-08 12:08:12
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1577.smt2,1.796,6.062,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1577.smt2 currently lia_generic is not supported 272.09342834097333,8032,2022-05-08 12:11:51
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1141.smt2,0.352,1.709,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1141.smt2 currently lia_generic is not supported 64.67874145100359,3103,2022-05-08 12:08:17
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2138.smt2,0.171,2.035,Proofterm: 36.242,1791,2022-05-08 12:07:49
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1234.smt2,0.428,2.221,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1234.smt2 Timeout 300.0038938479265,3445,2022-05-08 12:12:13
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2133.smt2,0.159,2.463,Proofterm: 13.972,1758,2022-05-08 12:07:27
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1242.smt2,0.421,2.226,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1242.smt2 Timeout 300.0083145890385,3452,2022-05-08 12:12:13
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1218.smt2,0.497,2.381,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1218.smt2 Timeout 300.00305403000675,3426,2022-05-08 12:12:14
+../smt-lib/QF_LIA/convert/convert-tiff2jpg-query-1831.smt2,0.055,1.055,Proofterm: 1.087,269,2022-05-08 12:07:13
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1238.smt2,0.424,1.930,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1238.smt2 Timeout 300.0033944370225,3450,2022-05-08 12:12:13
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2139.smt2,0.183,2.094,Proofterm: 31.253,1793,2022-05-08 12:07:44
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2134.smt2,0.237,3.177,Proofterm: 33.425,1774,2022-05-08 12:07:48
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2136.smt2,0.180,2.053,Proofterm: 31.926,1779,2022-05-08 12:07:45
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1222.smt2,0.442,2.038,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1222.smt2 Timeout 300.00276983506046,3430,2022-05-08 12:12:13
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1214.smt2,0.415,2.462,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1214.smt2 Timeout 300.0046103069326,3419,2022-05-08 12:12:14
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2132.smt2,0.172,2.568,Proofterm: 30.386,1756,2022-05-08 12:07:44
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2120.smt2,0.183,2.105,Proofterm: 17.148,1686,2022-05-08 12:07:30
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2121.smt2,0.176,2.292,Proofterm: 30.678,1688,2022-05-08 12:07:44
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1237.smt2,0.386,2.752,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1237.smt2 Timeout 300.00388335995376,3448,2022-05-08 12:12:15
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1227.smt2,0.392,2.650,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1227.smt2 Timeout 300.0032170400955,3436,2022-05-08 12:12:15
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1209.smt2,0.465,2.452,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1209.smt2 Timeout 300.0028189640725,3414,2022-05-08 12:12:14
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1217.smt2,0.375,3.017,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1217.smt2 Timeout 300.0093270369107,3424,2022-05-08 12:12:15
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1232.smt2,0.421,2.495,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1232.smt2 Timeout 300.00353359396104,3442,2022-05-08 12:12:14
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-2141.smt2,0.236,2.596,Proofterm: 65.617,1610,2022-05-08 12:08:20
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1228.smt2,0.410,2.153,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1228.smt2 Timeout 300.00295125192497,3438,2022-05-08 12:12:14
+../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1239.smt2,0.468,2.538,Error: ../smt-lib/QF_LIA/convert/convert-jpg2gif-query-1239.smt2 Timeout 300.0079605450155,3452,2022-05-08 12:12:15
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/benchmark14_linear-O0.smt2,76.873,11.905,Error: ../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/benchmark14_linear-O0.smt2 Timeout 300.07471771899145,72155,2022-05-08 12:13:46
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/benchmark23_conjunctive-O0.smt2,103.168,10.692,Error: ../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/benchmark23_conjunctive-O0.smt2 Timeout 300.08515558589716,83286,2022-05-08 12:14:13
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/mono-crafted_1-O0.smt2,34.568,58.291,Error: ../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/mono-crafted_1-O0.smt2 Timeout 300.2989746480016,55828,2022-05-08 12:14:09
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/count_up_down-1-O0.smt2,7.342,11.218,Proofterm: 246.861,25038,2022-05-08 12:11:41
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/underapprox_2-2-O0.smt2,5.377,14.696,Proofterm: 218.848,28283,2022-05-08 12:11:20
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/mono-crafted_3-O0.smt2,37.625,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:08:50
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/mono-crafted_8-O0.smt2,25.678,54.799,Error: ../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/mono-crafted_8-O0.smt2 Timeout 300.1119642680278,44287,2022-05-08 12:14:07
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/gr2006-O0.smt2,70.081,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:10:28
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/benchmark37_conjunctive-O0.smt2,82.107,12.542,Error: ../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/benchmark37_conjunctive-O0.smt2 Timeout 300.0681616429938,83483,2022-05-08 12:13:54
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/invert_string-3-O0.smt2,7.606,31.167,Error: ../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/invert_string-3-O0.smt2 maximum recursion depth exceeded 114.22307001799345,125646,2022-05-08 12:09:49
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/simple_vardep_1-O0.smt2,46.784,30.506,Proofterm: 290.582,39230,2022-05-08 12:13:39
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/benchmark26_linear-O0.smt2,50.271,19.481,Error: ../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/benchmark26_linear-O0.smt2 Timeout 300.07378563599195,71869,2022-05-08 12:13:34
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/cggmp2005-O0.smt2,43.648,14.612,Error: ../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/cggmp2005-O0.smt2 maximum recursion depth exceeded 201.75859601900447,26435,2022-05-08 12:11:44
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/deep-nested-O0.smt2,1.585,11.153,Error: ../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/deep-nested-O0.smt2 maximum recursion depth exceeded 236.333870404982,37901,2022-05-08 12:11:23
+../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/cggmp2005b-O0.smt2,16.897,50.546,Error: ../smt-lib/QF_LIA/20210219-Dartagnan/ReachSafety-Loops/cggmp2005b-O0.smt2 Timeout 300.10909378901124,39005,2022-05-08 12:13:23
+../smt-lib/QF_LIA/slacks/25-31.slack.smt2,0.703,0.682,Error: ../smt-lib/QF_LIA/slacks/25-31.slack.smt2 currently lia_generic is not supported 0.7705005119787529,371,2022-05-08 12:07:16
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex14400_2600_100.smt2,1.569,2.816,Proofterm: 14.184,3879,2022-05-08 12:07:34
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex8700_2600_100.smt2,0.147,2.570,Proofterm: 20.186,4036,2022-05-08 12:07:36
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex9700_2600_100.smt2,0.142,1.864,Proofterm: 13.627,4082,2022-05-08 12:07:29
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex12100_2600_100.smt2,0.157,1.867,Proofterm: 35.989,4316,2022-05-08 12:07:52
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex9400_2600_100.smt2,0.136,3.080,Proofterm: 14.171,4024,2022-05-08 12:07:31
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex10100_2600_100.smt2,0.141,2.228,Proofterm: 14.725,4076,2022-05-08 12:07:31
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex10500_2600_100.smt2,0.134,4.064,Proofterm: 31.290,4160,2022-05-08 12:07:50
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex7300_2600_100.smt2,0.125,2.270,Proofterm: 12.598,4012,2022-05-08 12:07:29
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex7600_2600_100.smt2,0.152,2.705,Proofterm: 13.789,4036,2022-05-08 12:07:31
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex9100_2600_100.smt2,0.140,2.929,Proofterm: 18.784,4082,2022-05-08 12:07:36
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex12300_2600_100.smt2,0.149,2.823,Proofterm: 38.154,4316,2022-05-08 12:07:56
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex5400_2600_100.smt2,0.215,2.834,Proofterm: 16.498,4002,2022-05-08 12:07:35
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex5200_2600_100.smt2,0.158,4.004,Proofterm: 15.760,3978,2022-05-08 12:07:35
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex13300_2600_100.smt2,0.221,2.372,Proofterm: 27.532,4278,2022-05-08 12:07:46
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex9600_2600_100.smt2,0.299,3.712,Proofterm: 24.639,4082,2022-05-08 12:07:44
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex8400_2600_100.smt2,0.132,2.869,Proofterm: 16.227,4036,2022-05-08 12:07:35
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex10200_2600_100.smt2,0.174,2.076,Proofterm: 19.434,4076,2022-05-08 12:07:38
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex9900_2600_100.smt2,0.162,2.572,Proofterm: 23.044,4134,2022-05-08 12:07:42
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex6600_2600_100.smt2,0.144,1.911,Proofterm: 15.526,4026,2022-05-08 12:07:34
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex10400_2600_100.smt2,0.132,1.833,Proofterm: 20.701,4134,2022-05-08 12:07:39
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex13600_2600_100.smt2,3.088,3.499,Proofterm: 17.019,3901,2022-05-08 12:07:42
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex8800_2600_100.smt2,0.184,1.851,Proofterm: 17.691,4060,2022-05-08 12:07:37
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex12500_2600_100.smt2,0.185,2.117,Proofterm: 33.221,4270,2022-05-08 12:07:53
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex13100_2600_100.smt2,0.142,2.585,Proofterm: 27.109,4207,2022-05-08 12:07:47
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex14300_2600_100.smt2,1.952,2.261,Proofterm: 11.545,3895,2022-05-08 12:07:34
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex5500_2600_100.smt2,0.168,2.934,Proofterm: 17.698,4002,2022-05-08 12:07:39
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex12600_2600_100.smt2,0.191,1.920,Proofterm: 32.521,4247,2022-05-08 12:07:53
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex5900_2600_100.smt2,0.167,2.239,Proofterm: 15.242,3989,2022-05-08 12:07:36
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex11200_2600_100.smt2,0.164,5.184,Proofterm: 33.803,4202,2022-05-08 12:07:58
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex9800_2600_100.smt2,0.143,2.604,Proofterm: 19.357,4107,2022-05-08 12:07:41
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex12200_2600_100.smt2,0.162,3.398,Proofterm: 43.677,4316,2022-05-08 12:08:07
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex6100_2600_100.smt2,0.127,2.356,Proofterm: 12.971,3989,2022-05-08 12:07:36
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex13000_2600_100.smt2,0.160,2.418,Proofterm: 26.872,4207,2022-05-08 12:07:51
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex12000_2600_100.smt2,0.197,3.032,Proofterm: 41.238,4316,2022-05-08 12:08:07
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex10700_2600_100.smt2,0.136,1.452,Proofterm: 29.499,4209,2022-05-08 12:07:54
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex6200_2600_100.smt2,0.160,2.238,Proofterm: 15.560,3989,2022-05-08 12:07:43
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex9500_2600_100.smt2,0.140,2.311,Proofterm: 18.555,4082,2022-05-08 12:07:47
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex12800_2600_100.smt2,0.148,2.362,Proofterm: 30.619,4262,2022-05-08 12:08:00
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex14200_2600_100.smt2,3.041,3.350,Proofterm: 17.433,3874,2022-05-08 12:07:53
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex10900_2600_100.smt2,0.151,2.004,Proofterm: 24.552,4234,2022-05-08 12:07:54
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex11900_2600_100.smt2,0.135,4.478,Proofterm: 41.258,4316,2022-05-08 12:08:14
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex8600_2600_100.smt2,0.169,4.004,Proofterm: 21.666,4036,2022-05-08 12:07:55
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex13400_2600_100.smt2,0.921,1.489,Proofterm: 5.928,3881,2022-05-08 12:07:38
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex10600_2600_100.smt2,0.143,0.960,Proofterm: 17.140,4186,2022-05-08 12:07:48
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex12400_2600_100.smt2,0.144,1.394,Proofterm: 34.746,4316,2022-05-08 12:08:07
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex10000_2600_100.smt2,0.127,2.341,Proofterm: 21.160,4134,2022-05-08 12:07:55
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex12700_2600_100.smt2,0.167,1.168,Proofterm: 19.004,4220,2022-05-08 12:07:51
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex11000_2600_100.smt2,0.149,3.185,Proofterm: 22.761,4133,2022-05-08 12:07:57
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex7800_2600_100.smt2,0.137,0.999,Proofterm: 8.024,3978,2022-05-08 12:07:40
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex12900_2600_100.smt2,0.170,1.177,Proofterm: 15.830,4207,2022-05-08 12:07:49
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex11500_2600_100.smt2,0.132,2.521,Proofterm: 18.029,4106,2022-05-08 12:07:52
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex11600_2600_100.smt2,0.142,1.991,Proofterm: 37.703,4374,2022-05-08 12:08:12
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex13200_2600_100.smt2,0.176,2.773,Proofterm: 33.751,4278,2022-05-08 12:08:10
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex10800_2600_100.smt2,0.183,2.001,Proofterm: 25.566,4209,2022-05-08 12:08:01
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex13500_2600_100.smt2,4.664,2.883,Proofterm: 15.335,3873,2022-05-08 12:07:58
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex5800_2600_100.smt2,0.133,1.756,Proofterm: 13.953,4026,2022-05-08 12:07:50
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex8900_2600_100.smt2,0.134,2.658,Proofterm: 17.290,4060,2022-05-08 12:07:54
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex6900_2600_100.smt2,0.139,0.989,Proofterm: 9.789,4012,2022-05-08 12:07:45
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex9300_2600_100.smt2,0.198,1.782,Proofterm: 13.665,4024,2022-05-08 12:07:50
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex6700_2600_100.smt2,0.178,1.106,Proofterm: 9.256,4012,2022-05-08 12:07:45
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex8100_2600_100.smt2,0.171,1.181,Proofterm: 11.358,3978,2022-05-08 12:07:48
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex13800_2600_100.smt2,2.452,2.048,Proofterm: 9.612,3895,2022-05-08 12:07:50
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex9000_2600_100.smt2,0.153,2.366,Proofterm: 15.895,4060,2022-05-08 12:07:54
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex11400_2600_100.smt2,0.181,2.019,Proofterm: 25.169,4202,2022-05-08 12:08:03
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex7100_2600_100.smt2,0.142,2.338,Proofterm: 14.384,4012,2022-05-08 12:07:53
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex8200_2600_100.smt2,0.160,1.160,Proofterm: 8.873,4036,2022-05-08 12:07:46
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex7700_2600_100.smt2,0.345,1.105,Proofterm: 12.173,4036,2022-05-08 12:07:50
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex11300_2600_100.smt2,0.164,1.059,Proofterm: 21.127,4202,2022-05-08 12:07:59
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex13700_2600_100.smt2,2.911,1.100,Proofterm: 10.512,3876,2022-05-08 12:07:52
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex14000_2600_100.smt2,2.936,2.121,Proofterm: 8.485,3887,2022-05-08 12:07:52
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex11100_2600_100.smt2,0.145,1.014,Proofterm: 23.662,4202,2022-05-08 12:08:02
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex7200_2600_100.smt2,0.174,0.854,Proofterm: 8.692,4012,2022-05-08 12:07:47
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex8000_2600_100.smt2,0.146,2.818,Proofterm: 16.438,3978,2022-05-08 12:07:58
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex6400_2600_100.smt2,0.183,0.926,Proofterm: 11.586,3989,2022-05-08 12:07:51
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex6000_2600_100.smt2,0.156,1.296,Proofterm: 11.824,3989,2022-05-08 12:07:52
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex13900_2600_100.smt2,2.384,1.347,Proofterm: 8.330,3886,2022-05-08 12:07:54
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex5000_2600_100.smt2,0.199,0.839,Proofterm: 6.289,3941,2022-05-08 12:07:48
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex6500_2600_100.smt2,0.164,1.720,Proofterm: 8.798,3989,2022-05-08 12:07:52
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex5300_2600_100.smt2,0.164,1.884,Proofterm: 14.206,4002,2022-05-08 12:07:58
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex6800_2600_100.smt2,0.177,1.230,Proofterm: 9.714,4012,2022-05-08 12:07:53
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex14100_2600_100.smt2,3.506,2.652,Proofterm: 12.236,3882,2022-05-08 12:08:03
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex7000_2600_100.smt2,0.165,1.300,Proofterm: 11.076,4012,2022-05-08 12:07:55
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex7400_2600_100.smt2,0.145,3.395,Proofterm: 18.964,4012,2022-05-08 12:08:06
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex7500_2600_100.smt2,0.150,0.838,Proofterm: 9.873,4012,2022-05-08 12:07:55
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex5100_2600_100.smt2,0.173,1.758,Proofterm: 12.963,3978,2022-05-08 12:07:59
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex11800_2600_100.smt2,0.202,2.744,Proofterm: 38.865,4316,2022-05-08 12:08:26
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex8500_2600_100.smt2,0.162,1.606,Proofterm: 12.866,4036,2022-05-08 12:07:59
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex11700_2600_100.smt2,0.151,2.349,Proofterm: 36.847,4316,2022-05-08 12:08:24
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex6300_2600_100.smt2,0.181,2.165,Proofterm: 15.187,3989,2022-05-08 12:08:02
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex5700_2600_100.smt2,0.145,0.900,Proofterm: 7.561,4002,2022-05-08 12:07:54
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex8300_2600_100.smt2,0.162,1.500,Proofterm: 13.914,4036,2022-05-08 12:08:01
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex7900_2600_100.smt2,0.181,0.946,Proofterm: 10.331,3978,2022-05-08 12:07:57
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex5600_2600_100.smt2,0.144,2.785,Proofterm: 17.555,4002,2022-05-08 12:08:06
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex10300_2600_100.smt2,0.168,0.922,Proofterm: 11.326,4076,2022-05-08 12:07:58
+../smt-lib/QF_LIA/bofill-scheduling/SMT_random_LIA/ex9200_2600_100.smt2,0.175,2.942,Proofterm: 18.510,4024,2022-05-08 12:08:08
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2900_2400_100.smt2,0.163,1.083,Proofterm: 13.422,3035,2022-05-08 12:08:01
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3800_2400_100.smt2,0.127,0.915,Proofterm: 17.204,3075,2022-05-08 12:08:05
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4960_2400_100.smt2,0.642,0.919,Proofterm: 94.569,3299,2022-05-08 12:09:25
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2940_2400_100.smt2,0.135,0.783,Proofterm: 14.916,3035,2022-05-08 12:08:03
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2120_2400_100.smt2,0.140,2.305,Proofterm: 29.382,3057,2022-05-08 12:08:20
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2620_2400_100.smt2,0.133,0.809,Proofterm: 17.378,3035,2022-05-08 12:08:06
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2600_2400_100.smt2,0.133,0.730,Proofterm: 15.518,3062,2022-05-08 12:08:04
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3020_2400_100.smt2,0.143,1.284,Proofterm: 13.935,3035,2022-05-08 12:08:03
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4580_2400_100.smt2,0.252,1.584,Proofterm: 7.948,2898,2022-05-08 12:07:59
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3640_2400_100.smt2,0.141,2.230,Proofterm: 27.866,3098,2022-05-08 12:08:20
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3340_2400_100.smt2,0.127,1.863,Proofterm: 28.667,3071,2022-05-08 12:08:20
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2060_2400_100.smt2,0.137,0.829,Proofterm: 16.546,3031,2022-05-08 12:08:07
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4800_2400_100.smt2,0.168,1.369,Proofterm: 22.518,3098,2022-05-08 12:08:14
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3880_2400_100.smt2,0.164,1.785,Proofterm: 21.887,3048,2022-05-08 12:08:14
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3280_2400_100.smt2,0.130,0.918,Proofterm: 18.751,3071,2022-05-08 12:08:10
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3320_2400_100.smt2,0.152,1.026,Proofterm: 21.963,3071,2022-05-08 12:08:13
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4060_2400_100.smt2,0.221,1.347,Proofterm: 16.674,3025,2022-05-08 12:08:09
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3400_2400_100.smt2,0.150,1.030,Proofterm: 22.806,3085,2022-05-08 12:08:15
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2240_2400_100.smt2,0.173,1.202,Proofterm: 18.137,3057,2022-05-08 12:08:11
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3820_2400_100.smt2,0.141,0.867,Proofterm: 15.575,3075,2022-05-08 12:08:08
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3540_2400_100.smt2,0.260,0.898,Proofterm: 6.533,2771,2022-05-08 12:08:00
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3480_2400_100.smt2,0.149,1.049,Proofterm: 18.802,3085,2022-05-08 12:08:12
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4680_2400_100.smt2,0.128,0.873,Proofterm: 21.023,3098,2022-05-08 12:08:14
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3840_2400_100.smt2,0.145,1.507,Proofterm: 16.762,3048,2022-05-08 12:08:11
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3220_2400_100.smt2,0.174,0.830,Proofterm: 19.481,3071,2022-05-08 12:08:13
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2860_2400_100.smt2,0.194,1.123,Proofterm: 14.735,3035,2022-05-08 12:08:09
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3980_2400_100.smt2,0.174,1.364,Proofterm: 19.441,3048,2022-05-08 12:08:14
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2400_2400_100.smt2,0.174,0.782,Proofterm: 21.473,3108,2022-05-08 12:08:15
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4000_2400_100.smt2,0.107,0.777,Proofterm: 16.131,3048,2022-05-08 12:08:10
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3900_2400_100.smt2,0.130,0.751,Proofterm: 16.053,3048,2022-05-08 12:08:10
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3000_2400_100.smt2,0.119,1.049,Proofterm: 20.379,3035,2022-05-08 12:08:15
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2920_2400_100.smt2,0.104,4.376,Proofterm: 25.678,3035,2022-05-08 12:08:24
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2380_2400_100.smt2,0.142,0.817,Proofterm: 23.237,3108,2022-05-08 12:08:18
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3560_2400_100.smt2,0.133,0.753,Proofterm: 5.512,2771,2022-05-08 12:08:00
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3500_2400_100.smt2,0.122,2.963,Proofterm: 24.951,3098,2022-05-08 12:08:22
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3780_2400_100.smt2,0.140,0.908,Proofterm: 21.153,3075,2022-05-08 12:08:17
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4360_2400_100.smt2,0.114,1.343,Proofterm: 14.163,2998,2022-05-08 12:08:10
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4260_2400_100.smt2,0.139,0.847,Proofterm: 11.276,2998,2022-05-08 12:08:07
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2180_2400_100.smt2,0.196,0.828,Proofterm: 23.231,3057,2022-05-08 12:08:19
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2220_2400_100.smt2,0.157,1.090,Proofterm: 21.449,3057,2022-05-08 12:08:17
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4380_2400_100.smt2,0.139,0.909,Proofterm: 12.467,2998,2022-05-08 12:08:08
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4340_2400_100.smt2,0.140,0.922,Proofterm: 15.381,2998,2022-05-08 12:08:11
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4220_2400_100.smt2,0.171,0.888,Proofterm: 17.977,3025,2022-05-08 12:08:15
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3620_2400_100.smt2,0.121,0.980,Proofterm: 6.450,2771,2022-05-08 12:08:04
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2880_2400_100.smt2,0.186,1.195,Proofterm: 17.698,3035,2022-05-08 12:08:16
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2420_2400_100.smt2,0.217,1.412,Proofterm: 25.089,3108,2022-05-08 12:08:24
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3100_2400_100.smt2,0.151,1.034,Proofterm: 17.143,3035,2022-05-08 12:08:15
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4460_2400_100.smt2,0.101,0.921,Proofterm: 13.462,2998,2022-05-08 12:08:12
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3940_2400_100.smt2,0.114,0.801,Proofterm: 17.571,3048,2022-05-08 12:08:16
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2020_2400_100.smt2,0.126,2.577,Proofterm: 25.958,3031,2022-05-08 12:08:27
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3180_2400_100.smt2,0.121,2.173,Proofterm: 18.741,3071,2022-05-08 12:08:19
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3060_2400_100.smt2,0.163,0.868,Proofterm: 18.103,3035,2022-05-08 12:08:18
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3360_2400_100.smt2,0.162,0.672,Proofterm: 16.134,3071,2022-05-08 12:08:15
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2540_2400_100.smt2,0.175,1.032,Proofterm: 15.401,3062,2022-05-08 12:08:15
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4720_2400_100.smt2,0.200,1.385,Proofterm: 20.417,3098,2022-05-08 12:08:21
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4700_2400_100.smt2,0.164,1.230,Proofterm: 23.976,3098,2022-05-08 12:08:25
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3040_2400_100.smt2,0.155,0.885,Proofterm: 16.099,3035,2022-05-08 12:08:17
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2440_2400_100.smt2,0.209,1.433,Proofterm: 25.450,3108,2022-05-08 12:08:27
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3260_2400_100.smt2,0.087,0.556,Proofterm: 20.001,3071,2022-05-08 12:08:21
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2760_2400_100.smt2,0.119,0.703,Proofterm: 12.890,2985,2022-05-08 12:08:14
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3380_2400_100.smt2,0.139,1.571,Proofterm: 19.156,3071,2022-05-08 12:08:22
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4620_2400_100.smt2,0.179,1.170,Proofterm: 11.653,2898,2022-05-08 12:08:14
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2040_2400_100.smt2,0.144,1.262,Proofterm: 13.915,3031,2022-05-08 12:08:17
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3680_2400_100.smt2,0.174,0.818,Proofterm: 21.366,3075,2022-05-08 12:08:24
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2520_2400_100.smt2,0.175,2.016,Proofterm: 20.991,3062,2022-05-08 12:08:26
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3740_2400_100.smt2,0.149,1.264,Proofterm: 20.721,3075,2022-05-08 12:08:25
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3580_2400_100.smt2,0.176,1.116,Proofterm: 5.823,2771,2022-05-08 12:08:10
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2700_2400_100.smt2,0.141,1.700,Proofterm: 20.382,3035,2022-05-08 12:08:26
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2820_2400_100.smt2,0.167,1.177,Proofterm: 12.694,2985,2022-05-08 12:08:17
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2500_2400_100.smt2,0.126,0.709,Proofterm: 18.118,3071,2022-05-08 12:08:23
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4140_2400_100.smt2,0.144,0.717,Proofterm: 11.328,2998,2022-05-08 12:08:16
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2080_2400_100.smt2,0.135,0.785,Proofterm: 17.584,3057,2022-05-08 12:08:22
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4920_2400_100.smt2,0.631,0.731,Proofterm: 29.108,3174,2022-05-08 12:08:35
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4880_2400_100.smt2,0.734,0.860,Proofterm: 25.270,3197,2022-05-08 12:08:32
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2460_2400_100.smt2,0.248,4.676,Proofterm: 23.941,3108,2022-05-08 12:08:35
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2280_2400_100.smt2,0.129,0.808,Proofterm: 19.539,3057,2022-05-08 12:08:27
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3720_2400_100.smt2,0.154,0.932,Proofterm: 18.491,3075,2022-05-08 12:08:26
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2340_2400_100.smt2,0.122,0.993,Proofterm: 22.029,3108,2022-05-08 12:08:30
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3760_2400_100.smt2,0.162,1.489,Proofterm: 15.672,3075,2022-05-08 12:08:24
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3700_2400_100.smt2,0.150,0.828,Proofterm: 16.772,3075,2022-05-08 12:08:25
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3440_2400_100.smt2,0.162,0.860,Proofterm: 21.830,3085,2022-05-08 12:08:30
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2160_2400_100.smt2,0.159,0.755,Proofterm: 17.041,3057,2022-05-08 12:08:25
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4420_2400_100.smt2,0.157,0.955,Proofterm: 14.418,2998,2022-05-08 12:08:23
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2100_2400_100.smt2,0.148,0.920,Proofterm: 18.892,3057,2022-05-08 12:08:28
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4200_2400_100.smt2,0.132,0.798,Proofterm: 11.666,3025,2022-05-08 12:08:21
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4120_2400_100.smt2,0.156,0.744,Proofterm: 12.425,2998,2022-05-08 12:08:22
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4560_2400_100.smt2,0.162,1.238,Proofterm: 10.314,2898,2022-05-08 12:08:21
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2360_2400_100.smt2,0.127,0.737,Proofterm: 19.648,3108,2022-05-08 12:08:30
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2660_2400_100.smt2,0.110,2.206,Proofterm: 19.118,3035,2022-05-08 12:08:31
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3160_2400_100.smt2,0.200,2.307,Proofterm: 26.468,3085,2022-05-08 12:08:39
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2960_2400_100.smt2,0.181,0.914,Proofterm: 14.333,3035,2022-05-08 12:08:25
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3660_2400_100.smt2,0.170,1.079,Proofterm: 17.397,3075,2022-05-08 12:08:29
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4820_2400_100.smt2,0.116,0.765,Proofterm: 19.002,3098,2022-05-08 12:08:30
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2560_2400_100.smt2,0.157,4.299,Proofterm: 22.757,3062,2022-05-08 12:08:37
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2980_2400_100.smt2,0.116,2.279,Proofterm: 18.604,3035,2022-05-08 12:08:31
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2260_2400_100.smt2,0.118,0.703,Proofterm: 16.601,3057,2022-05-08 12:08:28
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4400_2400_100.smt2,0.163,0.708,Proofterm: 13.171,2998,2022-05-08 12:08:24
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4660_2400_100.smt2,0.122,0.805,Proofterm: 16.588,3048,2022-05-08 12:08:28
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2140_2400_100.smt2,0.281,5.099,Proofterm: 22.751,3057,2022-05-08 12:08:39
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4760_2400_100.smt2,0.175,1.422,Proofterm: 16.587,3098,2022-05-08 12:08:29
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4440_2400_100.smt2,0.165,0.715,Proofterm: 11.254,2998,2022-05-08 12:08:23
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4600_2400_100.smt2,0.158,3.728,Proofterm: 12.559,2898,2022-05-08 12:08:28
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4900_2400_100.smt2,0.722,4.104,Proofterm: 34.260,3187,2022-05-08 12:08:51
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4940_2400_100.smt2,0.862,4.875,Proofterm: 38.235,3198,2022-05-08 12:08:56
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4280_2400_100.smt2,0.188,2.319,Proofterm: 17.392,2998,2022-05-08 12:08:32
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4480_2400_100.smt2,0.195,0.835,Proofterm: 14.549,2998,2022-05-08 12:08:27
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4100_2400_100.smt2,0.177,1.989,Proofterm: 18.805,2998,2022-05-08 12:08:33
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3460_2400_100.smt2,0.175,1.029,Proofterm: 19.194,3085,2022-05-08 12:08:32
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2200_2400_100.smt2,0.134,0.766,Proofterm: 16.419,3057,2022-05-08 12:08:29
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2840_2400_100.smt2,0.137,2.383,Proofterm: 24.072,3035,2022-05-08 12:08:39
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4780_2400_100.smt2,0.169,1.105,Proofterm: 16.028,3098,2022-05-08 12:08:30
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4500_2400_100.smt2,0.141,1.170,Proofterm: 13.460,2998,2022-05-08 12:08:27
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3240_2400_100.smt2,0.153,2.733,Proofterm: 22.315,3071,2022-05-08 12:08:38
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2000_2400_100.smt2,0.124,1.569,Proofterm: 16.990,3031,2022-05-08 12:08:31
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2680_2400_100.smt2,0.146,2.063,Proofterm: 18.189,3035,2022-05-08 12:08:33
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4300_2400_100.smt2,0.165,2.171,Proofterm: 16.427,2998,2022-05-08 12:08:32
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2640_2400_100.smt2,0.141,2.561,Proofterm: 19.502,3035,2022-05-08 12:08:35
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2800_2400_100.smt2,0.166,1.959,Proofterm: 12.542,2985,2022-05-08 12:08:28
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2480_2400_100.smt2,0.185,3.890,Proofterm: 23.802,3108,2022-05-08 12:08:41
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2320_2400_100.smt2,0.152,1.961,Proofterm: 19.172,3108,2022-05-08 12:08:35
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3300_2400_100.smt2,0.149,3.200,Proofterm: 24.300,3071,2022-05-08 12:08:41
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4160_2400_100.smt2,0.139,2.453,Proofterm: 20.653,2998,2022-05-08 12:08:37
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4040_2400_100.smt2,0.172,1.053,Proofterm: 16.102,3025,2022-05-08 12:08:31
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2580_2400_100.smt2,0.139,1.977,Proofterm: 20.171,3062,2022-05-08 12:08:36
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3860_2400_100.smt2,0.160,1.477,Proofterm: 16.484,3048,2022-05-08 12:08:32
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3520_2400_100.smt2,0.141,3.541,Proofterm: 12.574,2771,2022-05-08 12:08:30
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3140_2400_100.smt2,0.132,1.727,Proofterm: 17.614,3085,2022-05-08 12:08:34
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3200_2400_100.smt2,0.200,1.389,Proofterm: 17.259,3071,2022-05-08 12:08:33
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3920_2400_100.smt2,0.141,1.282,Proofterm: 14.409,3048,2022-05-08 12:08:30
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4860_2400_100.smt2,0.161,1.049,Proofterm: 20.197,3098,2022-05-08 12:08:36
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4240_2400_100.smt2,0.132,0.738,Proofterm: 13.211,3025,2022-05-08 12:08:28
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4180_2400_100.smt2,0.129,0.827,Proofterm: 13.591,2998,2022-05-08 12:08:29
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3080_2400_100.smt2,0.131,2.475,Proofterm: 20.323,3035,2022-05-08 12:08:38
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3960_2400_100.smt2,0.197,0.934,Proofterm: 15.511,3048,2022-05-08 12:08:31
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2720_2400_100.smt2,0.131,0.778,Proofterm: 15.776,3035,2022-05-08 12:08:32
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4540_2400_100.smt2,0.148,1.942,Proofterm: 14.625,2923,2022-05-08 12:08:32
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4640_2400_100.smt2,0.153,0.842,Proofterm: 16.457,3048,2022-05-08 12:08:33
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4320_2400_100.smt2,0.135,0.757,Proofterm: 11.082,2998,2022-05-08 12:08:28
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4520_2400_100.smt2,0.190,1.420,Proofterm: 10.669,2923,2022-05-08 12:08:28
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3600_2400_100.smt2,0.197,2.305,Proofterm: 5.921,2771,2022-05-08 12:08:24
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3420_2400_100.smt2,0.118,0.800,Proofterm: 15.037,3085,2022-05-08 12:08:32
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4740_2400_100.smt2,0.149,2.964,Proofterm: 20.443,3098,2022-05-08 12:08:39
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex3120_2400_100.smt2,0.151,0.755,Proofterm: 10.982,3035,2022-05-08 12:08:28
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2300_2400_100.smt2,0.111,1.611,Proofterm: 18.133,3057,2022-05-08 12:08:36
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4020_2400_100.smt2,0.236,0.700,Proofterm: 14.388,3048,2022-05-08 12:08:32
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2780_2400_100.smt2,0.142,0.800,Proofterm: 13.955,3035,2022-05-08 12:08:31
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4080_2400_100.smt2,0.164,2.618,Proofterm: 15.160,3025,2022-05-08 12:08:35
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex2740_2400_100.smt2,0.162,0.979,Proofterm: 12.762,3035,2022-05-08 12:08:31
+../smt-lib/QF_LIA/bofill-scheduling/SMT_real_LIA/ex4840_2400_100.smt2,0.130,0.939,Proofterm: 18.184,3098,2022-05-08 12:08:36
+../smt-lib/QF_LIA/check/bignum_lia1.smt2,0.060,0.393,Proofterm: 0.290,68,2022-05-08 12:08:18
+../smt-lib/QF_LIA/check/int_incompleteness2.smt2,UNKNOWN PROOF (veriT),,,,2022-05-08 12:08:17
+../smt-lib/QF_LIA/check/int_incompleteness1.smt2,0.071,0.425,Error: ../smt-lib/QF_LIA/check/int_incompleteness1.smt2 la_generic: unexpected result 0.06965632003266364,8,2022-05-08 12:08:18
+../smt-lib/QF_LIA/check/int_incompleteness3.smt2,UNKNOWN PROOF (veriT),,,,2022-05-08 12:08:18
+../smt-lib/QF_LIA/tightrhombus/tightrhombus-273-245-1.smt2,0.117,0.406,Error: ../smt-lib/QF_LIA/tightrhombus/tightrhombus-273-245-1.smt2 currently lia_generic is not supported 0.003043288947083056,8,2022-05-08 12:08:18
+../smt-lib/QF_LIA/tightrhombus/tightrhombus-273-245-2.smt2,0.885,0.382,Error: ../smt-lib/QF_LIA/tightrhombus/tightrhombus-273-245-2.smt2 currently lia_generic is not supported 0.003102418966591358,8,2022-05-08 12:08:20
+../smt-lib/QF_LIA/tightrhombus/tightrhombus-283-245-0.smt2,0.124,0.445,Error: ../smt-lib/QF_LIA/tightrhombus/tightrhombus-283-245-0.smt2 currently lia_generic is not supported 0.0053376840660348535,8,2022-05-08 12:08:18
+../smt-lib/QF_LIA/tightrhombus/tightrhombus-273-245-0.smt2,0.089,0.494,Error: ../smt-lib/QF_LIA/tightrhombus/tightrhombus-273-245-0.smt2 currently lia_generic is not supported 0.004493230022490025,8,2022-05-08 12:08:18
+../smt-lib/QF_LIA/tightrhombus/tightrhombus-283-245-1.smt2,0.074,0.868,Error: ../smt-lib/QF_LIA/tightrhombus/tightrhombus-283-245-1.smt2 currently lia_generic is not supported 0.002982566016726196,8,2022-05-08 12:08:19
+../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_blmc002.smt2,7.074,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:09:24
+../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_blmc004.smt2,14.779,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:09:32
+../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_blmc006.smt2,27.937,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:09:46
+../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_bgmc004.smt2,2.813,53.138,Error: ../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_bgmc004.smt2 Timeout 300.22226124303415,47406,2022-05-08 12:14:14
+../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_bgmc002.smt2,0.445,16.251,Proofterm: 277.276,16475,2022-05-08 12:13:12
+../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_blmc000.smt2,1.682,29.423,Error: ../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_blmc000.smt2 Timeout 300.05432767106686,31438,2022-05-08 12:13:50
+../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_live_blmc002.smt2,6.573,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:09:25
+../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_bgmc003.smt2,1.153,33.016,Error: ../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_bgmc003.smt2 Timeout 300.05424918595236,31871,2022-05-08 12:13:53
+../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_bgmc005.smt2,3.881,PARSING ERROR (HolPy) Timeout,,,2022-05-08 12:09:22
+../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_live_bgmc003.smt2,1.981,46.689,Error: ../smt-lib/QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_live_bgmc003.smt2 Timeout 300.0681718989508,43496,2022-05-08 12:14:08
+../smt-lib/QF_LIA/calypto/problem-004350.cvc.1.smt2,0.102,0.817,Error: ../smt-lib/QF_LIA/calypto/problem-004350.cvc.1.smt2 currently lia_generic is not supported 3.646674113930203,910,2022-05-08 12:08:24
+../smt-lib/QF_LIA/calypto/problem-001553.cvc.1.smt2,0.238,1.276,Error: ../smt-lib/QF_LIA/calypto/problem-001553.cvc.1.smt2 currently lia_generic is not supported 85.9603837300092,3979,2022-05-08 12:09:47
+../smt-lib/QF_LIA/calypto/problem-004299.cvc.1.smt2,0.063,1.087,Error: ../smt-lib/QF_LIA/calypto/problem-004299.cvc.1.smt2 currently lia_generic is not supported 3.361651237006299,802,2022-05-08 12:08:24
+../smt-lib/QF_LIA/calypto/problem-004316.cvc.1.smt2,0.110,1.316,Error: ../smt-lib/QF_LIA/calypto/problem-004316.cvc.1.smt2 currently lia_generic is not supported 3.6480172460433096,910,2022-05-08 12:08:25
+../smt-lib/QF_LIA/calypto/problem-004337.cvc.1.smt2,0.139,0.736,Error: ../smt-lib/QF_LIA/calypto/problem-004337.cvc.1.smt2 currently lia_generic is not supported 4.025750608998351,910,2022-05-08 12:08:25
+../smt-lib/QF_LIA/calypto/problem-004353.cvc.1.smt2,0.078,0.737,Error: ../smt-lib/QF_LIA/calypto/problem-004353.cvc.1.smt2 currently lia_generic is not supported 4.31170653400477,802,2022-05-08 12:08:25
+../smt-lib/QF_LIA/calypto/problem-002673.cvc.1.smt2,0.133,0.792,Error: ../smt-lib/QF_LIA/calypto/problem-002673.cvc.1.smt2 currently lia_generic is not supported 17.824267828953452,935,2022-05-08 12:08:39
+../smt-lib/QF_LIA/calypto/problem-004344.cvc.1.smt2,0.114,1.012,Error: ../smt-lib/QF_LIA/calypto/problem-004344.cvc.1.smt2 currently lia_generic is not supported 2.9635205060476437,802,2022-05-08 12:08:25
+../smt-lib/QF_LIA/calypto/problem-004346.cvc.1.smt2,0.085,1.149,Error: ../smt-lib/QF_LIA/calypto/problem-004346.cvc.1.smt2 currently lia_generic is not supported 3.0909502500435337,910,2022-05-08 12:08:25
+../smt-lib/QF_LIA/calypto/problem-001542.cvc.1.smt2,0.179,1.489,Error: ../smt-lib/QF_LIA/calypto/problem-001542.cvc.1.smt2 currently lia_generic is not supported 143.35079478402622,4237,2022-05-08 12:10:46
+../smt-lib/QF_LIA/calypto/problem-002666.cvc.1.smt2,0.142,1.378,Error: ../smt-lib/QF_LIA/calypto/problem-002666.cvc.1.smt2 currently lia_generic is not supported 6.286749618011527,843,2022-05-08 12:08:29
+../smt-lib/QF_LIA/calypto/problem-006045.cvc.1.smt2,12.441,2.049,Error: ../smt-lib/QF_LIA/calypto/problem-006045.cvc.1.smt2 currently lia_generic is not supported 1.64026667305734,6038,2022-05-08 12:08:52
+../smt-lib/QF_LIA/calypto/problem-002267.cvc.1.smt2,0.097,1.535,Error: ../smt-lib/QF_LIA/calypto/problem-002267.cvc.1.smt2 currently lia_generic is not supported 4.492648383020423,1557,2022-05-08 12:08:27
+Solve timeout: 120,ProofTerm timeout: 300
+Total time: 1310.369
+2022-05-08 12:28:42
