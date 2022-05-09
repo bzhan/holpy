@@ -256,6 +256,31 @@ def resolve_order(props):
 
     return resolves, [id_to_term(a, n) for (a, n) in props[id_remain[0]]]
 
+
+@register_macro("swap_disj_to_front")
+class SwapDisjToFrontMacro(Macro):
+    """The two arguments are respectively: a list of disjunctions on the
+    left side, and the index to swap to front.
+    
+    """
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        l_args, idx = args
+        if idx >= len(l_args):
+            raise AssertionError("swap_disj_to_front: index out of bounds")
+
+        # Check prevs does decompose into l_args
+        if strip_disj_n(prevs[0].prop, len(l_args)) != l_args:
+            raise AssertionError("swap_disj_to_front: clause does not match")
+
+        r_args = [l_args[idx]] + l_args[:idx] + l_args[idx+1:]
+        return Thm(Or(*r_args), prevs[0].hyps)
+
+
 @register_macro("verit_th_resolution")
 class ThResolutionMacro(Macro):
     """Return the resolution result of multiple proof terms."""
@@ -346,13 +371,9 @@ class ThResolutionMacro(Macro):
 
             # First, move t1 and t2 to the left
             if t1 > 0:
-                disj1 = [prem1[t1]] + prem1[:t1] + prem1[t1+1:]
-                eq_pt1 = logic.imp_disj_iff(Eq(pt1.prop, Or(*disj1)))
-                pt1 = eq_pt1.equal_elim(pt1)
+                pt1 = ProofTerm("swap_disj_to_front", (prems[id1], t1), prevs=[pt1])
             if t2 > 0:
-                disj2 = [prem2[t2]] + prem2[:t2] + prem2[t2+1:]
-                eq_pt2 = logic.imp_disj_iff(Eq(pt2.prop, Or(*disj2)))
-                pt2 = eq_pt2.equal_elim(pt2)
+                pt2 = ProofTerm("swap_disj_to_front", (prems[id2], t2), prevs=[pt2])
 
             # Apply the resolution theorem
             if len(prem1) > 1 and len(prem2) > 1:
