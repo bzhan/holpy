@@ -10,26 +10,17 @@ import sys
 import csv
 import concurrent.futures
 from itertools import repeat
-import functools
-import errno
+import signal
+import subprocess
+from typing import Optional
 
-from smt.veriT import interface, proof_rec, proof_parser
+from smt.veriT import proof_rec, proof_parser, command
 from smt.veriT.verit_macro import VeriTException
 from syntax.settings import settings
 settings.unicode = False
 
 sys.setrecursionlimit(10000)
 
-smtlib_path = None
-
-try:
-    with open('smt/veriT/tests/smtlib_path.txt', 'r') as f:
-        smtlib_path = f.readline().strip()
-except FileNotFoundError:
-    print("File smtlib_path.txt should be present in the smt/veriT/tests/ directory,")
-    print("containing the path to the smtlib folder.")
-
-import signal
 
 class TO:
     def __init__(self, seconds=1, error_message='Timeout'):
@@ -49,42 +40,60 @@ class TO:
 class TimeoutError(Exception):
     pass
 
-def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
-    def decorator(func):
-        def _handle_timeout(signum, frame):
-            raise TimeoutError(error_message)
-
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            signal.signal(signal.SIGALRM, _handle_timeout)
-            signal.alarm(seconds)
-            try:
-                result = func(*args, **kwargs)
-            finally:
-                signal.alarm(0)
-            return result
-
-        return wrapper
-
-    return decorator
-
-
-try:
-    with open('smt/veriT/tests/smtlib_path.txt', 'r') as f:
-        smtlib_path = f.readline().strip()
-except FileNotFoundError:
-    print("File smtlib_path.txt should be present in the smt/veriT/tests/ directory,")
-    print("containing the path to the smtlib folder.")
-
 def test_parse_step(verit_proof, ctx):
     parser = proof_parser.proof_parser(ctx)
     steps = []
     for s in verit_proof.replace("\r", "").split("\n"):
         if s == "unsat" or s == "":
             continue
-        steps.append(parser.parse(s))
-
+        step = parser.parse(s)
+        if isinstance(step, command.Step) and step.rule_name == "lia_generic":
+            return ["lia_generic"]
+        steps.append(step)
     return steps
+
+def check_sat_from_file(filename: str) -> str:
+    """check the status from smt file"""
+    with open(filename, "r") as f:
+        for line in f.readlines():
+            if line == "(set-info :status sat)":
+                return "sat"
+            elif line == "(set-info :status unknown)":
+                return "unknown"
+            elif line == "(set-info :status unsat)":
+                return "unsat"
+            elif line.startswith("(declare"):
+                break
+    return "Proof extraction from veriT is timeout (veriT)"
+
+def solve(filename: str, timeout:int=120) -> Optional[str]:
+    res = check_sat_from_file(filename)
+    if res in ("sat", "unknown", "none"):
+        return None
+    args = "--proof-prune "\
+            "--proof-with-sharing "\
+            "--proof-merge "\
+            "--disable-print-success "\
+            "--disable-banner "\
+            "--proof=-"
+
+    with subprocess.Popen("veriT %s %s" % (args, filename),
+                          stdout=subprocess.PIPE, 
+                          stderr=subprocess.PIPE, shell=True, preexec_fn=os.setsid) as p:
+        try:
+            output, err_msg = p.communicate(timeout=timeout)
+            output_lines = output.decode('UTF-8').split("\n")
+            if output_lines == [""]:
+                return None
+            elif output_lines[1].strip() in ("sat", "unknown", "unsupported"):
+                return None
+            else:
+                return output.decode('UTF-8')
+        except subprocess.TimeoutExpired:
+            # Kill processes
+            print("Kiill")
+            os.killpg(os.getpgid(p.pid), signal.SIGTERM)
+            return None
 
 
 def test_proof(filename, solve_timeout=120):
@@ -99,121 +108,80 @@ def test_proof(filename, solve_timeout=120):
     else:
         return [filename[11:], "RETURN PROOF"]
 
-def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
+def test_file(filename, test_eval=False, test_proofterm=False,
               step_limit=None, omit_proofterm=None, solve_timeout=120, eval_timeout=300):
     """Test a given file under eval or proofterm mode."""
-    stastic = []
-    global smtlib_path
-    if not smtlib_path:
-        return
-
     if filename[-4:] != 'smt2':
         return
-    stastic.append(filename)
-    unsat, res = interface.is_unsat(filename, timeout=solve_timeout)
-    if not unsat:
-        return [filename, str(res), '', '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-    print(repr(filename) + ',')
+    # unsat, res = interface.is_unsat(filename, timeout=solve_timeout)
+    # if not unsat:
+    #     return [filename, str(res), '', '', '']
 
     # assts = proof_rec.get_assertions(filename) 
 
+    print(repr(filename) + ',')
     # Solve
     start_time = time.perf_counter()
-    verit_proof = interface.solve(filename, timeout=solve_timeout)
+    verit_proof = solve(filename, timeout=solve_timeout)
     if verit_proof is None:
         print([filename, 'NO PROOF (veriT)', '', '', ''])
-        return [filename, 'NO PROOF (veriT)', '', '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
+        return [filename, 'NO PROOF (veriT)', '', '', '']
     if verit_proof.strip() == "unknown":
         print("%s unknown proof" % filename)
-        return [filename, 'UNKNOWN PROOF (veriT)', '', '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
+        return [filename, 'UNKNOWN PROOF (veriT)', '', '', '']
     solve_time = time.perf_counter() - start_time
     solve_time_str = "%.3f" % solve_time
 
-
-    total_time = 60
+    # Parse
     start_time = time.perf_counter()
     try:
-        with TO(seconds=total_time):
+        with TO(seconds=60):
             try:
                 ctx = proof_rec.bind_var(filename)
-            except Exception as e:
-                print([filename, solve_time_str, "BIND_VAR %s (HolPy)" % str(e), '', ''])
-                return [filename, solve_time_str, "BIND_VAR %s (HolPy)" % str(e), '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-    except Exception as e:
-        print([filename, solve_time_str, "PARSER ERROR %s" % str(e), '', ''])
-        return [filename, solve_time_str, "PARSER ERROR %s" % str(e), '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-    end_time = time.perf_counter()
-    total_time -= (end_time - start_time)
-    if total_time < 0:
-        print([filename, solve_time_str, "TIMEOUT", "TIMEOUT", '', ''])
-        return [filename, solve_time_str, "TIMEOUT", "TIMEOUT", '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-    # Parse
-    start_time  = time.perf_counter()
-    try: # timeout error
-        with TO(seconds=total_time):
-            try: # parsing error
                 steps = test_parse_step(verit_proof, ctx)
             except Exception as e:
-                print([filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', ''])
-                return [filename, solve_time_str, 'PARSING ERROR (HolPy) %s' % e, '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-    except Exception as e: # should consider timeout error as well as other unexpected error
-        print("%s PARSING TIMEOUT %s" % (filename, str(e)))
-        return [filename, solve_time_str, 'PARSING ERROR %s (HolPy)' % e, '', '']
-    parse_time = time.perf_counter() - start_time
-    parse_time_str = "%.3f" % parse_time
-    if parse_time > total_time:
-        print([filename, solve_time_str, 'PARSING TIMEOUT (HolPy)', '', ''])
-        return [filename, solve_time_str, 'PARSING TIMEOUT (HolPy)', '', '', datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-    total_time -= parse_time
-    # Validation by macro.eval
-    eval_time_str = ""
+                return [filename, solve_time_str, str(e), '', '']
+    except Exception as e:
+        return [filename, solve_time_str, str(e), '', '']
+    parse_time_str = "%.3f" % (time.perf_counter() - start_time)
+    
+    # lia_generic is not supported
+    if len(steps) == 1 and steps[0] == "lia_generic":
+        return [filename, solve_time_str, 'lia_generic', '', '']
+    
+    # eval
+    start_time = time.perf_counter()
     if test_eval:
-        start_time = time.perf_counter()
-        recon = proof_rec.ProofReconstruction(steps)
-        try:
-            with TO(seconds=total_time):
-                try:
-                    pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
-                except Exception as e:
-                    print([filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps)])
-                    return  [filename, solve_time_str, parse_time_str, 'Filename: %s Error: %s' % (str(filename), str(e)), len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]                   
-        except TimeoutError:
-            print([filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps)])
-            return [filename, solve_time_str, parse_time_str, 'Proof evaluation is timeout! (HolPy)', len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-        eval_time = time.perf_counter() - start_time
-        eval_time_str = "Eval: %.3f" % eval_time
-        assert pt.rule != "sorry"
-        print([filename, solve_time_str, parse_time_str, eval_time_str, len(steps)])
-        return [filename, solve_time_str, parse_time_str, eval_time_str, len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-
-    # Validation by macro.get_proof_term
-    proofterm_time_str = ""
-    if test_proofterm:
-        start_time = time.perf_counter()
-        recon = proof_rec.ProofReconstruction(steps)
         try:
             with TO(seconds=300):
                 try:
-                    print("TOTAL TIME %.3f" % total_time)
-                    pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
-                    assert pt.rule != "sorry"
+                    recon = proof_rec.ProofReconstruction(steps)
+                    pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                 except Exception as e:
-                    print([filename, solve_time_str, parse_time_str, 'Error: %s %s %s' % (str(filename), str(e), time.perf_counter() - start_time), len(steps)])
-                    return [filename, solve_time_str, parse_time_str, 'Error: %s %s %s' % (str(filename), str(e), time.perf_counter() - start_time), len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-        except (RecursionError,Exception) as e: # maybe other error?
-            print("%s proof reconstruction timeout %s" % (filename, str(e)))
-            if isinstance(e, TimeoutError):
-                print([filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps)])
-                return [filename, solve_time_str, parse_time_str, 'Proof reconstruction is timeout! (HolPy)', len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-            else:
-                print([filename, solve_time_str, parse_time_str, 'Proof reconstruction failed %s' % str(e), len(steps)])
-                return [filename, solve_time_str, parse_time_str, 'Proof reconstruction failed %s' % str(e), len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-        proofterm_time = time.perf_counter() - start_time
-        proofterm_time_str = "Proofterm: %.3f" % proofterm_time
+                    return [filename, solve_time_str, parse_time_str, str(e), len(steps)]
+        except Exception:
+            return [filename, solve_time_str, parse_time_str, str(e), len(steps)]
+        eval_time_str = "%.3f" % (time.perf_counter() - start_time)
+        return [filename, solve_time_str, parse_time_str, eval_time_str, len(steps)]
+    # get_proof_term
+    else:
+        try:
+            with TO(seconds=300):
+                try:
+                    recon = proof_rec.ProofReconstruction(steps)
+                    pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
+                except Exception as e:
+                    end_time = time.perf_counter()
+                    print([filename, solve_time_str, parse_time_str, "%s %.3f" % (str(e), end_time-start_time), len(steps)])
+                    return [filename, solve_time_str, parse_time_str, "%s %.3f" % (str(e), end_time-start_time), len(steps)]
+        except Exception:
+            end_time = time.perf_counter()
+            return [filename, solve_time_str, parse_time_str, "%s %.3f" % (str(e), end_time-start_time), len(steps)]
+        proof_time_str = "%.3f" % (time.perf_counter() - start_time)
+        print([filename, solve_time_str, parse_time_str, proof_time_str, len(steps)])
+        return [filename, solve_time_str, parse_time_str, proof_time_str, len(steps)]
 
-        print([filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps)])
-        return [filename, solve_time_str, parse_time_str, proofterm_time_str, len(steps), datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
-
+    
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
               step_limit=None, omit_proofterm=None, solve_timeout=10, eval_timeout=120):
     """Test a directory containing SMT files.
@@ -225,9 +193,7 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         is omitted (evaluation is used instead).
         
     """
-    global smtlib_path
-    if not smtlib_path:
-        return
+    smtlib_path = "../smt-lib/"
 
     abs_path = smtlib_path + path
 
@@ -257,7 +223,7 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         max_workers = len(file_names)
     print("start at %s" %  datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
-        res = executor.map(test_file, file_names, repeat(show_time),
+        res = executor.map(test_file, file_names,
                         repeat(test_eval), repeat(test_proofterm), repeat(step_limit),
                             repeat(omit_proofterm), repeat(solve_timeout), repeat(eval_timeout))
     print("end")
@@ -281,10 +247,7 @@ def run_fast_scandir(dir, ext):    # dir: str, ext: list
     return subfolders, files
 
 def test_path_proof(path, solve_timeout=120):
-    global smtlib_path
-    if not smtlib_path:
-        return
-
+    smtlib = "../smt-lib/"
     abs_path = smtlib_path + path
 
     stats = []

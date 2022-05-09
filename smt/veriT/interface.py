@@ -2,9 +2,7 @@
 VeriT Interface.
 """
 
-import z3
 import subprocess
-from prover import z3wrapper
 import os
 import time
 
