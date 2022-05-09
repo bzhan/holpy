@@ -1468,7 +1468,7 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                 return None
             v2, body2 = t2.dest_abs()
             _, body1 = t1.dest_abs(var_name=v2.name)
-            pt = helper(body2, body1, depth-1)
+            pt = helper(body1, body2, depth-1).symmetric()
             if pt is None:
                 return None
             res = ProofTerm.reflexive(t2).on_rhs(abs_conv(replace_conv(pt))).symmetric()
@@ -3777,7 +3777,10 @@ class SkoExMacro(Macro):
         if pt.rhs != rhs:
             raise VeriTException("sko_ex", "rhs should be equal to pt's rhs")
 
-        xs, lhs_body = lhs.strip_exists()
+        xs, lhs_body = [], lhs
+        while lhs_body.is_exists() and pt.lhs != lhs_body:
+            x, lhs_body = lhs_body.arg.dest_abs()
+            xs.append(x)
 
         if pt.lhs != lhs_body:
             print('pt.lhs:', pt.lhs)
@@ -3814,9 +3817,12 @@ class SkoExMacro(Macro):
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal, ctx = args
         lhs, rhs = goal.args
-        xs, lhs_body = lhs.strip_exists()
-
         pt = prevs[0]
+
+        xs, lhs_body = [], lhs
+        while lhs_body.is_exists() and pt.lhs != lhs_body:
+            x, lhs_body = lhs_body.arg.dest_abs()
+            xs.append(x)
 
         eqs = dict()
         for hyp in pt.hyps:
@@ -3887,7 +3893,10 @@ class SkoForallMacro(Macro):
         if pt.rhs != rhs:
             raise VeriTException("sko_forall", "rhs should be equal to pt's rhs")
 
-        xs, lhs_body = lhs.strip_forall()
+        xs, lhs_body = [], lhs
+        while lhs_body.is_forall() and pt.lhs != lhs_body:
+            x, lhs_body = lhs_body.arg.dest_abs()
+            xs.append(x)
 
         if pt.lhs != lhs_body:
             print('pt.lhs:', pt.lhs)
@@ -3924,9 +3933,12 @@ class SkoForallMacro(Macro):
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal, ctx = args
         lhs, rhs = goal.args
-        xs, lhs_body = lhs.strip_forall()
-
         pt = prevs[0]
+
+        xs, lhs_body = [], lhs
+        while lhs_body.is_forall() and pt.lhs != lhs_body:
+            x, lhs_body = lhs_body.arg.dest_abs()
+            xs.append(x)
 
         eqs = dict()
         for hyp in pt.hyps:
@@ -4101,7 +4113,7 @@ class OnepointMacro(Macro):
             cur_t = cur_t_eq.rhs
             for x, _ in one_val_var:
                 cur_t = Forall(x, cur_t)
-            pt = ProofTerm.reflexive(cur_t).on_rhs(verit_conv.onepoint_forall_conv())
+            pt = ProofTerm.reflexive(cur_t).on_rhs(verit_conv.onepoint_forall_conv(ctx))
             for x in remain_var:
                 pt = ProofTerm.reflexive(hol_term.forall(x.T)).combination(pt.abstraction(x))
             
@@ -4115,6 +4127,14 @@ class OnepointMacro(Macro):
             goal_rhs_eq = ProofTerm.reflexive(goal_rhs).on_rhs(verit_conv.norm_to_disj_conv())
             _, pt_rhs = pt.rhs.strip_forall()
             goal_rhs_eq2 = compare_sym_tm_thm(goal_rhs_eq.rhs, pt_rhs)
+            if goal_rhs_eq2 is None:
+                print('goal', goal)
+                print('ctx')
+                for k, v in ctx.items():
+                    print(k, v)
+                print('goal_rhs_eq', goal_rhs_eq.rhs)
+                print('pt', pt.rhs)
+                raise AssertionError
             goal_rhs_eq = ProofTerm.transitive(goal_rhs_eq, goal_rhs_eq2)
             eqs = dict()
             eqs[(cur_t_eq.lhs, cur_t_eq.rhs)] = cur_t_eq

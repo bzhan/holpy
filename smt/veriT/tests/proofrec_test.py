@@ -270,14 +270,19 @@ class ProofrecTest(unittest.TestCase):
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_57_04_292_1481164.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_56_13_740_1441286.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_17_07_59_177_2281818.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/coinductive_list/x2015_09_10_16_56_12_258_1440056.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/huffman/x2015_09_10_16_51_19_087_1305640.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/sorted_list_operations/x2015_09_10_16_48_18_474_1105048.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_52_48_322_1388593.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_46_30_200_1001391.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_47_39_480_1078027.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_48_44_767_1147663.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/distro/gram_lang/x2015_09_10_16_52_04_277_1342945.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/distro/stream/x2015_09_10_16_47_52_499_1057641.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_54_35_132_1014381.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_54_53_474_1036287.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_55_00_922_1043783.smt_in.smt2',
+            'UF/20170428-Barrett/cdt-cade2015/nada/gandl/stern_brocot_tree/x2015_09_10_16_50_54_775_1033877.smt_in.smt2',
             'UF/sledgehammer/Arrow_Order/smtlib.578262.smt2',
             'UF/sledgehammer/Arrow_Order/smtlib.617784.smt2',
             'UF/sledgehammer/Arrow_Order/smtlib.686801.smt2',
@@ -540,6 +545,9 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt121642227126350719.smt2',
             'AUFLIA/20170829-Rodin/smt1218456647866960210.smt2',
             'AUFLIA/20170829-Rodin/smt1238392701218460929.smt2',
+            'AUFLIA/20170829-Rodin/smt1306673360382824160.smt2',
+            'AUFLIA/20170829-Rodin/smt1404749150926468013.smt2',
+            'AUFLIA/20170829-Rodin/smt6890534299883019152.smt2',
             'AUFLIA/20170829-Rodin/smt1548357652033660278.smt2',
             'AUFLIA/20170829-Rodin/smt1551255090000261050.smt2',
             'AUFLIA/20170829-Rodin/smt1553283421285438203.smt2',
@@ -570,6 +578,9 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt7351897299178954133.smt2',
             'AUFLIA/20170829-Rodin/smt4213031790546145760.smt2',
             'AUFLIA/20170829-Rodin/smt4473657298807368490.smt2',
+            'AUFLIA/20170829-Rodin/smt28921856381296720.smt2',
+            'AUFLIA/20170829-Rodin/smt3504742795329872706.smt2',
+            'AUFLIA/20170829-Rodin/smt7175126839151094124.smt2',
             # 'AUFLIA/20170829-Rodin/smt5586736073099019802.smt2', # resolution
             'AUFLIA/20170829-Rodin/smt1524510508476207618.smt2',
             'AUFLIA/20170829-Rodin/smt3939123684161216825.smt2',
@@ -604,7 +615,7 @@ class ProofrecTest(unittest.TestCase):
             'LRA/keymaera/intersection-example-simple.proof-node684031.smt2',
             'LRA/keymaera/intersection-example-simple.proof-node403143.smt2',
             'LRA/keymaera/intersection-example-simple.proof-node62694.smt2',
-            'LRA/scholl-smt08/RND/RND_4_30.smt2'
+            'LRA/scholl-smt08/RND/RND_4_30.smt2',
         ]
         profile = False
         if profile:
