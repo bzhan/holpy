@@ -1699,6 +1699,33 @@
             "vars": {
                 "P": "bool"
             }
+        },
+        {
+            "name": "verit_int_add_gt_move_right",
+            "prop": "c + x > 0 ⟷ x > -c",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "verit_int_add_ge_move_right",
+            "prop": "c + x ≥ 0 ⟷ x ≥ -c",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
+        },
+        {
+            "name": "verit_int_add_eq_move_right",
+            "prop": "c + x = 0 ⟷ x = -c",
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "x": "int"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

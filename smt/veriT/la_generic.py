@@ -1,6 +1,7 @@
 import math
 from fractions import Fraction
 from decimal import Decimal
+from typing import Union
 
 from kernel import term as hol_term
 from kernel import type as hol_type
@@ -105,13 +106,14 @@ def to_la(tm: hol_term.Term) -> LinearArith:
         return LinearArith(const=0, lps=((tm, 1),))
 
 def from_int_la(la: LinearArith) -> hol_term.Term:
-    hol_const = hol_term.Int(la.const)
+    c = math.ceil(la.const)
+    hol_const = hol_term.Int(c)
     if len(la) == 0:
         return hol_const
     
     hol_pairs = [hol_term.Int(i) * v if i != 1 else v for v, i in la.lps]
 
-    return hol_const + sum(hol_pairs[1:], hol_pairs[0])
+    return c + sum(hol_pairs[1:], hol_pairs[0])
 
 
 def from_real_la(la):
@@ -193,7 +195,6 @@ class LAGenericMacro(Macro):
             print(coeffs)
             raise VeriTException("la_generic", "should supply a list of numbers")
 
-
         dis_eq = dis_eqs[0]
         if dis_eq.is_not():
             dis_eq = dis_eq.arg
@@ -202,10 +203,19 @@ class LAGenericMacro(Macro):
         # assert dis_eq.arg.get_type() == hol_type.IntType
         is_real = True if T == hol_type.RealType else False
         zero = hol_term.Real(0) if is_real else hol_term.Int(0)
-        eval_const = real.real_eval if is_real else integer.int_eval
+        # eval_const = real.real_eval if is_real else integer.int_eval
+        def eval_const(tm):
+            if tm.is_constant():
+                if tm.get_type() == hol_type.RealType:
+                    return real.real_eval(tm)
+                elif tm.get_type() == hol_type.IntType:
+                    return integer.int_eval(tm)
+                else:
+                    raise VeriTException("la_generic", "unexpected coeff type")
+            else:
+                return tm
         norm = norm_real_expr if is_real else norm_int_expr
         hol_num = hol_term.Real if is_real else hol_term.Int
-
 
         # Step 1: convert each disequality to a greater/greater_eq disequality
         dis_eq_step1 = []
@@ -297,10 +307,7 @@ class LAGenericMacro(Macro):
                 raise VeriTException("la_generic", "disequality should not be less or less_eq: %s" % dis_eq)
         
         
-        # if all variables are integers, convert all coeffs to integer
-        if not is_real:
-            coeffs = analyze_args(coeffs)
-                
+
 
         # Step 3: multiply each disequality with coeffs
         dis_eq_step3 = []
@@ -309,11 +316,12 @@ class LAGenericMacro(Macro):
         for coeff, dis_eq in zip(coeffs, dis_eq_step2): 
             lhs, rhs = dis_eq.args
             if not dis_eq.is_equals(): # coeff should be absoluted
-                abs_coeff = hol_num(abs(eval_const(coeff)))
+                abs_coeff = hol_term.Real(abs(eval_const(coeff)))
             else:
                 abs_coeff = coeff
             c_lhs, c_rhs = norm(abs_coeff * lhs), norm(abs_coeff * rhs)
             dis_eq_step3.append(dis_eq.head(c_lhs, c_rhs))
+
 
         # Step 4: compare the sum of all lhs and the sum of all rhs
         diseq_lhs = [dis_eq.arg1 for dis_eq in dis_eq_step3]

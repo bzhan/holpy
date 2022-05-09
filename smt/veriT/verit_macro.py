@@ -15,8 +15,8 @@ from kernel import type as hol_type
 from kernel.term import Lambda, Term, Not, And, Or, Eq, Implies, false, true, \
     BoolType, Int, Forall, Exists, Inst, conj, disj, Var, neg, implies, plus, IntType, RealType
 from logic import logic
-from logic.conv import ConvException, try_conv, rewr_conv, arg_conv,\
-         top_conv, arg1_conv, replace_conv, abs_conv, Conv, bottom_conv, beta_conv, beta_norm_conv
+from logic.conv import try_conv, rewr_conv, arg_conv,\
+         top_conv, arg1_conv, replace_conv, abs_conv, Conv, bottom_conv, beta_conv, binop_conv
 from data import integer, real
 from data import list as hol_list
 from kernel import term_ord
@@ -1648,7 +1648,7 @@ class expand_ite_conv(Conv):
             head_pt = refl(t.head)
             for i, arg in enumerate(t.args):
                 head_pt = head_pt.combination(refl(arg))
-                if arg.get_type() == BoolType and len(arg.get_vars()) != 0 and all(a.get_type() == BoolType for a in arg.get_vars()):
+                if arg.get_type() == BoolType and arg != true and arg != false:
                     pt = head_pt.on_rhs(
                         rewr_conv("verit_bfun_elim")
                     )
@@ -1656,7 +1656,7 @@ class expand_ite_conv(Conv):
                         pt = pt.combination(refl(arg_j)).on_rhs(
                             rewr_conv("verit_ite_apply")
                         )
-                    return pt
+                    return pt.on_rhs(binop_conv(self))
             return head_pt
         elif t.is_abs():
             return refl(t).on_rhs(abs_conv(self))
