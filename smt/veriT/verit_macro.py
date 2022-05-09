@@ -4101,7 +4101,7 @@ class OnepointMacro(Macro):
             cur_t = cur_t_eq.rhs
             for x, _ in one_val_var:
                 cur_t = Forall(x, cur_t)
-            pt = ProofTerm.reflexive(cur_t).on_rhs(verit_conv.onepoint_forall_conv())
+            pt = ProofTerm.reflexive(cur_t).on_rhs(verit_conv.onepoint_forall_conv(ctx))
             for x in remain_var:
                 pt = ProofTerm.reflexive(hol_term.forall(x.T)).combination(pt.abstraction(x))
             
@@ -4115,6 +4115,14 @@ class OnepointMacro(Macro):
             goal_rhs_eq = ProofTerm.reflexive(goal_rhs).on_rhs(verit_conv.norm_to_disj_conv())
             _, pt_rhs = pt.rhs.strip_forall()
             goal_rhs_eq2 = compare_sym_tm_thm(goal_rhs_eq.rhs, pt_rhs)
+            if goal_rhs_eq2 is None:
+                print('goal', goal)
+                print('ctx')
+                for k, v in ctx.items():
+                    print(k, v)
+                print('goal_rhs_eq', goal_rhs_eq.rhs)
+                print('pt', pt.rhs)
+                raise AssertionError
             goal_rhs_eq = ProofTerm.transitive(goal_rhs_eq, goal_rhs_eq2)
             eqs = dict()
             eqs[(cur_t_eq.lhs, cur_t_eq.rhs)] = cur_t_eq
