@@ -670,6 +670,8 @@ class ProofrecTest(unittest.TestCase):
             # 'QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2'
             # 'QF_LIA/rings_preprocessed/ring_2exp4_7vars_2ite_unsat.smt2'
             # 'QF_UFIDL/pete2/c8idw.smt2',
+            # 'QF_LIA/cut_lemmas/15-vars/cut_lemma_02_004.smt2'
+            'QF_LIA/check/int_incompleteness1.smt2'
         ]
 
         profile = False
@@ -678,7 +680,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True, write_file=True)
+            test_path(path, test_eval=True, parse_assertion=True, write_file=True)
 
         if profile:
             p = Stats(pr)
