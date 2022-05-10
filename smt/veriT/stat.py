@@ -173,10 +173,10 @@ def test_file(filename, test_eval=False, test_proofterm=False,
                 except Exception as e:
                     end_time = time.perf_counter()
                     print([filename, solve_time_str, parse_time_str, "%s %.3f" % (str(e), end_time-start_time), len(steps)])
-                    return [filename, solve_time_str, parse_time_str, "%s %.3f" % (str(e), end_time-start_time), len(steps)]
+                    return [filename, solve_time_str, parse_time_str, "Exception: %s %.3f" % (str(e), end_time-start_time), len(steps)]
         except Exception as e:
             end_time = time.perf_counter()
-            return [filename, solve_time_str, parse_time_str, "%s %.3f" % (str(e), end_time-start_time), len(steps)]
+            return [filename, solve_time_str, parse_time_str, "Exception: %s %.3f" % (str(e), end_time-start_time), len(steps)]
         proof_time_str = "%.3f" % (time.perf_counter() - start_time)
         print([filename, solve_time_str, parse_time_str, proof_time_str, len(steps)])
         return [filename, solve_time_str, parse_time_str, proof_time_str, len(steps)]

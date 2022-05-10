@@ -1,20 +1,20 @@
-    Theory     Count
---------------------
-    AUFLIA      2128
-       LIA       163
-       LRA        86
- QF_AUFLIA       259
-    QF_IDL       605
-    QF_LIA       987
-    QF_LRA       550
-    QF_RDL        85
-     QF_UF      4175
-  QF_UFIDL       271
-  QF_UFLIA       171
-  QF_UFLRA       415
-        UF      2853
-     UFIDL        55
-     UFLIA      7168
-     UFLRA        10
---------------------
-     Total     19981
+         Theory     Count
+-------------------------------
+         AUFLIA      2128
+            LIA       163
+            LRA        86
+      QF_AUFLIA       259
+     QF_IDL_NTO       577
+     QF_LIA_NTO       954
+         QF_LRA       550
+         QF_RDL        85
+          QF_UF      4175
+   QF_UFIDL_NTO        52
+       QF_UFLIA       171
+       QF_UFLRA       415
+             UF      2853
+          UFIDL        55
+          UFLIA      7168
+          UFLRA        10
+-------------------------------
+          Total     19701
