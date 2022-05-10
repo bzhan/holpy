@@ -1726,6 +1726,79 @@
                 "c": "int",
                 "x": "int"
             }
+        },
+        {
+            "name": "verit_round_lia_gcd",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "c > 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "c > 0 ⊢ c > 0"
+                },
+                {
+                    "args": "k * x ≥ c",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k * x ≥ c ⊢ k * x ≥ c"
+                },
+                {
+                    "args": "k * lb < c",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k * lb < c ⊢ k * lb < c"
+                },
+                {
+                    "args": "k * (lb + 1) > c",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k * (lb + 1) > c ⊢ k * (lb + 1) > c"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "c > 0, k * x ≥ c, k * lb < c, k * (lb + 1) > c ⊢ k * x ≥ k + k * lb"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ c > 0 ⟶ k * x ≥ c ⟶ k * lb < c ⟶ k * (lb + 1) > c ⟶ k * x ≥ k + k * lb"
+                }
+            ],
+            "prop": "k > 0 ⟶ k * x ≥ c ⟶ k * lb < c ⟶ k * lb + k > c ⟶ k * x ≥ k * lb + k",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "int",
+                "k": "int",
+                "lb": "int",
+                "x": "int"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",

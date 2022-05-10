@@ -172,8 +172,8 @@ class const_prod_lia_conv(Conv):
 
 class verit_norm_lia_greater_eq(Conv):
     def get_proof_term(self, t: Term) -> ProofTerm:
-        if t.is_greater() and t.arg.is_zero():
-            return refl(t).on_rhs(rewr_conv('int_great_to_geq'))
+        if t.is_greater() and t.arg.is_constant():
+            return refl(t).on_rhs(rewr_conv('int_gt_to_geq'), arg_conv(integer.int_eval_conv()))
         else:
             return refl(t)
 

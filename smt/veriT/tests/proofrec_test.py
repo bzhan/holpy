@@ -693,15 +693,17 @@ class ProofrecTest(unittest.TestCase):
 
     def test_QF_LIA(self):
         test_paths = [
-            'QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2',
-            'QF_LIA/rings/ring_2exp10_9vars_0ite_unsat.smt2'
-            'QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2'
-            'QF_LIA/rings_preprocessed/ring_2exp4_7vars_2ite_unsat.smt2'
-            'QF_UFIDL/pete2/c8idw.smt2',
-            'QF_LIA/cut_lemmas/15-vars/cut_lemma_02_004.smt2'
+            'QF_LIA/rings/ring_2exp10_9vars_0ite_unsat.smt2',
+            'QF_LIA/rings_preprocessed/ring_2exp4_7vars_2ite_unsat.smt2',
+            'QF_LIA/cut_lemmas/15-vars/cut_lemma_02_004.smt2',
             'QF_LIA/check/int_incompleteness1.smt2',
-            'UFLIA/simplify2/front_end_suite/javafe.parser.test.TestLex.033.smt2',
-            'UF/grasshopper/instantiated/dl_copy_loop_invariant_36_3.smt2'
+            'QF_LIA/cut_lemmas/15-vars/cut_lemma_03_013.smt2',
+            'QF_LIA/rings/ring_2exp16_8vars_0ite_unsat.smt2',
+            'QF_LIA/rings/ring_2exp8_7vars_0ite_unsat.smt2',
+            'QF_LIA/rings/ring_2exp8_6vars_0ite_unsat.smt2',
+            'QF_LIA/rings/ring_2exp10_6vars_0ite_unsat.smt2',
+            'QF_LIA/cut_lemmas/10-vars/cut_lemma_01_001.smt2',
+            'QF_LIA/check/int_incompleteness1.smt2',
         ]
 
         profile = False
