@@ -1468,9 +1468,10 @@ def compare_sym_tm_thm(tm1: Term, tm2: Term, *, eqs=None, depth=-1) -> Optional[
                 return None
             v2, body2 = t2.dest_abs()
             _, body1 = t1.dest_abs(var_name=v2.name)
-            pt = helper(body1, body2, depth-1).symmetric()
+            pt = helper(body1, body2, depth-1)
             if pt is None:
                 return None
+            pt = pt.symmetric()
             res = ProofTerm.reflexive(t2).on_rhs(abs_conv(replace_conv(pt))).symmetric()
             cache[(t1._id, t2._id)] = res
             return res
@@ -1648,7 +1649,7 @@ class expand_ite_conv(Conv):
             head_pt = refl(t.head)
             for i, arg in enumerate(t.args):
                 head_pt = head_pt.combination(refl(arg))
-                if arg.get_type() == BoolType and arg != true and arg != false:
+                if arg.get_type() == BoolType and len(arg.get_vars()) != 0 and all(a.get_type() == BoolType for a in arg.get_vars()):
                     pt = head_pt.on_rhs(
                         rewr_conv("verit_bfun_elim")
                     )

@@ -591,7 +591,6 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt1077199842095303803.smt2',
             'AUFLIA/20170829-Rodin/smt8260763450980098018.smt2',
             'AUFLIA/20170829-Rodin/smt1220722083703635536.smt2',
-            'AUFLIA/20170829-Rodin/smt2020844136539587643.smt2',
             'AUFLIA/20170829-Rodin/smt7351897299178954133.smt2',
             'AUFLIA/20170829-Rodin/smt4213031790546145760.smt2',
             'AUFLIA/20170829-Rodin/smt4473657298807368490.smt2',
@@ -602,6 +601,7 @@ class ProofrecTest(unittest.TestCase):
             'AUFLIA/20170829-Rodin/smt1524510508476207618.smt2',
             'AUFLIA/20170829-Rodin/smt3939123684161216825.smt2',
             'AUFLIA/misc/set1.smt2',
+            'AUFLIA/20170829-Rodin/smt8259835323357410578.smt2',
         ]
 
         profile = False
