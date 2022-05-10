@@ -542,6 +542,9 @@ def exists_reorder_iff(lhs: Term, xs2) -> ProofTerm:
     return ProofTerm.reflexive(hol_term.neg).combination(pt).on_prop(binop_conv(rewr_conv('double_neg')))
 
 class onepoint_forall_conv(Conv):
+    def __init__(self, ctx):
+        self.ctx = ctx
+
     def get_proof_term(self, t):
         assert t.is_forall()
         x, body = t.arg.dest_abs()
@@ -559,10 +562,10 @@ class onepoint_forall_conv(Conv):
         found = None
         sign = True
         for i, disj in enumerate(disjs):
-            if disj.is_not() and disj.arg.is_equals() and disj.arg.lhs == x:
+            if disj.is_not() and disj.arg.is_equals() and disj.arg.lhs == x and disj.arg.rhs == self.ctx[x.name]:
                 found = i
                 break
-            if disj.is_not() and disj.arg.is_equals() and disj.arg.rhs == x:
+            if disj.is_not() and disj.arg.is_equals() and disj.arg.rhs == x and disj.arg.lhs == self.ctx[x.name]:
                 found = i
                 sign = False
                 break

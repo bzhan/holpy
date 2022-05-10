@@ -159,7 +159,7 @@ def test_file(filename, test_eval=False, test_proofterm=False,
                     pt = recon.validate(is_eval=True, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                 except Exception as e:
                     return [filename, solve_time_str, parse_time_str, str(e), len(steps)]
-        except Exception:
+        except Exception as e:
             return [filename, solve_time_str, parse_time_str, str(e), len(steps)]
         eval_time_str = "%.3f" % (time.perf_counter() - start_time)
         return [filename, solve_time_str, parse_time_str, eval_time_str, len(steps)]
@@ -174,7 +174,7 @@ def test_file(filename, test_eval=False, test_proofterm=False,
                     end_time = time.perf_counter()
                     print([filename, solve_time_str, parse_time_str, "%s %.3f" % (str(e), end_time-start_time), len(steps)])
                     return [filename, solve_time_str, parse_time_str, "%s %.3f" % (str(e), end_time-start_time), len(steps)]
-        except Exception:
+        except Exception as e:
             end_time = time.perf_counter()
             return [filename, solve_time_str, parse_time_str, "%s %.3f" % (str(e), end_time-start_time), len(steps)]
         proof_time_str = "%.3f" % (time.perf_counter() - start_time)
@@ -199,9 +199,9 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
 
     stats = []
 
-    if path != "" and not os.path.exists(abs_path):
-        print("Directory %s not found." % path)
-        return
+    # if path != "" and not os.path.exists(abs_path):
+    #     print("Directory %s not found." % path)
+    #     return
 
     if path == "":
         print("test full")

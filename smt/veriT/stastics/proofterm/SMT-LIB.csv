@@ -216,7 +216,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/AUFLIA/20170829-Rodin/smt4554302636963093595.smt2,0.041,0.324,0.054,4
 ../smt-lib/AUFLIA/20170829-Rodin/smt2667264583198719828.smt2,0.059,0.400,0.399,129
 ../smt-lib/AUFLIA/20170829-Rodin/smt7399373559952043054.smt2,0.237,0.415,0.331,115
-../smt-lib/AUFLIA/20170829-Rodin/smt872164429150466761.smt2,0.067,0.502, 0.533,298
+../smt-lib/AUFLIA/20170829-Rodin/smt872164429150466761.smt2,0.040,1.185,EXISTS-CONJ 0.689,298
 ../smt-lib/AUFLIA/20170829-Rodin/smt7264001379635341214.smt2,0.059,0.360,0.512,123
 ../smt-lib/AUFLIA/20170829-Rodin/smt8839582396292960492.smt2,37.360,0.531,0.666,683
 ../smt-lib/AUFLIA/20170829-Rodin/smt7332664541846424372.smt2,0.050,0.252,0.004,4
@@ -502,7 +502,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/AUFLIA/20170829-Rodin/smt6101124544860517489.smt2,0.153,0.535,0.023,4
 ../smt-lib/AUFLIA/20170829-Rodin/smt3967279179823963184.smt2,0.041,0.622,0.810,156
 ../smt-lib/AUFLIA/20170829-Rodin/smt62951640437473493.smt2,0.064,0.261,0.007,7
-../smt-lib/AUFLIA/20170829-Rodin/smt1012188733744711688.smt2,0.085,0.457, 0.300,298
+../smt-lib/AUFLIA/20170829-Rodin/smt1012188733744711688.smt2,0.039,1.172,EXISTS-CONJ 0.689,298
 ../smt-lib/AUFLIA/20170829-Rodin/smt1421304273727626382.smt2,0.078,0.864,0.250,155
 ../smt-lib/AUFLIA/20170829-Rodin/smt7437464364212087007.smt2,0.042,0.334,0.322,168
 ../smt-lib/AUFLIA/20170829-Rodin/smt5142771635764515927.smt2,0.060,0.802,1.529,819
@@ -3348,563 +3348,596 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/QF_LIA/calypto/problem-002666.cvc.1.smt2,0.166,lia_generic,,
 ../smt-lib/QF_LIA/calypto/problem-006045.cvc.1.smt2,11.013,lia_generic,,
 ../smt-lib/QF_LIA/calypto/problem-002267.cvc.1.smt2,0.164,lia_generic,,
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-4-19.smt2,0.140,2.653,Timeout: 300.000,3585
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-16-23.smt2,6.199,3.432,Timeout: 300.000,10011
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-6-23.smt2,6.177,3.506,Timeout: 300.000,10357
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-21.smt2,0.750,2.858,Timeout: 300.000,4049
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-2-17.smt2,0.069,2.323,Timeout: 300.000,2037
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-18.smt2,0.093,2.552,Timeout: 300.000,2730
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-21.smt2,0.873,2.976,Timeout: 300.000,4090
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-20.smt2,0.999,2.951,Timeout: 300.000,4639
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-23.smt2,5.121,3.119,Timeout: 300.000,6509
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-2-19.smt2,0.131,2.617,Timeout: 300.000,3129
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-19.smt2,0.096,2.578,Timeout: 300.000,2473
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-5-22.smt2,3.155,3.216,Timeout: 300.000,5086
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-3-20.smt2,0.858,2.834,Timeout: 300.000,3191
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-6-22.smt2,4.379,3.998,Timeout: 300.000,7487
+../smt-lib/QF_LIA/nec-smt/small/int_from_list/prp-4-21.smt2,2.907,2.864,Timeout: 300.000,5184
+../smt-lib/QF_LIA/nec-smt/small/checkpass_pwd/prp-8-18.smt2,7.782,3.483,Timeout: 300.000,10285
+../smt-lib/QF_LIA/nec-smt/small/checkpass_pwd/prp-7-18.smt2,6.224,3.532,Timeout: 300.000,9545
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-19-26.smt2,27.488,4.721,Timeout: 300.000,18716
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-26.smt2,13.538,4.296,Timeout: 300.000,10256
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-24.smt2,10.889,4.500,Timeout: 300.000,13029
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-16-25.smt2,17.794,4.122,Timeout: 300.000,11740
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-27.smt2,18.663,4.646,Timeout: 300.000,11856
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-27.smt2,17.875,4.674,Timeout: 300.000,12669
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-22-28.smt2,22.485,5.288,Timeout: 300.000,15314
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-25.smt2,7.337,3.847,Timeout: 300.000,9156
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-28.smt2,24.621,5.284,Timeout: 300.000,13294
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-24.smt2,6.016,3.480,Timeout: 300.000,7452
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-18-25.smt2,9.929,3.861,Timeout: 300.000,8804
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-6-25.smt2,13.444,4.226,Timeout: 300.000,14016
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-6-26.smt2,25.122,4.315,Timeout: 300.000,12786
+../smt-lib/QF_LIA/nec-smt/med/int_from_list/prp-9-26.smt2,13.437,4.236,Timeout: 300.000,10394
+../smt-lib/QF_LIA/nec-smt/med/checkpass_pwd/prp-8-20.smt2,20.881,4.050,Timeout: 300.000,12169
+../smt-lib/QF_LIA/nec-smt/med/checkpass_pwd/prp-7-20.smt2,25.518,4.331,Timeout: 300.000,15315
 Solve timeout: 120,ProofTerm timeout: 300
 Total time: 424.179
 2022-05-09 19:01:41
 filename,Solve,Parse,ProofTerm,Steps
-../smt-lib/QF_LRA/meti-tarski/sqrt/problem/sqrt-problem-Melquiond2-chunk-0027.smt2,0.028,0.748,0.216,24
-../smt-lib/QF_LRA/meti-tarski/sqrt/problem/sqrt-problem-Melquiond2-chunk-0051.smt2,0.022,0.724,0.210,24
-../smt-lib/QF_LRA/meti-tarski/sqrt/problem/sqrt-problem-Melquiond2-chunk-0048.smt2,0.022,0.650,0.161,23
-../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0126.smt2,0.024,0.752,0.284,34
-../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0108.smt2,0.017,0.854,0.482,57
-../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0061.smt2,0.022,0.638,0.170,28
-../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0016.smt2,0.015,0.754,0.344,30
-../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0062.smt2,0.016,0.643,0.238,25
-../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0015.smt2,0.016,0.737,0.325,33
-../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0091.smt2,0.016,0.706,0.259,21
-../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0707.smt2,0.017,0.761,0.386,35
-../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0415.smt2,0.021,0.623,0.262,30
-../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0029.smt2,0.032,0.706,0.261,30
-../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0035.smt2,0.031,0.713,0.348,30
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0102.smt2,0.029,0.834,0.367,62
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0115.smt2,0.024,0.759,0.232,41
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0090.smt2,0.032,0.704,0.371,61
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0047.smt2,0.027,0.671,0.272,27
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0040.smt2,0.025,0.678,0.257,41
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0061.smt2,0.027,0.702,0.281,56
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0117.smt2,0.024,0.690,0.202,35
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0052.smt2,0.024,0.643,0.171,31
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0145.smt2,0.022,0.769,0.259,41
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0033.smt2,0.032,0.704,0.306,43
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0071.smt2,0.029,0.796,0.243,40
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0088.smt2,0.029,0.773,0.346,50
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0019.smt2,0.031,0.655,0.197,23
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0099.smt2,0.031,0.813,0.367,62
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0027.smt2,0.030,0.657,0.239,24
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0044.smt2,0.040,0.774,0.308,47
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0097.smt2,0.038,0.832,0.307,53
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0147.smt2,0.033,0.803,0.265,40
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0046.smt2,0.028,0.816,0.332,43
-../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0059.smt2,0.036,0.799,0.188,39
-../smt-lib/QF_LRA/meti-tarski/log/fun-ineq/log-fun-ineq-g-chunk-0010.smt2,0.035,0.687,0.140,17
-../smt-lib/QF_LRA/meti-tarski/log/fun-ineq/log-fun-ineq-g-chunk-0038.smt2,0.026,0.658,0.132,17
-../smt-lib/QF_LRA/meti-tarski/asin/8/vars4/asin-8-vars4-chunk-0022.smt2,0.028,0.668,0.171,20
-../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0024.smt2,0.026,0.828,0.421,41
-../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0018.smt2,0.024,0.798,0.414,39
-../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0020.smt2,0.028,0.680,0.272,27
-../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0023.smt2,0.024,0.840,0.525,62
-../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0016.smt2,0.035,0.795,0.364,37
-../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0025.smt2,0.031,0.744,0.366,27
-../smt-lib/QF_LRA/meti-tarski/CMOS/CMOS-opamp-chunk-0024.smt2,0.028,0.767,0.238,32
-../smt-lib/QF_LRA/meti-tarski/atan/problem/1/atan-problem-1-chunk-0030.smt2,0.028,0.735,0.146,18
-../smt-lib/QF_LRA/meti-tarski/atan/problem/1/atan-problem-1-chunk-0014.smt2,0.024,0.700,0.174,18
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0009.smt2,0.025,0.659,0.103,17
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0118.smt2,0.027,0.716,0.117,17
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0109.smt2,0.026,0.675,0.153,18
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0106.smt2,0.029,0.719,0.116,17
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0030.smt2,0.027,0.680,0.137,22
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0126.smt2,0.046,0.594,0.112,17
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0036.smt2,0.040,0.622,0.139,18
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0016.smt2,0.045,0.594,0.110,17
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0059.smt2,0.042,0.648,0.129,17
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0132.smt2,0.042,0.642,0.179,33
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0032.smt2,0.042,0.628,0.164,25
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0039.smt2,0.057,0.583,0.132,18
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0131.smt2,0.068,0.682,0.202,34
-../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0037.smt2,0.056,0.600,0.182,23
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0072.smt2,0.057,0.615,0.169,27
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0048.smt2,0.046,0.613,0.162,25
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0041.smt2,0.048,0.610,0.253,28
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0006.smt2,0.046,0.584,0.175,23
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0058.smt2,0.047,0.617,0.164,27
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0037.smt2,0.044,0.725,0.365,50
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0060.smt2,0.059,0.681,0.163,25
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0074.smt2,0.045,0.609,0.156,25
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0040.smt2,0.048,0.639,0.260,44
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0046.smt2,0.060,0.604,0.163,27
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0042.smt2,0.062,0.675,0.325,48
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0044.smt2,0.058,0.629,0.247,27
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0081.smt2,0.057,0.678,0.227,34
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0052.smt2,0.043,0.710,0.398,34
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0054.smt2,0.075,0.626,0.206,34
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0049.smt2,0.042,0.687,0.284,35
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0045.smt2,0.075,0.721,0.381,57
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0048.smt2,0.044,0.783,0.371,51
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0012.smt2,0.069,0.592,0.222,30
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0098.smt2,0.068,0.668,0.278,34
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0068.smt2,0.063,0.428,0.162,32
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0099.smt2,0.054,0.499,0.275,35
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0083.smt2,0.037,0.412,0.155,32
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0056.smt2,0.031,0.375,0.145,32
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0050.smt2,0.063,0.436,0.359,55
-../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0066.smt2,0.085,0.518,0.171,34
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0046.smt2,0.059,0.405,0.165,31
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0048.smt2,0.047,0.429,0.184,32
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0049.smt2,0.052,0.497,0.175,26
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0070.smt2,0.058,0.333,0.236,28
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0069.smt2,0.082,0.513,0.295,31
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0016.smt2,0.076,0.376,0.203,23
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0013.smt2,0.064,0.449,0.221,23
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0041.smt2,0.076,0.476,0.213,23
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0032.smt2,0.046,0.373,0.204,23
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0040.smt2,0.057,0.430,0.220,27
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0059.smt2,0.067,0.496,0.353,49
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0039.smt2,0.044,0.438,0.248,27
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0089.smt2,0.050,0.481,0.344,47
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0038.smt2,0.049,0.565,0.306,38
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0011.smt2,0.079,0.449,0.282,32
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0033.smt2,0.046,0.413,0.248,27
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0074.smt2,0.043,0.471,0.283,47
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0068.smt2,0.055,0.480,0.332,49
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0062.smt2,0.065,0.550,0.405,52
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0095.smt2,0.058,0.506,0.334,52
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0012.smt2,0.066,0.360,0.183,29
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0032.smt2,0.064,0.452,0.307,41
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0066.smt2,0.057,0.549,0.407,57
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0067.smt2,0.061,0.526,0.369,53
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0014.smt2,0.061,0.355,0.207,24
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0018.smt2,0.056,0.436,0.204,24
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0053.smt2,0.060,0.554,0.314,51
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0045.smt2,0.054,0.385,0.186,23
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0057.smt2,0.046,0.436,0.304,48
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0043.smt2,0.038,0.439,0.309,51
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0048.smt2,0.048,0.458,0.400,52
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0014.smt2,0.059,0.441,0.211,24
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0040.smt2,0.032,0.485,0.396,54
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0018.smt2,0.072,0.475,0.215,24
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0072.smt2,0.029,0.468,0.374,55
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0053.smt2,0.042,0.463,0.311,51
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0026.smt2,0.048,0.442,0.185,23
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0012.smt2,0.037,0.470,0.301,29
-../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0011.smt2,0.033,0.483,0.285,32
-../smt-lib/QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0042.smt2,0.066,0.379,0.296,23
-../smt-lib/QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0023.smt2,0.037,0.448,0.207,23
-../smt-lib/QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0032.smt2,0.034,0.374,0.142,27
-../smt-lib/QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0036.smt2,0.060,0.462,0.181,23
-../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0042.smt2,0.059,0.411,0.246,28
-../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0032.smt2,0.055,0.429,0.182,32
-../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0036.smt2,0.061,0.377,0.215,28
-../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0023.smt2,0.074,0.422,0.242,28
-../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0010.smt2,0.049,0.435,0.246,29
-../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0012.smt2,0.040,0.379,0.204,29
-../smt-lib/QF_LRA/meti-tarski/sin/344/4/sin-344-4-chunk-0017.smt2,0.072,0.433,0.257,37
-../smt-lib/QF_LRA/meti-tarski/sin/344/4/sin-344-4-chunk-0020.smt2,0.060,0.383,0.245,36
-../smt-lib/QF_LRA/meti-tarski/sin/344/3/sin-344-3-weak-chunk-0016.smt2,0.078,0.397,0.257,36
-../smt-lib/QF_LRA/meti-tarski/sin/344/3/sin-344-3-chunk-0016.smt2,0.090,0.354,0.190,29
-../smt-lib/QF_LRA/meti-tarski/sin/344/3/sin-344-3-weak-chunk-0013.smt2,0.050,0.418,0.241,37
-../smt-lib/QF_LRA/meti-tarski/sin/344/3/sin-344-3-chunk-0013.smt2,0.066,0.375,0.203,30
-../smt-lib/QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0155.smt2,0.072,0.319,0.191,23
-../smt-lib/QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0156.smt2,0.065,0.393,0.104,17
-../smt-lib/QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0113.smt2,0.057,0.348,0.184,31
-../smt-lib/QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0112.smt2,0.071,0.420,0.153,31
-../smt-lib/QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0155.smt2,0.054,0.358,0.173,23
-../smt-lib/QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0156.smt2,0.075,0.363,0.084,17
-../smt-lib/QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0156.smt2,0.084,0.397,0.110,20
-../smt-lib/QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0112.smt2,0.040,0.445,0.181,34
-../smt-lib/QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0155.smt2,0.083,0.387,0.152,26
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration6_Loop_4-pieceTemplate.smt2,38.400,33.617,Timeout 767848.327204957,68438
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/heidy7-simple.t2.c_Iteration2_Lasso_4-pieceTemplate.smt2,20.387,23.433,Timeout 767820.132851121,85228
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/disj_nightmare.t2.c_Iteration1_Loop_7-phaseTemplate.smt2,6.993,3.192,9.931,2606
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/polyrank4.t2.c_Iteration8_Loop_4-pieceTemplate.smt2,3.311,7.840,113.443,18008
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/p-46.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,90.136,54.825,Timeout 767921.337397562,97984
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration7_Loop_5-phaseTemplate.smt2,17.621,23.526,245.658,39218
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/collatz.t2.c_Iteration3_Loop_7-phaseTemplate.smt2,100.377,Timeout,,
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/collatz.t2.c_Iteration1_Loop_4-pieceTemplate.smt2,95.575,17.791,Timeout 767889.807107657,36608
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/ex11.t2.c_Iteration1_Lasso_2-pieceTemplate.smt2,22.882,16.874,Timeout 767816.196601567,41591
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/eric.t2.c_Iteration1_Loop_4-pieceTemplate.smt2,38.143,8.607,62.580,22199
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/agafp.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,22.487,28.081,Timeout 767827.032591387,61018
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/janne_complex.t2.c_Iteration3_Lasso_2-pieceTemplate.smt2,76.203,22.459,Timeout 767875.14920959,52588
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/janne_complex.t2.c_Iteration3_Lasso_6-phaseTemplate.smt2,NO PROOF (veriT),,,
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/p-46.t2.c_Iteration2_Lasso_4-pieceTemplate.smt2,106.672,57.887,Timeout 767941.08927436,103569
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/afagp-fail.t2.c_Iteration1_Lasso_7-phaseTemplate.smt2,22.000,Timeout,,
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Loop_4-pieceTemplate.smt2,120.068,30.483,273.762,52438
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/disj_nightmare.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,36.568,2.992,9.876,2703
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/janne_complex.t2.c_Iteration3_Lasso_3-pieceTemplate.smt2,NO PROOF (veriT),,,
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Loop_3-pieceTemplate.smt2,9.799,8.903,74.246,18542
-../smt-lib/QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration6_Loop_7-phaseTemplate.smt2,71.361,Timeout,,
-../smt-lib/QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,36.755,8.593,63.334,20697
-../smt-lib/QF_LRA/LassoRanker/Ultimate/Lobnya-Boolean-Reordered.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,49.766,14.551,125.984,42637
-../smt-lib/QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Loop_6-phaseTemplate.smt2,37.198,8.909,65.177,20697
-../smt-lib/QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Loop_4-pieceTemplate.smt2,21.579,8.480,Timeout 767806.72411954,17072
-../smt-lib/QF_LRA/LassoRanker/Ultimate/BradleyMannaSipma-2005ICALP-Fig1-deterministic.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,40.699,16.387,189.715,38946
-../smt-lib/QF_LRA/LassoRanker/Ultimate/Lobnya-Boolean-Reordered.bpl_Iteration1_Loop_7-phaseTemplate.smt2,34.390,13.405,135.289,43142
-../smt-lib/QF_LRA/LassoRanker/Ultimate/NonTerminationDifficult.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,5.216,12.720,Timeout 767794.630289485,38365
-../smt-lib/QF_LRA/LassoRanker/Ultimate/MenloPark.bpl_Iteration1_Lasso_3-pieceTemplate.smt2,24.424,9.016,Timeout 767810.132251879,23718
-../smt-lib/QF_LRA/LassoRanker/Ultimate/BenAmram-2010LMCS-Ex2.3.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,108.636,31.965,Timeout 767917.312045192,82770
-../smt-lib/QF_LRA/LassoRanker/Ultimate/Collatz.bpl_Iteration1_Loop_5-phaseTemplate.smt2,25.475,3.667,13.462,2412
-../smt-lib/QF_LRA/LassoRanker/Ultimate/Cairo2.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,8.773,8.275,81.268,28821
-../smt-lib/QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,19.812,4.361,22.575,7999
-../smt-lib/QF_LRA/LassoRanker/Ultimate/Collatz.bpl_Iteration1_Loop_2-pieceTemplate.smt2,75.010,3.886,16.783,2708
-../smt-lib/QF_LRA/LassoRanker/Ultimate/OpposedDisjuncts.bpl_Iteration1_Lasso_2-pieceTemplate.smt2,16.980,5.281,52.031,10499
-../smt-lib/QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Loop_4-pieceTemplate.smt2,19.911,4.362,23.396,7999
-../smt-lib/QF_LRA/LassoRanker/Ultimate/BradleyMannaSipma-2005ICALP-Fig1-deterministic.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,48.346,11.616,158.813,30815
-../smt-lib/QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,22.291,8.323,Timeout 767807.405154543,17072
-../smt-lib/QF_LRA/LassoRanker/Ultimate/BenAmram-2010LMCS-Ex2.3.bpl_Iteration1_Loop_4-pieceTemplate.smt2,106.022,32.340,Timeout 767915.154819127,82770
-../smt-lib/QF_LRA/LassoRanker/Ultimate/OpposedDisjuncts.bpl_Iteration1_Lasso_5-phaseTemplate.smt2,79.139,4.380,18.250,3693
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/joey_false-termination.c_Iteration2_Loop_4-pieceTemplate.smt2,18.592,8.209,Timeout 767803.59780483,16760
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/joey_false-termination.c_Iteration2_Loop_7-phaseTemplate.smt2,18.856,14.578,233.495,40645
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Loop_4-pieceTemplate.smt2,17.060,9.030,249.184,24910
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Lasso_4-phaseTemplate.smt2,19.210,7.992,216.911,20652
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex2_true-termination.c_Iteration1_Loop_7-phaseTemplate.smt2,84.540,30.179,Timeout 767891.528963831,63062
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/Ben-Amram-2010LMCS-Ex2.3_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,37.691,14.084,Timeout 767828.600507798,40277
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_6-phaseTemplate.smt2,54.689,2.534,6.767,1559
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/Masse_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,63.583,9.664,143.123,22163
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Lasso_2-pieceTemplate.smt2,4.190,4.667,119.788,9793
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Lasso_5-phaseTemplate.smt2,77.550,12.237,108.868,31006
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/HarrisLalNoriRajamani-2010SAS-Fig1_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,6.741,4.979,82.279,7651
+../smt-lib/QF_LRA/meti-tarski/sqrt/problem/sqrt-problem-Melquiond2-chunk-0027.smt2,0.033,0.433,0.247,24
+../smt-lib/QF_LRA/meti-tarski/sqrt/problem/sqrt-problem-Melquiond2-chunk-0051.smt2,0.031,0.433,0.278,24
+../smt-lib/QF_LRA/meti-tarski/sqrt/problem/sqrt-problem-Melquiond2-chunk-0048.smt2,0.033,0.443,0.162,23
+../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0126.smt2,0.032,0.468,0.319,34
+../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0108.smt2,0.030,0.557,0.963,57
+../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0061.smt2,0.027,0.433,0.218,28
+../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0016.smt2,0.026,0.474,0.388,30
+../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0062.smt2,0.029,0.432,0.297,25
+../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0015.smt2,0.031,0.459,0.374,33
+../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/7/sqrt-1mcosq-7-chunk-0091.smt2,0.028,0.405,0.250,21
+../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0707.smt2,0.027,0.478,0.357,35
+../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0415.smt2,0.026,0.436,0.338,30
+../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0029.smt2,0.025,0.432,0.351,30
+../smt-lib/QF_LRA/meti-tarski/sqrt/1mcosq/8/sqrt-1mcosq-8-chunk-0035.smt2,0.024,0.451,0.349,30
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0102.smt2,0.026,0.521,0.374,62
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0115.smt2,0.024,0.448,0.252,41
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0090.smt2,0.024,0.560,0.497,61
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0047.smt2,0.021,0.412,0.354,27
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0040.smt2,0.023,0.492,0.371,41
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0061.smt2,0.021,0.526,0.715,56
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0117.smt2,0.023,0.454,0.271,35
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0052.smt2,0.021,0.414,0.192,31
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0145.smt2,0.023,0.453,0.254,41
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0033.smt2,0.022,0.484,0.386,43
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0071.smt2,0.022,0.489,0.295,40
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0088.smt2,0.021,0.614,0.389,50
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0019.smt2,0.024,0.414,0.267,23
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0099.smt2,0.023,0.559,0.481,62
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0027.smt2,0.020,0.420,0.244,24
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0044.smt2,0.022,0.535,0.465,47
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0097.smt2,0.019,0.335,0.188,53
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0147.smt2,0.023,0.471,0.285,40
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0046.smt2,0.023,0.478,0.363,43
+../smt-lib/QF_LRA/meti-tarski/polypaver/bench-exp-3d/polypaver-bench-exp-3d-chunk-0059.smt2,0.023,0.523,0.280,39
+../smt-lib/QF_LRA/meti-tarski/log/fun-ineq/log-fun-ineq-g-chunk-0010.smt2,0.026,0.391,0.182,17
+../smt-lib/QF_LRA/meti-tarski/log/fun-ineq/log-fun-ineq-g-chunk-0038.smt2,0.023,0.401,0.190,17
+../smt-lib/QF_LRA/meti-tarski/asin/8/vars4/asin-8-vars4-chunk-0022.smt2,0.028,0.535,0.225,20
+../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0024.smt2,0.026,0.556,1.053,41
+../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0018.smt2,0.029,0.484,0.910,39
+../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0020.smt2,0.024,0.434,0.442,27
+../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0023.smt2,0.022,0.598,1.058,62
+../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0016.smt2,0.025,0.517,0.713,37
+../smt-lib/QF_LRA/meti-tarski/bottom-plate-mixer/bottom-plate-mixer-chunk-0025.smt2,0.023,0.445,0.614,27
+../smt-lib/QF_LRA/meti-tarski/CMOS/CMOS-opamp-chunk-0024.smt2,0.025,0.435,0.351,32
+../smt-lib/QF_LRA/meti-tarski/atan/problem/1/atan-problem-1-chunk-0030.smt2,0.032,0.501,0.228,18
+../smt-lib/QF_LRA/meti-tarski/atan/problem/1/atan-problem-1-chunk-0014.smt2,0.029,0.416,0.221,18
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0009.smt2,0.028,0.415,0.134,17
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0118.smt2,0.024,0.539,0.140,17
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0109.smt2,0.030,0.452,0.222,18
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0106.smt2,0.029,0.428,0.140,17
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0030.smt2,0.036,0.486,0.214,22
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0126.smt2,0.031,0.506,0.158,17
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0036.smt2,0.031,0.456,0.222,18
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0016.smt2,0.030,0.473,0.175,17
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0059.smt2,0.037,0.486,0.172,17
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0132.smt2,0.035,0.583,0.341,33
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0032.smt2,0.035,0.430,0.224,25
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0039.smt2,0.033,0.479,0.218,18
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0131.smt2,0.032,0.545,0.298,34
+../smt-lib/QF_LRA/meti-tarski/atan/problem/2/weak2/atan-problem-2-weak2-chunk-0037.smt2,0.032,0.500,0.349,23
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0072.smt2,0.030,0.559,0.255,27
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0048.smt2,0.029,0.557,0.239,25
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0041.smt2,0.043,0.553,0.359,28
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0006.smt2,0.039,0.547,0.283,23
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0058.smt2,0.037,0.630,0.279,27
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0037.smt2,0.037,0.669,1.427,50
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0060.smt2,0.032,0.563,0.239,25
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0074.smt2,0.033,0.640,0.242,25
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0040.smt2,0.033,0.633,0.930,44
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0046.smt2,0.034,0.641,0.276,27
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0042.smt2,0.032,0.780,0.835,48
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/cbrt-problem-3-chunk-0044.smt2,0.036,0.633,0.364,27
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0081.smt2,0.045,0.693,0.339,34
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0052.smt2,0.038,0.599,0.398,34
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0054.smt2,0.041,0.667,0.291,34
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0049.smt2,0.033,0.666,0.972,35
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0045.smt2,0.034,0.732,1.062,57
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0048.smt2,0.031,0.752,1.149,51
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0012.smt2,0.029,0.568,0.403,30
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0098.smt2,0.032,0.668,0.503,34
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0068.smt2,0.032,0.582,0.317,32
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0099.smt2,0.030,0.707,0.613,35
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0083.smt2,0.030,0.709,0.328,32
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0056.smt2,0.031,0.685,0.305,32
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0050.smt2,0.030,0.765,1.545,55
+../smt-lib/QF_LRA/meti-tarski/cbrt/3/weak/cbrt-problem-3-weak-chunk-0066.smt2,0.031,0.707,0.350,34
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0046.smt2,0.045,0.590,0.289,31
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0048.smt2,0.035,0.681,0.382,32
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0049.smt2,0.041,0.556,0.252,26
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0070.smt2,0.039,0.630,0.424,28
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0069.smt2,0.039,0.629,0.422,31
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0016.smt2,0.031,0.700,0.368,23
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0013.smt2,0.034,0.734,0.340,23
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0041.smt2,0.034,0.699,0.390,23
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/sin-problem-7-chunk-0032.smt2,0.033,0.766,0.322,23
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0040.smt2,0.031,0.671,0.401,27
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0059.smt2,0.032,0.787,1.467,49
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0039.smt2,0.031,0.661,0.413,27
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0089.smt2,0.035,0.717,1.312,47
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0038.smt2,0.035,0.748,1.309,38
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0011.smt2,0.034,0.806,0.466,32
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0033.smt2,0.034,0.704,0.376,27
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0074.smt2,0.036,0.801,1.335,47
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0068.smt2,0.034,0.766,1.372,49
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0062.smt2,0.041,0.785,1.524,52
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0095.smt2,0.031,0.774,1.471,52
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0012.smt2,0.039,0.677,0.396,29
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0032.smt2,0.036,0.718,1.115,41
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0066.smt2,0.036,0.823,1.459,57
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0067.smt2,0.035,0.800,1.539,53
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0014.smt2,0.039,0.668,0.381,24
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0018.smt2,0.035,0.672,0.365,24
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0053.smt2,0.037,0.778,1.442,51
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0045.smt2,0.033,0.715,0.323,23
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak/sin-problem-7-weak-chunk-0057.smt2,0.031,0.831,1.491,48
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0043.smt2,0.034,0.834,0.986,51
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0048.smt2,0.037,0.881,1.085,52
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0014.smt2,0.036,0.709,0.470,24
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0040.smt2,0.036,0.864,1.475,54
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0018.smt2,0.034,0.710,0.335,24
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0072.smt2,0.037,0.889,0.869,55
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0053.smt2,0.047,0.880,1.076,51
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0026.smt2,0.045,0.727,0.333,23
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0012.smt2,0.037,0.714,0.519,29
+../smt-lib/QF_LRA/meti-tarski/sin/problem/7/weak2/sin-problem-7-weak2-chunk-0011.smt2,0.036,0.758,0.766,32
+../smt-lib/QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0042.smt2,0.040,0.629,0.661,23
+../smt-lib/QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0023.smt2,0.050,0.737,0.552,23
+../smt-lib/QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0032.smt2,0.036,0.741,0.245,27
+../smt-lib/QF_LRA/meti-tarski/sin/problem/8/sin-problem-8-chunk-0036.smt2,0.048,0.742,0.665,23
+../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0042.smt2,0.040,0.757,0.571,28
+../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0032.smt2,0.037,0.789,0.463,32
+../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0036.smt2,0.039,0.749,0.775,28
+../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0023.smt2,0.048,0.761,0.497,28
+../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0010.smt2,0.041,0.754,0.980,29
+../smt-lib/QF_LRA/meti-tarski/sin/problem/8/weak/sin-problem-8-weak-chunk-0012.smt2,0.049,0.736,0.548,29
+../smt-lib/QF_LRA/meti-tarski/sin/344/4/sin-344-4-chunk-0017.smt2,0.047,0.803,1.232,37
+../smt-lib/QF_LRA/meti-tarski/sin/344/4/sin-344-4-chunk-0020.smt2,0.046,0.797,0.941,36
+../smt-lib/QF_LRA/meti-tarski/sin/344/3/sin-344-3-weak-chunk-0016.smt2,0.038,0.859,0.809,36
+../smt-lib/QF_LRA/meti-tarski/sin/344/3/sin-344-3-chunk-0016.smt2,0.037,0.660,0.875,29
+../smt-lib/QF_LRA/meti-tarski/sin/344/3/sin-344-3-weak-chunk-0013.smt2,0.034,0.786,0.935,37
+../smt-lib/QF_LRA/meti-tarski/sin/344/3/sin-344-3-chunk-0013.smt2,0.045,0.740,0.632,30
+../smt-lib/QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0155.smt2,0.052,0.707,0.498,23
+../smt-lib/QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0156.smt2,0.047,0.632,0.226,17
+../smt-lib/QF_LRA/meti-tarski/Chua/1/VC1/L/Chua-1-VC1-L-chunk-0113.smt2,0.050,0.716,0.413,31
+../smt-lib/QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0112.smt2,0.049,0.635,0.283,31
+../smt-lib/QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0155.smt2,0.053,0.678,0.297,23
+../smt-lib/QF_LRA/meti-tarski/Chua/1/VC2/U/Chua-1-VC2-U-chunk-0156.smt2,0.040,0.668,0.190,17
+../smt-lib/QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0156.smt2,0.050,0.688,0.208,20
+../smt-lib/QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0112.smt2,0.046,0.754,0.418,34
+../smt-lib/QF_LRA/meti-tarski/Chua/1/IL/L/Chua-1-IL-L-chunk-0155.smt2,0.050,0.721,0.868,26
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration6_Loop_4-pieceTemplate.smt2,41.016,37.983,193.955,68438
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/heidy7-simple.t2.c_Iteration2_Lasso_4-pieceTemplate.smt2,21.935,23.949,Timeout 300.000,85228
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/disj_nightmare.t2.c_Iteration1_Loop_7-phaseTemplate.smt2,8.133,4.953,14.315,2606
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/polyrank4.t2.c_Iteration8_Loop_4-pieceTemplate.smt2,3.549,10.041,106.462,18008
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/p-46.t2.c_Iteration2_Loop_4-pieceTemplate.smt2,82.523,36.248,Timeout 300.000,97984
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration7_Loop_5-phaseTemplate.smt2,18.673,30.495,148.196,39218
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/collatz.t2.c_Iteration3_Loop_7-phaseTemplate.smt2,94.595,41.323,239.064,89707
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/collatz.t2.c_Iteration1_Loop_4-pieceTemplate.smt2,81.826,10.041,278.317,36608
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/ex11.t2.c_Iteration1_Lasso_2-pieceTemplate.smt2,23.305,21.637,Timeout 300.000,41591
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/eric.t2.c_Iteration1_Loop_4-pieceTemplate.smt2,31.831,11.884,55.870,22199
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/agafp.t2.c_Iteration1_Lasso_4-pieceTemplate.smt2,23.300,23.615,Timeout 300.003,61018
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/janne_complex.t2.c_Iteration3_Lasso_2-pieceTemplate.smt2,71.155,19.393,Timeout 300.000,52588
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/janne_complex.t2.c_Iteration3_Lasso_6-phaseTemplate.smt2,110.688,24.652,186.871,83871
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/p-46.t2.c_Iteration2_Lasso_4-pieceTemplate.smt2,96.537,41.741,Timeout 300.000,103569
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/afagp-fail.t2.c_Iteration1_Lasso_7-phaseTemplate.smt2,23.143,Timeout,,
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Loop_4-pieceTemplate.smt2,104.978,26.119,126.047,52438
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/disj_nightmare.t2.c_Iteration2_Loop_7-phaseTemplate.smt2,43.413,5.593,16.785,2703
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/janne_complex.t2.c_Iteration3_Lasso_3-pieceTemplate.smt2,119.650,17.597,Timeout 300.001,71332
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration5_Loop_3-pieceTemplate.smt2,10.331,14.025,93.019,18542
+../smt-lib/QF_LRA/LassoRanker/CooperatingT2/sas2.t2.c_Iteration6_Loop_7-phaseTemplate.smt2,62.772,Timeout,,
+../smt-lib/QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Lasso_6-phaseTemplate.smt2,35.991,11.529,66.215,20697
+../smt-lib/QF_LRA/LassoRanker/Ultimate/Lobnya-Boolean-Reordered.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,46.299,17.353,96.369,42637
+../smt-lib/QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Loop_6-phaseTemplate.smt2,34.746,11.187,63.032,20697
+../smt-lib/QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Loop_4-pieceTemplate.smt2,23.481,10.163,261.248,17072
+../smt-lib/QF_LRA/LassoRanker/Ultimate/BradleyMannaSipma-2005ICALP-Fig1-deterministic.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,35.030,21.436,119.750,38946
+../smt-lib/QF_LRA/LassoRanker/Ultimate/Lobnya-Boolean-Reordered.bpl_Iteration1_Loop_7-phaseTemplate.smt2,30.410,15.984,93.641,43142
+../smt-lib/QF_LRA/LassoRanker/Ultimate/NonTerminationDifficult.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,5.926,16.618,239.334,38365
+../smt-lib/QF_LRA/LassoRanker/Ultimate/MenloPark.bpl_Iteration1_Lasso_3-pieceTemplate.smt2,23.542,10.902,202.656,23718
+../smt-lib/QF_LRA/LassoRanker/Ultimate/BenAmram-2010LMCS-Ex2.3.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,86.260,21.620,Timeout 300.000,82770
+../smt-lib/QF_LRA/LassoRanker/Ultimate/Collatz.bpl_Iteration1_Loop_5-phaseTemplate.smt2,35.913,5.534,19.658,2412
+../smt-lib/QF_LRA/LassoRanker/Ultimate/Cairo2.bpl_Iteration1_Lasso_7-phaseTemplate.smt2,8.415,13.260,94.382,28821
+../smt-lib/QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,23.935,6.867,34.575,7999
+../smt-lib/QF_LRA/LassoRanker/Ultimate/Collatz.bpl_Iteration1_Loop_2-pieceTemplate.smt2,95.076,4.867,18.653,2708
+../smt-lib/QF_LRA/LassoRanker/Ultimate/OpposedDisjuncts.bpl_Iteration1_Lasso_2-pieceTemplate.smt2,18.018,7.610,71.077,10499
+../smt-lib/QF_LRA/LassoRanker/Ultimate/Canberra.bpl_Iteration1_Loop_4-pieceTemplate.smt2,26.882,6.663,34.453,7999
+../smt-lib/QF_LRA/LassoRanker/Ultimate/BradleyMannaSipma-2005ICALP-Fig1-deterministic.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,41.335,12.313,105.721,30815
+../smt-lib/QF_LRA/LassoRanker/Ultimate/Braverman-2006CAV-Ex1-int.bpl_Iteration1_Lasso_4-pieceTemplate.smt2,23.179,9.830,252.552,17072
+../smt-lib/QF_LRA/LassoRanker/Ultimate/BenAmram-2010LMCS-Ex2.3.bpl_Iteration1_Loop_4-pieceTemplate.smt2,82.037,16.481,Timeout 300.001,82770
+../smt-lib/QF_LRA/LassoRanker/Ultimate/OpposedDisjuncts.bpl_Iteration1_Lasso_5-phaseTemplate.smt2,79.108,5.427,18.728,3693
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/joey_false-termination.c_Iteration2_Loop_4-pieceTemplate.smt2,16.706,10.195,199.955,16760
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/joey_false-termination.c_Iteration2_Loop_7-phaseTemplate.smt2,17.122,21.645,170.691,40645
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Loop_4-pieceTemplate.smt2,15.978,12.169,163.650,24910
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Lasso_4-phaseTemplate.smt2,16.868,11.362,157.854,20652
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex2_true-termination.c_Iteration1_Loop_7-phaseTemplate.smt2,70.043,26.000,Timeout 300.001,63062
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/Ben-Amram-2010LMCS-Ex2.3_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,31.889,16.045,265.030,40277
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_6-phaseTemplate.smt2,58.490,4.041,9.316,1559
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/Masse_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,58.693,10.459,107.105,22163
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Lasso_2-pieceTemplate.smt2,4.249,8.025,135.896,9793
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Lasso_5-phaseTemplate.smt2,67.426,9.506,67.636,31006
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/HarrisLalNoriRajamani-2010SAS-Fig1_true-termination.c_Iteration1_Lasso_4-pieceTemplate.smt2,6.857,7.114,92.659,7651
 ../smt-lib/QF_LRA/LassoRanker/SV-COMP/GulwaniJainKoskinen-2009PLDI-Fig1_true-termination.c_Iteration1_Lasso_5-nestedTemplate.smt2,NO PROOF (veriT),,,
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_2-pieceTemplate.smt2,39.174,5.787,62.276,11404
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/CookSeeZuleger-2013TACAS-Fig7a_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,37.496,9.582,103.266,29455
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/Masse_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,25.274,6.452,80.751,13165
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/Ben-Amram-2010LMCS-Ex2.3_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,51.242,13.571,Timeout 767841.669532055,39654
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Loop_6-phaseTemplate.smt2,63.006,13.139,192.033,31442
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Loop_5-phaseTemplate.smt2,14.215,7.956,84.486,22369
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/CookSeeZuleger-2013TACAS-Fig3_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,32.437,7.634,89.556,22065
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/min_rf_true-termination.c_Iteration1_Loop_6-phaseTemplate.smt2,14.312,1.658,4.784,952
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_5-phaseTemplate.smt2,17.026,2.633,7.557,1934
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Loop_7-phaseTemplate.smt2,NO PROOF (veriT),,,
-../smt-lib/QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,38.652,8.465,69.140,24471
-../smt-lib/QF_LRA/miplib/danoint-30.smt2,0.248,25.467,205.714,11855
-../smt-lib/QF_LRA/miplib/vpm2-5.smt2,1.598,16.181,219.257,16913
-../smt-lib/QF_LRA/miplib/pp08a-3000.smt2,19.762,37.852,Timeout 767834.516333614,30565
-../smt-lib/QF_LRA/miplib/danoint-50.smt2,0.402,25.421,208.811,12006
-../smt-lib/QF_LRA/miplib/pp08a-2000.smt2,1.771,21.040,Timeout 767799.719358549,18676
-../smt-lib/QF_LRA/miplib/pk1--1.smt2,0.281,8.876,51.776,12054
-../smt-lib/QF_LRA/miplib/fixnet-1000.smt2,5.914,44.532,Timeout 767827.409653841,29672
-../smt-lib/QF_LRA/miplib/pp08a-1000.smt2,1.339,19.111,230.640,17446
-../smt-lib/QF_LRA/miplib/vpm2-0.smt2,1.352,15.199,144.110,16158
-../smt-lib/QF_LRA/sc/sc-27.base.cvc.smt2,11.471,12.608,Timeout 767801.035599034,25238
-../smt-lib/QF_LRA/sc/sc-14.base.cvc.smt2,1.400,5.163,140.977,8999
-../smt-lib/QF_LRA/sc/sc-16.base.cvc.smt2,1.687,5.693,130.248,10365
-../smt-lib/QF_LRA/sc/sc-39.base.cvc.smt2,71.522,43.687,Timeout 767892.246599871,67806
-../smt-lib/QF_LRA/sc/sc-40.base.cvc.smt2,91.478,24.555,Timeout 767893.014884524,41785
-../smt-lib/QF_LRA/sc/sc-35.base.cvc.smt2,52.821,19.719,Timeout 767849.528180191,31246
-../smt-lib/QF_LRA/sc/sc-30.base.cvc.smt2,15.543,15.582,Timeout 767808.117736576,29807
-../smt-lib/QF_LRA/sc/sc-18.base.cvc.smt2,3.936,6.708,226.339,13445
-../smt-lib/QF_LRA/sc/sc-11.base.cvc.smt2,0.566,3.993,73.768,6539
-../smt-lib/QF_LRA/sc/sc-8.base.cvc.smt2,0.232,1.698,28.023,3573
-../smt-lib/QF_LRA/sc/sc-34.base.cvc.smt2,46.964,29.187,Timeout 767873.789538142,51220
-../smt-lib/QF_LRA/sc/sc-10.base.cvc.smt2,0.528,1.853,46.487,4974
-../smt-lib/QF_LRA/sc/sc-36.base.cvc.smt2,72.497,41.887,Timeout 767933.719178877,66930
-../smt-lib/QF_LRA/sc/sc-32.base.cvc.smt2,36.626,31.148,Timeout 767891.282887266,56210
-../smt-lib/QF_LRA/sc/sc-26.base.cvc.smt2,18.112,20.725,Timeout 767863.304912446,33397
-../smt-lib/QF_LRA/sc/sc-38.base.cvc.smt2,40.177,19.306,Timeout 767885.551384913,36820
-../smt-lib/QF_LRA/sc/sc-23.base.cvc.smt2,9.332,9.358,Timeout 767845.098572524,20856
-../smt-lib/QF_LRA/sc/sc-21.base.cvc.smt2,6.648,6.434,254.713,14079
-../smt-lib/QF_LRA/sc/sc-22.base.cvc.smt2,7.284,9.312,Timeout 767857.418532822,18021
-../smt-lib/QF_LRA/sc/sc-29.base.cvc.smt2,20.239,15.091,Timeout 767886.409233439,25799
-../smt-lib/QF_LRA/sc/sc-15.base.cvc.smt2,2.561,5.106,192.789,11407
-../smt-lib/QF_LRA/sc/sc-20.base.cvc.smt2,4.519,8.535,265.893,14611
-../smt-lib/QF_LRA/sc/sc-9.base.cvc.smt2,0.365,1.764,38.031,4004
-../smt-lib/QF_LRA/sc/sc-37.base.cvc.smt2,78.865,58.096,Timeout 768006.529996852,78747
-../smt-lib/QF_LRA/sc/sc-24.base.cvc.smt2,14.211,11.342,Timeout 767896.401142911,20471
-../smt-lib/QF_LRA/sc/sc-33.base.cvc.smt2,43.656,23.809,Timeout 767939.946539182,41608
-../smt-lib/QF_LRA/sc/sc-6.base.cvc.smt2,0.217,1.426,17.011,2568
-../smt-lib/QF_LRA/sc/sc-5.base.cvc.smt2,0.100,1.608,11.303,1826
-../smt-lib/QF_LRA/sc/sc-12.base.cvc.smt2,0.878,5.418,93.282,7084
-../smt-lib/QF_LRA/sc/sc-28.base.cvc.smt2,20.075,17.151,Timeout 767921.316837418,24640
-../smt-lib/QF_LRA/sc/sc-25.base.cvc.smt2,9.446,15.598,Timeout 767910.368060845,21862
-../smt-lib/QF_LRA/sc/sc-19.base.cvc.smt2,4.351,8.469,183.004,12223
-../smt-lib/QF_LRA/sc/sc-13.base.cvc.smt2,1.313,6.188,134.487,8711
-../smt-lib/QF_LRA/sc/sc-31.base.cvc.smt2,34.366,33.520,Timeout 767957.224587414,53643
-../smt-lib/QF_LRA/sc/sc-7.base.cvc.smt2,0.203,1.776,22.659,3110
-../smt-lib/QF_LRA/sc/sc-17.base.cvc.smt2,3.369,7.507,129.712,10008
-../smt-lib/QF_LRA/tta_startup/simple_startup_9nodes.synchro.induct.smt2,2.515,16.293,136.184,15280
-../smt-lib/QF_LRA/tta_startup/simple_startup_9nodes.abstract.induct.smt2,NO PROOF (veriT),,,
-../smt-lib/QF_LRA/tta_startup/simple_startup_14nodes.synchro.base.smt2,2.188,56.997,Timeout 767956.000440615,26769
-../smt-lib/QF_LRA/tta_startup/simple_startup_9nodes.abstract.base.smt2,0.415,15.587,105.902,11519
-../smt-lib/QF_LRA/tta_startup/simple_startup_11nodes.abstract.base.smt2,0.525,24.105,175.042,15540
-../smt-lib/QF_LRA/tta_startup/simple_startup_10nodes.synchro.induct.smt2,3.442,25.205,198.234,19098
-../smt-lib/QF_LRA/tta_startup/simple_startup_9nodes.synchro.base.smt2,0.658,20.348,123.010,13199
-../smt-lib/QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2,0.625,19.944,118.294,13458
-../smt-lib/QF_LRA/tta_startup/simple_startup_5nodes.synchro.induct.smt2,0.476,9.079,40.345,6617
-../smt-lib/QF_LRA/tta_startup/simple_startup_12nodes.synchro.induct.smt2,8.889,38.437,Timeout 767955.337453862,29186
-../smt-lib/QF_LRA/tta_startup/simple_startup_6nodes.synchro.induct.smt2,0.886,10.841,53.633,8200
-../smt-lib/QF_LRA/tta_startup/simple_startup_6nodes.abstract.induct.smt2,16.395,23.095,Timeout 767955.71628518,37285
-../smt-lib/QF_LRA/tta_startup/simple_startup_7nodes.abstract.induct.smt2,39.416,38.422,Timeout 768002.332508976,51792
-../smt-lib/QF_LRA/tta_startup/simple_startup_4nodes.abstract.base.smt2,0.264,2.816,16.407,3969
-../smt-lib/QF_LRA/tta_startup/simple_startup_6nodes.abstract.base.smt2,0.283,6.677,49.502,6580
-../smt-lib/QF_LRA/tta_startup/simple_startup_5nodes.abstract.base.smt2,0.207,3.873,27.541,5203
-../smt-lib/QF_LRA/tta_startup/simple_startup_6nodes.synchro.base.smt2,0.419,7.756,44.126,7297
-../smt-lib/QF_LRA/tta_startup/simple_startup_7nodes.synchro.base.smt2,0.534,11.065,66.441,9078
-../smt-lib/QF_LRA/tta_startup/simple_startup_11nodes.synchro.induct.smt2,7.567,30.851,265.917,23137
-../smt-lib/QF_LRA/tta_startup/simple_startup_4nodes.abstract.induct.smt2,2.841,10.868,287.695,16414
-../smt-lib/QF_LRA/tta_startup/simple_startup_15nodes.abstract.base.smt2,0.888,47.390,Timeout 768017.530180274,25298
-../smt-lib/QF_LRA/tta_startup/simple_startup_3nodes.synchro.induct.smt2,0.220,6.302,16.566,3254
-../smt-lib/QF_LRA/tta_startup/simple_startup_14nodes.synchro.induct.smt2,28.437,Timeout,,
-../smt-lib/QF_LRA/tta_startup/simple_startup_12nodes.abstract.base.smt2,0.692,25.960,192.332,17765
-../smt-lib/QF_LRA/tta_startup/simple_startup_3nodes.abstract.base.smt2,0.286,4.455,11.725,2888
-../smt-lib/QF_LRA/tta_startup/simple_startup_8nodes.synchro.base.smt2,0.463,16.135,97.196,11040
-../smt-lib/QF_LRA/tta_startup/simple_startup_15nodes.synchro.induct.smt2,37.649,Timeout,,
-../smt-lib/QF_LRA/tta_startup/simple_startup_8nodes.synchro.induct.smt2,1.570,13.547,118.139,13801
-../smt-lib/QF_LRA/tta_startup/simple_startup_5nodes.synchro.base.smt2,0.387,4.405,28.079,5683
-../smt-lib/QF_LRA/tta_startup/simple_startup_7nodes.abstract.base.smt2,0.325,6.377,53.676,8082
-../smt-lib/QF_LRA/tta_startup/simple_startup_5nodes.abstract.induct.smt2,7.957,15.662,Timeout 768033.297165633,26641
-../smt-lib/QF_LRA/tta_startup/simple_startup_10nodes.synchro.base.smt2,0.881,22.745,156.225,15543
-../smt-lib/QF_LRA/tta_startup/simple_startup_7nodes.synchro.induct.smt2,1.184,9.184,93.425,11119
-../smt-lib/QF_LRA/tta_startup/simple_startup_4nodes.synchro.induct.smt2,0.734,6.797,24.275,4686
-../smt-lib/QF_LRA/tta_startup/simple_startup_4nodes.synchro.base.smt2,0.186,5.860,27.357,4254
-../smt-lib/QF_LRA/tta_startup/simple_startup_11nodes.synchro.base.smt2,1.141,28.404,197.556,18072
-../smt-lib/QF_LRA/tta_startup/simple_startup_3nodes.abstract.induct.smt2,1.300,9.756,124.118,10293
-../smt-lib/QF_LRA/tta_startup/simple_startup_3nodes.synchro.base.smt2,0.273,5.317,12.703,3020
-../smt-lib/QF_LRA/tta_startup/simple_startup_8nodes.abstract.induct.smt2,58.988,45.705,Timeout 768132.716098908,57913
-../smt-lib/QF_LRA/tta_startup/simple_startup_12nodes.synchro.base.smt2,1.574,35.157,218.016,20786
-../smt-lib/QF_LRA/tta_startup/simple_startup_14nodes.abstract.base.smt2,0.840,39.833,254.598,22644
-../smt-lib/QF_LRA/tta_startup/simple_startup_8nodes.abstract.base.smt2,0.800,12.816,72.998,9723
-../smt-lib/QF_LRA/tta_startup/simple_startup_15nodes.synchro.base.smt2,3.273,Timeout,,
-../smt-lib/QF_LRA/TM/p5-driverlogNumeric_s9.smt2,0.617,1.831,21.121,4838
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-11.smt2,0.320,3.901,6.502,1590
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-5.smt2,0.307,0.846,1.399,712
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-16.smt2,0.299,1.516,9.678,2388
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-1.smt2,0.276,1.508,0.244,152
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-3.smt2,0.517,0.828,0.747,431
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-18.smt2,0.338,1.524,11.893,2663
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-20.smt2,0.336,4.570,19.076,2980
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-14.smt2,0.539,1.408,8.805,2067
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-10.smt2,0.186,0.822,4.415,1478
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-15.smt2,0.168,2.020,14.385,2194
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-2.smt2,0.423,2.029,0.509,284
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-13.smt2,0.586,1.263,10.502,1819
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-9.smt2,0.154,0.734,3.509,1351
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-4.smt2,0.307,1.050,1.241,611
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-6.smt2,0.408,2.104,2.546,796
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-7.smt2,0.424,0.813,2.088,1005
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-12.smt2,0.477,1.921,8.753,1821
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-8.smt2,0.291,0.882,4.243,1244
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-17.smt2,0.663,1.479,20.264,2638
-../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-19.smt2,0.280,1.704,13.593,2802
-../smt-lib/QF_LRA/sal/carpark/Carpark2-t1-1.smt2,0.474,1.566,3.501,919
-../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2,0.295,0.708,2.354,963
-../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-5.smt2,0.409,6.681,30.825,4436
-../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-2.smt2,0.285,1.122,5.850,1851
-../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-4.smt2,0.490,2.642,17.844,3568
-../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-7.smt2,0.563,7.495,54.272,6137
-../smt-lib/QF_LRA/sal/carpark/Carpark2-t1-3.smt2,0.525,2.868,13.421,2621
-../smt-lib/QF_LRA/sal/carpark/Carpark2-t1-2.smt2,0.574,2.387,7.001,1771
-../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-3.smt2,0.206,2.794,12.738,2701
-../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-6.smt2,0.773,5.702,41.343,5307
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-3.smt2,0.341,0.795,3.281,1397
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-10.smt2,0.262,3.227,27.309,4640
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-16.smt2,0.515,8.209,51.582,7307
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-13.smt2,0.449,5.124,37.214,6337
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-1.smt2,0.344,0.955,0.588,462
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-11.smt2,0.448,3.346,27.750,5026
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-15.smt2,0.594,6.131,45.935,6715
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-14.smt2,0.759,5.739,40.974,6661
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-8.smt2,0.666,2.533,19.067,4131
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-19.smt2,1.019,13.752,75.066,8723
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-7.smt2,0.505,2.483,18.136,3582
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-20.smt2,0.995,11.365,75.720,8802
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-17.smt2,0.809,8.662,54.259,7416
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-4.smt2,0.387,3.131,6.450,1964
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-2.smt2,0.457,3.124,2.533,914
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-12.smt2,0.555,4.740,40.981,5783
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-9.smt2,0.488,3.322,22.426,4511
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-5.smt2,0.256,1.103,8.317,2474
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-6.smt2,0.536,5.546,14.613,3198
-../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-18.smt2,0.949,10.469,69.240,7870
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-17.smt2,0.790,25.743,114.112,9865
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-16.smt2,0.544,18.721,99.056,9294
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-8.smt2,0.456,5.131,26.558,4692
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-4.smt2,0.588,1.961,7.605,2384
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-1.smt2,0.568,2.701,1.311,649
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-19.smt2,1.035,25.000,140.036,11011
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-7.smt2,0.809,5.654,20.432,4112
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-5.smt2,0.575,2.204,10.353,2962
-../smt-lib/QF_LRA/sal/windowreal/windowreal-safe2-2.smt2,0.746,3.885,3.984,1284
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-11.smt2,0.349,8.208,50.120,6413
-../smt-lib/QF_LRA/sal/windowreal/windowreal-safe2-1.smt2,0.493,2.822,1.453,670
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-9.smt2,0.919,9.061,34.530,5268
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-12.smt2,0.721,12.215,61.711,6990
-../smt-lib/QF_LRA/sal/windowreal/windowreal-safe-1.smt2,0.126,0.411,0.801,678
-../smt-lib/QF_LRA/sal/windowreal/windowreal-safe-2.smt2,0.789,4.226,3.200,1292
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-18.smt2,1.529,20.205,120.901,10443
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-10.smt2,0.631,8.134,43.773,5840
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-3.smt2,0.582,1.199,4.521,1807
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-15.smt2,0.441,14.218,86.633,8724
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-2.smt2,0.866,1.738,2.779,1265
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-20.smt2,1.240,26.024,147.360,11609
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-13.smt2,0.573,10.434,68.334,7569
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-6.smt2,0.323,2.901,15.469,3539
-../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-14.smt2,0.923,16.118,75.773,8158
-../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-6.smt2,0.355,1.591,8.880,3086
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-7.smt2,0.579,2.017,12.524,3922
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-14.smt2,0.873,10.406,73.243,8617
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-13.smt2,0.770,5.982,54.272,7909
-../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-3.smt2,0.323,1.151,2.472,1401
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-1.smt2,0.661,0.949,0.693,491
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-5.smt2,0.690,1.944,7.496,2503
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-12.smt2,0.755,5.245,40.727,7118
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-3.smt2,0.197,0.826,2.435,1396
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-16.smt2,0.808,10.718,82.156,10018
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-15.smt2,0.745,9.116,94.911,9414
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-11.smt2,0.646,7.217,39.394,6555
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-6.smt2,0.207,2.078,15.293,3025
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-4.smt2,0.200,1.027,3.553,1897
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-8.smt2,0.418,2.988,16.049,4271
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-2.smt2,0.296,0.820,1.235,927
-../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-1.smt2,0.646,2.730,0.803,494
-../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-4.smt2,0.339,1.316,3.933,1880
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-10.smt2,0.317,3.874,26.571,5559
-../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-9.smt2,0.673,2.750,20.535,5077
-../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-5.smt2,0.175,1.431,5.918,2512
-../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-2.smt2,0.338,0.823,1.114,930
-../smt-lib/QF_LRA/uart/uart-20.base.cvc.smt2,10.555,24.189,Timeout 768167.29512843,30805
-../smt-lib/QF_LRA/uart/uart-35.base.cvc.smt2,95.224,Timeout,,
-../smt-lib/QF_LRA/uart/uart-7.base.cvc.smt2,0.625,3.241,24.587,4549
-../smt-lib/QF_LRA/uart/uart-24.base.cvc.smt2,19.975,36.973,Timeout 768191.26996709,40546
-../smt-lib/QF_LRA/uart/uart-33.base.cvc.smt2,72.764,Timeout,,
-../smt-lib/QF_LRA/uart/uart-19.base.cvc.smt2,7.892,23.104,Timeout 768165.567522143,24539
-../smt-lib/QF_LRA/uart/uart-9.base.cvc.smt2,0.889,4.254,45.414,6881
-../smt-lib/QF_LRA/uart/uart-17.base.cvc.smt2,5.043,16.502,Timeout 768156.903652019,20158
-../smt-lib/QF_LRA/uart/uart-32.base.cvc.smt2,68.658,Timeout,,
-../smt-lib/QF_LRA/uart/uart-29.base.cvc.smt2,42.810,55.655,Timeout 768234.927867408,55425
-../smt-lib/QF_LRA/uart/uart-27.base.cvc.smt2,33.947,49.733,Timeout 768223.063261455,49407
-../smt-lib/QF_LRA/uart/uart-26.base.cvc.smt2,23.763,46.815,Timeout 768212.253178745,42827
-../smt-lib/QF_LRA/uart/uart-13.base.cvc.smt2,1.880,9.263,176.152,13101
-../smt-lib/QF_LRA/uart/uart-5.base.cvc.smt2,0.309,2.355,17.872,3203
-../smt-lib/QF_LRA/uart/uart-36.base.cvc.smt2,90.662,Timeout,,
-../smt-lib/QF_LRA/uart/uart-14.base.cvc.smt2,2.055,10.883,188.955,14573
-../smt-lib/QF_LRA/uart/uart-21.base.cvc.smt2,13.346,27.642,Timeout 768189.320726152,31345
-../smt-lib/QF_LRA/uart/uart-28.base.cvc.smt2,33.055,50.345,Timeout 768232.146640457,52392
-../smt-lib/QF_LRA/uart/uart-31.base.cvc.smt2,46.259,Timeout,,
-../smt-lib/QF_LRA/uart/uart-10.base.cvc.smt2,1.024,5.718,70.373,8257
-../smt-lib/QF_LRA/uart/uart-22.base.cvc.smt2,13.458,29.196,Timeout 768197.993881939,32920
-../smt-lib/QF_LRA/uart/uart-15.base.cvc.smt2,3.069,11.288,219.705,16793
-../smt-lib/QF_LRA/uart/uart-18.base.cvc.smt2,6.794,25.394,Timeout 768189.614585974,23613
-../smt-lib/QF_LRA/uart/uart-39.base.cvc.smt2,115.153,Timeout,,
-../smt-lib/QF_LRA/uart/uart-34.base.cvc.smt2,64.154,Timeout,,
-../smt-lib/QF_LRA/uart/uart-6.base.cvc.smt2,0.747,4.084,15.266,3705
-../smt-lib/QF_LRA/uart/uart-38.base.cvc.smt2,114.488,Timeout,,
-../smt-lib/QF_LRA/uart/uart-30.base.cvc.smt2,41.841,58.029,Timeout 768265.414302004,57618
-../smt-lib/QF_LRA/uart/uart-20-with-lemmas.induction.cvc.smt2,3.961,28.713,169.815,14880
-../smt-lib/QF_LRA/uart/uart-16.base.cvc.smt2,4.242,14.553,259.335,19255
-../smt-lib/QF_LRA/uart/uart-23.base.cvc.smt2,13.592,30.231,Timeout 768214.539804908,34792
-../smt-lib/QF_LRA/uart/uart-12.base.cvc.smt2,1.447,7.717,129.711,11541
-../smt-lib/QF_LRA/uart/uart-25.base.cvc.smt2,23.338,43.361,Timeout 768240.499984581,41545
-../smt-lib/QF_LRA/uart/uart-37.base.cvc.smt2,111.093,Timeout,,
-../smt-lib/QF_LRA/uart/uart-40.base.cvc.smt2,NO PROOF (veriT),,,
-../smt-lib/QF_LRA/uart/uart-8.base.cvc.smt2,0.649,2.725,30.418,5535
-../smt-lib/QF_LRA/uart/uart-11.base.cvc.smt2,1.146,6.845,97.043,9748
-../smt-lib/QF_LRA/spider_benchmarks/mode_cntrl.induction.smt2,0.516,0.826,2.906,1052
-../smt-lib/QF_LRA/spider_benchmarks/fs_init_no_op_accs.induction.smt2,0.857,0.934,1.911,999
-../smt-lib/QF_LRA/spider_benchmarks/fs_no_op_accs.base.smt2,0.605,1.555,11.132,3021
-../smt-lib/QF_LRA/spider_benchmarks/pd_no_op_accs.base.smt2,0.800,2.881,3.812,1126
-../smt-lib/QF_LRA/spider_benchmarks/pd_finish.base.smt2,0.808,0.868,2.240,988
-../smt-lib/QF_LRA/spider_benchmarks/fs_window.base.smt2,0.509,2.191,13.215,3086
-../smt-lib/QF_LRA/spider_benchmarks/op_seen_less2.induction.smt2,0.683,2.660,17.487,3674
-../smt-lib/QF_LRA/spider_benchmarks/sc_init_frame_gap.base.smt2,0.389,3.164,3.148,1009
-../smt-lib/QF_LRA/spider_benchmarks/op_seen_less2.base.smt2,0.907,3.026,19.641,3842
-../smt-lib/QF_LRA/spider_benchmarks/current_frame.induction.smt2,0.493,2.147,11.600,2780
-../smt-lib/QF_LRA/spider_benchmarks/op_seen_more1.base.smt2,0.192,1.589,15.999,3236
-../smt-lib/QF_LRA/spider_benchmarks/pd_finish.induction.smt2,0.256,2.991,2.653,897
-../smt-lib/QF_LRA/spider_benchmarks/reint_to_least.base.smt2,0.627,8.952,7.538,2064
-../smt-lib/QF_LRA/spider_benchmarks/pd_init_op_accs.base.smt2,0.408,1.191,2.553,1076
-../smt-lib/QF_LRA/spider_benchmarks/no_op_accs.induction.smt2,0.568,0.739,1.751,952
-../smt-lib/QF_LRA/spider_benchmarks/pd_not_fs_seen.induction.smt2,0.454,0.744,2.041,957
-../smt-lib/QF_LRA/spider_benchmarks/fs_no_op_accs.induction.smt2,0.504,2.118,14.092,3306
-../smt-lib/QF_LRA/spider_benchmarks/synched.induction.smt2,0.590,2.386,14.582,3509
-../smt-lib/QF_LRA/spider_benchmarks/pd_init_op_accs.induction.smt2,0.545,1.495,2.518,1045
-../smt-lib/QF_LRA/spider_benchmarks/bad_echos_ascend.induction.smt2,0.557,0.834,1.960,902
-../smt-lib/QF_LRA/spider_benchmarks/pd_not_sc_seen.induction.smt2,0.323,1.716,2.312,967
-../smt-lib/QF_LRA/spider_benchmarks/good_frame_update.induction.smt2,0.638,1.306,5.950,1797
-../smt-lib/QF_LRA/spider_benchmarks/fs_not_sc_seen.induction.smt2,0.522,0.563,1.645,964
-../smt-lib/QF_LRA/spider_benchmarks/bad_echos_ascend.base.smt2,0.559,1.006,2.360,992
-../smt-lib/QF_LRA/spider_benchmarks/good_frame_update.base.smt2,0.456,1.888,6.510,1956
-../smt-lib/QF_LRA/spider_benchmarks/no_op_accs.base.smt2,0.573,0.905,2.585,1107
-../smt-lib/QF_LRA/spider_benchmarks/frame_prop.induction.smt2,0.489,0.521,1.455,942
-../smt-lib/QF_LRA/spider_benchmarks/fs_frame_gap.induction.smt2,0.375,2.939,13.323,3191
-../smt-lib/QF_LRA/spider_benchmarks/op_seen_more1.induction.smt2,0.594,1.898,10.917,2985
-../smt-lib/QF_LRA/spider_benchmarks/reint_to_least.induction.smt2,0.896,2.020,6.627,1944
-../smt-lib/QF_LRA/spider_benchmarks/pd_not_sc_seen.base.smt2,0.646,1.119,1.688,1016
-../smt-lib/QF_LRA/spider_benchmarks/synched.base.smt2,0.444,2.737,14.841,3101
-../smt-lib/QF_LRA/spider_benchmarks/mode_cntrl.base.smt2,0.511,1.016,2.820,1084
-../smt-lib/QF_LRA/spider_benchmarks/frame_prop.base.smt2,0.413,0.939,2.291,1028
-../smt-lib/QF_LRA/spider_benchmarks/fs_init_no_op_accs.base.smt2,0.500,0.992,2.194,1007
-../smt-lib/QF_LRA/spider_benchmarks/pd_no_op_accs.induction.smt2,0.549,0.740,1.915,1002
-../smt-lib/QF_LRA/spider_benchmarks/sc_init_frame_gap.induction.smt2,0.538,0.823,2.114,1146
-../smt-lib/QF_LRA/spider_benchmarks/fs_not_sc_seen.base.smt2,0.537,0.792,2.028,1016
-../smt-lib/QF_LRA/spider_benchmarks/pd_not_fs_seen.base.smt2,0.403,0.779,2.193,1016
-../smt-lib/QF_LRA/spider_benchmarks/fs_window.induction.smt2,0.560,2.327,15.596,3558
-../smt-lib/QF_LRA/spider_benchmarks/fs_frame_gap.base.smt2,0.314,2.338,15.449,3436
-../smt-lib/QF_LRA/spider_benchmarks/current_frame.base.smt2,0.652,1.965,11.939,3014
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_5clocks.worst_case_skew.base.smt2,0.403,0.713,0.789,170
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_9clocks.main_invar.induct.smt2,50.220,18.301,239.686,16659
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_9clocks.main_invar.base.smt2,0.754,6.770, 767959.660470728,7297
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_4clocks.worst_case_skew.induct.smt2,0.866,1.901,25.251,1684
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_6clocks.worst_case_skew.base.smt2,0.696,0.408,0.657,200
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_2clocks.main_invar.base.smt2,0.551,1.085, 767915.017818498,1654
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_3clocks.worst_case_skew.induct.smt2,0.595,1.515,11.562,1146
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_8clocks.main_invar.base.smt2,1.044,5.001, 767946.210367532,6316
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_5clocks.worst_case_skew.induct.smt2,1.137,2.586,49.856,2386
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_2clocks.worst_case_skew.induct.smt2,0.457,0.954,4.899,751
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_2clocks.main_invar.induct.smt2,0.907,1.946,21.934,2505
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_9clocks.worst_case_skew.base.smt2,0.628,0.590,0.921,314
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_5clocks.main_invar.induct.smt2,6.690,5.379,97.308,7449
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_5clocks.main_invar.base.smt2,1.084,2.291, 767926.199148366,3746
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_10clocks.main_invar.induct.smt2,28.357,25.829,279.292,18887
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_4clocks.worst_case_skew.base.smt2,0.514,0.498,0.429,144
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_8clocks.main_invar.induct.smt2,56.846,16.352,149.008,13482
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_4clocks.main_invar.induct.smt2,2.779,3.289,61.862,5441
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_4clocks.main_invar.base.smt2,0.306,1.638, 767923.480775766,2985
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_9clocks.worst_case_skew.induct.smt2,15.740,9.858,225.308,8921
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_10clocks.worst_case_skew.induct.smt2,28.167,11.187,277.800,11752
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_6clocks.worst_case_skew.induct.smt2,1.826,4.255,61.035,3198
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_7clocks.worst_case_skew.base.smt2,0.240,0.363,0.502,234
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_3clocks.worst_case_skew.base.smt2,0.295,0.451,0.665,122
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_7clocks.worst_case_skew.induct.smt2,4.840,5.231,106.466,4576
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_10clocks.main_invar.base.smt2,0.741,7.221, 767970.778347926,8554
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_7clocks.main_invar.induct.smt2,22.570,12.239,160.265,11032
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_8clocks.worst_case_skew.induct.smt2,8.365,7.546,172.276,6737
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_2clocks.worst_case_skew.base.smt2,0.486,0.642,0.396,104
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_7clocks.main_invar.base.smt2,0.383,3.750, 767946.108532756,5398
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_6clocks.main_invar.induct.smt2,18.177,9.174,116.515,9267
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_6clocks.main_invar.base.smt2,0.716,3.078, 767940.193321121,4653
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_3clocks.main_invar.base.smt2,0.184,1.061, 767928.896748816,2279
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_10clocks.worst_case_skew.base.smt2,0.510,0.481,0.996,360
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_8clocks.worst_case_skew.base.smt2,0.543,0.714,0.516,272
-../smt-lib/QF_LRA/clock_synchro/clocksynchro_3clocks.main_invar.induct.smt2,1.503,2.549,41.817,3826
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_05.i_3_2_2.bpl_7.smt2,2.252,2.148,65.912,5876
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_sorting_bubblesort_ground.i_4_3_3.bpl_7.smt2,1.993,2.707,45.975,6219
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_jain_5.i_2_4_3.bpl_7.smt2,55.241,7.575,194.616,21099
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_2-pieceTemplate.smt2,43.647,8.641,52.410,11404
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/CookSeeZuleger-2013TACAS-Fig7a_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,46.304,14.959,85.277,29455
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/Masse_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,25.021,9.167,79.550,13165
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/Ben-Amram-2010LMCS-Ex2.3_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,50.058,16.185,235.436,39654
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Loop_6-phaseTemplate.smt2,55.646,14.866,118.961,31442
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Loop_5-phaseTemplate.smt2,12.077,11.469,83.223,22369
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/CookSeeZuleger-2013TACAS-Fig3_true-termination.c_Iteration1_Loop_3-pieceTemplate.smt2,42.470,11.508,92.117,22065
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/min_rf_true-termination.c_Iteration1_Loop_6-phaseTemplate.smt2,12.951,3.483,6.267,952
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/BradleyMannaSipma-2005ICALP-Fig1_true-termination.c_Iteration1_Lasso_5-phaseTemplate.smt2,18.321,4.700,11.693,1934
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/LeeJonesBen-Amram-2001POPL-Ex5_true-termination.c_Iteration2_Loop_7-phaseTemplate.smt2,94.431,24.337,204.088,59486
+../smt-lib/QF_LRA/LassoRanker/SV-COMP/NoriSharma-2013FSE-Fig8_true-termination.c_Iteration1_Lasso_3-pieceTemplate.smt2,42.613,11.677,58.773,24471
+../smt-lib/QF_LRA/miplib/danoint-30.smt2,0.313,34.928,141.966,11855
+../smt-lib/QF_LRA/miplib/vpm2-5.smt2,1.813,21.627,165.101,16913
+../smt-lib/QF_LRA/miplib/pp08a-3000.smt2,19.723,43.302,Timeout 300.000,30565
+../smt-lib/QF_LRA/miplib/danoint-50.smt2,0.454,33.414,138.278,12006
+../smt-lib/QF_LRA/miplib/pp08a-2000.smt2,2.268,25.423,Timeout 300.002,18676
+../smt-lib/QF_LRA/miplib/pk1--1.smt2,0.322,12.697,63.820,12054
+../smt-lib/QF_LRA/miplib/fixnet-1000.smt2,5.418,Timeout,,
+../smt-lib/QF_LRA/miplib/pp08a-1000.smt2,1.968,26.443,160.511,17446
+../smt-lib/QF_LRA/miplib/vpm2-0.smt2,1.743,22.822,118.531,16158
+../smt-lib/QF_LRA/sc/sc-27.base.cvc.smt2,12.517,15.700,Timeout 300.003,25238
+../smt-lib/QF_LRA/sc/sc-14.base.cvc.smt2,1.765,7.123,133.758,8999
+../smt-lib/QF_LRA/sc/sc-16.base.cvc.smt2,1.937,8.662,124.953,10365
+../smt-lib/QF_LRA/sc/sc-39.base.cvc.smt2,72.503,29.390,Timeout 300.001,67806
+../smt-lib/QF_LRA/sc/sc-40.base.cvc.smt2,85.505,23.442,Timeout 300.000,41785
+../smt-lib/QF_LRA/sc/sc-35.base.cvc.smt2,51.827,19.985,Timeout 300.000,31246
+../smt-lib/QF_LRA/sc/sc-30.base.cvc.smt2,15.742,17.679,Timeout 300.003,29807
+../smt-lib/QF_LRA/sc/sc-18.base.cvc.smt2,4.475,9.457,172.912,13445
+../smt-lib/QF_LRA/sc/sc-11.base.cvc.smt2,0.662,6.650,91.892,6539
+../smt-lib/QF_LRA/sc/sc-8.base.cvc.smt2,0.249,5.366,43.604,3573
+../smt-lib/QF_LRA/sc/sc-34.base.cvc.smt2,46.672,24.096,Timeout 300.001,51220
+../smt-lib/QF_LRA/sc/sc-10.base.cvc.smt2,0.667,5.749,67.081,4974
+../smt-lib/QF_LRA/sc/sc-36.base.cvc.smt2,63.475,36.250,Timeout 300.002,66930
+../smt-lib/QF_LRA/sc/sc-32.base.cvc.smt2,32.086,30.804,Timeout 300.000,56210
+../smt-lib/QF_LRA/sc/sc-26.base.cvc.smt2,16.756,20.279,Timeout 300.006,33397
+../smt-lib/QF_LRA/sc/sc-38.base.cvc.smt2,34.844,21.510,Timeout 300.000,36820
+../smt-lib/QF_LRA/sc/sc-23.base.cvc.smt2,8.809,13.448,298.820,20856
+../smt-lib/QF_LRA/sc/sc-21.base.cvc.smt2,6.090,10.005,184.488,14079
+../smt-lib/QF_LRA/sc/sc-22.base.cvc.smt2,6.394,11.026,253.398,18021
+../smt-lib/QF_LRA/sc/sc-29.base.cvc.smt2,16.035,16.031,Timeout 300.000,25799
+../smt-lib/QF_LRA/sc/sc-15.base.cvc.smt2,2.797,8.527,156.023,11407
+../smt-lib/QF_LRA/sc/sc-20.base.cvc.smt2,3.719,10.356,192.986,14611
+../smt-lib/QF_LRA/sc/sc-9.base.cvc.smt2,0.276,4.952,47.512,4004
+../smt-lib/QF_LRA/sc/sc-37.base.cvc.smt2,63.365,38.294,Timeout 300.002,78747
+../smt-lib/QF_LRA/sc/sc-24.base.cvc.smt2,11.406,13.472,256.371,20471
+../smt-lib/QF_LRA/sc/sc-33.base.cvc.smt2,36.405,23.513,Timeout 300.002,41608
+../smt-lib/QF_LRA/sc/sc-6.base.cvc.smt2,0.125,4.099,32.840,2568
+../smt-lib/QF_LRA/sc/sc-5.base.cvc.smt2,0.112,3.916,20.223,1826
+../smt-lib/QF_LRA/sc/sc-12.base.cvc.smt2,0.890,5.955,100.969,7084
+../smt-lib/QF_LRA/sc/sc-28.base.cvc.smt2,15.957,15.336,Timeout 300.000,24640
+../smt-lib/QF_LRA/sc/sc-25.base.cvc.smt2,7.720,13.742,292.474,21862
+../smt-lib/QF_LRA/sc/sc-19.base.cvc.smt2,3.784,9.574,131.669,12223
+../smt-lib/QF_LRA/sc/sc-13.base.cvc.smt2,1.489,7.403,126.015,8711
+../smt-lib/QF_LRA/sc/sc-31.base.cvc.smt2,28.548,29.430,Timeout 300.000,53643
+../smt-lib/QF_LRA/sc/sc-7.base.cvc.smt2,0.215,4.851,42.915,3110
+../smt-lib/QF_LRA/sc/sc-17.base.cvc.smt2,3.269,7.238,115.491,10008
+../smt-lib/QF_LRA/tta_startup/simple_startup_9nodes.synchro.induct.smt2,2.288,21.276,125.868,15280
+../smt-lib/QF_LRA/tta_startup/simple_startup_9nodes.abstract.induct.smt2,93.183,38.188,Timeout 300.000,80738
+../smt-lib/QF_LRA/tta_startup/simple_startup_14nodes.synchro.base.smt2,1.812,52.882,207.061,26769
+../smt-lib/QF_LRA/tta_startup/simple_startup_9nodes.abstract.base.smt2,0.496,16.334,91.020,11519
+../smt-lib/QF_LRA/tta_startup/simple_startup_11nodes.abstract.base.smt2,0.872,23.651,117.912,15540
+../smt-lib/QF_LRA/tta_startup/simple_startup_10nodes.synchro.induct.smt2,2.913,24.564,141.673,19098
+../smt-lib/QF_LRA/tta_startup/simple_startup_9nodes.synchro.base.smt2,0.838,20.460,108.592,13199
+../smt-lib/QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2,0.701,19.660,109.526,13458
+../smt-lib/QF_LRA/tta_startup/simple_startup_5nodes.synchro.induct.smt2,0.463,7.435,57.915,6617
+../smt-lib/QF_LRA/tta_startup/simple_startup_12nodes.synchro.induct.smt2,6.101,38.421,213.160,29186
+../smt-lib/QF_LRA/tta_startup/simple_startup_6nodes.synchro.induct.smt2,0.871,8.991,69.941,8200
+../smt-lib/QF_LRA/tta_startup/simple_startup_6nodes.abstract.induct.smt2,12.874,21.278,Timeout 300.001,37285
+../smt-lib/QF_LRA/tta_startup/simple_startup_7nodes.abstract.induct.smt2,28.732,36.990,Timeout 300.000,51792
+../smt-lib/QF_LRA/tta_startup/simple_startup_4nodes.abstract.base.smt2,0.170,7.025,28.456,3969
+../smt-lib/QF_LRA/tta_startup/simple_startup_6nodes.abstract.base.smt2,0.301,8.600,50.195,6580
+../smt-lib/QF_LRA/tta_startup/simple_startup_5nodes.abstract.base.smt2,0.190,7.014,38.019,5203
+../smt-lib/QF_LRA/tta_startup/simple_startup_6nodes.synchro.base.smt2,0.397,9.431,60.161,7297
+../smt-lib/QF_LRA/tta_startup/simple_startup_7nodes.synchro.base.smt2,0.642,12.394,78.985,9078
+../smt-lib/QF_LRA/tta_startup/simple_startup_11nodes.synchro.induct.smt2,4.923,30.674,172.933,23137
+../smt-lib/QF_LRA/tta_startup/simple_startup_4nodes.abstract.induct.smt2,2.691,10.901,187.283,16414
+../smt-lib/QF_LRA/tta_startup/simple_startup_15nodes.abstract.base.smt2,1.244,48.417,184.830,25298
+../smt-lib/QF_LRA/tta_startup/simple_startup_3nodes.synchro.induct.smt2,0.146,5.678,27.607,3254
+../smt-lib/QF_LRA/tta_startup/simple_startup_14nodes.synchro.induct.smt2,17.540,59.269,Timeout 300.000,42217
+../smt-lib/QF_LRA/tta_startup/simple_startup_12nodes.abstract.base.smt2,0.952,28.275,138.667,17765
+../smt-lib/QF_LRA/tta_startup/simple_startup_3nodes.abstract.base.smt2,0.135,5.530,20.775,2888
+../smt-lib/QF_LRA/tta_startup/simple_startup_8nodes.synchro.base.smt2,0.811,15.990,86.352,11040
+../smt-lib/QF_LRA/tta_startup/simple_startup_15nodes.synchro.induct.smt2,22.344,Timeout,,
+../smt-lib/QF_LRA/tta_startup/simple_startup_8nodes.synchro.induct.smt2,1.748,17.008,116.294,13801
+../smt-lib/QF_LRA/tta_startup/simple_startup_5nodes.synchro.base.smt2,0.226,8.026,44.623,5683
+../smt-lib/QF_LRA/tta_startup/simple_startup_7nodes.abstract.base.smt2,0.529,11.217,60.794,8082
+../smt-lib/QF_LRA/tta_startup/simple_startup_5nodes.abstract.induct.smt2,6.753,15.849,Timeout 300.000,26641
+../smt-lib/QF_LRA/tta_startup/simple_startup_10nodes.synchro.base.smt2,1.157,26.567,116.739,15543
+../smt-lib/QF_LRA/tta_startup/simple_startup_7nodes.synchro.induct.smt2,1.114,12.903,87.034,11119
+../smt-lib/QF_LRA/tta_startup/simple_startup_4nodes.synchro.induct.smt2,0.267,7.222,38.929,4686
+../smt-lib/QF_LRA/tta_startup/simple_startup_4nodes.synchro.base.smt2,0.251,6.069,32.966,4254
+../smt-lib/QF_LRA/tta_startup/simple_startup_11nodes.synchro.base.smt2,1.341,31.143,153.325,18072
+../smt-lib/QF_LRA/tta_startup/simple_startup_3nodes.abstract.induct.smt2,1.164,7.822,105.995,10293
+../smt-lib/QF_LRA/tta_startup/simple_startup_3nodes.synchro.base.smt2,0.130,5.262,20.292,3020
+../smt-lib/QF_LRA/tta_startup/simple_startup_8nodes.abstract.induct.smt2,45.022,40.131,Timeout 300.002,57913
+../smt-lib/QF_LRA/tta_startup/simple_startup_12nodes.synchro.base.smt2,1.605,36.855,167.220,20786
+../smt-lib/QF_LRA/tta_startup/simple_startup_14nodes.abstract.base.smt2,1.234,41.418,171.012,22644
+../smt-lib/QF_LRA/tta_startup/simple_startup_8nodes.abstract.base.smt2,0.611,13.009,80.999,9723
+../smt-lib/QF_LRA/tta_startup/simple_startup_15nodes.synchro.base.smt2,2.493,Timeout,,
+../smt-lib/QF_LRA/TM/p5-driverlogNumeric_s9.smt2,0.590,3.340,17.449,4838
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-11.smt2,0.109,4.446,16.197,1590
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-5.smt2,0.078,2.333,9.178,712
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-16.smt2,0.112,4.936,25.025,2388
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-1.smt2,0.058,1.459,1.263,152
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-3.smt2,0.094,1.982,3.939,431
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-18.smt2,0.149,4.927,29.875,2663
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-20.smt2,0.161,4.626,32.191,2980
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-14.smt2,0.160,3.992,21.420,2067
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-10.smt2,0.144,3.793,15.645,1478
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-15.smt2,0.139,4.798,23.115,2194
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-2.smt2,0.075,1.757,2.975,284
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-13.smt2,0.141,4.164,22.517,1819
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-9.smt2,0.125,4.041,14.209,1351
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-4.smt2,0.076,2.225,7.626,611
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-6.smt2,0.095,2.768,8.736,796
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-7.smt2,0.084,2.844,10.658,1005
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-12.smt2,0.163,3.981,22.560,1821
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-8.smt2,0.093,3.326,17.068,1244
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-17.smt2,0.138,4.384,35.005,2638
+../smt-lib/QF_LRA/sal/gasburner/gasburner-prop3-19.smt2,0.143,4.596,30.730,2802
+../smt-lib/QF_LRA/sal/carpark/Carpark2-t1-1.smt2,0.078,2.829,7.811,919
+../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2,0.137,3.262,7.857,963
+../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-5.smt2,0.337,7.737,39.531,4436
+../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-2.smt2,0.101,4.195,13.869,1851
+../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-4.smt2,0.300,5.893,27.573,3568
+../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-7.smt2,0.449,9.178,58.325,6137
+../smt-lib/QF_LRA/sal/carpark/Carpark2-t1-3.smt2,0.145,5.976,21.078,2621
+../smt-lib/QF_LRA/sal/carpark/Carpark2-t1-2.smt2,0.169,3.952,14.057,1771
+../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-3.smt2,0.150,5.796,21.810,2701
+../smt-lib/QF_LRA/sal/carpark/Carpark2-ausgabe-6.smt2,0.192,8.678,51.219,5307
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-3.smt2,0.110,3.169,12.418,1397
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-10.smt2,0.656,6.809,39.925,4640
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-16.smt2,0.773,10.477,70.961,7307
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-13.smt2,0.650,8.757,54.484,6337
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-1.smt2,0.072,2.506,3.736,462
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-11.smt2,0.240,7.461,43.557,5026
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-15.smt2,0.508,9.559,65.085,6715
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-14.smt2,0.847,9.103,61.282,6661
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-8.smt2,0.194,5.799,38.747,4131
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-19.smt2,0.643,12.569,72.968,8723
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-7.smt2,0.197,5.991,34.059,3582
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-20.smt2,1.105,12.775,89.145,8802
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-17.smt2,0.685,10.486,72.756,7416
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-4.smt2,0.107,4.350,14.832,1964
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-2.smt2,0.176,3.065,7.626,914
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-12.smt2,0.785,8.078,55.317,5783
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-9.smt2,0.197,6.402,41.006,4511
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-5.smt2,0.143,4.748,21.938,2474
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-6.smt2,0.188,5.487,30.346,3198
+../smt-lib/QF_LRA/sal/pursuit/pursuit-safety-18.smt2,0.756,11.768,73.083,7870
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-17.smt2,0.713,20.309,100.871,9865
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-16.smt2,0.908,17.871,94.624,9294
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-8.smt2,0.571,7.542,34.448,4692
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-4.smt2,0.294,4.648,14.034,2384
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-1.smt2,0.104,2.391,4.299,649
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-19.smt2,0.820,25.292,124.427,11011
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-7.smt2,0.242,7.097,27.650,4112
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-5.smt2,0.266,5.104,15.679,2962
+../smt-lib/QF_LRA/sal/windowreal/windowreal-safe2-2.smt2,0.174,3.668,6.654,1284
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-11.smt2,0.530,10.945,57.319,6413
+../smt-lib/QF_LRA/sal/windowreal/windowreal-safe2-1.smt2,0.093,1.833,4.336,670
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-9.smt2,0.419,8.814,41.652,5268
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-12.smt2,0.591,11.689,68.165,6990
+../smt-lib/QF_LRA/sal/windowreal/windowreal-safe-1.smt2,0.109,2.446,4.439,678
+../smt-lib/QF_LRA/sal/windowreal/windowreal-safe-2.smt2,0.106,3.283,7.131,1292
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-18.smt2,0.884,22.964,105.769,10443
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-10.smt2,0.407,10.525,48.571,5840
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-3.smt2,0.183,3.958,9.891,1807
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-15.smt2,0.787,16.781,83.248,8724
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-2.smt2,0.363,3.276,7.020,1265
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-20.smt2,0.470,24.922,121.025,11609
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-13.smt2,0.648,13.469,72.901,7569
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-6.smt2,0.294,6.299,23.929,3539
+../smt-lib/QF_LRA/sal/windowreal/windowreal-no_t_deadlock-14.smt2,0.412,14.571,80.635,8158
+../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-6.smt2,0.146,4.178,19.549,3086
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-7.smt2,0.227,5.499,25.231,3922
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-14.smt2,0.636,9.848,79.491,8617
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-13.smt2,0.514,8.665,70.719,7909
+../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-3.smt2,0.110,3.117,8.718,1401
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-1.smt2,0.084,2.044,2.819,491
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-5.smt2,0.175,4.474,15.546,2503
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-12.smt2,0.274,7.379,59.924,7118
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-3.smt2,0.291,3.423,7.987,1396
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-16.smt2,0.383,10.709,82.879,10018
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-15.smt2,0.574,10.154,103.133,9414
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-11.smt2,0.502,7.622,55.147,6555
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-6.smt2,0.121,4.212,19.983,3025
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-4.smt2,0.201,3.617,10.838,1897
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-8.smt2,0.164,5.131,31.027,4271
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-2.smt2,0.060,2.255,5.231,927
+../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-1.smt2,0.071,1.782,2.955,494
+../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-4.smt2,0.124,3.468,10.744,1880
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-10.smt2,0.270,6.242,41.498,5559
+../smt-lib/QF_LRA/sal/tgc/tgc_io-safe-9.smt2,0.176,6.525,38.132,5077
+../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-5.smt2,0.085,4.044,15.708,2512
+../smt-lib/QF_LRA/sal/tgc/tgc_io-nosafe-2.smt2,0.117,2.277,5.631,930
+../smt-lib/QF_LRA/uart/uart-20.base.cvc.smt2,8.507,28.855,Timeout 300.000,30805
+../smt-lib/QF_LRA/uart/uart-35.base.cvc.smt2,78.811,56.439,Timeout 300.000,87563
+../smt-lib/QF_LRA/uart/uart-7.base.cvc.smt2,0.217,6.020,46.662,4549
+../smt-lib/QF_LRA/uart/uart-24.base.cvc.smt2,14.826,38.779,Timeout 300.000,40546
+../smt-lib/QF_LRA/uart/uart-33.base.cvc.smt2,61.250,Timeout,,
+../smt-lib/QF_LRA/uart/uart-19.base.cvc.smt2,6.163,23.124,Timeout 300.000,24539
+../smt-lib/QF_LRA/uart/uart-9.base.cvc.smt2,0.400,8.071,72.166,6881
+../smt-lib/QF_LRA/uart/uart-17.base.cvc.smt2,3.913,19.523,285.753,20158
+../smt-lib/QF_LRA/uart/uart-32.base.cvc.smt2,57.052,49.273,Timeout 300.001,63732
+../smt-lib/QF_LRA/uart/uart-29.base.cvc.smt2,38.116,54.969,Timeout 300.000,55425
+../smt-lib/QF_LRA/uart/uart-27.base.cvc.smt2,29.428,46.789,Timeout 300.000,49407
+../smt-lib/QF_LRA/uart/uart-26.base.cvc.smt2,17.808,39.321,Timeout 300.004,42827
+../smt-lib/QF_LRA/uart/uart-13.base.cvc.smt2,1.348,11.557,151.527,13101
+../smt-lib/QF_LRA/uart/uart-5.base.cvc.smt2,0.251,4.036,27.378,3203
+../smt-lib/QF_LRA/uart/uart-36.base.cvc.smt2,68.016,57.308,Timeout 300.001,86803
+../smt-lib/QF_LRA/uart/uart-14.base.cvc.smt2,2.051,12.328,174.000,14573
+../smt-lib/QF_LRA/uart/uart-21.base.cvc.smt2,10.431,31.006,Timeout 300.000,31345
+../smt-lib/QF_LRA/uart/uart-28.base.cvc.smt2,29.310,49.810,Timeout 300.001,52392
+../smt-lib/QF_LRA/uart/uart-31.base.cvc.smt2,40.069,48.171,Timeout 300.021,58956
+../smt-lib/QF_LRA/uart/uart-10.base.cvc.smt2,0.564,7.175,93.600,8257
+../smt-lib/QF_LRA/uart/uart-22.base.cvc.smt2,12.268,30.652,Timeout 300.001,32920
+../smt-lib/QF_LRA/uart/uart-15.base.cvc.smt2,2.531,13.217,188.626,16793
+../smt-lib/QF_LRA/uart/uart-18.base.cvc.smt2,5.248,19.546,Timeout 300.000,23613
+../smt-lib/QF_LRA/uart/uart-39.base.cvc.smt2,107.960,Timeout,,
+../smt-lib/QF_LRA/uart/uart-34.base.cvc.smt2,56.142,56.055,Timeout 300.003,67989
+../smt-lib/QF_LRA/uart/uart-6.base.cvc.smt2,0.154,3.817,28.245,3705
+../smt-lib/QF_LRA/uart/uart-38.base.cvc.smt2,98.541,55.087,Timeout 300.001,91287
+../smt-lib/QF_LRA/uart/uart-30.base.cvc.smt2,35.907,49.424,Timeout 300.001,57618
+../smt-lib/QF_LRA/uart/uart-20-with-lemmas.induction.cvc.smt2,3.111,34.727,156.944,14880
+../smt-lib/QF_LRA/uart/uart-16.base.cvc.smt2,3.082,15.673,238.265,19255
+../smt-lib/QF_LRA/uart/uart-23.base.cvc.smt2,11.337,30.875,Timeout 300.000,34792
+../smt-lib/QF_LRA/uart/uart-12.base.cvc.smt2,1.027,9.524,111.129,11541
+../smt-lib/QF_LRA/uart/uart-25.base.cvc.smt2,21.453,33.855,Timeout 300.000,41545
+../smt-lib/QF_LRA/uart/uart-37.base.cvc.smt2,101.794,Timeout,,
+../smt-lib/QF_LRA/uart/uart-40.base.cvc.smt2,108.307,Timeout,,
+../smt-lib/QF_LRA/uart/uart-8.base.cvc.smt2,0.246,4.832,48.609,5535
+../smt-lib/QF_LRA/uart/uart-11.base.cvc.smt2,0.754,8.659,97.970,9748
+../smt-lib/QF_LRA/spider_benchmarks/mode_cntrl.induction.smt2,0.075,1.129,5.547,1052
+../smt-lib/QF_LRA/spider_benchmarks/fs_init_no_op_accs.induction.smt2,0.115,1.068,4.963,999
+../smt-lib/QF_LRA/spider_benchmarks/fs_no_op_accs.base.smt2,0.151,3.343,21.862,3021
+../smt-lib/QF_LRA/spider_benchmarks/pd_no_op_accs.base.smt2,0.063,1.895,5.531,1126
+../smt-lib/QF_LRA/spider_benchmarks/pd_finish.base.smt2,0.081,0.913,3.922,988
+../smt-lib/QF_LRA/spider_benchmarks/fs_window.base.smt2,0.121,3.340,20.917,3086
+../smt-lib/QF_LRA/spider_benchmarks/op_seen_less2.induction.smt2,0.179,5.698,30.676,3674
+../smt-lib/QF_LRA/spider_benchmarks/sc_init_frame_gap.base.smt2,0.128,1.421,6.601,1009
+../smt-lib/QF_LRA/spider_benchmarks/op_seen_less2.base.smt2,0.204,3.796,27.929,3842
+../smt-lib/QF_LRA/spider_benchmarks/current_frame.induction.smt2,0.150,3.199,17.814,2780
+../smt-lib/QF_LRA/spider_benchmarks/op_seen_more1.base.smt2,0.143,2.702,21.616,3236
+../smt-lib/QF_LRA/spider_benchmarks/pd_finish.induction.smt2,0.060,1.255,5.905,897
+../smt-lib/QF_LRA/spider_benchmarks/reint_to_least.base.smt2,0.102,3.120,11.708,2064
+../smt-lib/QF_LRA/spider_benchmarks/pd_init_op_accs.base.smt2,0.091,0.972,4.132,1076
+../smt-lib/QF_LRA/spider_benchmarks/no_op_accs.induction.smt2,0.067,0.851,3.101,952
+../smt-lib/QF_LRA/spider_benchmarks/pd_not_fs_seen.induction.smt2,0.104,1.465,3.680,957
+../smt-lib/QF_LRA/spider_benchmarks/fs_no_op_accs.induction.smt2,0.165,3.462,24.285,3306
+../smt-lib/QF_LRA/spider_benchmarks/synched.induction.smt2,0.155,3.753,24.970,3509
+../smt-lib/QF_LRA/spider_benchmarks/pd_init_op_accs.induction.smt2,0.075,0.769,4.309,1045
+../smt-lib/QF_LRA/spider_benchmarks/bad_echos_ascend.induction.smt2,0.082,2.109,3.998,902
+../smt-lib/QF_LRA/spider_benchmarks/pd_not_sc_seen.induction.smt2,0.079,1.175,3.175,967
+../smt-lib/QF_LRA/spider_benchmarks/good_frame_update.induction.smt2,0.101,1.402,10.752,1797
+../smt-lib/QF_LRA/spider_benchmarks/fs_not_sc_seen.induction.smt2,0.079,2.497,3.821,964
+../smt-lib/QF_LRA/spider_benchmarks/bad_echos_ascend.base.smt2,0.160,2.298,4.872,992
+../smt-lib/QF_LRA/spider_benchmarks/good_frame_update.base.smt2,0.117,2.342,9.957,1956
+../smt-lib/QF_LRA/spider_benchmarks/no_op_accs.base.smt2,0.094,2.162,3.630,1107
+../smt-lib/QF_LRA/spider_benchmarks/frame_prop.induction.smt2,0.089,1.473,4.022,942
+../smt-lib/QF_LRA/spider_benchmarks/fs_frame_gap.induction.smt2,0.155,4.227,23.317,3191
+../smt-lib/QF_LRA/spider_benchmarks/op_seen_more1.induction.smt2,0.156,3.934,17.732,2985
+../smt-lib/QF_LRA/spider_benchmarks/reint_to_least.induction.smt2,0.102,1.754,10.208,1944
+../smt-lib/QF_LRA/spider_benchmarks/pd_not_sc_seen.base.smt2,0.139,0.996,4.003,1016
+../smt-lib/QF_LRA/spider_benchmarks/synched.base.smt2,0.117,3.351,21.086,3101
+../smt-lib/QF_LRA/spider_benchmarks/mode_cntrl.base.smt2,0.101,0.965,3.358,1084
+../smt-lib/QF_LRA/spider_benchmarks/frame_prop.base.smt2,0.112,1.488,3.366,1028
+../smt-lib/QF_LRA/spider_benchmarks/fs_init_no_op_accs.base.smt2,0.108,3.635,4.255,1007
+../smt-lib/QF_LRA/spider_benchmarks/pd_no_op_accs.induction.smt2,0.068,0.755,3.218,1002
+../smt-lib/QF_LRA/spider_benchmarks/sc_init_frame_gap.induction.smt2,0.105,0.824,3.681,1146
+../smt-lib/QF_LRA/spider_benchmarks/fs_not_sc_seen.base.smt2,0.083,1.355,4.244,1016
+../smt-lib/QF_LRA/spider_benchmarks/pd_not_fs_seen.base.smt2,0.066,1.725,3.187,1016
+../smt-lib/QF_LRA/spider_benchmarks/fs_window.induction.smt2,0.146,3.995,23.770,3558
+../smt-lib/QF_LRA/spider_benchmarks/fs_frame_gap.base.smt2,0.136,3.162,26.450,3436
+../smt-lib/QF_LRA/spider_benchmarks/current_frame.base.smt2,0.131,3.462,17.249,3014
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_5clocks.worst_case_skew.base.smt2,0.136,1.172,1.130,170
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_9clocks.main_invar.induct.smt2,36.473,21.032,247.469,16659
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_9clocks.main_invar.base.smt2,0.286,4.399,compare_ac_thm: can't compare disjuction 16.512,7297
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_4clocks.worst_case_skew.induct.smt2,0.335,1.855,40.847,1684
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_6clocks.worst_case_skew.base.smt2,0.089,0.736,0.913,200
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_2clocks.main_invar.base.smt2,0.055,2.580,compare_ac_thm: can't compare disjuction 1.767,1654
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_3clocks.worst_case_skew.induct.smt2,0.161,1.234,18.506,1146
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_8clocks.main_invar.base.smt2,0.236,4.079,compare_ac_thm: can't compare disjuction 13.094,6316
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_5clocks.worst_case_skew.induct.smt2,0.754,6.808,55.340,2386
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_2clocks.worst_case_skew.induct.smt2,0.156,1.205,9.537,751
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_2clocks.main_invar.induct.smt2,0.432,1.778,31.532,2505
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_9clocks.worst_case_skew.base.smt2,0.097,1.261,1.248,314
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_5clocks.main_invar.induct.smt2,5.589,7.136,99.043,7449
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_5clocks.main_invar.base.smt2,0.113,4.254,compare_ac_thm: can't compare disjuction 5.995,3746
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_10clocks.main_invar.induct.smt2,26.003,29.772,268.440,18887
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_4clocks.worst_case_skew.base.smt2,0.076,0.579,0.749,144
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_8clocks.main_invar.induct.smt2,42.705,18.419,173.200,13482
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_4clocks.main_invar.induct.smt2,2.820,8.838,76.055,5441
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_4clocks.main_invar.base.smt2,0.125,2.555,compare_ac_thm: can't compare disjuction 4.323,2985
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_9clocks.worst_case_skew.induct.smt2,16.006,13.514,242.269,8921
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_10clocks.worst_case_skew.induct.smt2,24.993,6.208,294.152,11752
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_6clocks.worst_case_skew.induct.smt2,1.698,3.175,75.390,3198
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_7clocks.worst_case_skew.base.smt2,0.060,1.206,1.686,234
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_3clocks.worst_case_skew.base.smt2,0.057,0.403,0.810,122
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_7clocks.worst_case_skew.induct.smt2,4.406,4.916,132.245,4576
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_10clocks.main_invar.base.smt2,0.364,5.211,compare_ac_thm: can't compare disjuction 24.447,8554
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_7clocks.main_invar.induct.smt2,21.691,14.191,139.067,11032
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_8clocks.worst_case_skew.induct.smt2,8.360,6.038,183.056,6737
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_2clocks.worst_case_skew.base.smt2,0.065,1.167,1.326,104
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_7clocks.main_invar.base.smt2,0.181,3.599,compare_ac_thm: can't compare disjuction 9.619,5398
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_6clocks.main_invar.induct.smt2,17.057,8.233,119.824,9267
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_6clocks.main_invar.base.smt2,0.149,3.346,compare_ac_thm: can't compare disjuction 7.722,4653
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_3clocks.main_invar.base.smt2,0.073,2.687,compare_ac_thm: can't compare disjuction 2.687,2279
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_10clocks.worst_case_skew.base.smt2,0.092,2.372,1.927,360
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_8clocks.worst_case_skew.base.smt2,0.067,0.454,1.067,272
+../smt-lib/QF_LRA/clock_synchro/clocksynchro_3clocks.main_invar.induct.smt2,0.953,4.380,45.159,3826
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_05.i_3_2_2.bpl_7.smt2,1.753,2.577,84.423,5876
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_sorting_bubblesort_ground.i_4_3_3.bpl_7.smt2,1.692,3.175,60.533,6219
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_jain_5.i_2_4_3.bpl_7.smt2,43.774,6.707,208.398,21099
 ../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_copy1_ground.i_3_2_2.bpl_11.smt2,NO PROOF (veriT),,,
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_gj2007.c.i_4_3_3.bpl_7.smt2,9.931,4.426,128.416,13695
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_allDiff2_ground.i_4_4_3.bpl_7.smt2,55.713,8.787,Timeout 768294.257751356,37631
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2,2.455,2.953,45.561,4877
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_06.i_3_2_2.bpl_7.smt2,1.940,2.835,75.423,6028
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_sum60.i_5_6_5.bpl_5.smt2,34.658,23.472,Timeout 768295.636491212,43281
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_04.i_3_2_2.bpl_7.smt2,1.825,2.513,59.157,5292
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_gj2007.c.i_4_3_3.bpl_7.smt2,9.157,4.506,146.537,13695
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_allDiff2_ground.i_4_4_3.bpl_7.smt2,40.357,7.372,Timeout 300.014,37631
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2,2.312,2.394,63.544,4877
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_06.i_3_2_2.bpl_7.smt2,1.723,4.508,86.379,6028
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_sum60.i_5_6_5.bpl_5.smt2,33.729,21.964,Timeout 300.000,43281
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_two_index_04.i_3_2_2.bpl_7.smt2,1.433,2.908,69.880,5292
 ../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_array1.i_3_2_2.bpl_11.smt2,NO PROOF (veriT),,,
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_avg60.i_5_5_4.bpl_5.smt2,106.848,57.108,Timeout 768404.152306977,73406
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_copyInit_ground.i_3_2_2.bpl_7.smt2,48.312,7.736,286.774,35421
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_overflow1.i_3_8_2.bpl_7.smt2,1.435,3.110,52.973,3527
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_gr2006.c.i_4_4_3.bpl_7.smt2,7.022,4.867,119.984,13438
-../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_half_2.i_3_6_2.bpl_7.smt2,11.578,6.594,155.150,9811
-../smt-lib/QF_LRA/check/bignum_lra2.smt2,0.693,0.614,1.776,149
-../smt-lib/QF_LRA/keymaera/water_tank-node23593.smt2,0.639,0.382,0.017,25
-../smt-lib/QF_LRA/keymaera/square_root_zuse-node902.smt2,0.726,0.690,0.040,12
-../smt-lib/QF_LRA/keymaera/water_tank-node5964.smt2,0.596,0.641,0.025,32
-../smt-lib/QF_LRA/keymaera/water_tank-node21443.smt2,0.749,0.407,0.019,23
-../smt-lib/QF_LRA/keymaera/intersection-example-onelane.proof-node846.smt2,0.120,0.246,0.038,39
-../smt-lib/QF_LRA/keymaera/simple_example_2-node2074.smt2,0.248,0.420,0.079,53
-../smt-lib/QF_LRA/keymaera/bouncing-ball-simple-node1629.smt2,0.591,0.373,0.012,18
-../smt-lib/QF_LRA/keymaera/water_tank-node28718.smt2,0.229,0.488,0.032,29
-../smt-lib/QF_LRA/keymaera/bouncing-ball-inv-node1935.smt2,0.260,0.365,0.021,23
-../smt-lib/QF_LRA/keymaera/bouncing-ball-simple-node1628.smt2,0.675,0.385,0.019,23
-../smt-lib/QF_LRA/keymaera/water_tank-node28604.smt2,0.177,1.097,0.023,26
-../smt-lib/QF_LRA/keymaera/division_dijkstra-node701.smt2,0.599,0.372,0.009,11
-../smt-lib/QF_LRA/keymaera/simple_example_1-node2318.smt2,0.120,0.297,0.041,34
-../smt-lib/QF_LRA/keymaera/water_tank-node15243.smt2,0.537,0.666,0.025,27
-../smt-lib/QF_LRA/keymaera/intersection-example-simple.proof-node634.smt2,0.116,0.817,0.150,34
-../smt-lib/QF_LRA/keymaera/simple_example_2-node2406.smt2,0.113,0.445,0.080,53
-../smt-lib/QF_LRA/keymaera/bouncing-ball-inv-node1886.smt2,0.539,0.444,0.020,25
-../smt-lib/QF_LRA/keymaera/water_tank-node17126.smt2,0.169,0.717,0.023,30
-../smt-lib/QF_LRA/keymaera/integer_cubic_root_knuth-node1362.smt2,0.426,0.601,0.045,30
-../smt-lib/QF_LRA/keymaera/intersection-example-simple.proof-node606.smt2,0.226,0.287,0.031,54
-../smt-lib/QF_LRA/keymaera/water_tank-node4029.smt2,0.479,0.470,0.025,29
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_avg60.i_5_5_4.bpl_5.smt2,76.637,39.074,Timeout 300.000,73406
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_standard_copyInit_ground.i_3_2_2.bpl_7.smt2,41.223,10.570,288.581,35421
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_overflow1.i_3_8_2.bpl_7.smt2,1.250,7.292,58.189,3527
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_gr2006.c.i_4_4_3.bpl_7.smt2,6.508,7.144,125.605,13438
+../smt-lib/QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_half_2.i_3_6_2.bpl_7.smt2,11.316,6.449,170.794,9811
+../smt-lib/QF_LRA/check/bignum_lra2.smt2,0.086,1.839,2.484,149
+../smt-lib/QF_LRA/keymaera/water_tank-node23593.smt2,0.121,1.207,0.043,25
+../smt-lib/QF_LRA/keymaera/square_root_zuse-node902.smt2,0.054,0.341,0.027,12
+../smt-lib/QF_LRA/keymaera/water_tank-node5964.smt2,0.086,1.540,0.088,32
+../smt-lib/QF_LRA/keymaera/water_tank-node21443.smt2,0.065,0.586,0.165,23
+../smt-lib/QF_LRA/keymaera/intersection-example-onelane.proof-node846.smt2,0.063,0.738,0.057,39
+../smt-lib/QF_LRA/keymaera/simple_example_2-node2074.smt2,0.082,0.897,0.150,53
+../smt-lib/QF_LRA/keymaera/bouncing-ball-simple-node1629.smt2,0.096,0.785,0.041,18
+../smt-lib/QF_LRA/keymaera/water_tank-node28718.smt2,0.065,0.715,0.034,29
+../smt-lib/QF_LRA/keymaera/bouncing-ball-inv-node1935.smt2,0.073,0.728,0.043,23
+../smt-lib/QF_LRA/keymaera/bouncing-ball-simple-node1628.smt2,0.112,0.666,0.032,23
+../smt-lib/QF_LRA/keymaera/water_tank-node28604.smt2,0.081,0.562,0.056,26
+../smt-lib/QF_LRA/keymaera/division_dijkstra-node701.smt2,0.053,0.618,0.017,11
+../smt-lib/QF_LRA/keymaera/simple_example_1-node2318.smt2,0.061,1.532,0.102,34
+../smt-lib/QF_LRA/keymaera/water_tank-node15243.smt2,0.110,0.516,0.048,27
+../smt-lib/QF_LRA/keymaera/intersection-example-simple.proof-node634.smt2,0.073,0.587,0.077,34
+../smt-lib/QF_LRA/keymaera/simple_example_2-node2406.smt2,0.070,0.479,0.154,53
+../smt-lib/QF_LRA/keymaera/bouncing-ball-inv-node1886.smt2,0.080,0.624,0.040,25
+../smt-lib/QF_LRA/keymaera/water_tank-node17126.smt2,0.094,0.874,0.033,30
+../smt-lib/QF_LRA/keymaera/integer_cubic_root_knuth-node1362.smt2,0.118,0.702,0.096,30
+../smt-lib/QF_LRA/keymaera/intersection-example-simple.proof-node606.smt2,0.059,0.433,0.085,54
+../smt-lib/QF_LRA/keymaera/water_tank-node4029.smt2,0.068,0.780,0.033,29
 Solve timeout: 120,ProofTerm timeout: 300
-Total time: 942.152
-2022-05-09 19:17:08
+Total time: 515.188
+2022-05-09 21:31:02
 filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/QF_RDL/sal/fischer3-mutex-20.smt2,92.439,Timeout,,
 ../smt-lib/QF_RDL/sal/fischer9-mutex-1.smt2,0.098,3.529,16.456,2315
@@ -8603,7 +8636,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_elevator_planning.2.prop1_ab_reg_max.smt2,1.340,0.373,0.027,31
 ../smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.3.prop3_ab_reg_max.smt2,1.030,1.198,0.316,334
 ../smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp.4.prop1_ab_reg_max.smt2,1.367,0.734,0.047,31
-../smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_TicTacToe_ab_reg_max.smt2,1.158,0.698, 764203.498316465,1523
+../smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_h_TicTacToe_ab_reg_max.smt2,0.052,1.973,(UNKNOWN BUG)4.099,1523
 ../smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_lup.1.prop1_ab_reg_max.smt2,1.521,0.604,0.048,36
 ../smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_brp2.1.prop1_ab_reg_max.smt2,1.397,0.726,0.112,211
 ../smt-lib/QF_UF/2018-Goel-hwbench/QF_UF_sokoban.2.prop1_ab_br_max.smt2,2.047,2.236,12.186,4574
@@ -8822,13 +8855,13 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/QF_UF/SEQ/SEQ009_size7.smt2,1.043,1.817,22.082,8771
 ../smt-lib/QF_UF/SEQ/SEQ013_size4.smt2,2.036,5.969,31.585,27641
 ../smt-lib/QF_UF/SEQ/SEQ042_size3.smt2,1.301,1.426,10.533,8829
-../smt-lib/QF_UF/SEQ/SEQ020_size3.smt2,1.268,8.090, 764261.055445139,15515
+../smt-lib/QF_UF/SEQ/SEQ020_size3.smt2,compare_ac_thm: can't compare conjuction 29.299,15515
 ../smt-lib/QF_UF/SEQ/SEQ010_size9.smt2,1.493,8.668,35.775,16694
 ../smt-lib/QF_UF/SEQ/SEQ026_size4.smt2,5.654,10.587,57.018,91548
 ../smt-lib/QF_UF/SEQ/SEQ017_size4.smt2,0.856,2.327,9.789,13372
 ../smt-lib/QF_UF/SEQ/SEQ005_size6.smt2,3.736,12.023,72.292,107517
 ../smt-lib/QF_UF/SEQ/SEQ005_size9.smt2,2.825,16.758,54.080,21646
-../smt-lib/QF_UF/SEQ/SEQ020_size2.smt2,0.905,1.349, 764222.868702584,3551
+../smt-lib/QF_UF/SEQ/SEQ020_size2.smt2,0.049,2.520,compare_ac_thm: can't compare conjuction 3.190,3551
 ../smt-lib/QF_UF/SEQ/SEQ038_size6.smt2,11.745,23.972,142.217,341703
 ../smt-lib/QF_UF/SEQ/SEQ050_size3.smt2,1.337,1.291,7.766,7998
 ../smt-lib/QF_UF/SEQ/SEQ042_size2.smt2,0.479,0.460,0.875,1117
@@ -11461,7 +11494,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_54_42_821_1024603.smt_in.smt2,0.137,0.430,0.321,83
 ../smt-lib/UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_54_35_132_1014381.smt_in.smt2,0.123,0.316,0.487,57
 ../smt-lib/UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_54_53_474_1036287.smt_in.smt2,0.137,0.374,0.047,32
-../smt-lib/UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_54_39_034_1019201.smt_in.smt2,25.286,0.795, 0.167,1048
+../smt-lib/UF/20170428-Barrett/cdt-cade2015/nada/gandl/bird_tree/x2015_09_10_16_54_39_034_1019201.smt_in.smt2,24.245,1.978,bfun_elim: unexpected result 0.078,1048
 ../smt-lib/UF/20170428-Barrett/cdt-cade2015/nada/gandl/stern_brocot_tree/x2015_09_10_16_52_09_259_1096601.smt_in.smt2,0.091,0.324,0.065,31
 ../smt-lib/UF/20170428-Barrett/cdt-cade2015/nada/gandl/stern_brocot_tree/x2015_09_10_16_51_09_063_1044477.smt_in.smt2,0.128,0.292,0.219,184
 ../smt-lib/UF/20170428-Barrett/cdt-cade2015/nada/gandl/stern_brocot_tree/x2015_09_10_16_52_27_489_1114605.smt_in.smt2,0.130,0.432,0.145,75
@@ -11803,7 +11836,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UF/grasshopper/instantiated/dl_reverse_loop_check_heap_access_25_4.smt2,0.144,0.384,0.394,277
 ../smt-lib/UF/grasshopper/instantiated/dl_remove_loop_invariant_35_5.smt2,0.477,1.034,2.028,1916
 ../smt-lib/UF/grasshopper/instantiated/dl_concat_postcondition_of_dl_concat_21_4.smt2,0.126,0.628,0.786,686
-../smt-lib/UF/grasshopper/instantiated/dl_copy_loop_invariant_36_3.smt2,9.519,1.699, 3.248,8120
+../smt-lib/UF/grasshopper/instantiated/dl_copy_loop_invariant_36_3.smt2,compare_ac_thm: can't compare disjuction 4.252,8120
 ../smt-lib/UF/grasshopper/instantiated/dl_remove_check_heap_access_38_4.smt2,0.118,0.773,0.712,534
 ../smt-lib/UF/grasshopper/instantiated/copy_loop_check_heap_access_23_4.smt2,0.101,0.588,0.739,631
 ../smt-lib/UF/grasshopper/instantiated/rec_concat_check_heap_access_30_2.smt2,0.071,0.377,0.859,410
@@ -11842,7 +11875,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UF/grasshopper/instantiated/dl_insert_postcondition_of_dl_insert_39_4.smt2,1.828,0.708,4.696,4672
 ../smt-lib/UF/grasshopper/instantiated/union_precondition_of_find_38_7.smt2,0.789,1.025,3.167,3891
 ../smt-lib/UF/grasshopper/instantiated/dl_concat_check_heap_access_24_4.smt2,0.102,0.378,0.167,270
-../smt-lib/UF/grasshopper/instantiated/filter_loop_invariant_35_3.smt2,0.231,1.128, 2.044,2534
+../smt-lib/UF/grasshopper/instantiated/filter_loop_invariant_35_3.smt2,0.138,2.381,compare_ac_thm: can't compare disjuction 2.846,2534
 ../smt-lib/UF/grasshopper/instantiated/rec_remove_postcondition_of_rec_remove_26_4.smt2,0.719,0.998,2.411,3101
 ../smt-lib/UF/grasshopper/instantiated/dl_reverse_invariant_18_2.smt2,0.058,0.559,0.856,471
 ../smt-lib/UF/grasshopper/instantiated/filter_postcondition_of_filter_36_1.smt2,0.189,0.992,1.616,1605
@@ -12207,7 +12240,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.VisitorArgResult.042.smt2,0.261,1.373,1.108,101
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.filespace.PathComponent.004.smt2,0.422,5.338,55.212,3190
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.tc.TypeCheck.011.smt2,1.857,7.969,31.769,9032
-../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.MethodDecl.005.smt2,2.172,9.181, 28.655,14153
+../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.MethodDecl.005.smt2,0.740,4.699,compare_ac_thm: can't compare disjuction 11.439,14153
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.LocalVarDecl.008.smt2,0.287,3.566,5.452,706
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.ThrowStmt.007.smt2,1.943,8.031,37.164,13647
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.DefaultVisitor.008.smt2,0.333,6.116,21.948,4441
@@ -12219,7 +12252,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.VisitorArgResult.049.smt2,0.126,1.062,1.395,101
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.FrontEndTool.001.smt2,0.117,0.859,1.295,47
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.CompoundName.001.smt2,0.353,3.397,7.703,1859
-../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.ConstructorDecl.005.smt2,1.835,8.633, 30.522,14063
+../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.ConstructorDecl.005.smt2,1.261,3.851,compare_ac_thm: can't compare disjuction 9.446,14063
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.ForStmt.007.smt2,0.204,3.085,5.800,860
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.tc.Types.015.smt2,0.226,2.952,6.460,916
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.parser.ParseUtil.008.smt2,0.329,5.465,66.640,6871
@@ -12705,7 +12738,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.BinaryExpr.004.smt2,0.697,1.227,9.860,989
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.ConstructorInvocation.008.smt2,0.294,0.913,1.527,807
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.StmtVec.001.smt2,0.755,1.962,9.757,4259
-../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.InterfaceDecl.006.smt2,1.845,7.541, 24.120,14033
+../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.InterfaceDecl.006.smt2,1.313,4.667,compare_ac_thm: can't compare disjuction 10.609,14033
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.TypeModifierPragmaVec.001.smt2,0.473,2.457,13.435,4391
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.genericfile.UnopenableFile.009.smt2,0.064,0.446,0.094,55
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.util.ErrorSet.012.smt2,0.085,0.589,0.495,227
@@ -13526,7 +13559,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/simplify2/front_end_suite/tohtml.Java2Html.012.smt2,0.285,1.282,10.473,2546
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.CompoundName.016.smt2,0.252,0.927,2.556,1967
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.PrimitiveType.008.smt2,0.217,0.776,2.263,991
-../smt-lib/UFLIA/simplify2/front_end_suite/javafe.parser.test.TestLex.033.smt2,6.975,5.943, 21.517,13820
+../smt-lib/UFLIA/simplify2/front_end_suite/javafe.parser.test.TestLex.033.smt2,3.101,4.275,compare_ac_thm: can't compare disjuction 8.683,13820
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.tc.FieldDeclVec.020.smt2,2.994,2.140,13.262,4846
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.tc.FieldDeclVec.009.smt2,0.215,0.804,2.011,1187
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.TypeDeclVec.004.smt2,0.160,0.511,0.361,227
@@ -13768,7 +13801,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.ClassLiteral.002.smt2,0.331,0.934,1.508,710
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.IfStmt.001.smt2,0.238,1.789,8.152,3879
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.tc.Types.003.smt2,0.210,1.418,2.445,937
-../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.ClassDecl.006.smt2,2.319,6.357, 22.042,14061
+../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.ClassDecl.006.smt2,1.295,3.643,compare_ac_thm: can't compare disjuction 8.928,14061
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.test.LocTool.006.smt2,0.128,0.560,0.385,245
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.filespace.ZipTree.002.smt2,0.177,0.741,1.256,672
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.MethodDecl.009.smt2,0.302,1.881,5.513,3099
@@ -13908,7 +13941,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.ModifierPragmaVec.009.smt2,0.179,0.721,1.678,1187
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.VisitorArgResult.034.smt2,0.211,0.421,0.154,101
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.TryFinallyStmt.009.smt2,0.227,0.642,1.693,619
-../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.InitBlock.009.smt2,1.672,6.348, 21.750,13762
+../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.InitBlock.009.smt2,1.226,4.092,compare_ac_thm: can't compare disjuction 9.317,13762
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.DefaultVisitor.035.smt2,0.219,1.487,9.178,3385
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.ClassLiteral.007.smt2,1.813,5.240,27.679,13659
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.util.Set.007.smt2,0.162,0.971,0.375,315
@@ -13978,7 +14011,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.filespace.PkgTree.010.smt2,0.168,1.036,13.554,1528
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.CatchClause.008.smt2,0.166,0.677,1.382,619
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.tc.Types.039.smt2,0.205,0.700,2.763,971
-../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.FieldDecl.009.smt2,2.369,5.346, 22.375,13894
+../smt-lib/UFLIA/simplify2/front_end_suite/javafe.ast.FieldDecl.009.smt2,1.312,4.094,compare_ac_thm: can't compare disjuction 11.382,13894
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.tc.MethodDeclVec.007.smt2,0.193,1.346,5.501,4205
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.parser.Lex.019.smt2,0.201,1.681,4.292,2558
 ../smt-lib/UFLIA/simplify2/front_end_suite/javafe.tc.TypeSig.041.smt2,0.682,0.874,3.139,1286
@@ -15059,7 +15092,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.685864.smt2,0.170,0.341,0.356,271
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.630653.smt2,0.207,0.917,0.142,137
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.883491.smt2,0.182,0.400,0.072,75
-../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1081041.smt2,0.201,0.484, 0.996,659
+../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1081041.smt2,0.090,1.676,(UNKNOWN BUG) 1.237,659
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.615447.smt2,0.159,0.386,0.120,108
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1492210.smt2,0.129,0.295,0.025,4
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.574048.smt2,0.197,0.380,0.294,249
@@ -15250,7 +15283,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.634595.smt2,0.113,0.447,0.186,209
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.666455.smt2,0.119,0.562,1.688,707
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.599764.smt2,0.156,0.838,0.039,35
-../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1080151.smt2,0.197,0.442, 0.683,605
+../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1080151.smt2,0.197,0.442,(UNKNOWN BUG) 0.683,605
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.579192.smt2,0.136,0.378,0.293,311
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.656644.smt2,0.175,0.429,0.199,194
 ../smt-lib/UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.625563.smt2,4.318,0.539,0.284,308
@@ -17040,7 +17073,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/grasshopper/uninstantiated/traverse_loop_check_heap_access_42_4.smt2,0.179,0.375,0.287,404
 ../smt-lib/UFLIA/grasshopper/uninstantiated/contains_loop_check_heap_access_44_4.smt2,0.085,0.836,0.373,405
 ../smt-lib/UFLIA/grasshopper/uninstantiated/insertion_sort_loop_check_heap_access_58_4.smt2,0.195,0.525,0.857,704
-../smt-lib/UFLIA/grasshopper/uninstantiated/difference_postcondition_of_difference_36_8.smt2,18.021,0.611, 2.016,4442
+../smt-lib/UFLIA/grasshopper/uninstantiated/difference_postcondition_of_difference_36_8.smt2,compare_ac_thm: can't compare disjuction 4.295,4442
 ../smt-lib/UFLIA/grasshopper/uninstantiated/reverse_postcondition_of_reverse_38_1.smt2,0.257,0.680,1.428,1021
 ../smt-lib/UFLIA/grasshopper/uninstantiated/concat_invariant_31_4.smt2,0.102,0.326,0.427,468
 ../smt-lib/UFLIA/grasshopper/uninstantiated/filter_loop_check_heap_access_36_4.smt2,0.138,0.661,0.712,367
@@ -17057,7 +17090,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/grasshopper/uninstantiated/insertion_sort_loop_1_invariant_55_5.smt2,0.942,1.021,7.076,3189
 ../smt-lib/UFLIA/grasshopper/uninstantiated/quicksort_postcondition_of_quicksort_55_45.smt2,2.701,0.812,3.980,2516
 ../smt-lib/UFLIA/grasshopper/uninstantiated/quicksort_precondition_of_quicksort_55_4.smt2,0.332,0.627,1.928,1193
-../smt-lib/UFLIA/grasshopper/uninstantiated/union_postcondition_of_union_39_8.smt2,16.042,0.634, 1.408,4495
+../smt-lib/UFLIA/grasshopper/uninstantiated/union_postcondition_of_union_39_8.smt2,7.280,2.501,compare_ac_thm: can't compare disjuction 3.358,4495
 ../smt-lib/UFLIA/grasshopper/uninstantiated/insert_loop_check_heap_access_45_4.smt2,0.083,0.358,0.338,405
 ../smt-lib/UFLIA/grasshopper/uninstantiated/sls_insert_check_heap_access_41_4.smt2,0.115,0.712,0.429,329
 ../smt-lib/UFLIA/grasshopper/uninstantiated/union_precondition_of_union_44_15.smt2,8.104,0.657,1.795,1726
@@ -17138,7 +17171,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/grasshopper/uninstantiated/difference_postcondition_of_difference_31_8.smt2,0.152,0.405,0.768,753
 ../smt-lib/UFLIA/grasshopper/uninstantiated/split_check_heap_access_85_4.smt2,0.154,0.366,0.536,556
 ../smt-lib/UFLIA/grasshopper/uninstantiated/insert_postcondition_of_insert_56_4.smt2,25.586,0.675,3.274,5811
-../smt-lib/UFLIA/grasshopper/uninstantiated/union_postcondition_of_union_36_8.smt2,8.480,1.616, 3.155,5258
+../smt-lib/UFLIA/grasshopper/uninstantiated/union_postcondition_of_union_36_8.smt2,3.959,2.721,compare_ac_thm: can't compare disjuction 4.915,5258
 ../smt-lib/UFLIA/grasshopper/uninstantiated/remove_check_heap_access_39_6.smt2,0.120,0.501,0.559,458
 ../smt-lib/UFLIA/grasshopper/uninstantiated/pull_strands_invariant_78_2.smt2,0.270,0.889,1.324,1666
 ../smt-lib/UFLIA/grasshopper/uninstantiated/sls_dispose_loop_check_heap_access_25_4.smt2,0.131,0.342,0.148,206
@@ -17254,9 +17287,9 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/grasshopper/instantiated/sls_dispose_invariant_20_2.smt2,0.135,0.389,0.112,114
 ../smt-lib/UFLIA/grasshopper/instantiated/delete_loop_check_heap_access_43_8.smt2,0.078,0.407,0.338,275
 ../smt-lib/UFLIA/grasshopper/instantiated/difference_precondition_of_difference_35_21.smt2,0.134,0.433,1.218,831
-../smt-lib/UFLIA/grasshopper/instantiated/merge_loop_invariant_61_3.smt2,1.440,1.134, 4.969,5093
+../smt-lib/UFLIA/grasshopper/instantiated/merge_loop_invariant_61_3.smt2,1.017,2.913,compare_ac_thm: can't compare disjuction 5.340,5093
 ../smt-lib/UFLIA/grasshopper/instantiated/copy_loop_check_heap_access_48_6.smt2,0.180,0.268,0.211,386
-../smt-lib/UFLIA/grasshopper/instantiated/pull_strands_loop_invariant_101_3.smt2,4.887,1.768, 4.166,8172
+../smt-lib/UFLIA/grasshopper/instantiated/pull_strands_loop_invariant_101_3.smt2,2.902,3.044,compare_ac_thm: can't compare disjuction 3.990,8172
 ../smt-lib/UFLIA/grasshopper/instantiated/merge_sort_postcondition_of_merge_sort_102_2.smt2,3.791,1.029,2.574,2803
 ../smt-lib/UFLIA/grasshopper/instantiated/traverse_loop_check_heap_access_45_4.smt2,0.105,0.603,0.492,517
 ../smt-lib/UFLIA/grasshopper/instantiated/insert_check_heap_access_52_2.smt2,0.215,0.324,0.122,143
@@ -17300,7 +17333,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/grasshopper/instantiated/union_check_heap_access_42_8.smt2,0.113,0.617,0.466,270
 ../smt-lib/UFLIA/grasshopper/instantiated/union_precondition_of_union_38_21.smt2,0.140,0.500,0.822,842
 ../smt-lib/UFLIA/grasshopper/instantiated/merge_check_heap_access_40_4.smt2,0.123,0.405,0.176,270
-../smt-lib/UFLIA/grasshopper/instantiated/split_postcondition_of_split_88_1.smt2,0.554,1.576, 3.147,3039
+../smt-lib/UFLIA/grasshopper/instantiated/split_postcondition_of_split_88_1.smt2,0.361,2.291,compare_ac_thm: can't compare disjuction 2.876,3039
 ../smt-lib/UFLIA/grasshopper/instantiated/merge_loop_check_heap_access_53_6.smt2,0.092,0.507,0.381,313
 ../smt-lib/UFLIA/grasshopper/instantiated/sls_dispose_loop_invariant_27_3.smt2,0.112,0.406,0.643,649
 ../smt-lib/UFLIA/grasshopper/instantiated/copy_loop_check_heap_access_47_6.smt2,0.199,0.436,0.220,466
@@ -17360,7 +17393,7 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/UFLIA/grasshopper/instantiated/remove_postcondition_of_remove_45_2.smt2,0.867,0.780,3.745,3095
 ../smt-lib/UFLIA/grasshopper/instantiated/union_check_free_43_8.smt2,0.116,0.687,0.223,270
 ../smt-lib/UFLIA/grasshopper/instantiated/union_precondition_of_union_35_21.smt2,0.137,0.466,0.621,831
-../smt-lib/UFLIA/grasshopper/instantiated/filter_loop_invariant_48_3.smt2,0.281,0.831, 2.613,2859
+../smt-lib/UFLIA/grasshopper/instantiated/filter_loop_invariant_48_3.smt2,compare_ac_thm: can't compare disjuction 3.023,2859
 ../smt-lib/UFLIA/grasshopper/instantiated/pull_strands_loop_check_heap_access_99_6.smt2,0.133,0.431,0.410,572
 ../smt-lib/UFLIA/grasshopper/instantiated/sls_insert_loop_invariant_39_5.smt2,0.629,0.990,3.751,2102
 ../smt-lib/UFLIA/grasshopper/instantiated/split_loop_check_heap_access_38_6.smt2,0.116,0.361,0.297,433
@@ -19126,3 +19159,271 @@ filename,Solve,Parse,ProofTerm,Steps
 Solve timeout: 120,ProofTerm timeout: 300
 Total time: 380.978
 2022-05-09 20:17:13
+filename,Solve,Parse,ProofTerm,Steps
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.600173.smt2,0.024,0.424,0.051,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.693723.smt2,0.024,0.439,0.047,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.877439.smt2,0.024,0.431,0.047,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.693706.smt2,0.023,0.421,0.047,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.877456.smt2,0.028,0.424,0.046,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.600189.smt2,0.028,0.459,0.078,10
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.883188.smt2,0.027,0.457,0.070,8
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.883203.smt2,0.026,0.443,0.065,8
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.600181.smt2,0.028,0.428,0.047,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.877473.smt2,0.028,0.434,0.068,10
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.883173.smt2,0.027,0.443,0.066,8
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.693740.smt2,0.026,0.447,0.072,10
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.883218.smt2,0.022,0.449,0.112,20
+../smt-lib/QF_UFIDL/uclid/elf.rf6.smt2,0.036,1.429,2.416,520
+../smt-lib/QF_UFIDL/uclid/ooo.rf6.smt2,0.074,2.329, 5.105,2283
+../smt-lib/QF_UFIDL/uclid/27s.smt2,0.061,2.401,9.257,2022
+../smt-lib/QF_UFIDL/uclid/elf.rf7.smt2,0.107,2.677, 14.372,2899
+../smt-lib/QF_UFIDL/RDS/simple_cyclic4.smt2,0.144,3.121,10.969,4535
+../smt-lib/QF_UFIDL/RDS/reverse_acyclic6.smt2,0.425,5.619,40.145,12519
+../smt-lib/QF_UFIDL/RDS/set_union5.smt2,1.041,9.600,79.152,19933
+../smt-lib/QF_UFIDL/uclid/44s.smt2,0.069,2.361, 98.141,2012
+../smt-lib/QF_UFIDL/uclid/q2.10.smt2,1.360,3.123,149.970,13289
+../smt-lib/QF_UFIDL/pete2/c6_s.smt2,0.036,1.548, 2.137,567
+../smt-lib/QF_UFIDL/pete2/c9_s.smt2,0.042,1.984, 2.829,782
+../smt-lib/QF_UFIDL/pete2/c7_s.smt2,0.037,1.732, 2.816,657
+../smt-lib/QF_UFIDL/pete2/c10_s.smt2,0.042,1.728, 2.756,826
+../smt-lib/QF_UFIDL/pete2/c8_s.smt2,0.046,1.630, 2.471,723
+../smt-lib/QF_UFIDL/pete2/c6n_s.smt2,0.048,1.771, 3.734,843
+../smt-lib/QF_UFIDL/pete2/c6b_s.smt2,0.046,1.893, 3.511,919
+../smt-lib/QF_UFIDL/pete2/c8n_s.smt2,0.041,2.155, 9.500,1006
+../smt-lib/QF_UFIDL/pete2/c7b_s.smt2,0.049,1.206, 5.008,978
+../smt-lib/QF_UFIDL/pete2/c7n_s.smt2,0.055,2.131, 7.100,920
+../smt-lib/QF_UFIDL/pete2/c9b_s.smt2,0.056,2.215, 9.927,1151
+../smt-lib/QF_UFIDL/pete2/c9n_s.smt2,0.056,2.289, 6.518,1063
+../smt-lib/QF_UFIDL/pete2/c8b_s.smt2,0.058,2.063, 7.748,1074
+../smt-lib/QF_UFIDL/pete2/c10n_s.smt2,0.060,2.187, 8.670,1102
+../smt-lib/QF_UFIDL/pete2/c10b_s.smt2,0.058,2.377, 12.885,1202
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard3.smt2,0.182,2.218,6.013,3000
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard6.smt2,4.165,3.953,24.134,22865
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard7.smt2,4.378,3.020,15.062,12891
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard9.smt2,34.551,3.075,17.259,14524
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard4.smt2,0.766,2.626,10.706,8821
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard5.smt2,1.189,2.919,12.186,10834
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard2.smt2,0.068,1.699,5.269,1333
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard8.smt2,9.107,4.077,23.326,20554
+../smt-lib/QF_UFIDL/UCLID-pred/OOO/OOO9.smt2,5.220,53.704,Timeout 300.000,62884
+../smt-lib/QF_UFIDL/UCLID-pred/aodv/aodv6.smt2,2.388,12.357, 105.155,28523
+../smt-lib/QF_UFIDL/UCLID-pred/bakery/LamportBakery18.smt2,4.621,34.753,Timeout 300.004,64863
+../smt-lib/QF_UFIDL/UCLID-pred/BRP/BRP9.smt2,0.079,2.455, 2.102,2738
+../smt-lib/QF_UFIDL/UCLID-pred/DLX/DLX1C5.smt2,4.826,47.324,Timeout 300.003,64314
+../smt-lib/QF_UFIDL/UCLID-pred/ibm_cache/ibm_cache_full_q_unbounded17.smt2,9.748,49.504,Timeout 300.029,77303
+../smt-lib/QF_UFIDL/UCLID-pred/ibm_cache/ibm_cache_full9.smt2,1.410,11.561, 81.046,24636
+../smt-lib/QF_UFIDL/uclid/43s.smt2,2.396,8.342,Timeout 300.000,20370
+../smt-lib/QF_UFIDL/uclid2/ooo.tag17.smt2,9.550,38.365,Timeout 300.000,47200
+../smt-lib/QF_UFIDL/uclid/37s.smt2,0.128,3.794,Timeout 300.000,3790
+../smt-lib/QF_UFIDL/uclid/dlx1c.smt2,0.227,3.917,Timeout 300.000,5338
+../smt-lib/QF_UFIDL/uclid/q2.12.smt2,9.239,4.447,Timeout 300.000,32648
+../smt-lib/QF_UFIDL/uclid/46s.smt2,0.083,3.670,Timeout 300.000,2796
+../smt-lib/QF_UFIDL/uclid/ooo.rf8.smt2,0.542,5.560,Timeout 300.000,11075
+../smt-lib/QF_UFIDL/uclid/cache.inv8.smt2,0.410,5.384,Timeout 300.000,9998
+../smt-lib/QF_UFIDL/uclid/ooo.tag10.smt2,0.571,7.373,Timeout 300.000,10739
+../smt-lib/QF_UFIDL/uclid/49s.smt2,0.201,5.871,Timeout 300.000,4898
+../smt-lib/QF_UFIDL/uclid/ooo.rf7.smt2,0.177,4.245,Timeout 300.000,5341
+../smt-lib/QF_UFIDL/uclid/ooo.tag8.smt2,0.159,3.961,Timeout 300.000,4989
+../smt-lib/QF_UFIDL/uclid/32s.smt2,0.049,2.584,Timeout 300.000,1426
+../smt-lib/QF_UFIDL/uclid/elf.rf9.smt2,1.483,8.445,Timeout 300.000,17418
+../smt-lib/QF_UFIDL/uclid/cache.inv12.smt2,6.755,10.799,Timeout 300.000,35824
+../smt-lib/QF_UFIDL/uclid/dlx1c.rwmem.smt2,0.205,4.158,Timeout 300.000,5233
+../smt-lib/QF_UFIDL/RDS/sorted_list_insert_noalloc9.smt2,13.879,Timeout 300.000,,
+../smt-lib/QF_UFIDL/uclid/dlx1c.rwmem1.smt2,0.205,4.207,Timeout 300.000,5204
+../smt-lib/QF_UFIDL/uclid/ooo.tag14.smt2,4.435,16.537,Timeout 300.000,27937
+../smt-lib/QF_UFIDL/uclid/22s.smt2,0.257,4.841,Timeout 300.000,7067
+../smt-lib/QF_UFIDL/uclid/elf.rf8.smt2,0.305,4.189,Timeout 300.000,7489
+../smt-lib/QF_UFIDL/uclid/elf.rf10.smt2,6.849,11.892,Timeout 300.000,39420
+../smt-lib/QF_UFIDL/uclid/cache.inv14.smt2,17.632,17.067,Timeout 300.000,61135
+../smt-lib/QF_UFIDL/uclid/cache.inv10.smt2,1.782,7.167,Timeout 300.000,18326
+../smt-lib/QF_UFIDL/uclid2/ooo.tag19.smt2,14.091,Timeout 300.000,,
+../smt-lib/QF_UFIDL/uclid2/cache.inv15.smt2,31.146,27.206,Timeout 300.000,85254
+../smt-lib/QF_UFIDL/uclid/ooo.tag12.smt2,1.934,11.133,Timeout 300.000,18655
+../smt-lib/QF_UFIDL/uclid2/ooo.tag15.smt2,5.643,22.994,Timeout 300.000,35478
+../smt-lib/QF_UFIDL/uclid/ooo.rf10.smt2,27.995,20.579,Timeout 300.000,94193
+../smt-lib/QF_UFIDL/uclid/ooo.rf9.smt2,3.737,8.525,Timeout 300.000,26300
+../smt-lib/QF_UFIDL/uclid/25s.smt2,0.139,3.687,Timeout 300.000,4568
+../smt-lib/QF_UFIDL/pete2/c8n_i.smt2,1.224,5.643,Timeout 300.000,12429
+../smt-lib/QF_UFIDL/pete2/c6idw_i.smt2,2.327,8.564,Timeout 300.000,22257
+../smt-lib/QF_UFIDL/pete2/g10ni.smt2,31.617,29.575,Timeout 300.000,195048
+../smt-lib/QF_UFIDL/pete2/c7nidw.smt2,6.964,11.515,Timeout 300.000,36960
+../smt-lib/QF_UFIDL/pete2/c10nid_i.smt2,12.378,22.514,Timeout 300.000,52194
+../smt-lib/QF_UFIDL/pete2/c6ni_s.smt2,0.460,6.143,Timeout 300.000,6028
+../smt-lib/QF_UFIDL/pete2/c10id_s.smt2,2.605,13.892,Timeout 300.000,18020
+../smt-lib/QF_UFIDL/pete2/f6b.smt2,0.409,4.907,Timeout 300.000,7781
+../smt-lib/QF_UFIDL/pete2/g9b.smt2,7.760,11.992,Timeout 300.000,69126
+../smt-lib/QF_UFIDL/pete2/c8nidw.smt2,9.375,14.603,Timeout 300.000,41670
+../smt-lib/QF_UFIDL/pete2/c8n.smt2,1.446,6.184,Timeout 300.000,12735
+../smt-lib/QF_UFIDL/pete2/c6bid_s.smt2,0.516,7.226,Timeout 300.000,6989
+../smt-lib/QF_UFIDL/pete2/g6bi.smt2,0.272,5.094,Timeout 300.000,5993
+../smt-lib/QF_UFIDL/pete2/c7b.smt2,1.312,5.793,Timeout 300.000,10686
+../smt-lib/QF_UFIDL/pete2/c6bi_i.smt2,3.267,8.002,Timeout 300.000,25946
+../smt-lib/QF_UFIDL/pete2/c8.smt2,0.282,4.104,Timeout 300.000,6448
+../smt-lib/QF_UFIDL/pete2/c10idw_i.smt2,6.578,17.979,Timeout 300.000,46497
+../smt-lib/QF_UFIDL/pete2/c8bidw_s.smt2,2.145,10.338,Timeout 300.000,11492
+../smt-lib/QF_UFIDL/pete2/c6nidw_s.smt2,0.781,8.972,Timeout 300.000,8486
+../smt-lib/QF_UFIDL/pete2/c10nidw_s.smt2,4.887,18.091,Timeout 300.000,21318
+../smt-lib/QF_UFIDL/pete2/f8.smt2,27.982,35.041,Timeout 300.000,199083
+../smt-lib/QF_UFIDL/pete2/c7n.smt2,1.437,4.912,Timeout 300.000,11126
+../smt-lib/QF_UFIDL/pete2/c10nidw_i.smt2,12.976,23.307,Timeout 300.000,60476
+../smt-lib/QF_UFIDL/pete2/c10bid_s.smt2,3.556,15.309,Timeout 300.000,19071
+../smt-lib/QF_UFIDL/pete2/g8idw.smt2,16.212,24.025,Timeout 300.000,168110
+../smt-lib/QF_UFIDL/pete2/c6id.smt2,1.699,8.891,Timeout 300.000,22498
+../smt-lib/QF_UFIDL/pete2/g10n.smt2,41.320,39.326,Timeout 300.000,263029
+../smt-lib/QF_UFIDL/pete2/f7bidw.smt2,18.911,23.459,Timeout 300.000,103504
+../smt-lib/QF_UFIDL/pete2/c6bi.smt2,3.920,7.083,Timeout 300.000,26166
+../smt-lib/QF_UFIDL/pete2/c10bi_i.smt2,14.220,18.990,Timeout 300.000,71117
+../smt-lib/QF_UFIDL/pete2/c8bidw.smt2,9.575,15.993,Timeout 300.000,51278
+../smt-lib/QF_UFIDL/pete2/g6i.smt2,0.219,4.650,Timeout 300.000,5558
+../smt-lib/QF_UFIDL/pete2/f6bi.smt2,0.816,6.457,Timeout 300.000,11236
+../smt-lib/QF_UFIDL/pete2/c9bidw_i.smt2,11.681,16.684,Timeout 300.000,54059
+../smt-lib/QF_UFIDL/pete2/c8idw.smt2,4.030,12.198,Timeout 300.000,29151
+../smt-lib/QF_UFIDL/pete2/c10bidw_s.smt2,3.882,14.796,Timeout 300.000,19465
+../smt-lib/QF_UFIDL/pete2/c6id_i.smt2,2.176,8.608,Timeout 300.000,21396
+../smt-lib/QF_UFIDL/pete2/c9b.smt2,1.358,5.976,Timeout 300.000,13897
+../smt-lib/QF_UFIDL/pete2/g6id.smt2,0.930,5.778,Timeout 300.000,13756
+../smt-lib/QF_UFIDL/pete2/c8_i.smt2,0.347,3.411,Timeout 300.000,6192
+../smt-lib/QF_UFIDL/pete2/f7.smt2,2.065,7.234,Timeout 300.000,19743
+../smt-lib/QF_UFIDL/pete2/g6n.smt2,0.196,4.206,Timeout 300.000,5116
+../smt-lib/QF_UFIDL/pete2/f6idw.smt2,4.495,11.894,Timeout 300.000,32411
+../smt-lib/QF_UFIDL/pete2/c10nid_s.smt2,4.408,17.368,Timeout 300.000,21007
+../smt-lib/QF_UFIDL/pete2/f6n.smt2,0.436,5.852,Timeout 300.000,7720
+../smt-lib/QF_UFIDL/pete2/c6bi_s.smt2,0.420,5.763,Timeout 300.000,4959
+../smt-lib/QF_UFIDL/pete2/c9nidw_i.smt2,10.340,16.787,Timeout 300.000,50636
+../smt-lib/QF_UFIDL/pete2/c6idw.smt2,2.264,8.040,Timeout 300.000,22466
+../smt-lib/QF_UFIDL/pete2/g6bidw.smt2,2.827,7.451,Timeout 300.000,23110
+../smt-lib/QF_UFIDL/pete2/c7idw.smt2,3.222,11.978,Timeout 300.000,28418
+../smt-lib/QF_UFIDL/pete2/c9idw_s.smt2,1.797,11.605,Timeout 300.000,15202
+../smt-lib/QF_UFIDL/pete2/c10ni.smt2,12.621,18.358,Timeout 300.000,49072
+../smt-lib/QF_UFIDL/pete2/c6ni.smt2,4.827,9.068,Timeout 300.000,35004
+../smt-lib/QF_UFIDL/pete2/c6.smt2,0.195,4.453,Timeout 300.000,5448
+../smt-lib/QF_UFIDL/pete2/f7b.smt2,2.689,7.673,Timeout 300.000,22793
+../smt-lib/QF_UFIDL/pete2/c6bidw_i.smt2,5.613,9.677,Timeout 300.000,33969
+../smt-lib/QF_UFIDL/pete2/c9nidw_s.smt2,3.234,15.107,Timeout 300.000,17724
+../smt-lib/QF_UFIDL/pete2/c7bidw.smt2,7.269,11.510,Timeout 300.000,35371
+../smt-lib/QF_UFIDL/pete2/g7idw.smt2,7.646,12.681,Timeout 300.000,75449
+../smt-lib/QF_UFIDL/pete2/c9_i.smt2,0.395,4.431,Timeout 300.000,7832
+../smt-lib/QF_UFIDL/pete2/c10b_i.smt2,1.483,6.840,Timeout 300.000,14369
+../smt-lib/QF_UFIDL/pete2/c6ni_i.smt2,3.254,7.101,Timeout 300.000,23751
+../smt-lib/QF_UFIDL/pete2/c8b.smt2,1.605,5.796,Timeout 300.000,11813
+../smt-lib/QF_UFIDL/pete2/c6i_s.smt2,0.299,5.307,Timeout 300.000,4421
+../smt-lib/QF_UFIDL/pete2/c6i_i.smt2,1.363,6.013,Timeout 300.000,15215
+../smt-lib/QF_UFIDL/pete2/f6nidw.smt2,5.016,12.258,Timeout 300.000,31913
+../smt-lib/QF_UFIDL/pete2/g9n.smt2,7.608,10.165,Timeout 300.000,54888
+../smt-lib/QF_UFIDL/pete2/c10.smt2,0.283,3.927,Timeout 300.000,7867
+../smt-lib/QF_UFIDL/pete2/c10id_i.smt2,6.550,17.904,Timeout 300.000,42709
+../smt-lib/QF_UFIDL/pete2/g6idw.smt2,2.245,7.574,Timeout 300.000,24147
+../smt-lib/QF_UFIDL/pete2/c8bidw_i.smt2,8.816,14.130,Timeout 300.000,43005
+../smt-lib/QF_UFIDL/pete2/c10ni_i.smt2,11.673,17.142,Timeout 300.000,49496
+../smt-lib/QF_UFIDL/pete2/c9n_i.smt2,1.639,5.618,Timeout 300.000,13442
+../smt-lib/QF_UFIDL/RTCL/b13_tf_100/b13_tf_100.smt2,22.854,Timeout 300.000,,
+../smt-lib/QF_UFIDL/pete2/c6i.smt2,1.030,7.560,Timeout 300.000,15967
+../smt-lib/QF_UFIDL/pete2/c10bi_s.smt2,2.932,13.484,Timeout 300.000,16349
+../smt-lib/QF_UFIDL/pete2/g8b.smt2,2.526,7.435,Timeout 300.000,27583
+../smt-lib/QF_UFIDL/pete2/c7b_i.smt2,1.919,5.162,Timeout 300.000,14510
+../smt-lib/QF_UFIDL/pete2/g10i.smt2,12.557,21.008,Timeout 300.000,133929
+../smt-lib/QF_UFIDL/pete2/c10nidw.smt2,16.940,21.274,Timeout 300.000,61656
+../smt-lib/QF_UFIDL/pete2/c8idw_s.smt2,1.225,10.234,Timeout 300.000,10696
+../smt-lib/QF_UFIDL/pete2/c6bidw_s.smt2,0.529,7.818,Timeout 300.000,7293
+../smt-lib/QF_UFIDL/pete2/c10n.smt2,2.413,7.130,Timeout 300.000,15262
+../smt-lib/QF_UFIDL/pete2/c9bidw.smt2,10.333,17.086,Timeout 300.000,52056
+../smt-lib/QF_UFIDL/pete2/g6nidw.smt2,2.664,7.247,Timeout 300.000,24757
+../smt-lib/QF_UFIDL/pete2/f6ni.smt2,0.828,6.411,Timeout 300.000,9082
+../smt-lib/QF_UFIDL/pete2/c7bidw_i.smt2,6.811,12.529,Timeout 300.000,36769
+../smt-lib/QF_UFIDL/pete2/g10bi.smt2,27.088,29.193,Timeout 300.000,185528
+../smt-lib/QF_UFIDL/pete2/f6id.smt2,2.002,8.621,Timeout 300.000,18963
+../smt-lib/QF_UFIDL/pete2/f6bid.smt2,3.700,9.243,Timeout 300.000,21196
+../smt-lib/QF_UFIDL/pete2/c6nid_i.smt2,5.329,8.536,Timeout 300.000,26745
+../smt-lib/QF_UFIDL/pete2/c10i.smt2,5.644,15.281,Timeout 300.000,42128
+../smt-lib/QF_UFIDL/pete2/c6b_i.smt2,1.384,5.128,Timeout 300.000,9313
+../smt-lib/QF_UFIDL/pete2/c6idw_s.smt2,0.516,7.274,Timeout 300.000,6871
+../smt-lib/QF_UFIDL/pete2/c10bi.smt2,16.182,19.722,Timeout 300.000,73659
+../smt-lib/QF_UFIDL/pete2/c10b.smt2,2.083,5.402,Timeout 300.000,14908
+../smt-lib/QF_UFIDL/pete2/g9.smt2,7.996,11.017,Timeout 300.000,63330
+../smt-lib/QF_UFIDL/pete2/c9.smt2,0.449,4.913,Timeout 300.000,7843
+../smt-lib/QF_UFIDL/pete2/c10id.smt2,7.399,16.915,Timeout 300.000,42905
+../smt-lib/QF_UFIDL/pete2/c10_i.smt2,0.412,4.400,Timeout 300.000,7382
+../smt-lib/QF_UFIDL/pete2/f6i.smt2,0.676,5.451,Timeout 300.000,8108
+../smt-lib/QF_UFIDL/pete2/c6_i.smt2,0.281,3.571,Timeout 300.000,5477
+../smt-lib/QF_UFIDL/pete2/g7n.smt2,0.812,4.619,Timeout 300.000,11274
+../smt-lib/QF_UFIDL/pete2/c6nid_s.smt2,0.889,8.465,Timeout 300.000,7875
+../smt-lib/QF_UFIDL/pete2/g7bidw.smt2,7.705,11.854,Timeout 300.000,70480
+../smt-lib/QF_UFIDL/pete2/c8idw_i.smt2,3.910,13.167,Timeout 300.000,31290
+../smt-lib/QF_UFIDL/pete2/c6nid.smt2,5.239,10.060,Timeout 300.000,28783
+../smt-lib/QF_UFIDL/pete2/c8nidw_s.smt2,2.378,10.706,Timeout 300.000,13008
+../smt-lib/QF_UFIDL/pete2/c9n.smt2,1.456,7.346,Timeout 300.000,14400
+../smt-lib/QF_UFIDL/pete2/c10ni_s.smt2,3.104,14.409,Timeout 300.000,18170
+../smt-lib/QF_UFIDL/pete2/c6n.smt2,1.134,5.423,Timeout 300.000,10315
+../smt-lib/QF_UFIDL/pete2/c7n_i.smt2,1.379,6.009,Timeout 300.000,10950
+../smt-lib/QF_UFIDL/pete2/c8b_i.smt2,2.005,4.737,Timeout 300.000,11725
+../smt-lib/QF_UFIDL/pete2/g10.smt2,20.297,22.615,Timeout 300.000,154241
+../smt-lib/QF_UFIDL/pete2/c10idw_s.smt2,2.855,15.246,Timeout 300.000,18468
+../smt-lib/QF_UFIDL/pete2/c7idw_i.smt2,3.389,10.232,Timeout 300.000,28441
+../smt-lib/QF_UFIDL/pete2/g8nidw.smt2,26.271,27.030,Timeout 300.000,188603
+../smt-lib/QF_UFIDL/pete2/c9bidw_s.smt2,3.347,12.102,Timeout 300.000,16115
+../smt-lib/QF_UFIDL/pete2/g6.smt2,0.218,3.941,Timeout 300.000,3916
+../smt-lib/QF_UFIDL/pete2/g10b.smt2,23.863,27.591,Timeout 300.000,184552
+../smt-lib/QF_UFIDL/pete2/c6bid_i.smt2,4.007,9.387,Timeout 300.000,26020
+../smt-lib/QF_UFIDL/pete2/f6.smt2,0.401,4.115,Timeout 300.000,6148
+../smt-lib/QF_UFIDL/pete2/c9idw.smt2,5.186,16.195,Timeout 300.000,38610
+../smt-lib/QF_UFIDL/pete2/c10bid_i.smt2,13.342,19.517,Timeout 300.000,53572
+../smt-lib/QF_UFIDL/pete2/g8n.smt2,2.853,7.166,Timeout 300.000,26119
+../smt-lib/QF_UFIDL/pete2/g8.smt2,1.942,6.176,Timeout 300.000,19577
+../smt-lib/QF_UFIDL/pete2/c6nidw.smt2,5.318,11.749,Timeout 300.000,34955
+../smt-lib/QF_UFIDL/pete2/c8nidw_i.smt2,6.868,13.634,Timeout 300.000,39859
+../smt-lib/QF_UFIDL/pete2/c6n_i.smt2,0.823,5.202,Timeout 300.000,9188
+../smt-lib/QF_UFIDL/pete2/c10bid.smt2,14.900,18.571,Timeout 300.000,61885
+../smt-lib/QF_UFIDL/pete2/f6nid.smt2,2.754,9.619,Timeout 300.000,19488
+../smt-lib/QF_UFIDL/pete2/f7nidw.smt2,26.400,24.688,Timeout 300.000,115135
+../smt-lib/QF_UFIDL/pete2/c7bidw_s.smt2,1.203,9.229,Timeout 300.000,9484
+../smt-lib/QF_UFIDL/pete2/f6bidw.smt2,6.405,11.387,Timeout 300.000,30282
+../smt-lib/QF_UFIDL/pete2/c9idw_i.smt2,5.471,16.439,Timeout 300.000,36492
+../smt-lib/QF_UFIDL/pete2/c10nid.smt2,14.535,20.454,Timeout 300.000,55769
+../smt-lib/QF_UFIDL/pete2/c6b.smt2,1.152,5.200,Timeout 300.000,9259
+../smt-lib/QF_UFIDL/pete2/c6bidw.smt2,5.610,9.688,Timeout 300.000,34275
+../smt-lib/QF_UFIDL/pete2/c10i_s.smt2,2.231,12.483,Timeout 300.000,15064
+../smt-lib/QF_UFIDL/pete2/g7nidw.smt2,8.550,12.439,Timeout 300.000,78255
+../smt-lib/QF_UFIDL/pete2/c7idw_s.smt2,0.694,7.473,Timeout 300.000,8620
+../smt-lib/QF_UFIDL/pete2/c6bid.smt2,4.787,9.290,Timeout 300.000,33602
+../smt-lib/QF_UFIDL/pete2/c10bidw_i.smt2,13.361,19.979,Timeout 300.000,55525
+../smt-lib/QF_UFIDL/pete2/f7idw.smt2,16.309,20.168,Timeout 300.000,102245
+../smt-lib/QF_UFIDL/pete2/c7.smt2,0.299,4.633,Timeout 300.000,5929
+../smt-lib/QF_UFIDL/pete2/c7_i.smt2,0.319,4.366,Timeout 300.000,6514
+../smt-lib/QF_UFIDL/pete2/g7.smt2,0.530,4.633,Timeout 300.000,11786
+../smt-lib/QF_UFIDL/pete2/c6id_s.smt2,0.565,5.810,Timeout 300.000,6273
+../smt-lib/QF_UFIDL/pete2/c10bidw.smt2,17.270,22.640,Timeout 300.000,62591
+../smt-lib/QF_UFIDL/pete2/c10idw.smt2,7.693,17.862,Timeout 300.000,46305
+../smt-lib/QF_UFIDL/pete2/c6nidw_i.smt2,5.081,9.269,Timeout 300.000,32490
+../smt-lib/QF_UFIDL/pete2/g6bid.smt2,0.978,7.031,Timeout 300.000,16738
+../smt-lib/QF_UFIDL/pete2/c9b_i.smt2,2.066,6.527,Timeout 300.000,14684
+../smt-lib/QF_UFIDL/pete2/c7nidw_i.smt2,5.787,11.383,Timeout 300.000,33435
+../smt-lib/QF_UFIDL/pete2/c9nidw.smt2,10.954,19.997,Timeout 300.000,49752
+../smt-lib/QF_UFIDL/pete2/f7n.smt2,3.103,8.543,Timeout 300.000,24645
+../smt-lib/QF_UFIDL/pete2/c10i_i.smt2,5.520,15.580,Timeout 300.000,39613
+../smt-lib/QF_UFIDL/pete2/c7nidw_s.smt2,1.244,9.092,Timeout 300.000,9609
+../smt-lib/QF_UFIDL/pete2/g6nid.smt2,1.195,6.440,Timeout 300.000,14477
+../smt-lib/QF_UFIDL/pete2/g7b.smt2,1.221,5.355,Timeout 300.000,15270
+../smt-lib/QF_UFIDL/pete2/f8n.smt2,32.258,35.787,Timeout 300.000,191796
+../smt-lib/QF_UFIDL/pete2/g6b.smt2,0.300,3.637,Timeout 300.000,4988
+../smt-lib/QF_UFIDL/pete2/c10n_i.smt2,2.258,7.547,Timeout 300.000,13821
+../smt-lib/QF_UFIDL/pete/fxs-bp-ex-inp.smt2,9.016,10.356,Timeout 300.000,33327
+../smt-lib/QF_UFIDL/pete/fxs-bp-ex-inp-safety.smt2,4.147,8.811,Timeout 300.000,26128
+../smt-lib/QF_UFIDL/pete/cxs-safety.smt2,0.283,3.674,Timeout 300.000,5136
+../smt-lib/QF_UFIDL/pete/cxs-bp-ex.smt2,2.208,5.675,Timeout 300.000,14507
+../smt-lib/QF_UFIDL/pete/fxs-safety.smt2,1.030,5.725,Timeout 300.000,15995
+../smt-lib/QF_UFIDL/pete/8stage-flush.smt2,32.841,37.652,Timeout 300.000,209536
+../smt-lib/QF_UFIDL/pete/cxs-bp-safety.smt2,2.284,5.260,Timeout 300.000,13492
+../smt-lib/QF_UFIDL/pete/fxs.smt2,1.904,6.792,Timeout 300.000,19743
+../smt-lib/QF_UFIDL/pete/fxs-bp-ex.smt2,4.549,9.847,Timeout 300.000,30566
+../smt-lib/QF_UFIDL/pete/cxs-bp-ex-safety.smt2,1.541,3.773,Timeout 300.000,11907
+../smt-lib/QF_UFIDL/pete/fxs-bp-ex-safety.smt2,4.846,8.672,Timeout 300.000,25208
+../smt-lib/QF_UFIDL/pete/cxs-bp-ex-inp.smt2,2.297,4.777,Timeout 300.000,11347
+../smt-lib/QF_UFIDL/pete/fxs-bp-safety.smt2,1.960,5.629,Timeout 300.000,17385
+../smt-lib/QF_UFIDL/pete/cxs-bp.smt2,1.594,4.430,Timeout 300.000,9324
+../smt-lib/QF_UFIDL/pete/fxs-bp.smt2,2.683,8.566,Timeout 300.000,22793
+../smt-lib/QF_UFIDL/pete/cxs-bp-ex-inp-safety.smt2,2.438,4.673,Timeout 300.000,12716
+../smt-lib/QF_UFIDL/pete/6stage-flush.smt2,0.440,4.324,Timeout 300.000,7166
+../smt-lib/QF_UFIDL/pete/cxs.smt2,0.338,3.972,Timeout 300.000,5242
+Solve timeout: 120,ProofTerm timeout: 300
+Total time: 361.793
+2022-05-09 23:03:49
