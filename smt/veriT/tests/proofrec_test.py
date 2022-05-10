@@ -5,7 +5,7 @@ from pstats import Stats
 import cProfile
 import sys
 
-from smt.veriT import interface, proof_rec, proof_parser
+from smt.veriT import interface, proof_rec, proof_parser, command
 from syntax.settings import settings
 settings.unicode = False
 
@@ -27,7 +27,10 @@ def test_parse_step(verit_proof, ctx):
         # print(s)
         if s == "unsat" or s == "":
             continue
-        steps.append(parser.parse(s))
+        step = parser.parse(s)
+        if isinstance(step, command.Step) and step.rule_name == "lia_generic":
+            return [step]
+        steps.append(step)
 
     return steps
 
@@ -71,6 +74,8 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     start_time = time.perf_counter()
     steps = test_parse_step(verit_proof, ctx)
     parse_time = time.perf_counter() - start_time
+    if len(steps) == 1 and isinstance(steps[0], command.Step) and steps[0].rule_name == "lia_generic":
+        return
 
     # Validation by macro.eval
     eval_time_str = ""
@@ -398,6 +403,8 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438517.smt2',
             'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437253.smt2',
             'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1437948.smt2',
+            'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1081041.smt2',
+            'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1080151.smt2',
             'UFLIA/sledgehammer/Hoare/smtlib.750663.smt2',
             'UFLIA/sledgehammer/QEpres/smtlib.1113749.smt2',
             'UFLIA/spec_sharp/textbook-DutchFlag.bpl.1.Partition.smt2',
@@ -415,6 +422,11 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/tptp/ARI604=1.smt2',
             'UFLIA/tptp/ARI612=1.smt2',
             'UFLIA/tptp/ARI615=1.smt2',
+            'UFLIA/grasshopper/uninstantiated/union_postcondition_of_union_36_8.smt2',
+            'UFLIA/grasshopper/instantiated/merge_loop_invariant_61_3.smt2',
+            'UFLIA/grasshopper/instantiated/pull_strands_loop_invariant_101_3.smt2',
+            'UFLIA/grasshopper/instantiated/split_postcondition_of_split_88_1.smt2',
+            'UFLIA/grasshopper/instantiated/filter_loop_invariant_48_3.smt2'
         ]
         profile = False
         if profile:
@@ -475,9 +487,14 @@ class ProofrecTest(unittest.TestCase):
             'QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2',
             'QF_LRA/spider_benchmarks/current_frame.induction.smt2',
             'QF_LRA/sc/sc-10.base.cvc.smt2',
-            'QF_LRA/tta_startup/simple_startup_10nodes.abstract.base.smt2', 
-            'QF_LRA/tta_startup/simple_startup_10nodes.synchro.induct.smt2',
             'QF_LRA/uart/uart-10.base.cvc.smt2',
+            'QF_LRA/clock_synchro/clocksynchro_9clocks.main_invar.base.smt2',
+            'QF_LRA/clock_synchro/clocksynchro_8clocks.main_invar.base.smt2',
+            'QF_LRA/clock_synchro/clocksynchro_5clocks.main_invar.base.smt2',
+            'QF_LRA/clock_synchro/clocksynchro_4clocks.main_invar.base.smt2',
+            'QF_LRA/clock_synchro/clocksynchro_7clocks.main_invar.base.smt2',
+            'QF_LRA/clock_synchro/clocksynchro_6clocks.main_invar.base.smt2',
+            'QF_LRA/clock_synchro/clocksynchro_3clocks.main_invar.base.smt2',
         ]
 
         profile = False
@@ -676,13 +693,15 @@ class ProofrecTest(unittest.TestCase):
 
     def test_QF_LIA(self):
         test_paths = [
-            # 'QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2',
-            # 'QF_LIA/rings/ring_2exp10_9vars_0ite_unsat.smt2'
-            # 'QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2'
-            # 'QF_LIA/rings_preprocessed/ring_2exp4_7vars_2ite_unsat.smt2'
-            # 'QF_UFIDL/pete2/c8idw.smt2',
-            # 'QF_LIA/cut_lemmas/15-vars/cut_lemma_02_004.smt2'
-            'QF_LIA/check/int_incompleteness1.smt2'
+            'QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2',
+            'QF_LIA/rings/ring_2exp10_9vars_0ite_unsat.smt2'
+            'QF_LIA/rings/ring_2exp12_4vars_3ite_unsat.smt2'
+            'QF_LIA/rings_preprocessed/ring_2exp4_7vars_2ite_unsat.smt2'
+            'QF_UFIDL/pete2/c8idw.smt2',
+            'QF_LIA/cut_lemmas/15-vars/cut_lemma_02_004.smt2'
+            'QF_LIA/check/int_incompleteness1.smt2',
+            'UFLIA/simplify2/front_end_suite/javafe.parser.test.TestLex.033.smt2',
+            'UF/grasshopper/instantiated/dl_copy_loop_invariant_36_3.smt2'
         ]
 
         profile = False
@@ -691,7 +710,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True, parse_assertion=True, write_file=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, write_file=True)
 
         if profile:
             p = Stats(pr)
