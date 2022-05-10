@@ -1,7 +1,7 @@
 import math
 from fractions import Fraction
 from decimal import Decimal
-from typing import Union
+import functools
 
 from kernel import term as hol_term
 from kernel import type as hol_type
@@ -14,7 +14,7 @@ from kernel.macro import Macro
 from kernel.theory import register_macro
 from kernel.proofterm import ProofTerm, refl
 from logic import logic
-from logic.conv import rewr_conv, arg1_conv, binop_conv, replace_conv, top_conv, arg_conv
+from logic.conv import rewr_conv, arg1_conv, binop_conv, replace_conv, top_conv, arg_conv, Conv
 from smt.veriT import verit_conv
 
 def norm_int_expr(t):
@@ -106,7 +106,7 @@ def to_la(tm: hol_term.Term) -> LinearArith:
         return LinearArith(const=0, lps=((tm, 1),))
 
 def from_int_la(la: LinearArith) -> hol_term.Term:
-    c = math.ceil(la.const)
+    c = la.const
     hol_const = hol_term.Int(c)
     if len(la) == 0:
         return hol_const
@@ -181,6 +181,66 @@ class NormLRAMacro(Macro):
         goal = args[0]
         return verit_conv.norm_lra_conv().get_proof_term(goal)
 
+
+def coeffs_gcd(sum_tm: hol_term.Term) -> int:
+    la = to_la(sum_tm)
+    if la.const != 0:
+        raise AssertionError("when computing coeffs gcd, left side should not have constants")
+    
+    coeffs = [c for _, c in la.lps]
+    return functools.reduce(math.gcd, coeffs[1:], coeffs[0])
+    
+class extract_gcd_conv(Conv):
+    """rewrite a linear disequality c_1 * x_1 + ... + c_n * x_n ⋈ c to 
+        k * (c_1' * x_1 + ... + c_n' * x_n) ⋈ c, where k = gcd(c_1, ..., c_n)."""
+    def get_proof_term(self, t: hol_term.Term) -> ProofTerm:
+        pt = refl(t)
+        if not t.is_greater_eq():
+            return pt
+        lhs = t.arg1
+        la = to_la(lhs)
+        k  = coeffs_gcd(lhs)
+        body = tuple(hol_term.Int(int(c / k)) * v for v, c in la.lps)
+        pt_eq1 = ProofTerm("verit_norm_lia", [hol_term.Int(k) * sum(body[1:], body[0])])
+        pt_eq2 = ProofTerm("verit_norm_lia", [lhs])
+        return pt.on_rhs(arg1_conv(replace_conv(ProofTerm.transitive(pt_eq2, pt_eq1.symmetric()))))
+
+@register_macro("verit_round_lia")
+class RoundLiaMacro(Macro):
+    """round a linear integer disequality to a stronger form"""
+    def __init__(self):
+        self.level = 1
+        self.sig = hol_term.Term
+        self.limit = None
+
+    def get_proof_term(self, args, prevs):
+        goal = args
+        pt = prevs[0]
+        dis_eq = pt.prop
+        if not dis_eq.is_greater_eq():
+            return pt
+        lhs = dis_eq.arg1
+        la = to_la(lhs)
+        k  = coeffs_gcd(lhs)
+        body = tuple(hol_term.Int(int(c / k)) * v for v, c in la.lps)
+        pt_eq1 = ProofTerm("verit_norm_lia", [hol_term.Int(k) * sum(body[1:], body[0])])
+        pt_eq2 = ProofTerm("verit_norm_lia", [lhs])
+        pt1 = pt.on_prop(extract_gcd_conv())
+        # gcd
+        k = coeffs_gcd(dis_eq.arg1)
+        # |- k > 0
+        pt_pos_k = ProofTerm("int_const_ineq", hol_term.greater(hol_type.IntType)(hol_term.Int(k), hol_term.Int(0)))
+        # lower bound
+        rhs = integer.int_eval(dis_eq.arg)
+        lb = rhs // k
+        # |- k * lb < rhs
+        pt_lb_le_rhs = ProofTerm("int_const_ineq", hol_term.less(hol_type.IntType)(hol_term.Int(k) * hol_term.Int(lb), hol_term.Int(rhs)))
+        # |- k * lb + k > rhs
+        pt_lb_plus_k_ge_rhs = ProofTerm("int_const_ineq", hol_term.greater(hol_type.IntType)(hol_term.Int(k) * hol_term.Int(lb) + hol_term.Int(k), hol_term.Int(rhs)))
+        # |- k > 0 ⟶ k * x ≥ c ⟶ k * lb < c ⟶ k * lb + k > c ⟶ k * x ≥ k * lb + k
+        pt2 = logic.apply_theorem("verit_round_lia_gcd", pt_pos_k, pt1, pt_lb_le_rhs, pt_lb_plus_k_ge_rhs)
+        pt_eq = ProofTerm.transitive(pt_eq1, pt_eq2.symmetric())
+        return pt2.on_prop(arg1_conv(replace_conv(pt_eq)), arg_conv(integer.int_eval_conv()))
 
 @register_macro("verit_la_generic")
 class LAGenericMacro(Macro):
@@ -305,9 +365,24 @@ class LAGenericMacro(Macro):
                     raise VeriTException("la_generic", "unexpected results: %s" % dis_eqs[0])
             else:
                 raise VeriTException("la_generic", "disequality should not be less or less_eq: %s" % dis_eq)
-        
-        
 
+        if T == hol_type.IntType:
+            dis_eq_step_round = []
+            # Additional step: if lhs can be rewrited to k * x ⋈ c, s.t. c > 0 /\ c < k, 
+            # then we could rewrite the disquality to a strong form: k * x ⋈ k, where ⋈ is either > or ≥
+            for dis_eq in dis_eq_step2:
+                k = coeffs_gcd(dis_eq.arg1)
+                c = integer.int_eval(dis_eq.arg)
+                if c > 0 and c % k != 0:
+                    t = k * (c // k + 1)
+                    round_dis_eq = hol_term.greater_eq(hol_type.IntType)(dis_eq.arg1, hol_term.Int(t))
+                elif c < 0 and c % k != 0:
+                    t = k * (c // k + 1)
+                    round_dis_eq = hol_term.greater_eq(hol_type.IntType)(dis_eq.arg1, hol_term.Int(t))
+                else:
+                    round_dis_eq = dis_eq
+                dis_eq_step_round.append(round_dis_eq)
+            dis_eq_step2 = dis_eq_step_round
 
         # Step 3: multiply each disequality with coeffs
         dis_eq_step3 = []
@@ -334,13 +409,12 @@ class LAGenericMacro(Macro):
                 "after multiplying coeffs, both sides should be number")
         lhs_const, rhs_const = eval_const(lhs_sum_norm), eval_const(rhs_sum_norm)
         cond = False
-        if all(dis_eq.is_equals() for dis_eq in dis_eq_step1):
+        if all(dis_eq.is_equals() for dis_eq in dis_eq_step3):
             cond = (rhs_const != lhs_const)
-        elif all(dis_eq.is_equals() or dis_eq.is_greater_eq() for dis_eq in dis_eq_step1):
+        elif all(dis_eq.is_equals() or dis_eq.is_greater_eq() for dis_eq in dis_eq_step3):
             cond = (rhs_const > lhs_const) # lhs <= rhs -> check 
         else:
             cond = (rhs_const >= lhs_const)
-
         if cond:
             return Thm(hol_term.Or(*args[:-1]))
         else:
@@ -423,11 +497,23 @@ class LAGenericMacro(Macro):
                 raise VeriTException('la_generic', 'unexpected type of disequality (less, less_eq)')
             # step2_pts.append(pt_minus)
             pt_eq = ProofTerm("verit_norm_lia", [pt_minus.prop.arg1])
-            step2_pts.append(pt_minus.on_prop(arg1_conv(replace_conv(pt_eq))))
+            pt_dis_eq = pt_minus.on_prop(arg1_conv(replace_conv(pt_eq)))
+            if not pt_dis_eq.prop.arg1.is_plus() or not pt_dis_eq.prop.arg1.arg1.is_constant():
+                step2_pts.append(pt_dis_eq)
+                continue
+            if pt_dis_eq.prop.is_greater_eq():
+                pt_dis_eq = pt_dis_eq.on_prop(rewr_conv("verit_int_add_ge_move_right"), arg_conv(integer.int_eval_conv()))
+            elif pt_dis_eq.prop.is_greater():
+                pt_dis_eq = pt_dis_eq.on_prop(rewr_conv("verit_int_add_gt_move_right"), arg_conv(integer.int_eval_conv()))
+            elif pt_dis_eq.prop.is_equals():
+                pt_dis_eq = pt_dis_eq.on_prop(rewr_conv("verit_int_add_eq_move_right"), arg_conv(integer.int_eval_conv()))
+            else:
+                raise VeriTException("la_generic", "the direction of dis_eq should be >, ≥ or =")
+            step2_pts.append(pt_dis_eq)
         
         # print("step2")
         # for pt in step2_pts:
-        #     print("pt", pt)
+        #     print("pt", pt.prop)
         # print()
 
         if len(step2_pts) == 1:
@@ -456,8 +542,23 @@ class LAGenericMacro(Macro):
 
         # print("step3")
         # for pt in step3_pts:
-        #     print(pt)
+        #     print(pt.prop)
+        #     print()
         # print()
+
+        # Rounding
+        step_round_pts = []
+        for step3_pt in step3_pts:
+            dis_eq = step3_pt.prop
+            k = coeffs_gcd(dis_eq.arg1)
+            c = integer.int_eval(dis_eq.arg)
+            if c % k == 0:
+                step_round_pts.append(step3_pt)
+                continue
+            pt1 = ProofTerm("verit_round_lia", None, prevs=[step3_pt])
+            step_round_pts.append(pt1)
+        
+        step3_pts = step_round_pts
 
         # multiply two sides with coeff
         step4_pts = []
