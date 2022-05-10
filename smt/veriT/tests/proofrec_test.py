@@ -671,7 +671,9 @@ class ProofrecTest(unittest.TestCase):
             # 'QF_LIA/rings_preprocessed/ring_2exp4_7vars_2ite_unsat.smt2'
             # 'QF_UFIDL/pete2/c8idw.smt2',
             # 'QF_LIA/cut_lemmas/15-vars/cut_lemma_02_004.smt2'
-            'QF_LIA/check/int_incompleteness1.smt2'
+            # 'QF_LIA/check/int_incompleteness1.smt2',
+            # 'UFLIA/simplify2/front_end_suite/javafe.parser.test.TestLex.033.smt2',
+            # 'UF/grasshopper/instantiated/dl_copy_loop_invariant_36_3.smt2'
         ]
 
         profile = False
@@ -680,13 +682,22 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_eval=True, parse_assertion=True, write_file=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, write_file=True)
 
         if profile:
             p = Stats(pr)
             p.strip_dirs()
             p.sort_stats('cumtime')
             p.print_stats(50)
+
+    def test_AC_SIMP(self):
+        test_paths = [
+            '../smt-lib/QF_UFIDL/pete2/c6_s.smt2',
+            '../smt-lib/QF_UFIDL/pete2/c7_s.smt2',
+            '../smt-lib/QF_UFIDL/pete2/c8_s.smt2',
+            '../smt-lib/QF_UFIDL/pete2/c9_s.smt2',
+            '../smt-lib/QF_UFIDL/pete2/c10_s.smt2',
+        ]
 
 if __name__ == "__main__":
     unittest.main()
