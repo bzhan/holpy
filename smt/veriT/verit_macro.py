@@ -2121,6 +2121,8 @@ def compare_ac(tm1, tm2):
     elif tm1.is_implies():
         return tm2.is_implies() and compare_ac(tm1.arg1, tm2.arg1) and compare_ac(tm1.arg, tm2.arg)
     elif tm1.is_equals():
+        if not tm2.is_equals():
+            return False
         return compare_ac(tm1.arg1, tm2.arg1) and compare_ac(tm1.arg, tm2.arg)
     elif tm1.is_forall():
         if not tm2.is_forall():
@@ -2161,7 +2163,7 @@ def compare_ac_thm(tm1, tm2):
             for conj1 in conjs1:
                 if conj1 not in conjs1_unique:
                     conjs1_unique.append(conj1)
-            assert len(conjs1_unique) == len(conjs2)
+            assert len(conjs1_unique) == len(conjs2), "tm1 and tm2 have different number of unique conjunction"
             conjs1 = conjs1_unique
         
         if len(conjs1) == len(conjs2) and all(compare_ac(t1, t2) for t1, t2 in zip(conjs1, conjs2)):
@@ -2173,12 +2175,24 @@ def compare_ac_thm(tm1, tm2):
             tm2_eq = logic.imp_conj_iff(Eq(tm2, And(*conjs2)))
             sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs=eqs)
             return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
-        raise AssertionError
+        raise AssertionError("can't compare conjunction")
     elif tm1.is_disj():
         disjs1 = logic.strip_disj(tm1)
         disjs2 = logic.strip_disj(tm2)
-        if set(disjs1) == set(disjs2):
+        disjs1_set = set(disjs1)
+        disjs2_set = set(disjs2)
+        if disjs1_set == disjs2_set:
             return logic.imp_disj_iff(Eq(tm1, tm2))
+        
+        # remove the repeated disjuncts in disjs1_set
+        if len(disjs1) != len(disjs2) and len(disjs1_set) == len(disjs2_set):
+            disjs1_unique = []
+            for disj1 in disjs1:
+                if disj1 not in disjs1_unique:
+                    disjs1_unique.append(disj1)
+            assert len(disjs1_unique) == len(disjs2), "tm1 and tm2 have different number of unique disjunction"
+            disjs1 = disjs1_unique
+
         if len(disjs1) == len(disjs2) and all(compare_ac(t1, t2) for t1, t2 in zip(disjs1, disjs2)):
             eqs = dict()
             for t1, t2 in zip(disjs1, disjs2):
@@ -2188,8 +2202,15 @@ def compare_ac_thm(tm1, tm2):
             tm2_eq = logic.imp_disj_iff(Eq(tm2, Or(*disjs2)))
             sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs=eqs)
             return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
-
-        raise NotImplementedError
+        print("tm1")
+        for disj in disjs1:
+            print(disj)
+        print()
+        print("tm2")
+        for disj in disjs2:
+            print(disj)
+        print()
+        raise AssertionError("can't compare disjunction")
     elif tm1.is_not():
         eq_pt = compare_ac_thm(tm1.arg, tm2.arg)
         return ProofTerm.reflexive(neg).combination(eq_pt)
@@ -2298,14 +2319,14 @@ class imp_conj_macro(Macro):
             if l == true:
                 ptCs.append(logic.apply_theorem("trueI"))
             else:
-                assert l in dct
+                assert l in dct, "verit_imp_conj"
                 ptCs.append(dct[l])
 
             if not r.is_conj():
                 if r == true:
                     ptCs.append(logic.apply_theorem("trueI"))
                 else:
-                    assert r in dct
+                    assert r in dct, "verit_imp_conj"
                     ptCs.append(dct[r])
             elif r in dct:
                 ptCs.append(dct[r])
@@ -2373,14 +2394,14 @@ class AndSimplifyMacro(Macro):
                 for j in range(i+1, len(conjs)):
                     if Not(conjs[i]) == conjs[j]:
                         # p_1 & ... & p_i & ... & ~p_i & ... p_n --> p_i & ~p_i
-                        return ProofTerm("verit_imp_conj", args=Implies(lhs, And(conjs[i], conjs[j])))
+                        return ProofTerm("imp_conj", args=Implies(lhs, And(conjs[i], conjs[j])))
                     elif conjs[i] == Not(conjs[j]):
                        # p_1 & ... & p_i & ... & ~p_i & ... p_n --> ~p_i & p_i
-                        return ProofTerm("verit_imp_conj", args=Implies(lhs, And(conjs[j], conjs[i])))
+                        return ProofTerm("imp_conj", args=Implies(lhs, And(conjs[j], conjs[i])))
                     elif Not(conjs[i]) == And(*conjs[j:]):
-                        return ProofTerm("verit_imp_conj", args=Implies(lhs, And(conjs[i], And(*conjs[j:]))))
+                        return ProofTerm("imp_conj", args=Implies(lhs, And(conjs[i], And(*conjs[j:]))))
                     elif conjs[i] == Not(And(*conjs[j:])):
-                        return ProofTerm("verit_imp_conj", args=Implies(lhs, And(And(*conjs[j:]), conjs[i])))
+                        return ProofTerm("imp_conj", args=Implies(lhs, And(And(*conjs[j:]), conjs[i])))
             return None
 
         goal = args[0]
@@ -2390,7 +2411,7 @@ class AndSimplifyMacro(Macro):
             pt_r_l = logic.apply_theorem("falseE", concl=lhs) # false -> anything
             if false in lhs_conjs:
                 # p_1 & ... & false & ... & p_n --> false
-                pt_l_r = ProofTerm("verit_imp_conj", args=Implies(lhs, rhs))
+                pt_l_r = ProofTerm("imp_conj", args=Implies(lhs, rhs))
                 return ProofTerm.equal_intr(pt_l_r, pt_r_l)
             else:
                 pt = find_pos_neg_pair(lhs_conjs)
@@ -2399,8 +2420,8 @@ class AndSimplifyMacro(Macro):
                 pt_l_r = logic.apply_theorem("syllogism", pt, pt_imp_false)
                 return ProofTerm.equal_intr(pt_l_r, pt_r_l)
         else:
-            pt1 = ProofTerm("verit_imp_conj", args=Implies(lhs, rhs))
-            pt2 = ProofTerm("verit_imp_conj", args=Implies(rhs, lhs))
+            pt1 = ProofTerm("imp_conj", args=Implies(lhs, rhs))
+            pt2 = ProofTerm("imp_conj", args=Implies(rhs, lhs))
             if pt1.prop.arg1 == lhs and pt1.prop.arg == rhs:
                 return ProofTerm.equal_intr(pt1, pt2)
 
@@ -2445,7 +2466,7 @@ class imp_disj_macro(Macro):
         A = goal.arg1
         pts_A = []
         if not A.is_disj():
-            assert A in pts_B
+            assert A in pts_B, "verit_imp_disj"
             pts_A = [pts_B[A]]
         if A in pts_B:
             pts_A = [pts_B[A]]
@@ -2460,7 +2481,7 @@ class imp_disj_macro(Macro):
                 if r == false:
                     pts_A.append(logic.apply_theorem("falseE", concl=goal.arg))
                 else:
-                    assert r in pts_B, str(r)
+                    assert r in pts_B, "verit_imp_disj"
                     pts_A.append(pts_B[r])
                 break
             A = r
