@@ -4972,3 +4972,56 @@ class XORNeg2Macro(Macro):
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         return logic.apply_theorem('verit_xor_neg2', concl=Or(*args))
+
+@register_macro("verit_not_ite1")
+class NotITE1Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs) -> Thm:
+        if len(args) != 2 or len(prevs) != 1:
+            raise VeriTException("not_ite1", "unexpected number of arguments and prevs")
+        pt = prevs[0]
+        neg_ite = pt.prop # ~(ite P_1 P_2 P_3)
+        if not neg_ite.is_not() or not logic.is_if(neg_ite.arg):
+            raise VeriTException("not_ite1", "pt should be in the form ~(ite p q r)")
+        Q_1, Q_2 = args # P_1 \/ ~P_3
+        if not Q_2.is_not():
+            raise VeriTException("not_ite1", "the second disjunct should be a negation")
+        P_1, _, P_3 = neg_ite.arg.args
+        if P_1 == Q_1 and Not(P_3) == Q_2:
+            return Thm(Or(*args))
+        raise VeriTException("not_ite1", "unexpected result")
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        pt = prevs[0]
+        return logic.apply_theorem("verit_not_ite1", pt, concl=Or(*args))
+
+
+@register_macro("verit_not_ite2")
+class NotITE1Macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs) -> Thm:
+        if len(args) != 2 or len(prevs) != 1:
+            raise VeriTException("not_ite2", "unexpected number of arguments and prevs")
+        pt = prevs[0]
+        neg_ite = pt.prop # ~(ite P_1 P_2 P_3)
+        if not neg_ite.is_not() or not logic.is_if(neg_ite.arg):
+            raise VeriTException("not_ite2", "pt should be in the form ~(ite p q r)")
+        Q_1, Q_2 = args # ~P_1 \/ ~P_2
+        if not Q_1.is_not() or not Q_2.is_not():
+            raise VeriTException("not_ite2", "goal should be a disjunction of two negation")
+        P_1, P_2, _ = neg_ite.arg.args
+        if Not(P_1) == Q_1 and Not(P_2) == Q_2:
+            return Thm(Or(*args))
+        raise VeriTException("not_ite2", "unexpected result")
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        pt = prevs[0]
+        return logic.apply_theorem("verit_not_ite2", pt, concl=Or(*args))

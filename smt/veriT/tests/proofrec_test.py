@@ -267,6 +267,7 @@ class ProofrecTest(unittest.TestCase):
             "UF/20170428-Barrett/cdt-cade2015/nada/afp/lmirror/x2015_09_10_16_47_35_530_1067960.smt_in.smt2",
             "UF/20170428-Barrett/cdt-cade2015/nada/afp/lmirror/x2015_09_10_16_47_27_202_1060941.smt_in.smt2",
             "UF/20170428-Barrett/cdt-cade2015/nada/afp/huffman/x2015_09_10_16_49_30_501_1188113.smt_in.smt2",
+            'UF/20170428-Barrett/cdt-cade2015/nada/afp/huffman/x2015_09_10_16_48_25_033_1111490.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_52_18_634_983654.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_53_05_211_1033050.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/bindag/x2015_09_10_16_53_31_362_1064389.smt_in.smt2',
