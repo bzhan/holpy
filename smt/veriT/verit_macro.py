@@ -2095,6 +2095,92 @@ def flatten_prop(tm):
     else:
         return tm
 
+@register_macro("verit_conj_pts")
+class ConjPtsMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        hyps = []
+        for pt in prevs:
+            for hyp in pt.hyps:
+                hyps.append(hyp)
+        rhs_set = []
+        for pt in prevs:
+            if pt.rhs not in rhs_set:
+                rhs_set.append(pt.rhs)
+        if hyps:
+            return Thm(Eq(And(*[pt.lhs for pt in prevs]), And(*rhs_set)), hyps)
+        else:
+            return Thm(Eq(And(*[pt.lhs for pt in prevs]), And(*rhs_set)))
+
+@register_macro("verit_disj_pts")
+class ConjPtsMacro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        hyps = []
+        for pt in prevs:
+            for hyp in pt.hyps:
+                hyps.append(hyp)
+        rhs_set = []
+        for pt in prevs:
+            if pt.rhs not in rhs_set:
+                rhs_set.append(pt.rhs)
+        if hyps:
+            return Thm(Eq(Or(*[pt.lhs for pt in prevs]), Or(*rhs_set)), hyps)
+        else:
+            return Thm(Eq(Or(*[pt.lhs for pt in prevs]), Or(*rhs_set)))
+
+class flap_prop_conv(Conv):
+    def get_proof_term(self, t):
+        pt = refl(t)
+        if t.is_conj():
+            conjs = logic.strip_conj(t)
+            unique_conjs = []
+            for conj in conjs:
+                if conj not in unique_conjs:
+                    unique_conjs.append(conj)
+            unique_conjs_flat_pts = []
+            for conj in unique_conjs:
+                pt = refl(conj).on_rhs(self)
+                unique_conjs_flat_pts.append(pt)
+            pt_conjs = unique_conjs_flat_pts[-1]
+            for pt in reversed(unique_conjs_flat_pts[:-1]):
+                pt_conjs = logic.apply_theorem("verit_flat_conj", pt, pt_conjs)
+            
+            pt_eq = logic.imp_conj_iff(Eq(t, And(*unique_conjs)))
+            return pt_eq.transitive(pt_conjs)
+        elif t.is_disj():
+            disjs = logic.strip_disj(t)
+            unique_disjs = []
+            for disj in disjs:
+                if disj not in unique_disjs:
+                    unique_disjs.append(disj)
+            unique_disjs_flat_pts = []
+            for disj in unique_disjs:
+                pt = refl(disj).on_rhs(self)
+                unique_disjs_flat_pts.append(pt)
+            pt_disjs = unique_disjs_flat_pts[-1]
+            for pt in reversed(unique_disjs_flat_pts[:-1]):
+                pt_disjs = logic.apply_theorem("verit_flat_disj", pt, pt_disjs)
+            
+            pt_eq = logic.imp_disj_iff(Eq(t, Or(*unique_disjs)))
+            return pt_eq.transitive(pt_disjs)
+        elif t.is_comb():
+            head_pt = refl(t.head)
+            for arg in t.args:
+                head_pt = head_pt.combination(refl(arg).on_rhs(self))
+            return head_pt
+        else:
+            return pt
+
+
 def compare_ac(tm1, tm2):
     """Compare two terms up to AC of conjunction and disjunction."""
     if tm1.is_conj():
@@ -2148,6 +2234,19 @@ def compare_ac(tm1, tm2):
     else:
         return tm1 == tm2
 
+def remove_repeated_tm(tm: hol_term.Term) -> hol_term.Term:
+    """tm is a conjunction (disjunction), remove repeated conjuncts (disjuncts)."""
+    assert tm.is_conj() or tm.is_disj(), "tm should be either a conjunction or disjunction"
+    if tm.is_conj():
+        tms = logic.strip_conj(tm)
+    else:
+        tms = logic.strip_disj(tm)
+    unique_tms = []
+    for tm in tms:
+        if tm not in unique_tms:
+            unique_tms.append(tm)
+    return unique_tms
+
 def compare_ac_thm(tm1, tm2):
     if tm1.is_conj():
         conjs1 = logic.strip_conj(tm1)
@@ -2176,6 +2275,16 @@ def compare_ac_thm(tm1, tm2):
             tm2_eq = logic.imp_conj_iff(Eq(tm2, And(*conjs2)))
             sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs=eqs)
             return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
+
+        tm1_set_pt = logic.imp_conj_iff(Eq(tm1, And(*remove_repeated_tm(tm1))))
+        tm2_set_pt = logic.imp_conj_iff(Eq(tm2, And(*remove_repeated_tm(tm2))))
+        # flat each disjunct
+        pt_tm1_flat = [refl(conj).on_rhs(flap_prop_conv()) for conj in remove_repeated_tm(tm1)]
+        pt_tm2_flat = [refl(conj).on_rhs(flap_prop_conv()) for conj in remove_repeated_tm(tm2)]
+        pt1 = ProofTerm("verit_conj_pts", None, prevs=pt_tm1_flat) # |- P_1 | ... | P_n <--> P_1' | ... | P_n'
+        pt2 = ProofTerm("verit_conj_pts", None, prevs=pt_tm2_flat)
+        if pt1.prop.rhs == pt2.prop.rhs and tm1_set_pt.rhs == pt1.lhs and tm2_set_pt.rhs == pt2.lhs:
+            return tm1_set_pt.transitive(pt1).transitive(tm2_set_pt.transitive(pt2).symmetric())
         raise AssertionError("can't compare conjunction")
     elif tm1.is_disj():
         disjs1 = logic.strip_disj(tm1)
@@ -2203,14 +2312,15 @@ def compare_ac_thm(tm1, tm2):
             tm2_eq = logic.imp_disj_iff(Eq(tm2, Or(*disjs2)))
             sub_eq = compare_sym_tm_thm(tm1_eq.rhs, tm2_eq.rhs, eqs=eqs)
             return ProofTerm.transitive(tm1_eq, sub_eq, tm2_eq.symmetric())
-        print("tm1")
-        for disj in disjs1:
-            print(disj)
-        print()
-        print("tm2")
-        for disj in disjs2:
-            print(disj)
-        print()
+        tm1_set_pt = logic.imp_disj_iff(Eq(tm1, Or(*remove_repeated_tm(tm1))))
+        tm2_set_pt = logic.imp_disj_iff(Eq(tm2, Or(*remove_repeated_tm(tm2))))
+        # flat each disjunct
+        pt_tm1_flat = [refl(disj).on_rhs(flap_prop_conv()) for disj in remove_repeated_tm(tm1)]
+        pt_tm2_flat = [refl(disj).on_rhs(flap_prop_conv()) for disj in remove_repeated_tm(tm2)]
+        pt1 = ProofTerm("verit_disj_pts", None, prevs=pt_tm1_flat) # |- P_1 | ... | P_n <--> P_1' | ... | P_n'
+        pt2 = ProofTerm("verit_disj_pts", None, prevs=pt_tm2_flat)
+        if pt1.prop.rhs == pt2.prop.rhs and tm1_set_pt.rhs == pt1.lhs and tm2_set_pt.rhs == pt2.lhs:
+            return tm1_set_pt.transitive(pt1).transitive(tm2_set_pt.transitive(pt2).symmetric())
         raise AssertionError("can't compare disjunction")
     elif tm1.is_not():
         eq_pt = compare_ac_thm(tm1.arg, tm2.arg)
@@ -3166,7 +3276,6 @@ class ITESimplifyMacro(Macro):
         if pt_rhs_lhs is not None and pt_rhs_lhs.symmetric().prop == goal:
             return pt_rhs_lhs.symmetric()
         else:
-            print("goal", goal)
             raise VeriTException("ite_simplify", "unexpected result")
 
 @register_macro("verit_minus_simplify")
@@ -4992,7 +5101,7 @@ class NotITE1Macro(Macro):
             raise VeriTException("not_ite1", "the second disjunct should be a negation")
         P_1, _, P_3 = neg_ite.arg.args
         if P_1 == Q_1 and Not(P_3) == Q_2:
-            return Thm(Or(*args))
+            return Thm(Or(*args), hyps=pt.hyps)
         raise VeriTException("not_ite1", "unexpected result")
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
@@ -5019,7 +5128,7 @@ class NotITE1Macro(Macro):
             raise VeriTException("not_ite2", "goal should be a disjunction of two negation")
         P_1, P_2, _ = neg_ite.arg.args
         if Not(P_1) == Q_1 and Not(P_2) == Q_2:
-            return Thm(Or(*args))
+            return Thm(Or(*args), hyps=pt.hyps)
         raise VeriTException("not_ite2", "unexpected result")
 
     def get_proof_term(self, args, prevs) -> ProofTerm:

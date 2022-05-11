@@ -176,6 +176,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_UF/SEQ/SEQ004_size5.smt2',
             'QF_UF/SEQ/SEQ004_size6.smt2',
             'QF_UF/SEQ/SEQ005_size7.smt2',
+            'QF_UF/SEQ/SEQ020_size2.smt2',
             "QF_UF/TypeSafe/z3.1184131.smt2",
             "QF_UF/TypeSafe/z3.1184147.smt2",
             "QF_UF/TypeSafe/z3.1184163.smt2",
@@ -258,6 +259,29 @@ class ProofrecTest(unittest.TestCase):
             p.strip_dirs()
             p.sort_stats('cumtime')
             p.print_stats(50)
+
+
+    def test_QF_UFIDL(self):
+        test_paths = [
+            'QF_UFIDL/pete2/c6_s.smt2',
+            # 'QF_UFIDL/pete2/c9_s.smt2', #ite_simplify
+            'QF_UFIDL/pete2/c7_s.smt2',
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=True, parse_assertion=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
+
 
     def test_UF(self): # eval ✓ proofterm ✓
         test_paths = [
@@ -705,7 +729,8 @@ class ProofrecTest(unittest.TestCase):
             'QF_LIA/rings/ring_2exp10_6vars_0ite_unsat.smt2',
             'QF_LIA/cut_lemmas/10-vars/cut_lemma_01_001.smt2',
             'QF_LIA/check/int_incompleteness1.smt2',
-            'QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__026.smt2'
+            'QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__026.smt2',
+            'QF_LIA/Averest/parallel_prefix_sum/ParallelPrefixSum_safe_bgmc002.smt2', # timeout
         ]
 
         profile = False

@@ -1799,6 +1799,28 @@
                 "lb": "int",
                 "x": "int"
             }
+        },
+        {
+            "name": "verit_flat_conj",
+            "prop": "P ⟷ Q ⟶ R ⟷ S ⟶ P ∧ R ⟷ Q ∧ S",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool",
+                "S": "bool"
+            }
+        },
+        {
+            "name": "verit_flat_disj",
+            "prop": "P ⟷ Q ⟶ R ⟷ S ⟶ P ∨ R ⟷ Q ∨ S",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool",
+                "S": "bool"
+            }
         }
     ],
     "description": "Schematic verit proof rule.",
