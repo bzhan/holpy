@@ -705,6 +705,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_LIA/rings/ring_2exp10_6vars_0ite_unsat.smt2',
             'QF_LIA/cut_lemmas/10-vars/cut_lemma_01_001.smt2',
             'QF_LIA/check/int_incompleteness1.smt2',
+            'QF_LIA/CAV_2009_benchmarks/smt/10-vars/problem_2__026.smt2'
         ]
 
         profile = False

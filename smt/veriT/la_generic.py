@@ -183,12 +183,13 @@ class NormLRAMacro(Macro):
 
 
 def coeffs_gcd(sum_tm: hol_term.Term) -> int:
+    """Compute the gcd of coefficients (note: gcd should be a positive number)"""
     la = to_la(sum_tm)
     if la.const != 0:
         raise AssertionError("when computing coeffs gcd, left side should not have constants")
     
     coeffs = [c for _, c in la.lps]
-    return functools.reduce(math.gcd, coeffs[1:], coeffs[0])
+    return abs(functools.reduce(math.gcd, coeffs[1:], coeffs[0]))
     
 class extract_gcd_conv(Conv):
     """rewrite a linear disequality c_1 * x_1 + ... + c_n * x_n ⋈ c to 
