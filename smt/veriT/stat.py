@@ -91,10 +91,38 @@ def solve(filename: str, timeout:int=120) -> Optional[str]:
                 return output.decode('UTF-8')
         except subprocess.TimeoutExpired:
             # Kill processes
-            print("Kiill")
+            print("Kill")
             os.killpg(os.getpgid(p.pid), signal.SIGTERM)
             return None
 
+def cvc5_solve(filename, timeout=120):
+    res = check_sat_from_file(filename)
+    if res in ("sat", "unknown", "none"):
+        return None
+    args =  "--dump-proofs "\
+            "--proof-format-mode=alethe "\
+            "--simplification=none "\
+            "--dag-thresh=0 "\
+            "--proof-granularity=theory-rewrite "
+    
+    with subprocess.Popen("cvc5 %s %s" % (args, filename),
+                          stdout=subprocess.PIPE, 
+                          stderr=subprocess.PIPE, shell=True, preexec_fn=os.setsid) as p:
+        try:
+            output, err_msg = p.communicate(timeout=timeout)
+            # print(output)
+            output_lines = output.decode('UTF-8').split("\n")
+            if output_lines == [""]:
+                return None
+            elif output_lines[1].strip() in ("sat", "unknown", "unsupported"):
+                return None
+            else:
+                return output.decode('UTF-8')
+        except subprocess.TimeoutExpired:
+            # Kill processes
+            print("Kill")
+            os.killpg(os.getpgid(p.pid), signal.SIGTERM)
+            return None
 
 def test_proof(filename, solve_timeout=120):
     """note: sys.getsizeof(verit_proof) failed in pypy3, so we can't get the proof size now"""
