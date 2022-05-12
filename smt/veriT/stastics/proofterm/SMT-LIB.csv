@@ -8976,229 +8976,229 @@ filename,Solve,Parse,ProofTerm,Steps
 ../smt-lib/QF_UF/SEQ/SEQ005_size7.smt2,1.114,7.418,40.483,14040
 ../smt-lib/QF_UF/SEQ/SEQ019_size4.smt2,1.296,10.021,9.746,5217
 ../smt-lib/QF_UF/SEQ/SEQ010_size7.smt2,1.225,3.949,17.409,8252
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.600173.smt2,1.179,0.744,0.019,4
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.693723.smt2,0.803,0.291,0.018,4
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.877439.smt2,0.734,0.445,0.015,4
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.693706.smt2,0.863,0.311,0.023,4
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.877456.smt2,1.316,0.994,0.076,4
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.600189.smt2,1.432,0.517,0.031,10
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.883188.smt2,0.939,0.331,0.023,8
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.883203.smt2,1.055,0.983,0.048,8
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.600181.smt2,0.815,0.412,0.014,4
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.877473.smt2,1.402,0.498,0.023,10
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.883173.smt2,1.093,0.635,0.135,8
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.693740.smt2,1.160,0.322,0.031,10
-../smt-lib/QF_UFIDL/TwoSquares/smtlib.883218.smt2,1.048,0.448,0.030,20
-../smt-lib/QF_UFIDL/uclid/elf.rf6.smt2,1.129,0.707,1.487,520
-../smt-lib/QF_UFIDL/uclid/ooo.rf6.smt2,0.571,0.650,Exception: can't compare conjunction 12.760,2283
-../smt-lib/QF_UFIDL/uclid/27s.smt2,0.910,0.697,16.746,2022
-../smt-lib/QF_UFIDL/uclid/elf.rf7.smt2,1.087,1.438,Exception: can't compare conjunction 39.240,2899
-../smt-lib/QF_UFIDL/RDS/simple_cyclic4.smt2,0.794,2.405,15.881,4535
-../smt-lib/QF_UFIDL/RDS/reverse_acyclic6.smt2,1.438,14.921,153.486,12519
-../smt-lib/QF_UFIDL/RDS/set_union5.smt2,3.011,35.699,284.852,19933
-../smt-lib/QF_UFIDL/uclid/44s.smt2,1.859,6.322,Exception: Timeout 303.487,2012
-../smt-lib/QF_UFIDL/uclid/q2.10.smt2,2.899,2.406,Exception: Timeout 300.000,13289
-../smt-lib/QF_UFIDL/pete2/c6_s.smt2,1.429,0.566,51.385,567
-../smt-lib/QF_UFIDL/pete2/c9_s.smt2,0.990,0.608,Exception: ite_simplify: unexpected result 144.839,782
-../smt-lib/QF_UFIDL/pete2/c7_s.smt2,1.524,0.789,100.291,657
-../smt-lib/QF_UFIDL/pete2/c10_s.smt2,1.505,0.661,Exception: ite_simplify: unexpected result 211.409,826
-../smt-lib/QF_UFIDL/pete2/c8_s.smt2,0.836,0.514,128.041,723
-../smt-lib/QF_UFIDL/pete2/c6n_s.smt2,0.979,0.850,Exception: Timeout 300.001,843
-../smt-lib/QF_UFIDL/pete2/c6b_s.smt2,1.107,1.067,Exception: Timeout 300.003,919
-../smt-lib/QF_UFIDL/pete2/c8n_s.smt2,1.226,1.906,Exception: Timeout 300.002,1006
-../smt-lib/QF_UFIDL/pete2/c7b_s.smt2,1.465,0.772,Exception: Timeout 300.001,978
-../smt-lib/QF_UFIDL/pete2/c7n_s.smt2,1.058,0.570,Exception: Timeout 300.044,920
-../smt-lib/QF_UFIDL/pete2/c9b_s.smt2,1.303,0.958,Exception: Timeout 300.002,1151
-../smt-lib/QF_UFIDL/pete2/c9n_s.smt2,1.484,1.309,Exception: Timeout 300.001,1063
-../smt-lib/QF_UFIDL/pete2/c8b_s.smt2,1.334,0.969,Exception: Timeout 300.001,1074
-../smt-lib/QF_UFIDL/pete2/c10n_s.smt2,0.839,0.986,Exception: Timeout 300.003,1102
-../smt-lib/QF_UFIDL/pete2/c10b_s.smt2,0.964,1.058,Exception: Timeout 300.001,1202
-../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard3.smt2,1.326,0.828,6.336,3000
-../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard6.smt2,8.790,17.902,"Exception: when computing coeffs gcd, left side should not have constants 1.175",22865
-../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard7.smt2,8.299,2.785,"Exception: when computing coeffs gcd, left side should not have constants 2.260",12891
-../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard9.smt2,94.629,4.052,"Exception: when computing coeffs gcd, left side should not have constants 2.261",14524
-../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard4.smt2,2.407,2.161,"Exception: when computing coeffs gcd, left side should not have constants 1.020",8821
-../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard5.smt2,2.904,4.796,"Exception: when computing coeffs gcd, left side should not have constants 1.022",10834
-../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard2.smt2,0.729,0.688,3.974,1333
-../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard8.smt2,24.519,4.073,"Exception: when computing coeffs gcd, left side should not have constants 1.784",20554
-../smt-lib/QF_UFIDL/UCLID-pred/OOO/OOO9.smt2,9.970,Timeout,,
-../smt-lib/QF_UFIDL/UCLID-pred/aodv/aodv6.smt2,4.041,29.334,Exception: Timeout 300.006,28523
-../smt-lib/QF_UFIDL/UCLID-pred/bakery/LamportBakery18.smt2,9.146,Timeout,,
-../smt-lib/QF_UFIDL/UCLID-pred/BRP/BRP9.smt2,1.844,1.716,10.176,2738
-../smt-lib/QF_UFIDL/UCLID-pred/DLX/DLX1C5.smt2,10.499,Timeout,,
-../smt-lib/QF_UFIDL/UCLID-pred/ibm_cache/ibm_cache_full_q_unbounded17.smt2,22.103,Timeout,,
-../smt-lib/QF_UFIDL/UCLID-pred/ibm_cache/ibm_cache_full9.smt2,4.415,33.127,Exception: Timeout 300.002,24636
-../smt-lib/QF_UFLIA/wisas/xs_5_5.smt2,8.930,lia_generic,,
-../smt-lib/QF_UFLIA/wisas/xs_6_16.smt2,1.338,0.659,9.445,1383
-../smt-lib/QF_UFLIA/wisas/xs_12_22.smt2,81.310,lia_generic,,
-../smt-lib/QF_UFLIA/wisas/xs_9_19.smt2,64.720,lia_generic,,
-../smt-lib/QF_UFLIA/wisas/xs_6_6.smt2,11.258,lia_generic,,
-../smt-lib/QF_UFLIA/wisas/xs_8_18.smt2,48.656,lia_generic,,
-../smt-lib/QF_UFLIA/wisas/xs_7_17.smt2,46.348,lia_generic,,
-../smt-lib/QF_UFLIA/wisas/xs_5_15.smt2,8.763,lia_generic,,
-../smt-lib/QF_UFLIA/wisas/xs_10_20.smt2,54.368,0.822,12.365,3772
-../smt-lib/QF_UFLIA/wisas/xs_9_14.smt2,47.520,0.760,8.646,3602
-../smt-lib/QF_UFLIA/wisas/xs_5_10.smt2,9.071,lia_generic,,
-../smt-lib/QF_UFLIA/wisas/xs_6_11.smt2,4.261,lia_generic,,
-../smt-lib/QF_UFLIA/wisas/xs_7_12.smt2,6.288,0.544,2.823,1133
-../smt-lib/QF_UFLIA/wisas/xs_8_13.smt2,78.104,lia_generic,,
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.602033.smt2,0.513,0.472,0.062,11
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.675451.smt2,1.075,1.198,0.286,33
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.666105.smt2,1.052,0.448,0.041,18
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.686126.smt2,0.387,0.443,0.084,43
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.606691.smt2,1.584,0.350,0.053,11
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.675482.smt2,0.657,0.410,0.105,33
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.686091.smt2,0.903,0.301,0.085,36
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.769286.smt2,0.448,0.502,0.248,38
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.686056.smt2,0.916,0.285,0.083,36
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.602059.smt2,0.618,0.434,0.042,16
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.675513.smt2,0.898,0.355,0.054,39
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.602046.smt2,0.956,0.419,0.040,11
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.606709.smt2,0.845,0.284,0.034,11
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.666078.smt2,0.715,0.255,0.033,18
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.606727.smt2,0.489,0.349,0.099,16
-../smt-lib/QF_UFLIA/TwoSquares/smtlib.666132.smt2,0.538,0.593,0.064,31
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_20.smt2,0.853,1.048,10.367,1927
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_16.smt2,1.257,0.566,7.159,1559
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_20.smt2,1.159,1.378,20.259,3003
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_03.smt2,0.757,0.380,0.478,227
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_18.smt2,1.289,1.456,22.735,2713
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_17.smt2,0.914,0.480,3.237,941
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_12.smt2,1.037,0.954,11.518,1843
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_13.smt2,0.449,0.712,7.084,1283
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_09.smt2,1.004,2.250,3.064,533
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_11.smt2,0.974,0.925,8.830,1698
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_04.smt2,1.714,0.518,2.042,683
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_11.smt2,1.040,0.727,1.800,635
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_05.smt2,0.968,0.430,0.905,329
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_19.smt2,0.971,0.595,4.082,1043
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_19.smt2,0.729,0.796,7.857,1835
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_05.smt2,1.129,0.541,2.777,828
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_17.smt2,0.705,2.975,17.696,2568
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_15.smt2,0.687,2.092,14.806,2278
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_08.smt2,1.142,0.445,1.009,482
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_12.smt2,1.507,0.708,2.427,686
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_14.smt2,0.627,0.818,2.202,788
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_16.smt2,1.220,1.162,14.665,2423
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_10.smt2,1.247,0.504,1.975,1007
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_07.smt2,1.197,0.694,5.296,1118
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_13.smt2,0.911,1.125,11.953,1988
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_07.smt2,1.477,0.552,2.247,731
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_03.smt2,0.550,0.485,1.174,538
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_05.smt2,1.280,0.680,1.484,547
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_09.smt2,1.205,1.104,5.276,1408
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_11.smt2,0.454,0.587,3.510,1099
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_15.smt2,0.539,0.599,2.484,839
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_16.smt2,1.317,0.742,3.991,890
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_08.smt2,0.575,0.862,2.577,823
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_06.smt2,0.984,0.474,2.061,973
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_07.smt2,1.501,0.305,0.708,431
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_06.smt2,1.931,3.278,18.436,639
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_15.smt2,0.629,0.729,6.154,1467
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_17.smt2,1.090,0.639,6.956,1651
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_04.smt2,1.153,0.494,0.830,278
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_18.smt2,1.177,0.437,1.667,992
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_10.smt2,0.507,0.498,0.845,584
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_19.smt2,0.682,1.902,20.110,2858
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_14.smt2,1.378,1.138,11.505,2133
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_13.smt2,1.166,0.781,1.701,737
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_04.smt2,1.328,0.492,1.003,455
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_10.smt2,1.077,0.768,7.420,1553
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_18.smt2,1.698,0.972,8.401,1743
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_20.smt2,1.322,0.616,3.990,1094
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_03.smt2,1.215,0.886,2.059,363
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_06.smt2,1.364,0.415,1.004,380
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_12.smt2,1.010,0.570,3.867,1191
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_09.smt2,0.592,0.782,1.711,915
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_14.smt2,1.121,0.536,5.733,1375
-../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_08.smt2,1.265,0.710,5.464,1263
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-12-1-4-2-1.smt2,1.154,0.373,1.328,545
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-17-2-2-4-1.smt2,21.372,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-09-3-5-5-3.smt2,20.020,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-16-2-4-3-5.smt2,10.653,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-18-1-1-4-1.smt2,18.312,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-05-5-2-5-5.smt2,25.142,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-15-4-4-1-5.smt2,31.827,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-19-5-3-2-5.smt2,11.892,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-06-2-2-5-1.smt2,18.993,0.393,2.875,684
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-19-1-4-2-1.smt2,28.640,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-15-5-3-2-3.smt2,53.636,0.756,11.532,2496
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-20-2-5-1-4.smt2,15.727,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-18-1-2-1-5.smt2,18.102,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-10-18-2-2-5-3.smt2,64.872,1.000,18.962,3775
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-13-2-4-5-3.smt2,24.761,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-14-1-1-1-1.smt2,10.755,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-09-5-1-2-5.smt2,30.568,0.367,0.930,547
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-10-19-3-4-2-4.smt2,41.962,0.666,17.917,3659
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-18-1-3-4-5.smt2,60.904,1.064,16.377,2428
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-13-5-3-2-1.smt2,56.778,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-16-4-4-5-1.smt2,26.839,0.644,7.213,1919
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-13-2-3-1-3.smt2,32.491,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-17-2-1-4-1.smt2,29.323,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-18-1-3-1-3.smt2,13.358,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-12-5-4-2-5.smt2,5.563,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-17-4-1-2-2.smt2,12.452,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-11-20-5-2-5-3.smt2,13.448,0.715,"Exception: when computing coeffs gcd, left side should not have constants 1.812",3982
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-15-4-1-4-1.smt2,1.472,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-20-5-1-4-2.smt2,1.097,0.373,"Exception: when computing coeffs gcd, left side should not have constants 1.647",582
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-17-1-5-1-5.smt2,13.785,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-09-3-4-4-3.smt2,28.962,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-20-5-1-5-1.smt2,5.491,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-14-4-3-1-1.smt2,17.209,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-15-4-2-1-4.smt2,11.130,0.505,9.353,1763
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-19-2-2-3-1.smt2,46.445,1.674,7.256,1968
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-11-19-4-5-1-1.smt2,77.854,1.501,"Exception: when computing coeffs gcd, left side should not have constants 3.880",4222
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-11-2-5-3-2.smt2,23.950,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-16-1-5-4-3.smt2,0.804,0.300,0.917,587
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-16-3-4-1-5.smt2,49.147,0.658,10.474,2646
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-20-5-5-1-5.smt2,30.542,0.728,"Exception: when computing coeffs gcd, left side should not have constants 3.026",2641
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-05-5-2-3-5.smt2,29.596,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-19-3-3-4-4.smt2,8.136,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-14-3-1-5-2.smt2,31.084,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-11-1-1-1-1.smt2,2.859,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-11-18-3-3-4-1.smt2,89.318,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-07-4-5-1-2.smt2,22.170,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-20-3-2-4-5.smt2,11.004,0.961,5.673,1539
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-10-17-5-2-2-5.smt2,61.167,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-14-2-3-3-5.smt2,7.631,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-10-1-4-2-5.smt2,22.273,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-11-17-5-2-4-4.smt2,114.691,1.388,23.792,5552
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-10-2-4-5-3.smt2,31.364,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-13-5-3-5-5.smt2,19.857,lia_generic,,
-../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-08-4-2-5-4.smt2,1.120,0.395,2.927,723
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium13.smt2,1.367,1.067,4.499,4960
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium11.smt2,0.668,0.522,2.877,3687
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium14.smt2,0.531,0.719,4.403,5678
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium20.smt2,1.185,0.969,7.894,10919
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium7.smt2,0.945,0.447,1.299,1706
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium16.smt2,1.031,0.721,5.751,7219
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium17.smt2,1.186,1.097,6.882,8085
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium10.smt2,1.121,1.596,2.399,3112
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium18.smt2,0.678,1.134,6.712,8992
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium19.smt2,1.209,1.508,11.007,9936
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium6.smt2,0.983,0.450,1.187,1329
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium8.smt2,1.414,0.589,2.549,2132
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium9.smt2,0.844,0.636,2.509,2596
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium5.smt2,0.746,0.446,0.760,1007
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium12.smt2,1.145,0.629,4.231,4299
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium15.smt2,1.399,1.656,3.343,6427
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard7.smt2,1.124,4.159,18.122,2303
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard4.smt2,1.239,0.596,8.166,1414
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard15.smt2,1.651,2.095,"Exception: when computing coeffs gcd, left side should not have constants 5.595",7681
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard14.smt2,2.319,1.243,"Exception: when computing coeffs gcd, left side should not have constants 6.943",7589
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard11.smt2,1.189,0.764,"Exception: when computing coeffs gcd, left side should not have constants 2.862",4582
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard9.smt2,1.453,0.746,16.697,3429
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard16.smt2,1.838,1.391,"Exception: when computing coeffs gcd, left side should not have constants 4.440",9072
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard5.smt2,0.478,0.605,8.011,1754
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard20.smt2,2.098,1.671,"Exception: when computing coeffs gcd, left side should not have constants 3.138",13017
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard8.smt2,0.795,0.906,17.974,2935
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard17.smt2,1.738,1.185,"Exception: when computing coeffs gcd, left side should not have constants 7.984",9892
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard6.smt2,1.220,0.644,8.355,2107
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard10.smt2,1.079,0.928,"Exception: when computing coeffs gcd, left side should not have constants 1.193",4179
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard12.smt2,1.217,0.933,"Exception: when computing coeffs gcd, left side should not have constants 5.066",5959
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard18.smt2,1.472,1.423,"Exception: when computing coeffs gcd, left side should not have constants 2.457",11195
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard13.smt2,1.314,1.195,"Exception: when computing coeffs gcd, left side should not have constants 2.671",6108
-../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard19.smt2,1.896,1.775,"Exception: when computing coeffs gcd, left side should not have constants 2.819",11063
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.600173.smt2,0.036,0.596,0.071,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.693723.smt2,0.032,0.628,0.069,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.877439.smt2,0.030,0.608,0.056,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.693706.smt2,0.037,0.625,0.068,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.877456.smt2,0.034,0.617,0.055,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.600189.smt2,0.033,0.660,0.093,10
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.883188.smt2,0.033,0.644,0.077,8
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.883203.smt2,0.029,0.642,0.072,8
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.600181.smt2,0.043,0.638,0.071,4
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.877473.smt2,0.041,0.634,0.090,10
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.883173.smt2,0.030,0.661,0.072,8
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.693740.smt2,0.032,0.657,0.089,10
+../smt-lib/QF_UFIDL/TwoSquares/smtlib.883218.smt2,0.031,0.647,0.122,20
+../smt-lib/QF_UFIDL/uclid/elf.rf6.smt2,0.038,1.584,2.464,520
+../smt-lib/QF_UFIDL/uclid/ooo.rf6.smt2,0.068,2.542,Exception: can't compare conjunction 5.474,2283
+../smt-lib/QF_UFIDL/uclid/27s.smt2,0.055,2.651,9.146,2022
+../smt-lib/QF_UFIDL/uclid/elf.rf7.smt2,0.079,2.992,Exception: can't compare conjunction 13.731,2899
+../smt-lib/QF_UFIDL/RDS/simple_cyclic4.smt2,0.192,3.488,11.024,4535
+../smt-lib/QF_UFIDL/RDS/reverse_acyclic6.smt2,0.588,5.778,36.355,12519
+../smt-lib/QF_UFIDL/RDS/set_union5.smt2,1.208,8.078,81.640,19933
+../smt-lib/QF_UFIDL/uclid/44s.smt2,0.056,2.577,Exception: Timeout 300.004,2012
+../smt-lib/QF_UFIDL/uclid/q2.10.smt2,1.311,2.920,144.597,13289
+../smt-lib/QF_UFIDL/pete2/c6_s.smt2,0.036,1.649,19.046,567
+../smt-lib/QF_UFIDL/pete2/c9_s.smt2,0.031,1.981,Exception: ite_simplify: unexpected result 51.660,782
+../smt-lib/QF_UFIDL/pete2/c7_s.smt2,0.033,1.816,29.363,657
+../smt-lib/QF_UFIDL/pete2/c10_s.smt2,0.038,1.897,Exception: ite_simplify: unexpected result 59.877,826
+../smt-lib/QF_UFIDL/pete2/c8_s.smt2,0.049,1.857,43.104,723
+../smt-lib/QF_UFIDL/pete2/c6n_s.smt2,0.073,1.975,78.810,843
+../smt-lib/QF_UFIDL/pete2/c6b_s.smt2,0.043,2.072,79.020,919
+../smt-lib/QF_UFIDL/pete2/c8n_s.smt2,0.048,2.161,223.755,1006
+../smt-lib/QF_UFIDL/pete2/c7b_s.smt2,0.049,2.200,133.119,978
+../smt-lib/QF_UFIDL/pete2/c7n_s.smt2,0.068,2.012,144.839,920
+../smt-lib/QF_UFIDL/pete2/c9b_s.smt2,0.073,2.304,Exception: ite_simplify: unexpected result 286.932,1151
+../smt-lib/QF_UFIDL/pete2/c9n_s.smt2,0.071,2.201,Exception: Timeout 300.000,1063
+../smt-lib/QF_UFIDL/pete2/c8b_s.smt2,0.069,2.479,217.400,1074
+../smt-lib/QF_UFIDL/pete2/c10n_s.smt2,0.071,2.303,Exception: Timeout 300.000,1102
+../smt-lib/QF_UFIDL/pete2/c10b_s.smt2,0.055,2.289,Exception: Timeout 300.008,1202
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard3.smt2,0.156,2.197,6.181,3000
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard6.smt2,4.067,3.764,23.950,22865
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard7.smt2,4.229,2.899,14.738,12891
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard9.smt2,31.049,3.040,16.888,14524
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard4.smt2,0.823,2.419,11.290,8821
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard5.smt2,1.286,2.807,12.044,10834
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard2.smt2,0.067,1.810,4.504,1333
+../smt-lib/QF_UFIDL/mathsat/EufLaArithmetic/vhard/vhard8.smt2,9.328,4.073,21.747,20554
+../smt-lib/QF_UFIDL/UCLID-pred/OOO/OOO9.smt2,5.212,57.105,Exception: Timeout 300.011,62884
+../smt-lib/QF_UFIDL/UCLID-pred/aodv/aodv6.smt2,2.537,13.464,202.258,28523
+../smt-lib/QF_UFIDL/UCLID-pred/bakery/LamportBakery18.smt2,4.807,37.072,Exception: Timeout 300.007,64863
+../smt-lib/QF_UFIDL/UCLID-pred/BRP/BRP9.smt2,0.104,2.671,8.428,2738
+../smt-lib/QF_UFIDL/UCLID-pred/DLX/DLX1C5.smt2,5.704,47.696,Exception: Timeout 300.077,64314
+../smt-lib/QF_UFIDL/UCLID-pred/ibm_cache/ibm_cache_full_q_unbounded17.smt2,9.927,47.919,Exception: Timeout 300.027,77303
+../smt-lib/QF_UFIDL/UCLID-pred/ibm_cache/ibm_cache_full9.smt2,1.641,10.669,109.094,24636
+../smt-lib/QF_UFLIA/wisas/xs_5_5.smt2,6.533,lia_generic,,
+../smt-lib/QF_UFLIA/wisas/xs_6_16.smt2,0.086,2.535,6.847,1383
+../smt-lib/QF_UFLIA/wisas/xs_12_22.smt2,43.747,lia_generic,,
+../smt-lib/QF_UFLIA/wisas/xs_9_19.smt2,34.359,lia_generic,,
+../smt-lib/QF_UFLIA/wisas/xs_6_6.smt2,8.206,lia_generic,,
+../smt-lib/QF_UFLIA/wisas/xs_8_18.smt2,24.602,lia_generic,,
+../smt-lib/QF_UFLIA/wisas/xs_7_17.smt2,24.389,lia_generic,,
+../smt-lib/QF_UFLIA/wisas/xs_5_15.smt2,5.887,lia_generic,,
+../smt-lib/QF_UFLIA/wisas/xs_10_20.smt2,28.694,2.357,9.696,3772
+../smt-lib/QF_UFLIA/wisas/xs_9_14.smt2,26.233,2.283,8.327,3602
+../smt-lib/QF_UFLIA/wisas/xs_5_10.smt2,5.382,lia_generic,,
+../smt-lib/QF_UFLIA/wisas/xs_6_11.smt2,2.773,lia_generic,,
+../smt-lib/QF_UFLIA/wisas/xs_7_12.smt2,5.671,1.865,4.896,1133
+../smt-lib/QF_UFLIA/wisas/xs_8_13.smt2,41.020,lia_generic,,
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.602033.smt2,0.029,0.480,0.220,11
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.675451.smt2,0.030,0.472,0.352,33
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.666105.smt2,0.026,0.453,0.206,18
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.686126.smt2,0.027,0.505,0.463,43
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.606691.smt2,0.029,0.403,0.127,11
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.675482.smt2,0.027,0.479,0.209,33
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.686091.smt2,0.025,0.542,0.472,36
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.769286.smt2,0.027,0.494,0.748,38
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.686056.smt2,0.025,0.487,0.438,36
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.602059.smt2,0.026,0.426,0.187,16
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.675513.smt2,0.026,0.520,0.244,39
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.602046.smt2,0.023,0.406,0.213,11
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.606709.smt2,0.035,0.405,0.135,11
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.666078.smt2,0.024,0.443,0.224,18
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.606727.smt2,0.030,0.260,0.084,16
+../smt-lib/QF_UFLIA/TwoSquares/smtlib.666132.smt2,0.029,0.445,0.216,31
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_20.smt2,0.060,2.416,6.992,1927
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_16.smt2,0.050,2.839,5.040,1559
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_20.smt2,0.088,2.884,11.079,3003
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_03.smt2,0.028,0.935,1.335,227
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_18.smt2,0.076,2.921,10.955,2713
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_17.smt2,0.043,2.247,2.989,941
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_12.smt2,0.053,2.434,6.114,1843
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_13.smt2,0.042,2.237,3.960,1283
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_09.smt2,0.035,1.766,1.946,533
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_11.smt2,0.052,3.009,5.664,1698
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_04.smt2,0.037,1.834,2.427,683
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_11.smt2,0.036,2.203,2.233,635
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_05.smt2,0.028,1.132,1.515,329
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_19.smt2,0.039,2.077,3.561,1043
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_19.smt2,0.052,2.514,6.304,1835
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_05.smt2,0.039,2.227,3.355,828
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_17.smt2,0.077,3.442,8.728,2568
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_15.smt2,0.069,2.734,8.017,2278
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_08.smt2,0.033,1.648,1.892,482
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_12.smt2,0.039,2.523,2.546,686
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_14.smt2,0.042,2.099,2.789,788
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_16.smt2,0.067,2.720,9.327,2423
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_10.smt2,0.035,2.158,3.895,1007
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_07.smt2,0.037,2.162,3.459,1118
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_13.smt2,0.061,2.491,6.293,1988
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_07.smt2,0.038,1.800,2.468,731
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_03.smt2,0.035,1.639,1.814,538
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_05.smt2,0.038,1.849,2.167,547
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_09.smt2,0.048,2.147,4.591,1408
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_11.smt2,0.040,2.135,3.619,1099
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_15.smt2,0.041,2.599,2.774,839
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_16.smt2,0.042,2.159,2.902,890
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_08.smt2,0.041,1.919,2.538,823
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_06.smt2,0.040,2.609,3.704,973
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_07.smt2,0.038,1.551,1.795,431
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_06.smt2,0.038,1.753,2.112,639
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_15.smt2,0.050,2.283,4.910,1467
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_17.smt2,0.055,2.218,5.120,1651
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_04.smt2,0.035,1.449,1.743,278
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_18.smt2,0.044,2.299,3.395,992
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_10.smt2,0.046,2.281,1.988,584
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_19.smt2,0.094,3.058,11.625,2858
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_14.smt2,0.061,2.517,6.447,2133
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_13.smt2,0.042,1.900,2.580,737
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_04.smt2,0.037,1.610,1.795,455
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_10.smt2,0.051,2.261,5.451,1553
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_18.smt2,0.059,2.384,6.552,1743
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_20.smt2,0.045,2.462,3.692,1094
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_03.smt2,0.035,1.708,1.831,363
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_03_06.smt2,0.034,1.414,1.535,380
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_12.smt2,0.049,2.700,3.454,1191
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_09.smt2,0.046,2.526,3.164,915
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_04_14.smt2,0.046,2.215,4.267,1375
+../smt-lib/QF_UFLIA/mathsat/Hash/hash_uns_05_08.smt2,0.045,2.750,3.706,1263
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-12-1-4-2-1.smt2,0.142,1.791,3.001,545
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-17-2-2-4-1.smt2,11.667,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-09-3-5-5-3.smt2,11.361,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-16-2-4-3-5.smt2,6.774,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-18-1-1-4-1.smt2,10.203,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-05-5-2-5-5.smt2,13.747,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-15-4-4-1-5.smt2,17.537,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-19-5-3-2-5.smt2,7.324,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-06-2-2-5-1.smt2,10.124,1.700,3.030,684
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-19-1-4-2-1.smt2,15.414,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-15-5-3-2-3.smt2,31.219,2.307,8.891,2496
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-20-2-5-1-4.smt2,10.647,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-18-1-2-1-5.smt2,10.594,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-10-18-2-2-5-3.smt2,34.331,2.409,11.027,3775
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-13-2-4-5-3.smt2,14.131,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-14-1-1-1-1.smt2,6.526,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-09-5-1-2-5.smt2,16.672,1.803,2.427,547
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-10-19-3-4-2-4.smt2,23.260,2.375,11.439,3659
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-18-1-3-4-5.smt2,33.363,2.294,8.825,2428
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-13-5-3-2-1.smt2,31.111,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-16-4-4-5-1.smt2,14.020,2.027,5.882,1919
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-13-2-3-1-3.smt2,20.361,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-17-2-1-4-1.smt2,17.175,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-18-1-3-1-3.smt2,8.674,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-12-5-4-2-5.smt2,3.712,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-17-4-1-2-2.smt2,8.026,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-11-20-5-2-5-3.smt2,7.467,2.394,13.291,3982
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-15-4-1-4-1.smt2,0.438,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-20-5-1-4-2.smt2,0.047,1.773,3.733,582
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-17-1-5-1-5.smt2,8.597,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-09-3-4-4-3.smt2,16.357,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-20-5-1-5-1.smt2,4.582,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-14-4-3-1-1.smt2,10.497,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-15-4-2-1-4.smt2,7.521,1.422,5.763,1763
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-19-2-2-3-1.smt2,25.705,2.338,8.992,1968
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-11-19-4-5-1-1.smt2,41.916,1.567,14.898,4222
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-11-2-5-3-2.smt2,14.834,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-16-1-5-4-3.smt2,0.066,1.865,3.414,587
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-16-3-4-1-5.smt2,29.745,2.243,8.606,2646
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-09-20-5-5-1-5.smt2,18.816,2.288,7.933,2641
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-05-5-2-3-5.smt2,16.499,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-19-3-3-4-4.smt2,7.022,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-14-3-1-5-2.smt2,17.438,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-11-1-1-1-1.smt2,1.521,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-11-18-3-3-4-1.smt2,50.352,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-07-4-5-1-2.smt2,13.013,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-20-3-2-4-5.smt2,8.066,2.068,5.235,1539
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-10-17-5-2-2-5.smt2,32.490,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-08-14-2-3-3-5.smt2,4.329,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-10-1-4-2-5.smt2,13.970,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-11-17-5-2-4-4.smt2,60.786,2.537,14.361,5552
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-07-10-2-4-5-3.smt2,18.374,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-06-13-5-3-5-5.smt2,11.761,lia_generic,,
+../smt-lib/QF_UFLIA/mathsat/Wisa/xs-05-08-4-2-5-4.smt2,0.072,1.762,4.398,723
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium13.smt2,0.106,2.425,6.212,4960
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium11.smt2,0.115,2.143,5.225,3687
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium14.smt2,0.106,3.264,6.767,5678
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium20.smt2,0.239,3.901,8.922,10919
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium7.smt2,0.070,2.000,3.985,1706
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium16.smt2,0.188,3.215,6.714,7219
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium17.smt2,0.206,2.529,7.604,8085
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium10.smt2,0.093,2.228,5.280,3112
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium18.smt2,0.157,2.599,8.234,8992
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium19.smt2,0.251,2.587,8.619,9936
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium6.smt2,0.066,2.475,3.536,1329
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium8.smt2,0.084,2.036,4.511,2132
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium9.smt2,0.085,2.827,4.607,2596
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium5.smt2,0.059,2.302,3.652,1007
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium12.smt2,0.122,2.980,5.678,4299
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/medium/medium15.smt2,0.180,2.722,6.937,6427
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard7.smt2,0.147,2.921,10.560,2303
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard4.smt2,0.090,1.922,9.487,1414
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard15.smt2,0.675,2.855,24.658,7681
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard14.smt2,0.622,3.644,23.382,7589
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard11.smt2,0.286,3.216,17.047,4582
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard9.smt2,0.172,2.433,14.395,3429
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard16.smt2,0.310,3.159,27.321,9072
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard5.smt2,0.110,1.903,9.587,1754
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard20.smt2,1.419,4.435,35.798,13017
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard8.smt2,0.182,2.713,12.722,2935
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard17.smt2,0.690,2.768,31.956,9892
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard6.smt2,0.140,2.099,10.526,2107
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard10.smt2,0.293,2.518,15.388,4179
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard12.smt2,0.425,3.468,19.962,5959
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard18.smt2,0.793,2.881,31.579,11195
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard13.smt2,0.405,2.587,20.542,6108
+../smt-lib/QF_UFLIA/mathsat/EufLaArithmetic/hard/hard19.smt2,0.859,3.022,32.389,11063
 ../smt-lib/QF_UFLRA/FFT/smtlib.624882.smt2,1.082,0.856,0.026,15
 ../smt-lib/QF_UFLRA/FFT/smtlib.626179.smt2,1.226,0.422,0.035,16
 ../smt-lib/QF_UFLRA/FFT/smtlib.624916.smt2,0.909,0.263,0.020,23

@@ -372,6 +372,9 @@ class LAGenericMacro(Macro):
             # Additional step: if lhs can be rewrited to k * x ⋈ c, s.t. c > 0 /\ c < k, 
             # then we could rewrite the disquality to a strong form: k * x ⋈ k, where ⋈ is either > or ≥
             for dis_eq in dis_eq_step2:
+                if dis_eq.arg1.is_constant() and dis_eq.arg.is_constant():
+                    dis_eq_step_round.append(dis_eq)
+                    continue
                 k = coeffs_gcd(dis_eq.arg1)
                 c = integer.int_eval(dis_eq.arg)
                 if dis_eq.is_equals():
@@ -554,7 +557,7 @@ class LAGenericMacro(Macro):
         step_round_pts = []
         for step3_pt in step3_pts:
             dis_eq = step3_pt.prop
-            if dis_eq.is_equals():
+            if dis_eq.is_equals() or dis_eq.arg1.is_constant() and dis_eq.arg.is_constant():
                 step_round_pts.append(step3_pt)
                 continue
             k = coeffs_gcd(dis_eq.arg1)
