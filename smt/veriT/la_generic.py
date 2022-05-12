@@ -374,6 +374,9 @@ class LAGenericMacro(Macro):
             for dis_eq in dis_eq_step2:
                 k = coeffs_gcd(dis_eq.arg1)
                 c = integer.int_eval(dis_eq.arg)
+                if dis_eq.is_equals():
+                    dis_eq_step_round.append(dis_eq)
+                    continue
                 if c > 0 and c % k != 0:
                     t = k * (c // k + 1)
                     round_dis_eq = hol_term.greater_eq(hol_type.IntType)(dis_eq.arg1, hol_term.Int(t))
@@ -551,6 +554,9 @@ class LAGenericMacro(Macro):
         step_round_pts = []
         for step3_pt in step3_pts:
             dis_eq = step3_pt.prop
+            if dis_eq.is_equals():
+                step_round_pts.append(step3_pt)
+                continue
             k = coeffs_gcd(dis_eq.arg1)
             c = integer.int_eval(dis_eq.arg)
             if c % k == 0:
