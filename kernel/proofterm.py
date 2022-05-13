@@ -234,6 +234,7 @@ class ProofTerm():
                     expand_pt = macro.get_proof_term(pt.args, pt.prevs)
                     rpt.expand_macro(pt.rule)
                     rec(expand_pt)
+            pt.checked = True
 
         rec(self)
         return
