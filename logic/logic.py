@@ -308,9 +308,12 @@ class apply_theorem_macro(Macro):
             pt = pt.on_prop(beta_norm_conv())
         pt = pt.implies_elim(*pts)
 
-        assert len(pt.prop.get_stvars()) == 0, "apply_theorem: unmatched type variables."
-        vars = pt.prop.get_svars()
-        for v in reversed(vars):
+        # Check that all type variables are instantiated
+        for stvar in th.prop.get_stvars():
+            assert stvar.name in inst.tyinst, "apply_theorem: unmatched type variable %s" % stvar
+
+        remain_svars = [t.subst_type(inst.tyinst) for t in svars if t.name not in inst]
+        for v in reversed(remain_svars):
             pt = pt.forall_intr(v)
 
         return pt

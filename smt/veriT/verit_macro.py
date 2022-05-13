@@ -280,6 +280,40 @@ class SwapDisjToFrontMacro(Macro):
         r_args = [l_args[idx]] + l_args[:idx] + l_args[idx+1:]
         return Thm(Or(*r_args), prevs[0].hyps)
 
+@register_macro("combine_disj_clauses")
+class CombineDisjClausesMacro(Macro):
+    """The two arguments are respectively: a list of disjunctions on the
+    left side, and a list of disjunctions on the right side.
+    
+    """
+    def __init__(self):
+        self.level = 0
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, args, prevs):
+        l_args, r_args, goal_args = args
+
+        if len(l_args) == 0:
+            if strip_disj_n(prevs[0].prop, len(r_args)) != r_args:
+                raise AssertionError("combine_disj_clauses: r_args does not match")
+        elif len(r_args) == 0:
+            if strip_disj_n(prevs[0].prop, len(l_args)) != l_args:
+                raise AssertionError("combine_disj_clauses: l_args does not match")
+        else:
+            # Check prevs does decompose into l_args and r_args
+            if not prevs[0].prop.is_disj():
+                raise AssertionError("combine_disj_clauses: prev is not a disjunction.")
+            t1, t2 = prevs[0].prop.args
+            if strip_disj_n(t1, len(l_args)) != l_args:
+                raise AssertionError("combine_disj_clauses: l_args does not match")
+            if strip_disj_n(t2, len(r_args)) != r_args:
+                raise AssertionError("combine_disj_clauses: r_args does not match")
+
+        if set(l_args + r_args) != set(goal_args):
+            raise AssertionError("combine_disj_clauses: unexpected goal")
+
+        return Thm(Or(*goal_args), prevs[0].hyps)
 
 @register_macro("verit_th_resolution")
 class ThResolutionMacro(Macro):
@@ -393,8 +427,10 @@ class ThResolutionMacro(Macro):
             if Not(Not(pt.prop)) == res:
                 pt = pt.on_prop(rewr_conv('double_neg', sym=True))
             elif pt.prop != res:
-                eq_pt = logic.imp_disj_iff(Eq(pt.prop, res))
-                pt = eq_pt.equal_elim(pt)
+                pt = ProofTerm("combine_disj_clauses", (
+                    prems[id1][:t1] + prems[id1][t1+1:],
+                    prems[id2][:t2] + prems[id2][t2+1:],
+                    cl if i == len(resolves) - 1 else res_list), prevs=[pt])
             
             prems[id1] = res_list
             prevs[id1] = pt
