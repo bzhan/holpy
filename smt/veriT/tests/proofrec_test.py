@@ -431,6 +431,7 @@ class ProofrecTest(unittest.TestCase):
             'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1081041.smt2',
             'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1080151.smt2',
             'UFLIA/sledgehammer/Hoare/smtlib.750663.smt2',
+            'UFLIA/sledgehammer/Hoare/smtlib.1046517.smt2',
             'UFLIA/sledgehammer/QEpres/smtlib.1113749.smt2',
             'UFLIA/spec_sharp/textbook-DutchFlag.bpl.1.Partition.smt2',
             'UFLIA/spec_sharp/textbook-Find.bpl.1.Find.smt2',
@@ -739,7 +740,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True, write_file=True)
+            test_path(path, test_proofterm=True, parse_assertion=True)
 
         if profile:
             p = Stats(pr)

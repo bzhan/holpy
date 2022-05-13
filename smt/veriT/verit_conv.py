@@ -632,7 +632,7 @@ class onepoint_exists_conv(Conv):
         return pt
 
 
-class qnt_rm_unsed_conv(Conv):
+class qnt_rm_unused_conv(Conv):
     def get_proof_term(self, t):
         pt = refl(t)
         if not t.is_forall() and not t.is_exists():
@@ -646,7 +646,7 @@ class qnt_rm_unsed_conv(Conv):
             elif t.is_exists():
                 return pt.on_rhs(rewr_conv('verit_rm_unused_exists'), self)
         else:
-            return pt
+            return pt.on_rhs(arg_conv(abs_conv(self)))
 
 class not_member_conv(Conv):
     def get_proof_term(self, t):

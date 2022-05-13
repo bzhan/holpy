@@ -4650,7 +4650,7 @@ class QNTSimplifyMacro(Macro):
     def get_proof_term(self, args, prevs):
         goal = args[0]
         lhs, rhs = goal.args
-        pt = refl(lhs).on_rhs(verit_conv.qnt_rm_unsed_conv())
+        pt = refl(lhs).on_rhs(verit_conv.qnt_rm_unused_conv())
         if pt.prop == goal:
             return pt
         raise VeriTException("qnt_simplify", "unexpected result")
@@ -4812,10 +4812,13 @@ class QntRmUnusedMacro(Macro):
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         goal = args[0]
-        pt = refl(goal.lhs).on_rhs(verit_conv.qnt_rm_unsed_conv())
+        pt = refl(goal.lhs).on_rhs(verit_conv.qnt_rm_unused_conv())
         if pt.prop == goal:
             return pt
-        raise VeriTException("qnt_rm_unused", "unexpected result %s" % goal)
+
+        print('obtained', pt.prop)
+        print('goal', goal)
+        raise VeriTException("qnt_rm_unused", "unexpected result")
 
 @register_macro("verit_prod_simplify")
 class ProdSimplifyMacro(Macro):
