@@ -10,6 +10,7 @@ from kernel.proofterm import ProofTerm
 from kernel.thm import Thm
 from kernel import term
 from kernel.term import Or
+from kernel.report import ProofReport
 from kernel import theory
 from logic import logic
 from alive_progress import alive_bar
@@ -143,7 +144,7 @@ class ProofReconstruction:
                 if not isinstance(self.steps[i+1], command.Anchor) and not isinstance(self.steps[i], command.Anchor):
                     return self.pts[self.steps[i].id]
 
-    def validate_step(self, step, is_eval=True, omit_proofterm=None):
+    def validate_step(self, step, is_eval=True, omit_proofterm=None, test_expand=False, rpt=None):
         if omit_proofterm is None:
             omit_proofterm = []
         
@@ -227,6 +228,9 @@ class ProofReconstruction:
             print("In proof: ", Or(*step.cl))
             raise AssertionError("Unexpected returned theorem")
 
+        if test_expand:
+            self.pts[step.id].check(check_level=0, rpt=rpt)
+
         # Compare with eval
         eval_pt = ProofTerm(macro_name, args, prevs)
         # if not set(self.pts[step.id].hyps) <= set(eval_pt.hyps):
@@ -247,17 +251,20 @@ class ProofReconstruction:
             raise AssertionError("Disagreement between eval and proof term: prop")
 
 
-    def validate(self, is_eval=True, step_limit=None, omit_proofterm=None, with_bar=True):
+    def validate(self, is_eval=True, step_limit=None, omit_proofterm=None, with_bar=True,
+                 test_expand=False, rpt=None):
         if with_bar:
             with alive_bar(len(self.steps), spinner=None, bar=None) as bar:
                 for i, step in enumerate(self.steps):
-                    self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm)
+                    self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm,
+                                       test_expand=test_expand, rpt=rpt)
                     bar()
                     if step_limit and i > step_limit:
                         break
         else:
             for i, step in enumerate(self.steps):
-                self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm)
+                self.validate_step(step, is_eval=is_eval, omit_proofterm=omit_proofterm,
+                                   test_expand=test_expand, rpt=rpt)
                 if step_limit and i > step_limit:
                     break
 

@@ -44,7 +44,7 @@ class Macro():
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
         """Obtain the proof term for applying the macro."""
-        raise NotImplementedError
+        raise NotImplementedError("Proof term not implemented for %s" % type(self))
 
     def expand(self, prefix, args, prevs):
         """Obtain the detailed proof of the derivation.

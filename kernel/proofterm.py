@@ -6,6 +6,7 @@ from kernel.term import Term, Var, Inst
 from kernel.type import TyInst
 from kernel.thm import Thm, primitive_deriv
 from kernel.proof import Proof, ItemID
+from kernel.report import ProofReport
 from kernel import theory
 from util import typecheck
 
@@ -64,6 +65,9 @@ class ProofTerm():
             self.gaps = [self.th]
         else:
             self.gaps = list(set(sum([prev.gaps for prev in self.prevs], [])))
+
+        # Used for checking
+        self.checked = False
 
     def __repr__(self):
         return str(self)
@@ -197,6 +201,42 @@ class ProofTerm():
     def sorry(th: Thm) -> ProofTerm:
         typecheck.checkinstance('sorry', th, Thm)
         return ProofTerm("sorry", None, [], th)
+
+    def check(self, *, check_level=0, rpt=None):
+        """Check the given proof term by expanding macros.
+        
+        Returns the proof report.
+        
+        """
+        def rec(pt: ProofTerm):
+            if pt.checked:
+                return
+
+            # First, check the prevs that self relies on.
+            for prev in pt.prevs:
+                rec(prev)
+
+            if pt.rule == 'atom':
+                raise AssertionError("check proofterm: atom")
+            elif pt.rule == 'sorry':
+                rpt.add_gap(pt.th)
+            elif pt.rule == 'variable':
+                pass
+            elif pt.rule == 'theorem':
+                rpt.apply_theorem(pt.args)
+            elif pt.rule in primitive_deriv:
+                rpt.apply_primitive_deriv()
+            else:
+                macro = theory.get_macro(pt.rule)
+                if macro.level <= check_level:
+                    rpt.eval_macro(pt.rule)
+                else:
+                    expand_pt = macro.get_proof_term(pt.args, pt.prevs)
+                    rpt.expand_macro(pt.rule)
+                    rec(expand_pt)
+
+        rec(self)
+        return
 
     def export(self, prefix=None, prf=None, subproof=True):
         """Convert to proof object."""

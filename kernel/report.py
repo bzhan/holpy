@@ -60,7 +60,7 @@ class ProofReport():
             "num_gaps": len(self.gaps)
         }
 
-    def apply_theorem(self, th_name):
+    def apply_theorem(self, th_name: str):
         self.steps += 1
         self.thm_steps += 1
         self.th_names.add(th_name)
@@ -69,15 +69,15 @@ class ProofReport():
         self.steps += 1
         self.prim_steps += 1
 
-    def eval_macro(self, macro_name):
+    def eval_macro(self, macro_name: str):
         self.steps += 1
         self.macro_steps += 1
         self.macros_eval.add(macro_name)
 
-    def expand_macro(self, macro_name):
+    def expand_macro(self, macro_name: str):
         self.macros_expand.add(macro_name)
 
-    def add_gap(self, th):
+    def add_gap(self, th: Thm):
         """Register a gap with conclusion theorem t."""
         self.gaps.append(th)
 

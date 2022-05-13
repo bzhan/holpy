@@ -264,7 +264,7 @@ class SwapDisjToFrontMacro(Macro):
     
     """
     def __init__(self):
-        self.level = 1
+        self.level = 0
         self.sig = Term
         self.limit = None
 

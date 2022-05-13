@@ -5,6 +5,7 @@ from pstats import Stats
 import cProfile
 import sys
 
+from kernel.report import ProofReport
 from smt.veriT import interface, proof_rec, proof_parser, command
 from syntax.settings import settings
 settings.unicode = False
@@ -35,7 +36,8 @@ def test_parse_step(verit_proof, ctx):
     return steps
 
 def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
-              write_file=False, step_limit=None, omit_proofterm=None, parse_assertion=False):
+              write_file=False, step_limit=None, omit_proofterm=None, parse_assertion=False,
+              test_expand=False):
     """Test a given file under eval or proofterm mode."""
     global smtlib_path
     if not smtlib_path:
@@ -92,7 +94,13 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
     if test_proofterm:
         start_time = time.perf_counter()
         recon = proof_rec.ProofReconstruction(steps, smt_assertions=assts)
-        pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm)
+        rpt = None
+        if test_expand:
+            rpt = ProofReport()
+        pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm,
+                            test_expand=test_expand, rpt=rpt)
+        if test_expand:
+            print(rpt)
         proofterm_time = time.perf_counter() - start_time
         proofterm_time_str = "Proofterm: %.3f." % proofterm_time
         assert pt.rule != "sorry"
@@ -104,7 +112,8 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
 
 
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
-              write_file=False, step_limit=None, omit_proofterm=None, parse_assertion=False):
+              write_file=False, step_limit=None, omit_proofterm=None, parse_assertion=False,
+              test_expand=False):
     """Test a directory containing SMT files.
     
     test_eval : bool - test evaluation of steps.
@@ -130,11 +139,13 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         sub_paths = [path + '/' + child for child in os.listdir(abs_path)]
         for sub_path in sub_paths:
             test_path(sub_path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm,
-                      write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm, parse_assertion=parse_assertion)
+                      write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm, parse_assertion=parse_assertion,
+                      test_expand=test_expand)
     else:
         # Input is a file
         test_file(path, show_time=show_time, test_eval=test_eval, test_proofterm=test_proofterm,
-                  write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm, parse_assertion=parse_assertion)
+                  write_file=write_file, step_limit=step_limit, omit_proofterm=omit_proofterm, parse_assertion=parse_assertion,
+                  test_expand=test_expand)
 
 
 class ProofrecTest(unittest.TestCase):
