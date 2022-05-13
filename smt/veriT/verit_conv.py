@@ -121,7 +121,7 @@ class norm_lia_conv(Conv):
             elif t.arg.is_minus():
                 return pt.on_rhs(arg_conv(self), self)
             elif t.arg.is_times() and t.arg.arg1.is_constant():
-                return pt.on_rhs(rewr_conv('int_mult_assoc'), arg1_conv(int.int_eval_conv()), self)
+                return pt.on_rhs(rewr_conv('int_mult_assoc'), arg1_conv(integer.int_eval_conv()), self)
             else:
                 return pt
         elif t.is_uminus():
