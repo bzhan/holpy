@@ -5101,7 +5101,7 @@ class NotITE1Macro(Macro):
             raise VeriTException("not_ite1", "the second disjunct should be a negation")
         P_1, _, P_3 = neg_ite.arg.args
         if P_1 == Q_1 and Not(P_3) == Q_2:
-            return Thm(Or(*args), hyps=pt.hyps)
+            return Thm(Or(*args), pt.hyps)
         raise VeriTException("not_ite1", "unexpected result")
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
@@ -5128,7 +5128,7 @@ class NotITE1Macro(Macro):
             raise VeriTException("not_ite2", "goal should be a disjunction of two negation")
         P_1, P_2, _ = neg_ite.arg.args
         if Not(P_1) == Q_1 and Not(P_2) == Q_2:
-            return Thm(Or(*args), hyps=pt.hyps)
+            return Thm(Or(*args), pt.hyps)
         raise VeriTException("not_ite2", "unexpected result")
 
     def get_proof_term(self, args, prevs) -> ProofTerm:
