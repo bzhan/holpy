@@ -791,8 +791,7 @@ class EquivPos2(Macro):
 
 @register_macro("imp_to_or")
 class ImpEqToMacro(Macro):
-    """Given a proof term ⊢ A --> B --> ... --> C, 
-    construct ⊢ ~A | ~B | ... | C"""
+    """Given a proof term A1, ..., An ⊢ C, construct ⊢ ~A1 | ... | ~An | C."""
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -807,10 +806,17 @@ class ImpEqToMacro(Macro):
         return Thm(concl)
     
     def get_proof_term(self, args, prevs):
-        disjs = [arg.arg for arg in args]
-        pt0 = prevs[0]
-        pt1 = functools.reduce(lambda x, y: x.implies_intr(y).on_prop(rewr_conv("imp_disj_eq")), reversed(disjs), pt0)
-        return pt1
+        disjs = []
+        for arg in args:
+            if arg.is_not():
+                disjs.append(arg.arg)
+            else:
+                disjs.append(Not(arg))
+
+        pt = prevs[0]
+        for disj in reversed(disjs):
+            pt = pt.implies_intr(disj).on_prop(rewr_conv('imp_disj_eq'))
+        return pt
 
 
 @register_macro("verit_eq_congruent_pred")
