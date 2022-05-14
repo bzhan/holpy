@@ -121,21 +121,21 @@ class NotNotMacro(Macro):
             raise VeriTException("not_not", "unexpected goal: %s" % Or(*args))
         return pt
 
-def strip_disj_n(tm, n):
+def strip_disj_n(tm: Term, n: int):
     """Strip the disjunction into n parts."""
     if n == 1:
         return [tm]
     assert tm.is_disj(), "strip_disj_n: not enough terms"
     return [tm.arg1] + strip_disj_n(tm.arg, n-1)
 
-def strip_conj_n(tm, n):
+def strip_conj_n(tm: Term, n: int):
     """Strip the conjunction into n parts."""
     if n == 1:
         return [tm]
     assert tm.is_conj(), "strip_disj_n: not enough terms"
     return [tm.arg1] + strip_conj_n(tm.arg, n-1)
 
-def strip_plus_n(tm, n):
+def strip_plus_n(tm: Term, n: int):
     if n == 1:
         return [tm]
     return strip_plus_n(tm.arg1, n-1) + [tm.arg]
@@ -259,12 +259,14 @@ def resolve_order(props):
 
 @register_macro("swap_disj_to_front")
 class SwapDisjToFrontMacro(Macro):
-    """The two arguments are respectively: a list of disjunctions on the
+    """Given a disjunction, swap the i'th disjunct to the front.
+    
+    The two arguments are respectively: a list of disjunctions on the
     left side, and the index to swap to front.
     
     """
     def __init__(self):
-        self.level = 0
+        self.level = 1
         self.sig = Term
         self.limit = None
 
@@ -280,6 +282,19 @@ class SwapDisjToFrontMacro(Macro):
         r_args = [l_args[idx]] + l_args[:idx] + l_args[idx+1:]
         return Thm(Or(*r_args), prevs[0].hyps)
 
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        prev = prevs[0]
+        _, idx = args
+        disjs = strip_disj_n(prev.prop, idx)
+        eq_pt = ProofTerm.reflexive(disjs[-1])
+
+        # Add one disjunct at one time.
+        for t in reversed(disjs[:-1]):
+            eq_pt = ProofTerm.reflexive(disj(t)).combination(eq_pt)
+            eq_pt.on_rhs(rewr_conv('disj_swap_eq'))
+        return eq_pt.equal_elim(prev)
+
+
 @register_macro("combine_disj_clauses")
 class CombineDisjClausesMacro(Macro):
     """The two arguments are respectively: a list of disjunctions on the
@@ -287,7 +302,7 @@ class CombineDisjClausesMacro(Macro):
     
     """
     def __init__(self):
-        self.level = 0
+        self.level = 1
         self.sig = Term
         self.limit = None
 
@@ -314,6 +329,23 @@ class CombineDisjClausesMacro(Macro):
             raise AssertionError("combine_disj_clauses: unexpected goal")
 
         return Thm(Or(*goal_args), prevs[0].hyps)
+
+    def get_proof_term(self, args, prevs) -> ProofTerm:
+        l_args, r_args, goal_args = args
+        prev = prevs[0]
+
+        # If associativity suffices, do so
+        if l_args + r_args == goal_args:
+            eq_pt = ProofTerm.reflexive(Or(l_args[-1], Or(*r_args)))
+            for l_arg in reversed(l_args[:-1]):
+                eq_pt = ProofTerm.reflexive(disj(l_arg)).combination(eq_pt)
+                eq_pt = eq_pt.on_rhs(rewr_conv('disj_assoc_eq'))
+            return eq_pt.symmetric().equal_elim(prev)
+        # Otherwise, just use imp_disj
+        else:
+            imp_pt = ProofTerm("imp_disj", Implies(prev.prop, Or(*goal_args)))
+            return imp_pt.implies_elim(prev)
+
 
 @register_macro("verit_th_resolution")
 class ThResolutionMacro(Macro):
@@ -2207,7 +2239,7 @@ class DisjPtsMacro(Macro):
         eq_pt = logic.imp_disj_iff(Eq(pt.rhs, Or(*rhs_set)))
         return ProofTerm.transitive(pt, eq_pt)
 
-class flap_prop_conv(Conv):
+class flat_prop_conv(Conv):
     def get_proof_term(self, t):
         pt = refl(t)
         if t.is_conj():
@@ -2222,8 +2254,7 @@ class flap_prop_conv(Conv):
                 unique_conjs_flat_pts.append(pt)
             pt_conjs = unique_conjs_flat_pts[-1]
             for pt in reversed(unique_conjs_flat_pts[:-1]):
-                pt_conjs = logic.apply_theorem("verit_flat_conj", pt, pt_conjs)
-            
+                pt_conjs = ProofTerm.reflexive(conj).combination(pt).combination(pt_conjs)
             pt_eq = logic.imp_conj_iff(Eq(t, And(*unique_conjs)))
             return pt_eq.transitive(pt_conjs)
         elif t.is_disj():
@@ -2238,8 +2269,7 @@ class flap_prop_conv(Conv):
                 unique_disjs_flat_pts.append(pt)
             pt_disjs = unique_disjs_flat_pts[-1]
             for pt in reversed(unique_disjs_flat_pts[:-1]):
-                pt_disjs = logic.apply_theorem("verit_flat_disj", pt, pt_disjs)
-            
+                pt_disjs = ProofTerm.reflexive(disj).combination(pt).combination(pt_disjs)            
             pt_eq = logic.imp_disj_iff(Eq(t, Or(*unique_disjs)))
             return pt_eq.transitive(pt_disjs)
         elif t.is_comb():
@@ -2349,8 +2379,8 @@ def compare_ac_thm(tm1, tm2):
         tm1_set_pt = logic.imp_conj_iff(Eq(tm1, And(*remove_repeated_tm(tm1))))
         tm2_set_pt = logic.imp_conj_iff(Eq(tm2, And(*remove_repeated_tm(tm2))))
         # flat each disjunct
-        pt_tm1_flat = [refl(conj).on_rhs(flap_prop_conv()) for conj in remove_repeated_tm(tm1)]
-        pt_tm2_flat = [refl(conj).on_rhs(flap_prop_conv()) for conj in remove_repeated_tm(tm2)]
+        pt_tm1_flat = [refl(conj).on_rhs(flat_prop_conv()) for conj in remove_repeated_tm(tm1)]
+        pt_tm2_flat = [refl(conj).on_rhs(flat_prop_conv()) for conj in remove_repeated_tm(tm2)]
         pt1 = ProofTerm("verit_conj_pts", None, prevs=pt_tm1_flat) # |- P_1 | ... | P_n <--> P_1' | ... | P_n'
         pt2 = ProofTerm("verit_conj_pts", None, prevs=pt_tm2_flat)
         if pt1.prop.rhs == pt2.prop.rhs and tm1_set_pt.rhs == pt1.lhs and tm2_set_pt.rhs == pt2.lhs:
@@ -2385,8 +2415,8 @@ def compare_ac_thm(tm1, tm2):
         tm1_set_pt = logic.imp_disj_iff(Eq(tm1, Or(*remove_repeated_tm(tm1))))
         tm2_set_pt = logic.imp_disj_iff(Eq(tm2, Or(*remove_repeated_tm(tm2))))
         # flat each disjunct
-        pt_tm1_flat = [refl(disj).on_rhs(flap_prop_conv()) for disj in remove_repeated_tm(tm1)]
-        pt_tm2_flat = [refl(disj).on_rhs(flap_prop_conv()) for disj in remove_repeated_tm(tm2)]
+        pt_tm1_flat = [refl(disj).on_rhs(flat_prop_conv()) for disj in remove_repeated_tm(tm1)]
+        pt_tm2_flat = [refl(disj).on_rhs(flat_prop_conv()) for disj in remove_repeated_tm(tm2)]
         pt1 = ProofTerm("verit_disj_pts", None, prevs=pt_tm1_flat) # |- P_1 | ... | P_n <--> P_1' | ... | P_n'
         pt2 = ProofTerm("verit_disj_pts", None, prevs=pt_tm2_flat)
         if pt1.prop.rhs == pt2.prop.rhs and tm1_set_pt.rhs == pt1.lhs and tm2_set_pt.rhs == pt2.lhs:

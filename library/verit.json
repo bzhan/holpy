@@ -18,6 +18,16 @@
             }
         },
         {
+            "name": "disj_swap_eq",
+            "prop": "P ∨ Q ∨ R ⟷ Q ∨ P ∨ R",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
             "name": "equiv1",
             "prop": "P ⟷ Q ⟶ ¬P ∨ Q",
             "ty": "thm",
@@ -1798,28 +1808,6 @@
                 "k": "int",
                 "lb": "int",
                 "x": "int"
-            }
-        },
-        {
-            "name": "verit_flat_conj",
-            "prop": "P ⟷ Q ⟶ R ⟷ S ⟶ P ∧ R ⟷ Q ∧ S",
-            "ty": "thm",
-            "vars": {
-                "P": "bool",
-                "Q": "bool",
-                "R": "bool",
-                "S": "bool"
-            }
-        },
-        {
-            "name": "verit_flat_disj",
-            "prop": "P ⟷ Q ⟶ R ⟷ S ⟶ P ∨ R ⟷ Q ∨ S",
-            "ty": "thm",
-            "vars": {
-                "P": "bool",
-                "Q": "bool",
-                "R": "bool",
-                "S": "bool"
             }
         }
     ],
