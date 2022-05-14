@@ -2139,45 +2139,73 @@ def flatten_prop(tm):
 
 @register_macro("verit_conj_pts")
 class ConjPtsMacro(Macro):
+    """Given a list of prevs of the form A_i <--> B_i, form the equality
+    A_1 /\ ... /\ A_n <--> B_1 /\ ... /\ B_n, with duplicates removed on the
+    right side.
+    
+    """
     def __init__(self):
         self.level = 1
         self.sig = Term
         self.limit = None
 
     def eval(self, args, prevs):
-        hyps = []
-        for pt in prevs:
-            for hyp in pt.hyps:
-                hyps.append(hyp)
+        lhs_set = [pt.lhs for pt in prevs]
         rhs_set = []
         for pt in prevs:
             if pt.rhs not in rhs_set:
                 rhs_set.append(pt.rhs)
-        if hyps:
-            return Thm(Eq(And(*[pt.lhs for pt in prevs]), And(*rhs_set)), hyps)
-        else:
-            return Thm(Eq(And(*[pt.lhs for pt in prevs]), And(*rhs_set)))
+
+        return Thm(Eq(And(*lhs_set), And(*rhs_set)), *(prev.hyps for prev in prevs))
+
+    def get_proof_term(self, args, prevs):
+        # First form the equality without removing duplicates
+        pt = prevs[-1]
+        for prev in reversed(prevs[:-1]):
+            pt = ProofTerm.reflexive(conj).combination(prev).combination(pt)
+        
+        # Next, rewrite the right side to remove duplicates
+        rhs_set = []
+        for prev in prevs:
+            if prev.rhs not in rhs_set:
+                rhs_set.append(prev.rhs)
+        eq_pt = logic.imp_conj_iff(Eq(pt.rhs, And(*rhs_set)))
+        return ProofTerm.transitive(pt, eq_pt)
 
 @register_macro("verit_disj_pts")
-class ConjPtsMacro(Macro):
+class DisjPtsMacro(Macro):
+    """Given a list of prevs of the form A_i <--> B_i, form the equality
+    A_1 \/ ... \/ A_n <--> B_1 \/ ... \/ B_n, with duplicates removed on the
+    right side.
+    
+    """
     def __init__(self):
         self.level = 1
         self.sig = Term
         self.limit = None
 
     def eval(self, args, prevs):
-        hyps = []
-        for pt in prevs:
-            for hyp in pt.hyps:
-                hyps.append(hyp)
+        lhs_set = [pt.lhs for pt in prevs]
         rhs_set = []
         for pt in prevs:
             if pt.rhs not in rhs_set:
                 rhs_set.append(pt.rhs)
-        if hyps:
-            return Thm(Eq(Or(*[pt.lhs for pt in prevs]), Or(*rhs_set)), hyps)
-        else:
-            return Thm(Eq(Or(*[pt.lhs for pt in prevs]), Or(*rhs_set)))
+
+        return Thm(Eq(Or(*lhs_set), Or(*rhs_set)), *(prev.hyps for prev in prevs))
+
+    def get_proof_term(self, args, prevs):
+        # First form the equality without removing duplicates
+        pt = prevs[-1]
+        for prev in reversed(prevs[:-1]):
+            pt = ProofTerm.reflexive(disj).combination(prev).combination(pt)
+        
+        # Next, rewrite the right side to remove duplicates
+        rhs_set = []
+        for prev in prevs:
+            if prev.rhs not in rhs_set:
+                rhs_set.append(prev.rhs)
+        eq_pt = logic.imp_disj_iff(Eq(pt.rhs, Or(*rhs_set)))
+        return ProofTerm.transitive(pt, eq_pt)
 
 class flap_prop_conv(Conv):
     def get_proof_term(self, t):
