@@ -638,8 +638,12 @@ class imp_conj_macro(Macro):
             # Given proof term showing a conjunction, put proof terms
             # showing atoms of the conjunction in dct.
             if pt.prop.is_conj():
-                traverse_A(apply_theorem('conjD1', pt))
-                traverse_A(apply_theorem('conjD2', pt))
+                cur_pt = pt
+                while cur_pt.prop.is_conj():
+                    pt1 = apply_theorem('conjD1', cur_pt)
+                    traverse_A(pt1)
+                    cur_pt = apply_theorem('conjD2', cur_pt)
+                traverse_A(cur_pt)
             elif pt.prop == true:
                 pass
             else:
@@ -648,9 +652,11 @@ class imp_conj_macro(Macro):
         def traverse_C(t):
             # Return proof term with conclusion t
             if t.is_conj():
-                left = traverse_C(t.arg1)
-                right = traverse_C(t.arg)
-                return apply_theorem('conjI', left, right)
+                ts = t.strip_conj()
+                pt = traverse_C(ts[-1])
+                for sub_t in reversed(ts[:-1]):
+                    pt = apply_theorem('conjI', traverse_C(sub_t), pt)
+                return pt
             elif t == true:
                 return apply_theorem('trueI')
             else:
