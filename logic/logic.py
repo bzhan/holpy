@@ -694,10 +694,10 @@ class imp_disj_macro(Macro):
         # Fills up pts_B.
         def traverse_C(pt):
             if pt.prop.arg1.is_disj():
-                pt1 = apply_theorem('disjI1', concl=pt.prop.arg1)
-                pt2 = apply_theorem('disjI2', concl=pt.prop.arg1)
-                traverse_C(apply_theorem('syllogism', pt1, pt))
-                traverse_C(apply_theorem('syllogism', pt2, pt))
+                pt1 = apply_theorem('disjI1_syllogism', pt)
+                pt2 = apply_theorem('disjI2_syllogism', pt)
+                traverse_C(pt1)
+                traverse_C(pt2)
             else:
                 pts_B[pt.prop.arg1] = pt
         
