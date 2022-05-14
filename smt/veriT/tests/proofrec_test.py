@@ -149,7 +149,7 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
 
 
 class ProofrecTest(unittest.TestCase):
-    def test_QF_UF(self): # proofterm ✓ eval ✓
+    def test_QF_UF(self): # proofterm ✓ eval ✓ expand ✓
         test_paths = [
             'QF_UF/20170829-Rodin/smt1300175744189082250.smt2',
             'QF_UF/20170829-Rodin/smt1468783596909311386.smt2',
@@ -166,7 +166,7 @@ class ProofrecTest(unittest.TestCase):
             'QF_UF/2018-Goel-hwbench/QF_UF_h_TicTacToe_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_cache_coherence_three_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_cambridge.1.prop1_ab_reg_max.smt2',
-            'QF_UF/2018-Goel-hwbench/QF_UF_sokoban.3.prop1_ab_br_max.smt2',
+            # 'QF_UF/2018-Goel-hwbench/QF_UF_sokoban.3.prop1_ab_br_max.smt2',  # distinct_elim
             'QF_UF/2018-Goel-hwbench/QF_UF_h_Vlunc_ab_cti_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_collision.1.prop1_ab_reg_max.smt2',
             'QF_UF/2018-Goel-hwbench/QF_UF_counter_v_ab_reg_max.smt2',
@@ -199,7 +199,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, test_expand=True)
 
         if profile:
             p = Stats(pr)
@@ -207,7 +207,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_QF_UFLRA(self): # proofterm ✓ eval ✓
+    def test_QF_UFLRA(self): # proofterm ✓ eval ✓ expand ✓
         test_paths = [
             'QF_UFLRA/mathsat/RandomCoupled/pb_real_10_0200_10_14.smt2',
             'QF_UFLRA/mathsat/RandomCoupled/pb_real_20_0400_10_12.smt2',
@@ -230,7 +230,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, test_expand=True)
 
         if profile:
             p = Stats(pr)
@@ -238,7 +238,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_QF_UFLIA(self): # proofterm ✓ eval ✓
+    def test_QF_UFLIA(self): # proofterm ✓ eval ✓ expand ✓
         test_paths = [
             'QF_UFLIA/mathsat/EufLaArithmetic/medium/medium5.smt2',
             'QF_UFLIA/mathsat/EufLaArithmetic/medium/medium6.smt2',
@@ -263,7 +263,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, test_expand=True)
 
         if profile:
             p = Stats(pr)
@@ -294,7 +294,7 @@ class ProofrecTest(unittest.TestCase):
             p.print_stats(50)
 
 
-    def test_UF(self): # eval ✓ proofterm ✓
+    def test_UF(self): # eval ✓ proofterm ✓ expand ✓
         test_paths = [
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_16_59_39_090_1045351.smt_in.smt2',
             'UF/20170428-Barrett/cdt-cade2015/nada/afp/abstract_completeness/x2015_09_10_17_00_12_337_1079814.smt_in.smt2',
@@ -376,7 +376,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, test_expand=True)
 
         if profile:
             p = Stats(pr)
@@ -384,7 +384,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_UFLRA(self): # eval ✓ proofterm ✓
+    def test_UFLRA(self): # eval ✓ proofterm ✓ expand ✓
         test_paths = [
             'UFLRA/FFT/smtlib.620487.smt2',
             'UFLRA/FFT/smtlib.620535.smt2',
@@ -399,9 +399,9 @@ class ProofrecTest(unittest.TestCase):
         ]
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, test_expand=True)
 
-    def test_UFLIA(self): # eval ✓
+    def test_UFLIA(self): # eval ✓ proofterm ✓ expand ✓
         test_paths = [
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods..ctor.smt2',
             'UFLIA/boogie/AdditiveMethods_AdditiveMethods.M.smt2',
@@ -471,7 +471,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, test_expand=True)
 
         if profile:
             p = Stats(pr)
@@ -518,7 +518,7 @@ class ProofrecTest(unittest.TestCase):
     #         p.sort_stats('cumtime')
     #         p.print_stats(50)
 
-    def test_QF_LRA(self): # proofterm ✓ eval ✓
+    def test_QF_LRA(self): # proofterm ✓ eval ✓ expand ✓
         test_paths = [
             'QF_LRA/2017-Heizmann-UltimateInvariantSynthesis/_count_by_k.i_3_3_2.bpl_7.smt2',
             'QF_LRA/sal/carpark/Carpark2-ausgabe-1.smt2',
@@ -540,7 +540,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, test_expand=True)
 
         if profile:
             p = Stats(pr)
@@ -548,7 +548,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_QF_AUFLIA(self): # eval ✓ proofterm ✓
+    def test_QF_AUFLIA(self): # eval ✓ proofterm ✓ expand ✓
         test_paths = [
             'QF_AUFLIA/20170829-Rodin/smt101358492275879472.smt2',
             'QF_AUFLIA/20170829-Rodin/smt1048206973303286471.smt2',
@@ -580,7 +580,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, test_expand=True)
 
         if profile:
             p = Stats(pr)
@@ -588,7 +588,7 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
-    def test_AUFLIA(self): # eval ✓ proofterm ✓
+    def test_AUFLIA(self): # eval ✓ proofterm ✓ expand ✓
         test_paths = [
             'AUFLIA/20170829-Rodin/smt1002232729905089644.smt2',
             'AUFLIA/20170829-Rodin/smt1005619206308662052.smt2',
@@ -647,7 +647,7 @@ class ProofrecTest(unittest.TestCase):
             pr.enable()
 
         for path in test_paths:
-            test_path(path, test_proofterm=True, parse_assertion=True)
+            test_path(path, test_proofterm=True, parse_assertion=True, test_expand=True)
 
         if profile:
             p = Stats(pr)
