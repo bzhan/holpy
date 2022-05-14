@@ -2254,7 +2254,7 @@ class flat_prop_conv(Conv):
                 unique_conjs_flat_pts.append(pt)
             pt_conjs = unique_conjs_flat_pts[-1]
             for pt in reversed(unique_conjs_flat_pts[:-1]):
-                pt_conjs = ProofTerm.reflexive(conj).combination(pt).combination(pt_conjs)
+                pt_conjs = ProofTerm.reflexive(hol_term.conj).combination(pt).combination(pt_conjs)
             pt_eq = logic.imp_conj_iff(Eq(t, And(*unique_conjs)))
             return pt_eq.transitive(pt_conjs)
         elif t.is_disj():
@@ -2269,7 +2269,7 @@ class flat_prop_conv(Conv):
                 unique_disjs_flat_pts.append(pt)
             pt_disjs = unique_disjs_flat_pts[-1]
             for pt in reversed(unique_disjs_flat_pts[:-1]):
-                pt_disjs = ProofTerm.reflexive(disj).combination(pt).combination(pt_disjs)            
+                pt_disjs = ProofTerm.reflexive(hol_term.disj).combination(pt).combination(pt_disjs)            
             pt_eq = logic.imp_disj_iff(Eq(t, Or(*unique_disjs)))
             return pt_eq.transitive(pt_disjs)
         elif t.is_comb():
