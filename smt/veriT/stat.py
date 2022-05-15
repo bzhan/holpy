@@ -17,6 +17,7 @@ from typing import Optional
 from smt.veriT import proof_rec, proof_parser, command
 from smt.veriT.verit_macro import VeriTException
 from syntax.settings import settings
+from kernel.report import ProofReport
 settings.unicode = False
 
 sys.setrecursionlimit(10000)
@@ -137,7 +138,7 @@ def test_proof(filename, solve_timeout=120):
         return [filename[11:], "RETURN PROOF"]
 
 def test_file(filename, test_eval=False, test_proofterm=False,
-              step_limit=None, omit_proofterm=None, solve_timeout=120, eval_timeout=300):
+              step_limit=None, omit_proofterm=None, solve_timeout=120, eval_timeout=300, test_expand=test_expand):
     """Test a given file under eval or proofterm mode."""
     if filename[-4:] != 'smt2':
         return
@@ -197,7 +198,11 @@ def test_file(filename, test_eval=False, test_proofterm=False,
             with TO(seconds=300):
                 try:
                     recon = proof_rec.ProofReconstruction(steps)
-                    pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
+                    if test_expand:
+                        rpt = ProofReport()
+                        pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False, test_expand=test_expand, rpt=rpt)
+                    else:
+                        pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                 except Exception as e:
                     end_time = time.perf_counter()
                     print([filename, solve_time_str, parse_time_str, "%s %.3f" % (str(e), end_time-start_time), len(steps)])
@@ -211,7 +216,7 @@ def test_file(filename, test_eval=False, test_proofterm=False,
 
     
 def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
-              step_limit=None, omit_proofterm=None, solve_timeout=10, eval_timeout=120):
+              step_limit=None, omit_proofterm=None, solve_timeout=10, eval_timeout=120, test_expand=False):
     """Test a directory containing SMT files.
     
     test_eval : bool - test evaluation of steps.
@@ -253,7 +258,7 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
         res = executor.map(test_file, file_names,
                         repeat(test_eval), repeat(test_proofterm), repeat(step_limit),
-                            repeat(omit_proofterm), repeat(solve_timeout), repeat(eval_timeout))
+                            repeat(omit_proofterm), repeat(solve_timeout), repeat(eval_timeout), repeat(test_expand))
     print("end")
     return res
 
@@ -319,6 +324,7 @@ if __name__ == "__main__":
     test_eval = True # test eval as default, test proofterm if it is false
     find_proof = False
     test_full = False
+    test_expand = False
     if len(sys.argv) == 3:
         if sys.argv[2] == "--proofterm":
             test_eval = False
@@ -326,6 +332,9 @@ if __name__ == "__main__":
             test_eval = True
         elif sys.argv[2] == "--find-proof":
             find_proof = True
+        elif sys.argv[2] == "--test-expand":
+            test_eval = False
+            test_expand = True
     if sys.argv[1] == "--SMT-LIB":
         test_full = True
         assert len(sys.argv) == 3
@@ -354,9 +363,9 @@ if __name__ == "__main__":
         
         start_time = time.perf_counter()
         if test_eval:
-            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout)
+            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_expand=test_expand)
         else:
-            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout)
+            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_expand=test_expand)
     
     end_time = time.perf_counter()
     print("stats", stats)
@@ -369,6 +378,8 @@ if __name__ == "__main__":
     
     if test_full:
         csv_name = "SMT-LIB"
+    elif test_expand:
+        csv_name = "SMT-LIB-Expand-Macro"
     else:
         csv_name = folder_name.replace('/', '.')
     
