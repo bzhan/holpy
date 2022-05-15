@@ -47,7 +47,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
         return
 
     abs_name = smtlib_path + filename
-    if not interface.is_unsat(abs_name):
+    if not interface.is_unsat(abs_name, timeout=100):
         return
     print(repr(filename) + ',')
 
@@ -58,7 +58,7 @@ def test_file(filename, show_time=True, test_eval=False, test_proofterm=False,
 
     # Solve
     start_time = time.perf_counter()
-    verit_proof = interface.solve(abs_name)
+    verit_proof = interface.solve(abs_name, timeout=100)
     if verit_proof is None:
         return
     if verit_proof == "unknown\r\n":
@@ -590,6 +590,10 @@ class ProofrecTest(unittest.TestCase):
 
     def test_AUFLIA(self): # eval ✓ proofterm ✓ expand ✓
         test_paths = [
+            'AUFLIA/20170829-Rodin/smt1857914508354494859.smt2',
+            # 'AUFLIA/20170829-Rodin/smt8562182281812961752.smt2', # resolution
+            # 'AUFLIA/20170829-Rodin/smt872164429150466761.smt2',  # resolution
+            # 'AUFLIA/20170829-Rodin/smt1012188733744711688.smt2',  # onepoint
             'AUFLIA/20170829-Rodin/smt1002232729905089644.smt2',
             'AUFLIA/20170829-Rodin/smt1005619206308662052.smt2',
             'AUFLIA/20170829-Rodin/smt1041855950602319657.smt2',

@@ -309,7 +309,10 @@ class CombineDisjClausesMacro(Macro):
     def eval(self, args, prevs):
         l_args, r_args, goal_args = args
 
-        if len(l_args) == 0:
+        if len(l_args) == 0 and len(r_args) == 0:
+            if prevs[0].prop != false:
+                raise AssertionError("combine_disj_clauses: prop does not match")
+        elif len(l_args) == 0:
             if strip_disj_n(prevs[0].prop, len(r_args)) != r_args:
                 raise AssertionError("combine_disj_clauses: r_args does not match")
         elif len(r_args) == 0:
@@ -372,7 +375,7 @@ class ThResolutionMacro(Macro):
             prems.append(strip_disj_n(prev.prop, cl_size))
 
         _, cl_concl = resolve_order(prems)
-        if set(cl_concl) == set(cl):
+        if set(cl_concl) <= set(cl):
             return Thm(Or(*cl), *(pt.hyps for pt in prevs))
         # Sometimes the expected goal is ~~A while resolve_order returns A.
         elif len(cl_concl) == 1 and len(cl) == 1 and Not(Not(cl_concl[0])) == cl[0]:
