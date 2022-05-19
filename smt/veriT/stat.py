@@ -141,7 +141,7 @@ def test_file(filename, test_eval=False, test_proofterm=False,
               step_limit=None, omit_proofterm=None, solve_timeout=120, eval_timeout=300, test_expand=test_expand):
     """Test a given file under eval or proofterm mode."""
     if filename[-4:] != 'smt2':
-        return
+        return ["Invalid filename %s" % filename, "", "", "", ""]
     # unsat, res = interface.is_unsat(filename, timeout=solve_timeout)
     # if not unsat:
     #     return [filename, str(res), '', '', '']
@@ -200,7 +200,7 @@ def test_file(filename, test_eval=False, test_proofterm=False,
                     recon = proof_rec.ProofReconstruction(steps)
                     if test_expand:
                         rpt = ProofReport()
-                        pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False, test_expand=test_expand, rpt=rpt)
+                        pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False, test_expand=True, rpt=rpt)
                     else:
                         pt = recon.validate(is_eval=False, step_limit=step_limit, omit_proofterm=omit_proofterm, with_bar=False)
                 except Exception as e:
@@ -215,7 +215,7 @@ def test_file(filename, test_eval=False, test_proofterm=False,
         return [filename, solve_time_str, parse_time_str, proof_time_str, len(steps)]
 
     
-def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
+def test_path(file_names, show_time=True, test_eval=False, test_proofterm=False,
               step_limit=None, omit_proofterm=None, solve_timeout=10, eval_timeout=120, test_expand=False):
     """Test a directory containing SMT files.
     
@@ -226,30 +226,6 @@ def test_path(path, show_time=True, test_eval=False, test_proofterm=False,
         is omitted (evaluation is used instead).
         
     """
-    smtlib_path = "../smt-lib/"
-
-    abs_path = smtlib_path + path
-
-    stats = []
-
-    # if path != "" and not os.path.exists(abs_path):
-    #     print("Directory %s not found." % path)
-    #     return
-
-    if path == "":
-        print("test full")
-        with open("./smt/veriT/data/test_files.txt") as f:
-            file_names = [smtlib_path+file_name[:-1] for file_name in f.readlines()]
-    elif os.path.isfile("./smt/veriT/data/%s.csv" % path):
-        file_names = []
-        with open("./smt/veriT/data/%s.csv" % path) as f:
-            f_csv = csv.reader(f)
-            headers = next(f_csv)
-            for row in f_csv:
-                if len(row) == 2 and "RETURN PROOF" == row[-1]:
-                    file_names.append(smtlib_path+row[0])
-    else:
-        _, file_names = run_fast_scandir(abs_path, ['.smt2'])
     if len(file_names) > os.cpu_count():
         max_workers = os.cpu_count()
     else:
@@ -310,7 +286,32 @@ def test_path_proof(path, solve_timeout=120):
         f_csv.writerow(["TIMESTAMP %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
     return res
 
+def collect_TO_files(res):
+    res = list(res)
+    timeout_rows = []
+    for row in res:
+        if "Timeout" in row[3]:
+            timeout_rows.append(row[0])
+    
+    return timeout_rows
 
+
+def collect_files_from_path(path):
+    if path == "--SMT-LIB":
+        with open("./smt/veriT/data/test_files.txt") as f:
+            file_names = ["../smt-lib/"+file_name.strip() for file_name in f.readlines()]
+    elif os.path.isfile("./smt/veriT/data/%s.csv" % path):
+        file_names = []
+        with open("./smt/veriT/data/%s.csv" % path) as f:
+            f_csv = csv.reader(f)
+            headers = next(f_csv)
+            for row in f_csv:
+                if len(row) == 2 and "RETURN PROOF" == row[-1]:
+                    file_names.append("../smt-lib/"+row[0])
+    else:
+        _, file_names = run_fast_scandir(abs_path, ['.smt2'])
+
+    return file_names
 
 # Parameters
 # 1. folder name
@@ -339,21 +340,27 @@ if __name__ == "__main__":
         test_full = True
         assert len(sys.argv) == 3
         last_arg = sys.argv[-1]
-        assert last_arg in ("--eval", "--proofterm")
+        assert last_arg in ("--eval", "--proofterm", "--test-expand")
         if last_arg == "--eval":
             test_eval = True
+        elif last_arg == "--test-expand":
+            test_eval = False
+            test_expand = True
         else:
             test_eval = False
     print()
     for arg in sys.argv:
         print(arg)
+    
     print("test_full %s" % test_full)
-    print("folder")
+
+    filenames = collect_files_from_path(folder_name)
+    
     start_time = time.perf_counter()
     if find_proof:
         test_path_proof(folder_name, solve_timeout=120)
     elif test_full:
-        stats = test_path("", test_eval=test_eval, test_proofterm=not test_eval, solve_timeout=solve_timeout, eval_timeout=eval_timeout)
+        stats = test_path(filenames, test_eval=test_eval, test_proofterm=not test_eval, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_expand=test_expand)  
     elif not test_full:
         if len(sys.argv) == 4:
             solve_timeout = int(sys.argv[3])
@@ -363,12 +370,21 @@ if __name__ == "__main__":
         
         start_time = time.perf_counter()
         if test_eval:
-            stats = test_path(folder_name, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_expand=test_expand)
+            stats = test_path(filenames, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_expand=test_expand)
         else:
-            stats = test_path(folder_name, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_expand=test_expand)
+            stats = test_path(filenames, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_expand=test_expand)
     
+    # # Re-run timeout stats
+    # print("Re-run timeout files")
+    # timeout_files = collect_TO_files(res)
+    # if test_eval:
+    #     stats1 = test_path(timeout_files, test_eval=True, test_proofterm=False, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_expand=test_expand)
+    # else:
+    #     stats1 = test_path(timeout_files, test_eval=False, test_proofterm=True, solve_timeout=solve_timeout, eval_timeout=eval_timeout, test_expand=test_expand)
+
     end_time = time.perf_counter()
     print("stats", stats)
+    
     if not os.path.isdir('./smt/veriT/stastics'):
         os.mkdir('./smt/veriT/stastics')
     if test_eval and not os.path.isdir('./smt/veriT/stastics/eval'):
@@ -379,7 +395,7 @@ if __name__ == "__main__":
     if test_full:
         csv_name = "SMT-LIB"
     elif test_expand:
-        csv_name = "SMT-LIB-Expand-Macro"
+        csv_name = "%s-Macro" % folder_name 
     else:
         csv_name = folder_name.replace('/', '.')
     
