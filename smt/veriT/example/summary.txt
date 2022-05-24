@@ -1,0 +1,17 @@
+         Theory     Count
+-------------------------------
+          QF_UF        39
+       QF_UFLRA        13
+       QF_UFLIA        15
+       QF_UFIDL         3
+             UF        71
+          UFLRA        10
+          UFLIA        61
+         QF_LRA        12
+      QF_AUFLIA        22
+         AUFLIA        49
+            LRA        13
+            LIA         5
+         QF_LIA        11
+-------------------------------
+          Total       324

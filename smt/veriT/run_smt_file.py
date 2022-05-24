@@ -94,7 +94,7 @@ if __name__ == "__main__":
     fs = get_file_names()
     test_eval = True
     test_expand = False
-    assert len(sys.argv) == 2 and\
+    assert len(sys.argv) >= 2 and\
             sys.argv[1] in ("--eval", "--proofterm", "--expand"), "the argument\
                      should be --eval, --proofterm or --expand"
     if sys.argv[1] != "--eval":
@@ -113,7 +113,11 @@ if __name__ == "__main__":
     else:        
         headers = ['filename', 'Solve', 'Parse', 'ProofTerm', 'Steps']
     start_time = time.perf_counter()
-    results =  [test_file("./smt/veriT/example/"+smt_file, test_eval=test_eval,
+    if len(sys.argv) == 2:
+        results =  [test_file("./smt/veriT/example/"+smt_file, test_eval=test_eval,
+                 test_proofterm=not test_eval, test_expand=test_expand) for smt_file in fs]
+    elif len(sys.argv) == 3:
+        results =  [test_file(smt_file, test_eval=test_eval,
                  test_proofterm=not test_eval, test_expand=test_expand) for smt_file in fs]
     end_time = time.perf_counter()
     with open("./smt/veriT/example/result.csv", "w", newline='') as f:

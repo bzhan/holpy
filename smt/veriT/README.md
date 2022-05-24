@@ -4,7 +4,7 @@ This tool aims to reconstruct the Alethe format proof returned by the SMT solver
 ## Installation
 **(All the commands below are assumed to run in the root directory of HolPy)**
 
-At first, you need to install all the packages required by HolPy:  
+At first, you need to install all the packages required by HolPy (the recommended Python version is >= 3.8.10):
 
 `python -m pip install -r requirements.txt`
 
@@ -26,7 +26,7 @@ Note: if you want to use PyPy, you need to reinstall all the packages via:
 ## Run tests
 We have collected several examples for each theory in the folder `./smt/veriT/example/`.
 
-You can run all the tests via:
+You can run run a selection of examples from SMT-LIB via:
 
 `python -m smt.veriT.run_smt_file OPTION`
 
@@ -39,4 +39,14 @@ There are three possible `OPTION`:
 - `--proofterm`: run the expansion function in each macro (**lower-level macros are not expanded**)
 - `--expand`: expanding all the macros
 
-The results can be found in `./smt/veriT/example/result.csv`
+Similarly, you can test a single `.smt2` file (please make sure that it is **UNSAT**) via:
+
+`python -m smt.veriT.run_smt_file OPTION FILE_PATH`
+
+or
+
+`pypy3 -m smt.veriT.run_smt_file OPTION FILE_PATH`
+
+where `FILE_PATH` is the path of `.smt2` file.
+
+The results can be found in `./smt/veriT/example/result.csv`.
