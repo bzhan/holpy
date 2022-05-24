@@ -1,0 +1,38 @@
+(set-info :smt-lib-version 2.6)
+(set-logic QF_AUFLIA)
+(set-info :source |
+Translated from old SVC processor verification benchmarks.  Contact Clark
+Barrett at barrett@cs.nyu.edu for more information.
+
+This benchmark was automatically translated into SMT-LIB format from
+CVC format using CVC Lite
+|)
+(set-info :category "industrial")
+(set-info :status unsat)
+(declare-fun selAreg (Int) Int)
+(declare-fun Stall_Control_0 (Int) Int)
+(declare-fun plus (Int Int Int) Int)
+(declare-fun s__2 () Int)
+(declare-fun t_0 () Int)
+(declare-fun selDest (Int) Int)
+(declare-fun Stall_Control_1 (Int) Int)
+(declare-fun s_0 () Int)
+(declare-fun selBreg (Int) Int)
+(declare-fun selIType (Int) Int)
+(declare-fun icache (Int) (Array Int Int))
+(declare-fun PC (Int) Int)
+(declare-fun s__3 () Int)
+(declare-fun t__2 () Int)
+(declare-fun t__3 () Int)
+(declare-fun s__1 () Int)
+(declare-fun t__1 () Int)
+(declare-fun s_1 () Int)
+(declare-fun t_1 () Int)
+(declare-fun ALU (Int Int Int) Int)
+(declare-fun selOp (Int) Int)
+(declare-fun Bypass_1 (Int) Int)
+(declare-fun Bypass_0 (Int) Int)
+(declare-fun RF (Int) (Array Int Int))
+(assert (let ((?v_0 (plus (- 2) s_0 t_0))) (let ((?v_2 (Stall_Control_1 ?v_0))) (let ((?v_1 (selDest ?v_2)) (?v_3 (Stall_Control_0 ?v_0))) (let ((?v_26 (= (selBreg ?v_3) ?v_1)) (?v_27 (= (selIType ?v_2) 33)) (?v_28 (select (icache ?v_0) (PC (plus (- 3) s_0 t_0)))) (?v_21 (plus (- 1) s_0 t_0))) (let ((?v_20 (Stall_Control_0 ?v_21)) (?v_4 (Stall_Control_0 (plus (- 1) s_0 t__1))) (?v_8 (plus (- 1) s__1 t__1))) (let ((?v_6 (Stall_Control_1 ?v_8))) (let ((?v_5 (selDest ?v_6))) (let ((?v_7 (= (selAreg ?v_4) ?v_5)) (?v_14 (= (selBreg ?v_4) ?v_5)) (?v_15 (Bypass_1 ?v_8)) (?v_9 (Stall_Control_0 (plus (- 2) s__1 t__2))) (?v_12 (plus (- 2) s__2 t__2))) (let ((?v_11 (Stall_Control_1 ?v_12))) (let ((?v_10 (selDest ?v_11))) (let ((?v_16 (ite (ite (ite (= (selAreg ?v_9) ?v_10) true (= (selBreg ?v_9) ?v_10)) (= (selIType ?v_11) 33) false) ?v_9 (select (icache (plus (- 2) s_0 t__2)) (PC (plus (- 3) s_0 t__3)))))) (let ((?v_13 (selAreg ?v_16)) (?v_17 (Bypass_0 (plus (- 1) s__2 t__2))) (?v_18 (RF ?v_12)) (?v_19 (selBreg ?v_16)) (?v_25 (selAreg ?v_20)) (?v_23 (Stall_Control_1 ?v_21))) (let ((?v_22 (selDest ?v_23))) (let ((?v_24 (= ?v_25 ?v_22)) (?v_31 (selBreg ?v_20))) (let ((?v_29 (= ?v_31 ?v_22)) (?v_30 (Bypass_1 ?v_21)) (?v_32 (Bypass_0 ?v_21)) (?v_33 (RF ?v_0)) (?v_34 (ite (ite (ite (= (selAreg ?v_3) ?v_1) true ?v_26) ?v_27 false) ?v_3 ?v_28))) (not (ite (ite (= (ite (ite (ite (= (selAreg (Stall_Control_0 (plus (- 2) s__2 t_0))) ?v_1) true ?v_26) ?v_27 false) ?v_3 ?v_28) ?v_20) (ite (ite (= s__2 s__3) (= t__2 t__3) false) (ite (ite (= s__1 s__2) (= t__1 t__2) false) (ite (ite (= s__1 s_0) (= t__1 t_0) false) (ite (= s_0 s_1) (= t_0 t_1) false) false) false) false) false) (= (ALU (selOp (ite (ite (ite ?v_7 true ?v_14) (= (selIType ?v_6) 33) false) 0 ?v_4)) (ite ?v_7 ?v_15 (ite (= ?v_13 ?v_10) ?v_17 (select ?v_18 ?v_13))) (ite ?v_14 ?v_15 (ite (= ?v_19 ?v_10) ?v_17 (select ?v_18 ?v_19)))) (ALU (selOp (ite (ite (ite ?v_24 true ?v_29) (= (selIType ?v_23) 33) false) 0 ?v_20)) (ite ?v_24 ?v_30 (ite (= ?v_25 ?v_1) ?v_32 (select ?v_33 (selAreg ?v_34)))) (ite ?v_29 ?v_30 (ite (= ?v_31 ?v_1) ?v_32 (select ?v_33 (selBreg ?v_34)))))) true))))))))))))))))))
+(check-sat)
+(exit)
