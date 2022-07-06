@@ -10,7 +10,8 @@ from integral import expr
 
 
 def collect_pairs(ps):
-    """Reduce a list of pairs by collecting into groups according to
+    """
+    Reduce a list of pairs by collecting into groups according to
     first components, and adding the second component for each group.
 
     It is assumed that the first components are hashable.
@@ -46,6 +47,7 @@ def reduce_power(n, e):
         return ((n, e),)
     elif isinstance(n, int):
         if n >= 0:
+            # 对n分解
             return tuple((ni, e * ei) for ni, ei in sympy.factorint(n).items())
         else:
             assert Fraction(e).denominator % 2 == 1, 'reduce_power'
@@ -86,7 +88,8 @@ class InfPoly:
     pass
 
 class ConstantMonomial:
-    """Represents a monomial constant expression.
+    """
+    Represents a monomial constant expression.
 
     The expression is in the form
 
@@ -100,7 +103,8 @@ class ConstantMonomial:
 
     """
     def __init__(self, coeff, factors):
-        """Construct a monomial from coefficient and tuple of factors."""
+        """ Construct a monomial from coefficient and tuple of factors. """
+        ''' 2 * 5^3 * 4^3 <-> (5,[(5,3),(4,3)])'''
         assert isinstance(coeff, (int, Fraction)), \
                 "coeff: %s, factors: %s" % (coeff, factors)
 
@@ -196,7 +200,10 @@ class ConstantMonomial:
 
 
 class ConstantPolynomial:
-    """Represents a sum of constant monomials"""
+    """
+    Represents a sum of constant monomials
+        属性:ConstantMonomial的列表
+    """
     def __init__(self, monomials):
         ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
         self.monomials = tuple(ConstantMonomial(coeff, factor) for factor, coeff in ts if coeff != 0)
@@ -239,6 +246,8 @@ class ConstantPolynomial:
             return ConstantPolynomial(m * other for m in self.monomials)
         elif isinstance(other, ConstantPolynomial):
             return ConstantPolynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
+        elif isinstance(other, Polynomial):#back
+            return Polynomial([Monomial(self*mono.coeff,mono.factors) for mono in other.monomials])
         else:
             raise NotImplementedError
 
@@ -309,9 +318,9 @@ class Monomial:
         (2, ((x, 2), (y, 1))) -> 2 * x^2 * y
 
         """
-        if isinstance(coeff, (int, Fraction)):
+        if isinstance(coeff, (int, Fraction)): # Fraction(1,2) , 5
             coeff = const_fraction(coeff)
-        elif isinstance(coeff, expr.Expr):
+        elif isinstance(coeff, expr.Expr): #比如sqrt(3), pi ...
             coeff = const_singleton(coeff)
         assert isinstance(coeff, ConstantPolynomial), "Unexpected coeff: %s" % str(coeff)
         assert all(isinstance(factor, Iterable) and len(factor) == 2 and \
@@ -319,6 +328,7 @@ class Monomial:
             "Unexpected argument for factors: %s" % str(factors)
 
         self.coeff = coeff
+        # 把次幂等于0的项去掉
         self.factors = tuple((i, j) for i, j in collect_pairs(factors) if j != 0)
 
     def __hash__(self):
@@ -496,6 +506,8 @@ class Polynomial:
             return Polynomial(m * other for m in self.monomials)
         elif isinstance(other, Polynomial):
             return Polynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
+        elif isinstance(other, ConstantPolynomial):
+            return other * self
         else:
             raise NotImplementedError
 
@@ -540,7 +552,9 @@ class Polynomial:
             raise AssertionError
 
     def is_univariate(self):
-        """Determine polynomial is whether univariate.
+        """
+
+        Determine polynomial is whether univariate.
         
         If there is unique f(x) occurs in polynomial, it is univariate.
         """
@@ -563,7 +577,6 @@ class Polynomial:
 
     def is_one(self):
         return len(self.monomials) == 1 and self.monomials[0].is_one()
-
 
     @property
     def degree(self):
