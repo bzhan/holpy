@@ -1,10 +1,14 @@
 """Rules for integration."""
+import math
+from decimal import Decimal
 
-from integral import expr
-from integral import poly
+import sympy
+import sympy.series.limits
+from sympy.integrals import integrals
+from integral import poly, expr
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
-        sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, \
-            DERIV, decompose_expr_factor, Deriv
+    sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, \
+    DERIV, decompose_expr_factor, Deriv, Inf, INF, Limit
 import functools, operator
 from integral import parser
 from sympy import Interval, expand_multinomial, apart
@@ -13,7 +17,9 @@ from integral import parser
 from fractions import Fraction
 
 class Rule:
-    """Represents a rule for integration. It takes an integral
+    """
+    表示积分规则，输入一个积分，然后出来一个与之相等的表达式
+    Represents a rule for integration. It takes an integral
     to be evaluated (as an expression), then outputs a new
     expression that it is equal to.
     
@@ -41,7 +47,7 @@ class Simplify(Rule):
 
 class Linearity(Rule):
     """Applies linearity rules:
-    
+    这里INT表示积分
     INT (a + b) = INT a + INT b,
     INT (c * a) = c * INT a  (where c is a constant).
     INT (c / a) = c * INT 1 / a (where c is a contant)
@@ -281,8 +287,9 @@ class Substitution1(Rule):
         if isinstance(e, str):
             e = parser.parse_expr(e)
 
-
+        #积分中被替换的变量
         var_name = parser.parse_expr(self.var_name)
+        #用来替换的式子
         var_subst = self.var_subst
         dfx = expr.deriv(e.var, var_subst)
         body = holpy_style(sympy_style(e.body/dfx))
@@ -377,7 +384,7 @@ class Equation(Rule):
         #     if (self.new_expr * self.denom).normalize() != (e * self.denom).normalize():
         #         raise AssertionError("Rewriting by equation failed")
         return self.new_expr
-
+# 分部积分
 class IntegrationByParts(Rule):
     """Apply integration by parts."""
     def __init__(self, u, v):
@@ -403,6 +410,7 @@ class IntegrationByParts(Rule):
             print("%s != %s" % (str(udv), str(e.body)))
             raise NotImplementedError("%s != %s" % (str(udv), str(e.body)))
 
+#对有理分式进行化简
 class PolynomialDivision(Rule):
     """Simplify the representation of polynomial divided by polynomial.
     """
@@ -430,19 +438,23 @@ class RewriteTrigonometric(Rule):
     def eval(self, e):
         if isinstance(e, str):
             e = parser.parse_expr(e)
-
+        # 选择一条Fu-like rule然后对表示e进行重写
         rule_fun, _ = expr.trigFun[self.rule_name]
         sympy_result = rule_fun(expr.sympy_style(e))
         result = expr.holpy_style(sympy_result)
         return result
 
+
+
 class ElimAbs(Rule):
     """Eliminate abstract value."""
     def __init__(self):
         self.name = "Eliminate abs"
-
+    
+    # 
     def check_zero_point(self, e):
         integrals = e.separate_integral()
+        print("e.sep:",integrals)
         if not integrals:
             return False
         abs_info = []
@@ -456,12 +468,23 @@ class ElimAbs(Rule):
             zero_point += zeros
         return len(zero_point) > 0
 
+    '''
+    比如INT x:[-2,3]. |x-2| 故get_zero_point = 2
+    '''
     def get_zero_point(self, e):
+        # 收集积分中被积表达式中的所有abs表达式
         abs_expr = e.body.getAbs()
         zero_point = []
+        
         for a in abs_expr:
+            '''
+               例如 a = |x+2| = abs(x+2)
+               所以 args[0] = x+2 #即表达式
+            '''
             arg = a.args[0]
+            # 调用sympy
             zeros = solveset(expr.sympy_style(arg), expr.sympy_style(e.var), Interval(sympy_style(e.lower), sympy_style(e.upper), left_open = True, right_open = True))
+            # [] += []
             zero_point += zeros
         return holpy_style(zero_point[0])
 
@@ -475,8 +498,9 @@ class ElimAbs(Rule):
         abs_expr = e.body.getAbs()
         if len(abs_expr) == 0:
             return e
+        # 选择一个 abs 表达式
         abs_expr = abs_expr[0]  # only consider the first absolute value
-
+        # 表达式的上下界
         g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
         new_integral = []
         for l, h in g:
@@ -556,8 +580,11 @@ class IntegrateByEquation(Rule):
         return (new_rhs/(Const(1-coeff))).normalize()
 
 class ElimInfInterval(Rule):
-    """Convert improper integral of TYPE 1 (infinite intervals) 
-    to a limit expression."""
+    """
+        Convert improper integral of TYPE 1 (infinite intervals)
+        to a limit expression.
+    """
+
     def __init__(self):
         self.name = "Improper integral of Type 1"
 
@@ -565,24 +592,32 @@ class ElimInfInterval(Rule):
         if isinstance(e, str):
             e = parser.parse_expr(e)
 
-        def gen_lim_expr(var, lim, lower, upper):
-            return expr.Limit(new_var, lim, expr.Integral(e.var, lower, upper, e.body))
-        
+        def gen_lim_expr(new_var, lim, lower, upper, drt = None):
+            return expr.Limit(new_var, lim, expr.Integral(e.var, lower, upper, e.body),drt)
         if e.ty != expr.INTEGRAL:
             return e
+        inf = Inf(Decimal('inf'))
+        neg_inf = Inf(Decimal('-inf'))
         upper, lower = e.upper, e.lower
-        if upper != expr.inf and lower != expr.neg_inf:
-            return e
-        
         new_var = "s" if e.var == "t" else "t"
-        if upper == expr.inf and lower != expr.neg_inf:
-            return gen_lim_expr(new_var, expr.inf, lower, Var(new_var))
-        elif upper != expr.inf and lower == expr.neg_inf:
-            return gen_lim_expr(new_var, expr.neg_inf, Var(new_var), upper)
-        elif upper == expr.inf and lower == expr.neg_inf:
+        if upper == inf and lower != neg_inf and lower != inf:
+            return gen_lim_expr(new_var, inf, lower, Var(new_var))
+        elif upper == neg_inf and lower != neg_inf and lower != inf:
+            return gen_lim_expr(new_var, inf, lower, Var(new_var))
+        elif upper != inf and upper != neg_inf and lower == neg_inf:
+            return gen_lim_expr(new_var, neg_inf, Var(new_var), upper)
+        elif upper != inf and upper != neg_inf and lower == inf:
+            return gen_lim_expr(new_var, inf, Var(new_var), upper)
+        elif upper == inf and lower == neg_inf:
             assert a is not None, "No split point provided"
-            return gen_lim_expr(new_var, expr.neg_inf, Var(new_var), a) + \
-                gen_lim_expr(new_var, expr.inf, a, Var(new_var))
+            lim1 = gen_lim_expr(new_var, neg_inf, Var(new_var), a)
+            lim2 = gen_lim_expr(new_var, inf, a, Var(new_var))
+            return Op('+',lim1,lim2)
+        elif upper == neg_inf and lower == inf:
+            assert a is not None, "No split point provided"
+            lim1 = gen_lim_expr(new_var, inf, Var(new_var), a)
+            lim2 = gen_lim_expr(new_var, neg_inf, a, Var(new_var))
+            return Op('+',lim1,lim2)
         else:
             raise NotImplementedError
 
@@ -592,54 +627,156 @@ class LHopital(Rule):
         self.name = "L'Hopital"
 
     def eval(self, e):
-        if e.ty != LIMIT:
+        #上下分式进行求导
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+        if not (isinstance(e, expr.Limit) and isinstance(e.body, expr.Op) and e.body.op == '/'):
             return e
+        numerator, denominator = e.body.args
+        rule = DerivationSimplify()
+        return expr.Limit(e.var,e.lim,Op('/',rule.eval(Deriv(e.var,numerator)),\
+                                         rule.eval(Deriv(e.var,denominator))) ,e.drt)
+        # if e.ty != LIMIT:
+        #     return e
+        # bd = e.body
+        #
+        # subst_poly = bd.replace_trig(Var(e.var), e.lim).to_poly()
+        # if subst_poly.T != poly.UNKNOWN:
+        #     return e
+        # inf_part, zero_part, const_part = [], [], []
+        #
+        # bd_poly = bd.to_poly()
+        # if len(bd_poly) != 1:
+        #     raise NotImplementedError
+        # m = bd_poly[0]
+        # factors = m.factors
+        # for i, j in factors:
+        #     mono = poly.Polynomial([poly.Monomial(1, ((i, j),))])
+        #     norm_m = expr.from_poly(mono)
+        #     subst_m = norm_m.replace_trig(Var(e.var), e.lim).to_poly()
+        #     if subst_m.T == poly.ZERO:
+        #         zero_part.append((Const(1) / norm_m).normalize())
+        #     elif subst_m.T in (poly.POS_INF, poly.NEG_INF):
+        #         inf_part.append(norm_m)
+        #     elif subst_m.T == poly.NON_ZERO:
+        #         const_part.append(norm_m)
+        #     else:
+        #         raise NotImplementedError(str(mono))
+        #
+        # assert inf_part and zero_part
+        # inf_expr = functools.reduce(operator.mul, inf_part[1:], inf_part[0])
+        # zero_expr = functools.reduce(operator.mul, zero_part[1:], zero_part[0])
+        #
+        # nm_trace = [inf_expr]
+        # denom_trace = [zero_expr]
+        # while True:
+        #     nm, denom = nm_trace[-1], denom_trace[-1]
+        #     nm_deriv, denom_deriv = expr.deriv(e.var, nm), expr.deriv(e.var, denom)
+        #     nm_subst, denom_subst = nm_deriv.replace_trig(Var(e.var), e.lim), denom_deriv.replace_trig(Var(e.var), e.lim)
+        #     nm_poly, denom_poly = nm_subst.to_poly(), denom_subst.to_poly()
+        #     if nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
+        #         continue
+        #     elif nm_poly.T in (poly.ZERO, poly.NON_ZERO) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
+        #         return Const(0)
+        #     elif nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.ZERO, poly.NON_ZERO):
+        #         return expr.from_poly(nm_poly)
+        #     elif nm_poly.T == poly.NON_ZERO and denom_poly.T == poly.NON_ZERO:
+        #         return (nm_subst / denom_subst).normalize()
+        #     else:
+        #         raise NotImplementedError
+class LimSep(Rule):
+    '''
+    ex:
+        Lim (exp1 + exp2) -> (Lim exp1) + (Lim exp2)
+        Lim (exp1 - exp2) -> (Lim exp1) - (Lim exp2)
+        Lim (exp1 * exp2) -> (Lim exp1) * (Lim exp2)
+        Lim (exp1 / exp2) -> (Lim exp1) / (Lim exp2)
+    '''
+    def __init__(self):
+        self.name = "LimSep"
 
-        bd = e.body
-        subst_poly = bd.replace_trig(Var(e.var), e.lim).to_poly()
-        if subst_poly.T != poly.UNKNOWN:
+    def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+        if not (isinstance(e, expr.Limit) and isinstance(e.body, expr.Op) and\
+                e.body.op in ('+','-','*','/') and len(e.body.args)==2):
+            return e;
+        return expr.Op(e.body.op,expr.Limit(e.var, e.lim, e.body.args[0],e.drt) , expr.Limit(e.var, e.lim, e.body.args[1],e.drt));
+class DerivationSimplify(Rule):
+    # 导数计算，但是可导性的判断不在这里做
+    def __init__(self):
+        self.name = "DerivationSimplify"
+
+    def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+        if not isinstance(e, Deriv):
             return e
-        inf_part, zero_part, const_part = [], [], []
+        '''
+        依据e的不同条件进行不同的化简
+        e = a, a是常数或者是非求导变量，则 D x. a = 0
+        e = x ，则 D x. x = 1
+        e 如果符合常见的被积表达式 比如
+            e = sin(x) 则 D x.e = cos(x)
+            e = log(x) 则 D x.e = 1 / x
+            ...
+        e = (f(u))^g(v) 则 D x.e = e * D x.(v*log u) log e = v log u // f(u) > 0 
+        e = f(u),u = g(x),则 D x.e = D u. f(u) * D x.g(x)   // f在u可导，g在x可导
+        e = u +(-) v,则 D x.e = D x. u +(-) D x. v  // u,v 在x可导
+        e = u * v,则 D x. e = D x. u * v + D x. v * u 
+        e = u / v,则 D x.e = (D x. u) * v - (D x.v) * u / (v^ 2)
+        '''
+        def D(f):
+            #print("f and type:",f,type(f))
+            if f.ty == CONST:
+                return Const(0);
+            elif f.ty == VAR and f.name == e.var:
+                return Const(1);
+            elif f.ty == VAR and f.name != e.var:
+                return Const(0);
+            elif f.ty == OP:
+                op, length = f.op, len(f.args)
+                if length > 2:
+                    raise NotImplementedError;
+                a,b = None,None
+                if length == 2:
+                    a, b = f.args
+                elif length == 1:
+                    a = f.args[0]
+                else:
+                    raise NotImplementedError
+                if op == '-' and length == 1:
+                    return Op(op, D(f.args[0]))
+                elif op in ('-', '+'):
+                    return Op(op, D(f.args[0]), D(f.args[1]))
+                elif op == '*':
+                    return D(a)*b + D(b)*a
+                elif op == '/':
+                    return (D(a)*b - D(b)*a)/(b*b)
+                elif op == '^':
+                    return f * D(b * Fun('log', a))
+                else:
+                    raise NotImplementedError;
+            elif f.ty == FUN:
+                func_name, length = f.func_name, len(f.args)
+                # 例如 pi , e
+                if length == 0:
+                    return Const(0)
+                elif length == 1:
+                    if func_name in expr.DMap.keys():
+                        return expr.DMap[func_name](f.args[0]) * D(f.args[0])
+                    else:
 
-        bd_poly = bd.to_poly()
-        if len(bd_poly) != 1:
-            raise NotImplementedError
-        m = bd_poly[0]
-        factors = m.factors
-        for i, j in factors:
-            mono = poly.Polynomial([poly.Monomial(1, ((i, j),))])
-            norm_m = expr.from_poly(mono)
-            subst_m = norm_m.replace_trig(Var(e.var), e.lim).to_poly()
-            if subst_m.T == poly.ZERO:
-                zero_part.append((Const(1) / norm_m).normalize())
-            elif subst_m.T in (poly.POS_INF, poly.NEG_INF):
-                inf_part.append(norm_m)
-            elif subst_m.T == poly.NON_ZERO:
-                const_part.append(norm_m)
-            else:
-                raise NotImplementedError(str(mono))
-
-        assert inf_part and zero_part
-        inf_expr = functools.reduce(operator.mul, inf_part[1:], inf_part[0])
-        zero_expr = functools.reduce(operator.mul, zero_part[1:], zero_part[0])
-
-        nm_trace = [inf_expr]
-        denom_trace = [zero_expr]
-        while True:
-            nm, denom = nm_trace[-1], denom_trace[-1]
-            nm_deriv, denom_deriv = expr.deriv(e.var, nm), expr.deriv(e.var, denom)
-            nm_subst, denom_subst = nm_deriv.replace_trig(Var(e.var), e.lim), denom_deriv.replace_trig(Var(e.var), e.lim)
-            nm_poly, denom_poly = nm_subst.to_poly(), denom_subst.to_poly()
-            if nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
-                continue
-            elif nm_poly.T in (poly.ZERO, poly.NON_ZERO) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
-                return Const(0)
-            elif nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.ZERO, poly.NON_ZERO):
-                return expr.from_poly(nm_poly)
-            elif nm_poly.T == poly.NON_ZERO and denom_poly.T == poly.NON_ZERO:
-                return (nm_subst / denom_subst).normalize()
+                        raise NotImplementedError
+                else:
+                    raise NotImplementedError
+            elif f.ty == INTEGRAL:
+                raise NotImplementedError
             else:
                 raise NotImplementedError
+        res = D(e.body)
+        #print("res:",res)
+        return res.normalize()
 
 def check_item(item, target=None, *, debug=False):
     """Check application of rules in the item."""
@@ -767,3 +904,409 @@ def check_item(item, target=None, *, debug=False):
             print("Target: %s" % target)
             print("Result: %s" % current)
             raise AssertionError("Error on final answer")
+
+
+# 返回值 (表达式，类型, 无穷的阶数， 无穷的类型)
+# 类型有 const:常量,pos_inf:正无穷,neg_inf:负无穷,
+# indefinite_bounded:不确定有界量,indefinite_unbounded,不确定无界量 # 极限不存在
+# unknown 不定式 # 不确定存不存在
+# 变量已经被替换掉了
+# origin是原本的极限表达式，e是把极限值带入之后的式子
+def computeLimit(e:Expr):
+    if e.ty == CONST or e.ty == FUN and len(e.args) == 0:
+        return (e, 'const', 0, "?");
+    elif e.ty == VAR:
+        return (e, 'const', 0, '?')
+    elif e.ty == OP and e.op == '-' and len(e.args) == 1:
+        a, b, c, d= computeLimit(e.args[0])
+        if b == 'pos_inf':
+            return (-a, 'neg_inf', c, d)
+        elif b == 'neg_inf':
+            return (-a, 'pos_inf', c, d)
+        return (-a,b,c,d)
+    elif e.ty == OP and e.op == '-' and len(e.args) == 2:
+        a1, b1, c1, d1 = computeLimit(e.args[0])
+        a2, b2, c2, d2= computeLimit(e.args[1])
+        if b1 == 'const' and b2 == 'const': # a - b
+            return ((a1 - a2), 'const', 0, "?")
+        elif b1 == 'pos_inf' and b2 == 'pos_inf':
+            if d1 == 'poly' and d2 == 'poly':
+                if c1 == c2:
+                    return (a1 - a2, 'unknown', -1, "?")
+                elif c1 > c2:
+                    return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
+                else:
+                    return (Inf(Decimal('-inf')), 'neg_inf', c2, d2)
+            else:
+                return (a1 - a2, 'unknown', -1, "?")
+        elif b1 == 'const' and b2 == 'pos_inf': # a - oo
+            return (Inf(Decimal('-inf')), 'neg_inf', c2, d2)
+        elif b1 == 'const' and b2 == 'neg_inf': # a - (-oo)
+            return (Inf(Decimal('inf')), 'pos_inf', c2, d2)
+        elif b1 == 'const' and b2 == 'indefinite_bounded':
+            return (a1 - a2, 'indefinite_bounded', -1, "?")
+        elif b1 == 'const' and b2 == 'indefinite_unbounded': # a - 不存在
+            return (a1 - a2, "indefinite_unbounded", -1, "?")
+        elif b1 == 'pos_inf' and b2 in ('indefinite_bounded', 'const'): # oo - 有界量
+            return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
+        elif b1 == 'pos_inf' and b2 == 'neg_inf': # oo - (-oo)
+            if d1 == 'poly' and d2 == 'poly':
+                return (Inf(Decimal('inf')), 'pos_inf', max(c1,c2), d2)
+            else:
+                return (Inf(Decimal('inf')), 'pos_inf', -1, "?")
+        elif b1 == 'neg_inf' and b2 in ('const', 'indefinite_bounded'): # -oo - 有界量
+            return (Inf(Decimal('-inf')), 'neg_inf',c1,d1)
+        elif b1 == 'neg_inf' and b2 == 'pos_inf': # (-oo) - oo
+            if d1 == 'poly' and d2 == 'poly':
+                return (Inf(Decimal('-inf')), 'neg_inf',max(c1,c2),d1)
+            else:
+                return (Inf(Decimal('-inf')), 'neg_inf',-1,"?")
+        elif b1 in ('indefinite_bounded') and b2 == 'const':
+            return (a1 - a2, "indefinite_bounded",-1,"?")
+        elif b1 in ('indefinite_unbounded') and b2 == 'const':
+            return (a1 - a2, "indefinite_unbounded", -1, "?")
+        else:
+            return (a1 - a2,'unknown',-1,"?")
+    elif e.ty == OP and e.op == '+' and len(e.args) == 2:
+
+        a1, b1, c1, d1 = computeLimit(e.args[0])
+
+        a2, b2, c2, d2 = computeLimit(e.args[1])
+
+        if b1 == 'const' and b2 == 'const':  # a + b
+            if a1.ty==CONST and a2.ty==CONST:
+                return (Const(a1.val+a2.val), "const", 0, "?")
+            else:
+                return ((a1 + a2), 'const', 0, "?")
+        elif b1 == 'const' and b2 == 'pos_inf':  # a + oo
+            return (Inf(Decimal('inf')), 'pos_inf', c2, d2)
+        elif b1 == 'const' and b2 == 'neg_inf':  # a + (-oo)
+            return (Inf(Decimal('-inf')), 'neg_inf', c2, d2)
+        elif b2 in ('indefinite_bounded') and b1 == 'const':
+            return (a1 + a2, "indefinite_bounded",-1,"?")
+        elif b2 in ('indefinite_unbounded') and b1 == 'const':
+            return (a1 + a2, "indefinite_unbounded", -1, "?")
+
+        elif b1 == 'pos_inf' and b2 in ('pos_inf', 'indefinite_bounded', 'const'):  # oo + 有界量
+            if b2 != 'pos_inf':
+                return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
+            else:
+                if d1 == 'poly' and d2 == 'poly':
+                    return (Inf(Decimal('inf')), 'pos_inf', max(c1,c2), d2)
+                else:
+                    return (Inf(Decimal('inf')), 'pos_inf', -1, d2)
+        elif b1 == 'neg_inf' and b2 in ('neg_inf', 'const', 'indefinite_bounded'):  # -oo + 有界量
+            if b2 != 'neg_inf':
+                return (Inf(Decimal('-inf')), 'neg_inf', c1, d1)
+            else:
+                if d1 == 'poly' and d2 == 'poly':
+                        return (Inf(Decimal('-inf')), 'neg_inf', max(c2,c1), d2)
+                else:
+                    return (Inf(Decimal('-inf')), 'neg_inf', -1, "?")
+        elif b1 in ('indefinite_bounded') and b2 == 'const':
+            return (a1 + a2, "indefinite_bounded",-1,"?")
+        elif b1 in ('indefinite_unbounded') and b2 == 'const':
+            return (a1 + a2, "indefinite_unbounded", -1, "?")
+        else:
+            return (a1 + a2, 'unknown', -1, "?")
+    elif e.ty == OP and e.op == '*' and len(e.args) == 2:
+        a1, b1, c1, d1 = computeLimit(e.args[0])
+        a2, b2, c2, d2 = computeLimit(e.args[1])
+
+        if b1 == 'const' and b2 == 'const':  # a * b
+            return (a1 * a2, 'const', 0, "?")
+        elif b1 == 'const' and b2 in ('pos_inf', 'neg_inf'):
+
+            if a1.ty == CONST and a1.val > 0 and b2 == 'pos_inf':
+                return (Inf(Decimal('inf')) , 'pos_inf', c2, d2)
+            elif a1.ty == CONST and a1.val > 0 and b2 == 'neg_inf':
+                return (Inf(Decimal('-inf')) , 'neg_inf', c2, d2)
+            elif a1.ty == CONST and a1.val < 0 and b2 == 'pos_inf':
+                return (Inf(Decimal('-inf')) , 'neg_inf', c2, d2)
+            elif a1.ty == CONST and a1.val < 0 and b2 == 'neg_inf':
+                return (Inf(Decimal('inf')) , 'pos_inf', c2, d2)
+            elif a1.ty == FUN and a1.func_name in ('log') and a1.args[0].ty == CONST\
+                    and a1.args[0].val > 1 and b2 == 'pos_inf':
+                return (Inf(Decimal('inf')), 'pos_inf', -1, '?')
+            else:
+                return (a1*a2, 'unknown', -1, "?")
+        elif b2 == 'const' and b1 in ('pos_inf', 'neg_inf'):
+            if a2.ty == CONST and a2.val > 0 and b1 == 'pos_inf':
+                return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
+            elif a2.ty == CONST and a2.val > 0 and b1 == 'neg_inf':
+                return (Inf(Decimal('-inf')), 'neg_inf', c1, d1)
+            elif a2.ty == CONST and a2.val < 0 and b1 == 'pos_inf':
+                return (Inf(Decimal('-inf')), 'neg_inf', c1, d1)
+            elif a2.ty == CONST and a2.val < 0 and b1 == 'neg_inf':
+                return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
+            else:
+                return (a1 * a2, 'unknown', -1, "?")
+        elif b1 == 'pos_inf' and b2 == 'pos_inf':
+            if d1 == 'poly' and d2 == 'poly':
+                return (Inf(Decimal('inf')), 'pos_inf', c1 + c2, 'poly')
+            else:
+                return (Inf(Decimal('inf')), 'pos_inf', -1, '?')
+        elif b1 == 'pos_inf' and b2 == 'neg_inf':
+            if d1 == 'poly' and d2 == 'poly':
+                return (Inf(Decimal('-inf')), 'neg_inf', c1 + c2, 'poly')
+            else:
+                return (Inf(Decimal('-inf')), 'neg_inf', -1, '?')
+        elif b1 == 'neg_inf' and b2 == 'neg_inf':
+            if d1 == 'poly' and d2 == 'poly':
+                return (Inf(Decimal('inf')), 'pos_inf', c1 + c2, 'poly')
+            else:
+                return (Inf(Decimal('inf')), 'pos_inf', -1, '?')
+        elif b1 == 'neg_inf' and b2 == 'pos_inf':
+            if d1 == 'poly' and d2 == 'poly':
+                return (Inf(Decimal('-inf')), 'neg_inf', c1 + c2, 'poly')
+            else:
+                return (Inf(Decimal('-inf')), 'neg_inf', -1, '?')
+        else:
+            return (a1 * a2 , 'unknown', -1, "?")
+    elif e.ty == OP and e.op == '/' and len(e.args) == 2:
+
+        a1, b1, c1, d1 = computeLimit(e.args[0])
+
+        a2, b2, c2, d2 = computeLimit(e.args[1])
+        if b1 == 'const' and b2 == 'const':  # a + b
+            if a1.ty == CONST and a2.ty == CONST and a1.val !=0 and a2.val==0:
+                return (a1/a2,'unknown',0,"?")
+            return (a1 / a2, 'const', 0, "?")
+        elif b1 == 'pos_inf' and b2 == 'const' and a2.ty == CONST and a2.val > 0:
+            return (Inf(Decimal("inf")), 'pos_inf', c1, d1)
+        elif b1 == 'pos_inf' and b2 == 'const' and a2.ty == CONST and a2.val < 0:
+            return (Inf(Decimal("-inf")), 'neg_inf', c1, d1)
+        elif b1 == 'neg_inf' and b2 == 'const':  # a + b
+            return (Inf(Decimal("-inf")), 'neg_inf', c1, d1)
+        elif b1 == 'neg_inf' and b2 == 'pos_inf':  # a + b
+            if d1 == 'poly' and d2 == 'poly':
+                if c1 < c2:
+                    return (Const(0), 'const', 0, "?")
+                elif c2 > c1:
+                    return (Inf(Decimal("-inf")), "neg_inf", c1 - c2 ,"poly")
+                else:
+                    return (a1/a2,'unknow',-1,'?')
+            else:
+                return (a1/a2,'unknow',-1,'?')
+        elif b1 == 'neg_inf' and b2 == 'neg_inf':  # a + b
+            if d1 == 'poly' and d2 == 'poly':
+                if c1 < c2:
+                    return (Const(0), 'const', 0, "?")
+                elif c2 > c1:
+                    return (Inf(Decimal("inf")), "pos_inf", c1 - c2 ,"poly")
+                else:
+                    return (a1/a2,'unknow',-1,'?')
+            else:
+                return (a1/a2,'unknow',-1,'?')
+
+        elif b1 == 'pos_inf' and b2 == 'neg_inf':  # a + b
+            if d1 == 'poly' and d2 == 'poly':
+                if c1 < c2:
+                    return (Const(0), 'const', 0, "?")
+                elif c2 > c1:
+                    return (Inf(Decimal("-inf")), "neg_inf", c1 - c2 ,"poly")
+                else:
+                    return (a1/a2,'unknow',-1,'?')
+            else:
+                return (a1/a2,'unknow',-1,'?')
+        elif b1 == 'pos_inf' and b2 == 'pos_inf':  # a + b
+            if d1 == 'poly' and d2 == 'poly':
+                if c1 < c2:
+                    return (Const(0), 'const', 0, "?")
+                elif c2 > c1:
+                    return (Inf(Decimal("inf")), "pos_inf", c1 - c2 ,"poly")
+                else:
+                    return (a1/a2,'unknow',-1,'?')
+            else:
+                return (a1/a2,'unknow',-1,'?')
+        elif b1 in ('const','indefinite_bounded') and b2 in ('neg_inf', 'pos_inf'):
+            return (Const(0), 'const', 0, "?")
+        else:  # 常数判断是否是0这个事情挺困难的 大于0 小于0
+            return (a1 / a2, 'unknown', -1, "?")
+    elif e.ty == OP and e.op == '^' and len(e.args) == 2:
+        a1, b1, c1, d1 = computeLimit(e.args[0])
+        a2, b2, c2, d2 = computeLimit(e.args[1])
+
+        if b1 == 'const' and b2 == 'const' :#这个地方问题很多
+            if a1.ty == CONST and a2.ty == CONST and a1.val==0 and a2.val < 0:
+                return (a1^a2,"unknonw",0,"?")
+            return (a1^a2, 'const', 0, "?")
+        elif b1 == 'const' and a1.ty == CONST and abs(a1.val) < 1 and b2 in ('neg_inf', 'pos_inf'):
+            return (Const(0), "const", 0 ,"?")
+        elif b1 == 'const' and a1.ty == CONST and a1.val > 1 and b2 == 'pos_inf':
+            return (Inf(Decimal('inf')), 'pos_inf', -1, '?')
+
+        elif b1 == 'pos_inf' and b2 == 'const' and a2.ty == CONST and a2.val > 0:
+            return (Inf(Decimal('inf')), 'pos_inf', a2.val, d1)
+        elif b1 == 'neg_inf' and b2 == 'const' and a2.ty == CONST and math.modf(a2.val)[0] == 0:
+            if a2.val % 2 == 0:
+                return (Inf(Decimal('inf')), 'pos_inf', abs(a2.val), d1)
+            else:
+                return (Inf(Decimal('-inf')), 'neg_inf', abs(a2.val), d1)
+        elif b1 in ('pos_inf','neg_inf') and b2 == 'const' and a2.ty == CONST and a2.val < 0:
+            return (Const(0), 'const', 0, "?")
+        else:
+            return (a1 ^ a2, 'unknown', -1, "?")
+    elif e.ty == FUN and e.func_name in ('atan', 'acot', 'exp', "acsc","asec"):
+        a, b, c, d = computeLimit(e.args[0])
+        if b == 'const':
+            return (Fun(e.func_name, a), 'const', 0, "?")
+        elif e.func_name == 'atan' and b == 'pos_inf':
+            return (Const(Fraction(1,2)) * Fun('pi'),'const', 0, "?"); # pi / 2
+        elif e.func_name == 'atan' and b == 'neg_inf':
+            return (Const(Fraction(-1,2)) * Fun('pi'), 'const', 0, "?"); # -pi / 2
+        elif e.func_name == 'acot' and b == 'pos_inf':
+            return (Const(0),'const', 0, "?") # 0
+        elif e.func_name == 'acot' and b == 'neg_inf':
+            return (Fun('pi'),'const', 0, "?")# pi
+        elif e.func_name == 'exp' and b == 'pos_inf':
+            return (Inf(Decimal('inf')),'pos_inf', -1, '?')
+        elif e.func_name == 'exp' and b == 'neg_inf':
+            return (Const(0),'const', 0, "?") # pi
+        elif e.func_name == 'asec' and b in ("pos_inf",'neg_inf'):
+            return (Const(Fraction(1,2)) * Fun('pi'),'const', 0, "?") # pi
+        elif e.func_name == 'acsc' and b in ("pos_inf",'neg_inf'):
+            return (Const(0),'const', 0, "?") # pi
+        else:
+            return (e,'unknown',-1,"?")
+    elif e.ty == FUN and e.func_name in ('sqrt','log', "sin", "cos","asin","acos", "tan", "cot", "csc", "sec"):
+        a, b, c, d = computeLimit(e.args[0])
+        if b == 'const':
+            return (Fun(e.func_name, a),'const',0,"?")
+        elif e.func_name == 'sqrt' and b == 'pos_inf':
+            return (Inf(Decimal("inf")),'pos_inf',c/2,d)
+        elif e.func_name in ('sin','cos','asin','acos') and b in ("pos_inf",'neg_inf'):
+            return (Fun(e.func_name,a),'indefinite_bounded',0,"?")
+        elif e.func_name in ('tan','cot',"csc", "sec") and b in ("pos_inf",'neg_inf'):
+            return (Fun(e.func_name,a),'indefinite_unbounded',-1,"?")
+        elif e.func_name == 'log' and b == "pos_inf":
+            return (Inf(Decimal('inf')),'pos_inf',0.0001,"log")
+        else:
+            return (Fun(e.func_name,a),'unknown',-1,"?")
+    elif e.ty == INF and e == Inf(Decimal('inf')):
+        return (e,'pos_inf',1,"poly");
+    elif e.ty == INF and e == Inf(Decimal('-inf')):
+        return (e,'neg_inf',1,"poly");
+    else:
+        return (e,'unknown',-1,"?")
+
+class LimitSimplify(Rule):
+    # 极限的计算
+    def __init__(self):
+        self.name = "LimitSimplify"
+
+    def eval(self, e):
+        if isinstance(e, str):
+            e = parser.parse_expr(e)
+
+        if not isinstance(e,expr.Limit):
+            return e
+
+        res = None
+        var, lim, drt, body= e.var, e.lim, e.drt, e.body
+        deriv = DerivationSimplify()
+        if drt == None:
+            rep = body.replace_trig(Var(var), lim)
+            rule = LHopital()
+            if isinstance(body,Op) and body.op == '/' and len(body.args)==2:
+                # 除法中涉及sqrt函数
+                if body.args[0].ty == FUN and body.args[0].func_name == 'sqrt' or \
+                        body.args[1].ty == FUN and body.args[1].func_name == 'sqrt' :
+                    t1 = computeLimit(body.args[0].replace_trig(Var(var),lim))[1]
+                    t2 = computeLimit(body.args[1].replace_trig(Var(var),lim))[1]
+                    sign = 1
+                    if t1 == 'pos_inf' and t2 == 'neg_inf':
+                        sign = -1
+                    elif t1 == 'neg_inf' and t2 == 'pos_inf':
+                        sign = -1
+                    a,b,repa,repb = None,None,None,None
+                    if body.args[0].ty == FUN and body.args[0].func_name == 'sqrt' and body.args[1].ty == FUN and body.args[1].func_name == 'sqrt':
+                        a,b = body.args[0].args[0],body.args[1].args[0]
+                    elif body.args[0].ty == FUN and body.args[0].func_name == 'sqrt':
+                        a,b = body.args[0].args[0],body.args[1]^2
+                    elif body.args[1].ty == FUN and body.args[1].func_name == 'sqrt':
+                        a, b = body.args[0] ^ 2, body.args[1].args[0]
+                    repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
+
+
+                    # 确定极限的符号
+                    while (repa.normalize() == Const(0) and repb.normalize() == Const(0) \
+                           or computeLimit(repa)[1] in ('pos_inf', 'neg_inf') and \
+                           computeLimit(repb)[1] in ('pos_inf', 'neg_inf')):
+                        newa, newb = deriv.eval(expr.Deriv(var,a)),deriv.eval(expr.Deriv(var,b))
+                        a,b = newa, newb
+                        repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
+
+                    return computeLimit(Const(sign)*Fun('sqrt',repa/repb))
+
+
+                # 使用洛必达法则化简 但是无限的情况是有可能出现的
+                # 分子分母全为0
+                while (computeLimit(rep.args[0])[1] == 'const' and \
+                        computeLimit(rep.args[1])[1] == 'const' and \
+                        rep.args[1].normalize() == Const(0) and \
+                       rep.args[0].normalize() == Const(0)\
+                       or computeLimit(rep.args[0])[1] in ('pos_inf', 'neg_inf') and\
+                       computeLimit(rep.args[1])[1] in ('pos_inf', 'neg_inf') ):
+                    new_body = rule.eval(e).body
+                    e = expr.Limit(var,lim,new_body,drt)
+                    rep = new_body.replace_trig(Var(var), lim)
+                    # print("rep:",rep)
+
+            elif isinstance(body, Op) and body.op == '-' and len(body.args) == 2 \
+                    and (body.args[0].ty==FUN and body.args[0].func_name == 'sqrt' or \
+                    body.args[1].ty==FUN and body.args[1].func_name == 'sqrt'):
+
+                a,b = body.args[0],body.args[1]
+                repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
+
+                if computeLimit(repa)[1] == 'pos_inf' and \
+                       computeLimit(repb)[1] == 'pos_inf' or \
+                        computeLimit(repa)[1] == 'neg_inf' and \
+                        computeLimit(repb)[1] == 'neg_inf':
+                    ta,tb = a,b
+
+                    t1,t2 = ta^2,tb^2
+                    if ta.ty == FUN and ta.func_name == 'sqrt':
+                        t1 = ta.args[0]
+                    if tb.ty == FUN and tb.func_name == 'sqrt':
+                        t2 = tb.args[0]
+                    a = t1 - t2
+                    b = ta + tb
+                    a = a.normalize()
+                    b = b.normalize()
+                    repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
+                    while (computeLimit(repa)[1] in ('pos_inf', 'neg_inf') and \
+                           computeLimit(repb)[1] in ('pos_inf', 'neg_inf')):
+                        newa, newb = deriv.eval(expr.Deriv(var, a)), deriv.eval(expr.Deriv(var, b))
+                        a, b = newa, newb
+                        repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
+
+                    return computeLimit(repa/repb)
+            elif isinstance(body,Fun) and isinstance(body.args[0],Op) and body.args[0].op == '/':
+                a, b = body.args[0].args[0], body.args[0].args[1]
+                repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
+
+                while (repa.normalize() == Const(0) and repb.normalize() == Const(0) \
+                       or computeLimit(repa)[1] in ('pos_inf', 'neg_inf') and \
+                       computeLimit(repb)[1] in ('pos_inf', 'neg_inf')):
+                    newa, newb = deriv.eval(expr.Deriv(var, a)), deriv.eval(expr.Deriv(var, b))
+                    a, b = newa, newb
+                    repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
+                return computeLimit(Fun(body.func_name, repa / repb))
+            elif body.ty == OP and body.op == '^' and body.args[1].ty == VAR and body.args[1].name == var\
+                and (body.args[0] == Op('+',Const(1),Op('/',Const(1),Var(var))) or \
+                     body.args[0] == Op('+',Op('/', Const(1), Var(var)), Const(1) ) or \
+                     body.args[0] == Op('+', Const(1), Op('^',  Var(var), Const(-1))) or \
+                     body.args[0] == Op('+', Op('^' , Var(var), Const(-1)), Const(1))):
+                return (Fun('exp',Const(1)), 'const', 0, "?") #LIM x->oo.(1+1/x)^x = e
+
+            res = computeLimit(rep)
+            return res
+        else:
+            raise NotImplementedError
+
+
+
+
+
