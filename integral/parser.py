@@ -17,6 +17,8 @@ grammar = r"""
         | "pi" -> pi_expr
         | "inf" -> pos_inf_expr
         | "oo" -> pos_inf_expr
+        | "-inf" -> neg_inf_expr
+        | "-oo" -> neg_inf_expr
         | CNAME "(" expr ("," expr)* ")" -> fun_expr
         | "(" expr ")"
         | "\|" expr "\|" -> abs_expr 
@@ -99,7 +101,9 @@ class ExprTransformer(Transformer):
         return expr.pi
 
     def pos_inf_expr(self):
-        return expr.inf()
+        return expr.Inf(Decimal("inf"))
+    def neg_inf_expr(self):
+        return expr.Inf(Decimal("-inf"))
 
     def fun_expr(self, func_name, *args):
         return expr.Fun(func_name, *args)
@@ -126,7 +130,6 @@ class ExprTransformer(Transformer):
 
     def limit_inf_expr(self, var, lim, body):
         return expr.Limit(str(var), lim, body)
-    
     def limit_l_expr(self, var, lim, body):
         return expr.Limit(str(var), lim, body, "-")
 
