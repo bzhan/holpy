@@ -35,22 +35,23 @@ mapping from (ty, name) to (theory_name, timestamp, index).
 """
 item_index = dict()
 
+dirname = os.path.dirname(__file__)
 
 def user_dir(username="master"):
     """Returns directory for the user."""
     assert username, "user_dir: empty username."
     if username == 'master':
-        return './library/'
+        return os.path.join(dirname, '../library/')
     else:
-        return './users/' + username
+        return os.path.join(dirname, '../users/' + username)
 
 def user_file(filename, username="master"):
     """Return json file for the user and given filename."""
     assert username, "user_file: empty username."
     if username == 'master':
-        return './library/' + filename + '.json'
+        return os.path.join(dirname, '../library/' + filename + '.json')
     else:
-        return './users/' + username + '/' + filename + '.json'
+        return os.path.join(dirname, '../users/' + username + '/' + filename + '.json')
 
 def load_json_data(filename, username="master"):
     """Load json data for the given theory name and user."""
