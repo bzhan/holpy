@@ -18,20 +18,21 @@ from app.app import app
 
 basic.load_theory('interval_arith')
 
+dirname = os.path.dirname(__file__)
 
 @app.route("/api/integral-load-file-list", methods=['POST'])
 def integral_load_file_list():
-    os.chdir('./integral/examples')
-    json_files = tuple(str(z) for z in list(pathlib.Path('./').rglob('*.json')))
-    os.chdir('../../')
+    json_files = []
+    for res in pathlib.Path('../integral/examples').rglob('*.json'):
+        json_files.append(str(res.relative_to('../integral/examples')))
     return jsonify({
-        'file_list': json_files
+        'file_list': tuple(json_files)
     })
 
 @app.route("/api/integral-open-file", methods=['POST'])
 def integral_open_file():
     data = json.loads(request.get_data().decode('utf-8'))
-    file_name = "integral/examples/%s" % data['filename']
+    file_name = os.path.join(dirname, "../integral/examples/" + data['filename'])
     with open(file_name, 'r', encoding='utf-8') as f:
         f_data = json.load(f)
 
@@ -685,7 +686,7 @@ def integral_polynomial_division():
 @app.route("/api/integral-save-file", methods=['POST'])
 def integral_save_file():
     data = json.loads(request.get_data().decode('utf-8'))
-    file_name = "integral/examples/%s" % data['filename']
+    file_name = os.path.join(dirname, "../integral/examples/" + data['filename'])
     with open(file_name, 'w', encoding='utf-8') as f:
         json.dump({"content": data['content']}, f, indent=4, ensure_ascii=False, sort_keys=True)
 
