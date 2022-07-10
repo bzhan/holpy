@@ -14,7 +14,7 @@ from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
-from logic.context import Context
+from logic import context
 from data import set
 from data import nat
 from data import real
@@ -1068,6 +1068,7 @@ def translate_item(item, target=None, *, debug=False):
 def translate_single_item(step, init, *, _loc=None, debug=False):
     """Translate a single step into holpy proof."""
     try:
+        context.set_context('interval_arith')
         init = expr_to_holpy(parse_expr(init))
         pt = refl(init)
         if 'location' in step:
