@@ -1887,12 +1887,18 @@ def expr_to_holpy(expr):
             raise NotImplementedError
     elif expr.is_deriv():
         raise NotImplementedError
+    elif expr.is_integral():
+        a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
+        var = term.Var(expr.var, RealType)
+        f = term.Lambda(var, expr_to_holpy(expr.body))
+        return real_integral(real.closed_interval(a, b), f)
     elif expr.is_evalat():
         a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
         var = term.Var(expr.var, RealType)
         f = term.Lambda(var, expr_to_holpy(expr.body))
         return evalat(f, a, b)
     else:
+        print("expr_to_holpy: unknown expression %s" % expr)
         raise NotImplementedError
 
 def holpy_to_expr(t):

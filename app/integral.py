@@ -74,7 +74,9 @@ def integral_validate_integral():
 @app.route("/api/integral-super-simplify", methods=['POST'])
 def integral_super_simplify():
     data = json.loads(request.get_data().decode('utf-8'))
-    rules_set = [integral.rules.Simplify(), integral.rules.OnSubterm(integral.rules.Linearity()), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
+    rules_set = [integral.rules.Simplify(),
+                 integral.rules.OnSubterm(integral.rules.Linearity()),
+                 integral.rules.OnSubterm(integral.rules.CommonIntegral())]
     # abs_rule = integral.rules.ElimAbs()
     problem = integral.parser.parse_expr(data['problem'])
     # if not (abs_rule.check_zero_point(problem) and len(problem.getAbs()) == 0):

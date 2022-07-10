@@ -1198,5 +1198,6 @@ def translate_single_item(step, init, *, _loc=None, debug=False):
 
         assert pt.lhs == init, "translate_item: wrong left side."
         return expected == pt.rhs, str(pt)
-    except:
+    except Exception as e:
+        print("Exception", type(e), flush=True)
         return False, "No proof!"
