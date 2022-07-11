@@ -5,11 +5,12 @@ from decimal import Decimal
 from fractions import Fraction
 import copy
 
+import integral
 from logic import basic
 from logic import context
-from integral import expr
-from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt, Symbol,\
-    VAR, CONST, OP, FUN, match, pi, Const
+from integral import expr, proof
+from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt, Symbol, \
+    VAR, CONST, OP, FUN, match, pi, Const, expr_to_holpy
 from integral.parser import parse_expr
 
 basic.load_theory('transcendentals')
@@ -530,5 +531,10 @@ class ExprTest(unittest.TestCase):
     def testSimplifyConstant(self):
         pass
 
+
 if __name__ == "__main__":
-    unittest.main()
+    # unittest.main()
+    str = "INT u:[1,4]. 1/3 * u ^ -2"
+    ex = parse_expr(str)
+    print(ex.is_integral())
+    hh = expr_to_holpy(ex)
