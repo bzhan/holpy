@@ -1,6 +1,8 @@
 """Proofs for differentiation and integration."""
-
+import io
 from fractions import Fraction
+
+import chardet
 import sympy
 from sympy.ntheory.factor_ import factorint
 
@@ -1078,6 +1080,8 @@ def translate_single_item(step, init, *, _loc=None, debug=False):
 
         if _loc is not None:
             loc = Location(_loc)
+        import sys
+        sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
         print("loc", _loc, flush=True)
         reason = step['reason']
         expected = expr_to_holpy(parse_expr(step['text']))
