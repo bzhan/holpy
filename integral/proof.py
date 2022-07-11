@@ -14,7 +14,7 @@ from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
-from logic.context import Context
+from logic import context
 from data import set
 from data import nat
 from data import real
@@ -1068,6 +1068,7 @@ def translate_item(item, target=None, *, debug=False):
 def translate_single_item(step, init, *, _loc=None, debug=False):
     """Translate a single step into holpy proof."""
     try:
+        context.set_context('interval_arith')
         init = expr_to_holpy(parse_expr(init))
         pt = refl(init)
         if 'location' in step:
@@ -1077,11 +1078,11 @@ def translate_single_item(step, init, *, _loc=None, debug=False):
 
         if _loc is not None:
             loc = Location(_loc)
-        print("loc", _loc)
+        print("loc", _loc, flush=True)
         reason = step['reason']
         expected = expr_to_holpy(parse_expr(step['text']))
-        print("step: ", step)
-        print("init: ", init)
+        print("step: ", step, flush=True)
+        print("init: ", init, flush=True)
         rewr_loc = get_at_location(loc, pt.rhs)
         expected_loc = get_at_location(loc, expected)
 
@@ -1198,5 +1199,6 @@ def translate_single_item(step, init, *, _loc=None, debug=False):
 
         assert pt.lhs == init, "translate_item: wrong left side."
         return expected == pt.rhs, str(pt)
-    except:
+    except Exception as e:
+        print("Exception", type(e), flush=True)
         return False, "No proof!"

@@ -3,9 +3,6 @@
 from fractions import Fraction
 import functools, operator
 from collections.abc import Iterable
-
-import chardet
-from idna import unicode
 from sympy import solveset, re, Interval, Eq, Union, EmptySet, pexquo
 from decimal import Decimal
 from sympy.simplify.fu import *
@@ -1472,13 +1469,6 @@ class Op(Expr):
         return isinstance(other, Op) and self.op == other.op and self.args == other.args
 
     def __str__(self):
-        # if len(self.args)==1:
-        #     return '(%s%s)'%(self.op,self.args[0])
-        # elif len(self.args) == 2:
-        #     return '(%s) %s (%s)'%(self.args[0],self.op,self.args[1])
-        # else:
-        #     raise NotImplementedError
-
         if len(self.args) == 1:
             a, = self.args
             s = str(a)
@@ -1506,7 +1496,6 @@ class Op(Expr):
             return "%s %s %s" % (s1, self.op, s2)
         else:
             raise NotImplementedError
-
 
     def __repr__(self):
         return "Op(%s,%s)" % (self.op, ",".join(repr(arg) for arg in self.args))
@@ -1889,19 +1878,18 @@ def expr_to_holpy(expr):
             raise NotImplementedError
     elif expr.is_deriv():
         raise NotImplementedError
+    elif expr.is_integral():
+        a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
+        var = term.Var(expr.var, RealType)
+        f = term.Lambda(var, expr_to_holpy(expr.body))
+        return real_integral(real.closed_interval(a, b), f)
     elif expr.is_evalat():
         a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
         var = term.Var(expr.var, RealType)
         f = term.Lambda(var, expr_to_holpy(expr.body))
         return evalat(f, a, b)
-    elif expr.is_integral():
-        a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
-        var = term.Var(expr.var, RealType)
-        f = term.Lambda(var, expr_to_holpy(expr.body))
-        kk = str(f)
-        print("str(f):",kk)
-        return real_integral(real.closed_interval(a, b), f);
     else:
+        print("expr_to_holpy: unknown expression %s" % expr)
         raise NotImplementedError
 
 def holpy_to_expr(t):

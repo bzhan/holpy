@@ -74,7 +74,9 @@ def integral_validate_integral():
 @app.route("/api/integral-super-simplify", methods=['POST'])
 def integral_super_simplify():
     data = json.loads(request.get_data().decode('utf-8'))
-    rules_set = [integral.rules.Simplify(), integral.rules.OnSubterm(integral.rules.Linearity()), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
+    rules_set = [integral.rules.Simplify(),
+                 integral.rules.OnSubterm(integral.rules.Linearity()),
+                 integral.rules.OnSubterm(integral.rules.CommonIntegral())]
     # abs_rule = integral.rules.ElimAbs()
     problem = integral.parser.parse_expr(data['problem'])
     # if not (abs_rule.check_zero_point(problem) and len(problem.getAbs()) == 0):
@@ -746,7 +748,6 @@ def integral_elim_inf():
     
 @app.route("/api/integral-lhopital", methods=['POST'])
 def integral_lhopital():
-    print(1233)
     data = json.loads(request.get_data().decode('UTF-8'))
     problem = integral.parser.parse_expr(data["problem"])
     new_problem = integral.rules.LHopital().eval(problem)
