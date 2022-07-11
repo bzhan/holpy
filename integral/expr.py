@@ -1469,42 +1469,33 @@ class Op(Expr):
         return isinstance(other, Op) and self.op == other.op and self.args == other.args
 
     def __str__(self):
-        if len(self.args)==1:
-            return '(%s%s)'%(self.op,self.args[0])
+        if len(self.args) == 1:
+            a, = self.args
+            s = str(a)
+            if a.ty == CONST and a.val > 0:
+                return "(%s%s)" % (self.op, s)
+            if a.priority() < self.priority():
+                s = "(%s)" % s
+            return "%s%s" % (self.op, s)
         elif len(self.args) == 2:
-            return '(%s) %s (%s)'%(self.args[0],self.op,self.args[1])
+            a, b = self.args
+            s1, s2 = str(a), str(b)
+            if a.priority() <= op_priority[self.op]:
+                if a.ty == OP and a.op != self.op:
+                    s1 = "(%s)" % s1
+                elif a.ty in (EVAL_AT, INTEGRAL, DERIV):
+                    s1 = "(%s)" % s1
+            if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
+                s2 = "(%s)" % s2
+            elif self.op == "^" and a.ty == CONST and a.val < 0:
+                s1 = "(%s)" % s1
+            elif self.op == "^" and a.is_constant() and a.ty == OP and len(a.args) == 1:
+                s1 = "(%s)" % s1
+            elif self.op == "^" and a.is_constant() and a.ty == OP and a.op == "^":
+                s1 = "(%s)" % s1
+            return "%s %s %s" % (s1, self.op, s2)
         else:
             raise NotImplementedError
-        # if len(self.args) == 1:
-        #     a, = self.args
-        #     s = str(a)
-        #     if a.ty == CONST and a.val > 0:
-        #         return "(%s%s)" % (self.op, s)
-        #     if a.priority() < self.priority():
-        #         s = "(%s)" % s
-        #     return "%s%s" % (self.op, s)
-        # elif len(self.args) == 2:
-        #     a, b = self.args
-        #     s1, s2 = str(a), str(b)
-        #     if self.op=='+':
-        #         return '(%s1) + (%s2)'%(s1,s2)
-        #     if a.priority() <= op_priority[self.op]:
-        #         if a.ty == OP and a.op != self.op:
-        #             s1 = "(%s)" % s1
-        #         elif a.ty in (EVAL_AT, INTEGRAL, DERIV):
-        #             s1 = "(%s)" % s1
-        #     if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
-        #         s2 = "(%s)" % s2
-        #     elif self.op == "^" and a.ty == CONST and a.val < 0:
-        #         s1 = "(%s)" % s1
-        #     elif self.op == "^" and a.is_constant() and a.ty == OP and len(a.args) == 1:
-        #         s1 = "(%s)" % s1
-        #     elif self.op == "^" and a.is_constant() and a.ty == OP and a.op == "^":
-        #         s1 = "(%s)" % s1
-        #     return "%s %s %s" % (s1, self.op, s2)
-        # else:
-        #     raise NotImplementedError
-
 
     def __repr__(self):
         return "Op(%s,%s)" % (self.op, ",".join(repr(arg) for arg in self.args))

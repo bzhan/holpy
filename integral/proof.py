@@ -1078,11 +1078,11 @@ def translate_single_item(step, init, *, _loc=None, debug=False):
 
         if _loc is not None:
             loc = Location(_loc)
-        print("loc", _loc)
+        print("loc", _loc, flush=True)
         reason = step['reason']
         expected = expr_to_holpy(parse_expr(step['text']))
-        print("step: ", step)
-        print("init: ", init)
+        print("step: ", step, flush=True)
+        print("init: ", init, flush=True)
         rewr_loc = get_at_location(loc, pt.rhs)
         expected_loc = get_at_location(loc, expected)
 

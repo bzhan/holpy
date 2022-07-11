@@ -748,7 +748,6 @@ def integral_elim_inf():
     
 @app.route("/api/integral-lhopital", methods=['POST'])
 def integral_lhopital():
-    print(1233)
     data = json.loads(request.get_data().decode('UTF-8'))
     problem = integral.parser.parse_expr(data["problem"])
     new_problem = integral.rules.LHopital().eval(problem)
