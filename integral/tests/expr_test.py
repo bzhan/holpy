@@ -6,6 +6,7 @@ from fractions import Fraction
 import copy
 
 from logic import basic
+from logic import context
 from integral import expr
 from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt, Symbol,\
     VAR, CONST, OP, FUN, match, pi, Const
@@ -131,11 +132,13 @@ class ExprTest(unittest.TestCase):
             ("cos((39 * (pi / 100)) / 2)", "cos(39/200 * pi)")
         ]
 
+        context.set_context('interval_arith')
         for s, res in test_data:
             t = parse_expr(s)
             self.assertEqual(str(t.normalize_constant()), res)
 
     def testNormalizeConstantTrig(self):
+        context.set_context('interval_arith')
         table = expr.trig_table()
         for func_name in ('sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
             for k, v in table[func_name].items():
@@ -247,6 +250,7 @@ class ExprTest(unittest.TestCase):
             ("exp (log(2))", "2"),
         ]
 
+        context.set_context('interval_arith')
         for s, res in test_data:
             t = parse_expr(s)
             self.assertEqual(str(t.normalize()), res)
