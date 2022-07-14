@@ -8,7 +8,7 @@ from sympy.integrals import integrals
 from integral import poly, expr
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
     sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, \
-    DERIV, decompose_expr_factor, Deriv, Inf, INF, Limit
+    DERIV, decompose_expr_factor, Deriv, Inf, INF, Limit, NEG_INF, POS_INF
 import functools, operator
 from integral import parser
 from sympy import Interval, expand_multinomial, apart
@@ -454,7 +454,7 @@ class ElimAbs(Rule):
     # 
     def check_zero_point(self, e):
         integrals = e.separate_integral()
-        print("e.sep:",integrals)
+        #print("e.sep:",integrals)
         if not integrals:
             return False
         abs_info = []
@@ -630,7 +630,30 @@ class LHopital(Rule):
         #上下分式进行求导
         if isinstance(e, str):
             e = parser.parse_expr(e)
-        if not (isinstance(e, expr.Limit) and isinstance(e.body, expr.Op) and e.body.op == '/'):
+        if not isinstance(e, expr.Limit):
+            return e
+        if e.body.op == '-' and len(e.body.args) == 1:
+            e1 = e.body.args[0]
+            if e1.op == '*' and len(e1.args) == 2:
+                a,b = e1.args
+                var, lim = e.var, e.lim
+                res1 = computeLimit(a.replace_trig(Var(var), lim))
+                res2 = computeLimit(b.replace_trig(Var(var), lim))
+                # x * exp(-x) -> x / exp(x) when x->-oo
+                if res1[0] in (NEG_INF,POS_INF) and res2[0] == expr.ZERO:
+                    if b.ty == expr.FUN and b.func_name == 'exp':
+                        e = Limit(var, lim, -a / Fun('exp', -b.args[0]))
+                    else:
+                        return e;
+                elif res2[0] in (NEG_INF,POS_INF) and res1[0] == expr.ZERO:
+                    if a.ty == expr.FUN and a.func_name == 'exp':
+                        e = Limit(var, lim, -b / Fun('exp', -a.args[0]))
+                    else:
+                        return e
+                else:
+                    return e
+
+        if not (isinstance(e.body, expr.Op) and e.body.op == '/'):
             return e
         numerator, denominator = e.body.args
         rule = DerivationSimplify()
@@ -746,15 +769,17 @@ class DerivationSimplify(Rule):
                 else:
                     raise NotImplementedError
                 if op == '-' and length == 1:
-                    return Op(op, D(f.args[0]))
+                    return Op(op, D(f.args[0])).normalize()
                 elif op in ('-', '+'):
-                    return Op(op, D(f.args[0]), D(f.args[1]))
+                    return Op(op, D(f.args[0]), D(f.args[1])).normalize()
                 elif op == '*':
-                    return D(a)*b + D(b)*a
+                    return (D(a)*b + D(b)*a).normalize()
                 elif op == '/':
-                    return (D(a)*b - D(b)*a)/(b*b)
+                    return (D(a)*b - D(b)*a).normalize()/(b^2).normalize()
                 elif op == '^':
-                    return f * D(b * Fun('log', a))
+                    if b.is_constant():
+                        return b.normalize() * (a^(b-1)).normalize()
+                    return (f * D(Fun('exp',b * Fun('log', a)))).normalize()
                 else:
                     raise NotImplementedError;
             elif f.ty == FUN:
@@ -764,9 +789,8 @@ class DerivationSimplify(Rule):
                     return Const(0)
                 elif length == 1:
                     if func_name in expr.DMap.keys():
-                        return expr.DMap[func_name](f.args[0]) * D(f.args[0])
+                        return (expr.DMap[func_name](f.args[0]) * D(f.args[0])).normalize()
                     else:
-
                         raise NotImplementedError
                 else:
                     raise NotImplementedError
@@ -776,7 +800,7 @@ class DerivationSimplify(Rule):
                 raise NotImplementedError
         res = D(e.body)
         #print("res:",res)
-        return res.normalize()
+        return res
 
 def check_item(item, target=None, *, debug=False):
     """Check application of rules in the item."""

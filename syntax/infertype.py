@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 """Hindley-Milner type inference algorithm."""
+import copy
 
 from kernel.type import STVar, TFun, TyInst
 from kernel.term import Term
@@ -24,7 +25,6 @@ def type_infer(t, *, forbid_internal=True):
     has all types marked None, except those subterms whose type is
     explicitly given. This function works on terms with overloaded
     constants.
-    
     """
     # Union-find mapping for representatives of temporary
     # type variables.
@@ -210,7 +210,6 @@ def type_infer(t, *, forbid_internal=True):
                 has_repl = True
 
     t.subst_type_inplace(tyinst)
-
     return t
 
 def infer_printed_type(t):

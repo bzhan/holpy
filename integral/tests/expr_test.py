@@ -297,7 +297,7 @@ class ExprTest(unittest.TestCase):
     def testReplace1(self):
         test_data = [
             ("x ^ 4", "x ^ 2", "u", "u ^ 2"),
-            ("1/2 * x ^ ((-1)/2)", "x ^ (1/2)", "u", "1/2 * u ^ (-1)")
+            ("1/2 * x ^ ((-1)/2)", "x ^ (1/2)", "u", "1/2 * u ^ -1")
         ]
 
         for s, e, repl_e, res in test_data:
@@ -390,11 +390,17 @@ class ExprTest(unittest.TestCase):
     def testPriority(self):
         x = parse_expr("x")
         test_data = [
-            (Const(1) + (x ^ Const(2)), "1 + x^2"),
+            ("1+(x^2)", "1 + x ^ 2"),
+            ("1+(-2)","1 + -2"),
+            ('-(x+3)','-(x + 3)'),
+            ('------------x', '------------x'),
+            ('x+-5', 'x + -5'),
+
         ]
 
         for s, s2 in test_data:
-            self.assertEqual(s, parse_expr(s2))
+            e = expr.parser.parse_expr(s)
+            self.assertEqual(str(e), s2)
 
     def testReplaceExpr(self):
         test_data = [
@@ -475,6 +481,7 @@ class ExprTest(unittest.TestCase):
             ("2 + 3 * x + 4", "6 + 3 * x"),
             (" 0 / (x + y)", "0"),
             ("2 + x / y + 2 * (x / y) + 3", "5 + 3 * x * y ^ -1"),
+            ("x+y","x + y"),
             ("(x + y) ^ 2", "(x + y) ^ 2"),
             ("x^(1.5)","x ^ (3/2)"),
             ("(x + y) * (x - y)", "x ^ 2 + -(y ^ 2)"),
@@ -533,8 +540,5 @@ class ExprTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # unittest.main()
-    str = "INT u:[1,4]. 1/3 * u ^ -2"
-    ex = parse_expr(str)
-    print(ex.is_integral())
-    hh = expr_to_holpy(ex)
+    unittest.main()
+

@@ -3,7 +3,7 @@
 import unittest
 
 from integral.parser import parse_expr
-from integral import slagle
+from integral import slagle, expr
 
 
 class SlagleTest(unittest.TestCase):

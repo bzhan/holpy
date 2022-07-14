@@ -6,14 +6,10 @@ from kernel.type import TVar, TConst, TFun, Type, BoolType
 from kernel.term import Var, Term, And, Eq, Inst
 from kernel.thm import Thm
 from kernel.proof import ProofItem
-from logic import logic
-from data import nat
-from data import real
 from logic import basic
-from data import set
 from syntax.printer import print_term, print_type
 from syntax import parser
-from syntax.settings import settings, global_setting
+from syntax.settings import global_setting
 from logic import context
 
 
@@ -72,15 +68,31 @@ class ParserTest(unittest.TestCase):
 
     def run_test(self, thy_name, *, vars=None, svars=None, s, Ts):
         context.set_context(thy_name, vars=vars, svars=svars)
-
         t = parser.parse_term(s)
         T = parser.parse_type(Ts)
-        self.assertIsInstance(t, Term)
-        self.assertEqual(t.checked_get_type(), T)
+        self.assertIsInstance(t, Term, "xxxx1")
+        self.assertEqual(t.checked_get_type(), T, "xxxx2")
         # with global_setting(unicode=False):
-        self.assertEqual(print_term(t), s)
+        self.assertEqual(str(print_term(t)), str(s))
+
+    def testTermEq(self):
+        test_data = [("!x. P x","!a. P a")]
+        thy_name = 'list'
+        vars = {'A': 'bool', 'B': 'bool', 'C': 'bool', 'P': "'a => bool", 'Q': "'a => bool",
+                'R': "'a => 'a => bool", 'a': "'a", 'b': "'a", 'c': "'a",
+                'f': "'a => 'a", 'nn': "bool => bool", 'm': "nat", 'n': "nat", 'p': "nat",
+                'xs': "'a list", 'ys': "'a list", 'zs': "'a list"}
+        svars = {'P': 'bool'}
+
+        for t1, t2 in test_data:
+            with global_setting(unicode=False):
+                context.set_context(thy_name, vars=vars, svars=svars)
+                t1 = parser.parse_term(t1)
+                t2 = parser.parse_term(t2)
+                self.assertEqual(t1, t2)
 
     def testParseTerm(self):
+
         test_data = [
             # Atoms
             ("A", "bool"),
@@ -97,7 +109,6 @@ class ParserTest(unittest.TestCase):
             ("P (f (f a))", "bool"),
             ("R (f a) b", "bool"),
             ("R a (f b)", "bool"),
-
             # Abstraction
             ("%x::'a. x", "'a => 'a"),
             ("%x. P x", "'a => bool"),
@@ -124,7 +135,7 @@ class ParserTest(unittest.TestCase):
             ("(A | B) | C", "bool"),
             ("A & B | B & C", "bool"),
             ("(A | B) & (B | C)", "bool"),
-            
+
             # Negation
             ("~A", "bool"),
             ("~~A", "bool"),
@@ -216,9 +227,24 @@ class ParserTest(unittest.TestCase):
                 'xs': "'a list", 'ys': "'a list", 'zs': "'a list"}
         svars = {'P': 'bool'}
 
+
+        # test_data = [("!a. P a", "bool"), ]
+        # vars = {'A': 'bool', 'B': 'bool', 'C': 'bool', 'P': "'a => bool", 'Q': "'a => bool",
+        #         'R': "'a => 'a => bool", 'a': "'a", 'b': "'a", 'c': "'a",
+        #         'f': "'a => 'a", 'nn': "bool => bool", 'm': "nat", 'n': "nat", 'p': "nat",
+        #         'xs': "'a list", 'ys': "'a list", 'zs': "'a list"}
+        # svars = {'P': 'bool'}
+        thy_name = 'list'
         for s, Ts in test_data:
             with global_setting(unicode=False):
-                self.run_test('list', vars=vars, svars=svars, s=s, Ts=Ts)
+                context.set_context(thy_name, vars=vars, svars=svars)
+                t = parser.parse_term(s)
+                T = parser.parse_type(Ts)
+                self.assertIsInstance(t, Term)
+                self.assertEqual(t.checked_get_type(), T)
+                # with global_setting(unicode=False):
+                self.assertEqual(str(print_term(t)), str(s))
+
 
     def testParseInt(self):
         test_data = [
@@ -456,7 +482,6 @@ class ParserTest(unittest.TestCase):
         context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})
         for s, res in test_data:
             self.assertEqual(parser.parse_named_thm(s), res)
-
 
 if __name__ == "__main__":
     unittest.main()

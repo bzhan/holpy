@@ -259,8 +259,11 @@ ATOM, FUN_APPL, UNARY, BINARY, BINDER = range(5)
 
 def get_ast_term(t):
     """Obtain the abstract syntax tree for a term."""
-    if (t, settings.unicode) in term_ast:
-        return term_ast[(t, settings.unicode)]
+    key = [t, settings.unicode]
+    key = key + t.get_absBindVar()
+    key = tuple(key)
+    if key in term_ast:
+        return term_ast[key]
 
     typecheck.checkinstance('get_ast_term', t, term.Term)
     var_names = [v.name for v in t.get_vars()]
@@ -479,7 +482,7 @@ def get_ast_term(t):
     infertype.infer_printed_type(copy_t)
 
     ast = helper(copy_t, [])
-    term_ast[(t, settings.unicode)] = ast
+    term_ast[key] = ast
     return ast
 
 def print_length(ast):

@@ -277,7 +277,8 @@ class Expr:
 
     def is_trig(self):
         return self.ty == FUN and self.func_name in ("sin", "cos", "tan", "cot", "csc", "sec")
-    
+
+
     def is_inverse_trig(self):
         return self.ty == FUN and self.func_name in ("asin","acos","atan","acot","acsc","asec")
 
@@ -1483,7 +1484,7 @@ class Op(Expr):
             if a.priority() <= op_priority[self.op]:
                 if a.ty == OP and a.op != self.op:
                     s1 = "(%s)" % s1
-                elif a.ty in (EVAL_AT, INTEGRAL, DERIV):
+                elif a.ty in (EVAL_AT, INTEGRAL, DERIV, LIMIT):
                     s1 = "(%s)" % s1
             if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
                 s2 = "(%s)" % s2
@@ -1615,7 +1616,9 @@ class Inf(Expr):
         return hash((INF, self.t))
     def __eq__(self, other):
         return isinstance(other,Inf) and other.ty == INF and self.t == other.t;
-
+NEG_INF = Inf(Decimal('-inf'))
+POS_INF = Inf(Decimal('inf'))
+ZERO = Const(0)
 def inf():
     return Inf(Decimal("inf"))
 
