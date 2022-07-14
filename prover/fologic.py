@@ -143,34 +143,38 @@ def skolem(fm):
     """Skolemize the formula. Assume the formula is already in nnf."""
     var_names = [v.name for v in fm.get_vars()]
 
-    def rec(t):
+    def rec(t,bd_var:list):
         if t.is_exists():
             # Obtain the list of variables that t depends on, not
             # counting functions (including skolem functions).
-            xs = [v for v in t.arg.body.get_vars() if not v.T.is_fun()]
-
+            xs1 = [v for v in t.arg.body.get_vars() if not v.T.is_fun() and v in bd_var]
+            xs2 = [v for v in t.arg.body.get_vars() if not v.T.is_fun() and v not in bd_var]
+            xs = xs1 + xs2
             # Obtain the new skolem variable.
             nm = "c_" + t.arg.var_name if len(xs) == 0 else "f_" + t.arg.var_name
             nm = name.get_variant_name(nm, var_names)
             var_names.append(nm)
-
             # Obtain the concrete instantiation of the skolem variable.
             T = TFun(*([x.T for x in xs] + [t.arg.var_T]))
             f = Var(nm, T)(*xs)
-            return rec(t.arg.subst_bound(f))
+            return rec(t.arg.subst_bound(f),bd_var.copy())
         elif t.is_forall():
             nm = name.get_variant_name(t.arg.var_name, var_names)
             var_names.append(nm)
             v = Var(nm, t.arg.var_T)
             body = t.arg.subst_bound(v)
-            return Forall(v, rec(body))
+            bd_var.append(v)
+            return Forall(v, rec(body, bd_var.copy()))
         elif t.is_conj() or t.is_disj():
-            return t.head(rec(t.arg1), rec(t.arg))
+            t1 = rec(t.arg1,bd_var.copy())
+            t2 = rec(t.arg,bd_var.copy())
+            return t.head(t1, t2)
         else:
             return t
 
-    return rec(fm)
+    return rec(fm,[])
 
 def askolemize(fm):
     """Perform simplify, nnf, and skolem transformations."""
-    return skolem(nnf(simplify(fm)))
+    simp_fm = nnf(simplify(fm))
+    return skolem(simp_fm)
