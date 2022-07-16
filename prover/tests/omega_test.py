@@ -1,6 +1,7 @@
 import unittest
 from kernel import term
 from kernel.type import IntType
+from logic import context
 # from prover.omega import Factoid, negate_key, combine_real_factoid, combine_dark_factoid, factoid_gcd,\
 #     dest_plus, dest_times, term_to_factoid, database
 from prover.omega import *
@@ -202,6 +203,7 @@ class OmegaTest(unittest.TestCase):
                         3, 4, [3, -15, 0, 0, 0, 29, 0, 24, -21, -13, 3])
         ]
 
+        context.set_context('int')
         vars = term.IntVars('x0 x1 x2 x3 x4 x5 x6 x7 x8 x9')
         hol = OmegaHOL([])
         for first, second, m1, m2, res in test_data:
@@ -223,6 +225,7 @@ class OmegaTest(unittest.TestCase):
             ([3, 6, -3], [1, 2, -1])
         ]
 
+        context.set_context('int')
         vars = term.IntVars('x0 x1 x2')
         hol = OmegaHOL([])
         for r, res in test_data:
