@@ -459,7 +459,7 @@ class ElimAbs(Rule):
             return False
         abs_info = []
         for i, j in integrals:
-            abs_expr = i.getAbs()
+            abs_expr = i.get_abs()
             abs_info += [(a, i) for a in abs_expr]
         zero_point = []
         for a, i in abs_info:
@@ -473,7 +473,7 @@ class ElimAbs(Rule):
     '''
     def get_zero_point(self, e):
         # 收集积分中被积表达式中的所有abs表达式
-        abs_expr = e.body.getAbs()
+        abs_expr = e.body.get_abs()
         zero_point = []
         
         for a in abs_expr:
@@ -495,7 +495,7 @@ class ElimAbs(Rule):
         if e.ty != expr.INTEGRAL:
             return e
 
-        abs_expr = e.body.getAbs()
+        abs_expr = e.body.get_abs()
         if len(abs_expr) == 0:
             return e
         # 选择一个 abs 表达式

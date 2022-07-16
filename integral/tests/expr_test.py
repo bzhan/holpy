@@ -361,20 +361,6 @@ class ExprTest(unittest.TestCase):
             s = parse_expr(s)
             self.assertEqual(s.is_constant(), s2)
 
-
-    # def testGetAbsByMonomial(self):
-    #     test_data = [
-    #         ("x * abs(x)", "abs(x)"),
-    #         ("sqrt(cos(x)) * abs(sin(x))", "abs(sin(x))"),
-    #         ("abs(x) * abs(y)", "abs(x) * abs(y)")
-    #     ]
-
-    #     for s, s2 in test_data:
-    #         s = parse_expr(s)
-    #             # s2[i] = parse_expr(s2[i])
-    #         print(s.getAbsByMonomial())
-    #         # self.assertEqual(s.getAbsByMonomial(), tuple(s2))
-
     def testGetAbs(self):
         test_data = [
             ("2 * u / (1 + abs(u))", ["abs(u)"]),
@@ -385,7 +371,7 @@ class ExprTest(unittest.TestCase):
             s = parse_expr(s)
             for i in range(len(s1)):
                 s1[i] = parse_expr(s1[i])
-            self.assertEqual(s.getAbs(), s1)
+            self.assertEqual(s.get_abs(), s1)
 
     def testPriority(self):
         x = parse_expr("x")

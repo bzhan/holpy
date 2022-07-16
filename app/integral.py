@@ -77,11 +77,7 @@ def integral_super_simplify():
     rules_set = [integral.rules.Simplify(),
                  integral.rules.OnSubterm(integral.rules.Linearity()),
                  integral.rules.OnSubterm(integral.rules.CommonIntegral())]
-    # abs_rule = integral.rules.ElimAbs()
     problem = integral.parser.parse_expr(data['problem'])
-    # if not (abs_rule.check_zero_point(problem) and len(problem.getAbs()) == 0):
-    #     # If there are no abs expression or there are no zero point
-    #     rules_set.append(integral.rules.OnSubterm(integral.rules.ElimAbs()))
     def simplify(problem):
         for i in range(5):
             for r in rules_set:             
