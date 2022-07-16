@@ -705,7 +705,7 @@ def rewrite_int_second_level(tm):
         (top_conv(rewr_conv('neg_iff_both_sides')), top_conv(rewr_conv('double_neg'))),
         (try_conv(bottom_conv(integer.omega_form_conv())),
         try_conv(bottom_conv(integer.int_norm_neg_compares())), try_conv(bottom_conv(integer.omega_form_conv())),
-        try_conv(bottom_conv(integer.int_norm_eq())),
+        bottom_conv(integer.int_norm_eq()),
         top_conv(rewr_conv('eq_mean_true')),
         try_conv(proplogic.norm_full()),
         top_conv(rewr_conv('neg_iff_both_sides')), 
@@ -713,7 +713,10 @@ def rewrite_int_second_level(tm):
     ]
 
     for arm in armony:
-        pt = compare_lhs_rhs(tm, arm)
+        try:
+            pt = compare_lhs_rhs(tm, arm)
+        except:
+            continue
         if pt.rule != 'sorry':
             return pt
 
@@ -732,7 +735,10 @@ def rewrite_int_second_level(tm):
     pt_norm_full = refl(tm).on_rhs(binop_conv(proplogic.norm_full()))
     tm_norm_full = pt_norm_full.rhs
     for arm in armony_with_norm:
-        pt = compare_lhs_rhs(tm_norm_full, arm)
+        try:
+            pt = compare_lhs_rhs(tm_norm_full, arm)
+        except:
+            continue
         if pt.rule != 'sorry':
             return pt_norm_full.symmetric().equal_elim(pt)
 

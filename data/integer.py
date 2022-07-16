@@ -8,7 +8,7 @@ from kernel.proofterm import ProofTerm
 from kernel.report import ProofReport
 from logic import basic
 from logic import context
-from logic.logic import apply_theorem
+from logic.logic import apply_theorem, is_if
 from logic.conv import Conv, rewr_conv, arg_conv, arg1_conv, binop_conv, top_conv, ConvException, try_conv
 from data import nat
 from kernel.thm import Thm
@@ -374,6 +374,8 @@ class simp_full(Conv):
             pt_mul_neg1 = pt.on_rhs(rewr_conv('int_poly_neg1'))
             pt_new = self.get_proof_term(pt_mul_neg1.prop.rhs)
             return pt.transitive(pt_mul_neg1).transitive(pt_new)
+        elif is_if(t):
+            return pt.on_rhs(binop_conv(self))
         else:  # rewrite x to 1 * x ^ 1
             return pt.on_rhs(
                 rewr_conv('int_pow_1_r', sym=True),
@@ -744,6 +746,8 @@ class int_eq_comparison_macro(Macro):
 class int_norm_eq(Conv):
     """Prove two linear equations are equal."""
     def get_proof_term(self, t):
+        if not t.is_int():
+            raise ConvException("%s should be an integer term")
         if not t.is_equals():
             raise ConvException("%s must be an equality." % str(t))
         pt = refl(t)
