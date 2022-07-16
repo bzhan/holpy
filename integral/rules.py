@@ -579,12 +579,15 @@ class IntegrateByEquation(Rule):
         self.coeff = (-Const(coeff)).normalize()
         return (new_rhs/(Const(1-coeff))).normalize()
 
-class ElimInfInterval(Rule):
-    """
-        Convert improper integral of TYPE 1 (infinite intervals)
-        to a limit expression.
-    """
 
+class ElimInfInterval(Rule):
+    """Convert improper integral with infinite upper or lower limits to
+    a limit expression.
+
+    If both upper and lower limits are infinity, a split point need to be
+    provided.
+
+    """
     def __init__(self):
         self.name = "Improper integral of Type 1"
 
@@ -594,25 +597,32 @@ class ElimInfInterval(Rule):
 
         def gen_lim_expr(new_var, lim, lower, upper, drt = None):
             return expr.Limit(new_var, lim, expr.Integral(e.var, lower, upper, e.body),drt)
+
         if e.ty != expr.INTEGRAL:
             return e
+
         inf = Inf(Decimal('inf'))
         neg_inf = Inf(Decimal('-inf'))
         upper, lower = e.upper, e.lower
         new_var = "s" if e.var == "t" else "t"
+
         if upper == inf and lower != neg_inf and lower != inf:
+            # INT x:[a,oo]. body => lim t->oo. INT x:[a,t]. body
             return gen_lim_expr(new_var, inf, lower, Var(new_var))
         elif upper == neg_inf and lower != neg_inf and lower != inf:
             return gen_lim_expr(new_var, inf, lower, Var(new_var))
         elif upper != inf and upper != neg_inf and lower == neg_inf:
+            # INT x:[-oo,a]. body => lim t->-oo. INT x:[t,a]. body
             return gen_lim_expr(new_var, neg_inf, Var(new_var), upper)
         elif upper != inf and upper != neg_inf and lower == inf:
             return gen_lim_expr(new_var, inf, Var(new_var), upper)
         elif upper == inf and lower == neg_inf:
+            # INT x:[-oo,oo]. body =>
+            # lim t->-oo. INT x:[t,a]. body + lim t->oo. INT x:[a,t]. body
             assert a is not None, "No split point provided"
             lim1 = gen_lim_expr(new_var, neg_inf, Var(new_var), a)
             lim2 = gen_lim_expr(new_var, inf, a, Var(new_var))
-            return Op('+',lim1,lim2)
+            return Op('+', lim1, lim2)
         elif upper == neg_inf and lower == inf:
             assert a is not None, "No split point provided"
             lim1 = gen_lim_expr(new_var, inf, Var(new_var), a)
@@ -621,31 +631,33 @@ class ElimInfInterval(Rule):
         else:
             raise NotImplementedError
 
+
 class LHopital(Rule):
     """Apply L'Hoptial rule."""
     def __init__(self):
         self.name = "L'Hopital"
 
     def eval(self, e):
-        #上下分式进行求导
         if isinstance(e, str):
             e = parser.parse_expr(e)
+
         if not isinstance(e, expr.Limit):
             return e
+
         if e.body.op == '-' and len(e.body.args) == 1:
             e1 = e.body.args[0]
             if e1.op == '*' and len(e1.args) == 2:
-                a,b = e1.args
+                # Special case: x * exp(-x) -> x / exp(x)
+                a, b = e1.args
                 var, lim = e.var, e.lim
                 res1 = compute_limit(a.replace_trig(Var(var), lim))
                 res2 = compute_limit(b.replace_trig(Var(var), lim))
-                # x * exp(-x) -> x / exp(x) when x->-oo
-                if res1[0] in (NEG_INF,POS_INF) and res2[0] == expr.ZERO:
+                if res1[0] in (NEG_INF, POS_INF) and res2[0] == expr.ZERO:
                     if b.ty == expr.FUN and b.func_name == 'exp':
                         e = Limit(var, lim, -a / Fun('exp', -b.args[0]))
                     else:
-                        return e;
-                elif res2[0] in (NEG_INF,POS_INF) and res1[0] == expr.ZERO:
+                        return e
+                elif res2[0] in (NEG_INF, POS_INF) and res1[0] == expr.ZERO:
                     if a.ty == expr.FUN and a.func_name == 'exp':
                         e = Limit(var, lim, -b / Fun('exp', -a.args[0]))
                     else:
@@ -655,10 +667,11 @@ class LHopital(Rule):
 
         if not (isinstance(e.body, expr.Op) and e.body.op == '/'):
             return e
+
         numerator, denominator = e.body.args
         rule = DerivationSimplify()
-        return expr.Limit(e.var,e.lim,Op('/',rule.eval(Deriv(e.var,numerator)),\
-                                         rule.eval(Deriv(e.var,denominator))) ,e.drt)
+        return expr.Limit(e.var ,e.lim, Op('/', rule.eval(Deriv(e.var,numerator)),
+                                                rule.eval(Deriv(e.var,denominator))), e.drt)
         # if e.ty != LIMIT:
         #     return e
         # bd = e.body
@@ -707,28 +720,32 @@ class LHopital(Rule):
         #         return (nm_subst / denom_subst).normalize()
         #     else:
         #         raise NotImplementedError
+
+
 class LimSep(Rule):
-    '''
-    ex:
+    """Perform the following rewrites:
+
         Lim (exp1 + exp2) -> (Lim exp1) + (Lim exp2)
         Lim (exp1 - exp2) -> (Lim exp1) - (Lim exp2)
         Lim (exp1 * exp2) -> (Lim exp1) * (Lim exp2)
         Lim (exp1 / exp2) -> (Lim exp1) / (Lim exp2)
-    '''
+
+    """
     def __init__(self):
         self.name = "LimSep"
 
     def eval(self, e):
         if isinstance(e, str):
             e = parser.parse_expr(e)
-        if not (isinstance(e, expr.Limit) and isinstance(e.body, expr.Op) and\
-                e.body.op in ('+','-','*','/') and len(e.body.args)==2):
-            return e;
-        return expr.Op(e.body.op,expr.Limit(e.var, e.lim, e.body.args[0],e.drt) , expr.Limit(e.var, e.lim, e.body.args[1],e.drt));
+        if not (isinstance(e, expr.Limit) and isinstance(e.body, expr.Op) and \
+                e.body.op in ('+', '-' ,'*', '/') and len(e.body.args) == 2):
+            return e
+        return expr.Op(e.body.op, expr.Limit(e.var, e.lim, e.body.args[0], e.drt),
+                                  expr.Limit(e.var, e.lim, e.body.args[1], e.drt))
 
 
 class DerivationSimplify(Rule):
-    # 导数计算，但是可导性的判断不在这里做
+    """Simplify the derivative of an expression"""
     def __init__(self):
         self.name = "DerivationSimplify"
 
@@ -752,7 +769,6 @@ class DerivationSimplify(Rule):
         e = u / v,则 D x.e = (D x. u) * v - (D x.v) * u / (v^ 2)
         '''
         def D(f):
-            #print("f and type:",f,type(f))
             if f.ty == CONST:
                 return Const(0);
             elif f.ty == VAR and f.name == e.var:
@@ -783,7 +799,7 @@ class DerivationSimplify(Rule):
                         return b.normalize() * (a^(b-1)).normalize()
                     return (f * D(Fun('exp',b * Fun('log', a)))).normalize()
                 else:
-                    raise NotImplementedError;
+                    raise NotImplementedError
             elif f.ty == FUN:
                 func_name, length = f.func_name, len(f.args)
                 # 例如 pi , e

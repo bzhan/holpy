@@ -374,7 +374,7 @@ class RulesTest(unittest.TestCase):
             ('LIM {x -> -oo}. (x+7) / (3*x+5)',"1/3"),
             ('LIM {x -> oo}. (7*x*x + x - 100) / (2*x^2 - 5 *x)',"7/2"),
             ("LIM {x -> oo}. (x^2 - 3*x + 7)/(x^3 + 10*x - 4)","0"),
-            ('LIM {x -> -oo}. (7 * x * x - x + 11) / (4 - x)',"-oo"),
+            ('LIM {x -> -oo}. (7 * x * x - x + 11) / (4 - x)',"oo"),
             ('LIM {x -> oo}. sqrt(x^3 + 7*x)',"oo"),
             ('LIM {x -> oo}. log((x^6-500)/(x^6+500))',"0"),
             ('LIM {x -> -oo}. cos(x/(x^2+10) + pi/3)',"1/2"),
