@@ -4,6 +4,7 @@ from typing import Tuple, List
 import copy
 from lark import Lark, Transformer, v_args, exceptions
 
+import syntax
 from kernel import type as hol_type
 from kernel.type import Type, STVar, TVar, TConst, TFun, BoolType, NatType, TyInst
 from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, Not, And, Or, Implies, Binary, Inst
@@ -15,6 +16,7 @@ from kernel import theory
 from kernel import extension
 from logic import context
 from syntax import infertype
+from syntax.tests import parser_test
 
 
 class ParserException(Exception):
@@ -419,7 +421,6 @@ def parse_type(s, *, check_type=True):
     if check_type:
         theory.thy.check_type(T)
     return T
-
 def parse_term(s):
     """Parse a term."""
     # Permit parsing a list of strings by concatenating them.

@@ -4,6 +4,7 @@ import unittest
 
 from kernel.type import BoolType, TFun, TVar
 from logic import basic
+from prover.fologic import simplify, nnf
 from syntax import parser
 from logic import context
 from prover import fologic
@@ -66,3 +67,4 @@ class FOLogicTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

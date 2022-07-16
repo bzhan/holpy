@@ -28,26 +28,6 @@
             }
         },
         {
-            "name": "disjI1_syllogism",
-            "prop": "(P ∨ Q ⟶ R) ⟶ P ⟶ R",
-            "ty": "thm",
-            "vars": {
-                "P": "bool",
-                "Q": "bool",
-                "R": "bool"
-            }
-        },
-        {
-            "name": "disjI2_syllogism",
-            "prop": "(P ∨ Q ⟶ R) ⟶ Q ⟶ R",
-            "ty": "thm",
-            "vars": {
-                "P": "bool",
-                "Q": "bool",
-                "R": "bool"
-            }
-        },
-        {
             "name": "equiv1",
             "prop": "P ⟷ Q ⟶ ¬P ∨ Q",
             "ty": "thm",

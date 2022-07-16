@@ -5,10 +5,12 @@ from decimal import Decimal
 from fractions import Fraction
 import copy
 
+import integral
 from logic import basic
-from integral import expr
-from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt, Symbol,\
-    VAR, CONST, OP, FUN, match, pi, Const
+from logic import context
+from integral import expr, proof
+from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt, Symbol, \
+    VAR, CONST, OP, FUN, match, pi, Const, expr_to_holpy
 from integral.parser import parse_expr
 
 basic.load_theory('transcendentals')
@@ -131,11 +133,13 @@ class ExprTest(unittest.TestCase):
             ("cos((39 * (pi / 100)) / 2)", "cos(39/200 * pi)")
         ]
 
+        context.set_context('interval_arith')
         for s, res in test_data:
             t = parse_expr(s)
             self.assertEqual(str(t.normalize_constant()), res)
 
     def testNormalizeConstantTrig(self):
+        context.set_context('interval_arith')
         table = expr.trig_table()
         for func_name in ('sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
             for k, v in table[func_name].items():
@@ -247,6 +251,7 @@ class ExprTest(unittest.TestCase):
             ("exp (log(2))", "2"),
         ]
 
+        context.set_context('interval_arith')
         for s, res in test_data:
             t = parse_expr(s)
             self.assertEqual(str(t.normalize()), res)
@@ -292,7 +297,7 @@ class ExprTest(unittest.TestCase):
     def testReplace1(self):
         test_data = [
             ("x ^ 4", "x ^ 2", "u", "u ^ 2"),
-            ("1/2 * x ^ ((-1)/2)", "x ^ (1/2)", "u", "1/2 * u ^ (-1)")
+            ("1/2 * x ^ ((-1)/2)", "x ^ (1/2)", "u", "1/2 * u ^ -1")
         ]
 
         for s, e, repl_e, res in test_data:
@@ -356,20 +361,6 @@ class ExprTest(unittest.TestCase):
             s = parse_expr(s)
             self.assertEqual(s.is_constant(), s2)
 
-
-    # def testGetAbsByMonomial(self):
-    #     test_data = [
-    #         ("x * abs(x)", "abs(x)"),
-    #         ("sqrt(cos(x)) * abs(sin(x))", "abs(sin(x))"),
-    #         ("abs(x) * abs(y)", "abs(x) * abs(y)")
-    #     ]
-
-    #     for s, s2 in test_data:
-    #         s = parse_expr(s)
-    #             # s2[i] = parse_expr(s2[i])
-    #         print(s.getAbsByMonomial())
-    #         # self.assertEqual(s.getAbsByMonomial(), tuple(s2))
-
     def testGetAbs(self):
         test_data = [
             ("2 * u / (1 + abs(u))", ["abs(u)"]),
@@ -380,16 +371,22 @@ class ExprTest(unittest.TestCase):
             s = parse_expr(s)
             for i in range(len(s1)):
                 s1[i] = parse_expr(s1[i])
-            self.assertEqual(s.getAbs(), s1)
+            self.assertEqual(s.get_abs(), s1)
 
     def testPriority(self):
         x = parse_expr("x")
         test_data = [
-            (Const(1) + (x ^ Const(2)), "1 + x^2"),
+            ("1+(x^2)", "1 + x ^ 2"),
+            ("1+(-2)","1 + -2"),
+            ('-(x+3)','-(x + 3)'),
+            ('------------x', '------------x'),
+            ('x+-5', 'x + -5'),
+
         ]
 
         for s, s2 in test_data:
-            self.assertEqual(s, parse_expr(s2))
+            e = expr.parser.parse_expr(s)
+            self.assertEqual(str(e), s2)
 
     def testReplaceExpr(self):
         test_data = [
@@ -470,6 +467,7 @@ class ExprTest(unittest.TestCase):
             ("2 + 3 * x + 4", "6 + 3 * x"),
             (" 0 / (x + y)", "0"),
             ("2 + x / y + 2 * (x / y) + 3", "5 + 3 * x * y ^ -1"),
+            ("x+y","x + y"),
             ("(x + y) ^ 2", "(x + y) ^ 2"),
             ("x^(1.5)","x ^ (3/2)"),
             ("(x + y) * (x - y)", "x ^ 2 + -(y ^ 2)"),
@@ -526,5 +524,7 @@ class ExprTest(unittest.TestCase):
     def testSimplifyConstant(self):
         pass
 
+
 if __name__ == "__main__":
     unittest.main()
+

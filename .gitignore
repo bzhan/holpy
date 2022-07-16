@@ -119,9 +119,11 @@ dmypy.json
 # DS_Store
 *.DS_Store
 
-# Users directory
-users/*
-
 # node_modules
 node_modules/
 package-lock.json
+
+# Holpy specific
+users/*
+smt/veriT/tests/smtlib_path.txt
+

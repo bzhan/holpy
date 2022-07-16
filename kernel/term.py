@@ -340,7 +340,25 @@ class Term():
             return 1
         else:
             raise TypeError
-    
+
+    def get_absBindVar(self) -> list:
+        res = []
+        def f(t:Term):
+            if t.is_abs():
+                res.append(t.var_name)
+                return
+            elif t.is_comb():
+                f(t.fun)
+                f(t.arg)
+            else:
+                return
+        f(self)
+        return res
+
+
+
+
+
     def get_type(self) -> Type:
         """Returns type of the term with minimal type checking."""
         def rec(t: Term, bd_vars):

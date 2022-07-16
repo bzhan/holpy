@@ -276,9 +276,9 @@ class LogicTest(unittest.TestCase):
         vars = {'A': 'bool', 'B': 'bool', 'C': 'bool', 'D': 'bool'}
         for t, success in test_data:
             if success:
-                test_macro(self, 'logic_base', 'imp_disj', vars=vars, args=t, res=t)
+                test_macro(self, 'logic', 'imp_disj', vars=vars, args=t, res=t)
             else:
-                test_macro(self, 'logic_base', 'imp_disj', vars=vars, args=t, failed=AssertionError)
+                test_macro(self, 'logic', 'imp_disj', vars=vars, args=t, failed=AssertionError)
 
     def testDisjNorm(self):
         test_data = [
@@ -302,7 +302,7 @@ class LogicTest(unittest.TestCase):
 
         vars = {'P': 'bool', 'Q': 'bool', 'R': 'bool'}
         for t1, t2, t_res in test_data:
-            test_macro(self, 'logic_base', 'resolution', vars=vars, assms=[t1, t2], res=t_res)
+            test_macro(self, 'logic', 'resolution', vars=vars, assms=[t1, t2], res=t_res)
 
 
 if __name__ == "__main__":

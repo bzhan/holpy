@@ -1,9 +1,14 @@
 """Unit test for rules."""
-
+import os
 import unittest
+from decimal import Decimal
 from fractions import Fraction
 
-from integral.expr import Const, deriv
+import sympy
+
+import integral
+from integral import expr, parser
+from integral.expr import Const, deriv, neg_inf, Inf
 from integral.parser import parse_expr
 from integral import rules
 from sympy.parsing import sympy_parser
@@ -117,7 +122,7 @@ class RulesTest(unittest.TestCase):
     def testSubstitution5(self):
         e = parse_expr("INT t:[0, 1]. t * exp(-(t^2/2))")
         e = rules.Substitution1("u", parse_expr("-t^2/2")).eval(e)
-        self.assertEqual(e, parse_expr("INT u:[-1/2,0]. exp(u)"))
+        self.assertEqual(e, parse_expr("INT u:[-1/2,0]. exp(u)"),"%s"%e)
 
     def testSubstitution6(self):
         e = parse_expr("INT x:[-2, 0]. (x + 2)/(x^2 + 2*x + 2)")
@@ -291,8 +296,157 @@ class RulesTest(unittest.TestCase):
             rule = rules.Substitution2(s1, s2)
             self.assertEqual(rule.eval(s).normalize(), s3.normalize())
             
+    def testElimInfInterval(self):
+        test_data = [
+            ("INT x:[-inf, inf]. 1/x",Const(2),"(LIM {t -> -oo}. INT x:[t,2]. 1 / x) + (LIM {t -> oo}. INT x:[2,t]. 1 / x)"),
+            ("INT x:[inf, -inf]. 1/x",Const(3),"(LIM {t -> oo}. INT x:[t,3]. 1 / x) + (LIM {t -> -oo}. INT x:[3,t]. 1 / x)")
+        ]
+        for s1,a,s2 in test_data:
+            e = parse_expr(s1)
+            e = rules.ElimInfInterval().eval(e,a)
+            self.assertEqual(str(e), s2)
+
+    def testElimInfInterval2(self):
+        test_data = [
+            ("INT x:[1, inf]. 1/x", "LIM {t -> oo}. INT x:[1,t]. 1 / x"),
+            ('INT x:[-inf,inf]. 1/x', "(LIM {t -> -oo}. INT x:[t,0]. (1) / (x)) + (LIM {t -> oo}. INT x:[0,t]. (1) / (x))"),
+            ('INT x:[-inf,3]. log(x) + sin(x) + x^2',"LIM {t -> -oo}. INT x:[t,3]. ((log(x)) + (sin(x))) + ((x) ^ (2))"),
+
+        ]
+        for s1, s2 in test_data:
+            e1 = parse_expr(s1)
+            e1 = rules.ElimInfInterval().eval(e1)
+            e2 = parse_expr(s2)
+            self.assertEqual(e1, e2)
+
+    def testLimSep(self):
+        test_data = [("LIM {x -> inf}. 3*x + 4*sin(x)", "(LIM {x -> oo}. (3) * (x)) + (LIM {x -> oo}. (4) * (sin(x)))"),
+                     ("LIM {x -> 3 +}. x / (x-3)", "(LIM {x -> 3 +}. x) / (LIM {x -> 3 +}. x - 3)"),
+                     ("LIM {x -> oo}. x", "LIM {x -> oo}.x"),
+                     ("LIM {x -> oo}. (-x) - x", "(LIM {x -> oo}. (-x)) - (LIM {x -> oo}. x)"),
+                     ("LIM {x -> -oo}. (1/x) + (2/x)", "(LIM {x -> -oo}. (1) / (x)) + (LIM {x -> -oo}. (2) / (x))"),
+                     ("LIM {x -> -oo}. x / (x+sin(x))", "(LIM {x -> -oo}. x) / (LIM {x -> -oo}. (x) + (sin(x)))"),
+                     ("LIM {x -> -oo}. (x^2) * x", "(LIM {x -> -oo}. (x) ^ (2)) * (LIM {x -> -oo}. x)"),
+                     ("LIM {x -> 3 -}. x / sin(x+2)", "(LIM {x -> 3 -}. x) / (LIM {x -> 3 -}. sin((x) + (2)))"),
+                     ("LIM {x -> 4 +}. cos(x) + x", "(LIM {x -> 4 +}. cos(x)) + (LIM {x -> 4 +}. x)"),
+                     ("LIM {x -> 5}. x / tan(x)", "(LIM {x -> 5 }. x) / (LIM {x -> 5 }. tan(x))"),
+                     ("LIM {x -> -oo}. log(x) * x", "(LIM {x -> -oo}. log(x)) * (LIM {x -> -oo}. x)"), ]
+        for s1,s2 in test_data:
+            e1,e2 = rules.LimSep().eval(parse_expr(s1)),parse_expr(s2)
+            self.assertEqual(str(e1),str(e2))
+    def testLHopital2(self):
+        pass
+
+    def testDerivationSimplify(self):
+        test_data = [
+            ("D x. x",'1'),
+            ( "D x. log(x)",'x ^ (-1)'),
+            ("D x. sin(x^2)",'2 * x * cos(x ^ 2)'),
+            ("D x. sin(x+y) * y + 3",'y * cos(x + y)'),
+            ("D y. tan(log(x)+y) * y^2 + cos(y) - y + 3", '-1 + 2 * y * tan(y + log(x)) + y ^ 2 * sec(y + log(x)) ^ 2 + -sin(y)'),
+            ('D z. exp(2*z) + 1/cos(z) + 1/z * z','cos(z) ^ (-2) * sin(z) + 2 * exp(2 * z)'),
+            ( 'D x. (2*x +x^2 + cos(x)) / (sin(x) + tan(x))','(-2 * x * cos(x) + -2 * x * sec(x) ^ 2 + 2 * x * sin(x) + 2 * x * tan(x) + -(x ^ 2 * cos(x)) + -(x ^ 2 * sec(x) ^ 2) + -(cos(x) * sec(x) ^ 2) + -(cos(x) ^ 2) + 2 * sin(x) + -(sin(x) * tan(x)) + -(sin(x) ^ 2) + 2 * tan(x)) / (sin(x) + tan(x)) ^ 2'),
+        ]
+        for a,b in test_data:
+            a,b = parser.parse_expr(a),parser.parse_expr(b)
+            self.assertEqual(str(rules.DerivationSimplify().eval(a)),str(b))
+
+    def testLimitSimplify(self):
+        test_data = [
+            ("LIM {x -> 3}. (5*x*x-8*x-13)/(x*x-5)", "2"),
+            ("LIM {x -> 2}. (3*x*x-x-10)/(x*x-4)", "11/4"),
+            ("LIM {x -> 3}. (x^4-81)/(2*x*x-5*x-3)", "108/7"),
+            ("LIM {x -> -2}. ((1/x)+(1/2))/(x^3+8)", "-1/48"),
+            ("LIM {x -> 4}. (3-sqrt(x+5))/(x-4)", "-1/6"),
+            ("LIM {x->27}. (x-27) / (x^(1/3)-3)", "27"),
+            ("LIM {x->1}. (x^(1/3) - 1) / (x^(1/4)-1)", "4/3"),
+            ("LIM {x->0}. sin(5*x) / (3*x)", "5/3"),
+            ("LIM {x->0}. (cos(2*x) - 1) / (cos(x) - 1)", "4"),
+            ("LIM {x->1}. (x^(1/3) - 1) / (x^(1/4)-1)", "4/3"),
+            ("LIM {x->0}. sin(5*x) / (3*x)", "5/3"),
+            ("LIM {x->0}. (cos(2*x) - 1) / (cos(x) - 1)", "4"),
+            ("LIM {t -> oo}. (-1/t) + 1","1"),
+            ('LIM {x -> oo}. 100 / (x^2+5)',"0"),
+            ('LIM {x -> -oo}. 7 / (x^3 - 20)',"0"),
+            ('LIM {x -> oo}. 3*x^3 - 1000*x^2',"oo"),
+            ('LIM {x -> -oo}. x^4 + 5*x^2 + 1',"oo"),
+            ('LIM {x -> oo}. x^5 - x^2 + x - 10',"oo"),
+            ('LIM {x -> -oo}. (x+7) / (3*x+5)',"1/3"),
+            ('LIM {x -> oo}. (7*x*x + x - 100) / (2*x^2 - 5 *x)',"7/2"),
+            ("LIM {x -> oo}. (x^2 - 3*x + 7)/(x^3 + 10*x - 4)","0"),
+            ('LIM {x -> -oo}. (7 * x * x - x + 11) / (4 - x)',"-oo"),
+            ('LIM {x -> oo}. sqrt(x^3 + 7*x)',"oo"),
+            ('LIM {x -> oo}. log((x^6-500)/(x^6+500))',"0"),
+            ('LIM {x -> -oo}. cos(x/(x^2+10) + pi/3)',"1/2"),
+            ('LIM {x -> -oo}. (x+3) / sqrt(9*x*x - 5 * x)',"-1/3"),  # 分子变成 sqrt((x+3)^2)
+            ('LIM {x -> oo}. (x+3) / sqrt(9*x*x - 5 * x)',"1/3"),
+            ("LIM {x -> oo}. sin(x)","sin(oo)"),
+            ('LIM {x -> oo}. x - sqrt(x*x + 7)',"0"),  # 待解决 分子分母同乘 x + sqrt(x*x + 7)
+            ('LIM {x -> -oo}. x - sqrt(x*x + 7)',"-oo"),  # 待解决 分子分母同乘 x + sqrt(x*x + 7)
+            ('LIM {x -> -oo}. exp(x) / (4+5*exp(3*x))',"0"),
+            # ("LIM {x->0}. (x^3 - 7*x) / (x^3)"),  #极限不存在
+            # ("LIM {x->1}. (x^3 - 7*x) / (x-1)^2"), #极限不存在
+            # ("LIM {x-> (pi/2) }. tan(2*x) / (x - pi / 2)"),
+            # ('LIM {x -> oo}. 5^x / (3^x + 2^x)'),
+            ("LIM {x -> oo}. (5/3)^x / (1 + (2/3)^x)","oo"),
+            # ('LIM {x -> oo}. (3^x + 3^(2*x))^(1/x)'),
+            ('LIM {x -> oo}. 9*((1/3)^x + 1)^(1/x)',"9"),
+            ('LIM {x -> 0}. sin(x) / x',"1"),  # 特殊极限
+            ('LIM {x -> 0}. x / sin(x)',"1"),
+            ('LIM {x -> oo}. (1+(1/x))^x',"exp(1)"),
+            ('LIM {x -> oo}. ((1/x)+1)^x',"exp(1)"),
+            ('LIM {x -> oo}. (1+x^(-1))^x',"exp(1)"),
+            ('LIM {x -> oo}. (x^(-1)+1)^x', "exp(1)"),
+            ("LIM {x -> 5}. 7","7"),
+            ("LIM {x -> 10}. (3*x+5)", '35'),
+            ("LIM {x -> (-3/2)}. (1-4*x)", '7'),
+            ("LIM {x -> 1}. (x^2 + 3)", '4'),
+            ("LIM {x -> (-1)}. (x^2+3)", '4'),
+            ("LIM {x -> 2}. (3*x*x-x)", '10'),
+            ("LIM {x -> 3}. 2/(x+3)", '1/3'),
+            ("LIM {x -> -6}. (x+4)/(2-x)", '-1/4'),
+            ("LIM {x -> 3}. x/(4*x-9)", '1'),
+            ("LIM {x -> -6}. (x+4) / (2-x)", '-1/4'),
+            ("LIM {x -> 3}. x / (4*x-9)", '1'),
+            ("LIM {x -> 9}. (2+sqrt(x))", '5'),
+            ("LIM {x->1}. (x*x-1)/(x*x+3*x-4)", "2/5"),
+            ("LIM {x->4}. (x-4)/(sqrt(x)-2)", "4"),
+            ("LIM {x->0}. sin(x) / x", "1"),
+            ("LIM {x->0}. (3^x-2^x)/(x^2-x)", "log(2) + -log(3)"),
+            # ('LIM {x -> oo}. 5^x / (3^x + 2^x)'),
+            ('LIM {x->0}. (x*tan(x))/sin(3*x)', "0"),
+            ('LIM {x->0}. (x^2*exp(x))/(tan(x))^2', "1"),
+            ('LIM {x->0}. atan(4*x)/atan(5*x)', "4/5"),
+            ('LIM {x->0}. sin(x*x)/(x*tan(x))', "1"),
+            ('LIM {x->0}. (x*x*e^x)/tan(x)^2', "1"),
+            # ('LIM {x->0}. exp(-1/x^2)/x^2'), #错误
+            ('LIM {x->oo}. exp(3*x) / (5*x+200)', "oo"),
+            ('LIM {x->oo}. (3+log(x))/(x^2+7)', "0"),
+            ('LIM {x->oo}. (x^2+3*x-10)/(7*x^2-5*x+4)', "1/7"),
+            ('LIM {x->oo}. (log(x))^2/exp(2*x)', "0"),
+            # ('LIM {x->oo}. (3*x+2^x)/(2*x+3^x)'),
+            # ('LIM {x->oo}. (exp(x)+2/x) / (exp(x)+5/x)')# 洛必达死循环
+            # ("LIM {x->oo}. sqrt(x^2+1)-sqrt(x-1)"),
+            ("LIM {x->oo}. exp(-x)*sin(x)", "0"),
+            ("LIM {x-> (pi/2) }. tan(2*x) / (x - pi / 2)","2"),
+            ("LIM {x->oo}. atan(x) + exp(-x)", "1/2 * pi"),
+            ("LIM {x->-oo}. atan(x) + exp(x)", "-1/2 * pi"),
+            ("LIM {x->oo}. asin(x)", "asin(oo)"),
+            ("LIM {x->oo}. exp(-3*x+2)*atan(3*x^2)", "0"),
+            ("LIM {t->-oo}. -1+(-t*exp(t))+exp(t)","-1"),
+            ("LIM {t->oo}. atan(t) - atan(sqrt(2)/2)","1/2 * pi + -atan(sqrt(2) / 2)"),
+        ]
+        for a,b in test_data:
+
+            e = rules.LimitSimplify().eval(a)
+            # print(e)
+            self.assertEqual(str(e[0].normalize()),b,a)
 
 
 if __name__ == "__main__":
     unittest.main()
- 
+    # e = parsef_expr("INT t:[0, 1]. t * exp(-(t^2/2))")
+    # print(e)
+    # e = rules.Substitution1("u", parse_expr("-t^2/2")).eval(e)
+    # self.assertEqual(e, parse_expr("INT u:[-1/2,0]. exp(u)"), "%s" % e)
+    # print(expr.parser.parse_expr("sqrt(-x)").normalize())
