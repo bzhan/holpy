@@ -637,8 +637,8 @@ class LHopital(Rule):
             if e1.op == '*' and len(e1.args) == 2:
                 a,b = e1.args
                 var, lim = e.var, e.lim
-                res1 = computeLimit(a.replace_trig(Var(var), lim))
-                res2 = computeLimit(b.replace_trig(Var(var), lim))
+                res1 = compute_limit(a.replace_trig(Var(var), lim))
+                res2 = compute_limit(b.replace_trig(Var(var), lim))
                 # x * exp(-x) -> x / exp(x) when x->-oo
                 if res1[0] in (NEG_INF,POS_INF) and res2[0] == expr.ZERO:
                     if b.ty == expr.FUN and b.func_name == 'exp':
@@ -930,30 +930,50 @@ def check_item(item, target=None, *, debug=False):
             raise AssertionError("Error on final answer")
 
 
-# 返回值 (表达式，类型, 无穷的阶数， 无穷的类型)
-# 类型有 const:常量,pos_inf:正无穷,neg_inf:负无穷,
-# indefinite_bounded:不确定有界量,indefinite_unbounded,不确定无界量 # 极限不存在
-# unknown 不定式 # 不确定存不存在
-# 变量已经被替换掉了
-# origin是原本的极限表达式，e是把极限值带入之后的式子
-def computeLimit(e:Expr):
+def compute_limit(e: Expr):
+    """Compute the limit of the expression.
+    
+    The returned value is of the form (e, type, order of infinity, type of infinity),
+    where type is one of
+    - "const": limit is a finite value
+    - "pos_inf": limit is positive infinity
+    - "neg_inf": limit is negative infinity
+    - "indefinite_bounded": limit is unknown finite value
+    - "indefinite_unbounded": "limit is unknown unbounded value
+    - "unknown": limit is unknown
+
+    Type of infinity is one of
+    - "poly": polynomial growth
+    - "log": logarithmic growth
+    - "?": other kind of growth
+
+    If type of infinity is "poly", order of infinity gives order of polynomial
+    growth. Otherwise order of infinity is -1.
+
+    """
     if e.ty == CONST or e.ty == FUN and len(e.args) == 0:
-        return (e, 'const', 0, "?");
+        # Constants
+        return (e, 'const', 0, "?")
     elif e.ty == VAR:
+        # Variable
         return (e, 'const', 0, '?')
     elif e.ty == OP and e.op == '-' and len(e.args) == 1:
-        a, b, c, d= computeLimit(e.args[0])
+        # Unary minus
+        a, b, c, d = compute_limit(e.args[0])
         if b == 'pos_inf':
             return (-a, 'neg_inf', c, d)
         elif b == 'neg_inf':
             return (-a, 'pos_inf', c, d)
-        return (-a,b,c,d)
+        return (-a, b, c, d)
     elif e.ty == OP and e.op == '-' and len(e.args) == 2:
-        a1, b1, c1, d1 = computeLimit(e.args[0])
-        a2, b2, c2, d2= computeLimit(e.args[1])
-        if b1 == 'const' and b2 == 'const': # a - b
-            return ((a1 - a2), 'const', 0, "?")
+        # Binary minus
+        a1, b1, c1, d1 = compute_limit(e.args[0])
+        a2, b2, c2, d2 = compute_limit(e.args[1])
+        if b1 == 'const' and b2 == 'const':
+            # Both sides have finite limits
+            return (a1 - a2, 'const', 0, "?")
         elif b1 == 'pos_inf' and b2 == 'pos_inf':
+            # Both sides to infinity: compare order of infinity
             if d1 == 'poly' and d2 == 'poly':
                 if c1 == c2:
                     return (a1 - a2, 'unknown', -1, "?")
@@ -963,124 +983,159 @@ def computeLimit(e:Expr):
                     return (Inf(Decimal('-inf')), 'neg_inf', c2, d2)
             else:
                 return (a1 - a2, 'unknown', -1, "?")
-        elif b1 == 'const' and b2 == 'pos_inf': # a - oo
+        elif b1 == 'const' and b2 == 'pos_inf':
+            # a - oo = -oo
             return (Inf(Decimal('-inf')), 'neg_inf', c2, d2)
-        elif b1 == 'const' and b2 == 'neg_inf': # a - (-oo)
+        elif b1 == 'const' and b2 == 'neg_inf':
+            # a - (-oo) = oo
             return (Inf(Decimal('inf')), 'pos_inf', c2, d2)
         elif b1 == 'const' and b2 == 'indefinite_bounded':
+            # a - bounded = bounded
             return (a1 - a2, 'indefinite_bounded', -1, "?")
-        elif b1 == 'const' and b2 == 'indefinite_unbounded': # a - 不存在
+        elif b1 == 'const' and b2 == 'indefinite_unbounded':
+            # a - unbounded = unbounded
             return (a1 - a2, "indefinite_unbounded", -1, "?")
-        elif b1 == 'pos_inf' and b2 in ('indefinite_bounded', 'const'): # oo - 有界量
+        elif b1 == 'pos_inf' and b2 in ('indefinite_bounded', 'const'):
+            # oo - bounded = oo
             return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
-        elif b1 == 'pos_inf' and b2 == 'neg_inf': # oo - (-oo)
+        elif b1 == 'pos_inf' and b2 == 'neg_inf':
+            # oo - (-oo) = oo, compute order of infinity
             if d1 == 'poly' and d2 == 'poly':
                 return (Inf(Decimal('inf')), 'pos_inf', max(c1,c2), d2)
             else:
                 return (Inf(Decimal('inf')), 'pos_inf', -1, "?")
-        elif b1 == 'neg_inf' and b2 in ('const', 'indefinite_bounded'): # -oo - 有界量
+        elif b1 == 'neg_inf' and b2 in ('const', 'indefinite_bounded'):
+            # -oo - bounded = -oo
             return (Inf(Decimal('-inf')), 'neg_inf',c1,d1)
-        elif b1 == 'neg_inf' and b2 == 'pos_inf': # (-oo) - oo
+        elif b1 == 'neg_inf' and b2 == 'pos_inf':
+            # (-oo) - oo = -oo, compute order of infinity
             if d1 == 'poly' and d2 == 'poly':
-                return (Inf(Decimal('-inf')), 'neg_inf',max(c1,c2),d1)
+                return (Inf(Decimal('-inf')), 'neg_inf', max(c1,c2), d1)
             else:
-                return (Inf(Decimal('-inf')), 'neg_inf',-1,"?")
-        elif b1 in ('indefinite_bounded') and b2 == 'const':
-            return (a1 - a2, "indefinite_bounded",-1,"?")
+                return (Inf(Decimal('-inf')), 'neg_inf', -1, "?")
+        elif b1 == 'indefinite_bounded' and b2 == 'const':
+            # bounded - const = bounded
+            return (a1 - a2, "indefinite_bounded", -1, "?")
         elif b1 in ('indefinite_unbounded') and b2 == 'const':
+            # unbounded - const = unbounded
             return (a1 - a2, "indefinite_unbounded", -1, "?")
         else:
-            return (a1 - a2,'unknown',-1,"?")
+            # Otherwise, return unknown
+            return (a1 - a2, "unknown", -1, "?")
     elif e.ty == OP and e.op == '+' and len(e.args) == 2:
-
-        a1, b1, c1, d1 = computeLimit(e.args[0])
-
-        a2, b2, c2, d2 = computeLimit(e.args[1])
-
-        if b1 == 'const' and b2 == 'const':  # a + b
-            if a1.ty==CONST and a2.ty==CONST:
-                return (Const(a1.val+a2.val), "const", 0, "?")
+        # Binary plus
+        a1, b1, c1, d1 = compute_limit(e.args[0])
+        a2, b2, c2, d2 = compute_limit(e.args[1])
+        if b1 == 'const' and b2 == 'const': 
+            # Both sides have finite limits
+            if a1.is_const() and a2.is_const():
+                return (Const(a1.val + a2.val), "const", 0, "?")
             else:
-                return ((a1 + a2), 'const', 0, "?")
-        elif b1 == 'const' and b2 == 'pos_inf':  # a + oo
+                return (a1 + a2, 'const', 0, "?")
+        elif b1 == 'const' and b2 == 'pos_inf':
+            # a + oo = oo
             return (Inf(Decimal('inf')), 'pos_inf', c2, d2)
-        elif b1 == 'const' and b2 == 'neg_inf':  # a + (-oo)
+        elif b1 == 'const' and b2 == 'neg_inf':
+            # a + (-oo) = -oo
             return (Inf(Decimal('-inf')), 'neg_inf', c2, d2)
-        elif b2 in ('indefinite_bounded') and b1 == 'const':
-            return (a1 + a2, "indefinite_bounded",-1,"?")
+        elif b2 == 'indefinite_bounded' and b1 == 'const':
+            # bounded + const = bounded
+            return (a1 + a2, "indefinite_bounded", -1, "?")
         elif b2 in ('indefinite_unbounded') and b1 == 'const':
+            # unbounded + const = unbounded
             return (a1 + a2, "indefinite_unbounded", -1, "?")
-
-        elif b1 == 'pos_inf' and b2 in ('pos_inf', 'indefinite_bounded', 'const'):  # oo + 有界量
-            if b2 != 'pos_inf':
-                return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
+        elif b1 == 'pos_inf' and b2 == 'pos_inf':
+            # oo + oo = oo, compute order of infinity
+            if d1 == 'poly' and d2 == 'poly':
+                return (Inf(Decimal('inf')), 'pos_inf', max(c1,c2), d2)
             else:
-                if d1 == 'poly' and d2 == 'poly':
-                    return (Inf(Decimal('inf')), 'pos_inf', max(c1,c2), d2)
-                else:
-                    return (Inf(Decimal('inf')), 'pos_inf', -1, d2)
-        elif b1 == 'neg_inf' and b2 in ('neg_inf', 'const', 'indefinite_bounded'):  # -oo + 有界量
-            if b2 != 'neg_inf':
-                return (Inf(Decimal('-inf')), 'neg_inf', c1, d1)
+                return (Inf(Decimal('inf')), 'pos_inf', -1, d2)
+        elif b1 == 'pos_inf' and b2 in ('indefinite_bounded', 'const'):
+            # oo + bounded = oo
+            return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
+        elif b1 == 'neg_inf' and b2 == 'neg_inf':
+            # -oo + -oo = -oo, compute order of infinity
+            if d1 == 'poly' and d2 == 'poly':
+                return (Inf(Decimal('-inf')), 'neg_inf', max(c2, c1), d2)
             else:
-                if d1 == 'poly' and d2 == 'poly':
-                        return (Inf(Decimal('-inf')), 'neg_inf', max(c2,c1), d2)
-                else:
-                    return (Inf(Decimal('-inf')), 'neg_inf', -1, "?")
-        elif b1 in ('indefinite_bounded') and b2 == 'const':
-            return (a1 + a2, "indefinite_bounded",-1,"?")
-        elif b1 in ('indefinite_unbounded') and b2 == 'const':
+                return (Inf(Decimal('-inf')), 'neg_inf', -1, "?")
+        elif b1 == 'neg_inf' and b2 in ('const', 'indefinite_bounded'):
+            # -oo + bounded = -oo
+            return (Inf(Decimal('-inf')), 'neg_inf', c1, d1)
+        elif b1 == 'indefinite_bounded' and b2 == 'const':
+            # bounded + const = bounded
+            return (a1 + a2, "indefinite_bounded", -1, "?")
+        elif b1 == 'indefinite_unbounded' and b2 == 'const':
+            # unbounded + const = unbounded
             return (a1 + a2, "indefinite_unbounded", -1, "?")
         else:
+            # Otherwise, return unknown
             return (a1 + a2, 'unknown', -1, "?")
     elif e.ty == OP and e.op == '*' and len(e.args) == 2:
-        a1, b1, c1, d1 = computeLimit(e.args[0])
-        a2, b2, c2, d2 = computeLimit(e.args[1])
-
-        if b1 == 'const' and b2 == 'const':  # a * b
+        # Multiplication
+        a1, b1, c1, d1 = compute_limit(e.args[0])
+        a2, b2, c2, d2 = compute_limit(e.args[1])
+        if b1 == 'const' and b2 == 'const':
+            # Both sides have finite limits
             return (a1 * a2, 'const', 0, "?")
         elif b1 == 'const' and b2 in ('pos_inf', 'neg_inf'):
-
+            # Cases when the left side is constant, and right side is infinity
             if a1.ty == CONST and a1.val > 0 and b2 == 'pos_inf':
+                # pos * oo = oo
                 return (Inf(Decimal('inf')) , 'pos_inf', c2, d2)
             elif a1.ty == CONST and a1.val > 0 and b2 == 'neg_inf':
+                # pos * -oo = -oo
                 return (Inf(Decimal('-inf')) , 'neg_inf', c2, d2)
             elif a1.ty == CONST and a1.val < 0 and b2 == 'pos_inf':
+                # neg * oo = -oo
                 return (Inf(Decimal('-inf')) , 'neg_inf', c2, d2)
             elif a1.ty == CONST and a1.val < 0 and b2 == 'neg_inf':
+                # neg * -oo = oo
                 return (Inf(Decimal('inf')) , 'pos_inf', c2, d2)
-            elif a1.ty == FUN and a1.func_name in ('log') and a1.args[0].ty == CONST\
+            elif a1.ty == FUN and a1.func_name in ('log') and a1.args[0].ty == CONST \
                     and a1.args[0].val > 1 and b2 == 'pos_inf':
+                # log(a) * oo = oo, where a > 1
                 return (Inf(Decimal('inf')), 'pos_inf', -1, '?')
             else:
+                # Otherwise, return unknown
                 return (a1*a2, 'unknown', -1, "?")
         elif b2 == 'const' and b1 in ('pos_inf', 'neg_inf'):
+            # Cases when the right side is constant, and left side is infinity
             if a2.ty == CONST and a2.val > 0 and b1 == 'pos_inf':
+                # oo * pos = oo
                 return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
             elif a2.ty == CONST and a2.val > 0 and b1 == 'neg_inf':
+                # -oo * pos = -oo
                 return (Inf(Decimal('-inf')), 'neg_inf', c1, d1)
             elif a2.ty == CONST and a2.val < 0 and b1 == 'pos_inf':
+                # oo * neg = -oo
                 return (Inf(Decimal('-inf')), 'neg_inf', c1, d1)
             elif a2.ty == CONST and a2.val < 0 and b1 == 'neg_inf':
+                # -oo * neg = oo
                 return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
             else:
+                # Otherwise, return unknown
                 return (a1 * a2, 'unknown', -1, "?")
         elif b1 == 'pos_inf' and b2 == 'pos_inf':
+            # oo * oo = oo, compute order of infinity
             if d1 == 'poly' and d2 == 'poly':
                 return (Inf(Decimal('inf')), 'pos_inf', c1 + c2, 'poly')
             else:
                 return (Inf(Decimal('inf')), 'pos_inf', -1, '?')
         elif b1 == 'pos_inf' and b2 == 'neg_inf':
+            # oo * -oo = -oo, compute order of infinity
             if d1 == 'poly' and d2 == 'poly':
                 return (Inf(Decimal('-inf')), 'neg_inf', c1 + c2, 'poly')
             else:
                 return (Inf(Decimal('-inf')), 'neg_inf', -1, '?')
         elif b1 == 'neg_inf' and b2 == 'neg_inf':
+            # -oo * -oo = oo, compute order of infinity
             if d1 == 'poly' and d2 == 'poly':
                 return (Inf(Decimal('inf')), 'pos_inf', c1 + c2, 'poly')
             else:
                 return (Inf(Decimal('inf')), 'pos_inf', -1, '?')
         elif b1 == 'neg_inf' and b2 == 'pos_inf':
+            # -oo * oo = -oo, compute order of infinity
             if d1 == 'poly' and d2 == 'poly':
                 return (Inf(Decimal('-inf')), 'neg_inf', c1 + c2, 'poly')
             else:
@@ -1088,134 +1143,182 @@ def computeLimit(e:Expr):
         else:
             return (a1 * a2 , 'unknown', -1, "?")
     elif e.ty == OP and e.op == '/' and len(e.args) == 2:
-
-        a1, b1, c1, d1 = computeLimit(e.args[0])
-
-        a2, b2, c2, d2 = computeLimit(e.args[1])
-        if b1 == 'const' and b2 == 'const':  # a + b
-            if a1.ty == CONST and a2.ty == CONST and a1.val !=0 and a2.val==0:
-                return (a1/a2,'unknown',0,"?")
-            return (a1 / a2, 'const', 0, "?")
+        # Division
+        a1, b1, c1, d1 = compute_limit(e.args[0])
+        a2, b2, c2, d2 = compute_limit(e.args[1])
+        if b1 == 'const' and b2 == 'const':
+            # Both sides have finite limits
+            if a1.ty == CONST and a2.ty == CONST and a1.val != 0 and a2.val == 0:
+                # Case where denominator is zero
+                return (a1 / a2, 'unknown', 0, "?")
+            else:
+                # Case where denominator is nonzero
+                return (a1 / a2, 'const', 0, "?")
         elif b1 == 'pos_inf' and b2 == 'const' and a2.ty == CONST and a2.val > 0:
+            # oo / pos = oo
             return (Inf(Decimal("inf")), 'pos_inf', c1, d1)
         elif b1 == 'pos_inf' and b2 == 'const' and a2.ty == CONST and a2.val < 0:
+            # oo / neg = -oo
             return (Inf(Decimal("-inf")), 'neg_inf', c1, d1)
-        elif b1 == 'neg_inf' and b2 == 'const':  # a + b
+        elif b1 == 'neg_inf' and b2 == 'const' and a2.ty == CONST and a2.val > 0:
+            # -oo / pos = -oo
             return (Inf(Decimal("-inf")), 'neg_inf', c1, d1)
-        elif b1 == 'neg_inf' and b2 == 'pos_inf':  # a + b
+        elif b1 == 'neg_inf' and b2 == 'const' and a2.ty == CONST and a2.val < 0:
+            # -oo / neg = oo
+            return (Inf(Decimal("inf")), 'pos_inf', c1, d1)
+        elif b1 == 'neg_inf' and b2 == 'pos_inf':
+            # -oo / oo, compare order of infinity
+            if d1 == 'poly' and d2 == 'poly':
+                if c1 < c2:
+                    # Numerator has smaller order, result is zero
+                    return (Const(0), 'const', 0, "?")
+                elif c2 > c1:
+                    # Numerator has bigger order, result is negative infinity,
+                    # compute order of infinity of result
+                    return (Inf(Decimal("-inf")), "neg_inf", c2 - c1, "poly")
+                else:
+                    return (a1 / a2, 'unknown', -1, '?')
+            else:
+                return (a1 / a2, 'unknown', -1, '?')
+        elif b1 == 'neg_inf' and b2 == 'neg_inf':
+            # -oo / -oo, compare order of infinity
+            if d1 == 'poly' and d2 == 'poly':
+                if c1 < c2:
+                    # Numerator has smaller order
+                    return (Const(0), 'const', 0, "?")
+                elif c2 > c1:
+                    # Numerator has bigger order, result is positive infinity,
+                    # compute order of infinity of result
+                    return (Inf(Decimal("inf")), "pos_inf", c2 - c1, "poly")
+                else:
+                    return (a1 / a2, 'unknown', -1, '?')
+            else:
+                return (a1 / a2, 'unknown', -1, '?')
+        elif b1 == 'pos_inf' and b2 == 'neg_inf':
+            # oo / -oo, compare order of infinity
             if d1 == 'poly' and d2 == 'poly':
                 if c1 < c2:
                     return (Const(0), 'const', 0, "?")
                 elif c2 > c1:
-                    return (Inf(Decimal("-inf")), "neg_inf", c1 - c2 ,"poly")
+                    return (Inf(Decimal("-inf")), "neg_inf", c2 - c1, "poly")
                 else:
-                    return (a1/a2,'unknow',-1,'?')
+                    return (a1 / a2, 'unknown', -1, '?')
             else:
-                return (a1/a2,'unknow',-1,'?')
-        elif b1 == 'neg_inf' and b2 == 'neg_inf':  # a + b
+                return (a1 / a2, 'unknown', -1, '?')
+        elif b1 == 'pos_inf' and b2 == 'pos_inf':
+            # oo / oo, compare order of infinity
             if d1 == 'poly' and d2 == 'poly':
                 if c1 < c2:
                     return (Const(0), 'const', 0, "?")
                 elif c2 > c1:
-                    return (Inf(Decimal("inf")), "pos_inf", c1 - c2 ,"poly")
+                    return (Inf(Decimal("inf")), "pos_inf", c2 - c1, "poly")
                 else:
-                    return (a1/a2,'unknow',-1,'?')
+                    return (a1 / a2, 'unknown', -1, '?')
             else:
-                return (a1/a2,'unknow',-1,'?')
-
-        elif b1 == 'pos_inf' and b2 == 'neg_inf':  # a + b
-            if d1 == 'poly' and d2 == 'poly':
-                if c1 < c2:
-                    return (Const(0), 'const', 0, "?")
-                elif c2 > c1:
-                    return (Inf(Decimal("-inf")), "neg_inf", c1 - c2 ,"poly")
-                else:
-                    return (a1/a2,'unknow',-1,'?')
-            else:
-                return (a1/a2,'unknow',-1,'?')
-        elif b1 == 'pos_inf' and b2 == 'pos_inf':  # a + b
-            if d1 == 'poly' and d2 == 'poly':
-                if c1 < c2:
-                    return (Const(0), 'const', 0, "?")
-                elif c2 > c1:
-                    return (Inf(Decimal("inf")), "pos_inf", c1 - c2 ,"poly")
-                else:
-                    return (a1/a2,'unknow',-1,'?')
-            else:
-                return (a1/a2,'unknow',-1,'?')
-        elif b1 in ('const','indefinite_bounded') and b2 in ('neg_inf', 'pos_inf'):
+                return (a1 / a2, 'unknown', -1, '?')
+        elif b1 in ('const', 'indefinite_bounded') and b2 in ('neg_inf', 'pos_inf'):
+            # bounded / infinity = 0
             return (Const(0), 'const', 0, "?")
-        else:  # 常数判断是否是0这个事情挺困难的 大于0 小于0
+        else:
+            # Otherwise, return unknown
             return (a1 / a2, 'unknown', -1, "?")
     elif e.ty == OP and e.op == '^' and len(e.args) == 2:
-        a1, b1, c1, d1 = computeLimit(e.args[0])
-        a2, b2, c2, d2 = computeLimit(e.args[1])
-
-        if b1 == 'const' and b2 == 'const' :#这个地方问题很多
-            if a1.ty == CONST and a2.ty == CONST and a1.val==0 and a2.val < 0:
-                return (a1^a2,"unknonw",0,"?")
-            return (a1^a2, 'const', 0, "?")
-        elif b1 == 'const' and a1.ty == CONST and abs(a1.val) < 1 and b2 in ('neg_inf', 'pos_inf'):
+        a1, b1, c1, d1 = compute_limit(e.args[0])
+        a2, b2, c2, d2 = compute_limit(e.args[1])
+        if b1 == 'const' and b2 == 'const':
+            # Both sides have finite limits
+            # TODO: more cases to consider
+            if a1.ty == CONST and a2.ty == CONST and a1.val == 0 and a2.val < 0:
+                return (a1 ^ a2, "unknown", 0, "?")
+            else:
+                return (a1 ^ a2, 'const', 0, "?")
+        elif b1 == 'const' and a1.ty == CONST and abs(a1.val) < 1 and b2 == 'pos_inf':
+            # a ^ oo = 0 where -1 < a < 1
             return (Const(0), "const", 0 ,"?")
         elif b1 == 'const' and a1.ty == CONST and a1.val > 1 and b2 == 'pos_inf':
+            # a ^ oo = oo where a > 1
             return (Inf(Decimal('inf')), 'pos_inf', -1, '?')
-
         elif b1 == 'pos_inf' and b2 == 'const' and a2.ty == CONST and a2.val > 0:
+            # oo ^ b = oo where b > 0
             return (Inf(Decimal('inf')), 'pos_inf', a2.val, d1)
         elif b1 == 'neg_inf' and b2 == 'const' and a2.ty == CONST and math.modf(a2.val)[0] == 0:
             if a2.val % 2 == 0:
+                # -oo ^ b = oo, where b is an even integer
                 return (Inf(Decimal('inf')), 'pos_inf', abs(a2.val), d1)
             else:
+                # -oo ^ b = -oo, where b is an odd integer
                 return (Inf(Decimal('-inf')), 'neg_inf', abs(a2.val), d1)
-        elif b1 in ('pos_inf','neg_inf') and b2 == 'const' and a2.ty == CONST and a2.val < 0:
+        elif b1 in ('pos_inf', 'neg_inf') and b2 == 'const' and a2.ty == CONST and a2.val < 0:
+            # oo ^ b = 0, -oo ^ b = 0, where b < 0
             return (Const(0), 'const', 0, "?")
         else:
+            # Otherwise, return unknown
             return (a1 ^ a2, 'unknown', -1, "?")
-    elif e.ty == FUN and e.func_name in ('atan', 'acot', 'exp', "acsc","asec"):
-        a, b, c, d = computeLimit(e.args[0])
+    elif e.ty == FUN and e.func_name in ('atan', 'acot', 'exp', "acsc", "asec"):
+        # The following functions are finite within their range
+        # TODO: this is not true for acsc and asec, which have infinities at zero.
+        a, b, c, d = compute_limit(e.args[0])
         if b == 'const':
             return (Fun(e.func_name, a), 'const', 0, "?")
         elif e.func_name == 'atan' and b == 'pos_inf':
-            return (Const(Fraction(1,2)) * Fun('pi'),'const', 0, "?"); # pi / 2
+            # atan(oo) = pi/2
+            return (Const(Fraction(1,2)) * Fun('pi'), 'const', 0, "?")
         elif e.func_name == 'atan' and b == 'neg_inf':
-            return (Const(Fraction(-1,2)) * Fun('pi'), 'const', 0, "?"); # -pi / 2
+            # atan(-oo) = -pi/2
+            return (Const(Fraction(-1,2)) * Fun('pi'), 'const', 0, "?")
         elif e.func_name == 'acot' and b == 'pos_inf':
-            return (Const(0),'const', 0, "?") # 0
+            # acot(oo) = 0
+            return (Const(0), 'const', 0, "?")
         elif e.func_name == 'acot' and b == 'neg_inf':
-            return (Fun('pi'),'const', 0, "?")# pi
+            # acot(-oo) = pi
+            return (Fun('pi'), 'const', 0, "?")
         elif e.func_name == 'exp' and b == 'pos_inf':
-            return (Inf(Decimal('inf')),'pos_inf', -1, '?')
+            # exp(oo) = oo
+            return (Inf(Decimal('inf')), 'pos_inf', -1, '?')
         elif e.func_name == 'exp' and b == 'neg_inf':
-            return (Const(0),'const', 0, "?") # pi
-        elif e.func_name == 'asec' and b in ("pos_inf",'neg_inf'):
-            return (Const(Fraction(1,2)) * Fun('pi'),'const', 0, "?") # pi
-        elif e.func_name == 'acsc' and b in ("pos_inf",'neg_inf'):
-            return (Const(0),'const', 0, "?") # pi
+            # exp(-oo) = 0
+            return (Const(0), 'const', 0, "?")
+        elif e.func_name == 'asec' and b in ("pos_inf", 'neg_inf'):
+            # asec(oo) = asec(-oo) = pi/2
+            return (Const(Fraction(1,2)) * Fun('pi'), 'const', 0, "?")
+        elif e.func_name == 'acsc' and b in ("pos_inf", 'neg_inf'):
+            # acsc(oo) = acsc(-oo) = 0
+            return (Const(0), 'const', 0, "?")
         else:
-            return (e,'unknown',-1,"?")
-    elif e.ty == FUN and e.func_name in ('sqrt','log', "sin", "cos","asin","acos", "tan", "cot", "csc", "sec"):
-        a, b, c, d = computeLimit(e.args[0])
+            # Otherwise, return unknown
+            return (e, 'unknown', -1, "?")
+    elif e.ty == FUN and e.func_name in ('sqrt', 'log', "sin", "cos", "asin", "acos", "tan", "cot", "csc", "sec"):
+        # Other special functions
+        a, b, c, d = compute_limit(e.args[0])
         if b == 'const':
-            return (Fun(e.func_name, a),'const',0,"?")
+            return (Fun(e.func_name, a), 'const', 0, "?")
         elif e.func_name == 'sqrt' and b == 'pos_inf':
-            return (Inf(Decimal("inf")),'pos_inf',c/2,d)
-        elif e.func_name in ('sin','cos','asin','acos') and b in ("pos_inf",'neg_inf'):
-            return (Fun(e.func_name,a),'indefinite_bounded',0,"?")
-        elif e.func_name in ('tan','cot',"csc", "sec") and b in ("pos_inf",'neg_inf'):
-            return (Fun(e.func_name,a),'indefinite_unbounded',-1,"?")
+            # sqrt(oo) = oo, compute order of infinity
+            # TODO: divide into "poly" and "?" cases
+            return (Inf(Decimal("inf")), 'pos_inf', c/2, d)
+        elif e.func_name in ('sin', 'cos', 'asin', 'acos') and b in ("pos_inf", 'neg_inf'):
+            return (Fun(e.func_name, a), 'indefinite_bounded', 0, "?")
+        elif e.func_name in ('tan', 'cot', "csc", "sec") and b in ("pos_inf", 'neg_inf'):
+            return (Fun(e.func_name, a), 'indefinite_unbounded', -1, "?")
         elif e.func_name == 'log' and b == "pos_inf":
-            return (Inf(Decimal('inf')),'pos_inf',0.0001,"log")
+            # log(oo) = oo
+            # TODO: fix use of 0.0001
+            return (Inf(Decimal('inf')), 'pos_inf', 0.0001, "log")
         else:
-            return (Fun(e.func_name,a),'unknown',-1,"?")
+            # Otherwise, return unknown
+            return (Fun(e.func_name, a), 'unknown', -1, "?")
     elif e.ty == INF and e == Inf(Decimal('inf')):
-        return (e,'pos_inf',1,"poly");
+        # oo, order of infinity is 1
+        return (e, 'pos_inf', 1, "poly")
     elif e.ty == INF and e == Inf(Decimal('-inf')):
-        return (e,'neg_inf',1,"poly");
+        # -oo, order of infinity is 1
+        return (e, 'neg_inf', 1, "poly")
     else:
-        return (e,'unknown',-1,"?")
+        # Otherwise, return unknown
+        return (e, 'unknown', -1, "?")
 
 class LimitSimplify(Rule):
-    # 极限的计算
+    """Simplification by computation of limits"""
     def __init__(self):
         self.name = "LimitSimplify"
 
@@ -1236,8 +1339,8 @@ class LimitSimplify(Rule):
                 # 除法中涉及sqrt函数
                 if body.args[0].ty == FUN and body.args[0].func_name == 'sqrt' or \
                         body.args[1].ty == FUN and body.args[1].func_name == 'sqrt' :
-                    t1 = computeLimit(body.args[0].replace_trig(Var(var),lim))[1]
-                    t2 = computeLimit(body.args[1].replace_trig(Var(var),lim))[1]
+                    t1 = compute_limit(body.args[0].replace_trig(Var(var),lim))[1]
+                    t2 = compute_limit(body.args[1].replace_trig(Var(var),lim))[1]
                     sign = 1
                     if t1 == 'pos_inf' and t2 == 'neg_inf':
                         sign = -1
@@ -1255,23 +1358,23 @@ class LimitSimplify(Rule):
 
                     # 确定极限的符号
                     while (repa.normalize() == Const(0) and repb.normalize() == Const(0) \
-                           or computeLimit(repa)[1] in ('pos_inf', 'neg_inf') and \
-                           computeLimit(repb)[1] in ('pos_inf', 'neg_inf')):
+                           or compute_limit(repa)[1] in ('pos_inf', 'neg_inf') and \
+                           compute_limit(repb)[1] in ('pos_inf', 'neg_inf')):
                         newa, newb = deriv.eval(expr.Deriv(var,a)),deriv.eval(expr.Deriv(var,b))
                         a,b = newa, newb
                         repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
 
-                    return computeLimit(Const(sign)*Fun('sqrt',repa/repb))
+                    return compute_limit(Const(sign)*Fun('sqrt',repa/repb))
 
 
                 # 使用洛必达法则化简 但是无限的情况是有可能出现的
                 # 分子分母全为0
-                while (computeLimit(rep.args[0])[1] == 'const' and \
-                        computeLimit(rep.args[1])[1] == 'const' and \
+                while (compute_limit(rep.args[0])[1] == 'const' and \
+                        compute_limit(rep.args[1])[1] == 'const' and \
                         rep.args[1].normalize() == Const(0) and \
                        rep.args[0].normalize() == Const(0)\
-                       or computeLimit(rep.args[0])[1] in ('pos_inf', 'neg_inf') and\
-                       computeLimit(rep.args[1])[1] in ('pos_inf', 'neg_inf') ):
+                       or compute_limit(rep.args[0])[1] in ('pos_inf', 'neg_inf') and\
+                       compute_limit(rep.args[1])[1] in ('pos_inf', 'neg_inf') ):
                     new_body = rule.eval(e).body
                     e = expr.Limit(var,lim,new_body,drt)
                     rep = new_body.replace_trig(Var(var), lim)
@@ -1284,10 +1387,10 @@ class LimitSimplify(Rule):
                 a,b = body.args[0],body.args[1]
                 repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
 
-                if computeLimit(repa)[1] == 'pos_inf' and \
-                       computeLimit(repb)[1] == 'pos_inf' or \
-                        computeLimit(repa)[1] == 'neg_inf' and \
-                        computeLimit(repb)[1] == 'neg_inf':
+                if compute_limit(repa)[1] == 'pos_inf' and \
+                       compute_limit(repb)[1] == 'pos_inf' or \
+                        compute_limit(repa)[1] == 'neg_inf' and \
+                        compute_limit(repb)[1] == 'neg_inf':
                     ta,tb = a,b
 
                     t1,t2 = ta^2,tb^2
@@ -1300,24 +1403,24 @@ class LimitSimplify(Rule):
                     a = a.normalize()
                     b = b.normalize()
                     repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
-                    while (computeLimit(repa)[1] in ('pos_inf', 'neg_inf') and \
-                           computeLimit(repb)[1] in ('pos_inf', 'neg_inf')):
+                    while (compute_limit(repa)[1] in ('pos_inf', 'neg_inf') and \
+                           compute_limit(repb)[1] in ('pos_inf', 'neg_inf')):
                         newa, newb = deriv.eval(expr.Deriv(var, a)), deriv.eval(expr.Deriv(var, b))
                         a, b = newa, newb
                         repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
 
-                    return computeLimit(repa/repb)
+                    return compute_limit(repa/repb)
             elif isinstance(body,Fun) and isinstance(body.args[0],Op) and body.args[0].op == '/':
                 a, b = body.args[0].args[0], body.args[0].args[1]
                 repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
 
                 while (repa.normalize() == Const(0) and repb.normalize() == Const(0) \
-                       or computeLimit(repa)[1] in ('pos_inf', 'neg_inf') and \
-                       computeLimit(repb)[1] in ('pos_inf', 'neg_inf')):
+                       or compute_limit(repa)[1] in ('pos_inf', 'neg_inf') and \
+                       compute_limit(repb)[1] in ('pos_inf', 'neg_inf')):
                     newa, newb = deriv.eval(expr.Deriv(var, a)), deriv.eval(expr.Deriv(var, b))
                     a, b = newa, newb
                     repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
-                return computeLimit(Fun(body.func_name, repa / repb))
+                return compute_limit(Fun(body.func_name, repa / repb))
             elif body.ty == OP and body.op == '^' and body.args[1].ty == VAR and body.args[1].name == var\
                 and (body.args[0] == Op('+',Const(1),Op('/',Const(1),Var(var))) or \
                      body.args[0] == Op('+',Op('/', Const(1), Var(var)), Const(1) ) or \
@@ -1325,12 +1428,7 @@ class LimitSimplify(Rule):
                      body.args[0] == Op('+', Op('^' , Var(var), Const(-1)), Const(1))):
                 return (Fun('exp',Const(1)), 'const', 0, "?") #LIM x->oo.(1+1/x)^x = e
 
-            res = computeLimit(rep)
+            res = compute_limit(rep)
             return res
         else:
             raise NotImplementedError
-
-
-
-
-
