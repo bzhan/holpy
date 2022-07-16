@@ -6,6 +6,9 @@ from smt.veriT import interface, proof_rec
 from smt.veriT import command
 import os
 from syntax.settings import settings
+import sys
+sys.setrecursionlimit(10000)
+
 settings.unicode = False
 
 smtlib_path = None
@@ -305,8 +308,8 @@ class ParserTest(unittest.TestCase):
 
     def testParseQF_RDL(self):
         test_paths = [
-            'QF_RDL/check/bignum_rdl2.smt2',
-            'QF_RDL/sal/fischer3-mutex-1.smt2',
+            # 'QF_RDL/check/bignum_rdl2.smt2',
+            # 'QF_RDL/sal/fischer3-mutex-1.smt2',
             'QF_RDL/sal/fischer3-mutex-10.smt2',
             'QF_RDL/sal/fischer6-mutex-2.smt2',
             'QF_RDL/sal/fischer6-mutex-3.smt2',
