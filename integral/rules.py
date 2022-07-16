@@ -725,6 +725,8 @@ class LimSep(Rule):
                 e.body.op in ('+','-','*','/') and len(e.body.args)==2):
             return e;
         return expr.Op(e.body.op,expr.Limit(e.var, e.lim, e.body.args[0],e.drt) , expr.Limit(e.var, e.lim, e.body.args[1],e.drt));
+
+
 class DerivationSimplify(Rule):
     # 导数计算，但是可导性的判断不在这里做
     def __init__(self):
@@ -1326,74 +1328,83 @@ class LimitSimplify(Rule):
         if isinstance(e, str):
             e = parser.parse_expr(e)
 
-        if not isinstance(e,expr.Limit):
+        if not isinstance(e, expr.Limit):
             return e
 
-        res = None
-        var, lim, drt, body= e.var, e.lim, e.drt, e.body
+        var, lim, drt, body = e.var, e.lim, e.drt, e.body
         deriv = DerivationSimplify()
+
         if drt == None:
             rep = body.replace_trig(Var(var), lim)
-            rule = LHopital()
-            if isinstance(body,Op) and body.op == '/' and len(body.args)==2:
-                # 除法中涉及sqrt函数
+            if isinstance(body, Op) and body.op == '/' and len(body.args) == 2:
+                # Case of a / b, where one of a or b are square roots. Perform the
+                # computations on the square of a and b.
                 if body.args[0].ty == FUN and body.args[0].func_name == 'sqrt' or \
-                        body.args[1].ty == FUN and body.args[1].func_name == 'sqrt' :
-                    t1 = compute_limit(body.args[0].replace_trig(Var(var),lim))[1]
-                    t2 = compute_limit(body.args[1].replace_trig(Var(var),lim))[1]
+                        body.args[1].ty == FUN and body.args[1].func_name == 'sqrt':
+                    t1 = compute_limit(body.args[0].replace_trig(Var(var), lim))[1]
+                    t2 = compute_limit(body.args[1].replace_trig(Var(var), lim))[1]
                     sign = 1
                     if t1 == 'pos_inf' and t2 == 'neg_inf':
                         sign = -1
                     elif t1 == 'neg_inf' and t2 == 'pos_inf':
                         sign = -1
-                    a,b,repa,repb = None,None,None,None
-                    if body.args[0].ty == FUN and body.args[0].func_name == 'sqrt' and body.args[1].ty == FUN and body.args[1].func_name == 'sqrt':
-                        a,b = body.args[0].args[0],body.args[1].args[0]
+
+                    # a and b are squares of numerator and denominator, respectively
+                    a, b = None, None
+                    if body.args[0].ty == FUN and body.args[0].func_name == 'sqrt' and \
+                            body.args[1].ty == FUN and body.args[1].func_name == 'sqrt':
+                        # Both sides are square roots
+                        a = body.args[0].args[0]
+                        b = body.args[1].args[0]
                     elif body.args[0].ty == FUN and body.args[0].func_name == 'sqrt':
-                        a,b = body.args[0].args[0],body.args[1]^2
+                        # Numerator is square root
+                        a = body.args[0].args[0]
+                        b = body.args[1] ^ 2
                     elif body.args[1].ty == FUN and body.args[1].func_name == 'sqrt':
-                        a, b = body.args[0] ^ 2, body.args[1].args[0]
+                        # Denominator is square root
+                        a = body.args[0] ^ 2
+                        b = body.args[1].args[0]
+
+                    # repa and repb are limits of a and b
                     repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
 
-
-                    # 确定极限的符号
+                    # Apply L'Hopital's rule
                     while (repa.normalize() == Const(0) and repb.normalize() == Const(0) \
                            or compute_limit(repa)[1] in ('pos_inf', 'neg_inf') and \
                            compute_limit(repb)[1] in ('pos_inf', 'neg_inf')):
-                        newa, newb = deriv.eval(expr.Deriv(var,a)),deriv.eval(expr.Deriv(var,b))
-                        a,b = newa, newb
+                        a, b = deriv.eval(expr.Deriv(var, a)), deriv.eval(expr.Deriv(var, b))
                         repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
 
-                    return compute_limit(Const(sign)*Fun('sqrt',repa/repb))
+                    # Take square root of the result
+                    return compute_limit(Const(sign) * Fun('sqrt', repa / repb))
 
-
-                # 使用洛必达法则化简 但是无限的情况是有可能出现的
-                # 分子分母全为0
+                # Apply L'Hopital's rule
                 while (compute_limit(rep.args[0])[1] == 'const' and \
                         compute_limit(rep.args[1])[1] == 'const' and \
                         rep.args[1].normalize() == Const(0) and \
-                       rep.args[0].normalize() == Const(0)\
-                       or compute_limit(rep.args[0])[1] in ('pos_inf', 'neg_inf') and\
-                       compute_limit(rep.args[1])[1] in ('pos_inf', 'neg_inf') ):
-                    new_body = rule.eval(e).body
-                    e = expr.Limit(var,lim,new_body,drt)
+                        rep.args[0].normalize() == Const(0) \
+                        or compute_limit(rep.args[0])[1] in ('pos_inf', 'neg_inf') and \
+                           compute_limit(rep.args[1])[1] in ('pos_inf', 'neg_inf')):
+                    new_body = LHopital().eval(e).body
+                    e = expr.Limit(var, lim, new_body, drt)
                     rep = new_body.replace_trig(Var(var), lim)
-                    # print("rep:",rep)
 
             elif isinstance(body, Op) and body.op == '-' and len(body.args) == 2 \
-                    and (body.args[0].ty==FUN and body.args[0].func_name == 'sqrt' or \
-                    body.args[1].ty==FUN and body.args[1].func_name == 'sqrt'):
-
-                a,b = body.args[0],body.args[1]
+                    and (body.args[0].ty == FUN and body.args[0].func_name == 'sqrt' or \
+                    body.args[1].ty == FUN and body.args[1].func_name == 'sqrt'):
+                # Case of a - b, where one of a and b are square roots, perform the
+                # computation after rewriting to (a^2 - b^2) / (a + b)
+                a, b = body.args
                 repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
 
                 if compute_limit(repa)[1] == 'pos_inf' and \
-                       compute_limit(repb)[1] == 'pos_inf' or \
+                        compute_limit(repb)[1] == 'pos_inf' or \
                         compute_limit(repa)[1] == 'neg_inf' and \
                         compute_limit(repb)[1] == 'neg_inf':
-                    ta,tb = a,b
-
-                    t1,t2 = ta^2,tb^2
+                    # Case oo - oo or -oo - (-oo)
+                    # Let ta = a, tb = b, t1 = a^2, t2 = b^2
+                    ta, tb = a, b
+                    t1, t2 = ta ^ 2, tb ^ 2
                     if ta.ty == FUN and ta.func_name == 'sqrt':
                         t1 = ta.args[0]
                     if tb.ty == FUN and tb.func_name == 'sqrt':
@@ -1408,9 +1419,10 @@ class LimitSimplify(Rule):
                         newa, newb = deriv.eval(expr.Deriv(var, a)), deriv.eval(expr.Deriv(var, b))
                         a, b = newa, newb
                         repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
+                    return compute_limit(repa / repb)
 
-                    return compute_limit(repa/repb)
-            elif isinstance(body,Fun) and isinstance(body.args[0],Op) and body.args[0].op == '/':
+            elif isinstance(body, Fun) and isinstance(body.args[0], Op) and body.args[0].op == '/':
+                # Case of function application, where the argument is a / b
                 a, b = body.args[0].args[0], body.args[0].args[1]
                 repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
 
@@ -1421,12 +1433,14 @@ class LimitSimplify(Rule):
                     a, b = newa, newb
                     repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
                 return compute_limit(Fun(body.func_name, repa / repb))
-            elif body.ty == OP and body.op == '^' and body.args[1].ty == VAR and body.args[1].name == var\
+
+            elif body.ty == OP and body.op == '^' and body.args[1].ty == VAR and body.args[1].name == var \
                 and (body.args[0] == Op('+',Const(1),Op('/',Const(1),Var(var))) or \
                      body.args[0] == Op('+',Op('/', Const(1), Var(var)), Const(1) ) or \
                      body.args[0] == Op('+', Const(1), Op('^',  Var(var), Const(-1))) or \
                      body.args[0] == Op('+', Op('^' , Var(var), Const(-1)), Const(1))):
-                return (Fun('exp',Const(1)), 'const', 0, "?") #LIM x->oo.(1+1/x)^x = e
+                # lim x -> oo. (1 + 1 / x) ^ x = e
+                return (Fun('exp', Const(1)), 'const', 0, "?")
 
             res = compute_limit(rep)
             return res
