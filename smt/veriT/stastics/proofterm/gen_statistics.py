@@ -44,7 +44,7 @@ def collect_theory(filename, theory_name):
     return theory_name, solve_num, solve_avg_time, recon_num, recon_avg_time, success, to, r_time
 
 def display(filename):
-    print("                               Experimental Result                                ")
+    print("                               Experimental Result (%s)               " % filename)
     print("----------------------------------------------------------------------------------")
     print("%10s  %15s  %15s  %26s" % ('Theory', 'Solved (veriT)', 'Reconstruted', 'Rates'))
     print("----------------------------------------------------------------------------------")
@@ -55,5 +55,31 @@ def display(filename):
     for st in theory_stats:
         print("%10s  %7s %7s  %7s %7s  %8s %8s %8s" % st)
     print("----------------------------------------------------------------------------------")
+    total_stat = total(theory_stats)
+    print("%10s  %7s %7s  %7s %7s  %8s %8s %8s" % total_stat)
 
-display("SMT-LIB.csv")
+    for st in theory_stats:
+        print(st[0], "    ", " & ".join(st[1:3]), "& & & & & &", " & ".join(st[3:]))
+
+
+def total(stats):
+    solved_num = [2124, 162, 86, 259, 575, 943, 548, 85, 4172, 52, 171, 415, 2851, 55, 7168, 10]
+    # solved_num      = [int(s[1]) for s in stats]
+    # solved_time     = [float(s[2]) for s in stats]
+    solved_time = [0.64, 0.112, 1.236, 0.341, 7.809, 3.051, 7.698, 11.188, 1.725, 3.026, 8.563, 1.019, 0.708, 0.1, 0.558, 0.069]
+    # print("solved_num", solved_num)
+    # print("solved_time", solved_time)
+    solved_time_sum = [a * b for a, b in zip(solved_num, solved_time)]
+    avg_solved_time = sum(solved_time_sum) / sum(solved_num)
+    recon_num       = [int(s[3]) for s in stats]
+    recon_time      = [float(s[4]) for s in stats]
+    recon_time_sum  = [a * b for a, b in zip(recon_num, recon_time)]
+    avg_recon_time  = sum(recon_time_sum) / sum(recon_num)
+    success_rate    = sum(recon_num)/sum(solved_num)
+    timeout         = [float(s[-2][:-1]) / 100 for s in stats]
+    timeout_sum     = [a * b for a, b in zip(solved_num, timeout)]
+    avg_timeout     = sum(timeout_sum) / sum(solved_num)
+    avg_r_time      = avg_recon_time / avg_solved_time
+    return "Total", sum(solved_num), "%.3f" % avg_solved_time, sum(recon_num), \
+                    "%.3f" % avg_recon_time, '{:.0%}'.format(success_rate), \
+                        "{:.0%}".format(avg_timeout), "%.3f" % avg_r_time
