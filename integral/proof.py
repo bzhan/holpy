@@ -1,8 +1,6 @@
 """Proofs for differentiation and integration."""
-import io
 from fractions import Fraction
 
-import chardet
 import sympy
 from sympy.ntheory.factor_ import factorint
 

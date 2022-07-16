@@ -7960,6 +7960,26 @@
             "prop": "xor A B ⟷ A ∧ ¬B ∨ ¬A ∧ B",
             "ty": "def",
             "type": "bool ⇒ bool ⇒ bool"
+        },
+        {
+            "name": "disjI1_syllogism",
+            "prop": "(P ∨ Q ⟶ R) ⟶ P ⟶ R",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
+        },
+        {
+            "name": "disjI2_syllogism",
+            "prop": "(P ∨ Q ⟶ R) ⟶ Q ⟶ R",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool",
+                "R": "bool"
+            }
         }
     ],
     "description": "Basic results in logic",
