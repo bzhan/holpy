@@ -1,19 +1,19 @@
 """Rules for integration."""
+
 import math
 from decimal import Decimal
-
 import sympy
+import functools
 import sympy.series.limits
-from sympy.integrals import integrals
+
 from integral import poly, expr
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
     sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, \
     DERIV, decompose_expr_factor, Deriv, Inf, INF, Limit, NEG_INF, POS_INF
-import functools, operator
 from integral import parser
 from sympy import Interval, expand_multinomial, apart
 from sympy.solvers import solvers, solveset
-from integral import parser
+from integral import compstate
 from fractions import Fraction
 
 class Rule:
@@ -47,10 +47,11 @@ class Simplify(Rule):
 
 class Linearity(Rule):
     """Applies linearity rules:
-    这里INT表示积分
+
     INT (a + b) = INT a + INT b,
-    INT (c * a) = c * INT a  (where c is a constant).
-    INT (c / a) = c * INT 1 / a (where c is a contant)
+    INT (c * a) = c * INT a      (where c is a constant).
+    INT (c / a) = c * INT 1 / a  (where c is a constant).
+
     """
     def __init__(self):
         self.name = "Linearity"
@@ -162,7 +163,7 @@ class OnSubterm(Rule):
 
     def eval(self, e):
         rule = self.rule
-        if e.ty in (expr.VAR, expr.CONST):
+        if e.ty in (expr.VAR, expr.CONST, expr.INF):
             return rule.eval(e)
         elif e.ty == expr.OP:
             args = [self.eval(arg) for arg in e.args]
@@ -1413,3 +1414,18 @@ class DerivIntExchange(Rule):
 
         v1, v2 = e.var, e.body.var
         return Integral(v2, e.body.lower, e.body.upper, Deriv(v1, e.body.body))
+
+
+class ExpandDefinition(Rule):
+    """Expand a definition"""
+    def __init__(self, func_def: compstate.FuncDef):
+        self.func_def = func_def
+
+    def eval(self, e):
+        if not (e.is_fun() and e.func_name == self.func_def.symb):
+            raise AssertionError("ExpandDefinition: wrong form for t.")
+
+        body = self.func_def.body
+        for arg, val in zip(self.func_def.args, e.args):
+            body = body.replace(arg, val)
+        return body

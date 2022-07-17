@@ -42,7 +42,10 @@ grammar = r"""
     ?plus: plus "+" times -> plus_expr         // priority 65
         | plus "-" times -> minus_expr | times
 
-    ?expr: plus
+    ?eq: plus "=" plus -> eq_expr              // priority 50
+        | plus
+
+    ?expr: eq
 
     !interval: ("(" | "[") expr "," expr ("]" | ")") -> interval_expr
 
@@ -88,6 +91,9 @@ class ExprTransformer(Transformer):
 
     def pow_expr(self, a, b):
         return expr.Op("^", a, b)
+
+    def eq_expr(self, a, b):
+        return expr.Op("=", a, b)
 
     def uminus_expr(self, a):
         if a.ty == expr.CONST:

@@ -27,7 +27,7 @@ real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(Re
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL, LIMIT, INF = range(11)
 
 op_priority = {
-    "+": 65, "-": 65, "*": 70, "/": 70, "^": 75
+    "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50,
 }
 
 trig_identity = []
@@ -271,16 +271,31 @@ class Expr:
     def is_power(self):
         return self.ty == OP and self.op == '^'
 
-    def is_inf(self):
+    def is_equals(self):
+        return self.ty == OP and self.op == '='
 
+    def is_inf(self):
         return self.ty == INF and  (self.t == Decimal("inf") or self.t == Decimal("-inf"))
 
     def is_trig(self):
         return self.ty == FUN and self.func_name in ("sin", "cos", "tan", "cot", "csc", "sec")
 
-
     def is_inverse_trig(self):
-        return self.ty == FUN and self.func_name in ("asin","acos","atan","acot","acsc","asec")
+        return self.ty == FUN and self.func_name in ("asin", "acos", "atan", "acot", "acsc", "asec")
+
+    @property
+    def lhs(self) -> Expr:
+        if self.is_equals():
+            return self.args[0]
+        else:
+            raise AssertionError("lhs: term is not an equality")
+
+    @property
+    def rhs(self) -> Expr:
+        if self.is_equals():
+            return self.args[1]
+        else:
+            raise AssertionError("rhs: term is not an equality")
 
     def __le__(self, other):
         if isinstance(other, (int, Fraction)):
@@ -515,12 +530,12 @@ class Expr:
         rec(self)
         return res
 
-    def replace(self, e, repl_e):
+    def replace(self, e: Expr, repl_e: Expr):
         """Replace occurrences of e with repl_e."""
         assert isinstance(e, Expr) and isinstance(repl_e, Expr)
         if self == e:
             return repl_e
-        elif self.ty in (VAR, CONST):
+        elif self.ty in (VAR, CONST, INF):
             return self
         elif self.ty == OP:
             return Op(self.op, *[arg.replace(e, repl_e) for arg in self.args])
@@ -535,6 +550,7 @@ class Expr:
             return EvalAt(self.var, self.lower.replace(e, repl_e), self.upper.replace(e, repl_e),
                           self.body.replace(e, repl_e))
         else:
+            print(self)
             raise NotImplementedError
 
     def to_const_poly(self):
@@ -1464,7 +1480,7 @@ class Op(Expr):
         if len(args) == 1:
             assert op == "-"
         elif len(args) == 2:
-            assert op in ["+", "-", "*", "/", "^"]
+            assert op in ["+", "-", "*", "/", "^", "="]
         else:
             raise NotImplementedError
         self.ty = OP
@@ -1513,13 +1529,6 @@ class Fun(Expr):
     """Functions."""
     def __init__(self, func_name, *args):
         assert isinstance(func_name, str) and all(isinstance(arg, Expr) for arg in args)
-        if len(args) == 0:
-            assert func_name in ["pi"]
-        elif len(args) == 1:
-            assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "csc",
-                         "sec", "cot", "asin", "acos", "atan", "acot", "acsc", "asec", "abs"], func_name
-        else:
-            raise NotImplementedError
 
         self.ty = FUN
         self.func_name = func_name
@@ -1675,6 +1684,9 @@ def sqrt(e):
 
 pi = Fun("pi")
 E = Fun("exp", Const(1))
+
+def Eq(s, t):
+    return Op("=", s, t)
 
 class Deriv(Expr):
     """Derivative of an expression."""

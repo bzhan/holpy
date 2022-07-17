@@ -11,6 +11,7 @@ from integral import expr, parser
 from integral.expr import Const, deriv, neg_inf, Inf
 from integral.parser import parse_expr
 from integral import rules
+from integral import compstate
 from sympy.parsing import sympy_parser
 
 
@@ -442,13 +443,31 @@ class RulesTest(unittest.TestCase):
             self.assertEqual(str(e[0].normalize()), b, a)
 
     def testWallis(self):
-        t = parser.parse_expr("INT x:[0,oo]. 1/(x^2+b)^(m+1)")
-        dt = expr.Deriv("b", t)
-        print(dt)
-        dt2 = rules.DerivIntExchange().eval(dt)
-        print(dt2)
-        dt3 = rules.OnLocation(rules.DerivativeSimplify(), "0").eval(dt2)
-        print(dt3)
+        # Make definition
+        Idef_s = "I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))"
+        Idef_t = parser.parse_expr(Idef_s)
+        Idef = compstate.FuncDef(Idef_t)
+
+        # Starting term on LHS
+        lt = parser.parse_expr("D b. I(m,b)")
+        print("lt  =", lt)
+        lt2 = rules.OnLocation(rules.ExpandDefinition(Idef), "0").eval(lt)
+        print("lt2 =", lt2)
+        lt3 = rules.DerivIntExchange().eval(lt2)
+        print("lt3 =", lt3)
+        lt4 = rules.OnLocation(rules.DerivativeSimplify(), "0").eval(lt3)
+        print("lt4 =", lt4)
+        lt5 = rules.FullSimplify().eval(lt4)
+        print("lt5 =", lt5)
+
+        # Starting term on RHS
+        rt = parser.parse_expr("-(m+1) * I(m+1, b)")
+        print("rt  =", rt)
+        rt2 = rules.OnLocation(rules.ExpandDefinition(Idef), "1").eval(rt)
+        print("rt2 =", rt2)
+        rt3 = rules.FullSimplify().eval(rt2)
+        print("rt3 =", rt3)
+
 
 if __name__ == "__main__":
     unittest.main()
