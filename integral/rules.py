@@ -15,6 +15,8 @@ from sympy import Interval, expand_multinomial, apart
 from sympy.solvers import solvers, solveset
 from integral import compstate
 from fractions import Fraction
+from integral.solve import solve_equation
+
 
 class Rule:
     """
@@ -75,7 +77,7 @@ class Linearity(Rule):
                    rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
         elif e.body.is_times():
             factors = decompose_expr_factor(e.body)
-            if factors[0].is_constant():
+            if not factors[0].contains_var(e.var):
                 return factors[0] * rec(expr.Integral(e.var, e.lower, e.upper, 
                             functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
             else:
@@ -232,6 +234,13 @@ class OnLocation(Rule):
             elif cur_e.ty == DERIV:
                 assert loc.head == 0, "OnLocation: invalid location"
                 return Deriv(cur_e.var, rec(cur_e.body, loc.rest))
+            elif cur_e.ty == LIMIT:
+                if loc.head == 0:
+                    return Limit(cur_e.var, cur_e.lim, rec(cur_e.body, loc.rest), drt=cur_e.drt)
+                elif loc.head == 1:
+                    return Limit(cur_e.var, rec(cur_e.lim, loc.rest), cur_e.body, drt=cur_e.drt)
+                else:
+                    raise AssertionError("OnLocation: invalid location")
             else:
                 raise NotImplementedError
 
@@ -262,14 +271,17 @@ class FullSimplify(Rule):
         return current
 
 class Substitution1(Rule):
-    """Apply substitution u = g(x) x = y(u)  f(x) = x+5  u=>x+1   (x+1)+4 """
-    """INT x:[a, b]. f(g(x))*g(x)' = INT u:[g(a), g(b)].f(u)"""
-    def __init__(self, var_name, var_subst):
-        """
-        var_name: string, name of the new variable.
-        var_subst: Expr, expression in the original integral to be substituted.
+    """Apply substitution u = g(x).
     
-        """
+    var_name - str: name of the new variable.
+    var_subst - Expr: expression in the original integral to be substituted.
+
+    The identity to be applied is:
+    
+    INT x:[a, b]. f(g(x)) * g(x)' = INT u:[g(a), g(b)]. f(u)
+    
+    """
+    def __init__(self, var_name: str, var_subst: Expr):
         self.name = "Substitution"
         self.var_name = var_name
         self.var_subst = var_subst
@@ -326,22 +338,41 @@ class Substitution1(Rule):
                 return Integral(self.var_name, upper, lower, Op("-", new_problem_body)).normalize()
 
 class Substitution2(Rule):
-    """Apply substitution x = f(u)"""
-    def __init__(self, var_name, var_subst):
-        #such as var_name: "u" var_subst: "sin(u)"
+    """Apply substitution x = f(u).
+    
+    var_name - str: name of the new variable u.
+    var_subst - Expr: expression containing the new variable.
+
+    """
+    def __init__(self, var_name: str, var_subst: Expr):
+        self.name = "Substitution inverse"
         self.var_name = var_name
         self.var_subst = var_subst
-        self.name = "Substitution inverse"
 
     def eval(self, e):
         if isinstance(e, str):
             e = parser.parse_expr(e)
 
-        subst_deriv = expr.deriv(self.var_name, self.var_subst) #dx = d(x(u)) = x'(u) *du
-        new_e_body = e.body.replace_trig(expr.holpy_style(str(e.var)), self.var_subst) #replace all x with x(u)
-        new_e_body = expr.Op("*", new_e_body, subst_deriv) # g(x) = g(x(u)) * x'(u)
-        lower = solvers.solve(expr.sympy_style(self.var_subst - e.lower))[0]
-        upper = solvers.solve(expr.sympy_style(self.var_subst - e.upper))[0]
+        # dx = f'(u) * du
+        subst_deriv = expr.deriv(self.var_name, self.var_subst)
+
+        # Replace x with f(u)
+        new_e_body = e.body.replace_trig(expr.holpy_style(str(e.var)), self.var_subst)
+
+        # g(x) = g(x(u)) * f'(u)
+        new_e_body = new_e_body * subst_deriv
+
+        # Solve the equations lower = f(u) and upper = f(u) for u.
+        try:
+            lower = solve_equation(self.var_subst, e.lower, self.var_name).normalize()
+        except NotImplementedError:
+            lower = solvers.solve(expr.sympy_style(self.var_subst - e.lower))[0]
+
+        try:
+            upper = solve_equation(self.var_subst, e.upper, self.var_name).normalize()
+        except NotImplementedError:
+            upper = solvers.solve(expr.sympy_style(self.var_subst - e.upper))[0]
+
         return expr.Integral(self.var_name, expr.holpy_style(lower), expr.holpy_style(upper), new_e_body)
         
 

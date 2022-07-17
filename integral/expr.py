@@ -530,6 +530,10 @@ class Expr:
         rec(self)
         return res
 
+    def contains_var(self, x: str):
+        """Whether self contains variable x."""
+        return x in self.get_vars()
+
     def replace(self, e: Expr, repl_e: Expr):
         """Replace occurrences of e with repl_e."""
         assert isinstance(e, Expr) and isinstance(repl_e, Expr)

@@ -468,6 +468,22 @@ class RulesTest(unittest.TestCase):
         rt3 = rules.FullSimplify().eval(rt2)
         print("rt3 =", rt3)
 
+        # Induction case m = 0
+        t = parser.parse_expr("I(0,b)")
+        print("t = ", t)
+        t2 = rules.ExpandDefinition(Idef).eval(t)
+        print("t2 = ", t2)
+        t3 = rules.ElimInfInterval().eval(t2)
+        print("t3 = ", t3)
+        t4 = rules.OnLocation(rules.Substitution2("u", parser.parse_expr("sqrt(b) * u")), "0").eval(t3)
+        print("t4 = ", t4)
+        t5 = rules.OnLocation(rules.FullSimplify(), "0").eval(t4)
+        print("t5 = ", t5)
+        t6 = rules.OnLocation(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1")), "0.1.0").eval(t5)
+        print("t6 = ", t6)
+        t7 = rules.OnLocation(rules.FullSimplify(), "0").eval(t6)
+        print("t7 = ", t7)
+
 
 if __name__ == "__main__":
     unittest.main()
