@@ -356,7 +356,10 @@ class Monomial:
                         s = s + " ^ " + str(p)
                 else:
                     s = s + "^" + str(p)
-            res += " * " + s
+            if res:
+                res += " * " + s
+            else:
+                res = s
 
         if res == "":
             res = "1"

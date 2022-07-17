@@ -14,12 +14,12 @@ class PolynomialTest(unittest.TestCase):
             (Monomial(1, []), "1"),
             (Monomial(2, []), "2"),
             (Monomial(0, []), "0"),
-            (Monomial(2, [("x", 1)]), "2x"),
-            (Monomial(2, [("x", 2)]), "2x^2"),
-            (Monomial(2, [("x", 2), ("y", 2)]), "2x^2y^2"),
-            (Monomial(2, [("y", 2), ("x", 2)]), "2x^2y^2"),
-            (Monomial(2, [("x+y", 2)]), "2(x+y)^2"),
-            (Monomial(2, [("x", 1), ("x", 2)]), "2x^3"),
+            (Monomial(2, [("x", 1)]), "2 * x"),
+            (Monomial(2, [("x", 2)]), "2 * x^2"),
+            (Monomial(2, [("x", 2), ("y", 2)]), "2 * x^2 * y^2"),
+            (Monomial(2, [("y", 2), ("x", 2)]), "2 * x^2 * y^2"),
+            (Monomial(2, [("x+y", 2)]), "2 * (x+y)^2"),
+            (Monomial(2, [("x", 1), ("x", 2)]), "2 * x^3"),
             (Monomial(1, [("x", Fraction(1, 2))]), "x ^ 1/2"),
             (Monomial(1, [("x", Fraction(1, 2)), ("x", Fraction(1, 2))]), "x")
         ]
