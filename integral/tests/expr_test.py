@@ -325,6 +325,7 @@ class ExprTest(unittest.TestCase):
             ("x * log(x)", "1 + log(x)"),
             ("exp(x)", "exp(x)"),
             ("exp(x^2)", "2 * x * exp(x ^ 2)"),
+            ("tan(2*x)", "2 * sec(2 * x) ^ 2"),
         ]
 
         for s, s2 in test_data:

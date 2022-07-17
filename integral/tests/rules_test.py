@@ -337,7 +337,7 @@ class RulesTest(unittest.TestCase):
     def testLHopital2(self):
         pass
 
-    def testDerivationSimplify(self):
+    def testDerivativeSimplify(self):
         test_data = [
             ("D x. x",'1'),
             ( "D x. log(x)",'x ^ (-1)'),
@@ -347,9 +347,9 @@ class RulesTest(unittest.TestCase):
             ('D z. exp(2*z) + 1/cos(z) + 1/z * z','cos(z) ^ (-2) * sin(z) + 2 * exp(2 * z)'),
             ( 'D x. (2*x +x^2 + cos(x)) / (sin(x) + tan(x))','(-2 * x * cos(x) + -2 * x * sec(x) ^ 2 + 2 * x * sin(x) + 2 * x * tan(x) + -(x ^ 2 * cos(x)) + -(x ^ 2 * sec(x) ^ 2) + -(cos(x) * sec(x) ^ 2) + -(cos(x) ^ 2) + 2 * sin(x) + -(sin(x) * tan(x)) + -(sin(x) ^ 2) + 2 * tan(x)) / (sin(x) + tan(x)) ^ 2'),
         ]
-        for a,b in test_data:
-            a,b = parser.parse_expr(a),parser.parse_expr(b)
-            self.assertEqual(str(rules.DerivationSimplify().eval(a)),str(b))
+        for a, b in test_data:
+            a, b = parser.parse_expr(a), parser.parse_expr(b)
+            self.assertEqual(str(rules.DerivativeSimplify().eval(a)), str(b))
 
     def testLimitSimplify(self):
         test_data = [
@@ -428,7 +428,7 @@ class RulesTest(unittest.TestCase):
             # ('LIM {x->oo}. (exp(x)+2/x) / (exp(x)+5/x)')# 洛必达死循环
             # ("LIM {x->oo}. sqrt(x^2+1)-sqrt(x-1)"),
             ("LIM {x->oo}. exp(-x)*sin(x)", "0"),
-            ("LIM {x-> (pi/2) }. tan(2*x) / (x - pi / 2)","2"),
+            ("LIM {x-> (pi/2) }. tan(2*x) / (x - pi / 2)", "2"),
             ("LIM {x->oo}. atan(x) + exp(-x)", "1/2 * pi"),
             ("LIM {x->-oo}. atan(x) + exp(x)", "-1/2 * pi"),
             ("LIM {x->oo}. asin(x)", "asin(oo)"),
@@ -447,7 +447,7 @@ class RulesTest(unittest.TestCase):
         print(dt)
         dt2 = rules.DerivIntExchange().eval(dt)
         print(dt2)
-        dt3 = deriv("b", dt2.body.body)
+        dt3 = rules.OnLocation(rules.DerivativeSimplify(), "0").eval(dt2)
         print(dt3)
 
 if __name__ == "__main__":

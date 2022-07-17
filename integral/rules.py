@@ -183,7 +183,7 @@ class OnSubterm(Rule):
 
 class OnLocation(Rule):
     """Apply given rule on subterm specified by given location."""
-    def __init__(self, rule, loc):
+    def __init__(self, rule: Rule, loc):
         assert isinstance(rule, Rule)
         self.rule = rule
         self.loc = expr.Location(loc)
@@ -669,7 +669,7 @@ class LHopital(Rule):
             return e
 
         numerator, denominator = e.body.args
-        rule = DerivationSimplify()
+        rule = DerivativeSimplify()
         return expr.Limit(e.var ,e.lim, Op('/', rule.eval(Deriv(e.var,numerator)),
                                                 rule.eval(Deriv(e.var,denominator))), e.drt)
         # if e.ty != LIMIT:
@@ -744,81 +744,19 @@ class LimSep(Rule):
                                   expr.Limit(e.var, e.lim, e.body.args[1], e.drt))
 
 
-class DerivationSimplify(Rule):
+class DerivativeSimplify(Rule):
     """Simplify the derivative of an expression"""
     def __init__(self):
-        self.name = "DerivationSimplify"
+        self.name = "Simplify derivative"
 
     def eval(self, e):
         if isinstance(e, str):
             e = parser.parse_expr(e)
+
         if not isinstance(e, Deriv):
             return e
-        '''
-        依据e的不同条件进行不同的化简
-        e = a, a是常数或者是非求导变量，则 D x. a = 0
-        e = x ，则 D x. x = 1
-        e 如果符合常见的被积表达式 比如
-            e = sin(x) 则 D x.e = cos(x)
-            e = log(x) 则 D x.e = 1 / x
-            ...
-        e = (f(u))^g(v) 则 D x.e = e * D x.(v*log u) log e = v log u // f(u) > 0 
-        e = f(u),u = g(x),则 D x.e = D u. f(u) * D x.g(x)   // f在u可导，g在x可导
-        e = u +(-) v,则 D x.e = D x. u +(-) D x. v  // u,v 在x可导
-        e = u * v,则 D x. e = D x. u * v + D x. v * u 
-        e = u / v,则 D x.e = (D x. u) * v - (D x.v) * u / (v^ 2)
-        '''
-        def D(f):
-            if f.ty == CONST:
-                return Const(0);
-            elif f.ty == VAR and f.name == e.var:
-                return Const(1);
-            elif f.ty == VAR and f.name != e.var:
-                return Const(0);
-            elif f.ty == OP:
-                op, length = f.op, len(f.args)
-                if length > 2:
-                    raise NotImplementedError;
-                a,b = None,None
-                if length == 2:
-                    a, b = f.args
-                elif length == 1:
-                    a = f.args[0]
-                else:
-                    raise NotImplementedError
-                if op == '-' and length == 1:
-                    return Op(op, D(f.args[0])).normalize()
-                elif op in ('-', '+'):
-                    return Op(op, D(f.args[0]), D(f.args[1])).normalize()
-                elif op == '*':
-                    return (D(a)*b + D(b)*a).normalize()
-                elif op == '/':
-                    return (D(a)*b - D(b)*a).normalize()/(b^2).normalize()
-                elif op == '^':
-                    if b.is_constant():
-                        return b.normalize() * (a^(b-1)).normalize()
-                    return (f * D(Fun('exp',b * Fun('log', a)))).normalize()
-                else:
-                    raise NotImplementedError
-            elif f.ty == FUN:
-                func_name, length = f.func_name, len(f.args)
-                # 例如 pi , e
-                if length == 0:
-                    return Const(0)
-                elif length == 1:
-                    if func_name in expr.DMap.keys():
-                        return (expr.DMap[func_name](f.args[0]) * D(f.args[0])).normalize()
-                    else:
-                        raise NotImplementedError
-                else:
-                    raise NotImplementedError
-            elif f.ty == INTEGRAL:
-                raise NotImplementedError
-            else:
-                raise NotImplementedError
-        res = D(e.body)
-        #print("res:",res)
-        return res
+        
+        return expr.deriv(e.var, e.body)
 
 def check_item(item, target=None, *, debug=False):
     """Check application of rules in the item."""
@@ -1348,7 +1286,7 @@ class LimitSimplify(Rule):
             return e
 
         var, lim, drt, body = e.var, e.lim, e.drt, e.body
-        deriv = DerivationSimplify()
+        deriv = DerivativeSimplify()
 
         if drt == None:
             rep = body.replace_trig(Var(var), lim)

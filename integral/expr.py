@@ -1362,7 +1362,7 @@ def deriv(var: str, e: Expr) -> Expr:
             elif var not in y.get_vars():
                 return (y * (x ^ (y - 1)) * deriv(var, x)).normalize()
             else:
-                raise NotImplementedError
+                return (e * deriv(var, exp(y * log(x)))).normalize()
         else:
             raise NotImplementedError
     elif e.ty == FUN:
@@ -1374,7 +1374,7 @@ def deriv(var: str, e: Expr) -> Expr:
             return (-(sin(x) * deriv(var, x))).normalize()
         elif e.func_name == "tan":
             x, = e.args
-            return (sec(x) ^ Const(2) * deriv(var, x)).normalize()
+            return ((sec(x) ^ Const(2)) * deriv(var, x)).normalize()
         elif e.func_name == "sec":
             x, = e.args
             return (sec(x) * tan(x) * deriv(var, x)).normalize()
