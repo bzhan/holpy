@@ -47,7 +47,7 @@ def reduce_power(n, e):
         return ((n, e),)
     elif isinstance(n, int):
         if n >= 0:
-            # 对n分解
+            # Compute factors of n.
             return tuple((ni, e * ei) for ni, ei in sympy.factorint(n).items())
         else:
             assert Fraction(e).denominator % 2 == 1, 'reduce_power'
@@ -73,7 +73,7 @@ def extract_frac(ps):
     return tuple(res), coeff
 
 class Unknown:
-    """Represent the polynomial which has a unkown value."""
+    """Represent the polynomial which has a unknown value."""
     def __init__(self, factors) -> None:
         self.factors = factors
 
@@ -104,7 +104,6 @@ class ConstantMonomial:
     """
     def __init__(self, coeff, factors):
         """ Construct a monomial from coefficient and tuple of factors. """
-        ''' 2 * 5^3 * 4^3 <-> (5,[(5,3),(4,3)])'''
         assert isinstance(coeff, (int, Fraction)), \
                 "coeff: %s, factors: %s" % (coeff, factors)
 
@@ -202,7 +201,9 @@ class ConstantMonomial:
 class ConstantPolynomial:
     """
     Represents a sum of constant monomials
-        属性:ConstantMonomial的列表
+
+    monomials - a list of ConstantMonomial.
+
     """
     def __init__(self, monomials):
         ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
@@ -233,7 +234,10 @@ class ConstantPolynomial:
         return self <= other and self != other
 
     def __add__(self, other):
-        return ConstantPolynomial(self.monomials + other.monomials)
+        if isinstance(other, ConstantPolynomial):
+            return ConstantPolynomial(self.monomials + other.monomials)
+        else:
+            raise AssertionError("other: %s" % other)
 
     def __neg__(self):
         return ConstantPolynomial([-m for m in self.monomials])
@@ -246,8 +250,8 @@ class ConstantPolynomial:
             return ConstantPolynomial(m * other for m in self.monomials)
         elif isinstance(other, ConstantPolynomial):
             return ConstantPolynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
-        elif isinstance(other, Polynomial):#back
-            return Polynomial([Monomial(self*mono.coeff,mono.factors) for mono in other.monomials])
+        elif isinstance(other, Polynomial): #back
+            return Polynomial([Monomial(self * mono.coeff, mono.factors) for mono in other.monomials])
         else:
             raise NotImplementedError
 
@@ -298,8 +302,6 @@ class ConstantPolynomial:
     def is_minus_one(self):
         return self.is_fraction() and self.get_fraction() == -1
 
-            
-
 
 def const_singleton(t):
     return ConstantPolynomial([ConstantMonomial(1, [(t, 1)])])
@@ -318,9 +320,9 @@ class Monomial:
         (2, ((x, 2), (y, 1))) -> 2 * x^2 * y
 
         """
-        if isinstance(coeff, (int, Fraction)): # Fraction(1,2) , 5
+        if isinstance(coeff, (int, Fraction)):
             coeff = const_fraction(coeff)
-        elif isinstance(coeff, expr.Expr): #比如sqrt(3), pi ...
+        elif isinstance(coeff, expr.Expr):
             coeff = const_singleton(coeff)
         assert isinstance(coeff, ConstantPolynomial), "Unexpected coeff: %s" % str(coeff)
         assert all(isinstance(factor, Iterable) and len(factor) == 2 and \
@@ -328,7 +330,6 @@ class Monomial:
             "Unexpected argument for factors: %s" % str(factors)
 
         self.coeff = coeff
-        # 把次幂等于0的项去掉
         self.factors = tuple((i, j) for i, j in collect_pairs(factors) if j != 0)
 
     def __hash__(self):
@@ -355,7 +356,7 @@ class Monomial:
                         s = s + " ^ " + str(p)
                 else:
                     s = s + "^" + str(p)
-            res += s
+            res += " * " + s
 
         if res == "":
             res = "1"

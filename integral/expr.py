@@ -473,7 +473,7 @@ class Expr:
         elif self.ty == VAR:
             return False
         elif self.ty == FUN:
-            if len(self.args) == 0: # pi
+            if len(self.args) == 0:  # pi
                 return True
             else:
                 return self.args[0].is_constant()
@@ -481,6 +481,40 @@ class Expr:
             return all(arg.is_constant() for arg in self.args)
         else:
             return False
+
+    def get_vars(self):
+        """Obtain the set of variables in self.
+        
+        For simplicity, this functin includes bound variables.
+
+        """
+        res = set()
+        def rec(t):
+            if t.ty == VAR:
+                res.add(t.name)
+            elif t.ty == CONST:
+                return
+            elif t.ty in (OP, FUN):
+                for arg in t.args:
+                    rec(arg)
+            elif t.ty == DERIV:
+                res.add(t.var)
+                rec(t.body)
+            elif t.ty == LIMIT:
+                res.add(t.var)
+                rec(t.lim)
+                rec(t.body)
+            elif t.ty in (INTEGRAL, EVAL_AT):
+                res.add(t.var)
+                rec(t.lower)
+                rec(t.upper)
+                rec(t.body)
+            else:
+                raise NotImplementedError
+
+        rec(self)
+        return res
+
     def replace(self, e, repl_e):
         """Replace occurrences of e with repl_e."""
         assert isinstance(e, Expr) and isinstance(repl_e, Expr)
@@ -676,11 +710,8 @@ class Expr:
     def normalize_constant(self):
         return from_const_poly(self.to_const_poly())
 
-    # 用表达式构建一个多项式对象
-    def to_poly(self):
-        #print("to poly self:",self)
+    def to_poly(self) -> Polynomial:
         """Convert expression to polynomial."""
-        # Var("x") -> 1 * x^1
         if self.ty == VAR:
             return poly.singleton(self)
 
@@ -713,7 +744,7 @@ class Expr:
             elif b.is_fraction():
                 return poly.Polynomial([poly.Monomial(poly.const_fraction(1), [(from_poly(a), b.get_fraction())])])
             else:
-                return poly.const_singleton(self)
+                return poly.singleton(from_poly(a) ^ from_poly(b))
 
         elif self.ty == FUN and self.func_name == "exp":
             a, = self.args
@@ -1290,7 +1321,7 @@ def from_poly(p):
         monos = [from_mono(m) for m in p.monomials]
         return sum(monos[1:], monos[0]) 
 
-def deriv(var, e):
+def deriv(var: str, e: Expr) -> Expr:
     """Compute the derivative of e with respect to variable
     name var.
 
@@ -1320,11 +1351,16 @@ def deriv(var, e):
             return (x * deriv(var, y) + deriv(var, x) * y).normalize()
         elif e.op == "/":
             x, y = e.args
-            return (deriv(var, x) * y - x * deriv(var, y)).normalize() / (y ^ Const(2)).normalize()
+            if var not in x.get_vars() and y.ty == OP and y.op == "^":
+                return deriv(var, x * (y.args[0] ^ (-y.args[1])))
+            else:
+                return (deriv(var, x) * y - x * deriv(var, y)).normalize() / (y ^ Const(2)).normalize()
         elif e.op == "^":
             x, y = e.args
             if y.ty == CONST:
                 return (y * (x ^ Const(y.val - 1)) * deriv(var, x)).normalize()
+            elif var not in y.get_vars():
+                return (y * (x ^ (y - 1)) * deriv(var, x)).normalize()
             else:
                 raise NotImplementedError
         else:
@@ -1518,7 +1554,7 @@ class Limit(Expr):
     - dir: limit side
 
     """
-    def __init__(self, var, lim, body, drt=None):
+    def __init__(self, var: str, lim: Expr, body: Expr, drt=None):
         assert isinstance(var, str) and isinstance(lim, Expr) and isinstance(body, Expr), \
             "Illegal expression: %s %s %s" % (type(var), type(lim), type(body))
         self.ty = LIMIT
@@ -1642,7 +1678,7 @@ E = Fun("exp", Const(1))
 
 class Deriv(Expr):
     """Derivative of an expression."""
-    def __init__(self, var, body):
+    def __init__(self, var: str, body: Expr):
         assert isinstance(var, str) and isinstance(body, Expr)
 
         self.ty = DERIV
@@ -1664,7 +1700,7 @@ class Deriv(Expr):
 
 class Integral(Expr):
     """Integral of an expression."""
-    def __init__(self, var, lower, upper, body):
+    def __init__(self, var: str, lower: Expr, upper: Expr, body: Expr):
         assert isinstance(var, str) and isinstance(lower, Expr) and \
             isinstance(upper, Expr) and isinstance(body, Expr)
         self.ty = INTEGRAL

@@ -436,17 +436,19 @@ class RulesTest(unittest.TestCase):
             ("LIM {t->-oo}. -1+(-t*exp(t))+exp(t)","-1"),
             ("LIM {t->oo}. atan(t) - atan(sqrt(2)/2)","1/2 * pi + -atan(sqrt(2) / 2)"),
         ]
-        for a,b in test_data:
-
+        for a, b in test_data:
             e = rules.LimitSimplify().eval(a)
             # print(e)
-            self.assertEqual(str(e[0].normalize()),b,a)
+            self.assertEqual(str(e[0].normalize()), b, a)
 
+    def testWallis(self):
+        t = parser.parse_expr("INT x:[0,oo]. 1/(x^2+b)^(m+1)")
+        dt = expr.Deriv("b", t)
+        print(dt)
+        dt2 = rules.DerivIntExchange().eval(dt)
+        print(dt2)
+        dt3 = deriv("b", dt2.body.body)
+        print(dt3)
 
 if __name__ == "__main__":
     unittest.main()
-    # e = parsef_expr("INT t:[0, 1]. t * exp(-(t^2/2))")
-    # print(e)
-    # e = rules.Substitution1("u", parse_expr("-t^2/2")).eval(e)
-    # self.assertEqual(e, parse_expr("INT u:[-1/2,0]. exp(u)"), "%s" % e)
-    # print(expr.parser.parse_expr("sqrt(-x)").normalize())

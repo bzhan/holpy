@@ -141,7 +141,7 @@ class ExprTransformer(Transformer):
 expr_parser = Lark(grammar, start="expr", parser="lalr", transformer=ExprTransformer())
 interval_parser = Lark(grammar, start="interval", parser="lalr", transformer=ExprTransformer())
 
-def parse_expr(s) -> Expr:
+def parse_expr(s: str) -> Expr:
     """Parse an integral expression."""
     try:
         return expr_parser.parse(s)
@@ -149,7 +149,7 @@ def parse_expr(s) -> Expr:
         print("When parsing:", s)
         raise e
 
-def parse_interval(s) -> Interval:
+def parse_interval(s: str) -> Interval:
     """Parse an interval."""
     try:
         return interval_parser.parse(s)

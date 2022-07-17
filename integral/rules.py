@@ -1462,3 +1462,16 @@ class LimitSimplify(Rule):
             return res
         else:
             raise NotImplementedError
+
+
+class DerivIntExchange(Rule):
+    """Exchanging derivative and integral"""
+    def __init__(self):
+        self.name = "Exchange of derivative and integral"
+
+    def eval(self, e):
+        if not e.is_deriv() or not e.body.is_integral():
+            raise AssertionError("DerivIntExchange: unexpected form of input")
+
+        v1, v2 = e.var, e.body.var
+        return Integral(v2, e.body.lower, e.body.upper, Deriv(v1, e.body.body))
