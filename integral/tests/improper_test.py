@@ -34,16 +34,22 @@ class ImproperTest(unittest.TestCase):
 
     def testLHopital(self):
         test_cases = [
-            ("LIM {t -> -oo}. -(t * exp(t))", "0")
+            ("LIM {t -> -oo}. -(t * exp(t))", '', 1 , "0")
         ]
 
-        for t, t_res in test_cases:
-            t = parse_expr(t)
-            t_res = parse_expr(t_res)
-            e1 = rules.LHopital().eval(t)
-            e2 = rules.LimitSimplify().eval(e1)
-            self.assertEqual(e2[0], t_res)
+        # for t, t_res in test_cases:
+        #     t = parse_expr(t)
+        #     t_res = parse_expr(t_res)
+        #     e1 = rules.LHopital().eval(t)
+        #     e2 = rules.LimitSimplify().eval(e1)
+        #     self.assertEqual(e2[0], t_res)
 
+        for t, loc1, loc2, t_res in test_cases:
+            t = parse_expr(t)
+            t1 = rules.OnLocation(rules.Mul2Div(loc2), loc1).eval(t)
+            t2 = rules.LHopital().eval(t1)
+            t3 = rules.LimitSimplify().eval(t2)
+            self.assertEqual(str(t3[0]), t_res)
 
     # def test_improper_integration(self):
     #     test_case = [
