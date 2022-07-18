@@ -418,7 +418,7 @@ class Equation(Rule):
         #     if (self.new_expr * self.denom).normalize() != (e * self.denom).normalize():
         #         raise AssertionError("Rewriting by equation failed")
         return self.new_expr
-# 分部积分
+
 class IntegrationByParts(Rule):
     """Apply integration by parts."""
     def __init__(self, u, v):
@@ -444,7 +444,6 @@ class IntegrationByParts(Rule):
             print("%s != %s" % (str(udv), str(e.body)))
             raise NotImplementedError("%s != %s" % (str(udv), str(e.body)))
 
-#对有理分式进行化简
 class PolynomialDivision(Rule):
     """Simplify the representation of polynomial divided by polynomial.
     """
@@ -477,7 +476,6 @@ class RewriteTrigonometric(Rule):
         sympy_result = rule_fun(expr.sympy_style(e))
         result = expr.holpy_style(sympy_result)
         return result
-
 
 
 class ElimAbs(Rule):
@@ -532,9 +530,9 @@ class ElimAbs(Rule):
         abs_expr = e.body.get_abs()
         if len(abs_expr) == 0:
             return e
-        # 选择一个 abs 表达式
+
         abs_expr = abs_expr[0]  # only consider the first absolute value
-        # 表达式的上下界
+
         g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
         new_integral = []
         for l, h in g:
@@ -542,6 +540,7 @@ class ElimAbs(Rule):
         for l, h in s:
             new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
         return sum(new_integral[1:], new_integral[0])
+
 
 class SplitRegion(Rule):
     """Split integral into two parts at a point."""
@@ -677,27 +676,6 @@ class LHopital(Rule):
 
         if not isinstance(e, expr.Limit):
             return e
-
-        if e.body.op == '-' and len(e.body.args) == 1:
-            e1 = e.body.args[0]
-            if e1.op == '*' and len(e1.args) == 2:
-                # Special case: x * exp(-x) -> x / exp(x)
-                a, b = e1.args
-                var, lim = e.var, e.lim
-                res1 = compute_limit(a.replace_trig(Var(var), lim))
-                res2 = compute_limit(b.replace_trig(Var(var), lim))
-                if res1[0] in (NEG_INF, POS_INF) and res2[0] == expr.ZERO:
-                    if b.ty == expr.FUN and b.func_name == 'exp':
-                        e = Limit(var, lim, -a / Fun('exp', -b.args[0]))
-                    else:
-                        return e
-                elif res2[0] in (NEG_INF, POS_INF) and res1[0] == expr.ZERO:
-                    if a.ty == expr.FUN and a.func_name == 'exp':
-                        e = Limit(var, lim, -b / Fun('exp', -a.args[0]))
-                    else:
-                        return e
-                else:
-                    return e
 
         if not (isinstance(e.body, expr.Op) and e.body.op == '/'):
             return e
@@ -1466,3 +1444,29 @@ class ExpandDefinition(Rule):
         for arg, val in zip(self.func_def.args, e.args):
             body = body.replace(arg, val)
         return body
+
+
+class Mul2Div(Rule):
+    """
+        rewrite multiplication to division
+        for example a * b ,we can choose the first number as divisor so that
+        this expression can be rewritten as b / (1/a)
+    """
+
+    def __init__(self, multiplierLoc:int):
+        self.name = "Mul2Div"
+        self.multiplierLoc = multiplierLoc
+
+    def eval(self, e):
+        # locate at mulication expression
+        if e.ty != expr.OP or e.op != '*':
+            return e
+        if self.multiplierLoc == 0:
+            d1,d2 = e.args[1],e.args[0]
+        elif self.multiplierLoc == 1:
+            d1,d2 = e.args[0],e.args[1]
+        else:
+            raise NotImplementedError
+        s = expr.sympy_style(d2) ** -1
+        d2 = expr.holpy_style(s)
+        return d1 / d2

@@ -503,6 +503,16 @@ class RulesTest(unittest.TestCase):
         t8 = rules.LimitSimplify().eval(t7, conds=conds)[0]
         print("t8 = ", t8)
 
+    def testMul2Div(self):
+        test_data = [("x*(e^-x)", "", 1, "x / e ^ x"),
+                     ('1 + (x*y + t*log(t))/5', "1.0.1", 1, "1 + (x * y + t / (1 / log(t))) / 5"),
+                     ('1 + (x*y + t*log(t))/5', "1.0.0", 0, "1 + (y / (1 / x) + t * log(t)) / 5"), ]
+        for s, mulExprLoc, multiplierLoc, res in test_data:
+            loc = expr.Location(mulExprLoc)
+            r = rules.Mul2Div(multiplierLoc)
+            res2 = rules.OnLocation(r, loc).eval(expr.parser.parse_expr(s))
+            self.assertEqual(str(res2), res)
 
 if __name__ == "__main__":
     unittest.main()
+
