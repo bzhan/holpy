@@ -20,6 +20,7 @@ class RulesTest(unittest.TestCase):
              "INT x:[4,9]. sqrt(x) + x"),
             ("INT x:[0,pi/2]. (cos(x)^4 * sin(x) ^ 2) /  -(sin(x))",
              "INT x:[0,1/2 * pi]. -(cos(x) ^ 4 * sin(x))"),
+            ('(sqrt(x)-2)*(sqrt(x)+2)','-4 + x')
         ]
         rule = rules.Simplify()
         for s1, s2 in test_data:
@@ -513,6 +514,22 @@ class RulesTest(unittest.TestCase):
             res2 = rules.OnLocation(r, loc).eval(expr.parser.parse_expr(s))
             self.assertEqual(str(res2), res)
 
+    def testNDME(self):
+        test_data = [("sqrt(a) + sqrt(b)", "", "sqrt(a)-sqrt(b)", \
+                      "((sqrt(a) + sqrt(b)) * (sqrt(a) - sqrt(b))) / (sqrt(a) - sqrt(b))"),
+                     ('3/2 + 1/(sqrt(x^2-2) + sqrt(x^2-1))', '1', 'sqrt(x^2-2) - sqrt(x^2-1)',
+                      '3/2 + ((1 / (sqrt(x ^ 2 - 2) + sqrt(x ^ 2 - 1))) * (sqrt(x ^ 2 - 2) - sqrt(x ^ 2 - 1))) / (sqrt(x ^ 2 - 2) - sqrt(x ^ 2 - 1))'),
+                     ('x - sqrt(x*x + 7)', '', 'x + sqrt(x*x + 7)',\
+                      '((x - sqrt(x * x + 7)) * (x + sqrt(x * x + 7))) / (x + sqrt(x * x + 7))'),
+                     ('sqrt(a) / b', '', 'sqrt(a)', '((sqrt(a) / b) * sqrt(a)) / sqrt(a)'),
+                     ]
+        for s, loc, u, res2 in test_data:
+            s = expr.parser.parse_expr(s)
+            u = expr.parser.parse_expr(u)
+            loc = expr.Location(loc)
+            res1 = rules.OnLocation(rules.NDME(u), loc).eval(s)
+            self.assertEqual(str(res1), res2)
 if __name__ == "__main__":
     unittest.main()
+
 

@@ -1470,3 +1470,18 @@ class Mul2Div(Rule):
         s = expr.sympy_style(d2) ** -1
         d2 = expr.holpy_style(s)
         return d1 / d2
+
+class NDME(Rule):
+    '''numerator and denominator multiply by e
+        for example a / b -> a*e / b*e
+     '''
+    def __init__(self, u:expr.Expr):
+        self.name = "NDME"
+        self.u = u
+
+    def eval(self, e):
+        u = self.u
+        if e.ty == OP and e.ty == '/' and len(e.args) == 2:
+            return (e.args[0] * u) / (e.args[1] * u)
+        else:
+            return e * u / u
