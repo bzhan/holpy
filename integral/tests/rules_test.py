@@ -1,18 +1,14 @@
 """Unit test for rules."""
-import os
+
 import unittest
-from decimal import Decimal
 from fractions import Fraction
 
-import sympy
-
-import integral
 from integral import expr, parser
 from integral.expr import Const, deriv, neg_inf, Inf
 from integral.parser import parse_expr
 from integral import rules
 from integral import compstate
-from sympy.parsing import sympy_parser
+from integral import conditions
 
 
 class RulesTest(unittest.TestCase):
@@ -437,16 +433,37 @@ class RulesTest(unittest.TestCase):
             ("LIM {t->-oo}. -1+(-t*exp(t))+exp(t)","-1"),
             ("LIM {t->oo}. atan(t) - atan(sqrt(2)/2)","1/2 * pi + -atan(sqrt(2) / 2)"),
         ]
+
         for a, b in test_data:
             e = rules.LimitSimplify().eval(a)
             # print(e)
             self.assertEqual(str(e[0].normalize()), b, a)
+
+    def testComputeLimitConds(self):
+        test_data = [
+            ("b * oo", "b > 0", "oo"),
+            ("b * oo", "b < 0", "-oo"),
+            ("b ^ (-1/2) * oo", "b > 0", "oo"),
+            ("atan(b ^ (-1/2) * oo)", "b > 0", "1/2 * pi"),
+        ]
+
+        for e, cond, res in test_data:
+            e = parser.parse_expr(e)
+            res = parser.parse_expr(res)
+            conds = conditions.Conditions()
+            conds.add_condition("1", parser.parse_expr(cond))
+            self.assertEqual(rules.compute_limit(e, conds)[0], res)
+
 
     def testWallis(self):
         # Make definition
         Idef_s = "I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))"
         Idef_t = parser.parse_expr(Idef_s)
         Idef = compstate.FuncDef(Idef_t)
+
+        # Condition b > 0
+        conds = conditions.Conditions()
+        conds.add_condition("b", parser.parse_expr("b > 0"))
 
         # Starting term on LHS
         lt = parser.parse_expr("D b. I(m,b)")
@@ -483,6 +500,8 @@ class RulesTest(unittest.TestCase):
         print("t6 = ", t6)
         t7 = rules.OnLocation(rules.FullSimplify(), "0").eval(t6)
         print("t7 = ", t7)
+        t8 = rules.LimitSimplify().eval(t7, conds=conds)[0]
+        print("t8 = ", t8)
 
 
 if __name__ == "__main__":

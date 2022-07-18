@@ -42,10 +42,15 @@ grammar = r"""
     ?plus: plus "+" times -> plus_expr         // priority 65
         | plus "-" times -> minus_expr | times
 
-    ?eq: plus "=" plus -> eq_expr              // priority 50
+    ?compare: plus "=" plus -> eq_expr              // priority 50
+        | plus "!=" plus -> not_eq_expr
+        | plus ">" plus -> greater_expr
+        | plus "<" plus -> less_expr
+        | plus ">=" plus -> greater_eq_expr
+        | plus "<=" plus -> less_eq_expr
         | plus
 
-    ?expr: eq
+    ?expr: compare
 
     !interval: ("(" | "[") expr "," expr ("]" | ")") -> interval_expr
 
@@ -95,6 +100,21 @@ class ExprTransformer(Transformer):
     def eq_expr(self, a, b):
         return expr.Op("=", a, b)
 
+    def not_eq_expr(self, a, b):
+        return expr.Op("!=", a, b)
+
+    def less_expr(self, a, b):
+        return expr.Op("<", a, b)
+
+    def greater_expr(self, a, b):
+        return expr.Op(">", a, b)
+
+    def less_eq_expr(self, a, b):
+        return expr.Op("<=", a, b)
+
+    def greater_eq_expr(self, a, b):
+        return expr.Op(">=", a, b)
+    
     def uminus_expr(self, a):
         if a.ty == expr.CONST:
             return expr.Const(-a.val)

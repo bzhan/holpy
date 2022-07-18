@@ -16,6 +16,8 @@ from sympy.solvers import solvers, solveset
 from integral import compstate
 from fractions import Fraction
 from integral.solve import solve_equation
+from integral.conditions import Conditions, is_positive, is_negative
+from integral import conditions
 
 
 class Rule:
@@ -918,7 +920,7 @@ def check_item(item, target=None, *, debug=False):
             raise AssertionError("Error on final answer")
 
 
-def compute_limit(e: Expr):
+def compute_limit(e: Expr, conds=None):
     """Compute the limit of the expression.
     
     The returned value is of the form (e, type, order of infinity, type of infinity),
@@ -939,6 +941,9 @@ def compute_limit(e: Expr):
     growth. Otherwise order of infinity is -1.
 
     """
+    if conds is None:
+        conds = Conditions()
+
     if e.ty == CONST or e.ty == FUN and len(e.args) == 0:
         # Constants
         return (e, 'const', 0, "?")
@@ -1061,23 +1066,23 @@ def compute_limit(e: Expr):
             return (a1 + a2, 'unknown', -1, "?")
     elif e.ty == OP and e.op == '*' and len(e.args) == 2:
         # Multiplication
-        a1, b1, c1, d1 = compute_limit(e.args[0])
-        a2, b2, c2, d2 = compute_limit(e.args[1])
+        a1, b1, c1, d1 = compute_limit(e.args[0], conds=conds)
+        a2, b2, c2, d2 = compute_limit(e.args[1], conds=conds)
         if b1 == 'const' and b2 == 'const':
             # Both sides have finite limits
             return (a1 * a2, 'const', 0, "?")
         elif b1 == 'const' and b2 in ('pos_inf', 'neg_inf'):
             # Cases when the left side is constant, and right side is infinity
-            if a1.ty == CONST and a1.val > 0 and b2 == 'pos_inf':
+            if is_positive(a1, conds) and b2 == 'pos_inf':
                 # pos * oo = oo
                 return (Inf(Decimal('inf')) , 'pos_inf', c2, d2)
-            elif a1.ty == CONST and a1.val > 0 and b2 == 'neg_inf':
+            elif is_positive(a1, conds) and b2 == 'neg_inf':
                 # pos * -oo = -oo
                 return (Inf(Decimal('-inf')) , 'neg_inf', c2, d2)
-            elif a1.ty == CONST and a1.val < 0 and b2 == 'pos_inf':
+            elif is_negative(a1, conds) and b2 == 'pos_inf':
                 # neg * oo = -oo
                 return (Inf(Decimal('-inf')) , 'neg_inf', c2, d2)
-            elif a1.ty == CONST and a1.val < 0 and b2 == 'neg_inf':
+            elif is_negative(a1, conds) and b2 == 'neg_inf':
                 # neg * -oo = oo
                 return (Inf(Decimal('inf')) , 'pos_inf', c2, d2)
             elif a1.ty == FUN and a1.func_name in ('log') and a1.args[0].ty == CONST \
@@ -1217,6 +1222,7 @@ def compute_limit(e: Expr):
             # Both sides have finite limits
             # TODO: more cases to consider
             if a1.ty == CONST and a2.ty == CONST and a1.val == 0 and a2.val < 0:
+                # Case of 0 ^ e, where e is negative
                 return (a1 ^ a2, "unknown", 0, "?")
             else:
                 return (a1 ^ a2, 'const', 0, "?")
@@ -1245,7 +1251,7 @@ def compute_limit(e: Expr):
     elif e.ty == FUN and e.func_name in ('atan', 'acot', 'exp', "acsc", "asec"):
         # The following functions are finite within their range
         # TODO: this is not true for acsc and asec, which have infinities at zero.
-        a, b, c, d = compute_limit(e.args[0])
+        a, b, c, d = compute_limit(e.args[0], conds=conds)
         if b == 'const':
             return (Fun(e.func_name, a), 'const', 0, "?")
         elif e.func_name == 'atan' and b == 'pos_inf':
@@ -1310,7 +1316,7 @@ class LimitSimplify(Rule):
     def __init__(self):
         self.name = "LimitSimplify"
 
-    def eval(self, e):
+    def eval(self, e, conds=None):
         if isinstance(e, str):
             e = parser.parse_expr(e)
 
@@ -1428,7 +1434,7 @@ class LimitSimplify(Rule):
                 # lim x -> oo. (1 + 1 / x) ^ x = e
                 return (Fun('exp', Const(1)), 'const', 0, "?")
 
-            res = compute_limit(rep)
+            res = compute_limit(rep, conds=conds)
             return res
         else:
             raise NotImplementedError

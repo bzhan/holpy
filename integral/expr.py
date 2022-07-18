@@ -274,6 +274,21 @@ class Expr:
     def is_equals(self):
         return self.ty == OP and self.op == '='
 
+    def is_not_equals(self):
+        return self.ty == OP and self.op == "!="
+
+    def is_less(self):
+        return self.ty == OP and self.op == "<"
+
+    def is_less_eq(self):
+        return self.ty == OP and self.op == "<="
+
+    def is_greater(self):
+        return self.ty == OP and self.op == ">"
+
+    def is_greater_eq(self):
+        return self.ty == OP and self.op == ">="
+
     def is_inf(self):
         return self.ty == INF and  (self.t == Decimal("inf") or self.t == Decimal("-inf"))
 
@@ -1484,7 +1499,7 @@ class Op(Expr):
         if len(args) == 1:
             assert op == "-"
         elif len(args) == 2:
-            assert op in ["+", "-", "*", "/", "^", "="]
+            assert op in ["+", "-", "*", "/", "^", "=", "!=", "<", "<=", ">", ">="]
         else:
             raise NotImplementedError
         self.ty = OP
@@ -1990,26 +2005,3 @@ def eval_hol_expr(t):
 def eval_expr(e):
     t = expr_to_holpy(e)
     return eval_hol_expr(t)
-
-def d_cos(e):
-    return Op('-',Fun('sin',e))
-
-def d_sin(e):
-    return Fun('cos',e)
-
-def d_log(e):
-    return 1 / e
-def d_exp(e):
-    return Fun('exp', e)
-def d_sqrt(e):
-    return Const(Fraction(1,2)) / sqrt(e)
-def d_tan(e):
-    return Fun('sec',e) * Fun('sec',e)
-def d_sec(e):
-    return Fun('sec',e) * Fun('tan',e)
-def d_atan(e):
-    return Const(1) / (Const(1) + e^2)
-DMap = {
-    'cos':d_cos,'sin':d_sin,'log':d_log,"tan":d_tan,
-    "exp":d_exp, "sqrt":d_sqrt,"sec":d_sec,"atan":d_atan,
-}

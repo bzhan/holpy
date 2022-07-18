@@ -20,7 +20,7 @@ class ImproperTest(unittest.TestCase):
             ("LIM {x -> oo}. exp(1/x)", "1"),
             ("LIM {x -> -oo}. exp(1/x)", "1"),
             ("LIM {x -> oo}. x*exp(-x)", "LIM {x->oo}. x*exp(-x)"),
-            ("LIM {x->oo}. exp(x) - log(x)", "LIM {x->oo}. exp(x) + -log(x)"),
+            ("LIM {x -> oo}. exp(x) - log(x)", "LIM {x->oo}. exp(x) + -log(x)"),
             ("LIM {x -> oo}. x/log(x)", "LIM {x -> oo}. x * log(x) ^ -1"),
             ("LIM {x -> oo}. exp(x+2)/x", "LIM {x -> oo}. x ^ -1 * exp(2 + x)"),
             ("LIM {x -> oo}. x/exp(x+2)", "LIM {x -> oo}. x * exp(-2 + -x)"),
