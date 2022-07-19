@@ -1346,7 +1346,7 @@ class LimitSimplify(Rule):
                         repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
 
                     # Take square root of the result
-                    return compute_limit(Const(sign) * Fun('sqrt', repa / repb))
+                    return compute_limit(Const(sign) * Fun('sqrt', repa / repb))[0]
 
                 # Apply L'Hopital's rule
                 while (compute_limit(rep.args[0])[1] == 'const' and \
@@ -1389,7 +1389,7 @@ class LimitSimplify(Rule):
                         newa, newb = deriv.eval(expr.Deriv(var, a)), deriv.eval(expr.Deriv(var, b))
                         a, b = newa, newb
                         repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
-                    return compute_limit(repa / repb)
+                    return compute_limit(repa / repb)[0]
 
             elif isinstance(body, Fun) and isinstance(body.args[0], Op) and body.args[0].op == '/':
                 # Case of function application, where the argument is a / b
@@ -1402,7 +1402,7 @@ class LimitSimplify(Rule):
                     newa, newb = deriv.eval(expr.Deriv(var, a)), deriv.eval(expr.Deriv(var, b))
                     a, b = newa, newb
                     repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
-                return compute_limit(Fun(body.func_name, repa / repb))
+                return compute_limit(Fun(body.func_name, repa / repb))[0]
 
             elif body.ty == OP and body.op == '^' and body.args[1].ty == VAR and body.args[1].name == var \
                 and (body.args[0] == Op('+',Const(1),Op('/',Const(1),Var(var))) or \
@@ -1410,10 +1410,10 @@ class LimitSimplify(Rule):
                      body.args[0] == Op('+', Const(1), Op('^',  Var(var), Const(-1))) or \
                      body.args[0] == Op('+', Op('^' , Var(var), Const(-1)), Const(1))):
                 # lim x -> oo. (1 + 1 / x) ^ x = e
-                return (Fun('exp', Const(1)), 'const', 0, "?")
+                return (Fun('exp', Const(1)), 'const', 0, "?")[0]
 
             res = compute_limit(rep, conds=conds)
-            return res
+            return res[0]
         else:
             raise NotImplementedError
 
@@ -1458,30 +1458,56 @@ class Mul2Div(Rule):
         self.multiplierLoc = multiplierLoc
 
     def eval(self, e):
-        # locate at mulication expression
+        if isinstance(e,str):
+            e = expr.parser.parse_expr(e)
+        if not isinstance(e, Expr):
+            raise AssertionError("Mul2Div: wrong form for e.")
         if e.ty != expr.OP or e.op != '*':
             return e
         if self.multiplierLoc == 0:
-            d1,d2 = e.args[1],e.args[0]
+            d1,d2 = e.args[1], 1/e.args[0]
         elif self.multiplierLoc == 1:
-            d1,d2 = e.args[0],e.args[1]
+            d1,d2 = e.args[0], 1/e.args[1]
         else:
             raise NotImplementedError
-        s = expr.sympy_style(d2) ** -1
-        d2 = expr.holpy_style(s)
         return d1 / d2
 
-class NDME(Rule):
+class NumeratorDeominatorMulExpr(Rule):
     '''numerator and denominator multiply by e
         for example a / b -> a*e / b*e
      '''
     def __init__(self, u:expr.Expr):
-        self.name = "NDME"
+        self.name = "NumeratorDeominatorMulExpr"
         self.u = u
 
     def eval(self, e):
+        if isinstance(e,str):
+            e = expr.parser.parse_expr(e)
+        if not isinstance(e, Expr):
+            raise AssertionError("NumeratorDeominatorMulExpr: wrong form for e.")
         u = self.u
         if e.ty == OP and e.ty == '/' and len(e.args) == 2:
             return (e.args[0] * u) / (e.args[1] * u)
         else:
             return e * u / u
+
+class LimFunExchange(Rule):
+    '''Compound function limit rule
+        lim {x->a}. f(g(x)) = f(lim {x->a}. g(x))
+    '''
+
+    def __init__(self):
+        self.name = "LimFunExchange"
+
+    def eval(self, e):
+        if isinstance(e,str):
+            e = expr.parser.parse_expr(e)
+        if not isinstance(e, Expr):
+            raise AssertionError("LimFunExchange: wrong form for e.")
+        if not e.ty == LIMIT:
+            return e
+        if e.body.ty == FUN:
+            func_name, args = e.body.func_name, e.body.args
+            return expr.Fun(func_name, *[Limit(e.var, e.lim, arg) for arg in args])
+        if e.body.ty == OP and e.body.op == '-' and len(e.body.args) == 1:
+            return -(Limit(e.var, e.lim, e.body.args[0]))

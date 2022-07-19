@@ -438,7 +438,7 @@ class RulesTest(unittest.TestCase):
         for a, b in test_data:
             e = rules.LimitSimplify().eval(a)
             # print(e)
-            self.assertEqual(str(e[0].normalize()), b, a)
+            self.assertEqual(str(e.normalize()), b, a)
 
     def testComputeLimitConds(self):
         test_data = [
@@ -501,11 +501,11 @@ class RulesTest(unittest.TestCase):
         print("t6 = ", t6)
         t7 = rules.OnLocation(rules.FullSimplify(), "0").eval(t6)
         print("t7 = ", t7)
-        t8 = rules.LimitSimplify().eval(t7, conds=conds)[0]
+        t8 = rules.LimitSimplify().eval(t7, conds=conds)
         print("t8 = ", t8)
 
     def testMul2Div(self):
-        test_data = [("x*(e^-x)", "", 1, "x / e ^ x"),
+        test_data = [("x*(e^-x)", "", 1, "x / (1 / e ^ -x)"),
                      ('1 + (x*y + t*log(t))/5', "1.0.1", 1, "1 + (x * y + t / (1 / log(t))) / 5"),
                      ('1 + (x*y + t*log(t))/5', "1.0.0", 0, "1 + (y / (1 / x) + t * log(t)) / 5"), ]
         for s, mulExprLoc, multiplierLoc, res in test_data:
@@ -514,7 +514,7 @@ class RulesTest(unittest.TestCase):
             res2 = rules.OnLocation(r, loc).eval(expr.parser.parse_expr(s))
             self.assertEqual(str(res2), res)
 
-    def testNDME(self):
+    def testNumeratorDeominatorMulExpr(self):
         test_data = [("sqrt(a) + sqrt(b)", "", "sqrt(a)-sqrt(b)", \
                       "((sqrt(a) + sqrt(b)) * (sqrt(a) - sqrt(b))) / (sqrt(a) - sqrt(b))"),
                      ('3/2 + 1/(sqrt(x^2-2) + sqrt(x^2-1))', '1', 'sqrt(x^2-2) - sqrt(x^2-1)',
@@ -527,8 +527,15 @@ class RulesTest(unittest.TestCase):
             s = expr.parser.parse_expr(s)
             u = expr.parser.parse_expr(u)
             loc = expr.Location(loc)
-            res1 = rules.OnLocation(rules.NDME(u), loc).eval(s)
+            res1 = rules.OnLocation(rules.NumeratorDeominatorMulExpr(u), loc).eval(s)
             self.assertEqual(str(res1), res2)
+
+    def testLimFunExchange(self):
+        test_data = [("LIM {x->3}. f(x,log(x))", "f(LIM {x -> 3 }. x,LIM {x -> 3 }. log(x))"),
+                      ("LIM {x->oo}. sqrt(x-sqrt(x))", "sqrt(LIM {x -> oo}. x - sqrt(x))"),]
+        for s, res in test_data:
+            e = rules.LimFunExchange().eval(s)
+            self.assertEqual(str(e),res)
 if __name__ == "__main__":
     unittest.main()
 
