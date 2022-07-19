@@ -34,22 +34,24 @@ class ImproperTest(unittest.TestCase):
 
     def testLHopital(self):
         test_cases = [
-            ("LIM {t -> -oo}. -(t * exp(t))", '', 1 , "0")
+            "LIM {t -> -oo}. -(t * exp(t))"
         ]
 
-        # for t, t_res in test_cases:
-        #     t = parse_expr(t)
-        #     t_res = parse_expr(t_res)
-        #     e1 = rules.LHopital().eval(t)
-        #     e2 = rules.LimitSimplify().eval(e1)
-        #     self.assertEqual(e2[0], t_res)
-
-        for t, loc1, loc2, t_res in test_cases:
-            t = parse_expr(t)
-            t1 = rules.OnLocation(rules.Mul2Div(loc2), loc1).eval(t)
-            t2 = rules.LHopital().eval(t1)
-            t3 = rules.LimitSimplify().eval(t2)
-            self.assertEqual(str(t3[0]), t_res)
+        t = test_cases[0]
+        t = parse_expr(t)
+        t0 = rules.OnLocation(rules.LimFunExchange(), '').eval(t)
+        # print("t0:", t0)
+        t1 = rules.OnLocation(rules.Mul2Div(1), '0.0').eval(t0)
+        # print("t1:", t1)
+        t2 = rules.OnLocation(rules.Simplify(), '0.0.1').eval(t1)
+        # print("t2:", t2)
+        t3 = rules.OnLocation(rules.LHopital(), '0').eval(t2)
+        # print("t3:", t3)
+        t4 = rules.OnLocation(rules.LimitSimplify(), '0').eval(t3)
+        # print("t4:", t4)
+        t5 = rules.OnLocation(rules.Simplify(), '').eval(t4)
+        # print("t5:", t5)
+        self.assertEqual(str(t5),'0')
 
     # def test_improper_integration(self):
     #     test_case = [
@@ -101,3 +103,4 @@ class ImproperTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
