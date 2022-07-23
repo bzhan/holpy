@@ -469,10 +469,30 @@ class Equation(Rule):
         #         raise AssertionError("Rewriting by equation failed")
         return self.new_expr
 
+
+class RewriteBinom(Rule):
+    """Rewrite binomial coefficients."""
+    def __init__(self):
+        self.name = "Rewrite binomial coefficients"
+
+    def eval(self, e: Expr) -> Expr:
+        if not e.is_fun() and e.func_name == "binom":
+            return e
+
+        m, n = e.args
+        if n.is_plus() and n.args[1] == Const(1) and m.is_plus() and m.args[1] == Const(2) and \
+                m.args[0] == 2 * n.args[0]:
+            # Case binom(2*k+2, k+1) = binom(2*k, k) * 2 * (2*k+1) / (k+1)
+            k = n.args[0]
+            return expr.binom(2*k, k) * 2 * (2*k+1) / (k + 1)
+        else:
+            return e
+
+
 class IntegrationByParts(Rule):
     """Apply integration by parts."""
-    def __init__(self, u, v):
-        assert isinstance(u, expr.Expr) and isinstance(v, expr.Expr)
+    def __init__(self, u: Expr, v: Expr):
+        assert isinstance(u, Expr) and isinstance(v, Expr)
         self.u = u
         self.v = v
         self.name = "Integrate by parts"

@@ -517,9 +517,19 @@ class RulesTest(unittest.TestCase):
         print("t3 = ", t3)
         t4 = rules.OnLocation(rules.DerivativeSimplify(), "0").eval(t3)
         print("t4 = ", t4)
-        exp_t5 = parser.parse_expr("pi * ((-2*m-1)/2) * binom(2*m, m) * b^(-3/2 + -m) * 2^(1 + 2*m) ^ -1")
-        t5 = rules.OnLocation(rules.Equation(exp_t5), "0").eval(t4)
+        t5 = rules.FullSimplify().eval(t4)
         print("t5 = ", t5)
+        # exp_t5 = parser.parse_expr("pi * ((-2*m-1)/2) * binom(2*m, m) * b^(-3/2 + -m) * 2^(1 + 2*m) ^ -1")
+        # t5 = rules.OnLocation(rules.Equation(exp_t5), "0").eval(t4)
+        # print("t5 = ", t5)
+    
+        # Induction case, right side
+        t = parser.parse_expr("pi / (2^(2*m+3)) * binom(2*m+2, m+1) * (1/(b^((2*m+3)/2)))")
+        print("t = ", t)
+        t2 = rules.OnLocation(rules.RewriteBinom(), "0.1").eval(t)
+        print("t2 = ", t2)
+        t3 = rules.FullSimplify().eval(t2)
+        print("t3 = ", t3)
 
     def testMul2Div(self):
         test_data = [("x*(e^-x)", "", 1, "x / (1 / e ^ -x)"),
@@ -552,7 +562,9 @@ class RulesTest(unittest.TestCase):
                       ("LIM {x->oo}. sqrt(x-sqrt(x))", "sqrt(LIM {x -> oo}. x - sqrt(x))"),]
         for s, res in test_data:
             e = rules.LimFunExchange().eval(s)
-            self.assertEqual(str(e),res)
+            self.assertEqual(str(e), res)
+
+
 if __name__ == "__main__":
     unittest.main()
 
