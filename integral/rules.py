@@ -257,15 +257,39 @@ class OnLocation(Rule):
 class SimplifyPower(Rule):
     """Apply the following simplifications on powers:
     
-    x ^ a ^ b => x ^ (a * b).
+    1. Collect repeated powers
+        x ^ a ^ b => x ^ (a * b).
+
+    2. Separate constants in the exponent if base is also a constant
+        c1 ^ (c2 + a) => c1 ^ c2 * c1 ^ a
+
+    3. In the expression (-a) ^ n, separate out -1.
+        (-a) ^ n = (-1) ^ n * a ^ n
+        (-a + -b) ^ n = (-1) ^ n * (a + b) ^ n
     
     """
     def __init__(self):
         self.name = "SimplifyPower"
 
     def eval(self, e: Expr) -> Expr:
-        if e.is_power() and e.args[0].is_power():
+        if not e.is_power():
+            return e
+
+        if e.args[0].is_power():
+            # x ^ a ^ b => x ^ (a * b)
             return e.args[0].args[0] ^ (e.args[0].args[1] * e.args[1])
+        elif e.args[0].is_const() and e.args[1].is_plus() and e.args[1].args[0].is_const() and \
+                not e.args[1].args[1].is_constant():
+            # c1 ^ (c2 + a) => c1 ^ c2 * c1 ^ a
+            return (e.args[0] ^ e.args[1].args[0]) * (e.args[0] ^ e.args[1].args[1])
+        elif e.args[0].is_uminus() and e.args[1].is_const():
+            # (-a) ^ n = (-1) ^ n * a ^ n
+            return (Const(-1) ^ e.args[1]) * (e.args[0].args[0] ^ e.args[1])
+        elif e.args[0].is_plus() and e.args[0].args[0].is_const() and e.args[0].args[0].val < 0 and \
+                e.args[0].args[1].is_uminus() and e.args[1].is_const():
+            # (-a + -b) ^ n = (-1) ^ n * (a + b) ^ n
+            nega, negb = e.args[0].args
+            return (Const(-1) ^ e.args[1]) * ((Const(-nega.val) + negb.args[0]) ^ e.args[1])
         else:
             return e
 
