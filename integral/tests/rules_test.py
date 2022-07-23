@@ -458,9 +458,7 @@ class RulesTest(unittest.TestCase):
 
     def testWallis(self):
         # Make definition
-        Idef_s = "I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))"
-        Idef_t = parser.parse_expr(Idef_s)
-        Idef = compstate.FuncDef(Idef_t)
+        Idef = compstate.FuncDef(parser.parse_expr("I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))"))
 
         # Condition b > 0
         conds = conditions.Conditions()
@@ -486,7 +484,10 @@ class RulesTest(unittest.TestCase):
         rt3 = rules.FullSimplify().eval(rt2)
         print("rt3 =", rt3)
 
-        # Induction case m = 0
+        # Obtain equality
+        Eq = compstate.Identity(parser.parse_expr("(D b. I(m,b)) = -(m+1) * I(m+1, b)"))
+
+        # Base case m = 0
         t = parser.parse_expr("I(0,b)")
         print("t = ", t)
         t2 = rules.ExpandDefinition(Idef).eval(t)
@@ -503,6 +504,12 @@ class RulesTest(unittest.TestCase):
         print("t7 = ", t7)
         t8 = rules.LimitSimplify().eval(t7, conds=conds)
         print("t8 = ", t8)
+
+        # Induction case
+        t = parser.parse_expr("I(m+1,b)")
+        print("t = ", t)
+        t2 = rules.ApplyEquation(Eq).eval(t)
+        print("t2 = ", t2)
 
     def testMul2Div(self):
         test_data = [("x*(e^-x)", "", 1, "x / (1 / e ^ -x)"),

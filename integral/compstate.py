@@ -26,6 +26,18 @@ class FuncDef(StateItem):
         return str(self.eq)
 
 
+class Identity(StateItem):
+    """Proved identity."""
+    def __init__(self, eq: Expr):
+        if not eq.is_equals():
+            raise AssertionError("Identity: expression should be an equality")
+        
+        self.eq = eq
+
+    def __str__(self):
+        return str(self.eq)
+
+
 class State:
     def __init__(self, goal):
         # Final goal of the computation
@@ -43,4 +55,3 @@ class State:
         self.items.append(item)
         if isinstance(item, FuncDef):
             self.func_map[item.symb] = item
-

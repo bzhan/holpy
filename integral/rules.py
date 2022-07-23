@@ -301,6 +301,27 @@ class FullSimplify(Rule):
                 raise AssertionError("Loop in FullSimplify")
         return current
 
+
+class ApplyEquation(Rule):
+    """"""
+    def __init__(self, identity: compstate.Identity):
+        self.identity = identity
+
+    def eval(self, e):
+        eq = self.identity.eq
+        if e == eq.lhs:
+            # e = e'
+            return eq.rhs
+        elif e == eq.rhs:
+            # e' = e
+            return eq.lhs
+        elif eq.rhs.is_times() and eq.rhs.args[1] == e:
+            # e' = f * e
+            return eq.lhs / eq.rhs.args[0]
+        else:
+            return e
+
+
 class Substitution1(Rule):
     """Apply substitution u = g(x).
     
