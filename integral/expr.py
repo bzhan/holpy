@@ -1393,7 +1393,7 @@ def deriv(var: str, e: Expr) -> Expr:
             x, y = e.args
             if not y.contains_var(var):
                 # x / c case:
-                return deriv(var, x) / c
+                return deriv(var, x) / y
             elif not x.contains_var(var) and y.ty == OP and y.op == "^":
                 # c / (y0 ^ y1): rewrite to c * y0 ^ (-y1)
                 return deriv(var, x * (y.args[0] ^ (-y.args[1])))

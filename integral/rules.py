@@ -1,5 +1,5 @@
 """Rules for integration."""
-
+import fractions
 import math
 from decimal import Decimal
 import sympy
@@ -1137,6 +1137,8 @@ def compute_limit(e: Expr, conds=None):
             else:
                 # Otherwise, return unknown
                 return (a1 * a2, 'unknown', -1, "?")
+        elif b1 == 'const' and a1.ty == CONST and a1.val == 0 and b2 == 'indefinite_bounded':
+            return (Const(0),'const',-1,"?")
         elif b1 == 'pos_inf' and b2 == 'pos_inf':
             # oo * oo = oo, compute order of infinity
             if d1 == 'poly' and d2 == 'poly':
@@ -1263,7 +1265,7 @@ def compute_limit(e: Expr, conds=None):
         elif b1 == 'pos_inf' and b2 == 'const' and a2.ty == CONST and a2.val > 0:
             # oo ^ b = oo where b > 0
             return (Inf(Decimal('inf')), 'pos_inf', a2.val, d1)
-        elif b1 == 'neg_inf' and b2 == 'const' and a2.ty == CONST and math.modf(a2.val)[0] == 0:
+        elif b1 == 'neg_inf' and b2 == 'const' and a2.ty == CONST and a2.val > 0:
             if a2.val % 2 == 0:
                 # -oo ^ b = oo, where b is an even integer
                 return (Inf(Decimal('inf')), 'pos_inf', abs(a2.val), d1)
@@ -1352,117 +1354,13 @@ class LimitSimplify(Rule):
             return e
 
         var, lim, drt, body = e.var, e.lim, e.drt, e.body
-        deriv = DerivativeSimplify()
-
         if drt == None:
             rep = body.replace_trig(Var(var), lim)
-            if isinstance(body, Op) and body.op == '/' and len(body.args) == 2:
-                # Case of a / b, where one of a or b are square roots. Perform the
-                # computations on the square of a and b.
-                if body.args[0].ty == FUN and body.args[0].func_name == 'sqrt' or \
-                        body.args[1].ty == FUN and body.args[1].func_name == 'sqrt':
-                    t1 = compute_limit(body.args[0].replace_trig(Var(var), lim))[1]
-                    t2 = compute_limit(body.args[1].replace_trig(Var(var), lim))[1]
-                    sign = 1
-                    if t1 == 'pos_inf' and t2 == 'neg_inf':
-                        sign = -1
-                    elif t1 == 'neg_inf' and t2 == 'pos_inf':
-                        sign = -1
-
-                    # a and b are squares of numerator and denominator, respectively
-                    a, b = None, None
-                    if body.args[0].ty == FUN and body.args[0].func_name == 'sqrt' and \
-                            body.args[1].ty == FUN and body.args[1].func_name == 'sqrt':
-                        # Both sides are square roots
-                        a = body.args[0].args[0]
-                        b = body.args[1].args[0]
-                    elif body.args[0].ty == FUN and body.args[0].func_name == 'sqrt':
-                        # Numerator is square root
-                        a = body.args[0].args[0]
-                        b = body.args[1] ^ 2
-                    elif body.args[1].ty == FUN and body.args[1].func_name == 'sqrt':
-                        # Denominator is square root
-                        a = body.args[0] ^ 2
-                        b = body.args[1].args[0]
-
-                    # repa and repb are limits of a and b
-                    repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
-
-                    # Apply L'Hopital's rule
-                    while (repa.normalize() == Const(0) and repb.normalize() == Const(0) \
-                           or compute_limit(repa)[1] in ('pos_inf', 'neg_inf') and \
-                           compute_limit(repb)[1] in ('pos_inf', 'neg_inf')):
-                        a, b = deriv.eval(expr.Deriv(var, a)), deriv.eval(expr.Deriv(var, b))
-                        repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
-
-                    # Take square root of the result
-                    return compute_limit(Const(sign) * Fun('sqrt', repa / repb))[0]
-
-                # Apply L'Hopital's rule
-                while (compute_limit(rep.args[0])[1] == 'const' and \
-                        compute_limit(rep.args[1])[1] == 'const' and \
-                        rep.args[1].normalize() == Const(0) and \
-                        rep.args[0].normalize() == Const(0) \
-                        or compute_limit(rep.args[0])[1] in ('pos_inf', 'neg_inf') and \
-                           compute_limit(rep.args[1])[1] in ('pos_inf', 'neg_inf')):
-                    new_body = LHopital().eval(e).body
-                    e = expr.Limit(var, lim, new_body, drt)
-                    rep = new_body.replace_trig(Var(var), lim)
-
-            elif isinstance(body, Op) and body.op == '-' and len(body.args) == 2 \
-                    and (body.args[0].ty == FUN and body.args[0].func_name == 'sqrt' or \
-                    body.args[1].ty == FUN and body.args[1].func_name == 'sqrt'):
-                # Case of a - b, where one of a and b are square roots, perform the
-                # computation after rewriting to (a^2 - b^2) / (a + b)
-                a, b = body.args
-                repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
-
-                if compute_limit(repa)[1] == 'pos_inf' and \
-                        compute_limit(repb)[1] == 'pos_inf' or \
-                        compute_limit(repa)[1] == 'neg_inf' and \
-                        compute_limit(repb)[1] == 'neg_inf':
-                    # Case oo - oo or -oo - (-oo)
-                    # Let ta = a, tb = b, t1 = a^2, t2 = b^2
-                    ta, tb = a, b
-                    t1, t2 = ta ^ 2, tb ^ 2
-                    if ta.ty == FUN and ta.func_name == 'sqrt':
-                        t1 = ta.args[0]
-                    if tb.ty == FUN and tb.func_name == 'sqrt':
-                        t2 = tb.args[0]
-                    a = t1 - t2
-                    b = ta + tb
-                    a = a.normalize()
-                    b = b.normalize()
-                    repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
-                    while (compute_limit(repa)[1] in ('pos_inf', 'neg_inf') and \
-                           compute_limit(repb)[1] in ('pos_inf', 'neg_inf')):
-                        newa, newb = deriv.eval(expr.Deriv(var, a)), deriv.eval(expr.Deriv(var, b))
-                        a, b = newa, newb
-                        repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
-                    return compute_limit(repa / repb)[0]
-
-            elif isinstance(body, Fun) and isinstance(body.args[0], Op) and body.args[0].op == '/':
-                # Case of function application, where the argument is a / b
-                a, b = body.args[0].args[0], body.args[0].args[1]
-                repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
-
-                while (repa.normalize() == Const(0) and repb.normalize() == Const(0) \
-                       or compute_limit(repa)[1] in ('pos_inf', 'neg_inf') and \
-                       compute_limit(repb)[1] in ('pos_inf', 'neg_inf')):
-                    newa, newb = deriv.eval(expr.Deriv(var, a)), deriv.eval(expr.Deriv(var, b))
-                    a, b = newa, newb
-                    repa, repb = a.replace_trig(Var(var), lim), b.replace_trig(Var(var), lim)
-                return compute_limit(Fun(body.func_name, repa / repb))[0]
-
-            elif body.ty == OP and body.op == '^' and body.args[1].ty == VAR and body.args[1].name == var \
-                and (body.args[0] == Op('+',Const(1),Op('/',Const(1),Var(var))) or \
-                     body.args[0] == Op('+',Op('/', Const(1), Var(var)), Const(1) ) or \
-                     body.args[0] == Op('+', Const(1), Op('^',  Var(var), Const(-1))) or \
-                     body.args[0] == Op('+', Op('^' , Var(var), Const(-1)), Const(1))):
-                # lim x -> oo. (1 + 1 / x) ^ x = e
-                return (Fun('exp', Const(1)), 'const', 0, "?")[0]
-
             res = compute_limit(rep, conds=conds)
+
+            if(res[1] == 'unknown'):
+                # print(res)
+                return e
             return res[0]
         else:
             raise NotImplementedError
@@ -1561,3 +1459,86 @@ class LimFunExchange(Rule):
             return expr.Fun(func_name, *[Limit(e.var, e.lim, arg) for arg in args])
         if e.body.ty == OP and e.body.op == '-' and len(e.body.args) == 1:
             return -(Limit(e.var, e.lim, e.body.args[0]))
+        if e.body.ty == OP and e.body.op == '^':
+            if e.body.args[1].is_constant():
+                return Limit(e.var, e.lim, e.body.args[0]) ^ e.body.args[1]
+        return e;
+
+class RootFractionReWrite(Rule):
+    '''
+       rewrite nth root fraction
+       a^(1/n) / b^(1/m)  -> (a^(x) / b^(y))^(1/z)
+       z = lcm(n,m), x = z/n, y = z/m
+    '''
+
+    def __init__(self):
+        self.name = "RootFractionReWrite"
+
+    def eval(self, e):
+        if isinstance(e, str):
+            e = expr.parser.parse_expr(e)
+        if not isinstance(e, Expr):
+            raise AssertionError("RootFractionReWrite: wrong form for e.")
+        if e.ty != OP and e.op != '/':
+            return e
+        a,b = e.args
+        if a.ty == FUN and a.func_name == 'sqrt':
+            n = 2
+            a = a.args[0]
+        elif a.ty == OP and a.op == '^':
+            c = a.args[1]
+            if c.ty == CONST:
+                c = Fraction(c.val)
+            if isinstance(c,Fraction) and c.numerator == 1 and isinstance(c.denominator,int):
+                n = c.denominator
+                a = a.args[0]
+            else:
+                raise NotImplementedError
+        else:
+            n = 1
+
+        if b.ty == FUN and b.func_name == 'sqrt':
+            m = 2
+            b = b.args[0]
+        elif b.ty == OP and b.op == '^':
+            c = b.args[1]
+            if c.ty == CONST:
+                c = Fraction(c.val)
+            if isinstance(c,Fraction) and c.numerator == 1 and isinstance(c.denominator,int):
+                m = c.denominator
+                b = b.args[0]
+            else:
+                raise NotImplementedError
+        else:
+            m = 1
+        l = int(sympy.lcm(n,m))
+        return ((a^ fractions.Fraction(l,n)) / (b^fractions.Fraction(l,m)))^Fraction(1,l);
+
+class ExtractFromRoot(Rule):
+    '''
+           extract a expression u from root expression e
+           e = sqrt(x*x + x)
+           u = x and x<0
+           e -> -x * sqrt(x*x / x^2 + x/x^2)
+        '''
+
+    # sign : positive is 1, negative is -1
+    def __init__(self, u, sign=1):
+        if sign not in (-1,1):
+            raise AssertionError("ExtractFromRoot: wrong form for sign.")
+        if isinstance(u,str):
+            u = expr.parser.parse_expr(u)
+        self.name = "ExtractFromRoot"
+        self.u = u
+        self.sign = sign
+
+    def eval(self, e):
+        if isinstance(e, str):
+            e = expr.parser.parse_expr(e)
+        if not isinstance(e, Expr):
+            raise AssertionError("ExtractFromRoot: wrong form for e.")
+        if e.ty == FUN and e.func_name == 'sqrt':
+            if self.sign == -1:
+                return -self.u * expr.Fun('sqrt', e.args[0]/(self.u^2))
+        else:
+            raise NotImplementedError
