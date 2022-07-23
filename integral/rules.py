@@ -504,11 +504,11 @@ class RewriteBinom(Rule):
             return e
 
         m, n = e.args
-        if n.is_plus() and n.args[1] == Const(1) and m.is_plus() and m.args[1] == Const(2) and \
-                m.args[0] == 2 * n.args[0]:
-            # Case binom(2*k+2, k+1) = binom(2*k, k) * 2 * (2*k+1) / (k+1)
-            k = n.args[0]
-            return expr.binom(2*k, k) * 2 * (2*k+1) / (k + 1)
+        if n.is_plus() and n.args[0] == Const(1) and m.is_plus() and m.args[0] == Const(2) and \
+                m.args[1] == 2 * n.args[1]:
+            # Case binom(2+2*k, 1+k) = binom(2*k, k) * 2 * (1+2*k) / (1+k)
+            k = n.args[1]
+            return expr.binom(2*k, k) * 2 * (1+2*k) / (1+k)
         else:
             return e
 
@@ -1402,7 +1402,7 @@ class LimitSimplify(Rule):
             rep = body.replace_trig(Var(var), lim)
             res = compute_limit(rep, conds=conds)
 
-            if(res[1] == 'unknown'):
+            if res[1] == 'unknown':
                 # print(res)
                 return e
             return res[0]

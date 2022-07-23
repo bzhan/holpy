@@ -5,6 +5,7 @@ import functools, operator
 from collections.abc import Iterable
 from sympy import solveset, re, Interval, Eq, Union, EmptySet, pexquo
 from decimal import Decimal
+import math
 from sympy.simplify.fu import *
 from sympy.parsing import sympy_parser
 from sympy.ntheory.factor_ import factorint
@@ -479,7 +480,7 @@ class Expr:
         get(self)
         return location[0]
 
-    def subst(self, var, e):
+    def subst(self, var: str, e: Expr) -> Expr:
         """Substitute occurrence of var for e in self."""
         assert isinstance(var, str) and isinstance(e, Expr)
         if self.ty == VAR:
@@ -503,10 +504,7 @@ class Expr:
         elif self.ty == VAR:
             return False
         elif self.ty == FUN:
-            if len(self.args) == 0:  # pi
-                return True
-            else:
-                return self.args[0].is_constant()
+            return all(arg.is_constant() for arg in self.args)
         elif self.ty == OP:
             return all(arg.is_constant() for arg in self.args)
         else:
@@ -734,9 +732,21 @@ class Expr:
                     return -a
             else:
                 return poly.const_singleton(self)
+        
+        elif self.ty == FUN and self.func_name == "binom":
+            a = self.args[0].to_const_poly()
+            norm_a = from_const_poly(a)
+            b = self.args[1].to_const_poly()
+            norm_b = from_const_poly(b)
+            if norm_a.is_const() and norm_b.is_const():
+                return Const(math.comb(norm_a.val, norm_b.val)).to_const_poly()
+            else:
+                return poly.const_singleton(binom(norm_a, norm_b))
+
         elif self.ty == LIMIT:
             return self.body.replace_trig(Var(self.var), self.lim).to_const_poly()
         else:
+            print("to_const_poly on", self)
             raise NotImplementedError
 
     def norm(self):
@@ -823,6 +833,12 @@ class Expr:
             if self.args[0].normalize().ty == CONST:
                 return poly.constant(Const(abs(self.args[0].normalize().val)).to_const_poly())
             return poly.singleton(Fun("abs", self.args[0].normalize()))
+
+        elif self.ty == FUN and self.func_name == "binom":
+            if self.is_constant():
+                return poly.constant(self.to_const_poly())
+            else:
+                return poly.singleton(Fun("binom", self.args[0].normalize(), self.args[1].normalize()))
 
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)
@@ -1286,7 +1302,7 @@ def decompose_expr_factor(e):
     f(e)
     return factors
 
-def from_const_mono(m):
+def from_const_mono(m: ConstantMonomial) -> Expr:
     """Convert a ConstantMonomial to an expression."""
     factors = []
     for base, power in m.factors:
@@ -1313,7 +1329,7 @@ def from_const_mono(m):
     else:
         return functools.reduce(operator.mul, factors, Const(m.coeff))
 
-def from_const_poly(p):
+def from_const_poly(p: ConstantPolynomial) -> Expr:
     """Convert a ConstantPolynomial to an expression."""
     if len(p.monomials) == 0:
         return Const(0)
@@ -1321,7 +1337,7 @@ def from_const_poly(p):
         monos = [from_const_mono(m) for m in p.monomials]
         return sum(monos[1:], monos[0])
 
-def from_mono(m):
+def from_mono(m: Monomial) -> Expr:
     """Convert a monomial to an expression.""" 
     factors = []
     for base, power in m.factors:
@@ -1347,7 +1363,7 @@ def from_mono(m):
     else:
         return functools.reduce(operator.mul, factors, from_const_poly(m.coeff))
 
-def from_poly(p):
+def from_poly(p: Polynomial) -> Expr:
     """Convert a polynomial to an expression."""
 
     if len(p.monomials) == 0:

@@ -1,12 +1,17 @@
 """State of computation"""
 
-from integral.expr import Expr, Eq
+from typing import Tuple
+from integral.expr import Expr, Eq, Var, Const
+from integral import expr
 
 
 class StateItem:
     """Items in a state of computation"""
     pass
 
+class StateRule:
+    """A rule that modifies state of computation"""
+    pass
 
 class FuncDef(StateItem):
     """Introduce a new function definition."""
@@ -36,6 +41,21 @@ class Identity(StateItem):
 
     def __str__(self):
         return str(self.eq)
+
+
+def perform_induction(eq: Expr, induct_var: str) -> Tuple[Expr, Expr]:
+    if not eq.is_equals():
+        raise AssertionError("perform_induction")
+
+    # Base case: m = 0
+    eq0 = eq.subst(induct_var, Const(0))
+    eq0 = Eq(eq0.lhs.normalize(), eq0.rhs.normalize())
+
+    # Inductive case:
+    eqI = eq.subst(induct_var, Var(induct_var) + Const(1))
+    eqI = Eq(eqI.lhs.normalize(), eqI.rhs.normalize())
+    
+    return (eq0, eqI)
 
 
 class State:

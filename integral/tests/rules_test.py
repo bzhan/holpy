@@ -549,8 +549,12 @@ class RulesTest(unittest.TestCase):
         # Prove the following by induction
         Eq2 = compstate.Identity(parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"))
 
+        goal0, goalI = compstate.perform_induction(Eq2.eq, "m")
+        print('goal0', goal0)
+        print('goalI', goalI)
+
         # Base case m = 0
-        t = parser.parse_expr("I(0,b)")
+        t = goal0.lhs
         print("t = ", t)
         t2 = rules.ExpandDefinition(Idef).eval(t)
         print("t2 = ", t2)
@@ -566,9 +570,12 @@ class RulesTest(unittest.TestCase):
         print("t7 = ", t7)
         t8 = rules.LimitSimplify().eval(t7, conds=conds)
         print("t8 = ", t8)
+        t9 = rules.FullSimplify().eval(t8)
+        print("t9 = ", t9)
+        self.assertEqual(t9, goal0.rhs)
 
         # Induction case
-        lt = parser.parse_expr("I(m+1,b)")
+        lt = goalI.lhs
         print("lt = ", lt)
         lt2 = rules.ApplyEquation(Eq1).eval(lt)
         print("lt2 = ", lt2)
@@ -580,15 +587,17 @@ class RulesTest(unittest.TestCase):
         print("lt5 = ", lt5)
     
         # Induction case, right side
-        rt = parser.parse_expr("pi / (2^(2*m+3)) * binom(2*m+2, m+1) * (1/(b^((2*m+3)/2)))")
+        rt = goalI.rhs
         print("rt = ", rt)
-        rt2 = rules.OnLocation(rules.RewriteBinom(), "0.1").eval(rt)
+        rt2 = rules.FullSimplify().eval(rt)
         print("rt2 = ", rt2)
-        rt3 = rules.FullSimplify().eval(rt2)
+        rt3 = rules.OnLocation(rules.RewriteBinom(), "1").eval(rt2)
         print("rt3 = ", rt3)
+        rt4 = rules.FullSimplify().eval(rt3)
+        print("rt4 = ", rt4)
 
         # Correctness of Eq2
-        self.assertEqual(lt5, rt3)
+        self.assertEqual(lt5, rt4)
 
     def testMul2Div(self):
         test_data = [("x*(e^-x)", "", 1, "x / (1 / e ^ -x)"),

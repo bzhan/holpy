@@ -590,7 +590,7 @@ def singleton(s):
     """Polynomial for 1*s^1."""
     return Polynomial([Monomial(const_fraction(1), [(s, 1)])])
 
-def constant(c):
+def constant(c: ConstantPolynomial) -> Polynomial:
     """Polynomial for c (numerical constant)."""
     assert isinstance(c, ConstantPolynomial), "Unexpected constant: %s, type: %s" % (str(c), type(c))
     return Polynomial([Monomial(c, tuple())])
