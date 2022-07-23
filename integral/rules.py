@@ -160,7 +160,12 @@ class CommonDeriv(Rule):
             return e
 
 class OnSubterm(Rule):
-    """Apply given rule on subterms."""
+    """Apply given rule on subterms.
+    
+    The traversal order is similar to bottom-conv: first traverse each subterm
+    of the term recursively, then apply the rule to the term itself.
+
+    """
     def __init__(self, rule):
         assert isinstance(rule, Rule)
         self.rule = rule
@@ -249,8 +254,31 @@ class OnLocation(Rule):
         return rec(e, self.loc)
             
 
+class SimplifyPower(Rule):
+    """Apply the following simplifications on powers:
+    
+    x ^ a ^ b => x ^ (a * b).
+    
+    """
+    def __init__(self):
+        self.name = "SimplifyPower"
+
+    def eval(self, e: Expr) -> Expr:
+        if e.is_power() and e.args[0].is_power():
+            return e.args[0].args[0] ^ (e.args[0].args[1] * e.args[1])
+        else:
+            return e
+
+
 class FullSimplify(Rule):
-    """Perform full simplification using CommonIntegral, Linearity, and Simplify."""
+    """Perform simplification by applying the following rules repeatedly:
+    
+    - Simplify
+    - CommonIntegral
+    - Linearity
+    - SimplifyPower
+
+    """
     def __init__(self):
         self.name = "FullSimplify"
 
@@ -264,9 +292,10 @@ class FullSimplify(Rule):
             s1 = OnSubterm(Linearity()).eval(current)
             s2 = OnSubterm(CommonIntegral()).eval(s1)
             s3 = Simplify().eval(s2)
-            if s3 == current:
+            s4 = OnSubterm(SimplifyPower()).eval(s3)
+            if s4 == current:
                 break
-            current = s3
+            current = s4
             counter += 1
             if counter > 5:
                 raise AssertionError("Loop in FullSimplify")
