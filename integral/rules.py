@@ -198,7 +198,7 @@ class OnLocation(Rule):
         self.rule = rule
         self.loc = expr.Location(loc)
 
-    def eval(self, e):
+    def eval(self, e: Expr) -> Expr:
         def rec(cur_e, loc):
             if loc.is_empty():
                 return self.rule.eval(cur_e)

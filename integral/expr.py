@@ -545,11 +545,11 @@ class Expr:
         rec(self)
         return res
 
-    def contains_var(self, x: str):
+    def contains_var(self, x: str) -> bool:
         """Whether self contains variable x."""
         return x in self.get_vars()
 
-    def replace(self, e: Expr, repl_e: Expr):
+    def replace(self, e: Expr, repl_e: Expr) -> Expr:
         """Replace occurrences of e with repl_e."""
         assert isinstance(e, Expr) and isinstance(repl_e, Expr)
         if self == e:
@@ -1383,12 +1383,22 @@ def deriv(var: str, e: Expr) -> Expr:
             return (-(deriv(var, x))).normalize()
         elif e.op == "*":
             x, y = e.args
-            return (x * deriv(var, y) + deriv(var, x) * y).normalize()
+            if not x.contains_var(var):
+                return (x * deriv(var, y)).normalize()
+            elif not y.contains_var(var):
+                return (deriv(var, x) * y).normalize()
+            else:
+                return (x * deriv(var, y) + deriv(var, x) * y).normalize()
         elif e.op == "/":
             x, y = e.args
-            if var not in x.get_vars() and y.ty == OP and y.op == "^":
+            if not y.contains_var(var):
+                # x / c case:
+                return deriv(var, x) / c
+            elif not x.contains_var(var) and y.ty == OP and y.op == "^":
+                # c / (y0 ^ y1): rewrite to c * y0 ^ (-y1)
                 return deriv(var, x * (y.args[0] ^ (-y.args[1])))
             else:
+                # general case
                 return (deriv(var, x) * y - x * deriv(var, y)).normalize() / (y ^ Const(2)).normalize()
         elif e.op == "^":
             x, y = e.args
@@ -1447,6 +1457,10 @@ def deriv(var: str, e: Expr) -> Expr:
         elif e.func_name == "acot":
             x, = e.args
             return (-deriv(var, x)) / (Const(1) + x ^ Const(2)).normalize()
+        elif e.func_name == "binom":
+            # Arguments should be integers
+            assert not e.contains_var(var), "deriv: binom applied to real variables"
+            return Const(0)
         else:
             raise NotImplementedError
     else:
@@ -1700,6 +1714,10 @@ def arccos(e):
 
 def sqrt(e):
     return Fun("sqrt", e)
+
+def binom(e1, e2):
+    """Binomial coefficients"""
+    return Fun("binom", e1, e2)
 
 pi = Fun("pi")
 E = Fun("exp", Const(1))

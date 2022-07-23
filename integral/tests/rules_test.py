@@ -487,6 +487,9 @@ class RulesTest(unittest.TestCase):
         # Obtain equality
         Eq = compstate.Identity(parser.parse_expr("(D b. I(m,b)) = -(m+1) * I(m+1, b)"))
 
+        # Prove the following by induction
+        Eq2 = compstate.Identity(parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"))
+
         # Base case m = 0
         t = parser.parse_expr("I(0,b)")
         print("t = ", t)
@@ -510,6 +513,13 @@ class RulesTest(unittest.TestCase):
         print("t = ", t)
         t2 = rules.ApplyEquation(Eq).eval(t)
         print("t2 = ", t2)
+        t3 = rules.OnLocation(rules.ApplyEquation(Eq2), "0.0").eval(t2)
+        print("t3 = ", t3)
+        t4 = rules.OnLocation(rules.DerivativeSimplify(), "0").eval(t3)
+        print("t4 = ", t4)
+        exp_t5 = parser.parse_expr("pi * ((-2*m-1)/2) * binom(2*m, m) * b^(-3/2 + -m) * 2^(1 + 2*m) ^ -1")
+        t5 = rules.OnLocation(rules.Equation(exp_t5), "0").eval(t4)
+        print("t5 = ", t5)
 
     def testMul2Div(self):
         test_data = [("x*(e^-x)", "", 1, "x / (1 / e ^ -x)"),
