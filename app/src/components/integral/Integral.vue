@@ -258,7 +258,7 @@
 
 <script>
 import axios from 'axios'
-import MathEquation from './util/MathEquation'
+import MathEquation from '../util/MathEquation'
 
 export default {
   name: 'Integral',
