@@ -2,6 +2,7 @@
 import fractions
 import math
 from decimal import Decimal
+from typing import Optional
 import sympy
 import functools
 import sympy.series.limits
@@ -13,22 +14,19 @@ from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, t
 from integral import parser
 from sympy import Interval, expand_multinomial, apart
 from sympy.solvers import solvers, solveset
-from integral import compstate
 from fractions import Fraction
 from integral.solve import solve_equation
 from integral.conditions import Conditions, is_positive, is_negative
-from integral import conditions
 
 
 class Rule:
     """
-    表示积分规则，输入一个积分，然后出来一个与之相等的表达式
     Represents a rule for integration. It takes an integral
     to be evaluated (as an expression), then outputs a new
     expression that it is equal to.
     
     """
-    def eval(self, e):
+    def eval(self, e: Expr, conds: Optional[Conditions] = None) -> Expr:
         """Evaluation of the rule on the given expression. Returns
         a new expression.
 
@@ -43,7 +41,7 @@ class Simplify(Rule):
     def __init__(self):
         self.name = "Simplify"
     
-    def eval(self, e):
+    def eval(self, e, conds=None):
         if isinstance(e, str):
             e = parser.parse_expr(e)
         res = e.normalize()
@@ -60,7 +58,7 @@ class Linearity(Rule):
     def __init__(self):
         self.name = "Linearity"
     
-    def eval(self, e):
+    def eval(self, e, conds=None):
         if isinstance(e, str):
             e = parser.parse_expr(e)
 
@@ -107,7 +105,7 @@ class CommonIntegral(Rule):
     def __init__(self):
         self.name = "CommonIntegral"
 
-    def eval(self, e):
+    def eval(self, e, conds=None):
         if isinstance(e, str):
             e = parser.parse_expr(e)
         if e.ty != expr.INTEGRAL:
@@ -150,7 +148,7 @@ class CommonIntegral(Rule):
 class CommonDeriv(Rule):
     """Common rules for evaluating a derivative."""
 
-    def eval(self, e):
+    def eval(self, e, conds=None):
         if isinstance(e, str):
             e = parser.parse_expr(e)
 
@@ -170,24 +168,28 @@ class OnSubterm(Rule):
         assert isinstance(rule, Rule)
         self.rule = rule
 
-    def eval(self, e):
+    def eval(self, e, conds=None):
         rule = self.rule
         if e.ty in (expr.VAR, expr.CONST, expr.INF):
-            return rule.eval(e)
+            return rule.eval(e, conds=conds)
         elif e.ty == expr.OP:
-            args = [self.eval(arg) for arg in e.args]
-            return rule.eval(expr.Op(e.op, *args))
+            args = [self.eval(arg, conds=conds) for arg in e.args]
+            return rule.eval(expr.Op(e.op, *args), conds=conds)
         elif e.ty == expr.FUN:
-            args = [self.eval(arg) for arg in e.args]
-            return rule.eval(expr.Fun(e.func_name, *args))
+            args = [self.eval(arg, conds=conds) for arg in e.args]
+            return rule.eval(expr.Fun(e.func_name, *args), conds=conds)
         elif e.ty == expr.DERIV:
-            return rule.eval(expr.Deriv(e.var, self.eval(e.body)))
+            return rule.eval(expr.Deriv(e.var, self.eval(e.body, conds=conds)), conds=conds)
         elif e.ty == expr.INTEGRAL:
-            return rule.eval(expr.Integral(e.var, self.eval(e.lower), self.eval(e.upper), self.eval(e.body)))
+            return rule.eval(expr.Integral(
+                e.var, self.eval(e.lower, conds=conds), self.eval(e.upper, conds=conds),
+                self.eval(e.body, conds=conds)), conds=conds)
         elif e.ty == expr.EVAL_AT:
-            return rule.eval(expr.EvalAt(e.var, self.eval(e.lower), self.eval(e.upper), self.eval(e.body)))
+            return rule.eval(expr.EvalAt(
+                e.var, self.eval(e.lower, conds=conds), self.eval(e.upper, conds=conds),
+                self.eval(e.body, conds=conds)), conds=conds)
         elif e.ty == expr.LIMIT:
-            return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body)))
+            return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, conds=conds)), conds=conds)
         else:
             raise NotImplementedError
 
@@ -198,10 +200,10 @@ class OnLocation(Rule):
         self.rule = rule
         self.loc = expr.Location(loc)
 
-    def eval(self, e: Expr) -> Expr:
+    def eval(self, e: Expr, conds=None) -> Expr:
         def rec(cur_e, loc):
             if loc.is_empty():
-                return self.rule.eval(cur_e)
+                return self.rule.eval(cur_e, conds=conds)
             elif cur_e.ty == VAR or cur_e.ty == CONST:
                 raise AssertionError("OnLocation: invalid location")
             elif cur_e.ty == OP:
@@ -271,7 +273,7 @@ class SimplifyPower(Rule):
     def __init__(self):
         self.name = "SimplifyPower"
 
-    def eval(self, e: Expr) -> Expr:
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not e.is_power():
             return e
 
@@ -306,10 +308,7 @@ class FullSimplify(Rule):
     def __init__(self):
         self.name = "FullSimplify"
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
+    def eval(self, e: Expr, conds=None) -> Expr:
         counter = 0
         current = e
         while True:
@@ -327,21 +326,20 @@ class FullSimplify(Rule):
 
 
 class ApplyEquation(Rule):
-    """"""
-    def __init__(self, identity: compstate.Identity):
-        self.identity = identity
+    """Apply the given equation to for rewriting."""
+    def __init__(self, eq: Expr):
+        self.eq = eq
 
-    def eval(self, e):
-        eq = self.identity.eq
-        if e == eq.lhs:
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e == self.eq.lhs:
             # e = e'
-            return eq.rhs
-        elif e == eq.rhs:
+            return self.eq.rhs
+        elif e == self.eq.rhs:
             # e' = e
-            return eq.lhs
-        elif eq.rhs.is_times() and eq.rhs.args[1] == e:
+            return self.eqeq.lhs
+        elif self.eq.rhs.is_times() and self.eq.rhs.args[1] == e:
             # e' = f * e
-            return eq.lhs / eq.rhs.args[0]
+            return self.eq.lhs / self.eq.rhs.args[0]
         else:
             return e
 
@@ -363,7 +361,7 @@ class Substitution1(Rule):
         self.var_subst = var_subst
         self.f = None  # After application, record f here
 
-    def eval(self, e):
+    def eval(self, e: Expr, conds=None) -> Expr:
         """
         Parameters:
         e: Expr, the integral on which to perform substitution.
@@ -373,13 +371,12 @@ class Substitution1(Rule):
         specify the substitution.
 
         """
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
-        #积分中被替换的变量
+        # Variable to be substituted in the integral
         var_name = parser.parse_expr(self.var_name)
-        #用来替换的式子
+
+        # Expression used for substitution
         var_subst = self.var_subst
+
         dfx = expr.deriv(e.var, var_subst)
         body = holpy_style(sympy_style(e.body/dfx))
         body_subst = body.replace_trig(var_subst, var_name)
@@ -425,10 +422,7 @@ class Substitution2(Rule):
         self.var_name = var_name
         self.var_subst = var_subst
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
+    def eval(self, e: Expr, conds=None) -> Expr:
         # dx = f'(u) * du
         subst_deriv = expr.deriv(self.var_name, self.var_subst)
 
@@ -457,10 +451,7 @@ class UnfoldPower(Rule):
     def __init__(self):
         self.name = "Unfold power"
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
+    def eval(self, e: Expr, conds=None) -> Expr:
         if e.ty == expr.INTEGRAL:
             return Integral(e.var, e.lower, e.upper, e.body.expand())
         else:
@@ -475,11 +466,9 @@ class Equation(Rule):
         self.name = "Equation"
         self.denom = denom
     
-    def eval(self, e):
+    def eval(self, e: Expr, conds=None) -> Expr:
         if e.ty == INTEGRAL:
             raise NotImplementedError
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
 
         if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
            expand_multinomial(expr.sympy_style(e.normalize()).simplify()):
@@ -499,7 +488,7 @@ class RewriteBinom(Rule):
     def __init__(self):
         self.name = "Rewrite binomial coefficients"
 
-    def eval(self, e: Expr) -> Expr:
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not e.is_fun() and e.func_name == "binom":
             return e
 
@@ -521,12 +510,10 @@ class IntegrationByParts(Rule):
         self.v = v
         self.name = "Integrate by parts"
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
+    def eval(self, e: Expr, conds=None) -> Expr:
         if e.ty != expr.INTEGRAL:
             return e
+
         e.body = e.body.normalize()
         du = expr.deriv(e.var, self.u)
         dv = expr.deriv(e.var, self.v)
@@ -544,11 +531,7 @@ class PolynomialDivision(Rule):
     def __init__(self):
         self.name = "Fraction Division"
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
-
+    def eval(self, e: Expr, conds=None) -> Expr:
         if e.ty == OP and e.op != "/" and not (e.ty == OP and e.op == "*" and e.args[1].ty == OP and e.args[1].op == "^"\
             and (e.args[1].args[1].ty == OP and len(e.args[1].args[1]) == 1 or e.args[1].args[1].ty == CONST and e.args[1].args[1].val < 0)):
             return e
@@ -562,10 +545,8 @@ class RewriteTrigonometric(Rule):
         self.name = "Rewrite trigonometric"
         self.rule_name = rule_name
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-        # 选择一条Fu-like rule然后对表示e进行重写
+    def eval(self, e: Expr, conds=None) -> Expr:
+        # Select one of Fu's rules
         rule_fun, _ = expr.trigFun[self.rule_name]
         sympy_result = rule_fun(expr.sympy_style(e))
         result = expr.holpy_style(sympy_result)
@@ -614,10 +595,7 @@ class ElimAbs(Rule):
             zero_point += zeros
         return holpy_style(zero_point[0])
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
+    def eval(self, e: Expr, conds=None) -> Expr:
         if e.ty != expr.INTEGRAL:
             return e
 
@@ -642,11 +620,7 @@ class SplitRegion(Rule):
         self.name = "Split region"
         self.c = c
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
-        
+    def eval(self, e: Expr, conds=None) -> Expr:        
         if e.ty != expr.INTEGRAL:
             return e
 
@@ -674,10 +648,8 @@ class IntegrateByEquation(Rule):
                 return True
         return False
 
-    def eval(self, e):
+    def eval(self, e: Expr, conds=None) -> Expr:
         """Eliminate the lhs's integral in rhs by solving equation."""
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
         norm_e = e.normalize()
         rhs_var = None
         def get_coeff(t):
@@ -715,13 +687,11 @@ class ElimInfInterval(Rule):
     provided.
 
     """
-    def __init__(self):
+    def __init__(self, a=Const(0)):
         self.name = "Improper integral of Type 1"
+        self.a = a
 
-    def eval(self, e, a=Const(0)):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
+    def eval(self, e: Expr, conds=None) -> Expr:
         def gen_lim_expr(new_var, lim, lower, upper, drt = None):
             return expr.Limit(new_var, lim, expr.Integral(e.var, lower, upper, e.body),drt)
 
@@ -746,15 +716,15 @@ class ElimInfInterval(Rule):
         elif upper == inf and lower == neg_inf:
             # INT x:[-oo,oo]. body =>
             # lim t->-oo. INT x:[t,a]. body + lim t->oo. INT x:[a,t]. body
-            assert a is not None, "No split point provided"
-            lim1 = gen_lim_expr(new_var, neg_inf, Var(new_var), a)
-            lim2 = gen_lim_expr(new_var, inf, a, Var(new_var))
+            assert self.a is not None, "No split point provided"
+            lim1 = gen_lim_expr(new_var, neg_inf, Var(new_var), self.a)
+            lim2 = gen_lim_expr(new_var, inf, self.a, Var(new_var))
             return Op('+', lim1, lim2)
         elif upper == neg_inf and lower == inf:
-            assert a is not None, "No split point provided"
-            lim1 = gen_lim_expr(new_var, inf, Var(new_var), a)
-            lim2 = gen_lim_expr(new_var, neg_inf, a, Var(new_var))
-            return Op('+',lim1,lim2)
+            assert self.a is not None, "No split point provided"
+            lim1 = gen_lim_expr(new_var, inf, Var(new_var), self.a)
+            lim2 = gen_lim_expr(new_var, neg_inf, self.a, Var(new_var))
+            return Op('+', lim1, lim2)
         else:
             raise NotImplementedError
 
@@ -764,10 +734,7 @@ class LHopital(Rule):
     def __init__(self):
         self.name = "L'Hopital"
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not isinstance(e, expr.Limit):
             return e
 
@@ -840,9 +807,7 @@ class LimSep(Rule):
     def __init__(self):
         self.name = "LimSep"
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not (isinstance(e, expr.Limit) and isinstance(e.body, expr.Op) and \
                 e.body.op in ('+', '-' ,'*', '/') and len(e.body.args) == 2):
             return e
@@ -855,10 +820,7 @@ class DerivativeSimplify(Rule):
     def __init__(self):
         self.name = "Simplify derivative"
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not isinstance(e, Deriv):
             return e
         
@@ -1390,10 +1352,7 @@ class LimitSimplify(Rule):
     def __init__(self):
         self.name = "LimitSimplify"
 
-    def eval(self, e, conds=None):
-        if isinstance(e, str):
-            e = parser.parse_expr(e)
-
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not isinstance(e, expr.Limit):
             return e
 
@@ -1415,7 +1374,7 @@ class DerivIntExchange(Rule):
     def __init__(self):
         self.name = "Exchange of derivative and integral"
 
-    def eval(self, e):
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not e.is_deriv() or not e.body.is_integral():
             raise AssertionError("DerivIntExchange: unexpected form of input")
 
@@ -1425,15 +1384,15 @@ class DerivIntExchange(Rule):
 
 class ExpandDefinition(Rule):
     """Expand a definition"""
-    def __init__(self, func_def: compstate.FuncDef):
+    def __init__(self, func_def: Expr):
         self.func_def = func_def
 
-    def eval(self, e):
-        if not (e.is_fun() and e.func_name == self.func_def.symb):
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if not (e.is_fun() and e.func_name == self.func_def.lhs.func_name):
             raise AssertionError("ExpandDefinition: wrong form for t.")
 
-        body = self.func_def.body
-        for arg, val in zip(self.func_def.args, e.args):
+        body = self.func_def.rhs
+        for arg, val in zip(self.func_def.lhs.args, e.args):
             body = body.replace(arg, val)
         return body
 
@@ -1449,11 +1408,7 @@ class Mul2Div(Rule):
         self.name = "Mul2Div"
         self.multiplierLoc = multiplierLoc
 
-    def eval(self, e):
-        if isinstance(e,str):
-            e = expr.parser.parse_expr(e)
-        if not isinstance(e, Expr):
-            raise AssertionError("Mul2Div: wrong form for e.")
+    def eval(self, e: Expr, conds=None) -> Expr:
         if e.ty != expr.OP or e.op != '*':
             return e
         if self.multiplierLoc == 0:
@@ -1468,13 +1423,11 @@ class NumeratorDeominatorMulExpr(Rule):
     '''numerator and denominator multiply by e
         for example a / b -> a*e / b*e
      '''
-    def __init__(self, u:expr.Expr):
+    def __init__(self, u: Expr):
         self.name = "NumeratorDeominatorMulExpr"
         self.u = u
 
-    def eval(self, e):
-        if isinstance(e,str):
-            e = expr.parser.parse_expr(e)
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not isinstance(e, Expr):
             raise AssertionError("NumeratorDeominatorMulExpr: wrong form for e.")
         u = self.u
@@ -1491,9 +1444,7 @@ class LimFunExchange(Rule):
     def __init__(self):
         self.name = "LimFunExchange"
 
-    def eval(self, e):
-        if isinstance(e,str):
-            e = expr.parser.parse_expr(e)
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not isinstance(e, Expr):
             raise AssertionError("LimFunExchange: wrong form for e.")
         if not e.ty == LIMIT:
@@ -1518,9 +1469,7 @@ class RootFractionReWrite(Rule):
     def __init__(self):
         self.name = "RootFractionReWrite"
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = expr.parser.parse_expr(e)
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not isinstance(e, Expr):
             raise AssertionError("RootFractionReWrite: wrong form for e.")
         if e.ty != OP and e.op != '/':
@@ -1576,9 +1525,7 @@ class ExtractFromRoot(Rule):
         self.u = u
         self.sign = sign
 
-    def eval(self, e):
-        if isinstance(e, str):
-            e = expr.parser.parse_expr(e)
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not isinstance(e, Expr):
             raise AssertionError("ExtractFromRoot: wrong form for e.")
         if e.ty == FUN and e.func_name == 'sqrt':

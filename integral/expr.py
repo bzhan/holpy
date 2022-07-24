@@ -1731,14 +1731,14 @@ def arccos(e):
 def sqrt(e):
     return Fun("sqrt", e)
 
-def binom(e1, e2):
+def binom(e1: Expr, e2: Expr) -> Expr:
     """Binomial coefficients"""
     return Fun("binom", e1, e2)
 
 pi = Fun("pi")
 E = Fun("exp", Const(1))
 
-def Eq(s, t):
+def Eq(s: Expr, t: Expr) -> Expr:
     return Op("=", s, t)
 
 class Deriv(Expr):

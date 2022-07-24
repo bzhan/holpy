@@ -301,7 +301,7 @@ class RulesTest(unittest.TestCase):
         ]
         for s1,a,s2 in test_data:
             e = parse_expr(s1)
-            e = rules.ElimInfInterval().eval(e,a)
+            e = rules.ElimInfInterval(a).eval(e)
             self.assertEqual(str(e), s2)
 
     def testElimInfInterval2(self):
@@ -396,9 +396,11 @@ class RulesTest(unittest.TestCase):
         self.assertEqual(str(t12),res)
 
     def testExtractFromRoot(self):
-        test_data = [('sqrt(9*x*x - 5 * x)', '3*x', -1,"-(3 * x) * sqrt((9 * x * x - 5 * x) / (3 * x) ^ 2)")]
-        print("")
+        test_data = [
+            ('sqrt(9*x*x - 5 * x)', '3*x', -1, "-(3 * x) * sqrt((9 * x * x - 5 * x) / (3 * x) ^ 2)")
+        ]
         for a, b, c, d in test_data:
+            a = parser.parse_expr(a)
             e = rules.ExtractFromRoot(b, c).eval(a)
             self.assertEqual(str(e), d)
 
@@ -490,6 +492,7 @@ class RulesTest(unittest.TestCase):
         ]
 
         for a, b in test_data:
+            a = parser.parse_expr(a)
             e = rules.LimitSimplify().eval(a)
             # print(e)
             if e.ty != expr.LIMIT:
@@ -513,8 +516,15 @@ class RulesTest(unittest.TestCase):
             self.assertEqual(rules.compute_limit(e, conds)[0], res)
 
     def testWallis(self):
+        # Overall goal
+        goal = parser.parse_expr("(INT x:[0,oo]. 1/(x^2+1)^(m+1)) = pi/(2^(2*m+1))*binom(2*m,m)")
+
+        # Initial state
+        st = compstate.State(goal)
+
         # Make definition
         Idef = compstate.FuncDef(parser.parse_expr("I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))"))
+        st.add_item(Idef)
 
         # Condition b > 0
         conds = conditions.Conditions()
@@ -522,82 +532,52 @@ class RulesTest(unittest.TestCase):
 
         # Prove the following equality
         Eq1 = compstate.Identity(parser.parse_expr("(D b. I(m,b)) = -(m+1) * I(m+1, b)"))
+        st.add_item(Eq1)
 
-        # Starting term on LHS
-        lt = parser.parse_expr("D b. I(m,b)")
-        print("lt  =", lt)
-        lt2 = rules.OnLocation(rules.ExpandDefinition(Idef), "0").eval(lt)
-        print("lt2 =", lt2)
-        lt3 = rules.DerivIntExchange().eval(lt2)
-        print("lt3 =", lt3)
-        lt4 = rules.OnLocation(rules.DerivativeSimplify(), "0").eval(lt3)
-        print("lt4 =", lt4)
-        lt5 = rules.FullSimplify().eval(lt4)
-        print("lt5 =", lt5)
+        Eq1_proof = compstate.CalculationProof(Eq1.eq, conds=conds)
+        st.add_item(Eq1_proof)
 
-        # Starting term on RHS
-        rt = parser.parse_expr("-(m+1) * I(m+1, b)")
-        print("rt  =", rt)
-        rt2 = rules.OnLocation(rules.ExpandDefinition(Idef), "1").eval(rt)
-        print("rt2 =", rt2)
-        rt3 = rules.FullSimplify().eval(rt2)
-        print("rt3 =", rt3)
+        calc = Eq1_proof.lhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), "0"))
+        calc.perform_rule(rules.DerivIntExchange())
+        calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), "0"))
+        calc.perform_rule(rules.FullSimplify())
 
-        # Correctness of Eq1
-        self.assertEqual(lt5, rt3)
+        calc = Eq1_proof.rhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), "1"))
+        calc.perform_rule(rules.FullSimplify())
 
         # Prove the following by induction
         Eq2 = compstate.Identity(parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"))
+        st.add_item(Eq2)
 
-        goal0, goalI = compstate.perform_induction(Eq2.eq, "m")
-        print('goal0', goal0)
-        print('goalI', goalI)
+        Eq2_proof = compstate.InductionProof(Eq2.eq, "m", conds=conds)
+        st.add_item(Eq2_proof)
 
-        # Base case m = 0
-        t = goal0.lhs
-        print("t = ", t)
-        t2 = rules.ExpandDefinition(Idef).eval(t)
-        print("t2 = ", t2)
-        t3 = rules.ElimInfInterval().eval(t2)
-        print("t3 = ", t3)
-        t4 = rules.OnLocation(rules.Substitution2("u", parser.parse_expr("sqrt(b) * u")), "0").eval(t3)
-        print("t4 = ", t4)
-        t5 = rules.OnLocation(rules.FullSimplify(), "0").eval(t4)
-        print("t5 = ", t5)
-        t6 = rules.OnLocation(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1")), "0.1.0").eval(t5)
-        print("t6 = ", t6)
-        t7 = rules.OnLocation(rules.FullSimplify(), "0").eval(t6)
-        print("t7 = ", t7)
-        t8 = rules.LimitSimplify().eval(t7, conds=conds)
-        print("t8 = ", t8)
-        t9 = rules.FullSimplify().eval(t8)
-        print("t9 = ", t9)
-        self.assertEqual(t9, goal0.rhs)
+        # Base case
+        calc = Eq2_proof.base_case.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        calc.perform_rule(rules.ElimInfInterval())
+        calc.perform_rule(rules.OnLocation(rules.Substitution2("u", parser.parse_expr("sqrt(b) * u")), "0"))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
+        calc.perform_rule(rules.OnLocation(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1")), "0.1.0"))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
+        calc.perform_rule(rules.LimitSimplify())
+        calc.perform_rule(rules.FullSimplify())
 
-        # Induction case
-        lt = goalI.lhs
-        print("lt = ", lt)
-        lt2 = rules.ApplyEquation(Eq1).eval(lt)
-        print("lt2 = ", lt2)
-        lt3 = rules.OnLocation(rules.ApplyEquation(Eq2), "0.0").eval(lt2)
-        print("lt3 = ", lt3)
-        lt4 = rules.OnLocation(rules.DerivativeSimplify(), "0").eval(lt3)
-        print("lt4 = ", lt4)
-        lt5 = rules.FullSimplify().eval(lt4)
-        print("lt5 = ", lt5)
-    
-        # Induction case, right side
-        rt = goalI.rhs
-        print("rt = ", rt)
-        rt2 = rules.FullSimplify().eval(rt)
-        print("rt2 = ", rt2)
-        rt3 = rules.OnLocation(rules.RewriteBinom(), "1").eval(rt2)
-        print("rt3 = ", rt3)
-        rt4 = rules.FullSimplify().eval(rt3)
-        print("rt4 = ", rt4)
+        # Induction case, LHS
+        calc = Eq2_proof.induct_case.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(Eq1.eq))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq2.eq), "0.0"))
+        calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), "0"))
+        calc.perform_rule(rules.FullSimplify())
 
-        # Correctness of Eq2
-        self.assertEqual(lt5, rt4)
+        # Induction step, RHS
+        calc = Eq2_proof.induct_case.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
+        calc.perform_rule(rules.FullSimplify())
+        print(st)
 
     def testMul2Div(self):
         test_data = [("x*(e^-x)", "", 1, "x / (1 / e ^ -x)"),
@@ -626,16 +606,24 @@ class RulesTest(unittest.TestCase):
             self.assertEqual(str(res1), res2)
 
     def testLimFunExchange(self):
-        test_data = [("LIM {x->3}. f(x,log(x))", "f(LIM {x -> 3 }. x,LIM {x -> 3 }. log(x))"),
-                      ("LIM {x->oo}. sqrt(x-sqrt(x))", "sqrt(LIM {x -> oo}. x - sqrt(x))"),]
+        test_data = [
+            ("LIM {x->3}. f(x,log(x))", "f(LIM {x -> 3 }. x,LIM {x -> 3 }. log(x))"),
+            ("LIM {x->oo}. sqrt(x-sqrt(x))", "sqrt(LIM {x -> oo}. x - sqrt(x))"),
+        ]
+
         for s, res in test_data:
+            s = parser.parse_expr(s)
             e = rules.LimFunExchange().eval(s)
             self.assertEqual(str(e), res)
 
     def testRootFractionReWrite(self):
-        test_data = [("(x+3) / sqrt(9*x*x - 5 * x)","((x + 3) ^ 2 / (9 * x * x - 5 * x) ^ 1) ^ (1/2)"),
-                     ("x^(1/2) / y^(1/6)","(x ^ 3 / y ^ 1) ^ (1/6)")]
+        test_data = [
+            ("(x+3) / sqrt(9*x*x - 5 * x)", "((x + 3) ^ 2 / (9 * x * x - 5 * x) ^ 1) ^ (1/2)"),
+            ("x^(1/2) / y^(1/6)", "(x ^ 3 / y ^ 1) ^ (1/6)")
+        ]
+
         for s, s2 in test_data:
+            s = parser.parse_expr(s)
             e = rules.RootFractionReWrite().eval(s)
             self.assertEqual(str(e), s2)
 

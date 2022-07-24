@@ -1,5 +1,7 @@
 """Conditions"""
 
+from copy import copy
+
 from integral.expr import Expr
 
 
@@ -12,6 +14,11 @@ class Conditions:
 
     def add_condition(self, name: str, cond: Expr):
         self.data[name] = cond
+
+    def __copy__(self):
+        res = Conditions()
+        res.data = copy(self.data)
+        return res
 
 
 def is_positive(e: Expr, conds: Conditions) -> bool:
