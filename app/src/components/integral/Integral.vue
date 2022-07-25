@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <div id="calc">
+    <div v-if="cur_calc !== undefined" id="calc">
       <div v-for="(step, index) in cur_calc" :key="index">
         <span>Step {{index+1}}:&nbsp;&nbsp;</span>
         <MathEquation v-bind:data="'\\(' + step.latex + '\\)'" v-on:click.native='displayProof(index)' />
@@ -57,6 +57,22 @@
         <span class="calc-reason" v-else>{{step.reason}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <v-icon name="check" style="color:green" v-if="'checked' in step && step.checked === true"></v-icon> 
         <v-icon name="ban" style="color:red" v-if="'checked' in step && step.checked === false"></v-icon> 
+      </div>
+    </div>
+    <div v-if="cur_items !== undefined" id="items">
+      <div v-for="(item, index) in cur_items" :key="index">
+        <div v-if="item.type === 'FuncDef'">
+          <FuncDef v-bind:eq="item.eq"/>
+        </div>
+        <div v-if="item.type === 'Identity'">
+          <Identity v-bind:eq="item.eq"/>
+        </div>
+        <div v-if="item.type === 'CalculationProof'">
+          <CalculationProof v-bind:item="item"/>
+        </div>
+        <div v-if="item.type === 'InductionProof'">
+          <InductionProof v-bind:item="item"/>
+        </div>
       </div>
     </div>
     <div id="dialog">
@@ -259,11 +275,19 @@
 <script>
 import axios from 'axios'
 import MathEquation from '../util/MathEquation'
+import FuncDef from './FuncDef'
+import Identity from "./Identity"
+import CalculationProof from "./CalculationProof"
+import InductionProof from "./InductionProof"
 
 export default {
   name: 'Integral',
   components: {
     MathEquation,
+    FuncDef,
+    Identity,
+    CalculationProof,
+    InductionProof,
   },
 
   props: [
@@ -280,6 +304,7 @@ export default {
                                 // or else display the json files in file list
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
+      cur_items: [],       // Current items in state
       query_mode: undefined,  // Currently performing which query
       r_query_mode: undefined, //record query mode
       display_integral: undefined, //display the separate integral
@@ -334,6 +359,7 @@ export default {
       this.file_list = response.data.file_list
       this.content_state = false
       this.cur_calc = undefined
+      this.cur_items = undefined
     },
 
     openFile: async function (file_name) {
@@ -344,6 +370,7 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/integral-open-file", JSON.stringify(data))
       this.content = response.data.content
       this.cur_calc = undefined
+      this.cur_items = undefined
       this.content_state = true
     },
 
@@ -368,7 +395,7 @@ export default {
       this.proof_term = undefined
       this.cur_id = index
       this.take_effect = 0
-      if ('calc' in this.content[index]) {
+      if ('calc' in this.content[index] || 'items' in this.content[index]) {
         this.restore()
       } else {
         this.restart()
@@ -440,7 +467,12 @@ export default {
 
     // Retrieve the stored calculation
     restore: function () {
-      this.cur_calc = Array.from(this.content[this.cur_id].calc)  // create copy
+      if ('calc' in this.content[this.cur_id]) {
+        this.cur_calc = Array.from(this.content[this.cur_id].calc)  // create copy
+      }
+      if ('items' in this.content[this.cur_id]) {
+        this.cur_items = Array.from(this.content[this.cur_id].items)
+      }
       this.query_mode = undefined
     },
 
@@ -1027,6 +1059,18 @@ export default {
 }
 
 #calc {
+  display: inline-block;
+  width: 75%;
+  position: fixed;
+  top: 48px;
+  bottom: 30%;
+  left: 25%;
+  overflow-y: scroll;
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+#items {
   display: inline-block;
   width: 75%;
   position: fixed;

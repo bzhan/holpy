@@ -153,6 +153,8 @@ def convert_expr(e, mode="large"):
                         return "\\frac{%s}{%s}" % (sx, sy)
                 else:
                     return "%s/%s" % (sx, sy)
+            elif e.op == "=":
+                return "%s = %s" % (sx, sy)
             else:
                 raise NotImplementedError
         else:
@@ -178,7 +180,15 @@ def convert_expr(e, mode="large"):
                 return "\\arcsin{%s}" % sx
             elif e.func_name == "acos":
                 return "\\arccos{%s}" % sx
-            return "\\%s{(%s)}" % (e.func_name, sx)
+            else:
+                return "\\%s{(%s)}" % (e.func_name, sx)
+        elif len(e.args) == 2:
+            x, y = e.args
+            sx, sy = convert_expr(x, mode), convert_expr(y, mode)
+            if e.func_name == "binom":
+                return "\\binom{%s}{%s}" % (sx, sy)
+            else:
+                return "%s(%s,%s)" % (e.func_name, sx, sy)
         else:
             raise NotImplementedError
     elif e.ty == expr.INTEGRAL:
