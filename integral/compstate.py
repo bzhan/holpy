@@ -37,6 +37,12 @@ class FuncDef(StateItem):
         res += "  %s\n" % self.eq
         return res
 
+    def export(self):
+        return {
+            "type": "FuncDef",
+            "eq": str(self.eq)
+        }
+
 
 class Identity(StateItem):
     """Proved identity."""
@@ -51,6 +57,12 @@ class Identity(StateItem):
         res += "  %s\n" % self.eq
         return res
 
+    def export(self):
+        return {
+            "type": "Identity",
+            "eq": str(self.eq)
+        }
+
 
 class CalculationStep(StateItem):
     """A step in the calculation."""
@@ -60,6 +72,13 @@ class CalculationStep(StateItem):
 
     def __str__(self):
         return "%s (%s)" % (self.res, self.rule)
+
+    def export(self):
+        return {
+            "type": "CalculationStep",
+            "rule": self.rule.export(),
+            "res": str(self.res)
+        }
 
 
 class Calculation(StateItem):
@@ -83,12 +102,19 @@ class Calculation(StateItem):
             res += "= %s\n" % step
         return res
 
+    def export(self):
+        return {
+            "type": "Calculation",
+            "steps": [step.export() for step in self.steps]
+        }
+
     def add_step(self, step: CalculationStep):
         """Add the given step to the computation."""
         self.steps.append(step)
 
     @property
     def last_expr(self) -> Expr:
+        """Last expression of the calculation."""
         if self.steps:
             return self.steps[-1].res
         else:
@@ -132,6 +158,14 @@ class CalculationProof(StateItem):
             res += str(self.rhs_calc)
         return res
 
+    def export(self):
+        return {
+            "type": "CalculationProof",
+            "goal": str(self.goal),
+            "lhs_calc": self.lhs_calc.export(),
+            "rhs_calc": self.rhs_calc.export()
+        }
+
 
 class InductionProof(StateItem):
     """Proof for an equation by induction on natural numbers.
@@ -170,10 +204,22 @@ class InductionProof(StateItem):
         res += str(self.induct_case)
         return res
 
+    def export(self):
+        return {
+            "type": "InductionProof",
+            "goal": str(self.goal),
+            "induct_var": self.induct_var,
+            "base_case": self.base_case.export(),
+            "induct_case": self.induct_case.export()
+        }
+
 
 class State:
     """Represents the global state of the proof."""
-    def __init__(self, goal: Expr):
+    def __init__(self, name: str, goal: Expr):
+        # Name of the proof
+        self.name = name
+
         # Final goal of the computation
         self.goal = goal
 
@@ -188,6 +234,13 @@ class State:
         for item in self.items:
             res += str(item)
         return res
+
+    def export(self):
+        return {
+            "name": self.name,
+            "problem": str(self.goal),
+            "items": [item.export() for item in self.items]
+        }
 
     def add_item(self, item: StateItem):
         """Add an item of computation."""

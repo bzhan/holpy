@@ -1,6 +1,7 @@
 """Unit test for rules."""
 
 import unittest
+import json
 from fractions import Fraction
 
 from integral import expr, parser
@@ -521,7 +522,7 @@ class RulesTest(unittest.TestCase):
         goal = parser.parse_expr("(INT x:[0,oo]. 1/(x^2+1)^(m+1)) = pi/(2^(2*m+1))*binom(2*m,m)")
 
         # Initial state
-        st = compstate.State(goal)
+        st = compstate.State("Wallis", goal)
 
         # Make definition
         Idef = compstate.FuncDef(parser.parse_expr("I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))"))
@@ -578,12 +579,20 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
         calc.perform_rule(rules.FullSimplify())
-        print(st)
 
+        file_content = {
+            "content": [st.export()]
+        }
+        with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
+            json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
+        
     def testMul2Div(self):
-        test_data = [("x*(e^-x)", "", 1, "x / (1 / e ^ -x)"),
-                     ('1 + (x*y + t*log(t))/5', "1.0.1", 1, "1 + (x * y + t / (1 / log(t))) / 5"),
-                     ('1 + (x*y + t*log(t))/5', "1.0.0", 0, "1 + (y / (1 / x) + t * log(t)) / 5"), ]
+        test_data = [
+            ("x*(e^-x)", "", 1, "x / (1 / e ^ -x)"),
+            ('1 + (x*y + t*log(t))/5', "1.0.1", 1, "1 + (x * y + t / (1 / log(t))) / 5"),
+            ('1 + (x*y + t*log(t))/5', "1.0.0", 0, "1 + (y / (1 / x) + t * log(t)) / 5")
+        ]
+
         for s, mulExprLoc, multiplierLoc, res in test_data:
             loc = expr.Location(mulExprLoc)
             r = rules.Mul2Div(multiplierLoc)
@@ -591,14 +600,16 @@ class RulesTest(unittest.TestCase):
             self.assertEqual(str(res2), res)
 
     def testNumeratorDeominatorMulExpr(self):
-        test_data = [("sqrt(a) + sqrt(b)", "", "sqrt(a)-sqrt(b)", \
-                      "((sqrt(a) + sqrt(b)) * (sqrt(a) - sqrt(b))) / (sqrt(a) - sqrt(b))"),
-                     ('3/2 + 1/(sqrt(x^2-2) + sqrt(x^2-1))', '1', 'sqrt(x^2-2) - sqrt(x^2-1)',
-                      '3/2 + ((1 / (sqrt(x ^ 2 - 2) + sqrt(x ^ 2 - 1))) * (sqrt(x ^ 2 - 2) - sqrt(x ^ 2 - 1))) / (sqrt(x ^ 2 - 2) - sqrt(x ^ 2 - 1))'),
-                     ('x - sqrt(x*x + 7)', '', 'x + sqrt(x*x + 7)',\
-                      '((x - sqrt(x * x + 7)) * (x + sqrt(x * x + 7))) / (x + sqrt(x * x + 7))'),
-                     ('sqrt(a) / b', '', 'sqrt(a)', '((sqrt(a) / b) * sqrt(a)) / sqrt(a)'),
-                     ]
+        test_data = [
+            ("sqrt(a) + sqrt(b)", "", "sqrt(a)-sqrt(b)",
+             "((sqrt(a) + sqrt(b)) * (sqrt(a) - sqrt(b))) / (sqrt(a) - sqrt(b))"),
+            ('3/2 + 1/(sqrt(x^2-2) + sqrt(x^2-1))', '1', 'sqrt(x^2-2) - sqrt(x^2-1)',
+             '3/2 + ((1 / (sqrt(x ^ 2 - 2) + sqrt(x ^ 2 - 1))) * (sqrt(x ^ 2 - 2) - sqrt(x ^ 2 - 1))) / (sqrt(x ^ 2 - 2) - sqrt(x ^ 2 - 1))'),
+            ('x - sqrt(x*x + 7)', '', 'x + sqrt(x*x + 7)',\
+             '((x - sqrt(x * x + 7)) * (x + sqrt(x * x + 7))) / (x + sqrt(x * x + 7))'),
+            ('sqrt(a) / b', '', 'sqrt(a)', '((sqrt(a) / b) * sqrt(a)) / sqrt(a)')
+        ]
+
         for s, loc, u, res2 in test_data:
             s = expr.parser.parse_expr(s)
             u = expr.parser.parse_expr(u)
