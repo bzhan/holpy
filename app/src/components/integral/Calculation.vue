@@ -2,7 +2,7 @@
   <div>
     <div v-for="(step, index) in steps" :key="index">
       <div v-if="step.type === 'CalculationStep'">
-        <CalculationStep v-bind:res="step.res" v-bind:str="step.rule.str"/>
+        <CalculationStep v-bind:step="step"/>
       </div>
     </div>
     <MathEquation/>

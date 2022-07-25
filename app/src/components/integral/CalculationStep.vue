@@ -1,8 +1,7 @@
 <template>
   <div>
-		<span>= {{res}} &nbsp;&nbsp;&nbsp;</span>
-		<span>({{str}})</span>
-		<MathEquation/>
+    <MathEquation v-bind:data="'\\(=' + step.latex_res + '\\)'"/>&nbsp;&nbsp;&nbsp;
+		<span>({{step.rule.str}})</span>
 	</div>
 </template>
 
@@ -16,8 +15,7 @@ export default {
   },
 
 props: [
-    "res",
-		"str"
+		"step",
   ]
 }
 

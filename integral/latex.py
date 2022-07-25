@@ -6,7 +6,7 @@ from integral import expr
 from integral.expr import EVAL_AT, OP, CONST, FUN, Const, Op
 
 
-def convert_expr(e, mode="large"):
+def convert_expr(e: expr.Expr, mode: str = "large") -> str:
     if e.ty == expr.VAR:
         return e.name
     elif e.ty == expr.CONST:
@@ -208,5 +208,7 @@ def convert_expr(e, mode="large"):
             return "\\lim\\limits_{%s\\to %s} (\,%s\,)" % (e.var, lim, body)
         else:
             return "\\lim\\limits_{%s\\to %s} %s" % (e.var, lim, body)
+    elif e.ty == expr.DERIV:
+        return "\\frac{d}{d%s} %s" % (e.var, e.body)
     else:
         raise NotImplementedError

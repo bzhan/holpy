@@ -1,7 +1,7 @@
 <template>
   <div>
     <span class="keyword">show</span>&nbsp;
-    <span>{{item.goal}}</span>&nbsp;
+    <MathEquation v-bind:data="'\\(' + item.latex_goal + '\\)'"/>&nbsp;
     <span class="keyword">by induction on</span>&nbsp;
     <span>{{item.induct_var}}</span><br>
     <span class="keyword">Base case</span><br>

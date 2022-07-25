@@ -62,10 +62,10 @@
     <div v-if="cur_items !== undefined" id="items">
       <div v-for="(item, index) in cur_items" :key="index">
         <div v-if="item.type === 'FuncDef'">
-          <FuncDef v-bind:eq="item.eq"/>
+          <FuncDef v-bind:item="item"/>
         </div>
         <div v-if="item.type === 'Identity'">
-          <Identity v-bind:eq="item.eq"/>
+          <Identity v-bind:item="item"/>
         </div>
         <div v-if="item.type === 'CalculationProof'">
           <CalculationProof v-bind:item="item"/>

@@ -1,8 +1,7 @@
 <template>
   <div>
     <span class="keyword">definition</span>&nbsp;
-    <span>{{eq}}</span>
-    <MathEquation/>
+    <MathEquation v-bind:data="'\\(' + item.latex_eq + '\\)'"/>
   </div>
 </template>
 
@@ -16,7 +15,7 @@ export default {
   },
 
 props: [
-    "eq"
+    "item"
   ]
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <span class="keyword">show</span>&nbsp;
-    <span>{{item.goal}}</span>&nbsp;
+    <MathEquation v-bind:data="'\\(' + item.latex_goal + '\\)'"/>&nbsp;
     <span class="keyword">by calculation</span><br>
     <span class="keyword">LHS</span><br>
     <Calculation v-bind:steps="item.lhs_calc.steps"/>

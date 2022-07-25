@@ -8,6 +8,7 @@ from integral import rules
 from integral.rules import Rule
 from integral.conditions import Conditions
 from integral import conditions
+from integral import latex
 
 
 class StateItem:
@@ -40,7 +41,8 @@ class FuncDef(StateItem):
     def export(self):
         return {
             "type": "FuncDef",
-            "eq": str(self.eq)
+            "eq": str(self.eq),
+            "latex_eq": latex.convert_expr(self.eq)
         }
 
 
@@ -60,7 +62,8 @@ class Identity(StateItem):
     def export(self):
         return {
             "type": "Identity",
-            "eq": str(self.eq)
+            "eq": str(self.eq),
+            "latex_eq": latex.convert_expr(self.eq)
         }
 
 
@@ -77,7 +80,8 @@ class CalculationStep(StateItem):
         return {
             "type": "CalculationStep",
             "rule": self.rule.export(),
-            "res": str(self.res)
+            "res": str(self.res),
+            "latex_res": latex.convert_expr(self.res)
         }
 
 
@@ -162,6 +166,7 @@ class CalculationProof(StateItem):
         return {
             "type": "CalculationProof",
             "goal": str(self.goal),
+            "latex_goal": latex.convert_expr(self.goal),
             "lhs_calc": self.lhs_calc.export(),
             "rhs_calc": self.rhs_calc.export()
         }
@@ -208,6 +213,7 @@ class InductionProof(StateItem):
         return {
             "type": "InductionProof",
             "goal": str(self.goal),
+            "latex_goal": latex.convert_expr(self.goal),
             "induct_var": self.induct_var,
             "base_case": self.base_case.export(),
             "induct_case": self.induct_case.export()
@@ -239,6 +245,7 @@ class State:
         return {
             "name": self.name,
             "problem": str(self.goal),
+            "latex_problem": latex.convert_expr(self.goal),
             "items": [item.export() for item in self.items]
         }
 
