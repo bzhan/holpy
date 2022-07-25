@@ -165,7 +165,7 @@ class AlgoNonLinearSubstitution(AlgorithmRule):
 
 def substitution(integral, subst):
     new_var = gen_rand_letter(integral.var)
-    rule = rules.Substitution1(new_var, subst)
+    rule = rules.Substitution(new_var, subst)
     new_e = rule.eval(integral)
     steps = [calc.SubstitutionStep(e=new_e, var_name=new_var, var_subst=subst, f=rule.f, loc=[])]
     return new_e, steps
@@ -763,7 +763,7 @@ class HeuristicElimQuadratic(HeuristicRule):
         res = []
         v = gen_rand_letter(e.var)
         for quad, l, (a, b, c) in quadratics:
-            # new_integral, f = rules.Substitution1(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
+            # new_integral, f = rules.Substitution(gen_rand_letter(e.var), Var(e.var) + (b/(Const(2)*c))).eval(e)
             new_integral, step1 = substitution(e, Var(e.var) + (b/(Const(2)*c)))
             # step1 = [calc.SubstitutionStep(
                 # new_integral, new_integral.var, Var(e.var) + (b/(Const(2)*c)), f, tuple(loc) + (0,) + l)]
@@ -815,7 +815,7 @@ class HeuristicTrigSubstitution(HeuristicRule):
             
             elif a < 0 and b > 0:
                 subst = Op("^", Const(Fraction(-a, b)), Const(Fraction(1,2))).normalize() * sec(new_var)
-            new_integral = rules.Substitution2(str(new_var), subst).eval(e)
+            new_integral = rules.SubstitutionInverse(str(new_var), subst).eval(e)
             step = [calc.SubstitutionInverseStep(new_integral, str(new_var), subst)]
             res.append((new_integral, step))
 
@@ -1208,7 +1208,7 @@ def perform_steps(node):
                 "location": str(loc)
             })
         elif step.reason == "Substitution":
-            rule = rules.Substitution1(step.var_name, step.var_subst)
+            rule = rules.Substitution(step.var_name, step.var_subst)
             current = rules.OnLocation(rule, loc).eval(current)
             real_steps.append({
                 "text": str(current),
@@ -1269,7 +1269,7 @@ def perform_steps(node):
                 }
             real_steps.append(info)
         elif step.reason == "Substitution inverse":
-            rule = rules.Substitution2(step.var_name, step.var_subst)
+            rule = rules.SubstitutionInverse(step.var_name, step.var_subst)
             current = rules.OnLocation(rule, loc).eval(current)
             real_steps.append({
                 "text": str(current),

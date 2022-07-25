@@ -93,7 +93,7 @@ class RulesTest(unittest.TestCase):
 
     def testSubstitution(self):
         e = parse_expr("INT x:[0,1]. (3 * x + 1) ^ (-2)")
-        e = rules.Substitution1("u", parse_expr("3 * x + 1")).eval(e)
+        e = rules.Substitution("u", parse_expr("3 * x + 1")).eval(e)
         e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
@@ -101,7 +101,7 @@ class RulesTest(unittest.TestCase):
 
     def testSubstitution2(self):
         e = parse_expr("INT x:[0,1]. exp(6*x)")
-        e = rules.Substitution1("u", parse_expr("6 * x")).eval(e)
+        e = rules.Substitution("u", parse_expr("6 * x")).eval(e)
         e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
@@ -109,54 +109,54 @@ class RulesTest(unittest.TestCase):
 
     def testSubstitution3(self):
         e = parse_expr("INT x:[0, pi/2].sqrt(cos(x))*sin(x)")
-        e = rules.Substitution1("u",parse_expr("cos(x)")).eval(e)
+        e = rules.Substitution("u",parse_expr("cos(x)")).eval(e)
         self.assertEqual(e, parse_expr("INT u:[0,1]. sqrt(u)"))
 
     def testSubstitution4(self):
         e = parse_expr("INT x:[1, 4]. 1/(1+sqrt(x))")
-        e = rules.Substitution1("u", parse_expr("sqrt(x)")).eval(e)
+        e = rules.Substitution("u", parse_expr("sqrt(x)")).eval(e)
         self.assertEqual(str(e), "INT u:[1,2]. 2 * u * (1 + u) ^ -1")
 
     def testSubstitution5(self):
         e = parse_expr("INT t:[0, 1]. t * exp(-(t^2/2))")
-        e = rules.Substitution1("u", parse_expr("-t^2/2")).eval(e)
+        e = rules.Substitution("u", parse_expr("-t^2/2")).eval(e)
         self.assertEqual(e, parse_expr("INT u:[-1/2,0]. exp(u)"),"%s"%e)
 
     def testSubstitution6(self):
         e = parse_expr("INT x:[-2, 0]. (x + 2)/(x^2 + 2*x + 2)")
         e.body = rules.Equation(e.body, parse_expr("((x+1) + 1)/((x+1)*(x+1) + 1)")).eval(e.body)
-        e = rules.Substitution1("u", parse_expr("x+1")).eval(e)
+        e = rules.Substitution("u", parse_expr("x+1")).eval(e)
         self.assertEqual(e, parse_expr("INT u:[-1,1]. u * (2 * u + (-1 + u) ^ 2) ^ -1 + (2 * u + (-1 + u) ^ 2) ^ -1"))
 
     def testSubstitution7(self):
         e = parse_expr("INT x:[3/4, 1]. 1/(sqrt(1-x) - 1)")
-        e = rules.Substitution1("u", parse_expr("sqrt(1 - x)")).eval(e)
+        e = rules.Substitution("u", parse_expr("sqrt(1 - x)")).eval(e)
         self.assertEqual(str(e), "INT u:[0,1/2]. 2 * u * (-1 + u) ^ -1")
 
     def testSubstitution8(self):
         e = parse_expr("INT x:[1, exp(1)]. sin(log(x))")
-        e = rules.Substitution1("u", parse_expr("log(x)")).eval(e)
+        e = rules.Substitution("u", parse_expr("log(x)")).eval(e)
         self.assertEqual(e.normalize(), parse_expr("INT u:[0,1]. exp(u) * sin(u)"))
 
     def testSubstitution9(self):
         e = parse_expr("INT x:[1, exp(2)]. 1/(x * sqrt(1 + log(x)))")
-        e = rules.Substitution1("u", parse_expr("1 + log(x)")).eval(e)
+        e = rules.Substitution("u", parse_expr("1 + log(x)")).eval(e)
         self.assertEqual(e, parse_expr("INT u:[1,3]. u ^ (-1/2)"))
 
     def testSubstitution10(self):
         e = parse_expr("INT x:[0, 441]. (pi * sin(pi*sqrt(x))) / sqrt(x)")
-        e = rules.Substitution1("u", parse_expr("pi * sqrt(x)")).eval(e)
+        e = rules.Substitution("u", parse_expr("pi * sqrt(x)")).eval(e)
         self.assertEqual(e, parse_expr("INT u:[0,21 * pi]. 2 * sin(u)"))
 
     # Caused by there is no default simplification for fraction in rules.py, Line 291
     # def testSubstitution11(self):
     #     e = parse_expr("INT x:[0, 1]. (2 * x + 1)/(2 * x ^ 2 + 2 * x + 1)")
-    #     res = rules.Substitution1("u", parse_expr("2 * x ^ 2 + 2 * x + 1")).eval(e)
+    #     res = rules.Substitution("u", parse_expr("2 * x ^ 2 + 2 * x + 1")).eval(e)
     #     self.assertEqual(str(res), "INT u:[1,5]. 1/2 * u ^ -1")
 
     # def testSubstitution12(self):
     #     e = parse_expr("INT x:[0, 1]. x ^ 3 / (1 + x ^ 4) ^ (1/4)")
-    #     res = rules.Substitution1("u", parse_expr("1 + x ^ 4")).eval(e)
+    #     res = rules.Substitution("u", parse_expr("1 + x ^ 4")).eval(e)
     #     self.assertEqual(str(res), "INT u:[1,2]. 1/4 * u ^ (-1/4)")
 
     def testUnfoldPower(self):
@@ -183,7 +183,7 @@ class RulesTest(unittest.TestCase):
 
     def testSubstitutionInverse(self):
         e = parse_expr("INT x:[0, sqrt(2)]. sqrt(2 - x^2)")
-        e = rules.Substitution2("u", parse_expr("sqrt(2) * sin(u)")).eval(e)
+        e = rules.SubstitutionInverse("u", parse_expr("sqrt(2) * sin(u)")).eval(e)
 
     # def testTrigSubstitution(self):
     #     test_data = [
@@ -291,7 +291,7 @@ class RulesTest(unittest.TestCase):
             s = parse_expr(s)
             s2 = parse_expr(s2)
             s3 = parse_expr(s3)
-            rule = rules.Substitution2(s1, s2)
+            rule = rules.SubstitutionInverse(s1, s2)
             self.assertEqual(rule.eval(s).normalize(), s3.normalize())
             
     def testElimInfInterval(self):
@@ -377,7 +377,7 @@ class RulesTest(unittest.TestCase):
         t2 = rules.LimSep().eval(t1)
         t3 = rules.OnLocation(rules.LimitSimplify(), '1').eval(t2)
         #print(t3)
-        t4 = rules.OnLocation(rules.ExtractFromRoot('3*x', -1), '0.0.1').eval(t3);
+        t4 = rules.OnLocation(rules.ExtractFromRoot(parser.parse_expr('3*x'), -1), '0.0.1').eval(t3);
         sub = '(x/(-(3*x))) * (1/sqrt((9 * x * x - 5 * x) / (3 * x) ^ 2))'
         sub = expr.parser.parse_expr(sub)
         t5 = rules.OnLocation(rules.Equation(sub), '0.0').eval(t4)
@@ -401,6 +401,7 @@ class RulesTest(unittest.TestCase):
         ]
         for a, b, c, d in test_data:
             a = parser.parse_expr(a)
+            b = parser.parse_expr(b)
             e = rules.ExtractFromRoot(b, c).eval(a)
             self.assertEqual(str(e), d)
 
@@ -558,7 +559,7 @@ class RulesTest(unittest.TestCase):
         calc = Eq2_proof.base_case.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(Idef.eq))
         calc.perform_rule(rules.ElimInfInterval())
-        calc.perform_rule(rules.OnLocation(rules.Substitution2("u", parser.parse_expr("sqrt(b) * u")), "0"))
+        calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse("u", parser.parse_expr("sqrt(b) * u")), "0"))
         calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
         calc.perform_rule(rules.OnLocation(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1")), "0.1.0"))
         calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))

@@ -286,7 +286,7 @@ def integral_substitution():
                 'flag': False,
                 'reason': "%s is not a valid substitution expression." % data['expr']
             })
-    rule = integral.rules.Substitution1(data['var_name'], expr)
+    rule = integral.rules.Substitution(data['var_name'], expr)
     problem = integral.parser.parse_expr(data['problem'])
     if data['var_name'] == problem.var:
         return jsonify({
@@ -330,7 +330,7 @@ def integral_substitution2():
             'flag': False,
             'reason': "%s is not a valid expression" % data['expr']
         })
-    rule = integral.rules.Substitution2(data['var_name'], expr)
+    rule = integral.rules.SubstitutionInverse(data['var_name'], expr)
     
     problem = integral.parser.parse_expr(data['problem'])
     new_problem = rule.eval(problem)

@@ -133,7 +133,7 @@ class SubstitutionInverseStep(IntegrationStep):
         self.latex = latex.convert_expr(e)
         self.var_name = var_name
         self.var_subst = var_subst
-        self.comp = rules.Substitution2(var_name, var_subst).eval  
+        self.comp = rules.SubstitutionInverse(var_name, var_subst).eval  
         self.loc = Location(loc) 
 
     def __str__(self):
