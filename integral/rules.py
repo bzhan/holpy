@@ -1410,10 +1410,10 @@ def compute_limit(e: Expr, conds=None):
                 if c1 < c2:
                     # Numerator has smaller order, result is zero
                     return (Const(0), 'const', 0, "?")
-                elif c2 > c1:
+                elif c1 > c2:
                     # Numerator has bigger order, result is negative infinity,
                     # compute order of infinity of result
-                    return (Inf(Decimal("-inf")), "neg_inf", c2 - c1, "poly")
+                    return (Inf(Decimal("-inf")), "neg_inf", c1 - c2, "poly")
                 else:
                     return (a1 / a2, 'unknown', -1, '?')
             else:
@@ -1424,10 +1424,10 @@ def compute_limit(e: Expr, conds=None):
                 if c1 < c2:
                     # Numerator has smaller order
                     return (Const(0), 'const', 0, "?")
-                elif c2 > c1:
+                elif c1 > c2:
                     # Numerator has bigger order, result is positive infinity,
                     # compute order of infinity of result
-                    return (Inf(Decimal("inf")), "pos_inf", c2 - c1, "poly")
+                    return (Inf(Decimal("inf")), "pos_inf", c1 - c2, "poly")
                 else:
                     return (a1 / a2, 'unknown', -1, '?')
             else:
