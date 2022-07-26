@@ -60,18 +60,22 @@
       </div>
     </div>
     <div v-if="cur_items !== undefined" id="items">
+      <div v-if="cur_id !== undefined && content[cur_id].latex_problem !== undefined" id="problem">
+        <span class="math-text">Prove the identity</span><br>
+        <MathEquation v-bind:data="'\\(' + content[cur_id].latex_problem + '\\)'" class="indented-text"/>
+      </div>
       <div v-for="(item, index) in cur_items" :key="index">
         <div v-if="item.type === 'FuncDef'">
-          <FuncDef v-bind:item="item"/>
+          <FuncDef v-bind:item="item" v-bind:label="(index+1).toString()"/>
         </div>
         <div v-if="item.type === 'Identity'">
-          <Identity v-bind:item="item"/>
+          <Identity v-bind:item="item" v-bind:label="(index+1).toString()"/>
         </div>
         <div v-if="item.type === 'CalculationProof'">
-          <CalculationProof v-bind:item="item"/>
+          <CalculationProof v-bind:item="item" v-bind:label="(index+1).toString()"/>
         </div>
         <div v-if="item.type === 'InductionProof'">
-          <InductionProof v-bind:item="item"/>
+          <InductionProof v-bind:item="item" v-bind:label="(index+1).toString()"/>
         </div>
       </div>
     </div>

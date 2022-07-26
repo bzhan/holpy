@@ -42,6 +42,7 @@ class FuncDef(StateItem):
         return {
             "type": "FuncDef",
             "eq": str(self.eq),
+            "latex_lhs": latex.convert_expr(self.eq.lhs),
             "latex_eq": latex.convert_expr(self.eq)
         }
 

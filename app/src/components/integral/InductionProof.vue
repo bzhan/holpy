@@ -1,13 +1,12 @@
 <template>
   <div>
-    <span class="keyword">show</span>&nbsp;
-    <MathEquation v-bind:data="'\\(' + item.latex_goal + '\\)'"/>&nbsp;
-    <span class="keyword">by induction on</span>&nbsp;
-    <span>{{item.induct_var}}</span><br>
-    <span class="keyword">Base case</span><br>
-    <CalculationProof v-bind:item="item.base_case"/>
-    <span class="keyword">Induction case</span><br>
-    <CalculationProof v-bind:item="item.induct_case"/>
+    <span class="math-text">{{label}}.</span>&nbsp;
+    <span class="math-text">Show by induction on </span>
+    <MathEquation v-bind:data="'\\(' + item.induct_var + '\\)'"/><br/>
+    <span class="math-text">{{label}}.1. Base case</span><br>
+    <CalculationProof v-bind:item="item.base_case" v-bind:label="label + '.1'"/>
+    <span class="math-text">{{label}}.2. Induction case</span><br>
+    <CalculationProof v-bind:item="item.induct_case" v-bind:label="label + '.2'"/>
   </div>
 </template>
 
@@ -22,8 +21,9 @@ export default {
     CalculationProof,
   },
 
-props: [
-    "item"
+  props: [
+    "item",
+    "label"
   ]
 }
 

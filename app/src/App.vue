@@ -40,6 +40,10 @@ a.dropdown-item {
   color: #006000;
 }
 
+.math-text {
+  font-family: MathJax_Main;
+}
+
 .indented-text {
   margin-left: 0.8em;
 }

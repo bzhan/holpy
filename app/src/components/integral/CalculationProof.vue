@@ -1,28 +1,30 @@
 <template>
   <div>
-    <span class="keyword">show</span>&nbsp;
-    <MathEquation v-bind:data="'\\(' + item.latex_goal + '\\)'"/>&nbsp;
-    <span class="keyword">by calculation</span><br>
-    <span class="keyword">LHS</span><br>
+    <span class="math-text">{{label}}.</span>&nbsp;
+    <span class="math-text">Show by calculation</span><br/>
+    <span class="math-text">{{label}}.1.</span>&nbsp;
+    <span class="math-text">LHS</span><br>
     <Calculation v-bind:steps="item.lhs_calc.steps"/>
-    <span class="keyword">RHS</span><br>
+    <span class="math-text">{{label}}.2.</span>&nbsp;
+    <span class="math-text">RHS</span><br>
     <Calculation v-bind:steps="item.rhs_calc.steps"/>
   </div>
 </template>
 
 <script>
-import MathEquation from '../util/MathEquation.vue'
+// import MathEquation from '../util/MathEquation.vue'
 import Calculation from './Calculation.vue'
 
 export default {
   name: "CalculationProof",
   components: {
-    MathEquation,
+//    MathEquation,
     Calculation,
   },
 
   props: [
-    "item"
+    "item",
+    "label"
   ]
 }
 
