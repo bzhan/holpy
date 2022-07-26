@@ -9,209 +9,35 @@
                     "type": "FuncDef"
                 },
                 {
-                    "eq": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
-                    "latex_eq": "\\frac{d}{db} I(m,b) = -(m + 1) I(m + 1,b)",
-                    "type": "Identity"
-                },
-                {
                     "goal": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
                     "latex_goal": "\\frac{d}{db} I(m,b) = -(m + 1) I(m + 1,b)",
-                    "lhs_calc": {
-                        "steps": [
-                            {
-                                "latex_res": "\\frac{d}{db} \\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + b) ^ {m + 1}} \\,dx",
-                                "res": "D b. INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1)",
-                                "rule": {
-                                    "loc": "0",
-                                    "name": "ExpandDefinition",
-                                    "str": "expand definition at 0"
-                                },
-                                "type": "CalculationStep"
-                            },
-                            {
-                                "latex_res": "\\int_{0}^{\\infty} \\frac{d}{db} \\frac{1}{(x ^ {2} + b) ^ {m + 1}} \\,dx",
-                                "res": "INT x:[0,oo]. D b. 1 / (x ^ 2 + b) ^ (m + 1)",
-                                "rule": {
-                                    "name": "DerivIntExchange",
-                                    "str": "exchange derivative and integral"
-                                },
-                                "type": "CalculationStep"
-                            },
-                            {
-                                "latex_res": "\\int_{0}^{\\infty} -m (b + x ^ {2}) ^ {-2 + -m} + -(b + x ^ {2}) ^ {-2 + -m} \\,dx",
-                                "res": "INT x:[0,oo]. -(m * (b + x ^ 2) ^ (-2 + -m)) + -((b + x ^ 2) ^ (-2 + -m))",
-                                "rule": {
-                                    "loc": "0",
-                                    "name": "DerivativeSimplify",
-                                    "str": "simplify derivative at 0"
-                                },
-                                "type": "CalculationStep"
-                            },
-                            {
-                                "latex_res": "-m \\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx + -(\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx)",
-                                "res": "-(m * (INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))) + -(INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))",
-                                "rule": {
-                                    "name": "FullSimplify",
-                                    "str": "full simplify"
-                                },
-                                "type": "CalculationStep"
-                            }
-                        ],
-                        "type": "Calculation"
-                    },
-                    "rhs_calc": {
-                        "steps": [
-                            {
-                                "latex_res": "-(m + 1) \\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + b) ^ {m + 1 + 1}} \\,dx",
-                                "res": "-(m + 1) * (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1 + 1))",
-                                "rule": {
-                                    "loc": "1",
-                                    "name": "ExpandDefinition",
-                                    "str": "expand definition at 1"
-                                },
-                                "type": "CalculationStep"
-                            },
-                            {
-                                "latex_res": "-m \\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx + -(\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx)",
-                                "res": "-(m * (INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))) + -(INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))",
-                                "rule": {
-                                    "name": "FullSimplify",
-                                    "str": "full simplify"
-                                },
-                                "type": "CalculationStep"
-                            }
-                        ],
-                        "type": "Calculation"
-                    },
-                    "type": "CalculationProof"
-                },
-                {
-                    "eq": "I(m,b) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
-                    "latex_eq": "I(m,b) = (\\frac{\\pi}{2 ^ {2 m + 1}}) \\binom{2 m}{m} (\\frac{1}{b ^ {\\frac{1}{2} \\times 2 m + 1}})",
-                    "type": "Identity"
-                },
-                {
-                    "base_case": {
-                        "goal": "I(0,b) = 1/2 * pi * b ^ (-1/2)",
-                        "latex_goal": "I(0,b) = \\frac{1}{2} \\pi * b ^ {-\\frac{1}{2}}",
+                    "proof": {
+                        "goal": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
+                        "latex_goal": "\\frac{d}{db} I(m,b) = -(m + 1) I(m + 1,b)",
                         "lhs_calc": {
                             "steps": [
                                 {
-                                    "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + b) ^ {0 + 1}} \\,dx",
-                                    "res": "INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (0 + 1)",
+                                    "latex_res": "\\frac{d}{db} \\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + b) ^ {m + 1}} \\,dx",
+                                    "res": "D b. INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1)",
                                     "rule": {
-                                        "func_def": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
+                                        "loc": "0",
                                         "name": "ExpandDefinition",
-                                        "str": "expand definition"
+                                        "str": "expand definition at 0"
                                     },
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} \\frac{1}{(x ^ {2} + b) ^ {0 + 1}} \\,dx",
-                                    "res": "LIM {t -> oo}. INT x:[0,t]. 1 / (x ^ 2 + b) ^ (0 + 1)",
+                                    "latex_res": "\\int_{0}^{\\infty} \\frac{d}{db} \\frac{1}{(x ^ {2} + b) ^ {m + 1}} \\,dx",
+                                    "res": "INT x:[0,oo]. D b. 1 / (x ^ 2 + b) ^ (m + 1)",
                                     "rule": {
-                                        "a": "0",
-                                        "name": "ElimInfInterval",
-                                        "str": "eliminate improper integral"
+                                        "name": "DerivIntExchange",
+                                        "str": "exchange derivative and integral"
                                     },
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} (\\frac{1}{((\\sqrt{b} u) ^ {2} + b) ^ {0 + 1}}) \\sqrt{b} \\,du",
-                                    "res": "LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. (1 / ((sqrt(b) * u) ^ 2 + b) ^ (0 + 1)) * sqrt(b)",
-                                    "rule": {
-                                        "loc": "0",
-                                        "name": "SubstitutionInverse",
-                                        "str": "substitute x for sqrt(b) * u at 0"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\sqrt{b} \\int_{0}^{b ^ {-1/2} t} (b + b u ^ {2}) ^ {-1} \\,du\\,)",
-                                    "res": "LIM {t -> oo}. sqrt(b) * (INT u:[0,b ^ (-1/2) * t]. (b + b * u ^ 2) ^ -1)",
-                                    "rule": {
-                                        "loc": "0",
-                                        "name": "FullSimplify",
-                                        "str": "full simplify at 0"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\sqrt{b} \\int_{0}^{b ^ {-1/2} t} b ^ {-1} * (1 + u ^ {2}) ^ {-1} \\,du\\,)",
-                                    "res": "LIM {t -> oo}. sqrt(b) * (INT u:[0,b ^ (-1/2) * t]. b ^ -1 * (1 + u ^ 2) ^ -1)",
-                                    "rule": {
-                                        "loc": "0.1.0",
-                                        "name": "Equation",
-                                        "str": "rewriting at 0.1.0"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,b ^ {-\\frac{1}{2}} \\arctan{b ^ {-\\frac{1}{2}} t}\\,)",
-                                    "res": "LIM {t -> oo}. b ^ (-1/2) * atan(b ^ (-1/2) * t)",
-                                    "rule": {
-                                        "loc": "0",
-                                        "name": "FullSimplify",
-                                        "str": "full simplify at 0"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "b ^ {-\\frac{1}{2}} * \\frac{1}{2} \\pi",
-                                    "res": "b ^ (-1/2) * (1/2 * pi)",
-                                    "rule": {
-                                        "name": "LimitSimplify",
-                                        "str": "simplify limits"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\frac{1}{2} \\pi * b ^ {-\\frac{1}{2}}",
-                                    "res": "1/2 * pi * b ^ (-1/2)",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                }
-                            ],
-                            "type": "Calculation"
-                        },
-                        "rhs_calc": {
-                            "steps": [],
-                            "type": "Calculation"
-                        },
-                        "type": "CalculationProof"
-                    },
-                    "goal": "I(m,b) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
-                    "induct_case": {
-                        "goal": "I(m + 1,b) = pi * b ^ (3/2 + m) ^ -1 * 2 ^ (3 + 2 * m) ^ -1 * binom(2 + 2 * m,1 + m)",
-                        "latex_goal": "I(m + 1,b) = \\pi (b ^ {\\frac{3}{2} + m}) ^ {-1} * (2 ^ {3 + 2 m}) ^ {-1} \\binom{2 + 2 m}{1 + m}",
-                        "lhs_calc": {
-                            "steps": [
-                                {
-                                    "latex_res": "\\frac{\\frac{d}{db} I(m,b)}{-(m + 1)}",
-                                    "res": "(D b. I(m,b)) / -(m + 1)",
-                                    "rule": {
-                                        "eq": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
-                                        "name": "ApplyEquation",
-                                        "str": "apply equation"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\frac{\\frac{d}{db} (\\frac{\\pi}{2 ^ {2 m + 1}}) \\binom{2 m}{m} (\\frac{1}{b ^ {\\frac{1}{2} \\times 2 m + 1}})}{-(m + 1)}",
-                                    "res": "(D b. (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))) / -(m + 1)",
-                                    "rule": {
-                                        "loc": "0.0",
-                                        "name": "ApplyEquation",
-                                        "str": "apply equation at 0.0"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\frac{-\\pi * m \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m} * (2 ^ {1 + 2 m}) ^ {-1} + -\\frac{1}{2} \\pi * \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m} * (2 ^ {1 + 2 m}) ^ {-1}}{-(m + 1)}",
-                                    "res": "(-pi * m * binom(2 * m,m) * b ^ (-3/2 + -m) * 2 ^ (1 + 2 * m) ^ -1 + -1/2 * pi * binom(2 * m,m) * b ^ (-3/2 + -m) * 2 ^ (1 + 2 * m) ^ -1) / -(m + 1)",
+                                    "latex_res": "\\int_{0}^{\\infty} -m (b + x ^ {2}) ^ {-2 + -m} + -(b + x ^ {2}) ^ {-2 + -m} \\,dx",
+                                    "res": "INT x:[0,oo]. -(m * (b + x ^ 2) ^ (-2 + -m)) + -((b + x ^ 2) ^ (-2 + -m))",
                                     "rule": {
                                         "loc": "0",
                                         "name": "DerivativeSimplify",
@@ -220,8 +46,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\frac{1}{2} \\pi * m * (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m} + \\frac{1}{4} \\pi * (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m}",
-                                    "res": "1/2 * pi * m * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m) + 1/4 * pi * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m)",
+                                    "latex_res": "-m \\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx + -(\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx)",
+                                    "res": "-(m * (INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))) + -(INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"
@@ -234,27 +60,18 @@
                         "rhs_calc": {
                             "steps": [
                                 {
-                                    "latex_res": "\\frac{1}{8} \\pi * 2 ^ {-2 m} b ^ {-\\frac{3}{2} + -m} \\binom{2 + 2 m}{1 + m}",
-                                    "res": "1/8 * pi * 2 ^ (-2 * m) * b ^ (-3/2 + -m) * binom(2 + 2 * m,1 + m)",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\frac{1}{8} \\pi * 2 ^ {-2 m} b ^ {-\\frac{3}{2} + -m} (\\frac{\\binom{2 m}{m} * 2 (1 + 2 m)}{1 + m})",
-                                    "res": "1/8 * pi * 2 ^ (-2 * m) * b ^ (-3/2 + -m) * ((binom(2 * m,m) * 2 * (1 + 2 * m)) / (1 + m))",
+                                    "latex_res": "-(m + 1) \\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + b) ^ {m + 1 + 1}} \\,dx",
+                                    "res": "-(m + 1) * (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1 + 1))",
                                     "rule": {
                                         "loc": "1",
-                                        "name": "RewriteBinom",
-                                        "str": "rewriting binomial coefficients at 1"
+                                        "name": "ExpandDefinition",
+                                        "str": "expand definition at 1"
                                     },
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\frac{1}{2} \\pi * m * (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m} + \\frac{1}{4} \\pi * (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m}",
-                                    "res": "1/2 * pi * m * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m) + 1/4 * pi * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m)",
+                                    "latex_res": "-m \\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx + -(\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx)",
+                                    "res": "-(m * (INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))) + -(INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"
@@ -266,9 +83,202 @@
                         },
                         "type": "CalculationProof"
                     },
-                    "induct_var": "m",
+                    "type": "Goal"
+                },
+                {
+                    "goal": "I(m,b) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                     "latex_goal": "I(m,b) = (\\frac{\\pi}{2 ^ {2 m + 1}}) \\binom{2 m}{m} (\\frac{1}{b ^ {\\frac{1}{2} \\times 2 m + 1}})",
-                    "type": "InductionProof"
+                    "proof": {
+                        "base_case": {
+                            "goal": "I(0,b) = 1/2 * pi * b ^ (-1/2)",
+                            "latex_goal": "I(0,b) = \\frac{1}{2} \\pi * b ^ {-\\frac{1}{2}}",
+                            "proof": {
+                                "goal": "I(0,b) = 1/2 * pi * b ^ (-1/2)",
+                                "latex_goal": "I(0,b) = \\frac{1}{2} \\pi * b ^ {-\\frac{1}{2}}",
+                                "lhs_calc": {
+                                    "steps": [
+                                        {
+                                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + b) ^ {0 + 1}} \\,dx",
+                                            "res": "INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (0 + 1)",
+                                            "rule": {
+                                                "func_def": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
+                                                "name": "ExpandDefinition",
+                                                "str": "expand definition"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} \\frac{1}{(x ^ {2} + b) ^ {0 + 1}} \\,dx",
+                                            "res": "LIM {t -> oo}. INT x:[0,t]. 1 / (x ^ 2 + b) ^ (0 + 1)",
+                                            "rule": {
+                                                "a": "0",
+                                                "name": "ElimInfInterval",
+                                                "str": "eliminate improper integral"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} (\\frac{1}{((\\sqrt{b} u) ^ {2} + b) ^ {0 + 1}}) \\sqrt{b} \\,du",
+                                            "res": "LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. (1 / ((sqrt(b) * u) ^ 2 + b) ^ (0 + 1)) * sqrt(b)",
+                                            "rule": {
+                                                "loc": "0",
+                                                "name": "SubstitutionInverse",
+                                                "str": "substitute x for sqrt(b) * u at 0"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\sqrt{b} \\int_{0}^{b ^ {-1/2} t} (b + b u ^ {2}) ^ {-1} \\,du\\,)",
+                                            "res": "LIM {t -> oo}. sqrt(b) * (INT u:[0,b ^ (-1/2) * t]. (b + b * u ^ 2) ^ -1)",
+                                            "rule": {
+                                                "loc": "0",
+                                                "name": "FullSimplify",
+                                                "str": "full simplify at 0"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\sqrt{b} \\int_{0}^{b ^ {-1/2} t} b ^ {-1} * (1 + u ^ {2}) ^ {-1} \\,du\\,)",
+                                            "res": "LIM {t -> oo}. sqrt(b) * (INT u:[0,b ^ (-1/2) * t]. b ^ -1 * (1 + u ^ 2) ^ -1)",
+                                            "rule": {
+                                                "loc": "0.1.0",
+                                                "name": "Equation",
+                                                "str": "rewriting at 0.1.0"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,b ^ {-\\frac{1}{2}} \\arctan{b ^ {-\\frac{1}{2}} t}\\,)",
+                                            "res": "LIM {t -> oo}. b ^ (-1/2) * atan(b ^ (-1/2) * t)",
+                                            "rule": {
+                                                "loc": "0",
+                                                "name": "FullSimplify",
+                                                "str": "full simplify at 0"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "b ^ {-\\frac{1}{2}} * \\frac{1}{2} \\pi",
+                                            "res": "b ^ (-1/2) * (1/2 * pi)",
+                                            "rule": {
+                                                "name": "LimitSimplify",
+                                                "str": "simplify limits"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\frac{1}{2} \\pi * b ^ {-\\frac{1}{2}}",
+                                            "res": "1/2 * pi * b ^ (-1/2)",
+                                            "rule": {
+                                                "name": "FullSimplify",
+                                                "str": "full simplify"
+                                            },
+                                            "type": "CalculationStep"
+                                        }
+                                    ],
+                                    "type": "Calculation"
+                                },
+                                "rhs_calc": {
+                                    "steps": [],
+                                    "type": "Calculation"
+                                },
+                                "type": "CalculationProof"
+                            },
+                            "type": "Goal"
+                        },
+                        "goal": "I(m,b) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
+                        "induct_case": {
+                            "goal": "I(m + 1,b) = pi * b ^ (3/2 + m) ^ -1 * 2 ^ (3 + 2 * m) ^ -1 * binom(2 + 2 * m,1 + m)",
+                            "latex_goal": "I(m + 1,b) = \\pi (b ^ {\\frac{3}{2} + m}) ^ {-1} * (2 ^ {3 + 2 m}) ^ {-1} \\binom{2 + 2 m}{1 + m}",
+                            "proof": {
+                                "goal": "I(m + 1,b) = pi * b ^ (3/2 + m) ^ -1 * 2 ^ (3 + 2 * m) ^ -1 * binom(2 + 2 * m,1 + m)",
+                                "latex_goal": "I(m + 1,b) = \\pi (b ^ {\\frac{3}{2} + m}) ^ {-1} * (2 ^ {3 + 2 m}) ^ {-1} \\binom{2 + 2 m}{1 + m}",
+                                "lhs_calc": {
+                                    "steps": [
+                                        {
+                                            "latex_res": "\\frac{\\frac{d}{db} I(m,b)}{-(m + 1)}",
+                                            "res": "(D b. I(m,b)) / -(m + 1)",
+                                            "rule": {
+                                                "eq": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
+                                                "name": "ApplyEquation",
+                                                "str": "apply equation"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\frac{\\frac{d}{db} (\\frac{\\pi}{2 ^ {2 m + 1}}) \\binom{2 m}{m} (\\frac{1}{b ^ {\\frac{1}{2} \\times 2 m + 1}})}{-(m + 1)}",
+                                            "res": "(D b. (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))) / -(m + 1)",
+                                            "rule": {
+                                                "loc": "0.0",
+                                                "name": "ApplyEquation",
+                                                "str": "apply equation at 0.0"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\frac{-\\pi * m \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m} * (2 ^ {1 + 2 m}) ^ {-1} + -\\frac{1}{2} \\pi * \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m} * (2 ^ {1 + 2 m}) ^ {-1}}{-(m + 1)}",
+                                            "res": "(-pi * m * binom(2 * m,m) * b ^ (-3/2 + -m) * 2 ^ (1 + 2 * m) ^ -1 + -1/2 * pi * binom(2 * m,m) * b ^ (-3/2 + -m) * 2 ^ (1 + 2 * m) ^ -1) / -(m + 1)",
+                                            "rule": {
+                                                "loc": "0",
+                                                "name": "DerivativeSimplify",
+                                                "str": "simplify derivative at 0"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\frac{1}{2} \\pi * m * (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m} + \\frac{1}{4} \\pi * (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m}",
+                                            "res": "1/2 * pi * m * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m) + 1/4 * pi * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m)",
+                                            "rule": {
+                                                "name": "FullSimplify",
+                                                "str": "full simplify"
+                                            },
+                                            "type": "CalculationStep"
+                                        }
+                                    ],
+                                    "type": "Calculation"
+                                },
+                                "rhs_calc": {
+                                    "steps": [
+                                        {
+                                            "latex_res": "\\frac{1}{8} \\pi * 2 ^ {-2 m} b ^ {-\\frac{3}{2} + -m} \\binom{2 + 2 m}{1 + m}",
+                                            "res": "1/8 * pi * 2 ^ (-2 * m) * b ^ (-3/2 + -m) * binom(2 + 2 * m,1 + m)",
+                                            "rule": {
+                                                "name": "FullSimplify",
+                                                "str": "full simplify"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\frac{1}{8} \\pi * 2 ^ {-2 m} b ^ {-\\frac{3}{2} + -m} (\\frac{\\binom{2 m}{m} * 2 (1 + 2 m)}{1 + m})",
+                                            "res": "1/8 * pi * 2 ^ (-2 * m) * b ^ (-3/2 + -m) * ((binom(2 * m,m) * 2 * (1 + 2 * m)) / (1 + m))",
+                                            "rule": {
+                                                "loc": "1",
+                                                "name": "RewriteBinom",
+                                                "str": "rewriting binomial coefficients at 1"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\frac{1}{2} \\pi * m * (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m} + \\frac{1}{4} \\pi * (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-\\frac{3}{2} + -m}",
+                                            "res": "1/2 * pi * m * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m) + 1/4 * pi * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m)",
+                                            "rule": {
+                                                "name": "FullSimplify",
+                                                "str": "full simplify"
+                                            },
+                                            "type": "CalculationStep"
+                                        }
+                                    ],
+                                    "type": "Calculation"
+                                },
+                                "type": "CalculationProof"
+                            },
+                            "type": "Goal"
+                        },
+                        "induct_var": "m",
+                        "latex_goal": "I(m,b) = (\\frac{\\pi}{2 ^ {2 m + 1}}) \\binom{2 m}{m} (\\frac{1}{b ^ {\\frac{1}{2} \\times 2 m + 1}})",
+                        "type": "InductionProof"
+                    },
+                    "type": "Goal"
                 }
             ],
             "latex_problem": "\\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + 1) ^ {m + 1}} \\,dx = (\\frac{\\pi}{2 ^ {2 m + 1}}) \\binom{2 m}{m}",

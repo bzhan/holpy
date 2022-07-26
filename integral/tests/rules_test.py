@@ -533,31 +533,29 @@ class RulesTest(unittest.TestCase):
         conds.add_condition("b", parser.parse_expr("b > 0"))
 
         # Prove the following equality
-        Eq1 = compstate.Identity(parser.parse_expr("(D b. I(m,b)) = -(m+1) * I(m+1, b)"))
+        Eq1 = compstate.Goal(parser.parse_expr("(D b. I(m,b)) = -(m+1) * I(m+1, b)"), conds=conds)
         st.add_item(Eq1)
+        proof = Eq1.proof_by_calculation()
 
-        Eq1_proof = compstate.CalculationProof(Eq1.eq, conds=conds)
-        st.add_item(Eq1_proof)
-
-        calc = Eq1_proof.lhs_calc
+        calc = proof.lhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), "0"))
         calc.perform_rule(rules.DerivIntExchange())
         calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), "0"))
         calc.perform_rule(rules.FullSimplify())
 
-        calc = Eq1_proof.rhs_calc
+        calc = proof.rhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), "1"))
         calc.perform_rule(rules.FullSimplify())
 
         # Prove the following by induction
-        Eq2 = compstate.Identity(parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"))
+        Eq2 = compstate.Goal(parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"), conds=conds)
         st.add_item(Eq2)
-
-        Eq2_proof = compstate.InductionProof(Eq2.eq, "m", conds=conds)
-        st.add_item(Eq2_proof)
+        proof = Eq2.proof_by_induction("m")
+        proof_base = proof.base_case.proof_by_calculation()
+        proof_induct = proof.induct_case.proof_by_calculation()
 
         # Base case
-        calc = Eq2_proof.base_case.lhs_calc
+        calc = proof_base.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(Idef.eq))
         calc.perform_rule(rules.ElimInfInterval())
         calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse("u", parser.parse_expr("sqrt(b) * u")), "0"))
@@ -568,14 +566,14 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         # Induction case, LHS
-        calc = Eq2_proof.induct_case.lhs_calc
-        calc.perform_rule(rules.ApplyEquation(Eq1.eq))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq2.eq), "0.0"))
+        calc = proof_induct.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(Eq1.goal))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("IH"), "0.0"))
         calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), "0"))
         calc.perform_rule(rules.FullSimplify())
 
         # Induction step, RHS
-        calc = Eq2_proof.induct_case.rhs_calc
+        calc = proof_induct.rhs_calc
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
         calc.perform_rule(rules.FullSimplify())
@@ -585,7 +583,7 @@ class RulesTest(unittest.TestCase):
         }
         with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
             json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
-        
+
     def testMul2Div(self):
         test_data = [
             ("x*(e^-x)", "", 1, "x / (1 / e ^ -x)"),

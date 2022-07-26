@@ -1,6 +1,7 @@
 """State of computation"""
 
 from copy import copy
+from msilib.schema import Condition
 from typing import Optional, Tuple
 
 from integral.expr import Expr, Eq, Var, Const
@@ -47,25 +48,36 @@ class FuncDef(StateItem):
         }
 
 
-class Identity(StateItem):
-    """Proved identity."""
-    def __init__(self, eq: Expr):
-        if not eq.is_equals():
-            raise AssertionError("Identity: expression should be an equality")
-        
-        self.eq = eq
+class Goal(StateItem):
+    """Goal to be proved."""
+    def __init__(self, goal: Expr, conds: Optional[Conditions] = None):
+        self.goal = goal
+        if conds is None:
+            conds = Conditions()
+        self.conds = conds
+        self.proof = None
 
     def __str__(self):
-        res = "Identity\n"
-        res += "  %s\n" % self.eq
+        res = "Goal\n"
+        res += "  %s\n" % self.goal
+        res += str(self.proof)
         return res
 
     def export(self):
         return {
-            "type": "Identity",
-            "eq": str(self.eq),
-            "latex_eq": latex.convert_expr(self.eq)
+            "type": "Goal",
+            "goal": str(self.goal),
+            "latex_goal": latex.convert_expr(self.goal),
+            "proof": self.proof.export()
         }
+
+    def proof_by_calculation(self):
+        self.proof = CalculationProof(self.goal, conds=self.conds)
+        return self.proof
+
+    def proof_by_induction(self, induct_var: str):
+        self.proof = InductionProof(self.goal, induct_var, conds=self.conds)
+        return self.proof
 
 
 class CalculationStep(StateItem):
@@ -191,16 +203,14 @@ class InductionProof(StateItem):
         self.conds = conds
 
         # Base case: n = 0
-        eq0 = goal.subst(induct_var, Const(0))
-        eq0 = Eq(eq0.lhs.normalize(), eq0.rhs.normalize())
-        self.base_case = CalculationProof(eq0, conds=self.conds)
+        eq0 = goal.subst(induct_var, Const(0)).normalize()
+        self.base_case = Goal(eq0, conds=self.conds)
         
         # Inductive case:
-        eqI = goal.subst(induct_var, Var(induct_var) + 1)
-        eqI = Eq(eqI.lhs.normalize(), eqI.rhs.normalize())
+        eqI = goal.subst(induct_var, Var(induct_var) + 1).normalize()
         induct_conds = copy(self.conds)
         induct_conds.add_condition("IH", self.goal)
-        self.induct_case = CalculationProof(eqI, conds=induct_conds)
+        self.induct_case = Goal(eqI, conds=induct_conds)
 
     def __str__(self):
         res = "Proof by induction on %s\n" % self.induct_var

@@ -864,7 +864,10 @@ class Expr:
             return poly.singleton(self)
 
     def normalize(self):
-        return from_poly(self.to_poly())
+        if self.is_equals():
+            return Eq(self.lhs.normalize(), self.rhs.normalize())
+        else:
+            return from_poly(self.to_poly())
 
     def replace_trig(self, trig_old: Expr, trig_new: Expr):
         """Replace trigonometric expression with its equivalent form in e.

@@ -68,8 +68,8 @@
         <div v-if="item.type === 'FuncDef'">
           <FuncDef v-bind:item="item" v-bind:label="(index+1).toString()"/>
         </div>
-        <div v-if="item.type === 'Identity'">
-          <Identity v-bind:item="item" v-bind:label="(index+1).toString()"/>
+        <div v-if="item.type === 'Goal'">
+          <Goal v-bind:item="item" v-bind:label="(index+1).toString()"/>
         </div>
         <div v-if="item.type === 'CalculationProof'">
           <CalculationProof v-bind:item="item" v-bind:label="(index+1).toString()"/>
@@ -280,7 +280,7 @@
 import axios from 'axios'
 import MathEquation from '../util/MathEquation'
 import FuncDef from './FuncDef'
-import Identity from "./Identity"
+import Goal from "./Goal"
 import CalculationProof from "./CalculationProof"
 import InductionProof from "./InductionProof"
 
@@ -289,7 +289,7 @@ export default {
   components: {
     MathEquation,
     FuncDef,
-    Identity,
+    Goal,
     CalculationProof,
     InductionProof,
   },

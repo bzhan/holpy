@@ -1,7 +1,6 @@
 <template>
   <div>
-    <span class="math-text">{{label}}.</span>&nbsp;
-    <span class="math-text">Show by calculation</span><br/>
+    <span class="math-text">by calculation</span><br/>
     <span class="math-text">{{label}}.1.</span>&nbsp;
     <span class="math-text">LHS</span><br>
     <Calculation v-bind:steps="item.lhs_calc.steps"/>

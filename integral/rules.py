@@ -2,7 +2,7 @@
 import fractions
 import math
 from decimal import Decimal
-from typing import Optional
+from typing import Optional, Union
 import sympy
 import functools
 import sympy.series.limits
@@ -380,7 +380,7 @@ class FullSimplify(Rule):
 
 class ApplyEquation(Rule):
     """Apply the given equation to for rewriting."""
-    def __init__(self, eq: Expr):
+    def __init__(self, eq: Union[Expr, str]):
         self.name = "ApplyEquation"
         self.eq = eq
 
@@ -395,6 +395,10 @@ class ApplyEquation(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
+        if isinstance(self.eq, str):
+            assert conds is not None and self.eq in conds.data, "ApplyEquation: equation not found"
+            self.eq = conds.data[self.eq]
+
         if e == self.eq.lhs:
             # e = e'
             return self.eq.rhs

@@ -48,6 +48,11 @@ a.dropdown-item {
   margin-left: 0.8em;
 }
 
+.indented-label {
+  display: flex;
+  flex-direction: row;
+}
+
 .item-text {
   font-family: Consolas, monospace;
 }
