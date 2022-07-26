@@ -567,7 +567,7 @@ class Equation(Rule):
     def export(self):
         return {
             "name": self.name,
-            "new_expr": str(new_expr),
+            "new_expr": str(self.new_expr),
             "str": str(self)
         }
 
