@@ -17,6 +17,7 @@ from sympy.solvers import solvers, solveset
 from fractions import Fraction
 from integral.solve import solve_equation
 from integral.conditions import Conditions, is_positive, is_negative
+from integral import latex
 
 
 class Rule:
@@ -186,11 +187,12 @@ class OnSubterm(Rule):
         return "%s on subterms" % self.rule
 
     def export(self):
-        return {
-            "name": self.rule.name,
-            "str": str(self),
-            "loc": "subterms"
-        }
+        res = self.rule.export()
+        res['str'] += ' on subterms'
+        res['loc'] = 'subterms'
+        if 'latex_str' in res:
+            res['latex_str'] += ' on subterms'
+        return res
 
     def eval(self, e: Expr, conds=None) -> Expr:
         rule = self.rule
@@ -229,11 +231,12 @@ class OnLocation(Rule):
         return "%s at %s" % (self.rule, self.loc)
 
     def export(self):
-        return {
-            "name": self.rule.name,
-            "str": str(self),
-            "loc": str(self.loc)
-        }
+        res = self.rule.export()
+        res['str'] += ' at ' + str(self.loc)
+        res['loc'] = str(self.loc)
+        if 'latex_str' in res:
+            res['latex_str'] += ' at ' + str(self.loc)
+        return res
 
     def eval(self, e: Expr, conds=None) -> Expr:
         def rec(cur_e, loc):
@@ -437,7 +440,9 @@ class Substitution(Rule):
             "name": self.name,
             "var_name": self.var_name,
             "var_subst": str(self.var_subst),
-            "str": str(self)
+            "str": str(self),
+            "latex_str": "substitute \\(%s\\) for \\(%s\\)" % \
+                (self.var_name, latex.convert_expr(self.var_subst))
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
@@ -509,7 +514,9 @@ class SubstitutionInverse(Rule):
             "name": self.name,
             "var_name": self.var_name,
             "var_subst": str(self.var_subst),
-            "str": str(self)
+            "str": str(self),
+            "latex_str": "substitute \\(%s\\) for \\(%s\\)" % \
+                ("x", latex.convert_expr(self.var_subst))
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
@@ -571,7 +578,7 @@ class Equation(Rule):
     def export(self):
         return {
             "name": self.name,
-            "new_expr": str(new_expr),
+            "new_expr": str(self.new_expr),
             "str": str(self)
         }
 

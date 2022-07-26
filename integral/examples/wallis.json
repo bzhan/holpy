@@ -20,6 +20,7 @@
                                     "latex_res": "\\frac{d}{db} \\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + b) ^ {m + 1}} \\,dx",
                                     "res": "D b. INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1)",
                                     "rule": {
+                                        "func_def": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
                                         "loc": "0",
                                         "name": "ExpandDefinition",
                                         "str": "expand definition at 0"
@@ -63,6 +64,7 @@
                                     "latex_res": "-(m + 1) \\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + b) ^ {m + 1 + 1}} \\,dx",
                                     "res": "-(m + 1) * (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1 + 1))",
                                     "rule": {
+                                        "func_def": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
                                         "loc": "1",
                                         "name": "ExpandDefinition",
                                         "str": "expand definition at 1"
@@ -121,9 +123,12 @@
                                             "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} (\\frac{1}{((\\sqrt{b} u) ^ {2} + b) ^ {0 + 1}}) \\sqrt{b} \\,du",
                                             "res": "LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. (1 / ((sqrt(b) * u) ^ 2 + b) ^ (0 + 1)) * sqrt(b)",
                                             "rule": {
+                                                "latex_str": "substitute \\(x\\) for \\(\\sqrt{b} u\\) at 0",
                                                 "loc": "0",
                                                 "name": "SubstitutionInverse",
-                                                "str": "substitute x for sqrt(b) * u at 0"
+                                                "str": "substitute x for sqrt(b) * u at 0",
+                                                "var_name": "u",
+                                                "var_subst": "sqrt(b) * u"
                                             },
                                             "type": "CalculationStep"
                                         },
@@ -143,6 +148,7 @@
                                             "rule": {
                                                 "loc": "0.1.0",
                                                 "name": "Equation",
+                                                "new_expr": "b ^ -1 * (1 + u ^ 2) ^ -1",
                                                 "str": "rewriting at 0.1.0"
                                             },
                                             "type": "CalculationStep"
@@ -209,6 +215,7 @@
                                             "latex_res": "\\frac{\\frac{d}{db} (\\frac{\\pi}{2 ^ {2 m + 1}}) \\binom{2 m}{m} (\\frac{1}{b ^ {\\frac{1}{2} \\times 2 m + 1}})}{-(m + 1)}",
                                             "res": "(D b. (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))) / -(m + 1)",
                                             "rule": {
+                                                "eq": "I(m,b) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                                                 "loc": "0.0",
                                                 "name": "ApplyEquation",
                                                 "str": "apply equation at 0.0"

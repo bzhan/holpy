@@ -1,7 +1,10 @@
 <template>
   <div>
     <MathEquation v-bind:data="'\\(=' + step.latex_res + '\\)'" class="indented-text"/>&nbsp;&nbsp;&nbsp;
-		<span class="math-text">({{step.rule.str}})</span>
+    <span v-if="'latex_str' in step.rule">
+      <MathEquation v-bind:data="'(' + step.rule.latex_str + ')'" class="math-text"/>
+    </span>
+		<span v-else class="math-text">({{step.rule.str}})</span>
 	</div>
 </template>
 
