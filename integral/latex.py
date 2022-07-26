@@ -166,8 +166,10 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 return "\\arcsin{(%s)}" % sx
             elif e.func_name == "acos":
                 return "\\arccos{(%s)}" % sx
-            else:
+            elif e.func_name in ('log', 'sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
                 return "\\%s{(%s)}" % (e.func_name, sx)
+            else:
+                return "%s{(%s)}" % (e.func_name, sx)
         elif len(e.args) == 2:
             x, y = e.args
             sx, sy = convert_expr(x, mode), convert_expr(y, mode)

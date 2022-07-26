@@ -10,6 +10,7 @@ from integral.rules import Rule
 from integral.conditions import Conditions
 from integral import conditions
 from integral import latex
+from integral import parser
 
 
 class StateItem:
@@ -265,3 +266,21 @@ class State:
         self.items.append(item)
         if isinstance(item, FuncDef):
             self.func_map[item.symb] = item
+
+def parse_func_def(item) -> FuncDef:
+    eq = parser.parse_expr(item['eq'])
+    return FuncDef(eq)
+
+def parse_state(name: str, problem: str, items) -> State:
+    goal = parser.parse_expr(problem)
+
+    parsed_items = []
+    for item in items:
+        if item['type'] == 'FuncDef':
+            parsed_items.append(parse_func_def(item))
+        else:
+            raise NotImplementedError
+    st = State(name, goal)
+    for item in parsed_items:
+        st.add_item()
+    return st

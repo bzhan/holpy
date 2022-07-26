@@ -14,6 +14,7 @@ import integral
 from logic import basic
 from integral import slagle
 from integral import proof
+from integral import compstate
 from app.app import app
 
 basic.load_theory('interval_arith')
@@ -754,3 +755,11 @@ def integral_lhopital():
         "location": data["location"],
         "reason": "Eliminate infinity"
     })
+
+@app.route("/api/add-function-definition", methods=['POST'])
+def add_function_definition():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    eq = integral.parser.parse_expr(data['eq'])
+    st.add_item(compstate.FuncDef(eq))
+    return jsonify(st.export())

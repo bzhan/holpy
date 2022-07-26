@@ -15,6 +15,10 @@
           <b-dropdown-item href="#" v-on:click='restore'>Restore</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='save'>Save</b-dropdown-item>
         </b-nav-item-dropdown>
+        <b-nav-item-dropdown text="Proof" left>
+          <b-dropdown-item href="#" v-on:click="restartProof">Restart</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="addFuncDef">Add definition</b-dropdown-item>
+        </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='superSimplify'>Simplification</b-dropdown-item>          
@@ -205,6 +209,12 @@
           <span class="calc-reason" v-else>{{step.reason}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </div>
       </div>
+      <div v-if="r_query_mode === 'add definition'">
+        <span class="math-text">Add function definition:</span><br/>
+        <input v-model="funcdef"><br/>
+        <MathEquation v-bind:data="'\\(' + funcdef + '\\)'"/><br/>
+        <button v-on:click="doAddFuncDef">OK</button>
+      </div>
     </div>
     <div id="select">
       <div v-if="display_integral === 'separate'">
@@ -353,6 +363,8 @@ export default {
 
       proof_term: undefined, // store the proof terms for each step
       show_proof_mode: undefined, // indicate whether show proof
+
+      funcdef: undefined,
     }
   },
 
@@ -467,6 +479,29 @@ export default {
         const response = await axios.post("http://127.0.0.1:5000/api/integral-initialize", JSON.stringify(data))
         this.cur_calc = [response.data]
         this.query_mode = undefined
+    },
+
+    // Restart proof, delete all steps
+    restartProof: function () {
+      this.cur_items = []
+    },
+
+    // Add function definition
+    addFuncDef: function () {
+      this.r_query_mode = 'add definition'
+    },
+
+    // Perform add function definition
+    doAddFuncDef: async function () {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        eq: this.funcdef
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/add-function-definition", JSON.stringify(data))
+      this.cur_items = response.data.items
+      this.r_query_mode = undefined
     },
 
     // Retrieve the stored calculation
