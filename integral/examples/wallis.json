@@ -202,8 +202,8 @@
                                 "lhs_calc": {
                                     "steps": [
                                         {
-                                            "latex_res": "\\frac{\\frac{d}{db} I(m,b)}{-(m + 1)}",
-                                            "res": "(D b. I(m,b)) / -(m + 1)",
+                                            "latex_res": "\\frac{1}{-(m + 1)} (\\frac{d}{db} I(m,b))",
+                                            "res": "(1 / -(m + 1)) * (D b. I(m,b))",
                                             "rule": {
                                                 "eq": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
                                                 "name": "ApplyEquation",
@@ -212,23 +212,23 @@
                                             "type": "CalculationStep"
                                         },
                                         {
-                                            "latex_res": "\\frac{\\frac{d}{db} \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})}{-(m + 1)}",
-                                            "res": "(D b. (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))) / -(m + 1)",
+                                            "latex_res": "\\frac{1}{-(m + 1)} (\\frac{d}{db} \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}}))",
+                                            "res": "(1 / -(m + 1)) * (D b. (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2)))",
                                             "rule": {
                                                 "eq": "I(m,b) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
-                                                "loc": "0.0",
+                                                "loc": "1.0",
                                                 "name": "ApplyEquation",
-                                                "str": "apply equation at 0.0"
+                                                "str": "apply equation at 1.0"
                                             },
                                             "type": "CalculationStep"
                                         },
                                         {
-                                            "latex_res": "\\frac{-\\pi m \\binom{2 m}{m} b ^ {-3/2 + -m} (2 ^ {1 + 2 m}) ^ {-1} + -\\frac{1}{2} \\pi \\binom{2 m}{m} b ^ {-3/2 + -m} (2 ^ {1 + 2 m}) ^ {-1}}{-(m + 1)}",
-                                            "res": "(-pi * m * binom(2 * m,m) * b ^ (-3/2 + -m) * 2 ^ (1 + 2 * m) ^ -1 + -1/2 * pi * binom(2 * m,m) * b ^ (-3/2 + -m) * 2 ^ (1 + 2 * m) ^ -1) / -(m + 1)",
+                                            "latex_res": "\\frac{1}{-(m + 1)} (-\\pi m \\binom{2 m}{m} b ^ {-3/2 + -m} (2 ^ {1 + 2 m}) ^ {-1} + -\\frac{1}{2} \\pi \\binom{2 m}{m} b ^ {-3/2 + -m} (2 ^ {1 + 2 m}) ^ {-1})",
+                                            "res": "(1 / -(m + 1)) * (-pi * m * binom(2 * m,m) * b ^ (-3/2 + -m) * 2 ^ (1 + 2 * m) ^ -1 + -1/2 * pi * binom(2 * m,m) * b ^ (-3/2 + -m) * 2 ^ (1 + 2 * m) ^ -1)",
                                             "rule": {
-                                                "loc": "0",
+                                                "loc": "1",
                                                 "name": "DerivativeSimplify",
-                                                "str": "simplify derivative at 0"
+                                                "str": "simplify derivative at 1"
                                             },
                                             "type": "CalculationStep"
                                         },

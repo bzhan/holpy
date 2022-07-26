@@ -568,8 +568,8 @@ class RulesTest(unittest.TestCase):
         # Induction case, LHS
         calc = proof_induct.lhs_calc
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("IH"), "0.0"))
-        calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), "0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("IH"), "1.0"))
+        calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), "1"))
         calc.perform_rule(rules.FullSimplify())
 
         # Induction step, RHS

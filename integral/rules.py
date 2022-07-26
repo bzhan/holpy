@@ -410,7 +410,7 @@ class ApplyEquation(Rule):
             return self.eqeq.lhs
         elif self.eq.rhs.is_times() and self.eq.rhs.args[1] == e:
             # e' = f * e
-            return self.eq.lhs / self.eq.rhs.args[0]
+            return 1 / self.eq.rhs.args[0] * self.eq.lhs
         else:
             return e
 
