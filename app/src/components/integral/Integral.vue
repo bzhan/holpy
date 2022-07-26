@@ -1056,6 +1056,7 @@ export default {
   overflow-y: scroll;
   padding-left: 10px;
   padding-top: 5px;
+  font-size: large;
 }
 
 #calc {
@@ -1080,6 +1081,7 @@ export default {
   overflow-y: scroll;
   padding-left: 10px;
   padding-top: 10px;
+  font-size: 20px;
 }
 
 #dialog {

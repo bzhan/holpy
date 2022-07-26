@@ -8,7 +8,6 @@
     <CalculationProof v-bind:item="item.base_case"/>
     <span class="keyword">Induction case</span><br>
     <CalculationProof v-bind:item="item.induct_case"/>
-    <MathEquation/>
   </div>
 </template>
 

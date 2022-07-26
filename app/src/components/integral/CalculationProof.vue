@@ -7,7 +7,6 @@
     <Calculation v-bind:steps="item.lhs_calc.steps"/>
     <span class="keyword">RHS</span><br>
     <Calculation v-bind:steps="item.rhs_calc.steps"/>
-    <MathEquation/>
   </div>
 </template>
 
@@ -22,7 +21,7 @@ export default {
     Calculation,
   },
 
-props: [
+  props: [
     "item"
   ]
 }
