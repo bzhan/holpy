@@ -794,3 +794,14 @@ def proof_by_calculation():
     label = data['selected_item']
     st.get_by_label(label).proof_by_calculation()
     return jsonify(st.export())
+
+@app.route("/api/proof-by-induction", methods=["POST"])
+def proof_by_induction():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    label = data['selected_item']
+    induct_var = data['induct_var']
+    proof = st.get_by_label(label).proof_by_induction(induct_var)
+    proof.base_case.proof_by_calculation()
+    proof.induct_case.proof_by_calculation()
+    return jsonify(st.export())

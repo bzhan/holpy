@@ -20,6 +20,7 @@
           <b-dropdown-item href="#" v-on:click="addFuncDef">Add definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addGoal">Add goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByCalculation">Proof by calculation</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="proofByInduction">Proof by induction</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
@@ -227,6 +228,11 @@
         <MathEquation v-bind:data="'\\(' + latex_query_field1 + '\\)'"/><br/>
         <button v-on:click="doAddGoal">OK</button>
       </div>
+      <div v-if="r_query_mode === 'apply induction'">
+        <span class="math-text">Please specify induction variable</span><br/>
+        <input v-model="induct_var">
+        <button v-on:click="doApplyInduction">OK</button>
+      </div>
     </div>
     <div id="select">
       <div v-if="display_integral === 'separate'">
@@ -378,6 +384,9 @@ export default {
 
       query_field1: undefined,
       latex_query_field1: undefined,
+
+      // Induction variable
+      induct_var: undefined,
     }
   },
 
@@ -563,6 +572,24 @@ export default {
         selected_item: this.selected_item
       }
       const response = await axios.post("http://127.0.0.1:5000/api/proof-by-calculation", JSON.stringify(data))
+      this.cur_items = response.data.items
+    },
+
+    // Proof by induction
+    proofByInduction: function() {
+      this.r_query_mode = 'apply induction'
+    },
+
+    // Perform proof by induction
+    doApplyInduction: async function() {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        selected_item: this.selected_item,
+        induct_var: this.induct_var
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/proof-by-induction", JSON.stringify(data))
       this.cur_items = response.data.items
     },
 

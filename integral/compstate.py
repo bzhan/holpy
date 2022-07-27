@@ -315,7 +315,7 @@ class State:
             return self.items[label[0]].get_by_label(label[1:])
 
 
-def parse_item(item):
+def parse_item(item) -> StateItem:
     if item['type'] == 'FuncDef':
         eq = parser.parse_expr(item['eq'])
         return FuncDef(eq)
@@ -336,6 +336,13 @@ def parse_item(item):
         res = Calculation(start)
         for step in item['steps']:
             res.add_step(parse_item(step))
+        return res
+    elif item['type'] == 'InductionProof':
+        goal = parser.parse_expr(item['goal'])
+        induct_var = item['induct_var']
+        res = InductionProof(goal, induct_var)
+        res.base_case = parse_item(item['base_case'])
+        res.induct_case = parse_item(item['induct_case'])
         return res
     else:
         raise NotImplementedError
