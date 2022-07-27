@@ -218,16 +218,15 @@
           <span class="calc-reason" v-else>{{step.reason}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </div>
       </div>
+      <!-- Newly added -->
       <div v-if="r_query_mode === 'add definition'">
         <span class="math-text">Add function definition:</span><br/>
-        <input v-model="query_field1" style="width:500px"><br/>
-        <MathEquation v-bind:data="'\\(' + latex_query_field1 + '\\)'"/><br/>
+        <ExprQuery v-model="expr_query1"/><br/>
         <button v-on:click="doAddFuncDef">OK</button>
       </div>
       <div v-if="r_query_mode === 'add goal'">
         <span class="math-text">Add goal:</span><br/>
-        <input v-model="query_field1" style="width:500px"><br/>
-        <MathEquation v-bind:data="'\\(' + latex_query_field1 + '\\)'"/><br/>
+        <ExprQuery v-model="expr_query1"/><br/>
         <button v-on:click="doAddGoal">OK</button>
       </div>
       <div v-if="r_query_mode === 'apply induction'">
@@ -310,6 +309,7 @@
 import axios from 'axios'
 import MathEquation from '../util/MathEquation'
 import FuncDef from './FuncDef'
+import ExprQuery from './ExprQuery'
 import Goal from "./Goal"
 
 export default {
@@ -318,6 +318,7 @@ export default {
     MathEquation,
     FuncDef,
     Goal,
+    ExprQuery,
   },
 
   props: [
@@ -381,28 +382,13 @@ export default {
       // Selected goal
       selected_item: undefined,
 
-      query_field1: undefined,
-      latex_query_field1: undefined,
+      expr_query1: undefined,
 
       // Induction variable
       induct_var: undefined,
 
       // Selected fact
       selected_facts: {},
-    }
-  },
-
-  watch: {
-    query_field1: async function(val) {
-      const data = {
-        expr: val
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-expr", JSON.stringify(data))
-      if (response.data.status === 'ok') {
-        this.latex_query_field1 = response.data.latex_expr
-      } else {
-        this.latex_query_field1 = undefined
-      }
     }
   },
 
@@ -551,13 +537,13 @@ export default {
         name: this.content[this.cur_id].name,
         problem: this.content[this.cur_id].problem,
         items: this.cur_items,
-        eq: this.query_field1
+        eq: this.expr_query1
       }
       const response = await axios.post("http://127.0.0.1:5000/api/add-function-definition", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.cur_items = response.data.state.items
         this.r_query_mode = undefined
-        this.query_field1 = ''
+        this.expr_query1 = ''
       }
     },
 
@@ -572,14 +558,14 @@ export default {
         name: this.content[this.cur_id].name,
         problem: this.content[this.cur_id].problem,
         items: this.cur_items,
-        goal: this.query_field1
+        goal: this.expr_query1
       }
       const response = await axios.post("http://127.0.0.1:5000/api/add-goal", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.cur_items = response.data.state.items
         this.selected_item = response.data.selected_item
         this.r_query_mode = undefined
-        this.query_field1 = ''
+        this.expr_query1 = ''
       }
     },
 
