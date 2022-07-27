@@ -4,11 +4,13 @@
     <div>
       <span class="math-text">Show</span><br/>
       <MathEquation v-bind:data="'\\(' + item.latex_goal + '\\)'" class="indented-text"/>
-      <div v-if="item.proof.type === 'CalculationProof'">
-        <CalculationProof v-bind:item="item.proof" v-bind:label="label"/>
-      </div>
-      <div v-if="item.proof.type === 'InductionProof'">
-        <InductionProof v-bind:item="item.proof" v-bind:label="label"/>
+      <div v-if="'proof' in item">
+        <div v-if="item.proof.type === 'CalculationProof'">
+          <CalculationProof v-bind:item="item.proof" v-bind:label="label"/>
+        </div>
+        <div v-if="item.proof.type === 'InductionProof'">
+          <InductionProof v-bind:item="item.proof" v-bind:label="label"/>
+        </div>
       </div>
     </div>
   </div>

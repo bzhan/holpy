@@ -18,6 +18,7 @@
         <b-nav-item-dropdown text="Proof" left>
           <b-dropdown-item href="#" v-on:click="restartProof">Restart</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addFuncDef">Add definition</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="addGoal">Add goal</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
@@ -211,9 +212,15 @@
       </div>
       <div v-if="r_query_mode === 'add definition'">
         <span class="math-text">Add function definition:</span><br/>
-        <input v-model="funcdef" style="width:500px" @change="funcdefChange()"><br/>
-        <MathEquation v-bind:data="'\\(' + latex_funcdef + '\\)'"/><br/>
+        <input v-model="query_field1" style="width:500px" @change="queryFieldChange1()"><br/>
+        <MathEquation v-bind:data="'\\(' + latex_query_field1 + '\\)'"/><br/>
         <button v-on:click="doAddFuncDef">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'add goal'">
+        <span class="math-text">Add goal:</span><br/>
+        <input v-model="query_field1" style="width:500px" @change="queryFieldChange1()"><br/>
+        <MathEquation v-bind:data="'\\(' + latex_query_field1 + '\\)'"/><br/>
+        <button v-on:click="doAddGoal">OK</button>
       </div>
     </div>
     <div id="select">
@@ -307,8 +314,6 @@ export default {
   props: [
   ],
 
-
-
   data: function () {
     return {
       filename: 'tongji7',    // Currently opened file
@@ -364,8 +369,8 @@ export default {
       proof_term: undefined, // store the proof terms for each step
       show_proof_mode: undefined, // indicate whether show proof
 
-      funcdef: undefined,
-      latex_funcdef: undefined,
+      query_field1: undefined,
+      latex_query_field1: undefined,
     }
   },
 
@@ -482,15 +487,15 @@ export default {
         this.query_mode = undefined
     },
 
-    funcdefChange: async function () {
+    queryFieldChange1: async function () {
       const data = {
-        expr: this.funcdef
+        expr: this.query_field1
       }
       const response = await axios.post("http://127.0.0.1:5000/api/query-expr", JSON.stringify(data))
       if (response.data.status === 'ok') {
-        this.latex_funcdef = response.data.latex_expr
+        this.latex_query_field1 = response.data.latex_expr
       } else {
-        this.latex_funcdef = undefined
+        this.latex_query_field1 = undefined
       }
     },
 
@@ -510,11 +515,31 @@ export default {
         name: this.content[this.cur_id].name,
         problem: this.content[this.cur_id].problem,
         items: this.cur_items,
-        eq: this.funcdef
+        eq: this.query_field1
       }
       const response = await axios.post("http://127.0.0.1:5000/api/add-function-definition", JSON.stringify(data))
       this.cur_items = response.data.items
       this.r_query_mode = undefined
+      this.query_field1 = ''
+    },
+
+    // Add goal
+    addGoal: function() {
+      this.r_query_mode = 'add goal'
+    },
+
+    // Perform add goal
+    doAddGoal: async function () {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        goal: this.query_field1
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/add-goal", JSON.stringify(data))
+      this.cur_items = response.data.items
+      this.r_query_mode = undefined
+      this.query_field1 = ''
     },
 
     // Retrieve the stored calculation

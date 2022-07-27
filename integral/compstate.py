@@ -65,12 +65,14 @@ class Goal(StateItem):
         return res
 
     def export(self):
-        return {
+        res = {
             "type": "Goal",
             "goal": str(self.goal),
             "latex_goal": latex.convert_expr(self.goal),
-            "proof": self.proof.export()
         }
+        if self.proof:
+            res['proof'] = self.proof.export()
+        return res
 
     def proof_by_calculation(self):
         self.proof = CalculationProof(self.goal, conds=self.conds)
@@ -282,5 +284,5 @@ def parse_state(name: str, problem: str, items) -> State:
             raise NotImplementedError
     st = State(name, goal)
     for item in parsed_items:
-        st.add_item()
+        st.add_item(item)
     return st
