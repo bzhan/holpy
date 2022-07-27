@@ -1638,7 +1638,7 @@ class ExpandDefinition(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         if not (e.is_fun() and e.func_name == self.func_def.lhs.func_name):
-            raise AssertionError("ExpandDefinition: wrong form for t.")
+            return e
 
         body = self.func_def.rhs
         for arg, val in zip(self.func_def.lhs.args, e.args):

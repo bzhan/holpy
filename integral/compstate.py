@@ -20,8 +20,12 @@ class StateItem:
         raise NotImplementedError
 
     def get_by_label(self, label) -> "StateItem":
-        """Return the object at the given label"""
+        """Return the object at the given label."""
         raise NotImplementedError
+
+    def get_facts(self):
+        """Return the list of facts in this item."""
+        return []
 
 
 class FuncDef(StateItem):
@@ -55,6 +59,9 @@ class FuncDef(StateItem):
         if len(label) > 0:
             raise AssertionError("get_by_item: invalid label")
         return self
+
+    def get_facts(self):
+        return [self.eq]
 
 
 class Goal(StateItem):
@@ -95,6 +102,9 @@ class Goal(StateItem):
             return self
         else:
             return self.proof.get_by_label(label)
+
+    def get_facts(self):
+        return [self.goal]
 
 
 class CalculationStep(StateItem):
@@ -162,6 +172,11 @@ class Calculation(StateItem):
         new_e = rule.eval(e, conds=self.conds)
         self.add_step(CalculationStep(rule, new_e))
 
+    def get_by_label(self, label) -> "StateItem":
+        if len(label) == 0:
+            return self
+        else:
+            raise NotImplementedError
 
 class CalculationProof(StateItem):
     """Proof for an equation by calculation.

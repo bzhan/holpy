@@ -805,3 +805,17 @@ def proof_by_induction():
     proof.base_case.proof_by_calculation()
     proof.induct_case.proof_by_calculation()
     return jsonify(st.export())
+
+@app.route("/api/expand-definition", methods=["POST"])
+def expand_definition():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    label = data['selected_item']
+    facts = data['selected_facts']
+    func_defs = []
+    for fact in facts:
+        func_defs.extend(st.get_by_label(fact).get_facts())
+    assert len(func_defs) == 1, "expand_definition: unexpected number of definitions"
+    st.get_by_label(label).perform_rule(
+        integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_defs[0])))
+    return jsonify(st.export())

@@ -3,8 +3,10 @@
     <span class="math-text">{{label}}.</span>&nbsp;
     <div>
       <span class="math-text">Show</span>
-      <div @click="$emit('select', label)"
-           :class="{selected: selected_item == label}">
+      <div @click.exact="$emit('select', label)"
+           @click.ctrl="$emit('select_fact', label)"
+           :class="{selected: selected_item == label,
+                    'selected-fact': label in selected_facts}">
         <MathEquation v-bind:data="'\\(' + item.latex_goal + '\\)'" class="indented-text"/>
       </div>
       <div v-if="'proof' in item">
@@ -40,10 +42,12 @@ export default {
     "item",
     "label",
     "selected_item",
+    "selected_facts",
   ],
 
   emits: [
-    "select"
+    "select",
+    "select_fact"
   ],
 }
 

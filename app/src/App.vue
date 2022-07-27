@@ -84,4 +84,8 @@ textarea.form-element {
   background-color: lightgray;
 }
 
+.selected-fact {
+  background-color: yellow;
+}
+
 </style>

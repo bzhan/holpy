@@ -21,6 +21,7 @@
           <b-dropdown-item href="#" v-on:click="addGoal">Add goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByCalculation">Proof by calculation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByInduction">Proof by induction</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
@@ -75,18 +76,16 @@
         <div v-if="item.type === 'FuncDef'">
           <FuncDef v-bind:item="item" v-bind:label="(index+1).toString()"
             @select="selectItem"
-            v-bind:selected_item="selected_item"/>
+            @select_fact="selectFact"
+            v-bind:selected_item="selected_item"
+            v-bind:selected_facts="selected_facts"/>
         </div>
         <div v-if="item.type === 'Goal'">
           <Goal v-bind:item="item" v-bind:label="(index+1).toString()"
             @select="selectItem"
-            v-bind:selected_item="selected_item"/>
-        </div>
-        <div v-if="item.type === 'CalculationProof'">
-          <CalculationProof v-bind:item="item" v-bind:label="(index+1).toString()"/>
-        </div>
-        <div v-if="item.type === 'InductionProof'">
-          <InductionProof v-bind:item="item" v-bind:label="(index+1).toString()"/>
+            @select_fact="selectFact"
+            v-bind:selected_item="selected_item"
+            v-bind:selected_facts="selected_facts"/>
         </div>
       </div>
     </div>
@@ -309,8 +308,6 @@ import axios from 'axios'
 import MathEquation from '../util/MathEquation'
 import FuncDef from './FuncDef'
 import Goal from "./Goal"
-import CalculationProof from "./CalculationProof"
-import InductionProof from "./InductionProof"
 
 export default {
   name: 'Integral',
@@ -318,8 +315,6 @@ export default {
     MathEquation,
     FuncDef,
     Goal,
-    CalculationProof,
-    InductionProof,
   },
 
   props: [
@@ -380,6 +375,7 @@ export default {
       proof_term: undefined, // store the proof terms for each step
       show_proof_mode: undefined, // indicate whether show proof
 
+      // Selected goal
       selected_item: undefined,
 
       query_field1: undefined,
@@ -387,6 +383,9 @@ export default {
 
       // Induction variable
       induct_var: undefined,
+
+      // Selected fact
+      selected_facts: {},
     }
   },
 
@@ -492,9 +491,20 @@ export default {
       this.r_query_mode = undefined
     },
 
+    // Select an item
     selectItem: function(item_id) {
-      console.log(item_id)
+      console.log('selectItem', item_id)
       this.selected_item = item_id
+    },
+
+    // Select a fact
+    selectFact: function(item_id) {
+      console.log('selectFact', item_id)
+      if (item_id in this.selected_facts) {
+        this.$delete(this.selected_facts, item_id)
+      } else {
+        this.$set(this.selected_facts, item_id, true)
+      }
     },
 
     // Restart calculation, delete all steps
@@ -590,6 +600,19 @@ export default {
         induct_var: this.induct_var
       }
       const response = await axios.post("http://127.0.0.1:5000/api/proof-by-induction", JSON.stringify(data))
+      this.cur_items = response.data.items
+    },
+
+    // Expand definition
+    expandDefinition: async function() {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        selected_item: this.selected_item,
+        selected_facts: this.selected_facts
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/expand-definition", JSON.stringify(data))
       this.cur_items = response.data.items
     },
 
