@@ -220,13 +220,13 @@
       </div>
       <div v-if="r_query_mode === 'add definition'">
         <span class="math-text">Add function definition:</span><br/>
-        <input v-model="query_field1" style="width:500px" @change="queryFieldChange1()"><br/>
+        <input v-model="query_field1" style="width:500px"><br/>
         <MathEquation v-bind:data="'\\(' + latex_query_field1 + '\\)'"/><br/>
         <button v-on:click="doAddFuncDef">OK</button>
       </div>
       <div v-if="r_query_mode === 'add goal'">
         <span class="math-text">Add goal:</span><br/>
-        <input v-model="query_field1" style="width:500px" @change="queryFieldChange1()"><br/>
+        <input v-model="query_field1" style="width:500px"><br/>
         <MathEquation v-bind:data="'\\(' + latex_query_field1 + '\\)'"/><br/>
         <button v-on:click="doAddGoal">OK</button>
       </div>
@@ -392,6 +392,20 @@ export default {
     }
   },
 
+  watch: {
+    query_field1: async function(val) {
+      const data = {
+        expr: val
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-expr", JSON.stringify(data))
+      if (response.data.status === 'ok') {
+        this.latex_query_field1 = response.data.latex_expr
+      } else {
+        this.latex_query_field1 = undefined
+      }
+    }
+  },
+
   methods: {
 
     load_file_list: async function (){
@@ -519,18 +533,6 @@ export default {
         const response = await axios.post("http://127.0.0.1:5000/api/integral-initialize", JSON.stringify(data))
         this.cur_calc = [response.data]
         this.query_mode = undefined
-    },
-
-    queryFieldChange1: async function() {
-      const data = {
-        expr: this.query_field1
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-expr", JSON.stringify(data))
-      if (response.data.status === 'ok') {
-        this.latex_query_field1 = response.data.latex_expr
-      } else {
-        this.latex_query_field1 = undefined
-      }
     },
 
     // Restart proof, delete all steps

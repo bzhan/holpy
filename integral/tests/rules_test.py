@@ -535,48 +535,43 @@ class RulesTest(unittest.TestCase):
         # Prove the following equality
         Eq1 = compstate.Goal(parser.parse_expr("(D b. I(m,b)) = -(m+1) * I(m+1, b)"), conds=conds)
         st.add_item(Eq1)
-        proof = Eq1.proof_by_calculation()
+        proof = st.get_by_label("2").proof_by_calculation()
 
-        calc = proof.lhs_calc
-        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), "0"))
-        calc.perform_rule(rules.DerivIntExchange())
-        calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), "0"))
-        calc.perform_rule(rules.FullSimplify())
-
-        calc = proof.rhs_calc
-        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), "1"))
-        calc.perform_rule(rules.FullSimplify())
+        # st.get_by_label("2.1").perform_rule(rules.OnSubterm(rules.ExpandDefinition(st.get_by_label("1").get_facts()[0])))
+        # st.get_by_label("2.1.1").perform_rule(rules.DerivIntExchange())
+        # st.get_by_label("2.1.2").perform_rule(rules.FullSimplify())
+        # st.get_by_label("2.2").perform_rule(rules.OnSubterm(rules.ExpandDefinition(st.get_by_label("1").get_facts()[0])))
+        # st.get_by_label("2.2.1").perform_rule(rules.FullSimplify())
 
         # Prove the following by induction
         Eq2 = compstate.Goal(parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"), conds=conds)
         st.add_item(Eq2)
-        proof = Eq2.proof_by_induction("m")
+        proof = st.get_by_label("3").proof_by_induction("m")
         proof_base = proof.base_case.proof_by_calculation()
         proof_induct = proof.induct_case.proof_by_calculation()
 
         # Base case
-        calc = proof_base.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
-        calc.perform_rule(rules.ElimInfInterval())
-        calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse("u", parser.parse_expr("sqrt(b) * u")), "0"))
-        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
-        calc.perform_rule(rules.OnLocation(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1")), "0.1.0"))
-        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
-        calc.perform_rule(rules.LimitSimplify())
-        calc.perform_rule(rules.FullSimplify())
+        st.get_by_label("3.1.1").perform_rule(rules.OnSubterm(rules.ExpandDefinition(st.get_by_label("1").get_facts()[0])))
+        st.get_by_label("3.1.1.1").perform_rule(rules.ElimInfInterval())
+        # calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse("u", parser.parse_expr("sqrt(b) * u")), "0"))
+        # calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
+        # calc.perform_rule(rules.OnLocation(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1")), "0.1.0"))
+        # calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
+        # calc.perform_rule(rules.LimitSimplify())
+        # calc.perform_rule(rules.FullSimplify())
 
-        # Induction case, LHS
-        calc = proof_induct.lhs_calc
-        calc.perform_rule(rules.ApplyEquation(Eq1.goal))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("IH"), "1.0"))
-        calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), "1"))
-        calc.perform_rule(rules.FullSimplify())
+        # # Induction case, LHS
+        # calc = proof_induct.lhs_calc
+        # calc.perform_rule(rules.ApplyEquation(Eq1.goal))
+        # calc.perform_rule(rules.OnLocation(rules.ApplyEquation("IH"), "1.0"))
+        # calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), "1"))
+        # calc.perform_rule(rules.FullSimplify())
 
-        # Induction step, RHS
-        calc = proof_induct.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
-        calc.perform_rule(rules.FullSimplify())
+        # # Induction step, RHS
+        # calc = proof_induct.rhs_calc
+        # calc.perform_rule(rules.FullSimplify())
+        # calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
+        # calc.perform_rule(rules.FullSimplify())
 
         file_content = {
             "content": [st.export()]
