@@ -80,4 +80,8 @@ textarea.form-element {
   margin-left: 10px;
 }
 
+.selected {
+  background-color: lightgray;
+}
+
 </style>

@@ -2,8 +2,11 @@
   <div class="indented-label">
     <span class="math-text">{{label}}.</span>&nbsp;
     <div>
-      <span class="math-text">Introduce definition</span><br/>
-      <MathEquation v-bind:data="'\\(' + item.latex_eq + '\\)'" class="indented-text"/>
+      <span class="math-text">Introduce definition</span>
+      <div @click="$emit('select', label)"
+           :class="{selected: selected_item === label}">
+        <MathEquation v-bind:data="'\\(' + item.latex_eq + '\\)'" class="indented-text"/>
+      </div>
     </div>
   </div>
 </template>
@@ -19,8 +22,13 @@ export default {
 
   props: [
     "item",
-    "label"
-  ]
+    "label",
+    "selected_item",
+  ],
+
+  emits: [
+    "select"
+  ],
 }
 
 </script>

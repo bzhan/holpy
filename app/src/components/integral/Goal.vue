@@ -2,8 +2,11 @@
   <div class="indented-label">
     <span class="math-text">{{label}}.</span>&nbsp;
     <div>
-      <span class="math-text">Show</span><br/>
-      <MathEquation v-bind:data="'\\(' + item.latex_goal + '\\)'" class="indented-text"/>
+      <span class="math-text">Show</span>
+      <div @click="$emit('select', label)"
+           :class="{selected: selected_item == label}">
+        <MathEquation v-bind:data="'\\(' + item.latex_goal + '\\)'" class="indented-text"/>
+      </div>
       <div v-if="'proof' in item">
         <div v-if="item.proof.type === 'CalculationProof'">
           <CalculationProof v-bind:item="item.proof" v-bind:label="label"/>
@@ -31,8 +34,13 @@ export default {
 
   props: [
     "item",
-    "label"
-  ]
+    "label",
+    "selected_item",
+  ],
+
+  emits: [
+    "select"
+  ],
 }
 
 </script>

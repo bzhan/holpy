@@ -15,11 +15,14 @@ from integral import parser
 
 class StateItem:
     """Items in a state of computation"""
-    pass
+    def export(self):
+        """Obtain the JSON representation of the item."""
+        raise NotImplementedError
 
-class StateRule:
-    """A rule that modifies state of computation"""
-    pass
+    def get_by_label(self, label) -> "StateItem":
+        """Return the object at the given label"""
+        raise NotImplementedError
+
 
 class FuncDef(StateItem):
     """Introduce a new function definition."""
@@ -47,6 +50,11 @@ class FuncDef(StateItem):
             "latex_lhs": latex.convert_expr(self.eq.lhs),
             "latex_eq": latex.convert_expr(self.eq)
         }
+
+    def get_by_label(self, label):
+        if len(label) > 0:
+            raise AssertionError("get_by_item: invalid label")
+        return self
 
 
 class Goal(StateItem):
@@ -81,6 +89,12 @@ class Goal(StateItem):
     def proof_by_induction(self, induct_var: str):
         self.proof = InductionProof(self.goal, induct_var, conds=self.conds)
         return self.proof
+
+    def get_by_label(self, label):
+        if len(label) == 0:
+            return self
+        else:
+            return self.proof.get_by_label(label)
 
 
 class CalculationStep(StateItem):
@@ -187,6 +201,16 @@ class CalculationProof(StateItem):
             "rhs_calc": self.rhs_calc.export()
         }
 
+    def get_by_label(self, label):
+        if len(label) == 0:
+            return self
+        elif label[0] == 0:
+            return self.lhs_calc.get_by_label(label[1:])
+        elif label[0] == 1:
+            return self.rhs_calc.get_by_label(label[1:])
+        else:
+            raise AssertionError("get_by_label: invalid label")
+
 
 class InductionProof(StateItem):
     """Proof for an equation by induction on natural numbers.
@@ -233,6 +257,16 @@ class InductionProof(StateItem):
             "induct_case": self.induct_case.export()
         }
 
+    def get_by_label(self, label):
+        if len(label) == 0:
+            return self
+        elif label[0] == 0:
+            return self.base_case.get_by_label(label[1:])
+        elif label[0] == 1:
+            return self.induct_case.get_by_label(label[1:])
+        else:
+            raise AssertionError("get_by_label: invalid label")
+
 
 class State:
     """Represents the global state of the proof."""
@@ -269,9 +303,23 @@ class State:
         if isinstance(item, FuncDef):
             self.func_map[item.symb] = item
 
+    def get_by_label(self, label):
+        """Return an item corresponding to a label"""
+        if isinstance(label, str):
+            label = list(int(n) - 1 for n in label.split("."))
+        if len(label) == 0:
+            return self
+        else:
+            return self.items[label[0]].get_by_label(label[1:])
+
+
 def parse_func_def(item) -> FuncDef:
     eq = parser.parse_expr(item['eq'])
     return FuncDef(eq)
+
+def parse_goal(item) -> Goal:
+    goal = parser.parse_expr(item['goal'])
+    return Goal(goal)
 
 def parse_state(name: str, problem: str, items) -> State:
     goal = parser.parse_expr(problem)
@@ -280,6 +328,8 @@ def parse_state(name: str, problem: str, items) -> State:
     for item in items:
         if item['type'] == 'FuncDef':
             parsed_items.append(parse_func_def(item))
+        elif item['type'] == 'Goal':
+            parsed_items.append(parse_goal(item))
         else:
             raise NotImplementedError
     st = State(name, goal)

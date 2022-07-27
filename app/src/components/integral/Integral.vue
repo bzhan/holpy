@@ -19,6 +19,7 @@
           <b-dropdown-item href="#" v-on:click="restartProof">Restart</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addFuncDef">Add definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addGoal">Add goal</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="proofByCalculation">Proof by calculation</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
@@ -71,10 +72,14 @@
       </div>
       <div v-for="(item, index) in cur_items" :key="index">
         <div v-if="item.type === 'FuncDef'">
-          <FuncDef v-bind:item="item" v-bind:label="(index+1).toString()"/>
+          <FuncDef v-bind:item="item" v-bind:label="(index+1).toString()"
+            @select="selectItem"
+            v-bind:selected_item="selected_item"/>
         </div>
         <div v-if="item.type === 'Goal'">
-          <Goal v-bind:item="item" v-bind:label="(index+1).toString()"/>
+          <Goal v-bind:item="item" v-bind:label="(index+1).toString()"
+            @select="selectItem"
+            v-bind:selected_item="selected_item"/>
         </div>
         <div v-if="item.type === 'CalculationProof'">
           <CalculationProof v-bind:item="item" v-bind:label="(index+1).toString()"/>
@@ -369,6 +374,8 @@ export default {
       proof_term: undefined, // store the proof terms for each step
       show_proof_mode: undefined, // indicate whether show proof
 
+      selected_item: undefined,
+
       query_field1: undefined,
       latex_query_field1: undefined,
     }
@@ -476,8 +483,13 @@ export default {
       this.r_query_mode = undefined
     },
 
+    selectItem: function(item_id) {
+      console.log(item_id)
+      this.selected_item = item_id
+    },
+
     // Restart calculation, delete all steps
-    restart: async function () {
+    restart: async function() {
         this.clear_separate_integral()
         const data = {
           problem: this.content[this.cur_id].problem
@@ -487,7 +499,7 @@ export default {
         this.query_mode = undefined
     },
 
-    queryFieldChange1: async function () {
+    queryFieldChange1: async function() {
       const data = {
         expr: this.query_field1
       }
@@ -500,17 +512,17 @@ export default {
     },
 
     // Restart proof, delete all steps
-    restartProof: function () {
+    restartProof: function() {
       this.cur_items = []
     },
 
     // Add function definition
-    addFuncDef: function () {
+    addFuncDef: function() {
       this.r_query_mode = 'add definition'
     },
 
     // Perform add function definition
-    doAddFuncDef: async function () {
+    doAddFuncDef: async function() {
       const data = {
         name: this.content[this.cur_id].name,
         problem: this.content[this.cur_id].problem,
@@ -529,7 +541,7 @@ export default {
     },
 
     // Perform add goal
-    doAddGoal: async function () {
+    doAddGoal: async function() {
       const data = {
         name: this.content[this.cur_id].name,
         problem: this.content[this.cur_id].problem,
@@ -540,6 +552,18 @@ export default {
       this.cur_items = response.data.items
       this.r_query_mode = undefined
       this.query_field1 = ''
+    },
+
+    // Perform proof by calculation
+    proofByCalculation: async function() {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        selected_item: this.selected_item
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/proof-by-calculation", JSON.stringify(data))
+      this.cur_items = response.data.items
     },
 
     // Retrieve the stored calculation

@@ -786,3 +786,11 @@ def add_goal():
     goal = integral.parser.parse_expr(data['goal'])
     st.add_item(compstate.Goal(goal))
     return jsonify(st.export())
+
+@app.route("/api/proof-by-calculation", methods=["POST"])
+def proof_by_calculation():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    label = data['selected_item']
+    st.get_by_label(label).proof_by_calculation()
+    return jsonify(st.export())
