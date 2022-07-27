@@ -1,8 +1,9 @@
 """State of computation"""
 
+from ast import Assert
 from copy import copy
 from msilib.schema import Condition
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 from integral.expr import Expr, Eq, Var, Const
 from integral import rules
@@ -11,6 +12,32 @@ from integral.conditions import Conditions
 from integral import conditions
 from integral import latex
 from integral import parser
+
+
+class Label:
+    def __init__(self, data):
+        self.data = []
+        if isinstance(data, str):
+            split = data.split(".")
+            for n in split:
+                assert int(n) >= 1, "Label: non-positive value"
+                self.data.append(int(n) - 1)
+        elif isinstance(data, list):
+            assert all(n >= 0 for n in data), "Label: negative value"
+            self.data = list(data)
+        else:
+            raise AssertionError("Label: unexpected type")
+
+    @property
+    def head(self):
+        return self.data[0]
+
+    @property
+    def tail(self):
+        return Label(self.data[1:])
+
+    def empty(self):
+        return len(self.data) == 0
 
 
 class StateItem:
@@ -55,8 +82,8 @@ class FuncDef(StateItem):
             "latex_eq": latex.convert_expr(self.eq)
         }
 
-    def get_by_label(self, label):
-        if len(label) > 0:
+    def get_by_label(self, label: Label):
+        if not label.empty():
             raise AssertionError("get_by_label: invalid label")
         return self
 
@@ -97,8 +124,8 @@ class Goal(StateItem):
         self.proof = InductionProof(self.goal, induct_var, conds=self.conds)
         return self.proof
 
-    def get_by_label(self, label):
-        if len(label) == 0:
+    def get_by_label(self, label: Label):
+        if label.empty():
             return self
         else:
             return self.proof.get_by_label(label)
@@ -183,11 +210,11 @@ class Calculation(StateItem):
         new_e = rule.eval(e, conds=self.conds)
         self.add_step(CalculationStep(rule, new_e, self, id+1))
 
-    def get_by_label(self, label) -> "StateItem":
-        if len(label) == 0:
+    def get_by_label(self, label: Label) -> "StateItem":
+        if label.empty():
             return self
-        elif len(label) == 1:
-            return self.steps[label[0]]
+        elif label.tail.empty():
+            return self.steps[label.head]
         else:
             raise AssertionError("get_by_label: invalid label")
 
@@ -232,13 +259,13 @@ class CalculationProof(StateItem):
             "rhs_calc": self.rhs_calc.export()
         }
 
-    def get_by_label(self, label):
-        if len(label) == 0:
+    def get_by_label(self, label: Label):
+        if label.empty():
             return self
-        elif label[0] == 0:
-            return self.lhs_calc.get_by_label(label[1:])
-        elif label[0] == 1:
-            return self.rhs_calc.get_by_label(label[1:])
+        elif label.head == 0:
+            return self.lhs_calc.get_by_label(label.tail)
+        elif label.head == 1:
+            return self.rhs_calc.get_by_label(label.tail)
         else:
             raise AssertionError("get_by_label: invalid label")
 
@@ -288,13 +315,13 @@ class InductionProof(StateItem):
             "induct_case": self.induct_case.export()
         }
 
-    def get_by_label(self, label):
-        if len(label) == 0:
+    def get_by_label(self, label: Label):
+        if label.empty():
             return self
-        elif label[0] == 0:
-            return self.base_case.get_by_label(label[1:])
-        elif label[0] == 1:
-            return self.induct_case.get_by_label(label[1:])
+        elif label.head == 0:
+            return self.base_case.get_by_label(label.tail)
+        elif label.head == 1:
+            return self.induct_case.get_by_label(label.tail)
         else:
             raise AssertionError("get_by_label: invalid label")
 
@@ -334,14 +361,14 @@ class State:
         if isinstance(item, FuncDef):
             self.func_map[item.symb] = item
 
-    def get_by_label(self, label):
+    def get_by_label(self, label: Union[str, Label]):
         """Return an item corresponding to a label"""
         if isinstance(label, str):
-            label = list(int(n) - 1 for n in label.split("."))
-        if len(label) == 0:
+            label = Label(label)
+        if label.empty():
             return self
         else:
-            return self.items[label[0]].get_by_label(label[1:])
+            return self.items[label.head].get_by_label(label.tail)
 
 def parse_rule(item) -> Rule:
     if 'loc' in item:
