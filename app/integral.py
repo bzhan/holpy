@@ -776,7 +776,8 @@ def add_function_definition():
     data = json.loads(request.get_data().decode('UTF-8'))
     st = compstate.parse_state(data['name'], data['problem'], data['items'])
     eq = integral.parser.parse_expr(data['eq'])
-    st.add_item(compstate.FuncDef(eq))
+    conds = integral.conditions.Conditions(integral.parser.parse_expr(cond) for cond in data['conds'])
+    st.add_item(compstate.FuncDef(eq, conds=conds))
     return jsonify({
         "status": "ok",
         "state": st.export(),
@@ -787,7 +788,8 @@ def add_goal():
     data = json.loads(request.get_data().decode('UTF-8'))
     st = compstate.parse_state(data['name'], data['problem'], data['items'])
     goal = integral.parser.parse_expr(data['goal'])
-    st.add_item(compstate.Goal(goal))
+    conds = integral.conditions.Conditions(integral.parser.parse_expr(cond) for cond in data['conds'])
+    st.add_item(compstate.Goal(goal, conds=conds))
     return jsonify({
         "status": "ok",
         "state": st.export(),

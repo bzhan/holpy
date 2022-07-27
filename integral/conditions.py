@@ -3,14 +3,17 @@
 from copy import copy
 
 from integral.expr import Expr
-
+from integral import latex
 
 # A condition is represented by a dictionary mapping condition names to
 # boolean expressions
 
 class Conditions:
-    def __init__(self):
+    def __init__(self, conds=None):
         self.data = dict()
+        if conds is not None:
+            for i, cond in enumerate(conds):
+                self.data['C' + str(i+1)] = cond
 
     def add_condition(self, name: str, cond: Expr):
         self.data[name] = cond
@@ -18,6 +21,17 @@ class Conditions:
     def __copy__(self):
         res = Conditions()
         res.data = copy(self.data)
+        return res
+
+    def export(self):
+        res = list()
+        for name, cond in self.data.items():
+            res.append({
+                "type": "Condition",
+                "name": name,
+                "cond": str(cond),
+                "latex_cond": latex.convert_expr(cond)
+            })
         return res
 
 

@@ -28,7 +28,7 @@ real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(Re
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF = range(10)
 
 op_priority = {
-    "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50,
+    "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50, "<": 50, ">": 50, "<=": 50, ">=": 50
 }
 
 trig_identity = []

@@ -222,12 +222,20 @@
       <div v-if="r_query_mode === 'add definition'">
         <span class="math-text">Add function definition:</span><br/>
         <ExprQuery v-model="expr_query1"/><br/>
-        <button v-on:click="doAddFuncDef">OK</button>
+        <div v-for="(cond, index) in cond_query" :key="index">
+          <ExprQuery v-bind:value="cond" @input="setCondQuery(index, $event)"/><br/>
+        </div>
+        <button v-on:click="doAddFuncDef">OK</button>&nbsp;
+        <button v-on:click="cond_query.push('')">Add condition</button>
       </div>
       <div v-if="r_query_mode === 'add goal'">
         <span class="math-text">Add goal:</span><br/>
         <ExprQuery v-model="expr_query1"/><br/>
-        <button v-on:click="doAddGoal">OK</button>
+        <div v-for="(cond, index) in cond_query" :key="index">
+          <ExprQuery v-bind:value="cond" @input="setCondQuery(index, $event)"/><br/>
+        </div>
+        <button v-on:click="doAddGoal">OK</button>&nbsp;
+        <button v-on:click="cond_query.push('')">Add condition</button>
       </div>
       <div v-if="r_query_mode === 'apply induction'">
         <span class="math-text">Please specify induction variable</span><br/>
@@ -383,6 +391,7 @@ export default {
       selected_item: undefined,
 
       expr_query1: undefined,
+      cond_query: [],
 
       // Induction variable
       induct_var: undefined,
@@ -526,6 +535,10 @@ export default {
       this.cur_items = []
     },
 
+    setCondQuery: function(index, value) {
+      this.$set(this.cond_query, index, value)
+    },
+
     // Add function definition
     addFuncDef: function() {
       this.r_query_mode = 'add definition'
@@ -537,13 +550,15 @@ export default {
         name: this.content[this.cur_id].name,
         problem: this.content[this.cur_id].problem,
         items: this.cur_items,
-        eq: this.expr_query1
+        eq: this.expr_query1,
+        conds: this.cond_query
       }
       const response = await axios.post("http://127.0.0.1:5000/api/add-function-definition", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.cur_items = response.data.state.items
         this.r_query_mode = undefined
         this.expr_query1 = ''
+        this.cond_query = []
       }
     },
 
@@ -558,7 +573,8 @@ export default {
         name: this.content[this.cur_id].name,
         problem: this.content[this.cur_id].problem,
         items: this.cur_items,
-        goal: this.expr_query1
+        goal: this.expr_query1,
+        conds: this.cond_query
       }
       const response = await axios.post("http://127.0.0.1:5000/api/add-goal", JSON.stringify(data))
       if (response.data.status == 'ok') {
@@ -566,6 +582,7 @@ export default {
         this.selected_item = response.data.selected_item
         this.r_query_mode = undefined
         this.expr_query1 = ''
+        this.cond_query = []
       }
     },
 
