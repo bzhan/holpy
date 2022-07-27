@@ -39,6 +39,9 @@ class Label:
     def empty(self):
         return len(self.data) == 0
 
+    def __str__(self):
+        return ".".join(str(n + 1) for n in self.data)
+
 
 class StateItem:
     """Items in a state of computation"""
@@ -369,6 +372,16 @@ class State:
             return self
         else:
             return self.items[label.head].get_by_label(label.tail)
+
+    def next_step_label(self, label: Label) -> Label:
+        step = self.get_by_label(label)
+        if isinstance(step, Calculation):
+            return Label(label.data + [0])
+        elif isinstance(step, CalculationStep):
+            return Label(label.data[:-1] + [label.data[-1] + 1])
+        else:
+            raise NotImplementedError
+
 
 def parse_rule(item) -> Rule:
     if 'loc' in item:

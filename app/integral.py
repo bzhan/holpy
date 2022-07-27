@@ -777,7 +777,10 @@ def add_function_definition():
     st = compstate.parse_state(data['name'], data['problem'], data['items'])
     eq = integral.parser.parse_expr(data['eq'])
     st.add_item(compstate.FuncDef(eq))
-    return jsonify(st.export())
+    return jsonify({
+        "status": "ok",
+        "state": st.export(),
+    })
 
 @app.route("/api/add-goal", methods=["POST"])
 def add_goal():
@@ -785,7 +788,11 @@ def add_goal():
     st = compstate.parse_state(data['name'], data['problem'], data['items'])
     goal = integral.parser.parse_expr(data['goal'])
     st.add_item(compstate.Goal(goal))
-    return jsonify(st.export())
+    return jsonify({
+        "status": "ok",
+        "state": st.export(),
+        "selected_item": str(compstate.Label([len(st.items)-1])),
+    })
 
 @app.route("/api/proof-by-calculation", methods=["POST"])
 def proof_by_calculation():
@@ -793,7 +800,11 @@ def proof_by_calculation():
     st = compstate.parse_state(data['name'], data['problem'], data['items'])
     label = compstate.Label(data['selected_item'])
     st.get_by_label(label).proof_by_calculation()
-    return jsonify(st.export())
+    return jsonify({
+        "status": "ok",
+        "state": st.export(),
+        "selected_item": str(compstate.Label(label.data + [0]))
+    })
 
 @app.route("/api/proof-by-induction", methods=["POST"])
 def proof_by_induction():
@@ -804,7 +815,11 @@ def proof_by_induction():
     proof = st.get_by_label(label).proof_by_induction(induct_var)
     proof.base_case.proof_by_calculation()
     proof.induct_case.proof_by_calculation()
-    return jsonify(st.export())
+    return jsonify({
+        "status": "ok",
+        "state": st.export(),
+        "selected_item": str(compstate.Label(label.data + [0]))
+    })
 
 @app.route("/api/expand-definition", methods=["POST"])
 def expand_definition():
@@ -818,7 +833,11 @@ def expand_definition():
     assert len(func_defs) == 1, "expand_definition: unexpected number of definitions"
     st.get_by_label(label).perform_rule(
         integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_defs[0])))
-    return jsonify(st.export())
+    return jsonify({
+        "status": "ok",
+        "state": st.export(),
+        "selected_item": str(st.next_step_label(label))
+    })
 
 @app.route("/api/perform-step", methods=["POST"])
 def exchange_deriv_integral():
@@ -827,4 +846,8 @@ def exchange_deriv_integral():
     label = compstate.Label(data['selected_item'])
     rule = compstate.parse_rule(data['rule'])
     st.get_by_label(label).perform_rule(rule)
-    return jsonify(st.export())
+    return jsonify({
+        "status": "ok",
+        "state": st.export(),
+        "selected_item": str(st.next_step_label(label))
+    })

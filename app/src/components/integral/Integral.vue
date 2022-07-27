@@ -551,9 +551,11 @@ export default {
         eq: this.query_field1
       }
       const response = await axios.post("http://127.0.0.1:5000/api/add-function-definition", JSON.stringify(data))
-      this.cur_items = response.data.items
-      this.r_query_mode = undefined
-      this.query_field1 = ''
+      if (response.data.status == 'ok') {
+        this.cur_items = response.data.state.items
+        this.r_query_mode = undefined
+        this.query_field1 = ''
+      }
     },
 
     // Add goal
@@ -570,9 +572,12 @@ export default {
         goal: this.query_field1
       }
       const response = await axios.post("http://127.0.0.1:5000/api/add-goal", JSON.stringify(data))
-      this.cur_items = response.data.items
-      this.r_query_mode = undefined
-      this.query_field1 = ''
+      if (response.data.status == 'ok') {
+        this.cur_items = response.data.state.items
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+        this.query_field1 = ''
+      }
     },
 
     // Perform proof by calculation
@@ -584,7 +589,10 @@ export default {
         selected_item: this.selected_item
       }
       const response = await axios.post("http://127.0.0.1:5000/api/proof-by-calculation", JSON.stringify(data))
-      this.cur_items = response.data.items
+      if (response.data.status == 'ok') {
+        this.cur_items = response.data.state.items
+        this.selected_item = response.data.selected_item
+      }
     },
 
     // Proof by induction
@@ -602,7 +610,10 @@ export default {
         induct_var: this.induct_var
       }
       const response = await axios.post("http://127.0.0.1:5000/api/proof-by-induction", JSON.stringify(data))
-      this.cur_items = response.data.items
+      if (response.data.status == 'ok') {
+        this.cur_items = response.data.state.items
+        this.selected_item = response.data.selected_item
+      }
     },
 
     // Expand definition
@@ -615,7 +626,11 @@ export default {
         selected_facts: this.selected_facts
       }
       const response = await axios.post("http://127.0.0.1:5000/api/expand-definition", JSON.stringify(data))
-      this.cur_items = response.data.items
+      if (response.data.status == 'ok') {
+        this.cur_items = response.data.state.items
+        this.selected_item = response.data.selected_item
+        this.selected_facts = {}
+      }
     },
 
     exchangeDerivIntegral: async function() {
@@ -629,7 +644,10 @@ export default {
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      this.cur_items = response.data.items
+      if (response.data.status == 'ok') {
+        this.cur_items = response.data.state.items
+        this.selected_item = response.data.selected_item
+      }
     },
 
     simplifyStep: async function() {
@@ -643,7 +661,10 @@ export default {
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      this.cur_items = response.data.items
+      if (response.data.status == 'ok') {
+        this.cur_items = response.data.state.items
+        this.selected_item = response.data.selected_item
+      }
     },
 
     // Retrieve the stored calculation
