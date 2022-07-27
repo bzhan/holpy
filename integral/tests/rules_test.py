@@ -547,13 +547,13 @@ class RulesTest(unittest.TestCase):
         Eq2 = compstate.Goal(parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"), conds=conds)
         st.add_item(Eq2)
         proof = st.get_by_label("3").proof_by_induction("m")
-        proof_base = proof.base_case.proof_by_calculation()
-        proof_induct = proof.induct_case.proof_by_calculation()
+        proof.base_case.proof_by_calculation()
+        proof.induct_case.proof_by_calculation()
 
         # Base case
         st.get_by_label("3.1.1").perform_rule(rules.OnSubterm(rules.ExpandDefinition(st.get_by_label("1").get_facts()[0])))
         st.get_by_label("3.1.1.1").perform_rule(rules.ElimInfInterval())
-        # calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse("u", parser.parse_expr("sqrt(b) * u")), "0"))
+        st.get_by_label("3.1.1.2").perform_rule(rules.OnLocation(rules.SubstitutionInverse("u", parser.parse_expr("sqrt(b) * u")), "0"))
         # calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
         # calc.perform_rule(rules.OnLocation(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1")), "0.1.0"))
         # calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))

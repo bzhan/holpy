@@ -25,6 +25,7 @@
           <b-dropdown-item href="#" v-on:click="exchangeDerivIntegral">Exchange deriv and integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="simplifyStep">Simplify</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="improperToLimit">Improper integral to limit</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
@@ -241,6 +242,17 @@
         <span class="math-text">Please specify induction variable</span><br/>
         <input v-model="induct_var">
         <button v-on:click="doApplyInduction">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'backward substitution'">
+        <span class="math-text">Backward substitution on: </span>
+        <MathEquation v-bind:data="'\\(' + sep_int[0].latex_body + '\\)'"/><br/>
+        <span class="math-text">New variable </span>
+        <input v-model="subst_var"><br/>
+        <span class="math-text">Substitute </span>
+        <span class="math-text-italic">{{sep_int[0].var_name}}</span>
+        <span class="math-text"> for</span><br/>
+        <ExprQuery v-model="expr_query1"/><br/>
+        <button v-on:click="doBackwardSubstitution">OK</button>
       </div>
     </div>
     <div id="select">
@@ -687,6 +699,41 @@ export default {
       if (response.data.status == 'ok') {
         this.cur_items = response.data.state.items
         this.selected_item = response.data.selected_item
+      }
+    },
+
+    backwardSubstitution: async function() {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        selected_item: this.selected_item,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-integral", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.sep_int = response.data.integrals
+        this.r_query_mode = 'backward substitution'
+      }
+    },
+    
+    doBackwardSubstitution: async function() {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        selected_item: this.selected_item,
+        rule: {
+          name: 'SubstitutionInverse',
+          var_name: this.subst_var,
+          var_subst: this.expr_query1,
+          loc: this.sep_int[0].loc
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.cur_items = response.data.state.items
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
       }
     },
 

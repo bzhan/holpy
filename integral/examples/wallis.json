@@ -98,6 +98,19 @@
                                                 "str": "eliminate improper integral"
                                             },
                                             "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} \\frac{1}{((\\sqrt{b} u) ^ {2} + b) ^ {0 + 1}} \\sqrt{b} \\,du",
+                                            "res": "LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. (1 / ((sqrt(b) * u) ^ 2 + b) ^ (0 + 1)) * sqrt(b)",
+                                            "rule": {
+                                                "latex_str": "substitute \\(x\\) for \\(\\sqrt{b} u\\) at 0",
+                                                "loc": "0",
+                                                "name": "SubstitutionInverse",
+                                                "str": "substitute x for sqrt(b) * u at 0",
+                                                "var_name": "u",
+                                                "var_subst": "sqrt(b) * u"
+                                            },
+                                            "type": "CalculationStep"
                                         }
                                     ],
                                     "type": "Calculation"

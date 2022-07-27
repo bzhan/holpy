@@ -140,6 +140,8 @@ class Goal(StateItem):
         if label.empty():
             return self
         else:
+            if self.proof is None:
+                raise AssertionError("get_by_label: goal %s has no proof" % str(self.goal))
             return self.proof.get_by_label(label)
 
     def get_facts(self):
@@ -399,7 +401,9 @@ def parse_rule(item) -> Rule:
             del item['loc']
             return rules.OnSubterm(parse_rule(item))
         else:
-            raise NotImplementedError
+            loc = item['loc']
+            del item['loc']
+            return rules.OnLocation(parse_rule(item), loc)
     elif item['name'] == 'ExpandDefinition':
         func_def = parser.parse_expr(item['func_def'])
         return rules.ExpandDefinition(func_def)
@@ -412,6 +416,10 @@ def parse_rule(item) -> Rule:
         if 'a' in item:
             a = parser.parse_expr(item['a'])
         return rules.ElimInfInterval(a)
+    elif item['name'] == 'SubstitutionInverse':
+        var_name = item['var_name']
+        var_subst = parser.parse_expr(item['var_subst'])
+        return rules.SubstitutionInverse(var_name, var_subst)
     else:
         raise NotImplementedError
 

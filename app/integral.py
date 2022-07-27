@@ -771,6 +771,27 @@ def query_expr():
             "exception": str(e)
         })
 
+@app.route("/api/query-integral", methods=['POST'])
+def query_integral():
+    data = json.loads(request.get_data().decode('utf-8'))
+    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    label = compstate.Label(data['selected_item'])
+    integrals = st.get_by_label(label).res.separate_integral()
+    res = []
+    for e, loc in integrals:
+        res.append({
+            "expr": str(e),
+            "var_name": e.var,
+            "body": str(e.body),
+            "latex_expr": integral.latex.convert_expr(e),
+            "latex_body": integral.latex.convert_expr(e.body),
+            "loc": str(loc)
+        })
+    return jsonify({
+        "status": "ok",
+        "integrals": res
+    })
+
 @app.route("/api/add-function-definition", methods=['POST'])
 def add_function_definition():
     data = json.loads(request.get_data().decode('UTF-8'))
@@ -842,7 +863,7 @@ def expand_definition():
     })
 
 @app.route("/api/perform-step", methods=["POST"])
-def exchange_deriv_integral():
+def integral_perform_step():
     data = json.loads(request.get_data().decode('UTF-8'))
     st = compstate.parse_state(data['name'], data['problem'], data['items'])
     label = compstate.Label(data['selected_item'])
