@@ -494,7 +494,10 @@ class Expr:
             return Op(self.op, *[arg.subst(var, e) for arg in self.args])
         elif self.ty == FUN:
             return Fun(self.func_name, *[arg.subst(var, e) for arg in self.args])
+        elif self.ty == DERIV:
+            return Deriv(self.var, self.body.subst(var, e))
         else:
+            print('subst on', self)
             raise NotImplementedError
 
     def is_constant(self):
@@ -850,6 +853,7 @@ class Expr:
                 return poly.constant(Const(0).to_const_poly())
             body = self.body.normalize()
             return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), body))
+
         elif self.ty == LIMIT:
             # e = self.lim_to_inf()
             # p = e.body.replace_trig(Var(self.var), inf).to_poly()

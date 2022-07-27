@@ -353,6 +353,10 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'ExpandDefinition':
         func_def = parser.parse_expr(item['func_def'])
         return rules.ExpandDefinition(func_def)
+    elif item['name'] == 'DerivIntExchange':
+        return rules.DerivIntExchange()
+    elif item['name'] == 'FullSimplify':
+        return rules.FullSimplify()
     else:
         raise NotImplementedError
 

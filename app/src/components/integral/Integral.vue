@@ -23,6 +23,7 @@
           <b-dropdown-item href="#" v-on:click="proofByInduction">Proof by induction</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="exchangeDerivIntegral">Exchange deriv and integral</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="simplifyStep">Simplify</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
@@ -622,9 +623,26 @@ export default {
         name: this.content[this.cur_id].name,
         problem: this.content[this.cur_id].problem,
         items: this.cur_items,
-        selected_item: this.selected_item
+        selected_item: this.selected_item,
+        rule: {
+          name: 'DerivIntExchange'
+        }
       }
-      const response = await axios.post("http://127.0.0.1:5000/api/exchange-deriv-integral", JSON.stringify(data))
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      this.cur_items = response.data.items
+    },
+
+    simplifyStep: async function() {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        selected_item: this.selected_item,
+        rule: {
+          name: 'FullSimplify'
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       this.cur_items = response.data.items
     },
 

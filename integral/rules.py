@@ -172,6 +172,27 @@ class CommonIntegral(Rule):
         return e
 
 
+class DerivativeSimplify(Rule):
+    """Simplify the derivative of an expression"""
+    def __init__(self):
+        self.name = "DerivativeSimplify"
+
+    def __str__(self):
+        return "simplify derivative"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if not isinstance(e, Deriv):
+            return e
+        
+        return expr.deriv(e.var, e.body)
+
+
 class OnSubterm(Rule):
     """Apply given rule on subterms.
     
@@ -349,6 +370,7 @@ class FullSimplify(Rule):
     - Simplify
     - CommonIntegral
     - Linearity
+    - DerivativeSimplify
     - SimplifyPower
 
     """
@@ -368,13 +390,14 @@ class FullSimplify(Rule):
         counter = 0
         current = e
         while True:
-            s1 = OnSubterm(Linearity()).eval(current)
-            s2 = OnSubterm(CommonIntegral()).eval(s1)
-            s3 = Simplify().eval(s2)
-            s4 = OnSubterm(SimplifyPower()).eval(s3)
-            if s4 == current:
+            s = OnSubterm(Linearity()).eval(current)
+            s = OnSubterm(CommonIntegral()).eval(s)
+            s = Simplify().eval(s)
+            s = OnSubterm(DerivativeSimplify()).eval(s)
+            s = OnSubterm(SimplifyPower()).eval(s)
+            if s == current:
                 break
-            current = s4
+            current = s
             counter += 1
             if counter > 5:
                 raise AssertionError("Loop in FullSimplify")
@@ -1025,26 +1048,6 @@ class LimSep(Rule):
         return expr.Op(e.body.op, expr.Limit(e.var, e.lim, e.body.args[0], e.drt),
                                   expr.Limit(e.var, e.lim, e.body.args[1], e.drt))
 
-
-class DerivativeSimplify(Rule):
-    """Simplify the derivative of an expression"""
-    def __init__(self):
-        self.name = "DerivativeSimplify"
-
-    def __str__(self):
-        return "simplify derivative"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, conds=None) -> Expr:
-        if not isinstance(e, Deriv):
-            return e
-        
-        return expr.deriv(e.var, e.body)
 
 def check_item(item, target=None, *, debug=False):
     """Check application of rules in the item."""

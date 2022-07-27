@@ -820,11 +820,11 @@ def expand_definition():
         integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_defs[0])))
     return jsonify(st.export())
 
-@app.route("/api/exchange-deriv-integral", methods=["POST"])
+@app.route("/api/perform-step", methods=["POST"])
 def exchange_deriv_integral():
     data = json.loads(request.get_data().decode('UTF-8'))
     st = compstate.parse_state(data['name'], data['problem'], data['items'])
     label = data['selected_item']
-    print(label)
-    st.get_by_label(label).perform_rule(integral.rules.DerivIntExchange())
+    rule = compstate.parse_rule(data['rule'])
+    st.get_by_label(label).perform_rule(rule)
     return jsonify(st.export())
