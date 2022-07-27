@@ -24,6 +24,7 @@
           <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="exchangeDerivIntegral">Exchange deriv and integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="simplifyStep">Simplify</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="improperToLimit">Improper integral to limit</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
@@ -658,6 +659,23 @@ export default {
         selected_item: this.selected_item,
         rule: {
           name: 'FullSimplify'
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.cur_items = response.data.state.items
+        this.selected_item = response.data.selected_item
+      }
+    },
+
+    improperToLimit: async function() {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        selected_item: this.selected_item,
+        rule: {
+          name: 'ElimInfInterval'
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))

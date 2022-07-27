@@ -45,7 +45,29 @@
                                 "lhs_calc": {
                                     "latex_start": "I(0,b)",
                                     "start": "I(0,b)",
-                                    "steps": [],
+                                    "steps": [
+                                        {
+                                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + b) ^ {0 + 1}} \\,dx",
+                                            "res": "INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (0 + 1)",
+                                            "rule": {
+                                                "func_def": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
+                                                "loc": "subterms",
+                                                "name": "ExpandDefinition",
+                                                "str": "expand definition on subterms"
+                                            },
+                                            "type": "CalculationStep"
+                                        },
+                                        {
+                                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} \\frac{1}{(x ^ {2} + b) ^ {0 + 1}} \\,dx",
+                                            "res": "LIM {t -> oo}. INT x:[0,t]. 1 / (x ^ 2 + b) ^ (0 + 1)",
+                                            "rule": {
+                                                "a": "0",
+                                                "name": "ElimInfInterval",
+                                                "str": "eliminate improper integral"
+                                            },
+                                            "type": "CalculationStep"
+                                        }
+                                    ],
                                     "type": "Calculation"
                                 },
                                 "rhs_calc": {

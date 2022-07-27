@@ -398,6 +398,11 @@ def parse_rule(item) -> Rule:
         return rules.DerivIntExchange()
     elif item['name'] == 'FullSimplify':
         return rules.FullSimplify()
+    elif item['name'] == 'ElimInfInterval':
+        a = Const(0)
+        if 'a' in item:
+            a = parser.parse_expr(item['a'])
+        return rules.ElimInfInterval(a)
     else:
         raise NotImplementedError
 
