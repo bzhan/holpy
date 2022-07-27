@@ -211,8 +211,8 @@
       </div>
       <div v-if="r_query_mode === 'add definition'">
         <span class="math-text">Add function definition:</span><br/>
-        <input v-model="funcdef"><br/>
-        <MathEquation v-bind:data="'\\(' + funcdef + '\\)'"/><br/>
+        <input v-model="funcdef" style="width:500px" @change="funcdefChange()"><br/>
+        <MathEquation v-bind:data="'\\(' + latex_funcdef + '\\)'"/><br/>
         <button v-on:click="doAddFuncDef">OK</button>
       </div>
     </div>
@@ -365,6 +365,7 @@ export default {
       show_proof_mode: undefined, // indicate whether show proof
 
       funcdef: undefined,
+      latex_funcdef: undefined,
     }
   },
 
@@ -479,6 +480,18 @@ export default {
         const response = await axios.post("http://127.0.0.1:5000/api/integral-initialize", JSON.stringify(data))
         this.cur_calc = [response.data]
         this.query_mode = undefined
+    },
+
+    funcdefChange: async function () {
+      const data = {
+        expr: this.funcdef
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-expr", JSON.stringify(data))
+      if (response.data.status === 'ok') {
+        this.latex_funcdef = response.data.latex_expr
+      } else {
+        this.latex_funcdef = undefined
+      }
     },
 
     // Restart proof, delete all steps

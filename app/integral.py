@@ -756,6 +756,21 @@ def integral_lhopital():
         "reason": "Eliminate infinity"
     })
 
+@app.route("/api/query-expr", methods=['POST'])
+def query_expr():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    try:
+        e = integral.parser.parse_expr(data['expr'])
+        return jsonify({
+            "status": "ok",
+            "latex_expr": integral.latex.convert_expr(e)
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "fail",
+            "exception": str(e)
+        })
+
 @app.route("/api/add-function-definition", methods=['POST'])
 def add_function_definition():
     data = json.loads(request.get_data().decode('UTF-8'))
