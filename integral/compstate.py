@@ -57,7 +57,7 @@ class FuncDef(StateItem):
 
     def get_by_label(self, label):
         if len(label) > 0:
-            raise AssertionError("get_by_item: invalid label")
+            raise AssertionError("get_by_label: invalid label")
         return self
 
     def get_facts(self):
@@ -109,9 +109,11 @@ class Goal(StateItem):
 
 class CalculationStep(StateItem):
     """A step in the calculation."""
-    def __init__(self, rule: Rule, res: Expr):
+    def __init__(self, rule: Rule, res: Expr, parent: "Calculation", id: int):
         self.rule = rule
         self.res = res
+        self.parent = parent
+        self.id = id
 
     def __str__(self):
         return "%s (%s)" % (self.res, self.rule)
@@ -123,6 +125,9 @@ class CalculationStep(StateItem):
             "res": str(self.res),
             "latex_res": latex.convert_expr(self.res)
         }
+
+    def perform_rule(self, rule: Rule):
+        self.parent.perform_rule(rule, id=self.id)
 
 
 class Calculation(StateItem):
@@ -166,17 +171,26 @@ class Calculation(StateItem):
         else:
             return self.start
 
-    def perform_rule(self, rule: Rule):
-        """Perform the given rule on the current expression."""        
+    def perform_rule(self, rule: Rule, id: Optional[int] = None):
+        """Perform the given rule on the current expression."""
+        if id is not None:
+            # Cut off later steps
+            self.steps = self.steps[:id+1]
+        else:
+            id = len(self.steps) - 1
+
         e = self.last_expr
         new_e = rule.eval(e, conds=self.conds)
-        self.add_step(CalculationStep(rule, new_e))
+        self.add_step(CalculationStep(rule, new_e, self, id+1))
 
     def get_by_label(self, label) -> "StateItem":
         if len(label) == 0:
             return self
+        elif len(label) == 1:
+            return self.steps[label[0]]
         else:
-            raise NotImplementedError
+            raise AssertionError("get_by_label: invalid label")
+
 
 class CalculationProof(StateItem):
     """Proof for an equation by calculation.
@@ -329,6 +343,27 @@ class State:
         else:
             return self.items[label[0]].get_by_label(label[1:])
 
+def parse_rule(item) -> Rule:
+    if 'loc' in item:
+        if item['loc'] == 'subterms':
+            del item['loc']
+            return rules.OnSubterm(parse_rule(item))
+        else:
+            raise NotImplementedError
+    elif item['name'] == 'ExpandDefinition':
+        func_def = parser.parse_expr(item['func_def'])
+        return rules.ExpandDefinition(func_def)
+    else:
+        raise NotImplementedError
+
+def parse_step(item, parent: Calculation, id: int) -> CalculationStep:
+    if item['type'] != 'CalculationStep':
+        raise AssertionError('parse_step')
+
+    rule = parse_rule(item['rule'])
+    res = parser.parse_expr(item['res'])
+    step = CalculationStep(rule, res, parent, id)
+    return step
 
 def parse_item(item) -> StateItem:
     if item['type'] == 'FuncDef':
@@ -349,8 +384,8 @@ def parse_item(item) -> StateItem:
     elif item['type'] == 'Calculation':
         start = parser.parse_expr(item['start'])
         res = Calculation(start)
-        for step in item['steps']:
-            res.add_step(parse_item(step))
+        for i, step in enumerate(item['steps']):
+            res.add_step(parse_step(step, res, i))
         return res
     elif item['type'] == 'InductionProof':
         goal = parser.parse_expr(item['goal'])

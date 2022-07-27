@@ -819,3 +819,12 @@ def expand_definition():
     st.get_by_label(label).perform_rule(
         integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_defs[0])))
     return jsonify(st.export())
+
+@app.route("/api/exchange-deriv-integral", methods=["POST"])
+def exchange_deriv_integral():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    label = data['selected_item']
+    print(label)
+    st.get_by_label(label).perform_rule(integral.rules.DerivIntExchange())
+    return jsonify(st.export())

@@ -22,6 +22,7 @@
           <b-dropdown-item href="#" v-on:click="proofByCalculation">Proof by calculation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByInduction">Proof by induction</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="exchangeDerivIntegral">Exchange deriv and integral</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
@@ -613,6 +614,17 @@ export default {
         selected_facts: this.selected_facts
       }
       const response = await axios.post("http://127.0.0.1:5000/api/expand-definition", JSON.stringify(data))
+      this.cur_items = response.data.items
+    },
+
+    exchangeDerivIntegral: async function() {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        selected_item: this.selected_item
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/exchange-deriv-integral", JSON.stringify(data))
       this.cur_items = response.data.items
     },
 

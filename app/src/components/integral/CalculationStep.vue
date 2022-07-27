@@ -1,6 +1,9 @@
 <template>
   <div>
-    <MathEquation v-bind:data="'\\(=' + step.latex_res + '\\)'" class="indented-text"/>&nbsp;&nbsp;&nbsp;
+    <span @click.exact="$emit('select', label)"
+          :class="{selected: selected_item === label}">
+      <MathEquation v-bind:data="'\\(=' + step.latex_res + '\\)'" class="indented-text"/>&nbsp;&nbsp;&nbsp;
+    </span>
     <span v-if="'latex_str' in step.rule">
       <MathEquation v-bind:data="'(' + step.rule.latex_str + ')'" class="math-text"/>
     </span>
@@ -17,9 +20,11 @@ export default {
     MathEquation
   },
 
-props: [
+  props: [
 		"step",
-  ]
+    "label",
+    "selected_item",
+  ],
 }
 
 </script>
