@@ -1,6 +1,7 @@
 <template>
   <div>
-    <span class="math-text">by calculation</span><br/>
+    <span class="math-text">by calculation</span>
+    <span v-if="item.finished" class="math-text" style="color: green">&nbsp;(finished)</span><br/>
     <span class="math-text">{{label}}.1.</span>&nbsp;
     <span class="math-text">LHS: </span>
     <span @click="$emit('select', label + '.1')"

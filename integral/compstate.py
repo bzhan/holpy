@@ -259,7 +259,8 @@ class CalculationProof(StateItem):
             "goal": str(self.goal),
             "latex_goal": latex.convert_expr(self.goal),
             "lhs_calc": self.lhs_calc.export(),
-            "rhs_calc": self.rhs_calc.export()
+            "rhs_calc": self.rhs_calc.export(),
+            "finished": self.lhs_calc.last_expr == self.rhs_calc.last_expr
         }
 
     def get_by_label(self, label: Label):
