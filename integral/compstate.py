@@ -139,6 +139,8 @@ class Calculation(StateItem):
     def export(self):
         return {
             "type": "Calculation",
+            "start": str(self.start),
+            "latex_start": latex.convert_expr(self.start),
             "steps": [step.export() for step in self.steps]
         }
 
@@ -313,26 +315,34 @@ class State:
             return self.items[label[0]].get_by_label(label[1:])
 
 
-def parse_func_def(item) -> FuncDef:
-    eq = parser.parse_expr(item['eq'])
-    return FuncDef(eq)
-
-def parse_goal(item) -> Goal:
-    goal = parser.parse_expr(item['goal'])
-    return Goal(goal)
+def parse_item(item):
+    if item['type'] == 'FuncDef':
+        eq = parser.parse_expr(item['eq'])
+        return FuncDef(eq)
+    elif item['type'] == 'Goal':
+        goal = parser.parse_expr(item['goal'])
+        res = Goal(goal)
+        if 'proof' in item:
+            res.proof = parse_item(item['proof'])
+        return res
+    elif item['type'] == 'CalculationProof':
+        goal = parser.parse_expr(item['goal'])
+        res = CalculationProof(goal)
+        res.lhs_calc = parse_item(item['lhs_calc'])
+        res.rhs_calc = parse_item(item['rhs_calc'])
+        return res
+    elif item['type'] == 'Calculation':
+        start = parser.parse_expr(item['start'])
+        res = Calculation(start)
+        for step in item['steps']:
+            res.add_step(parse_item(step))
+        return res
+    else:
+        raise NotImplementedError
 
 def parse_state(name: str, problem: str, items) -> State:
     goal = parser.parse_expr(problem)
-
-    parsed_items = []
-    for item in items:
-        if item['type'] == 'FuncDef':
-            parsed_items.append(parse_func_def(item))
-        elif item['type'] == 'Goal':
-            parsed_items.append(parse_goal(item))
-        else:
-            raise NotImplementedError
     st = State(name, goal)
-    for item in parsed_items:
-        st.add_item(item)
+    for item in items:
+        st.add_item(parse_item(item))
     return st
