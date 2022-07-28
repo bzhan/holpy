@@ -60,7 +60,7 @@ class StateItem:
 
 class FuncDef(StateItem):
     """Introduce a new function definition."""
-    def __init__(self, eq: Expr):
+    def __init__(self, eq: Expr, conds: Optional[Conditions] = None):
         if not (eq.is_equals() and eq.lhs.is_fun()):
             raise AssertionError("FuncDef: left side should be a function")
 
@@ -72,18 +72,25 @@ class FuncDef(StateItem):
         if any(not arg.is_var() for arg in self.args) or len(self.args) != len(set(self.args)):
             raise AssertionError("FuncDef: arguments should be distinct variables")
 
+        if conds is None:
+            conds = Conditions()
+        self.conds = conds
+
     def __str__(self):
         res = "Definition\n"
         res += "  %s\n" % self.eq
         return res
 
     def export(self):
-        return {
+        res = {
             "type": "FuncDef",
             "eq": str(self.eq),
             "latex_lhs": latex.convert_expr(self.eq.lhs),
             "latex_eq": latex.convert_expr(self.eq)
         }
+        if self.conds.data:
+            res["conds"] = self.conds.export()
+        return res
 
     def get_by_label(self, label: Label):
         if not label.empty():
@@ -117,6 +124,8 @@ class Goal(StateItem):
         }
         if self.proof:
             res['proof'] = self.proof.export()
+        if self.conds.data:
+            res['conds'] = self.conds.export()
         return res
 
     def proof_by_calculation(self):
@@ -131,6 +140,8 @@ class Goal(StateItem):
         if label.empty():
             return self
         else:
+            if self.proof is None:
+                raise AssertionError("get_by_label: goal %s has no proof" % str(self.goal))
             return self.proof.get_by_label(label)
 
     def get_facts(self):
@@ -390,7 +401,9 @@ def parse_rule(item) -> Rule:
             del item['loc']
             return rules.OnSubterm(parse_rule(item))
         else:
-            raise NotImplementedError
+            loc = item['loc']
+            del item['loc']
+            return rules.OnLocation(parse_rule(item), loc)
     elif item['name'] == 'ExpandDefinition':
         func_def = parser.parse_expr(item['func_def'])
         return rules.ExpandDefinition(func_def)
@@ -403,6 +416,10 @@ def parse_rule(item) -> Rule:
         if 'a' in item:
             a = parser.parse_expr(item['a'])
         return rules.ElimInfInterval(a)
+    elif item['name'] == 'SubstitutionInverse':
+        var_name = item['var_name']
+        var_subst = parser.parse_expr(item['var_subst'])
+        return rules.SubstitutionInverse(var_name, var_subst)
     else:
         raise NotImplementedError
 
@@ -415,13 +432,24 @@ def parse_step(item, parent: Calculation, id: int) -> CalculationStep:
     step = CalculationStep(rule, res, parent, id)
     return step
 
+def parse_conds(item) -> Conditions:
+    res = Conditions()
+    if 'conds' in item:
+        for subitem in item['conds']:
+            if subitem['type'] != 'Condition':
+                raise AssertionError('parse_conds')        
+            res.add_condition(subitem['name'], parser.parse_expr(subitem['cond']))
+    return res
+
 def parse_item(item) -> StateItem:
     if item['type'] == 'FuncDef':
+        conds = parse_conds(item)
         eq = parser.parse_expr(item['eq'])
-        return FuncDef(eq)
+        return FuncDef(eq, conds=conds)
     elif item['type'] == 'Goal':
         goal = parser.parse_expr(item['goal'])
-        res = Goal(goal)
+        conds = parse_conds(item)
+        res = Goal(goal, conds=conds)
         if 'proof' in item:
             res.proof = parse_item(item['proof'])
         return res

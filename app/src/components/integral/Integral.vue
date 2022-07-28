@@ -25,6 +25,7 @@
           <b-dropdown-item href="#" v-on:click="exchangeDerivIntegral">Exchange deriv and integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="simplifyStep">Simplify</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="improperToLimit">Improper integral to limit</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
@@ -218,22 +219,40 @@
           <span class="calc-reason" v-else>{{step.reason}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </div>
       </div>
+      <!-- Newly added -->
       <div v-if="r_query_mode === 'add definition'">
         <span class="math-text">Add function definition:</span><br/>
-        <input v-model="query_field1" style="width:500px" @change="queryFieldChange1()"><br/>
-        <MathEquation v-bind:data="'\\(' + latex_query_field1 + '\\)'"/><br/>
-        <button v-on:click="doAddFuncDef">OK</button>
+        <ExprQuery v-model="expr_query1"/><br/>
+        <div v-for="(cond, index) in cond_query" :key="index">
+          <ExprQuery v-bind:value="cond" @input="setCondQuery(index, $event)"/><br/>
+        </div>
+        <button v-on:click="doAddFuncDef">OK</button>&nbsp;
+        <button v-on:click="cond_query.push('')">Add condition</button>
       </div>
       <div v-if="r_query_mode === 'add goal'">
         <span class="math-text">Add goal:</span><br/>
-        <input v-model="query_field1" style="width:500px" @change="queryFieldChange1()"><br/>
-        <MathEquation v-bind:data="'\\(' + latex_query_field1 + '\\)'"/><br/>
-        <button v-on:click="doAddGoal">OK</button>
+        <ExprQuery v-model="expr_query1"/><br/>
+        <div v-for="(cond, index) in cond_query" :key="index">
+          <ExprQuery v-bind:value="cond" @input="setCondQuery(index, $event)"/><br/>
+        </div>
+        <button v-on:click="doAddGoal">OK</button>&nbsp;
+        <button v-on:click="cond_query.push('')">Add condition</button>
       </div>
       <div v-if="r_query_mode === 'apply induction'">
         <span class="math-text">Please specify induction variable</span><br/>
         <input v-model="induct_var">
         <button v-on:click="doApplyInduction">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'backward substitution'">
+        <span class="math-text">Backward substitution on: </span>
+        <MathEquation v-bind:data="'\\(' + sep_int[0].latex_body + '\\)'"/><br/>
+        <span class="math-text">New variable </span>
+        <input v-model="subst_var"><br/>
+        <span class="math-text">Substitute </span>
+        <span class="math-text-italic">{{sep_int[0].var_name}}</span>
+        <span class="math-text"> for</span><br/>
+        <ExprQuery v-model="expr_query1"/><br/>
+        <button v-on:click="doBackwardSubstitution">OK</button>
       </div>
     </div>
     <div id="select">
@@ -310,6 +329,7 @@
 import axios from 'axios'
 import MathEquation from '../util/MathEquation'
 import FuncDef from './FuncDef'
+import ExprQuery from './ExprQuery'
 import Goal from "./Goal"
 
 export default {
@@ -318,6 +338,7 @@ export default {
     MathEquation,
     FuncDef,
     Goal,
+    ExprQuery,
   },
 
   props: [
@@ -381,8 +402,8 @@ export default {
       // Selected goal
       selected_item: undefined,
 
-      query_field1: undefined,
-      latex_query_field1: undefined,
+      expr_query1: undefined,
+      cond_query: [],
 
       // Induction variable
       induct_var: undefined,
@@ -521,21 +542,13 @@ export default {
         this.query_mode = undefined
     },
 
-    queryFieldChange1: async function() {
-      const data = {
-        expr: this.query_field1
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-expr", JSON.stringify(data))
-      if (response.data.status === 'ok') {
-        this.latex_query_field1 = response.data.latex_expr
-      } else {
-        this.latex_query_field1 = undefined
-      }
-    },
-
     // Restart proof, delete all steps
     restartProof: function() {
       this.cur_items = []
+    },
+
+    setCondQuery: function(index, value) {
+      this.$set(this.cond_query, index, value)
     },
 
     // Add function definition
@@ -549,13 +562,15 @@ export default {
         name: this.content[this.cur_id].name,
         problem: this.content[this.cur_id].problem,
         items: this.cur_items,
-        eq: this.query_field1
+        eq: this.expr_query1,
+        conds: this.cond_query
       }
       const response = await axios.post("http://127.0.0.1:5000/api/add-function-definition", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.cur_items = response.data.state.items
         this.r_query_mode = undefined
-        this.query_field1 = ''
+        this.expr_query1 = ''
+        this.cond_query = []
       }
     },
 
@@ -570,14 +585,16 @@ export default {
         name: this.content[this.cur_id].name,
         problem: this.content[this.cur_id].problem,
         items: this.cur_items,
-        goal: this.query_field1
+        goal: this.expr_query1,
+        conds: this.cond_query
       }
       const response = await axios.post("http://127.0.0.1:5000/api/add-goal", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.cur_items = response.data.state.items
         this.selected_item = response.data.selected_item
         this.r_query_mode = undefined
-        this.query_field1 = ''
+        this.expr_query1 = ''
+        this.cond_query = []
       }
     },
 
@@ -682,6 +699,41 @@ export default {
       if (response.data.status == 'ok') {
         this.cur_items = response.data.state.items
         this.selected_item = response.data.selected_item
+      }
+    },
+
+    backwardSubstitution: async function() {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        selected_item: this.selected_item,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-integral", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.sep_int = response.data.integrals
+        this.r_query_mode = 'backward substitution'
+      }
+    },
+    
+    doBackwardSubstitution: async function() {
+      const data = {
+        name: this.content[this.cur_id].name,
+        problem: this.content[this.cur_id].problem,
+        items: this.cur_items,
+        selected_item: this.selected_item,
+        rule: {
+          name: 'SubstitutionInverse',
+          var_name: this.subst_var,
+          var_subst: this.expr_query1,
+          loc: this.sep_int[0].loc
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.cur_items = response.data.state.items
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
       }
     },
 
