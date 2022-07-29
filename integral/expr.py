@@ -227,6 +227,8 @@ class Expr:
             return 1 + self.body.size()
         elif self.ty in (INTEGRAL, EVAL_AT):
             return 1 + self.lower.size() + self.upper.size() + self.body.size()
+        elif self.ty == LIMIT:
+            return 1 + self.lim.size() + self.body.size()
         else:
             raise NotImplementedError
 
@@ -499,6 +501,10 @@ class Expr:
             return Fun(self.func_name, *[arg.subst(var, e) for arg in self.args])
         elif self.ty == DERIV:
             return Deriv(self.var, self.body.subst(var, e))
+        elif self.ty == LIMIT:
+            return Limit(self.var, self.lim.subst(var, e),self.body.subst(var, e))
+        elif self.ty == INF:
+            return self
         else:
             print('subst on', self)
             raise NotImplementedError
@@ -751,7 +757,20 @@ class Expr:
                 return Const(math.comb(norm_a.val, norm_b.val)).to_const_poly()
             else:
                 return poly.const_singleton(binom(norm_a, norm_b))
-
+        elif self.ty == FUN and self.func_name == 'factorial':
+            a = self.args[0].to_const_poly()
+            norm_a = from_const_poly(a)
+            def rec(n):
+                if n==0 or n == 1:
+                    return 1
+                else:
+                    return n * rec(n-1)
+            if norm_a.is_const() and int(norm_a.val) == float(norm_a.val):
+                return Const(rec(norm_a.val)).to_const_poly()
+            else:
+                return poly.const_singleton(factorial(norm_a))
+        elif self.ty == FUN:
+            return poly.const_singleton(self)
         elif self.ty == LIMIT:
             return self.body.replace_trig(Var(self.var), self.lim).to_const_poly()
         else:
@@ -863,6 +882,8 @@ class Expr:
         elif self.ty == LIMIT:
             # e = self.lim_to_inf()
             # p = e.body.replace_trig(Var(self.var), inf).to_poly()
+            return poly.singleton(Limit(self.var, self.lim.normalize(), self.body.normalize()))
+
             raise NotImplementedError
         # inf -> [(1,inf,1)]
         elif self.ty == INF:
@@ -1771,6 +1792,9 @@ def binom(e1: Expr, e2: Expr) -> Expr:
     """Binomial coefficients"""
     return Fun("binom", e1, e2)
 
+def factorial(e: Expr):
+    '''e!'''
+    return Fun('factorial', e)
 pi = Fun("pi")
 E = Fun("exp", Const(1))
 

@@ -66,8 +66,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "-m (\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx) + -(\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx)",
-                                    "res": "-(m * (INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))) + -(INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))",
+                                    "latex_res": "-m (\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2} (b + x ^ {2}) ^ {-m} \\,dx) + -(\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2} (b + x ^ {2}) ^ {-m} \\,dx)",
+                                    "res": "-(m * (INT x:[0,oo]. (b + x ^ 2) ^ -2 * (b + x ^ 2) ^ -m)) + -(INT x:[0,oo]. (b + x ^ 2) ^ -2 * (b + x ^ 2) ^ -m)",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"
@@ -93,8 +93,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "-m (\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx) + -(\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2 + -m} \\,dx)",
-                                    "res": "-(m * (INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))) + -(INT x:[0,oo]. (b + x ^ 2) ^ (-2 + -m))",
+                                    "latex_res": "-m (\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2} (b + x ^ {2}) ^ {-m} \\,dx) + -(\\int_{0}^{\\infty} (b + x ^ {2}) ^ {-2} (b + x ^ {2}) ^ {-m} \\,dx)",
+                                    "res": "-(m * (INT x:[0,oo]. (b + x ^ 2) ^ -2 * (b + x ^ 2) ^ -m)) + -(INT x:[0,oo]. (b + x ^ 2) ^ -2 * (b + x ^ 2) ^ -m)",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"
@@ -292,8 +292,8 @@
                                             "type": "CalculationStep"
                                         },
                                         {
-                                            "latex_res": "\\frac{1}{2} \\pi m (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-3/2 + -m} + \\frac{1}{4} \\pi (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-3/2 + -m}",
-                                            "res": "1/2 * pi * m * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m) + 1/4 * pi * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m)",
+                                            "latex_res": "\\frac{1}{2} \\pi b ^ {-3/2} m (1 + m) ^ {-1} b ^ {-m} 2 ^ {-2 m} \\binom{2 m}{m} + \\frac{1}{4} \\pi b ^ {-3/2} (1 + m) ^ {-1} b ^ {-m} 2 ^ {-2 m} \\binom{2 m}{m}",
+                                            "res": "1/2 * pi * b ^ (-3/2) * m * (1 + m) ^ -1 * b ^ -m * 2 ^ (-2 * m) * binom(2 * m,m) + 1/4 * pi * b ^ (-3/2) * (1 + m) ^ -1 * b ^ -m * 2 ^ (-2 * m) * binom(2 * m,m)",
                                             "rule": {
                                                 "name": "FullSimplify",
                                                 "str": "full simplify"
@@ -308,8 +308,8 @@
                                     "start": "pi * b ^ (3/2 + m) ^ -1 * 2 ^ (3 + 2 * m) ^ -1 * binom(2 + 2 * m,1 + m)",
                                     "steps": [
                                         {
-                                            "latex_res": "\\frac{1}{8} \\pi 2 ^ {-2 m} b ^ {-3/2 + -m} \\binom{2 + 2 m}{1 + m}",
-                                            "res": "1/8 * pi * 2 ^ (-2 * m) * b ^ (-3/2 + -m) * binom(2 + 2 * m,1 + m)",
+                                            "latex_res": "\\frac{1}{8} \\pi b ^ {-3/2} b ^ {-m} 2 ^ {-2 m} \\binom{2 + 2 m}{1 + m}",
+                                            "res": "1/8 * pi * b ^ (-3/2) * b ^ -m * 2 ^ (-2 * m) * binom(2 + 2 * m,1 + m)",
                                             "rule": {
                                                 "name": "FullSimplify",
                                                 "str": "full simplify"
@@ -317,8 +317,8 @@
                                             "type": "CalculationStep"
                                         },
                                         {
-                                            "latex_res": "\\frac{1}{8} \\pi 2 ^ {-2 m} b ^ {-3/2 + -m} (\\frac{\\binom{2 m}{m} 2 (1 + 2 m)}{1 + m})",
-                                            "res": "1/8 * pi * 2 ^ (-2 * m) * b ^ (-3/2 + -m) * ((binom(2 * m,m) * 2 * (1 + 2 * m)) / (1 + m))",
+                                            "latex_res": "\\frac{1}{8} \\pi b ^ {-3/2} b ^ {-m} 2 ^ {-2 m} (\\frac{\\binom{2 m}{m} 2 (1 + 2 m)}{1 + m})",
+                                            "res": "1/8 * pi * b ^ (-3/2) * b ^ -m * 2 ^ (-2 * m) * ((binom(2 * m,m) * 2 * (1 + 2 * m)) / (1 + m))",
                                             "rule": {
                                                 "loc": "1",
                                                 "name": "RewriteBinom",
@@ -327,8 +327,8 @@
                                             "type": "CalculationStep"
                                         },
                                         {
-                                            "latex_res": "\\frac{1}{2} \\pi m (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-3/2 + -m} + \\frac{1}{4} \\pi (1 + m) ^ {-1} 2 ^ {-2 m} \\binom{2 m}{m} b ^ {-3/2 + -m}",
-                                            "res": "1/2 * pi * m * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m) + 1/4 * pi * (1 + m) ^ -1 * 2 ^ (-2 * m) * binom(2 * m,m) * b ^ (-3/2 + -m)",
+                                            "latex_res": "\\frac{1}{2} \\pi b ^ {-3/2} m (1 + m) ^ {-1} b ^ {-m} 2 ^ {-2 m} \\binom{2 m}{m} + \\frac{1}{4} \\pi b ^ {-3/2} (1 + m) ^ {-1} b ^ {-m} 2 ^ {-2 m} \\binom{2 m}{m}",
+                                            "res": "1/2 * pi * b ^ (-3/2) * m * (1 + m) ^ -1 * b ^ -m * 2 ^ (-2 * m) * binom(2 * m,m) + 1/4 * pi * b ^ (-3/2) * (1 + m) ^ -1 * b ^ -m * 2 ^ (-2 * m) * binom(2 * m,m)",
                                             "rule": {
                                                 "name": "FullSimplify",
                                                 "str": "full simplify"

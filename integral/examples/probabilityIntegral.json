@@ -697,7 +697,7 @@
                     "goal": "C = pi / 2",
                     "latex_goal": "C = \\frac{\\pi}{2}",
                     "proof": {
-                        "finished": false,
+                        "finished": true,
                         "goal": "C = pi / 2",
                         "latex_goal": "C = \\frac{\\pi}{2}",
                         "lhs_calc": {
@@ -749,7 +749,17 @@
                         "rhs_calc": {
                             "latex_start": "\\frac{\\pi}{2}",
                             "start": "pi / 2",
-                            "steps": [],
+                            "steps": [
+                                {
+                                    "latex_res": "\\frac{1}{2} \\pi",
+                                    "res": "1/2 * pi",
+                                    "rule": {
+                                        "name": "FullSimplify",
+                                        "str": "full simplify"
+                                    },
+                                    "type": "CalculationStep"
+                                }
+                            ],
                             "type": "Calculation"
                         },
                         "type": "CalculationProof"
@@ -757,7 +767,7 @@
                     "type": "Goal"
                 },
                 {
-                    "finished": false,
+                    "finished": true,
                     "goal": "C = pi / 2",
                     "latex_goal": "C = \\frac{\\pi}{2}",
                     "lhs_calc": {
@@ -809,7 +819,17 @@
                     "rhs_calc": {
                         "latex_start": "\\frac{\\pi}{2}",
                         "start": "pi / 2",
-                        "steps": [],
+                        "steps": [
+                            {
+                                "latex_res": "\\frac{1}{2} \\pi",
+                                "res": "1/2 * pi",
+                                "rule": {
+                                    "name": "FullSimplify",
+                                    "str": "full simplify"
+                                },
+                                "type": "CalculationStep"
+                            }
+                        ],
                         "type": "Calculation"
                     },
                     "type": "CalculationProof"
