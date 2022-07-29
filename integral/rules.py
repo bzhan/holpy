@@ -116,6 +116,11 @@ class Linearity(Rule):
                     return e
             else:
                 return e
+        elif e.is_limit():
+            if e.body.is_uminus():
+                return -Limit(e.var,e.lim,e.body.args[0])
+            else:
+                return e
         else:
             return e
 
@@ -331,7 +336,24 @@ class OnLocation(Rule):
 
         return rec(e, self.loc)
 
+class CompositePower(Rule):
+    def __init__(self):
+        self.name = "CompositePower"
 
+    def __str__(self):
+        return "CompositePower"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.is_times() and e.args[1].is_power() and e.args[0] == e.args[1].args[0]:
+            return e.args[0] ^ (e.args[1].args[1]+1)
+        else:
+            raise NotImplementedError
 class SimplifyPower(Rule):
     """Apply the following simplifications on powers:
     
@@ -344,7 +366,8 @@ class SimplifyPower(Rule):
     3. In the expression (-a) ^ n, separate out -1.
         (-a) ^ n = (-1) ^ n * a ^ n
         (-a + -b) ^ n = (-1) ^ n * (a + b) ^ n
-    
+
+    4. 0 ^ m = 0 where m is a positive number
     """
     def __init__(self):
         self.name = "SimplifyPower"
@@ -361,12 +384,10 @@ class SimplifyPower(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         if not e.is_power():
             return e
-
         if e.args[0].is_power():
             # x ^ a ^ b => x ^ (a * b)
             return e.args[0].args[0] ^ (e.args[0].args[1] * e.args[1])
-        elif e.args[0].is_const() and e.args[1].is_plus() and e.args[1].args[0].is_const() and \
-                not e.args[1].args[1].is_constant():
+        elif e.args[1].is_plus():
             # c1 ^ (c2 + a) => c1 ^ c2 * c1 ^ a
             return (e.args[0] ^ e.args[1].args[0]) * (e.args[0] ^ e.args[1].args[1])
         elif e.args[0].is_uminus() and e.args[1].is_const():
@@ -377,6 +398,8 @@ class SimplifyPower(Rule):
             # (-a + -b) ^ n = (-1) ^ n * (a + b) ^ n
             nega, negb = e.args[0].args
             return (Const(-1) ^ e.args[1]) * ((Const(-nega.val) + negb.args[0]) ^ e.args[1])
+        elif e.args[0].is_const() and e.args[0].val == 0 and conditions.is_positive(e.args[1], conds):
+            return Const(0)
         else:
             return e
 
@@ -407,11 +430,11 @@ class FullSimplify(Rule):
         counter = 0
         current = e
         while True:
-            s = OnSubterm(Linearity()).eval(current)
-            s = OnSubterm(CommonIntegral()).eval(s)
-            s = Simplify().eval(s)
-            s = OnSubterm(DerivativeSimplify()).eval(s)
-            s = OnSubterm(SimplifyPower()).eval(s)
+            s = OnSubterm(Linearity()).eval(current,conds)
+            s = OnSubterm(CommonIntegral()).eval(s,conds)
+            s = Simplify().eval(s,conds)
+            s = OnSubterm(DerivativeSimplify()).eval(s,conds)
+            s = OnSubterm(SimplifyPower()).eval(s,conds)
             if s == current:
                 break
             current = s
@@ -517,10 +540,13 @@ class Substitution(Rule):
             # Substitution is able to clear all x in original integrand
             # print('Substitution: case 1')
             self.f = body_subst
-            if sympy_style(lower) <= sympy_style(upper):
+            try:
+                if sympy_style(lower) <= sympy_style(upper):
+                    return Integral(self.var_name, lower, upper, body_subst).normalize()
+                else:
+                    return Integral(self.var_name, upper, lower, Op("-", body_subst)).normalize()
+            except:
                 return Integral(self.var_name, lower, upper, body_subst).normalize()
-            else:
-                return Integral(self.var_name, upper, lower, Op("-", body_subst)).normalize()
         else:
             # Substitution is unable to clear x, need to solve for x
             # print('Substitution: case 2')
@@ -1917,22 +1943,22 @@ class RewriteExp(Rule):
 #         else:
 #             raise NotImplementedError
 #
-# class Div2Mul(Rule):
-#     def __init__(self):
-#         self.name = "Div2Mul"
-#
-#     def __str__(self):
-#         return "rewrite divsion to multiplication"
-#
-#     def export(self):
-#         return {
-#             "name": self.name,
-#             "str": str(self)
-#         }
-#     def eval(self, e: Expr, conds=None) -> Expr:
-#         if e.ty != OP or e.op != '/':
-#             return e
-#         return e.args[0] * (e.args[1]^-1)
+class Div2Mul(Rule):
+    def __init__(self):
+        self.name = "Div2Mul"
+
+    def __str__(self):
+        return "rewrite divsion to multiplication"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.ty != OP or e.op != '/':
+            return e
+        return e.args[0] * (e.args[1]^-1)
 
 class Assoc(Rule):
     def __init__(self):
@@ -1952,6 +1978,11 @@ class Assoc(Rule):
         if e.op == '/':
             if e.args[0].op == '*':
                 return e.args[0].args[0] * (e.args[0].args[1] / e.args[1])
+            else:
+                raise NotImplementedError
+        elif e.op == '*':
+            if e.args[0].op == '*':
+                return e.args[0].args[0] * (e.args[0].args[1] * e.args[1])
             else:
                 raise NotImplementedError
         else:
@@ -1991,6 +2022,10 @@ class Distribution(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         if e.ty == OP and e.op == '*' and e.args[1].ty == OP and e.args[1].op == '+':
             return e.args[0] * e.args[1].args[0] + e.args[0] * e.args[1].args[1]
+        elif e.ty == OP and e.op == '/' and e.args[0].ty == OP and e.args[0].op == '*':
+            return (e.args[0].args[0] / e.args[1]) * (e.args[0].args[1] / e.args[1])
+        elif e.ty == OP and e.op == '*' and e.args[0].ty == OP and e.args[0].op == '+':
+            return (e.args[0].args[0] * e.args[1]) + (e.args[0].args[1] * e.args[1])
         else:
             raise NotImplementedError
 
@@ -2057,7 +2092,7 @@ class ConstExprSubs(Rule):
             raise NotImplementedError
 
 class RewriteLimit(Rule):
-    ''' '''
+    ''' LIM {x->a}. f(x) = f(a)'''
     def __init__(self):
         self.name = "RewriteLimit"
 
@@ -2074,7 +2109,7 @@ class RewriteLimit(Rule):
         return e.body.replace(Var(e.var), e.lim)
 
 class LimIntExchange(Rule):
-
+    '''LIM INT f(x) = LIM INT f(x)'''
     def __init__(self):
         self.name = "LimIntExchange"
 
@@ -2093,4 +2128,56 @@ class LimIntExchange(Rule):
             return Integral(e.body.var, e.body.lower, e.body.upper, Limit(e.var, e.lim, e.body.body))
         else:
             print(e)
+            raise NotImplementedError
+
+class Swap(Rule):
+    '''
+    1. a+b = b+a
+    2. a*b = b*a
+    '''
+    def __init__(self):
+        self.name = "Swap"
+
+    def __str__(self):
+        return "Swap"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.is_plus():
+            return e.args[1] + e.args[0]
+        elif e.is_times():
+            return e.args[1] * e.args[0]
+        else:
+            print(e)
+            raise NotImplementedError
+
+class RewriteFactorial(Rule):
+    '''
+    1. (m+1) * m! = (m+1)!
+    '''
+    def __init__(self):
+        self.name = "RewriteFactorial"
+
+    def __str__(self):
+        return "RewriteFactorial"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.is_times() and e.args[1].ty == FUN and e.args[1].func_name == 'factorial':
+            if e.args[0].is_plus:
+                # (m+1) * m! = (m+1)!
+                m0,m1,c = e.args[1].args[0], e.args[0].args[0], e.args[0].args[1]
+                if m0.is_var() and m0 == m1 and c==Const(1):
+                    return Fun('factorial', e.args[0])
+        else:
             raise NotImplementedError

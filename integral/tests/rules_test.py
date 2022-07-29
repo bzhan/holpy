@@ -622,6 +622,8 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.ConstExprSubs('t', e))
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '0'))
         calc.perform_rule(rules.FullSimplify())
+        calc = Eq4_proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
 
         # proof  I = sqrt(2 * pi)
 
@@ -658,7 +660,9 @@ class RulesTest(unittest.TestCase):
         file_content = {
             "content": [st.export()]
         }
-        with open('./../examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
+        # with open('./../examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
+        #     json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
+        with open('integral/examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
             json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testWallis(self):
@@ -721,12 +725,107 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
         calc.perform_rule(rules.FullSimplify())
+        # print(st)
 
         file_content = {
             "content": [st.export()]
         }
         with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
             json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testGammaFunction(self):
+        # Overall goal
+        goal = parser.parse_expr("(INT x:[0,oo]. x^m*exp(-x)) = factorial(m)")
+
+        # Initial state
+        st = compstate.State("GammaFunction", goal)
+
+        # Make definition
+        Idef = compstate.FuncDef(parser.parse_expr("I(m) = (INT x:[0,oo]. x^m * exp(-x))"))
+        st.add_item(Idef)
+
+        # Condition: m is a positive integer
+        conds = conditions.Conditions()
+        conds.add_condition("m", parser.parse_expr("m >= 0"))
+        # conds.add_condition("m", parser.parse_expr("isInteger(m)"))
+
+        # proof: lim {t->oo}. exp(-t) * t^m = 0
+        Eq0 = compstate.Goal(parser.parse_expr("(LIM {t->oo}. exp(-t) * t^(m+1)) = 0"), conds=conds)
+        st.add_item(Eq0)
+        Eq0_proof = Eq0.proof_by_induction("m")
+        Eq0_proof_base = Eq0_proof.base_case.proof_by_calculation()
+        Eq0_proof_induct = Eq0_proof.induct_case.proof_by_calculation()
+        calc = Eq0_proof_base.lhs_calc
+        calc.perform_rule(rules.OnLocation(rules.Mul2Div(1), '0'))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '0.1'))
+        calc.perform_rule(rules.LHopital())
+        calc.perform_rule(rules.LimitSimplify())
+        calc = Eq0_proof_induct.lhs_calc
+        calc.perform_rule(rules.OnLocation(rules.Mul2Div(0), '0'))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '0.1'))
+        e = parser.parse_expr("(m+1) + (1)")
+        calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.0.1'))
+        calc.perform_rule(rules.OnLocation(rules.SimplifyPower(), '0.0'))
+        calc.perform_rule(rules.OnLocation(rules.Distribution(),'0'))
+        calc.perform_rule(rules.LimSep())
+        calc.perform_rule(rules.OnLocation(rules.Div2Mul(), '0.0'))
+        calc.perform_rule(rules.OnLocation(rules.Simplify(), '0.0'))
+        calc.perform_rule(rules.OnLocation(rules.Swap(), '0.0.1.1'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation('IH'), '0'))
+        calc.perform_rule(rules.FullSimplify())
+        # proof: (m+1)*I(m) = I(m+1)
+        Eq1 = compstate.Goal(parser.parse_expr("(m+1) * I(m) = I(m+1)"), conds = conds)
+        st.add_item(Eq1)
+        Eq1_proof = Eq1.proof_by_calculation()
+        calc = Eq1_proof.lhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '1'))
+        calc.perform_rule(rules.Distribution())
+        calc.perform_rule(rules.FullSimplify())
+        calc = Eq1_proof.rhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ElimInfInterval())
+        calc.perform_rule(rules.OnLocation(rules.Swap(), '0.0.0'))
+        calc.perform_rule(rules.OnLocation(rules.Assoc(), '0.0'))
+        calc.perform_rule(rules.OnLocation(rules.CompositePower(), '0.0.1'))
+        e1 = parser.parse_expr('x^(m+1)')
+        e2 = parser.parse_expr('-exp(-x)')
+        calc.perform_rule(rules.OnLocation(rules.IntegrationByParts(e1,e2),'0'))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '0.0'))
+        calc.perform_rule(rules.LimSep())
+        calc.perform_rule(rules.OnLocation(rules.RewriteLimit(), '1'))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '1'))
+        calc.perform_rule(rules.OnLocation(rules.Linearity(), '0'))
+        calc.perform_rule(rules.OnLocation(rules.Swap(), '0.0.0.0'))
+        calc.perform_rule(rules.OnLocation(rules.Assoc(), '0.0.0'))
+        calc.perform_rule(rules.OnLocation(rules.CompositePower(), '0.0.0.1'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq0.goal), '0.0'))
+        calc.perform_rule(rules.FullSimplify())
+        # proof I(m) = m !
+        Eq2 = compstate.Goal(parser.parse_expr("I(m) = factorial(m)"), conds=conds)
+        st.add_item(Eq2)
+        # I(0) = factorial(0)
+        Eq2_proof = Eq2.proof_by_induction("m")
+        Eq2_proof_base = Eq2_proof.base_case.proof_by_calculation()
+        Eq2_proof_induct = Eq2_proof.induct_case.proof_by_calculation()
+        calc = Eq2_proof_base.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ElimInfInterval())
+        calc.perform_rule(rules.OnLocation(rules.Substitution('y',parser.parse_expr('-x')),'0'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '0'))
+        calc.perform_rule(rules.FullSimplify())
+        calc = Eq2_proof_induct.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(Eq1.goal))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation('IH'), '1'))
+        calc.perform_rule(rules.RewriteFactorial())
+        file_content = {
+            "content": [st.export()]
+        }
+        with open('integralexamples/GammaFunction.json', 'w', encoding='utf-8') as f:
+            json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
+
 
     def testMul2Div(self):
         test_data = [

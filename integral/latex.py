@@ -168,6 +168,11 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 return "\\arccos{(%s)}" % sx
             elif e.func_name in ('log', 'sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
                 return "\\%s{(%s)}" % (e.func_name, sx)
+            elif e.func_name == 'factorial':
+                if x.is_var():
+                    return "%s!" % sx
+                else:
+                    return "(%s)!" % sx
             else:
                 return "%s{(%s)}" % (e.func_name, sx)
         elif len(e.args) == 2:
