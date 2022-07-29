@@ -25,7 +25,7 @@ real_derivative = term.Const('real_derivative', TFun(TFun(RealType, RealType), R
 real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(RealType, RealType), RealType))
 
 
-VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF = range(10)
+VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF, INDEFINITEINTEGRAL = range(11)
 
 op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50, "<": 50, ">": 50, "<=": 50, ">=": 50
@@ -248,6 +248,9 @@ class Expr:
     def is_integral(self):
         return self.ty == INTEGRAL
 
+    def is_indefinite_integral(self):
+        return self.ty == INDEFINITEINTEGRAL
+
     def is_evalat(self):
         return self.ty == EVAL_AT
 
@@ -371,7 +374,7 @@ class Expr:
                 raise NotImplementedError
         elif self.ty == FUN:
             return 95
-        elif self.ty in (DERIV, INTEGRAL, EVAL_AT):
+        elif self.ty in (DERIV, INTEGRAL, EVAL_AT, INDEFINITEINTEGRAL):
             return 10
         elif self.ty == LIMIT:
             return 5
@@ -539,6 +542,9 @@ class Expr:
                 res.add(t.var)
                 rec(t.lower)
                 rec(t.upper)
+                rec(t.body)
+            elif t.ty == INDEFINITEINTEGRAL:
+                res.add(t.var)
                 rec(t.body)
             else:
                 raise NotImplementedError
@@ -1292,6 +1298,19 @@ def collect_spec_expr(expr, symb):
     c = [p.args[0] for p, _, _ in find_pattern(expr, symb) if len(p.args) != 0]
     return c   
 
+def decompose_expr_add(e):
+    res = []
+    def f(e):
+        if e.ty == OP and e.op == '+':
+            f(e.args[0])
+            f(e.args[1])
+        else:
+            res.append(e)
+
+    f(e)
+    return res
+
+
 def decompose_expr_factor(e):
     """Get production factors from expr.
     
@@ -1397,21 +1416,21 @@ def deriv(var: str, e: Expr) -> Expr:
     elif e.ty == OP:
         if e.op == "+":
             x, y = e.args
-            return (deriv(var, x) + deriv(var, y)).normalize()
+            return (deriv(var, x) + deriv(var, y))
         elif e.op == "-" and len(e.args) == 2:
             x, y = e.args
-            return (deriv(var, x) - deriv(var, y)).normalize()
+            return (deriv(var, x) - deriv(var, y))
         elif e.op == "-" and len(e.args) == 1:
             x, = e.args
-            return (-(deriv(var, x))).normalize()
+            return (-(deriv(var, x)))
         elif e.op == "*":
             x, y = e.args
             if not x.contains_var(var):
-                return (x * deriv(var, y)).normalize()
+                return (x * deriv(var, y))
             elif not y.contains_var(var):
-                return (deriv(var, x) * y).normalize()
+                return (deriv(var, x) * y)
             else:
-                return (x * deriv(var, y) + deriv(var, x) * y).normalize()
+                return (x * deriv(var, y) + deriv(var, x) * y)
         elif e.op == "/":
             x, y = e.args
             if not y.contains_var(var):
@@ -1422,45 +1441,45 @@ def deriv(var: str, e: Expr) -> Expr:
                 return deriv(var, x * (y.args[0] ^ (-y.args[1])))
             else:
                 # general case
-                return (deriv(var, x) * y - x * deriv(var, y)).normalize() / (y ^ Const(2)).normalize()
+                return (deriv(var, x) * y - x * deriv(var, y)) / (y ^ Const(2))
         elif e.op == "^":
             x, y = e.args
             if y.ty == CONST:
-                return (y * (x ^ Const(y.val - 1)) * deriv(var, x)).normalize()
+                return (y * (x ^ Const(y.val - 1)) * deriv(var, x))
             elif var not in y.get_vars():
-                return (y * (x ^ (y - 1)) * deriv(var, x)).normalize()
+                return (y * (x ^ (y - 1)) * deriv(var, x))
             else:
-                return (e * deriv(var, exp(y * log(x)))).normalize()
+                return (e * deriv(var, exp(y * log(x))))
         else:
             raise NotImplementedError
     elif e.ty == FUN:
         if e.func_name == "sin":
             x, = e.args
-            return (cos(x) * deriv(var, x)).normalize()
+            return (cos(x) * deriv(var, x))
         elif e.func_name == "cos":
             x, = e.args
-            return (-(sin(x) * deriv(var, x))).normalize()
+            return (-(sin(x) * deriv(var, x)))
         elif e.func_name == "tan":
             x, = e.args
-            return ((sec(x) ^ Const(2)) * deriv(var, x)).normalize()
+            return ((sec(x) ^ Const(2)) * deriv(var, x))
         elif e.func_name == "sec":
             x, = e.args
-            return (sec(x) * tan(x) * deriv(var, x)).normalize()
+            return (sec(x) * tan(x) * deriv(var, x))
         elif e.func_name == "csc":
             x, = e.args
-            return (-csc(x) * cot(x) * deriv(var, x)).normalize()
+            return (-csc(x) * cot(x) * deriv(var, x))
         elif e.func_name == "cot":
             x,  = e.args
-            return -(csc(x) ^ Const(2)).normalize()
+            return -(csc(x) ^ Const(2))
         elif e.func_name == "cot":
             x, = e.args
-            return (-(sin(x) ^ Const(-2)) * deriv(var, x)).normalize()
+            return (-(sin(x) ^ Const(-2)) * deriv(var, x))
         elif e.func_name == "log":
             x, = e.args
-            return (deriv(var, x) / x).normalize()
+            return (deriv(var, x) / x)
         elif e.func_name == "exp":
             x, = e.args
-            return (exp(x) * deriv(var, x)).normalize()
+            return (exp(x) * deriv(var, x))
         elif e.func_name == "pi":
             return Const(0)
         elif e.func_name == "sqrt":
@@ -1486,6 +1505,10 @@ def deriv(var: str, e: Expr) -> Expr:
             return Const(0)
         else:
             raise NotImplementedError
+    elif e.ty == INTEGRAL:
+        return Integral(e.var, e.lower, e.upper, deriv(var, e.body)) + \
+               e.body.subst(e.var, e.upper) * deriv(var, e.upper) - \
+               e.body.subst(e.var, e.lower) * deriv(var, e.lower)
     else:
         raise NotImplementedError
 
@@ -1495,6 +1518,7 @@ class Var(Expr):
         assert isinstance(name, str)
         self.ty = VAR
         self.name = name
+
 
     def __hash__(self):
         return hash((VAR, self.name))
@@ -1516,6 +1540,7 @@ class Const(Expr):
         if isinstance(val, Decimal):
             val = Fraction(val)
         self.val = val
+
 
     def __hash__(self):
         return hash((CONST, self.val))
@@ -1543,6 +1568,7 @@ class Op(Expr):
         self.op = op
         self.args = tuple(args)
 
+
     def __hash__(self):
         return hash((OP, self.op, tuple(self.args)))
 
@@ -1564,7 +1590,7 @@ class Op(Expr):
             if a.priority() <= op_priority[self.op]:
                 if a.ty == OP and a.op != self.op:
                     s1 = "(%s)" % s1
-                elif a.ty in (EVAL_AT, INTEGRAL, DERIV, LIMIT):
+                elif a.ty in (EVAL_AT, INTEGRAL, DERIV, LIMIT, INDEFINITEINTEGRAL):
                     s1 = "(%s)" % s1
             if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
                 s2 = "(%s)" % s2
@@ -1589,6 +1615,7 @@ class Fun(Expr):
         self.ty = FUN
         self.func_name = func_name
         self.args = tuple(args)
+
 
     def __hash__(self):
         return hash((FUN, self.func_name, self.args))
@@ -1627,6 +1654,7 @@ class Limit(Expr):
         self.lim = lim
         self.body = body
         self.drt = drt
+
 
     def __eq__(self, other):
         return isinstance(other, Limit) and other.var == self.var and \
@@ -1675,6 +1703,7 @@ class Inf(Expr):
         assert t in (Decimal("inf"), Decimal("-inf"))
         self.ty = INF
         self.t = t
+
 
     def __str__(self):
         if self.t == Decimal("inf"):
@@ -1757,6 +1786,7 @@ class Deriv(Expr):
         self.var = var
         self.body = body
 
+
     def __hash__(self):
         return hash((DERIV, self.var, self.body))
 
@@ -1769,6 +1799,33 @@ class Deriv(Expr):
     def __repr__(self):
         return "Deriv(%s,%s)" % (self.var, repr(self.body))
 
+class IndefiniteIntegral(Expr):
+    """Indefinite integral of an expression."""
+
+    def __init__(self, var: str, body: Expr):
+        assert isinstance(var, str) and isinstance(body, Expr)
+        self.ty = INDEFINITEINTEGRAL
+        self.var = var
+        self.body = body
+
+
+    def __hash__(self):
+        return hash((INDEFINITEINTEGRAL, self.var, self.body))
+
+    def __eq__(self, other):
+        return other.ty == INDEFINITEINTEGRAL and self.body == other.alpha_convert(self.var).body
+
+    def __str__(self):
+        return "INT %s. %s" % (self.var, str(self.body))
+
+    def __repr__(self):
+        return "Indefinite integral(%s,%s)" % (self.var, repr(self.body))
+
+    def alpha_convert(self, new_name):
+        """Change the variable of integration to new_name."""
+        assert isinstance(new_name, str), "alpha_convert"
+        return Integral(new_name, self.body.subst(self.var, Var(new_name)))
+
 
 class Integral(Expr):
     """Integral of an expression."""
@@ -1780,6 +1837,7 @@ class Integral(Expr):
         self.lower = lower
         self.upper = upper
         self.body = body
+
 
     def __hash__(self):
         return hash((INTEGRAL, self.var, self.lower, self.upper, self.body))
@@ -1811,6 +1869,7 @@ class EvalAt(Expr):
         self.upper = upper
         self.body = body
 
+
     def __hash__(self):
         return hash((EVAL_AT, self.var, self.lower, self.upper, self.body))
 
@@ -1831,6 +1890,7 @@ class Symbol(Expr):
         self.name = name
         self.ty = SYMBOL
         self.pat = tuple(ty)
+
     
     def __eq__(self, other):
         if not isinstance(other, Symbol):

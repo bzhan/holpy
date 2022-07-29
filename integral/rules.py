@@ -7,10 +7,11 @@ import sympy
 import functools
 import sympy.series.limits
 
-from integral import poly, expr
+from integral import poly, expr, conditions
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
     sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, \
-    DERIV, decompose_expr_factor, Deriv, Inf, INF, Limit, NEG_INF, POS_INF
+    DERIV, decompose_expr_factor, Deriv, Inf, INF, Limit, NEG_INF, POS_INF, IndefiniteIntegral, INDEFINITEINTEGRAL, \
+    SYMBOL
 from integral import parser
 from sympy import Interval, expand_multinomial, apart
 from sympy.solvers import solvers, solveset
@@ -81,28 +82,40 @@ class Linearity(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if e.ty != expr.INTEGRAL:
-            return e
+        # if e.ty != expr.INTEGRAL:
+        #     return e
 
         rec = Linearity().eval
-
-        if e.body.is_plus():
-            return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) + \
-                   rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
-        elif e.body.is_uminus():
-            return -rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0]))
-        elif e.body.is_minus():
-            return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) - \
-                   rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
-        elif e.body.is_times():
-            factors = decompose_expr_factor(e.body)
-            if not factors[0].contains_var(e.var):
-                return factors[0] * rec(expr.Integral(e.var, e.lower, e.upper, 
-                            functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
+        if e.ty == expr.INTEGRAL:
+            if e.body.is_plus():
+                return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) + \
+                       rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
+            elif e.body.is_uminus():
+                return -rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0]))
+            elif e.body.is_minus():
+                return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) - \
+                       rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
+            elif e.body.is_times():
+                factors = decompose_expr_factor(e.body)
+                if not factors[0].contains_var(e.var):
+                    return factors[0] * rec(expr.Integral(e.var, e.lower, e.upper,
+                                functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
+                else:
+                    return e
+            elif e.body.is_constant() and e.body != Const(1):
+                return e.body * expr.Integral(e.var, e.lower, e.upper, Const(1))
             else:
                 return e
-        elif e.body.is_constant() and e.body != Const(1):
-            return e.body * expr.Integral(e.var, e.lower, e.upper, Const(1))
+        elif e.ty == INDEFINITEINTEGRAL:
+            if e.body.is_times():
+                factors = decompose_expr_factor(e.body)
+                if conditions.is_const(factors[0], conds):
+                    return factors[0] * rec(expr.IndefiniteIntegral(e.var,\
+                                functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
+                else:
+                    return e
+            else:
+                return e
         else:
             return e
 
@@ -309,6 +322,10 @@ class OnLocation(Rule):
                     return Limit(cur_e.var, rec(cur_e.lim, loc.rest), cur_e.body, drt=cur_e.drt)
                 else:
                     raise AssertionError("OnLocation: invalid location")
+
+            elif cur_e.ty == INDEFINITEINTEGRAL:
+                assert loc.head == 0, "OnLocation: invalid location"
+                return IndefiniteIntegral(cur_e.var, rec(cur_e.body, loc.rest))
             else:
                 raise NotImplementedError
 
@@ -430,10 +447,15 @@ class ApplyEquation(Rule):
             return self.eq.rhs
         elif e == self.eq.rhs:
             # e' = e
-            return self.eqeq.lhs
+            return self.eq.lhs
         elif self.eq.rhs.is_times() and self.eq.rhs.args[1] == e:
             # e' = f * e
             return 1 / self.eq.rhs.args[0] * self.eq.lhs
+        elif self.eq.rhs.is_plus() and self.eq.rhs.args[1] == e:
+            res = self.eq.lhs - self.eq.rhs.args[0]
+            if conditions.is_const(e,conds):
+                conds.add_condition(str(res), Fun('isConst',res))
+            return res
         else:
             return e
 
@@ -733,9 +755,10 @@ class RewriteTrigonometric(Rule):
 
 class ElimAbs(Rule):
     """Eliminate abstract value."""
+
     def __init__(self):
         self.name = "ElimAbs"
-    
+
     def __str__(self):
         return "eliminate absolute values"
 
@@ -747,7 +770,7 @@ class ElimAbs(Rule):
 
     def check_zero_point(self, e):
         integrals = e.separate_integral()
-        #print("e.sep:",integrals)
+        # print("e.sep:",integrals)
         if not integrals:
             return False
         abs_info = []
@@ -757,48 +780,46 @@ class ElimAbs(Rule):
         zero_point = []
         for a, i in abs_info:
             arg = a.args[0]
-            zeros = solveset(expr.sympy_style(arg), expr.sympy_style(i.var), Interval(sympy_style(i.lower), sympy_style(i.upper), left_open = True, right_open = True))
+            zeros = solveset(expr.sympy_style(arg), expr.sympy_style(i.var),
+                             Interval(sympy_style(i.lower), sympy_style(i.upper), left_open=True, right_open=True))
             zero_point += zeros
         return len(zero_point) > 0
 
-    '''
-    比如INT x:[-2,3]. |x-2| 故get_zero_point = 2
-    '''
     def get_zero_point(self, e):
-        # 收集积分中被积表达式中的所有abs表达式
+
         abs_expr = e.body.get_abs()
         zero_point = []
-        
+
         for a in abs_expr:
-            '''
-               例如 a = |x+2| = abs(x+2)
-               所以 args[0] = x+2 #即表达式
-            '''
             arg = a.args[0]
-            # 调用sympy
-            zeros = solveset(expr.sympy_style(arg), expr.sympy_style(e.var), Interval(sympy_style(e.lower), sympy_style(e.upper), left_open = True, right_open = True))
-            # [] += []
+            zeros = solveset(expr.sympy_style(arg), expr.sympy_style(e.var),
+                             Interval(sympy_style(e.lower), sympy_style(e.upper), left_open=True, right_open=True))
             zero_point += zeros
         return holpy_style(zero_point[0])
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if e.ty != expr.INTEGRAL:
+        if e.ty == expr.INTEGRAL:
+            abs_expr = e.body.get_abs()
+            if len(abs_expr) == 0:
+                return e
+
+            abs_expr = abs_expr[0]  # only consider the first absolute value
+
+            g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper)  # g: value in abs > 0, s: value in abs < 0
+            new_integral = []
+            for l, h in g:
+                new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, abs_expr.args[0])))
+            for l, h in s:
+                new_integral.append(
+                    expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
+            return sum(new_integral[1:], new_integral[0])
+        elif e.ty == expr.FUN and e.func_name == 'abs':
+            if conds != None and is_positive(e.args[0], conds):
+                return e.args[0]
+            else:
+                raise NotImplementedError
+        else:
             return e
-
-        abs_expr = e.body.get_abs()
-        if len(abs_expr) == 0:
-            return e
-
-        abs_expr = abs_expr[0]  # only consider the first absolute value
-
-        g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
-        new_integral = []
-        for l, h in g:
-            new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, abs_expr.args[0])))
-        for l, h in s:
-            new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
-        return sum(new_integral[1:], new_integral[0])
-
 
 class SplitRegion(Rule):
     """Split integral into two parts at a point."""
@@ -1603,9 +1624,9 @@ class LimitSimplify(Rule):
 
 class DerivIntExchange(Rule):
     """Exchanging derivative and integral"""
-    def __init__(self):
+    def __init__(self, const_var = None):
         self.name = "DerivIntExchange"
-
+        self.const_var = const_var
     def __str__(self):
         return "exchange derivative and integral"
 
@@ -1616,11 +1637,28 @@ class DerivIntExchange(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if not e.is_deriv() or not e.body.is_integral():
-            raise AssertionError("DerivIntExchange: unexpected form of input")
-
-        v1, v2 = e.var, e.body.var
-        return Integral(v2, e.body.lower, e.body.upper, Deriv(v1, e.body.body))
+        # if not e.is_deriv() or not e.body.is_integral():
+        #     raise AssertionError("DerivIntExchange: unexpected form of input")
+        if e.is_deriv and e.body.is_integral():
+            v1, v2 = e.var, e.body.var
+            return Integral(v2, e.body.lower, e.body.upper, Deriv(v1, e.body.body))
+        elif e.is_deriv() and e.body.is_indefinite_integral():
+            if conds != None:
+                const_vname = self.const_var
+                const_v = Var(const_vname)
+                conds.add_condition(const_vname, parser.parse_expr("isConst("+const_vname+")"))
+                ne = IndefiniteIntegral(e.var, Deriv(e.var, e.body.body)) + const_v
+                return ne
+            else:
+                raise NotImplementedError
+        elif e.is_indefinite_integral() and e.body.is_deriv():
+            const_vname = self.const_var
+            const_v = Var(const_vname)
+            conds.add_condition(const_vname, parser.parse_expr("isConst(" + const_vname + ")"))
+            ne = Deriv(e.var, IndefiniteIntegral(e.var, e.body.body)) + const_v
+            return ne
+        else:
+            raise NotImplementedError
 
 
 class ExpandDefinition(Rule):
@@ -1831,4 +1869,228 @@ class ExtractFromRoot(Rule):
             if self.sign == -1:
                 return -self.u * expr.Fun('sqrt', e.args[0]/(self.u^2))
         else:
+            raise NotImplementedError
+
+class RewriteExp(Rule):
+    def __init__(self):
+        self.name = "RewriteExp"
+
+    def __str__(self):
+        return "rewrite exp expression"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.ty != FUN and e.func_name != 'exp':
+            return e
+        b = e.args[0]
+        if b.ty == OP and b.op == '+':
+            a1,a2 = b.args
+            return Fun('exp',a1) * Fun('exp',a2)
+        else:
+            raise NotImplementedError
+
+# class Div2Add(Rule):
+#     def __init__(self):
+#         self.name = "Div2Add"
+#
+#     def __str__(self):
+#         return "rewrite divsion to add"
+#
+#     def export(self):
+#         return {
+#             "name": self.name,
+#             "str": str(self)
+#         }
+#
+#     def eval(self, e: Expr, conds=None) -> Expr:
+#         if e.ty != OP or e.op != '/':
+#             return e
+#         numer = e.args[0]
+#         if numer.ty == OP and numer.op == '+':
+#             a,b = numer.args
+#             return a / e.args[1] + b / e.args[1]
+#         else:
+#             raise NotImplementedError
+#
+# class Div2Mul(Rule):
+#     def __init__(self):
+#         self.name = "Div2Mul"
+#
+#     def __str__(self):
+#         return "rewrite divsion to multiplication"
+#
+#     def export(self):
+#         return {
+#             "name": self.name,
+#             "str": str(self)
+#         }
+#     def eval(self, e: Expr, conds=None) -> Expr:
+#         if e.ty != OP or e.op != '/':
+#             return e
+#         return e.args[0] * (e.args[1]^-1)
+
+class Assoc(Rule):
+    def __init__(self):
+        self.name = "Assoc"
+
+    def __str__(self):
+        return "Assoc"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.ty != OP:
+            return e
+        if e.op == '/':
+            if e.args[0].op == '*':
+                return e.args[0].args[0] * (e.args[0].args[1] / e.args[1])
+            else:
+                raise NotImplementedError
+        else:
+            raise NotImplementedError
+
+class DerivIndefiniteIntegralRewrite(Rule):
+    def __init__(self, var:str):
+        self.name = "DerivIndefiniteIntegralRewrite"
+        self.var = var
+    def __str__(self):
+        return "DerivIndefiniteIntegralRewrite"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self),
+            'var': self.var
+        }
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.ty == DERIV and e.body.ty == INDEFINITEINTEGRAL:
+            return e.body.body
+        else:
+            return Deriv(self.var, expr.IndefiniteIntegral(self.var, e))
+
+class Distribution(Rule):
+    def __init__(self):
+        self.name = "Distribution"
+
+    def __str__(self):
+        return "Distribution"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.ty == OP and e.op == '*' and e.args[1].ty == OP and e.args[1].op == '+':
+            return e.args[0] * e.args[1].args[0] + e.args[0] * e.args[1].args[1]
+        else:
+            raise NotImplementedError
+
+class RewriteConstVars(Rule):
+    '''rewrite all const exprs which contains const var to a const var
+        for example  2*C0 + 3*C1 + INT x. exp(x) -> C + INT x.exp(x)
+    '''
+    def __init__(self, const_var:str):
+        self.name = "RewriteConstVars"
+        self.const_var = const_var
+
+    def __str__(self):
+        return "RewriteConstVars"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+    def eval(self, e: Expr, conds=None) -> Expr:
+        adds = expr.decompose_expr_add(e)
+        res = Const(0)
+        const_vars = conditions.get_const_vars(e, conds)
+        first = True
+        for item in adds:
+            if not conditions.is_const(item, conds):
+                if first:
+                    res = item
+                    first = False
+                else:
+                    res = res + item
+        # remove const conds C0,C1...
+        for item in const_vars:
+            conds.data.pop(item)
+        const_v = Var(self.const_var)
+        conds.add_condition(self.const_var,parser.parse_expr("isConst("+self.const_var+")"))
+        return res + const_v
+
+
+class ConstExprSubs(Rule):
+    '''if e is a const expr(could contains const var),
+        then we can replace a var with any expression
+        '''
+
+    def __init__(self, var:str, var_subs:Expr):
+        self.name = "ConstExprSubs"
+        self.var = var
+        self.var_subs = var_subs
+
+    def __str__(self):
+        return "ConstExprSubs"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if conds != None and conditions.is_const(e, conds):
+            return e.replace(Var(self.var), self.var_subs)
+        else:
+            print(e)
+            raise NotImplementedError
+
+class RewriteLimit(Rule):
+    ''' '''
+    def __init__(self):
+        self.name = "RewriteLimit"
+
+    def __str__(self):
+        return "RewriteLimit"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        return e.body.replace(Var(e.var), e.lim)
+
+class LimIntExchange(Rule):
+
+    def __init__(self):
+        self.name = "LimIntExchange"
+
+    def __str__(self):
+        return "LimIntExchange"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        print(e)
+        if e.ty == LIMIT and e.body.is_integral():
+            return Integral(e.body.var, e.body.lower, e.body.upper, Limit(e.var, e.lim, e.body.body))
+        else:
+            print(e)
             raise NotImplementedError
