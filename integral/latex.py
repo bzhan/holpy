@@ -138,8 +138,12 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                     if y.priority() <= e.priority():
                         sy = "(%s)" % sy
                     return "%s/%s" % (sx, sy)
-            elif e.op == "=":
-                return "%s = %s" % (sx, sy)
+            elif e.op in ("=", "<", ">"):
+                return "%s %s %s" % (sx, e.op, sy)
+            elif e.op == '<=':
+                return "%s \\le %s" % (sx, sy)
+            elif e.op == ">=":
+                return "%s \\ge %s" % (sx, sy)
             else:
                 raise NotImplementedError
         else:

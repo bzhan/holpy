@@ -44,6 +44,10 @@ a.dropdown-item {
   font-family: MathJax_Main;
 }
 
+.math-text-italic {
+  font-family: MathJax_Math-italic;
+}
+
 .indented-text {
   margin-left: 0.8em;
 }

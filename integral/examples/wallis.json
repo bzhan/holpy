@@ -3,12 +3,28 @@
         {
             "items": [
                 {
+                    "conds": [
+                        {
+                            "cond": "b > 0",
+                            "latex_cond": "b > 0",
+                            "name": "b",
+                            "type": "Condition"
+                        }
+                    ],
                     "eq": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
                     "latex_eq": "I(m,b) = \\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + b) ^ {m + 1}} \\,dx",
                     "latex_lhs": "I(m,b)",
                     "type": "FuncDef"
                 },
                 {
+                    "conds": [
+                        {
+                            "cond": "b > 0",
+                            "latex_cond": "b > 0",
+                            "name": "b",
+                            "type": "Condition"
+                        }
+                    ],
                     "goal": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
                     "latex_goal": "\\frac{d}{db} I(m,b) = -(m + 1) I(m + 1,b)",
                     "proof": {
@@ -93,10 +109,26 @@
                     "type": "Goal"
                 },
                 {
+                    "conds": [
+                        {
+                            "cond": "b > 0",
+                            "latex_cond": "b > 0",
+                            "name": "b",
+                            "type": "Condition"
+                        }
+                    ],
                     "goal": "I(m,b) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                     "latex_goal": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
                     "proof": {
                         "base_case": {
+                            "conds": [
+                                {
+                                    "cond": "b > 0",
+                                    "latex_cond": "b > 0",
+                                    "name": "b",
+                                    "type": "Condition"
+                                }
+                            ],
                             "goal": "I(0,b) = 1/2 * pi * b ^ (-1/2)",
                             "latex_goal": "I(0,b) = \\frac{1}{2} \\pi b ^ {-1/2}",
                             "proof": {
@@ -204,6 +236,20 @@
                         },
                         "goal": "I(m,b) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                         "induct_case": {
+                            "conds": [
+                                {
+                                    "cond": "b > 0",
+                                    "latex_cond": "b > 0",
+                                    "name": "b",
+                                    "type": "Condition"
+                                },
+                                {
+                                    "cond": "I(m,b) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
+                                    "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
+                                    "name": "IH",
+                                    "type": "Condition"
+                                }
+                            ],
                             "goal": "I(m + 1,b) = pi * b ^ (3/2 + m) ^ -1 * 2 ^ (3 + 2 * m) ^ -1 * binom(2 + 2 * m,1 + m)",
                             "latex_goal": "I(m + 1,b) = \\pi (b ^ {3/2 + m}) ^ {-1} (2 ^ {3 + 2 m}) ^ {-1} \\binom{2 + 2 m}{1 + m}",
                             "proof": {
