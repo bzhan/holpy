@@ -6,7 +6,7 @@ from msilib.schema import Condition
 from typing import Optional, Tuple, Union
 
 from integral.expr import Expr, Eq, Var, Const
-from integral import rules
+from integral import rules, expr
 from integral.rules import Rule
 from integral.conditions import Conditions
 from integral import conditions
@@ -104,6 +104,8 @@ class FuncDef(StateItem):
 class Goal(StateItem):
     """Goal to be proved."""
     def __init__(self, goal: Expr, conds: Optional[Conditions] = None):
+        if goal.is_equals():
+            goal = expr.Op('=', goal.args[0].normalize(), goal.args[1].normalize())
         self.goal = goal
         if conds is None:
             conds = Conditions()
@@ -132,8 +134,8 @@ class Goal(StateItem):
         self.proof = CalculationProof(self.goal, conds=self.conds)
         return self.proof
 
-    def proof_by_induction(self, induct_var: str):
-        self.proof = InductionProof(self.goal, induct_var, conds=self.conds)
+    def proof_by_induction(self, induct_var: str, start:int=0):
+        self.proof = InductionProof(self.goal, induct_var, conds=self.conds,start = start)
         return self.proof
 
     def get_by_label(self, label: Label):
@@ -292,8 +294,9 @@ class InductionProof(StateItem):
     base case and inductive case.
 
     """
-    def __init__(self, goal: Expr, induct_var: str, *, conds: Optional[Conditions] = None):
+    def __init__(self, goal: Expr, induct_var: str, *, conds: Optional[Conditions] = None, start = Const(0)):
         if not goal.is_equals():
+            print(str(goal))
             raise AssertionError("InductionProof: currently only support equation goals.")
 
         self.goal = goal
@@ -301,9 +304,9 @@ class InductionProof(StateItem):
         if conds is None:
             conds = Conditions()
         self.conds = conds
-
+        self.start = Const(start)
         # Base case: n = 0
-        eq0 = goal.subst(induct_var, Const(0)).normalize()
+        eq0 = goal.subst(induct_var, self.start).normalize()
         self.base_case = Goal(eq0, conds=self.conds)
         
         # Inductive case:
