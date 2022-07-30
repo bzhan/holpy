@@ -577,11 +577,11 @@ class RulesTest(unittest.TestCase):
         # prove I(t) = C * exp(-t^2 / 2)
 
 
-        print(st)
+        # print(st)
 
     def testProbabilityIntegral(self):
         # Overall goal
-        goal = parser.parse_expr("INT x:[-oo,oo]. exp(-(x^2)/2) = sqrt(2*pi)")
+        goal = parser.parse_expr("(INT x:[-oo,oo]. exp(-(x^2)/2)) = sqrt(2*pi)")
 
         # Initial state
         st = compstate.State('Probablity Integral', goal)
@@ -594,7 +594,7 @@ class RulesTest(unittest.TestCase):
 
         # Condition g(t) > 0
         e = parser.parse_expr('(INT x:[0,oo]. exp(-1/2 * x ^ 2)) > 0')
-        conds.add_condition('INT x:[0,oo]. exp(-1/2 * x ^ 2)', e)
+        conds.add_condition('INT x:[0,oo]. exp(-1/2 * x ^ 2) > 0', e)
 
         # Prove the following equality
         e = parser.parse_expr('(INT x:[-oo,oo].exp(-(x^2)/2)) = (2*sqrt(g(oo)))')
@@ -678,6 +678,7 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(Eq3.goal))
         e = Const(0)
         calc.perform_rule(rules.ConstExprSubs('t', e))
+
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '0'))
         calc.perform_rule(rules.FullSimplify())
         calc = Eq4_proof.rhs_calc
@@ -704,22 +705,18 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq3.goal), '1.0.0'))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq4.goal), '1.0.0.1'))
         calc.perform_rule(rules.OnLocation(rules.LimSep(), '1.0'))
-        calc.perform_rule(rules.OnLocation(rules.LimSep(), '1.0.0'))
-        calc.perform_rule(rules.OnLocation(rules.LimIntExchange(),'1.0.0.1'))
-        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(),'1.0.0.0'))
         calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '1.0.1'))
-        calc.perform_rule(rules.OnLocation(rules.LimSep(), '1.0.0.1.0'))
-        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '1.0.0.1.0.1'))
-        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '1.0.0.1.0.0'))
+        calc.perform_rule(rules.OnLocation(rules.LimSep(), '1.0.0'))
+        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '1.0.0.0'))
+        calc.perform_rule(rules.OnLocation(rules.LimIntExchange(), '1.0.0.1'))
+        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '1.0.0.1.0'))
         calc.perform_rule(rules.FullSimplify())
         calc = Eq6_proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-
+        # print(st)
         file_content = {
             "content": [st.export()]
         }
-        # with open('./../examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
-        #     json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
         with open('integral/examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
             json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
 
@@ -875,13 +872,11 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.RewriteFactorial())
         calc = Eq2_proof_induct.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        # print(st)
-        # calc.perform_rule(rules.OnLocation(rules.ApplyEquation('IH'), '1'))
-        # calc.perform_rule(rules.RewriteFactorial())
+        print(st)
         file_content = {
             "content": [st.export()]
         }
-        with open('./../examples/GammaFunction.json', 'w', encoding='utf-8') as f:
+        with open('integral/examples/GammaFunction.json', 'w', encoding='utf-8') as f:
             json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
 
 

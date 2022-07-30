@@ -104,8 +104,7 @@ class FuncDef(StateItem):
 class Goal(StateItem):
     """Goal to be proved."""
     def __init__(self, goal: Expr, conds: Optional[Conditions] = None):
-        if goal.is_equals():
-            goal = expr.Op('=', goal.args[0].normalize(), goal.args[1].normalize())
+
         self.goal = goal
         if conds is None:
             conds = Conditions()

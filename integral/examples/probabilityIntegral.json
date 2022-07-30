@@ -13,7 +13,7 @@
                         {
                             "cond": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) > 0",
                             "latex_cond": "\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\,dx > 0",
-                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2)",
+                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2) > 0",
                             "type": "Condition"
                         },
                         {
@@ -230,7 +230,7 @@
                         {
                             "cond": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) > 0",
                             "latex_cond": "\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\,dx > 0",
-                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2)",
+                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2) > 0",
                             "type": "Condition"
                         },
                         {
@@ -535,7 +535,7 @@
                         {
                             "cond": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) > 0",
                             "latex_cond": "\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\,dx > 0",
-                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2)",
+                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2) > 0",
                             "type": "Condition"
                         },
                         {
@@ -758,7 +758,7 @@
                         {
                             "cond": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) > 0",
                             "latex_cond": "\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\,dx > 0",
-                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2)",
+                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2) > 0",
                             "type": "Condition"
                         },
                         {
@@ -919,7 +919,7 @@
                         {
                             "cond": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) > 0",
                             "latex_cond": "\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\,dx > 0",
-                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2)",
+                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2) > 0",
                             "type": "Condition"
                         },
                         {
@@ -1000,7 +1000,7 @@
                         {
                             "cond": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) > 0",
                             "latex_cond": "\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\,dx > 0",
-                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2)",
+                            "name": "INT x:[0,oo]. exp(-1/2 * x ^ 2) > 0",
                             "type": "Condition"
                         },
                         {
@@ -1080,8 +1080,18 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "2 \\sqrt{(\\lim\\limits_{t\\to \\infty} -2) (\\lim\\limits_{t\\to \\infty} \\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) + (\\lim\\limits_{t\\to \\infty} (\\,\\frac{\\pi}{2}\\,))}",
-                                    "res": "2 * sqrt((LIM {t -> oo}. -2) * (LIM {t -> oo}. INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + (LIM {t -> oo}. pi / 2))",
+                                    "latex_res": "2 \\sqrt{(\\lim\\limits_{t\\to \\infty} (\\,-2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy)\\,)) + \\frac{\\pi}{2}}",
+                                    "res": "2 * sqrt((LIM {t -> oo}. -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2))) + pi / 2)",
+                                    "rule": {
+                                        "loc": "1.0.1",
+                                        "name": "LimitSimplify",
+                                        "str": "simplify limits at 1.0.1"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "2 \\sqrt{(\\lim\\limits_{t\\to \\infty} -2) (\\lim\\limits_{t\\to \\infty} \\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) + \\frac{\\pi}{2}}",
+                                    "res": "2 * sqrt((LIM {t -> oo}. -2) * (LIM {t -> oo}. INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + pi / 2)",
                                     "rule": {
                                         "loc": "1.0.0",
                                         "name": "LimSep",
@@ -1090,18 +1100,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "2 \\sqrt{(\\lim\\limits_{t\\to \\infty} -2) (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,\\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}}\\,) \\,dy) + (\\lim\\limits_{t\\to \\infty} (\\,\\frac{\\pi}{2}\\,))}",
-                                    "res": "2 * sqrt((LIM {t -> oo}. -2) * (INT y:[0,1]. LIM {t -> oo}. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + (LIM {t -> oo}. pi / 2))",
-                                    "rule": {
-                                        "loc": "1.0.0.1",
-                                        "name": "LimIntExchange",
-                                        "str": "LimIntExchange at 1.0.0.1"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,\\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}}\\,) \\,dy) + (\\lim\\limits_{t\\to \\infty} (\\,\\frac{\\pi}{2}\\,))}",
-                                    "res": "2 * sqrt(-2 * (INT y:[0,1]. LIM {t -> oo}. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + (LIM {t -> oo}. pi / 2))",
+                                    "latex_res": "2 \\sqrt{-2 (\\lim\\limits_{t\\to \\infty} \\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) + \\frac{\\pi}{2}}",
+                                    "res": "2 * sqrt(-2 * (LIM {t -> oo}. INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + pi / 2)",
                                     "rule": {
                                         "loc": "1.0.0.0",
                                         "name": "LimitSimplify",
@@ -1113,29 +1113,9 @@
                                     "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,\\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}}\\,) \\,dy) + \\frac{\\pi}{2}}",
                                     "res": "2 * sqrt(-2 * (INT y:[0,1]. LIM {t -> oo}. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + pi / 2)",
                                     "rule": {
-                                        "loc": "1.0.1",
-                                        "name": "LimitSimplify",
-                                        "str": "simplify limits at 1.0.1"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\frac{\\lim\\limits_{t\\to \\infty} e^{-(1 + y ^ {2}) t ^ {2}/2}}{\\lim\\limits_{t\\to \\infty} (\\,1 + y ^ {2}\\,)} \\,dy) + \\frac{\\pi}{2}}",
-                                    "res": "2 * sqrt(-2 * (INT y:[0,1]. (LIM {t -> oo}. exp((-(1 + y ^ 2) * t ^ 2) / 2)) / (LIM {t -> oo}. 1 + y ^ 2)) + pi / 2)",
-                                    "rule": {
-                                        "loc": "1.0.0.1.0",
-                                        "name": "LimSep",
-                                        "str": "separate limits at 1.0.0.1.0"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\frac{\\lim\\limits_{t\\to \\infty} e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) + \\frac{\\pi}{2}}",
-                                    "res": "2 * sqrt(-2 * (INT y:[0,1]. (LIM {t -> oo}. exp((-(1 + y ^ 2) * t ^ 2) / 2)) / (1 + y ^ 2)) + pi / 2)",
-                                    "rule": {
-                                        "loc": "1.0.0.1.0.1",
-                                        "name": "LimitSimplify",
-                                        "str": "simplify limits at 1.0.0.1.0.1"
+                                        "loc": "1.0.0.1",
+                                        "name": "LimIntExchange",
+                                        "str": "LimIntExchange at 1.0.0.1"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -1143,9 +1123,9 @@
                                     "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\frac{0}{1 + y ^ {2}} \\,dy) + \\frac{\\pi}{2}}",
                                     "res": "2 * sqrt(-2 * (INT y:[0,1]. 0 / (1 + y ^ 2)) + pi / 2)",
                                     "rule": {
-                                        "loc": "1.0.0.1.0.0",
+                                        "loc": "1.0.0.1.0",
                                         "name": "LimitSimplify",
-                                        "str": "simplify limits at 1.0.0.1.0.0"
+                                        "str": "simplify limits at 1.0.0.1.0"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -1243,8 +1223,18 @@
                                 "type": "CalculationStep"
                             },
                             {
-                                "latex_res": "2 \\sqrt{(\\lim\\limits_{t\\to \\infty} -2) (\\lim\\limits_{t\\to \\infty} \\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) + (\\lim\\limits_{t\\to \\infty} (\\,\\frac{\\pi}{2}\\,))}",
-                                "res": "2 * sqrt((LIM {t -> oo}. -2) * (LIM {t -> oo}. INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + (LIM {t -> oo}. pi / 2))",
+                                "latex_res": "2 \\sqrt{(\\lim\\limits_{t\\to \\infty} (\\,-2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy)\\,)) + \\frac{\\pi}{2}}",
+                                "res": "2 * sqrt((LIM {t -> oo}. -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2))) + pi / 2)",
+                                "rule": {
+                                    "loc": "1.0.1",
+                                    "name": "LimitSimplify",
+                                    "str": "simplify limits at 1.0.1"
+                                },
+                                "type": "CalculationStep"
+                            },
+                            {
+                                "latex_res": "2 \\sqrt{(\\lim\\limits_{t\\to \\infty} -2) (\\lim\\limits_{t\\to \\infty} \\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) + \\frac{\\pi}{2}}",
+                                "res": "2 * sqrt((LIM {t -> oo}. -2) * (LIM {t -> oo}. INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + pi / 2)",
                                 "rule": {
                                     "loc": "1.0.0",
                                     "name": "LimSep",
@@ -1253,18 +1243,8 @@
                                 "type": "CalculationStep"
                             },
                             {
-                                "latex_res": "2 \\sqrt{(\\lim\\limits_{t\\to \\infty} -2) (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,\\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}}\\,) \\,dy) + (\\lim\\limits_{t\\to \\infty} (\\,\\frac{\\pi}{2}\\,))}",
-                                "res": "2 * sqrt((LIM {t -> oo}. -2) * (INT y:[0,1]. LIM {t -> oo}. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + (LIM {t -> oo}. pi / 2))",
-                                "rule": {
-                                    "loc": "1.0.0.1",
-                                    "name": "LimIntExchange",
-                                    "str": "LimIntExchange at 1.0.0.1"
-                                },
-                                "type": "CalculationStep"
-                            },
-                            {
-                                "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,\\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}}\\,) \\,dy) + (\\lim\\limits_{t\\to \\infty} (\\,\\frac{\\pi}{2}\\,))}",
-                                "res": "2 * sqrt(-2 * (INT y:[0,1]. LIM {t -> oo}. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + (LIM {t -> oo}. pi / 2))",
+                                "latex_res": "2 \\sqrt{-2 (\\lim\\limits_{t\\to \\infty} \\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) + \\frac{\\pi}{2}}",
+                                "res": "2 * sqrt(-2 * (LIM {t -> oo}. INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + pi / 2)",
                                 "rule": {
                                     "loc": "1.0.0.0",
                                     "name": "LimitSimplify",
@@ -1276,29 +1256,9 @@
                                 "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,\\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}}\\,) \\,dy) + \\frac{\\pi}{2}}",
                                 "res": "2 * sqrt(-2 * (INT y:[0,1]. LIM {t -> oo}. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + pi / 2)",
                                 "rule": {
-                                    "loc": "1.0.1",
-                                    "name": "LimitSimplify",
-                                    "str": "simplify limits at 1.0.1"
-                                },
-                                "type": "CalculationStep"
-                            },
-                            {
-                                "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\frac{\\lim\\limits_{t\\to \\infty} e^{-(1 + y ^ {2}) t ^ {2}/2}}{\\lim\\limits_{t\\to \\infty} (\\,1 + y ^ {2}\\,)} \\,dy) + \\frac{\\pi}{2}}",
-                                "res": "2 * sqrt(-2 * (INT y:[0,1]. (LIM {t -> oo}. exp((-(1 + y ^ 2) * t ^ 2) / 2)) / (LIM {t -> oo}. 1 + y ^ 2)) + pi / 2)",
-                                "rule": {
-                                    "loc": "1.0.0.1.0",
-                                    "name": "LimSep",
-                                    "str": "separate limits at 1.0.0.1.0"
-                                },
-                                "type": "CalculationStep"
-                            },
-                            {
-                                "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\frac{\\lim\\limits_{t\\to \\infty} e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) + \\frac{\\pi}{2}}",
-                                "res": "2 * sqrt(-2 * (INT y:[0,1]. (LIM {t -> oo}. exp((-(1 + y ^ 2) * t ^ 2) / 2)) / (1 + y ^ 2)) + pi / 2)",
-                                "rule": {
-                                    "loc": "1.0.0.1.0.1",
-                                    "name": "LimitSimplify",
-                                    "str": "simplify limits at 1.0.0.1.0.1"
+                                    "loc": "1.0.0.1",
+                                    "name": "LimIntExchange",
+                                    "str": "LimIntExchange at 1.0.0.1"
                                 },
                                 "type": "CalculationStep"
                             },
@@ -1306,9 +1266,9 @@
                                 "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\frac{0}{1 + y ^ {2}} \\,dy) + \\frac{\\pi}{2}}",
                                 "res": "2 * sqrt(-2 * (INT y:[0,1]. 0 / (1 + y ^ 2)) + pi / 2)",
                                 "rule": {
-                                    "loc": "1.0.0.1.0.0",
+                                    "loc": "1.0.0.1.0",
                                     "name": "LimitSimplify",
-                                    "str": "simplify limits at 1.0.0.1.0.0"
+                                    "str": "simplify limits at 1.0.0.1.0"
                                 },
                                 "type": "CalculationStep"
                             },
@@ -1343,9 +1303,9 @@
                     "type": "CalculationProof"
                 }
             ],
-            "latex_problem": "\\int_{\\infty}^{\\infty} e^{-x ^ {2}/2} = \\sqrt{2 \\pi} \\,dx",
+            "latex_problem": "\\int_{\\infty}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{2 \\pi}",
             "name": "Probablity Integral",
-            "problem": "INT x:[-oo,oo]. exp(-(x ^ 2) / 2) = sqrt(2 * pi)"
+            "problem": "(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)"
         }
     ]
 }

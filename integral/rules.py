@@ -486,6 +486,11 @@ class ApplyEquation(Rule):
             if conditions.is_const(e,conds):
                 conds.add_condition(str(res), Fun('isConst',res))
             return res
+        elif self.eq.rhs.is_plus() and self.eq.rhs.args[0] == e:
+            res = self.eq.lhs - self.eq.rhs.args[1]
+            if conditions.is_const(e, conds):
+                conds.add_condition(str(res), Fun('isConst', res))
+            return res
         else:
             return e
 
@@ -850,7 +855,7 @@ class ElimAbs(Rule):
             if conds != None and is_positive(e.args[0], conds):
                 return e.args[0]
             else:
-                raise NotImplementedError
+                return e
         else:
             return e
 
@@ -1406,16 +1411,16 @@ def compute_limit(e: Expr, conds=None):
                 return (a1*a2, 'unknown', -1, "?")
         elif b2 == 'const' and b1 in ('pos_inf', 'neg_inf'):
             # Cases when the right side is constant, and left side is infinity
-            if a2.ty == CONST and a2.val > 0 and b1 == 'pos_inf':
+            if is_positive(a2,conds) and b1 == 'pos_inf':
                 # oo * pos = oo
                 return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
-            elif a2.ty == CONST and a2.val > 0 and b1 == 'neg_inf':
+            elif is_positive(a2,conds) and b1 == 'neg_inf':
                 # -oo * pos = -oo
                 return (Inf(Decimal('-inf')), 'neg_inf', c1, d1)
-            elif a2.ty == CONST and a2.val < 0 and b1 == 'pos_inf':
+            elif is_negative(a2, conds) and b1 == 'pos_inf':
                 # oo * neg = -oo
                 return (Inf(Decimal('-inf')), 'neg_inf', c1, d1)
-            elif a2.ty == CONST and a2.val < 0 and b1 == 'neg_inf':
+            elif is_negative(a2, conds) and b1 == 'neg_inf':
                 # -oo * neg = oo
                 return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
             else:

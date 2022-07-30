@@ -1853,6 +1853,8 @@ class Deriv(Expr):
         return hash((DERIV, self.var, self.body))
 
     def __eq__(self, other):
+        if other == None:
+            return False
         return other.ty == DERIV and self.var == other.var and self.body == other.body
 
     def __str__(self):
@@ -1905,6 +1907,8 @@ class Integral(Expr):
         return hash((INTEGRAL, self.var, self.lower, self.upper, self.body))
 
     def __eq__(self, other):
+        if other == None:
+            return False;
         return other.ty == INTEGRAL and self.lower == other.lower and self.upper == other.upper and \
                self.body == other.alpha_convert(self.var).body
 
