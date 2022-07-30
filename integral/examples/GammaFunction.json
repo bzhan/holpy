@@ -671,7 +671,8 @@
             ],
             "latex_problem": "\\int_{0}^{\\infty} x ^ {m} e^{-x} \\,dx = m!",
             "name": "GammaFunction",
-            "problem": "(INT x:[0,oo]. x ^ m * exp(-x)) = factorial(m)"
+            "problem": "(INT x:[0,oo]. x ^ m * exp(-x)) = factorial(m)",
+            "type": "CompState"
         }
     ]
 }
