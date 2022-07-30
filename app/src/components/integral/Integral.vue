@@ -53,11 +53,25 @@
       </div>
       <div v-if="content_state === true">
         <div v-for="(item, index) in content" :key="index" style="margin:5px 10px">
-          <div>{{item.name}}:</div>
-          <MathEquation
-            v-on:click.native="initialize(index)"
-            v-bind:data="'\\(' + item._problem_latex + '\\)'"
-            style="cursor:pointer"/>
+          <div v-if="'_problem_latex' in item">
+            <div>{{item.name}}:</div>
+            <MathEquation
+              v-on:click.native="initialize(index)"
+              v-bind:data="'\\(' + item._problem_latex + '\\)'"
+              style="cursor:pointer"/>
+          </div>
+          <div v-if="'type' in item && item.type == 'FuncDef'">
+            <div>Definition</div>
+            <MathEquation
+              v-bind:data="'\\(' + item.latex_eq + '\\)'"
+              style="cursor:pointer"/>
+          </div>
+          <div v-if="'type' in item && item.type == 'Goal'">
+            <div>Goal</div>
+            <MathEquation
+              v-bind:data="'\\(' + item.latex_goal + '\\)'"
+              style="cursor:pointer"/>
+          </div>
         </div>
       </div>
     </div>

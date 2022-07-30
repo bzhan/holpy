@@ -2,19 +2,19 @@
     "content": [
         {
             "eq": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
-            "latex_eq": "Gamma{(n)} = \\int_{0}^{\\infty} e^{-x} x ^ {n - 1} \\,dx",
-            "latex_lhs": "Gamma{(n)}",
+            "latex_eq": "\\Gamma{(n)} = \\int_{0}^{\\infty} e^{-x} x ^ {n - 1} \\,dx",
+            "latex_lhs": "\\Gamma{(n)}",
             "type": "FuncDef"
         },
         {
             "goal": "Gamma(n + 1) = n * Gamma(n)",
-            "latex_goal": "Gamma{(n + 1)} = n Gamma{(n)}",
+            "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
             "proof": {
                 "finished": false,
                 "goal": "Gamma(n + 1) = n * Gamma(n)",
-                "latex_goal": "Gamma{(n + 1)} = n Gamma{(n)}",
+                "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
                 "lhs_calc": {
-                    "latex_start": "Gamma{(n + 1)}",
+                    "latex_start": "\\Gamma{(n + 1)}",
                     "start": "Gamma(n + 1)",
                     "steps": [
                         {
@@ -71,7 +71,7 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "n Gamma{(n)}",
+                    "latex_start": "n \\Gamma{(n)}",
                     "start": "n * Gamma(n)",
                     "steps": [
                         {
@@ -114,17 +114,17 @@
         },
         {
             "goal": "Gamma(n + 1) = factorial(n)",
-            "latex_goal": "Gamma{(n + 1)} = n!",
+            "latex_goal": "\\Gamma{(n + 1)} = n!",
             "proof": {
                 "base_case": {
                     "goal": "Gamma(0 + 1) = 1",
-                    "latex_goal": "Gamma{(0 + 1)} = 1",
+                    "latex_goal": "\\Gamma{(0 + 1)} = 1",
                     "proof": {
                         "finished": false,
                         "goal": "Gamma(0 + 1) = 1",
-                        "latex_goal": "Gamma{(0 + 1)} = 1",
+                        "latex_goal": "\\Gamma{(0 + 1)} = 1",
                         "lhs_calc": {
-                            "latex_start": "Gamma{(0 + 1)}",
+                            "latex_start": "\\Gamma{(0 + 1)}",
                             "start": "Gamma(0 + 1)",
                             "steps": [
                                 {
@@ -197,23 +197,23 @@
                     "conds": [
                         {
                             "cond": "Gamma(n + 1) = factorial(n)",
-                            "latex_cond": "Gamma{(n + 1)} = n!",
+                            "latex_cond": "\\Gamma{(n + 1)} = n!",
                             "name": "IH",
                             "type": "Condition"
                         }
                     ],
                     "goal": "Gamma(n + 1 + 1) = factorial(n + 1)",
-                    "latex_goal": "Gamma{(n + 1 + 1)} = (n + 1)!",
+                    "latex_goal": "\\Gamma{(n + 1 + 1)} = (n + 1)!",
                     "proof": {
                         "finished": false,
                         "goal": "Gamma(n + 1 + 1) = factorial(n + 1)",
-                        "latex_goal": "Gamma{(n + 1 + 1)} = (n + 1)!",
+                        "latex_goal": "\\Gamma{(n + 1 + 1)} = (n + 1)!",
                         "lhs_calc": {
-                            "latex_start": "Gamma{(n + 1 + 1)}",
+                            "latex_start": "\\Gamma{(n + 1 + 1)}",
                             "start": "Gamma(n + 1 + 1)",
                             "steps": [
                                 {
-                                    "latex_res": "Gamma{(n + 1 + 1)}",
+                                    "latex_res": "\\Gamma{(n + 1 + 1)}",
                                     "res": "Gamma(n + 1 + 1)",
                                     "rule": {
                                         "eq": "Gamma(n + 1) = n * Gamma(n)",
@@ -236,7 +236,7 @@
                     "type": "Goal"
                 },
                 "induct_var": "n",
-                "latex_goal": "Gamma{(n + 1)} = n!",
+                "latex_goal": "\\Gamma{(n + 1)} = n!",
                 "type": "InductionProof"
             },
             "type": "Goal"

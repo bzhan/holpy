@@ -177,6 +177,8 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                     return "%s!" % sx
                 else:
                     return "(%s)!" % sx
+            elif e.func_name == 'Gamma':
+                return "\\Gamma{(%s)}" % sx
             else:
                 return "%s{(%s)}" % (e.func_name, sx)
         elif len(e.args) == 2:
