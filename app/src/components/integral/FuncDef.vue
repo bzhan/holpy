@@ -1,6 +1,6 @@
 <template>
   <div class="indented-label">
-    <span class="math-text">{{label}}.</span>&nbsp;
+    <span class="math-text">{{label}}</span>&nbsp;
     <div>
       <span class="math-text">Introduce definition</span>
       <div @click.exact="$emit('select', label)"
