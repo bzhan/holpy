@@ -1830,9 +1830,10 @@ def binom(e1: Expr, e2: Expr) -> Expr:
     """Binomial coefficients"""
     return Fun("binom", e1, e2)
 
-def factorial(e: Expr):
-    '''e!'''
+def factorial(e: Expr) -> Expr:
+    """Factorial of e"""
     return Fun('factorial', e)
+
 pi = Fun("pi")
 E = Fun("exp", Const(1))
 
@@ -1843,11 +1844,9 @@ class Deriv(Expr):
     """Derivative of an expression."""
     def __init__(self, var: str, body: Expr):
         assert isinstance(var, str) and isinstance(body, Expr)
-
         self.ty = DERIV
         self.var = var
         self.body = body
-
 
     def __hash__(self):
         return hash((DERIV, self.var, self.body))
@@ -1863,15 +1862,14 @@ class Deriv(Expr):
     def __repr__(self):
         return "Deriv(%s,%s)" % (self.var, repr(self.body))
 
+
 class IndefiniteIntegral(Expr):
     """Indefinite integral of an expression."""
-
     def __init__(self, var: str, body: Expr):
         assert isinstance(var, str) and isinstance(body, Expr)
         self.ty = INDEFINITEINTEGRAL
         self.var = var
         self.body = body
-
 
     def __hash__(self):
         return hash((INDEFINITEINTEGRAL, self.var, self.body))
@@ -1902,7 +1900,6 @@ class Integral(Expr):
         self.upper = upper
         self.body = body
 
-
     def __hash__(self):
         return hash((INTEGRAL, self.var, self.lower, self.upper, self.body))
 
@@ -1923,18 +1920,17 @@ class Integral(Expr):
         assert isinstance(new_name, str), "alpha_convert"
         return Integral(new_name, self.lower, self.upper, self.body.subst(self.var, Var(new_name)))
 
+
 class EvalAt(Expr):
     """Evaluation at upper and lower, then subtract."""
-    def __init__(self, var, lower, upper, body):
+    def __init__(self, var: str, lower: Expr, upper: Expr, body: Expr):
         assert isinstance(var, str) and isinstance(lower, Expr) and \
             isinstance(upper, Expr) and isinstance(body, Expr)
-
         self.ty = EVAL_AT
         self.var = var
         self.lower = lower
         self.upper = upper
         self.body = body
-
 
     def __hash__(self):
         return hash((EVAL_AT, self.var, self.lower, self.upper, self.body))
@@ -1949,15 +1945,15 @@ class EvalAt(Expr):
     def __repr__(self):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
 
+
 class Symbol(Expr):
     """Pattern expression. It can be used to find expression with the given specific structure.
     """
-    def __init__(self, name, ty):
-        self.name = name
+    def __init__(self, name: str, ty):
         self.ty = SYMBOL
+        self.name = name
         self.pat = tuple(ty)
 
-    
     def __eq__(self, other):
         if not isinstance(other, Symbol):
             return False
@@ -2027,7 +2023,7 @@ def inverse_trig_table():
         }
     return inverse_trig_table_cache
 
-def expr_to_holpy(expr):
+def expr_to_holpy(expr: Expr) -> term.Term:
     """Convert an expression to holpy term."""
     assert isinstance(expr, Expr), "expr_to_holpy"
     if expr.is_var():
@@ -2105,7 +2101,7 @@ def expr_to_holpy(expr):
         print("expr_to_holpy: unknown expression %s" % expr)
         raise NotImplementedError
 
-def holpy_to_expr(t):
+def holpy_to_expr(t: term.Term) -> Expr:
     """Convert a HOL term to expression."""
     assert isinstance(t, term.Term), "holpy_to_expr"
     if t.is_var():
@@ -2155,7 +2151,7 @@ def holpy_to_expr(t):
     else:
         raise NotImplementedError
 
-def eval_hol_expr(t):
+def eval_hol_expr(t: term.Term):
     """Evaluate an HOL term of type real.
 
     First try the exact evaluation with real_eval. If that fails, fall back
@@ -2169,6 +2165,6 @@ def eval_hol_expr(t):
     
     return res
 
-def eval_expr(e):
+def eval_expr(e: Expr):
     t = expr_to_holpy(e)
     return eval_hol_expr(t)
