@@ -584,7 +584,7 @@ class RulesTest(unittest.TestCase):
         goal = parser.parse_expr("(INT x:[-oo,oo]. exp(-(x^2)/2)) = sqrt(2*pi)")
 
         # Initial state
-        st = compstate.State('Probablity Integral', goal)
+        st = compstate.CompState('Probablity Integral', goal)
 
         # Make definition
         e = parser.parse_expr("g(t) = (INT x:[0,t].exp(-(x^2)/2))^2")
@@ -725,7 +725,7 @@ class RulesTest(unittest.TestCase):
         goal = parser.parse_expr("(INT x:[0,oo]. 1/(x^2+1)^(m+1)) = pi/(2^(2*m+1))*binom(2*m,m)")
 
         # Initial state
-        st = compstate.State("Wallis", goal)
+        st = compstate.CompState("Wallis", goal)
 
         # Condition b > 0
         conds = conditions.Conditions()
@@ -788,12 +788,58 @@ class RulesTest(unittest.TestCase):
         with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
             json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
 
+    def testGammaBeta(self):
+        file = compstate.CompFile("GammaBeta")
+
+        # Definition of Gamma function
+        gamma_def = compstate.FuncDef(parser.parse_expr("Gamma(n) = (INT x:[0,oo]. exp(-x) * x^(n-1))"))
+        file.add_definition(gamma_def)
+
+        # Recursive equation for gamma function
+        goal1 = compstate.Goal(parser.parse_expr("Gamma(n+1) = n * Gamma(n)"))
+        file.add_compstate(goal1)
+
+        proof = goal1.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(gamma_def.eq))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ElimInfInterval())
+        calc.perform_rule(rules.OnLocation(
+            rules.IntegrationByParts(parser.parse_expr("x^n"), parser.parse_expr("-exp(-x)")), "0"))
+        calc.perform_rule(rules.FullSimplify())
+
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(gamma_def.eq)))
+        calc.perform_rule(rules.OnLocation(rules.ElimInfInterval(), "1"))
+        calc.perform_rule(rules.FullSimplify())
+
+        # Gamma function and factorial
+        goal2 = compstate.Goal(parser.parse_expr("Gamma(n+1) = factorial(n)"))
+        file.add_compstate(goal2)
+
+        proof = goal2.proof_by_induction("n")
+        proof_base = proof.base_case.proof_by_calculation()
+        proof_induct = proof.induct_case.proof_by_calculation()
+
+        calc = proof_base.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(gamma_def.eq))
+        calc.perform_rule(rules.ElimInfInterval())
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution("u", parser.parse_expr("-x")), "0"))
+        calc.perform_rule(rules.FullSimplify())
+
+        calc = proof_induct.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal1.goal))
+        print(file)
+        with open('integral/examples/GammaBeta.json', 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
     def testGammaFunction(self):
         # Overall goal
         goal = parser.parse_expr("(INT x:[0,oo]. x^(m-1)*exp(-x)) = factorial(m)")
 
         # Initial state
-        st = compstate.State("GammaFunction", goal)
+        st = compstate.CompState("GammaFunction", goal)
 
         # Make definition
         Idef = compstate.FuncDef(parser.parse_expr("I(m) = (INT x:[0,oo]. x^(m-1) * exp(-x))"))

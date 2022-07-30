@@ -343,7 +343,8 @@
             ],
             "latex_problem": "\\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + 1) ^ {m + 1}} \\,dx = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m}",
             "name": "Wallis",
-            "problem": "(INT x:[0,oo]. 1 / (x ^ 2 + 1) ^ (m + 1)) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m)"
+            "problem": "(INT x:[0,oo]. 1 / (x ^ 2 + 1) ^ (m + 1)) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m)",
+            "type": "CompState"
         }
     ]
 }

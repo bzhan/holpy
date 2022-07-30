@@ -1305,7 +1305,8 @@
             ],
             "latex_problem": "\\int_{\\infty}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{2 \\pi}",
             "name": "Probablity Integral",
-            "problem": "(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)"
+            "problem": "INT x:[-oo,oo]. exp(-(x ^ 2) / 2) = sqrt(2 * pi)",
+            "type": "CompState"
         }
     ]
 }

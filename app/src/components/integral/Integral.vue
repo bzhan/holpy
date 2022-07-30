@@ -45,6 +45,7 @@
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
+    <!-- Content of the file -->
     <div id="content">
       <div v-if="content_state === false" align=left>
         <div v-for="name in file_list" v-bind:key=name style="margin:5px 10px">
@@ -53,14 +54,33 @@
       </div>
       <div v-if="content_state === true">
         <div v-for="(item, index) in content" :key="index" style="margin:5px 10px">
-          <div>{{item.name}}:</div>
-          <MathEquation
-            v-on:click.native="initialize(index)"
-            v-bind:data="'\\(' + item._problem_latex + '\\)'"
-            style="cursor:pointer"/>
+          <!-- Original format -->
+          <div v-if="'_problem_latex' in item">
+            <div>{{item.name}}:</div>
+            <MathEquation
+              v-on:click.native="initialize(index)"
+              v-bind:data="'\\(' + item._problem_latex + '\\)'"
+              style="cursor:pointer"/>
+          </div>
+          <!-- New format -->
+          <div v-if="'type' in item && item.type == 'FuncDef'">
+            <div class="math-text">Definition</div>
+            <MathEquation
+              v-on:click.native="initialize(index)"
+              v-bind:data="'\\(' + item.latex_eq + '\\)'"
+              style="cursor:pointer"/>
+          </div>
+          <div v-if="'type' in item && item.type == 'Goal'">
+            <div class="math-text">Goal</div>
+            <MathEquation
+              v-on:click.native="initialize(index)"
+              v-bind:data="'\\(' + item.latex_goal + '\\)'"
+              style="cursor:pointer"/>
+          </div>
         </div>
       </div>
     </div>
+    <!-- Main panel showing calculation -->
     <div v-if="cur_calc !== undefined" id="calc">
       <div v-for="(step, index) in cur_calc" :key="index">
         <span>Step {{index+1}}:&nbsp;&nbsp;</span>
@@ -71,6 +91,20 @@
         <v-icon name="ban" style="color:red" v-if="'checked' in step && step.checked === false"></v-icon> 
       </div>
     </div>
+    <div v-if="cur_id !== undefined" id="problem">
+      <div v-if="'type' in content[cur_id] && content[cur_id].type == 'FuncDef'">
+        <FuncDef v-bind:item="content[cur_id]" v-bind:label="''"
+          v-bind:selected_item="selected_item"
+          v-bind:selected_facts="selected_facts"/>
+      </div>
+      <div v-if="'type' in content[cur_id] && content[cur_id].type == 'Goal'">
+        <Goal v-bind:item="content[cur_id]" v-bind:label="''"
+          @select="selectItem"
+          @select_fact="selectFact"
+          v-bind:selected_item="selected_item"
+          v-bind:selected_facts="selected_facts"/>
+      </div>
+    </div>
     <div v-if="cur_items !== undefined" id="items">
       <div v-if="cur_id !== undefined && content[cur_id].latex_problem !== undefined" id="problem">
         <span class="math-text">Prove the identity</span><br>
@@ -78,14 +112,14 @@
       </div>
       <div v-for="(item, index) in cur_items" :key="index">
         <div v-if="item.type === 'FuncDef'">
-          <FuncDef v-bind:item="item" v-bind:label="(index+1).toString()"
+          <FuncDef v-bind:item="item" v-bind:label="(index+1) + '.'"
             @select="selectItem"
             @select_fact="selectFact"
             v-bind:selected_item="selected_item"
             v-bind:selected_facts="selected_facts"/>
         </div>
         <div v-if="item.type === 'Goal'">
-          <Goal v-bind:item="item" v-bind:label="(index+1).toString()"
+          <Goal v-bind:item="item" v-bind:label="(index+1) + '.'"
             @select="selectItem"
             @select_fact="selectFact"
             v-bind:selected_item="selected_item"
@@ -456,10 +490,8 @@ export default {
       this.proof_term = undefined
       this.cur_id = index
       this.take_effect = 0
-      if ('calc' in this.content[index] || 'items' in this.content[index]) {
+      if ('calc' in this.content[index]) {
         this.restore()
-      } else {
-        this.restart()
       }
     },
 
@@ -1344,6 +1376,19 @@ export default {
 }
 
 #items {
+  display: inline-block;
+  width: 75%;
+  position: fixed;
+  top: 48px;
+  bottom: 30%;
+  left: 25%;
+  overflow-y: scroll;
+  padding-left: 10px;
+  padding-top: 10px;
+  font-size: 20px;
+}
+
+#problem {
   display: inline-block;
   width: 75%;
   position: fixed;

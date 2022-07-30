@@ -1,0 +1,246 @@
+{
+    "content": [
+        {
+            "eq": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+            "latex_eq": "\\Gamma{(n)} = \\int_{0}^{\\infty} e^{-x} x ^ {n - 1} \\,dx",
+            "latex_lhs": "\\Gamma{(n)}",
+            "type": "FuncDef"
+        },
+        {
+            "goal": "Gamma(n + 1) = n * Gamma(n)",
+            "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
+            "proof": {
+                "finished": false,
+                "goal": "Gamma(n + 1) = n * Gamma(n)",
+                "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
+                "lhs_calc": {
+                    "latex_start": "\\Gamma{(n + 1)}",
+                    "start": "Gamma(n + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} e^{-x} x ^ {n + 1 - 1} \\,dx",
+                            "res": "INT x:[0,oo]. exp(-x) * x ^ ((n + 1) - 1)",
+                            "rule": {
+                                "func_def": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} e^{-x} x ^ {n} \\,dx",
+                            "res": "INT x:[0,oo]. exp(-x) * x ^ n",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} e^{-x} x ^ {n} \\,dx",
+                            "res": "LIM {t -> oo}. INT x:[0,t]. exp(-x) * x ^ n",
+                            "rule": {
+                                "a": "0",
+                                "name": "ElimInfInterval",
+                                "str": "eliminate improper integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. -e^{-x} x ^ {n} \\right\\vert_{x=0}^{t}) - (\\int_{0}^{t} -n e^{-x} x ^ {-1 + n} \\,dx)\\,)",
+                            "res": "LIM {t -> oo}. ([-(exp(-x) * x ^ n)]_x=0,t) - (INT x:[0,t]. -(n * exp(-x) * x ^ (-1 + n)))",
+                            "rule": {
+                                "loc": "0",
+                                "name": "IntegrationByParts",
+                                "str": "integrate by parts at 0",
+                                "u": "x ^ n",
+                                "v": "-exp(-x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,n (\\int_{0}^{t} x ^ {-1} e^{-x} x ^ {n} \\,dx) + -e^{-t} t ^ {n} + 0 ^ {n}\\,)",
+                            "res": "LIM {t -> oo}. n * (INT x:[0,t]. x ^ -1 * exp(-x) * x ^ n) + -(exp(-t) * t ^ n) + 0 ^ n",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "n \\Gamma{(n)}",
+                    "start": "n * Gamma(n)",
+                    "steps": [
+                        {
+                            "latex_res": "n (\\int_{0}^{\\infty} e^{-x} x ^ {n - 1} \\,dx)",
+                            "res": "n * (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+                            "rule": {
+                                "func_def": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "n (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} e^{-x} x ^ {n - 1} \\,dx)",
+                            "res": "n * (LIM {t -> oo}. INT x:[0,t]. exp(-x) * x ^ (n - 1))",
+                            "rule": {
+                                "a": "0",
+                                "loc": "1",
+                                "name": "ElimInfInterval",
+                                "str": "eliminate improper integral at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "n (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} x ^ {-1} e^{-x} x ^ {n} \\,dx)",
+                            "res": "n * (LIM {t -> oo}. INT x:[0,t]. x ^ -1 * exp(-x) * x ^ n)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "goal": "Gamma(n + 1) = factorial(n)",
+            "latex_goal": "\\Gamma{(n + 1)} = n!",
+            "proof": {
+                "base_case": {
+                    "goal": "Gamma(0 + 1) = 1",
+                    "latex_goal": "\\Gamma{(0 + 1)} = 1",
+                    "proof": {
+                        "finished": false,
+                        "goal": "Gamma(0 + 1) = 1",
+                        "latex_goal": "\\Gamma{(0 + 1)} = 1",
+                        "lhs_calc": {
+                            "latex_start": "\\Gamma{(0 + 1)}",
+                            "start": "Gamma(0 + 1)",
+                            "steps": [
+                                {
+                                    "latex_res": "\\int_{0}^{\\infty} e^{-x} x ^ {0 + 1 - 1} \\,dx",
+                                    "res": "INT x:[0,oo]. exp(-x) * x ^ ((0 + 1) - 1)",
+                                    "rule": {
+                                        "func_def": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+                                        "name": "ExpandDefinition",
+                                        "str": "expand definition"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} e^{-x} x ^ {0 + 1 - 1} \\,dx",
+                                    "res": "LIM {t -> oo}. INT x:[0,t]. exp(-x) * x ^ ((0 + 1) - 1)",
+                                    "rule": {
+                                        "a": "0",
+                                        "name": "ElimInfInterval",
+                                        "str": "eliminate improper integral"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} e^{-x} \\,dx",
+                                    "res": "LIM {t -> oo}. INT x:[0,t]. exp(-x)",
+                                    "rule": {
+                                        "loc": "0",
+                                        "name": "FullSimplify",
+                                        "str": "full simplify at 0"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{-t} -e^{u} \\,du",
+                                    "res": "LIM {t -> oo}. INT u:[0,-t]. -exp(u)",
+                                    "rule": {
+                                        "latex_str": "substitute \\(u\\) for \\(-x\\) at 0",
+                                        "loc": "0",
+                                        "name": "Substitution",
+                                        "str": "substitute u for -x at 0",
+                                        "var_name": "u",
+                                        "var_subst": "-x"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "-(\\lim\\limits_{t\\to \\infty} (\\,-1 + e^{-t}\\,))",
+                                    "res": "-(LIM {t -> oo}. -1 + exp(-t))",
+                                    "rule": {
+                                        "name": "FullSimplify",
+                                        "str": "full simplify"
+                                    },
+                                    "type": "CalculationStep"
+                                }
+                            ],
+                            "type": "Calculation"
+                        },
+                        "rhs_calc": {
+                            "latex_start": "1",
+                            "start": "1",
+                            "steps": [],
+                            "type": "Calculation"
+                        },
+                        "type": "CalculationProof"
+                    },
+                    "type": "Goal"
+                },
+                "goal": "Gamma(n + 1) = factorial(n)",
+                "induct_case": {
+                    "conds": [
+                        {
+                            "cond": "Gamma(n + 1) = factorial(n)",
+                            "latex_cond": "\\Gamma{(n + 1)} = n!",
+                            "name": "IH",
+                            "type": "Condition"
+                        }
+                    ],
+                    "goal": "Gamma(n + 1 + 1) = factorial(n + 1)",
+                    "latex_goal": "\\Gamma{(n + 1 + 1)} = (n + 1)!",
+                    "proof": {
+                        "finished": false,
+                        "goal": "Gamma(n + 1 + 1) = factorial(n + 1)",
+                        "latex_goal": "\\Gamma{(n + 1 + 1)} = (n + 1)!",
+                        "lhs_calc": {
+                            "latex_start": "\\Gamma{(n + 1 + 1)}",
+                            "start": "Gamma(n + 1 + 1)",
+                            "steps": [
+                                {
+                                    "latex_res": "\\Gamma{(n + 1 + 1)}",
+                                    "res": "Gamma(n + 1 + 1)",
+                                    "rule": {
+                                        "eq": "Gamma(n + 1) = n * Gamma(n)",
+                                        "name": "ApplyEquation",
+                                        "str": "apply equation"
+                                    },
+                                    "type": "CalculationStep"
+                                }
+                            ],
+                            "type": "Calculation"
+                        },
+                        "rhs_calc": {
+                            "latex_start": "(n + 1)!",
+                            "start": "factorial(n + 1)",
+                            "steps": [],
+                            "type": "Calculation"
+                        },
+                        "type": "CalculationProof"
+                    },
+                    "type": "Goal"
+                },
+                "induct_var": "n",
+                "latex_goal": "\\Gamma{(n + 1)} = n!",
+                "type": "InductionProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "GammaBeta"
+}
