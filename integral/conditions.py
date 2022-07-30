@@ -45,13 +45,18 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
         if is_positive(e.args[0], conds):
             return True
     if e.is_plus():
-        if is_positive(e.args[0],conds) and e.args[1].is_power() and e.args[1].args[1].val % 2 == 0:
+        if is_positive(e.args[0], conds) and e.args[1].is_power() and e.args[1].args[1].val % 2 == 0:
             return True
     for _, cond in conds.data.items():
         if cond.is_greater() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val >= 0:
             return True
         if cond.is_greater_eq() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val > 0:
             return True
+        if e.is_plus():
+            if cond.is_greater_eq() and cond.args[0] == e.args[0] and cond.args[1].is_const() and \
+                e.args[1].is_const() and cond.args[1].val + e.args[1].val > 0:
+                return True
+
     return False
 
 def is_negative(e: Expr, conds: Conditions) -> bool:
@@ -77,6 +82,7 @@ def contains_const_var(e: Expr, conds: Conditions) -> bool:
                     and t.args[0].name == v:
                 return True
     return False
+
 def get_const_vars(e: Expr, conds: Conditions) -> bool:
     '''return get all const vars in e based on conds'''
     all_vars = e.get_vars()
@@ -88,6 +94,7 @@ def get_const_vars(e: Expr, conds: Conditions) -> bool:
                     and t.args[0].name == v:
                 res.append(v)
     return res
+
 def is_const(e: Expr, conds: Conditions) -> bool:
     """Return whether conditions imply e is const."""
     if e.is_const():
