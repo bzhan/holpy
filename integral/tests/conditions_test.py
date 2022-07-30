@@ -13,6 +13,7 @@ class ConditionsTest(unittest.TestCase):
             ("a", "a > 0"),
             ("a ^ (1/2)", "a > 0"),
             ("a ^ (-1/2)", "a > 0"),
+            ("m + 1", "m >= 0"),
         ]
 
         for a, b in test_data:

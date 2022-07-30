@@ -730,13 +730,13 @@ class RulesTest(unittest.TestCase):
         # Initial state
         st = compstate.State("Wallis", goal)
 
-        # Make definition
-        Idef = compstate.FuncDef(parser.parse_expr("I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))"))
-        st.add_item(Idef)
-
         # Condition b > 0
         conds = conditions.Conditions()
         conds.add_condition("b", parser.parse_expr("b > 0"))
+
+        # Make definition
+        Idef = compstate.FuncDef(parser.parse_expr("I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))"), conds=conds)
+        st.add_item(Idef)
 
         # Prove the following equality
         Eq1 = compstate.Goal(parser.parse_expr("(D b. I(m,b)) = -(m+1) * I(m+1, b)"), conds=conds)
@@ -881,7 +881,7 @@ class RulesTest(unittest.TestCase):
         file_content = {
             "content": [st.export()]
         }
-        with open('./../examples/GammaFunction.json', 'w', encoding='utf-8') as f:
+        with open('integral/examples/GammaFunction.json', 'w', encoding='utf-8') as f:
             json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
 
 
