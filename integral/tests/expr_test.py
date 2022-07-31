@@ -96,7 +96,7 @@ class ExprTest(unittest.TestCase):
             ("sqrt(18) + 2 * sqrt(2)", "5 * sqrt(2)"),
             ("2 ^ (1/2) * 2 ^ (1/3)", "2 ^ (5/6)"),
             ("(-9)^(1/3)", "-(3 ^ (2/3))"),
-            ("(-8)^(2/3)", "-4"),
+            ("(-8)^(2/3)", "4"),
             ("0 ^ 5", "0"),
             ("sqrt(8) / sqrt(10)", "2/5 * sqrt(5)"),
             ("sqrt(8) / (1 + sqrt(10))", "2 * sqrt(2) * (1 + sqrt(2) * sqrt(5)) ^ -1"),
@@ -503,27 +503,6 @@ class ExprTest(unittest.TestCase):
         for v, v_res in test_data:
             v = parse_expr(v)
             self.assertEqual(str(v.normalize()), v_res)
-
-    def testUnivariatePolynomial(self):
-        test_data = [
-            ("1", True),
-            ("x - 1", True),
-            ("x*y", False),
-            ("x - y + z", False),
-            ("x^2 + 1", True),
-            ("1 + 2 * x - x ^ 2 + x ^ 4", True),
-            ("x*(x - 1) ^ (-1)", True),
-            ("(x^2+1)/(y-1)", False),
-            ("(1-sin(x)^2)/(1+sin(x))", True),
-            ("(cos(x)^2+1)/(sin(x))", False)
-        ]
-
-        for v, v_res in test_data:
-            v = parse_expr(v)
-            self.assertEqual(v.is_univariate(), v_res)
-
-    def testSimplifyConstant(self):
-        pass
 
 
 if __name__ == "__main__":

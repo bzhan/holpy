@@ -218,7 +218,7 @@
                                     "rule": {
                                         "eq": "Gamma(n + 1) = n * Gamma(n)",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation"
+                                        "str": "apply equation:Gamma(n + 1) = n * Gamma(n)"
                                     },
                                     "type": "CalculationStep"
                                 }

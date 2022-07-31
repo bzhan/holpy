@@ -37,8 +37,12 @@ def collect_pairs(ps):
             return expr.Const(0)
         elif isinstance(v, ConstantPolynomial):
             return ConstantPolynomial(tuple())
-        else:
+        elif isinstance(v, Polynomial):
+            return Polynomial(tuple())
+        elif isinstance(v, (int, Fraction)):
             return 0
+        else:
+            raise NotImplementedError
 
     res_list = []
     for k, v in res.items():
@@ -346,6 +350,8 @@ class Monomial:
         (2, ((x, 1))) -> 2 * x
         (2, ((x, 2), (y, 1))) -> 2 * x^2 * y
 
+        coeff: ConstantPolynomial - coefficient of the monomial.
+
         """
         if isinstance(coeff, (int, Fraction)):
             coeff = const_fraction(coeff)
@@ -357,7 +363,7 @@ class Monomial:
             "Unexpected argument for factors: %s" % str(factors)
 
         self.coeff = coeff
-        self.factors = tuple((i, j) for i, j in collect_pairs(factors) if j != 0)
+        self.factors = tuple((i, j) for i, j in collect_pairs(factors))
 
     def __hash__(self):
         return hash(("MONO", self.coeff, self.factors))
@@ -401,9 +407,6 @@ class Monomial:
     def __lt__(self, other):
         return self <= other and self != other
 
-    def __getitem__(self, i):
-        return self.factors[i]
-
     def __mul__(self, other):
         if isinstance(other, (int, Fraction)):
             return Monomial(self.coeff * other, self.factors)
@@ -416,8 +419,11 @@ class Monomial:
         return Monomial(const_fraction(-1) * self.coeff, self.factors)
 
     def __truediv__(self, other):
-        inv_factors = tuple((n, -e) for n, e in other.factors)
-        return Monomial(self.coeff / other.coeff, self.factors + inv_factors)
+        if isinstance(other, Monomial):
+            inv_factors = tuple((n, -e) for n, e in other.factors)
+            return Monomial(self.coeff / other.coeff, self.factors + inv_factors)
+        else:
+            raise NotImplementedError
 
     def __pow__(self, exp):
         # Assume the power is a fraction
@@ -434,27 +440,32 @@ class Monomial:
         else:
             raise ValueError
 
-    def is_constant(self):
+    def is_constant(self) -> bool:
         return len(self.factors) == 0
 
-    def get_constant(self):
+    def get_constant(self) -> ConstantPolynomial:
         if len(self.factors) == 0:
             return self.coeff
         else:
             raise AssertionError
 
-    def is_fraction(self):
+    def is_fraction(self) -> bool:
         return len(self.factors) == 0 and self.coeff.is_fraction()
 
-    def get_fraction(self):
+    def get_fraction(self) -> Union[int, Fraction]:
         return self.coeff.get_fraction()
 
-    def to_frac(self):
-        """Collect factor with positive power and negative power"""
+    def to_frac(self) -> "FracPoly":
+        """Convert the monomial to a fraction of Polynomials.
+        
+        This is done by collecting factors with positive power into the numerator
+        and factors with negative power into the denominator.
+        
+        """
         pos_facs, neg_facs = [], []
         for i, j in self.factors:
             if isinstance(j, Polynomial):
-                if len(j) == 1:
+                if len(j.monomials) == 1:
                     coeff = j.monomials[0].coeff.get_fraction()
                     if coeff > 0:
                         pos_facs.append((i, j))
@@ -476,13 +487,6 @@ class Monomial:
         nm = Polynomial([Monomial(self.coeff, pos_facs)])
         denom = Polynomial([Monomial(1, neg_facs)])
         return FracPoly(nm, denom)
-
-    @property
-    def degree(self):
-        if len(self.factors) == 0:
-            return 0
-        else:
-            return self.factors[-1][1]
 
 
 class Polynomial:
@@ -517,9 +521,6 @@ class Polynomial:
     def __repr__(self):
         return "Polynomial(%s)" % str(self)
 
-    def __getitem__(self, i):
-        return self.monomials[i]
-
     def __len__(self):
         return len(self.monomials)
 
@@ -536,6 +537,7 @@ class Polynomial:
         if isinstance(other, (int, Fraction)):
             return Polynomial(m * other for m in self.monomials)
         elif isinstance(other, Polynomial):
+            # Applies distributivity - could expand the number of terms exponentially
             return Polynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
         elif isinstance(other, ConstantPolynomial):
             return other * self
@@ -544,10 +546,13 @@ class Polynomial:
 
     def __truediv__(self, other):
         # Assume the denominator is a monomial
-        if len(other.monomials) == 1:
-            return Polynomial([m / other.monomials[0] for m in self.monomials])
+        if isinstance(other, Polynomial):
+            if len(other.monomials) == 1:
+                return Polynomial([m / other.monomials[0] for m in self.monomials])
+            else:
+                raise ValueError
         else:
-            raise ValueError
+            raise NotImplementedError
 
     def __pow__(self, exp):
         # Assume self is a monomial and exp is a fraction
@@ -556,24 +561,27 @@ class Polynomial:
         else:
             raise ValueError('%s, %s' % (self, exp))
 
-    def is_monomial(self):
+    def is_monomial(self) -> bool:
         return len(self.monomials) == 1
 
-    def get_monomial(self):
-        return self.monomials[0]
+    def get_monomial(self) -> Monomial:
+        if self.is_monomial():
+            return self.monomials[0]
+        else:
+            raise AssertionError("get_monomial")
 
-    def is_fraction(self):
+    def is_fraction(self) -> bool:
         if len(self.monomials) == 0:
             return True
         return self.is_monomial() and self.get_monomial().is_fraction()
 
-    def get_fraction(self):
+    def get_fraction(self) -> Union[int, Fraction]:
         if len(self.monomials) == 0:
             return 0
         else:
             return self.get_monomial().get_fraction()
         
-    def get_constant(self):
+    def get_constant(self) -> Union[int, ConstantPolynomial]:
         """If self is a constant, return the constant. Otherwise raise an exception."""
         if len(self.monomials) == 0:
             return 0
@@ -582,38 +590,16 @@ class Polynomial:
         else:
             raise AssertionError
 
-    def is_univariate(self):
-        """
-
-        Determine polynomial is whether univariate.
-        
-        If there is unique f(x) occurs in polynomial, it is univariate.
-        """
-        d = set()
-        for mono in self.monomials:
-            if len(mono.factors) > 1:
-                return False
-            if len(mono.factors) == 1:
-                d.add(mono.factors[0][0])
-        
-        return len(d) <= 1
-
-    def is_multivariate(self):
-        return not self.is_univariate()
-
-    def to_frac(self):
+    def to_frac(self) -> "FracPoly":
         """Convert self to a fraction."""
         frac_monos = [m.to_frac() for m in self.monomials]
         return sum(frac_monos[1:], frac_monos[0])
 
-    def is_one(self):
+    def is_one(self) -> bool:
         return len(self.monomials) == 1 and self.monomials[0].is_one()
 
-    @property
-    def degree(self):
-        return self.monomials[-1].degree
 
-def singleton(s):
+def singleton(s) -> Polynomial:
     """Polynomial for 1*s^1."""
     return Polynomial([Monomial(const_fraction(1), [(s, 1)])])
 
@@ -645,4 +631,5 @@ class FracPoly:
         comm_denoms = set(self.denom.monomials) | set(other.denom.monomials)
         left = set(other.denom.monomials) - set(self.denom.monomials)
         right = set(self.denom.monomials) - set(other.denom.monomials)
-        return FracPoly(self.nm * Polynomial(list(left)) + other.nm * Polynomial(list(right)), Polynomial(list(comm_denoms)))
+        return FracPoly(self.nm * Polynomial(list(left)) +
+                        other.nm * Polynomial(list(right)), Polynomial(list(comm_denoms)))

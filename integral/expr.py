@@ -1122,38 +1122,6 @@ class Expr:
 
         return expand_expr
 
-    def is_univariate(self, var=False):
-        """Determine polynomial is whether univariate.
-        
-        If there is unique f(x) occurs in polynomial, it is univariate.
-        
-        If self is univariate and var is true, also return the variate.
-        """
-        d = set()
-    
-        def rec(e):
-            if e.ty == VAR:
-                d.add(e)
-            elif e.ty == OP:
-                for arg in e.args:
-                    rec(arg)
-            elif e.ty == FUN:
-                d.add(e)
-            elif e.ty not in (VAR, CONST, FUN, OP):
-                return False
-            
-        rec(self)
-        if len(d) == 1:
-            return True if not var else d.pop()
-        else:
-            return len(d) <= 1
-
-    def is_multivariate(self):
-        """Determine whether expr has a * f(x)^k + b * g(x) ^ m + c * h(y) ^ n form
-        
-        """
-        return not self.is_univariate()
-
     def inst_pat(self, mapping):
         """Instantiate by replacing symbols in term with mapping."""
         if self.ty in (VAR, CONST):
