@@ -872,7 +872,19 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.RewriteFactorial())
         calc = Eq2_proof_induct.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        print(st)
+
+        Eq3 = compstate.Goal(parser.parse_expr("(INT x:[0, oo]. exp(-x^3)) = I(4/3)"), conds=conds)
+        st.add_item(Eq3)
+        Eq3_proof = Eq3.proof_by_calculation()
+        calc = Eq3_proof.lhs_calc
+        calc.perform_rule(rules.Substitution('y', parser.parse_expr('x^3')))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.FoldDefinition(Idef.eq, parser.parse_expr('1/3')), '1'))
+        e1 = parser.parse_expr('m')
+        e2 = parser.parse_expr('1/3')
+        calc.perform_rule(rules.ApplyEquation(Eq1.goal, {e1 : e2}))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '0'))
+        # print(st)
         file_content = {
             "content": [st.export()]
         }

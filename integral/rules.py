@@ -442,6 +442,7 @@ class FullSimplify(Rule):
             s = Simplify().eval(s,conds)
             s = OnSubterm(DerivativeSimplify()).eval(s,conds)
             s = OnSubterm(SimplifyPower()).eval(s,conds)
+            s = OnSubterm(SimplifyInfinity()).eval(s,conds)
             if s == current:
                 break
             current = s
@@ -453,12 +454,21 @@ class FullSimplify(Rule):
 
 class ApplyEquation(Rule):
     """Apply the given equation to for rewriting."""
-    def __init__(self, eq: Union[Expr, str]):
+    def __init__(self, eq: Union[Expr, str], subMap:dict = None):
         self.name = "ApplyEquation"
         self.eq = eq
-
+        self.subMap = subMap
     def __str__(self):
-        return "apply equation"
+        s = ""
+        if self.subMap != None:
+            first  = True
+            for a,b in self.subMap.items():
+                if first:
+                    first = False
+                    s = s + " where " + str(a) + '=' + str(b)
+                else:
+                    s = s + ', ' + str(a) + '=' + str(b)
+        return "apply equation:"+ str(self.eq) + s
 
     def export(self):
         return {
@@ -471,28 +481,37 @@ class ApplyEquation(Rule):
         if isinstance(self.eq, str):
             assert conds is not None and self.eq in conds.data, "ApplyEquation: equation not found"
             self.eq = conds.data[self.eq]
-
-        if e == self.eq.lhs:
-            # e = e'
-            return self.eq.rhs
-        elif e == self.eq.rhs:
-            # e' = e
-            return self.eq.lhs
-        elif self.eq.rhs.is_times() and self.eq.rhs.args[1] == e:
-            # e' = f * e
-            return 1 / self.eq.rhs.args[0] * self.eq.lhs
-        elif self.eq.rhs.is_plus() and self.eq.rhs.args[1] == e:
-            res = self.eq.lhs - self.eq.rhs.args[0]
-            if conditions.is_const(e,conds):
-                conds.add_condition(str(res), Fun('isConst',res))
-            return res
-        elif self.eq.rhs.is_plus() and self.eq.rhs.args[0] == e:
-            res = self.eq.lhs - self.eq.rhs.args[1]
-            if conditions.is_const(e, conds):
-                conds.add_condition(str(res), Fun('isConst', res))
-            return res
+        if self.subMap == None:
+            if e == self.eq.lhs:
+                # e = e'
+                return self.eq.rhs
+            elif e == self.eq.rhs:
+                # e' = e
+                return self.eq.lhs
+            elif self.eq.rhs.is_times() and self.eq.rhs.args[1] == e:
+                # e' = f * e
+                return 1 / self.eq.rhs.args[0] * self.eq.lhs
+            elif self.eq.rhs.is_plus() and self.eq.rhs.args[1] == e:
+                res = self.eq.lhs - self.eq.rhs.args[0]
+                if conditions.is_const(e,conds):
+                    conds.add_condition(str(res), Fun('isConst',res))
+                return res
+            elif self.eq.rhs.is_plus() and self.eq.rhs.args[0] == e:
+                res = self.eq.lhs - self.eq.rhs.args[1]
+                if conditions.is_const(e, conds):
+                    conds.add_condition(str(res), Fun('isConst', res))
+                return res
+            else:
+                return e
         else:
-            return e
+            new_eq = self.eq
+            for e1,e2 in self.subMap.items():
+                new_eq = new_eq.replace(e1,e2)
+            print(new_eq)
+            return ApplyEquation(new_eq).eval(e)
+            # self.eq = new_eq
+            # self.subMap = None
+            # return self.eval(e)
 
 
 class Substitution(Rule):
@@ -2094,7 +2113,7 @@ class ConstExprSubs(Rule):
         self.var_subs = var_subs
 
     def __str__(self):
-        return "ConstExprSubs"
+        return "ConstExprSubs: substitute "+str(self.var)+" for "+str(self.var_subs)
 
     def export(self):
         return {
@@ -2211,6 +2230,29 @@ class RewriteFactorial(Rule):
         else:
             raise NotImplementedError
 
+class SimplifyInfinity(Rule):
+    '''
+    1. oo^3 = oo
+
+    '''
+    def __init__(self):
+        self.name = "SimplifyInfinity"
+
+    def __str__(self):
+        return "SimplifyInfinity"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.ty == OP and e.op == '^' and e.args[0].is_pos_inf() and is_positive(e.args[1], conds):
+            return Inf(Decimal('inf'))
+        else:
+            return e
+
 class RewriteDifferential(Rule):
     '''
         1. DIFF. f(t) / DIFF. t = D t. f(t)
@@ -2232,3 +2274,41 @@ class RewriteDifferential(Rule):
         if e.is_divides() and e.args[0].is_diff() and e.args[1].is_diff() and e.args[1].body.is_var():
             return Deriv(e.args[1].body.name, e.args[0].body)
         raise NotImplementedError
+
+class FoldDefinition(Rule):
+    '''
+    Definition: I(m) = m^2 + b
+    1^2 + b = I(1)
+    '''
+    def __init__(self, func_def, *args):
+        self.name = "FoldDefinition"
+        self.args = args
+        self.func_def = func_def
+    def __str__(self):
+        s = ""
+        first = True
+        for a,b in zip(self.func_def.lhs.args, self.args):
+            if first:
+                first = False
+                s = s + str(a) + '=' + str(b)
+            else:
+                s = s + ',' + str(a) + '=' + str(b)
+        return "FoldDefinition: "+s
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        body = self.func_def.rhs
+        for arg, val in zip(self.func_def.lhs.args, self.args):
+            body = body.replace(arg, val)
+
+        e = e.normalize()
+        body = body.normalize()
+        if body == e:
+            return Fun(self.func_def.lhs.func_name, *self.args)
+        else:
+            raise NotImplementedError

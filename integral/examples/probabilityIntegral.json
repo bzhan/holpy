@@ -587,7 +587,7 @@
                                         "eq": "(D t. g(t)) = -2 * (D t. INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2))",
                                         "loc": "0.0",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation at 0.0"
+                                        "str": "apply equation:(D t. g(t)) = -2 * (D t. INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) at 0.0"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -688,7 +688,7 @@
                                     "eq": "(D t. g(t)) = -2 * (D t. INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2))",
                                     "loc": "0.0",
                                     "name": "ApplyEquation",
-                                    "str": "apply equation at 0.0"
+                                    "str": "apply equation:(D t. g(t)) = -2 * (D t. INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) at 0.0"
                                 },
                                 "type": "CalculationStep"
                             },
@@ -790,7 +790,7 @@
                                     "rule": {
                                         "eq": "g(t) = -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + C",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation"
+                                        "str": "apply equation:g(t) = -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + C"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -799,7 +799,7 @@
                                     "res": "g(0) - -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * 0 ^ 2) / 2) / (1 + y ^ 2))",
                                     "rule": {
                                         "name": "ConstExprSubs",
-                                        "str": "ConstExprSubs"
+                                        "str": "ConstExprSubs: substitute t for 0"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -860,7 +860,7 @@
                                 "rule": {
                                     "eq": "g(t) = -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + C",
                                     "name": "ApplyEquation",
-                                    "str": "apply equation"
+                                    "str": "apply equation:g(t) = -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + C"
                                 },
                                 "type": "CalculationStep"
                             },
@@ -869,7 +869,7 @@
                                 "res": "g(0) - -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * 0 ^ 2) / 2) / (1 + y ^ 2))",
                                 "rule": {
                                     "name": "ConstExprSubs",
-                                    "str": "ConstExprSubs"
+                                    "str": "ConstExprSubs: substitute t for 0"
                                 },
                                 "type": "CalculationStep"
                             },
@@ -1032,7 +1032,7 @@
                                     "rule": {
                                         "eq": "(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = 2 * sqrt(g(oo))",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation"
+                                        "str": "apply equation:(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = 2 * sqrt(g(oo))"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -1043,7 +1043,7 @@
                                         "eq": "(LIM {t -> oo}. g(t)) = g(oo)",
                                         "loc": "1.0",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation at 1.0"
+                                        "str": "apply equation:(LIM {t -> oo}. g(t)) = g(oo) at 1.0"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -1054,7 +1054,7 @@
                                         "eq": "g(t) = -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + C",
                                         "loc": "1.0.0",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation at 1.0.0"
+                                        "str": "apply equation:g(t) = -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + C at 1.0.0"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -1065,7 +1065,7 @@
                                         "eq": "C = pi / 2",
                                         "loc": "1.0.0.1",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation at 1.0.0.1"
+                                        "str": "apply equation:C = pi / 2 at 1.0.0.1"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -1175,7 +1175,7 @@
                                 "rule": {
                                     "eq": "(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = 2 * sqrt(g(oo))",
                                     "name": "ApplyEquation",
-                                    "str": "apply equation"
+                                    "str": "apply equation:(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = 2 * sqrt(g(oo))"
                                 },
                                 "type": "CalculationStep"
                             },
@@ -1186,7 +1186,7 @@
                                     "eq": "(LIM {t -> oo}. g(t)) = g(oo)",
                                     "loc": "1.0",
                                     "name": "ApplyEquation",
-                                    "str": "apply equation at 1.0"
+                                    "str": "apply equation:(LIM {t -> oo}. g(t)) = g(oo) at 1.0"
                                 },
                                 "type": "CalculationStep"
                             },
@@ -1197,7 +1197,7 @@
                                     "eq": "g(t) = -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + C",
                                     "loc": "1.0.0",
                                     "name": "ApplyEquation",
-                                    "str": "apply equation at 1.0.0"
+                                    "str": "apply equation:g(t) = -2 * (INT y:[0,1]. exp((-(1 + y ^ 2) * t ^ 2) / 2) / (1 + y ^ 2)) + C at 1.0.0"
                                 },
                                 "type": "CalculationStep"
                             },
@@ -1208,7 +1208,7 @@
                                     "eq": "C = pi / 2",
                                     "loc": "1.0.0.1",
                                     "name": "ApplyEquation",
-                                    "str": "apply equation at 1.0.0.1"
+                                    "str": "apply equation:C = pi / 2 at 1.0.0.1"
                                 },
                                 "type": "CalculationStep"
                             },
