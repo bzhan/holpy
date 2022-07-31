@@ -4,9 +4,9 @@ import unittest
 
 from integral import expr
 from integral.expr import Var, Const, pi, E
-from integral.poly import ConstantMonomial, Monomial
-from decimal import Decimal
+from integral.poly import reduce_power, extract_frac, ConstantMonomial, Monomial
 from fractions import Fraction
+
 
 class PolynomialTest(unittest.TestCase):
     def testPrintMonomial(self):
@@ -26,6 +26,28 @@ class PolynomialTest(unittest.TestCase):
 
         for m, s in test_data:
             self.assertEqual(str(m), s)
+
+    def testReducePower(self):
+        test_data = [
+            (2, 2, ((2, 2),)),
+            (-2, 2, ((2, 2),)),
+            (-1, 3, ((-1, 1),)),
+            (-2, 3, ((-1, 1), (2, 3))),
+            (-2, Fraction(3, 5), ((-1, 1), (2, Fraction(3, 5)))),
+            (-2, Fraction(2, 5), ((2, Fraction(2, 5)),)),
+        ]
+
+        for n, e, res in test_data:
+            self.assertEqual(reduce_power(n, e), res)
+
+    def testExtractFrac(self):
+        test_data = [
+            (((2, Fraction(3, 2)),), (((2, Fraction(1, 2)),), 2)),
+            (((2, Fraction(-1, 2)),), (((2, Fraction(1, 2)),), Fraction(1, 2))),
+        ]
+
+        for ps, res in test_data:
+            self.assertEqual(extract_frac(ps), res)
 
     def testConstantMonomial(self):
         test_data = [
