@@ -102,6 +102,7 @@ def is_const(e: Expr, conds: Conditions) -> bool:
     for a,b in conds.data.items():
         if b.ty == expr.FUN and b.func_name == 'isConst' and b.args[0] == e:
             return True
+    # contain vars but doesn't contain const var implies e is not const
     if not contains_const_var(e, conds) and len(e.get_vars())!=0:
         return False
     return True
