@@ -49,6 +49,7 @@ class PolynomialTest(unittest.TestCase):
             self.assertEqual(str(mono), res)
 
     def testMultConstantMonomial(self):
+
         test_data = [
             (1, [(2, "1/2")], 1, [(2, "3/2")], "4"),
             (2, [(2, "1/2")], 3, [(3, "3/2")], "18 * 2^(1/2) * 3^(1/2)"),
