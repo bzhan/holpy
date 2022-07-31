@@ -1825,9 +1825,9 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
     if assertions:
         # print("start process assertion!")
         handle_assertion(assertions)
-    with open('int_prf1.txt', 'a', encoding='utf-8') as f:
-        f.seek(0)
-        f.truncate()
+    # with open('int_prf1.txt', 'a', encoding='utf-8') as f:
+    #     f.seek(0)
+    #     f.truncate()
     # print("done")
     for i in order:
         args = tuple(r[j] for j in net[i])
@@ -1841,13 +1841,13 @@ def proofrec(proof, bounds=deque(), trace=False, debug=False, assertions=None):
             t1 = time.perf_counter()
             r[i] = convert_method(term[i], *args, subterms=subterms)
             t2 = time.perf_counter()
-            with open('int_prf1.txt', 'a', encoding='utf-8') as f:
-                if r[i].rule == 'sorry' and method_name != 'def-axiom':
-                    gaps |= set(r[i].gaps)
-                    print('term['+str(i)+']', term[i], file=f)
-                    print('r['+str(i)+']', r[i], t2 - t1, file=f)
-                if trace:
-                    print('r['+str(i)+']', term[i].decl().name(), t2 - t1, file=f)
+            # with open('int_prf1.txt', 'a', encoding='utf-8') as f:
+            #     if r[i].rule == 'sorry' and method_name != 'def-axiom':
+            #         gaps |= set(r[i].gaps)
+            #         print('term['+str(i)+']', term[i], file=f)
+            #         print('r['+str(i)+']', r[i], t2 - t1, file=f)
+            #     if trace:
+            #         print('r['+str(i)+']', term[i].decl().name(), t2 - t1, file=f)
     # conclusion = delete_redundant(r[0], redundant)
     # redundant.clear()
     time2 = time.perf_counter()
