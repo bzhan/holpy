@@ -14,9 +14,14 @@ def collect_pairs(ps):
     Reduce a list of pairs by collecting into groups according to
     first components, and adding the second component for each group.
 
-    It is assumed that the first components are hashable.
+    It is assumed that the first components are hashable. The second
+    components are either Expr, ConstantPolynomial, or numbers. Pairs
+    whose second component equals zero are removed.
 
-    e.g. [("x", 1), ("y", 2), ("x", 3)] => [("x", 4), ("y", 2)]
+    e.g.    
+
+    - [("x", 1), ("y", 2), ("x", 3)] => [("x", 4), ("y", 2)]
+    - [("x", 1), ("x", -1), ("y", 1)] => [("y", 1)]
 
     """
     res = {}
@@ -42,21 +47,40 @@ def collect_pairs(ps):
     return tuple(sorted(res_list, key=lambda p: p[0]))
 
 def reduce_power(n, e):
-    """Reduce n^e to normal form."""
+    """Reduce n ^ e to normal form.
+    
+    Returns a list of (n_i, e_i), so that n ^ e equals (n_1 ^ e^1) * ... (n_k ^ e_k).
+
+    If n has type Expr, n ^ e is left unchanged. If n is an integer,
+    it is factored to simplify the representation.
+
+    """
     if isinstance(n, expr.Expr):
         return ((n, e),)
     elif isinstance(n, int):
         if n >= 0:
-            # Compute factors of n.
+            # Compute factors of n. Let n = (n_1 ^ e_1) * ... * (n_k ^ e_k), then
+            # n ^ e = (n_1 ^ (e * e_1)) * ... * (n_k ^ (e * e_k)).
             return tuple((ni, e * ei) for ni, ei in sympy.factorint(n).items())
         else:
-            assert Fraction(e).denominator % 2 == 1, 'reduce_power'
-            return ((-1, 1),) + tuple((ni, e * ei) for ni, ei in sympy.factorint(-n).items())
+            # If n is negative, the denominator of e must be odd.
+            # If the numerator of e is also odd, add an extra -1 factor.
+            assert Fraction(e).denominator % 2 == 1, 'reduce_power: exponent has even denominator'
+            if Fraction(e).numerator % 2 == 0:
+                return tuple((ni, e * ei) for ni, ei in sympy.factorint(-n).items())
+            else:
+                return ((-1, 1),) + tuple((ni, e * ei) for ni, ei in sympy.factorint(-n).items())
     else:
         raise NotImplementedError
 
 def extract_frac(ps):
-    """Given a list of pairs (n, e), reduce list by collecting rational coefficient."""
+    """Reduce (n_1 ^ e_1) * ... * (n_k ^ e_k) by extracting fractions.
+    
+    Collects the integer part of e_i into a separate coefficient. E.g.
+    2 ^ (3/2) => 2 * 2^(1/2),
+    2 ^ (-1/2) => 1/2 * 2^(1/2)
+    
+    """
     res = []
     coeff = 1
 
@@ -70,6 +94,7 @@ def extract_frac(ps):
                 res.append((n, e - math.floor(e)))
         else:
             res.append((n, e))
+
     return tuple(res), coeff
 
 
