@@ -2137,6 +2137,7 @@ class ConstExprSubs(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         if conds != None and conditions.is_const(e, conds):
             res = e.replace(Var(self.var), self.var_subs)
+            # add condition res is const ...
             for a, b in conds.data.items():
                 if b == Fun('isConst', e):
                     conds.data.pop(a)
