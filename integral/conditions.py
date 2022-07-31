@@ -12,12 +12,15 @@ from integral import latex
 class Conditions:
     def __init__(self, conds=None):
         self.data = dict()
+        self.is_assume = dict()
         if conds is not None:
             for i, cond in enumerate(conds):
                 self.data['C' + str(i+1)] = cond
 
-    def add_condition(self, name: str, cond: Expr):
+    def add_condition(self, name: str, cond: Expr, isAssume:bool = False):
         self.data[name] = cond
+        self.is_assume[name] = isAssume
+
 
     def __copy__(self):
         res = Conditions()
@@ -35,6 +38,12 @@ class Conditions:
             })
         return res
 
+    def del_assume(self, cond:Expr):
+        # delete assume
+        for n, c in self.data.items():
+            if c == cond and self.is_assume[n]:
+                self.data.pop(n)
+                break
 
 def is_positive(e: Expr, conds: Conditions) -> bool:
     """Return whether conditions imply e is positive."""
