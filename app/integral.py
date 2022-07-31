@@ -38,9 +38,10 @@ def integral_open_file():
         f_data = json.load(f)
 
     for item in f_data['content']:
-        problem = integral.parser.parse_expr(item['problem'])
-        item['_problem_latex'] = integral.latex.convert_expr(problem)
-
+        if 'problem' in item:
+            problem = integral.parser.parse_expr(item['problem'])
+            item['_problem_latex'] = integral.latex.convert_expr(problem)
+        
     return jsonify(f_data)
 
 @app.route("/api/integral-initialize", methods=['POST'])

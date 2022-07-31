@@ -343,8 +343,8 @@ class InductionProof(StateItem):
             raise AssertionError("get_by_label: invalid label")
 
 
-class State:
-    """Represents the global state of the proof."""
+class CompState:
+    """Represents the global state of a computation proof."""
     def __init__(self, name: str, goal: Expr):
         # Name of the proof
         self.name = name
@@ -367,6 +367,7 @@ class State:
     def export(self):
         return {
             "name": self.name,
+            "type": "CompState",
             "problem": str(self.goal),
             "latex_problem": latex.convert_expr(self.goal),
             "items": [item.export() for item in self.items]
@@ -395,6 +396,41 @@ class State:
             return Label(label.data[:-1] + [label.data[-1] + 1])
         else:
             raise NotImplementedError
+
+
+class CompFile:
+    """Represent a file containing multiple CompState objects."""
+    def __init__(self, name: str):
+        self.name = name
+        self.content = []
+
+    def __str__(self):
+        res = "File %s\n" % self.name
+        for st in self.content:
+            res += str(st)
+        return res
+
+    def add_definition(self, funcdef: FuncDef):
+        """Add a function definition."""
+        self.content.append(funcdef)
+
+    def add_compstate(self, st: CompState):
+        """Add a computation proof."""
+        self.content.append(st)
+
+    def add_calculation(self, calc: Calculation):
+        """Add a calculation."""
+        self.content.append(calc)
+
+    def add_goal(self, goal: Goal):
+        """Add a goal."""
+        self.content.append(goal)
+
+    def export(self):
+        return {
+            "name": self.name,
+            "content": [item.export() for item in self.content]
+        }
 
 
 def parse_rule(item) -> Rule:
@@ -477,9 +513,9 @@ def parse_item(item) -> StateItem:
     else:
         raise NotImplementedError
 
-def parse_state(name: str, problem: str, items) -> State:
+def parse_state(name: str, problem: str, items) -> CompState:
     goal = parser.parse_expr(problem)
-    st = State(name, goal)
+    st = CompState(name, goal)
     for item in items:
         st.add_item(parse_item(item))
     return st

@@ -526,6 +526,7 @@ class Substitution(Rule):
     
     """
     def __init__(self, var_name: str, var_subst: Expr):
+        assert isinstance(var_name, str) and isinstance(var_subst, Expr)
         self.name = "Substitution"
         self.var_name = var_name
         self.var_subst = var_subst
@@ -730,7 +731,11 @@ class RewriteBinom(Rule):
 
 
 class IntegrationByParts(Rule):
-    """Apply integration by parts."""
+    """Apply integration by parts.
+    
+    The arguments u and v should satisfy u * dv equals the integrand.
+
+    """
     def __init__(self, u: Expr, v: Expr):
         self.name = "IntegrationByParts"
         assert isinstance(u, Expr) and isinstance(v, Expr)
