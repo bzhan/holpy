@@ -3,7 +3,7 @@
 from fractions import Fraction
 import functools, operator
 from collections.abc import Iterable
-from sympy import solveset, re, Interval, Eq, Union, EmptySet, pexquo
+from sympy import solveset, re, Interval, Eq, EmptySet, pexquo
 from decimal import Decimal
 import math
 from sympy.simplify.fu import *
@@ -1025,7 +1025,7 @@ class Expr:
 
         # Convert results SymPy's solveset into holpy style.
         def to_holpy(l):
-            if isinstance(l, Union):
+            if isinstance(l, sympy.Union):
                 return [(holpy_style(x.start), holpy_style(x.end)) for x in l.args]
             elif isinstance(l, Interval):
                 return [(holpy_style(l.start), holpy_style(l.end))]
