@@ -266,7 +266,7 @@
                                             "rule": {
                                                 "eq": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
                                                 "name": "ApplyEquation",
-                                                "str": "apply equation"
+                                                "str": "apply equation:(D b. I(m,b)) = -(m + 1) * I(m + 1,b)"
                                             },
                                             "type": "CalculationStep"
                                         },
@@ -277,7 +277,7 @@
                                                 "eq": "I(m,b) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                                                 "loc": "1.0",
                                                 "name": "ApplyEquation",
-                                                "str": "apply equation at 1.0"
+                                                "str": "apply equation:I(m,b) = (pi / 2 ^ (2 * m + 1)) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2)) at 1.0"
                                             },
                                             "type": "CalculationStep"
                                         },

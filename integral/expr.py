@@ -303,6 +303,12 @@ class Expr:
     def is_inf(self):
         return self.ty == INF and  (self.t == Decimal("inf") or self.t == Decimal("-inf"))
 
+    def is_pos_inf(self):
+        return self.ty == INF and self.t == Decimal("inf")
+
+    def is_neg_inf(self):
+        return self.ty == INF and self.t == Decimal("-inf")
+
     def is_trig(self):
         return self.ty == FUN and self.func_name in ("sin", "cos", "tan", "cot", "csc", "sec")
 

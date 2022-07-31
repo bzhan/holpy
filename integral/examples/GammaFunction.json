@@ -190,7 +190,7 @@
                                                 "eq": "(LIM {t -> oo}. exp(-t) * t ^ m) = 0",
                                                 "loc": "0.1",
                                                 "name": "ApplyEquation",
-                                                "str": "apply equation at 0.1"
+                                                "str": "apply equation:(LIM {t -> oo}. exp(-t) * t ^ m) = 0 at 0.1"
                                             },
                                             "type": "CalculationStep"
                                         },
@@ -201,7 +201,7 @@
                                                 "eq": "(LIM {t -> oo}. exp(-t) * t ^ m) = 0",
                                                 "loc": "1",
                                                 "name": "ApplyEquation",
-                                                "str": "apply equation at 1"
+                                                "str": "apply equation:(LIM {t -> oo}. exp(-t) * t ^ m) = 0 at 1"
                                             },
                                             "type": "CalculationStep"
                                         },
@@ -365,7 +365,7 @@
                                         "eq": "(LIM {t -> oo}. exp(-t) * t ^ m) = 0",
                                         "loc": "1.0",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation at 1.0"
+                                        "str": "apply equation:(LIM {t -> oo}. exp(-t) * t ^ m) = 0 at 1.0"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -541,7 +541,7 @@
                                             "rule": {
                                                 "eq": "m * I(m) = I(m + 1)",
                                                 "name": "ApplyEquation",
-                                                "str": "apply equation"
+                                                "str": "apply equation:m * I(m) = I(m + 1)"
                                             },
                                             "type": "CalculationStep"
                                         },
@@ -552,7 +552,7 @@
                                                 "eq": "I(m) = factorial(m - 1)",
                                                 "loc": "1",
                                                 "name": "ApplyEquation",
-                                                "str": "apply equation at 1"
+                                                "str": "apply equation:I(m) = factorial(m - 1) at 1"
                                             },
                                             "type": "CalculationStep"
                                         },
@@ -591,6 +591,89 @@
                         "induct_var": "m",
                         "latex_goal": "I{(m)} = (m - 1)!",
                         "type": "InductionProof"
+                    },
+                    "type": "Goal"
+                },
+                {
+                    "conds": [
+                        {
+                            "cond": "m > 0",
+                            "latex_cond": "m > 0",
+                            "name": "m greater than 0",
+                            "type": "Condition"
+                        }
+                    ],
+                    "goal": "(INT x:[0,oo]. exp(-(x ^ 3))) = I(4/3)",
+                    "latex_goal": "\\int_{0}^{\\infty} e^{-x ^ {3}} \\,dx = I{(\\frac{4}{3})}",
+                    "proof": {
+                        "finished": true,
+                        "goal": "(INT x:[0,oo]. exp(-(x ^ 3))) = I(4/3)",
+                        "latex_goal": "\\int_{0}^{\\infty} e^{-x ^ {3}} \\,dx = I{(\\frac{4}{3})}",
+                        "lhs_calc": {
+                            "latex_start": "\\int_{0}^{\\infty} e^{-x ^ {3}} \\,dx",
+                            "start": "INT x:[0,oo]. exp(-(x ^ 3))",
+                            "steps": [
+                                {
+                                    "latex_res": "\\int_{0}^{\\infty ^ {3}} \\frac{1}{3} y ^ {-2/3} e^{-y} \\,dy",
+                                    "res": "INT y:[0,oo ^ 3]. 1/3 * y ^ (-2/3) * exp(-y)",
+                                    "rule": {
+                                        "latex_str": "substitute \\(y\\) for \\(x ^ {3}\\)",
+                                        "name": "Substitution",
+                                        "str": "substitute y for x ^ 3",
+                                        "var_name": "y",
+                                        "var_subst": "x ^ 3"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "\\frac{1}{3} (\\int_{0}^{\\infty} y ^ {-2/3} e^{-y} \\,dy)",
+                                    "res": "1/3 * (INT y:[0,oo]. y ^ (-2/3) * exp(-y))",
+                                    "rule": {
+                                        "name": "FullSimplify",
+                                        "str": "full simplify"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "\\frac{1}{3} I{(\\frac{1}{3})}",
+                                    "res": "1/3 * I(1/3)",
+                                    "rule": {
+                                        "loc": "1",
+                                        "name": "FoldDefinition",
+                                        "str": "FoldDefinition: m=1/3 at 1"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "I{(\\frac{1}{3} + 1)}",
+                                    "res": "I(1/3 + 1)",
+                                    "rule": {
+                                        "eq": "m * I(m) = I(m + 1)",
+                                        "name": "ApplyEquation",
+                                        "str": "apply equation:m * I(m) = I(m + 1) where m=1/3"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "I{(\\frac{4}{3})}",
+                                    "res": "I(4/3)",
+                                    "rule": {
+                                        "loc": "0",
+                                        "name": "FullSimplify",
+                                        "str": "full simplify at 0"
+                                    },
+                                    "type": "CalculationStep"
+                                }
+                            ],
+                            "type": "Calculation"
+                        },
+                        "rhs_calc": {
+                            "latex_start": "I{(\\frac{4}{3})}",
+                            "start": "I(4/3)",
+                            "steps": [],
+                            "type": "Calculation"
+                        },
+                        "type": "CalculationProof"
                     },
                     "type": "Goal"
                 }

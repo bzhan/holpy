@@ -127,3 +127,4 @@ package-lock.json
 users/*
 smt/veriT/tests/smtlib_path.txt
 
+/integral/examples/GammaFunction.json
