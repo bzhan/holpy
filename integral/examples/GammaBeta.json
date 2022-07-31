@@ -202,12 +202,12 @@
                             "type": "Condition"
                         }
                     ],
-                    "goal": "Gamma(n + 1 + 1) = factorial(n + 1)",
-                    "latex_goal": "\\Gamma{(n + 1 + 1)} = (n + 1)!",
+                    "goal": "Gamma(n + 1 + 1) = factorial(1 + n)",
+                    "latex_goal": "\\Gamma{(n + 1 + 1)} = (1 + n)!",
                     "proof": {
                         "finished": false,
-                        "goal": "Gamma(n + 1 + 1) = factorial(n + 1)",
-                        "latex_goal": "\\Gamma{(n + 1 + 1)} = (n + 1)!",
+                        "goal": "Gamma(n + 1 + 1) = factorial(1 + n)",
+                        "latex_goal": "\\Gamma{(n + 1 + 1)} = (1 + n)!",
                         "lhs_calc": {
                             "latex_start": "\\Gamma{(n + 1 + 1)}",
                             "start": "Gamma(n + 1 + 1)",
@@ -226,8 +226,8 @@
                             "type": "Calculation"
                         },
                         "rhs_calc": {
-                            "latex_start": "(n + 1)!",
-                            "start": "factorial(n + 1)",
+                            "latex_start": "(1 + n)!",
+                            "start": "factorial(1 + n)",
                             "steps": [],
                             "type": "Calculation"
                         },

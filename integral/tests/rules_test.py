@@ -338,13 +338,15 @@ class RulesTest(unittest.TestCase):
 
     def testDerivativeSimplify(self):
         test_data = [
-            ("D x. x",'1'),
-            ( "D x. log(x)",'x ^ (-1)'),
-            ("D x. sin(x^2)",'2 * x * cos(x ^ 2)'),
-            ("D x. sin(x+y) * y + 3",'y * cos(x + y)'),
-            ("D y. tan(log(x)+y) * y^2 + cos(y) - y + 3", '-1 + 2 * y * tan(y + log(x)) + y ^ 2 * sec(y + log(x)) ^ 2 + -sin(y)'),
-            ('D z. exp(2*z) + 1/cos(z) + 1/z * z','cos(z) ^ (-2) * sin(z) + 2 * exp(2 * z)'),
-            ( 'D x. (2*x +x^2 + cos(x)) / (sin(x) + tan(x))','(-2 * x * cos(x) + -2 * x * sec(x) ^ 2 + 2 * x * sin(x) + 2 * x * tan(x) + -(x ^ 2 * cos(x)) + -(x ^ 2 * sec(x) ^ 2) + -(cos(x) * sec(x) ^ 2) + -(cos(x) ^ 2) + 2 * sin(x) + -(sin(x) * tan(x)) + -(sin(x) ^ 2) + 2 * tan(x)) / (sin(x) + tan(x)) ^ 2'),
+            ("D x. x", '1'),
+            ("D x. log(x)", 'x ^ (-1)'),
+            ("D x. sin(x^2)", '2 * x * cos(x ^ 2)'),
+            ("D x. sin(x+y) * y + 3", 'y * cos(x + y)'),
+            ("D y. tan(log(x)+y) * y^2 + cos(y) - y + 3",
+             '-1 + 2 * y * tan(y + log(x)) + y ^ 2 * sec(y + log(x)) ^ 2 + -sin(y)'),
+            ('D z. exp(2*z) + 1/cos(z) + 1/z * z', 'cos(z) ^ (-2) * sin(z) + 2 * exp(2 * z)'),
+            ('D x. (2*x +x^2 + cos(x)) / (sin(x) + tan(x))',
+             '(-2 * x * cos(x) + -2 * x * sec(x) ^ 2 + 2 * x * sin(x) + 2 * x * tan(x) + -(x ^ 2 * cos(x)) + -(x ^ 2 * sec(x) ^ 2) + -(cos(x) * sec(x) ^ 2) + -(cos(x) ^ 2) + 2 * sin(x) + -(sin(x) * tan(x)) + -(sin(x) ^ 2) + 2 * tan(x)) / (sin(x) + tan(x)) ^ 2'),
         ]
         for a, b in test_data:
             a, b = parser.parse_expr(a), parser.parse_expr(b)
@@ -524,7 +526,7 @@ class RulesTest(unittest.TestCase):
         goal = parser.parse_expr("INT x:[0, oo]. cos(tx)*exp(-(x^2)/2) = sqrt(pi/2)*exp(-(t^2)/2)")
 
         # Initial state
-        st = compstate.State('Integral1', goal)
+        st = compstate.CompState('Integral1', goal)
 
         # Make definition
         e = parser.parse_expr("I(t) = INT x:[0, oo]. cos(t*x)*exp(-(x^2)/2)")

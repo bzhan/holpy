@@ -72,20 +72,6 @@ def extract_frac(ps):
             res.append((n, e))
     return tuple(res), coeff
 
-class Unknown:
-    """Represent the polynomial which has a unknown value."""
-    def __init__(self, factors) -> None:
-        self.factors = factors
-
-    def __str__(self, factors):
-        pass
-
-class InfMono:
-    def __init__(self, t) -> None:
-        assert t in (Decimal("inf"), Decimal("-inf"))
-
-class InfPoly:
-    pass
 
 class ConstantMonomial:
     """
@@ -303,10 +289,10 @@ class ConstantPolynomial:
         return self.is_fraction() and self.get_fraction() == -1
 
 
-def const_singleton(t):
+def const_singleton(t) -> ConstantPolynomial:
     return ConstantPolynomial([ConstantMonomial(1, [(t, 1)])])
 
-def const_fraction(r):
+def const_fraction(r) -> ConstantPolynomial:
     return ConstantPolynomial([ConstantMonomial(r, [])])
 
 class Monomial:
