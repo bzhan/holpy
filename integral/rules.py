@@ -494,7 +494,12 @@ class ApplyEquation(Rule):
             elif self.eq.rhs.is_plus() and self.eq.rhs.args[1] == e:
                 res = self.eq.lhs - self.eq.rhs.args[0]
                 if conditions.is_const(e,conds):
-                    conds.add_condition(str(res), Fun('isConst',res))
+                    conds.add_condition(str(res) + ' is const', Fun('isConst',res))
+                    # remove condition imply e is const
+                    for a, b in conds.data.items():
+                        if b==Fun('isConst',e):
+                            conds.data.pop(a)
+                            break;
                 return res
             elif self.eq.rhs.is_plus() and self.eq.rhs.args[0] == e:
                 res = self.eq.lhs - self.eq.rhs.args[1]
@@ -1693,7 +1698,10 @@ class DerivIntExchange(Rule):
         self.name = "DerivIntExchange"
         self.const_var = const_var
     def __str__(self):
-        return "exchange derivative and integral"
+        s = ""
+        if self.const_var != None:
+            s = ', ' + self.const_var + ' is const'
+        return "exchange derivative and integral" + s
 
     def export(self):
         return {
@@ -2080,7 +2088,7 @@ class RewriteConstVars(Rule):
         self.const_var = const_var
 
     def __str__(self):
-        return "RewriteConstVars"
+        return "RewriteConstVars, "+self.const_var+" is const"
 
     def export(self):
         return {
@@ -2103,7 +2111,7 @@ class RewriteConstVars(Rule):
         for item in const_vars:
             conds.data.pop(item)
         const_v = Var(self.const_var)
-        conds.add_condition(self.const_var,parser.parse_expr("isConst("+self.const_var+")"))
+        conds.add_condition(self.const_var, parser.parse_expr("isConst("+self.const_var+")"))
         return res + const_v
 
 
@@ -2128,9 +2136,13 @@ class ConstExprSubs(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         if conds != None and conditions.is_const(e, conds):
-            return e.replace(Var(self.var), self.var_subs)
+            res = e.replace(Var(self.var), self.var_subs)
+            for a, b in conds.data.items():
+                if b == Fun('isConst', e):
+                    conds.data.pop(a)
+                    break
+            return res
         else:
-            print(e)
             raise NotImplementedError
 
 class RewriteLimit(Rule):

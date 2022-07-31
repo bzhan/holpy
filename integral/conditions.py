@@ -99,9 +99,8 @@ def is_const(e: Expr, conds: Conditions) -> bool:
     """Return whether conditions imply e is const."""
     if e.is_const():
         return True
-    if str(e) in conds.data.keys():
-        t = conds.data[str(e)]
-        if t.ty == expr.FUN and t.func_name == 'isConst':
+    for a,b in conds.data.items():
+        if b.ty == expr.FUN and b.func_name == 'isConst' and b.args[0] == e:
             return True
     if not contains_const_var(e, conds) and len(e.get_vars())!=0:
         return False

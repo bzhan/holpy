@@ -582,16 +582,15 @@ class RulesTest(unittest.TestCase):
         # print(st)
 
     def testProbabilityIntegral(self):
+        file = compstate.CompFile('probability integral')
+
         # Overall goal
         goal = parser.parse_expr("(INT x:[-oo,oo]. exp(-(x^2)/2)) = sqrt(2*pi)")
-
-        # Initial state
-        st = compstate.CompState('Probablity Integral', goal)
 
         # Make definition
         e = parser.parse_expr("g(t) = (INT x:[0,t].exp(-(x^2)/2))^2")
         Idef = compstate.FuncDef(e)
-        st.add_item(Idef)
+        file.add_definition(Idef)
         conds = conditions.Conditions()
 
         # Condition g(t) > 0
@@ -601,9 +600,8 @@ class RulesTest(unittest.TestCase):
         # Prove the following equality
         e = parser.parse_expr('(INT x:[-oo,oo].exp(-(x^2)/2)) = (2*sqrt(g(oo)))')
         Eq1 = compstate.Goal(e, conds=conds)
-        st.add_item(Eq1)
+        file.add_compstate(Eq1)
         Eq1_proof = Eq1.proof_by_calculation()
-        st.add_item(Eq1_proof)
 
         # left part
         calc = Eq1_proof.lhs_calc
@@ -623,9 +621,8 @@ class RulesTest(unittest.TestCase):
         # prove the following equation
         e = parser.parse_expr('(D t.g(t)) = -2*(D t.INT y:[0,1]. exp(-(1+y^2)*(t^2)/2) / (1+y^2))')
         Eq2 = compstate.Goal(e, conds=conds)
-        st.add_item(Eq2)
+        file.add_compstate(Eq2)
         Eq2_proof = Eq2.proof_by_calculation()
-        st.add_item(Eq2_proof)
 
         # # left side
         calc = Eq2_proof.lhs_calc
@@ -651,11 +648,10 @@ class RulesTest(unittest.TestCase):
 
         # proving the following equation
         e = parser.parse_expr('g(t) = -2 * (INT y:[0,1]. exp(-(1+y^2)*(t^2)/2)/(1+y^2)) + C')
-        conds.add_condition('C', parser.parse_expr('isConst(C)'))
+        # conds.add_condition('C', parser.parse_expr('isConst(C)'))
         Eq3 = compstate.Goal(e, conds=conds)
-        st.add_item(Eq3)
+        file.add_compstate(Eq3)
         Eq3_proof = Eq3.proof_by_calculation()
-        st.add_item(Eq3_proof)
 
         # left side
         calc = Eq3_proof.lhs_calc
@@ -673,9 +669,8 @@ class RulesTest(unittest.TestCase):
         # proof c = pi/2
         e = parser.parse_expr('C = pi/2')
         Eq4 = compstate.Goal(e, conds=conds)
-        st.add_item(Eq4)
+        file.add_compstate(Eq4)
         Eq4_proof = Eq4.proof_by_calculation()
-        st.add_item(Eq4_proof)
         calc = Eq4_proof.lhs_calc
         calc.perform_rule(rules.ApplyEquation(Eq3.goal))
         e = Const(0)
@@ -690,17 +685,15 @@ class RulesTest(unittest.TestCase):
 
         e = parser.parse_expr('(LIM {t->oo}.g(t)) = g(oo)')
         Eq5 = compstate.Goal(e, conds=conds)
-        st.add_item(Eq5)
+        file.add_compstate(Eq5)
         Eq5_proof = Eq5.proof_by_calculation()
-        st.add_item(Eq5_proof)
         calc = Eq5_proof.lhs_calc
         calc.perform_rule(rules.RewriteLimit())
 
         e = parser.parse_expr('(INT x:[-oo,oo].exp(-(x^2)/2)) = sqrt(2*pi)')
         Eq6 = compstate.Goal(e, conds=conds)
-        st.add_item(Eq6)
+        file.add_compstate(Eq6)
         Eq6_proof = Eq6.proof_by_calculation()
-        st.add_item(Eq6_proof)
         calc = Eq6_proof.lhs_calc
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq5.goal),'1.0'))
@@ -715,19 +708,15 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = Eq6_proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        # print(st)
-        file_content = {
-            "content": [st.export()]
-        }
+        # print(file)
         with open('integral/examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
-            json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testWallis(self):
+        file = compstate.CompFile('Wallis')
+
         # Overall goal
         goal = parser.parse_expr("(INT x:[0,oo]. 1/(x^2+1)^(m+1)) = pi/(2^(2*m+1))*binom(2*m,m)")
-
-        # Initial state
-        st = compstate.CompState("Wallis", goal)
 
         # Condition b > 0
         conds = conditions.Conditions()
@@ -735,11 +724,11 @@ class RulesTest(unittest.TestCase):
 
         # Make definition
         Idef = compstate.FuncDef(parser.parse_expr("I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))"), conds=conds)
-        st.add_item(Idef)
+        file.add_definition(Idef)
 
         # Prove the following equality
         Eq1 = compstate.Goal(parser.parse_expr("(D b. I(m,b)) = -(m+1) * I(m+1, b)"), conds=conds)
-        st.add_item(Eq1)
+        file.add_compstate(Eq1)
         proof = Eq1.proof_by_calculation()
 
         calc = proof.lhs_calc
@@ -754,7 +743,7 @@ class RulesTest(unittest.TestCase):
 
         # Prove the following by induction
         Eq2 = compstate.Goal(parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"), conds=conds)
-        st.add_item(Eq2)
+        file.add_compstate(Eq2)
         proof = Eq2.proof_by_induction("m")
         proof_base = proof.base_case.proof_by_calculation()
         proof_induct = proof.induct_case.proof_by_calculation()
@@ -782,13 +771,9 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
         calc.perform_rule(rules.FullSimplify())
-        # print(st)
-
-        file_content = {
-            "content": [st.export()]
-        }
+        print(file)
         with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
-            json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testGammaBeta(self):
         file = compstate.CompFile("GammaBeta")
@@ -837,15 +822,16 @@ class RulesTest(unittest.TestCase):
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testGammaFunction(self):
+        st = compstate.CompFile("GammaFunction")
         # Overall goal
         goal = parser.parse_expr("(INT x:[0,oo]. x^(m-1)*exp(-x)) = factorial(m)")
 
         # Initial state
-        st = compstate.CompState("GammaFunction", goal)
+        # st = compstate.CompState("GammaFunction", goal)
 
         # Make definition
         Idef = compstate.FuncDef(parser.parse_expr("I(m) = (INT x:[0,oo]. x^(m-1) * exp(-x))"))
-        st.add_item(Idef)
+        st.add_definition(Idef)
 
         # Condition: m is a positive integer
         conds = conditions.Conditions()
@@ -854,7 +840,7 @@ class RulesTest(unittest.TestCase):
 
         # proof: lim {t->oo}. exp(-t) * t^m = 0
         Eq0 = compstate.Goal(parser.parse_expr("(LIM {t->oo}. exp(-t) * t^m) = 0"), conds=conds)
-        st.add_item(Eq0)
+        st.add_compstate(Eq0)
         Eq0_proof = Eq0.proof_by_induction("m",1)
         Eq0_proof_base = Eq0_proof.base_case.proof_by_calculation()
         Eq0_proof_induct = Eq0_proof.induct_case.proof_by_calculation()
@@ -878,7 +864,7 @@ class RulesTest(unittest.TestCase):
 
         # proof: m*I(m) = I(m+1)
         Eq1 = compstate.Goal(parser.parse_expr("m * I(m) = I(m+1)"), conds = conds)
-        st.add_item(Eq1)
+        st.add_compstate(Eq1)
         Eq1_proof = Eq1.proof_by_calculation()
         calc = Eq1_proof.lhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '1'))
@@ -900,7 +886,7 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         # # proof I(m+1) = m !
         Eq2 = compstate.Goal(parser.parse_expr("I(m) = factorial(m-1)"), conds=conds)
-        st.add_item(Eq2)
+        st.add_compstate(Eq2)
         # I(1) = factorial(0)
         Eq2_proof = Eq2.proof_by_induction("m", 1)
         Eq2_proof_base = Eq2_proof.base_case.proof_by_calculation()
@@ -922,7 +908,7 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         Eq3 = compstate.Goal(parser.parse_expr("(INT x:[0, oo]. exp(-x^3)) = I(4/3)"), conds=conds)
-        st.add_item(Eq3)
+        st.add_compstate(Eq3)
         Eq3_proof = Eq3.proof_by_calculation()
         calc = Eq3_proof.lhs_calc
         calc.perform_rule(rules.Substitution('y', parser.parse_expr('x^3')))
@@ -933,11 +919,13 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(Eq1.goal, {e1 : e2}))
         calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '0'))
         # print(st)
-        file_content = {
-            "content": [st.export()]
-        }
+        # file_content = {
+        #     "content": [st.export()]
+        # }
+        # with open('integral/examples/GammaFunction.json', 'w', encoding='utf-8') as f:
+        #     json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
         with open('integral/examples/GammaFunction.json', 'w', encoding='utf-8') as f:
-            json.dump(file_content, f, indent=4, ensure_ascii=False, sort_keys=True)
+            json.dump(st.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
 
     def testMul2Div(self):
