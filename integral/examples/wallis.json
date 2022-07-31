@@ -3,14 +3,6 @@
         {
             "items": [
                 {
-                    "conds": [
-                        {
-                            "cond": "b > 0",
-                            "latex_cond": "b > 0",
-                            "name": "b",
-                            "type": "Condition"
-                        }
-                    ],
                     "eq": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
                     "latex_eq": "I(m,b) = \\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + b) ^ {m + 1}} \\,dx",
                     "latex_lhs": "I(m,b)",

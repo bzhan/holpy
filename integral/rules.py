@@ -119,6 +119,13 @@ class Linearity(Rule):
         elif e.is_limit():
             if e.body.is_uminus():
                 return -Limit(e.var,e.lim,e.body.args[0])
+            elif e.body.is_times():
+                factors = decompose_expr_factor(e.body)
+                if not factors[0].contains_var(e.var):
+                    return factors[0] * rec(expr.Limit(e.var, e.lim, \
+                                        functools.reduce(lambda x, y: x * y, factors[2:],factors[1])))
+                else:
+                    return e
             else:
                 return e
         else:
@@ -207,7 +214,6 @@ class DerivativeSimplify(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         if not isinstance(e, Deriv):
             return e
-        
         return expr.deriv(e.var, e.body)
 
 
@@ -255,6 +261,7 @@ class OnSubterm(Rule):
                 self.eval(e.body, conds=conds)), conds=conds)
         elif e.ty == expr.LIMIT:
             return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, conds=conds)), conds=conds)
+
         else:
             raise NotImplementedError
 
@@ -478,6 +485,11 @@ class ApplyEquation(Rule):
             res = self.eq.lhs - self.eq.rhs.args[0]
             if conditions.is_const(e,conds):
                 conds.add_condition(str(res), Fun('isConst',res))
+            return res
+        elif self.eq.rhs.is_plus() and self.eq.rhs.args[0] == e:
+            res = self.eq.lhs - self.eq.rhs.args[1]
+            if conditions.is_const(e, conds):
+                conds.add_condition(str(res), Fun('isConst', res))
             return res
         else:
             return e
@@ -848,7 +860,7 @@ class ElimAbs(Rule):
             if conds != None and is_positive(e.args[0], conds):
                 return e.args[0]
             else:
-                raise NotImplementedError
+                return e
         else:
             return e
 
@@ -945,9 +957,10 @@ class ElimInfInterval(Rule):
     provided.
 
     """
-    def __init__(self, a=Const(0)):
+    def __init__(self, a=Const(0),new_var = 't'):
         self.name = "ElimInfInterval"
         self.a = a
+        self.new_var = new_var
 
     def __str__(self):
         return "eliminate improper integral"
@@ -969,7 +982,7 @@ class ElimInfInterval(Rule):
         inf = Inf(Decimal('inf'))
         neg_inf = Inf(Decimal('-inf'))
         upper, lower = e.upper, e.lower
-        new_var = "s" if e.var == "t" else "t"
+        new_var = self.new_var
 
         if upper == inf and lower != neg_inf and lower != inf:
             # INT x:[a,oo]. body => lim t->oo. INT x:[a,t]. body
@@ -1403,22 +1416,22 @@ def compute_limit(e: Expr, conds=None):
                 return (a1*a2, 'unknown', -1, "?")
         elif b2 == 'const' and b1 in ('pos_inf', 'neg_inf'):
             # Cases when the right side is constant, and left side is infinity
-            if a2.ty == CONST and a2.val > 0 and b1 == 'pos_inf':
+            if is_positive(a2,conds) and b1 == 'pos_inf':
                 # oo * pos = oo
                 return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
-            elif a2.ty == CONST and a2.val > 0 and b1 == 'neg_inf':
+            elif is_positive(a2,conds) and b1 == 'neg_inf':
                 # -oo * pos = -oo
                 return (Inf(Decimal('-inf')), 'neg_inf', c1, d1)
-            elif a2.ty == CONST and a2.val < 0 and b1 == 'pos_inf':
+            elif is_negative(a2, conds) and b1 == 'pos_inf':
                 # oo * neg = -oo
                 return (Inf(Decimal('-inf')), 'neg_inf', c1, d1)
-            elif a2.ty == CONST and a2.val < 0 and b1 == 'neg_inf':
+            elif is_negative(a2, conds) and b1 == 'neg_inf':
                 # -oo * neg = oo
                 return (Inf(Decimal('inf')), 'pos_inf', c1, d1)
             else:
                 # Otherwise, return unknown
                 return (a1 * a2, 'unknown', -1, "?")
-        elif b1 == 'const' and a1.ty == CONST and a1.val == 0 and b2 == 'indefinite_bounded':
+        elif b1 == 'const' and a1.ty == CONST and a1.val == 0 and b2 in ('bounded', 'indefinite_bounded'):
             return (Const(0),'const',-1,"?")
         elif b1 == 'pos_inf' and b2 == 'pos_inf':
             # oo * oo = oo, compute order of infinity
@@ -1603,6 +1616,8 @@ def compute_limit(e: Expr, conds=None):
             return (Inf(Decimal("inf")), 'pos_inf', c/2, d)
         elif e.func_name in ('sin', 'cos', 'asin', 'acos') and b in ("pos_inf", 'neg_inf'):
             return (Fun(e.func_name, a), 'indefinite_bounded', 0, "?")
+        elif e.func_name in ('sin', 'cos') and b == 'unknown':
+            return (e, 'bounded', -1, '?')
         elif e.func_name in ('tan', 'cot', "csc", "sec") and b in ("pos_inf", 'neg_inf'):
             return (Fun(e.func_name, a), 'indefinite_unbounded', -1, "?")
         elif e.func_name == 'log' and b == "pos_inf":
@@ -1797,17 +1812,20 @@ class LimFunExchange(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         if not isinstance(e, Expr):
             raise AssertionError("LimFunExchange: wrong form for e.")
-        if not e.ty == LIMIT:
-            return e
-        if e.body.ty == FUN:
-            func_name, args = e.body.func_name, e.body.args
-            return expr.Fun(func_name, *[Limit(e.var, e.lim, arg) for arg in args])
-        if e.body.ty == OP and e.body.op == '-' and len(e.body.args) == 1:
-            return -(Limit(e.var, e.lim, e.body.args[0]))
-        if e.body.ty == OP and e.body.op == '^':
-            if e.body.args[1].is_constant():
-                return Limit(e.var, e.lim, e.body.args[0]) ^ e.body.args[1]
-        return e;
+        if e.ty == LIMIT:
+
+            if e.body.ty == FUN:
+                func_name, args = e.body.func_name, e.body.args
+                return expr.Fun(func_name, *[Limit(e.var, e.lim, arg) for arg in args])
+            if e.body.ty == OP and e.body.op == '-' and len(e.body.args) == 1:
+                return -(Limit(e.var, e.lim, e.body.args[0]))
+            if e.body.ty == OP and e.body.op == '^':
+                if e.body.args[1].is_constant():
+                    return Limit(e.var, e.lim, e.body.args[0]) ^ e.body.args[1]
+        else:
+            if e.ty == OP and e.op == '-' and len(e.args) == 1 and e.args[0].ty == LIMIT:
+                return Limit(e.args[0].var,e.args[0].lim,-e.args[0].body)
+            return e;
 
 class RootFractionReWrite(Rule):
     '''
@@ -1925,33 +1943,30 @@ class RewriteExp(Rule):
         else:
             raise NotImplementedError
 
-# class Div2Add(Rule):
-#     def __init__(self):
-#         self.name = "Div2Add"
-#
-#     def __str__(self):
-#         return "rewrite divsion to add"
-#
-#     def export(self):
-#         return {
-#             "name": self.name,
-#             "str": str(self)
-#         }
-#
-#     def eval(self, e: Expr, conds=None) -> Expr:
-#         if e.ty != OP or e.op != '/':
-#             return e
-#         numer = e.args[0]
-#         if numer.ty == OP and numer.op == '+':
-#             a,b = numer.args
-#             return a / e.args[1] + b / e.args[1]
-#         else:
-#             raise NotImplementedError
-#
-class Div2Mul(Rule):
+class RewriteUminus(Rule):
     def __init__(self):
-        self.name = "Div2Mul"
+        self.name = "RewriteUminus"
 
+    def __str__(self):
+        return "RewriteUminus"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.is_uminus():
+            if e.args[0].is_times():
+                return -e.args[0].args[0] * e.args[0].args[1]
+        else:
+            raise NotImplementedError
+
+class Div2Mul(Rule):
+    def __init__(self, tmp = None):
+        self.name = "Div2Mul"
+        self.tmp = tmp
     def __str__(self):
         return "rewrite divsion to multiplication"
 
@@ -1963,7 +1978,10 @@ class Div2Mul(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         if e.ty != OP or e.op != '/':
             return e
-        return e.args[0] * (e.args[1]^-1)
+        if self.tmp == None:
+            return e.args[0] * (e.args[1]^-1)
+        else:
+            return (e.args[0] / self.tmp) * (self.tmp / e.args[1])
 
 class Assoc(Rule):
     def __init__(self):
@@ -2179,10 +2197,43 @@ class RewriteFactorial(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         if e.is_times() and e.args[1].ty == FUN and e.args[1].func_name == 'factorial':
-            if e.args[0].is_plus:
+            if e.args[0].is_plus():
                 # (m+1) * m! = (m+1)!
                 m0,m1,c = e.args[1].args[0], e.args[0].args[0], e.args[0].args[1]
                 if m0.is_var() and m0 == m1 and c==Const(1):
                     return Fun('factorial', e.args[0])
+                else:
+                    raise NotImplementedError
+            elif e.args[0].is_var():
+                # m * (m-1)! = m!
+                m0, m1 = e.args[0], e.args[1].args[0]
+                if (m0-m1).normalize() == Const(1):
+                    return Fun('factorial', m0)
+                else:
+                    raise NotImplementedError
+            else:
+                raise NotImplementedError
         else:
             raise NotImplementedError
+
+class RewriteDifferential(Rule):
+    '''
+        1. DIFF. f(t) / DIFF. t = D t. f(t)
+    '''
+
+    def __init__(self):
+        self.name = "RewriteFactorial"
+
+    def __str__(self):
+        return "RewriteFactorial"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.is_divides() and e.args[0].is_diff() and e.args[1].is_diff() and e.args[1].body.is_var():
+            return Deriv(e.args[1].body.name, e.args[0].body)
+        raise NotImplementedError

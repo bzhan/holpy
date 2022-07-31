@@ -25,6 +25,7 @@ grammar = r"""
         | "\|" expr "\|" -> abs_expr 
         | "$" expr "$" -> trig_expr
         | "INT" CNAME ":[" expr "," expr "]." expr -> integral_expr
+        | "DIFF" "." expr -> differential_expr
         | "[" expr "]_" CNAME "=" expr "," expr -> eval_at_expr
         | "LIM" "{" CNAME "->" expr "}" "." expr -> limit_inf_expr
         | "LIM" "{" CNAME "->" expr "-}" "."  expr -> limit_l_expr
@@ -163,6 +164,9 @@ class ExprTransformer(Transformer):
 
     def limit_r_expr(self, var, lim, body):
         return expr.Limit(str(var), lim, body, "+")
+
+    def differential_expr(self, body):
+        return expr.Differential(body)
 
 expr_parser = Lark(grammar, start="expr", parser="lalr", transformer=ExprTransformer())
 interval_parser = Lark(grammar, start="interval", parser="lalr", transformer=ExprTransformer())

@@ -25,7 +25,7 @@ real_derivative = term.Const('real_derivative', TFun(TFun(RealType, RealType), R
 real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(RealType, RealType), RealType))
 
 
-VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF, INDEFINITEINTEGRAL = range(11)
+VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF, INDEFINITEINTEGRAL, DIFFERENTIAL = range(12)
 
 op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50, "<": 50, ">": 50, "<=": 50, ">=": 50
@@ -229,11 +229,16 @@ class Expr:
             return 1 + self.lower.size() + self.upper.size() + self.body.size()
         elif self.ty == LIMIT:
             return 1 + self.lim.size() + self.body.size()
+        elif self.ty == DIFFERENTIAL:
+            return 1 + self.body.size()
         else:
             raise NotImplementedError
 
     def is_var(self):
         return self.ty == VAR
+
+    def is_diff(self):
+        return self.ty == DIFFERENTIAL
 
     def is_const(self):
         return self.ty == CONST
@@ -376,7 +381,7 @@ class Expr:
                 raise NotImplementedError
         elif self.ty == FUN:
             return 95
-        elif self.ty in (DERIV, INTEGRAL, EVAL_AT, INDEFINITEINTEGRAL):
+        elif self.ty in (DERIV, INTEGRAL, EVAL_AT, INDEFINITEINTEGRAL,DIFFERENTIAL):
             return 10
         elif self.ty == LIMIT:
             return 5
@@ -867,7 +872,11 @@ class Expr:
                 return poly.constant(self.to_const_poly())
             else:
                 return poly.singleton(Fun("binom", self.args[0].normalize(), self.args[1].normalize()))
-
+        elif self.ty == FUN and self.func_name == "factorial":
+            if self.is_constant():
+                return poly.constant(self.to_const_poly())
+            else:
+                return poly.singleton(Fun("factorial", self.args[0].normalize()))
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)
             lower = self.body.subst(self.var, self.lower)
@@ -1545,6 +1554,8 @@ class Var(Expr):
         return hash((VAR, self.name))
 
     def __eq__(self, other):
+        if other == None:
+            return False
         return other.ty == VAR and self.name == other.name
 
     def __str__(self):
@@ -1567,6 +1578,8 @@ class Const(Expr):
         return hash((CONST, self.val))
 
     def __eq__(self, other):
+        if other == None:
+            return False
         return other.ty == CONST and self.val == other.val
 
     def __str__(self):
@@ -1611,7 +1624,7 @@ class Op(Expr):
             if a.priority() <= op_priority[self.op]:
                 if a.ty == OP and a.op != self.op:
                     s1 = "(%s)" % s1
-                elif a.ty in (EVAL_AT, INTEGRAL, DERIV, LIMIT, INDEFINITEINTEGRAL):
+                elif a.ty in (EVAL_AT, INTEGRAL, DERIV, LIMIT, INDEFINITEINTEGRAL,DIFFERENTIAL):
                     s1 = "(%s)" % s1
             if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
                 s2 = "(%s)" % s2
@@ -1642,6 +1655,8 @@ class Fun(Expr):
         return hash((FUN, self.func_name, self.args))
 
     def __eq__(self, other):
+        if other == None:
+            return False
         if isinstance(other, (int, Fraction)):
             other = Const(other)
         return other.ty == FUN and self.func_name == other.func_name and self.args == other.args
@@ -1739,8 +1754,31 @@ class Inf(Expr):
         return hash((INF, self.t))
 
     def __eq__(self, other):
+        if other == None:
+            return False
         return other.ty == INF and self.t == other.t
 
+class Differential(Expr):
+    """Differential of an expression."""
+
+    def __init__(self, body: Expr):
+        assert isinstance(body, Expr)
+        self.body = body
+        self.ty = DIFFERENTIAL
+
+    def __hash__(self):
+        return hash((DIFFERENTIAL, self.body))
+
+    def __eq__(self, other):
+        if other == None:
+            return False
+        return other.ty == DIFFERENTIAL and self.body == other.body
+
+    def __str__(self):
+        return "DIFF. %s" % str(self.body)
+
+    def __repr__(self):
+        return "Differential(%s)" % repr(self.body)
 
 NEG_INF = Inf(Decimal('-inf'))
 POS_INF = Inf(Decimal('inf'))
@@ -1814,6 +1852,8 @@ class Deriv(Expr):
         return hash((DERIV, self.var, self.body))
 
     def __eq__(self, other):
+        if other == None:
+            return False
         return other.ty == DERIV and self.var == other.var and self.body == other.body
 
     def __str__(self):
@@ -1864,6 +1904,8 @@ class Integral(Expr):
         return hash((INTEGRAL, self.var, self.lower, self.upper, self.body))
 
     def __eq__(self, other):
+        if other == None:
+            return False;
         return other.ty == INTEGRAL and self.lower == other.lower and self.upper == other.upper and \
                self.body == other.alpha_convert(self.var).body
 
