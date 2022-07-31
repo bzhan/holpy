@@ -775,6 +775,8 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
         calc.perform_rule(rules.FullSimplify())
         print(file)
+        print(conds.data)
+        print(conds.is_assume)
         with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 

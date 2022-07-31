@@ -30,12 +30,13 @@ class Conditions:
     def export(self):
         res = list()
         for name, cond in self.data.items():
-            res.append({
-                "type": "Condition",
-                "name": name,
-                "cond": str(cond),
-                "latex_cond": latex.convert_expr(cond)
-            })
+            if name in self.is_assume.keys() and not self.is_assume[name]:
+                res.append({
+                    "type": "Condition",
+                    "name": name,
+                    "cond": str(cond),
+                    "latex_cond": latex.convert_expr(cond)
+                })
         return res
 
     def del_assume(self, cond:Expr):

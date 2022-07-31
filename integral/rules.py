@@ -2137,7 +2137,7 @@ class ConstExprSubs(Rule):
         if conds != None and conditions.is_const(e, conds):
             res = e.replace(Var(self.var), self.var_subs)
             # add condition res is const ...
-            conds.add_condition(str(e) + ' is const', expr.Fun('isConst', e), True)
+            conds.add_condition(str(res) + ' is const', expr.Fun('isConst', res), True)
             conds.del_assume(Fun('isConst', e))
             return res
         else:
