@@ -1518,7 +1518,7 @@ def deriv(var: str, e: Expr) -> Expr:
 
 class Var(Expr):
     """Variable."""
-    def __init__(self, name):
+    def __init__(self, name: str):
         assert isinstance(name, str)
         self.ty = VAR
         self.name = name
@@ -1540,7 +1540,7 @@ class Var(Expr):
 
 class Const(Expr):
     """Constants."""
-    def __init__(self, val):
+    def __init__(self, val: Union[int, Decimal, Fraction]):
         assert isinstance(val, (int, Decimal, Fraction))
         self.ty = CONST
         if isinstance(val, Decimal):
@@ -1564,7 +1564,7 @@ class Const(Expr):
 
 class Op(Expr):
     """Operators."""
-    def __init__(self, op, *args):
+    def __init__(self, op: str, *args):
         assert isinstance(op, str) and all(isinstance(arg, Expr) for arg in args)
         if len(args) == 1:
             assert op == "-"
@@ -1617,7 +1617,7 @@ class Op(Expr):
 
 class Fun(Expr):
     """Functions."""
-    def __init__(self, func_name, *args):
+    def __init__(self, func_name: str, *args):
         assert isinstance(func_name, str) and all(isinstance(arg, Expr) for arg in args)
 
         self.ty = FUN

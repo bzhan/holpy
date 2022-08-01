@@ -50,6 +50,8 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
     """Return whether conditions imply e is positive."""
     if e.is_const():
         return e.val > 0
+    if e == expr.E:
+        return True
 
     if e.is_power():
         if is_positive(e.args[0], conds):
@@ -73,6 +75,7 @@ def is_negative(e: Expr, conds: Conditions) -> bool:
     """Return whether conditions imply e is negative."""
     if e.is_const():
         return e.val < 0
+
     if e.ty == expr.OP and e.op == '-' and len(e.args) == 1 and is_positive(e.args[0],conds):
         return True
     for _, cond in conds.data.items():
