@@ -102,12 +102,6 @@
                 "induct_case": {
                     "conds": [
                         {
-                            "cond": "m > 0",
-                            "latex_cond": "m > 0",
-                            "name": "m greater than 0",
-                            "type": "Condition"
-                        },
-                        {
                             "cond": "(LIM {t -> oo}. exp(-t) * t ^ m) = 0",
                             "latex_cond": "\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {m}\\,) = 0",
                             "name": "IH",
@@ -510,12 +504,6 @@
                 "goal": "I(m) = factorial(m - 1)",
                 "induct_case": {
                     "conds": [
-                        {
-                            "cond": "m > 0",
-                            "latex_cond": "m > 0",
-                            "name": "m greater than 0",
-                            "type": "Condition"
-                        },
                         {
                             "cond": "I(m) = factorial(m - 1)",
                             "latex_cond": "I{(m)} = (m - 1)!",

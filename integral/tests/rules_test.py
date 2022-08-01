@@ -594,8 +594,6 @@ class RulesTest(unittest.TestCase):
         conds = conditions.Conditions()
 
         # Condition g(t) > 0
-        e = parser.parse_expr('(INT x:[0,oo]. exp(-1/2 * x ^ 2)) > 0')
-        conds.add_condition('INT x:[0,oo]. exp(-1/2 * x ^ 2) > 0', e)
 
         # Prove the following equality
         e = parser.parse_expr('(INT x:[-oo,oo].exp(-(x^2)/2)) = (2*sqrt(g(oo)))')
@@ -616,7 +614,12 @@ class RulesTest(unittest.TestCase):
         calc = Eq1_proof.rhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '1.0'))
         calc.perform_rule(rules.OnLocation(rules.Simplify(), '1'))
+        # add assume
+        e = parser.parse_expr('(INT x:[0,oo]. exp(-1/2 * x ^ 2)) > 0')
+        conds.add_condition('INT x:[0,oo]. exp(-1/2 * x ^ 2) > 0', e, 1)
+        # after one step this condition is deleted
         calc.perform_rule(rules.OnLocation(rules.ElimAbs(), '1'))
+
 
         # prove the following equation
         e = parser.parse_expr('(D t.g(t)) = -2*(D t.INT y:[0,1]. exp(-(1+y^2)*(t^2)/2) / (1+y^2))')
@@ -772,6 +775,8 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
         calc.perform_rule(rules.FullSimplify())
         print(file)
+        print(conds.data)
+        print(conds.is_assume)
         with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 

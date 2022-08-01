@@ -494,12 +494,10 @@ class ApplyEquation(Rule):
             elif self.eq.rhs.is_plus() and self.eq.rhs.args[1] == e:
                 res = self.eq.lhs - self.eq.rhs.args[0]
                 if conditions.is_const(e,conds):
-                    conds.add_condition(str(res) + ' is const', Fun('isConst',res))
-                    # remove condition imply e is const
-                    for a, b in conds.data.items():
-                        if b==Fun('isConst',e):
-                            conds.data.pop(a)
-                            break;
+                    conds.add_condition(str(res) + ' is const', Fun('isConst',res), isAssume=True)
+                    # remove condition is isConst(e) is assume
+                    conds.del_assume(Fun('isConst', e))
+
                 return res
             elif self.eq.rhs.is_plus() and self.eq.rhs.args[0] == e:
                 res = self.eq.lhs - self.eq.rhs.args[1]
@@ -882,6 +880,7 @@ class ElimAbs(Rule):
             return sum(new_integral[1:], new_integral[0])
         elif e.ty == expr.FUN and e.func_name == 'abs':
             if conds != None and is_positive(e.args[0], conds):
+                conds.del_assume(Op('>', e.args[0], Const(0)))
                 return e.args[0]
             else:
                 return e
@@ -1719,7 +1718,7 @@ class DerivIntExchange(Rule):
             if conds != None:
                 const_vname = self.const_var
                 const_v = Var(const_vname)
-                conds.add_condition(const_vname, parser.parse_expr("isConst("+const_vname+")"))
+                conds.add_condition(const_vname, parser.parse_expr("isConst("+const_vname+")"), isAssume=True)
                 ne = IndefiniteIntegral(e.var, Deriv(e.var, e.body.body)) + const_v
                 return ne
             else:
@@ -1727,7 +1726,7 @@ class DerivIntExchange(Rule):
         elif e.is_indefinite_integral() and e.body.is_deriv():
             const_vname = self.const_var
             const_v = Var(const_vname)
-            conds.add_condition(const_vname, parser.parse_expr("isConst(" + const_vname + ")"))
+            conds.add_condition(const_vname, parser.parse_expr("isConst(" + const_vname + ")"), True)
             ne = Deriv(e.var, IndefiniteIntegral(e.var, e.body.body)) + const_v
             return ne
         else:
@@ -2109,9 +2108,9 @@ class RewriteConstVars(Rule):
                     res = res + item
         # remove const conds C0,C1...
         for item in const_vars:
-            conds.data.pop(item)
+            conds.del_assume(Fun('isConst', Var(item)))
         const_v = Var(self.const_var)
-        conds.add_condition(self.const_var, parser.parse_expr("isConst("+self.const_var+")"))
+        conds.add_condition(self.const_var, parser.parse_expr("isConst("+self.const_var+")"), True)
         return res + const_v
 
 
@@ -2138,12 +2137,8 @@ class ConstExprSubs(Rule):
         if conds != None and conditions.is_const(e, conds):
             res = e.replace(Var(self.var), self.var_subs)
             # add condition res is const ...
-            if not conditions.is_const(self.var_subs, conds):
-                conds.add_condition(e+' is const', expr.Fun('isConst', e))
-            for a, b in conds.data.items():
-                if b == Fun('isConst', e):
-                    conds.data.pop(a)
-                    break
+            conds.add_condition(str(res) + ' is const', expr.Fun('isConst', res), True)
+            conds.del_assume(Fun('isConst', e))
             return res
         else:
             raise NotImplementedError
