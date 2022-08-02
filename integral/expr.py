@@ -373,7 +373,7 @@ class Expr:
         if self.ty in (VAR, SYMBOL, INF):
             return 100
         elif self.ty == CONST:
-            if isinstance(self.val, Fraction):
+            if isinstance(self.val, Fraction) and self.val.denominator != 1:
                 return op_priority['/']
             elif self.val < 0:
                 return 80  # priority of uminus
@@ -388,7 +388,7 @@ class Expr:
                 raise NotImplementedError
         elif self.ty == FUN:
             return 95
-        elif self.ty in (DERIV, INTEGRAL, EVAL_AT, INDEFINITEINTEGRAL,DIFFERENTIAL):
+        elif self.ty in (DERIV, INTEGRAL, EVAL_AT, INDEFINITEINTEGRAL, DIFFERENTIAL):
             return 10
         elif self.ty == LIMIT:
             return 5
@@ -637,15 +637,15 @@ class Expr:
                 return poly.const_fraction(0)
             elif a.is_monomial() and b.is_fraction():
                 return a ** b.get_fraction()
-            # elif b.is_fraction():
-            #     rb = b.get_fraction()
-            #     if rb > 0 and int(rb) == rb and rb <= 3:
-            #         res = poly.const_fraction(1)
-            #         for i in range(int(rb)):
-            #             res *= a
-            #         return res
-            #     else:
-            #         return poly.const_singleton(self)
+            elif b.is_fraction():
+                rb = b.get_fraction()
+                if rb > 0 and int(rb) == rb and rb <= 3:
+                    res = poly.const_fraction(1)
+                    for i in range(int(rb)):
+                        res *= a
+                    return res
+                else:
+                    return poly.const_singleton(self)
             else:
                 return poly.const_singleton(from_const_poly(a) ** from_const_poly(b))
 
@@ -812,14 +812,26 @@ class Expr:
             return self.args[0].to_poly() - self.args[1].to_poly()
 
         elif self.is_times():
-            return self.args[0].to_poly() * self.args[1].to_poly()
+            a, b = self.args[0].to_poly(), self.args[1].to_poly()
+            if a.is_monomial() and b.is_monomial():
+                return a * b
+            elif a.is_fraction() or b.is_fraction():
+                return a * b
+            else:
+                return poly.singleton(from_poly(a)) * poly.singleton(from_poly(b))
         
         elif self.is_divides():
             a, b = self.args[0].to_poly(), self.args[1].to_poly()
-            if b.is_monomial():
+            if a.is_fraction() and a.get_fraction() == 0:
+                return poly.constant(poly.const_fraction(0))
+            elif b.is_fraction() and b.get_fraction() == 1:
+                return a
+            elif a.is_monomial() and b.is_monomial():
                 return a / b
-            else:
+            elif a.is_monomial():
                 return a / poly.singleton(from_poly(b))
+            else:
+                return poly.singleton(from_poly(a)) / poly.singleton(from_poly(b))
         
         elif self.is_power():
             a, b = self.args[0].to_poly(), self.args[1].to_poly()
@@ -1364,7 +1376,17 @@ def from_const_poly(p: ConstantPolynomial) -> Expr:
         return Const(0)
     else:
         monos = [from_const_mono(m) for m in p.monomials]
-        return sum(monos[1:], monos[0])
+        res = monos[0]
+        for mono in monos[1:]:
+            if mono.is_uminus():
+                res = res - mono.args[0]
+            elif mono.is_times() and mono.args[0].is_uminus():
+                res = res - mono.args[0].args[0] * mono.args[1]
+            elif mono.is_times() and mono.args[0].is_const() and mono.args[0].val < 0:
+                res = res - Const(-mono.args[0].val) * mono.args[1]
+            else:
+                res = res + mono
+        return res
 
 def from_mono(m: Monomial) -> Expr:
     """Convert a monomial to an expression.""" 
@@ -1399,7 +1421,17 @@ def from_poly(p: Polynomial) -> Expr:
         return Const(0)
     else:
         monos = [from_mono(m) for m in p.monomials]
-        return sum(monos[1:], monos[0]) 
+        res = monos[0]
+        for mono in monos[1:]:
+            if mono.is_uminus():
+                res = res - mono.args[0]
+            elif mono.is_times() and mono.args[0].is_uminus():
+                res = res - mono.args[0].args[0] * mono.args[1]
+            elif mono.is_times() and mono.args[0].is_const() and mono.args[0].val < 0:
+                res = res - Const(-mono.args[0].val) * mono.args[1]
+            else:
+                res = res + mono
+        return res
 
 def deriv(var: str, e: Expr) -> Expr:
     """Compute the derivative of e with respect to variable
@@ -1522,7 +1554,6 @@ class Var(Expr):
         self.ty = VAR
         self.name = name
 
-
     def __hash__(self):
         return hash((VAR, self.name))
 
@@ -1545,7 +1576,6 @@ class Const(Expr):
         if isinstance(val, Decimal):
             val = Fraction(val)
         self.val = val
-
 
     def __hash__(self):
         return hash((CONST, self.val))
@@ -1575,7 +1605,6 @@ class Op(Expr):
         self.op = op
         self.args = tuple(args)
 
-
     def __hash__(self):
         return hash((OP, self.op, tuple(self.args)))
 
@@ -1594,19 +1623,10 @@ class Op(Expr):
         elif len(self.args) == 2:
             a, b = self.args
             s1, s2 = str(a), str(b)
-            if a.priority() <= op_priority[self.op]:
-                if a.ty == OP and a.op != self.op:
-                    s1 = "(%s)" % s1
-                elif a.ty in (EVAL_AT, INTEGRAL, DERIV, LIMIT, INDEFINITEINTEGRAL,DIFFERENTIAL):
-                    s1 = "(%s)" % s1
-            if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
+            if a.priority() < op_priority[self.op]:
+                s1 = "(%s)" % s1
+            if b.priority() <= op_priority[self.op]:
                 s2 = "(%s)" % s2
-            elif self.op == "^" and a.ty == CONST and a.val < 0:
-                s1 = "(%s)" % s1
-            elif self.op == "^" and a.is_constant() and a.ty == OP and len(a.args) == 1:
-                s1 = "(%s)" % s1
-            elif self.op == "^" and a.is_constant() and a.ty == OP and a.op == "^":
-                s1 = "(%s)" % s1
             return "%s %s %s" % (s1, self.op, s2)
         else:
             raise NotImplementedError
