@@ -123,16 +123,18 @@ def asymp_add(a: Asymptote, b: Asymptote) -> Asymptote:
     else:
         return Unknown()
 
-def asymp_sub(a: Asymptote, b: Asymptote) -> Asymptote:
-    """Return the difference of two asymptotes.
-    
-    Assume a > b according to asymp_compare. Otherwise throw Exception.
-    
-    """
-    if asymp_compare(a, b) != GREATER:
-        raise AssertionError("asymp_sub")
-    
-    return a
+def asymp_add_inv(a: Asymptote, b: Asymptote) -> Asymptote:
+    """Return the sum of two decaying asumptotes."""
+    if isinstance(a, Unknown) or isinstance(b, Unknown):
+        return Unknown()
+
+    cmp = asymp_compare(a, b)
+    if cmp == GREATER:
+        return b
+    elif cmp == LESS or cmp == EQUAL:
+        return a
+    else:
+        return Unknown()    
 
 def asymp_mult(a: Asymptote, b: Asymptote) -> Asymptote:
     """Return the product of two asymptotes."""
@@ -287,13 +289,13 @@ def limit_add(a: Limit, b: Limit) -> Limit:
     else:
         res_e = (a.e + b.e).normalize()
         if a.side == TWO_SIDED or b.side == TWO_SIDED:
-            return Limit(res_e, asymp=asymp_add(a.asymp, b.asymp))
+            return Limit(res_e, asymp=asymp_add_inv(a.asymp, b.asymp))
         elif a.side == AT_CONST:
             return Limit(res_e, asymp=b.asymp, side=b.side)
         elif b.side == AT_CONST:
             return Limit(res_e, asymp=a.asymp, side=a.side)
         elif a.side == FROM_ABOVE and b.side == FROM_ABOVE:
-            return Limit(res_e, asymp=asymp_add(a.asymp, b.asymp), side=FROM_ABOVE)
+            return Limit(res_e, asymp=asymp_add_inv(a.asymp, b.asymp), side=FROM_ABOVE)
         elif a.side == FROM_ABOVE and b.side == FROM_BELOW:
             cmp = asymp_compare(a.asymp, b.asymp)
             if cmp == UNKNOWN:
@@ -307,7 +309,7 @@ def limit_add(a: Limit, b: Limit) -> Limit:
         elif a.side == FROM_BELOW and b.side == FROM_ABOVE:
             return limit_add(b, a)
         elif a.side == FROM_BELOW and b.side == FROM_BELOW:
-            return Limit(res_e, asymp=asymp_add(a.asymp, b.asymp), side=FROM_BELOW)
+            return Limit(res_e, asymp=asymp_add_inv(a.asymp, b.asymp), side=FROM_BELOW)
         else:
             raise NotImplementedError
 

@@ -103,7 +103,7 @@ class LimitsTest(unittest.TestCase):
              Limit(NEG_INF, asymp=PolyLog(2))),
             (Limit(POS_INF, asymp=PolyLog(1)), Limit(2), Limit(POS_INF, asymp=PolyLog(1))),
             (Limit(NEG_INF, asymp=PolyLog(1)), Limit(2), Limit(NEG_INF, asymp=PolyLog(1))),
-            (Limit(0, asymp=PolyLog(1)), Limit(0, asymp=PolyLog(2)), Limit(0, asymp=PolyLog(2))),
+            (Limit(0, asymp=PolyLog(1)), Limit(0, asymp=PolyLog(2)), Limit(0, asymp=PolyLog(1))),
             (Limit(0, side=AT_CONST), Limit(2, side=AT_CONST), Limit(2, side=AT_CONST)),
             (Limit(0, asymp=PolyLog(1), side=FROM_ABOVE), Limit(0, asymp=PolyLog(2), side=FROM_BELOW),
              Limit(0, asymp=PolyLog(1), side=FROM_ABOVE)),
