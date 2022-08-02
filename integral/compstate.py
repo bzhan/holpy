@@ -112,16 +112,23 @@ class Goal(StateItem):
         self.proof = None
 
     def __str__(self):
-        res = "Goal\n"
+        if self.is_finished():
+            res = "Goal (finished)\n"
+        else:
+            res = "Goal\n"
         res += "  %s\n" % self.goal
         res += str(self.proof)
         return res
+
+    def is_finished(self):
+        return self.proof is not None and self.proof.is_finished()
 
     def export(self):
         res = {
             "type": "Goal",
             "goal": str(self.goal),
             "latex_goal": latex.convert_expr(self.goal),
+            "finished": self.is_finished()
         }
         if self.proof:
             res['proof'] = self.proof.export()
@@ -253,7 +260,7 @@ class CalculationProof(StateItem):
         self.rhs_calc = Calculation(self.goal.rhs, conds=self.conds)
 
     def __str__(self):
-        if self.lhs_calc.last_expr == self.rhs_calc.last_expr:
+        if self.is_finished():
             res = "Proof by calculation (finished)\n"
         else:
             res = "Proof by calculation\n"
@@ -265,6 +272,9 @@ class CalculationProof(StateItem):
             res += str(self.rhs_calc)
         return res
 
+    def is_finished(self):
+        return self.lhs_calc.last_expr == self.rhs_calc.last_expr
+
     def export(self):
         return {
             "type": "CalculationProof",
@@ -272,7 +282,7 @@ class CalculationProof(StateItem):
             "latex_goal": latex.convert_expr(self.goal),
             "lhs_calc": self.lhs_calc.export(),
             "rhs_calc": self.rhs_calc.export(),
-            "finished": self.lhs_calc.last_expr == self.rhs_calc.last_expr
+            "finished": self.is_finished()
         }
 
     def get_by_label(self, label: Label):
@@ -315,12 +325,18 @@ class InductionProof(StateItem):
         self.induct_case = Goal(eqI, conds=induct_conds)
 
     def __str__(self):
-        res = "Proof by induction on %s\n" % self.induct_var
+        if self.is_finished():
+            res = "Proof by induction on %s (finished)\n" % self.induct_var
+        else:
+            res = "Proof by induction on %s\n" % self.induct_var
         res += "Base case: %s\n" % self.base_case.goal
         res += str(self.base_case)
         res += "Induct case: %s\n" % self.induct_case.goal
         res += str(self.induct_case)
         return res
+
+    def is_finished(self):
+        return self.base_case.is_finished() and self.induct_case.is_finished()
 
     def export(self):
         return {
@@ -329,7 +345,8 @@ class InductionProof(StateItem):
             "latex_goal": latex.convert_expr(self.goal),
             "induct_var": self.induct_var,
             "base_case": self.base_case.export(),
-            "induct_case": self.induct_case.export()
+            "induct_case": self.induct_case.export(),
+            "finished": self.is_finished()
         }
 
     def get_by_label(self, label: Label):
