@@ -822,7 +822,6 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(goal1.goal, subMap={parser.parse_expr("n"): parser.parse_expr("n + 1")}))
         calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal2.goal)))
         calc.perform_rule(rules.RewriteFactorial())
-        calc.perform_rule(rules.FullSimplify())
 
         # Application
         goal3 = compstate.Calculation(parser.parse_expr("INT x:[0,oo]. exp(-x^3)"))

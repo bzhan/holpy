@@ -435,7 +435,7 @@ class Monomial:
         elif isinstance(exp, Fraction) and exp.denominator % 2 == 0:
             sqrt_factors = []
             for n, e in self.factors:
-                if isinstance(n, expr.Expr) and isinstance(e, int) and e % 2 == 0:
+                if isinstance(n, expr.Expr) and e.is_fraction() and e.get_fraction() % 2 == 0:
                     sqrt_factors.append((expr.Fun('abs', n), e * exp))
                 else:
                     sqrt_factors.append((n, e * exp))

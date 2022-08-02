@@ -55,8 +55,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. -x ^ {n} e^{-x} \\right\\vert_{x=0}^{t}) - (\\int_{0}^{t} -n x ^ {-1 + n} e^{-x} \\,dx)\\,)",
-                            "res": "LIM {t -> oo}. ([-(x ^ n * exp(-x))]_x=0,t) - (INT x:[0,t]. -(n * x ^ (-1 + n) * exp(-x)))",
+                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. -x ^ {n} e^{-x} \\right\\vert_{x=0}^{t}) - (\\int_{0}^{t} -n x ^ {n - 1} e^{-x} \\,dx)\\,)",
+                            "res": "LIM {t -> oo}. ([-(x ^ n * exp(-x))]_x=0,t) - (INT x:[0,t]. -(n * x ^ (n - 1) * exp(-x)))",
                             "rule": {
                                 "loc": "0",
                                 "name": "IntegrationByParts",
@@ -67,8 +67,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "n (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} x ^ {-1 + n} e^{-x} \\,dx)",
-                            "res": "n * (LIM {t -> oo}. INT x:[0,t]. x ^ (-1 + n) * exp(-x))",
+                            "latex_res": "n (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} x ^ {n - 1} e^{-x} \\,dx)",
+                            "res": "n * (LIM {t -> oo}. INT x:[0,t]. x ^ (n - 1) * exp(-x))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -83,8 +83,8 @@
                     "start": "n * Gamma(n)",
                     "steps": [
                         {
-                            "latex_res": "n (\\int_{0}^{\\infty} x ^ {-1 + n} e^{-x} \\,dx)",
-                            "res": "n * (INT x:[0,oo]. x ^ (-1 + n) * exp(-x))",
+                            "latex_res": "n (\\int_{0}^{\\infty} x ^ {n - 1} e^{-x} \\,dx)",
+                            "res": "n * (INT x:[0,oo]. x ^ (n - 1) * exp(-x))",
                             "rule": {
                                 "func_def": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
                                 "loc": "subterms",
@@ -94,8 +94,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "n (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} x ^ {-1 + n} e^{-x} \\,dx)",
-                            "res": "n * (LIM {t -> oo}. INT x:[0,t]. x ^ (-1 + n) * exp(-x))",
+                            "latex_res": "n (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} x ^ {n - 1} e^{-x} \\,dx)",
+                            "res": "n * (LIM {t -> oo}. INT x:[0,t]. x ^ (n - 1) * exp(-x))",
                             "rule": {
                                 "a": "0",
                                 "loc": "1",
@@ -195,15 +195,15 @@
                         }
                     ],
                     "finished": true,
-                    "goal": "Gamma(2 + n) = factorial(1 + n)",
-                    "latex_goal": "\\Gamma{(2 + n)} = (1 + n)!",
+                    "goal": "Gamma(n + 2) = factorial(n + 1)",
+                    "latex_goal": "\\Gamma{(n + 2)} = (n + 1)!",
                     "proof": {
                         "finished": true,
-                        "goal": "Gamma(2 + n) = factorial(1 + n)",
-                        "latex_goal": "\\Gamma{(2 + n)} = (1 + n)!",
+                        "goal": "Gamma(n + 2) = factorial(n + 1)",
+                        "latex_goal": "\\Gamma{(n + 2)} = (n + 1)!",
                         "lhs_calc": {
-                            "latex_start": "\\Gamma{(2 + n)}",
-                            "start": "Gamma(2 + n)",
+                            "latex_start": "\\Gamma{(n + 2)}",
+                            "start": "Gamma(n + 2)",
                             "steps": [
                                 {
                                     "latex_res": "(n + 1) \\Gamma{(n + 1)}",
@@ -234,22 +234,13 @@
                                         "str": "RewriteFactorial"
                                     },
                                     "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "(1 + n)!",
-                                    "res": "factorial(1 + n)",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
                                 }
                             ],
                             "type": "Calculation"
                         },
                         "rhs_calc": {
-                            "latex_start": "(1 + n)!",
-                            "start": "factorial(1 + n)",
+                            "latex_start": "(n + 1)!",
+                            "start": "factorial(n + 1)",
                             "steps": [],
                             "type": "Calculation"
                         },

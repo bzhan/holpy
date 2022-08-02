@@ -645,7 +645,7 @@ class Expr:
                         res *= a
                     return res
                 else:
-                    return poly.const_singleton(self)
+                    return poly.const_singleton(from_const_poly(a) ** from_const_poly(b))
             else:
                 return poly.const_singleton(from_const_poly(a) ** from_const_poly(b))
 
@@ -1381,12 +1381,23 @@ def from_const_mono(m: ConstantMonomial) -> Expr:
     else:
         return functools.reduce(operator.mul, factors, Const(m.coeff))
 
+def rsize(e: Expr) -> int:
+    if e.is_const():
+        return 0
+    elif e.is_uminus():
+        return rsize(e.args[0])
+    elif e.is_times() and e.args[0].is_const():
+        return rsize(e.args[1])
+    else:
+        return e.size()
+
 def from_const_poly(p: ConstantPolynomial) -> Expr:
     """Convert a ConstantPolynomial to an expression."""
     if len(p.monomials) == 0:
         return Const(0)
     else:
         monos = [from_const_mono(m) for m in p.monomials]
+        monos = sorted(monos, key=lambda p: rsize(p), reverse=True)
         res = monos[0]
         for mono in monos[1:]:
             if mono.is_uminus():
@@ -1395,6 +1406,8 @@ def from_const_poly(p: ConstantPolynomial) -> Expr:
                 res = res - mono.args[0].args[0] * mono.args[1]
             elif mono.is_times() and mono.args[0].is_const() and mono.args[0].val < 0:
                 res = res - Const(-mono.args[0].val) * mono.args[1]
+            elif mono.is_const() and mono.val < 0:
+                res = res - Const(-mono.val)
             else:
                 res = res + mono
         return res
@@ -1436,6 +1449,7 @@ def from_poly(p: Polynomial) -> Expr:
         return Const(0)
     else:
         monos = [from_mono(m) for m in p.monomials]
+        monos = sorted(monos, key=lambda p: rsize(p), reverse=True)
         res = monos[0]
         for mono in monos[1:]:
             if mono.is_uminus():
@@ -1444,6 +1458,8 @@ def from_poly(p: Polynomial) -> Expr:
                 res = res - mono.args[0].args[0] * mono.args[1]
             elif mono.is_times() and mono.args[0].is_const() and mono.args[0].val < 0:
                 res = res - Const(-mono.args[0].val) * mono.args[1]
+            elif mono.is_const() and mono.val < 0:
+                res = res - Const(-mono.val)
             else:
                 res = res + mono
         return res
