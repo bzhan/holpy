@@ -782,7 +782,8 @@ class Expr:
             else:
                 return poly.const_singleton(factorial(norm_a))
         elif self.ty == FUN:
-            return poly.const_singleton(self)
+            args_norm = [arg.normalize() for arg in self.args]
+            return poly.const_singleton(Fun(self.func_name, *args_norm))
         else:
             print("to_const_poly:", self)
             raise NotImplementedError
@@ -896,6 +897,10 @@ class Expr:
 
         elif self.ty == FUN and self.func_name == "factorial":
             return poly.singleton(Fun("factorial", self.args[0].normalize()))
+
+        elif self.ty == FUN:
+            args_norm = [arg.normalize() for arg in self.args]
+            return poly.singleton(Fun(self.func_name, *args_norm))
 
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)

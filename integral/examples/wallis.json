@@ -247,15 +247,15 @@
                         }
                     ],
                     "finished": true,
-                    "goal": "I(m + 1,b) = pi * b ^ (-1/2 * (3 + 2 * m)) * 2 ^ (-3 - 2 * m) * binom(2 + 2 * m,1 + m)",
-                    "latex_goal": "I(m + 1,b) = \\pi b ^ {-1/2 (3 + 2 m)} 2 ^ {-3 - 2 m} \\binom{2 + 2 m}{1 + m}",
+                    "goal": "I(1 + m,b) = pi * b ^ (-1/2 * (3 + 2 * m)) * 2 ^ (-3 - 2 * m) * binom(2 + 2 * m,1 + m)",
+                    "latex_goal": "I(1 + m,b) = \\pi b ^ {-1/2 (3 + 2 m)} 2 ^ {-3 - 2 m} \\binom{2 + 2 m}{1 + m}",
                     "proof": {
                         "finished": true,
-                        "goal": "I(m + 1,b) = pi * b ^ (-1/2 * (3 + 2 * m)) * 2 ^ (-3 - 2 * m) * binom(2 + 2 * m,1 + m)",
-                        "latex_goal": "I(m + 1,b) = \\pi b ^ {-1/2 (3 + 2 m)} 2 ^ {-3 - 2 m} \\binom{2 + 2 m}{1 + m}",
+                        "goal": "I(1 + m,b) = pi * b ^ (-1/2 * (3 + 2 * m)) * 2 ^ (-3 - 2 * m) * binom(2 + 2 * m,1 + m)",
+                        "latex_goal": "I(1 + m,b) = \\pi b ^ {-1/2 (3 + 2 m)} 2 ^ {-3 - 2 m} \\binom{2 + 2 m}{1 + m}",
                         "lhs_calc": {
-                            "latex_start": "I(m + 1,b)",
-                            "start": "I(m + 1,b)",
+                            "latex_start": "I(1 + m,b)",
+                            "start": "I(1 + m,b)",
                             "steps": [
                                 {
                                     "latex_res": "\\frac{1}{-(m + 1)} (\\frac{d}{db} I(m,b))",
@@ -279,16 +279,6 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\frac{1}{-(m + 1)} (-\\frac{1}{2} \\pi b ^ {-3/2 - m} 2 ^ {-1 - 2 m} (1 + 2 m) \\binom{2 m}{m})",
-                                    "res": "1 / -(m + 1) * (-1/2 * pi * b ^ (-3/2 - m) * 2 ^ (-1 - 2 * m) * (1 + 2 * m) * binom(2 * m,m))",
-                                    "rule": {
-                                        "loc": "1",
-                                        "name": "DerivativeSimplify",
-                                        "str": "simplify derivative at 1"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
                                     "latex_res": "\\frac{1}{4} \\pi b ^ {-3/2 - m} 2 ^ {-2 m} (1 + m) ^ {-1} (1 + 2 m) \\binom{2 m}{m}",
                                     "res": "1/4 * pi * b ^ (-3/2 - m) * 2 ^ (-2 * m) * (1 + m) ^ -1 * (1 + 2 * m) * binom(2 * m,m)",
                                     "rule": {
@@ -305,17 +295,8 @@
                             "start": "pi * b ^ (-1/2 * (3 + 2 * m)) * 2 ^ (-3 - 2 * m) * binom(2 + 2 * m,1 + m)",
                             "steps": [
                                 {
-                                    "latex_res": "\\frac{1}{8} \\pi b ^ {-3/2 - m} 2 ^ {-2 m} \\binom{2 + 2 m}{1 + m}",
-                                    "res": "1/8 * pi * b ^ (-3/2 - m) * 2 ^ (-2 * m) * binom(2 + 2 * m,1 + m)",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\frac{1}{8} \\pi b ^ {-3/2 - m} 2 ^ {-2 m} (\\frac{\\binom{2 m}{m} 2 (1 + 2 m)}{1 + m})",
-                                    "res": "1/8 * pi * b ^ (-3/2 - m) * 2 ^ (-2 * m) * (binom(2 * m,m) * 2 * (1 + 2 * m) / (1 + m))",
+                                    "latex_res": "\\pi b ^ {-1/2 (3 + 2 m)} 2 ^ {-3 - 2 m} (\\frac{\\binom{2 m}{m} 2 (1 + 2 m)}{1 + m})",
+                                    "res": "pi * b ^ (-1/2 * (3 + 2 * m)) * 2 ^ (-3 - 2 * m) * (binom(2 * m,m) * 2 * (1 + 2 * m) / (1 + m))",
                                     "rule": {
                                         "loc": "1",
                                         "name": "RewriteBinom",

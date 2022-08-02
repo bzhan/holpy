@@ -766,12 +766,10 @@ class RulesTest(unittest.TestCase):
         calc = proof_induct.lhs_calc
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation("IH"), "1.0"))
-        calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), "1"))
         calc.perform_rule(rules.FullSimplify())
 
         # Induction step, RHS
         calc = proof_induct.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
         calc.perform_rule(rules.FullSimplify())
 
@@ -805,7 +803,6 @@ class RulesTest(unittest.TestCase):
         calc = proof.rhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(gamma_def.eq)))
         calc.perform_rule(rules.OnLocation(rules.ElimInfInterval(), "1"))
-        calc.perform_rule(rules.FullSimplify())
 
         # Gamma function and factorial
         goal2 = compstate.Goal(parser.parse_expr("Gamma(n+1) = factorial(n)"))
@@ -818,15 +815,23 @@ class RulesTest(unittest.TestCase):
         calc = proof_base.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(gamma_def.eq))
         calc.perform_rule(rules.ElimInfInterval())
-        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
         calc.perform_rule(rules.OnLocation(rules.Substitution("u", parser.parse_expr("-x")), "0"))
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof_induct.lhs_calc
-        calc.perform_rule(rules.ApplyEquation(goal1.goal))
+        calc.perform_rule(rules.ApplyEquation(goal1.goal, subMap={parser.parse_expr("n"): parser.parse_expr("n + 1")}))
         calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal2.goal)))
         calc.perform_rule(rules.RewriteFactorial())
         calc.perform_rule(rules.FullSimplify())
+
+        # Application
+        goal3 = compstate.Calculation(parser.parse_expr("INT x:[0,oo]. exp(-x^3)"))
+        file.add_calculation(goal3)
+        goal3.perform_rule(rules.Substitution('y', parser.parse_expr('x^3')))
+        goal3.perform_rule(rules.FullSimplify())
+        goal3.perform_rule(rules.OnLocation(rules.FoldDefinition(gamma_def.eq, parser.parse_expr('1/3')), '1'))
+        goal3.perform_rule(rules.ApplyEquation(goal1.goal))
+        goal3.perform_rule(rules.FullSimplify())
 
         print(file)
         with open('integral/examples/GammaBeta.json', 'w', encoding='utf-8') as f:

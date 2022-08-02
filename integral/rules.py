@@ -516,15 +516,16 @@ class ApplyEquation(Rule):
             # With no instantiation
             pat = expr.expr_to_pattern(self.eq)
             inst_lhs = expr.match(e, pat.lhs)
+            inst_rhs = expr.match(e, pat.rhs)
             if inst_lhs is not None:
                 return pat.rhs.inst_pat(inst_lhs)
-            elif e == self.eq.lhs:
-                # e = e'
+            elif inst_rhs is not None:
+                return pat.lhs.inst_pat(inst_rhs)
+            elif self.eq.lhs.normalize() == e.normalize():
                 return self.eq.rhs
-            elif e == self.eq.rhs:
-                # e' = e
+            elif self.eq.rhs.normalize() == e.normalize():
                 return self.eq.lhs
-            elif self.eq.rhs.is_times() and self.eq.rhs.args[1] == e:
+            elif self.eq.rhs.is_times() and self.eq.rhs.args[1].normalize() == e.normalize():
                 # e' = f * e
                 return 1 / self.eq.rhs.args[0] * self.eq.lhs
             elif self.eq.rhs.is_plus() and self.eq.rhs.args[1] == e:
@@ -2261,23 +2262,23 @@ class RewriteFactorial(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         if e.is_times() and e.args[1].ty == FUN and e.args[1].func_name == 'factorial':
             if e.args[0].is_plus():
-                # (m+1) * m! = (m+1)!
-                m0,m1,c = e.args[1].args[0], e.args[0].args[0], e.args[0].args[1]
+                # (m + 1) * m! = (m + 1)!
+                m0, m1, c = e.args[1].args[0], e.args[0].args[0], e.args[0].args[1]
                 if m0.is_var() and m0 == m1 and c==Const(1):
                     return Fun('factorial', e.args[0])
                 else:
-                    raise NotImplementedError
+                    return e
             elif e.args[0].is_var():
-                # m * (m-1)! = m!
+                # m * (m - 1)! = m!
                 m0, m1 = e.args[0], e.args[1].args[0]
                 if (m0-m1).normalize() == Const(1):
                     return Fun('factorial', m0)
                 else:
-                    raise NotImplementedError
+                    return e
             else:
-                raise NotImplementedError
+                return e
         else:
-            raise NotImplementedError
+            return e
 
 class SimplifyInfinity(Rule):
     '''
