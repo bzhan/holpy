@@ -3,8 +3,8 @@
         {
             "conds": [
                 {
-                    "cond": "n > 1",
-                    "latex_cond": "n > 1",
+                    "cond": "n > 0",
+                    "latex_cond": "n > 0",
                     "name": "n",
                     "type": "Condition"
                 }
@@ -17,8 +17,8 @@
         {
             "conds": [
                 {
-                    "cond": "n > 1",
-                    "latex_cond": "n > 1",
+                    "cond": "n > 0",
+                    "latex_cond": "n > 0",
                     "name": "n",
                     "type": "Condition"
                 }
@@ -221,7 +221,7 @@
                     "goal": "Gamma(n + 1 + 1) = factorial(1 + n)",
                     "latex_goal": "\\Gamma{(n + 1 + 1)} = (1 + n)!",
                     "proof": {
-                        "finished": false,
+                        "finished": true,
                         "goal": "Gamma(n + 1 + 1) = factorial(1 + n)",
                         "latex_goal": "\\Gamma{(n + 1 + 1)} = (1 + n)!",
                         "lhs_calc": {
@@ -229,12 +229,41 @@
                             "start": "Gamma(n + 1 + 1)",
                             "steps": [
                                 {
-                                    "latex_res": "\\Gamma{(n + 1 + 1)}",
-                                    "res": "Gamma(n + 1 + 1)",
+                                    "latex_res": "(n + 1) \\Gamma{(n + 1)}",
+                                    "res": "(n + 1) * Gamma(n + 1)",
                                     "rule": {
                                         "eq": "Gamma(n + 1) = n * Gamma(n)",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation:Gamma(n + 1) = n * Gamma(n)"
+                                        "str": "apply equation: Gamma(n + 1) = n * Gamma(n)"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "(n + 1) n!",
+                                    "res": "(n + 1) * factorial(n)",
+                                    "rule": {
+                                        "eq": "Gamma(n + 1) = factorial(n)",
+                                        "loc": "subterms",
+                                        "name": "ApplyEquation",
+                                        "str": "apply equation: Gamma(n + 1) = factorial(n) on subterms"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "(n + 1)!",
+                                    "res": "factorial(n + 1)",
+                                    "rule": {
+                                        "name": "RewriteFactorial",
+                                        "str": "RewriteFactorial"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "(1 + n)!",
+                                    "res": "factorial(1 + n)",
+                                    "rule": {
+                                        "name": "FullSimplify",
+                                        "str": "full simplify"
                                     },
                                     "type": "CalculationStep"
                                 }

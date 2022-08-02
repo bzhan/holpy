@@ -468,7 +468,6 @@ class FullSimplify(Rule):
             s = OnSubterm(SimplifyPower()).eval(s, conds)
             s = OnSubterm(SimplifyInfinity()).eval(s, conds)
             s = OnSubterm(ReduceInfLimit()).eval(s, conds)
-            print(s)
             if s == current:
                 break
             current = s
@@ -480,21 +479,22 @@ class FullSimplify(Rule):
 
 class ApplyEquation(Rule):
     """Apply the given equation to for rewriting."""
-    def __init__(self, eq: Union[Expr, str], subMap:dict = None):
+    def __init__(self, eq: Union[Expr, str], subMap: dict = None):
         self.name = "ApplyEquation"
         self.eq = eq
         self.subMap = subMap
+
     def __str__(self):
         s = ""
         if self.subMap != None:
-            first  = True
-            for a,b in self.subMap.items():
+            first = True
+            for a, b in self.subMap.items():
                 if first:
                     first = False
                     s = s + " where " + str(a) + '=' + str(b)
                 else:
                     s = s + ', ' + str(a) + '=' + str(b)
-        return "apply equation:"+ str(self.eq) + s
+        return "apply equation: "+ str(self.eq) + s
 
     def export(self):
         return {
@@ -505,10 +505,17 @@ class ApplyEquation(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         if isinstance(self.eq, str):
+            # If equation is given as a string, try to find it in conds.
             assert conds is not None and self.eq in conds.data, "ApplyEquation: equation not found"
             self.eq = conds.data[self.eq]
+
         if self.subMap == None:
-            if e == self.eq.lhs:
+            # With no instantiation
+            pat = expr.expr_to_pattern(self.eq)
+            inst_lhs = expr.match(e, pat.lhs)
+            if inst_lhs is not None:
+                return pat.rhs.inst_pat(inst_lhs)
+            elif e == self.eq.lhs:
                 # e = e'
                 return self.eq.rhs
             elif e == self.eq.rhs:
@@ -518,14 +525,15 @@ class ApplyEquation(Rule):
                 # e' = f * e
                 return 1 / self.eq.rhs.args[0] * self.eq.lhs
             elif self.eq.rhs.is_plus() and self.eq.rhs.args[1] == e:
+                # e' = f + e
                 res = self.eq.lhs - self.eq.rhs.args[0]
-                if conditions.is_const(e,conds):
-                    conds.add_condition(str(res) + ' is const', Fun('isConst',res), isAssume=True)
+                if conditions.is_const(e, conds):
+                    conds.add_condition(str(res) + ' is const', Fun('isConst', res), isAssume=True)
                     # remove condition is isConst(e) is assume
                     conds.del_assume(Fun('isConst', e))
-
                 return res
             elif self.eq.rhs.is_plus() and self.eq.rhs.args[0] == e:
+                # e' = e + f
                 res = self.eq.lhs - self.eq.rhs.args[1]
                 if conditions.is_const(e, conds):
                     conds.add_condition(str(res), Fun('isConst', res))
@@ -533,14 +541,11 @@ class ApplyEquation(Rule):
             else:
                 return e
         else:
+            # With provided instantiation
             new_eq = self.eq
-            for e1,e2 in self.subMap.items():
-                new_eq = new_eq.replace(e1,e2)
-            print(new_eq)
+            for e1, e2 in self.subMap.items():
+                new_eq = new_eq.replace(e1, e2)
             return ApplyEquation(new_eq).eval(e)
-            # self.eq = new_eq
-            # self.subMap = None
-            # return self.eval(e)
 
 
 class Substitution(Rule):

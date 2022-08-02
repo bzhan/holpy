@@ -3,6 +3,7 @@
 from fractions import Fraction
 import functools, operator
 from collections.abc import Iterable
+from typing import Dict, Optional
 from sympy import solveset, re, Interval, Eq, EmptySet, pexquo
 from decimal import Decimal
 import math
@@ -1122,7 +1123,7 @@ class Expr:
 
         return expand_expr
 
-    def inst_pat(self, mapping):
+    def inst_pat(self, mapping: Dict) -> Expr:
         """Instantiate by replacing symbols in term with mapping."""
         if self.ty in (VAR, CONST):
             return self
@@ -1204,7 +1205,7 @@ def trig_transform(trig, var, rule_list=None):
     poss.add((holpy_style(i), "Unchanged"))
     return poss
 
-def match(exp, pattern):
+def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
     """Match expr with given pattern. 
     
     If successful, return a dictionary mapping symbols to expressions.
@@ -1272,6 +1273,13 @@ def match(exp, pattern):
     if exp == pattern:
         return dict()
     return rec(exp, pattern)
+
+def expr_to_pattern(e: Expr) -> Expr:
+    """Convert an expression to pattern."""
+    vars = e.get_vars()
+    for var in vars:
+        e = e.subst(var, Symbol(var, [VAR, CONST, OP, FUN]))
+    return e
 
 def find_pattern(expr, pat, transform=None):
     """Find all subexpr can be matched with the given pattern.

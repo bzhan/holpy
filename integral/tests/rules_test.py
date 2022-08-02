@@ -785,7 +785,7 @@ class RulesTest(unittest.TestCase):
 
         # Condition n > 0
         conds = conditions.Conditions()
-        conds.add_condition("n", parser.parse_expr("n > 1"))
+        conds.add_condition("n", parser.parse_expr("n > 0"))
 
         # Definition of Gamma function
         gamma_def = compstate.FuncDef(parser.parse_expr("Gamma(n) = (INT x:[0,oo]. exp(-x) * x^(n-1))"), conds=conds)
@@ -826,6 +826,10 @@ class RulesTest(unittest.TestCase):
 
         calc = proof_induct.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal1.goal))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal2.goal)))
+        calc.perform_rule(rules.RewriteFactorial())
+        calc.perform_rule(rules.FullSimplify())
+
         print(file)
         with open('integral/examples/GammaBeta.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
