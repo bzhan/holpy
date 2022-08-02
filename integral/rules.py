@@ -396,17 +396,20 @@ class SimplifyPower(Rule):
         if e.args[0].is_power():
             # x ^ a ^ b => x ^ (a * b)
             return e.args[0].args[0] ^ (e.args[0].args[1] * e.args[1])
-        elif e.args[1].is_plus():
+        elif e.args[1].is_plus() and e.args[0].is_const() and e.args[1].args[0].is_const():
             # c1 ^ (c2 + a) => c1 ^ c2 * c1 ^ a
             return (e.args[0] ^ e.args[1].args[0]) * (e.args[0] ^ e.args[1].args[1])
+        elif e.args[1].is_minus() and e.args[0].is_const() and e.args[1].args[0].is_const():
+            # c1 ^ (c2 - a) => c1 ^ c2 * c1 ^ (-a)
+            return (e.args[0] ^ e.args[1].args[0]) * (e.args[0] ^ (-(e.args[1].args[1])))
         elif e.args[0].is_uminus() and e.args[1].is_const():
             # (-a) ^ n = (-1) ^ n * a ^ n
             return (Const(-1) ^ e.args[1]) * (e.args[0].args[0] ^ e.args[1])
-        elif e.args[0].is_plus() and e.args[0].args[0].is_const() and e.args[0].args[0].val < 0 and \
-                e.args[0].args[1].is_uminus() and e.args[1].is_const():
-            # (-a + -b) ^ n = (-1) ^ n * (a + b) ^ n
+        elif e.args[0].is_minus() and e.args[0].args[0].is_const() and e.args[0].args[0].val < 0 and \
+                e.args[1].is_const():
+            # (-a - b) ^ n = (-1) ^ n * (a + b) ^ n
             nega, negb = e.args[0].args
-            return (Const(-1) ^ e.args[1]) * ((Const(-nega.val) + negb.args[0]) ^ e.args[1])
+            return (Const(-1) ^ e.args[1]) * ((Const(-nega.val) + negb) ^ e.args[1])
         elif e.args[0].is_const() and e.args[0].val == 0 and conditions.is_positive(e.args[1], conds):
             return Const(0)
         else:

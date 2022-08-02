@@ -358,12 +358,15 @@ class Monomial:
         elif isinstance(coeff, expr.Expr):
             coeff = const_singleton(coeff)
         assert isinstance(coeff, ConstantPolynomial), "Unexpected coeff: %s" % str(coeff)
-        assert all(isinstance(factor, Iterable) and len(factor) == 2 and \
-            isinstance(factor[1], (int, Fraction, Polynomial)) for factor in factors), \
-            "Unexpected argument for factors: %s" % str(factors)
 
         self.coeff = coeff
-        self.factors = tuple((i, j) for i, j in collect_pairs(factors))
+        self.factors = []
+        for base, power in factors:
+            if isinstance(power, (int, Fraction)):
+                power = constant(const_fraction(power))
+            assert isinstance(power, Polynomial), "Unexpected power: %s" % str(power)
+            self.factors.append((base, power))
+        self.factors = tuple((i, j) for i, j in collect_pairs(self.factors))
 
     def __hash__(self):
         return hash(("MONO", self.coeff, self.factors))

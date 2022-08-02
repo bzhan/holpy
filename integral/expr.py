@@ -834,6 +834,8 @@ class Expr:
                 return a / b
             elif a.is_monomial():
                 return a / poly.singleton(from_poly(b))
+            elif b.is_monomial():
+                return poly.singleton(from_poly(a)) / b
             else:
                 return poly.singleton(from_poly(a)) / poly.singleton(from_poly(b))
         
@@ -844,7 +846,7 @@ class Expr:
             elif b.is_fraction():
                 return poly.Polynomial([poly.Monomial(poly.const_fraction(1), [(from_poly(a), b.get_fraction())])])
             else:
-                return poly.singleton(from_poly(a) ^ from_poly(b))
+                return poly.Polynomial([poly.Monomial(poly.const_fraction(1), [(from_poly(a), b)])])
 
         elif self.ty == FUN and self.func_name == "exp":
             a = self.args[0]
@@ -1406,8 +1408,12 @@ def from_mono(m: Monomial) -> Expr:
                 factors.append(base)
             elif power == Fraction(1/2):
                 factors.append(sqrt(base))
-            else:
+            elif isinstance(power, (int, Fraction)):
                 factors.append(base ** Const(power))
+            elif isinstance(power, Polynomial):
+                factors.append(base ** from_poly(power))
+            else:
+                raise TypeError("from_mono: unexpected type %s for power" % type(power))
 
     if len(factors) == 0:
         return from_const_poly(m.coeff)
