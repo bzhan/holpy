@@ -19,6 +19,7 @@ from fractions import Fraction
 from integral.solve import solve_equation
 from integral.conditions import Conditions, is_positive, is_negative
 from integral import latex
+from integral import limits
 
 
 class Rule:
@@ -361,6 +362,7 @@ class CompositePower(Rule):
             return e.args[0] ^ (e.args[1].args[1]+1)
         else:
             raise NotImplementedError
+
 class SimplifyPower(Rule):
     """Apply the following simplifications on powers:
     
@@ -411,6 +413,27 @@ class SimplifyPower(Rule):
             return e
 
 
+class ReduceInfLimit(Rule):
+    """Reduce limit to infinity using asymptotic growth compuations."""
+    def __init__(self):
+        self.name = "ReduceInfLimit"
+
+    def __str__(self):
+        return "reduce infinite limits"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+    
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.is_limit() and e.lim == POS_INF:
+            return limits.reduce_inf_limit(e.body, e.var, conds=conds)
+        else:
+            return e
+
+
 class FullSimplify(Rule):
     """Perform simplification by applying the following rules repeatedly:
     
@@ -419,6 +442,7 @@ class FullSimplify(Rule):
     - Linearity
     - DerivativeSimplify
     - SimplifyPower
+    - ReduceInfLimit
 
     """
     def __init__(self):
@@ -437,12 +461,14 @@ class FullSimplify(Rule):
         counter = 0
         current = e
         while True:
-            s = OnSubterm(Linearity()).eval(current,conds)
-            s = OnSubterm(CommonIntegral()).eval(s,conds)
-            s = Simplify().eval(s,conds)
-            s = OnSubterm(DerivativeSimplify()).eval(s,conds)
-            s = OnSubterm(SimplifyPower()).eval(s,conds)
-            s = OnSubterm(SimplifyInfinity()).eval(s,conds)
+            s = OnSubterm(Linearity()).eval(current, conds)
+            s = OnSubterm(CommonIntegral()).eval(s, conds)
+            s = Simplify().eval(s, conds)
+            s = OnSubterm(DerivativeSimplify()).eval(s, conds)
+            s = OnSubterm(SimplifyPower()).eval(s, conds)
+            s = OnSubterm(SimplifyInfinity()).eval(s, conds)
+            s = OnSubterm(ReduceInfLimit()).eval(s, conds)
+            print(s)
             if s == current:
                 break
             current = s

@@ -1,16 +1,32 @@
 {
     "content": [
         {
+            "conds": [
+                {
+                    "cond": "n > 1",
+                    "latex_cond": "n > 1",
+                    "name": "n",
+                    "type": "Condition"
+                }
+            ],
             "eq": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
             "latex_eq": "\\Gamma{(n)} = \\int_{0}^{\\infty} e^{-x} x ^ {n - 1} \\,dx",
             "latex_lhs": "\\Gamma{(n)}",
             "type": "FuncDef"
         },
         {
+            "conds": [
+                {
+                    "cond": "n > 1",
+                    "latex_cond": "n > 1",
+                    "name": "n",
+                    "type": "Condition"
+                }
+            ],
             "goal": "Gamma(n + 1) = n * Gamma(n)",
             "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
             "proof": {
-                "finished": false,
+                "finished": true,
                 "goal": "Gamma(n + 1) = n * Gamma(n)",
                 "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
                 "lhs_calc": {
@@ -59,8 +75,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,n (\\int_{0}^{t} x ^ {-1} e^{-x} x ^ {n} \\,dx) + -e^{-t} t ^ {n} + 0 ^ {n}\\,)",
-                            "res": "LIM {t -> oo}. n * (INT x:[0,t]. x ^ -1 * exp(-x) * x ^ n) + -(exp(-t) * t ^ n) + 0 ^ n",
+                            "latex_res": "n (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} x ^ {-1} e^{-x} x ^ {n} \\,dx)",
+                            "res": "n * (LIM {t -> oo}. INT x:[0,t]. x ^ -1 * exp(-x) * x ^ n)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -120,7 +136,7 @@
                     "goal": "Gamma(0 + 1) = 1",
                     "latex_goal": "\\Gamma{(0 + 1)} = 1",
                     "proof": {
-                        "finished": false,
+                        "finished": true,
                         "goal": "Gamma(0 + 1) = 1",
                         "latex_goal": "\\Gamma{(0 + 1)} = 1",
                         "lhs_calc": {
@@ -171,8 +187,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "-(\\lim\\limits_{t\\to \\infty} (\\,-1 + e^{-t}\\,))",
-                                    "res": "-(LIM {t -> oo}. -1 + exp(-t))",
+                                    "latex_res": "1",
+                                    "res": "1",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"

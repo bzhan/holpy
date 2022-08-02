@@ -219,6 +219,7 @@ class LimitsTest(unittest.TestCase):
             ("exp(x) / (x ^ 2)", "oo"),
             ("-exp(x) / (x ^ 2)", "-oo"),
             ("exp(-x) * (x ^ 2)", "0"),
+            ("(x + 1) / x", None),
         ]
 
         for a, res in test_data:
@@ -248,6 +249,17 @@ class LimitsTest(unittest.TestCase):
             else:
                 res = parser.parse_expr(res)
                 self.assertEqual(l.e, res)
+
+    def testReduceLimit(self):
+        test_data = [
+            ("1 / x + (x + 1) / x", "LIM {x -> oo}. 1 + x ^ -1"),
+            ("n * ((x + 1) / x)", "n * LIM {x -> oo}. 1 + x ^ -1"),
+        ]
+
+        for a, res in test_data:
+            a = parser.parse_expr(a)
+            res = parser.parse_expr(res)
+            self.assertEqual(limits.reduce_inf_limit(a, "x"), res)
 
 
 if __name__ == "__main__":

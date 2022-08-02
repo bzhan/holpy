@@ -234,34 +234,34 @@ class Expr:
         else:
             raise NotImplementedError
 
-    def is_var(self):
+    def is_var(self) -> bool:
         return self.ty == VAR
 
-    def is_diff(self):
+    def is_diff(self) -> bool:
         return self.ty == DIFFERENTIAL
 
-    def is_const(self):
+    def is_const(self) -> bool:
         return self.ty == CONST
 
-    def is_op(self):
+    def is_op(self) -> bool:
         return self.ty == OP
 
-    def is_fun(self):
+    def is_fun(self) -> bool:
         return self.ty == FUN
 
-    def is_deriv(self):
+    def is_deriv(self) -> bool:
         return self.ty == DERIV
 
-    def is_integral(self):
+    def is_integral(self) -> bool:
         return self.ty == INTEGRAL
 
-    def is_indefinite_integral(self):
+    def is_indefinite_integral(self) -> bool:
         return self.ty == INDEFINITEINTEGRAL
 
-    def is_evalat(self):
+    def is_evalat(self) -> bool:
         return self.ty == EVAL_AT
 
-    def is_limit(self):
+    def is_limit(self) -> bool:
         return self.ty == LIMIT
 
     def is_plus(self):

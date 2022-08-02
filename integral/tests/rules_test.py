@@ -783,12 +783,16 @@ class RulesTest(unittest.TestCase):
     def testGammaBeta(self):
         file = compstate.CompFile("GammaBeta")
 
+        # Condition n > 0
+        conds = conditions.Conditions()
+        conds.add_condition("n", parser.parse_expr("n > 1"))
+
         # Definition of Gamma function
-        gamma_def = compstate.FuncDef(parser.parse_expr("Gamma(n) = (INT x:[0,oo]. exp(-x) * x^(n-1))"))
+        gamma_def = compstate.FuncDef(parser.parse_expr("Gamma(n) = (INT x:[0,oo]. exp(-x) * x^(n-1))"), conds=conds)
         file.add_definition(gamma_def)
 
         # Recursive equation for gamma function
-        goal1 = compstate.Goal(parser.parse_expr("Gamma(n+1) = n * Gamma(n)"))
+        goal1 = compstate.Goal(parser.parse_expr("Gamma(n+1) = n * Gamma(n)"), conds=conds)
         file.add_compstate(goal1)
 
         proof = goal1.proof_by_calculation()
