@@ -775,8 +775,6 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
         calc.perform_rule(rules.FullSimplify())
         print(file)
-        print(conds.data)
-        print(conds.is_assume)
         with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
@@ -798,7 +796,6 @@ class RulesTest(unittest.TestCase):
         proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(gamma_def.eq))
-        calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.ElimInfInterval())
         calc.perform_rule(rules.OnLocation(
             rules.IntegrationByParts(parser.parse_expr("x^n"), parser.parse_expr("-exp(-x)")), "0"))

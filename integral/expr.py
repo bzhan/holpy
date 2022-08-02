@@ -344,8 +344,6 @@ class Expr:
             return self.name <= other.name
         elif self.ty == CONST:
             return self.val <= other.val
-        # elif self.is_constant() and other.is_constant():
-        #     return sympy_parser.parse_expr(str(self - other).replace("^", "**")) <= 0
         elif self.ty == OP:
             return (self.op, self.args) <= (other.op, other.args)
         elif self.ty == FUN:
@@ -506,6 +504,8 @@ class Expr:
             else:
                 return self
         elif self.ty == CONST:
+            return self
+        elif self.ty == SYMBOL:
             return self
         elif self.ty == OP:
             return Op(self.op, *[arg.subst(var, e) for arg in self.args])
@@ -817,6 +817,10 @@ class Expr:
                 return a * b
             elif a.is_fraction() or b.is_fraction():
                 return a * b
+            elif a.is_monomial():
+                return a * poly.singleton(from_poly(b))
+            elif b.is_monomial():
+                return b * poly.singleton(from_poly(a))
             else:
                 return poly.singleton(from_poly(a)) * poly.singleton(from_poly(b))
         

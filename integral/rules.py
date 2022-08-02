@@ -1787,7 +1787,7 @@ class ExpandDefinition(Rule):
         body = self.func_def.rhs
         for arg, val in zip(self.func_def.lhs.args, e.args):
             body = body.replace(arg, val)
-        return body
+        return body.normalize()
 
 
 class Mul2Div(Rule):

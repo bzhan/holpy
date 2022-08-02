@@ -572,6 +572,13 @@ def reduce_inf_limit(e: Expr, var_name: str, conds: Optional[Conditions] = None)
             return (l1 + l2).normalize()
         else:
             return expr.Limit(var_name, POS_INF, e)
+    elif e.is_minus():
+        l1 = reduce_inf_limit(e.args[0], var_name, conds=conds)
+        l2 = reduce_inf_limit(e.args[1], var_name, conds=conds)
+        if l1 not in (POS_INF, NEG_INF) and l2 not in (POS_INF, NEG_INF):
+            return (l1 - l2).normalize()
+        else:
+            return expr.Limit(var_name, POS_INF, e)
     elif e.is_times():
         if not e.args[0].contains_var(var_name):
             return (e.args[0] * reduce_inf_limit(e.args[1], var_name, conds=conds)).normalize()
