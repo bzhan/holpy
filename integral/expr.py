@@ -597,7 +597,7 @@ class Expr:
             print(self)
             raise NotImplementedError
 
-    def to_const_poly(self):
+    def to_const_poly(self) -> ConstantPolynomial:
         """Normalize a constant expression.
         
         Assume self.is_constant() = True in this function.
@@ -610,44 +610,44 @@ class Expr:
             return poly.const_fraction(self.val)
 
         elif self.ty == INF:
-            return poly.const_singleton(self)
+            raise ValueError
 
-        elif self.ty == OP and self.op == '+':
+        elif self.is_plus():
             return self.args[0].to_const_poly() + self.args[1].to_const_poly()
         
-        elif self.ty == OP and self.op == '-':
-            if len(self.args) == 1:
-                return -self.args[0].to_const_poly()
-            else:
-                return self.args[0].to_const_poly() - self.args[1].to_const_poly()
+        elif self.is_uminus():
+            return -self.args[0].to_const_poly()
 
-        elif self.ty == OP and self.op == '*':
+        elif self.is_minus():
+            return self.args[0].to_const_poly() - self.args[1].to_const_poly()
+
+        elif self.is_times():
             return self.args[0].to_const_poly() * self.args[1].to_const_poly()
 
-        elif self.ty == OP and self.op == '/':
+        elif self.is_divides():
             a, b = self.args[0].to_const_poly(), self.args[1].to_const_poly()
             if b.is_monomial():
                 return a / b
             else:
                 return a / poly.const_singleton(from_const_poly(b))
 
-        elif self.ty == OP and self.op == '^':
+        elif self.is_power():
             a, b = self.args[0].to_const_poly(), self.args[1].to_const_poly()
             if a.is_zero() and b.is_fraction() and b.get_fraction() > 0:
                 return poly.const_fraction(0)
             elif a.is_monomial() and b.is_fraction():
                 return a ** b.get_fraction()
-            elif b.is_fraction():
-                rb = b.get_fraction()
-                if rb > 0 and int(rb) == rb and rb <= 3:
-                    res = poly.const_fraction(1)
-                    for i in range(int(rb)):
-                        res *= a
-                    return res
-                else:
-                    return poly.const_singleton(self)
+            # elif b.is_fraction():
+            #     rb = b.get_fraction()
+            #     if rb > 0 and int(rb) == rb and rb <= 3:
+            #         res = poly.const_fraction(1)
+            #         for i in range(int(rb)):
+            #             res *= a
+            #         return res
+            #     else:
+            #         return poly.const_singleton(self)
             else:
-                return poly.const_singleton(self)
+                return poly.const_singleton(from_const_poly(a) ** from_const_poly(b))
 
         elif self.ty == FUN and self.func_name == 'sqrt':
             a = self.args[0].to_const_poly()
@@ -659,7 +659,7 @@ class Expr:
                 return poly.const_singleton(sqrt(from_const_poly(a)))
 
         elif self.ty == FUN and self.func_name == 'pi':
-            return poly.ConstantPolynomial([poly.ConstantMonomial(1, [(pi, 1)])])
+            return poly.const_singleton(pi)
 
         elif self.ty == FUN and self.func_name == 'exp':
             a = self.args[0].to_const_poly()
@@ -783,10 +783,8 @@ class Expr:
                 return poly.const_singleton(factorial(norm_a))
         elif self.ty == FUN:
             return poly.const_singleton(self)
-        elif self.ty == LIMIT:
-            return self.body.replace_trig(Var(self.var), self.lim).to_const_poly()
         else:
-            print("to_const_poly on", self)
+            print("to_const_poly:", self)
             raise NotImplementedError
 
     def norm(self):
@@ -801,28 +799,29 @@ class Expr:
             return poly.singleton(self)
 
         elif self.is_constant():
+            # Consists of CONST, OP and FUN only.
             return poly.constant(self.to_const_poly())
         
-        elif self.ty == OP and self.op == "+":
+        elif self.is_plus():
             return self.args[0].to_poly() + self.args[1].to_poly()
         
-        elif self.ty == OP and self.op == "-":
-            if len(self.args) == 1:
-                return -self.args[0].to_poly()
-            else:
-                return self.args[0].to_poly() - self.args[1].to_poly()
+        elif self.is_uminus():
+            return -self.args[0].to_poly()
 
-        elif self.ty == OP and self.op == "*":
+        elif self.is_minus():
+            return self.args[0].to_poly() - self.args[1].to_poly()
+
+        elif self.is_times():
             return self.args[0].to_poly() * self.args[1].to_poly()
         
-        elif self.ty == OP and self.op == "/":
+        elif self.is_divides():
             a, b = self.args[0].to_poly(), self.args[1].to_poly()
             if b.is_monomial():
                 return a / b
             else:
                 return a / poly.singleton(from_poly(b))
         
-        elif self.ty == OP and self.op == "^":
+        elif self.is_power():
             a, b = self.args[0].to_poly(), self.args[1].to_poly()
             if a.is_monomial() and b.is_fraction():
                 return a ** b.get_fraction()
@@ -832,23 +831,23 @@ class Expr:
                 return poly.singleton(from_poly(a) ^ from_poly(b))
 
         elif self.ty == FUN and self.func_name == "exp":
-            a, = self.args
+            a = self.args[0]
             if a.ty == FUN and a.func_name == "log":
                 return a.args[0].to_poly()
             else:
                 return poly.Polynomial([poly.Monomial(poly.const_fraction(1), [(E, a.to_poly())])])
 
         elif self.ty == FUN and self.func_name in ("sin", "cos", "tan", "cot", "csc", "sec"):
-            a, = self.args
+            a = self.args[0]
             if a.ty == FUN and a.func_name == "a" + self.func_name:
                 # sin(asin(x)) = x
                 return a.args[0].to_poly()
             else:
                 return poly.singleton(Fun(self.func_name, a.normalize()))
 
-        elif self.ty == FUN and self.func_name in ("asin","acos","atan","acot","acsc","asec"):
+        elif self.ty == FUN and self.func_name in ("asin", "acos", "atan", "acot", "acsc", "asec"):
             a, = self.args
-            if self.func_name in ("atan","acot") and a.ty == FUN and a.func_name == self.func_name[1:]:
+            if self.func_name in ("atan", "acot") and a.ty == FUN and a.func_name == self.func_name[1:]:
                 # atan(tan(x)) = x
                 return a.args[0].to_poly()
             else:
@@ -875,15 +874,11 @@ class Expr:
             return poly.singleton(Fun("abs", self.args[0].normalize()))
 
         elif self.ty == FUN and self.func_name == "binom":
-            if self.is_constant():
-                return poly.constant(self.to_const_poly())
-            else:
-                return poly.singleton(Fun("binom", self.args[0].normalize(), self.args[1].normalize()))
+            return poly.singleton(Fun("binom", self.args[0].normalize(), self.args[1].normalize()))
+
         elif self.ty == FUN and self.func_name == "factorial":
-            if self.is_constant():
-                return poly.constant(self.to_const_poly())
-            else:
-                return poly.singleton(Fun("factorial", self.args[0].normalize()))
+            return poly.singleton(Fun("factorial", self.args[0].normalize()))
+
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)
             lower = self.body.subst(self.var, self.lower)
@@ -896,12 +891,8 @@ class Expr:
             return poly.singleton(Integral(self.var, self.lower.normalize(), self.upper.normalize(), body))
 
         elif self.ty == LIMIT:
-            # e = self.lim_to_inf()
-            # p = e.body.replace_trig(Var(self.var), inf).to_poly()
             return poly.singleton(Limit(self.var, self.lim.normalize(), self.body.normalize()))
 
-            raise NotImplementedError
-        # inf -> [(1,inf,1)]
         elif self.ty == INF:
             if self == Inf(Decimal("inf")):
                 return poly.singleton(self)
@@ -1428,77 +1419,77 @@ def deriv(var: str, e: Expr) -> Expr:
     elif e.ty == OP:
         if e.op == "+":
             x, y = e.args
-            return (deriv(var, x) + deriv(var, y))
+            return (deriv(var, x) + deriv(var, y)).normalize()
         elif e.op == "-" and len(e.args) == 2:
             x, y = e.args
-            return (deriv(var, x) - deriv(var, y))
+            return (deriv(var, x) - deriv(var, y)).normalize()
         elif e.op == "-" and len(e.args) == 1:
             x, = e.args
-            return (-(deriv(var, x)))
+            return (-(deriv(var, x))).normalize()
         elif e.op == "*":
             x, y = e.args
             if not x.contains_var(var):
-                return (x * deriv(var, y))
+                return (x * deriv(var, y)).normalize()
             elif not y.contains_var(var):
-                return (deriv(var, x) * y)
+                return (deriv(var, x) * y).normalize()
             else:
-                return (x * deriv(var, y) + deriv(var, x) * y)
+                return (x * deriv(var, y) + deriv(var, x) * y).normalize()
         elif e.op == "/":
             x, y = e.args
             if not y.contains_var(var):
                 # x / c case:
-                return deriv(var, x) / y
+                return (deriv(var, x) / y).normalize()
             elif not x.contains_var(var) and y.ty == OP and y.op == "^":
                 # c / (y0 ^ y1): rewrite to c * y0 ^ (-y1)
                 return deriv(var, x * (y.args[0] ^ (-y.args[1])))
             else:
                 # general case
-                return (deriv(var, x) * y - x * deriv(var, y)) / (y ^ Const(2))
+                return ((deriv(var, x) * y - x * deriv(var, y)) / (y ^ Const(2))).normalize()
         elif e.op == "^":
             x, y = e.args
             if y.ty == CONST:
-                return (y * (x ^ Const(y.val - 1)) * deriv(var, x))
+                return (y * (x ^ Const(y.val - 1)) * deriv(var, x)).normalize()
             elif var not in y.get_vars():
-                return (y * (x ^ (y - 1)) * deriv(var, x))
+                return (y * (x ^ (y - 1)) * deriv(var, x)).normalize()
             else:
-                return (e * deriv(var, exp(y * log(x))))
+                return (e * deriv(var, exp(y * log(x)))).normalize()
         else:
             raise NotImplementedError
     elif e.ty == FUN:
         if e.func_name == "sin":
             x, = e.args
-            return (cos(x) * deriv(var, x))
+            return (cos(x) * deriv(var, x)).normalize()
         elif e.func_name == "cos":
             x, = e.args
-            return (-(sin(x) * deriv(var, x)))
+            return (-(sin(x) * deriv(var, x))).normalize()
         elif e.func_name == "tan":
             x, = e.args
-            return ((sec(x) ^ Const(2)) * deriv(var, x))
+            return ((sec(x) ^ Const(2)) * deriv(var, x)).normalize()
         elif e.func_name == "sec":
             x, = e.args
-            return (sec(x) * tan(x) * deriv(var, x))
+            return (sec(x) * tan(x) * deriv(var, x)).normalize()
         elif e.func_name == "csc":
             x, = e.args
-            return (-csc(x) * cot(x) * deriv(var, x))
+            return (-csc(x) * cot(x) * deriv(var, x)).normalize()
         elif e.func_name == "cot":
             x,  = e.args
-            return -(csc(x) ^ Const(2))
+            return (-(csc(x) ^ Const(2))).normalize()
         elif e.func_name == "cot":
             x, = e.args
-            return (-(sin(x) ^ Const(-2)) * deriv(var, x))
+            return (-(sin(x) ^ Const(-2)) * deriv(var, x)).normalize()
         elif e.func_name == "log":
             x, = e.args
-            return (deriv(var, x) / x)
+            return (deriv(var, x) / x).normalize()
         elif e.func_name == "exp":
             x, = e.args
-            return (exp(x) * deriv(var, x))
+            return (exp(x) * deriv(var, x)).normalize()
         elif e.func_name == "pi":
             return Const(0)
         elif e.func_name == "sqrt":
             if e.args[0].ty == CONST:
                 return Const(0)
             else:
-                return deriv(var, e.args[0] ^ Const(Fraction(1/2)))
+                return (deriv(var, e.args[0] ^ Const(Fraction(1/2)))).normalize()
         elif e.func_name == "atan":
             x, = e.args
             return (deriv(var, x) / (Const(1) + (x ^ Const(2)))).normalize()
@@ -1518,9 +1509,9 @@ def deriv(var: str, e: Expr) -> Expr:
         else:
             raise NotImplementedError
     elif e.ty == INTEGRAL:
-        return Integral(e.var, e.lower, e.upper, deriv(var, e.body)) + \
-               e.body.subst(e.var, e.upper) * deriv(var, e.upper) - \
-               e.body.subst(e.var, e.lower) * deriv(var, e.lower)
+        return (Integral(e.var, e.lower, e.upper, deriv(var, e.body))
+                + e.body.subst(e.var, e.upper) * deriv(var, e.upper)
+                - e.body.subst(e.var, e.lower) * deriv(var, e.lower)).normalize()
     else:
         raise NotImplementedError
 

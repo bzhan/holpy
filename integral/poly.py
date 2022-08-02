@@ -331,11 +331,11 @@ class ConstantPolynomial:
         return self.is_fraction() and self.get_fraction() == -1
 
 
-def const_singleton(t) -> ConstantPolynomial:
+def const_singleton(t: expr.Expr) -> ConstantPolynomial:
     """Returns the constant polynomial equals to t."""
     return ConstantPolynomial([ConstantMonomial(1, [(t, 1)])])
 
-def const_fraction(r) -> ConstantPolynomial:
+def const_fraction(r: Union[int, Fraction]) -> ConstantPolynomial:
     """Returns the constant polynomial equals to fraction r."""
     return ConstantPolynomial([ConstantMonomial(r, [])])
 
@@ -599,7 +599,7 @@ class Polynomial:
         return len(self.monomials) == 1 and self.monomials[0].is_one()
 
 
-def singleton(s) -> Polynomial:
+def singleton(s: expr.Expr) -> Polynomial:
     """Polynomial for 1*s^1."""
     return Polynomial([Monomial(const_fraction(1), [(s, 1)])])
 
