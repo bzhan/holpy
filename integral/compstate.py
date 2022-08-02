@@ -435,9 +435,17 @@ class CompFile:
         """Add a computation proof."""
         self.content.append(st)
 
-    def add_calculation(self, calc: Calculation):
+    def add_calculation(self, calc: Union[str, Expr, Calculation]) -> Calculation:
         """Add a calculation."""
-        self.content.append(calc)
+        if isinstance(calc, str):
+            self.content.append(Calculation(parser.parse_expr(calc)))
+        elif isinstance(calc, Expr):
+            self.content.append(Calculation(calc))
+        elif isinstance(calc, Calculation):
+            self.content.append(calc)
+        else:
+            raise NotImplementedError
+        return self.content[-1]
 
     def add_goal(self, goal: Goal):
         """Add a goal."""

@@ -181,7 +181,7 @@ class CommonIntegral(Rule):
             (expr.exp(x), None, expr.exp(x)),
             (Const(1) / x, None, expr.log(expr.Fun('abs', x))),
             (x ^ Const(-1), None, expr.log(expr.Fun('abs', x))),
-            ((1 + (x ^ Const(2))) ^ Const(-1), None, expr.arctan(x)),
+            (((x ^ Const(2)) + 1) ^ Const(-1), None, expr.arctan(x)),
             (expr.sec(x) ^ Const(2), None, expr.tan(x)),
             (expr.csc(x) ^ Const(2), None, -expr.cot(x)),
         ]
@@ -405,7 +405,7 @@ class SimplifyPower(Rule):
         elif e.args[0].is_uminus() and e.args[1].is_const():
             # (-a) ^ n = (-1) ^ n * a ^ n
             return (Const(-1) ^ e.args[1]) * (e.args[0].args[0] ^ e.args[1])
-        elif e.args[0].is_minus() and e.args[0].args[0].is_uminus and e.args[1].is_const():
+        elif e.args[0].is_minus() and e.args[0].args[0].is_uminus() and e.args[1].is_const():
             # (-a - b) ^ n = (-1) ^ n * (a + b) ^ n
             nega, negb = e.args[0].args
             return (Const(-1) ^ e.args[1]) * ((nega.args[0] + negb) ^ e.args[1])
@@ -592,6 +592,9 @@ class Substitution(Rule):
         specify the substitution.
 
         """
+        if not e.is_integral():
+            return e
+
         # Variable to be substituted in the integral
         var_name = parser.parse_expr(self.var_name)
 
@@ -682,6 +685,38 @@ class SubstitutionInverse(Rule):
 
         return expr.Integral(self.var_name, expr.holpy_style(lower), expr.holpy_style(upper), new_e_body)
         
+
+class ExpandPolynomial(Rule):
+    """Expand multiplication and power."""
+    def __init__(self):
+        self.name = "ExpandPolynomial"
+
+    def __str__(self):
+        return "expand polynomial"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.is_power() and e.args[1].is_const() and e.args[1].val > 1 and \
+            int(e.args[1].val) == e.args[1].val:
+            n = int(e.args[1].val)
+            base = self.eval(e.args[0]).to_poly()
+            res = base
+            for i in range(n-1):
+                res = res * base
+            return expr.from_poly(base)
+        elif e.is_times():
+            s1, s2 = self.eval(e.args[0]), self.eval(e.args[1])
+            return expr.from_poly(s1.to_poly() * s2.to_poly())
+        elif e.is_integral():
+            return expr.Integral(e.var, e.lower, e.upper, self.eval(e.body))
+        else:
+            return e
+
 
 class UnfoldPower(Rule):
     """Unfold power"""
@@ -821,12 +856,12 @@ class PolynomialDivision(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if e.ty == OP and e.op != "/" and not (e.ty == OP and e.op == "*" and e.args[1].ty == OP and e.args[1].op == "^"\
-            and (e.args[1].args[1].ty == OP and len(e.args[1].args[1]) == 1 or e.args[1].args[1].ty == CONST and e.args[1].args[1].val < 0)):
-            return e
-            
-        result = apart(expr.sympy_style(e))
-        return parser.parse_expr(str(result).replace("**","^"))
+        if e.is_integral():
+            return expr.Integral(e.var, e.lower, e.upper, self.eval(e.body))
+        else:
+            result = apart(expr.sympy_style(e))
+            return parser.parse_expr(str(result).replace("**","^"))
+
 
 class RewriteTrigonometric(Rule):
     """Rewrite using one of Fu's rules."""
