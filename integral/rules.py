@@ -480,7 +480,11 @@ class FullSimplify(Rule):
 
 
 class ApplyEquation(Rule):
-    """Apply the given equation to for rewriting."""
+    """Apply the given equation to for rewriting.
+
+    subMap is an optional map from variable name (str) to expressions.
+
+    """
     def __init__(self, eq: Union[Expr, str], subMap: dict = None):
         self.name = "ApplyEquation"
         self.eq = eq
@@ -502,12 +506,21 @@ class ApplyEquation(Rule):
         return "apply equation \\(%s\\)" % latex.convert_expr(self.eq)
 
     def export(self):
-        return {
+        res = {
             "name": self.name,
             "eq": str(self.eq),
             "str": str(self),
             "latex_str": self.latex_str()
         }
+        if self.subMap:
+            res['subMap'] = []
+            for var, e in self.subMap.items():
+                res['subMap'].append({
+                    "var": var,
+                    "expr": str(e),
+                    "latex_expr": latex.convert_expr(e)
+                })
+        return res
 
     def eval(self, e: Expr, conds=None) -> Expr:
         if isinstance(self.eq, str):
@@ -550,8 +563,8 @@ class ApplyEquation(Rule):
         else:
             # With provided instantiation
             new_eq = self.eq
-            for e1, e2 in self.subMap.items():
-                new_eq = new_eq.replace(e1, e2)
+            for var, e2 in self.subMap.items():
+                new_eq = new_eq.subst(var, e2)
             return ApplyEquation(new_eq).eval(e)
 
 

@@ -514,9 +514,13 @@ class Expr:
         elif self.ty == DERIV:
             return Deriv(self.var, self.body.subst(var, e))
         elif self.ty == LIMIT:
-            return Limit(self.var, self.lim.subst(var, e),self.body.subst(var, e))
+            return Limit(self.var, self.lim.subst(var, e), self.body.subst(var, e))
         elif self.ty == INF:
             return self
+        elif self.ty == INTEGRAL:
+            return Integral(self.var, self.lower.subst(var, e), self.upper.subst(var, e), self.body.subst(var, e))
+        elif self.ty == EVAL_AT:
+            return EvalAt(self.var, self.lower.subst(var, e), self.upper.subst(var, e), self.body.subst(var, e))
         else:
             print('subst on', self)
             raise NotImplementedError
@@ -544,7 +548,7 @@ class Expr:
         def rec(t):
             if t.ty == VAR:
                 res.add(t.name)
-            elif t.ty == CONST:
+            elif t.ty in (CONST, INF):
                 return
             elif t.ty in (OP, FUN):
                 for arg in t.args:
@@ -565,6 +569,7 @@ class Expr:
                 res.add(t.var)
                 rec(t.body)
             else:
+                print(t, type(t))
                 raise NotImplementedError
 
         rec(self)

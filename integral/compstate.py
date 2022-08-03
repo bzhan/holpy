@@ -534,7 +534,11 @@ def parse_rule(item) -> Rule:
         return rules.Equation(new_expr)
     elif item['name'] == 'ApplyEquation':
         eq = parser.parse_expr(item['eq'])
-        return rules.ApplyEquation(eq)
+        subMap = dict()
+        if 'subMap' in item:
+            for inst in item['subMap']:
+                subMap[inst['var']] = parser.parse_expr(inst['expr'])
+        return rules.ApplyEquation(eq, subMap)
     elif item['name'] == 'ExpandPolynomial':
         return rules.ExpandPolynomial()
     elif item['name'] == 'PolynomialDivision':
@@ -552,6 +556,8 @@ def parse_rule(item) -> Rule:
         return rules.IntegrateByEquation(lhs)
     elif item['name'] == 'RewriteBinom':
         return rules.RewriteBinom()
+    elif item['name'] == 'RewriteFactorial':
+        return rules.RewriteFactorial()
     else:
         print(item['name'])
         raise NotImplementedError
