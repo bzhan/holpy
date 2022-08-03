@@ -80,8 +80,9 @@
                     "latex_res": "(\\left. x e^{x} \\right\\vert_{x=-1}^{2}) - (\\int_{-1}^{2} e^{x} \\,dx)",
                     "res": "([x * exp(x)]_x=-1,2) - (INT x:[-1,2]. exp(x))",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to x, v \\to e^{x}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> x, v -> exp(x)",
                         "u": "x",
                         "v": "exp(x)"
                     },
@@ -414,9 +415,9 @@
                     "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{1 - \\sin^{2}(u)} \\cos{(u)} \\,du",
                     "res": "INT u:[0,pi / 2]. (1 - sin(u) ^ 2) ^ (1/2) * cos(u)",
                     "rule": {
-                        "latex_str": "substitute \\(x\\) for \\(\\sin{(u)}\\)",
+                        "latex_str": "inverse substitution for \\(\\sin{(u)}\\)",
                         "name": "SubstitutionInverse",
-                        "str": "substitute x for sin(u)",
+                        "str": "inverse substitution for sin(u)",
                         "var_name": "u",
                         "var_subst": "sin(u)"
                     },
@@ -503,9 +504,9 @@
                     "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{2 - (\\sqrt{2} \\sin{(u)}) ^ {2}} (\\sqrt{2} \\cos{(u)}) \\,du",
                     "res": "INT u:[0,pi / 2]. sqrt(2 - (sqrt(2) * sin(u)) ^ 2) * (sqrt(2) * cos(u))",
                     "rule": {
-                        "latex_str": "substitute \\(x\\) for \\(\\sqrt{2} \\sin{(u)}\\)",
+                        "latex_str": "inverse substitution for \\(\\sqrt{2} \\sin{(u)}\\)",
                         "name": "SubstitutionInverse",
-                        "str": "substitute x for sqrt(2) * sin(u)",
+                        "str": "inverse substitution for sqrt(2) * sin(u)",
                         "var_name": "u",
                         "var_subst": "sqrt(2) * sin(u)"
                     },
@@ -602,9 +603,9 @@
                     "latex_res": "\\int_{-\\pi/4}^{\\pi/4} \\sqrt{8 - 2 (2 \\sin{(u)}) ^ {2}} (2 \\cos{(u)}) \\,du",
                     "res": "INT u:[-pi / 4,pi / 4]. sqrt(8 - 2 * (2 * sin(u)) ^ 2) * (2 * cos(u))",
                     "rule": {
-                        "latex_str": "substitute \\(x\\) for \\(2 \\sin{(u)}\\)",
+                        "latex_str": "inverse substitution for \\(2 \\sin{(u)}\\)",
                         "name": "SubstitutionInverse",
-                        "str": "substitute x for 2 * sin(u)",
+                        "str": "inverse substitution for 2 * sin(u)",
                         "var_name": "u",
                         "var_subst": "2 * sin(u)"
                     },
@@ -701,9 +702,9 @@
                     "latex_res": "\\int_{\\pi/4}^{\\pi/2} \\frac{\\sqrt{1 - \\sin^{2}(u)}}{\\sin^{2}(u)} \\cos{(u)} \\,du",
                     "res": "INT u:[pi / 4,pi / 2]. sqrt(1 - sin(u) ^ 2) / sin(u) ^ 2 * cos(u)",
                     "rule": {
-                        "latex_str": "substitute \\(x\\) for \\(\\sin{(u)}\\)",
+                        "latex_str": "inverse substitution for \\(\\sin{(u)}\\)",
                         "name": "SubstitutionInverse",
-                        "str": "substitute x for sin(u)",
+                        "str": "inverse substitution for sin(u)",
                         "var_name": "u",
                         "var_subst": "sin(u)"
                     },
@@ -1344,8 +1345,9 @@
                     "latex_res": "(\\left. -x e^{-x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} -e^{-x} \\,dx)",
                     "res": "([-(x * exp(-x))]_x=0,1) - (INT x:[0,1]. -exp(-x))",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to x, v \\to -e^{-x}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> x, v -> -exp(-x)",
                         "u": "x",
                         "v": "-exp(-x)"
                     },
@@ -1392,8 +1394,9 @@
                     "latex_res": "(\\left. \\frac{1}{2} x ^ {2} \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} \\frac{1}{2} x \\,dx)",
                     "res": "([1/2 * x ^ 2 * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1/2 * x)",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to \\frac{\\log{(x)}}{2}, v \\to x ^ {2}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> log(x) / 2, v -> x ^ 2",
                         "u": "log(x) / 2",
                         "v": "x ^ 2"
                     },
@@ -1430,8 +1433,9 @@
                     "latex_res": "(\\left. -x \\cot{(x)} \\right\\vert_{x=\\pi/4}^{\\pi/3}) - (\\int_{\\pi/4}^{\\pi/3} -\\cot{(x)} \\,dx)",
                     "res": "([-(x * cot(x))]_x=pi / 4,pi / 3) - (INT x:[pi / 4,pi / 3]. -cot(x))",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to x, v \\to -\\cot{(x)}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> x, v -> -cot(x)",
                         "u": "x",
                         "v": "-cot(x)"
                     },
@@ -1489,8 +1493,9 @@
                     "latex_res": "(\\left. 2 \\sqrt{x} \\log{(x)} \\right\\vert_{x=1}^{4}) - (\\int_{1}^{4} 2 x ^ {-1/2} \\,dx)",
                     "res": "([2 * sqrt(x) * log(x)]_x=1,4) - (INT x:[1,4]. 2 * x ^ (-1/2))",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to 2 \\log{(x)}, v \\to \\sqrt{x}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> 2 * log(x), v -> sqrt(x)",
                         "u": "2 * log(x)",
                         "v": "sqrt(x)"
                     },
@@ -1516,8 +1521,9 @@
                     "latex_res": "(\\left. \\frac{1}{2} x ^ {2} \\arctan{(x)} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{1}{2} x ^ {2} (x ^ {2} + 1) ^ {-1} \\,dx)",
                     "res": "([1/2 * x ^ 2 * atan(x)]_x=0,1) - (INT x:[0,1]. 1/2 * x ^ 2 * (x ^ 2 + 1) ^ -1)",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to \\frac{\\arctan{(x)}}{2}, v \\to x ^ {2}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> atan(x) / 2, v -> x ^ 2",
                         "u": "atan(x) / 2",
                         "v": "x ^ 2"
                     },
@@ -1562,8 +1568,9 @@
                     "latex_res": "(\\left. e^{2 x} \\sin{(x)} \\right\\vert_{x=0}^{\\pi/2}) - (\\int_{0}^{\\pi/2} 2 e^{2 x} \\sin{(x)} \\,dx)",
                     "res": "([exp(2 * x) * sin(x)]_x=0,pi / 2) - (INT x:[0,pi / 2]. 2 * exp(2 * x) * sin(x))",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to e^{2 x}, v \\to \\sin{(x)}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> exp(2 * x), v -> sin(x)",
                         "u": "exp(2 * x)",
                         "v": "sin(x)"
                     },
@@ -1582,8 +1589,9 @@
                     "latex_res": "-2 ((\\left. -\\cos{(x)} e^{2 x} \\right\\vert_{x=0}^{1/2 \\pi}) - (\\int_{0}^{1/2 \\pi} -2 \\cos{(x)} e^{2 x} \\,dx)) + e^{\\pi}",
                     "res": "-2 * (([-(cos(x) * exp(2 * x))]_x=0,1/2 * pi) - (INT x:[0,1/2 * pi]. -2 * cos(x) * exp(2 * x))) + exp(pi)",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to e^{2 x}, v \\to -\\cos{(x)}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> exp(2 * x), v -> -cos(x)",
                         "u": "exp(2 * x)",
                         "v": "-cos(x)"
                     },
@@ -1657,8 +1665,9 @@
                     "latex_res": "-\\frac{1}{2} ((\\left. \\frac{1}{2} x ^ {2} \\sin{(2 x)} \\right\\vert_{x=0}^{\\pi}) - (\\int_{0}^{\\pi} x \\sin{(2 x)} \\,dx)) + \\frac{1}{6} \\pi ^ {3}",
                     "res": "-1/2 * (([1/2 * x ^ 2 * sin(2 * x)]_x=0,pi) - (INT x:[0,pi]. x * sin(2 * x))) + 1/6 * pi ^ 3",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to \\frac{x ^ {2}}{2}, v \\to \\sin{(2 x)}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> x ^ 2 / 2, v -> sin(2 * x)",
                         "u": "x ^ 2 / 2",
                         "v": "sin(2 * x)"
                     },
@@ -1677,8 +1686,9 @@
                     "latex_res": "\\frac{1}{2} ((\\left. -\\frac{1}{2} x \\cos{(2 x)} \\right\\vert_{x=0}^{\\pi}) - (\\int_{0}^{\\pi} -\\frac{1}{2} \\cos{(2 x)} \\,dx)) + \\frac{1}{6} \\pi ^ {3}",
                     "res": "1/2 * (([-1/2 * x * cos(2 * x)]_x=0,pi) - (INT x:[0,pi]. -1/2 * cos(2 * x))) + 1/6 * pi ^ 3",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to \\frac{x}{2}, v \\to -\\cos{(2 x)}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> x / 2, v -> -cos(2 * x)",
                         "u": "x / 2",
                         "v": "-cos(2 * x)"
                     },
@@ -1737,8 +1747,9 @@
                     "latex_res": "(\\left. -\\cos{(u)} e^{u} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} -\\cos{(u)} e^{u} \\,du)",
                     "res": "([-(cos(u) * exp(u))]_u=0,1) - (INT u:[0,1]. -(cos(u) * exp(u)))",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to -e^{u}, v \\to \\cos{(u)}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> -exp(u), v -> cos(u)",
                         "u": "-exp(u)",
                         "v": "cos(u)"
                     },
@@ -1757,8 +1768,9 @@
                     "latex_res": "-\\cos{(1)} e + 1 + ((\\left. e^{u} \\sin{(u)} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} e^{u} \\sin{(u)} \\,du))",
                     "res": "-(cos(1) * exp(1)) + 1 + (([exp(u) * sin(u)]_u=0,1) - (INT u:[0,1]. exp(u) * sin(u)))",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to e^{u}, v \\to \\sin{(u)}\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> exp(u), v -> sin(u)",
                         "u": "exp(u)",
                         "v": "sin(u)"
                     },
@@ -1803,8 +1815,9 @@
                     "latex_res": "(\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,dx) + (\\int_{e^{-1}}^{1} -\\log{(x)} \\,dx)",
                     "res": "([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1) + (INT x:[exp(-1),1]. -log(x))",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to \\log{(x)}, v \\to x\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> log(x), v -> x",
                         "u": "log(x)",
                         "v": "x"
                     },
@@ -1823,8 +1836,9 @@
                     "latex_res": "-((\\left. x \\log{(x)} \\right\\vert_{x=e^{-1}}^{1}) - (\\int_{e^{-1}}^{1} 1 \\,dx)) + 1",
                     "res": "-(([x * log(x)]_x=exp(-1),1) - (INT x:[exp(-1),1]. 1)) + 1",
                     "rule": {
+                        "latex_str": "integrate by parts \\(u \\to \\log{(x)}, v \\to x\\)",
                         "name": "IntegrationByParts",
-                        "str": "integrate by parts",
+                        "str": "integrate by parts u -> log(x), v -> x",
                         "u": "log(x)",
                         "v": "x"
                     },

@@ -41,7 +41,10 @@ class Label:
         return len(self.data) == 0
 
     def __str__(self):
-        return ".".join(str(n + 1) for n in self.data)
+        res = ""
+        for n in self.data:
+            res += str(n+1) + "."
+        return res
 
 
 class StateItem:
@@ -497,7 +500,10 @@ def parse_rule(item) -> Rule:
         else:
             loc = item['loc']
             del item['loc']
-            return rules.OnLocation(parse_rule(item), loc)
+            if loc == '':
+                return parse_rule(item)
+            else:
+                return rules.OnLocation(parse_rule(item), loc)
     elif item['name'] == 'ExpandDefinition':
         func_def = parser.parse_expr(item['func_def'])
         return rules.ExpandDefinition(func_def)

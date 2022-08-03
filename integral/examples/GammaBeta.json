@@ -58,9 +58,10 @@
                             "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. -x ^ {n} e^{-x} \\right\\vert_{x=0}^{t}) - (\\int_{0}^{t} -n x ^ {n - 1} e^{-x} \\,dx)\\,)",
                             "res": "LIM {t -> oo}. ([-(x ^ n * exp(-x))]_x=0,t) - (INT x:[0,t]. -(n * x ^ (n - 1) * exp(-x)))",
                             "rule": {
+                                "latex_str": "integrate by parts \\(u \\to x ^ {n}, v \\to -e^{-x}\\) at 0",
                                 "loc": "0",
                                 "name": "IntegrationByParts",
-                                "str": "integrate by parts at 0",
+                                "str": "integrate by parts u -> x ^ n, v -> -exp(-x) at 0",
                                 "u": "x ^ n",
                                 "v": "-exp(-x)"
                             },

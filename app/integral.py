@@ -785,10 +785,20 @@ def query_expr():
 
 @app.route("/api/query-integral", methods=['POST'])
 def query_integral():
-    data = json.loads(request.get_data().decode('utf-8'))
-    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    data = json.loads(request.get_data().decode('UTF-8'))
+    item = compstate.parse_item(data['item'])
     label = compstate.Label(data['selected_item'])
-    integrals = st.get_by_label(label).res.separate_integral()
+    subitem = item.get_by_label(label)
+    if isinstance(subitem, compstate.CalculationStep):
+        integrals = subitem.res.separate_integral()
+    elif isinstance(subitem, compstate.Calculation):
+        integrals = subitem.start.separate_integral()
+    else:
+        return jsonify({
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
+        })
+    
     res = []
     for e, loc in integrals:
         res.append({
