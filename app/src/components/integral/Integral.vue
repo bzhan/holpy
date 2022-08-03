@@ -77,6 +77,13 @@
               v-bind:data="'\\(' + item.latex_goal + '\\)'"
               style="cursor:pointer"/>
           </div>
+          <div v-if="'type' in item && item.type == 'Calculation'">
+            <div class="math-text">Calculate</div>
+            <MathEquation
+              v-on:click.native="initialize(index)"
+              v-bind:data="'\\(' + item.latex_start + '\\)'"
+              style="cursor:pointer"/>
+          </div>
         </div>
       </div>
     </div>
@@ -103,6 +110,9 @@
           @select_fact="selectFact"
           v-bind:selected_item="selected_item"
           v-bind:selected_facts="selected_facts"/>
+      </div>
+      <div v-if="'type' in content[cur_id] && content[cur_id].type == 'Calculation'">
+        <Calculation v-bind:item="content[cur_id]" v-bind:label="''"/>
       </div>
     </div>
     <div v-if="cur_items !== undefined" id="items">
@@ -365,6 +375,7 @@ import MathEquation from '../util/MathEquation'
 import FuncDef from './FuncDef'
 import ExprQuery from './ExprQuery'
 import Goal from "./Goal"
+import Calculation from "./Calculation"
 
 export default {
   name: 'Integral',
@@ -372,6 +383,7 @@ export default {
     MathEquation,
     FuncDef,
     Goal,
+    Calculation,
     ExprQuery,
   },
 

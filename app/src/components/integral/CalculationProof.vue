@@ -8,7 +8,7 @@
           :class="{selected: selected_item == label + '1.'}">
       <MathEquation v-bind:data="'\\(' + item.lhs_calc.latex_start + '\\)'"/>
     </span>
-    <Calculation v-bind:steps="item.lhs_calc.steps" v-bind:label="label + '1.'"
+    <Calculation v-bind:item="item.lhs_calc" v-bind:label="label + '1.'"
                  v-bind:selected_item="selected_item"
                  @select="(lbl) => $emit('select', lbl)"/>
     <span class="math-text">{{label}}2.</span>&nbsp;
@@ -17,7 +17,7 @@
           :class="{selected: selected_item == label + '2.'}">
       <MathEquation v-bind:data="'\\(' + item.rhs_calc.latex_start + '\\)'"/>
     </span>    
-    <Calculation v-bind:steps="item.rhs_calc.steps" v-bind:label="label + '2.'"
+    <Calculation v-bind:item="item.rhs_calc" v-bind:label="label + '2.'"
                  v-bind:selected_item="selected_item"
                  @select="(lbl) => $emit('select', lbl)"/>
   </div>
