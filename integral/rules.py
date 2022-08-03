@@ -492,18 +492,27 @@ class ApplyEquation(Rule):
 
     def __str__(self):
         s = ""
-        if self.subMap != None:
+        if self.subMap:
             first = True
             for a, b in self.subMap.items():
                 if first:
                     first = False
-                    s = s + " where " + str(a) + '=' + str(b)
+                    s = s + " where %s -> %s" % (a, b)
                 else:
-                    s = s + ', ' + str(a) + '=' + str(b)
+                    s = s + ', %s -> %s' % (a, b)
         return "apply equation: "+ str(self.eq) + s
 
     def latex_str(self):
-        return "apply equation \\(%s\\)" % latex.convert_expr(self.eq)
+        s = ""
+        if self.subMap:
+            first = True
+            for a, b in self.subMap.items():
+                if first:
+                    first = False
+                    s = s + " where \\(%s \\to %s\\)" % (a, latex.convert_expr(b))
+                else:
+                    s = s + ', \\(%s \\to %s\\)' % (a, latex.convert_expr(b))
+        return "apply equation \\(%s\\)" % latex.convert_expr(self.eq) + s
 
     def export(self):
         res = {
