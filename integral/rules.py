@@ -712,7 +712,7 @@ class ExpandPolynomial(Rule):
             res = base
             for i in range(n-1):
                 res = res * base
-            return expr.from_poly(base)
+            return expr.from_poly(res)
         elif e.is_times():
             s1, s2 = self.eval(e.args[0]), self.eval(e.args[1])
             return expr.from_poly(s1.to_poly() * s2.to_poly())
@@ -977,11 +977,15 @@ class SplitRegion(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:        
-        if e.ty != expr.INTEGRAL:
-            return e
+        if not e.is_integral():
+            sep_ints = e.separate_integral()
+            if len(sep_ints) == 0:
+                return e
+            else:
+                return OnLocation(self, sep_ints[0][1]).eval(e)
 
         if expr.sympy_style(e.upper) <= expr.sympy_style(self.c) or \
-        expr.sympy_style(e.lower) >= expr.sympy_style(self.c):
+           expr.sympy_style(e.lower) >= expr.sympy_style(self.c):
             raise AssertionError("Split region")
 
         return expr.Integral(e.var, e.lower, self.c, e.body) + expr.Integral(e.var, self.c, e.upper, e.body)

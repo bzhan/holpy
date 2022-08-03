@@ -722,6 +722,8 @@ class Expr:
                     norm_a = Const(x.val - n) * pi
                 else:
                     norm_a = Const(x.val - (n+1)) * pi if n > 0 else Const(x.val - (n-1)) * pi
+            elif norm_a == -pi:
+                norm_a = pi
             table = trig_table()[self.func_name]
             norm_a = norm_a.normalize_constant()
             if norm_a in table:
@@ -1590,9 +1592,7 @@ class Var(Expr):
         return hash((VAR, self.name))
 
     def __eq__(self, other):
-        if other == None:
-            return False
-        return other.ty == VAR and self.name == other.name
+        return isinstance(other, Var) and self.name == other.name
 
     def __str__(self):
         return self.name
@@ -1613,9 +1613,7 @@ class Const(Expr):
         return hash((CONST, self.val))
 
     def __eq__(self, other):
-        if other == None:
-            return False
-        return other.ty == CONST and self.val == other.val
+        return isinstance(other, Const) and self.val == other.val
 
     def __str__(self):
         return str(self.val)
@@ -1675,16 +1673,11 @@ class Fun(Expr):
         self.func_name = func_name
         self.args = tuple(args)
 
-
     def __hash__(self):
         return hash((FUN, self.func_name, self.args))
 
     def __eq__(self, other):
-        if other == None:
-            return False
-        if isinstance(other, (int, Fraction)):
-            other = Const(other)
-        return other.ty == FUN and self.func_name == other.func_name and self.args == other.args
+        return isinstance(other, Fun) and self.func_name == other.func_name and self.args == other.args
 
     def __str__(self):
         if len(self.args) > 0:
@@ -1779,9 +1772,7 @@ class Inf(Expr):
         return hash((INF, self.t))
 
     def __eq__(self, other):
-        if other == None:
-            return False
-        return other.ty == INF and self.t == other.t
+        return isinstance(other, Inf) and self.t == other.t
 
 class Differential(Expr):
     """Differential of an expression."""
@@ -1795,9 +1786,7 @@ class Differential(Expr):
         return hash((DIFFERENTIAL, self.body))
 
     def __eq__(self, other):
-        if other == None:
-            return False
-        return other.ty == DIFFERENTIAL and self.body == other.body
+        return isinstance(other, Differential) and self.body == other.body
 
     def __str__(self):
         return "DIFF. %s" % str(self.body)
@@ -1877,9 +1866,7 @@ class Deriv(Expr):
         return hash((DERIV, self.var, self.body))
 
     def __eq__(self, other):
-        if other == None:
-            return False
-        return other.ty == DERIV and self.var == other.var and self.body == other.body
+        return isinstance(other, Deriv) and self.var == other.var and self.body == other.body
 
     def __str__(self):
         return "D %s. %s" % (self.var, str(self.body))
@@ -1900,7 +1887,7 @@ class IndefiniteIntegral(Expr):
         return hash((INDEFINITEINTEGRAL, self.var, self.body))
 
     def __eq__(self, other):
-        return other.ty == INDEFINITEINTEGRAL and self.body == other.alpha_convert(self.var).body
+        return isinstance(other, IndefiniteIntegral) and self.body == other.alpha_convert(self.var).body
 
     def __str__(self):
         return "INT %s. %s" % (self.var, str(self.body))
@@ -1929,9 +1916,7 @@ class Integral(Expr):
         return hash((INTEGRAL, self.var, self.lower, self.upper, self.body))
 
     def __eq__(self, other):
-        if other == None:
-            return False;
-        return other.ty == INTEGRAL and self.lower == other.lower and self.upper == other.upper and \
+        return isinstance(other, Integral) and self.lower == other.lower and self.upper == other.upper and \
                self.body == other.alpha_convert(self.var).body
 
     def __str__(self):
@@ -1961,7 +1946,7 @@ class EvalAt(Expr):
         return hash((EVAL_AT, self.var, self.lower, self.upper, self.body))
 
     def __eq__(self, other):
-        return other.ty == EVAL_AT and self.var == other.var and \
+        return isinstance(other, EvalAt) and self.var == other.var and \
             self.lower == other.lower and self.upper == other.upper and self.body == other.body
 
     def __str__(self):
@@ -1980,9 +1965,7 @@ class Symbol(Expr):
         self.pat = tuple(ty)
 
     def __eq__(self, other):
-        if not isinstance(other, Symbol):
-            return False
-        return self.name == other.name and self.pat == other.pat
+        return isinstance(other, Symbol) and self.name == other.name and self.pat == other.pat
 
     def __hash__(self):
         return hash((SYMBOL, self.name, self.ty, sum(self.pat)))
