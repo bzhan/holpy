@@ -16,7 +16,7 @@
           <b-dropdown-item href="#" v-on:click='save'>Save</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Proof" left>
-          <b-dropdown-item href="#" v-on:click="restartProof">Restart</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="clearItem">Clear</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addFuncDef">Add definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addGoal">Add goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByCalculation">Proof by calculation</b-dropdown-item>
@@ -587,8 +587,15 @@ export default {
     },
 
     // Restart proof, delete all steps
-    restartProof: function() {
-      this.cur_items = []
+    clearItem: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/clear-item", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+      }
     },
 
     setCondQuery: function(index, value) {
@@ -645,14 +652,12 @@ export default {
     // Perform proof by calculation
     proofByCalculation: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item
       }
       const response = await axios.post("http://127.0.0.1:5000/api/proof-by-calculation", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
       }
     },

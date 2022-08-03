@@ -757,6 +757,17 @@ def integral_lhopital():
         "reason": "Eliminate infinity"
     })
 
+@app.route("/api/clear-item", methods=['POST'])
+def clear_item():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    st = compstate.parse_item(data['item'])
+    label = compstate.Label(data['selected_item'])
+    st.get_by_label(label).clear()
+    return jsonify({
+        "status": "ok",
+        "item": st.export(),
+    })
+
 @app.route("/api/query-expr", methods=['POST'])
 def query_expr():
     data = json.loads(request.get_data().decode('UTF-8'))
@@ -821,14 +832,21 @@ def add_goal():
 @app.route("/api/proof-by-calculation", methods=["POST"])
 def proof_by_calculation():
     data = json.loads(request.get_data().decode('UTF-8'))
-    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    item = compstate.parse_item(data['item'])
     label = compstate.Label(data['selected_item'])
-    st.get_by_label(label).proof_by_calculation()
-    return jsonify({
-        "status": "ok",
-        "state": st.export(),
-        "selected_item": str(compstate.Label(label.data + [0]))
-    })
+    subitem = item.get_by_label(label)
+    if isinstance(subitem, compstate.Goal):
+        subitem.proof_by_calculation()
+        return jsonify({
+            "status": "ok",
+            "item": item.export(),
+            "selected_item": str(compstate.Label(label.data + [0]))
+        })
+    else:
+        return jsonify({
+            "status": "error",
+            "msg": "Selected item is not a goal."
+        })
 
 @app.route("/api/proof-by-induction", methods=["POST"])
 def proof_by_induction():

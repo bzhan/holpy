@@ -19,6 +19,8 @@ class Label:
         if isinstance(data, str):
             split = data.split(".")
             for n in split:
+                if n == '':
+                    continue
                 assert int(n) >= 1, "Label: non-positive value"
                 self.data.append(int(n) - 1)
         elif isinstance(data, list):
