@@ -980,6 +980,7 @@ class Expr:
             if p.ty == INTEGRAL:
                 p.selected = True
                 loc = self.get_location()
+                del p.selected
                 result.append([p, loc])
             elif p.ty == OP:
                 for arg in p.args:

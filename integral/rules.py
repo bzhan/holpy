@@ -593,7 +593,11 @@ class Substitution(Rule):
 
         """
         if not e.is_integral():
-            return e
+            sep_ints = e.separate_integral()
+            if len(sep_ints) == 0:
+                return e
+            else:
+                return OnLocation(self, sep_ints[0][1]).eval(e)
 
         # Variable to be substituted in the integral
         var_name = parser.parse_expr(self.var_name)

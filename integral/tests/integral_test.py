@@ -63,7 +63,7 @@ class IntegralTest(unittest.TestCase):
         calc = file.add_calculation("INT x:[4, exp(1) + 3]. (x ^ 3 - 12 * x ^ 2 - 42) / (x - 3)")
         calc.perform_rule(rules.PolynomialDivision())
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.Substitution("u", parser.parse_expr("x - 3")), "1.1"))
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("x - 3")))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "-45 * exp(1) - 3/2 * exp(2) + 1/3 * exp(3) - 461/6")
 
@@ -76,14 +76,14 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.Equation(parser.parse_expr("sin(x) * sin(x)^2")), "0.0.0"))
         calc.perform_rule(rules.OnLocation(rules.RewriteTrigonometric("TR5"), "0.0.0.1"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution("u", parser.parse_expr("cos(x)")), "0.0"))
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("cos(x)")))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "pi - 4/3")
 
         calc = file.add_calculation("INT x:[pi/6, pi/2]. cos(x) ^ 2")
         calc.perform_rule(rules.OnLocation(rules.RewriteTrigonometric("TR7"), "0"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.Substitution("u", parser.parse_expr("2 * x")), "0.1"))
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("2 * x")))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "-1/8 * sqrt(3) + 1/6 * pi")
 
@@ -106,7 +106,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ElimAbs(), "1"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.RewriteTrigonometric("TR7"), "1.0"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution("v", parser.parse_expr("2 * u")), "1"))
+        calc.perform_rule(rules.Substitution("v", parser.parse_expr("2 * u")))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "1/2 * pi")
 
@@ -118,7 +118,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ElimAbs(), "1"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.RewriteTrigonometric("TR7"), "1.0"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution("v", parser.parse_expr("2 * u")), "1"))
+        calc.perform_rule(rules.Substitution("v", parser.parse_expr("2 * u")))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "sqrt(2) * pi + 2 * sqrt(2)")
 
