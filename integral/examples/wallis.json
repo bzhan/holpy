@@ -55,16 +55,6 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} (-m - 1) (x ^ {2} + b) ^ {-m - 2} \\,dx",
-                            "res": "INT x:[0,oo]. (-m - 1) * (x ^ 2 + b) ^ (-m - 2)",
-                            "rule": {
-                                "loc": "0",
-                                "name": "DerivativeSimplify",
-                                "str": "simplify derivative at 0"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "(-m - 1) (\\int_{0}^{\\infty} (x ^ {2} + b) ^ {-m - 2} \\,dx)",
                             "res": "(-m - 1) * (INT x:[0,oo]. (x ^ 2 + b) ^ (-m - 2))",
                             "rule": {
@@ -164,10 +154,9 @@
                                     "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} ((\\sqrt{b} u) ^ {2} + b) ^ {-1} \\sqrt{b} \\,du",
                                     "res": "LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. ((sqrt(b) * u) ^ 2 + b) ^ -1 * sqrt(b)",
                                     "rule": {
-                                        "latex_str": "substitute \\(x\\) for \\(\\sqrt{b} u\\) at 0",
-                                        "loc": "0",
+                                        "latex_str": "substitute \\(x\\) for \\(\\sqrt{b} u\\)",
                                         "name": "SubstitutionInverse",
-                                        "str": "substitute x for sqrt(b) * u at 0",
+                                        "str": "substitute x for sqrt(b) * u",
                                         "var_name": "u",
                                         "var_subst": "sqrt(b) * u"
                                     },

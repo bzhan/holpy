@@ -21,11 +21,13 @@ class Conditions:
         self.data[name] = cond
         self.is_assume[name] = isAssume
 
-
     def __copy__(self):
         res = Conditions()
         res.data = copy(self.data)
         return res
+
+    def __eq__(self, other):
+        return isinstance(other, Conditions) and self.data == other.data
 
     def export(self):
         res = list()

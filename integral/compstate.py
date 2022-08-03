@@ -1,6 +1,5 @@
 """State of computation"""
 
-from ast import Assert
 from copy import copy
 from msilib.schema import Condition
 from typing import Optional, Tuple, Union
@@ -57,6 +56,10 @@ class StateItem:
         """Return the list of facts in this item."""
         return []
 
+    def clear(self):
+        """Clear itself."""
+        pass
+
 
 class FuncDef(StateItem):
     """Introduce a new function definition."""
@@ -80,6 +83,9 @@ class FuncDef(StateItem):
         res = "Definition\n"
         res += "  %s\n" % self.eq
         return res
+
+    def __eq__(self, other):
+        return isinstance(other, FuncDef) and self.eq == other.eq and self.conds == other.conds
 
     def export(self):
         res = {
@@ -120,8 +126,15 @@ class Goal(StateItem):
         res += str(self.proof)
         return res
 
+    def __eq__(self, other):
+        return isinstance(other, Goal) and self.goal == other.goal and self.conds == other.conds and \
+            self.proof == other.proof
+
     def is_finished(self):
         return self.proof is not None and self.proof.is_finished()
+
+    def clear(self):
+        self.proof = None
 
     def export(self):
         res = {
@@ -167,6 +180,9 @@ class CalculationStep(StateItem):
     def __str__(self):
         return "%s (%s)" % (self.res, self.rule)
 
+    def __eq__(self, other):
+        return isinstance(other, CalculationStep) and self.rule == other.rule and self.res == other.res
+
     def export(self):
         return {
             "type": "CalculationStep",
@@ -174,6 +190,9 @@ class CalculationStep(StateItem):
             "res": str(self.res),
             "latex_res": latex.convert_expr(self.res)
         }
+
+    def clear(self):
+        self.parent.clear(id=self.id)
 
     def perform_rule(self, rule: Rule):
         self.parent.perform_rule(rule, id=self.id)
@@ -207,6 +226,9 @@ class Calculation(StateItem):
             "latex_start": latex.convert_expr(self.start),
             "steps": [step.export() for step in self.steps]
         }
+
+    def clear(self, id: int = 0):
+        self.steps = self.steps[:id]
 
     def add_step(self, step: CalculationStep):
         """Add the given step to the computation."""
@@ -285,6 +307,10 @@ class CalculationProof(StateItem):
             "finished": self.is_finished()
         }
 
+    def clear(self):
+        self.lhs_calc.clear()
+        self.rhs_calc.clear()
+
     def get_by_label(self, label: Label):
         if label.empty():
             return self
@@ -303,7 +329,8 @@ class InductionProof(StateItem):
     base case and inductive case.
 
     """
-    def __init__(self, goal: Expr, induct_var: str, *, conds: Optional[Conditions] = None, start = Const(0)):
+    def __init__(self, goal: Expr, induct_var: str, *, conds: Optional[Conditions] = None,
+                 start: Union[int, Expr] = 0):
         if not goal.is_equals():
             print(str(goal))
             raise AssertionError("InductionProof: currently only support equation goals.")
@@ -313,7 +340,14 @@ class InductionProof(StateItem):
         if conds is None:
             conds = Conditions()
         self.conds = conds
-        self.start = Const(start)
+
+        if isinstance(start, int):
+            self.start = Const(start)
+        elif isinstance(start, Expr):
+            self.start = start
+        else:
+            raise NotImplementedError
+
         # Base case: n = 0
         eq0 = goal.subst(induct_var, self.start).normalize()
         self.base_case = Goal(eq0, conds=self.conds)
@@ -348,6 +382,10 @@ class InductionProof(StateItem):
             "induct_case": self.induct_case.export(),
             "finished": self.is_finished()
         }
+
+    def clear(self):
+        self.base_case.clear()
+        self.induct_case.clear()
 
     def get_by_label(self, label: Label):
         if label.empty():
@@ -479,11 +517,43 @@ def parse_rule(item) -> Rule:
         if 'a' in item:
             a = parser.parse_expr(item['a'])
         return rules.ElimInfInterval(a)
+    elif item['name'] == 'Substitution':
+        var_name = item['var_name']
+        var_subst = parser.parse_expr(item['var_subst'])
+        return rules.Substitution(var_name, var_subst)
     elif item['name'] == 'SubstitutionInverse':
         var_name = item['var_name']
         var_subst = parser.parse_expr(item['var_subst'])
         return rules.SubstitutionInverse(var_name, var_subst)
+    elif item['name'] == 'IntegrationByParts':
+        u = parser.parse_expr(item['u'])
+        v = parser.parse_expr(item['v'])
+        return rules.IntegrationByParts(u, v)
+    elif item['name'] == 'Equation':
+        new_expr = parser.parse_expr(item['new_expr'])
+        return rules.Equation(new_expr)
+    elif item['name'] == 'ApplyEquation':
+        eq = parser.parse_expr(item['eq'])
+        return rules.ApplyEquation(eq)
+    elif item['name'] == 'ExpandPolynomial':
+        return rules.ExpandPolynomial()
+    elif item['name'] == 'PolynomialDivision':
+        return rules.PolynomialDivision()
+    elif item['name'] == 'RewriteTrigonometric':
+        rule_name = item['rule_name']
+        return rules.RewriteTrigonometric(rule_name)
+    elif item['name'] == 'ElimAbs':
+        return rules.ElimAbs()
+    elif item['name'] == 'SplitRegion':
+        c = parser.parse_expr(item['c'])
+        return rules.SplitRegion(c)
+    elif item['name'] == 'IntegrateByEquation':
+        lhs = parser.parse_expr(item['lhs'])
+        return rules.IntegrateByEquation(lhs)
+    elif item['name'] == 'RewriteBinom':
+        return rules.RewriteBinom()
     else:
+        print(item['name'])
         raise NotImplementedError
 
 def parse_step(item, parent: Calculation, id: int) -> CalculationStep:

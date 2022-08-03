@@ -280,6 +280,11 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "-2 * exp(-1) + 2")
 
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
         with open('integral/examples/tongji7.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 

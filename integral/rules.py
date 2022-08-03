@@ -671,6 +671,13 @@ class SubstitutionInverse(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
+        if not e.is_integral():
+            sep_ints = e.separate_integral()
+            if len(sep_ints) == 0:
+                return e
+            else:
+                return OnLocation(self, sep_ints[0][1]).eval(e)
+
         # dx = f'(u) * du
         subst_deriv = expr.deriv(self.var_name, self.var_subst)
 

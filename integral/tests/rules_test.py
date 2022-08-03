@@ -734,7 +734,6 @@ class RulesTest(unittest.TestCase):
         calc = proof.lhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), "0"))
         calc.perform_rule(rules.DerivIntExchange())
-        calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), "0"))
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
@@ -752,7 +751,7 @@ class RulesTest(unittest.TestCase):
         calc = proof_base.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(Idef.eq))
         calc.perform_rule(rules.ElimInfInterval())
-        calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse("u", parser.parse_expr("sqrt(b) * u")), "0"))
+        calc.perform_rule(rules.SubstitutionInverse("u", parser.parse_expr("sqrt(b) * u")))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1")), "1.0.0"))
         calc.perform_rule(rules.FullSimplify())
@@ -768,7 +767,11 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
         calc.perform_rule(rules.FullSimplify())
 
-        print(file)
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
         with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
