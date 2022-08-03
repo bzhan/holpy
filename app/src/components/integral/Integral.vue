@@ -112,7 +112,9 @@
           v-bind:selected_facts="selected_facts"/>
       </div>
       <div v-if="'type' in content[cur_id] && content[cur_id].type == 'Calculation'">
-        <Calculation v-bind:item="content[cur_id]" v-bind:label="''"/>
+        <Calculation v-bind:item="content[cur_id]" v-bind:label="''"
+          @select="selectItem"
+          v-bind:selected_item="selected_item"/>
       </div>
     </div>
     <div v-if="cur_items !== undefined" id="items">
@@ -670,15 +672,13 @@ export default {
     // Perform proof by induction
     doApplyInduction: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item,
         induct_var: this.induct_var
       }
       const response = await axios.post("http://127.0.0.1:5000/api/proof-by-induction", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
       }
     },
@@ -702,9 +702,7 @@ export default {
 
     exchangeDerivIntegral: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item,
         rule: {
           name: 'DerivIntExchange'
@@ -712,16 +710,14 @@ export default {
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
       }
     },
 
     simplifyStep: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item,
         rule: {
           name: 'FullSimplify'
@@ -729,16 +725,14 @@ export default {
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
       }
     },
 
     improperToLimit: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item,
         rule: {
           name: 'ElimInfInterval'
@@ -746,7 +740,7 @@ export default {
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
       }
     },

@@ -445,15 +445,6 @@ class CompState:
         else:
             return self.items[label.head].get_by_label(label.tail)
 
-    def next_step_label(self, label: Label) -> Label:
-        step = self.get_by_label(label)
-        if isinstance(step, Calculation):
-            return Label(label.data + [0])
-        elif isinstance(step, CalculationStep):
-            return Label(label.data[:-1] + [label.data[-1] + 1])
-        else:
-            raise NotImplementedError
-
 
 class CompFile:
     """Represent a file containing multiple CompState objects."""
@@ -622,3 +613,11 @@ def parse_state(name: str, problem: str, items) -> CompState:
     for item in items:
         st.add_item(parse_item(item))
     return st
+
+def get_next_step_label(step: Union[Calculation, CalculationStep], label: Label) -> Label:
+    if isinstance(step, Calculation):
+        return Label(label.data + [0])
+    elif isinstance(step, CalculationStep):
+        return Label(label.data[:-1] + [label.data[-1] + 1])
+    else:
+        raise NotImplementedError

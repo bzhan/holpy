@@ -884,12 +884,19 @@ def expand_definition():
 @app.route("/api/perform-step", methods=["POST"])
 def integral_perform_step():
     data = json.loads(request.get_data().decode('UTF-8'))
-    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    item = compstate.parse_item(data['item'])
     label = compstate.Label(data['selected_item'])
     rule = compstate.parse_rule(data['rule'])
-    st.get_by_label(label).perform_rule(rule)
-    return jsonify({
-        "status": "ok",
-        "state": st.export(),
-        "selected_item": str(st.next_step_label(label))
-    })
+    subitem = item.get_by_label(label)
+    if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
+        subitem.perform_rule(rule)
+        return jsonify({
+            "status": "ok",
+            "item": item.export(),
+            "selected_item": str(compstate.get_next_step_label(subitem, label))
+        })
+    else:
+        return jsonify({
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
+        })
