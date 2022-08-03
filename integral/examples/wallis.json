@@ -174,42 +174,22 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\sqrt{b} (\\int_{0}^{b ^ {-1/2} t} (b u ^ {2} + b) ^ {-1} \\,du)\\,)",
-                                    "res": "LIM {t -> oo}. sqrt(b) * (INT u:[0,b ^ (-1/2) * t]. (b * u ^ 2 + b) ^ -1)",
+                                    "latex_res": "\\sqrt{b} (\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} (b u ^ {2} + b) ^ {-1} \\,du)",
+                                    "res": "sqrt(b) * (LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. (b * u ^ 2 + b) ^ -1)",
                                     "rule": {
-                                        "loc": "0",
                                         "name": "FullSimplify",
-                                        "str": "full simplify at 0"
+                                        "str": "full simplify"
                                     },
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\sqrt{b} (\\int_{0}^{b ^ {-1/2} t} b ^ {-1} (1 + u ^ {2}) ^ {-1} \\,du)\\,)",
-                                    "res": "LIM {t -> oo}. sqrt(b) * (INT u:[0,b ^ (-1/2) * t]. b ^ -1 * (1 + u ^ 2) ^ -1)",
+                                    "latex_res": "\\sqrt{b} (\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} b ^ {-1} (1 + u ^ {2}) ^ {-1} \\,du)",
+                                    "res": "sqrt(b) * (LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. b ^ -1 * (1 + u ^ 2) ^ -1)",
                                     "rule": {
-                                        "loc": "0.1.0",
+                                        "loc": "1.0.0",
                                         "name": "Equation",
                                         "new_expr": "b ^ -1 * (1 + u ^ 2) ^ -1",
-                                        "str": "rewriting at 0.1.0"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,b ^ {-1/2} \\arctan{(b ^ {-1/2} t)}\\,)",
-                                    "res": "LIM {t -> oo}. b ^ (-1/2) * atan(b ^ (-1/2) * t)",
-                                    "rule": {
-                                        "loc": "0",
-                                        "name": "FullSimplify",
-                                        "str": "full simplify at 0"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "b ^ {-1/2} (\\frac{1}{2} \\pi)",
-                                    "res": "b ^ (-1/2) * (1/2 * pi)",
-                                    "rule": {
-                                        "name": "LimitSimplify",
-                                        "str": "simplify limits"
+                                        "str": "rewriting at 1.0.0"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -262,6 +242,7 @@
                                     "res": "1 / -(m + 1) * (D b. I(m,b))",
                                     "rule": {
                                         "eq": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
+                                        "latex_str": "apply equation \\(\\frac{d}{db} I(m,b) = -(m + 1) I(m + 1,b)\\)",
                                         "name": "ApplyEquation",
                                         "str": "apply equation: (D b. I(m,b)) = -(m + 1) * I(m + 1,b)"
                                     },
@@ -272,6 +253,7 @@
                                     "res": "1 / -(m + 1) * (D b. pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2)))",
                                     "rule": {
                                         "eq": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
+                                        "latex_str": "apply equation \\(I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})\\) at 1.0",
                                         "loc": "1.0",
                                         "name": "ApplyEquation",
                                         "str": "apply equation: I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2)) at 1.0"
@@ -295,8 +277,8 @@
                             "start": "pi * b ^ (-1/2 * (2 * m + 3)) * 2 ^ (-2 * m - 3) * binom(2 * m + 2,m + 1)",
                             "steps": [
                                 {
-                                    "latex_res": "\\pi b ^ {-1/2 (2 m + 3)} 2 ^ {-2 m - 3} (\\frac{\\binom{2 m}{m} 2 (2 m + 1)}{m + 1})",
-                                    "res": "pi * b ^ (-1/2 * (2 * m + 3)) * 2 ^ (-2 * m - 3) * (binom(2 * m,m) * 2 * (2 * m + 1) / (m + 1))",
+                                    "latex_res": "\\pi b ^ {-1/2 (2 m + 3)} 2 ^ {-2 m - 3} (2 \\binom{2 m}{m} (\\frac{2 m + 1}{m + 1}))",
+                                    "res": "pi * b ^ (-1/2 * (2 * m + 3)) * 2 ^ (-2 * m - 3) * (2 * binom(2 * m,m) * ((2 * m + 1) / (m + 1)))",
                                     "rule": {
                                         "loc": "1",
                                         "name": "RewriteBinom",

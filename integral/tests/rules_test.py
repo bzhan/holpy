@@ -718,9 +718,6 @@ class RulesTest(unittest.TestCase):
     def testWallis(self):
         file = compstate.CompFile('Wallis')
 
-        # Overall goal
-        goal = parser.parse_expr("(INT x:[0,oo]. 1/(x^2+1)^(m+1)) = pi/(2^(2*m+1))*binom(2*m,m)")
-
         # Condition b > 0
         conds = conditions.Conditions()
         conds.add_condition("b", parser.parse_expr("b > 0"))
@@ -756,10 +753,8 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.ExpandDefinition(Idef.eq))
         calc.perform_rule(rules.ElimInfInterval())
         calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse("u", parser.parse_expr("sqrt(b) * u")), "0"))
-        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
-        calc.perform_rule(rules.OnLocation(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1")), "0.1.0"))
-        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0"))
-        calc.perform_rule(rules.LimitSimplify())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1")), "1.0.0"))
         calc.perform_rule(rules.FullSimplify())
 
         # Induction case, LHS

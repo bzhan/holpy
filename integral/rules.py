@@ -498,11 +498,15 @@ class ApplyEquation(Rule):
                     s = s + ', ' + str(a) + '=' + str(b)
         return "apply equation: "+ str(self.eq) + s
 
+    def latex_str(self):
+        return "apply equation \\(%s\\)" % latex.convert_expr(self.eq)
+
     def export(self):
         return {
             "name": self.name,
             "eq": str(self.eq),
-            "str": str(self)
+            "str": str(self),
+            "latex_str": self.latex_str()
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
@@ -801,7 +805,7 @@ class RewriteBinom(Rule):
                 m.args[0] == 2 * n.args[0]:
             # Case binom(2*k+2, k+1) = binom(2*k, k) * 2 * (2*k+1) / (k+1)
             k = n.args[0]
-            return expr.binom(2*k, k) * 2 * (2*k+1) / (k+1)
+            return 2 * expr.binom(2*k, k) * ((2*k+1) / (k+1))
         else:
             return e
 

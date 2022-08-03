@@ -474,11 +474,9 @@ def limit_power(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit
             return Limit(POS_INF, asymp=exp_asymp(b.asymp))
         elif b.e == NEG_INF:
             return Limit(Const(0), asymp=exp_asymp(b.asymp), side=FROM_ABOVE)
-        elif is_positive(b.e, conds):
+        else:
             # TODO: try to figure out asymp and side in more cases
             return Limit((a.e ^ b.e).normalize())
-        else:
-            return Limit(None)
     elif is_negative(a.e, conds):
         # Base is negative
         if b.e.is_const() and b.e.val > 0 and b.side == AT_CONST:
@@ -556,6 +554,16 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
     elif e.is_fun() and e.func_name == 'exp':
         l = limit_of_expr(e.args[0], var_name, conds=conds)
         return limit_power(Limit(expr.E, side=AT_CONST), l)
+    elif e.is_fun() and e.func_name == 'atan':
+        l = limit_of_expr(e.args[0], var_name, conds=conds)
+        if l.e is None:
+            return Limit(None)
+        elif l.e == POS_INF:
+            return Limit(expr.pi/2, side=FROM_BELOW)
+        elif l.e == NEG_INF:
+            return Limit(-expr.pi/2, side=FROM_ABOVE)
+        else:
+            return Limit(expr.Fun('atan', l.e))
     else:
         # TODO: add support for other functions
         return Limit(None)

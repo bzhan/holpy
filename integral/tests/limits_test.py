@@ -220,6 +220,7 @@ class LimitsTest(unittest.TestCase):
             ("-exp(x) / (x ^ 2)", "-oo"),
             ("exp(-x) * (x ^ 2)", "0"),
             ("(x + 1) / x", None),
+            ("atan(x)", "pi/2"),
         ]
 
         for a, res in test_data:
@@ -237,6 +238,9 @@ class LimitsTest(unittest.TestCase):
             ("exp(-x) * (x ^ n)", "0", "n > 0"),
             ("exp(x) * (x ^ n)", "oo", "n < 0"),
             ("exp(-x) / (x ^ n)", "0", "n < 0"),
+            ("atan(b * x)", "pi/2", "b > 0"),
+            ("atan(-b * x)", "-pi/2", "b > 0"),
+            ("atan(b ^ (-1/2) * x)", "pi/2", "b > 0"),
         ]
 
         for a, res, cond in test_data:
@@ -252,8 +256,8 @@ class LimitsTest(unittest.TestCase):
 
     def testReduceLimit(self):
         test_data = [
-            ("1 / x + (x + 1) / x", "LIM {x -> oo}. 1 + x ^ -1"),
-            ("n * ((x + 1) / x)", "n * LIM {x -> oo}. 1 + x ^ -1"),
+            ("1 / x + (x + 1) / x", "LIM {x -> oo}. x ^ -1 * (x + 1)"),
+            ("n * ((x + 1) / x)", "n * LIM {x -> oo}. x ^ -1 * (x + 1)"),
         ]
 
         for a, res in test_data:
