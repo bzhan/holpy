@@ -1,6 +1,7 @@
 """Overall test for integrals."""
 
 import unittest
+import json
 
 from logic import basic
 from integral import compstate
@@ -241,7 +242,46 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "1/4 * pi - 1/2")
 
-        print(file)
+        calc = file.add_calculation(parser.parse_expr("INT x:[0, pi/2]. exp(2*x)*cos(x)"))
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("exp(2*x)"), parser.parse_expr("sin(x)")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("exp(2*x)"), parser.parse_expr("-cos(x)")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0, pi/2]. exp(2*x)*cos(x)")))
+        self.assertEqual(str(calc.last_expr), "1/5 * exp(pi) - 2/5")
+
+        calc = file.add_calculation(parser.parse_expr("INT x:[0,pi]. (x * sin(x))^2"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.RewriteTrigonometric("TR8"), "0.1"))
+        calc.perform_rule(rules.ExpandPolynomial())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("x^2/2"), parser.parse_expr("sin(2*x)")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("x/2"), parser.parse_expr("-cos(2*x)")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("2 * x")))
+        calc.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(calc.last_expr), "1/6 * pi ^ 3 - 1/4 * pi")
+
+        calc = file.add_calculation(parser.parse_expr("INT x:[1, exp(1)]. sin(log(x))"))
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("log(x)")))
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("-exp(u)"), parser.parse_expr("cos(u)")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("exp(u)"), parser.parse_expr("sin(u)")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT u:[0,1]. exp(u) * sin(u)")))
+        self.assertEqual(str(calc.last_expr), "-1/2 * cos(1) * exp(1) + 1/2 * exp(1) * sin(1) + 1/2")
+
+        calc = file.add_calculation("INT x:[1/exp(1), exp(1)]. abs(log(x))")
+        calc.perform_rule(rules.ElimAbs())
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("log(x)"), parser.parse_expr("x")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("log(x)"), parser.parse_expr("x")))
+        calc.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(calc.last_expr), "-2 * exp(-1) + 2")
+
+        with open('integral/examples/tongji7.json', 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
 
 if __name__ == "__main__":

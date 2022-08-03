@@ -830,8 +830,12 @@ class IntegrationByParts(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if e.ty != expr.INTEGRAL:
-            return e
+        if not e.is_integral():
+            sep_ints = e.separate_integral()
+            if len(sep_ints) == 0:
+                return e
+            else:
+                return OnLocation(self, sep_ints[0][1]).eval(e)
 
         e.body = e.body.normalize()
         du = expr.deriv(e.var, self.u)
@@ -994,6 +998,7 @@ class SplitRegion(Rule):
 class IntegrateByEquation(Rule):
     """When the initial integral occurs in the steps."""
     def __init__(self, lhs: Expr):
+        self.name = "IntegrateByEquation"
         assert isinstance(lhs, Integral)
         self.lhs = lhs.normalize()
         self.coeff = None
