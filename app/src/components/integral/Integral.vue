@@ -16,7 +16,7 @@
           <b-dropdown-item href="#" v-on:click='save'>Save</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Proof" left>
-          <b-dropdown-item href="#" v-on:click="restartProof">Restart</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="clearItem">Clear</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addFuncDef">Add definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addGoal">Add goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByCalculation">Proof by calculation</b-dropdown-item>
@@ -25,14 +25,12 @@
           <b-dropdown-item href="#" v-on:click="exchangeDerivIntegral">Exchange deriv and integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="simplifyStep">Simplify</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="improperToLimit">Improper integral to limit</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="forwardSubstitution">Forward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='superSimplify'>Simplification</b-dropdown-item>          
-          <b-dropdown-item href="#" v-on:click='substitution'>Forward Substitution</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='substitution1'>Backward Substitution</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='integrateByParts'>Integration by parts</b-dropdown-item>          
           <b-dropdown-item href="#" v-on:click='polynomialDivision'>Rewrite fraction</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Identities</b-dropdown-item>
@@ -112,7 +110,9 @@
           v-bind:selected_facts="selected_facts"/>
       </div>
       <div v-if="'type' in content[cur_id] && content[cur_id].type == 'Calculation'">
-        <Calculation v-bind:item="content[cur_id]" v-bind:label="''"/>
+        <Calculation v-bind:item="content[cur_id]" v-bind:label="''"
+          @select="selectItem"
+          v-bind:selected_item="selected_item"/>
       </div>
     </div>
     <div v-if="cur_items !== undefined" id="items">
@@ -138,43 +138,6 @@
       </div>
     </div>
     <div id="dialog">
-      <div v-if="r_query_mode === 'substitution'">
-        <div>
-          <span>The initial text is {{sep_int[integral_index].text}}</span>
-        </div>
-        <div>
-          <label>Substitute</label>
-          <input v-model="subst_data.var_name" style="margin:0px 5px;width:50px">
-          <label>for</label>
-          <input v-model="subst_data.expr" style="margin:0px 5px;width:200px">
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="doSubstitution">OK</button>
-        </div>
-        <div>
-          <p v-if="seen === true" style="color:red">{{this.error_message}}</p>
-        </div>
-      </div>
-      <div v-if="r_query_mode === 'substitution1'">
-        <div>
-          <span>The initial text is {{sep_int[integral_index].text}}</span>
-        </div>
-        <div>
-          <label>The variable name: </label>
-          <input v-model="subst_data.var_name" style="margin:0px 5px;width:200px">
-          <label>The expression: </label>
-          <input v-model="subst_data.expr" style="margin:0px 5px;width:200px">
-        </div>
-        <div>
-          <p v-if="seen === true" style="color:red">{{this.error_message}}</p>
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="doSubstitution1">OK</button>
-        </div>
-        <div>
-          <p v-if="seen === true" style="color:red">{{this.error_message}}</p>
-        </div>
-      </div>
       <div v-if="r_query_mode === 'unfoldpower'">
         <lable>Select the power expression you want to unfold.</lable>
         <br>
@@ -196,25 +159,6 @@
             v-on:click.native="transform(step)"
             v-bind:data="'\\(' + step.latex + '\\)'"
             style="cursor:pointer"/>
-        </div>
-      </div>
-      <div v-if="r_query_mode === 'byparts'">
-        <div>
-          <MathEquation data="Choose \(u\) and \(v\) such that \(u\cdot\mathrm{d}v\) is the integrand."/>
-          <br/>
-          <span>{{sep_int[integral_index].text}}</span>
-        </div>
-        <div>
-          <MathEquation data="u ="/>
-          <input v-model="byparts_data.parts_u" style="margin:0px 5px;width:100px">
-          <MathEquation data="v ="/>
-          <input v-model="byparts_data.parts_v" style="margin:0px 5px;width:100px">
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="doIntegrateByParts">OK</button>
-        </div>
-        <div>
-          <p v-if="seen === true" style="color:red">{{this.error_message}}</p>
         </div>
       </div>
       <div v-if="r_query_mode === 'eqsubst'">
@@ -286,6 +230,29 @@
         <span class="math-text">Please specify induction variable</span><br/>
         <input v-model="induct_var">
         <button v-on:click="doApplyInduction">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'integrate by parts'">
+        <span class="math-text">Integrate by parts on: </span>
+        <MathEquation v-bind:data="'\\(' + sep_int[0].latex_body + '\\)'"/><br/>
+        <MathEquation data="Choose \(u\) and \(v\) such that \(u\cdot\mathrm{d}v\) is the integrand."/>
+        <div>
+          <MathEquation data="\(u=\)"/>
+          <ExprQuery v-model="expr_query1"/>
+        </div>
+        <div>
+          <MathEquation data="\(v=\)"/>
+          <ExprQuery v-model="expr_query2"/><br/>
+        </div>
+        <button v-on:click="doIntegrateByParts">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'forward substitution'">
+        <span class="math-text">Substitution on: </span>
+        <MathEquation v-bind:data="'\\(' + sep_int[0].latex_body + '\\)'"/><br/>
+        <span class="math-text">Substitute </span>
+        <input v-model="subst_var"><br/>
+        <span class="math-text"> for</span><br/>
+        <ExprQuery v-model="expr_query1"/><br/>
+        <button v-on:click="doForwardSubstitution">OK</button>
       </div>
       <div v-if="r_query_mode === 'backward substitution'">
         <span class="math-text">Backward substitution on: </span>
@@ -448,10 +415,17 @@ export default {
       // Selected goal
       selected_item: undefined,
 
+      // Query for expressions
       expr_query1: undefined,
+      expr_query2: undefined,
+
+      // Query for conditions
       cond_query: [],
 
-      // Induction variable
+      // Query for substitution variable
+      subst_var: undefined,
+
+      // Query for induction variable
       induct_var: undefined,
 
       // Selected fact
@@ -587,8 +561,15 @@ export default {
     },
 
     // Restart proof, delete all steps
-    restartProof: function() {
-      this.cur_items = []
+    clearItem: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/clear-item", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+      }
     },
 
     setCondQuery: function(index, value) {
@@ -645,14 +626,12 @@ export default {
     // Perform proof by calculation
     proofByCalculation: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item
       }
       const response = await axios.post("http://127.0.0.1:5000/api/proof-by-calculation", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
       }
     },
@@ -665,15 +644,13 @@ export default {
     // Perform proof by induction
     doApplyInduction: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item,
         induct_var: this.induct_var
       }
       const response = await axios.post("http://127.0.0.1:5000/api/proof-by-induction", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
       }
     },
@@ -697,9 +674,7 @@ export default {
 
     exchangeDerivIntegral: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item,
         rule: {
           name: 'DerivIntExchange'
@@ -707,16 +682,14 @@ export default {
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
       }
     },
 
     simplifyStep: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item,
         rule: {
           name: 'FullSimplify'
@@ -724,16 +697,14 @@ export default {
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
       }
     },
 
     improperToLimit: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item,
         rule: {
           name: 'ElimInfInterval'
@@ -741,16 +712,74 @@ export default {
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
+      }
+    },
+
+    integrateByParts: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-integral", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.sep_int = response.data.integrals
+        this.r_query_mode = 'integrate by parts'
+      }
+    },
+
+    doIntegrateByParts: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: "IntegrationByParts",
+          u: this.expr_query1,
+          v: this.expr_query2
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    forwardSubstitution: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-integral", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.sep_int = response.data.integrals
+        this.r_query_mode = 'forward substitution'
+      }
+    },
+
+    doForwardSubstitution: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: 'Substitution',
+          var_name: this.subst_var,
+          var_subst: this.expr_query1
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
       }
     },
 
     backwardSubstitution: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item,
       }
       const response = await axios.post("http://127.0.0.1:5000/api/query-integral", JSON.stringify(data))
@@ -762,20 +791,17 @@ export default {
     
     doBackwardSubstitution: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
         selected_item: this.selected_item,
         rule: {
           name: 'SubstitutionInverse',
           var_name: this.subst_var,
-          var_subst: this.expr_query1,
-          loc: this.sep_int[0].loc
+          var_subst: this.expr_query1
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
         this.r_query_mode = undefined
       }
@@ -908,20 +934,6 @@ export default {
       this.cur_calc.push(response.data);
     },
 
-    superSimplify: async function (){
-      this.clear_separate_integral();
-      if (this.cur_calc.length === 0){
-        return;
-      }
-      const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text
-      };
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-super-simplify", JSON.stringify(data));
-      //this.cur_calc.push(response.data);
-
-      this.cur_calc.push(response.data)
-    },
-
     slagle: async function(){
       this.clear_separate_integral();
       if (this.cur_calc.length === 0){
@@ -957,7 +969,6 @@ export default {
       this.take_effect = 1;
       this.closeIntegral();
       this.query_mode = undefined;
-      // this.superSimplify();
     },
 
     closeIntegral: async function(){
@@ -1074,72 +1085,6 @@ export default {
       this.trig_identities_data.old_expr = ''
       this.trig_identities_data.new_expr = []
     },
-
-    substitution: function () {
-      if (this.cur_calc.length === 0)
-        return;
-      this.sep_int = []
-      this.query_mode = 'substitution'
-      this.show_proof_mode = undefined
-      this.displaySeparateIntegrals()
-    },
-
-    doSubstitution: async function () {
-      const data = {
-        problem: this.sep_int[this.integral_index].text,
-        location: this.sep_int[this.integral_index].location,
-        var_name: this.subst_data.var_name,
-        expr: this.subst_data.expr
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-substitution", JSON.stringify(data))
-      if (response.data.flag === true){
-        this.sep_int[this.integral_index] = response.data.log;
-        this.r_query_mode = undefined;
-        this.subst_data = {var_name: '', expr: ''};
-        this.take_effect = 1;
-        this.process_index = this.integral_index;
-        this.closeIntegral();
-        this.integral_index = undefined;
-      }
-      else{
-        this.seen = true;
-        this.error_message = response.data.reason;
-      }
-      
-    },
-
-    substitution1: function () {
-      if (this.cur_calc.length === 0)
-        return;
-      this.sep_int = [];
-      this.query_mode = 'substitution1'
-      this.show_proof_mode = undefined
-      this.subst_data = {var_name: '', expr: ''};
-      this.displaySeparateIntegrals()
-    },
-
-    doSubstitution1: async function () {
-      const data = {
-        problem: this.sep_int[this.integral_index].text,
-        location: this.sep_int[this.integral_index].location,
-        var_name: this.subst_data.var_name,
-        expr: this.subst_data.expr
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-substitution2", JSON.stringify(data))
-      if(response.data.flag === true){
-        this.sep_int[this.integral_index] = response.data.log;
-        this.r_query_mode = undefined;
-        this.subst_data = {var_name: '', expr: ''};
-        this.take_effect = 1;
-        this.process_index = this.integral_index;
-        this.closeIntegral();
-        this.integral_index = undefined;
-      }
-      else{
-        this.seen = true;
-        this.error_message = response.data.reason;
-      }
-    },
     
     split: function(){
       if(this.cur_calc.length == 0)
@@ -1176,39 +1121,6 @@ export default {
       this.query_mode = 'unfoldpower'
       this.show_proof_mode = undefined
       this.displaySeparateIntegrals()
-    },
-
-    integrateByParts: function () {
-      if (this.cur_calc.length === 0)
-        return;
-      this.sep_int = []
-      this.query_mode = 'byparts'
-      this.show_proof_mode = undefined
-      this.displaySeparateIntegrals()
-    },
-
-    doIntegrateByParts: async function () {
-      const data = {
-        //problem: this.cur_calc[this.cur_calc.length - 1].text,
-        problem: this.sep_int[this.integral_index].text,
-        parts_u: this.byparts_data.parts_u,
-        parts_v: this.byparts_data.parts_v,
-        location: this.sep_int[this.integral_index].location
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-parts", JSON.stringify(data))
-      if(response.data.flag === true){
-        this.sep_int[this.integral_index] = response.data.log;
-        this.r_query_mode = undefined;
-        this.byparts_data = {parts_u: '', parts_v: ''};
-        this.take_effect = 1;
-        this.process_index = this.integral_index;
-        this.integral_index = undefined;
-        this.closeIntegral();
-      }
-      else{
-        this.seen = true;
-        this.error_message = response.data.reason;
-      }
     },
 
     integrateByEquation: function(){

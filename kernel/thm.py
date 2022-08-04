@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from typing import Tuple
 from kernel.type import TFun, BoolType, TyInst
 from kernel import term
 from kernel.term import Term, Const, Implies, Eq, Forall, Lambda, Inst
@@ -13,7 +14,7 @@ class InvalidDerivationException(Exception):
     def __init__(self, str):
         self.str = str
 
-class Thm():
+class Thm:
     """Represents a theorem in sequent calculus.
 
     A theorem is given by a list of hypotheses and a proposition.
@@ -43,10 +44,10 @@ class Thm():
 
         """
         typecheck.checkinstance('Thm', prop, Term)
-        self.prop = prop
+        self.prop: Term = prop
 
         # Now we form the tuple of hypothesis
-        self.hyps = tuple()
+        self.hyps: Tuple[Term] = tuple()
         for hyp in hyps:
             if isinstance(hyp, Term):
                 if not self.hyps:

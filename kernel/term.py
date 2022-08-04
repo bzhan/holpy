@@ -5,6 +5,7 @@ from collections import UserDict
 from copy import copy
 import math
 from fractions import Fraction
+from typing import List
 
 from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType, TyInst, TypeMatchException
 from util import typecheck
@@ -62,7 +63,7 @@ term_parser = None
 term_printer = None
 
 
-class Term():
+class Term:
     """Represents a term in higher-order logic.
     
     There are six term constructors:
@@ -1204,7 +1205,7 @@ class Term():
         rec(self)
         return res
 
-    def get_vars(self):
+    def get_vars(self) -> List[Var]:
         res = []
         found = set()
         def rec(t):

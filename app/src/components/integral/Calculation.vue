@@ -2,7 +2,10 @@
   <div>
     <div>
       &nbsp;&nbsp;&nbsp;
-      <MathEquation v-bind:data="'\\(' + item.latex_start + '\\)'" class='indented-text'/>
+      <span @click="$emit('select', label)"
+            :class="{selected: selected_item == label}">
+        <MathEquation v-bind:data="'\\(' + item.latex_start + '\\)'" class='indented-text'/>
+      </span>    
     </div>
     <div v-for="(step, index) in item.steps" :key="index">
       <div v-if="step.type === 'CalculationStep'">

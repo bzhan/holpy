@@ -680,7 +680,7 @@ class SubstitutionInverse(Rule):
         self.var_subst = var_subst
 
     def __str__(self):
-        return "substitute x for %s" % self.var_subst
+        return "inverse substitution for %s" % self.var_subst
 
     def export(self):
         return {
@@ -688,8 +688,7 @@ class SubstitutionInverse(Rule):
             "var_name": self.var_name,
             "var_subst": str(self.var_subst),
             "str": str(self),
-            "latex_str": "substitute \\(%s\\) for \\(%s\\)" % \
-                ("x", latex.convert_expr(self.var_subst))
+            "latex_str": "inverse substitution for \\(%s\\)" % latex.convert_expr(self.var_subst)
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
@@ -852,14 +851,16 @@ class IntegrationByParts(Rule):
         self.v = v
 
     def __str__(self):
-        return "integrate by parts"
+        return "integrate by parts u -> %s, v -> %s" % (self.u, self.v)
 
     def export(self):
         return {
             "name": self.name,
             "u": str(self.u),
             "v": str(self.v),
-            "str": str(self)
+            "str": str(self),
+            "latex_str": "integrate by parts \\(u \\to %s, v \\to %s\\)" % \
+                (latex.convert_expr(self.u), latex.convert_expr(self.v))
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:

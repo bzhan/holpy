@@ -154,9 +154,9 @@
                                     "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} ((\\sqrt{b} u) ^ {2} + b) ^ {-1} \\sqrt{b} \\,du",
                                     "res": "LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. ((sqrt(b) * u) ^ 2 + b) ^ -1 * sqrt(b)",
                                     "rule": {
-                                        "latex_str": "substitute \\(x\\) for \\(\\sqrt{b} u\\)",
+                                        "latex_str": "inverse substitution for \\(\\sqrt{b} u\\)",
                                         "name": "SubstitutionInverse",
-                                        "str": "substitute x for sqrt(b) * u",
+                                        "str": "inverse substitution for sqrt(b) * u",
                                         "var_name": "u",
                                         "var_subst": "sqrt(b) * u"
                                     },

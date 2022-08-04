@@ -4,19 +4,11 @@
     <span v-if="item.finished" class="math-text" style="color: green">&nbsp;(finished)</span><br/>
     <span class="math-text">{{label}}1.</span>&nbsp;
     <span class="math-text">LHS: </span>
-    <span @click="$emit('select', label + '1.')"
-          :class="{selected: selected_item == label + '1.'}">
-      <MathEquation v-bind:data="'\\(' + item.lhs_calc.latex_start + '\\)'"/>
-    </span>
     <Calculation v-bind:item="item.lhs_calc" v-bind:label="label + '1.'"
                  v-bind:selected_item="selected_item"
                  @select="(lbl) => $emit('select', lbl)"/>
     <span class="math-text">{{label}}2.</span>&nbsp;
     <span class="math-text">RHS: </span>
-    <span @click="$emit('select', label + '2.')"
-          :class="{selected: selected_item == label + '2.'}">
-      <MathEquation v-bind:data="'\\(' + item.rhs_calc.latex_start + '\\)'"/>
-    </span>    
     <Calculation v-bind:item="item.rhs_calc" v-bind:label="label + '2.'"
                  v-bind:selected_item="selected_item"
                  @select="(lbl) => $emit('select', lbl)"/>
@@ -25,14 +17,12 @@
 
 <script>
 import Calculation from './Calculation.vue'
-import MathEquation from '../util/MathEquation.vue'
 
 export default {
   name: "CalculationProof",
   components: {
     Calculation,
-    MathEquation
-},
+  },
 
   props: [
     "item",

@@ -30,7 +30,10 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
         else:
             raise NotImplementedError
     elif e.ty == expr.INF:
-        return "\\infty"
+        if e == expr.POS_INF:
+            return "\\infty"
+        else:
+            return "-\\infty"
     elif e.ty == expr.OP:
         if len(e.args) == 1:
             a, = e.args

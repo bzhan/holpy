@@ -202,7 +202,7 @@ def query_item_index(username, filename, ext_ty, name):
     else:
         return None
 
-def load_theory(filename, *, limit=None, username="master"):
+def load_theory(filename: str, *, limit=None, username="master"):
     """Load the theory with the given theory name.
     
     Optional limit is a pair (ty, name) specifying the first item

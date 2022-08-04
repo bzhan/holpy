@@ -20,7 +20,7 @@ class PolynomialTest(unittest.TestCase):
             (Monomial(2, [("y", 2), ("x", 2)]), "2 * x^2 * y^2"),
             (Monomial(2, [("x+y", 2)]), "2 * (x+y)^2"),
             (Monomial(2, [("x", 1), ("x", 2)]), "2 * x^3"),
-            (Monomial(1, [("x", Fraction(1, 2))]), "x ^ 1/2"),
+            (Monomial(1, [("x", Fraction(1, 2))]), "x^1/2"),
             (Monomial(1, [("x", Fraction(1, 2)), ("x", Fraction(1, 2))]), "x")
         ]
 

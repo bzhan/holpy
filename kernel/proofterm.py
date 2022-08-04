@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 from __future__ import annotations
+from typing import List
 
 from kernel.term import Term, Var, Inst
 from kernel.type import TyInst
@@ -20,7 +21,7 @@ class TacticException(Exception):
         return self.err
 
 
-class ProofTerm():
+class ProofTerm:
     """A proof term contains the derivation tree of a theorem.
     
     Each proof term contains the following fields:
@@ -59,8 +60,9 @@ class ProofTerm():
                 self.th = macro.eval(args, prev_ths)
             else:
                 self.th = th
+
         self.args = args
-        self.prevs = prevs
+        self.prevs: List[ProofTerm] = prevs
         if self.rule == 'sorry':
             self.gaps = [self.th]
         else:
@@ -242,7 +244,7 @@ class ProofTerm():
     def export(self, prefix=None, prf=None, subproof=True):
         """Convert to proof object."""
 
-        def rec(pt):
+        def rec(pt: ProofTerm):
             # Should not call _export when self is already in seq_to_id
             assert pt.th not in seq_to_id, "export: th already found."
 

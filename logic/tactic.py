@@ -27,7 +27,7 @@ class Tactic:
     of existing facts to use.
 
     """
-    def get_proof_term(self, goal, *, args=None, prevs=None):
+    def get_proof_term(self, goal, *, args=None, prevs=None) -> ProofTerm:
         raise NotImplementedError
 
 

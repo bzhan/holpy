@@ -19,6 +19,8 @@ class Label:
         if isinstance(data, str):
             split = data.split(".")
             for n in split:
+                if n == '':
+                    continue
                 assert int(n) >= 1, "Label: non-positive value"
                 self.data.append(int(n) - 1)
         elif isinstance(data, list):
@@ -39,7 +41,10 @@ class Label:
         return len(self.data) == 0
 
     def __str__(self):
-        return ".".join(str(n + 1) for n in self.data)
+        res = ""
+        for n in self.data:
+            res += str(n+1) + "."
+        return res
 
 
 class StateItem:
@@ -443,15 +448,6 @@ class CompState:
         else:
             return self.items[label.head].get_by_label(label.tail)
 
-    def next_step_label(self, label: Label) -> Label:
-        step = self.get_by_label(label)
-        if isinstance(step, Calculation):
-            return Label(label.data + [0])
-        elif isinstance(step, CalculationStep):
-            return Label(label.data[:-1] + [label.data[-1] + 1])
-        else:
-            raise NotImplementedError
-
 
 class CompFile:
     """Represent a file containing multiple CompState objects."""
@@ -504,7 +500,10 @@ def parse_rule(item) -> Rule:
         else:
             loc = item['loc']
             del item['loc']
-            return rules.OnLocation(parse_rule(item), loc)
+            if loc == '':
+                return parse_rule(item)
+            else:
+                return rules.OnLocation(parse_rule(item), loc)
     elif item['name'] == 'ExpandDefinition':
         func_def = parser.parse_expr(item['func_def'])
         return rules.ExpandDefinition(func_def)
@@ -620,3 +619,11 @@ def parse_state(name: str, problem: str, items) -> CompState:
     for item in items:
         st.add_item(parse_item(item))
     return st
+
+def get_next_step_label(step: Union[Calculation, CalculationStep], label: Label) -> Label:
+    if isinstance(step, Calculation):
+        return Label(label.data + [0])
+    elif isinstance(step, CalculationStep):
+        return Label(label.data[:-1] + [label.data[-1] + 1])
+    else:
+        raise NotImplementedError
