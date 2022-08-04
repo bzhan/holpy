@@ -14,10 +14,7 @@ from logic import basic
 from logic import context
 from logic import tactic
 from server import method, server
-from server.server import ProofState
 from syntax import parser
-from syntax import printer
-from imperative import imp
 
 
 def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
