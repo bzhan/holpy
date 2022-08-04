@@ -763,5 +763,31 @@ class ProofrecTest(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(50)
 
+    def test_bug(self):
+        test_paths = [
+            'UF\\20170428-Barrett\\cdt-cade2015\\nada\\afp\\abstract_completeness\\x2015_09_10_16_59_39_090_1045351.smt_in.smt2', # bind
+            'QF_UFLIA\\wisas\\xs_5_5.smt2', # resolution one proof term for twice
+            'UFLIA\\misc\\list5.smt2', # resolution extra double negation in the result.
+            'UFLIA/sledgehammer/TwoSquares/smtlib.832972.smt2', # ite_intro
+            'UFLIA/sledgehammer/Fundamental_Theorem_Algebra/smtlib.1438328.smt2', # th_resolution
+            'UF/sledgehammer/Arrow_Order/smtlib.617784.smt2', # bind suspected name conflict
+            'UF/sledgehammer/Fundamental_Theorem_Algebra/uf.560771.smt2', # th_resolution
+        ]
+
+        profile = False
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
+        for path in test_paths:
+            test_path(path, test_proofterm=True, parse_assertion=True, write_file=False)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats(50)
+
+
 if __name__ == "__main__":
     unittest.main()
