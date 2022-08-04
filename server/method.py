@@ -17,6 +17,7 @@ from logic import matcher
 from logic import logic
 from logic import context
 from logic import tactic
+from logic.tactic import Tactic
 from syntax import parser, printer, pprint
 from syntax.settings import settings, global_setting
 
@@ -83,7 +84,7 @@ class ProofState():
         self.rpt = report.ProofReport()
         return theory.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps, compute_only=compute_only)
 
-    def add_line_before(self, id, n):
+    def add_line_before(self, id, n: int):
         """Add n lines before the given id."""
         id = ItemID(id)
         prf = self.prf.get_parent_proof(id)
@@ -119,7 +120,7 @@ class ProofState():
 
     def replace_id(self, old_id, new_id):
         """Replace old_id with new_id in prevs."""
-        def replace(prf):
+        def replace(prf: Proof):
             for item in prf.items:
                 item.prevs = [new_id if id == old_id else id for id in item.prevs]
                 if item.subproof:
@@ -150,7 +151,7 @@ class ProofState():
         except (AttributeError, IndexError):
             raise ProofStateException
 
-    def apply_search(self, id, method, prevs=None):
+    def apply_search(self, id, method: "Method", prevs=None):
         id = ItemID(id)
         prevs = [ItemID(prev) for prev in prevs] if prevs else []
         return method.search(self, id, prevs)
@@ -184,7 +185,7 @@ class ProofState():
             results = list(filter(lambda r: '_goal' in r and len(r['_goal']) == 0, results))
         return results
 
-    def apply_tactic(self, id, tactic, args=None, prevs=None):
+    def apply_tactic(self, id, tactic: Tactic, args=None, prevs=None):
         id = ItemID(id)
         prevs = [ItemID(prev) for prev in prevs] if prevs else []
         prevs = [ProofTerm.atom(prev, self.get_proof_item(prev).th) for prev in prevs]
@@ -307,13 +308,13 @@ class cut_method(Method):
 
         return []
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         id = data['goal_id']
         with context.fresh_context(vars=state.get_vars(id)):
             goal = parser.parse_term(data['goal'])
         return pprint.N("have ") + printer.print_term(goal)
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         cur_item = state.get_proof_item(id)
         hyps = cur_item.th.hyps
 
@@ -1034,7 +1035,7 @@ class apply_fact(Method):
         state.set_line(id, 'apply_fact', prevs=prevs)
 
 
-def apply_method(state, step):
+def apply_method(state: ProofState, step):
     """Apply a method to the state. Here data is a dictionary containing
     all necessary information.
 
