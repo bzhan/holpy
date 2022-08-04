@@ -2,6 +2,7 @@
 
 import copy
 import itertools
+from typing import List, Union
 import traceback2
 
 from kernel import term
@@ -244,7 +245,7 @@ class ProofState():
 
         return history
 
-def parse_init_state(prop):
+def parse_init_state(prop: Union[str, List[str], Term]) -> ProofState:
     """Given data for a theorem statement, construct the initial partial proof.
     
     data['vars']: list of variables.
@@ -280,7 +281,7 @@ def parse_init_state(prop):
     state.check_proof(compute_only=True)
     return state
 
-def parse_proof(proof):
+def parse_proof(proof) -> ProofState:
     """Obtain proof from json format."""
     state = ProofState()
     for nm, T in context.ctxt.vars.items():

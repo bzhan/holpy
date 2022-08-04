@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from typing import Dict
 from kernel.type import TyInst
 from kernel import term
 from kernel.term import Term, Var, Inst
@@ -17,18 +18,24 @@ from syntax import parser, printer, pprint
 """Global store for methods."""
 global_methods = dict()
 
-def has_method(name):
+def has_method(name: str) -> bool:
+    """Return whether the method with the given name exists and can be
+    used in the current location of the theory.
+    
+    """
     if name in global_methods:
         method = global_methods[name]
         return method.limit is None or theory.thy.has_theorem(method.limit)
     else:
         return False
 
-def get_method(name):
+def get_method(name: str) -> "Method":
+    """Return method with the given name."""
     assert has_method(name), "get_method: %s is not available" % name
     return global_methods[name]
 
-def get_all_methods():
+def get_all_methods() -> Dict[str, "Method"]:
+    """Return a dictionary mapping method names to methods."""
     res = dict()
     for name in global_methods:
         if has_method(name):

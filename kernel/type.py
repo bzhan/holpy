@@ -40,7 +40,7 @@ type_parser = None
 type_printer = None
 
 
-class Type():
+class Type:
     """Represents a type in higher-order logic.
     
     Types in HOL are formed by two kinds of constructors: STVar, TVar and TConst.

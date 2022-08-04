@@ -1,5 +1,6 @@
 """Unit test for methods."""
 
+from typing import List, Optional
 import unittest
 
 from kernel.term import Var, Term, Implies
@@ -12,7 +13,9 @@ from server import server
 from syntax import parser
 
 
-def test_method(self, thy_name, *, vars=None, assms=None, concl, method_name, prevs=None, args=None,
+def test_method(self: unittest.TestCase, thy_name: str, *, vars=None,
+                assms: Optional[List[str]] = None, concl: str,
+                method_name: str, prevs=None, args=None,
                 gaps=None, lines=None, query=None, failed=None):
     """Test run a method.
 
@@ -69,7 +72,8 @@ def test_method(self, thy_name, *, vars=None, assms=None, concl, method_name, pr
 
 
 class MethodTest(unittest.TestCase):
-    def run_search_thm(self, thy_name, *, vars=None, assms=None, concl, method_name, prevs=None, res):
+    def run_search_thm(self, thy_name: str, *, vars=None, assms: Optional[List[str]] = None,
+                       concl: str, method_name: str, prevs=None, res):
         # Build context
         context.set_context(thy_name, vars=vars)
 

@@ -8,7 +8,7 @@ from kernel.thm import Thm
 from kernel.proofterm import ProofTerm
 
 
-class Macro():
+class Macro:
     """A proof macro represents a derived proof method.
     
     A single macro invocation can represent multiple primitive derivation

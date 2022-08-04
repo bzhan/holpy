@@ -1,13 +1,14 @@
 # Author: Bohua Zhan
 
 from copy import copy
-from typing import Tuple
+from typing import Dict, Tuple
 import contextlib
 
 from kernel.type import Type, TVar, TFun, BoolType, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofStateException
+from kernel.macro import Macro
 from kernel import extension
 from kernel.report import ExtensionReport
 
@@ -33,7 +34,7 @@ class ParameterQueryException(Exception):
             "ParameterQueryException: input is not a list of strings"
         self.params = params
 
-class Theory():
+class Theory:
     """Represents the current state of the theory.
 
     Data contained in the theory include the following:
@@ -511,7 +512,7 @@ class Theory():
 
 
 """Global theory"""
-thy = None
+thy: Theory = None
 
 def EmptyTheory():
     """Empty theory, with the absolute minimum setup."""
@@ -571,20 +572,25 @@ It is added to the theory only when a theory file contains an
 extension adding it by name.
 
 """
-global_macros = dict()
+global_macros: Dict[str, Macro] = dict()
 
-def has_macro(name):
+def has_macro(name: str) -> bool:
+    """Return whether a macro with the given name exists and is available
+    with the given limit.
+    
+    """
     if name in global_macros:
         macro = global_macros[name]
         return macro.limit is None or thy.has_theorem(macro.limit)
     else:
         return False
 
-def get_macro(name):
+def get_macro(name: str) -> Macro:
+    """Obtain the macro with the given name."""
     assert has_macro(name), "get_macro: %s is not available." % name
     return global_macros[name]
 
-def register_macro(name):
+def register_macro(name: str):
     def decorator(macro_cls):
         assert name not in global_macros, 'register_macro: %s already exists' % name
         global_macros[name] = macro_cls()

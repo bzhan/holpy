@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from typing import Tuple, List
+from typing import Tuple, List, Union
 import copy
 from lark import Lark, Transformer, v_args, exceptions
 
@@ -415,13 +415,14 @@ var_decl_parser = get_parser_for("var_decl")
 ind_constr_parser = get_parser_for("ind_constr")
 term_list_parser = get_parser_for("term_list")
 
-def parse_type(s, *, check_type=True):
+def parse_type(s: str, *, check_type: bool = True) -> Type:
     """Parse a type."""
     T = type_parser.parse(s)
     if check_type:
         theory.thy.check_type(T)
     return T
-def parse_term(s):
+
+def parse_term(s: Union[str, List[str]]) -> Term:
     """Parse a term."""
     # Permit parsing a list of strings by concatenating them.
     if isinstance(s, list):
@@ -429,17 +430,19 @@ def parse_term(s):
     try:
         t = term_parser.parse(s)
         return infertype.type_infer(t)
-    except (term.TermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
+    except (term.TermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters,
+            infertype.TypeInferenceException) as e:
         print("When parsing:", s)
         raise e
 
-def parse_thm(s):
+def parse_thm(s: str) -> Thm:
     """Parse a theorem (sequent)."""
     try:
         th = thm_parser.parse(s)
         th.hyps = tuple(infertype.type_infer(hyp) for hyp in th.hyps)
         th.prop = infertype.type_infer(th.prop)
-    except (term.TermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
+    except (term.TermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters,
+            infertype.TypeInferenceException) as e:
         print("When parsing:", s)
         raise e
     return th

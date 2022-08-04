@@ -62,7 +62,7 @@ term_parser = None
 term_printer = None
 
 
-class Term():
+class Term:
     """Represents a term in higher-order logic.
     
     There are six term constructors:
