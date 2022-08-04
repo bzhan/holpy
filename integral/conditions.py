@@ -52,6 +52,10 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
     """Return whether conditions imply e is positive."""
     if e.is_const():
         return e.val > 0
+
+    if e.is_fun() and e.func_name == 'exp':
+        return True
+
     if e == expr.E:
         return True
 
@@ -60,6 +64,11 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
             return True
     if e.is_plus():
         if is_positive(e.args[0], conds) and e.args[1].is_power() and e.args[1].args[1].val % 2 == 0:
+            return True
+
+    if e.is_integral():
+        l, h = e.lower, e.upper
+        if is_positive(e.body, conds) and l.is_const() and h.is_inf() or l.is_const() and h.is_const() and l<h:
             return True
     for _, cond in conds.data.items():
         if cond.is_greater() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val >= 0:
@@ -80,6 +89,12 @@ def is_negative(e: Expr, conds: Conditions) -> bool:
 
     if e.ty == expr.OP and e.op == '-' and len(e.args) == 1 and is_positive(e.args[0],conds):
         return True
+    if e.is_minus() and e.args[1].is_const() and e.args[1].val > 0:
+        # -y^2 - 1
+        if e.args[0].is_uminus():
+            a = e.args[0].args[0]
+            if a.ty == expr.OP and a.op == '^' and a.args[1].is_const and a.args[1].val % 2 == 0:
+                return True
     for _, cond in conds.data.items():
         if cond.is_less() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val <= 0:
             return True
