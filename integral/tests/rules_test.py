@@ -4,6 +4,8 @@ import unittest
 import json
 from fractions import Fraction
 
+import backcall
+
 from integral import expr, parser
 from integral.expr import Const, deriv, neg_inf, Inf
 from integral.parser import parse_expr
@@ -581,7 +583,11 @@ class RulesTest(unittest.TestCase):
 
 
         # print(st)
-
+    def testComputeLimit1(self):
+        s = 'LIM {t -> oo}. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1'
+        e = parser.parse_expr(s)
+        print()
+        print(rules.LimitSimplify().eval(e))
     def testProbabilityIntegral(self):
         file = compstate.CompFile('probability integral')
 
@@ -594,15 +600,11 @@ class RulesTest(unittest.TestCase):
         file.add_definition(Idef)
         conds = conditions.Conditions()
 
-        # Condition g(t) > 0
-
-        # Prove the following equality
-        e = parser.parse_expr('(INT x:[-oo,oo].exp(-(x^2)/2)) = (2*sqrt(g(oo)))')
-        Eq1 = compstate.Goal(e, conds=conds)
-        file.add_compstate(Eq1)
+        e = parser.parse_expr("(INT x:[-oo,oo]. exp(-x^2/2)) = 2 * LIM {t->oo}. sqrt(g(t))")
+        Eq1 = compstate.Goal(e, conds = conds)
+        file.add_goal(Eq1)
         Eq1_proof = Eq1.proof_by_calculation()
-
-        # left part
+        file.add_compstate(Eq1_proof)
         calc = Eq1_proof.lhs_calc
         calc.perform_rule(rules.SplitRegion(Const(0)))
         e = parser.parse_expr('-x')
@@ -610,111 +612,77 @@ class RulesTest(unittest.TestCase):
         e = parser.parse_expr('y')
         calc.perform_rule(rules.OnLocation(rules.Substitution('x', e), '0'))
         calc.perform_rule(rules.FullSimplify())
-
-        # right part
+        calc.perform_rule(rules.OnLocation(rules.ElimInfInterval(), '1'))
+        calc.perform_rule(rules.OnLocation(rules.RewriteLimit(), '1'))
         calc = Eq1_proof.rhs_calc
-        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '1.0'))
-        calc.perform_rule(rules.OnLocation(rules.Simplify(), '1'))
-        # add assume
-        e = parser.parse_expr('(INT x:[0,oo]. exp(-1/2 * x ^ 2)) > 0')
-        conds.add_condition('INT x:[0,oo]. exp(-1/2 * x ^ 2) > 0', e, 1)
-        # after one step this condition is deleted
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '1.0.0'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.RewriteLimit(), '1'))
         calc.perform_rule(rules.OnLocation(rules.ElimAbs(), '1'))
 
 
-        # prove the following equation
-        e = parser.parse_expr('(D t.g(t)) = -2*(D t.INT y:[0,1]. exp(-(1+y^2)*(t^2)/2) / (1+y^2))')
-        Eq2 = compstate.Goal(e, conds=conds)
-        file.add_compstate(Eq2)
+        e = '(D t. g(t) + 2 * INT y:[0, 1].exp(-(1+y^2)*t^2/2)/(1+y^2)) = 0'
+        e = parser.parse_expr(e)
+        Eq2 = compstate.Goal(e, conds = conds)
+        file.add_goal(Eq2)
         Eq2_proof = Eq2.proof_by_calculation()
-
-        # # left side
+        file.add_compstate(Eq2_proof)
         calc = Eq2_proof.lhs_calc
-        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '0'))
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '0.0'))
         calc.perform_rule(rules.DerivativeSimplify())
         calc.perform_rule(rules.FullSimplify())
-        e = parser.parse_expr("x/t")
-        calc.perform_rule(rules.OnLocation(rules.Substitution('y', e), '1'))
+        e = parser.parse_expr('x/t')
+        calc.perform_rule(rules.OnLocation(rules.Substitution('y', e), '1.1'))
         calc.perform_rule(rules.FullSimplify())
-
-        # right side
-        calc = Eq2_proof.rhs_calc
-        calc.perform_rule(rules.OnLocation(rules.DerivIntExchange(), '1'))
-        calc.perform_rule(rules.OnLocation(rules.DerivativeSimplify(), '1.0'))
-
-        calc.perform_rule(rules.OnLocation(rules.Assoc(), '1.0'))
-        e = parser.parse_expr('-t')
-        calc.perform_rule(rules.OnLocation(rules.Equation(e), '1.0.1'))
+        e = parser.parse_expr('-exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) ')
+        calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.1.0'))
+        e = parser.parse_expr('-1/2 * t ^ 2 * y ^ 2+1/2 * t ^ 2 *  (- 1) ')
+        calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.1.0.0.0'))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1.0'))
+        calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1.1.0'))
         calc.perform_rule(rules.FullSimplify())
 
 
-        # proving the following equation
-        e = parser.parse_expr('g(t) = -2 * (INT y:[0,1]. exp(-(1+y^2)*(t^2)/2)/(1+y^2)) + C')
-        # conds.add_condition('C', parser.parse_expr('isConst(C)'))
-        Eq3 = compstate.Goal(e, conds=conds)
-        file.add_compstate(Eq3)
-        Eq3_proof = Eq3.proof_by_calculation()
+        e = '(LIM {t -> oo}. g(t)) = 1/2 * pi'
+        e = parser.parse_expr(e)
+        Eq3 = compstate.Goal(e, conds=conds, start = Eq2)
+        file.add_goal(Eq3)
+        Eq3_proof = Eq3.proof_by_rewrite_goal();
+        file.add_compstate(Eq3_proof)
+        calc = Eq3_proof.start
+        calc.perform_rule(rules.IntegralEquation({'t':'0'}))
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq),'1.1'))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '1'))
+        calc.perform_rule(rules.LimEquation('t',expr.POS_INF))
+        calc.perform_rule(rules.OnLocation(rules.LimIntExchange(), '0.0.1'))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '0'))
+        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '0.0.1.0.1'))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '0'))
 
-        # left side
-        calc = Eq3_proof.lhs_calc
-        calc.perform_rule(rules.DerivIndefiniteIntegralRewrite('t'))
-
-        calc.perform_rule(rules.DerivIntExchange('C0'))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq2.goal), '0.0'))
-        calc.perform_rule(rules.OnLocation(rules.Linearity(), '0'))
-        calc.perform_rule(rules.OnLocation(rules.DerivIntExchange('C1'), '0.1'))
-        calc.perform_rule(rules.OnLocation(rules.DerivIndefiniteIntegralRewrite('t'), "0.1.0"))
-
-        calc.perform_rule(rules.OnLocation(rules.Distribution(), '0'))
-        calc.perform_rule(rules.RewriteConstVars('C'))
-
-        # proof c = pi/2
-        e = parser.parse_expr('C = pi/2')
+        e = parser.parse_expr('(INT x:[-oo,oo]. exp(-x^2/2)) = sqrt(2) * sqrt(pi)')
         Eq4 = compstate.Goal(e, conds=conds)
-        file.add_compstate(Eq4)
-        Eq4_proof = Eq4.proof_by_calculation()
+        file.add_goal(Eq4)
+        Eq4_proof = Eq4.proof_by_calculation();
+        file.add_compstate(Eq4_proof)
         calc = Eq4_proof.lhs_calc
-        calc.perform_rule(rules.ApplyEquation(Eq3.goal))
-        e = Const(0)
-        calc.perform_rule(rules.ConstExprSubs('t', e))
-
-        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '0'))
-        calc.perform_rule(rules.FullSimplify())
-        calc = Eq4_proof.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
-
-        # proof  I = sqrt(2 * pi)
-
-        e = parser.parse_expr('(LIM {t->oo}.g(t)) = g(oo)')
-        Eq5 = compstate.Goal(e, conds=conds)
-        file.add_compstate(Eq5)
-        Eq5_proof = Eq5.proof_by_calculation()
-        calc = Eq5_proof.lhs_calc
-        calc.perform_rule(rules.RewriteLimit())
-
-        e = parser.parse_expr('(INT x:[-oo,oo].exp(-(x^2)/2)) = sqrt(2*pi)')
-        Eq6 = compstate.Goal(e, conds=conds)
-        file.add_compstate(Eq6)
-        Eq6_proof = Eq6.proof_by_calculation()
-        calc = Eq6_proof.lhs_calc
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq5.goal),'1.0'))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq3.goal), '1.0.0'))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq4.goal), '1.0.0.1'))
-        calc.perform_rule(rules.OnLocation(rules.LimSep(), '1.0'))
-        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '1.0.1'))
-        calc.perform_rule(rules.OnLocation(rules.LimSep(), '1.0.0'))
-        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '1.0.0.0'))
-        calc.perform_rule(rules.OnLocation(rules.LimIntExchange(), '1.0.0.1'))
-        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '1.0.0.1.0'))
-        calc.perform_rule(rules.FullSimplify())
-        calc = Eq6_proof.rhs_calc
+        calc.perform_rule(rules.OnLocation(rules.LimFunExchange(), '1'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq3.goal),'1.0'))
         calc.perform_rule(rules.FullSimplify())
         # print(file)
-        with open('integral/examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
+        with open('./../examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        # with open('integral/examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
+        #     json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testFullSimplify(self):
+        test_data = [('-(1 + y ^ 2)','-(1 + y ^ 2)')]
+        for a,b in test_data:
+            a = parser.parse_expr(a)
+            print('')
+            print(a)
+            a = a.normalize()
+            self.assertEqual(str(a), b)
 
     def testGammaFunction(self):
         st = compstate.CompFile("GammaFunction")

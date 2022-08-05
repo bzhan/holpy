@@ -98,11 +98,13 @@ class Linearity(Rule):
                        rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
             elif e.body.is_times():
                 factors = decompose_expr_factor(e.body)
-                if not factors[0].contains_var(e.var):
-                    return factors[0] * rec(expr.Integral(e.var, e.lower, e.upper,
-                                functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
-                else:
-                    return e
+                b, c = Const(1), Const(1)
+                for f in factors:
+                    if not f.contains_var(e.var):
+                        c = c * f
+                    else:
+                        b = b * f
+                return (c * Integral(e.var, e.lower, e.upper, b)).normalize()
             elif e.body.is_constant() and e.body != Const(1):
                 return e.body * expr.Integral(e.var, e.lower, e.upper, Const(1))
             else:
@@ -2082,6 +2084,9 @@ class RewriteExp(Rule):
         if b.ty == OP and b.op == '+':
             a1,a2 = b.args
             return Fun('exp',a1) * Fun('exp',a2)
+        elif b.ty == OP and b.is_minus():
+            a1, a2 = b.args
+            return Fun('exp',a1) * Fun('exp',-a2)
         else:
             raise NotImplementedError
 
@@ -2443,3 +2448,48 @@ class FoldDefinition(Rule):
             return Fun(self.func_def.lhs.func_name, *self.args)
         else:
             raise NotImplementedError
+
+class IntegralEquation(Rule):
+    def __init__(self, mapping:dict):
+        self.name = "integral both side"
+        self.mapping = mapping
+    def eval(self, e:Expr, conds = None):
+        assert e.is_equals()
+        assert e.lhs.is_deriv()
+        assert e.rhs.normalize() == Const(0)
+        tmp = e.lhs.body
+        for a,b in self.mapping.items():
+            tmp = tmp.replace(Var(a), expr.parser.parse_expr(b))
+        return Op('=', e.lhs.body, tmp.normalize())
+
+    def __str__(self):
+        return "IntegralEquation"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class LimEquation(Rule):
+    def __init__(self, var, lim):
+        self.name = "LimEquation"
+        self.var = var
+        self.lim = lim
+    def eval(self, e:Expr, conds = None):
+        var,lim = self.var,self.lim
+        a = Limit(var, lim, e.lhs)
+        b = Limit(var, lim, e.rhs)
+        r = FullSimplify()
+        a = r.eval(a)
+        b = r.eval(b)
+        return Op('=',a,b)
+
+    def __str__(self):
+        return "LimEquation"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }

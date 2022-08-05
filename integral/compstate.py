@@ -114,13 +114,15 @@ class FuncDef(StateItem):
 
 class Goal(StateItem):
     """Goal to be proved."""
-    def __init__(self, goal: Expr, conds: Optional[Conditions] = None):
+    def __init__(self, goal: Expr, conds: Optional[Conditions] = None, start = None):
 
         self.goal = goal
         if conds is None:
             conds = Conditions()
         self.conds = conds
         self.proof = None
+        # for proving equation goal
+        self.start = start
 
     def __str__(self):
         if self.is_finished():
@@ -153,6 +155,10 @@ class Goal(StateItem):
         if self.conds.data:
             res['conds'] = self.conds.export()
         return res
+
+    def proof_by_rewrite_goal(self):
+        self.proof = RewriteGoalProof(self.goal, start = self.start, conds = self.conds)
+        return self.proof
 
     def proof_by_calculation(self):
         self.proof = CalculationProof(self.goal, conds=self.conds)
@@ -402,6 +408,39 @@ class InductionProof(StateItem):
         else:
             raise AssertionError("get_by_label: invalid label")
 
+class RewriteGoalProof(StateItem):
+    def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None, start:Goal = None):
+        assert start.is_finished()
+        if not goal.is_equals():
+            raise AssertionError("RewriteGoalProof: goal is not an equality.")
+        self.goal = goal
+        if conds is None:
+            conds = Conditions()
+        self.conds = conds
+        self.start = Calculation(start.goal, conds=self.conds)
+
+    def is_finished(self):
+        f1 = self.start.last_expr.lhs.normalize() == self.goal.lhs.normalize()
+        f2 = self.start.last_expr.rhs.normalize() == self.goal.rhs.normalize()
+        return f1 and f2
+
+    def export(self):
+        return {
+            "type": "RewriteGoalProof",
+            "goal": str(self.goal),
+            "latex_goal": latex.convert_expr(self.goal),
+            "start": self.start.export(),
+            "finished": self.is_finished()
+        }
+
+    def __str__(self):
+        if self.is_finished():
+            res = "Proof by calculation (finished)\n"
+        else:
+            res = "Proof by calculation\n"
+
+        res += str(self.start)
+        return res
 
 class CompState:
     """Represents the global state of a computation proof."""
