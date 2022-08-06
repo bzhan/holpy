@@ -2453,6 +2453,10 @@ class FoldDefinition(Rule):
             raise NotImplementedError
 
 class IntegralEquation(Rule):
+    '''
+        D x. a(x,y) + b(x,z) = 0
+        -> a(x,y)+ b(x,z) = a(x0,y0) + b(x0,z0)
+    '''
     def __init__(self, mapping:dict):
         self.name = "integral both side"
         self.mapping = mapping
@@ -2475,6 +2479,10 @@ class IntegralEquation(Rule):
         }
 
 class LimEquation(Rule):
+    '''
+        a = b
+        ->  LIM {var->lim}. a = LIM {var->lim}. b
+    '''
     def __init__(self, var, lim):
         self.name = "LimEquation"
         self.var = var
@@ -2498,6 +2506,10 @@ class LimEquation(Rule):
         }
 
 class IntegralSimplify(Rule):
+    '''
+    1. INT x:[-a,a]. even_function(x) = 2 * INT x:[0,a]. even_function(x)
+
+    '''
     def __init__(self):
         self.name = "IntegralSimplify"
     def eval(self, e:expr.Integral, conds = None):
