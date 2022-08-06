@@ -157,7 +157,7 @@ class Goal(StateItem):
         return res
 
     def proof_by_rewrite_goal(self):
-        self.proof = RewriteGoalProof(self.goal, start = self.start, conds = self.conds)
+        self.proof = RewriteGoalProof(self.goal, begin = self.start, conds = self.conds)
         return self.proof
 
     def proof_by_calculation(self):
@@ -409,19 +409,19 @@ class InductionProof(StateItem):
             raise AssertionError("get_by_label: invalid label")
 
 class RewriteGoalProof(StateItem):
-    def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None, start:Goal = None):
-        assert start.is_finished()
+    def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None, begin:Goal = None):
+        assert begin.is_finished()
         if not goal.is_equals():
             raise AssertionError("RewriteGoalProof: goal is not an equality.")
         self.goal = goal
         if conds is None:
             conds = Conditions()
         self.conds = conds
-        self.start = Calculation(start.goal, conds=self.conds)
+        self.begin = Calculation(begin.goal, conds=self.conds)
 
     def is_finished(self):
-        f1 = self.start.last_expr.lhs.normalize() == self.goal.lhs.normalize()
-        f2 = self.start.last_expr.rhs.normalize() == self.goal.rhs.normalize()
+        f1 = self.begin.last_expr.lhs.normalize() == self.goal.lhs.normalize()
+        f2 = self.begin.last_expr.rhs.normalize() == self.goal.rhs.normalize()
         return f1 and f2
 
     def export(self):
@@ -429,9 +429,12 @@ class RewriteGoalProof(StateItem):
             "type": "RewriteGoalProof",
             "goal": str(self.goal),
             "latex_goal": latex.convert_expr(self.goal),
-            "start": self.start.export(),
+            "start": self.begin.export(),
             "finished": self.is_finished()
         }
+
+    def clean(self):
+        self.begin.clear()
 
     def __str__(self):
         if self.is_finished():
@@ -439,7 +442,7 @@ class RewriteGoalProof(StateItem):
         else:
             res = "Proof by calculation\n"
 
-        res += str(self.start)
+        res += str(self.begin)
         return res
 
 class CompState:
@@ -525,6 +528,7 @@ class CompFile:
         self.content.append(goal)
 
     def export(self):
+        self.name = self.name
         return {
             "name": self.name,
             "content": [item.export() for item in self.content]

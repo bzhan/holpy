@@ -104,7 +104,9 @@ class Linearity(Rule):
                         c = c * f
                     else:
                         b = b * f
-                return (c * Integral(e.var, e.lower, e.upper, b)).normalize()
+                c = c.normalize()
+                b = b.normalize()
+                return (c * Integral(e.var, e.lower, e.upper, b))
             elif e.body.is_constant() and e.body != Const(1):
                 return e.body * expr.Integral(e.var, e.lower, e.upper, Const(1))
             else:
@@ -471,6 +473,7 @@ class FullSimplify(Rule):
             s = OnSubterm(DerivativeSimplify()).eval(s, conds)
             s = OnSubterm(SimplifyPower()).eval(s, conds)
             s = OnSubterm(SimplifyInfinity()).eval(s, conds)
+            s = OnSubterm(IntegralSimplify()).eval(s,conds)
             s = OnSubterm(ReduceInfLimit()).eval(s, conds)
             if s == current:
                 break
@@ -2487,6 +2490,26 @@ class LimEquation(Rule):
 
     def __str__(self):
         return "LimEquation"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class IntegralSimplify(Rule):
+    def __init__(self):
+        self.name = "IntegralSimplify"
+    def eval(self, e:expr.Integral, conds = None):
+        if not isinstance(e, expr.Integral):
+            return e
+        if (e.lower * -1).normalize() == (e.upper).normalize() and e.body.is_even_function(e.var):
+            return 2*Integral(e.var, Const(0), e.upper, e.body)
+        else:
+            return e
+
+    def __str__(self):
+        return "IntegralSimplify"
 
     def export(self):
         return {
