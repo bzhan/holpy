@@ -343,5 +343,6 @@ class ProofTerm:
         return pt
 
 
-def refl(t):
+def refl(t: Term) -> ProofTerm:
+    """Obtain the proof term for t = t."""
     return ProofTerm.reflexive(t)

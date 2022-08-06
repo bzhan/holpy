@@ -245,7 +245,7 @@ class ProofState():
 
 
 """Global store for methods."""
-global_methods = dict()
+global_methods: Dict[str, "Method"] = dict()
 
 def has_method(name: str) -> bool:
     """Return whether the method with the given name exists and can be
