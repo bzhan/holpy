@@ -3,7 +3,7 @@
 import unittest
 
 from integral.parser import parse_expr
-from integral import slagle, expr
+from integral import slagle, expr, rules
 
 
 class SlagleTest(unittest.TestCase):
@@ -68,11 +68,19 @@ class SlagleTest(unittest.TestCase):
         test_data = [
             ("INT x:[0, 1]. abs(-x)", "INT x:[0,1]. --x"),
             ("INT x:[0, pi/2]. abs(sin(x)) + 1", "INT x:[0,pi / 2]. sin(x) + 1"),
-            ("INT x:[-pi/2, pi/2]. abs(sin(x))", "(INT x:[0,pi / 2]. sin(x)) + (INT x:[-pi / 2,0]. -sin(x))")
-        ]
+            ("INT x:[-pi/2, pi/2]. abs(sin(x))", "(INT x:[0,pi / 2]. sin(x)) + (INT x:[-pi / 2,0]. -sin(x))"),
+            ]
         for v, v_res in test_data:
             v = parse_expr(v)
             self.assertEqual(str(slagle.ElimAbsRule().eval(v)[0]), v_res)
+
+    def testElimAbs2(self):
+        test_data = ("INT x:[-pi/2, pi/2]. abs(sin(x))", "2 * (INT x:[0,pi / 2]. sin(x))")
+        v = parse_expr(test_data[0])
+        v = rules.FullSimplify().eval(v)
+        v = rules.ElimAbs().eval(v)
+        v = rules.OnLocation(rules.ElimAbs(), '1').eval(v)
+        self.assertEqual(str(v), test_data[1])
 
     # def testTrigFunction(self):
     #     test_data = [
