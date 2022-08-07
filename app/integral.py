@@ -853,20 +853,30 @@ def proof_by_induction():
 @app.route("/api/expand-definition", methods=["POST"])
 def expand_definition():
     data = json.loads(request.get_data().decode('UTF-8'))
-    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    item = compstate.parse_item(data['item'])
+    prev_items = []
+    for prev_item in data['prev_items']:
+        prev_items.append(compstate.parse_item(prev_item))
     label = compstate.Label(data['selected_item'])
-    facts = data['selected_facts']
     func_defs = []
-    for fact in facts:
-        func_defs.extend(st.get_by_label(fact).get_facts())
+    for prev_item in prev_items:
+        if isinstance(prev_item, compstate.FuncDef):
+            func_defs.append(prev_item.eq)
     assert len(func_defs) == 1, "expand_definition: unexpected number of definitions"
-    st.get_by_label(label).perform_rule(
-        integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_defs[0])))
-    return jsonify({
-        "status": "ok",
-        "state": st.export(),
-        "selected_item": str(st.next_step_label(label))
-    })
+    subitem = item.get_by_label(label)
+    if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
+        rule = integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_defs[0]))
+        subitem.perform_rule(rule)
+        return jsonify({
+            "status": "ok",
+            "item": item.export(),
+            "selected_item": str(compstate.get_next_step_label(subitem, label))
+        })
+    else:
+        return jsonify({
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
+        })
 
 @app.route("/api/solve-equation", methods=["POST"])
 def integral_solve_equation():

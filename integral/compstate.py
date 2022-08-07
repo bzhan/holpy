@@ -231,12 +231,15 @@ class Calculation(StateItem):
         return res
 
     def export(self):
-        return {
+        res = {
             "type": "Calculation",
             "start": str(self.start),
             "latex_start": latex.convert_expr(self.start),
             "steps": [step.export() for step in self.steps]
         }
+        if self.conds.data:
+            res["conds"] = self.conds.export()
+        return res
 
     def clear(self, id: int = 0):
         self.steps = self.steps[:id]
@@ -309,7 +312,7 @@ class CalculationProof(StateItem):
         return self.lhs_calc.last_expr == self.rhs_calc.last_expr
 
     def export(self):
-        return {
+        res = {
             "type": "CalculationProof",
             "goal": str(self.goal),
             "latex_goal": latex.convert_expr(self.goal),
@@ -317,6 +320,9 @@ class CalculationProof(StateItem):
             "rhs_calc": self.rhs_calc.export(),
             "finished": self.is_finished()
         }
+        if self.conds.data:
+            res["conds"] = self.conds.export()
+        return res
 
     def clear(self):
         self.lhs_calc.clear()
@@ -384,7 +390,7 @@ class InductionProof(StateItem):
         return self.base_case.is_finished() and self.induct_case.is_finished()
 
     def export(self):
-        return {
+        res = {
             "type": "InductionProof",
             "goal": str(self.goal),
             "latex_goal": latex.convert_expr(self.goal),
@@ -393,6 +399,9 @@ class InductionProof(StateItem):
             "induct_case": self.induct_case.export(),
             "finished": self.is_finished()
         }
+        if self.conds.data:
+            res["conds"] = self.conds.export()
+        return res
 
     def clear(self):
         self.base_case.clear()
@@ -638,21 +647,24 @@ def parse_item(item) -> StateItem:
             res.proof = parse_item(item['proof'])
         return res
     elif item['type'] == 'CalculationProof':
+        conds = parse_conds(item)
         goal = parser.parse_expr(item['goal'])
-        res = CalculationProof(goal)
+        res = CalculationProof(goal, conds=conds)
         res.lhs_calc = parse_item(item['lhs_calc'])
         res.rhs_calc = parse_item(item['rhs_calc'])
         return res
     elif item['type'] == 'Calculation':
+        conds = parse_conds(item)
         start = parser.parse_expr(item['start'])
-        res = Calculation(start)
+        res = Calculation(start, conds=conds)
         for i, step in enumerate(item['steps']):
             res.add_step(parse_step(step, res, i))
         return res
     elif item['type'] == 'InductionProof':
+        conds = parse_conds(item)
         goal = parser.parse_expr(item['goal'])
         induct_var = item['induct_var']
-        res = InductionProof(goal, induct_var)
+        res = InductionProof(goal, induct_var, conds=conds)
         res.base_case = parse_item(item['base_case'])
         res.induct_case = parse_item(item['induct_case'])
         return res

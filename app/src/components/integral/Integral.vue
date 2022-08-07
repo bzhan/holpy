@@ -658,17 +658,14 @@ export default {
     // Expand definition
     expandDefinition: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        item: this.content[this.cur_id],
+        prev_items: this.content.slice(0, this.cur_id),
         selected_item: this.selected_item,
-        selected_facts: this.selected_facts
       }
       const response = await axios.post("http://127.0.0.1:5000/api/expand-definition", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
-        this.selected_facts = {}
       }
     },
 
