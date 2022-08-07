@@ -1,7 +1,9 @@
 <template>
   <div>
     <span @click.exact="$emit('select', label)"
-          :class="{selected: selected_item === label}">
+          @click.ctrl="$emit('select_fact', label)"
+          :class="{selected: selected_item === label,
+                   'selected-fact': label in selected_facts}">
       <MathEquation v-bind:data="'\\(=' + step.latex_res + '\\)'" class="indented-text"/>&nbsp;&nbsp;&nbsp;
     </span>
     <span v-if="'latex_str' in step.rule">
@@ -24,6 +26,7 @@ export default {
 		"step",
     "label",
     "selected_item",
+    "selected_facts",
   ],
 }
 

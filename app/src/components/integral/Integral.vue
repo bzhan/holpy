@@ -30,6 +30,7 @@
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="trigIdentity">Trig identities</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='elimAbs'>Eliminate Abs</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='solveEquation'>Solve Equation</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
@@ -37,7 +38,6 @@
           <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='unfoldPower'>Unfold power</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='split'>Splitting an Integral</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='integrateByEquation'>Solving Equations</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='elimInfinity'>Eliminate Infinity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='lhopital'>L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -112,7 +112,9 @@
       <div v-if="'type' in content[cur_id] && content[cur_id].type == 'Calculation'">
         <Calculation v-bind:item="content[cur_id]" v-bind:label="''"
           @select="selectItem"
-          v-bind:selected_item="selected_item"/>
+          @select_fact="selectFact"
+          v-bind:selected_item="selected_item"
+          v-bind:selected_facts="selected_facts"/>
       </div>
     </div>
     <div v-if="cur_items !== undefined" id="items">
@@ -163,17 +165,6 @@
         <input v-if="seen === false" v-model="equation_data.new_expr" style="width: 400px">
         <button v-on:click="rewrite" style="color:red">Rewrite</button>
         <p v-if="rewrite_error_flag === true" style="color:red">The rewrite is invalid.</p>
-      </div>
-      <div v-if="r_query_mode === 'byequation'">
-        <div>
-        <MathEquation data="Input the step index you want to put on the eqution' left side."/>
-        </div>
-        <div>
-          <input v-model.number="lhs" type="number" style="margin:0px 5px;width:50px">
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="doIntegrateByEquation">OK</button>
-        </div>
       </div>
       <div v-if="show_proof_mode === 'proof'">
         <span>{{proof_term}}</span>
@@ -263,8 +254,8 @@
              class="item-text" ref="select_expr1"
              v-bind:value="lastExpr"
              style="width:500px" disabled="disabled"
-             @select="selectExpr">
-        <MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'"/>
+             @select="selectExpr"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/>
         <div v-for="(item, index) in trig_rewrites" :key="index"
              v-on:click="doTrigIdentity(index)">
           <MathEquation v-bind:data="'\\(=' + item.latex_new_e + '\\)'"/>
@@ -871,6 +862,21 @@ export default {
       }
     },
 
+    solveEquation: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        selected_facts: this.selected_facts
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/solve-equation", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+        this.selected_facts = {}
+      }
+    },
+
     // Retrieve the stored calculation
     restore: function () {
       if ('calc' in this.content[this.cur_id]) {
@@ -1153,25 +1159,6 @@ export default {
       this.show_proof_mode = undefined
       this.displaySeparateIntegrals()
     },
-
-    integrateByEquation: function(){
-      if (this.cur_calc.length === 0)
-        return;
-      this.r_query_mode = "byequation"
-      this.show_proof_mode = undefined
-    },
-
-    doIntegrateByEquation: async function(){
-      const data = {
-        lhs: this.cur_calc[this.lhs - 1].text,
-        rhs: this.cur_calc[this.cur_calc.length - 1].text,
-        prev_id: this.lhs
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-equation", JSON.stringify(data))
-      this.cur_calc.push(response.data);
-      this.lhs = undefined;
-      this.r_query_mode = undefined;
-    }, 
 
     polynomialDivision: async function() {
       if (this.cur_calc.length === 0)

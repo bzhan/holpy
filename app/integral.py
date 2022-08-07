@@ -96,31 +96,6 @@ def integral_super_simplify():
     step["checked"], step["proof"] = proof.translate_single_item(step, data['problem'])
     return jsonify(step)
 
-@app.route("/api/integral-integrate-by-equation", methods=['POST'])
-def integrate_by_equation():
-    data = json.loads(request.get_data().decode('utf-8'))
-    rhs = integral.parser.parse_expr(data['rhs'])
-    lhs = integral.parser.parse_expr(data['lhs'])
-    rule = integral.rules.IntegrateByEquation(lhs)
-    if not rule.validate(rhs):
-        return jsonify({
-            'flag': False
-        })
-    new_problem = rule.eval(rhs)
-    coeff = rule.coeff
-    return jsonify({
-        "text": str(new_problem),
-        "latex": integral.latex.convert_expr(new_problem),
-        "params": {
-            "factor": str(coeff),
-            "prev_id": str(int(data['prev_id']) - 1)
-        },
-        "reason": "Solve equation",
-        "_latex_reason": "By solving equation: \\(%s = %s\\)" % (
-            integral.latex.convert_expr(lhs), integral.latex.convert_expr(rhs)
-        )
-    })
-
 @app.route("/api/integral-separate-integrals", methods=['POST'])
 def integral_separate_integrals():
     data = json.loads(request.get_data().decode('utf-8'))
@@ -786,6 +761,36 @@ def query_integral():
         "integrals": res
     })
 
+@app.route("/api/query-trig-identity", methods=['POST'])
+def query_trig_identity():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    try:
+        e = integral.parser.parse_expr(data['expr'])
+        results = []
+        # For each Fu's rule, try to apply
+        for rule_name, (rule_fun, _) in integral.expr.trigFun.items():
+            try:
+                sympy_result = rule_fun(integral.expr.sympy_style(e))
+                new_e = integral.expr.holpy_style(sympy_result)
+                if new_e != e:
+                    results.append({
+                        "rule_name": rule_name,
+                        "new_e": str(new_e),
+                        "latex_new_e": integral.latex.convert_expr(new_e)
+                    })
+            except Exception as e:
+                pass
+        return jsonify({
+            "status": "ok",
+            "latex_expr": integral.latex.convert_expr(e),
+            "results": results
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "fail",
+            "exception": str(e)
+        })
+
 @app.route("/api/add-function-definition", methods=['POST'])
 def add_function_definition():
     data = json.loads(request.get_data().decode('UTF-8'))
@@ -862,6 +867,45 @@ def expand_definition():
         "state": st.export(),
         "selected_item": str(st.next_step_label(label))
     })
+
+@app.route("/api/solve-equation", methods=["POST"])
+def integral_solve_equation():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    item = compstate.parse_item(data['item'])
+    label = compstate.Label(data['selected_item'])
+    facts = data['selected_facts']
+    if len(facts) != 1:
+        return jsonify({
+            "status": "error",
+            "msg": "Exactly one fact must be selected"
+        })
+    lhs: integral.expr.Expr
+    for fact_label in facts:
+        fact = item.get_by_label(integral.compstate.Label(fact_label))
+        if isinstance(fact, compstate.CalculationStep):
+            lhs = fact.res
+        elif isinstance(fact, compstate.Calculation):
+            lhs = fact.start
+        else:
+            return jsonify({
+                "status": "error",
+                "msg": "Selected fact is not part of a calculation."
+            })
+    
+    subitem = item.get_by_label(label)
+    if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
+        rule = integral.rules.IntegrateByEquation(lhs)
+        subitem.perform_rule(rule)
+        return jsonify({
+            "status": "ok",
+            "item": item.export(),
+            "selected_item": str(compstate.get_next_step_label(subitem, label))
+        })
+    else:
+        return jsonify({
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
+        })
 
 @app.route("/api/perform-step", methods=["POST"])
 def integral_perform_step():
