@@ -10,8 +10,9 @@ from kernel.theory import Theory, TheoryException
 from kernel.thm import Thm
 from kernel import extension
 from server import items
+
 import sys
-# sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8', line_buffering=True)
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8', line_buffering=True)
 
 """
 Cache of parsed theories.

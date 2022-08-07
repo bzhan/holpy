@@ -239,8 +239,9 @@ def save_file():
     username = data['username']
     filename = data['filename']
 
+    s = json.dumps(data['content'], indent=4, ensure_ascii=False, sort_keys=True)
     with open(basic.user_file(filename, username), 'w+', encoding='utf-8') as f:
-        json.dump(data['content'], f, indent=4, ensure_ascii=False, sort_keys=True)
+        f.write(s)
 
     return jsonify({})
 

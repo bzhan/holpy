@@ -289,8 +289,8 @@ class Z3Method(Method):
         self.no_order = True
 
     def search(self, state, id, prevs, data=None):
-        if data:
-            return [data]
+        # if data:
+        #     return [data]
 
         return [{}]
 

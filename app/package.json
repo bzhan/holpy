@@ -7,6 +7,9 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
+  "nodemonConfig": {
+    "ext": "vue,py,js"
+  },
   "dependencies": {
     "axios": "^0.19.2",
     "bootstrap": "^4.6.0",
