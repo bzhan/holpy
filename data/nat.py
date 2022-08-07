@@ -240,8 +240,12 @@ auto.add_global_autos_norm(times, nat_eval_conv())
 
 # First level normalization: AC rules for addition only.
 
-def compare_atom(t1, t2):
-    """Compare two atoms, placing numbers last."""
+def compare_atom(t1: Term, t2: Term) -> bool:
+    """Compare two atoms for AC-ordering.
+    
+    Numbers are ordered last, otherwise use fast_compare in term_ord.
+    
+    """
     if t1.is_number() and t2.is_number():
         return 0
     elif t1.is_number():
@@ -256,7 +260,7 @@ class swap_add_r(Conv):
     is an atom, rewrite a + b to b + a.
 
     """
-    def get_proof_term(self, t):
+    def get_proof_term(self, t: Term) -> ProofTerm:
         pt = refl(t)
         if t.arg1.is_plus():
             return pt.on_rhs(rewr_conv("add_assoc"),
@@ -267,7 +271,7 @@ class swap_add_r(Conv):
 
 class norm_add_atom_1(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + a."""
-    def get_proof_term(self, t):
+    def get_proof_term(self, t: Term) -> ProofTerm:
         pt = refl(t)
         if t.arg1.is_zero():
             return pt.on_rhs(rewr_conv("nat_plus_def_1"))
@@ -409,7 +413,7 @@ class combine_monomial(Conv):
 
 class norm_add_monomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + a."""
-    def get_proof_term(self, t):
+    def get_proof_term(self, t: Term) -> ProofTerm:
         pt = refl(t)
         if t.arg1.is_zero():
             return pt.on_rhs(rewr_conv("nat_plus_def_1"))

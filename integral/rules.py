@@ -943,7 +943,7 @@ class RewriteTrigonometric(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         # Rewrite on a subterm
         if self.rewrite_term is not None and self.rewrite_term != e:
-            find_res = e.get_subexpr(self.rewrite_term)
+            find_res = e.find_subexpr(self.rewrite_term)
             if len(find_res) == 0:
                 raise AssertionError("RewriteTrigonometric: rewrite term not found")
             loc = find_res[0]

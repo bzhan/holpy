@@ -1,0 +1,337 @@
+{
+    "content": [
+        {
+            "eq": "I(t) = (INT x:[0,oo]. cos(t * x) * exp(-(x ^ 2) / 2))",
+            "latex_eq": "I{(t)} = \\int_{0}^{\\infty} \\cos{(t x)} e^{-x ^ {2}/2} \\,dx",
+            "latex_lhs": "I{(t)}",
+            "type": "FuncDef"
+        },
+        {
+            "finished": true,
+            "goal": "(D t. I(t)) = -t * I(t)",
+            "latex_goal": "\\frac{d}{dt} I{(t)} = -t I{(t)}",
+            "proof": {
+                "finished": true,
+                "goal": "(D t. I(t)) = -t * I(t)",
+                "latex_goal": "\\frac{d}{dt} I{(t)} = -t I{(t)}",
+                "lhs_calc": {
+                    "latex_start": "\\frac{d}{dt} I{(t)}",
+                    "start": "D t. I(t)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{d}{dt} \\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\cos{(t x)} \\,dx",
+                            "res": "D t. INT x:[0,oo]. exp(-1/2 * x ^ 2) * cos(t * x)",
+                            "rule": {
+                                "func_def": "I(t) = (INT x:[0,oo]. cos(t * x) * exp(-(x ^ 2) / 2))",
+                                "loc": "0",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{d}{dt} \\lim\\limits_{u\\to \\infty} \\int_{0}^{u} e^{-1/2 x ^ {2}} \\cos{(t x)} \\,dx",
+                            "res": "D t. LIM {u -> oo}. INT x:[0,u]. exp(-1/2 * x ^ 2) * cos(t * x)",
+                            "rule": {
+                                "a": "0",
+                                "loc": "0",
+                                "name": "ElimInfInterval",
+                                "str": "eliminate improper integral at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\lim\\limits_{u\\to \\infty} \\int_{0}^{u} x e^{-1/2 x ^ {2}} \\sin{(t x)} \\,dx)",
+                            "res": "-(LIM {u -> oo}. INT x:[0,u]. x * exp(-1/2 * x ^ 2) * sin(t * x))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\lim\\limits_{u\\to \\infty} (\\,(\\left. -e^{-1/2 x ^ {2}} \\sin{(t x)} \\right\\vert_{x=0}^{u}) - (\\int_{0}^{u} -t e^{-1/2 x ^ {2}} \\cos{(t x)} \\,dx)\\,))",
+                            "res": "-(LIM {u -> oo}. ([-(exp(-1/2 * x ^ 2) * sin(t * x))]_x=0,u) - (INT x:[0,u]. -(t * exp(-1/2 * x ^ 2) * cos(t * x))))",
+                            "rule": {
+                                "latex_str": "integrate by parts \\(u \\to \\sin{(t x)}, v \\to -e^{-x ^ {2}/2}\\) at 0.0",
+                                "loc": "0.0",
+                                "name": "IntegrationByParts",
+                                "str": "integrate by parts u -> sin(t * x), v -> -exp(-(x ^ 2) / 2) at 0.0",
+                                "u": "sin(t * x)",
+                                "v": "-exp(-(x ^ 2) / 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-t (\\lim\\limits_{u\\to \\infty} \\int_{0}^{u} e^{-1/2 x ^ {2}} \\cos{(t x)} \\,dx) + (\\lim\\limits_{u\\to \\infty} (\\,e^{-1/2 u ^ {2}} \\sin{(t u)}\\,))",
+                            "res": "-(t * (LIM {u -> oo}. INT x:[0,u]. exp(-1/2 * x ^ 2) * cos(t * x))) + (LIM {u -> oo}. exp(-1/2 * u ^ 2) * sin(t * u))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-t (\\lim\\limits_{u\\to \\infty} \\int_{0}^{u} e^{-1/2 x ^ {2}} \\cos{(t x)} \\,dx) + 0",
+                            "res": "-(t * (LIM {u -> oo}. INT x:[0,u]. exp(-1/2 * x ^ 2) * cos(t * x))) + 0",
+                            "rule": {
+                                "loc": "1",
+                                "name": "LimitSimplify",
+                                "str": "simplify limits at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-t (\\lim\\limits_{u\\to \\infty} \\int_{0}^{u} e^{-1/2 x ^ {2}} \\cos{(t x)} \\,dx)",
+                            "res": "-(t * (LIM {u -> oo}. INT x:[0,u]. exp(-1/2 * x ^ 2) * cos(t * x)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "-t I{(t)}",
+                    "start": "-t * I(t)",
+                    "steps": [
+                        {
+                            "latex_res": "-t (\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\cos{(t x)} \\,dx)",
+                            "res": "-t * (INT x:[0,oo]. exp(-1/2 * x ^ 2) * cos(t * x))",
+                            "rule": {
+                                "func_def": "I(t) = (INT x:[0,oo]. cos(t * x) * exp(-(x ^ 2) / 2))",
+                                "loc": "1",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-t (\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\cos{(t x)} \\,dx)",
+                            "res": "-(t * (INT x:[0,oo]. exp(-1/2 * x ^ 2) * cos(t * x)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-t (\\lim\\limits_{u\\to \\infty} \\int_{0}^{u} e^{-1/2 x ^ {2}} \\cos{(t x)} \\,dx)",
+                            "res": "-(t * (LIM {u -> oo}. INT x:[0,u]. exp(-1/2 * x ^ 2) * cos(t * x)))",
+                            "rule": {
+                                "a": "0",
+                                "loc": "0.1",
+                                "name": "ElimInfInterval",
+                                "str": "eliminate improper integral at 0.1"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
+            "latex_goal": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0",
+            "proof": {
+                "finished": true,
+                "goal": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
+                "latex_goal": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0",
+                "lhs_calc": {
+                    "latex_start": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2}",
+                    "start": "D t. log(I(t)) + t ^ 2 / 2",
+                    "steps": [
+                        {
+                            "latex_res": "I^{-1}(t) (\\frac{d}{dt} I{(t)}) + t",
+                            "res": "I(t) ^ -1 * (D t. I(t)) + t",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I^{-1}(t) (-t I{(t)}) + t",
+                            "res": "I(t) ^ -1 * (-t * I(t)) + t",
+                            "rule": {
+                                "eq": "(D t. I(t)) = -t * I(t)",
+                                "latex_str": "apply equation \\(\\frac{d}{dt} I{(t)} = -t I{(t)}\\) at 0.1",
+                                "loc": "0.1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (D t. I(t)) = -t * I(t) at 0.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "0",
+                            "res": "0",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "0",
+                    "start": "0",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "log(I(t)) + t ^ 2 / 2 = log(sqrt(pi / 2))",
+            "latex_goal": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = \\log{(\\sqrt{\\frac{\\pi}{2}})}",
+            "proof": {
+                "finished": true,
+                "goal": "log(I(t)) + t ^ 2 / 2 = log(sqrt(pi / 2))",
+                "latex_goal": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = \\log{(\\sqrt{\\frac{\\pi}{2}})}",
+                "start": {
+                    "latex_start": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0",
+                    "start": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
+                    "steps": [
+                        {
+                            "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = \\log{(I{(0)})}",
+                            "res": "log(I(t)) + t ^ 2 / 2 = log(I(0))",
+                            "rule": {
+                                "name": "integral both side",
+                                "str": "IntegralEquation"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = \\log{(\\sqrt{\\frac{\\pi}{2}})}",
+                            "res": "log(I(t)) + t ^ 2 / 2 = log(sqrt(pi / 2))",
+                            "rule": {
+                                "eq": "I(0) = sqrt(pi / 2)",
+                                "latex_str": "apply equation \\(I{(0)} = \\sqrt{\\frac{\\pi}{2}}\\) at 1.0",
+                                "loc": "1.0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: I(0) = sqrt(pi / 2) at 1.0"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "log(I(t)) = -(t ^ 2) / 2 + log(sqrt(pi / 2))",
+            "latex_goal": "\\log{(I{(t)})} = \\frac{-t ^ {2}}{2} + \\log{(\\sqrt{\\frac{\\pi}{2}})}",
+            "proof": {
+                "finished": true,
+                "goal": "log(I(t)) = -(t ^ 2) / 2 + log(sqrt(pi / 2))",
+                "latex_goal": "\\log{(I{(t)})} = \\frac{-t ^ {2}}{2} + \\log{(\\sqrt{\\frac{\\pi}{2}})}",
+                "lhs_calc": {
+                    "latex_start": "\\log{(I{(t)})}",
+                    "start": "log(I(t))",
+                    "steps": [
+                        {
+                            "latex_res": "\\log{(\\sqrt{\\frac{\\pi}{2}})} - \\frac{t ^ {2}}{2}",
+                            "res": "log(sqrt(pi / 2)) - t ^ 2 / 2",
+                            "rule": {
+                                "eq": "log(I(t)) + t ^ 2 / 2 = log(sqrt(pi / 2))",
+                                "latex_str": "apply equation \\(\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = \\log{(\\sqrt{\\frac{\\pi}{2}})}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: log(I(t)) + t ^ 2 / 2 = log(sqrt(pi / 2))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\log{(\\pi)} - \\frac{1}{2} t ^ {2}",
+                            "res": "-1/2 * log(2) + 1/2 * log(pi) - 1/2 * t ^ 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{-t ^ {2}}{2} + \\log{(\\sqrt{\\frac{\\pi}{2}})}",
+                    "start": "-(t ^ 2) / 2 + log(sqrt(pi / 2))",
+                    "steps": [
+                        {
+                            "latex_res": "-\\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\log{(\\pi)} - \\frac{1}{2} t ^ {2}",
+                            "res": "-1/2 * log(2) + 1/2 * log(pi) - 1/2 * t ^ 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "I(t) = sqrt(pi / 2) * exp(-(t ^ 2) / 2)",
+            "latex_goal": "I{(t)} = \\sqrt{\\frac{\\pi}{2}} e^{-t ^ {2}/2}",
+            "proof": {
+                "finished": true,
+                "goal": "I(t) = sqrt(pi / 2) * exp(-(t ^ 2) / 2)",
+                "latex_goal": "I{(t)} = \\sqrt{\\frac{\\pi}{2}} e^{-t ^ {2}/2}",
+                "start": {
+                    "latex_start": "\\log{(I{(t)})} = \\frac{-t ^ {2}}{2} + \\log{(\\sqrt{\\frac{\\pi}{2}})}",
+                    "start": "log(I(t)) = -(t ^ 2) / 2 + log(sqrt(pi / 2))",
+                    "steps": [
+                        {
+                            "latex_res": "e^{\\log{(I{(t)})}} = e^{-t ^ {2}/2 + \\log{(\\sqrt{\\pi/2})}}",
+                            "res": "exp(log(I(t))) = exp(-(t ^ 2) / 2 + log(sqrt(pi / 2)))",
+                            "rule": {
+                                "name": "ExpEquation",
+                                "str": "ExpEquation"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "e^{\\log{(I{(t)})}} = e^{-t ^ {2}/2} e^{\\log{(\\sqrt{\\pi/2})}}",
+                            "res": "exp(log(I(t))) = exp(-(t ^ 2) / 2) * exp(log(sqrt(pi / 2)))",
+                            "rule": {
+                                "loc": "1",
+                                "name": "RewriteExp",
+                                "str": "rewrite exp expression at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I{(t)} = \\frac{1}{2} \\sqrt{2} \\sqrt{\\pi} e^{-1/2 t ^ {2}}",
+                            "res": "I(t) = 1/2 * sqrt(2) * sqrt(pi) * exp(-1/2 * t ^ 2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "Integral1"
+}

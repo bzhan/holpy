@@ -541,7 +541,7 @@ class Expr:
             else:
                 raise NotImplementedError
         elif self.ty == FUN:
-            assert loc.head < len(self.args), "get_subexpr: invalid location"
+            assert loc.head < len(self.args), "replace_expr: invalid location"
             arg = self.args[loc.head].replace_expr(loc.rest, new_expr)
             return Fun(self.func_name, arg)
         elif self.ty == INTEGRAL:
@@ -552,7 +552,7 @@ class Expr:
             elif loc.head == 2:
                 return Integral(self.var, self.lower, self.upper.replace_expr(loc.rest, new_expr), self.body)
             else:
-                raise AssertionError("get_subexpr: invalid location")
+                raise AssertionError("replace_expr: invalid location")
         elif self.ty == EVAL_AT:
             if loc.head == 0:
                 return EvalAt(self.var, self.lower, self.upper, self.body.replace_expr(loc.rest, new_expr))
@@ -561,12 +561,12 @@ class Expr:
             elif loc.head == 2:
                 return EvalAt(self.var, self.lower, self.upper.replace_expr(loc.rest, new_expr), self.body)
             else:
-                raise AssertionError("get_subexpr: invalid location")
+                raise AssertionError("replace_expr: invalid location")
         elif self.ty == DERIV:      
-            assert loc.head == 0, "get_subexpr: invalid location"
+            assert loc.head == 0, "replace_expr: invalid location"
             return Deriv(self.var, self.body.replace_expr(loc.rest, new_expr))
         elif self.ty == LIMIT:
-            assert loc.head == 0, "get_subexpr: invalid location"
+            assert loc.head == 0, "replace_expr: invalid location"
             return Limit(self.var, self.limit, self.body.replace_expr(loc.rest, new_expr))
         else:
             raise NotImplementedError
@@ -590,22 +590,22 @@ class Expr:
         get(self)
         return location[0]
 
-    def get_subexpr(self, subexpr: Expr) -> List[Location]:
+    def find_subexpr(self, subexpr: Expr) -> List[Location]:
         """Returns the location of a subexpression."""
         locations = []
-        def get(e, loc: Location):
+        def find(e, loc: Location):
             if e == subexpr:
                 locations.append(Location(loc))
             elif e.ty == OP or e.ty == FUN:
                 for i, arg in enumerate(e.args):
-                    get(arg, loc.append(i))
+                    find(arg, loc.append(i))
             elif e.ty == INTEGRAL or e.ty == EVAL_AT:
-                get(e.lower, loc.append(1))
-                get(e.upper, loc.append(2))
-                get(e.body, loc.append(0))
+                find(e.lower, loc.append(1))
+                find(e.upper, loc.append(2))
+                find(e.body, loc.append(0))
             elif e.ty == DERIV or e.ty == LIMIT:
-                get(e.body, loc.append(0))
-        get(self, Location(""))
+                find(e.body, loc.append(0))
+        find(self, Location(""))
         return locations
 
     def subst(self, var: str, e: Expr) -> Expr:
