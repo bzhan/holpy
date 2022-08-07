@@ -198,7 +198,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ElimAbs())
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("cos(x)")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Substitution("u", parser.parse_expr("cos(x)")))
+        calc.perform_rule(rules.OnLocation(rules.Substitution("u", parser.parse_expr("cos(x)")),'1'))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "4/3")
 

@@ -6,6 +6,7 @@ from integral.rules import FullSimplify, LHopital
 from integral.parser import parse_expr
 from integral.expr import Limit
 
+
 class ImproperTest(unittest.TestCase):
     def testNormalize(self):
         test_cases = [
@@ -51,7 +52,7 @@ class ImproperTest(unittest.TestCase):
         # print("t4:", t4)
         t5 = rules.OnLocation(rules.Simplify(), '').eval(t4)
         # print("t5:", t5)
-        self.assertEqual(str(t5),'0')
+        self.assertEqual(str(t5), '0')
 
     # def test_improper_integration(self):
     #     test_case = [
@@ -98,7 +99,6 @@ class ImproperTest(unittest.TestCase):
     #         res = parse_expr(res)
     #         lim_l_p = Limit("x", l, p)
     #         self.assertEqual(lim_l_p.lh(), res)
-            
 
 
 if __name__ == "__main__":
