@@ -306,6 +306,30 @@ class ExprTest(unittest.TestCase):
             repl_e = parse_expr(repl_e)
             res = parse_expr(res)
             self.assertEqual(s.replace_trig(e, repl_e), res)
+    def testDecomposeMul(self):
+        test_data = [('-(b * exp(-(b * t)) * sin(t) * (b ^ 2 + 1) ^ -1)',
+                      ('b', 'exp(-(b * t))','sin(t)','(b ^ 2 + 1) ^ -1','-1')),
+                     ('b * exp(-(b * t)) * sin(t) * (b ^ 2 + 1) ^ -1',
+                      ('b', 'exp(-(b * t))','sin(t)','(b ^ 2 + 1) ^ -1')),
+                     ('- cos(t) * exp(-(b * t)) * (b ^ 2 + 1) ^ -1',
+                      ('cos(t)','-1','exp(-(b * t))', '(b ^ 2 + 1) ^ -1')),]
+
+        for a,b in test_data:
+            a = parse_expr(a)
+            muls = expr.decompose_expr_factor(a)
+            for i,j in zip(muls, b):
+                self.assertEqual(str(i),j)
+    def testDecomposeAdd(self):
+        test_data = [('a-b+c',('a','-b','c')),('3*b+c*d-3',('3 * b','c * d','(-3)')),
+                     (' -(b * exp(-(b * t)) * sin(t) * (b ^ 2 + 1) ^ -1) - cos(t) * exp(-(b * t)) * (b ^ 2 + 1) ^ -1 + (b ^ 2 + 1) ^ -1',())]
+        print("")
+        for a,b in test_data:
+            a = parse_expr(a)
+            adds = expr.decompose_expr_add(a)
+            # for i in adds:
+            #     print(i)
+            for i,j in zip(adds,b):
+                self.assertEqual(str(i),j)
 
     def testDeriv(self):
         test_data = [

@@ -558,6 +558,9 @@ class ApplyEquation(Rule):
             elif self.eq.rhs.is_times() and self.eq.rhs.args[1].normalize() == e.normalize():
                 # e' = f * e
                 return 1 / self.eq.rhs.args[0] * self.eq.lhs
+            elif self.eq.rhs.is_minus() and self.eq.rhs.args[1].normalize() == e.normalize():
+                # c = a - e -> e = a - c
+                return self.eq.rhs.args[0] - self.eq.lhs
             elif self.eq.rhs.is_plus() and self.eq.rhs.args[1] == e:
                 # e' = f + e
                 res = self.eq.lhs - self.eq.rhs.args[0]
@@ -2522,6 +2525,116 @@ class IntegralSimplify(Rule):
 
     def __str__(self):
         return "IntegralSimplify"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class MoveItem(Rule):
+    ''' a + b = c + d -> a + b - c = d
+        move an item to other side
+    '''
+    def __init__(self):
+        self.name = "MoveItem"
+    def eval(self, e:expr.Integral, conds = None):
+        if not isinstance(e, expr.Integral):
+            return e
+        if (e.lower * -1).normalize() == (e.upper).normalize() and e.body.is_even_function(e.var):
+            return 2*Integral(e.var, Const(0), e.upper, e.body)
+        else:
+            return e
+
+    def __str__(self):
+        return "IntegralSimplify"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class MulExprEquation(Rule):
+    def __init__(self, m:Expr):
+        self.name = "MulExprEquation"
+        self.m = m
+    def __str__(self):
+        return "MulExprEquation"
+
+    def eval(self, e:Expr, conds = None):
+
+        if e.is_equals():
+            m = self.m
+            r = FullSimplify()
+            a, b = r.eval(e.lhs * m), r.eval(e.rhs*m)
+            r = ExpandPolynomial()
+            a, b = r.eval(a), r.eval(b)
+            r = FullSimplify()
+            a, b = r.eval(a), r.eval(b)
+            return Op('=', a, b)
+        return e
+
+
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+
+class AddExprEquation(Rule):
+    def __init__(self, m:Expr):
+        self.name = "AddExprEquation"
+        self.m = m
+    def __str__(self):
+        return "AddExprEquation"
+
+    def eval(self, e:Expr, conds = None):
+
+        if e.is_equals():
+            m = self.m
+            r = FullSimplify()
+            a, b = r.eval(e.lhs + m), r.eval(e.rhs + m)
+            return Op('=', a, b)
+        return e
+
+
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class CollectItem(Rule):
+    # m * 3 + m*t - m * 7 = m*(3+t*-7)
+    def __init__(self, m:Expr):
+        self.name = "CollectItem"
+        self.m = m
+    def __str__(self):
+        return "CollectItem"
+
+    def eval(self, e:Expr, conds = None):
+        adds = expr.decompose_expr_add(e)
+        sum = Const(0)
+        for a in adds:
+            muls = expr.decompose_expr_factor(a)
+            tmp = Const(1)
+            cnt = 0
+            for m in muls:
+                if m.normalize() == self.m.normalize():
+                    cnt = cnt+1
+                else:
+                    tmp = tmp * m
+            if cnt != 1:
+                raise NotImplementedError
+
+            sum = sum + tmp
+
+        return (sum.normalize() * self.m).normalize()
+
 
     def export(self):
         return {

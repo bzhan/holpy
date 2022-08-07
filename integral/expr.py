@@ -1,5 +1,5 @@
 """Expressions."""
-
+import copy
 from fractions import Fraction
 import functools, operator
 from collections.abc import Iterable
@@ -1427,14 +1427,20 @@ def collect_spec_expr(expr, symb):
 def decompose_expr_add(e):
     res = []
     def f(e):
+        tmp = []
         if e.ty == OP and e.op == '+':
-            f(e.args[0])
-            f(e.args[1])
+            tmp.extend(f(e.args[0]))
+            tmp.extend(f(e.args[1]))
+        elif e.is_uminus():
+            tmp.extend([-item for item in f(e.args[0])])
+        elif e.ty == OP and e.op == '-' and len(e.args) == 2:
+            tmp.extend(f(e.args[0]))
+            tmp.extend([-item for item in f(e.args[1])])
         else:
-            res.append(e)
+            tmp.extend([e])
+        return copy.copy(tmp)
 
-    f(e)
-    return res
+    return f(e)
 
 
 def decompose_expr_factor(e):
@@ -1445,14 +1451,18 @@ def decompose_expr_factor(e):
     if e.ty == OP and e.op == "/":
         e = e.args[0] * Op("^", e.args[1], Const(-1))
     def f(e):
+        tmp = []
         if e.ty == OP and e.op == '*':
-            f(e.args[0])
-            f(e.args[1])
+            tmp.extend(f(e.args[0]))
+            tmp.extend(f(e.args[1]))
+        elif e.is_uminus():
+            tmp.extend(f(e.args[0]))
+            tmp.append(Const(-1))
         else:
-            factors.append(e)
-
-    f(e)
-    return factors
+            tmp.extend([e])
+        return copy.copy(tmp)
+    return f(e)
+    # return factors
 
 def from_const_mono(m: ConstantMonomial) -> Expr:
     """Convert a ConstantMonomial to an expression."""
@@ -1675,6 +1685,8 @@ def deriv(var: str, e: Expr) -> Expr:
         return (Integral(e.var, e.lower, e.upper, deriv(var, e.body))
                 + e.body.subst(e.var, e.upper) * deriv(var, e.upper)
                 - e.body.subst(e.var, e.lower) * deriv(var, e.lower)).normalize()
+    # elif e.ty == LIMIT:
+    #     return Limit(e.var, e.lim, deriv(var, e.body))
     else:
         raise NotImplementedError
 
