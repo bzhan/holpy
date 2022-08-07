@@ -814,6 +814,36 @@ def query_integral():
         "integrals": res
     })
 
+@app.route("/api/query-trig-identity", methods=['POST'])
+def query_trig_identity():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    try:
+        e = integral.parser.parse_expr(data['expr'])
+        results = []
+        # For each Fu's rule, try to apply
+        for rule_name, (rule_fun, _) in integral.expr.trigFun.items():
+            try:
+                sympy_result = rule_fun(integral.expr.sympy_style(e))
+                new_e = integral.expr.holpy_style(sympy_result)
+                if new_e != e:
+                    results.append({
+                        "rule_name": rule_name,
+                        "new_e": str(new_e),
+                        "latex_new_e": integral.latex.convert_expr(new_e)
+                    })
+            except Exception as e:
+                pass
+        return jsonify({
+            "status": "ok",
+            "latex_expr": integral.latex.convert_expr(e),
+            "results": results
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "fail",
+            "exception": str(e)
+        })
+
 @app.route("/api/add-function-definition", methods=['POST'])
 def add_function_definition():
     data = json.loads(request.get_data().decode('UTF-8'))

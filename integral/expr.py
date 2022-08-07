@@ -3,7 +3,7 @@
 from fractions import Fraction
 import functools, operator
 from collections.abc import Iterable
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 from sympy import solveset, re, Interval, Eq, EmptySet, pexquo
 from decimal import Decimal
 import math
@@ -167,6 +167,9 @@ class Location:
     @property
     def rest(self):
         return Location(self.data[1:])
+
+    def append(self, i: int) -> "Location":
+        return Location(self.data + (i,))
 
 
 class Expr:
@@ -586,6 +589,24 @@ class Expr:
                 get(exp.body, loc+".0")
         get(self)
         return location[0]
+
+    def get_subexpr(self, subexpr: Expr) -> List[Location]:
+        """Returns the location of a subexpression."""
+        locations = []
+        def get(e, loc: Location):
+            if e == subexpr:
+                locations.append(Location(loc))
+            elif e.ty == OP or e.ty == FUN:
+                for i, arg in enumerate(e.args):
+                    get(arg, loc.append(i))
+            elif e.ty == INTEGRAL or e.ty == EVAL_AT:
+                get(e.lower, loc.append(1))
+                get(e.upper, loc.append(2))
+                get(e.body, loc.append(0))
+            elif e.ty == DERIV or e.ty == LIMIT:
+                get(e.body, loc.append(0))
+        get(self, Location(""))
+        return locations
 
     def subst(self, var: str, e: Expr) -> Expr:
         """Substitute occurrence of var for e in self."""
@@ -1301,7 +1322,7 @@ def is_polynomial(e):
     else:
         return False
 
-def trig_transform(trig, var, rule_list=None):
+def trig_transform(trig: Expr, var: str, rule_list=None):
     """Compute all possible trig function equal to trig"""
     poss = set()
     poss_expr = set()

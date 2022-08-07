@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "nodemonConfig": {
-    "ext": "vue,py,js"
+    "ext": "py"
   },
   "dependencies": {
     "axios": "^0.19.2",

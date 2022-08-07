@@ -912,21 +912,38 @@ class PolynomialDivision(Rule):
 
 class RewriteTrigonometric(Rule):
     """Rewrite using one of Fu's rules."""
-    def __init__(self, rule_name: str):
+    def __init__(self, rule_name: str, rewrite_term: Optional[Expr] = None):
         self.name = "RewriteTrigonometric"
         self.rule_name = rule_name
+        self.rewrite_term = rewrite_term
 
     def __str__(self):
-        return "rewrite trigonometric"
+        if self.rewrite_term is None:
+            return "rewrite trigonometric"
+        else:
+            return "rewrite trigonometric on %s" % self.rewrite_term
 
     def export(self):
-        return {
+        res = {
             "name": self.name,
             "rule_name": self.rule_name,
             "str": str(self)
         }
+        if self.rewrite_term is not None:
+            res['rewrite_term'] = str(self.rewrite_term)
+            res['latex_str'] = "rewrite trigonometric on \\(%s\\)" % \
+                latex.convert_expr(self.rewrite_term)
+        return res
 
     def eval(self, e: Expr, conds=None) -> Expr:
+        # Rewrite on a subterm
+        if self.rewrite_term is not None and self.rewrite_term != e:
+            find_res = e.get_subexpr(self.rewrite_term)
+            if len(find_res) == 0:
+                raise AssertionError("RewriteTrigonometric: rewrite term not found")
+            loc = find_res[0]
+            return OnLocation(self, loc).eval(e)
+
         # Select one of Fu's rules
         rule_fun, _ = expr.trigFun[self.rule_name]
         sympy_result = rule_fun(expr.sympy_style(e))

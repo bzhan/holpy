@@ -28,6 +28,7 @@
           <b-dropdown-item href="#" v-on:click="forwardSubstitution">Forward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="trigIdentity">Trig identities</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
@@ -265,6 +266,19 @@
         <ExprQuery v-model="expr_query1"/><br/>
         <button v-on:click="doBackwardSubstitution">OK</button>
       </div>
+      <div v-if="r_query_mode === 'trig identity'">
+        <div class="math-text">Select subexpression:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExpr">
+        <MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'"/>
+        <div v-for="(item, index) in trig_rewrites" :key="index"
+             v-on:click="doTrigIdentity(index)">
+          <MathEquation v-bind:data="'\\(=' + item.latex_new_e + '\\)'"/>
+        </div>
+      </div>
     </div>
     <div id="select">
       <div v-if="display_integral === 'separate'">
@@ -430,6 +444,22 @@ export default {
 
       // Selected fact
       selected_facts: {},
+
+      // Selected latex expression
+      selected_expr: undefined,
+      latex_selected_expr: undefined,
+      trig_rewrites: undefined,
+    }
+  },
+
+  computed: {
+    lastExpr: function() {
+      if (this.content[this.cur_id].steps.length == 0) {
+        return this.content[this.cur_id].start
+      } else {
+        const len = this.content[this.cur_id].steps.length
+        return this.content[this.cur_id].steps[len-1].res
+      }
     }
   },
 
@@ -726,6 +756,45 @@ export default {
       if (response.data.status == 'ok') {
         this.sep_int = response.data.integrals
         this.r_query_mode = 'integrate by parts'
+      }
+    },
+
+    trigIdentity: function() {
+      this.r_query_mode = 'trig identity'
+    },
+
+    selectExpr: async function() {
+      const start = this.$refs.select_expr1.selectionStart
+      const end = this.$refs.select_expr1.selectionEnd
+      this.selected_expr = this.lastExpr.slice(start, end)
+      const data = {
+        expr: this.selected_expr
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-trig-identity", JSON.stringify(data))
+      if (response.data.status === 'ok') {
+        this.latex_selected_expr = response.data.latex_expr
+        this.trig_rewrites = response.data.results
+      } else {
+        this.trig_rewrites = undefined
+      }
+    },
+
+    doTrigIdentity: async function(index) {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: "RewriteTrigonometric",
+          rule_name: this.trig_rewrites[index].rule_name,
+          rewrite_term: this.selected_expr
+        }
+      }
+      console.log(data.rule)
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
       }
     },
 

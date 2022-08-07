@@ -612,8 +612,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 (\\int_{-1/4 \\pi}^{1/4 \\pi} \\cos{(u)} \\sqrt{-8 \\sin^{2}(u) + 8} \\,du)",
-                    "res": "2 * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) * sqrt(-8 * sin(u) ^ 2 + 8))",
+                    "latex_res": "4 (\\int_{0}^{1/4 \\pi} \\cos{(u)} \\sqrt{-8 \\sin^{2}(u) + 8} \\,du)",
+                    "res": "4 * (INT u:[0,1/4 * pi]. cos(u) * sqrt(-8 * sin(u) ^ 2 + 8))",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -621,8 +621,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 (\\int_{-1/4 \\pi}^{1/4 \\pi} \\cos{(u)} \\sqrt{8 \\cos^{2}(u)} \\,du)",
-                    "res": "2 * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) * sqrt(8 * cos(u) ^ 2))",
+                    "latex_res": "4 (\\int_{0}^{1/4 \\pi} \\cos{(u)} \\sqrt{8 \\cos^{2}(u)} \\,du)",
+                    "res": "4 * (INT u:[0,1/4 * pi]. cos(u) * sqrt(8 * cos(u) ^ 2))",
                     "rule": {
                         "loc": "1.0.1.0",
                         "name": "RewriteTrigonometric",
@@ -632,8 +632,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "4 \\sqrt{2} (\\int_{-1/4 \\pi}^{1/4 \\pi} \\cos{(u)} \\left| \\cos{(u)} \\right| \\,du)",
-                    "res": "4 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) * abs(cos(u)))",
+                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{1/4 \\pi} \\cos{(u)} \\left| \\cos{(u)} \\right| \\,du)",
+                    "res": "8 * sqrt(2) * (INT u:[0,1/4 * pi]. cos(u) * abs(cos(u)))",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -641,8 +641,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "4 \\sqrt{2} (\\int_{-\\pi/4}^{\\pi/4} \\cos{(u)} \\cos{(u)} \\,du)",
-                    "res": "4 * sqrt(2) * (INT u:[-pi / 4,pi / 4]. cos(u) * cos(u))",
+                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{\\pi/4} \\cos{(u)} \\cos{(u)} \\,du)",
+                    "res": "8 * sqrt(2) * (INT u:[0,pi / 4]. cos(u) * cos(u))",
                     "rule": {
                         "loc": "1",
                         "name": "ElimAbs",
@@ -651,8 +651,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "4 \\sqrt{2} (\\int_{-1/4 \\pi}^{1/4 \\pi} \\cos^{2}(u) \\,du)",
-                    "res": "4 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) ^ 2)",
+                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{1/4 \\pi} \\cos^{2}(u) \\,du)",
+                    "res": "8 * sqrt(2) * (INT u:[0,1/4 * pi]. cos(u) ^ 2)",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -660,8 +660,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "4 \\sqrt{2} (\\int_{-1/4 \\pi}^{1/4 \\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,du)",
-                    "res": "4 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. cos(2 * u) / 2 + 1/2)",
+                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{1/4 \\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,du)",
+                    "res": "8 * sqrt(2) * (INT u:[0,1/4 * pi]. cos(2 * u) / 2 + 1/2)",
                     "rule": {
                         "loc": "1.0",
                         "name": "RewriteTrigonometric",
@@ -671,8 +671,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "4 \\sqrt{2} (\\int_{-1/2 \\pi}^{1/2 \\pi} \\frac{1}{4} \\cos{(v)} + \\frac{1}{4} \\,dv)",
-                    "res": "4 * sqrt(2) * (INT v:[-1/2 * pi,1/2 * pi]. 1/4 * cos(v) + 1/4)",
+                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{1/2 \\pi} \\frac{1}{4} \\cos{(v)} + \\frac{1}{4} \\,dv)",
+                    "res": "8 * sqrt(2) * (INT v:[0,1/2 * pi]. 1/4 * cos(v) + 1/4)",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(2 u\\)",
                         "name": "Substitution",
@@ -1148,8 +1148,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{8} (\\int_{-\\pi}^{\\pi} \\cos^{2}(u) \\,du) + \\frac{1}{4} \\pi",
-                    "res": "1/8 * (INT u:[-pi,pi]. cos(u) ^ 2) + 1/4 * pi",
+                    "latex_res": "\\frac{1}{4} (\\int_{0}^{\\pi} \\cos^{2}(u) \\,du) + \\frac{1}{4} \\pi",
+                    "res": "1/4 * (INT u:[0,pi]. cos(u) ^ 2) + 1/4 * pi",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -1157,8 +1157,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{8} (\\int_{-\\pi}^{\\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,du) + \\frac{1}{4} \\pi",
-                    "res": "1/8 * (INT u:[-pi,pi]. cos(2 * u) / 2 + 1/2) + 1/4 * pi",
+                    "latex_res": "\\frac{1}{4} (\\int_{0}^{\\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,du) + \\frac{1}{4} \\pi",
+                    "res": "1/4 * (INT u:[0,pi]. cos(2 * u) / 2 + 1/2) + 1/4 * pi",
                     "rule": {
                         "loc": "0.1.0",
                         "name": "RewriteTrigonometric",
@@ -1168,8 +1168,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{8} (\\int_{-2 \\pi}^{2 \\pi} \\frac{1}{4} \\cos{(v)} + \\frac{1}{4} \\,dv) + \\frac{1}{4} \\pi",
-                    "res": "1/8 * (INT v:[-2 * pi,2 * pi]. 1/4 * cos(v) + 1/4) + 1/4 * pi",
+                    "latex_res": "\\frac{1}{4} (\\int_{0}^{2 \\pi} \\frac{1}{4} \\cos{(v)} + \\frac{1}{4} \\,dv) + \\frac{1}{4} \\pi",
+                    "res": "1/4 * (INT v:[0,2 * pi]. 1/4 * cos(v) + 1/4) + 1/4 * pi",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(2 u\\)",
                         "name": "Substitution",
@@ -1192,95 +1192,6 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} - \\cos^{3}(x)} \\,dx",
-            "start": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) - cos(x) ^ 3)",
-            "steps": [
-                {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} (1 - \\cos^{2}(x))} \\,dx",
-                    "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * (1 - cos(x) ^ 2))",
-                    "rule": {
-                        "loc": "0.0",
-                        "name": "Equation",
-                        "new_expr": "cos(x) * (1 - cos(x) ^ 2)",
-                        "str": "rewriting at 0.0"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} \\sin^{2}(x)} \\,dx",
-                    "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * sin(x) ^ 2)",
-                    "rule": {
-                        "loc": "0.0.1",
-                        "name": "RewriteTrigonometric",
-                        "rule_name": "TR6",
-                        "str": "rewrite trigonometric at 0.0.1"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\int_{-1/2 \\pi}^{1/2 \\pi} \\sqrt{\\cos{(x)}} \\left| \\sin{(x)} \\right| \\,dx",
-                    "res": "INT x:[-1/2 * pi,1/2 * pi]. sqrt(cos(x)) * abs(sin(x))",
-                    "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "(\\int_{0}^{\\pi/2} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,dx) + (\\int_{-\\pi/2}^{0} \\sqrt{\\cos{(x)}} -\\sin{(x)} \\,dx)",
-                    "res": "(INT x:[0,pi / 2]. sqrt(cos(x)) * sin(x)) + (INT x:[-pi / 2,0]. sqrt(cos(x)) * -sin(x))",
-                    "rule": {
-                        "name": "ElimAbs",
-                        "str": "eliminate absolute values"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "(\\int_{0}^{1} \\sqrt{u} \\,du) + (\\int_{-\\pi/2}^{0} \\sqrt{\\cos{(x)}} -\\sin{(x)} \\,dx)",
-                    "res": "(INT u:[0,1]. sqrt(u)) + (INT x:[-pi / 2,0]. sqrt(cos(x)) * -sin(x))",
-                    "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(\\cos{(x)}\\)",
-                        "name": "Substitution",
-                        "str": "substitute u for cos(x)",
-                        "var_name": "u",
-                        "var_subst": "cos(x)"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "-(\\int_{-1/2 \\pi}^{0} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,dx) + \\frac{2}{3}",
-                    "res": "-(INT x:[-1/2 * pi,0]. sqrt(cos(x)) * sin(x)) + 2/3",
-                    "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "-(\\int_{0}^{1} -\\sqrt{u} \\,du) + \\frac{2}{3}",
-                    "res": "-(INT u:[0,1]. -sqrt(u)) + 2/3",
-                    "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(\\cos{(x)}\\)",
-                        "name": "Substitution",
-                        "str": "substitute u for cos(x)",
-                        "var_name": "u",
-                        "var_subst": "cos(x)"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\frac{4}{3}",
-                    "res": "4/3",
-                    "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
-                    },
-                    "type": "CalculationStep"
-                }
-            ],
-            "type": "Calculation"
-        },
-        {
             "latex_start": "\\int_{0}^{\\pi} \\sqrt{1 + \\cos{(2 x)}} \\,dx",
             "start": "INT x:[0,pi]. sqrt(1 + cos(2 * x))",
             "steps": [
@@ -1288,10 +1199,11 @@
                     "latex_res": "\\int_{0}^{\\pi} \\sqrt{1 + (-\\sin^{2}(x) + \\cos^{2}(x))} \\,dx",
                     "res": "INT x:[0,pi]. sqrt(1 + (-(sin(x) ^ 2) + cos(x) ^ 2))",
                     "rule": {
-                        "loc": "0.0.1",
+                        "latex_str": "rewrite trigonometric on \\(\\cos{(2 x)}\\)",
                         "name": "RewriteTrigonometric",
+                        "rewrite_term": "cos(2 * x)",
                         "rule_name": "TR11",
-                        "str": "rewrite trigonometric at 0.0.1"
+                        "str": "rewrite trigonometric on cos(2 * x)"
                     },
                     "type": "CalculationStep"
                 },
@@ -1299,10 +1211,11 @@
                     "latex_res": "\\int_{0}^{\\pi} \\sqrt{1 + (\\cos^{2}(x) - 1 + \\cos^{2}(x))} \\,dx",
                     "res": "INT x:[0,pi]. sqrt(1 + (cos(x) ^ 2 - 1 + cos(x) ^ 2))",
                     "rule": {
-                        "loc": "0.0.1.0",
+                        "latex_str": "rewrite trigonometric on \\(-\\sin^{2}(x)\\)",
                         "name": "RewriteTrigonometric",
+                        "rewrite_term": "-(sin(x) ^ 2)",
                         "rule_name": "TR5",
-                        "str": "rewrite trigonometric at 0.0.1.0"
+                        "str": "rewrite trigonometric on -(sin(x) ^ 2)"
                     },
                     "type": "CalculationStep"
                 },
