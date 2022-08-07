@@ -558,6 +558,9 @@ class ApplyEquation(Rule):
             elif self.eq.rhs.is_times() and self.eq.rhs.args[1].normalize() == e.normalize():
                 # e' = f * e
                 return 1 / self.eq.rhs.args[0] * self.eq.lhs
+            elif self.eq.rhs.is_minus() and self.eq.rhs.args[1].normalize() == e.normalize():
+                # c = a - e -> e = a - c
+                return self.eq.rhs.args[0] - self.eq.lhs
             elif self.eq.rhs.is_plus() and self.eq.rhs.args[1] == e:
                 # e' = f + e
                 res = self.eq.lhs - self.eq.rhs.args[0]
@@ -572,6 +575,8 @@ class ApplyEquation(Rule):
                 if conditions.is_const(e, conds):
                     conds.add_condition(str(res), Fun('isConst', res))
                 return res
+            elif self.eq.lhs.is_plus() and self.eq.lhs.args[0].normalize() == e.normalize():
+                return self.eq.rhs - self.eq.lhs.args[1]
             else:
                 return e
         else:
@@ -2547,6 +2552,27 @@ class IntegralSimplify(Rule):
 
     def __str__(self):
         return "IntegralSimplify"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+
+class ExpEquation(Rule):
+    def __init__(self):
+        self.name = "ExpEquation"
+    def __str__(self):
+        return "ExpEquation"
+
+    def eval(self, e:Expr, conds = None):
+        r = FullSimplify()
+        a = Fun('exp', e.lhs)
+        b = Fun('exp', e.rhs)
+        # a = r.eval(a)
+        # b = r.eval(b)
+        return Op('=', a, b)
 
     def export(self):
         return {

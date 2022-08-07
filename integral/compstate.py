@@ -111,6 +111,9 @@ class FuncDef(StateItem):
     def get_facts(self):
         return [self.eq]
 
+class Assumption(StateItem):
+    def __init__(self, assumption):
+        self.assumption = assumption
 
 class Goal(StateItem):
     """Goal to be proved."""
