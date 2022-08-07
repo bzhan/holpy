@@ -7,6 +7,7 @@ from integral.parser import parse_expr
 class LatexTest(unittest.TestCase):
     def testConvertExpr(self):
         test_data = [
+            ('I(t) ^ -1', 'I^{-1}(t)'),
             ("sqrt(2)", "\\sqrt{2}"),
             ("1/3", "\\frac{1}{3}"),
             ("x^-2", "x ^ {-2}"),

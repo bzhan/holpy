@@ -1680,13 +1680,13 @@ def deriv(var: str, e: Expr) -> Expr:
             assert not e.contains_var(var), "deriv: binom applied to real variables"
             return Const(0)
         else:
-            raise NotImplementedError
+            return Deriv(var, e)
     elif e.ty == INTEGRAL:
         return (Integral(e.var, e.lower, e.upper, deriv(var, e.body))
                 + e.body.subst(e.var, e.upper) * deriv(var, e.upper)
                 - e.body.subst(e.var, e.lower) * deriv(var, e.lower)).normalize()
-    # elif e.ty == LIMIT:
-    #     return Limit(e.var, e.lim, deriv(var, e.body))
+    elif e.ty == LIMIT:
+        return Limit(e.var, e.lim, deriv(var, e.body))
     else:
         raise NotImplementedError
 

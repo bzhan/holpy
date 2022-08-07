@@ -575,6 +575,8 @@ class ApplyEquation(Rule):
                 if conditions.is_const(e, conds):
                     conds.add_condition(str(res), Fun('isConst', res))
                 return res
+            elif self.eq.lhs.is_plus() and self.eq.lhs.args[0].normalize() == e.normalize():
+                return self.eq.rhs - self.eq.lhs.args[1]
             else:
                 return e
         else:
@@ -2635,6 +2637,26 @@ class CollectItem(Rule):
 
         return (sum.normalize() * self.m).normalize()
 
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class ExpEquation(Rule):
+    def __init__(self):
+        self.name = "ExpEquation"
+    def __str__(self):
+        return "ExpEquation"
+
+    def eval(self, e:Expr, conds = None):
+        r = FullSimplify()
+        a = Fun('exp', e.lhs)
+        b = Fun('exp', e.rhs)
+        # a = r.eval(a)
+        # b = r.eval(b)
+        return Op('=', a, b)
 
     def export(self):
         return {
