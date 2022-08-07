@@ -29,16 +29,15 @@
           <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="trigIdentity">Trig identities</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='elimAbs'>Eliminate Abs</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='polynomialDivision'>Rewrite fraction</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Identities</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='unfoldPower'>Unfold power</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='split'>Splitting an Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='integrateByEquation'>Solving Equations</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='elimAbs'>Eliminate Abs</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='elimInfinity'>Eliminate Infinity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='lhopital'>L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -144,14 +143,6 @@
         <br>
         <input ref="power" style="width:400px" disabled="disabled" v-model="this.sep_int[integral_index].body">
         <button v-on:click="validation_power">OK</button>  
-      </div>
-      <div v-if="r_query_mode === 'trig'">
-        <label>Select the part you wish to transform to other trignometric functions.</label>
-        <br>
-        <input id="cloned" ref="mycloned" style="width:500px" disabled="disabled" v-model="this.sep_int[integral_index].body">
-        <button v-on:click="validation">OK</button>
-        <br>
-        <p v-if="seen === true" style="color:red">Illegal selection: "{{this.selected}}" is not a valid expression.</p>
       </div>
       <div v-if="r_query_mode === 'display_trig'">
         <div v-for="(step, index) in trig_identities_data.new_expr" :key="index">
@@ -303,18 +294,6 @@
         </div>
         <div>
           <p v-if="seen === true" style="color:red">{{this.error_message}}</p>
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="closeIntegral">Close</button>
-        </div>  
-      </div>
-      <div v-if="display_integral === 'abs'">
-        <div v-for="(step, index) in sep_int" :key="index">
-          <span>{{index+1}}:</span>
-          <MathEquation
-          v-on:click.native="doElimAbs(index)"
-          v-bind:data="'\\(' + step.latex + '\\)'"
-          style="cursor:pointer"/>
         </div>
         <div style="margin-top:10px">
           <button v-on:click="closeIntegral">Close</button>
@@ -876,6 +855,22 @@ export default {
       }
     },
 
+    elimAbs: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: "ElimAbs"
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
     // Retrieve the stored calculation
     restore: function () {
       if ('calc' in this.content[this.cur_id]) {
@@ -1017,29 +1012,6 @@ export default {
       }
     },
 
-    elimAbs: function() {
-      if(this.cur_calc.length == 0){
-        return;
-      }
-      this.query_mode = 'abs';
-      this.show_proof_mode = undefined
-      this.displaySeparateIntegrals_abs();
-    },
-
-    doElimAbs: async function (index) {
-      this.integral_index = index;
-      const data = {
-        problem: this.sep_int[this.integral_index].text,
-        location: this.sep_int[this.integral_index].location
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-elim-abs", JSON.stringify(data))
-      this.sep_int[this.integral_index] = response.data;
-      this.process_index = this.integral_index;
-      this.take_effect = 1;
-      this.closeIntegral();
-      this.query_mode = undefined;
-    },
-
     closeIntegral: async function(){
       //this.clear_separate_integral()
       var integrals = []
@@ -1132,16 +1104,6 @@ export default {
       }
 
       this.integral_index = index
-    },
-
-    trigtransform: function(){
-      if (this.cur_calc.length === 0)
-        return;
-
-        this.query_mode = 'trig'
-        this.show_proof_mode = undefined
-        this.displaySeparateIntegrals()
-        this.sep_int = []
     },
 
     transform: function(item){

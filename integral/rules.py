@@ -1018,7 +1018,11 @@ class ElimAbs(Rule):
             else:
                 return e
         else:
-            return e
+            sep_ints = e.separate_integral()
+            if len(sep_ints) == 0:
+                return e
+            else:
+                return OnLocation(self, sep_ints[0][1]).eval(e)
 
 class SplitRegion(Rule):
     """Split integral into two parts at a point."""

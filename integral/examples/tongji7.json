@@ -545,9 +545,8 @@
                     "latex_res": "2 (\\int_{0}^{\\pi/2} \\cos{(u)} \\cos{(u)} \\,du)",
                     "res": "2 * (INT u:[0,pi / 2]. cos(u) * cos(u))",
                     "rule": {
-                        "loc": "1",
                         "name": "ElimAbs",
-                        "str": "eliminate absolute values at 1"
+                        "str": "eliminate absolute values"
                     },
                     "type": "CalculationStep"
                 },
@@ -644,9 +643,8 @@
                     "latex_res": "8 \\sqrt{2} (\\int_{0}^{\\pi/4} \\cos{(u)} \\cos{(u)} \\,du)",
                     "res": "8 * sqrt(2) * (INT u:[0,pi / 4]. cos(u) * cos(u))",
                     "rule": {
-                        "loc": "1",
                         "name": "ElimAbs",
-                        "str": "eliminate absolute values at 1"
+                        "str": "eliminate absolute values"
                     },
                     "type": "CalculationStep"
                 },
@@ -1192,6 +1190,74 @@
             "type": "Calculation"
         },
         {
+            "latex_start": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} - \\cos^{3}(x)} \\,dx",
+            "start": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) - cos(x) ^ 3)",
+            "steps": [
+                {
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} (1 - \\cos^{2}(x))} \\,dx",
+                    "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * (1 - cos(x) ^ 2))",
+                    "rule": {
+                        "loc": "0.0",
+                        "name": "Equation",
+                        "new_expr": "cos(x) * (1 - cos(x) ^ 2)",
+                        "str": "rewriting at 0.0"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} \\sin^{2}(x)} \\,dx",
+                    "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * sin(x) ^ 2)",
+                    "rule": {
+                        "loc": "0.0.1",
+                        "name": "RewriteTrigonometric",
+                        "rule_name": "TR6",
+                        "str": "rewrite trigonometric at 0.0.1"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "2 (\\int_{0}^{1/2 \\pi} \\sqrt{\\cos{(x)}} \\left| \\sin{(x)} \\right| \\,dx)",
+                    "res": "2 * (INT x:[0,1/2 * pi]. sqrt(cos(x)) * abs(sin(x)))",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "2 (\\int_{0}^{\\pi/2} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,dx)",
+                    "res": "2 * (INT x:[0,pi / 2]. sqrt(cos(x)) * sin(x))",
+                    "rule": {
+                        "name": "ElimAbs",
+                        "str": "eliminate absolute values"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "2 (\\int_{0}^{1} \\sqrt{u} \\,du)",
+                    "res": "2 * (INT u:[0,1]. sqrt(u))",
+                    "rule": {
+                        "latex_str": "substitute \\(u\\) for \\(\\cos{(x)}\\)",
+                        "name": "Substitution",
+                        "str": "substitute u for cos(x)",
+                        "var_name": "u",
+                        "var_subst": "cos(x)"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\frac{4}{3}",
+                    "res": "4/3",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                }
+            ],
+            "type": "Calculation"
+        },
+        {
             "latex_start": "\\int_{0}^{\\pi} \\sqrt{1 + \\cos{(2 x)}} \\,dx",
             "start": "INT x:[0,pi]. sqrt(1 + cos(2 * x))",
             "steps": [
@@ -1232,9 +1298,8 @@
                     "latex_res": "\\sqrt{2} ((\\int_{0}^{\\pi/2} \\cos{(x)} \\,dx) + (\\int_{\\pi/2}^{\\pi} -\\cos{(x)} \\,dx))",
                     "res": "sqrt(2) * ((INT x:[0,pi / 2]. cos(x)) + (INT x:[pi / 2,pi]. -cos(x)))",
                     "rule": {
-                        "loc": "1",
                         "name": "ElimAbs",
-                        "str": "eliminate absolute values at 1"
+                        "str": "eliminate absolute values"
                     },
                     "type": "CalculationStep"
                 },
