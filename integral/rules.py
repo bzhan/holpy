@@ -1141,8 +1141,12 @@ class ElimInfInterval(Rule):
         def gen_lim_expr(new_var, lim, lower, upper, drt = None):
             return expr.Limit(new_var, lim, expr.Integral(e.var, lower, upper, e.body),drt)
 
-        if e.ty != expr.INTEGRAL:
-            return e
+        if not e.is_integral():
+            sep_ints = e.separate_integral()
+            if len(sep_ints) == 0:
+                return e
+            else:
+                return OnLocation(self, sep_ints[0][1]).eval(e)
 
         inf = Inf(Decimal('inf'))
         neg_inf = Inf(Decimal('-inf'))
@@ -2361,7 +2365,7 @@ class RewriteFactorial(Rule):
         self.name = "RewriteFactorial"
 
     def __str__(self):
-        return "RewriteFactorial"
+        return "rewrite factorial"
 
     def export(self):
         return {

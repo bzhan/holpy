@@ -9,6 +9,7 @@
     </span>
     <CalculationProof v-bind:item="item.base_case.proof" v-bind:label="label + '1.'"
                       v-bind:selected_item="selected_item"
+                      v-bind:selected_facts="selected_facts"
                       @select="(lbl) => $emit('select', lbl)"/>
     <span class="math-text">{{label}}2. Induction case: </span>
     <span @click="$emit('select', label + '2.')"
@@ -17,6 +18,7 @@
     </span>
     <CalculationProof v-bind:item="item.induct_case.proof" v-bind:label="label + '2.'"
                       v-bind:selected_item="selected_item"
+                      v-bind:selected_facts="selected_facts"
                       @select="(lbl) => $emit('select', lbl)"/>
   </div>
 </template>
@@ -36,6 +38,7 @@ export default {
     "item",
     "label",
     "selected_item",
+    "selected_facts",
   ]
 }
 

@@ -370,13 +370,12 @@ class IntegralTest(unittest.TestCase):
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(gamma_def.eq))
         calc.perform_rule(rules.ElimInfInterval())
-        calc.perform_rule(rules.OnLocation(
-            rules.IntegrationByParts(parser.parse_expr("x^n"), parser.parse_expr("-exp(-x)")), "0"))
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("x^n"), parser.parse_expr("-exp(-x)")))
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(gamma_def.eq)))
-        calc.perform_rule(rules.OnLocation(rules.ElimInfInterval(), "1"))
+        calc.perform_rule(rules.ElimInfInterval())
 
         # Gamma function and factorial
         goal2 = compstate.Goal(parser.parse_expr("Gamma(n+1) = factorial(n)"))
@@ -389,7 +388,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof_base.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(gamma_def.eq))
         calc.perform_rule(rules.ElimInfInterval())
-        calc.perform_rule(rules.OnLocation(rules.Substitution("u", parser.parse_expr("-x")), "0"))
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("-x")))
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof_induct.lhs_calc

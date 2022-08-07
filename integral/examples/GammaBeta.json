@@ -58,10 +58,9 @@
                             "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. -x ^ {n} e^{-x} \\right\\vert_{x=0}^{t}) - (\\int_{0}^{t} -n x ^ {n - 1} e^{-x} \\,dx)\\,)",
                             "res": "LIM {t -> oo}. ([-(x ^ n * exp(-x))]_x=0,t) - (INT x:[0,t]. -(n * x ^ (n - 1) * exp(-x)))",
                             "rule": {
-                                "latex_str": "integrate by parts \\(u \\to x ^ {n}, v \\to -e^{-x}\\) at 0",
-                                "loc": "0",
+                                "latex_str": "integrate by parts \\(u \\to x ^ {n}, v \\to -e^{-x}\\)",
                                 "name": "IntegrationByParts",
-                                "str": "integrate by parts u -> x ^ n, v -> -exp(-x) at 0",
+                                "str": "integrate by parts u -> x ^ n, v -> -exp(-x)",
                                 "u": "x ^ n",
                                 "v": "-exp(-x)"
                             },
@@ -99,9 +98,8 @@
                             "res": "n * (LIM {t -> oo}. INT x:[0,t]. x ^ (n - 1) * exp(-x))",
                             "rule": {
                                 "a": "0",
-                                "loc": "1",
                                 "name": "ElimInfInterval",
-                                "str": "eliminate improper integral at 1"
+                                "str": "eliminate improper integral"
                             },
                             "type": "CalculationStep"
                         }
@@ -153,10 +151,9 @@
                                     "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{-t} -e^{u} \\,du",
                                     "res": "LIM {t -> oo}. INT u:[0,-t]. -exp(u)",
                                     "rule": {
-                                        "latex_str": "substitute \\(u\\) for \\(-x\\) at 0",
-                                        "loc": "0",
+                                        "latex_str": "substitute \\(u\\) for \\(-x\\)",
                                         "name": "Substitution",
-                                        "str": "substitute u for -x at 0",
+                                        "str": "substitute u for -x",
                                         "var_name": "u",
                                         "var_subst": "-x"
                                     },
@@ -241,7 +238,7 @@
                                     "res": "factorial(n + 1)",
                                     "rule": {
                                         "name": "RewriteFactorial",
-                                        "str": "RewriteFactorial"
+                                        "str": "rewrite factorial"
                                     },
                                     "type": "CalculationStep"
                                 }

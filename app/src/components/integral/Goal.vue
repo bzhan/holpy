@@ -20,11 +20,13 @@
         <div v-if="item.proof.type === 'CalculationProof'">
           <CalculationProof v-bind:item="item.proof" v-bind:label="label"
                             v-bind:selected_item="selected_item"
+                            v-bind:selected_facts="selected_facts"
                             @select="(lbl) => $emit('select', lbl)"/>
         </div>
         <div v-if="item.proof.type === 'InductionProof'">
           <InductionProof v-bind:item="item.proof" v-bind:label="label"
                           v-bind:selected_item="selected_item"
+                          v-bind:selected_facts="selected_facts"
                           @select="(lbl) => $emit('select', lbl)"/>
         </div>
       </div>
