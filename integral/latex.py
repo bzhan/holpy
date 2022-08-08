@@ -79,7 +79,12 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                     sx = "(%s)" % sx
                 if y.priority() <= e.priority():
                     sy = "(%s)" % sy
-                return "%s %s" % (sx, sy)
+                if mode == 'short' and x.is_const() and isinstance(x.val, Fraction) and \
+                    x.val.denominator != 1:
+                    # If left side is a fraction, add dot to reduce ambiguity
+                    return "%s\\cdot %s" % (sx, sy)
+                else:
+                    return "%s %s" % (sx, sy)
                 # if not x.is_constant() and not y.is_constant() and not (y.ty == OP and y.op == "^" and y.args[1].ty == CONST and y.args[1].val < 0) or x == expr.Fun("pi") or y == expr.Fun("pi"):
                 #     if x.ty == expr.OP and (x.op not in ("^", "*")) and not len(x.args) == 1:
                 #         sx = "(" + sx + ")"
