@@ -29,16 +29,15 @@
           <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="trigIdentity">Trig identities</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='elimAbs'>Eliminate Abs</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='solveEquation'>Solve Equation</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="elimAbs">Eliminate abs</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="expandPolynomial">Expand polynomial</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="polynomialDivision">Polynomial division</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='polynomialDivision'>Rewrite fraction</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='unfoldPower'>Unfold power</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='split'>Splitting an Integral</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='elimInfinity'>Eliminate Infinity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='lhopital'>L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -140,12 +139,6 @@
       </div>
     </div>
     <div id="dialog">
-      <div v-if="r_query_mode === 'unfoldpower'">
-        <lable>Select the power expression you want to unfold.</lable>
-        <br>
-        <input ref="power" style="width:400px" disabled="disabled" v-model="this.sep_int[integral_index].body">
-        <button v-on:click="validation_power">OK</button>  
-      </div>
       <div v-if="r_query_mode === 'display_trig'">
         <div v-for="(step, index) in trig_identities_data.new_expr" :key="index">
           <span>{{index+1}}:</span>
@@ -274,34 +267,6 @@
         <div style="margin-top:10px">
           <button v-on:click="closeIntegral">Close</button>
         </div>  
-      </div>
-      <div v-if="display_integral === 'division'">
-        <div v-for="(step, index) in sep_int" :key="index">
-          <span>{{index+1}}:</span>
-          <MathEquation
-          v-on:click.native="doPolynomialDivision(index)"
-          v-bind:data="'\\(' + step.latex + '\\)'"
-          style="cursor:pointer"/>
-        </div>
-        <div>
-          <p v-if="seen === true" style="color:red">{{this.error_message}}</p>
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="closeIntegral">Close</button>
-        </div>  
-      </div>
-      <div v-if="display_integral === 'eliminf'">
-        <label>Elim Inf</label>
-        <div v-for="(step, index) in sep_int" :key="index">
-          <span>{{index+1}}: </span>
-          <MathEquation
-          v-on:click.native="doElimInfinity(index)"
-          v-bind:data="'\\(' + step.latex + '\\)'"
-          style="cursor:pointer"/>
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="closeIntegral">Close</button>
-        </div>
       </div>
       <div v-if="display_integral === 'lhopital'">
         <label>L'Hopital Rule</label>
@@ -855,7 +820,6 @@ export default {
       if (response.data.status == 'ok') {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
-        this.r_query_mode = undefined
       }
     },
 
@@ -871,6 +835,36 @@ export default {
         this.selected_item = response.data.selected_item
         this.r_query_mode = undefined
         this.selected_facts = {}
+      }
+    },
+
+    expandPolynomial: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: "ExpandPolynomial"
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+      }
+    },
+
+    polynomialDivision: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: "PolynomialDivision"
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
       }
     },
 
@@ -1146,42 +1140,6 @@ export default {
         this.split_success = false;
       }
     },
-    
-
-    unfoldPower: function () {
-      if (this.cur_calc.length === 0)
-        return;
-      this.sep_int = []
-      this.query_mode = 'unfoldpower'
-      this.show_proof_mode = undefined
-      this.displaySeparateIntegrals()
-    },
-
-    polynomialDivision: async function() {
-      if (this.cur_calc.length === 0)
-        return;
-      this.sep_int = [];
-      this.displaySeparateIntegrals_division();
-      this.display_integral = "division";
-    },
-
-    doPolynomialDivision: async function (index) {
-      this.integral_index = index;
-      const data = {
-        problem: this.sep_int[index].text,
-        location: this.sep_int[index].location
-      };
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-polynomial-division", JSON.stringify(data));
-      if(response.data.flag === true){
-        this.sep_int[index] = response.data;
-        this.take_effect = 1;
-        this.process_index = index;
-        this.closeIntegral();
-      }else{
-        this.seen = true;
-        this.error_message = response.data.reason;
-      }
-    },
 
     equationSubst: function() {
       if (this.cur_calc.length === 0)
@@ -1209,28 +1167,6 @@ export default {
       }else{
         this.equation_data.fail_reason = response.data._latex_reason
       }
-    },
-
-    elimInfinity: function(){
-      this.sep_int = []
-      this.display_integral = 'eliminf'
-      this.show_proof_mode = undefined
-      this.displaySeparateIntegrals_eliminf()
-    },
-
-    doElimInfinity: async function(index) {
-      const data = {
-        problem: this.sep_int[index].text,
-        location: this.sep_int[index].location
-      }
-
-      const responce = await axios.post("http://127.0.0.1:5000/api/integral-elim-inf", JSON.stringify(data))
-
-      this.sep_int[index] = responce.data
-      this.take_effect = 1
-      this.integral_index = undefined
-      this.process_index = index
-      this.closeIntegral()
     },
 
     displayProof: function(index){
