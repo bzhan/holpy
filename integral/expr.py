@@ -1349,65 +1349,42 @@ def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
     """
     d = dict()
     def rec(exp, pattern):
-        if not isinstance(pattern, Symbol) and exp.ty != pattern.ty:
-            return None
+        if isinstance(pattern, Symbol):
+            if pattern in d:
+                return exp == d[pattern]
+            elif exp.ty in pattern.pat:
+                d[pattern] = exp
+                return True
+            else:
+                return False
+        if exp.ty != pattern.ty:
+            return False
         if exp.ty == VAR:
-            if pattern.ty == VAR and pattern.name == exp.name:
-                return d
-            if not isinstance(pattern, Symbol) or VAR not in pattern.pat:
-                return None
-            if pattern in d.keys():
-                return d if exp == d[pattern] else None
-            else:
-                d[pattern] = exp
-                return d
+            return pattern.name == exp.name
         elif exp.ty == CONST:
-            if pattern.ty == CONST and pattern.val == exp.val:
-                return d
-            if not isinstance(pattern, Symbol) or CONST not in pattern.pat:
-                return None
-            if pattern in d.keys():
-                return d if exp == d[pattern] else None
-            else:
-                d[pattern] = exp
-                return d
+            return pattern.val == exp.val
         elif exp.ty == OP:
-            if isinstance(pattern, Symbol):
-                if OP in pattern.pat:
-                    if pattern in d.keys():
-                        return d if d[pattern] == exp else None
-                    else:
-                        d[pattern] = exp
-                        return d
-                else:
-                    return None
             if exp.op != pattern.op or len(exp.args) != len(pattern.args):
-                return None
-            
-            table = [rec(exp.args[i], pattern.args[i]) for i in range(len(exp.args))]
-            and_table = functools.reduce(lambda x, y: x and y, table)
-            return d if and_table else None
+                return False
+            for i in range(len(exp.args)):
+                if not rec(exp.args[i], pattern.args[i]):
+                    return False
+            return True
         elif exp.ty == FUN:
-            if isinstance(pattern, Symbol):
-                if FUN in pattern.pat:
-                    if pattern in d.keys():
-                        return d if d[pattern] == exp else None
-                    else:
-                        d[pattern] = exp
-                        return d
-                else:
-                    return None
             if exp.func_name != pattern.func_name or len(exp.args) != len(pattern.args):
-                return None
-            table = [rec(exp.args[i], pattern.args[i]) for i in range(len(exp.args))]
-            and_table = functools.reduce(lambda x, y: x and y, table, True)
-            return d if and_table else None
-        elif exp.ty in (DERIV, EVAL_AT, INTEGRAL):
-            return rec(exp.body, pattern)
+                return False
+            for i in range(len(exp.args)):
+                if not rec(exp.args[i], pattern.args[i]):
+                    return False
+            return True
+        else:
+            # Currently not implemented
+            return False
 
-    if exp == pattern:
-        return dict()
-    return rec(exp, pattern)
+    if rec(exp, pattern):
+        return d
+    else:
+        return None
 
 def expr_to_pattern(e: Expr) -> Expr:
     """Convert an expression to pattern."""
@@ -2089,10 +2066,10 @@ class EvalAt(Expr):
 class Symbol(Expr):
     """Pattern expression. It can be used to find expression with the given specific structure.
     """
-    def __init__(self, name: str, ty):
+    def __init__(self, name: str, pat: List[str]):
         self.ty = SYMBOL
         self.name = name
-        self.pat = tuple(ty)
+        self.pat = tuple(pat)
 
     def __eq__(self, other):
         return isinstance(other, Symbol) and self.name == other.name and self.pat == other.pat

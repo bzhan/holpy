@@ -74,6 +74,17 @@ class RulesTest(unittest.TestCase):
             s = parse_expr(s)
             self.assertEqual(str(rule.eval(s.normalize())), s2)
 
+    def testTrigSimplify(self):
+        test_data = [
+            ("sin(1/2 * pi - x)", "cos(x)"),
+            ("cos(1/2 * pi - x)", "sin(x)"),
+        ]
+
+        rule = rules.TrigSimplify()
+        for s, s2 in test_data:
+            s = parse_expr(s)
+            self.assertEqual(str(rule.eval(s)), s2)
+
     def testOnSubterm(self):
         test_data = [
             ("(INT x:[a,b]. 1) + 2 * (INT x:[a,b]. x) + (INT x:[a,b]. x ^ 2)",

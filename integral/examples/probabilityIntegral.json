@@ -29,7 +29,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(\\int_{0}^{\\infty} e^{-1/2 y ^ {2}} \\,dy) + (\\int_{0}^{\\infty} e^{-x ^ {2}/2} \\,dx)",
+                            "latex_res": "(\\int_{0}^{\\infty} e^{-1/2\\cdot y ^ {2}} \\,dy) + (\\int_{0}^{\\infty} e^{-x ^ {2}/2} \\,dx)",
                             "res": "(INT y:[0,oo]. exp(-1/2 * y ^ 2)) + (INT x:[0,oo]. exp(-(x ^ 2) / 2))",
                             "rule": {
                                 "latex_str": "substitute \\(y\\) for \\(-x\\) at 0",
@@ -42,7 +42,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\,dx) + (\\int_{0}^{\\infty} e^{-x ^ {2}/2} \\,dx)",
+                            "latex_res": "(\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx) + (\\int_{0}^{\\infty} e^{-x ^ {2}/2} \\,dx)",
                             "res": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) + (INT x:[0,oo]. exp(-(x ^ 2) / 2))",
                             "rule": {
                                 "latex_str": "substitute \\(x\\) for \\(y\\) at 0",
@@ -55,7 +55,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\,dx)",
+                            "latex_res": "2 (\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx)",
                             "res": "2 * (INT x:[0,oo]. exp(-1/2 * x ^ 2))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -64,7 +64,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} e^{-1/2 x ^ {2}} \\,dx)",
+                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx)",
                             "res": "2 * (LIM {t -> oo}. INT x:[0,t]. exp(-1/2 * x ^ 2))",
                             "rule": {
                                 "a": "0",
@@ -75,7 +75,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\,dx)",
+                            "latex_res": "2 (\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx)",
                             "res": "2 * (INT x:[0,oo]. exp(-1/2 * x ^ 2))",
                             "rule": {
                                 "loc": "1",
@@ -92,7 +92,7 @@
                     "start": "2 * (LIM {t -> oo}. sqrt(g(t)))",
                     "steps": [
                         {
-                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\sqrt{(\\int_{0}^{t} e^{-1/2 x ^ {2}} \\,dx) ^ {2}})",
+                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\sqrt{(\\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx) ^ {2}})",
                             "res": "2 * (LIM {t -> oo}. sqrt((INT x:[0,t]. exp(-1/2 * x ^ 2)) ^ 2))",
                             "rule": {
                                 "func_def": "g(t) = (INT x:[0,t]. exp(-(x ^ 2) / 2)) ^ 2",
@@ -103,7 +103,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\left| \\int_{0}^{t} e^{-1/2 x ^ {2}} \\,dx \\right|)",
+                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\left| \\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx \\right|)",
                             "res": "2 * (LIM {t -> oo}. abs(INT x:[0,t]. exp(-1/2 * x ^ 2)))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -112,7 +112,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 \\left| \\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\,dx \\right|",
+                            "latex_res": "2 \\left| \\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx \\right|",
                             "res": "2 * abs(INT x:[0,oo]. exp(-1/2 * x ^ 2))",
                             "rule": {
                                 "loc": "1",
@@ -122,7 +122,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\int_{0}^{\\infty} e^{-1/2 x ^ {2}} \\,dx)",
+                            "latex_res": "2 (\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx)",
                             "res": "2 * (INT x:[0,oo]. exp(-1/2 * x ^ 2))",
                             "rule": {
                                 "loc": "1",
@@ -151,7 +151,7 @@
                     "start": "D t. g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2))",
                     "steps": [
                         {
-                            "latex_res": "\\frac{d}{dt} (\\int_{0}^{t} e^{-1/2 x ^ {2}} \\,dx) ^ {2} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy)",
+                            "latex_res": "\\frac{d}{dt} (\\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx) ^ {2} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy)",
                             "res": "D t. (INT x:[0,t]. exp(-1/2 * x ^ 2)) ^ 2 + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2))",
                             "rule": {
                                 "func_def": "g(t) = (INT x:[0,t]. exp(-(x ^ 2) / 2)) ^ 2",
@@ -162,7 +162,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\int_{0}^{1} t e^{1/2 t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 (\\int_{0}^{t} e^{-1/2 x ^ {2}} \\,dx) (e^{-1/2 t ^ {2}} + (\\int_{0}^{t} 0 \\,dx))",
+                            "latex_res": "2 (\\int_{0}^{1} t e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 (\\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx) (e^{-1/2\\cdot t ^ {2}} + (\\int_{0}^{t} 0 \\,dx))",
                             "res": "2 * (INT y:[0,1]. t * exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1 * (-(y ^ 2) - 1)) + 2 * (INT x:[0,t]. exp(-1/2 * x ^ 2)) * (exp(-1/2 * t ^ 2) + (INT x:[0,t]. 0))",
                             "rule": {
                                 "name": "DerivativeSimplify",
@@ -171,7 +171,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 t (\\int_{0}^{1} e^{1/2 t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 e^{-1/2 t ^ {2}} (\\int_{0}^{t} e^{-1/2 x ^ {2}} \\,dx)",
+                            "latex_res": "2 t (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx)",
                             "res": "2 * t * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1 * (-(y ^ 2) - 1)) + 2 * exp(-1/2 * t ^ 2) * (INT x:[0,t]. exp(-1/2 * x ^ 2))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -180,7 +180,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 t (\\int_{0}^{1} e^{1/2 t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 e^{-1/2 t ^ {2}} (\\int_{0}^{1} t e^{-1/2 t ^ {2} y ^ {2}} \\,dy)",
+                            "latex_res": "2 t (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} t e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
                             "res": "2 * t * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1 * (-(y ^ 2) - 1)) + 2 * exp(-1/2 * t ^ 2) * (INT y:[0,1]. t * exp(-1/2 * t ^ 2 * y ^ 2))",
                             "rule": {
                                 "latex_str": "substitute \\(y\\) for \\(\\frac{x}{t}\\) at 1.1",
@@ -193,7 +193,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 t (\\int_{0}^{1} e^{1/2 t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 t e^{-1/2 t ^ {2}} (\\int_{0}^{1} e^{-1/2 t ^ {2} y ^ {2}} \\,dy)",
+                            "latex_res": "2 t (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 t e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
                             "res": "2 * t * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1 * (-(y ^ 2) - 1)) + 2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -202,7 +202,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 t (\\int_{0}^{1} -e^{1/2 t ^ {2} (-y ^ {2} - 1)} \\,dy) + 2 t e^{-1/2 t ^ {2}} (\\int_{0}^{1} e^{-1/2 t ^ {2} y ^ {2}} \\,dy)",
+                            "latex_res": "2 t (\\int_{0}^{1} -e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} \\,dy) + 2 t e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
                             "res": "2 * t * (INT y:[0,1]. -exp(1/2 * t ^ 2 * (-(y ^ 2) - 1))) + 2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2))",
                             "rule": {
                                 "loc": "0.1.0",
@@ -213,7 +213,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 t (\\int_{0}^{1} -e^{-1/2 t ^ {2} y ^ {2} + 1/2 t ^ {2} -1} \\,dy) + 2 t e^{-1/2 t ^ {2}} (\\int_{0}^{1} e^{-1/2 t ^ {2} y ^ {2}} \\,dy)",
+                            "latex_res": "2 t (\\int_{0}^{1} -e^{-1/2\\cdot t ^ {2} y ^ {2} + 1/2\\cdot t ^ {2} -1} \\,dy) + 2 t e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
                             "res": "2 * t * (INT y:[0,1]. -exp(-1/2 * t ^ 2 * y ^ 2 + 1/2 * t ^ 2 * -1)) + 2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2))",
                             "rule": {
                                 "loc": "0.1.0.0.0",
@@ -224,7 +224,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 t e^{-1/2 t ^ {2}} (\\int_{0}^{1} e^{-1/2 t ^ {2} y ^ {2}} \\,dy) + -2 t (\\int_{0}^{1} e^{-1/2 t ^ {2} y ^ {2} - 1/2 t ^ {2}} \\,dy)",
+                            "latex_res": "2 t e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy) + -2 t (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2} - 1/2\\cdot t ^ {2}} \\,dy)",
                             "res": "2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2)) + -2 * t * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2 - 1/2 * t ^ 2))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -233,7 +233,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 t e^{-1/2 t ^ {2}} (\\int_{0}^{1} e^{-1/2 t ^ {2} y ^ {2}} \\,dy) + -2 t (\\int_{0}^{1} e^{-1/2 t ^ {2} y ^ {2}} e^{-1/2 t ^ {2}} \\,dy)",
+                            "latex_res": "2 t e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy) + -2 t (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} e^{-1/2\\cdot t ^ {2}} \\,dy)",
                             "res": "2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2)) + -2 * t * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2) * exp(-(1/2 * t ^ 2)))",
                             "rule": {
                                 "loc": "1.1.0",
@@ -307,7 +307,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\int_{0}^{1} e^{1/2 t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + (\\lim\\limits_{t\\to \\infty} g{(t)}) = \\frac{1}{2} \\pi",
+                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + (\\lim\\limits_{t\\to \\infty} g{(t)}) = \\frac{1}{2} \\pi",
                             "res": "2 * (LIM {t -> oo}. INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + (LIM {t -> oo}. g(t)) = 1/2 * pi",
                             "rule": {
                                 "name": "LimEquation",
@@ -316,7 +316,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,e^{1/2 t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1}\\,) \\,dy) + (\\lim\\limits_{t\\to \\infty} g{(t)}) = \\frac{1}{2} \\pi",
+                            "latex_res": "2 (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1}\\,) \\,dy) + (\\lim\\limits_{t\\to \\infty} g{(t)}) = \\frac{1}{2} \\pi",
                             "res": "2 * (INT y:[0,1]. LIM {t -> oo}. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + (LIM {t -> oo}. g(t)) = 1/2 * pi",
                             "rule": {
                                 "loc": "0.0.1",
@@ -326,7 +326,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\int_{0}^{1} (y ^ {2} + 1) ^ {-1} (\\lim\\limits_{t\\to \\infty} e^{1/2 t ^ {2} (-y ^ {2} - 1)}) \\,dy) + (\\lim\\limits_{t\\to \\infty} g{(t)}) = \\frac{1}{2} \\pi",
+                            "latex_res": "2 (\\int_{0}^{1} (y ^ {2} + 1) ^ {-1} (\\lim\\limits_{t\\to \\infty} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}) \\,dy) + (\\lim\\limits_{t\\to \\infty} g{(t)}) = \\frac{1}{2} \\pi",
                             "res": "2 * (INT y:[0,1]. (y ^ 2 + 1) ^ -1 * (LIM {t -> oo}. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)))) + (LIM {t -> oo}. g(t)) = 1/2 * pi",
                             "rule": {
                                 "loc": "0",

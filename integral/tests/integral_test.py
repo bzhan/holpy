@@ -11,6 +11,25 @@ from integral import conditions
 
 
 class IntegralTest(unittest.TestCase):
+    def testInteresting(self):
+        file = compstate.CompFile("Interesting")
+        
+        calc = file.add_calculation("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")
+        calc.perform_rule(rules.Substitution("y", parser.parse_expr("pi / 2 - x")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation(parser.parse_expr("1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))"),
+                                         old_expr=parser.parse_expr("sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y)))^-1")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")))
+
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        with open('integral/examples/interesting.json', 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
     def testTongji(self):
         basic.load_theory('interval_arith')
 

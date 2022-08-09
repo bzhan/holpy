@@ -319,17 +319,18 @@ class ExprTest(unittest.TestCase):
             muls = expr.decompose_expr_factor(a)
             for i,j in zip(muls, b):
                 self.assertEqual(str(i),j)
+
     def testDecomposeAdd(self):
-        test_data = [('a-b+c',('a','-b','c')),('3*b+c*d-3',('3 * b','c * d','(-3)')),
-                     (' -(b * exp(-(b * t)) * sin(t) * (b ^ 2 + 1) ^ -1) - cos(t) * exp(-(b * t)) * (b ^ 2 + 1) ^ -1 + (b ^ 2 + 1) ^ -1',())]
-        print("")
-        for a,b in test_data:
+        test_data = [
+            ('a-b+c', ('a','-b','c')),
+            ('3*b+c*d-3', ('3 * b','c * d','(-3)')),
+            ('-(b * exp(-(b * t)) * sin(t) * (b ^ 2 + 1) ^ -1) - cos(t) * exp(-(b * t)) * (b ^ 2 + 1) ^ -1 + (b ^ 2 + 1) ^ -1',())]
+
+        for a, b in test_data:
             a = parse_expr(a)
             adds = expr.decompose_expr_add(a)
-            # for i in adds:
-            #     print(i)
-            for i,j in zip(adds,b):
-                self.assertEqual(str(i),j)
+            for i, j in zip(adds, b):
+                self.assertEqual(str(i), j)
 
     def testDeriv(self):
         test_data = [
@@ -464,6 +465,7 @@ class ExprTest(unittest.TestCase):
             ('sin(x) ^ 2 + cos(y)^2', (sin(x)^Const(2))+(cos(x)^Const(2)), None),
             ('sin(2*x+1)^2 + cos(2*x+1) ^ 2', (sin(y)^Const(2))+(cos(y)^Const(2)), {y: Op("+",Op("*",Const(2),Var('x')),Const(1))}),
             ('2*pi', a * pi, {a: Const(2)}),
+            ('sin((1/2) * pi - x)', sin(Const(Fraction(1/2)) * pi - x), {x: Var('x')}),
         ]
 
         for r1, r2, r3 in test_data:

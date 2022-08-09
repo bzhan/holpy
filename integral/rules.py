@@ -151,6 +151,7 @@ class CommonIntegral(Rule):
     INT 1 / (x^2 + 1) = arctan(x)
     INT sec(x)^2 = tan(x)
     INT csc(x)^2 = -cot(x)
+
     """
     def __init__(self):
         self.name = "CommonIntegral"
@@ -220,6 +221,34 @@ class DerivativeSimplify(Rule):
         if not isinstance(e, Deriv):
             return e
         return expr.deriv(e.var, e.body)
+
+
+class TrigSimplify(Rule):
+    """Simplifications in trigonometry."""
+    def __init__(self):
+        self.name = "TrigSimplify"
+
+    def __str__(self):
+        return "trigonometric simplification"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        u = Symbol('u', [VAR, CONST, OP, FUN])
+        rules = [
+            (sin(Const(Fraction(1/2)) * expr.pi - u), cos(u)),
+            (cos(Const(Fraction(1/2)) * expr.pi - u), sin(u)),
+        ]
+
+        for pat, pat_res in rules:
+            mapping = expr.match(e, pat)
+            if mapping is not None:
+                e = pat_res.inst_pat(mapping)
+        return e
 
 
 class OnSubterm(Rule):
@@ -414,6 +443,7 @@ class SimplifyPower(Rule):
             nega, negb = e.args[0].args
             return (Const(-1) ^ e.args[1]) * ((nega.args[0] + negb) ^ e.args[1])
         elif e.args[0].is_const() and e.args[0].val == 0 and conditions.is_positive(e.args[1], conds):
+            # 0 ^ n = 0
             return Const(0)
         else:
             return e
@@ -475,6 +505,7 @@ class FullSimplify(Rule):
             s = OnSubterm(SimplifyInfinity()).eval(s, conds)
             s = OnSubterm(IntegralSimplify()).eval(s,conds)
             s = OnSubterm(ReduceInfLimit()).eval(s, conds)
+            s = OnSubterm(TrigSimplify()).eval(s, conds)
             if s == current:
                 break
             current = s
