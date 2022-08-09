@@ -53,7 +53,7 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                     else:
                         return "\\sqrt[%s]{%s}" % (y.val.denominator, sx)
                 elif isinstance(x, expr.Fun) and len(x.args) > 0 and x.func_name != "abs" \
-                        and x.func_name in ('cos','sin','tan','sec'):
+                        and x.func_name in ('cos', 'sin', 'tan', 'sec', 'csc', 'cot'):
                     # If base is a trigonometric function, use special format
                     sy = convert_expr(y, mode="short")
                     return "\%s^{%s}(%s)" % (x.func_name, sy, convert_expr(x.args[0]))

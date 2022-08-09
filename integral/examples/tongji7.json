@@ -795,7 +795,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} csc^{2}(u) \\,du) - \\frac{1}{4} \\pi",
+                    "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\csc^{2}(u) \\,du) - \\frac{1}{4} \\pi",
                     "res": "(INT u:[1/4 * pi,1/2 * pi]. csc(u) ^ 2) - 1/4 * pi",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(\\sin^{-2}(u)\\)",
@@ -1411,7 +1411,7 @@
             "start": "INT x:[pi / 4,pi / 3]. x / sin(x) ^ 2",
             "steps": [
                 {
-                    "latex_res": "\\int_{\\pi/4}^{\\pi/3} x csc^{2}(x) \\,dx",
+                    "latex_res": "\\int_{\\pi/4}^{\\pi/3} x \\csc^{2}(x) \\,dx",
                     "res": "INT x:[pi / 4,pi / 3]. x * csc(x) ^ 2",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(\\frac{x}{\\sin^{2}(x)}\\)",
