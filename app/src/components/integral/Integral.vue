@@ -6,17 +6,10 @@
       <b-navbar-nav>
         <b-nav-item-dropdown text="File" left>
           <b-dropdown-item href="#" v-on:click='load_file_list'>Open file</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='insert_integral'>New integral</b-dropdown-item>
-        </b-nav-item-dropdown>
-        <b-nav-item-dropdown text="Calc" left>
-          <b-dropdown-item href="#" v-on:click="back">Back</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="backsteps">Back N Steps</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="restart(cur_id)">Restart</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='restore'>Restore</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='save'>Save</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Proof" left>
           <b-dropdown-item href="#" v-on:click="clearItem">Clear</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="simplifyStep">Simplify</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addFuncDef">Add definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addGoal">Add goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByCalculation">Proof by calculation</b-dropdown-item>
@@ -36,15 +29,11 @@
           <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Rewrite" left>
-          <b-dropdown-item href="#" v-on:click="simplifyStep">Simplify</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="trigIdentity">Trig identities</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="expandPolynomial">Expand polynomial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="polynomialDivision">Polynomial division</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteEquation">Rewrite equation</b-dropdown-item>
-        </b-nav-item-dropdown>
-        <b-nav-item-dropdown text="Actions" left>
-          <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -57,15 +46,6 @@
       </div>
       <div v-if="content_state === true">
         <div v-for="(item, index) in content" :key="index" style="margin:5px 10px">
-          <!-- Original format -->
-          <div v-if="'_problem_latex' in item">
-            <div>{{item.name}}:</div>
-            <MathEquation
-              v-on:click.native="initialize(index)"
-              v-bind:data="'\\(' + item._problem_latex + '\\)'"
-              style="cursor:pointer"/>
-          </div>
-          <!-- New format -->
           <div v-if="'type' in item && item.type == 'FuncDef'">
             <div class="math-text">Definition</div>
             <MathEquation
@@ -91,16 +71,6 @@
       </div>
     </div>
     <!-- Main panel showing calculation -->
-    <div v-if="cur_calc !== undefined" id="calc">
-      <div v-for="(step, index) in cur_calc" :key="index">
-        <span>Step {{index+1}}:&nbsp;&nbsp;</span>
-        <MathEquation v-bind:data="'\\(' + step.latex + '\\)'" v-on:click.native='displayProof(index)' />
-        <MathEquation class="calc-reason" v-if="'_latex_reason' in step && step._latex_reason !== ''" v-bind:data="step._latex_reason"/>
-        <span class="calc-reason" v-else>{{step.reason}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <v-icon name="check" style="color:green" v-if="'checked' in step && step.checked === true"></v-icon> 
-        <v-icon name="ban" style="color:red" v-if="'checked' in step && step.checked === false"></v-icon> 
-      </div>
-    </div>
     <div v-if="cur_id !== undefined" id="problem">
       <div v-if="'type' in content[cur_id] && content[cur_id].type == 'FuncDef'">
         <FuncDef v-bind:item="content[cur_id]" v-bind:label="''"
@@ -122,63 +92,7 @@
           v-bind:selected_facts="selected_facts"/>
       </div>
     </div>
-    <div v-if="cur_items !== undefined" id="items">
-      <div v-if="cur_id !== undefined && content[cur_id].latex_problem !== undefined" id="problem">
-        <span class="math-text">Prove the identity</span><br>
-        <MathEquation v-bind:data="'\\(' + content[cur_id].latex_problem + '\\)'" class="indented-text"/>
-      </div>
-      <div v-for="(item, index) in cur_items" :key="index">
-        <div v-if="item.type === 'FuncDef'">
-          <FuncDef v-bind:item="item" v-bind:label="(index+1) + '.'"
-            @select="selectItem"
-            @select_fact="selectFact"
-            v-bind:selected_item="selected_item"
-            v-bind:selected_facts="selected_facts"/>
-        </div>
-        <div v-if="item.type === 'Goal'">
-          <Goal v-bind:item="item" v-bind:label="(index+1) + '.'"
-            @select="selectItem"
-            @select_fact="selectFact"
-            v-bind:selected_item="selected_item"
-            v-bind:selected_facts="selected_facts"/>
-        </div>
-      </div>
-    </div>
     <div id="dialog">
-      <div v-if="r_query_mode === 'display_trig'">
-        <div v-for="(step, index) in trig_identities_data.new_expr" :key="index">
-          <span>{{index+1}}:</span>
-          <MathEquation
-            v-on:click.native="transform(step)"
-            v-bind:data="'\\(' + step.latex + '\\)'"
-            style="cursor:pointer"/>
-        </div>
-      </div>
-      <div v-if="show_proof_mode === 'proof'">
-        <span>{{proof_term}}</span>
-      </div>
-      <div v-if="r_query_mode === 'split'">
-        <div>
-          <MathEquation v-bind:data="'\\(Write\\ the\\ point\\ you\\ want\\ to\\ split\\ in\\ ' + sep_int[integral_index].latex + '\\)'" />
-        </div>
-        <div>   
-            <input v-model="split_point" style="margin:0px 5px;width:100px">
-            <button v-on:click="doSplitIntegral">OK</button>
-            <label v-if="split_success === false" style="color:red">Invalid split.</label>
-        </div>
-      </div>
-      <div v-if="r_query_mode === 'select step'">
-        <div v-for="(step, index) in cur_calc" :key="index">
-          <span>Step {{index+1}}:</span>
-          <MathEquation
-          v-on:click.native="cutstep(index)"
-          v-bind:data="'\\(' + step.latex + '\\)'"
-          style="cursor:pointer"/>
-          <MathEquation class="calc-reason" v-if="'_latex_reason' in step && step._latex_reason !== ''" v-bind:data="step._latex_reason"/>
-          <span class="calc-reason" v-else>{{step.reason}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        </div>
-      </div>
-      <!-- Newly added -->
       <div v-if="r_query_mode === 'add definition'">
         <span class="math-text">Add function definition:</span><br/>
         <ExprQuery v-model="expr_query1"/><br/>
@@ -268,18 +182,6 @@
       </div>
     </div>
     <div id="select">
-      <div v-if="display_integral === 'separate'">
-        <div v-for="(step, index) in sep_int" :key="index">
-          <span>{{index+1}}:</span>
-          <MathEquation
-          v-on:click.native="operate(index)"
-          v-bind:data="'\\(' + step.latex + '\\)'"
-          style="cursor:pointer"/>
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="closeIntegral">Close</button>
-        </div>  
-      </div>
     </div>
   </div>
 </template>
@@ -313,52 +215,9 @@ export default {
       content_state: undefined, // state of the content panel, if it is true, display the integrals in content,
                                 // or else display the json files in file list
       cur_id: undefined,   // ID of the selected item
-      cur_calc: [],        // Current calculation
       cur_items: [],       // Current items in state
-      query_mode: undefined,  // Currently performing which query
       r_query_mode: undefined, //record query mode
-      display_integral: undefined, //display the separate integral
-      sep_int: [], //all separate integrals
-      process_index: undefined, // used in close integral
-      integral_index: undefined, //integral on processing
-      take_effect: 0,     //Flag for whether a rule takes effect or close on halfway.
-
-      seen: false, //When an error occurs, make the error message can be seen.
-      rewrite_error_flag: false, //When the rewrite is invalid, display error warning.
-
-      selected: undefined,
-      error_message: undefined,
-
-      subst_data: {
-        var_name: '',  // name of new variable u
-        expr: ''       // expression to substitute for u
-      },
-
-      byparts_data: {
-        parts_u: '',   // value of u
-        parts_v: ''    // value of v
-      },
-
-      equation_data: {
-        rewrite_part: undefined, //the expr want to rewrite
-        relative_location: undefined,
-        absolute_location: undefined,
-        new_expr: '',  //new expression
-        fail_reason: undefined
-      },
-
-      trig_identities_data: {
-        old_expr: undefined, //the equation you need to transform
-        new_expr: []
-      },
-
-      lhs: undefined, //equation left hand side
-      split_point: undefined,
-      split_success: undefined,
-      integral_str: '', // record the input string of new integral,
-
-      proof_term: undefined, // store the proof terms for each step
-      show_proof_mode: undefined, // indicate whether show proof
+      sep_int: [],         //all separate integrals
 
       // Selected goal
       selected_item: undefined,
@@ -403,7 +262,6 @@ export default {
       const response = await axios.post('http://127.0.0.1:5000/api/integral-load-file-list')
       this.file_list = response.data.file_list
       this.content_state = false
-      this.cur_calc = undefined
       this.cur_items = undefined
     },
 
@@ -414,87 +272,13 @@ export default {
       this.filename = file_name
       const response = await axios.post("http://127.0.0.1:5000/api/integral-open-file", JSON.stringify(data))
       this.content = response.data.content
-      this.cur_calc = undefined
       this.cur_items = undefined
       this.content_state = true
     },
 
-    insert_integral: async function (){
-      var integration = prompt('Please write the integral', '');
-      const data = {
-        expr: integration,
-        index: this.content.length + 1
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-validate-integral", JSON.stringify(data))
-      if(response.data.flag){
-        this.content.push(response.data.content)
-      }else{
-        prompt('Bad input!')
-      }
-    },
-
     initialize: async function (index) {
-      this.query_mode = undefined
       this.r_query_mode = undefined
-      this.display_integral = undefined
-      this.proof_term = undefined
       this.cur_id = index
-      this.take_effect = 0
-      if ('calc' in this.content[index]) {
-        this.restore()
-      }
-    },
-
-    // set r_query_mode
-    set_r_query_mode: function(name){
-      this.r_query_mode = name
-    },
-
-    // Take one step back
-    back: function(){
-      this.cur_calc.pop()
-      this.clear_separate_integral()
-    },
-
-    // Show existing steps in dialog
-    backsteps: function(){
-      this.set_r_query_mode("select step")
-    },
-
-    // Save steps into json file
-    save: async function () {
-      if (this.filename === undefined)
-        return;
-
-      if (this.cur_id === undefined)
-        return;
-
-      this.content[this.cur_id].calc = this.cur_calc;
-      const data = {
-        filename: this.filename,
-        content: this.content
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-save-file", JSON.stringify(data))
-
-      if (response.data.status === 'success') {
-          alert("Saved " + this.content[this.cur_id].name)
-      }
-    },
-
-    // Verification of steps
-    verify_step: async function () {
-      const data = {
-        previous_expr: this.cur_calc.at(-2).text,
-        cur_step: this.cur_calc.at(-1)
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/verify-step", JSON.stringify(data))
-      this.cur_calc[this.cur_calc.length-1] = response.data["step"]
-    },
-
-    // Delete the steps after index.
-    cutstep: function(index){
-      this.cur_calc = this.cur_calc.slice(0, index+1)
-      this.r_query_mode = undefined
     },
 
     // Select an item
@@ -511,17 +295,6 @@ export default {
       } else {
         this.$set(this.selected_facts, item_id, true)
       }
-    },
-
-    // Restart calculation, delete all steps
-    restart: async function() {
-        this.clear_separate_integral()
-        const data = {
-          problem: this.content[this.cur_id].problem
-        }
-        const response = await axios.post("http://127.0.0.1:5000/api/integral-initialize", JSON.stringify(data))
-        this.cur_calc = [response.data]
-        this.query_mode = undefined
     },
 
     // Restart proof, delete all steps
@@ -922,295 +695,6 @@ export default {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
       }
-    },
-
-    // Retrieve the stored calculation
-    restore: function () {
-      if ('calc' in this.content[this.cur_id]) {
-        this.cur_calc = Array.from(this.content[this.cur_id].calc)  // create copy
-      }
-      if ('items' in this.content[this.cur_id]) {
-        this.cur_items = Array.from(this.content[this.cur_id].items)
-      }
-      this.query_mode = undefined
-    },
-
-    // Check if the selected part is a valid expression
-    validation: async function() {
-      let selected = this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionStart, this.$refs.mycloned.selectionEnd);
-      let expr_with_dollar = this.sep_int[this.integral_index].body.slice(0, this.$refs.mycloned.selectionStart) + '$' + selected + '$' + this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionEnd);
-      this.selected = selected
-      const data = {
-        integral_location: this.sep_int[this.integral_index].location,
-        problem: this.sep_int[this.integral_index].text,
-        dollar: expr_with_dollar,
-        select: this.selected
-      };
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-validate-expr", JSON.stringify(data))
-      if(response.data.flag === true){
-        for(var i=0; i < response.data["content"].length; ++i){
-          this.trig_identities_data.new_expr.push(response.data["content"][i]);
-        }
-        this.r_query_mode = 'display_trig';
-      }else{
-        this.seen = true;
-      }
-    },
-
-    validation_power: async function() {
-      let selected = this.sep_int[this.integral_index].body.slice(this.$refs.power.selectionStart, this.$refs.power.selectionEnd);
-      let expr_with_dollar = this.sep_int[this.integral_index].body.slice(0, this.$refs.power.selectionStart) + '$' + selected + '$' + this.sep_int[this.integral_index].body.slice(this.$refs.power.selectionEnd);
-      const data = {
-        integral_location: this.sep_int[this.integral_index].location,
-        problem: this.sep_int[this.integral_index].text,
-        dollar: expr_with_dollar,
-        select: selected
-      };
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-validate-power-expr", JSON.stringify(data))
-      if(response.data.flag === true){
-        this.sep_int[this.integral_index] = response.data;
-        this.take_effect = 1;
-        this.r_query_mode = undefined;
-        this.process_index = this.integral_index;
-        this.closeIntegral();
-      }else{
-        this.seen = true;
-      }
-    },    
-
-    validation1: async function() {
-      //Check if the selected rewrite part is a valid expression, and find the location
-      let selected = this.sep_int[this.integral_index].body.slice(this.$refs.rewriten.selectionStart, this.$refs.rewriten.selectionEnd);
-      let expr_with_dollar = this.sep_int[this.integral_index].body.slice(0, this.$refs.rewriten.selectionStart) + '$' + selected + '$' + this.sep_int[this.integral_index].body.slice(this.$refs.rewriten.selectionEnd);
-      const data = {
-        //The first two items can be one thing.
-        integral_location: this.sep_int[this.integral_index].location,
-        problem: this.sep_int[this.integral_index].text,
-        dollar: expr_with_dollar,
-        select: selected
-      };
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-validate-rewrite", JSON.stringify(data))
-      if(response.data.flag === true){
-        this.seen = false;
-        this.equation_data.rewrite_part = response.data["rewrite"];
-        this.equation_data.relative_location = response.data["relative_location"];
-        this.equation_data.absolute_location = response.data["absolute_location"];
-      }else{
-        this.seen = true;
-      }
-    },
-
-    rewrite: async function() {
-      const data = {
-        old_expr: this.equation_data.rewrite_part,
-        new_expr: this.equation_data.new_expr,
-        relative_location: this.equation_data.relative_location,
-        absolute_location: this.equation_data.absolute_location,
-        problem: this.sep_int[this.integral_index].text
-      };
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-rewrite-expr", JSON.stringify(data));
-      if(response.data.flag === true){
-        this.sep_int[this.integral_index] = response.data;
-        this.r_query_mode = undefined;
-        this.take_effect = 1;
-        this.process_index = this.integral_index;
-        this.closeIntegral();
-      }else{
-        this.rewrite_error_flag = true;
-      }
-    },
-
-    clear_separate_integral: function(){
-      this.display_integral = undefined;
-      this.sep_int = [];
-      this.integral_index = undefined;
-      this.r_query_mode = undefined;
-      this.process_index = undefined;
-      this.take_effect = 0;
-      this.rewrite_error_flag = undefined;
-      this.split_success = undefined;
-      this.selected = undefined;
-      this.error_message = undefined;
-      this.seen = undefined;
-    },
-
-    clear_input_info: function() {      
-      this.byparts_data =  {parts_u: '', parts_v: ''};
-      this.equation_data = {new_expr: '', fail_reason: undefined};
-      this.trig_identities_data = {old_expr: undefined, new_expr: []};
-    },
-
-    simplify: async function () {
-      this.clear_separate_integral();
-      if (this.cur_calc.length === 0)
-        return;
-      const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text
-      };
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-simplify", JSON.stringify(data));
-      this.cur_calc.push(response.data);
-    },
-
-    slagle: async function(){
-      this.clear_separate_integral();
-      if (this.cur_calc.length === 0){
-        return;
-      }
-      const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text
-      };
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-slagle", JSON.stringify(data));
-      for(var i = 0; i < response.data.length; ++i){
-        this.cur_calc.push(response.data[i])
-      }
-    },
-
-    closeIntegral: async function(){
-      //this.clear_separate_integral()
-      var integrals = []
-      for(var i = 0; i < this.sep_int.length; ++i){
-        integrals.push(this.sep_int[i])
-      }
-      if (this.take_effect == 1){
-        const data = {
-          problem: integrals,
-          cur_calc: this.cur_calc[this.cur_calc.length - 1].text,
-          index:  this.process_index
-        }
-        const response = await axios.post("http://127.0.0.1:5000/api/integral-compose-integral", JSON.stringify(data))
-        this.cur_calc.push(response.data)        
-      }
-      this.clear_separate_integral();
-      this.clear_input_info()
-    },
-
-    closeLimit: async function(){
-      //this.clear_separate_integral()
-      var integrals = []
-      for(var i = 0; i < this.sep_int.length; ++i){
-        integrals.push(this.sep_int[i])
-      }
-      if (this.take_effect == 1){
-        const data = {
-          problem: integrals,
-          cur_calc: this.cur_calc[this.cur_calc.length - 1].text,
-          index:  this.process_index
-        }
-        const response = await axios.post("http://127.0.0.1:5000/api/integral-compose-limits", JSON.stringify(data))
-        this.cur_calc.push(response.data)        
-      }
-      this.clear_separate_integral();
-      this.clear_input_info()
-    },
-
-    displaySeparateIntegrals: async function(){
-      const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-integrals", JSON.stringify(data))
-      for(var i = 0; i < response.data.length; ++i){
-        this.sep_int.push(response.data[i])
-      }
-      this.display_integral = 'separate'
-    },
-
-    displaySeparateIntegrals_division: async function(){
-      const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-integrals", JSON.stringify(data))
-      for(var i = 0; i < response.data.length; ++i){
-        this.sep_int.push(response.data[i])
-      }
-      this.display_integral = 'division'
-    },
-
-
-  displaySeparateIntegrals_abs: async function(){
-      const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-integrals", JSON.stringify(data))
-      for(var i = 0; i < response.data.length; ++i){
-        this.sep_int.push(response.data[i])
-      }
-      this.display_integral = 'abs'
-    },
-
-  displaySeparateIntegrals_eliminf: async function(){
-      const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-integrals", JSON.stringify(data))
-      for(var i = 0; i < response.data.length; ++i){
-        this.sep_int.push(response.data[i])
-      }
-      this.display_integral = 'eliminf'
-    },
-
-    operate: function(index){
-      this.clear_input_info()
-      this.r_query_mode = this.query_mode
-      this.show_proof_mode = undefined
-      // if user want to do substitution,
-      // recommend a subst variable.
-      if(this.r_query_mode === 'substitution'){
-        let current_var = this.sep_int[index]["var_name"];
-        if(current_var === "u"){
-          this.subst_data.var_name = "v";
-        }
-        else{
-          this.subst_data.var_name = "u";
-        }
-      }
-
-      this.integral_index = index
-    },
-
-    transform: function(item){
-      //this.cur_calc.push(item)
-      this.sep_int[this.integral_index] = item;
-      this.process_index = this.integral_index;
-      this.take_effect = 1;
-      this.closeIntegral();
-      this.query_mode = undefined
-      this.trig_identities_data.old_expr = ''
-      this.trig_identities_data.new_expr = []
-    },
-    
-    split: function(){
-      if(this.cur_calc.length == 0)
-        return;
-      this.sep_int = []
-      this.query_mode = 'split'
-      this.show_proof_mode = undefined
-      this.displaySeparateIntegrals();
-    },
-
-    doSplitIntegral: async function() {
-      const data = {
-        problem: this.sep_int[this.integral_index].text,
-        point: this.split_point,
-        location: this.sep_int[this.integral_index].location
-      };
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-split", JSON.stringify(data));
-      if(response.data.flag == "success"){
-        this.sep_int[this.integral_index] = response.data;
-        this.split_success = true;
-        this.take_effect = 1;
-        this.process_index = this.integral_index;
-        this.closeIntegral();
-      }else{
-        this.split_success = false;
-      }
-    },
-
-    displayProof: function(index){
-      // Show the selected items proof.
-      this.show_proof_mode = 'proof'
-      this.proof_term = this.cur_calc[index].proof
-      
-    },
-
-    displaySeparateLimit: async function(){
-      const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-limits", JSON.stringify(data))
-      for(var i = 0; i < response.data.length; ++i){
-        this.sep_int.push(response.data[i])
-      }
-      this.display_integral = 'lhopital'
     },
   },
 
