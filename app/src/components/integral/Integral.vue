@@ -21,16 +21,20 @@
           <b-dropdown-item href="#" v-on:click="addGoal">Add goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByCalculation">Proof by calculation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByInduction">Proof by induction</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="exchangeDerivIntegral">Exchange deriv and integral</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="simplifyStep">Simplify</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="improperToLimit">Improper integral to limit</b-dropdown-item>
+        </b-nav-item-dropdown>
+        <b-nav-item-dropdown text="Integral" left>
           <b-dropdown-item href="#" v-on:click="forwardSubstitution">Forward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="trigIdentity">Trig identities</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="improperToLimit">Improper integral to limit</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="exchangeDerivIntegral">Exchange deriv and integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="elimAbs">Eliminate abs</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
+        </b-nav-item-dropdown>
+        <b-nav-item-dropdown text="Rewrite" left>
+          <b-dropdown-item href="#" v-on:click="simplifyStep">Simplify</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="trigIdentity">Trig identities</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="expandPolynomial">Expand polynomial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="polynomialDivision">Polynomial division</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteEquation">Rewrite equation</b-dropdown-item>
