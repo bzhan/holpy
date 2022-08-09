@@ -76,7 +76,8 @@ class IntegralTest(unittest.TestCase):
 
         calc = file.add_calculation("INT x:[0, pi]. (1 - sin(x)^3)")
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.Equation(parser.parse_expr("sin(x) * sin(x)^2")), "0.0.0"))
+        calc.perform_rule(rules.Equation(parser.parse_expr("sin(x) * sin(x)^2"),
+                                         old_expr=parser.parse_expr("sin(x)^3")))
         calc.perform_rule(rules.OnLocation(rules.RewriteTrigonometric("TR5"), "0.0.0.1"))
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("cos(x)")))
         calc.perform_rule(rules.FullSimplify())

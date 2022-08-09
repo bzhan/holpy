@@ -317,10 +317,10 @@
                     "latex_res": "-(\\int_{0}^{\\pi} \\sin{(x)} \\sin^{2}(x) \\,dx) + \\pi",
                     "res": "-(INT x:[0,pi]. sin(x) * sin(x) ^ 2) + pi",
                     "rule": {
-                        "loc": "0.0.0",
                         "name": "Equation",
                         "new_expr": "sin(x) * sin(x) ^ 2",
-                        "str": "rewriting at 0.0.0"
+                        "old_expr": "sin(x) ^ 3",
+                        "str": "rewriting"
                     },
                     "type": "CalculationStep"
                 },

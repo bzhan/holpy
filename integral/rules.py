@@ -787,26 +787,37 @@ class UnfoldPower(Rule):
 
 class Equation(Rule):
     """Apply substitution for equal expressions"""
-    def __init__(self, new_expr: Expr, denom=None):
+    def __init__(self, new_expr: Expr, denom=None, old_expr: Optional[Expr] = None):
         self.name = "Equation"
         assert isinstance(new_expr, Expr)
         self.new_expr = new_expr
         self.denom = denom
+        self.old_expr = old_expr
     
     def __str__(self):
         return "rewriting"
 
     def export(self):
-        return {
+        res = {
             "name": self.name,
             "new_expr": str(self.new_expr),
             "str": str(self)
         }
+        if self.old_expr:
+            res['old_expr'] = str(self.old_expr)
+        return res
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if e.ty == INTEGRAL:
-            raise NotImplementedError
+        # Rewrite on a subterm
+        if self.old_expr is not None and self.old_expr != e:
+            find_res = e.find_subexpr(self.old_expr)
+            if len(find_res) == 0:
+                raise AssertionError("Equation: old expression not found")
+            loc = find_res[0]
+            return OnLocation(self, loc).eval(e)
 
+        # Currently rewrite using SymPy.
+        # TODO: change to own implementation.
         if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
            expand_multinomial(expr.sympy_style(e.normalize()).simplify()):
             raise AssertionError("Rewriting by equation failed")

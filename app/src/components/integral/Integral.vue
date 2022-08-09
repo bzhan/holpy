@@ -33,10 +33,10 @@
           <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="expandPolynomial">Expand polynomial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="polynomialDivision">Polynomial division</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="rewriteEquation">Rewrite equation</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='split'>Splitting an Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='lhopital'>L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -148,17 +148,6 @@
             style="cursor:pointer"/>
         </div>
       </div>
-      <div v-if="r_query_mode === 'eqsubst'">
-        <div>Select the part you want to transform to new expression.</div>
-        <input ref="rewriten" style="width: 200px" disabled="disabled" v-model="this.sep_int[integral_index].body">
-        <button v-on:click="validation1">Validate</button>
-        <p v-if="seen === true">Illegal</p>
-        <br/>
-        <span v-if="seen === false">{{equation_data.rewrite_part}}=</span>
-        <input v-if="seen === false" v-model="equation_data.new_expr" style="width: 400px">
-        <button v-on:click="rewrite" style="color:red">Rewrite</button>
-        <p v-if="rewrite_error_flag === true" style="color:red">The rewrite is invalid.</p>
-      </div>
       <div v-if="show_proof_mode === 'proof'">
         <span>{{proof_term}}</span>
       </div>
@@ -253,6 +242,18 @@
              v-on:click="doTrigIdentity(index)">
           <MathEquation v-bind:data="'\\(=' + item.latex_new_e + '\\)'"/>
         </div>
+      </div>
+      <div v-if="r_query_mode === 'rewrite equation'">
+        <div class="math-text">Select subexpression:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExpr"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
+        <span class="math-text">Rewrite subexpression to</span><br/>
+        <ExprQuery v-model="expr_query1"/>
+        <button v-on:click="doRewriteEquation">OK</button>
       </div>
     </div>
     <div id="select">
@@ -721,7 +722,6 @@ export default {
           rewrite_term: this.selected_expr
         }
       }
-      console.log(data.rule)
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.$set(this.content, this.cur_id, response.data.item)
@@ -865,6 +865,28 @@ export default {
       if (response.data.status == 'ok') {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
+      }
+    },
+
+    rewriteEquation: function() {
+      this.r_query_mode = 'rewrite equation'
+    },
+
+    doRewriteEquation: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: "Equation",
+          old_expr: this.selected_expr,
+          new_expr: this.expr_query1
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
       }
     },
 
@@ -1138,34 +1160,6 @@ export default {
         this.closeIntegral();
       }else{
         this.split_success = false;
-      }
-    },
-
-    equationSubst: function() {
-      if (this.cur_calc.length === 0)
-        return;
-      this.sep_int = []
-      this.query_mode = 'eqsubst'
-      this.show_proof_mode = undefined
-      this.displaySeparateIntegrals()
-      this.equation_data.fail_reason = undefined
-    },
-
-    doEquationSubst: async function() {
-      const data = {
-        problem: this.sep_int[this.integral_index].text,
-        new_expr: this.equation_data.new_expr
-      }
-
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-equation-substitution", JSON.stringify(data))
-      if (response.data.flag == 'success'){
-        this.sep_int[this.integral_index] = response.data
-        this.r_query_mode = undefined
-        this.integral_index = undefined
-        this.equation_data = {new_expr: '', fail_reason: undefined}
-        this.take_effect = 1      
-      }else{
-        this.equation_data.fail_reason = response.data._latex_reason
       }
     },
 

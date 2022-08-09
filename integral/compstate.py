@@ -585,7 +585,10 @@ def parse_rule(item) -> Rule:
         return rules.IntegrationByParts(u, v)
     elif item['name'] == 'Equation':
         new_expr = parser.parse_expr(item['new_expr'])
-        return rules.Equation(new_expr)
+        old_expr = None
+        if 'old_expr' in item:
+            old_expr = parser.parse_expr(item['old_expr'])
+        return rules.Equation(new_expr, old_expr=old_expr)
     elif item['name'] == 'ApplyEquation':
         eq = parser.parse_expr(item['eq'])
         subMap = dict()
