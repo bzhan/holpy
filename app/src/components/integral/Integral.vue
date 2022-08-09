@@ -22,6 +22,9 @@
           <b-dropdown-item href="#" v-on:click="proofByCalculation">Proof by calculation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByInduction">Proof by induction</b-dropdown-item>
         </b-nav-item-dropdown>
+        <b-nav-item-dropdown text="Limits" left>
+          <b-dropdown-item href="#" v-on:click='lhopital'>L'Hopital Rule</b-dropdown-item>
+        </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Integral" left>
           <b-dropdown-item href="#" v-on:click="forwardSubstitution">Forward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
@@ -42,7 +45,6 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='lhopital'>L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -277,19 +279,6 @@
         <div style="margin-top:10px">
           <button v-on:click="closeIntegral">Close</button>
         </div>  
-      </div>
-      <div v-if="display_integral === 'lhopital'">
-        <label>L'Hopital Rule</label>
-        <div v-for="(step, index) in sep_int" :key="index">
-          <span>{{index+1}}: </span>
-          <MathEquation
-          v-on:click.native="doLhopital(index)"
-          v-bind:data="'\\(' + step.latex + '\\)'"
-          style="cursor:pointer"/>
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="closeLimit">Close</button>
-        </div>
       </div>
     </div>
   </div>
@@ -920,6 +909,21 @@ export default {
       }
     },
 
+    lhopital: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: "LHopital"
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+      }
+    },
+
     // Retrieve the stored calculation
     restore: function () {
       if ('calc' in this.content[this.cur_id]) {
@@ -1200,13 +1204,6 @@ export default {
       
     },
 
-    lhopital: function(){
-      this.sep_int = []
-      this.display_integral = 'lhopital'
-      this.show_proof_mode = undefined
-      this.displaySeparateLimit()
-    },
-
     displaySeparateLimit: async function(){
       const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
       const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-limits", JSON.stringify(data))
@@ -1215,22 +1212,6 @@ export default {
       }
       this.display_integral = 'lhopital'
     },
-
-    doLhopital: async function(index){
-      const data = {
-        problem: this.sep_int[index].text,
-        location: this.sep_int[index].location
-      }
-
-      const responce = await axios.post("http://127.0.0.1:5000/api/integral-lhopital", JSON.stringify(data))
-
-      this.sep_int[index] = responce.data
-      this.take_effect = 1
-      this.integral_index = undefined
-      this.process_index = index
-      this.closeLimit()
-    }
-
   },
 
   created: function () {

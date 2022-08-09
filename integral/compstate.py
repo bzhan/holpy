@@ -618,6 +618,8 @@ def parse_rule(item) -> Rule:
         return rules.RewriteBinom()
     elif item['name'] == 'RewriteFactorial':
         return rules.RewriteFactorial()
+    elif item['name'] == 'LHopital':
+        return rules.LHopital()
     else:
         print(item['name'])
         raise NotImplementedError

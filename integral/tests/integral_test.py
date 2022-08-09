@@ -321,6 +321,47 @@ class IntegralTest(unittest.TestCase):
         with open('integral/examples/tongji7.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
+    def testLHopital(self):
+        file = compstate.CompFile("LHopital")
+
+        calc = file.add_calculation("LIM {x -> 1}. (x^2 - 1) / (x^2 + 3*x - 4)")
+        calc.perform_rule(rules.LHopital())
+        calc.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(calc.last_expr), "2/5")
+
+        calc = file.add_calculation("LIM {x -> 4}. (x - 4) / (sqrt(x) - 2)")
+        calc.perform_rule(rules.LHopital())
+        calc.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(calc.last_expr), "4")
+
+        calc = file.add_calculation("LIM {x -> 0}. sin(x) / x")
+        calc.perform_rule(rules.LHopital())
+        calc.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(calc.last_expr), "1")
+
+        calc = file.add_calculation("LIM {x -> 0}. (3^x - 2^x) / (x^2 - x)")
+        calc.perform_rule(rules.LHopital())
+        calc.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(calc.last_expr), "log(2) - log(3)")
+
+        calc = file.add_calculation("LIM {x -> 3}. (1/x - 1/3) / (x^2 - 9)")
+        calc.perform_rule(rules.LHopital())
+        calc.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(calc.last_expr), "-1/54")
+
+        calc = file.add_calculation("LIM {x -> 0}. x * tan(x) / sin(3*x)")
+        calc.perform_rule(rules.LHopital())
+        calc.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(calc.last_expr), "0")
+
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        with open('integral/examples/UCDAVIS/LHopital.json', 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
     def testWallis(self):
         file = compstate.CompFile('Wallis')
 

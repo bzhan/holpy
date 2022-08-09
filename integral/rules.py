@@ -471,6 +471,31 @@ class ReduceInfLimit(Rule):
         else:
             return e
 
+class ReduceTrivLimit(Rule):
+    """Reduce limits that do not involve zeros or infinities."""
+    def __init__(self):
+        self.name = "ReduceTrivLimit"
+
+    def __str__(self):
+        return "reduce trivial limits"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if not e.is_limit():
+            return e
+        if e.lim in (POS_INF, NEG_INF):
+            return e
+
+        try:
+            body = e.body.subst(e.var, e.lim)
+            return body.normalize()
+        except ZeroDivisionError:
+            return e
 
 class FullSimplify(Rule):
     """Perform simplification by applying the following rules repeatedly:
@@ -507,6 +532,7 @@ class FullSimplify(Rule):
             s = OnSubterm(SimplifyInfinity()).eval(s, conds)
             s = OnSubterm(IntegralSimplify()).eval(s,conds)
             s = OnSubterm(ReduceInfLimit()).eval(s, conds)
+            s = OnSubterm(ReduceTrivLimit()).eval(s, conds)
             s = OnSubterm(TrigSimplify()).eval(s, conds)
             if s == current:
                 break
@@ -1256,56 +1282,8 @@ class LHopital(Rule):
 
         numerator, denominator = e.body.args
         rule = DerivativeSimplify()
-        return expr.Limit(e.var ,e.lim, Op('/', rule.eval(Deriv(e.var,numerator)),
+        return expr.Limit(e.var, e.lim, Op('/', rule.eval(Deriv(e.var,numerator)),
                                                 rule.eval(Deriv(e.var,denominator))), e.drt)
-        # if e.ty != LIMIT:
-        #     return e
-        # bd = e.body
-        #
-        # subst_poly = bd.replace_trig(Var(e.var), e.lim).to_poly()
-        # if subst_poly.T != poly.UNKNOWN:
-        #     return e
-        # inf_part, zero_part, const_part = [], [], []
-        #
-        # bd_poly = bd.to_poly()
-        # if len(bd_poly) != 1:
-        #     raise NotImplementedError
-        # m = bd_poly[0]
-        # factors = m.factors
-        # for i, j in factors:
-        #     mono = poly.Polynomial([poly.Monomial(1, ((i, j),))])
-        #     norm_m = expr.from_poly(mono)
-        #     subst_m = norm_m.replace_trig(Var(e.var), e.lim).to_poly()
-        #     if subst_m.T == poly.ZERO:
-        #         zero_part.append((Const(1) / norm_m).normalize())
-        #     elif subst_m.T in (poly.POS_INF, poly.NEG_INF):
-        #         inf_part.append(norm_m)
-        #     elif subst_m.T == poly.NON_ZERO:
-        #         const_part.append(norm_m)
-        #     else:
-        #         raise NotImplementedError(str(mono))
-        #
-        # assert inf_part and zero_part
-        # inf_expr = functools.reduce(operator.mul, inf_part[1:], inf_part[0])
-        # zero_expr = functools.reduce(operator.mul, zero_part[1:], zero_part[0])
-        #
-        # nm_trace = [inf_expr]
-        # denom_trace = [zero_expr]
-        # while True:
-        #     nm, denom = nm_trace[-1], denom_trace[-1]
-        #     nm_deriv, denom_deriv = expr.deriv(e.var, nm), expr.deriv(e.var, denom)
-        #     nm_subst, denom_subst = nm_deriv.replace_trig(Var(e.var), e.lim), denom_deriv.replace_trig(Var(e.var), e.lim)
-        #     nm_poly, denom_poly = nm_subst.to_poly(), denom_subst.to_poly()
-        #     if nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
-        #         continue
-        #     elif nm_poly.T in (poly.ZERO, poly.NON_ZERO) and denom_poly.T in (poly.POS_INF, poly.NEG_INF):
-        #         return Const(0)
-        #     elif nm_poly.T in (poly.POS_INF, poly.NEG_INF) and denom_poly.T in (poly.ZERO, poly.NON_ZERO):
-        #         return expr.from_poly(nm_poly)
-        #     elif nm_poly.T == poly.NON_ZERO and denom_poly.T == poly.NON_ZERO:
-        #         return (nm_subst / denom_subst).normalize()
-        #     else:
-        #         raise NotImplementedError
 
 
 class LimSep(Rule):

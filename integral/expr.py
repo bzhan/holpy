@@ -744,6 +744,8 @@ class Expr:
 
         elif self.is_divides():
             a, b = self.args[0].to_const_poly(), self.args[1].to_const_poly()
+            if b.is_fraction() and b.get_fraction() == 0:
+                raise ZeroDivisionError("Zero denominator")
             if b.is_monomial():
                 return a / b
             else:
