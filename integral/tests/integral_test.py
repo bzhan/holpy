@@ -379,12 +379,12 @@ class IntegralTest(unittest.TestCase):
         proof = Eq1.proof_by_calculation()
 
         calc = proof.lhs_calc
-        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), "0"))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.DerivIntExchange())
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
-        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), "1"))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.FullSimplify())
 
         # Prove the following by induction
@@ -400,18 +400,19 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ElimInfInterval())
         calc.perform_rule(rules.SubstitutionInverse("u", parser.parse_expr("sqrt(b) * u")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1")), "1.0.0"))
+        calc.perform_rule(rules.Equation(parser.parse_expr("b^-1 * (1 + u^2)^-1"),
+                                         old_expr=parser.parse_expr("(b * u^2 + b)^-1")))
         calc.perform_rule(rules.FullSimplify())
 
         # Induction case, LHS
         calc = proof_induct.lhs_calc
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("IH"), "1.0"))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation("IH")))
         calc.perform_rule(rules.FullSimplify())
 
         # Induction step, RHS
         calc = proof_induct.rhs_calc
-        calc.perform_rule(rules.OnLocation(rules.RewriteBinom(), "1"))
+        calc.perform_rule(rules.OnSubterm(rules.RewriteBinom()))
         calc.perform_rule(rules.FullSimplify())
 
         # Test parsing of json file
@@ -476,7 +477,7 @@ class IntegralTest(unittest.TestCase):
         file.add_calculation(goal3)
         goal3.perform_rule(rules.Substitution('y', parser.parse_expr('x^3')))
         goal3.perform_rule(rules.FullSimplify())
-        goal3.perform_rule(rules.OnLocation(rules.ApplyEquation(gamma_def.eq, subMap={"n": parser.parse_expr('1/3')}), '1'))
+        goal3.perform_rule(rules.OnSubterm(rules.ApplyEquation(gamma_def.eq, subMap={"n": parser.parse_expr('1/3')})))
         goal3.perform_rule(rules.ApplyEquation(goal1.goal))
         goal3.perform_rule(rules.FullSimplify())
 

@@ -339,10 +339,10 @@
                     "res": "1/3 * Gamma(1/3)",
                     "rule": {
                         "eq": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
-                        "latex_str": "apply equation \\(\\Gamma{(n)} = \\int_{0}^{\\infty} e^{-x} x ^ {n - 1} \\,dx\\) where \\(n \\to \\frac{1}{3}\\) at 1",
-                        "loc": "1",
+                        "latex_str": "apply equation \\(\\Gamma{(n)} = \\int_{0}^{\\infty} e^{-x} x ^ {n - 1} \\,dx\\) where \\(n \\to \\frac{1}{3}\\) on subterms",
+                        "loc": "subterms",
                         "name": "ApplyEquation",
-                        "str": "apply equation: Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1)) where n -> 1/3 at 1",
+                        "str": "apply equation: Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1)) where n -> 1/3 on subterms",
                         "subMap": [
                             {
                                 "expr": "1/3",

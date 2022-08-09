@@ -55,9 +55,9 @@
                             "res": "D b. INT x:[0,oo]. (x ^ 2 + b) ^ (-m - 1)",
                             "rule": {
                                 "func_def": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
-                                "loc": "0",
+                                "loc": "subterms",
                                 "name": "ExpandDefinition",
-                                "str": "expand definition at 0"
+                                "str": "expand definition on subterms"
                             },
                             "type": "CalculationStep"
                         },
@@ -99,9 +99,9 @@
                             "res": "-(m + 1) * (INT x:[0,oo]. (x ^ 2 + b) ^ (-m - 2))",
                             "rule": {
                                 "func_def": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
-                                "loc": "1",
+                                "loc": "subterms",
                                 "name": "ExpandDefinition",
-                                "str": "expand definition at 1"
+                                "str": "expand definition on subterms"
                             },
                             "type": "CalculationStep"
                         },
@@ -215,10 +215,10 @@
                                     "latex_res": "\\sqrt{b} (\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} b ^ {-1} (1 + u ^ {2}) ^ {-1} \\,du)",
                                     "res": "sqrt(b) * (LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. b ^ -1 * (1 + u ^ 2) ^ -1)",
                                     "rule": {
-                                        "loc": "1.0.0",
                                         "name": "Equation",
                                         "new_expr": "b ^ -1 * (1 + u ^ 2) ^ -1",
-                                        "str": "rewriting at 1.0.0"
+                                        "old_expr": "(b * u ^ 2 + b) ^ -1",
+                                        "str": "rewriting"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -314,10 +314,10 @@
                                     "res": "1 / -(m + 1) * (D b. pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2)))",
                                     "rule": {
                                         "eq": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
-                                        "latex_str": "apply equation \\(I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})\\) at 1.0",
-                                        "loc": "1.0",
+                                        "latex_str": "apply equation \\(I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})\\) on subterms",
+                                        "loc": "subterms",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation: I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2)) at 1.0"
+                                        "str": "apply equation: I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2)) on subterms"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -349,9 +349,9 @@
                                     "latex_res": "\\pi b ^ {-1/2\\cdot (2 m + 3)} 2 ^ {-2 m - 3} (2 \\binom{2 m}{m} (\\frac{2 m + 1}{m + 1}))",
                                     "res": "pi * b ^ (-1/2 * (2 * m + 3)) * 2 ^ (-2 * m - 3) * (2 * binom(2 * m,m) * ((2 * m + 1) / (m + 1)))",
                                     "rule": {
-                                        "loc": "1",
+                                        "loc": "subterms",
                                         "name": "RewriteBinom",
-                                        "str": "rewriting binomial coefficients at 1"
+                                        "str": "rewriting binomial coefficients on subterms"
                                     },
                                     "type": "CalculationStep"
                                 },

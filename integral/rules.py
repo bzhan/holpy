@@ -905,7 +905,7 @@ class RewriteBinom(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if not e.is_fun() and e.func_name == "binom":
+        if not (e.is_fun() and e.func_name == "binom"):
             return e
 
         m, n = e.args
