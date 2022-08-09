@@ -13,7 +13,8 @@ from integral import conditions
 class IntegralTest(unittest.TestCase):
     def testInteresting(self):
         file = compstate.CompFile("Interesting")
-        
+
+        # Problem (2.2.a)        
         calc = file.add_calculation("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")
         calc.perform_rule(rules.Substitution("y", parser.parse_expr("pi / 2 - x")))
         calc.perform_rule(rules.FullSimplify())
@@ -21,6 +22,17 @@ class IntegralTest(unittest.TestCase):
                                          old_expr=parser.parse_expr("sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y)))^-1")))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")))
+        self.assertEqual(str(calc.last_expr), "1/4 * pi")
+
+        # Problem (2.2.b)
+        calc = file.add_calculation("INT x:[0,pi]. x * sin(x) / (1 + cos(x)^2)")
+        calc.perform_rule(rules.Substitution("y", parser.parse_expr("pi - x")))
+        calc.perform_rule(rules.ExpandPolynomial())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,pi]. x * sin(x) / (1 + cos(x)^2)")))
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("cos(y)")))
+        calc.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(calc.last_expr), "1/4 * pi ^ 2")
 
         # Test parsing of json file
         json_file = file.export()

@@ -242,6 +242,8 @@ class TrigSimplify(Rule):
         rules = [
             (sin(Const(Fraction(1/2)) * expr.pi - u), cos(u)),
             (cos(Const(Fraction(1/2)) * expr.pi - u), sin(u)),
+            (sin(expr.pi - u), sin(u)),
+            (cos(expr.pi - u), -cos(u)),
         ]
 
         for pat, pat_res in rules:
