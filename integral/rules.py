@@ -646,6 +646,32 @@ class ApplyEquation(Rule):
             return ApplyEquation(new_eq).eval(e)
 
 
+class ApplyInductHyp(Rule):
+    """Apply induction hypothesis."""
+    def __init__(self, induct_hyp: Expr):
+        self.name = "ApplyInductHyp"
+        self.induct_hyp = induct_hyp
+
+    def __str__(self):
+        return "apply induction hypothesis"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self),
+            "induct_hyp": str(self.induct_hyp)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if not self.induct_hyp.is_equals():
+            return e
+
+        if e == self.induct_hyp.lhs:
+            return self.induct_hyp.rhs
+        else:
+            return e
+
+
 class Substitution(Rule):
     """Apply substitution u = g(x).
     

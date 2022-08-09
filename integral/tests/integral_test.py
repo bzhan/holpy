@@ -469,7 +469,7 @@ class IntegralTest(unittest.TestCase):
 
         calc = proof_induct.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal1.goal, subMap={"n": parser.parse_expr("n + 1")}))
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal2.goal)))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyInductHyp(goal2.goal)))
         calc.perform_rule(rules.RewriteFactorial())
 
         # Application

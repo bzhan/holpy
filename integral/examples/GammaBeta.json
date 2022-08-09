@@ -265,11 +265,10 @@
                                     "latex_res": "(n + 1) n!",
                                     "res": "(n + 1) * factorial(n)",
                                     "rule": {
-                                        "eq": "Gamma(n + 1) = factorial(n)",
-                                        "latex_str": "apply equation \\(\\Gamma{(n + 1)} = n!\\) on subterms",
+                                        "induct_hyp": "Gamma(n + 1) = factorial(n)",
                                         "loc": "subterms",
-                                        "name": "ApplyEquation",
-                                        "str": "apply equation: Gamma(n + 1) = factorial(n) on subterms"
+                                        "name": "ApplyInductHyp",
+                                        "str": "apply induction hypothesis on subterms"
                                     },
                                     "type": "CalculationStep"
                                 },

@@ -35,6 +35,7 @@
           <b-dropdown-item href="#" v-on:click="polynomialDivision">Polynomial division</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyTheorem">Apply theorem</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteEquation">Rewrite equation</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -762,6 +763,18 @@ export default {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
         this.r_query_mode = undefined
+      }
+    },
+
+    applyInductiveHyp: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+      }      
+      const response = await axios.post("http://127.0.0.1:5000/api/apply-inductive-hyp", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
       }
     }
   },

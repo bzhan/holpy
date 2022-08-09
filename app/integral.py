@@ -307,6 +307,33 @@ def integral_query_theorems():
         "theorems": eqs
     })
 
+@app.route("/api/apply-inductive-hyp", methods=["POST"])
+def integral_apply_inductive_hyp():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    item = compstate.parse_item(data['item'])
+    label = compstate.Label(data['selected_item'])
+    subitem = item.get_by_label(label)
+    
+    if not isinstance(item, compstate.Goal) or not isinstance(item.proof, compstate.InductionProof):
+        # TODO: search for induction more generally
+        return jsonify({
+            "status": "error",
+            "msg": "Not part of an induction proof"
+        })
+    if not isinstance(subitem, (compstate.Calculation, compstate.CalculationStep)):
+        return jsonify({
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
+        })
+
+    rule = integral.rules.OnSubterm(integral.rules.ApplyInductHyp(item.goal))
+    subitem.perform_rule(rule)
+    return jsonify({
+        "status": "ok",
+        "item": item.export(),
+        "selected_item": str(compstate.get_next_step_label(subitem, label))
+    })
+
 @app.route("/api/integral-apply-theorem", methods=["POST"])
 def integral_apply_theorem():
     data = json.loads(request.get_data().decode('UTF-8'))
