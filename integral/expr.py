@@ -3,7 +3,7 @@ import copy
 from fractions import Fraction
 import functools, operator
 from collections.abc import Iterable
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 from sympy import solveset, re, Interval, Eq, EmptySet, pexquo
 from decimal import Decimal
 import math
@@ -651,41 +651,34 @@ class Expr:
         else:
             return False
 
-    def get_vars(self):
-        """Obtain the set of variables in self.
-        
-        For simplicity, this functin includes bound variables.
-
-        """
+    def get_vars(self) -> Set[str]:
+        """Obtain the set of variables in self."""
         res = set()
-        def rec(t):
+        def rec(t, bd_vars):
             if t.ty == VAR:
-                res.add(t.name)
+                if t.name not in bd_vars:
+                    res.add(t.name)
             elif t.ty in (CONST, INF):
                 return
             elif t.ty in (OP, FUN):
                 for arg in t.args:
-                    rec(arg)
+                    rec(arg, bd_vars)
             elif t.ty == DERIV:
-                res.add(t.var)
-                rec(t.body)
+                rec(t.body, bd_vars + [t.var])
             elif t.ty == LIMIT:
-                res.add(t.var)
-                rec(t.lim)
-                rec(t.body)
+                rec(t.lim, bd_vars + [t.var])
+                rec(t.body, bd_vars + [t.var])
             elif t.ty in (INTEGRAL, EVAL_AT):
-                res.add(t.var)
-                rec(t.lower)
-                rec(t.upper)
-                rec(t.body)
+                rec(t.lower, bd_vars + [t.var])
+                rec(t.upper, bd_vars + [t.var])
+                rec(t.body, bd_vars + [t.var])
             elif t.ty == INDEFINITEINTEGRAL:
-                res.add(t.var)
-                rec(t.body)
+                rec(t.body, bd_vars + [t.var])
             else:
                 print(t, type(t))
                 raise NotImplementedError
 
-        rec(self)
+        rec(self, [])
         return res
 
     def contains_var(self, x: str) -> bool:
@@ -1262,7 +1255,7 @@ class Expr:
 
     def inst_pat(self, mapping: Dict) -> Expr:
         """Instantiate by replacing symbols in term with mapping."""
-        if self.ty in (VAR, CONST):
+        if self.ty in (VAR, CONST, INF):
             return self
         elif self.ty == SYMBOL:
             assert self in mapping, "inst_pat: %s not found" % self.name

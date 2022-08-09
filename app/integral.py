@@ -284,3 +284,64 @@ def integral_perform_step():
             "status": "error",
             "msg": "Selected item is not part of a calculation."
         })
+
+@app.route("/api/query-theorems", methods=["POST"])
+def integral_query_theorems():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    item = compstate.parse_item(data['item'])
+    prev_items = []
+    for prev_item in data['prev_items']:
+        prev_items.append(compstate.parse_item(prev_item))
+    label = compstate.Label(data['selected_item'])
+    subitem = item.get_by_label(label)
+    eqs = []
+    for prev_item in prev_items:
+        for eq in prev_item.get_facts():
+            if eq.is_equals():
+                eqs.append({
+                    'eq': str(eq),
+                    'latex_eq': integral.latex.convert_expr(eq)
+                })
+    return jsonify({
+        "status": "ok",
+        "theorems": eqs
+    })
+
+@app.route("/api/integral-apply-theorem", methods=["POST"])
+def integral_apply_theorem():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    item = compstate.parse_item(data['item'])
+    label = compstate.Label(data['selected_item'])
+    subitem = item.get_by_label(label)
+    eq = integral.parser.parse_expr(data['theorem'])
+    rule = integral.rules.ApplyEquation(eq)
+    e: integral.expr.Expr
+    conds: integral.conditions.Conditions
+    if isinstance(subitem, compstate.Calculation):
+        e = subitem.start
+        conds = subitem.conds
+    elif isinstance(subitem, compstate.CalculationStep):
+        e = subitem.res
+        conds = subitem.parent.conds
+    else:
+        return jsonify({
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
+        })
+    
+    new_e = rule.eval(e, conds=conds)
+    if new_e == e:
+        query_vars = []
+        for var in eq.get_vars():
+            query_vars.append({"var": var, "expr": ""})
+        return jsonify({
+            "status": "query",
+            "query_vars": query_vars
+        })
+    else:
+        subitem.perform_rule(rule)
+        return jsonify({
+            "status": "ok",
+            "item": item.export(),
+            "selected_item": str(compstate.get_next_step_label(subitem, label))
+        })

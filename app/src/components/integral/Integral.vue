@@ -33,6 +33,7 @@
           <b-dropdown-item href="#" v-on:click="trigIdentity">Trig identities</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="expandPolynomial">Expand polynomial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="polynomialDivision">Polynomial division</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyTheorem">Apply theorem</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteEquation">Rewrite equation</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -180,6 +181,22 @@
         <ExprQuery v-model="expr_query1"/>
         <button v-on:click="doSplitRegion">OK</button>
       </div>
+      <div v-if="r_query_mode === 'select theorem'">
+        <div class="math-text">Select theorem to apply:</div>
+        <div v-for="(item, index) in theorems" :key="index"
+             v-on:click="doApplyTheorem(index)">
+          <MathEquation v-bind:data="'\\(' + item.latex_eq + '\\)'"/>
+        </div>
+      </div>
+      <div v-if="r_query_mode === 'query vars'">
+        <div class="math-text">Enter instantiation in theorem</div>
+        <MathEquation v-bind:data="'\\(' + theorems[selected_theorem_id].latex_eq + '\\)'"/><br/>
+        <div v-for="(item, index) in query_vars" :key="index">
+          <MathEquation v-bind:data="'\\(' + item.var + '\\to \\)'"/>
+          <ExprQuery v-model="item.expr"/>
+        </div>
+        <button v-on:click="doApplyTheoremInst">OK</button>
+      </div>
     </div>
     <div id="select">
     </div>
@@ -209,15 +226,14 @@ export default {
 
   data: function () {
     return {
-      filename: 'tongji7',    // Currently opened file
-      content: [],         // List of problems
-      file_list: [],      //List of integral list
-      content_state: undefined, // state of the content panel, if it is true, display the integrals in content,
-                                // or else display the json files in file list
-      cur_id: undefined,   // ID of the selected item
-      cur_items: [],       // Current items in state
-      r_query_mode: undefined, //record query mode
-      sep_int: [],         //all separate integrals
+      filename: 'tongji7',       // Currently opened file
+      content: [],               // List of problems
+      file_list: [],             // List of integral list
+      content_state: undefined,  // Display items in content or json files in file list
+      cur_id: undefined,         // ID of the selected item
+      cur_items: [],             // Current items in state
+      r_query_mode: undefined,   // Record query mode
+      sep_int: [],               // All separate integrals
 
       // Selected goal
       selected_item: undefined,
@@ -242,6 +258,11 @@ export default {
       selected_expr: undefined,
       latex_selected_expr: undefined,
       trig_rewrites: undefined,
+
+      // List of theorems
+      theorems: undefined,
+      selected_theorem_id: undefined,
+      query_vars: undefined
     }
   },
 
@@ -257,7 +278,6 @@ export default {
   },
 
   methods: {
-
     load_file_list: async function (){
       const response = await axios.post('http://127.0.0.1:5000/api/integral-load-file-list')
       this.file_list = response.data.file_list
@@ -696,6 +716,54 @@ export default {
         this.selected_item = response.data.selected_item
       }
     },
+
+    applyTheorem: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        prev_items: this.content.slice(0, this.cur_id),
+        selected_item: this.selected_item,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-theorems", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.theorems = response.data.theorems
+        this.r_query_mode = 'select theorem'
+      }
+    },
+
+    doApplyTheorem: async function(index) {
+      this.selected_theorem_id = index
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        theorem: this.theorems[index].eq
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-apply-theorem", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+      } else if (response.data.status == 'query') {
+        this.query_vars = response.data.query_vars
+        this.r_query_mode = 'query vars'
+      }
+    },
+
+    doApplyTheoremInst: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: "ApplyEquation",
+          eq: this.theorems[this.selected_theorem_id].eq,
+          subMap: this.query_vars
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    }
   },
 
   created: function () {
