@@ -29,6 +29,7 @@
           <b-dropdown-item href="#" v-on:click="improperToLimit">Improper integral to limit</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="exchangeDerivIntegral">Exchange deriv and integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="elimAbs">Eliminate abs</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='splitRegion'>Splitting an Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Rewrite" left>
@@ -41,7 +42,6 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
           <b-dropdown-item href="#" v-on:click='slagle'>Slagle's method</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='split'>Splitting an Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='lhopital'>L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -258,6 +258,11 @@
         <span class="math-text">Rewrite subexpression to</span><br/>
         <ExprQuery v-model="expr_query1"/>
         <button v-on:click="doRewriteEquation">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'split region'">
+        <div class="math-text">Split region at:</div>
+        <ExprQuery v-model="expr_query1"/>
+        <button v-on:click="doSplitRegion">OK</button>
       </div>
     </div>
     <div id="select">
@@ -884,6 +889,27 @@ export default {
           name: "Equation",
           old_expr: this.selected_expr,
           new_expr: this.expr_query1
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    splitRegion: function() {
+      this.r_query_mode = 'split region'
+    },
+
+    doSplitRegion: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: "SplitRegion",
+          c: this.expr_query1
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
