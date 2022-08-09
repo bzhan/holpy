@@ -9,35 +9,35 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Proof" left>
           <b-dropdown-item href="#" v-on:click="clearItem">Clear</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="simplifyStep">Simplify</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('FullSimplify')">Simplify</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addFuncDef">Add definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="addGoal">Add goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByCalculation">Proof by calculation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="proofByInduction">Proof by induction</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Limits" left>
-          <b-dropdown-item href="#" v-on:click='lhopital'>L'Hopital Rule</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('LHopital')">L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Integral" left>
           <b-dropdown-item href="#" v-on:click="forwardSubstitution">Forward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="improperToLimit">Improper integral to limit</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="exchangeDerivIntegral">Exchange deriv and integral</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="elimAbs">Eliminate abs</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('ElimInfInterval')">Improper integral to limit</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('DerivIntExchange')">Exchange deriv and integral</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('ElimAbs')">Eliminate abs</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='splitRegion'>Splitting an Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Rewrite" left>
           <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="trigIdentity">Trig identities</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="expandPolynomial">Expand polynomial</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="polynomialDivision">Polynomial division</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('ExpandPolynomial')">Expand polynomial</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('PolynomialDivision')">Polynomial division</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyTheorem">Apply theorem</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteEquation">Rewrite equation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="rewriteFactorial">Factorial</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="rewriteBinom">Binomial coefficients</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('RewriteFactorial')">Factorial</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('RewriteBinom')">Binomial coefficients</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -401,6 +401,21 @@ export default {
       this.r_query_mode = 'apply induction'
     },
 
+    applyRule: async function(rulename) {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: rulename
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+      }
+    },
+
     // Perform proof by induction
     doApplyInduction: async function() {
       const data = {
@@ -423,51 +438,6 @@ export default {
         selected_item: this.selected_item,
       }
       const response = await axios.post("http://127.0.0.1:5000/api/expand-definition", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-      }
-    },
-
-    exchangeDerivIntegral: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: 'DerivIntExchange'
-        }
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-      }
-    },
-
-    simplifyStep: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: 'FullSimplify'
-        }
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-      }
-    },
-
-    improperToLimit: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: 'ElimInfInterval'
-        }
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
@@ -602,21 +572,6 @@ export default {
       }
     },
 
-    elimAbs: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: "ElimAbs"
-        }
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-      }
-    },
-
     solveEquation: async function() {
       const data = {
         item: this.content[this.cur_id],
@@ -629,36 +584,6 @@ export default {
         this.selected_item = response.data.selected_item
         this.r_query_mode = undefined
         this.selected_facts = {}
-      }
-    },
-
-    expandPolynomial: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: "ExpandPolynomial"
-        }
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-      }
-    },
-
-    polynomialDivision: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: "PolynomialDivision"
-        }
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
       }
     },
 
@@ -702,21 +627,6 @@ export default {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
         this.r_query_mode = undefined
-      }
-    },
-
-    lhopital: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: "LHopital"
-        }
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
       }
     },
 
@@ -774,36 +684,6 @@ export default {
         selected_item: this.selected_item,
       }      
       const response = await axios.post("http://127.0.0.1:5000/api/apply-inductive-hyp", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-      }
-    },
-
-    rewriteFactorial: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: "RewriteFactorial"
-        }
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-      }
-    },
-
-    rewriteBinom: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: "RewriteBinom"
-        }
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
