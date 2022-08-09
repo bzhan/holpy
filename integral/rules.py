@@ -919,11 +919,16 @@ class PolynomialDivision(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if e.is_integral():
-            return expr.Integral(e.var, e.lower, e.upper, self.eval(e.body))
-        else:
-            result = apart(expr.sympy_style(e))
-            return parser.parse_expr(str(result).replace("**","^"))
+        if not e.is_integral():
+            sep_ints = e.separate_integral()
+            if len(sep_ints) == 0:
+                return e
+            else:
+                return OnLocation(self, sep_ints[0][1]).eval(e)
+
+        result = apart(expr.sympy_style(e.body))
+        new_expr = expr.holpy_style(result)
+        return expr.Integral(e.var, e.lower, e.upper, new_expr)
 
 
 class RewriteTrigonometric(Rule):
