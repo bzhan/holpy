@@ -122,9 +122,8 @@ class DividePolynomial(AlgorithmRule):
         else:
             denom = e_body.args[1].args[0]
         try:
-            divide_expr = rules.PolynomialDivision().eval(e_body)
-            new_integral = Integral(e.var, e.lower, e.upper, divide_expr)
-            step = calc.PolynomialDivisionStep(new_integral, denom, divide_expr, Location([0]))
+            new_integral = rules.PolynomialDivision().eval(e)
+            step = calc.PolynomialDivisionStep(new_integral, denom, new_integral.body, Location([0]))
             return new_integral, [step]
         except NotImplementedError:
             return e, None

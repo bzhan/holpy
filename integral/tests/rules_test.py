@@ -230,17 +230,16 @@ class RulesTest(unittest.TestCase):
 
     def testPolynomialDivision(self):
         test_data = [
-            ("INT x:[4, exp(1) + 3]. (x^3 - 12 * x^2 - 42) / (x - 3)",
-             "INT x:[4, exp(1) + 3]. x ^ 2 - 9 * x - 27 - 123 / (x - 3)"),
-            ("INT x:[-1, 0]. (3*x^4 + 3*x^2 + 1) / (x^2 + 1)",
-             "INT x:[-1, 0]. 3 * x ^ 2 + 1 / (x ^ 2 + 1)")
+            ("INT x:[4,exp(1) + 3]. (x^3 - 12 * x^2 - 42) / (x - 3)",
+             "INT x:[4,exp(1) + 3]. x ^ 2 - 9 * x - 27 - 123 / (x - 3)"),
+            ("INT x:[-1,0]. (3*x^4 + 3*x^2 + 1) / (x^2 + 1)",
+             "INT x:[-1,0]. 3 * x ^ 2 + 1 / (x ^ 2 + 1)")
         ]
 
         rule = rules.PolynomialDivision()
-        for e1, e2 in test_data:
-            s1 = parse_expr(e1)
-            s2 = parse_expr(e2)
-            self.assertEqual(str(rule.eval(s1.body)), str(s2.body))
+        for s1, s2 in test_data:
+            e1 = parse_expr(s1)
+            self.assertEqual(str(rule.eval(e1)), s2)
 
     def testElimAbs(self):
         test_data = [
@@ -390,26 +389,26 @@ class RulesTest(unittest.TestCase):
         t0 = expr.parser.parse_expr(t)
         sub = expr.parser.parse_expr("x/sqrt(9*x*x-5*x) + 3/sqrt(9*x*x - 5*x)")
         t1 = rules.OnLocation(rules.Equation(sub), '0').eval(t0)
-        print("t1 =",t1)
+        # print("t1 =",t1)
         t2 = rules.LimSep().eval(t1)
-        print("t2 =", t2)
+        # print("t2 =", t2)
         t3 = rules.OnLocation(rules.LimitSimplify(), '1').eval(t2)
-        print("t3 =", t3)
+        # print("t3 =", t3)
         t4 = rules.OnLocation(rules.ExtractFromRoot(parser.parse_expr('3*x'), -1), '0.0.1').eval(t3);
         sub = '(x/(-(3*x))) * (1/sqrt((9 * x * x - 5 * x) / (3 * x) ^ 2))'
         sub = expr.parser.parse_expr(sub)
         t5 = rules.OnLocation(rules.Equation(sub), '0.0').eval(t4)
         t6 = rules.OnLocation(rules.LimSep(), '0').eval(t5)
         t7 = rules.OnLocation(rules.Simplify(), '0.1.0').eval(t6)
-        print("t7 =", t7)
+        # print("t7 =", t7)
         t8 = rules.OnLocation(rules.LimitSimplify(), '0.0').eval(t7)
-        print("t8 =", t8)
+        # print("t8 =", t8)
         t9 = rules.OnLocation(rules.LimitSimplify(), '0.1').eval(t8)
-        print("t9 =", t9)
+        # print("t9 =", t9)
         t10 = rules.OnLocation(rules.LHopital(), '0.0').eval(t9)
-        print("t10 =", t10)
+        # print("t10 =", t10)
         t11 = rules.OnLocation(rules.LimitSimplify(), '0.0').eval(t10)
-        print("t11 =", t11)
+        # print("t11 =", t11)
         t12 = rules.Simplify().eval(t11)
         self.assertEqual(str(t12),res)
 
@@ -525,7 +524,8 @@ class RulesTest(unittest.TestCase):
             if e.ty != expr.LIMIT:
                 self.assertEqual(str(e.normalize()), b, a)
             else:
-                print(e)
+                # print(e)
+                self.assertTrue(False)
 
     def testComputeLimitConds(self):
         test_data = [
@@ -546,8 +546,8 @@ class RulesTest(unittest.TestCase):
     def testComputeLimit1(self):
         s = 'LIM {t -> oo}. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1'
         e = parser.parse_expr(s)
-        print()
-        print(rules.LimitSimplify().eval(e))
+        # TODO: fix answer
+        # print(rules.LimitSimplify().eval(e))
 
     def testCosTransformationOfGaussion(self):
         # Overall goal
@@ -624,6 +624,7 @@ class RulesTest(unittest.TestCase):
         #     json.dump(st.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
         with open('integral/examples/cosIntegral.json', 'w', encoding='utf-8') as f:
             json.dump(st.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
     def testProbabilityIntegral(self):
         file = compstate.CompFile('probability integral')
 
