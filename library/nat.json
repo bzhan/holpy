@@ -760,13 +760,13 @@
                     "th": "⊢ ∀x. x + y + z = x + (y + z) ⟶ Suc x + y + z = Suc x + (y + z)"
                 },
                 {
-                    "args": "nat_induct, {P: λx. x + y + z = x + (y + z), x: x}",
+                    "args": "nat_induct, x, x + y + z = x + (y + z)",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
-                    "rule": "apply_theorem_for",
+                    "rule": "apply_induct",
                     "th": "⊢ x + y + z = x + (y + z)"
                 },
                 {
@@ -790,6 +790,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "nat_plus_def_1"
                 },
                 {
@@ -800,11 +801,13 @@
                 {
                     "goal_id": "1.2",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "nat_plus_def_2"
                 },
                 {
                     "goal_id": "1.2",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "nat_plus_def_2"
                 },
                 {
@@ -1341,13 +1344,13 @@
                     "th": "⊢ ∀x. x * (y + z) = x * y + x * z ⟶ Suc x * (y + z) = Suc x * y + Suc x * z"
                 },
                 {
-                    "args": "nat_induct, {P: λx. x * (y + z) = x * y + x * z, x: x}",
+                    "args": "nat_induct, x, x * (y + z) = x * y + x * z",
                     "id": "3",
                     "prevs": [
                         "1",
                         "2"
                     ],
-                    "rule": "apply_theorem_for",
+                    "rule": "apply_induct",
                     "th": "⊢ x * (y + z) = x * y + x * z"
                 },
                 {
@@ -1371,11 +1374,13 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "nat_times_def_1"
                 },
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "add_0_right"
                 },
                 {
@@ -1386,6 +1391,7 @@
                 {
                     "goal_id": "2.2",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "nat_times_def_2"
                 },
                 {

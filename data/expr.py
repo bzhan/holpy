@@ -130,7 +130,7 @@ class prove_avalI_method(Method):
             return []
 
     def display_step(self, state, data):
-        return pprint.N("prove_avalI: (solves)")
+        return pprint.N("prove_avalI: ") + pprint.KWGreen("(solves)")
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "prove_avalI_method"

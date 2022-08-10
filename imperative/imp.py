@@ -150,7 +150,7 @@ class eval_Sem_method(Method):
             return []
 
     def display_step(self, state, data):
-        return pprint.N("eval_Sem: (solves)")
+        return pprint.N("eval_Sem: ") + pprint.KWGreen("(solves)")
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "eval_Sem_method"

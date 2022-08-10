@@ -557,7 +557,7 @@ class nat_norm_method(Method):
             return []
 
     def display_step(self, state, data):
-        return pprint.N("nat_norm: (solves)")
+        return pprint.N("nat_norm: ") + pprint.KWGreen("(solves)")
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "nat_norm_method"
@@ -659,7 +659,7 @@ class nat_const_ineq_method(Method):
             return []
 
     def display_step(self, state, data):
-        return pprint.N("nat_const_ineq: (solves)")
+        return pprint.N("nat_const_ineq: ") + pprint.KWGreen("(solves)")
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "nat_const_ineq_method"

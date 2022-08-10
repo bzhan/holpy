@@ -288,10 +288,22 @@ def register_method(name):
 
 class Method:
     """Methods represent potential actions on the state."""
-    def search(self, state, id, prevs):
+    def search(self, state: ProofState, id, prevs):
+        """Search for parameters on which the method can be applied
+        given the current proof state.
+        
+        """
         pass
 
-    def apply(self, state, id, args, prevs):
+    def display_step(self, state: ProofState, data):
+        """Display the current step in pretty-printed form."""
+        pass
+
+    def apply(self, state: ProofState, id, args, prevs):
+        """Apply the method on the current state using the given
+        parameters. Return new proof state if successful.
+        
+        """
         pass
 
 
@@ -302,10 +314,7 @@ class cut_method(Method):
         self.sig = ['goal']
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
-        if data:
-            return [data]
-
+    def search(self, state: ProofState, id, prevs):
         return []
 
     def display_step(self, state: ProofState, data):
@@ -335,19 +344,16 @@ class cases_method(Method):
         self.sig = ['case']
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
-        if data:
-            return [data]
-
+    def search(self, state: ProofState, id, prevs):
         return []
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         id = data['goal_id']
         with context.fresh_context(vars=state.get_vars(id)):
             A = parser.parse_term(data['case'])
         return pprint.N("case ") + printer.print_term(A)
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         with context.fresh_context(vars=state.get_vars(id)):
             A = parser.parse_term(data['case'])
             for v in A.get_vars():
@@ -364,7 +370,7 @@ class apply_prev(Method):
         self.sig = []
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
+    def search(self, state: ProofState, id, prevs):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
@@ -376,10 +382,10 @@ class apply_prev(Method):
             # In this case, still suggest the result
             return [{}]
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         return pprint.N("Apply fact (b)")
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         inst = Inst()
         with context.fresh_context(vars=state.get_vars(id)):
             for key, val in data.items():
@@ -399,7 +405,7 @@ class rewrite_goal_with_prev(Method):
         self.sig = []
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
+    def search(self, state: ProofState, id, prevs):
         try:
             cur_item = state.get_proof_item(id)
             prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
@@ -409,10 +415,10 @@ class rewrite_goal_with_prev(Method):
         else:
             return [{"_goal": [gap.prop for gap in pt.gaps]}]        
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         return pprint.N("rewrite with fact")
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, args, prevs):
         state.apply_tactic(id, tactic.rewrite_goal_with_prev(), prevs=prevs)
 
 
@@ -423,7 +429,7 @@ class rewrite_goal(Method):
         self.sig = ['theorem', 'sym']
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
+    def search(self, state, id, prevs):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
@@ -437,17 +443,11 @@ class rewrite_goal(Method):
             except (AssertionError, matcher.MatchException) as e:
                 pass
 
-        if data:
-            sym = 'false'
-            if 'sym' in data:
-                sym = data['sym']
-            search_thm(data['theorem'], sym)
-        else:
-            for th_name in theory.thy.get_data("theorems"):
-                if 'hint_rewrite' in theory.thy.get_attributes(th_name):
-                    search_thm(th_name, 'false')
-                if 'hint_rewrite_sym' in theory.thy.get_attributes(th_name):
-                    search_thm(th_name, 'true')
+        for th_name in theory.thy.get_data("theorems"):
+            if 'hint_rewrite' in theory.thy.get_attributes(th_name):
+                search_thm(th_name, 'false')
+            if 'hint_rewrite_sym' in theory.thy.get_attributes(th_name):
+                search_thm(th_name, 'true')
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -472,10 +472,8 @@ class rewrite_fact(Method):
         self.sig = ['theorem', 'sym']
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
-        cur_item = state.get_proof_item(id)
+    def search(self, state: ProofState, id, prevs):
         prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
-
         results = []
 
         def search_thm(th_name, sym):
@@ -487,24 +485,21 @@ class rewrite_fact(Method):
                 # print(e)
                 pass
 
-        if data:
-            search_thm(data['theorem'], data['sym'])
-        else:
-            for th_name in theory.thy.get_data("theorems"):
-                if 'hint_rewrite' in theory.thy.get_attributes(th_name):
-                    search_thm(th_name, 'false')
-                if 'hint_rewrite_sym' in theory.thy.get_attributes(th_name):
-                    search_thm(th_name, 'true')
+        for th_name in theory.thy.get_data("theorems"):
+            if 'hint_rewrite' in theory.thy.get_attributes(th_name):
+                search_thm(th_name, 'false')
+            if 'hint_rewrite_sym' in theory.thy.get_attributes(th_name):
+                search_thm(th_name, 'true')
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         if 'sym' in data and data['sym'] == 'true':
             return pprint.N(data['theorem'] + " (sym, r)")
         else:
             return pprint.N(data['theorem'] + " (r)")
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         try:
             prev_pts = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
             sym_b = 'sym' in data and data['sym'] == 'true'
@@ -531,7 +526,7 @@ class rewrite_fact_with_prev(Method):
         self.sig = []
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
+    def search(self, state: ProofState, id, prevs):
         prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
             macro = logic.rewrite_fact_with_prev_macro()
@@ -540,10 +535,10 @@ class rewrite_fact_with_prev(Method):
         except (AssertionError, matcher.MatchException):
             return []
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         return pprint.N("rewrite fact with fact")
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, args, prevs):
         try:
             prev_pts = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
             pt = logic.rewrite_fact_with_prev_macro().get_proof_term(None, prev_pts)
@@ -566,7 +561,7 @@ class apply_forward_step(Method):
         self.sig = ['theorem']
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
+    def search(self, state: ProofState, id, prevs):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
 
         results = []
@@ -584,19 +579,16 @@ class apply_forward_step(Method):
             except (AssertionError, matcher.MatchException):
                 pass
 
-        if data:
-            search_thm(data['theorem'], min_prevs=0)
-        else:
-            for th_name in theory.thy.get_data("theorems"):
-                if 'hint_forward' in theory.thy.get_attributes(th_name):
-                    search_thm(th_name, min_prevs=1)
+        for th_name in theory.thy.get_data("theorems"):
+            if 'hint_forward' in theory.thy.get_attributes(th_name):
+                search_thm(th_name, min_prevs=1)
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         return pprint.N(data['theorem'] + " (f)")
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         inst = Inst()
         with context.fresh_context(vars=state.get_vars(id)):
             for key, val in data.items():
@@ -638,7 +630,7 @@ class apply_backward_step(Method):
         self.sig = ['theorem']
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
+    def search(self, state: ProofState, id, prevs):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
@@ -654,20 +646,17 @@ class apply_backward_step(Method):
             except (AssertionError, matcher.MatchException):
                 pass
 
-        if data:
-            search_thm(data['theorem'])
-        else:
-            for th_name in theory.thy.get_data("theorems"):
-                if 'hint_backward' in theory.thy.get_attributes(th_name) or \
-                   ('hint_backward1' in theory.thy.get_attributes(th_name) and len(prevs) >= 1):
-                    search_thm(th_name)
+        for th_name in theory.thy.get_data("theorems"):
+            if 'hint_backward' in theory.thy.get_attributes(th_name) or \
+                ('hint_backward1' in theory.thy.get_attributes(th_name) and len(prevs) >= 1):
+                search_thm(th_name)
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         return pprint.N(data['theorem'] + " (b)")
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         inst = Inst()
         with context.fresh_context(vars=state.get_vars(id)):
             for key, val in data.items():
@@ -686,7 +675,7 @@ class apply_resolve_step(Method):
         self.sig = ["theorem"]
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
+    def search(self, state: ProofState, id, prevs):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
@@ -699,19 +688,16 @@ class apply_resolve_step(Method):
             except (AssertionError, matcher.MatchException):
                 pass
 
-        if data:
-            search_thm(data['theorem'])
-        else:
-            for th_name in theory.thy.get_data("theorems"):
-                if 'hint_resolve' in theory.thy.get_attributes(th_name):
-                    search_thm(th_name)
+        for th_name in theory.thy.get_data("theorems"):
+            if 'hint_resolve' in theory.thy.get_attributes(th_name):
+                search_thm(th_name)
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         return pprint.N("Resolve using " + data['theorem'])
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         state.apply_tactic(id, tactic.resolve(), args=data['theorem'], prevs=prevs)
 
 
@@ -723,10 +709,7 @@ class introduction(Method):
         self.limit = None
         self.no_order = True
 
-    def search(self, state, id, prevs, data=None):
-        if data:
-            return [data]
-
+    def search(self, state: ProofState, id, prevs):
         if len(prevs) > 0:
             return []
 
@@ -738,7 +721,7 @@ class introduction(Method):
         else:
             return []
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         res = "introduction"
         if 'names' in data and data['names'] != "":
             names = [name.strip() for name in data['names'].split(',')]
@@ -748,7 +731,7 @@ class introduction(Method):
                 res += " with name " + ", ".join(names)
         return pprint.N(res)
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         cur_item = state.get_proof_item(id)
         assert cur_item.rule == "sorry", "introduction: id is not a gap"
 
@@ -783,16 +766,13 @@ class revert_intro(Method):
         self.sig = []
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
-        if data:
-            return [data]
-
+    def search(self, state: ProofState, id, prevs):
         return []
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         return pprint.N("revert intro")
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         cur_item = state.get_proof_item(id)
         assert cur_item.rule == "sorry", "revert intro: id is not a gap"
 
@@ -814,10 +794,7 @@ class exists_elim(Method):
         self.sig = ['names']
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
-        if data:
-            return [data]
-
+    def search(self, state: ProofState, id, prevs):
         if len(prevs) == 1:
             prev_th = state.get_proof_item(prevs[0]).th
             if prev_th.prop.is_exists():
@@ -825,10 +802,10 @@ class exists_elim(Method):
 
         return []
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         return pprint.N("Instantiate exists fact")
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         assert len(prevs) == 1, "exists_elim"
 
         # Parse the list of variable names
@@ -880,10 +857,7 @@ class forall_elim(Method):
         self.sig = ['s']
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
-        if data:
-            return [data]
-
+    def search(self, state: ProofState, id, prevs):
         if len(prevs) == 1:
             prev_th = state.get_proof_item(prevs[0]).th
             if prev_th.prop.is_forall():
@@ -891,10 +865,10 @@ class forall_elim(Method):
 
         return []
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         return pprint.N("Forall elimination")
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         with context.fresh_context(vars=state.get_vars(id)):
             t = parser.parse_term(data['s'])
 
@@ -913,10 +887,7 @@ class inst_exists_goal(Method):
         self.sig = ['s']
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
-        if data:
-            return [data]
-
+    def search(self, state: ProofState, id, prevs):
         if len(prevs) > 0:
             return []
 
@@ -929,7 +900,7 @@ class inst_exists_goal(Method):
     def display_step(self, state, data):
         return pprint.N("Instantiate exists goal")
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         with context.fresh_context(vars=state.get_vars(id)):
             t = parser.parse_term(data['s'])
 
@@ -948,10 +919,7 @@ class induction(Method):
         self.limit = None
         self.no_order = True
 
-    def search(self, state, id, prevs, data=None):
-        if data:
-            return [data]
-
+    def search(self, state: ProofState, id, prevs):
         cur_th = state.get_proof_item(id).th
 #        if len(cur_th.hyps) > 0:
 #            return []
@@ -969,13 +937,13 @@ class induction(Method):
                 results.append({'theorem': name})
         return results
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         if 'var' in data:
             return pprint.N("Induction " + data['theorem'] + " var: " + data['var'])
         else:
             return pprint.N("Induction " + data['theorem'])
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         # Find variable
         with context.fresh_context(vars=state.get_vars(id)):
             assert data['var'] in context.ctxt.vars, "induction: cannot find variable."
@@ -991,17 +959,14 @@ class new_var(Method):
         self.sig = ['name', 'type']
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
-        if data:
-            return [data]
-
+    def search(self, state: ProofState, id, prevs):
         return []
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         T = parser.parse_type(data['type'])
         return pprint.N("Variable " + data['name'] + " :: ") + printer.print_type(T)
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         state.add_line_before(id, 1)
         T = parser.parse_type(data['type'])
         state.set_line(id, 'variable', args=(data['name'], T), prevs=[])
@@ -1017,7 +982,7 @@ class apply_fact(Method):
         self.sig = []
         self.limit = None
 
-    def search(self, state, id, prevs, data=None):
+    def search(self, state: ProofState, id, prevs):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
 
         try:
@@ -1027,10 +992,10 @@ class apply_fact(Method):
         except (AssertionError, matcher.MatchException):
             return []
 
-    def display_step(self, state, data):
+    def display_step(self, state: ProofState, data):
         return pprint.N("Apply fact (f) %s onto %s" % (data['fact_ids'][0], ", ".join(data['fact_ids'][1:])))
 
-    def apply(self, state, id, data, prevs):
+    def apply(self, state: ProofState, id, data, prevs):
         state.add_line_before(id, 1)
         state.set_line(id, 'apply_fact', prevs=prevs)
 
@@ -1048,7 +1013,7 @@ def apply_method(state: ProofState, step):
         "apply_method: illegal dependence."
     return method.apply(state, goal_id, step, fact_ids)
 
-def output_step(state, step):
+def output_step(state: ProofState, step):
     """Obtain the string explaining the step in the user interface."""
     try:
         method = global_methods[step['method_name']]
@@ -1060,7 +1025,7 @@ def output_step(state, step):
         res += pprint.N(' using ' + ','.join(step['fact_ids']))
     return res
 
-def output_hint(state, step):
+def output_hint(state: ProofState, step):
     method = global_methods[step['method_name']]
     res = method.display_step(state, step)
     if '_goal' in step:

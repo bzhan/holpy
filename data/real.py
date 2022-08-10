@@ -804,7 +804,7 @@ class real_norm_method(Method):
             return []
 
     def display_step(self, state, data):
-        return pprint.N("real_norm: (solves)")
+        return pprint.N("real_norm: ") + pprint.KWGreen("(solves)")
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "real_norm_method"
