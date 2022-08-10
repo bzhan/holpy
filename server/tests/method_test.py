@@ -365,7 +365,7 @@ class MethodTest(unittest.TestCase):
             vars={'n': 'nat'},
             concl='0 + n = 0',
             method_name='rewrite_goal',
-            res=['add_comm', 'eq_add_lcancel_0', 'nat_plus_def_1']
+            res=['eq_add_lcancel_0', 'nat_plus_def_1']
         )
 
     def testRewriteGoalThms2(self):
@@ -451,7 +451,7 @@ class MethodTest(unittest.TestCase):
             concl='false',
             method_name='rewrite_fact',
             prevs=[0],
-            res=['add_comm', 'eq_add_lcancel_0', 'nat_plus_def_1']
+            res=['eq_add_lcancel_0', 'nat_plus_def_1']
         )
 
     def testRewriteFactThms2(self):

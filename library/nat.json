@@ -539,7 +539,6 @@
         },
         {
             "attributes": [
-                "hint_rewrite",
                 "hint_backward"
             ],
             "name": "add_comm",
@@ -689,8 +688,7 @@
         },
         {
             "attributes": [
-                "hint_rewrite",
-                "hint_rewrite_sym"
+                "hint_backward"
             ],
             "name": "add_assoc",
             "num_gaps": 0,
@@ -1562,8 +1560,7 @@
         },
         {
             "attributes": [
-                "hint_rewrite",
-                "hint_rewrite_sym"
+                "hint_backward"
             ],
             "name": "mult_assoc",
             "num_gaps": 0,
@@ -1713,7 +1710,6 @@
         },
         {
             "attributes": [
-                "hint_rewrite",
                 "hint_backward"
             ],
             "name": "mult_comm",
