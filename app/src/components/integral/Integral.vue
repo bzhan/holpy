@@ -24,7 +24,7 @@
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ElimInfInterval')">Improper integral to limit</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('DerivIntExchange')">Exchange deriv and integral</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyRule('ElimAbs')">Eliminate abs</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('ElimAbs')">Eliminate absolute value</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='splitRegion'>Splitting an Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -287,6 +287,8 @@ export default {
       const response = await axios.post('http://127.0.0.1:5000/api/integral-load-file-list')
       this.file_list = response.data.file_list
       this.content_state = false
+      this.content = []
+      this.cur_id = undefined
       this.cur_items = undefined
     },
 
@@ -297,6 +299,7 @@ export default {
       this.filename = file_name
       const response = await axios.post("http://127.0.0.1:5000/api/integral-open-file", JSON.stringify(data))
       this.content = response.data.content
+      this.cur_id = undefined
       this.cur_items = undefined
       this.content_state = true
     },
@@ -304,6 +307,8 @@ export default {
     initialize: async function (index) {
       this.r_query_mode = undefined
       this.cur_id = index
+      this.selected_item = undefined
+      this.selected_facts = {}
     },
 
     // Select an item

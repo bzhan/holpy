@@ -23,8 +23,8 @@ export default {
     }
   },
 
-  watch: {
-    value: async function(val) {
+  methods: {
+    update_latex_value: async function(val) {
       if (val == '') {
         this.latex_value = undefined
         return
@@ -41,9 +41,19 @@ export default {
     }
   },
 
+  watch: {
+    value: async function(val) {
+      this.update_latex_value(val)
+    }
+  },
+
   props: [
     "value",
   ],
+
+  created: function () {
+    this.update_latex_value(this.value)
+  }
 }
 
 </script>
