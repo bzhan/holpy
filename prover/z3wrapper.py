@@ -292,7 +292,8 @@ class Z3Method(Method):
         # if data:
         #     return [data]
 
-        return [{}]
+        # return [{}]
+        return []
 
     def display_step(self, state, data):
         return pprint.N("Apply Z3")

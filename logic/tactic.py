@@ -151,12 +151,14 @@ class var_induct(Tactic):
         th_name, var = args
         P = Lambda(var, goal.prop)
         th = theory.get_theorem(th_name)
-        f, args = th.concl.strip_comb()
-        if len(args) != 1:
+        f, th_args = th.concl.strip_comb()
+        if len(th_args) != 1:
             raise NotImplementedError
-        inst = matcher.first_order_match(args[0], var)
+        inst = matcher.first_order_match(th_args[0], var)
         inst[f.name] = P
-        return rule().get_proof_term(goal, args=(th_name, inst))
+        As, _ = th.prop.subst_norm(inst).strip_implies()
+        pts = [ProofTerm.sorry(Thm(A, goal.hyps)) for A in As]
+        return ProofTerm("apply_induct", (th_name, var, goal.prop), pts)
 
 class rewrite_goal(Tactic):
     """Rewrite the goal using a theorem."""

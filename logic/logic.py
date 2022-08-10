@@ -318,6 +318,24 @@ class apply_theorem_macro(Macro):
 
         return pt
 
+class apply_induct_macro(Macro):
+    """Apply induction. Directly invokes apply_theorem."""
+    def __init__(self):
+        self.level = 1
+        self.sig = Tuple[str, Term, Term]
+        self.limit = None
+
+    def get_proof_term(self, args, pts):
+        th_name, var, goal = args
+        th = theory.get_theorem(th_name)
+        f, th_args = th.concl.strip_comb()
+        P = Lambda(var, goal)
+        if len(th_args) != 1:
+            raise NotImplementedError
+        inst = matcher.first_order_match(th_args[0], var)
+        inst[f.name] = P
+        return apply_theorem(th_name, *pts, inst=inst)
+
 class apply_fact_macro(Macro):
     """Apply a given fact to a list of facts. The first input fact is
     in the forall-implies form. Apply this fact to the remaining
@@ -586,7 +604,7 @@ class resolve_theorem_macro(Macro):
         return apply_theorem('falseE', pt, concl=goal)
 
 
-def apply_theorem(th_name, *pts, concl=None, inst=None):
+def apply_theorem(th_name: str, *pts: ProofTerm, concl=None, inst=None) -> ProofTerm:
     """Wrapper for apply_theorem and apply_theorem_for macros.
 
     The function takes optional arguments concl, inst. Matching
@@ -827,6 +845,7 @@ theory.global_macros.update({
     "intros": intros_macro(),
     "apply_theorem": apply_theorem_macro(),
     "apply_theorem_for": apply_theorem_macro(with_inst=True),
+    "apply_induct": apply_induct_macro(),
     "resolve_theorem": resolve_theorem_macro(),
     "apply_fact": apply_fact_macro(),
     "apply_fact_for": apply_fact_macro(with_inst=True),
