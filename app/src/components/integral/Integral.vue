@@ -164,7 +164,7 @@
         &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/>
         <div v-for="(item, index) in trig_rewrites" :key="index"
              v-on:click="doTrigIdentity(index)">
-          <MathEquation v-bind:data="'\\(=' + item.latex_new_e + '\\)'"/>
+          <MathEquation v-bind:data="'\\(=' + item.latex_new_e + '\\)'" style="cursor:pointer"/>
         </div>
       </div>
       <div v-if="r_query_mode === 'rewrite equation'">
@@ -187,7 +187,7 @@
       <div v-if="r_query_mode === 'select theorem'">
         <div class="math-text">Select theorem to apply:</div>
         <div v-for="(item, index) in theorems" :key="index"
-             v-on:click="doApplyTheorem(index)">
+             v-on:click="doApplyTheorem(index)" style="cursor:pointer">
           <MathEquation v-bind:data="'\\(' + item.latex_eq + '\\)'"/>
         </div>
       </div>
@@ -271,7 +271,9 @@ export default {
 
   computed: {
     lastExpr: function() {
-      if (this.content[this.cur_id].steps.length == 0) {
+      if (this.cur_id == undefined) {
+        return ""
+      } else if (this.content[this.cur_id].steps.length == 0) {
         return this.content[this.cur_id].start
       } else {
         const len = this.content[this.cur_id].steps.length
@@ -326,9 +328,15 @@ export default {
         item: this.content[this.cur_id],
         selected_item: this.selected_item
       }
+      if (this.selected_item === undefined) {
+        data.selected_item = ""
+      }
       const response = await axios.post("http://127.0.0.1:5000/api/clear-item", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.$set(this.content, this.cur_id, response.data.item)
+        if ('selected_item' in response.data) {
+          this.selected_item = response.data.selected_item
+        }
       }
     },
 

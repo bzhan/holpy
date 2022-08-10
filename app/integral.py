@@ -58,10 +58,16 @@ def clear_item():
     st = compstate.parse_item(data['item'])
     label = compstate.Label(data['selected_item'])
     st.get_by_label(label).clear()
-    return jsonify({
+    res = {
         "status": "ok",
         "item": st.export(),
-    })
+    }
+    if isinstance(st, (compstate.Calculation)):
+        if len(st.steps) == 0:
+            res['selected_item'] = str(compstate.Label([]))
+        else:
+            res['selected_item'] = str(compstate.Label([len(st.steps) - 1]))
+    return jsonify(res)
 
 @app.route("/api/query-expr", methods=['POST'])
 def query_expr():
