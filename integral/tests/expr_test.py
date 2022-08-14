@@ -150,6 +150,12 @@ class ExprTest(unittest.TestCase):
             for k, v in inv_table[func_name].items():
                 self.assertEqual(Fun(func_name, k).normalize_constant(), v)
 
+    def testEqual(self):
+        test_data = [("INT x:[0,1/2 * pi]. log(a * sin(x))" ,"INT t:[0,1/2 * pi]. log(a * sin(t))")]
+        for a, b in test_data:
+            a, b = parse_expr(a), parse_expr(b)
+            self.assertEqual(a, b)
+
     def testNormalize(self):
         test_data = [
             ("2 + 3", "5"),
@@ -249,6 +255,13 @@ class ExprTest(unittest.TestCase):
             ("abs (2 + exp(2))", "exp(2) + 2"),
             ("abs (2 - exp(2))", "exp(2) - 2"),
             ("exp (log(2))", "2"),
+            ('a / b', 'a * b ^ -1'),
+            ('- (a+b)','-a - b'),
+            ('- (a*b)', '-(a * b)'),
+            ('2*3^-1','2/3'),
+            ("(2/a) *(a*sin(x))*(a*cos(x))", "2 * a * cos(x) * sin(x)"),
+            # ("1/2 * (INT x:[0,1/2 * pi]. log(a * sin(x))) + 1/2 * (INT t:[0,1/2 * pi]. log(a * sin(t)))",\
+            #  "(INT x:[0,1/2 * pi]. log(a * sin(x)))"),
         ]
 
         context.set_context('interval_arith')
@@ -256,6 +269,13 @@ class ExprTest(unittest.TestCase):
             t = parse_expr(s)
             self.assertEqual(str(t.normalize()), res)
 
+    def testIsINF(self):
+        test_data = [('1*(0^-1)', True), ('tan(pi/2)', True),
+                     ('tan(3*pi/2)', True), ('tan(pi)', False),
+                     ('tan(2*pi)',False),('tan(2)',False)]
+        for s, res in test_data:
+            e = parse_expr(s).normalize()
+            self.assertEqual(e.is_INF(), res, e)
 
     def testGetSubExpr(self):
         test_data = [

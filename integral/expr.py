@@ -1,12 +1,8 @@
 """Expressions."""
 import copy
-from fractions import Fraction
 import functools, operator
-from collections.abc import Iterable
 from typing import Dict, List, Optional, Set
-from sympy import solveset, re, Interval, Eq, EmptySet, pexquo
-from decimal import Decimal
-import math
+from sympy import solveset, re, Interval, Eq, EmptySet
 from sympy.simplify.fu import *
 from sympy.parsing import sympy_parser
 from sympy.ntheory.factor_ import factorint
@@ -256,6 +252,28 @@ class Expr:
     def is_deriv(self) -> bool:
         return self.ty == DERIV
 
+    def is_zero(self) -> bool:
+        tmp = self.normalize()
+        return tmp.is_const() and tmp.val == 0
+
+    def is_INF(self) -> bool:
+        if self.is_power():
+            a, b = self.args
+            if a.is_const() and b.is_const():
+                return a.val == 0 and b.val < 0
+        elif self.is_divides():
+            a, b = self.args
+            if a.is_const() and b.is_const():
+                return a.val != 0 and b.val == 0
+        elif self.is_fun():
+            if self.func_name == 'tan':
+                a = (self.args[0] / Fun('pi')).normalize()
+                # the coef of pi
+                coef = (a * 2).normalize()
+                if coef.is_const() and coef.val % 2 == 1:
+                    return True
+        return False
+
     def is_integral(self) -> bool:
         return self.ty == INTEGRAL
 
@@ -370,7 +388,6 @@ class Expr:
                 raise NotImplementedError
         else:
             raise NotImplementedError
-
 
     def is_divides(self):
         return self.ty == OP and self.op == '/'
@@ -1042,8 +1059,18 @@ class Expr:
     def normalize(self):
         if self.is_equals():
             return Eq(self.lhs.normalize(), self.rhs.normalize())
-        else:
-            return from_poly(self.to_poly())
+        elif self.is_limit():
+            if self.lim == POS_INF:
+                from integral import limits
+                res = limits.limit_of_expr(self.body, self.var)
+                if res.e != None:
+                    return res.e
+            elif self.lim == NEG_INF:
+                from integral import limits
+                res = limits.limit_of_expr(self.body.subst(self.var, -Var(self.var)), self.var)
+                if res.e != None:
+                    return res.e
+        return from_poly(self.to_poly())
 
     def replace_trig(self, trig_old: Expr, trig_new: Expr):
         """Replace trigonometric expression with its equivalent form in e.
@@ -1132,6 +1159,8 @@ class Expr:
             elif e.ty == OP:
                 for arg in e.args:
                     findv(arg, v)
+            elif e.ty == DERIV:
+                findv(e.body, v)
         findv(self, v)
         return v
 
@@ -1830,8 +1859,30 @@ class Limit(Expr):
         if self.lim == inf() or self.lim == neg_inf():
             return "Limit(%s, %s, %s)" % (self.var, self.lim, self.body)
         else:
-            return "Limit(%s, %s%s, %s)" % (self.var, self.lim, self.side, self.body)
-    
+            return "Limit(%s, %s%s, %s)" % (self.var, self.lim, "" if self.drt == None else self.drt\
+                                                , self.body)
+
+    def is_indeterminate_form(self):
+        # determine wether e is a indeterminate form limit or not
+        var, body, lim, drt = self.var, self.body.normalize(), self.lim, self.drt
+        if self.drt == None:
+            if body.is_constant():
+                return False
+            elif body.is_times():
+                l = [a.subst(var, lim).normalize() for a in body.args]
+                # 0 * INF or INF * 0
+                if l[0].is_zero() and l[1].is_INF() or l[1].is_zero() and l[0].is_INF():
+                    return True
+            elif body.is_fun():
+                if body.func_name in ('sin', 'cos'):
+                    a0 = body.args[0]
+                    if a0.subst(var, lim).is_const():
+                        return False
+            else:
+                raise NotImplementedError
+        else:
+            raise NotImplementedError
+
     def lim_to_inf(self):
         """
         Convert the limit to oo, e.g. LIM {x -> 0+}. 1/x will be
@@ -2278,3 +2329,5 @@ def eval_hol_expr(t: term.Term):
 def eval_expr(e: Expr):
     t = expr_to_holpy(e)
     return eval_hol_expr(t)
+
+

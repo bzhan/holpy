@@ -381,6 +381,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof.lhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.DerivIntExchange())
+
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
@@ -423,7 +424,6 @@ class IntegralTest(unittest.TestCase):
         # Test goals are finished
         self.assertTrue(file.content[1].is_finished())
         self.assertTrue(file.content[2].is_finished())
-
         with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
@@ -494,6 +494,87 @@ class IntegralTest(unittest.TestCase):
         with open('integral/examples/GammaBeta.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
+    def testEulerLogSineIntegral(self):
+        file = compstate.CompFile("EulerLogSine")
+
+        # Condition
+        conds = conditions.Conditions()
+
+        # Definition
+        e = parser.parse_expr('I(a) = INT x:[0,pi/2]. log(a * sin(x))')
+        Idef1 = compstate.FuncDef(e, conds=conds)
+        file.add_definition(Idef1)
+        e = parser.parse_expr('J(a) = INT x:[0,pi/2]. log(a * sin(2*x))')
+        Idef2 = compstate.FuncDef(e, conds=conds)
+        file.add_definition(Idef2)
+
+        # Recursive equation for gamma function
+        # goal1 = compstate.Goal(parser.parse_expr("Gamma(n+1) = n * Gamma(n)"), conds=conds)
+        # file.add_compstate(goal1)
+        e = parser.parse_expr("J(a) = I(a)")
+        goal1 = compstate.Goal(e, conds=conds)
+        file.add_compstate(goal1)
+
+        proof = goal1.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef2.eq))
+        calc.perform_rule(rules.Substitution("t", parser.parse_expr("2*x")))
+        calc.perform_rule(rules.SplitRegion(parser.parse_expr('pi/2')))
+        calc.perform_rule(rules.OnLocation(rules.Substitution('x', parser.parse_expr('pi - t')), '1'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.Substitution('x', parser.parse_expr('t')), '1'))
+        calc.perform_rule(rules.FullSimplify())
+
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef1.eq))
+
+        e = parser.parse_expr("J(a) = pi/2*log(2/a)+2*I(a)")
+        goal2 = compstate.Goal(e, conds=conds)
+        file.add_compstate(goal2)
+
+        proof = goal2.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef2.eq))
+        calc.perform_rule(rules.RewriteTrigonometric("TR11", parser.parse_expr("sin(2*x)")))
+        calc.perform_rule(rules.Equation(parser.parse_expr("(2/a) *(a*sin(x))*(a*cos(x))"),old_expr=parser.parse_expr("2*a*sin(x)*cos(x)")))
+        calc.perform_rule(rules.RewriteLog())
+        calc.perform_rule(rules.RewriteLog())
+        calc.perform_rule(rules.FullSimplify())
+
+        calc.perform_rule(rules.OnLocation(rules.Substitution('t', parser.parse_expr("pi/2 - x")), '0.1'))
+        calc.perform_rule(rules.OnLocation(rules.Substitution('x', parser.parse_expr("t")), '0.1'))
+        calc.perform_rule(rules.FullSimplify())
+
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef1.eq)))
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("I(a) = pi/2 * log(a/2)")
+        goal3 = compstate.Goal(e, conds=conds)
+        file.add_compstate(goal3)
+
+        proof = goal3.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal1.goal))
+        calc.perform_rule(rules.ApplyEquation(goal2.goal))
+        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("I(a)")))
+        calc.perform_rule(rules.RewriteLog())
+        calc.perform_rule(rules.ExpandPolynomial())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.RewriteLog())
+        calc.perform_rule(rules.ExpandPolynomial())
+        # print(file)
+
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for i in range(2,5):
+            self.assertTrue(file.content[i].is_finished())
+        with open('integral/examples/euler_log_sin.json', 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
 if __name__ == "__main__":
     unittest.main()
