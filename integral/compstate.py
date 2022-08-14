@@ -623,6 +623,8 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'ApplyInductHyp':
         induct_hyp = parser.parse_expr(item['induct_hyp'])
         return rules.ApplyInductHyp(induct_hyp)
+    elif item['name'] == 'RewriteLog':
+        return rules.RewriteLog()
     else:
         print(item['name'])
         raise NotImplementedError

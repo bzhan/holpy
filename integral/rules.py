@@ -11,7 +11,7 @@ from integral import poly, expr, conditions
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
     sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, \
     DERIV, decompose_expr_factor, Deriv, Inf, INF, Limit, NEG_INF, POS_INF, IndefiniteIntegral, INDEFINITEINTEGRAL, \
-    SYMBOL
+    SYMBOL, log
 from integral import parser
 from sympy import Interval, expand_multinomial, apart
 from sympy.solvers import solvers, solveset
@@ -168,8 +168,8 @@ class CommonIntegral(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         if e.ty != expr.INTEGRAL:
             return e
-
-        if e.body.is_constant() and e.body != Const(1):
+        v = Var(e.var)
+        if (e.body.is_constant() or v not in e.body.findVar()) and e.body != Const(1):
             return EvalAt(e.var, e.lower, e.upper, e.body * Var(e.var))
 
         x = Var(e.var)
@@ -297,7 +297,6 @@ class OnSubterm(Rule):
                 self.eval(e.body, conds=conds)), conds=conds)
         elif e.ty == expr.LIMIT:
             return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, conds=conds)), conds=conds)
-
         else:
             raise NotImplementedError
 
@@ -492,6 +491,12 @@ class ReduceTrivLimit(Rule):
             return e
 
         try:
+            if e.is_indeterminate_form():
+                return e
+            # inteternimate form
+            # 1. 0 * INF
+            # 2. INF / INF or 0 / 0
+            # if body is not indeterminate form
             body = e.body.subst(e.var, e.lim)
             return body.normalize()
         except ZeroDivisionError:
@@ -894,13 +899,25 @@ class Equation(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         # Rewrite on a subterm
-        if self.old_expr is not None and self.old_expr != e:
-            find_res = e.find_subexpr(self.old_expr)
+        # if self.old_expr is not None and self.old_expr != e:
+            # find_res = e.find_subexpr(self.old_expr)
+            # if len(find_res) == 0:
+            #     raise AssertionError("Equation: old expression not found")
+            # loc = find_res[0]
+            # return OnLocation(self, loc).eval(e)
+        tmp1 = e.normalize()
+        tmp2 = self.old_expr.normalize() if self.old_expr is not None else None
+        if tmp2 is not None and tmp2 != tmp1:
+            find_res = tmp1.find_subexpr(tmp2)
             if len(find_res) == 0:
                 raise AssertionError("Equation: old expression not found")
             loc = find_res[0]
-            return OnLocation(self, loc).eval(e)
-
+            return OnLocation(self, loc).eval(tmp1)
+        if tmp2 == tmp1:
+            if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
+                    expand_multinomial(expr.sympy_style(self.old_expr.normalize()).simplify()):
+                raise AssertionError("Rewriting by equation failed")
+            return self.new_expr
         # Currently rewrite using SymPy.
         # TODO: change to own implementation.
         if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
@@ -1165,7 +1182,7 @@ class IntegrateByEquation(Rule):
     """When the initial integral occurs in the steps."""
     def __init__(self, lhs: Expr):
         self.name = "IntegrateByEquation"
-        assert isinstance(lhs, Integral)
+        # assert isinstance(lhs, Integral)
         self.lhs = lhs.normalize()
         self.coeff = None
     
@@ -1195,13 +1212,18 @@ class IntegrateByEquation(Rule):
         rhs_var = None
         def get_coeff(t):
             nonlocal rhs_var
-            if t.ty == INTEGRAL:
-                if t == self.lhs:
+            if t == self.lhs:
+                if t.ty == INTEGRAL:
                     rhs_var = t.var
-                    return 1
-                else:
-                    return 0
-            elif t.is_plus():
+                return 1
+            # if t.ty == INTEGRAL:
+            #     if t == self.lhs:
+            #         rhs_var = t.var
+            #         return 1
+            #     else:
+            #         return 0
+
+            if t.is_plus():
                 return get_coeff(t.args[0]) + get_coeff(t.args[1])
             elif t.is_minus():
                 return get_coeff(t.args[0]) - get_coeff(t.args[1])
@@ -1215,7 +1237,11 @@ class IntegrateByEquation(Rule):
         coeff = get_coeff(norm_e)
         if coeff == 0:
             return e
-        new_rhs = (norm_e + (Const(-coeff)*self.lhs.alpha_convert(rhs_var))).normalize()
+
+        if rhs_var != None:
+            new_rhs = (norm_e + (Const(-coeff)*self.lhs.alpha_convert(rhs_var))).normalize()
+        else:
+            new_rhs = (norm_e + (Const(-coeff) * self.lhs)).normalize()
         self.coeff = (-Const(coeff)).normalize()
         return (new_rhs/(Const(1-coeff))).normalize()
 
@@ -1305,7 +1331,8 @@ class LHopital(Rule):
 
         if not (isinstance(e.body, expr.Op) and e.body.op == '/'):
             return e
-
+        if not e.is_indeterminate_form():
+            return e
         numerator, denominator = e.body.args
         rule = DerivativeSimplify()
         return expr.Limit(e.var, e.lim, Op('/', rule.eval(Deriv(e.var,numerator)),
@@ -2123,12 +2150,9 @@ class ExtractFromRoot(Rule):
         '''
 
     # sign : positive is 1, negative is -1
-    def __init__(self, u: Expr, sign=1):
-        if sign not in (-1, 1):
-            raise AssertionError("ExtractFromRoot: wrong form for sign.")
+    def __init__(self, u: Expr):
         self.name = "ExtractFromRoot"
         self.u = u
-        self.sign = sign
 
     def __str__(self):
         return "extraction from root"
@@ -2137,7 +2161,6 @@ class ExtractFromRoot(Rule):
         return {
             "name": self.name,
             "u": str(self.u),
-            "sign": str(self.sign),
             "str": str(self)
         }
 
@@ -2626,6 +2649,39 @@ class ExpEquation(Rule):
         # a = r.eval(a)
         # b = r.eval(b)
         return Op('=', a, b)
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class RewriteLog(Rule):
+    "log(ab) = log(a) + log(b)"
+    def __init__(self):
+        self.name = "RewriteLog"
+    def __str__(self):
+        return "RewriteLog"
+
+    def eval(self, e:Expr, conds = None):
+        # patter match first : log(a*b) then rewrite as log(a) + log(b)
+        a = Symbol('a', [VAR, CONST, OP, FUN])
+        b = Symbol('b', [VAR, CONST, OP, FUN])
+        rules = [
+            (log(a*b), log(a) + log(b)),
+            (log(a/b), log(a) - log(b))
+        ]
+        for pat, pat_res in rules:
+            #找到第一个匹配的位置
+            pos = expr.find_pattern(e, pat)
+            if len(pos) >= 1:
+                mapped_expr,loc,mapping = pos[0]
+                if mapped_expr == e:
+                    return pat_res.inst_pat(mapping)
+                else:
+                    return OnLocation(self, loc).eval(e);
+
+        return e
 
     def export(self):
         return {

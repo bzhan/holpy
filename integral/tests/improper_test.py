@@ -20,39 +20,30 @@ class ImproperTest(unittest.TestCase):
             ("LIM {x -> oo}. 1/x + exp(2*x)", "oo"),
             ("LIM {x -> oo}. exp(1/x)", "1"),
             ("LIM {x -> -oo}. exp(1/x)", "1"),
-            ("LIM {x -> oo}. x*exp(-x)", "LIM {x->oo}. x*exp(-x)"),
-            ("LIM {x -> oo}. exp(x) - log(x)", "LIM {x->oo}. exp(x) + -log(x)"),
+            ("LIM {x -> oo}. x*exp(-x)", "0"),
+            ("LIM {x -> oo}. exp(x) - log(x)", "LIM {x -> oo}. exp(x) - log(x)"),
             ("LIM {x -> oo}. x/log(x)", "LIM {x -> oo}. x * log(x) ^ -1"),
-            ("LIM {x -> oo}. exp(x+2)/x", "LIM {x -> oo}. x ^ -1 * exp(2 + x)"),
-            ("LIM {x -> oo}. x/exp(x+2)", "LIM {x -> oo}. x * exp(-2 + -x)"),
-            ("LIM {t -> -oo}. -1 + -(t * exp(t)) + exp(t)", "-1 + (LIM {t -> -oo}. -(t * exp(t)))")
-            # ("LIM {x -> 1}. 1/(x-1)", "oo")
+            ("LIM {x -> oo}. exp(x+2)/x", "oo"),
+            ("LIM {x -> oo}. x/exp(x+2)", "0"),
+            ("LIM {t -> -oo}. -1 + -(t * exp(t)) + exp(t)", "-1"),
+            # ("LIM {x -> 1}. 1/(x-1)", "oo"), # error case
         ]
         for t, t_res in test_cases:
             t = parse_expr(t)
             t_res = parse_expr(t_res)
             self.assertEqual(t.normalize(), t_res)
 
-    def testLHopital(self):
-        test_cases = [
-            "LIM {t -> -oo}. -(t * exp(t))"
-        ]
-
-        t = test_cases[0]
-        t = parse_expr(t)
-        t0 = rules.OnLocation(rules.LimFunExchange(), '').eval(t)
-        # print("t0:", t0)
-        t1 = rules.OnLocation(rules.Mul2Div(1), '0.0').eval(t0)
-        # print("t1:", t1)
-        t2 = rules.OnLocation(rules.Simplify(), '0.0.1').eval(t1)
-        # print("t2:", t2)
-        t3 = rules.OnLocation(rules.LHopital(), '0').eval(t2)
-        # print("t3:", t3)
-        t4 = rules.OnLocation(rules.LimitSimplify(), '0').eval(t3)
-        # print("t4:", t4)
-        t5 = rules.OnLocation(rules.Simplify(), '').eval(t4)
-        # print("t5:", t5)
-        self.assertEqual(str(t5), '0')
+    # def testLHopital(self):
+    #     test_cases = [
+    #         "LIM {t -> -oo}. -(t * exp(t))"
+    #     ]
+    #
+    #     t = test_cases[0]
+    #     t = parse_expr(t)
+    #     t0 = rules.FullSimplify().eval(t)
+    #     print("t0:", t0)
+    #
+    #     self.assertEqual(str(t5), '0')
 
     # def test_improper_integration(self):
     #     test_case = [

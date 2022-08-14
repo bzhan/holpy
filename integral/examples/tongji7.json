@@ -1014,8 +1014,8 @@
             "start": "INT x:[-2,0]. (x + 2) / (x ^ 2 + 2 * x + 2)",
             "steps": [
                 {
-                    "latex_res": "\\int_{-2}^{0} \\frac{x + 2}{(x + 1) ^ {2} + 1} \\,dx",
-                    "res": "INT x:[-2,0]. (x + 2) / ((x + 1) ^ 2 + 1)",
+                    "latex_res": "\\int_{-2}^{0} (x + 2) ((x + 1) ^ {2} + 1) ^ {-1} \\,dx",
+                    "res": "INT x:[-2,0]. (x + 2) * ((x + 1) ^ 2 + 1) ^ -1",
                     "rule": {
                         "name": "Equation",
                         "new_expr": "(x + 1) ^ 2 + 1",
@@ -1114,8 +1114,8 @@
             "start": "INT x:[-pi / 2,pi / 2]. cos(x) ^ 4",
             "steps": [
                 {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} (\\cos^{2}(x)) ^ {2} \\,dx",
-                    "res": "INT x:[-pi / 2,pi / 2]. cos(x) ^ 2 ^ 2",
+                    "latex_res": "\\int_{-1/2\\cdot \\pi}^{1/2\\cdot \\pi} (\\cos^{2}(x)) ^ {2} \\,dx",
+                    "res": "INT x:[-1/2 * pi,1/2 * pi]. cos(x) ^ 2 ^ 2",
                     "rule": {
                         "name": "Equation",
                         "new_expr": "cos(x) ^ 2 ^ 2",
@@ -1125,8 +1125,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} (\\frac{\\cos{(2 x)}}{2} + \\frac{1}{2}) ^ {2} \\,dx",
-                    "res": "INT x:[-pi / 2,pi / 2]. (cos(2 * x) / 2 + 1/2) ^ 2",
+                    "latex_res": "\\int_{-1/2\\cdot \\pi}^{1/2\\cdot \\pi} (\\frac{\\cos{(2 x)}}{2} + \\frac{1}{2}) ^ {2} \\,dx",
+                    "res": "INT x:[-1/2 * pi,1/2 * pi]. (cos(2 * x) / 2 + 1/2) ^ 2",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(\\cos^{2}(x)\\)",
                         "name": "RewriteTrigonometric",
@@ -1137,8 +1137,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\frac{1}{4} \\cos^{2}(2 x) + \\frac{1}{2} \\cos{(2 x)} + \\frac{1}{4} \\,dx",
-                    "res": "INT x:[-pi / 2,pi / 2]. 1/4 * cos(2 * x) ^ 2 + 1/2 * cos(2 * x) + 1/4",
+                    "latex_res": "\\int_{-1/2\\cdot \\pi}^{1/2\\cdot \\pi} \\frac{1}{4} \\cos^{2}(2 x) + \\frac{1}{2} \\cos{(2 x)} + \\frac{1}{4} \\,dx",
+                    "res": "INT x:[-1/2 * pi,1/2 * pi]. 1/4 * cos(2 * x) ^ 2 + 1/2 * cos(2 * x) + 1/4",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -1207,8 +1207,8 @@
             "start": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) - cos(x) ^ 3)",
             "steps": [
                 {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} (1 - \\cos^{2}(x))} \\,dx",
-                    "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * (1 - cos(x) ^ 2))",
+                    "latex_res": "\\int_{-1/2\\cdot \\pi}^{1/2\\cdot \\pi} \\sqrt{\\cos{(x)} (1 - \\cos^{2}(x))} \\,dx",
+                    "res": "INT x:[-1/2 * pi,1/2 * pi]. sqrt(cos(x) * (1 - cos(x) ^ 2))",
                     "rule": {
                         "name": "Equation",
                         "new_expr": "cos(x) * (1 - cos(x) ^ 2)",
@@ -1218,8 +1218,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} \\sin^{2}(x)} \\,dx",
-                    "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * sin(x) ^ 2)",
+                    "latex_res": "\\int_{-1/2\\cdot \\pi}^{1/2\\cdot \\pi} \\sqrt{\\cos{(x)} \\sin^{2}(x)} \\,dx",
+                    "res": "INT x:[-1/2 * pi,1/2 * pi]. sqrt(cos(x) * sin(x) ^ 2)",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(1 - \\cos^{2}(x)\\)",
                         "name": "RewriteTrigonometric",

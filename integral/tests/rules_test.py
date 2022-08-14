@@ -365,62 +365,24 @@ class RulesTest(unittest.TestCase):
             a, b = parser.parse_expr(a), parser.parse_expr(b)
             self.assertEqual(str(rules.DerivativeSimplify().eval(a)), str(b))
 
-    def testLimitCompute1(self):
-        t = 'LIM {x -> oo}. (x+3) / sqrt(9*x*x - 5 * x)'
-        res = "1/3"
-        t0 = expr.parser.parse_expr(t)
-        # print("t0 =",t0)
-        t1 = rules.OnLocation(rules.RootFractionReWrite(), '0').eval(t0);
-        # print("t1 =", t1)
-        t2 = rules.LimFunExchange().eval(t1)
-        # print("t2 =", t2)
-        t3 = rules.OnLocation(rules.LHopital(), '0').eval(t2);
-        # print("t3 =", t3)
-        t4 = rules.OnLocation(rules.LHopital(), '0').eval(t3);
-        # print("t4 =", t4)
-        t5 = rules.OnLocation(rules.LimitSimplify(), '0').eval(t4);
-        # print("t5 =", t5)
-        t6 = rules.FullSimplify().eval(t5)
-        # print("t6 =", t6)
+    # def testLimitCompute1(self):
+    #     t = 'LIM {x -> oo}. (x+3) / sqrt(9*x*x - 5 * x)'
+    #     res = "1/3"
+    #
+    #
+    # def testLimitCompute2(self):
+    #     t = 'LIM {x -> -oo}. (x+3) / sqrt(9*x*x - 5 * x)'
+    #     res = "-1/3"
 
-    def testLimitCompute2(self):
-        t = 'LIM {x -> -oo}. (x+3) / sqrt(9*x*x - 5 * x)'
-        res = "-1/3"
-        t0 = expr.parser.parse_expr(t)
-        sub = expr.parser.parse_expr("x/sqrt(9*x*x-5*x) + 3/sqrt(9*x*x - 5*x)")
-        t1 = rules.OnLocation(rules.Equation(sub), '0').eval(t0)
-        # print("t1 =",t1)
-        t2 = rules.LimSep().eval(t1)
-        # print("t2 =", t2)
-        t3 = rules.OnLocation(rules.LimitSimplify(), '1').eval(t2)
-        # print("t3 =", t3)
-        t4 = rules.OnLocation(rules.ExtractFromRoot(parser.parse_expr('3*x'), -1), '0.0.1').eval(t3);
-        sub = '(x/(-(3*x))) * (1/sqrt((9 * x * x - 5 * x) / (3 * x) ^ 2))'
-        sub = expr.parser.parse_expr(sub)
-        t5 = rules.OnLocation(rules.Equation(sub), '0.0').eval(t4)
-        t6 = rules.OnLocation(rules.LimSep(), '0').eval(t5)
-        t7 = rules.OnLocation(rules.Simplify(), '0.1.0').eval(t6)
-        # print("t7 =", t7)
-        t8 = rules.OnLocation(rules.LimitSimplify(), '0.0').eval(t7)
-        # print("t8 =", t8)
-        t9 = rules.OnLocation(rules.LimitSimplify(), '0.1').eval(t8)
-        # print("t9 =", t9)
-        t10 = rules.OnLocation(rules.LHopital(), '0.0').eval(t9)
-        # print("t10 =", t10)
-        t11 = rules.OnLocation(rules.LimitSimplify(), '0.0').eval(t10)
-        # print("t11 =", t11)
-        t12 = rules.Simplify().eval(t11)
-        self.assertEqual(str(t12),res)
-
-    def testExtractFromRoot(self):
-        test_data = [
-            ('sqrt(9*x*x - 5 * x)', '3*x', -1, "-(3 * x) * sqrt((9 * x * x - 5 * x) / (3 * x) ^ 2)")
-        ]
-        for a, b, c, d in test_data:
-            a = parser.parse_expr(a)
-            b = parser.parse_expr(b)
-            e = rules.ExtractFromRoot(b, c).eval(a)
-            self.assertEqual(str(e), d)
+    # def testExtractFromRoot(self):
+    #     test_data = [
+    #         ('sqrt(9*x*x - 5 * x)', '3*x', -1, "-(3 * x) * sqrt((9 * x * x - 5 * x) / (3 * x) ^ 2)")
+    #     ]
+    #     for a, b, c, d in test_data:
+    #         a = parser.parse_expr(a)
+    #         b = parser.parse_expr(b)
+    #         e = rules.ExtractFromRoot(b, c).eval(a)
+    #         self.assertEqual(str(e), d)
 
     def testIntegralSimplify(self):
         s = 'INT x:[-pi/4,pi/4].cos(x)*abs(cos(x))'
@@ -706,6 +668,16 @@ class RulesTest(unittest.TestCase):
         with open('integral/examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
+    def testFullSimplify(self):
+        test_data = [('LIM {x -> 1 }. (x ^ 2 - 1) / (x ^ 2 + 3 * x - 4)', "LIM {x -> 1 }. (x ^ 2 - 1) * (x ^ 2 + 3 * x - 4) ^ -1"),
+                     ('LIM {x -> 1 }. (x-1) * tan(pi/2 * x)', "LIM {x -> 1 }. (x - 1) * tan(1/2 * pi * x)"),
+                     ('LIM {x -> 0 }. sin(x) / x', "LIM {x -> 0 }. x ^ -1 * sin(x)"),]
+        r = rules.FullSimplify().eval
+        for s, res in test_data:
+            e = parse_expr(s)
+            e = r(e)
+            self.assertEqual(str(e), res)
+
     def testMul2Div(self):
         test_data = [
             ("x*(e^-x)", "", 1, "x / (1 / e ^ -x)"),
@@ -759,6 +731,12 @@ class RulesTest(unittest.TestCase):
             e = rules.RootFractionReWrite().eval(s)
             self.assertEqual(str(e), s2)
 
+    def testFullSimplify(self):
+        test_data = [("INT x:[0, oo].D b.(x ^ 2 + b) ^ (-m - 1)","INT x:[0,oo]. D b. (x ^ 2 + b) ^ (-m - 1)")]
+        for s,res in test_data:
+            s = parse_expr(s)
+            rules.FullSimplify().eval(s)
+            self.assertEqual(str(s), res)
 
 if __name__ == "__main__":
     unittest.main()
