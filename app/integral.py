@@ -379,3 +379,22 @@ def integral_apply_theorem():
             "item": item.export(),
             "selected_item": str(compstate.get_next_step_label(subitem, label))
         })
+
+@app.route("/api/query-last-expr", methods=["POST"])
+def query_last_expr():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    print(data, flush=True)
+    item = compstate.parse_item(data['item'])
+    label = compstate.Label(data['selected_item'])
+    print("query-last-expr:", label)
+    subitem = item.get_by_label(label)
+    try:
+        return jsonify({
+            "last_expr": str(subitem.res),
+            "status": "ok",
+        })
+    except:
+        return jsonify({
+            "last_expr": "",
+            "status": "ok",
+        })

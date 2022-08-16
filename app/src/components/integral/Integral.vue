@@ -265,24 +265,30 @@ export default {
       // List of theorems
       theorems: undefined,
       selected_theorem_id: undefined,
-      query_vars: undefined
+      query_vars: undefined,
+
+      // the choosed step expression
+      last_expr: undefined,
     }
   },
 
   computed: {
     lastExpr: function() {
-      if (this.cur_id == undefined) {
-        return ""
-      } else if (this.content[this.cur_id].steps.length == 0) {
-        return this.content[this.cur_id].start
-      } else {
-        const len = this.content[this.cur_id].steps.length
-        return this.content[this.cur_id].steps[len-1].res
-      }
+			this.query_last_expr()
+			return this.last_expr
     }
   },
 
   methods: {
+    query_last_expr: async function(){
+      const data = {
+      item: this.content[this.cur_id],
+      selected_item: this.selected_item
+    }
+    const response = await axios.post("http://127.0.0.1:5000/api/query-last-expr", JSON.stringify(data))
+    this.last_expr = response.data.last_expr
+    },
+		
     load_file_list: async function (){
       const response = await axios.post('http://127.0.0.1:5000/api/integral-load-file-list')
       this.file_list = response.data.file_list
