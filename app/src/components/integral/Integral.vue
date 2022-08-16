@@ -274,8 +274,8 @@ export default {
 
   computed: {
     lastExpr: function() {
-			this.query_last_expr()
-			return this.last_expr
+      this.query_last_expr()
+      return this.last_expr
     }
   },
 
