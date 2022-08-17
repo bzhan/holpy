@@ -217,11 +217,13 @@ def expand_definition():
     for prev_item in prev_items:
         if isinstance(prev_item, compstate.FuncDef):
             func_defs.append(prev_item.eq)
-    assert len(func_defs) == 1, "expand_definition: unexpected number of definitions"
+    # assert len(func_defs) == 1, "expand_definition: unexpected number of definitions"
     subitem = item.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
-        rule = integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_defs[0]))
-        subitem.perform_rule(rule)
+        for func_def in func_defs:
+            if subitem.last_expr.find_subexpr(func_def.lhs) != []:
+                rule = integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_def))
+                subitem.perform_rule(rule)
         return jsonify({
             "status": "ok",
             "item": item.export(),
