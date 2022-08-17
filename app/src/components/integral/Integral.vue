@@ -293,9 +293,8 @@ export default {
         const response = await axios.post("http://127.0.0.1:5000/api/query-last-expr", JSON.stringify(data))
         if (response.data.status === 'ok'){
           this.last_expr = response.data.last_expr
-          this.r_query_mode = 'rewrite equation'
         } else {
-          this.r_query_mode = undefined
+          this.last_expr = ""
         }
     },
 		
@@ -331,6 +330,7 @@ export default {
     selectItem: function(item_id) {
       console.log('selectItem', item_id)
       this.selected_item = item_id
+      this.r_query_mode = undefined
     },
 
     // Select a fact
@@ -619,8 +619,7 @@ export default {
     },
 
     rewriteEquation: function() {
-      this.query_last_expr()
-      //this.r_query_mode = 'rewrite equation'
+      this.r_query_mode = 'rewrite equation'
     },
 
     doRewriteEquation: async function() {
