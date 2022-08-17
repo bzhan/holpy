@@ -145,7 +145,9 @@
       </div>
       <div v-if="r_query_mode === 'backward substitution'">
         <span class="math-text">Backward substitution on: </span>
-        <MathEquation v-bind:data="'\\(' + sep_int[0].latex_body + '\\)'"/><br/>
+        <MathEquation v-bind:data="'\\(' + sep_int[int_id].latex_body + '\\)'"/>
+        <button v-bind:disabled='int_id == 0' v-on:click="int_id--">prev</button>
+        <button v-bind:disabled='int_id == sep_int.length-1' v-on:click='int_id++'>next</button><br/>
         <span class="math-text">New variable </span>
         <input v-model="subst_var"><br/>
         <span class="math-text">Substitute </span>
@@ -269,6 +271,9 @@ export default {
 
       // the choosed step expression
       last_expr: undefined,
+			
+      // the index of sep-integrals
+      int_id: 0,
     }
   },
 
@@ -569,6 +574,7 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/query-integral", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.sep_int = response.data.integrals
+        this.int_id = 0
         this.r_query_mode = 'backward substitution'
       }
     },
@@ -580,8 +586,9 @@ export default {
         rule: {
           name: 'SubstitutionInverse',
           var_name: this.subst_var,
-          var_subst: this.expr_query1
-        }
+          var_subst: this.expr_query1,
+          loc: this.sep_int[this.int_id].loc
+        },
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {

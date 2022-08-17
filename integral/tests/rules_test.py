@@ -174,6 +174,11 @@ class RulesTest(unittest.TestCase):
     #     res = rules.Substitution("u", parse_expr("1 + x ^ 4")).eval(e)
     #     self.assertEqual(str(res), "INT u:[1,2]. 1/4 * u ^ (-1/4)")
 
+    def testSubstitution13(self):
+        e = parse_expr('INT t:[pi / 2,pi]. 1/2 * log(a * sin(t))')
+        res = rules.SubstitutionInverse('x', parse_expr('pi-x')).eval(e)
+        self.assertEqual(str(res), "-(INT x:[0,pi / 2]. 1/2 * log(a * sin(pi - x)) * -1)")
+
     def testUnfoldPower(self):
         test_data = [
             ("INT x:[1, 2].(x + y) ^ 3", "INT x:[1,2]. 3 * x * y ^ 2 + 3 * x ^ 2 * y + x ^ 3 + y ^ 3"),

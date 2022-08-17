@@ -615,7 +615,7 @@ def parse_rule(item) -> Rule:
         lhs = parser.parse_expr(item['lhs'])
         return rules.IntegrateByEquation(lhs)
     elif item['name'] == 'RewriteBinom':
-        return rules.OnSubterm(rules.RewriteBinom())
+        return rules.RewriteBinom()
     elif item['name'] == 'RewriteFactorial':
         return rules.RewriteFactorial()
     elif item['name'] == 'LHopital':
