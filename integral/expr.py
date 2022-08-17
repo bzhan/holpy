@@ -1115,7 +1115,9 @@ class Expr:
         else:
             return self
 
-    def has_func(self, func_name):
+    def has_func(self, func_name:str) -> bool:
+        # determine whether expression has function called func_name
+
         if self.is_op():
             args = self.args
             for a in args:

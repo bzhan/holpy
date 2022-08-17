@@ -389,6 +389,7 @@ def integral_apply_theorem():
 
 @app.route("/api/query-last-expr", methods=["POST"])
 def query_last_expr():
+    # query selected expression by given label
     data = json.loads(request.get_data().decode('UTF-8'))
     print(data, flush=True)
     item = compstate.parse_item(data['item'])
