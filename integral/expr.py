@@ -1115,6 +1115,26 @@ class Expr:
         else:
             return self
 
+    def has_func(self, func_name):
+        if self.is_op():
+            args = self.args
+            for a in args:
+                if a.has_func(func_name):
+                    return True
+        elif self.is_fun():
+            if(self.func_name == func_name):
+                return True
+            else:
+                args = self.args
+                for a in args:
+                    if a.has_func(func_name):
+                        return True
+        elif self.is_integral():
+            if self.lower.has_func(func_name) or self.upper.has_func(func_name) or self.body.has_func(func_name):
+                return True;
+        else:
+            return False
+
     def separate_integral(self):
         """Collect the list of all integrals appearing in self."""
         result = []

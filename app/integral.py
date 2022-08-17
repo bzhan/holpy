@@ -220,8 +220,12 @@ def expand_definition():
     # assert len(func_defs) == 1, "expand_definition: unexpected number of definitions"
     subitem = item.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
+        if isinstance(subitem, compstate.Calculation):
+            ex = subitem.start
+        else:
+            ex = subitem.res
         for func_def in func_defs:
-            if subitem.last_expr.find_subexpr(func_def.lhs) != []:
+            if ex.has_func(func_def.lhs.func_name):
                 rule = integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_def))
                 subitem.perform_rule(rule)
         return jsonify({
