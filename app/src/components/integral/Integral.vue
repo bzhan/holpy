@@ -286,12 +286,17 @@ export default {
 
   methods: {
     query_last_expr: async function(){
-      const data = {
-      item: this.content[this.cur_id],
-      selected_item: this.selected_item
-    }
-    const response = await axios.post("http://127.0.0.1:5000/api/query-last-expr", JSON.stringify(data))
-    this.last_expr = response.data.last_expr
+        const data = {
+          item: this.content[this.cur_id],
+          selected_item: this.selected_item
+        }
+        const response = await axios.post("http://127.0.0.1:5000/api/query-last-expr", JSON.stringify(data))
+        if (response.data.status === 'ok'){
+          this.last_expr = response.data.last_expr
+          this.r_query_mode = 'rewrite equation'
+        } else {
+          this.r_query_mode = undefined
+        }
     },
 		
     load_file_list: async function (){
@@ -614,7 +619,8 @@ export default {
     },
 
     rewriteEquation: function() {
-      this.r_query_mode = 'rewrite equation'
+      this.query_last_expr()
+      //this.r_query_mode = 'rewrite equation'
     },
 
     doRewriteEquation: async function() {

@@ -397,6 +397,5 @@ def query_last_expr():
         })
     except:
         return jsonify({
-            "last_expr": "",
-            "status": "ok",
+            "status": "error",
         })
