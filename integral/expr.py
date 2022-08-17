@@ -1130,8 +1130,9 @@ class Expr:
                     if a.has_func(func_name):
                         return True
         elif self.is_integral():
-            if self.lower.has_func(func_name) or self.upper.has_func(func_name) or self.body.has_func(func_name):
-                return True;
+            return self.lower.has_func(func_name) or self.upper.has_func(func_name) or self.body.has_func(func_name)
+        elif self.is_deriv():
+            return self.body.has_func(func_name)
         else:
             return False
 
