@@ -145,7 +145,9 @@
       </div>
       <div v-if="r_query_mode === 'backward substitution'">
         <span class="math-text">Backward substitution on: </span>
-        <MathEquation v-bind:data="'\\(' + sep_int[0].latex_body + '\\)'"/><br/>
+        <MathEquation v-bind:data="'\\(' + sep_int[int_id].latex_body + '\\)'"/>
+        <button v-bind:disabled='int_id == 0' v-on:click="int_id--">prev</button>
+        <button v-bind:disabled='int_id == sep_int.length-1' v-on:click='int_id++'>next</button><br/>
         <span class="math-text">New variable </span>
         <input v-model="subst_var"><br/>
         <span class="math-text">Substitute </span>
@@ -265,24 +267,37 @@ export default {
       // List of theorems
       theorems: undefined,
       selected_theorem_id: undefined,
-      query_vars: undefined
+      query_vars: undefined,
+
+      // the choosed step expression
+      last_expr: undefined,
+			
+      // the index of sep-integrals
+      int_id: 0,
     }
   },
 
   computed: {
     lastExpr: function() {
-      if (this.cur_id == undefined) {
-        return ""
-      } else if (this.content[this.cur_id].steps.length == 0) {
-        return this.content[this.cur_id].start
-      } else {
-        const len = this.content[this.cur_id].steps.length
-        return this.content[this.cur_id].steps[len-1].res
-      }
+      this.query_last_expr()
+      return this.last_expr
     }
   },
 
   methods: {
+    query_last_expr: async function(){
+        const data = {
+          item: this.content[this.cur_id],
+          selected_item: this.selected_item
+        }
+        const response = await axios.post("http://127.0.0.1:5000/api/query-last-expr", JSON.stringify(data))
+        if (response.data.status === 'ok'){
+          this.last_expr = response.data.last_expr
+        } else {
+          this.last_expr = ""
+        }
+    },
+		
     load_file_list: async function (){
       const response = await axios.post('http://127.0.0.1:5000/api/integral-load-file-list')
       this.file_list = response.data.file_list
@@ -315,6 +330,7 @@ export default {
     selectItem: function(item_id) {
       console.log('selectItem', item_id)
       this.selected_item = item_id
+      this.r_query_mode = undefined
     },
 
     // Select a fact
@@ -563,6 +579,7 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/query-integral", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.sep_int = response.data.integrals
+        this.int_id = 0
         this.r_query_mode = 'backward substitution'
       }
     },
@@ -574,8 +591,9 @@ export default {
         rule: {
           name: 'SubstitutionInverse',
           var_name: this.subst_var,
-          var_subst: this.expr_query1
-        }
+          var_subst: this.expr_query1,
+          loc: this.sep_int[this.int_id].loc
+        },
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
       if (response.data.status == 'ok') {

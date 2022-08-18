@@ -217,11 +217,17 @@ def expand_definition():
     for prev_item in prev_items:
         if isinstance(prev_item, compstate.FuncDef):
             func_defs.append(prev_item.eq)
-    assert len(func_defs) == 1, "expand_definition: unexpected number of definitions"
+    # assert len(func_defs) == 1, "expand_definition: unexpected number of definitions"
     subitem = item.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
-        rule = integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_defs[0]))
-        subitem.perform_rule(rule)
+        if isinstance(subitem, compstate.Calculation):
+            ex = subitem.start
+        else:
+            ex = subitem.res
+        for func_def in func_defs:
+            if ex.has_func(func_def.lhs.func_name):
+                rule = integral.rules.OnSubterm(integral.rules.ExpandDefinition(func_def))
+                subitem.perform_rule(rule)
         return jsonify({
             "status": "ok",
             "item": item.export(),
@@ -278,6 +284,7 @@ def integral_perform_step():
     item = compstate.parse_item(data['item'])
     label = compstate.Label(data['selected_item'])
     rule = compstate.parse_rule(data['rule'])
+
     subitem = item.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
         subitem.perform_rule(rule)
@@ -378,4 +385,22 @@ def integral_apply_theorem():
             "status": "ok",
             "item": item.export(),
             "selected_item": str(compstate.get_next_step_label(subitem, label))
+        })
+
+@app.route("/api/query-last-expr", methods=["POST"])
+def query_last_expr():
+    # query selected expression by given label
+    data = json.loads(request.get_data().decode('UTF-8'))
+    print(data, flush=True)
+    item = compstate.parse_item(data['item'])
+    label = compstate.Label(data['selected_item'])
+    subitem = item.get_by_label(label)
+    try:
+        return jsonify({
+            "last_expr": str(subitem.res),
+            "status": "ok",
+        })
+    except:
+        return jsonify({
+            "status": "error",
         })

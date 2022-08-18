@@ -819,6 +819,9 @@ class SubstitutionInverse(Rule):
         except NotImplementedError:
             upper = solvers.solve(expr.sympy_style(self.var_subst - e.upper))[0]
 
+        if lower > upper:
+            return -expr.Integral(self.var_name, expr.holpy_style(upper), expr.holpy_style(lower), new_e_body)
+
         return expr.Integral(self.var_name, expr.holpy_style(lower), expr.holpy_style(upper), new_e_body)
         
 
