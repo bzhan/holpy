@@ -23,7 +23,7 @@ export default {
   },
 
   props: [
-	"step",
+    "step",
     "label",
     "selected_item",
     "selected_facts",
