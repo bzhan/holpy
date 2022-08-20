@@ -341,7 +341,6 @@ class OnLocation(Rule):
                     raise NotImplementedError
             elif cur_e.ty == FUN:
                 assert loc.head < len(cur_e.args), "OnLocation: invalid location"
-                # loc.head位置的参数进行操作
                 new_args = list(cur_e.args)
                 new_args[loc.head] = rec(cur_e.args[loc.head], loc.rest)
                 return Fun(cur_e.func_name, *tuple(new_args))
