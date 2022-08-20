@@ -84,10 +84,10 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                     # If left side is a fraction, add dot to reduce ambiguity
                     return "%s\\cdot %s" % (sx, sy)
                 elif x.is_constant() and y.is_constant():
-                    # 2*1
+                    # 2*1 = 2· 1
                     return "%s\\cdot %s" % (sx, sy)
                 elif y.is_constant() and not x.is_constant():
-                    # (m/2) * 2
+                    # (m/2) * 2 = m/2 · 2
                     return "%s\\cdot %s" % (sx, sy)
                 else:
                     return "%s %s" % (sx, sy)
