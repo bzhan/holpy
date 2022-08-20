@@ -284,7 +284,6 @@ def integral_perform_step():
     item = compstate.parse_item(data['item'])
     label = compstate.Label(data['selected_item'])
     rule = compstate.parse_rule(data['rule'])
-
     subitem = item.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
         subitem.perform_rule(rule)
