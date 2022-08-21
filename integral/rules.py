@@ -1,4 +1,5 @@
 """Rules for integration."""
+import copy
 import fractions
 import math
 from decimal import Decimal
@@ -340,7 +341,9 @@ class OnLocation(Rule):
                     raise NotImplementedError
             elif cur_e.ty == FUN:
                 assert loc.head < len(cur_e.args), "OnLocation: invalid location"
-                return Fun(cur_e.func_name, rec(cur_e.args[0], loc.rest))
+                new_args = list(cur_e.args)
+                new_args[loc.head] = rec(cur_e.args[loc.head], loc.rest)
+                return Fun(cur_e.func_name, *tuple(new_args))
             elif cur_e.ty == INTEGRAL:
                 if loc.head == 0:
                     return Integral(cur_e.var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest))
@@ -908,15 +911,14 @@ class Equation(Rule):
             #     raise AssertionError("Equation: old expression not found")
             # loc = find_res[0]
             # return OnLocation(self, loc).eval(e)
-        tmp1 = e.normalize()
-        tmp2 = self.old_expr.normalize() if self.old_expr is not None else None
-        if tmp2 is not None and tmp2 != tmp1:
-            find_res = tmp1.find_subexpr(tmp2)
+        old_expr = self.old_expr
+        if old_expr is not None and old_expr != e:
+            find_res = e.find_subexpr(old_expr)
             if len(find_res) == 0:
                 raise AssertionError("Equation: old expression not found")
             loc = find_res[0]
-            return OnLocation(self, loc).eval(tmp1)
-        if tmp2 == tmp1:
+            return OnLocation(self, loc).eval(e)
+        if old_expr == e:
             if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
                     expand_multinomial(expr.sympy_style(self.old_expr.normalize()).simplify()):
                 raise AssertionError("Rewriting by equation failed")

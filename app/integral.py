@@ -284,7 +284,6 @@ def integral_perform_step():
     item = compstate.parse_item(data['item'])
     label = compstate.Label(data['selected_item'])
     rule = compstate.parse_rule(data['rule'])
-
     subitem = item.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
         subitem.perform_rule(rule)
@@ -391,16 +390,16 @@ def integral_apply_theorem():
 def query_last_expr():
     # query selected expression by given label
     data = json.loads(request.get_data().decode('UTF-8'))
-    print(data, flush=True)
     item = compstate.parse_item(data['item'])
     label = compstate.Label(data['selected_item'])
     subitem = item.get_by_label(label)
-    try:
+    if isinstance(subitem, (compstate.CalculationStep,compstate.Calculation)):
+        res = subitem.res if isinstance(subitem, compstate.CalculationStep) else subitem.start
         return jsonify({
-            "last_expr": str(subitem.res),
+            "last_expr": str(res),
             "status": "ok",
         })
-    except:
+    else:
         return jsonify({
             "status": "error",
         })

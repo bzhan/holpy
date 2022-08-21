@@ -7,7 +7,8 @@
           :class="{selected: selected_item == label + '1.'}">
       <MathEquation v-bind:data="'\\(' + item.base_case.latex_goal + '\\)'"/><br/>
     </span>
-    <CalculationProof v-bind:item="item.base_case.proof" v-bind:label="label + '1.'"
+    <CalculationProof v-if="'proof' in item.base_case"
+                      v-bind:item="item.base_case.proof" v-bind:label="label + '1.'"
                       v-bind:selected_item="selected_item"
                       v-bind:selected_facts="selected_facts"
                       @select="(lbl) => $emit('select', lbl)"/>
@@ -16,7 +17,8 @@
           :class="{selected: selected_item == label + '2.'}">
       <MathEquation v-bind:data="'\\(' + item.induct_case.latex_goal + '\\)'"/><br/>
     </span>
-    <CalculationProof v-bind:item="item.induct_case.proof" v-bind:label="label + '2.'"
+    <CalculationProof v-if="'proof' in item.induct_case"
+                      v-bind:item="item.induct_case.proof" v-bind:label="label + '2.'"
                       v-bind:selected_item="selected_item"
                       v-bind:selected_facts="selected_facts"
                       @select="(lbl) => $emit('select', lbl)"/>
