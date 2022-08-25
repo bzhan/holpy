@@ -25,6 +25,7 @@ grammar = r"""
         | "\|" expr "\|" -> abs_expr 
         | "$" expr "$" -> trig_expr
         | "INT" CNAME ":[" expr "," expr "]." expr -> integral_expr
+        | "INT" CNAME "." expr -> indefinite_integral_expr
         | "DIFF" "." expr -> differential_expr
         | "[" expr "]_" CNAME "=" expr "," expr -> eval_at_expr
         | "LIM" "{" CNAME "->" expr "}" "." expr -> limit_inf_expr
@@ -145,11 +146,16 @@ class ExprTransformer(Transformer):
     def integral_expr(self, var, lower, upper, body):
         return expr.Integral(str(var), lower, upper, body)
 
+    def indefinite_integral_expr(self, var, body):
+        return expr.IndefiniteIntegral(str(var), body)
+
     def eval_at_expr(self, body, var, lower, upper):
         return expr.EvalAt(var, lower, upper, body)
     
     def trig_expr(self, e):
         e.selected = True
+        # reset trig_identity
+        expr.trig_identity = []
         expr.trig_identity.append(e)
         return e
 

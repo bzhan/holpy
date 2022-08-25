@@ -203,6 +203,52 @@ class CommonIntegral(Rule):
 
         return e
 
+class CommonIndefiniteIntegral(Rule):
+
+    def __init__(self, const_name):
+        self.name = "CommonIndefiniteIntegral"
+        self.const_name = const_name
+
+    def __str__(self):
+        return "common indefinite integrals"
+
+    def eval(self, e:Expr, conds=None) -> Expr:
+        if e.ty != INDEFINITEINTEGRAL:
+            return e
+        C = expr.SkolemConst(self.const_name, *expr.SkolemConst.find_free(e.var, e.body))
+        v = Var(e.var)
+        if (e.body.is_constant() or v not in e.body.findVar()) and e.body != Const(1):
+            return e.body * Var(e.var) + C
+
+        x = Var(e.var)
+        c = Symbol('c', [CONST])
+        rules = [
+            (Const(1), None, Var(e.var)),
+            (c, None, c * Var(e.var)),
+            (x, None, (x ^ 2) / 2),
+            (x ^ c, lambda m: m[c].val != -1, lambda m: (x ^ Const(m[c].val + 1)) / (Const(m[c].val + 1))),
+            (Const(1) / x ^ c, lambda m: m[c].val != 1, (-c) / (x ^ (c + 1))),
+            (expr.sqrt(x), None, Fraction(2, 3) * (x ^ Fraction(3, 2))),
+            (sin(x), None, -cos(x)),
+            (cos(x), None, sin(x)),
+            (expr.exp(x), None, expr.exp(x)),
+            (Const(1) / x, None, expr.log(expr.Fun('abs', x))),
+            (x ^ Const(-1), None, expr.log(expr.Fun('abs', x))),
+            (((x ^ Const(2)) + 1) ^ Const(-1), None, expr.arctan(x)),
+            (expr.sec(x) ^ Const(2), None, expr.tan(x)),
+            (expr.csc(x) ^ Const(2), None, -expr.cot(x)),
+        ]
+
+        for pat, cond, pat_res in rules:
+            mapping = expr.match(e.body, pat)
+            if mapping is not None and (cond is None or cond(mapping)):
+                if isinstance(pat_res, expr.Expr):
+                    integral = pat_res.inst_pat(mapping)
+                else:
+                    integral = pat_res(mapping)
+                return integral + C
+        return e
+
 
 class DerivativeSimplify(Rule):
     """Simplify the derivative of an expression"""
@@ -278,7 +324,7 @@ class OnSubterm(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         rule = self.rule
-        if e.ty in (expr.VAR, expr.CONST, expr.INF):
+        if e.ty in (expr.VAR, expr.CONST, expr.INF, expr.SKOLEMCONST):
             return rule.eval(e, conds=conds)
         elif e.ty == expr.OP:
             args = [self.eval(arg, conds=conds) for arg in e.args]
@@ -533,6 +579,9 @@ class FullSimplify(Rule):
         current = e
         while True:
             s = OnSubterm(Linearity()).eval(current, conds)
+            for a, b in conds.data.items():
+                if b.is_v_equals():
+                    s = s.subst(str(b.args[0]), b.args[1])
             s = OnSubterm(CommonIntegral()).eval(s, conds)
             s = Simplify().eval(s, conds)
             s = OnSubterm(DerivativeSimplify()).eval(s, conds)

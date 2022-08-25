@@ -3,6 +3,7 @@
 import unittest
 import json
 
+from integral import expr
 from logic import basic
 from integral import compstate
 from integral import rules
@@ -576,5 +577,75 @@ class IntegralTest(unittest.TestCase):
         with open('integral/examples/euler_log_sin.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
+    def testDiricheletIntegral(self):
+        file = compstate.CompFile("DiricheletIntegral")
+
+        # Condition
+        conds = conditions.Conditions()
+
+        # Definition
+        e = parser.parse_expr('I(b) = INT x:[0,oo]. sin(x) / x * exp(-b * x)')
+        # add condition b>=0
+        conds.add_condition("b>=0", parser.parse_expr("b>=0"))
+        Idef = compstate.FuncDef(e, conds=conds)
+        file.add_definition(Idef)
+
+        e = parser.parse_expr("INT x:[0,oo]. exp(-(b * x)) * sin(x) = 1/(b^2+1)") # for b > 0
+
+        e = parser.parse_expr("(D b. I(b)) = -1/(b^2+1)")
+        cond3 = conditions.Conditions()
+        e2 = parser.parse_expr("b>0")
+        cond3.add_condition(str(e2), e2)
+        goal0 = compstate.Goal(e, cond3)
+        file.add_goal(goal0)
+        proof = goal0.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
+        calc.perform_rule(rules.DerivIntExchange())
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("I(0) = INT x:[0, oo]. sin(x) / x")
+        goal1 = compstate.Goal(e, conds=conds)
+        file.add_compstate(goal1)
+
+        proof = goal1.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("I(0) = C")
+        conds2 = compstate.Conditions()
+        e2 = parser.parse_expr("is_const(C)")
+        conds2.add_condition(str(e2), e2)
+        assume = compstate.Assumption(e, conds2)
+
+        e = parser.parse_expr("I(b) = -atan(b) + C")
+        e2 = parser.parse_expr("is_const(C)")
+        conds.add_condition(str(e2), e2)
+        goal2 = compstate.Goal(e, conds=conds)
+        file.add_goal(goal2)
+        cond_str = "b=0"
+        proof = goal2.proof_by_case(cond_str)
+        case_1_proof = proof.case_1.proof_by_calculation()
+        case_2_proof = proof.case_2.proof_by_calculation()
+        calc = case_1_proof.lhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ApplyEquation(assume.assumption))
+        print(type(calc.last_expr))
+        calc = case_1_proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        print(type(calc.last_expr))
+
+        calc = case_2_proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+
+
+        print(file)
+        # # Test goals are finished
+        # for i in range(2, 5):
+        #     self.assertTrue(file.content[i].is_finished())
+        # with open('integral/examples/euler_log_sin.json', 'w', encoding='utf-8') as f:
+        #     json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 if __name__ == "__main__":
     unittest.main()

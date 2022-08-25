@@ -17,6 +17,28 @@ basic.load_theory('transcendentals')
 
 
 class ExprTest(unittest.TestCase):
+
+
+    def testSkolemConst(self):
+        test_data = [('a/(a^2+y^2)','C','y','C(a)'),
+                     ("1/(4+y^2)",'D','y','D'),
+                     ("1+a+b+c+d", "C", "d", "C(a, b, c)")]
+        s = 'a/(a^2+y^2)'
+        e = parse_expr(s)
+        C = expr.SkolemConst('C', *expr.SkolemConst.find_free('y', e))
+        self.assertEqual(str(C), "C(a)")
+        for s, c_name, e, res in test_data:
+            ex = parse_expr(s)
+            C = expr.SkolemConst(c_name, *expr.SkolemConst.find_free(e, ex))
+            self.assertEqual(str(C), res)
+
+
+    def testFindFree(self):
+        s = "INT x. x * y * a + t + 3"
+        e = parse_expr(s)
+        res = expr.SkolemConst.find_free(e.var, e.body)
+        self.assertEqual(set(res), {Var('y'),Var('a'),Var('t')})
+
     def testPrintExpr(self):
         x, y, z = Var("x"), Var("y"), Var("z")
         test_data = [

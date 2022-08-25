@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import MathEquation from '../util/MathEquation'
-import CalculationStep from './CalculationStep'
+import MathEquation from '../util/MathEquation.vue'
+import CalculationStep from './CalculationStep.vue'
 
 export default {
   name: "Calculation",

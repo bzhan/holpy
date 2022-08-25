@@ -1,10 +1,9 @@
 """State of computation"""
 
 from copy import copy
-from msilib.schema import Condition
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
-from integral.expr import Expr, Eq, Var, Const
+from integral.expr import Expr, Var, Const
 from integral import rules, expr
 from integral.rules import Rule
 from integral.conditions import Conditions
@@ -112,14 +111,16 @@ class FuncDef(StateItem):
         return [self.eq]
 
 class Assumption(StateItem):
-    def __init__(self, assumption):
-        self.assumption = assumption
+    def __init__(self, assumption:Expr, conds:Conditions = None):
+        self.assumption = conditions.replaceByConds(assumption, conds)
+
+        self.conds = conds
 
 class Goal(StateItem):
     """Goal to be proved."""
     def __init__(self, goal: Expr, conds: Optional[Conditions] = None, start = None):
 
-        self.goal = goal
+        self.goal = conditions.replaceByConds(goal, conds)
         if conds is None:
             conds = Conditions()
         self.conds = conds
@@ -171,6 +172,19 @@ class Goal(StateItem):
         self.proof = InductionProof(self.goal, induct_var, conds=self.conds,start = start)
         return self.proof
 
+    def proof_by_case(self, cond_str:str):
+        # cond_str: b = 0
+        # goal is f(b) = C for b>=0
+        # case1: f(b) = C for b>=0 and b=0
+        # case2: f(b) = C for b>=0 and b!=0
+        conds1, conds2 = copy(self.conds), copy(self.conds)
+        e1 = parser.parse_expr(cond_str)
+        e2 = expr.neg_expr(e1)
+        conds1.add_condition(str(e1), e1)
+        conds2.add_condition(str(e2), e2)
+        self.proof = CaseProof(self.goal, conds1=conds1, conds2=conds2)
+        return self.proof
+
     def get_by_label(self, label: Label):
         if label.empty():
             return self
@@ -181,7 +195,6 @@ class Goal(StateItem):
 
     def get_facts(self):
         return [self.goal]
-
 
 class CalculationStep(StateItem):
     """A step in the calculation."""
@@ -417,6 +430,60 @@ class InductionProof(StateItem):
             return self.base_case.get_by_label(label.tail)
         elif label.head == 1:
             return self.induct_case.get_by_label(label.tail)
+        else:
+            raise AssertionError("get_by_label: invalid label")
+
+class CaseProof(StateItem):
+    def __init__(self, goal: Expr, *, conds1: Optional[Conditions], conds2: Optional[Conditions]):
+        if not goal.is_equals():
+            print(str(goal))
+            raise AssertionError("CaseProof: currently only support equation goals.")
+        self.goal = goal
+        self.conds1 = conds1
+        self.conds2 = conds2
+        # case 1:
+        self.case_1 = Goal(goal, conds=conds1)
+        # case 2:
+        self.case_2 = Goal(goal, conds=conds2)
+
+    def __str__(self):
+        if self.is_finished():
+            res = "Proof by cases(finished)\n"
+        else:
+            res = "Proof by cases\n"
+        res += "case1: %s for %s\n" % (self.case_1.goal, self.conds1.data)
+        res += str(self.case_1)
+        res += "case2: %s for %s\n" % (self.case_2.goal, self.conds2.data)
+        res += str(self.case_2)
+        return res
+
+    def is_finished(self):
+        return self.case_1.is_finished() and self.case_2.is_finished()
+
+    def export(self):
+        res = {
+            "type": "CaseProof",
+            "goal": str(self.goal),
+            "latex_goal": latex.convert_expr(self.goal),
+            "case_1": self.case_1.export(),
+            "case_2": self.induct_case.export(),
+            "finished": self.is_finished()
+        }
+        if self.conds.data:
+            res["conds"] = self.conds.export()
+        return res
+
+    def clear(self):
+        self.case_1.clear()
+        self.case_2.clear()
+
+    def get_by_label(self, label: Label):
+        if label.empty():
+            return self
+        elif label.head == 0:
+            return self.case_1.get_by_label(label.tail)
+        elif label.head == 1:
+            return self.case_2.get_by_label(label.tail)
         else:
             raise AssertionError("get_by_label: invalid label")
 
