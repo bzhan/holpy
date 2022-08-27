@@ -113,8 +113,20 @@ class FuncDef(StateItem):
 class Assumption(StateItem):
     def __init__(self, assumption:Expr, conds:Conditions = None):
         self.assumption = conditions.replaceByConds(assumption, conds)
-
         self.conds = conds
+
+    def __str__(self):
+        res = "Assumption\n"
+        res2 = ""
+        first = True
+        if self.conds != None:
+            for k, v in self.conds.data.items():
+                if first:
+                    res2 += str(v)
+                else:
+                    res2 += ", "+str(v)
+        res += "  %s%s\n" % (self.assumption, (" for "+ res2) if self.conds!=None else "")
+        return res
 
 class Goal(StateItem):
     """Goal to be proved."""
@@ -492,10 +504,7 @@ class RewriteGoalProof(StateItem):
         if not goal.is_equals():
             raise AssertionError("RewriteGoalProof: goal is not an equality.")
         self.goal = goal
-        if conds is None:
-            conds = Conditions()
-        self.conds = conds
-        self.begin = Calculation(begin.goal, conds=self.conds, connection_symbol = '==>')
+        self.begin = Calculation(begin.goal, conds=begin.conds, connection_symbol = '==>')
 
     def is_finished(self):
         f1 = self.begin.last_expr.lhs.normalize() == self.goal.lhs.normalize()
@@ -604,7 +613,9 @@ class CompFile:
     def add_goal(self, goal: Goal):
         """Add a goal."""
         self.content.append(goal)
-
+    def add_assumption(self, assume: Assumption):
+        """Add a assumption"""
+        self.content.append(assume)
     def export(self):
         self.name = self.name
         return {

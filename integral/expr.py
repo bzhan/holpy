@@ -1182,7 +1182,7 @@ class Expr:
         def findv(e, v):
             if e.ty == VAR:
                 v.append(e)
-            elif e.ty in (CONST, INF):
+            elif e.ty in (CONST, INF, SKOLEMCONST):
                 return
             elif e.ty == FUN:
                 for arg in e.args:

@@ -595,15 +595,19 @@ class IntegralTest(unittest.TestCase):
         e2 = parser.parse_expr("is_const(C)")
         conds_of_assume1.add_condition(str(e2), e2)
         assume1 = compstate.Assumption(e, conds_of_assume1)
+        file.add_assumption(assume1)
+
 
         e = parser.parse_expr("(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1/(b^2+1)")  # for b > 0
         conds_of_assume2 = compstate.Conditions()
         e2 = parser.parse_expr("b>0")
         conds_of_assume2.add_condition(str(e2), e2)
         assume2 = compstate.Assumption(e, conds_of_assume2)
+        file.add_assumption(assume2)
 
         e = parser.parse_expr("(LIM {b -> oo}. INT x:[0,oo]. x ^ -1 * exp(-(b * x)) * sin(x)) = 0")
         assume3 = compstate.Assumption(e)
+        file.add_assumption(assume3)
 
         # goal: D b. I(b) = -1/(b^2+1)
         e = parser.parse_expr("(D b. I(b)) = -1/(b^2+1)")
@@ -617,7 +621,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.DerivIntExchange())
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(assume2.assumption), '0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyAssumption(assume2.assumption, assume2.conds), '0'))
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -641,7 +645,7 @@ class IntegralTest(unittest.TestCase):
         conds_of_goal3 = conditions.Conditions()
         conds_of_goal3.add_condition(str(e2), e2)
         e2 = parser.parse_expr("b>=0")
-        conds_of_goal3.add_condition(str(e2), e2)            
+        conds_of_goal3.add_condition(str(e2), e2)
         goal3 = compstate.Goal(e, conds=conds_of_goal3)
         file.add_goal(goal3)
         cond_str = "b=0"
@@ -649,7 +653,7 @@ class IntegralTest(unittest.TestCase):
         case_1_proof = proof.case_1.proof_by_calculation()
         calc = case_1_proof.lhs_calc
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.ApplyEquation(assume1.assumption))
+        calc.perform_rule(rules.ApplyAssumption(assume1.assumption,assume1.conds))
         calc = case_1_proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
         case_2_proof = proof.case_2.proof_by_rewrite_goal(begin=goal1)
@@ -662,12 +666,11 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         e = parser.parse_expr("0 = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi")
-        conds_of_goal4 = conditions.Conditions()
-        goal4 = compstate.Goal(e, conds=conds_of_goal4)
+        goal4 = compstate.Goal(e)
         file.add_goal(goal4)
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
         calc = proof_of_goal4.begin
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(assume1.assumption), '1.1'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyAssumption(assume1.assumption, assume1.conds), '1.1'))
         calc.perform_rule(rules.LimitEquation(var='b', lim=expr.POS_INF))
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.FullSimplify())
@@ -683,8 +686,8 @@ class IntegralTest(unittest.TestCase):
 
         print(file)
         # # Test goals are finished
-        # for i in range(2, 5):
-        #     self.assertTrue(file.content[i].is_finished())
+        for i in range(4, 9):
+            self.assertTrue(file.content[i].is_finished())
         # with open('integral/examples/euler_log_sin.json', 'w', encoding='utf-8') as f:
         #     json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 if __name__ == "__main__":

@@ -605,7 +605,6 @@ class FullSimplify(Rule):
                 raise AssertionError("Loop in FullSimplify")
         return current
 
-
 class ApplyEquation(Rule):
     """Apply the given equation to for rewriting.
 
@@ -709,6 +708,43 @@ class ApplyEquation(Rule):
             for var, e2 in self.subMap.items():
                 new_eq = new_eq.subst(var, e2)
             return ApplyEquation(new_eq).eval(e)
+
+class ApplyAssumption(Rule):
+    """Apply assumption"""
+
+    def __init__(self, assumption: Expr, conds: Conditions):
+        self.name = "ApplyAssumption"
+        self.assumption = assumption
+        self.conds = conds
+
+    def __str__(self):
+        return "apply assumption"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self),
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        # if assumption holds under this expression
+        # then apply assumption
+        flag = False if conds != None else True
+        if not flag:
+            items = self.conds.data.items()
+            for k, v in conds.data.items():
+                if (k,v) in items:
+                    flag = True
+                    break
+                if v.op == '>':
+                    e1, e2 = Op('>=', *v.args), Op('!=', *v.args)
+                    if (str(e1), e1) in items and (str(e2), e2) in items:
+                        flag =True;
+                        break
+        if not flag:
+            return e
+        rule = ApplyEquation(self.assumption)
+        return rule.eval(e, conds)
 
 
 class ApplyInductHyp(Rule):
