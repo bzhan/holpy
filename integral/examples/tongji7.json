@@ -61,7 +61,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{6} e^{6} - \\frac{1}{6}",
+                    "latex_res": "\\frac{1}{6}\\cdot e^{6} - \\frac{1}{6}",
                     "res": "1/6 * exp(6) - 1/6",
                     "rule": {
                         "name": "FullSimplify",
@@ -89,7 +89,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 e^{-1} + e^{2}",
+                    "latex_res": "2\\cdot e^{-1} + e^{2}",
                     "res": "2 * exp(-1) + exp(2)",
                     "rule": {
                         "name": "FullSimplify",
@@ -190,7 +190,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{81}{11} 2 ^ {2/3} + \\frac{945}{44} 3 ^ {2/3}",
+                    "latex_res": "-\\frac{81}{11}\\cdot 2 ^ {2/3} + \\frac{945}{44}\\cdot 3 ^ {2/3}",
                     "res": "-81/11 * 2 ^ (2/3) + 945/44 * 3 ^ (2/3)",
                     "rule": {
                         "name": "FullSimplify",
@@ -215,7 +215,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{4} \\pi + 1",
+                    "latex_res": "\\frac{1}{4}\\cdot \\pi + 1",
                     "res": "1/4 * pi + 1",
                     "rule": {
                         "name": "FullSimplify",
@@ -240,7 +240,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-45 e - \\frac{3}{2} e^{2} + \\frac{1}{3} e^{3} + \\frac{277}{6} - 123 (\\int_{4}^{e + 3} (x - 3) ^ {-1} \\,dx)",
+                    "latex_res": "-45\\cdot e - \\frac{3}{2}\\cdot e^{2} + \\frac{1}{3}\\cdot e^{3} + \\frac{277}{6} - 123 (\\int_{4}^{e + 3} (x - 3) ^ {-1} \\,dx)",
                     "res": "-45 * exp(1) - 3/2 * exp(2) + 1/3 * exp(3) + 277/6 - 123 * (INT x:[4,exp(1) + 3]. (x - 3) ^ -1)",
                     "rule": {
                         "name": "FullSimplify",
@@ -249,7 +249,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-45 e - \\frac{3}{2} e^{2} + \\frac{1}{3} e^{3} + \\frac{277}{6} - 123 (\\int_{1}^{e} u ^ {-1} \\,du)",
+                    "latex_res": "-45\\cdot e - \\frac{3}{2}\\cdot e^{2} + \\frac{1}{3}\\cdot e^{3} + \\frac{277}{6} - 123 (\\int_{1}^{e} u ^ {-1} \\,du)",
                     "res": "-45 * exp(1) - 3/2 * exp(2) + 1/3 * exp(3) + 277/6 - 123 * (INT u:[1,exp(1)]. u ^ -1)",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(x - 3\\)",
@@ -261,7 +261,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-45 e - \\frac{3}{2} e^{2} + \\frac{1}{3} e^{3} - \\frac{461}{6}",
+                    "latex_res": "-45\\cdot e - \\frac{3}{2}\\cdot e^{2} + \\frac{1}{3}\\cdot e^{3} - \\frac{461}{6}",
                     "res": "-45 * exp(1) - 3/2 * exp(2) + 1/3 * exp(3) - 461/6",
                     "rule": {
                         "name": "FullSimplify",
@@ -377,7 +377,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{2} (\\int_{1/6\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{(2 x)} \\,dx) + \\frac{1}{6} \\pi",
+                    "latex_res": "\\frac{1}{2} (\\int_{1/6\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{(2 x)} \\,dx) + \\frac{1}{6}\\cdot \\pi",
                     "res": "1/2 * (INT x:[1/6 * pi,1/2 * pi]. cos(2 * x)) + 1/6 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -386,7 +386,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{2} (\\int_{1/3\\cdot \\pi}^{\\pi} \\frac{1}{2} \\cos{(u)} \\,du) + \\frac{1}{6} \\pi",
+                    "latex_res": "\\frac{1}{2} (\\int_{1/3\\cdot \\pi}^{\\pi} \\frac{1}{2} \\cos{(u)} \\,du) + \\frac{1}{6}\\cdot \\pi",
                     "res": "1/2 * (INT u:[1/3 * pi,pi]. 1/2 * cos(u)) + 1/6 * pi",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(2 x\\)",
@@ -398,7 +398,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{8} \\sqrt{3} + \\frac{1}{6} \\pi",
+                    "latex_res": "-\\frac{1}{8} \\sqrt{3} + \\frac{1}{6}\\cdot \\pi",
                     "res": "-1/8 * sqrt(3) + 1/6 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -489,7 +489,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{4} \\pi",
+                    "latex_res": "\\frac{1}{4}\\cdot \\pi",
                     "res": "1/4 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -589,7 +589,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{2} \\pi",
+                    "latex_res": "\\frac{1}{2}\\cdot \\pi",
                     "res": "1/2 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -689,7 +689,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\sqrt{2} \\pi + 2 \\sqrt{2}",
+                    "latex_res": "\\sqrt{2}\\cdot \\pi + 2 \\sqrt{2}",
                     "res": "sqrt(2) * pi + 2 * sqrt(2)",
                     "rule": {
                         "name": "FullSimplify",
@@ -786,7 +786,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\sin^{-2}(u) \\,du) - \\frac{1}{4} \\pi",
+                    "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\sin^{-2}(u) \\,du) - \\frac{1}{4}\\cdot \\pi",
                     "res": "(INT u:[1/4 * pi,1/2 * pi]. sin(u) ^ -2) - 1/4 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -795,7 +795,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\csc^{2}(u) \\,du) - \\frac{1}{4} \\pi",
+                    "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\csc^{2}(u) \\,du) - \\frac{1}{4}\\cdot \\pi",
                     "res": "(INT u:[1/4 * pi,1/2 * pi]. csc(u) ^ 2) - 1/4 * pi",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(\\sin^{-2}(u)\\)",
@@ -807,7 +807,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{4} \\pi + 1",
+                    "latex_res": "-\\frac{1}{4}\\cdot \\pi + 1",
                     "res": "-1/4 * pi + 1",
                     "rule": {
                         "name": "FullSimplify",
@@ -893,7 +893,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 \\log{(2)} - 2 \\log{(3)} + 2",
+                    "latex_res": "2\\cdot \\log{(2)} - 2\\cdot \\log{(3)} + 2",
                     "res": "2 * log(2) - 2 * log(3) + 2",
                     "rule": {
                         "name": "FullSimplify",
@@ -942,7 +942,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-2 \\log{(2)} + 1",
+                    "latex_res": "-2\\cdot \\log{(2)} + 1",
                     "res": "-2 * log(2) + 1",
                     "rule": {
                         "name": "FullSimplify",
@@ -1014,8 +1014,8 @@
             "start": "INT x:[-2,0]. (x + 2) / (x ^ 2 + 2 * x + 2)",
             "steps": [
                 {
-                    "latex_res": "\\int_{-2}^{0} (x + 2) ((x + 1) ^ {2} + 1) ^ {-1} \\,dx",
-                    "res": "INT x:[-2,0]. (x + 2) * ((x + 1) ^ 2 + 1) ^ -1",
+                    "latex_res": "\\int_{-2}^{0} \\frac{x + 2}{(x + 1) ^ {2} + 1} \\,dx",
+                    "res": "INT x:[-2,0]. (x + 2) / ((x + 1) ^ 2 + 1)",
                     "rule": {
                         "name": "Equation",
                         "new_expr": "(x + 1) ^ 2 + 1",
@@ -1046,7 +1046,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{-1}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + \\frac{1}{2} \\pi",
+                    "latex_res": "(\\int_{-1}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + \\frac{1}{2}\\cdot \\pi",
                     "res": "(INT u:[-1,1]. u * (u ^ 2 + 1) ^ -1) + 1/2 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -1055,7 +1055,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{-1}^{0} u (u ^ {2} + 1) ^ {-1} \\,du) + (\\int_{0}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + \\frac{1}{2} \\pi",
+                    "latex_res": "(\\int_{-1}^{0} u (u ^ {2} + 1) ^ {-1} \\,du) + (\\int_{0}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + \\frac{1}{2}\\cdot \\pi",
                     "res": "(INT u:[-1,0]. u * (u ^ 2 + 1) ^ -1) + (INT u:[0,1]. u * (u ^ 2 + 1) ^ -1) + 1/2 * pi",
                     "rule": {
                         "c": "0",
@@ -1065,7 +1065,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{1}^{2} -\\frac{1}{2} v ^ {-1} \\,dv) + (\\int_{0}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + \\frac{1}{2} \\pi",
+                    "latex_res": "(\\int_{1}^{2} -\\frac{1}{2} v ^ {-1} \\,dv) + (\\int_{0}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + \\frac{1}{2}\\cdot \\pi",
                     "res": "(INT v:[1,2]. -1/2 * v ^ -1) + (INT u:[0,1]. u * (u ^ 2 + 1) ^ -1) + 1/2 * pi",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(u ^ {2} + 1\\)",
@@ -1077,7 +1077,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{0}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + (-\\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\pi)",
+                    "latex_res": "(\\int_{0}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + (-\\frac{1}{2}\\cdot \\log{(2)} + \\frac{1}{2}\\cdot \\pi)",
                     "res": "(INT u:[0,1]. u * (u ^ 2 + 1) ^ -1) + (-1/2 * log(2) + 1/2 * pi)",
                     "rule": {
                         "name": "FullSimplify",
@@ -1086,7 +1086,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{1}^{2} \\frac{1}{2} v ^ {-1} \\,dv) + (-\\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\pi)",
+                    "latex_res": "(\\int_{1}^{2} \\frac{1}{2} v ^ {-1} \\,dv) + (-\\frac{1}{2}\\cdot \\log{(2)} + \\frac{1}{2}\\cdot \\pi)",
                     "res": "(INT v:[1,2]. 1/2 * v ^ -1) + (-1/2 * log(2) + 1/2 * pi)",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(u ^ {2} + 1\\)",
@@ -1098,7 +1098,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{2} \\pi",
+                    "latex_res": "\\frac{1}{2}\\cdot \\pi",
                     "res": "1/2 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -1114,8 +1114,8 @@
             "start": "INT x:[-pi / 2,pi / 2]. cos(x) ^ 4",
             "steps": [
                 {
-                    "latex_res": "\\int_{-1/2\\cdot \\pi}^{1/2\\cdot \\pi} (\\cos^{2}(x)) ^ {2} \\,dx",
-                    "res": "INT x:[-1/2 * pi,1/2 * pi]. cos(x) ^ 2 ^ 2",
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} (\\cos^{2}(x)) ^ {2} \\,dx",
+                    "res": "INT x:[-pi / 2,pi / 2]. cos(x) ^ 2 ^ 2",
                     "rule": {
                         "name": "Equation",
                         "new_expr": "cos(x) ^ 2 ^ 2",
@@ -1125,8 +1125,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-1/2\\cdot \\pi}^{1/2\\cdot \\pi} (\\frac{\\cos{(2 x)}}{2} + \\frac{1}{2}) ^ {2} \\,dx",
-                    "res": "INT x:[-1/2 * pi,1/2 * pi]. (cos(2 * x) / 2 + 1/2) ^ 2",
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} (\\frac{\\cos{(2 x)}}{2} + \\frac{1}{2}) ^ {2} \\,dx",
+                    "res": "INT x:[-pi / 2,pi / 2]. (cos(2 * x) / 2 + 1/2) ^ 2",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(\\cos^{2}(x)\\)",
                         "name": "RewriteTrigonometric",
@@ -1137,8 +1137,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-1/2\\cdot \\pi}^{1/2\\cdot \\pi} \\frac{1}{4} \\cos^{2}(2 x) + \\frac{1}{2} \\cos{(2 x)} + \\frac{1}{4} \\,dx",
-                    "res": "INT x:[-1/2 * pi,1/2 * pi]. 1/4 * cos(2 * x) ^ 2 + 1/2 * cos(2 * x) + 1/4",
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\frac{1}{4} \\cos^{2}(2 x) + \\frac{1}{2} \\cos{(2 x)} + \\frac{1}{4} \\,dx",
+                    "res": "INT x:[-pi / 2,pi / 2]. 1/4 * cos(2 * x) ^ 2 + 1/2 * cos(2 * x) + 1/4",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -1158,7 +1158,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{4} (\\int_{0}^{\\pi} \\cos^{2}(u) \\,du) + \\frac{1}{4} \\pi",
+                    "latex_res": "\\frac{1}{4} (\\int_{0}^{\\pi} \\cos^{2}(u) \\,du) + \\frac{1}{4}\\cdot \\pi",
                     "res": "1/4 * (INT u:[0,pi]. cos(u) ^ 2) + 1/4 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -1167,7 +1167,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{4} (\\int_{0}^{\\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,du) + \\frac{1}{4} \\pi",
+                    "latex_res": "\\frac{1}{4} (\\int_{0}^{\\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,du) + \\frac{1}{4}\\cdot \\pi",
                     "res": "1/4 * (INT u:[0,pi]. cos(2 * u) / 2 + 1/2) + 1/4 * pi",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(\\cos^{2}(u)\\)",
@@ -1179,7 +1179,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{4} (\\int_{0}^{2 \\pi} \\frac{1}{4} \\cos{(v)} + \\frac{1}{4} \\,dv) + \\frac{1}{4} \\pi",
+                    "latex_res": "\\frac{1}{4} (\\int_{0}^{2\\cdot \\pi} \\frac{1}{4} \\cos{(v)} + \\frac{1}{4} \\,dv) + \\frac{1}{4}\\cdot \\pi",
                     "res": "1/4 * (INT v:[0,2 * pi]. 1/4 * cos(v) + 1/4) + 1/4 * pi",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(2 u\\)",
@@ -1191,7 +1191,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{3}{8} \\pi",
+                    "latex_res": "\\frac{3}{8}\\cdot \\pi",
                     "res": "3/8 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -1207,8 +1207,8 @@
             "start": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) - cos(x) ^ 3)",
             "steps": [
                 {
-                    "latex_res": "\\int_{-1/2\\cdot \\pi}^{1/2\\cdot \\pi} \\sqrt{\\cos{(x)} (1 - \\cos^{2}(x))} \\,dx",
-                    "res": "INT x:[-1/2 * pi,1/2 * pi]. sqrt(cos(x) * (1 - cos(x) ^ 2))",
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} (1 - \\cos^{2}(x))} \\,dx",
+                    "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * (1 - cos(x) ^ 2))",
                     "rule": {
                         "name": "Equation",
                         "new_expr": "cos(x) * (1 - cos(x) ^ 2)",
@@ -1218,8 +1218,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-1/2\\cdot \\pi}^{1/2\\cdot \\pi} \\sqrt{\\cos{(x)} \\sin^{2}(x)} \\,dx",
-                    "res": "INT x:[-1/2 * pi,1/2 * pi]. sqrt(cos(x) * sin(x) ^ 2)",
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} \\sin^{2}(x)} \\,dx",
+                    "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * sin(x) ^ 2)",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(1 - \\cos^{2}(x)\\)",
                         "name": "RewriteTrigonometric",
@@ -1367,7 +1367,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-2 e^{-1} + 1",
+                    "latex_res": "-2\\cdot e^{-1} + 1",
                     "res": "-2 * exp(-1) + 1",
                     "rule": {
                         "name": "FullSimplify",
@@ -1395,7 +1395,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{4} e^{2} + \\frac{1}{4}",
+                    "latex_res": "\\frac{1}{4}\\cdot e^{2} + \\frac{1}{4}",
                     "res": "1/4 * exp(2) + 1/4",
                     "rule": {
                         "name": "FullSimplify",
@@ -1435,7 +1435,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi + \\frac{1}{4} \\pi + (\\int_{1/4\\cdot \\pi}^{1/3\\cdot \\pi} \\cot{(x)} \\,dx)",
+                    "latex_res": "-\\frac{1}{9} \\sqrt{3}\\cdot \\pi + \\frac{1}{4}\\cdot \\pi + (\\int_{1/4\\cdot \\pi}^{1/3\\cdot \\pi} \\cot{(x)} \\,dx)",
                     "res": "-1/9 * sqrt(3) * pi + 1/4 * pi + (INT x:[1/4 * pi,1/3 * pi]. cot(x))",
                     "rule": {
                         "name": "FullSimplify",
@@ -1444,7 +1444,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi + \\frac{1}{4} \\pi + (\\int_{1/4\\cdot \\pi}^{1/3\\cdot \\pi} \\frac{\\cos{(x)}}{\\sin{(x)}} \\,dx)",
+                    "latex_res": "-\\frac{1}{9} \\sqrt{3}\\cdot \\pi + \\frac{1}{4}\\cdot \\pi + (\\int_{1/4\\cdot \\pi}^{1/3\\cdot \\pi} \\frac{\\cos{(x)}}{\\sin{(x)}} \\,dx)",
                     "res": "-1/9 * sqrt(3) * pi + 1/4 * pi + (INT x:[1/4 * pi,1/3 * pi]. cos(x) / sin(x))",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(\\cot{(x)}\\)",
@@ -1456,7 +1456,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi + \\frac{1}{4} \\pi + (\\int_{1/2\\cdot \\sqrt{2}}^{1/2\\cdot \\sqrt{3}} u ^ {-1} \\,du)",
+                    "latex_res": "-\\frac{1}{9} \\sqrt{3}\\cdot \\pi + \\frac{1}{4}\\cdot \\pi + (\\int_{1/2\\cdot \\sqrt{2}}^{1/2\\cdot \\sqrt{3}} u ^ {-1} \\,du)",
                     "res": "-1/9 * sqrt(3) * pi + 1/4 * pi + (INT u:[1/2 * sqrt(2),1/2 * sqrt(3)]. u ^ -1)",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(\\sin{(x)}\\)",
@@ -1468,7 +1468,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi - \\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\log{(3)} + \\frac{1}{4} \\pi",
+                    "latex_res": "-\\frac{1}{9} \\sqrt{3}\\cdot \\pi - \\frac{1}{2}\\cdot \\log{(2)} + \\frac{1}{2}\\cdot \\log{(3)} + \\frac{1}{4}\\cdot \\pi",
                     "res": "-1/9 * sqrt(3) * pi - 1/2 * log(2) + 1/2 * log(3) + 1/4 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -1496,7 +1496,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "8 \\log{(2)} - 4",
+                    "latex_res": "8\\cdot \\log{(2)} - 4",
                     "res": "8 * log(2) - 4",
                     "rule": {
                         "name": "FullSimplify",
@@ -1524,7 +1524,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{2} (\\int_{0}^{1} x ^ {2} (x ^ {2} + 1) ^ {-1} \\,dx) + \\frac{1}{8} \\pi",
+                    "latex_res": "-\\frac{1}{2} (\\int_{0}^{1} x ^ {2} (x ^ {2} + 1) ^ {-1} \\,dx) + \\frac{1}{8}\\cdot \\pi",
                     "res": "-1/2 * (INT x:[0,1]. x ^ 2 * (x ^ 2 + 1) ^ -1) + 1/8 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -1533,7 +1533,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{2} (\\int_{0}^{1} 1 - \\frac{1}{x ^ {2} + 1} \\,dx) + \\frac{1}{8} \\pi",
+                    "latex_res": "-\\frac{1}{2} (\\int_{0}^{1} 1 - \\frac{1}{x ^ {2} + 1} \\,dx) + \\frac{1}{8}\\cdot \\pi",
                     "res": "-1/2 * (INT x:[0,1]. 1 - 1 / (x ^ 2 + 1)) + 1/8 * pi",
                     "rule": {
                         "name": "PolynomialDivision",
@@ -1542,7 +1542,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{4} \\pi - \\frac{1}{2}",
+                    "latex_res": "\\frac{1}{4}\\cdot \\pi - \\frac{1}{2}",
                     "res": "1/4 * pi - 1/2",
                     "rule": {
                         "name": "FullSimplify",
@@ -1600,7 +1600,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{5} e^{\\pi} - \\frac{2}{5}",
+                    "latex_res": "\\frac{1}{5}\\cdot e^{\\pi} - \\frac{2}{5}",
                     "res": "1/5 * exp(pi) - 2/5",
                     "rule": {
                         "lhs": "INT x:[0,1/2 * pi]. cos(x) * exp(2 * x)",
@@ -1647,7 +1647,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{2} (\\int_{0}^{\\pi} x ^ {2} \\cos{(2 x)} \\,dx) + \\frac{1}{6} \\pi ^ {3}",
+                    "latex_res": "-\\frac{1}{2} (\\int_{0}^{\\pi} x ^ {2} \\cos{(2 x)} \\,dx) + \\frac{1}{6}\\cdot \\pi ^ {3}",
                     "res": "-1/2 * (INT x:[0,pi]. x ^ 2 * cos(2 * x)) + 1/6 * pi ^ 3",
                     "rule": {
                         "name": "FullSimplify",
@@ -1656,7 +1656,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{2} ((\\left. \\frac{1}{2} x ^ {2} \\sin{(2 x)} \\right\\vert_{x=0}^{\\pi}) - (\\int_{0}^{\\pi} x \\sin{(2 x)} \\,dx)) + \\frac{1}{6} \\pi ^ {3}",
+                    "latex_res": "-\\frac{1}{2} ((\\left. \\frac{1}{2} x ^ {2} \\sin{(2 x)} \\right\\vert_{x=0}^{\\pi}) - (\\int_{0}^{\\pi} x \\sin{(2 x)} \\,dx)) + \\frac{1}{6}\\cdot \\pi ^ {3}",
                     "res": "-1/2 * (([1/2 * x ^ 2 * sin(2 * x)]_x=0,pi) - (INT x:[0,pi]. x * sin(2 * x))) + 1/6 * pi ^ 3",
                     "rule": {
                         "latex_str": "integrate by parts \\(u \\to \\frac{x ^ {2}}{2}, v \\to \\sin{(2 x)}\\)",
@@ -1668,7 +1668,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi} x \\sin{(2 x)} \\,dx) + \\frac{1}{6} \\pi ^ {3}",
+                    "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi} x \\sin{(2 x)} \\,dx) + \\frac{1}{6}\\cdot \\pi ^ {3}",
                     "res": "1/2 * (INT x:[0,pi]. x * sin(2 * x)) + 1/6 * pi ^ 3",
                     "rule": {
                         "name": "FullSimplify",
@@ -1677,7 +1677,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{2} ((\\left. -\\frac{1}{2} x \\cos{(2 x)} \\right\\vert_{x=0}^{\\pi}) - (\\int_{0}^{\\pi} -\\frac{1}{2} \\cos{(2 x)} \\,dx)) + \\frac{1}{6} \\pi ^ {3}",
+                    "latex_res": "\\frac{1}{2} ((\\left. -\\frac{1}{2} x \\cos{(2 x)} \\right\\vert_{x=0}^{\\pi}) - (\\int_{0}^{\\pi} -\\frac{1}{2} \\cos{(2 x)} \\,dx)) + \\frac{1}{6}\\cdot \\pi ^ {3}",
                     "res": "1/2 * (([-1/2 * x * cos(2 * x)]_x=0,pi) - (INT x:[0,pi]. -1/2 * cos(2 * x))) + 1/6 * pi ^ 3",
                     "rule": {
                         "latex_str": "integrate by parts \\(u \\to \\frac{x}{2}, v \\to -\\cos{(2 x)}\\)",
@@ -1689,7 +1689,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{6} \\pi ^ {3} - \\frac{1}{4} \\pi + \\frac{1}{4} (\\int_{0}^{\\pi} \\cos{(2 x)} \\,dx)",
+                    "latex_res": "\\frac{1}{6}\\cdot \\pi ^ {3} - \\frac{1}{4}\\cdot \\pi + \\frac{1}{4} (\\int_{0}^{\\pi} \\cos{(2 x)} \\,dx)",
                     "res": "1/6 * pi ^ 3 - 1/4 * pi + 1/4 * (INT x:[0,pi]. cos(2 * x))",
                     "rule": {
                         "name": "FullSimplify",
@@ -1698,7 +1698,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{6} \\pi ^ {3} - \\frac{1}{4} \\pi + \\frac{1}{4} (\\int_{0}^{2 \\pi} \\frac{1}{2} \\cos{(u)} \\,du)",
+                    "latex_res": "\\frac{1}{6}\\cdot \\pi ^ {3} - \\frac{1}{4}\\cdot \\pi + \\frac{1}{4} (\\int_{0}^{2\\cdot \\pi} \\frac{1}{2} \\cos{(u)} \\,du)",
                     "res": "1/6 * pi ^ 3 - 1/4 * pi + 1/4 * (INT u:[0,2 * pi]. 1/2 * cos(u))",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(2 x\\)",
@@ -1710,7 +1710,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{6} \\pi ^ {3} - \\frac{1}{4} \\pi",
+                    "latex_res": "\\frac{1}{6}\\cdot \\pi ^ {3} - \\frac{1}{4}\\cdot \\pi",
                     "res": "1/6 * pi ^ 3 - 1/4 * pi",
                     "rule": {
                         "name": "FullSimplify",
@@ -1750,7 +1750,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\cos{(1)} e + 1 + (\\int_{0}^{1} \\cos{(u)} e^{u} \\,du)",
+                    "latex_res": "-\\cos{(1)}\\cdot e + 1 + (\\int_{0}^{1} \\cos{(u)} e^{u} \\,du)",
                     "res": "-(cos(1) * exp(1)) + 1 + (INT u:[0,1]. cos(u) * exp(u))",
                     "rule": {
                         "name": "FullSimplify",
@@ -1759,7 +1759,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\cos{(1)} e + 1 + ((\\left. e^{u} \\sin{(u)} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} e^{u} \\sin{(u)} \\,du))",
+                    "latex_res": "-\\cos{(1)}\\cdot e + 1 + ((\\left. e^{u} \\sin{(u)} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} e^{u} \\sin{(u)} \\,du))",
                     "res": "-(cos(1) * exp(1)) + 1 + (([exp(u) * sin(u)]_u=0,1) - (INT u:[0,1]. exp(u) * sin(u)))",
                     "rule": {
                         "latex_str": "integrate by parts \\(u \\to e^{u}, v \\to \\sin{(u)}\\)",
@@ -1771,7 +1771,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\cos{(1)} e + e \\sin{(1)} + 1 - (\\int_{0}^{1} e^{u} \\sin{(u)} \\,du)",
+                    "latex_res": "-\\cos{(1)}\\cdot e + e\\cdot \\sin{(1)} + 1 - (\\int_{0}^{1} e^{u} \\sin{(u)} \\,du)",
                     "res": "-(cos(1) * exp(1)) + exp(1) * sin(1) + 1 - (INT u:[0,1]. exp(u) * sin(u))",
                     "rule": {
                         "name": "FullSimplify",
@@ -1780,7 +1780,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{2} \\cos{(1)} e + \\frac{1}{2} e \\sin{(1)} + \\frac{1}{2}",
+                    "latex_res": "-\\frac{1}{2}\\cdot \\cos{(1)}\\cdot e + \\frac{1}{2}\\cdot e\\cdot \\sin{(1)} + \\frac{1}{2}",
                     "res": "-1/2 * cos(1) * exp(1) + 1/2 * exp(1) * sin(1) + 1/2",
                     "rule": {
                         "lhs": "INT u:[0,1]. exp(u) * sin(u)",
@@ -1839,7 +1839,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-2 e^{-1} + 2",
+                    "latex_res": "-2\\cdot e^{-1} + 2",
                     "res": "-2 * exp(-1) + 2",
                     "rule": {
                         "name": "FullSimplify",

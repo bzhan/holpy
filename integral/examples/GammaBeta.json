@@ -334,7 +334,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{3} \\Gamma{(\\frac{1}{3})}",
+                    "latex_res": "\\frac{1}{3}\\cdot \\Gamma{(\\frac{1}{3})}",
                     "res": "1/3 * Gamma(1/3)",
                     "rule": {
                         "eq": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",

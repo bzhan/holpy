@@ -111,7 +111,12 @@ class FuncDef(StateItem):
         return [self.eq]
 
 class Assumption(StateItem):
+    """
+    introduce assumption assisting proof
+    """
     def __init__(self, assumption:Expr, conds:Conditions = None):
+        '''assumption usually is an equation and
+        conds represents the conditions under which the assumption holds'''
         self.assumption = conditions.replaceByConds(assumption, conds)
         self.conds = conds
 
@@ -171,7 +176,7 @@ class Goal(StateItem):
         return res
 
     def proof_by_rewrite_goal(self, *, begin):
-        self.proof = RewriteGoalProof(self.goal, begin = begin, conds = self.conds)
+        self.proof = RewriteGoalProof(self.goal, begin=begin, conds=self.conds)
         return self.proof
 
     def proof_by_calculation(self):
@@ -365,7 +370,6 @@ class CalculationProof(StateItem):
         else:
             raise AssertionError("get_by_label: invalid label")
 
-
 class InductionProof(StateItem):
     """Proof for an equation by induction on natural numbers.
     
@@ -445,6 +449,7 @@ class InductionProof(StateItem):
             raise AssertionError("get_by_label: invalid label")
 
 class CaseProof(StateItem):
+    '''proof an equation by cases'''
     def __init__(self, goal: Expr, *, conds1: Optional[Conditions], conds2: Optional[Conditions]):
         if not goal.is_equals():
             print(str(goal))
@@ -499,6 +504,10 @@ class CaseProof(StateItem):
             raise AssertionError("get_by_label: invalid label")
 
 class RewriteGoalProof(StateItem):
+    '''
+    proof an equation by rewrting equation,
+    transform from a initial equation into goal using rules on both side.
+    '''
     def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None, begin:Goal):
         assert begin.is_finished()
         if not goal.is_equals():
@@ -525,9 +534,9 @@ class RewriteGoalProof(StateItem):
 
     def __str__(self):
         if self.is_finished():
-            res = "Proof by calculation (finished)\n"
+            res = "Proof by rewriting equation (finished)\n"
         else:
-            res = "Proof by calculation\n"
+            res = "Proof by rewriting equation\n"
 
         res += str(self.begin)
         return res
@@ -613,9 +622,11 @@ class CompFile:
     def add_goal(self, goal: Goal):
         """Add a goal."""
         self.content.append(goal)
+
     def add_assumption(self, assume: Assumption):
         """Add a assumption"""
         self.content.append(assume)
+
     def export(self):
         self.name = self.name
         return {

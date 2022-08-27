@@ -154,8 +154,7 @@ class ExprTransformer(Transformer):
     
     def trig_expr(self, e):
         e.selected = True
-        # reset trig_identity
-        expr.trig_identity = []
+        expr.trig_identity = list()
         expr.trig_identity.append(e)
         return e
 

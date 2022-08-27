@@ -84,6 +84,8 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                     # If left side is a fraction, add dot to reduce ambiguity
                     return "%s\\cdot %s" % (sx, sy)
                 elif x.is_constant() and y.is_constant():
+                    if y.is_fun() and y.func_name == 'sqrt' or y.is_power() and y.args[1].is_const() and y.args[1].val==(1/2):
+                        return "%s %s"%(sx, sy)
                     # 2*1 = 2· 1
                     return "%s\\cdot %s" % (sx, sy)
                 elif y.is_constant() and not x.is_constant():

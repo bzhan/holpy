@@ -400,6 +400,7 @@ class Expr:
         return self.ty == OP and self.op == '='
 
     def is_v_equals(self):
+        # for example b = 0 , x =f pi/2 +3
         return self.is_equals() and self.args[0].is_var() and self.args[1].is_constant()
 
     def is_not_equals(self):
@@ -2000,7 +2001,7 @@ class SkolemConst(Expr):
 
         else:
             res = []
-            for v in self.dependent_vars:
+            for v in sorted(list(self.dependent_vars)):
                 res.append(str(v))
             return self.name + "(" + ", ".join(res) +")"
 
