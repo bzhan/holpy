@@ -208,29 +208,6 @@ class RulesTest(unittest.TestCase):
         e = parse_expr("INT x:[0, pi]. sin(x) ^ 3")
         e.body = rules.Equation(parse_expr("sin(x) ^ 2 * sin(x)")).eval(e.body)
         self.assertEqual(e, parse_expr("INT x:[0, pi]. sin(x) ^ 2 * sin(x)"))
-    def testEquation2(self):
-        e = "pi * b ^ (-m - 3/2) * (1 + 1) ^ (-2 * m - 3) * binom(2 * m + 2,m + 1)"
-        old_expr = "2"
-        new_expr = "1 + 1"
-        (e,old_expr,new_expr) = (parse_expr(item) for item in (e,old_expr,new_expr))
-        print("\n")
-        print(e)
-        print(old_expr)
-        print(new_expr)
-        e = rules.Equation(new_expr=new_expr,old_expr=old_expr).eval(e)
-        print(e)
-        # e = rules.Equation(new_expr=new_expr, old_expr=old_expr).eval(e)
-        # print(e)
-
-    def testEquation3(self):
-        e = "pi * b ^ (-m - 3/2) * (1 + 1) ^ (-2 * m - 3) * binom(2 * m + 2,m + 1)"
-        old_expr = "2"
-        new_expr = "1 + 1"
-        (e, old_expr, new_expr) = (parse_expr(item) for item in (e, old_expr, new_expr))
-        loc = '1.0.0.0'
-        e = rules.OnLocation(rules.Equation(new_expr=new_expr, old_expr=old_expr), loc).eval(e)
-        print("\n")
-        print(e)
 
     def testSubstitutionInverse(self):
         e = parse_expr("INT x:[0, sqrt(2)]. sqrt(2 - x^2)")
