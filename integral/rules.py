@@ -120,6 +120,8 @@ class Linearity(Rule):
                                 functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
                 else:
                     return e
+            elif e.body.is_uminus():
+                return -IndefiniteIntegral(e.var, e.body.args[0])
             else:
                 return e
         elif e.is_limit():
@@ -344,6 +346,8 @@ class OnSubterm(Rule):
                 self.eval(e.body, conds=conds)), conds=conds)
         elif e.ty == expr.LIMIT:
             return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, conds=conds)), conds=conds)
+        elif e.ty == expr.INDEFINITEINTEGRAL:
+            return rule.eval(expr.IndefiniteIntegral(e.var, rule.eval(e.body)))
         else:
             raise NotImplementedError
 
@@ -536,6 +540,8 @@ class ReduceTrivLimit(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         if not e.is_limit():
             return e
+        if Var(e.var) not in e.body.findVar():
+            return e.body
         if e.lim in (POS_INF, NEG_INF):
             return e
 
@@ -693,6 +699,8 @@ class ApplyEquation(Rule):
                 return res
             elif self.eq.lhs.is_plus() and self.eq.lhs.args[0].normalize() == e.normalize():
                 return self.eq.rhs - self.eq.lhs.args[1]
+            elif self.eq.rhs.is_minus() and self.eq.rhs.args[0] == e:
+                return self.eq.lhs + self.eq.rhs.args[1]
             else:
                 return e
         else:
@@ -2614,20 +2622,24 @@ class FoldDefinition(Rule):
 
 class IntegralEquation(Rule):
     '''
-        D x. a(x,y) + b(x,z) = 0
-        -> a(x,y)+ b(x,z) = a(x0,y0) + b(x0,z0)
+        Integrate both side of an equation using some variable
+        such as expression: D b. I(b) = -1/b^2, we integrate both side using var b,
+        then we get a new expression: I(b) = INT x. -1/b^2
     '''
-    def __init__(self, mapping:dict):
+    def __init__(self, *, var):
         self.name = "integral both side"
-        self.mapping = mapping
+        self.var = var
     def eval(self, e:Expr, conds = None):
         assert e.is_equals()
-        assert e.lhs.is_deriv()
-        assert e.rhs.normalize() == Const(0)
-        tmp = e.lhs.body
-        for a,b in self.mapping.items():
-            tmp = tmp.replace(Var(a), expr.parser.parse_expr(b))
-        return Op('=', e.lhs.body, tmp.normalize())
+        # assert e.lhs.is_deriv()
+        # assert e.rhs.normalize() == Const(0)
+        if e.lhs.is_deriv() and e.rhs.normalize() == Const(0):
+            # return Op('=', e.lhs.body, tmp.normalize())
+            raise NotImplementedError
+        elif e.lhs.is_deriv():
+            return Op('=', e.lhs.body, IndefiniteIntegral(self.var, e.rhs))
+        else:
+            raise NotImplementedError
 
     def __str__(self):
         return "IntegralEquation"
@@ -2736,6 +2748,48 @@ class RewriteLog(Rule):
                     return OnLocation(self, loc).eval(e);
 
         return e
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class RewriteSkolemConst(Rule):
+    def __init__(self, rule:str):
+        self.name = "RewriteSkolemConst"
+        self.rule = rule
+
+    def __str__(self):
+        return "RewriteSkolemConst"
+
+    def eval(self, e:Expr, conds = None):
+        # assert
+        if self.rule == 'uminus':
+            return -e
+        else:
+            raise NotImplementedError
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class LimitEquation(Rule):
+    def __init__(self, var:str, lim:Expr):
+        self.name = "LimitEquation"
+        self.var = var
+        self.lim = lim
+
+    def __str__(self):
+        return "RewriteSkolemConst"
+
+    def eval(self, e:Expr, conds = None):
+        v, lim = self.var, self.lim
+        lim1 = Limit(v, lim, e.lhs)
+        lim2 = Limit(v, lim, e.rhs)
+        return Op('=', lim1, lim2)
 
     def export(self):
         return {

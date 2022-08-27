@@ -590,56 +590,96 @@ class IntegralTest(unittest.TestCase):
         Idef = compstate.FuncDef(e, conds=conds)
         file.add_definition(Idef)
 
-        e = parser.parse_expr("INT x:[0,oo]. exp(-(b * x)) * sin(x) = 1/(b^2+1)") # for b > 0
+        e = parser.parse_expr("I(0) = C")
+        conds_of_assume1 = compstate.Conditions()
+        e2 = parser.parse_expr("is_const(C)")
+        conds_of_assume1.add_condition(str(e2), e2)
+        assume1 = compstate.Assumption(e, conds_of_assume1)
 
-        e = parser.parse_expr("(D b. I(b)) = -1/(b^2+1)")
-        cond3 = conditions.Conditions()
+        e = parser.parse_expr("(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1/(b^2+1)")  # for b > 0
+        conds_of_assume2 = compstate.Conditions()
         e2 = parser.parse_expr("b>0")
-        cond3.add_condition(str(e2), e2)
-        goal0 = compstate.Goal(e, cond3)
-        file.add_goal(goal0)
-        proof = goal0.proof_by_calculation()
+        conds_of_assume2.add_condition(str(e2), e2)
+        assume2 = compstate.Assumption(e, conds_of_assume2)
+
+        e = parser.parse_expr("(LIM {b -> oo}. INT x:[0,oo]. x ^ -1 * exp(-(b * x)) * sin(x)) = 0")
+        assume3 = compstate.Assumption(e)
+
+        # goal: D b. I(b) = -1/(b^2+1)
+        e = parser.parse_expr("(D b. I(b)) = -1/(b^2+1)")
+        conds_of_goal1 = conditions.Conditions()
+        e2 = parser.parse_expr("b>0")
+        conds_of_goal1.add_condition(str(e2), e2)
+        goal1 = compstate.Goal(e, conds_of_goal1)
+        file.add_goal(goal1)
+        proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.DerivIntExchange())
         calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(assume2.assumption), '0'))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
 
+
+        # goal: I(0) = INT x:[0, oo]. sin(x) / x
         e = parser.parse_expr("I(0) = INT x:[0, oo]. sin(x) / x")
-        goal1 = compstate.Goal(e, conds=conds)
-        file.add_compstate(goal1)
-
-        proof = goal1.proof_by_calculation()
+        conds_of_goal2 = conditions.Conditions()
+        goal2 = compstate.Goal(e, conds=conds_of_goal2)
+        file.add_compstate(goal2)
+        proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
+        # need to check whether 0 is satisfied the condition of b
         calc.perform_rule(rules.ExpandDefinition(Idef.eq))
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        e = parser.parse_expr("I(0) = C")
-        conds2 = compstate.Conditions()
-        e2 = parser.parse_expr("is_const(C)")
-        conds2.add_condition(str(e2), e2)
-        assume = compstate.Assumption(e, conds2)
-
+        # goal: I(b) = -atan(b) + C for C is some constant
         e = parser.parse_expr("I(b) = -atan(b) + C")
         e2 = parser.parse_expr("is_const(C)")
-        conds.add_condition(str(e2), e2)
-        goal2 = compstate.Goal(e, conds=conds)
-        file.add_goal(goal2)
+        conds_of_goal3 = conditions.Conditions()
+        conds_of_goal3.add_condition(str(e2), e2)
+        e2 = parser.parse_expr("b>=0")
+        conds_of_goal3.add_condition(str(e2), e2)            
+        goal3 = compstate.Goal(e, conds=conds_of_goal3)
+        file.add_goal(goal3)
         cond_str = "b=0"
-        proof = goal2.proof_by_case(cond_str)
+        proof = goal3.proof_by_case(cond_str)
         case_1_proof = proof.case_1.proof_by_calculation()
-        case_2_proof = proof.case_2.proof_by_calculation()
         calc = case_1_proof.lhs_calc
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.ApplyEquation(assume.assumption))
-        print(type(calc.last_expr))
+        calc.perform_rule(rules.ApplyEquation(assume1.assumption))
         calc = case_1_proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        print(type(calc.last_expr))
+        case_2_proof = proof.case_2.proof_by_rewrite_goal(begin=goal1)
+        calc = case_2_proof.begin
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegralEquation(var='b'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral('C'), '1.0'))
+        calc.perform_rule(rules.OnLocation(rules.RewriteSkolemConst('uminus'), '1.0.1'))
+        calc.perform_rule(rules.FullSimplify())
 
-        calc = case_2_proof.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        e = parser.parse_expr("0 = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi")
+        conds_of_goal4 = conditions.Conditions()
+        goal4 = compstate.Goal(e, conds=conds_of_goal4)
+        file.add_goal(goal4)
+        proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
+        calc = proof_of_goal4.begin
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(assume1.assumption), '1.1'))
+        calc.perform_rule(rules.LimitEquation(var='b', lim=expr.POS_INF))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(assume3.assumption), '0'))
 
+        e = parser.parse_expr("(INT x:[0,oo]. x ^ -1 * sin(x)) = 1/2 * pi")
+        goal5 = compstate.Goal(e)
+        file.add_goal(goal5)
+        proof_of_goal5 = goal5.proof_by_calculation()
+        calc = proof_of_goal5.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal4.goal))
+        calc.perform_rule(rules.FullSimplify())
 
         print(file)
         # # Test goals are finished

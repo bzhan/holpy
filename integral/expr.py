@@ -230,7 +230,7 @@ class Expr:
             return 1 + self.lower.size() + self.upper.size() + self.body.size()
         elif self.ty == LIMIT:
             return 1 + self.lim.size() + self.body.size()
-        elif self.ty == DIFFERENTIAL:
+        elif self.ty in (DIFFERENTIAL, INDEFINITEINTEGRAL):
             return 1 + self.body.size()
         else:
             raise NotImplementedError
@@ -1182,6 +1182,8 @@ class Expr:
         def findv(e, v):
             if e.ty == VAR:
                 v.append(e)
+            elif e.ty in (CONST, INF):
+                return
             elif e.ty == FUN:
                 for arg in e.args:
                     findv(arg, v)
@@ -1190,6 +1192,13 @@ class Expr:
                     findv(arg, v)
             elif e.ty == DERIV:
                 findv(e.body, v)
+            elif e.ty == INTEGRAL:
+                findv(e.body, v)
+                findv(e.upper, v)
+                findv(e.lower, v)
+            else:
+                print(e)
+                raise NotImplementedError
         findv(self, v)
         return v
 
@@ -2110,7 +2119,7 @@ class IndefiniteIntegral(Expr):
     def alpha_convert(self, new_name):
         """Change the variable of integration to new_name."""
         assert isinstance(new_name, str), "alpha_convert"
-        return Integral(new_name, self.body.subst(self.var, Var(new_name)))
+        return IndefiniteIntegral(new_name, self.body.subst(self.var, Var(new_name)))
 
 
 class Integral(Expr):

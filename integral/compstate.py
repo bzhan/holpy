@@ -118,15 +118,13 @@ class Assumption(StateItem):
 
 class Goal(StateItem):
     """Goal to be proved."""
-    def __init__(self, goal: Expr, conds: Optional[Conditions] = None, start = None):
+    def __init__(self, goal: Expr, conds: Optional[Conditions] = None):
 
         self.goal = conditions.replaceByConds(goal, conds)
         if conds is None:
             conds = Conditions()
         self.conds = conds
         self.proof = None
-        # for proving equation goal
-        self.start = start
 
     def __str__(self):
         if self.is_finished():
@@ -160,8 +158,8 @@ class Goal(StateItem):
             res['conds'] = self.conds.export()
         return res
 
-    def proof_by_rewrite_goal(self):
-        self.proof = RewriteGoalProof(self.goal, begin = self.start, conds = self.conds)
+    def proof_by_rewrite_goal(self, *, begin):
+        self.proof = RewriteGoalProof(self.goal, begin = begin, conds = self.conds)
         return self.proof
 
     def proof_by_calculation(self):
@@ -233,17 +231,18 @@ class Calculation(StateItem):
         is carried out.
 
     """
-    def __init__(self, start: Expr, *, conds: Optional[Conditions] = None):
+    def __init__(self, start: Expr, connection_symbol = '=', *, conds: Optional[Conditions] = None):
         self.start = start
         self.steps = []
         if conds is None:
             conds = Conditions()
         self.conds = conds
+        self.connection_symbol = connection_symbol
 
     def __str__(self):
         res = "  " + str(self.start) + "\n"
         for step in self.steps:
-            res += "= %s\n" % step
+            res += self.connection_symbol + " %s\n" % step
         return res
 
     def export(self):
@@ -488,7 +487,7 @@ class CaseProof(StateItem):
             raise AssertionError("get_by_label: invalid label")
 
 class RewriteGoalProof(StateItem):
-    def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None, begin:Goal = None):
+    def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None, begin:Goal):
         assert begin.is_finished()
         if not goal.is_equals():
             raise AssertionError("RewriteGoalProof: goal is not an equality.")
@@ -496,7 +495,7 @@ class RewriteGoalProof(StateItem):
         if conds is None:
             conds = Conditions()
         self.conds = conds
-        self.begin = Calculation(begin.goal, conds=self.conds)
+        self.begin = Calculation(begin.goal, conds=self.conds, connection_symbol = '==>')
 
     def is_finished(self):
         f1 = self.begin.last_expr.lhs.normalize() == self.goal.lhs.normalize()
