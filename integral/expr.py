@@ -2403,4 +2403,5 @@ def eval_expr(e: Expr):
 def neg_expr(ex:Expr):
     if ex.is_op() and ex.op == '=':
         return Op('!=', *ex.args)
-    return None
+    else:
+        raise NotImplementedError
