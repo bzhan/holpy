@@ -120,6 +120,8 @@ class Linearity(Rule):
                                 functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
                 else:
                     return e
+            elif e.body.is_uminus():
+                return -IndefiniteIntegral(e.var, e.body.args[0])
             else:
                 return e
         elif e.is_limit():
@@ -203,6 +205,52 @@ class CommonIntegral(Rule):
 
         return e
 
+class CommonIndefiniteIntegral(Rule):
+
+    def __init__(self, const_name):
+        self.name = "CommonIndefiniteIntegral"
+        self.const_name = const_name
+
+    def __str__(self):
+        return "common indefinite integrals"
+
+    def eval(self, e:Expr, conds=None) -> Expr:
+        if e.ty != INDEFINITEINTEGRAL:
+            return e
+        C = expr.SkolemConst(self.const_name, *expr.SkolemConst.find_free(e.var, e.body))
+        v = Var(e.var)
+        if (e.body.is_constant() or v not in e.body.findVar()) and e.body != Const(1):
+            return e.body * Var(e.var) + C
+
+        x = Var(e.var)
+        c = Symbol('c', [CONST])
+        rules = [
+            (Const(1), None, Var(e.var)),
+            (c, None, c * Var(e.var)),
+            (x, None, (x ^ 2) / 2),
+            (x ^ c, lambda m: m[c].val != -1, lambda m: (x ^ Const(m[c].val + 1)) / (Const(m[c].val + 1))),
+            (Const(1) / x ^ c, lambda m: m[c].val != 1, (-c) / (x ^ (c + 1))),
+            (expr.sqrt(x), None, Fraction(2, 3) * (x ^ Fraction(3, 2))),
+            (sin(x), None, -cos(x)),
+            (cos(x), None, sin(x)),
+            (expr.exp(x), None, expr.exp(x)),
+            (Const(1) / x, None, expr.log(expr.Fun('abs', x))),
+            (x ^ Const(-1), None, expr.log(expr.Fun('abs', x))),
+            (((x ^ Const(2)) + 1) ^ Const(-1), None, expr.arctan(x)),
+            (expr.sec(x) ^ Const(2), None, expr.tan(x)),
+            (expr.csc(x) ^ Const(2), None, -expr.cot(x)),
+        ]
+
+        for pat, cond, pat_res in rules:
+            mapping = expr.match(e.body, pat)
+            if mapping is not None and (cond is None or cond(mapping)):
+                if isinstance(pat_res, expr.Expr):
+                    integral = pat_res.inst_pat(mapping)
+                else:
+                    integral = pat_res(mapping)
+                return integral + C
+        return e
+
 
 class DerivativeSimplify(Rule):
     """Simplify the derivative of an expression"""
@@ -278,7 +326,7 @@ class OnSubterm(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         rule = self.rule
-        if e.ty in (expr.VAR, expr.CONST, expr.INF):
+        if e.ty in (expr.VAR, expr.CONST, expr.INF, expr.SKOLEMCONST):
             return rule.eval(e, conds=conds)
         elif e.ty == expr.OP:
             args = [self.eval(arg, conds=conds) for arg in e.args]
@@ -298,6 +346,8 @@ class OnSubterm(Rule):
                 self.eval(e.body, conds=conds)), conds=conds)
         elif e.ty == expr.LIMIT:
             return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, conds=conds)), conds=conds)
+        elif e.ty == expr.INDEFINITEINTEGRAL:
+            return rule.eval(expr.IndefiniteIntegral(e.var, rule.eval(e.body)))
         else:
             raise NotImplementedError
 
@@ -490,6 +540,8 @@ class ReduceTrivLimit(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         if not e.is_limit():
             return e
+        if Var(e.var) not in e.body.findVar():
+            return e.body
         if e.lim in (POS_INF, NEG_INF):
             return e
 
@@ -533,6 +585,9 @@ class FullSimplify(Rule):
         current = e
         while True:
             s = OnSubterm(Linearity()).eval(current, conds)
+            for a, b in conds.data.items():
+                if b.is_v_equals():
+                    s = s.subst(str(b.args[0]), b.args[1])
             s = OnSubterm(CommonIntegral()).eval(s, conds)
             s = Simplify().eval(s, conds)
             s = OnSubterm(DerivativeSimplify()).eval(s, conds)
@@ -549,7 +604,6 @@ class FullSimplify(Rule):
             if counter > 5:
                 raise AssertionError("Loop in FullSimplify")
         return current
-
 
 class ApplyEquation(Rule):
     """Apply the given equation to for rewriting.
@@ -644,6 +698,8 @@ class ApplyEquation(Rule):
                 return res
             elif self.eq.lhs.is_plus() and self.eq.lhs.args[0].normalize() == e.normalize():
                 return self.eq.rhs - self.eq.lhs.args[1]
+            elif self.eq.rhs.is_minus() and self.eq.rhs.args[0] == e:
+                return self.eq.lhs + self.eq.rhs.args[1]
             else:
                 return e
         else:
@@ -652,6 +708,43 @@ class ApplyEquation(Rule):
             for var, e2 in self.subMap.items():
                 new_eq = new_eq.subst(var, e2)
             return ApplyEquation(new_eq).eval(e)
+
+class ApplyAssumption(Rule):
+    """Apply assumption"""
+
+    def __init__(self, assumption: Expr, conds: Conditions):
+        self.name = "ApplyAssumption"
+        self.assumption = assumption
+        self.conds = conds
+
+    def __str__(self):
+        return "apply assumption"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self),
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        # if assumption holds under this expression
+        # then apply assumption
+        flag = False if conds != None else True
+        if not flag:
+            items = self.conds.data.items()
+            for k, v in conds.data.items():
+                if (k,v) in items:
+                    flag = True
+                    break
+                if v.op == '>':
+                    e1, e2 = Op('>=', *v.args), Op('!=', *v.args)
+                    if (str(e1), e1) in items and (str(e2), e2) in items:
+                        flag =True;
+                        break
+        if not flag:
+            return e
+        rule = ApplyEquation(self.assumption)
+        return rule.eval(e, conds)
 
 
 class ApplyInductHyp(Rule):
@@ -2565,20 +2658,24 @@ class FoldDefinition(Rule):
 
 class IntegralEquation(Rule):
     '''
-        D x. a(x,y) + b(x,z) = 0
-        -> a(x,y)+ b(x,z) = a(x0,y0) + b(x0,z0)
+        Integrate both side of an equation using some variable
+        such as expression: D b. I(b) = -1/b^2, we integrate both side using var b,
+        then we get a new expression: I(b) = INT x. -1/b^2
     '''
-    def __init__(self, mapping:dict):
+    def __init__(self, *, var):
         self.name = "integral both side"
-        self.mapping = mapping
+        self.var = var
     def eval(self, e:Expr, conds = None):
         assert e.is_equals()
-        assert e.lhs.is_deriv()
-        assert e.rhs.normalize() == Const(0)
-        tmp = e.lhs.body
-        for a,b in self.mapping.items():
-            tmp = tmp.replace(Var(a), expr.parser.parse_expr(b))
-        return Op('=', e.lhs.body, tmp.normalize())
+        # assert e.lhs.is_deriv()
+        # assert e.rhs.normalize() == Const(0)
+        if e.lhs.is_deriv() and e.rhs.normalize() == Const(0):
+            # return Op('=', e.lhs.body, tmp.normalize())
+            raise NotImplementedError
+        elif e.lhs.is_deriv():
+            return Op('=', e.lhs.body, IndefiniteIntegral(self.var, e.rhs))
+        else:
+            raise NotImplementedError
 
     def __str__(self):
         return "IntegralEquation"
@@ -2687,6 +2784,48 @@ class RewriteLog(Rule):
                     return OnLocation(self, loc).eval(e);
 
         return e
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class RewriteSkolemConst(Rule):
+    def __init__(self, rule:str):
+        self.name = "RewriteSkolemConst"
+        self.rule = rule
+
+    def __str__(self):
+        return "RewriteSkolemConst"
+
+    def eval(self, e:Expr, conds = None):
+        # assert
+        if self.rule == 'uminus':
+            return -e
+        else:
+            raise NotImplementedError
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class LimitEquation(Rule):
+    def __init__(self, var:str, lim:Expr):
+        self.name = "LimitEquation"
+        self.var = var
+        self.lim = lim
+
+    def __str__(self):
+        return "RewriteSkolemConst"
+
+    def eval(self, e:Expr, conds = None):
+        v, lim = self.var, self.lim
+        lim1 = Limit(v, lim, e.lhs)
+        lim2 = Limit(v, lim, e.rhs)
+        return Op('=', lim1, lim2)
 
     def export(self):
         return {

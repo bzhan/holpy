@@ -1,6 +1,6 @@
 import unittest
 
-from integral import latex
+from integral import latex, expr
 from integral.parser import parse_expr
 
 
@@ -33,6 +33,20 @@ class LatexTest(unittest.TestCase):
             e = parse_expr(e)
             self.assertEqual(latex.convert_expr(e), res)
 
+    def testTrigExpr(self):
+        s1 = "exp^$2$ + 2"
+        s2 = "2"
+        e = parse_expr(s1)
+        self.assertEqual(str(expr.trig_identity[0]), s2)
+        self.assertEqual(e.args[0].args[1].selected, True)
+
+    def testTrigExpr2(self):
+        s1 = "log($x^2$ + y) + z"
+        s2 = "x ^ 2"
+        e = parse_expr(s1)
+        self.assertEqual(str(expr.trig_identity[0]), s2)
+        self.assertEqual(hasattr(e.args[0].args[0].args[1], 'selected'), False)
+        self.assertEqual(hasattr(e.args[0].args[0].args[0], 'selected'), True)
 
 if __name__ == "__main__":
     unittest.main()

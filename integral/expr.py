@@ -22,10 +22,11 @@ real_derivative = term.Const('real_derivative', TFun(TFun(RealType, RealType), R
 real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(RealType, RealType), RealType))
 
 
-VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF, INDEFINITEINTEGRAL, DIFFERENTIAL = range(12)
+VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF, INDEFINITEINTEGRAL, DIFFERENTIAL,\
+    SKOLEMCONST= range(13)
 
 op_priority = {
-    "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50, "<": 50, ">": 50, "<=": 50, ">=": 50
+    "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50, "<": 50, ">": 50, "<=": 50, ">=": 50, "!=":50
 }
 
 trig_identity = []
@@ -219,7 +220,7 @@ class Expr:
         return Op("-", self)
 
     def size(self):
-        if self.ty in (VAR, CONST, SYMBOL, INF):
+        if self.ty in (VAR, CONST, SYMBOL, INF, SKOLEMCONST):
             return 1
         elif self.ty in (OP, FUN):
             return 1 + sum(arg.size() for arg in self.args)
@@ -229,7 +230,7 @@ class Expr:
             return 1 + self.lower.size() + self.upper.size() + self.body.size()
         elif self.ty == LIMIT:
             return 1 + self.lim.size() + self.body.size()
-        elif self.ty == DIFFERENTIAL:
+        elif self.ty in (DIFFERENTIAL, INDEFINITEINTEGRAL):
             return 1 + self.body.size()
         else:
             raise NotImplementedError
@@ -398,6 +399,10 @@ class Expr:
     def is_equals(self):
         return self.ty == OP and self.op == '='
 
+    def is_v_equals(self):
+        # for example b = 0 , x =f pi/2 +3
+        return self.is_equals() and self.args[0].is_var() and self.args[1].is_constant()
+
     def is_not_equals(self):
         return self.ty == OP and self.op == "!="
 
@@ -480,7 +485,7 @@ class Expr:
         return not self < other
 
     def priority(self):
-        if self.ty in (VAR, SYMBOL, INF):
+        if self.ty in (VAR, SYMBOL, INF, SKOLEMCONST):
             return 100
         elif self.ty == CONST:
             if isinstance(self.val, Fraction) and self.val.denominator != 1:
@@ -635,6 +640,8 @@ class Expr:
                 return self
         elif self.ty == CONST:
             return self
+        elif self.ty == SKOLEMCONST:
+            return self
         elif self.ty == SYMBOL:
             return self
         elif self.ty == OP:
@@ -675,7 +682,7 @@ class Expr:
             if t.ty == VAR:
                 if t.name not in bd_vars:
                     res.add(t.name)
-            elif t.ty in (CONST, INF):
+            elif t.ty in (CONST, INF, SKOLEMCONST):
                 return
             elif t.ty in (OP, FUN):
                 for arg in t.args:
@@ -707,7 +714,7 @@ class Expr:
         assert isinstance(e, Expr) and isinstance(repl_e, Expr)
         if self == e:
             return repl_e
-        elif self.ty in (VAR, CONST, INF):
+        elif self.ty in (VAR, CONST, INF, SKOLEMCONST):
             return self
         elif self.ty == OP:
             return Op(self.op, *[arg.replace(e, repl_e) for arg in self.args])
@@ -1176,6 +1183,8 @@ class Expr:
         def findv(e, v):
             if e.ty == VAR:
                 v.append(e)
+            elif e.ty in (CONST, INF, SKOLEMCONST):
+                return
             elif e.ty == FUN:
                 for arg in e.args:
                     findv(arg, v)
@@ -1184,6 +1193,13 @@ class Expr:
                     findv(arg, v)
             elif e.ty == DERIV:
                 findv(e.body, v)
+            elif e.ty == INTEGRAL:
+                findv(e.body, v)
+                findv(e.upper, v)
+                findv(e.lower, v)
+            else:
+                print(e)
+                raise NotImplementedError
         findv(self, v)
         return v
 
@@ -1307,7 +1323,7 @@ class Expr:
 
     def inst_pat(self, mapping: Dict) -> Expr:
         """Instantiate by replacing symbols in term with mapping."""
-        if self.ty in (VAR, CONST, INF):
+        if self.ty in (VAR, CONST, INF, SKOLEMCONST):
             return self
         elif self.ty == SYMBOL:
             assert self in mapping, "inst_pat: %s not found" % self.name
@@ -1331,7 +1347,7 @@ class Expr:
         """Check if var occurs in self"""
         assert isinstance(var, Expr) and var.ty == VAR, \
                         "%s is not a var" % var
-        if self.ty in (VAR, CONST):
+        if self.ty in (VAR, CONST, SKOLEMCONST):
             return self == var
         elif self.ty in (OP, FUN):
             return any(subexpr.has_var(var) for subexpr in self.args)
@@ -1970,6 +1986,36 @@ class Differential(Expr):
     def __repr__(self):
         return "Differential(%s)" % repr(self.body)
 
+class SkolemConst(Expr):
+
+    def __init__(self, name, *dep_vars):
+        self.ty = SKOLEMCONST
+        self.name = name
+        self.dependent_vars = set(dep_vars)
+
+    def __eq__(self, other):
+        return self.ty == other.ty and self.dependent_vars == other.dependent_vars and self.name==other.name
+    def __str__(self):
+        if self.dependent_vars == set():
+            return self.name
+
+        else:
+            res = []
+            for v in sorted(list(self.dependent_vars)):
+                res.append(str(v))
+            return self.name + "(" + ", ".join(res) +")"
+
+    def find_free(var:str, ex:Expr):
+        res = set(ex.findVar())
+        if Var(var) in res:
+            res.remove(Var(var))
+        return res
+    def __hash__(self):
+        return hash((self.name, *list(self.dependent_vars), self.ty))
+
+
+
+
 NEG_INF = Inf(Decimal('-inf'))
 POS_INF = Inf(Decimal('inf'))
 ZERO = Const(0)
@@ -2074,7 +2120,7 @@ class IndefiniteIntegral(Expr):
     def alpha_convert(self, new_name):
         """Change the variable of integration to new_name."""
         assert isinstance(new_name, str), "alpha_convert"
-        return Integral(new_name, self.body.subst(self.var, Var(new_name)))
+        return IndefiniteIntegral(new_name, self.body.subst(self.var, Var(new_name)))
 
 
 class Integral(Expr):
@@ -2354,3 +2400,8 @@ def eval_expr(e: Expr):
     return eval_hol_expr(t)
 
 
+def neg_expr(ex:Expr):
+    if ex.is_op() and ex.op == '=':
+        return Op('!=', *ex.args)
+    else:
+        raise NotImplementedError

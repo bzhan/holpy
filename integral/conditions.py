@@ -136,3 +136,19 @@ def is_const(e: Expr, conds: Conditions) -> bool:
     if not contains_const_var(e, conds) and len(e.get_vars())!=0:
         return False
     return True
+
+
+def replaceByConds(ex:Expr, conds:Conditions):
+    if conds == None:
+        return ex
+    # replace is_const(C) with C which is a skolem constant
+    # repalce is_const(C(a,b)) with C which is a skolem constant that depends on a and b
+    for k, v in conds.data.items():
+        if v.is_fun() and v.func_name == 'is_const':
+            if not isinstance(v.args[0], expr.Var) and not isinstance(v.args[0], expr.Fun):
+                raise NotImplementedError
+            name = str(v.args[0]) if v.args[0].is_var() else v.args[0].func_name
+            dep_vars = [] if v.args[0].is_var() else v.args
+            new_c = expr.SkolemConst(name, *dep_vars)
+            ex = ex.replace(v.args[0], new_c)
+    return ex

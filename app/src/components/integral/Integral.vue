@@ -34,7 +34,7 @@
           <b-dropdown-item href="#" v-on:click="applyRule('ExpandPolynomial')">Expand polynomial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('PolynomialDivision')">Polynomial division</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyTheorem">Apply theorem</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="rewriteEquation">Rewrite equation</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewrite equation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('RewriteFactorial')">Factorial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('RewriteBinom')">Binomial coefficients</b-dropdown-item>
@@ -210,11 +210,11 @@
 
 <script>
 import axios from 'axios'
-import MathEquation from '../util/MathEquation'
-import FuncDef from './FuncDef'
-import ExprQuery from './ExprQuery'
-import Goal from "./Goal"
-import Calculation from "./Calculation"
+import MathEquation from '../util/MathEquation.vue'
+import FuncDef from './FuncDef.vue'
+import ExprQuery from './ExprQuery.vue'
+import Goal from "./Goal.vue"
+import Calculation from "./Calculation.vue"
 
 export default {
   name: 'Integral',
@@ -492,7 +492,7 @@ export default {
     selectExpr: async function() {
       const start = this.$refs.select_expr1.selectionStart
       const end = this.$refs.select_expr1.selectionEnd
-      this.selected_expr = this.lastExpr.slice(start, end)
+      this.selected_expr = this.lastExpr.slice(start, end)   
       const data = {
         expr: this.selected_expr
       }
