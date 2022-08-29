@@ -1,6 +1,6 @@
 """State of computation"""
 
-from copy import copy
+import copy
 from typing import Optional, Union
 
 from integral.expr import Expr, Var, Const
@@ -202,12 +202,12 @@ class Goal(StateItem):
         # goal is f(b) = C for b>=0
         # case1: f(b) = C for b>=0 and b=0
         # case2: f(b) = C for b>=0 and b!=0
-        conds1, conds2 = copy(self.conds), copy(self.conds)
+        conds1, conds2 = copy.deepcopy(self.conds), copy.deepcopy(self.conds)
         e1 = parser.parse_expr(cond_str)
         e2 = expr.neg_expr(e1)
         conds1.add_condition(str(e1), e1)
         conds2.add_condition(str(e2), e2)
-        self.proof = CaseProof(self.goal, conds=self.conds, conds1=conds1, conds2=conds2)
+        self.proof = CaseProof(self.goal, split_cond=e1, conds=self.conds, conds1=conds1, conds2=conds2)
         return self.proof
 
     def get_by_label(self, label: Label):
@@ -460,12 +460,14 @@ class InductionProof(StateItem):
 
 class CaseProof(StateItem):
     '''proof an equation by cases'''
-    def __init__(self, goal: Expr, *, conds: Optional[Conditions], conds1: Optional[Conditions], conds2: Optional[Conditions]):
+    def __init__(self, goal: Expr, *, conds: Optional[Conditions], split_cond:Expr, \
+                 conds1: Optional[Conditions], conds2: Optional[Conditions]):
         if not goal.is_equals():
             print(str(goal))
             raise AssertionError("CaseProof: currently only support equation goals.")
         self.goal = goal
         self.conds = conds
+        self.split_cond = split_cond
         self.conds1 = conds1
         self.conds2 = conds2
         # case 1:
@@ -494,6 +496,7 @@ class CaseProof(StateItem):
             "latex_goal": latex.convert_expr(self.goal),
             "case_1": self.case_1.export(),
             "case_2": self.case_2.export(),
+            "split_cond": latex.convert_expr(self.split_cond),
             "finished": self.is_finished()
         }
         if self.conds != None and self.conds.data:

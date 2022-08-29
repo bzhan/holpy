@@ -51,6 +51,7 @@ import MathEquation from '../util/MathEquation.vue'
 import CalculationProof from './CalculationProof.vue'
 import InductionProof from './InductionProof.vue'
 import RewriteGoalProof from './RewriteGoalProof.vue'
+import CaseProof from './CaseProof.vue'
 
 export default {
   name: "Goal",
@@ -58,7 +59,8 @@ export default {
     MathEquation,
     CalculationProof,
     InductionProof,
-    RewriteGoalProof
+    RewriteGoalProof,
+    CaseProof,
   },
 
   props: [
