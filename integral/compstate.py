@@ -133,6 +133,16 @@ class Assumption(StateItem):
         res += "  %s%s\n" % (self.assumption, (" for "+ res2) if self.conds!=None else "")
         return res
 
+    def export(self):
+        res = {
+            "type": "Assumption",
+            "eq": str(self.assumption),
+            "latex_eq": latex.convert_expr(self.assumption)
+        }
+        if self.conds!=None and self.conds.data:
+            res["conds"] = self.conds.export()
+        return res
+
 class Goal(StateItem):
     """Goal to be proved."""
     def __init__(self, goal: Expr, conds: Optional[Conditions] = None):
@@ -197,7 +207,7 @@ class Goal(StateItem):
         e2 = expr.neg_expr(e1)
         conds1.add_condition(str(e1), e1)
         conds2.add_condition(str(e2), e2)
-        self.proof = CaseProof(self.goal, conds1=conds1, conds2=conds2)
+        self.proof = CaseProof(self.goal, conds=self.conds, conds1=conds1, conds2=conds2)
         return self.proof
 
     def get_by_label(self, label: Label):
@@ -450,11 +460,12 @@ class InductionProof(StateItem):
 
 class CaseProof(StateItem):
     '''proof an equation by cases'''
-    def __init__(self, goal: Expr, *, conds1: Optional[Conditions], conds2: Optional[Conditions]):
+    def __init__(self, goal: Expr, *, conds: Optional[Conditions], conds1: Optional[Conditions], conds2: Optional[Conditions]):
         if not goal.is_equals():
             print(str(goal))
             raise AssertionError("CaseProof: currently only support equation goals.")
         self.goal = goal
+        self.conds = conds
         self.conds1 = conds1
         self.conds2 = conds2
         # case 1:
@@ -482,10 +493,10 @@ class CaseProof(StateItem):
             "goal": str(self.goal),
             "latex_goal": latex.convert_expr(self.goal),
             "case_1": self.case_1.export(),
-            "case_2": self.induct_case.export(),
+            "case_2": self.case_2.export(),
             "finished": self.is_finished()
         }
-        if self.conds.data:
+        if self.conds != None and self.conds.data:
             res["conds"] = self.conds.export()
         return res
 

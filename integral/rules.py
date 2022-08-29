@@ -251,6 +251,11 @@ class CommonIndefiniteIntegral(Rule):
                 return integral + C
         return e
 
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
 
 class DerivativeSimplify(Rule):
     """Simplify the derivative of an expression"""
@@ -585,9 +590,10 @@ class FullSimplify(Rule):
         current = e
         while True:
             s = OnSubterm(Linearity()).eval(current, conds)
-            for a, b in conds.data.items():
-                if b.is_v_equals():
-                    s = s.subst(str(b.args[0]), b.args[1])
+            if conds!=None:
+                for a, b in conds.data.items():
+                    if b.is_v_equals():
+                        s = s.subst(str(b.args[0]), b.args[1])
             s = OnSubterm(CommonIntegral()).eval(s, conds)
             s = Simplify().eval(s, conds)
             s = OnSubterm(DerivativeSimplify()).eval(s, conds)
@@ -2819,7 +2825,7 @@ class LimitEquation(Rule):
         self.lim = lim
 
     def __str__(self):
-        return "RewriteSkolemConst"
+        return "LimitEquation"
 
     def eval(self, e:Expr, conds = None):
         v, lim = self.var, self.lim

@@ -164,6 +164,8 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 return "%s \\le %s" % (sx, sy)
             elif e.op == ">=":
                 return "%s \\ge %s" % (sx, sy)
+            elif e.op == "!=":
+                return "%s \\neq %s" % (sx, sy)
             else:
                 raise NotImplementedError
         else:
@@ -199,6 +201,8 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                     return "(%s)!" % sx
             elif e.func_name == 'Gamma':
                 return "\\Gamma{(%s)}" % sx
+            elif e.func_name == 'is_const':
+                return "%s \\ is \\  a \\  const \\  expression" % str(e.args[0])
             else:
                 return "%s{(%s)}" % (e.func_name, sx)
         elif len(e.args) == 2:
@@ -232,5 +236,7 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
     elif e.ty == expr.INDEFINITEINTEGRAL:
         body = convert_expr(e.body, mode)
         return "\\int %s \\,d%s" % (body, e.var)
+    elif e.ty == expr.SKOLEMCONST:
+        return "%s" % str(e)
     else:
         raise NotImplementedError

@@ -684,11 +684,12 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(goal4.goal))
         calc.perform_rule(rules.FullSimplify())
 
-        print(file)
+        # print(file)
         # # Test goals are finished
         for i in range(4, 9):
             self.assertTrue(file.content[i].is_finished())
-        # with open('integral/examples/euler_log_sin.json', 'w', encoding='utf-8') as f:
-        #     json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        path = '../examples/diricheletIntegral.json'
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 if __name__ == "__main__":
     unittest.main()
