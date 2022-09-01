@@ -1,0 +1,616 @@
+{
+    "content": [
+        {
+            "conds": [
+                {
+                    "cond": "b >= 0",
+                    "latex_cond": "b \\ge 0",
+                    "name": "b>=0",
+                    "type": "Condition"
+                }
+            ],
+            "eq": "I(b) = (INT x:[0,oo]. sin(x) / x * exp(-b * x))",
+            "latex_eq": "I{(b)} = \\int_{0}^{\\infty} \\frac{\\sin{(x)}}{x} e^{-b x} \\,dx",
+            "latex_lhs": "I{(b)}",
+            "type": "FuncDef"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "is_const(C)",
+                    "latex_cond": "C \\ is \\  a \\  const \\  expression",
+                    "name": "is_const(C)",
+                    "type": "Condition"
+                }
+            ],
+            "eq": "I(0) = C",
+            "latex_eq": "I{(0)} = C",
+            "type": "Assumption"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0",
+                    "name": "b > 0",
+                    "type": "Condition"
+                }
+            ],
+            "eq": "(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1 / (b ^ 2 + 1)",
+            "latex_eq": "\\int_{0}^{\\infty} e^{-b x} \\sin{(x)} \\,dx = \\frac{1}{b ^ {2} + 1}",
+            "type": "Assumption"
+        },
+        {
+            "eq": "(LIM {b -> oo}. INT x:[0,oo]. x ^ -1 * exp(-(b * x)) * sin(x)) = 0",
+            "latex_eq": "\\lim\\limits_{b\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx = 0",
+            "type": "Assumption"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0",
+                    "name": "b > 0",
+                    "type": "Condition"
+                }
+            ],
+            "finished": true,
+            "goal": "(D b. I(b)) = -1 / (b ^ 2 + 1)",
+            "latex_goal": "\\frac{d}{db} I{(b)} = \\frac{-1}{b ^ {2} + 1}",
+            "proof": {
+                "conds": [
+                    {
+                        "cond": "b > 0",
+                        "latex_cond": "b > 0",
+                        "name": "b > 0",
+                        "type": "Condition"
+                    }
+                ],
+                "finished": true,
+                "goal": "(D b. I(b)) = -1 / (b ^ 2 + 1)",
+                "latex_goal": "\\frac{d}{db} I{(b)} = \\frac{-1}{b ^ {2} + 1}",
+                "lhs_calc": {
+                    "conds": [
+                        {
+                            "cond": "b > 0",
+                            "latex_cond": "b > 0",
+                            "name": "b > 0",
+                            "type": "Condition"
+                        }
+                    ],
+                    "latex_start": "\\frac{d}{db} I{(b)}",
+                    "start": "D b. I(b)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{d}{db} \\int_{0}^{\\infty} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx",
+                            "res": "D b. INT x:[0,oo]. x ^ -1 * exp(-(b * x)) * sin(x)",
+                            "rule": {
+                                "func_def": "I(b) = (INT x:[0,oo]. sin(x) / x * exp(-b * x))",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{db} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx",
+                            "res": "INT x:[0,oo]. D b. x ^ -1 * exp(-(b * x)) * sin(x)",
+                            "rule": {
+                                "name": "DerivIntExchange",
+                                "str": "exchange derivative and integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{\\infty} e^{-b x} \\sin{(x)} \\,dx)",
+                            "res": "-(INT x:[0,oo]. exp(-(b * x)) * sin(x))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{1}{b ^ {2} + 1}",
+                            "res": "-(1 / (b ^ 2 + 1))",
+                            "rule": {
+                                "loc": "0",
+                                "name": "ApplyAssumption",
+                                "str": "apply assumption at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(b ^ {2} + 1) ^ {-1}",
+                            "res": "-((b ^ 2 + 1) ^ -1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "conds": [
+                        {
+                            "cond": "b > 0",
+                            "latex_cond": "b > 0",
+                            "name": "b > 0",
+                            "type": "Condition"
+                        }
+                    ],
+                    "latex_start": "\\frac{-1}{b ^ {2} + 1}",
+                    "start": "-1 / (b ^ 2 + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "-(b ^ {2} + 1) ^ {-1}",
+                            "res": "-((b ^ 2 + 1) ^ -1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "I(0) = (INT x:[0,oo]. sin(x) / x)",
+            "latex_goal": "I{(0)} = \\int_{0}^{\\infty} \\frac{\\sin{(x)}}{x} \\,dx",
+            "proof": {
+                "finished": true,
+                "goal": "I(0) = (INT x:[0,oo]. sin(x) / x)",
+                "latex_goal": "I{(0)} = \\int_{0}^{\\infty} \\frac{\\sin{(x)}}{x} \\,dx",
+                "lhs_calc": {
+                    "latex_start": "I{(0)}",
+                    "start": "I(0)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx",
+                            "res": "INT x:[0,oo]. x ^ -1 * sin(x)",
+                            "rule": {
+                                "func_def": "I(b) = (INT x:[0,oo]. sin(x) / x * exp(-b * x))",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(x)}}{x} \\,dx",
+                    "start": "INT x:[0,oo]. sin(x) / x",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx",
+                            "res": "INT x:[0,oo]. x ^ -1 * sin(x)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "is_const(C)",
+                    "latex_cond": "C \\ is \\  a \\  const \\  expression",
+                    "name": "is_const(C)",
+                    "type": "Condition"
+                },
+                {
+                    "cond": "b >= 0",
+                    "latex_cond": "b \\ge 0",
+                    "name": "b >= 0",
+                    "type": "Condition"
+                }
+            ],
+            "finished": true,
+            "goal": "I(b) = -atan(b) + C",
+            "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
+            "proof": {
+                "case_1": {
+                    "conds": [
+                        {
+                            "cond": "is_const(C)",
+                            "latex_cond": "C \\ is \\  a \\  const \\  expression",
+                            "name": "is_const(C)",
+                            "type": "Condition"
+                        },
+                        {
+                            "cond": "b >= 0",
+                            "latex_cond": "b \\ge 0",
+                            "name": "b >= 0",
+                            "type": "Condition"
+                        },
+                        {
+                            "cond": "b = 0",
+                            "latex_cond": "b = 0",
+                            "name": "b = 0",
+                            "type": "Condition"
+                        }
+                    ],
+                    "finished": true,
+                    "goal": "I(b) = -atan(b) + C",
+                    "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
+                    "proof": {
+                        "conds": [
+                            {
+                                "cond": "is_const(C)",
+                                "latex_cond": "C \\ is \\  a \\  const \\  expression",
+                                "name": "is_const(C)",
+                                "type": "Condition"
+                            },
+                            {
+                                "cond": "b >= 0",
+                                "latex_cond": "b \\ge 0",
+                                "name": "b >= 0",
+                                "type": "Condition"
+                            },
+                            {
+                                "cond": "b = 0",
+                                "latex_cond": "b = 0",
+                                "name": "b = 0",
+                                "type": "Condition"
+                            }
+                        ],
+                        "finished": true,
+                        "goal": "I(b) = -atan(b) + C",
+                        "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
+                        "lhs_calc": {
+                            "conds": [
+                                {
+                                    "cond": "is_const(C)",
+                                    "latex_cond": "C \\ is \\  a \\  const \\  expression",
+                                    "name": "is_const(C)",
+                                    "type": "Condition"
+                                },
+                                {
+                                    "cond": "b >= 0",
+                                    "latex_cond": "b \\ge 0",
+                                    "name": "b >= 0",
+                                    "type": "Condition"
+                                },
+                                {
+                                    "cond": "b = 0",
+                                    "latex_cond": "b = 0",
+                                    "name": "b = 0",
+                                    "type": "Condition"
+                                }
+                            ],
+                            "latex_start": "I{(b)}",
+                            "start": "I(b)",
+                            "steps": [
+                                {
+                                    "latex_res": "I{(0)}",
+                                    "res": "I(0)",
+                                    "rule": {
+                                        "name": "FullSimplify",
+                                        "str": "full simplify"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "C",
+                                    "res": "C",
+                                    "rule": {
+                                        "name": "ApplyAssumption",
+                                        "str": "apply assumption"
+                                    },
+                                    "type": "CalculationStep"
+                                }
+                            ],
+                            "type": "Calculation"
+                        },
+                        "rhs_calc": {
+                            "conds": [
+                                {
+                                    "cond": "is_const(C)",
+                                    "latex_cond": "C \\ is \\  a \\  const \\  expression",
+                                    "name": "is_const(C)",
+                                    "type": "Condition"
+                                },
+                                {
+                                    "cond": "b >= 0",
+                                    "latex_cond": "b \\ge 0",
+                                    "name": "b >= 0",
+                                    "type": "Condition"
+                                },
+                                {
+                                    "cond": "b = 0",
+                                    "latex_cond": "b = 0",
+                                    "name": "b = 0",
+                                    "type": "Condition"
+                                }
+                            ],
+                            "latex_start": "-\\arctan{(b)} + C",
+                            "start": "-atan(b) + C",
+                            "steps": [
+                                {
+                                    "latex_res": "C",
+                                    "res": "C",
+                                    "rule": {
+                                        "name": "FullSimplify",
+                                        "str": "full simplify"
+                                    },
+                                    "type": "CalculationStep"
+                                }
+                            ],
+                            "type": "Calculation"
+                        },
+                        "type": "CalculationProof"
+                    },
+                    "type": "Goal"
+                },
+                "case_2": {
+                    "conds": [
+                        {
+                            "cond": "is_const(C)",
+                            "latex_cond": "C \\ is \\  a \\  const \\  expression",
+                            "name": "is_const(C)",
+                            "type": "Condition"
+                        },
+                        {
+                            "cond": "b >= 0",
+                            "latex_cond": "b \\ge 0",
+                            "name": "b >= 0",
+                            "type": "Condition"
+                        },
+                        {
+                            "cond": "b != 0",
+                            "latex_cond": "b \\neq 0",
+                            "name": "b != 0",
+                            "type": "Condition"
+                        }
+                    ],
+                    "finished": true,
+                    "goal": "I(b) = -atan(b) + C",
+                    "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
+                    "proof": {
+                        "finished": true,
+                        "goal": "I(b) = -atan(b) + C",
+                        "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
+                        "start": {
+                            "conds": [
+                                {
+                                    "cond": "b > 0",
+                                    "latex_cond": "b > 0",
+                                    "name": "b > 0",
+                                    "type": "Condition"
+                                }
+                            ],
+                            "latex_start": "\\frac{d}{db} I{(b)} = \\frac{-1}{b ^ {2} + 1}",
+                            "start": "(D b. I(b)) = -1 / (b ^ 2 + 1)",
+                            "steps": [
+                                {
+                                    "latex_res": "\\frac{d}{db} I{(b)} = -(b ^ {2} + 1) ^ {-1}",
+                                    "res": "(D b. I(b)) = -((b ^ 2 + 1) ^ -1)",
+                                    "rule": {
+                                        "name": "FullSimplify",
+                                        "str": "full simplify"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "I{(b)} = \\int -(b ^ {2} + 1) ^ {-1} \\,db",
+                                    "res": "I(b) = (INT b. -((b ^ 2 + 1) ^ -1))",
+                                    "rule": {
+                                        "name": "integral both side",
+                                        "str": "IntegralEquation"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "I{(b)} = -(\\int (b ^ {2} + 1) ^ {-1} \\,db)",
+                                    "res": "I(b) = -(INT b. (b ^ 2 + 1) ^ -1)",
+                                    "rule": {
+                                        "name": "FullSimplify",
+                                        "str": "full simplify"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "I{(b)} = -(\\arctan{(b)} + C)",
+                                    "res": "I(b) = -(atan(b) + C)",
+                                    "rule": {
+                                        "loc": "1.0",
+                                        "name": "CommonIndefiniteIntegral",
+                                        "str": "common indefinite integrals at 1.0"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "I{(b)} = -(\\arctan{(b)} + -C)",
+                                    "res": "I(b) = -(atan(b) + -C)",
+                                    "rule": {
+                                        "loc": "1.0.1",
+                                        "name": "RewriteSkolemConst",
+                                        "str": "RewriteSkolemConst at 1.0.1"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "I{(b)} = -\\arctan{(b)} + C",
+                                    "res": "I(b) = -atan(b) + C",
+                                    "rule": {
+                                        "name": "FullSimplify",
+                                        "str": "full simplify"
+                                    },
+                                    "type": "CalculationStep"
+                                }
+                            ],
+                            "type": "Calculation"
+                        },
+                        "type": "RewriteGoalProof"
+                    },
+                    "type": "Goal"
+                },
+                "conds": [
+                    {
+                        "cond": "is_const(C)",
+                        "latex_cond": "C \\ is \\  a \\  const \\  expression",
+                        "name": "is_const(C)",
+                        "type": "Condition"
+                    },
+                    {
+                        "cond": "b >= 0",
+                        "latex_cond": "b \\ge 0",
+                        "name": "b >= 0",
+                        "type": "Condition"
+                    }
+                ],
+                "finished": true,
+                "goal": "I(b) = -atan(b) + C",
+                "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
+                "split_cond": "b = 0",
+                "type": "CaseProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "0 = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi",
+            "latex_goal": "0 = (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx) - \\frac{1}{2} \\pi",
+            "proof": {
+                "finished": true,
+                "goal": "0 = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi",
+                "latex_goal": "0 = (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx) - \\frac{1}{2} \\pi",
+                "start": {
+                    "conds": [
+                        {
+                            "cond": "is_const(C)",
+                            "latex_cond": "C \\ is \\  a \\  const \\  expression",
+                            "name": "is_const(C)",
+                            "type": "Condition"
+                        },
+                        {
+                            "cond": "b >= 0",
+                            "latex_cond": "b \\ge 0",
+                            "name": "b >= 0",
+                            "type": "Condition"
+                        }
+                    ],
+                    "latex_start": "I{(b)} = -\\arctan{(b)} + C",
+                    "start": "I(b) = -atan(b) + C",
+                    "steps": [
+                        {
+                            "latex_res": "I{(b)} = -\\arctan{(b)} + I{(0)}",
+                            "res": "I(b) = -atan(b) + I(0)",
+                            "rule": {
+                                "loc": "1.1",
+                                "name": "ApplyAssumption",
+                                "str": "apply assumption at 1.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\lim\\limits_{b\\to \\infty} I{(b)} = \\lim\\limits_{b\\to \\infty} (\\,-\\arctan{(b)} + I{(0)}\\,)",
+                            "res": "(LIM {b -> oo}. I(b)) = (LIM {b -> oo}. -atan(b) + I(0))",
+                            "rule": {
+                                "name": "LimitEquation",
+                                "str": "LimitEquation"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\lim\\limits_{b\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx = \\lim\\limits_{b\\to \\infty} (\\,-\\arctan{(b)} + (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx)\\,)",
+                            "res": "(LIM {b -> oo}. INT x:[0,oo]. x ^ -1 * exp(-(b * x)) * sin(x)) = (LIM {b -> oo}. -atan(b) + (INT x:[0,oo]. x ^ -1 * sin(x)))",
+                            "rule": {
+                                "func_def": "I(b) = (INT x:[0,oo]. sin(x) / x * exp(-b * x))",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\lim\\limits_{b\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx = (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx) - \\frac{1}{2} \\pi",
+                            "res": "(LIM {b -> oo}. INT x:[0,oo]. x ^ -1 * exp(-(b * x)) * sin(x)) = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "0 = (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx) - \\frac{1}{2} \\pi",
+                            "res": "0 = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi",
+                            "rule": {
+                                "eq": "(LIM {b -> oo}. INT x:[0,oo]. x ^ -1 * exp(-(b * x)) * sin(x)) = 0",
+                                "latex_str": "apply equation \\(\\lim\\limits_{b\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx = 0\\) at 0",
+                                "loc": "0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (LIM {b -> oo}. INT x:[0,oo]. x ^ -1 * exp(-(b * x)) * sin(x)) = 0 at 0"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,oo]. x ^ -1 * sin(x)) = 1/2 * pi",
+            "latex_goal": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx = \\frac{1}{2} \\pi",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,oo]. x ^ -1 * sin(x)) = 1/2 * pi",
+                "latex_goal": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx = \\frac{1}{2} \\pi",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx",
+                    "start": "INT x:[0,oo]. x ^ -1 * sin(x)",
+                    "steps": [
+                        {
+                            "latex_res": "0 + \\frac{1}{2} \\pi",
+                            "res": "0 + 1/2 * pi",
+                            "rule": {
+                                "eq": "0 = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi",
+                                "latex_str": "apply equation \\(0 = (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx) - \\frac{1}{2} \\pi\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: 0 = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} \\pi",
+                            "res": "1/2 * pi",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{1}{2} \\pi",
+                    "start": "1/2 * pi",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "DiricheletIntegral"
+}

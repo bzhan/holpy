@@ -9,9 +9,9 @@
                     'selected-fact': label in selected_facts}">
         <MathEquation v-bind:data="'\\(' + item.latex_goal + '\\)'" class="indented-text"/>
         <span v-if="'conds' in item && item.conds.length > 0">
-          <span class="math-text indented-text">for </span>
+          <span class="math-text indented-text">for &nbsp;</span>
           <span v-for="(cond, index) in item.conds" :key="index">
-            <span v-if="index > 0">, </span>
+            <span v-if="index > 0">, &nbsp;</span>
             <MathEquation v-bind:data="'\\(' + cond.latex_cond + '\\)'"/>
           </span>
         </span>
@@ -29,6 +29,18 @@
                           v-bind:selected_facts="selected_facts"
                           @select="(lbl) => $emit('select', lbl)"/>
         </div>
+        <div v-if="item.proof.type === 'RewriteGoalProof'">
+          <RewriteGoalProof v-bind:item="item.proof" v-bind:label="label"
+                          v-bind:selected_item="selected_item"
+                          v-bind:selected_facts="selected_facts"
+                          @select="(lbl) => $emit('select', lbl)"/>
+        </div>
+        <div v-if="item.proof.type === 'CaseProof'">
+          <CaseProof v-bind:item="item.proof" v-bind:label="label"
+                          v-bind:selected_item="selected_item"
+                          v-bind:selected_facts="selected_facts"
+                          @select="(lbl) => $emit('select', lbl)"/>
+        </div>
       </div>
     </div>
   </div>
@@ -38,6 +50,8 @@
 import MathEquation from '../util/MathEquation.vue'
 import CalculationProof from './CalculationProof.vue'
 import InductionProof from './InductionProof.vue'
+import RewriteGoalProof from './RewriteGoalProof.vue'
+import CaseProof from './CaseProof.vue'
 
 export default {
   name: "Goal",
@@ -45,6 +59,8 @@ export default {
     MathEquation,
     CalculationProof,
     InductionProof,
+    RewriteGoalProof,
+    CaseProof,
   },
 
   props: [

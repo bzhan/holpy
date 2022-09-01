@@ -14,6 +14,7 @@
         <CalculationStep v-bind:step="step" v-bind:label="label + (index+1) + '.'"
                          v-bind:selected_item="selected_item"
                          v-bind:selected_facts="selected_facts"
+                         v-bind:is_rewrite_goal_proof="is_rewrite_goal_proof"
                          @select="(lbl) => $emit('select', lbl)"
                          @select_fact="(lbl) => $emit('select_fact', lbl)"/>
       </div>
@@ -37,6 +38,7 @@ export default {
     "label",
     "selected_item",
     "selected_facts",
+    "is_rewrite_goal_proof",
   ]
 }
 
