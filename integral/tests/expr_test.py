@@ -19,24 +19,20 @@ basic.load_theory('transcendentals')
 class ExprTest(unittest.TestCase):
 
 
-    def testSkolemConst(self):
-        test_data = [('a/(a^2+y^2)','C','y','C(a)'),
-                     ("1/(4+y^2)",'D','y','D'),
-                     ("1+a+b+c+d", "C", "d", "C(a, b, c)")]
-        s = 'a/(a^2+y^2)'
-        e = parse_expr(s)
-        C = expr.SkolemConst('C', *expr.SkolemConst.find_free('y', e))
-        self.assertEqual(str(C), "C(a)")
+    def testSkolemFunc(self):
+        test_data = [('a/(a^2+y^2)','C','y','SKOLEM_FUNC(C(a))'),
+                     ("1/(4+y^2)",'E','y','SKOLEM_CONST(E)'),
+                     ("1+a+b+c+d", "C", "d", "SKOLEM_FUNC(C(a, b, c))")]
         for s, c_name, e, res in test_data:
             ex = parse_expr(s)
-            C = expr.SkolemConst(c_name, *expr.SkolemConst.find_free(e, ex))
+            C = expr.SkolemFunc(c_name, *expr.SkolemFunc.find_free(e, ex))
             self.assertEqual(str(C), res)
 
 
     def testFindFree(self):
         s = "INT x. x * y * a + t + 3"
         e = parse_expr(s)
-        res = expr.SkolemConst.find_free(e.var, e.body)
+        res = expr.SkolemFunc.find_free(e.var, e.body)
         self.assertEqual(set(res), {Var('y'),Var('a'),Var('t')})
 
     def testPrintExpr(self):
@@ -393,6 +389,8 @@ class ExprTest(unittest.TestCase):
             ("exp(x)", "exp(x)"),
             ("exp(x^2)", "2 * x * exp(x ^ 2)"),
             ("tan(2*x)", "2 * sec(2 * x) ^ 2"),
+            ("a^x", "exp(x * log(a)) * log(a)"),
+            ("log(a) ^ -1 * (a ^ x - 1)", "exp(x * log(a))"),
         ]
 
         for s, s2 in test_data:
@@ -572,7 +570,14 @@ class ExprTest(unittest.TestCase):
             v = parse_expr(v)
             self.assertEqual(str(v.normalize()), v_res)
 
-
+    def testAllDependencies(self):
+        test_data = [
+                    ("SKOLEM_FUNC(E(b))", {Var('b')}),
+                    ("1/2 * pi * SKOLEM_CONST(C)", set()),
+                    ("pi/2 * log(SKOLEM_FUNC(C(b)))", {Var('b')}),]
+        for s, res in test_data:
+            e = parse_expr(s)
+            self.assertEqual(res, e.all_dependencies())
 if __name__ == "__main__":
     unittest.main()
 

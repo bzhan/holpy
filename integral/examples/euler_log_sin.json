@@ -164,7 +164,7 @@
                             "rule": {
                                 "name": "Equation",
                                 "new_expr": "2 / a * (a * sin(x)) * (a * cos(x))",
-                                "old_expr": "2 * a * sin(x) * cos(x)",
+                                "old_expr": "a * (2 * sin(x) * cos(x))",
                                 "str": "rewriting"
                             },
                             "type": "CalculationStep"

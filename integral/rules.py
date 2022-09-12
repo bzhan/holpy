@@ -122,6 +122,8 @@ class Linearity(Rule):
                     return e
             elif e.body.is_uminus():
                 return -IndefiniteIntegral(e.var, e.body.args[0])
+            elif e.body.is_divides():
+                return e
             else:
                 return e
         elif e.is_limit():
@@ -176,13 +178,17 @@ class CommonIntegral(Rule):
             return EvalAt(e.var, e.lower, e.upper, e.body * Var(e.var))
 
         x = Var(e.var)
-        c = Symbol('c', [CONST])
+        c = Symbol('c', [CONST, VAR])
+        # c = Symbol('c', [CONST])
         rules = [
             (Const(1), None, Var(e.var)),
-            (c, None, c * Var(e.var)),
+            (c, lambda m: isinstance(m[c], Const) or isinstance(m[c], Var) and m[c]!=x, c * Var(e.var)),
             (x, None, (x ^ 2) / 2),
-            (x ^ c, lambda m: m[c].val != -1, lambda m: (x ^ Const(m[c].val + 1)) / (Const(m[c].val + 1))),
-            (Const(1) / x ^ c, lambda m: m[c].val != 1, (-c) / (x ^ (c + 1))),
+            # (x ^ c, lambda m: m[c].val != -1, lambda m: (x ^ Const(m[c].val + 1)) / (Const(m[c].val + 1))),
+            # (Const(1) / x ^ c, lambda m: m[c].val != 1, (-c) / (x ^ (c + 1))),
+            (x ^ c, lambda m: isinstance(m[c], Const) and m[c].val != -1 or isinstance(m[c], Var), \
+                        lambda m: (x ^ ((m[c]+ 1).normalize())) / (m[c] + 1).normalize()),
+            (Const(1) / x ^ c, lambda m: isinstance(m[c], Const) and m[c].val != 1, (-c) / (x ^ (c + 1))),
             (expr.sqrt(x), None, Fraction(2,3) * (x ^ Fraction(3,2))),
             (sin(x), None, -cos(x)),
             (cos(x), None, sin(x)),
@@ -217,7 +223,7 @@ class CommonIndefiniteIntegral(Rule):
     def eval(self, e:Expr, conds=None) -> Expr:
         if e.ty != INDEFINITEINTEGRAL:
             return e
-        C = expr.SkolemConst(self.const_name, *expr.SkolemConst.find_free(e.var, e.body))
+        C = expr.SkolemFunc(self.const_name, *[arg for arg in expr.SkolemFunc.find_free(e.var, e.body)])
         v = Var(e.var)
         if (e.body.is_constant() or v not in e.body.findVar()) and e.body != Const(1):
             return e.body * Var(e.var) + C
@@ -235,6 +241,7 @@ class CommonIndefiniteIntegral(Rule):
             (cos(x), None, sin(x)),
             (expr.exp(x), None, expr.exp(x)),
             (Const(1) / x, None, expr.log(expr.Fun('abs', x))),
+            (Const(1) / (x+c), None, expr.log(expr.Fun('abs', x+c))),
             (x ^ Const(-1), None, expr.log(expr.Fun('abs', x))),
             (((x ^ Const(2)) + 1) ^ Const(-1), None, expr.arctan(x)),
             (expr.sec(x) ^ Const(2), None, expr.tan(x)),
@@ -331,7 +338,7 @@ class OnSubterm(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         rule = self.rule
-        if e.ty in (expr.VAR, expr.CONST, expr.INF, expr.SKOLEMCONST):
+        if e.ty in (expr.VAR, expr.CONST, expr.INF, expr.SKOLEMFUNC):
             return rule.eval(e, conds=conds)
         elif e.ty == expr.OP:
             args = [self.eval(arg, conds=conds) for arg in e.args]
@@ -483,9 +490,16 @@ class SimplifyPower(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if not e.is_power():
+        if not e.is_power() and not (e.is_fun() and e.func_name=='exp'):
             return e
-        if e.args[0].is_power():
+        if e.is_fun() and e.func_name == 'exp':
+            arg = e.args[0]
+            if arg.is_times():
+                a, b = arg.args
+                if b.is_fun() and b.func_name == 'log':
+                    return b.args[0] ^ a
+            return e
+        elif e.args[0].is_power():
             # x ^ a ^ b => x ^ (a * b)
             return e.args[0].args[0] ^ (e.args[0].args[1] * e.args[1])
         elif e.args[1].is_plus() and e.args[0].is_const() and e.args[1].args[1].is_const():
@@ -504,6 +518,8 @@ class SimplifyPower(Rule):
         elif e.args[0].is_const() and e.args[0].val == 0 and conditions.is_positive(e.args[1], conds):
             # 0 ^ n = 0
             return Const(0)
+        elif e.args[0].is_const() and e.args[0].val == 1:
+            return Const(1)
         else:
             return e
 
@@ -704,8 +720,12 @@ class ApplyEquation(Rule):
                 return res
             elif self.eq.lhs.is_plus() and self.eq.lhs.args[0].normalize() == e.normalize():
                 return self.eq.rhs - self.eq.lhs.args[1]
-            elif self.eq.rhs.is_minus() and self.eq.rhs.args[0] == e:
+            elif self.eq.lhs.is_plus() and self.eq.lhs.args[1].normalize() == e.normalize():
+                return self.eq.rhs - self.eq.lhs.args[0]
+            elif self.eq.rhs.is_minus() and self.eq.rhs.args[0] == e.normalize():
                 return self.eq.lhs + self.eq.rhs.args[1]
+            elif self.eq.rhs.normalize() == e.normalize():
+                return self.eq.lhs
             else:
                 return e
         else:
@@ -719,6 +739,7 @@ class ApplyAssumption(Rule):
     """Apply assumption"""
 
     def __init__(self, assumption: Expr, conds: Conditions):
+        assert isinstance(assumption, Expr)
         self.name = "ApplyAssumption"
         self.assumption = assumption
         self.conds = conds
@@ -737,16 +758,19 @@ class ApplyAssumption(Rule):
         # then apply assumption
         flag = False if conds != None else True
         if not flag:
-            items = self.conds.data.items()
-            for k, v in conds.data.items():
-                if (k,v) in items:
-                    flag = True
-                    break
-                if v.op == '>':
-                    e1, e2 = Op('>=', *v.args), Op('!=', *v.args)
-                    if (str(e1), e1) in items and (str(e2), e2) in items:
-                        flag =True;
+            if self.conds != None:
+                items = self.conds.data.items()
+                for k, v in conds.data.items():
+                    if (k,v) in items:
+                        flag = True
                         break
+                    if v.op == '>':
+                        e1, e2 = Op('>=', *v.args), Op('!=', *v.args)
+                        if (str(e1), e1) in items and (str(e2), e2) in items:
+                            flag =True;
+                            break
+            else:
+                flag = True
         if not flag:
             return e
         rule = ApplyEquation(self.assumption)
@@ -864,10 +888,13 @@ class Substitution(Rule):
             lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
             upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
             self.f = new_problem_body
-            if sympy_style(lower) < sympy_style(upper):
+            try:
+                if sympy_style(lower) < sympy_style(upper):
+                    return Integral(self.var_name, lower, upper, new_problem_body).normalize()
+                else:
+                    return Integral(self.var_name, upper, lower, Op("-", new_problem_body)).normalize()
+            except TypeError as e:
                 return Integral(self.var_name, lower, upper, new_problem_body).normalize()
-            else:
-                return Integral(self.var_name, upper, lower, Op("-", new_problem_body)).normalize()
 
 class SubstitutionInverse(Rule):
     """Apply substitution x = f(u).
@@ -920,7 +947,6 @@ class SubstitutionInverse(Rule):
             upper = solve_equation(self.var_subst, e.upper, self.var_name).normalize()
         except NotImplementedError:
             upper = solvers.solve(expr.sympy_style(self.var_subst - e.upper))[0]
-
         if lower > upper:
             return -expr.Integral(self.var_name, expr.holpy_style(upper), expr.holpy_style(lower), new_e_body)
 
@@ -2085,13 +2111,20 @@ class ExpandDefinition(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if not (e.is_fun() and e.func_name == self.func_def.lhs.func_name):
+        if e.is_fun() and self.func_def.lhs.is_fun() and \
+                e.func_name == self.func_def.lhs.func_name:
+            body = self.func_def.rhs
+            for arg, val in zip(self.func_def.lhs.args, e.args):
+                body = body.replace(arg, val)
+            return body.normalize()
+        elif e.is_skolem_func() and self.func_def.lhs.is_skolem_func() and\
+                e.name == self.func_def.lhs.name:
+            body = self.func_def.rhs
+            for arg, val in zip(self.func_def.lhs.dependent_vars, e.dependent_vars):
+                body = body.replace(arg, val)
+            return body.normalize()
+        else:
             return e
-
-        body = self.func_def.rhs
-        for arg, val in zip(self.func_def.lhs.args, e.args):
-            body = body.replace(arg, val)
-        return body.normalize()
 
 
 class Mul2Div(Rule):
@@ -2448,18 +2481,18 @@ class RewriteConstVars(Rule):
         return res + const_v
 
 
-class ConstExprSubs(Rule):
-    '''if e is a const expr(could contains const var),
-        then we can replace a var with any expression
-        '''
+class VarSubsOfEquation(Rule):
+    '''
+        if e is a equation, we can replace some var with any expression
+    '''
 
     def __init__(self, var:str, var_subs:Expr):
-        self.name = "ConstExprSubs"
+        self.name = "VarSubsOfEquation"
         self.var = var
         self.var_subs = var_subs
 
     def __str__(self):
-        return "ConstExprSubs: substitute "+str(self.var)+" for "+str(self.var_subs)
+        return "VarSubsOfEquation: substitute "+str(self.var)+" for "+str(self.var_subs)
 
     def export(self):
         return {
@@ -2468,14 +2501,10 @@ class ConstExprSubs(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if conds != None and conditions.is_const(e, conds):
-            res = e.replace(Var(self.var), self.var_subs)
-            # add condition res is const ...
-            conds.add_condition(str(res) + ' is const', expr.Fun('isConst', res), True)
-            conds.del_assume(Fun('isConst', e))
-            return res
+        if e.is_equals():
+            return e.subst(self.var, self.var_subs)
         else:
-            raise NotImplementedError
+            return e
 
 class RewriteLimit(Rule):
     ''' LIM {x->a}. f(x) = f(a)'''
@@ -2509,11 +2538,9 @@ class LimIntExchange(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        print(e)
         if e.ty == LIMIT and e.body.is_integral():
             return Integral(e.body.var, e.body.lower, e.body.upper, Limit(e.var, e.lim, e.body.body))
         else:
-            print(e)
             raise NotImplementedError
 
 class Swap(Rule):
@@ -2539,7 +2566,6 @@ class Swap(Rule):
         elif e.is_times():
             return e.args[1] * e.args[0]
         else:
-            print(e)
             raise NotImplementedError
 
 class RewriteFactorial(Rule):
@@ -2675,11 +2701,10 @@ class IntegralEquation(Rule):
         assert e.is_equals()
         # assert e.lhs.is_deriv()
         # assert e.rhs.normalize() == Const(0)
-        if e.lhs.is_deriv() and e.rhs.normalize() == Const(0):
-            # return Op('=', e.lhs.body, tmp.normalize())
-            raise NotImplementedError
-        elif e.lhs.is_deriv():
-            return Op('=', e.lhs.body, IndefiniteIntegral(self.var, e.rhs))
+        if e.lhs.is_deriv() and e.lhs.var == self.var:
+            const_part = expr.SkolemFunc("E",*[arg for arg in expr.SkolemFunc.find_free(self.var, e.lhs.body)])
+            new_lhs = e.lhs.body + const_part
+            return Op('=', new_lhs,  IndefiniteIntegral(self.var, e.rhs))
         else:
             raise NotImplementedError
 
@@ -2798,17 +2823,41 @@ class RewriteLog(Rule):
         }
 
 class RewriteSkolemConst(Rule):
-    def __init__(self, rule:str):
+    def __init__(self, new_expr:Expr):
         self.name = "RewriteSkolemConst"
-        self.rule = rule
+        self.new_expr = new_expr
 
     def __str__(self):
         return "RewriteSkolemConst"
 
     def eval(self, e:Expr, conds = None):
-        # assert
-        if self.rule == 'uminus':
-            return -e
+        if e.is_equals():
+            res = set()
+            res_lhs, res_rhs = list(), list()
+
+            lhs_terms, rhs_terms = expr.decompose_expr_add(e.lhs), expr.decompose_expr_add(e.rhs)
+
+            for item in lhs_terms:
+                if item.is_skolem_term():
+                    res = res.union(item.all_dependencies())
+                else:
+                    res_lhs.append(item)
+            for item in rhs_terms:
+                if item.is_skolem_term():
+                    res = res.union(item.all_dependencies())
+                else:
+                    res_rhs.append(item)
+            if self.new_expr.all_dependencies() == res:
+                res_rhs = expr.add(res_rhs) if res_rhs != [] else Const(0)
+                res_lhs = expr.add(res_lhs) if res_lhs != [] else Const(0)
+                return Op('=', res_lhs.normalize(), (res_rhs + self.new_expr).normalize())
+            else:
+                return e
+        elif e.is_skolem_term():
+            if self.new_expr.all_dependencies() == e.all_dependencies():
+                return self.new_expr
+            else:
+                return e
         else:
             raise NotImplementedError
 
@@ -2833,6 +2882,38 @@ class LimitEquation(Rule):
         lim2 = Limit(v, lim, e.rhs)
         return Op('=', lim1, lim2)
 
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class FoldRewrite(Rule):
+    def __init__(self):
+        self.name = "FoldRewrite"
+
+    def __str__(self):
+        return "FoldRewrite"
+
+    def eval(self, e:Expr, conds = None):
+        # patter match first : log(a*b) then rewrite as log(a) + log(b)
+        a = Symbol('a', [VAR, CONST, OP, FUN])
+        b = Symbol('b', [VAR, CONST, OP, FUN])
+        rules = [
+            (log(a * b), log(a) + log(b)),
+            (log(a / b), log(a) - log(b))
+        ]
+        for pat, pat_res in rules:
+            # 找到第一个匹配的位置
+            pos = expr.find_pattern(e, pat)
+            if len(pos) >= 1:
+                mapped_expr, loc, mapping = pos[0]
+                if mapped_expr == e:
+                    return pat_res.inst_pat(mapping)
+                else:
+                    return OnLocation(self, loc).eval(e);
+
+        return e
     def export(self):
         return {
             "name": self.name,

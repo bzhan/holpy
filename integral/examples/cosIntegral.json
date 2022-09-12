@@ -7,6 +7,11 @@
             "type": "FuncDef"
         },
         {
+            "eq": "I(0) = sqrt(pi / 2)",
+            "latex_eq": "I{(0)} = \\sqrt{\\frac{\\pi}{2}}",
+            "type": "Assumption"
+        },
+        {
             "finished": true,
             "goal": "(D t. I(t)) = -t * I(t)",
             "latex_goal": "\\frac{d}{dt} I{(t)} = -t I{(t)}",
@@ -192,19 +197,19 @@
         },
         {
             "finished": true,
-            "goal": "log(I(t)) + t ^ 2 / 2 = log(sqrt(pi / 2))",
-            "latex_goal": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = \\log{(\\sqrt{\\frac{\\pi}{2}})}",
+            "goal": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
+            "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
             "proof": {
                 "finished": true,
-                "goal": "log(I(t)) + t ^ 2 / 2 = log(sqrt(pi / 2))",
-                "latex_goal": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = \\log{(\\sqrt{\\frac{\\pi}{2}})}",
+                "goal": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
+                "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
                 "start": {
                     "latex_start": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0",
                     "start": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
                     "steps": [
                         {
-                            "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = \\log{(I{(0)})}",
-                            "res": "log(I(t)) + t ^ 2 / 2 = log(I(0))",
+                            "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} + E = \\int 0 \\,dt",
+                            "res": "log(I(t)) + t ^ 2 / 2 + SKOLEM_CONST(E) = (INT t. 0)",
                             "rule": {
                                 "name": "integral both side",
                                 "str": "IntegralEquation"
@@ -212,14 +217,68 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = \\log{(\\sqrt{\\frac{\\pi}{2}})}",
-                            "res": "log(I(t)) + t ^ 2 / 2 = log(sqrt(pi / 2))",
+                            "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} + E = 0 t + C",
+                            "res": "log(I(t)) + t ^ 2 / 2 + SKOLEM_CONST(E) = 0 * t + SKOLEM_CONST(C)",
                             "rule": {
-                                "eq": "I(0) = sqrt(pi / 2)",
-                                "latex_str": "apply equation \\(I{(0)} = \\sqrt{\\frac{\\pi}{2}}\\) at 1.0",
-                                "loc": "1.0",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: I(0) = sqrt(pi / 2) at 1.0"
+                                "loc": "1",
+                                "name": "CommonIndefiniteIntegral",
+                                "str": "common indefinite integrals at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
+                            "res": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "RewriteSkolemConst",
+                                "str": "RewriteSkolemConst"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "log(sqrt(pi / 2)) = SKOLEM_CONST(C)",
+            "latex_goal": "\\log{(\\sqrt{\\frac{\\pi}{2}})} = C",
+            "proof": {
+                "finished": true,
+                "goal": "log(sqrt(pi / 2)) = SKOLEM_CONST(C)",
+                "latex_goal": "\\log{(\\sqrt{\\frac{\\pi}{2}})} = C",
+                "start": {
+                    "latex_start": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
+                    "start": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
+                    "steps": [
+                        {
+                            "latex_res": "\\lim\\limits_{t\\to 0} (\\,\\frac{1}{2} t ^ {2} + \\log{(I{(t)})}\\,) = \\lim\\limits_{t\\to 0} C",
+                            "res": "(LIM {t -> 0 }. 1/2 * t ^ 2 + log(I(t))) = (LIM {t -> 0 }. SKOLEM_CONST(C))",
+                            "rule": {
+                                "name": "LimitEquation",
+                                "str": "LimitEquation"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\log{(I{(0)})} = C",
+                            "res": "log(I(0)) = SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\log{(\\sqrt{\\frac{\\pi}{2}})} = C",
+                            "res": "log(sqrt(pi / 2)) = SKOLEM_CONST(C)",
+                            "rule": {
+                                "loc": "0.0",
+                                "name": "ApplyAssumption",
+                                "str": "apply assumption at 0.0"
                             },
                             "type": "CalculationStep"
                         }
@@ -243,13 +302,25 @@
                     "start": "log(I(t))",
                     "steps": [
                         {
-                            "latex_res": "\\log{(\\sqrt{\\frac{\\pi}{2}})} - \\frac{t ^ {2}}{2}",
-                            "res": "log(sqrt(pi / 2)) - t ^ 2 / 2",
+                            "latex_res": "C - \\frac{1}{2} t ^ {2}",
+                            "res": "SKOLEM_CONST(C) - 1/2 * t ^ 2",
                             "rule": {
-                                "eq": "log(I(t)) + t ^ 2 / 2 = log(sqrt(pi / 2))",
-                                "latex_str": "apply equation \\(\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = \\log{(\\sqrt{\\frac{\\pi}{2}})}\\)",
+                                "eq": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
+                                "latex_str": "apply equation \\(\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C\\)",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: log(I(t)) + t ^ 2 / 2 = log(sqrt(pi / 2))"
+                                "str": "apply equation: 1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\log{(\\sqrt{\\frac{\\pi}{2}})} - \\frac{1}{2} t ^ {2}",
+                            "res": "log(sqrt(pi / 2)) - 1/2 * t ^ 2",
+                            "rule": {
+                                "eq": "log(sqrt(pi / 2)) = SKOLEM_CONST(C)",
+                                "latex_str": "apply equation \\(\\log{(\\sqrt{\\frac{\\pi}{2}})} = C\\) at 0",
+                                "loc": "0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: log(sqrt(pi / 2)) = SKOLEM_CONST(C) at 0"
                             },
                             "type": "CalculationStep"
                         },
@@ -307,7 +378,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "e^{\\log{(I{(t)})}} = e^{-t ^ {2}/2} e^{\\log{(\\sqrt{\\pi/2})}}",
+                            "latex_res": "e^{\\log{(I{(t)})}} = e^{-t ^ {2}/2}\\cdot e^{\\log{(\\sqrt{\\pi/2})}}",
                             "res": "exp(log(I(t))) = exp(-(t ^ 2) / 2) * exp(log(sqrt(pi / 2)))",
                             "rule": {
                                 "loc": "1",

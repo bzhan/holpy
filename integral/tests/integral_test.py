@@ -537,7 +537,8 @@ class IntegralTest(unittest.TestCase):
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(Idef2.eq))
         calc.perform_rule(rules.RewriteTrigonometric("TR11", parser.parse_expr("sin(2*x)")))
-        calc.perform_rule(rules.Equation(parser.parse_expr("(2/a) *(a*sin(x))*(a*cos(x))"),old_expr=parser.parse_expr("2*a*sin(x)*cos(x)")))
+        calc.perform_rule(rules.Equation(new_expr = parser.parse_expr("(2/a) *(a*sin(x))*(a*cos(x))"),\
+                                         old_expr=parser.parse_expr("a * (2 * sin(x) * cos(x))")))
         calc.perform_rule(rules.RewriteLog())
         calc.perform_rule(rules.RewriteLog())
         calc.perform_rule(rules.FullSimplify())
@@ -590,11 +591,8 @@ class IntegralTest(unittest.TestCase):
         Idef = compstate.FuncDef(e, conds=conds)
         file.add_definition(Idef)
 
-        e = parser.parse_expr("I(0) = C")
-        conds_of_assume1 = compstate.Conditions()
-        e2 = parser.parse_expr("is_const(C)")
-        conds_of_assume1.add_condition(str(e2), e2)
-        assume1 = compstate.Assumption(e, conds_of_assume1)
+        e = parser.parse_expr("I(0) = SKOLEM_CONST(C)")
+        assume1 = compstate.Assumption(e)
         file.add_assumption(assume1)
 
 
@@ -625,12 +623,11 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-
-
+        #
+        #
         # goal: I(0) = INT x:[0, oo]. sin(x) / x
         e = parser.parse_expr("I(0) = INT x:[0, oo]. sin(x) / x")
-        conds_of_goal2 = conditions.Conditions()
-        goal2 = compstate.Goal(e, conds=conds_of_goal2)
+        goal2 = compstate.Goal(e)
         file.add_compstate(goal2)
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
@@ -640,10 +637,8 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         # goal: I(b) = -atan(b) + C for C is some constant
-        e = parser.parse_expr("I(b) = -atan(b) + C")
-        e2 = parser.parse_expr("is_const(C)")
+        e = parser.parse_expr("I(b) = -atan(b) + SKOLEM_CONST(C)")
         conds_of_goal3 = conditions.Conditions()
-        conds_of_goal3.add_condition(str(e2), e2)
         e2 = parser.parse_expr("b>=0")
         conds_of_goal3.add_condition(str(e2), e2)
         goal3 = compstate.Goal(e, conds=conds_of_goal3)
@@ -662,8 +657,8 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.IntegralEquation(var='b'))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral('C'), '1.0'))
-        calc.perform_rule(rules.OnLocation(rules.RewriteSkolemConst('uminus'), '1.0.1'))
-        calc.perform_rule(rules.FullSimplify())
+        new_expr = parser.parse_expr("SKOLEM_CONST(C)")
+        calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
 
         e = parser.parse_expr("0 = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi")
         goal4 = compstate.Goal(e)
@@ -685,10 +680,184 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         # print(file)
-        # # Test goals are finished
+        # Test goals are finished
         for i in range(4, 9):
             self.assertTrue(file.content[i].is_finished())
-        path = '../examples/diricheletIntegral.json'
+        path = 'integral/examples/diricheletIntegral.json'
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testIntegral01(self):
+        # goal: INT x:[0, 1]. (x ^ a - 1) / log(x) = log(a + 1)
+        file = compstate.CompFile("Integral01")
+
+        # introduce definition
+        e = parser.parse_expr("I(a) = INT x:[0, 1]. (x ^ a - 1) / log(x)")
+        conds = compstate.Conditions()
+        conds.add_condition(str("a>=0"), parser.parse_expr("a>=0"))
+        Idef = compstate.FuncDef(e, conds)
+        file.add_definition(Idef)
+
+        # verify the following equation: D a. I(a) = 1/(a+1)
+        e = parser.parse_expr("(D a. I(a)) = 1/(a+1)")
+        goal1 = compstate.Goal(e, conds)
+        file.add_goal(goal1)
+        proof_of_goal1 = goal1.proof_by_calculation()
+        calc = proof_of_goal1.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
+        calc.perform_rule(rules.DerivIntExchange())
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal1.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        # verify the following equation: I(a) = log(a+1)
+        e = parser.parse_expr("I(0) = 0")
+        goal2 = compstate.Goal(e)
+        file.add_goal(goal2)
+        proof_of_goal2 = goal2.proof_by_calculation()
+        calc = proof_of_goal2.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("I(a) = log(a+1) + SKOLEM_CONST(C)")
+        conds2 = compstate.Conditions()
+        e2 = parser.parse_expr("a>=0")
+        conds2.add_condition(str(e2),e2)
+        goal3 = compstate.Goal(e, conds2)
+        file.add_goal(goal3)
+        proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal1)
+        calc = proof_of_goal3.begin
+        calc.perform_rule(rules.IntegralEquation(var='a'))
+        calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral('C'), '1'))
+        calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
+        new_expr = parser.parse_expr("SKOLEM_CONST(C)")
+        calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
+
+        e = parser.parse_expr("0 = SKOLEM_CONST(C)")
+        goal4 = compstate.Goal(e)
+        file.add_goal(goal4)
+        proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
+        calc = proof_of_goal4.begin
+        calc.perform_rule(rules.VarSubsOfEquation('a', expr.Const(0)))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal2.goal), '0'))
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("I(a) = log(a+1)")
+        conds4 = compstate.Conditions()
+        conds4.add_condition("a>=0", parser.parse_expr("a>=0"))
+        goal5 = compstate.Goal(e, conds4)
+        file.add_goal(goal5)
+        proof_of_goal5 = goal5.proof_by_calculation()
+        calc = proof_of_goal5.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal3.goal))
+        # didn't check condition about goal4
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), '1'))
+        calc.perform_rule(rules.FullSimplify())
+
+        # print(file)
+        for i in range(1, 6):
+            self.assertTrue(file.content[i].is_finished())
+        path = 'integral/examples/integral01.json'
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testFrullaniIntegral(self):
+        file = compstate.CompFile("Frullani Integral")
+
+        e = parser.parse_expr("I(a, b) = INT x:[0, oo]. (atan(a*x) - atan(b*x))/x")
+        conds_of_Idef = compstate.Conditions()
+        e2 = parser.parse_expr("a>0")
+        conds_of_Idef.add_condition(str(e2), e2)
+        e2 = parser.parse_expr("b>0")
+        conds_of_Idef.add_condition(str(e2), e2)
+        Idef = compstate.FuncDef(e, conds_of_Idef)
+        file.add_definition(Idef)
+
+        e = parser.parse_expr("I(a, a) = 0")
+        goal1 = compstate.Goal(e)
+        file.add_goal(goal1)
+        proof_of_goal1 = goal1.proof_by_calculation()
+        calc = proof_of_goal1.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("(D a. I(a,b)) = pi / (2*a)")
+        conds_of_goal2 = compstate.Conditions()
+        e2 = parser.parse_expr("a>0")
+        conds_of_goal2.add_condition(str(e2), e2)
+        goal2 = compstate.Goal(e, conds_of_goal2)
+        file.add_goal(goal2)
+        proof_of_goal2 = goal2.proof_by_calculation()
+        calc = proof_of_goal2.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
+        calc.perform_rule(rules.DerivIntExchange())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ElimInfInterval())
+        new_expr = parser.parse_expr('(a*x)^2')
+        old_expr = parser.parse_expr("a^2*x^2")
+        calc.perform_rule(rules.Equation(new_expr = new_expr, old_expr = old_expr))
+        calc.perform_rule(rules.OnLocation(rules.Substitution('u' , parser.parse_expr("a*x")) ,'0'))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal2.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("I(a,b) = 1/2 * pi * log(a) - SKOLEM_FUNC(C(b))")
+        conds_of_goal3 = compstate.Conditions()
+        e2 = parser.parse_expr("a>0")
+        conds_of_goal3.add_condition(str(e2), e2)
+        goal3 = compstate.Goal(e, conds_of_goal3)
+        file.add_goal(goal3)
+        proof_of_goal3 = goal3.proof_by_rewrite_goal(begin = goal2)
+        calc = proof_of_goal3.begin
+        calc.perform_rule(rules.IntegralEquation(var = 'a'))
+        calc.perform_rule(rules.OnLocation(rules.Simplify(), '1'))
+        calc.perform_rule(rules.OnLocation(rules.Linearity(), '1'))
+        calc.perform_rule(rules.OnSubterm(rules.CommonIndefiniteIntegral(const_name='C')))
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), '1'))
+        new_expr = parser.parse_expr("-SKOLEM_FUNC(C(b))")
+        calc.perform_rule(rules.RewriteSkolemConst(new_expr = new_expr))
+        calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
+        calc.perform_rule(rules.FullSimplify())
+        # calc.perform_rule(rules.OnSubterm(rules.UnfoldRewrite()))
+
+        e = parser.parse_expr("I(a,a) = 1/2 * pi * log(a) - SKOLEM_FUNC(C(a))")
+        conds_of_goal4 = compstate.Conditions()
+        e2 = parser.parse_expr("a>0")
+        conds_of_goal4.add_condition(str(e2), e2)
+        goal4 = compstate.Goal(e, conds_of_goal4)
+        file.add_goal(goal4)
+        proof_of_goal4 = goal4.proof_by_calculation()
+        calc = proof_of_goal4.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(goal3.goal))
+
+        e = parser.parse_expr("SKOLEM_FUNC(C(a)) = 1/2 * pi * log(a)")
+        conds_of_goal5 = compstate.Conditions()
+        e2 = parser.parse_expr("a>0")
+        conds_of_goal5.add_condition(str(e2), e2)
+        goal5 = compstate.Goal(e, conds_of_goal5)
+        file.add_goal(goal5)
+        proof_of_goal5 = goal5.proof_by_calculation()
+        calc = proof_of_goal5.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal4.goal))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal1.goal)))
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("I(a, b) = 1/2 * pi * log(a) - 1/2 * pi * log(b)")
+        conds_of_goal6 = compstate.Conditions()
+        e2 = parser.parse_expr("a>0")
+        conds_of_goal6.add_condition(str(e2), e2)
+        e2 = parser.parse_expr("b>0")
+        conds_of_goal6.add_condition(str(e2), e2)
+        goal6 = compstate.Goal(e, conds_of_goal6)
+        file.add_goal(goal6)
+        proof_of_goal6 = goal6.proof_by_calculation()
+        calc = proof_of_goal6.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal3.goal))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(goal5.goal)))
+        # print(file)
+        for i in range(1, 7):
+            self.assertTrue(file.content[i].is_finished())
+        path = 'integral/examples/FrullaniIntegral.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 if __name__ == "__main__":

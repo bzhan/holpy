@@ -127,14 +127,13 @@ def get_const_vars(e: Expr, conds: Conditions) -> bool:
 
 def is_const(e: Expr, conds: Conditions) -> bool:
     """Return whether conditions imply e is const."""
-    if e.is_const():
+    if e.is_constant():
         return True
-    for a,b in conds.data.items():
-        if b.ty == expr.FUN and b.func_name == 'isConst' and b.args[0] == e:
-            return True
-    # contain vars but doesn't contain const var implies e is not const
-    if not contains_const_var(e, conds) and len(e.get_vars())!=0:
+    if conds == None:
         return False
+    for a, b in conds.data.items():
+        if b.ty == expr.FUN and b.func_name in ('isConst', 'is_const') and b.args[0] == e:
+            return True
     return True
 
 
@@ -149,6 +148,6 @@ def replaceByConds(ex:Expr, conds:Conditions):
                 raise NotImplementedError
             name = str(v.args[0]) if v.args[0].is_var() else v.args[0].func_name
             dep_vars = [] if v.args[0].is_var() else v.args
-            new_c = expr.SkolemConst(name, *dep_vars)
+            new_c = expr.SkolemFunc(name, *dep_vars)
             ex = ex.replace(v.args[0], new_c)
     return ex
