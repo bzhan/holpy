@@ -236,7 +236,11 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
     elif e.ty == expr.INDEFINITEINTEGRAL:
         body = convert_expr(e.body, mode)
         return "\\int %s \\,d%s" % (body, e.var)
-    elif e.ty == expr.SKOLEMCONST:
+    elif e.ty == expr.SKOLEMFUNC:
+        if e.dependent_vars == set():
+            return e.name
+        else:
+            return e.name+'('+', '.join([str(arg) for arg in list(e.dependent_vars)])+')'
         return "%s" % str(e)
     else:
         raise NotImplementedError

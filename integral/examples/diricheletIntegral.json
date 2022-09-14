@@ -15,15 +15,7 @@
             "type": "FuncDef"
         },
         {
-            "conds": [
-                {
-                    "cond": "is_const(C)",
-                    "latex_cond": "C \\ is \\  a \\  const \\  expression",
-                    "name": "is_const(C)",
-                    "type": "Condition"
-                }
-            ],
-            "eq": "I(0) = C",
+            "eq": "I(0) = SKOLEM_CONST(C)",
             "latex_eq": "I{(0)} = C",
             "type": "Assumption"
         },
@@ -208,12 +200,6 @@
         {
             "conds": [
                 {
-                    "cond": "is_const(C)",
-                    "latex_cond": "C \\ is \\  a \\  const \\  expression",
-                    "name": "is_const(C)",
-                    "type": "Condition"
-                },
-                {
                     "cond": "b >= 0",
                     "latex_cond": "b \\ge 0",
                     "name": "b >= 0",
@@ -221,17 +207,11 @@
                 }
             ],
             "finished": true,
-            "goal": "I(b) = -atan(b) + C",
+            "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
             "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
             "proof": {
                 "case_1": {
                     "conds": [
-                        {
-                            "cond": "is_const(C)",
-                            "latex_cond": "C \\ is \\  a \\  const \\  expression",
-                            "name": "is_const(C)",
-                            "type": "Condition"
-                        },
                         {
                             "cond": "b >= 0",
                             "latex_cond": "b \\ge 0",
@@ -246,16 +226,10 @@
                         }
                     ],
                     "finished": true,
-                    "goal": "I(b) = -atan(b) + C",
+                    "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
                     "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
                     "proof": {
                         "conds": [
-                            {
-                                "cond": "is_const(C)",
-                                "latex_cond": "C \\ is \\  a \\  const \\  expression",
-                                "name": "is_const(C)",
-                                "type": "Condition"
-                            },
                             {
                                 "cond": "b >= 0",
                                 "latex_cond": "b \\ge 0",
@@ -270,16 +244,10 @@
                             }
                         ],
                         "finished": true,
-                        "goal": "I(b) = -atan(b) + C",
+                        "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
                         "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
                         "lhs_calc": {
                             "conds": [
-                                {
-                                    "cond": "is_const(C)",
-                                    "latex_cond": "C \\ is \\  a \\  const \\  expression",
-                                    "name": "is_const(C)",
-                                    "type": "Condition"
-                                },
                                 {
                                     "cond": "b >= 0",
                                     "latex_cond": "b \\ge 0",
@@ -307,7 +275,7 @@
                                 },
                                 {
                                     "latex_res": "C",
-                                    "res": "C",
+                                    "res": "SKOLEM_CONST(C)",
                                     "rule": {
                                         "name": "ApplyAssumption",
                                         "str": "apply assumption"
@@ -319,12 +287,6 @@
                         },
                         "rhs_calc": {
                             "conds": [
-                                {
-                                    "cond": "is_const(C)",
-                                    "latex_cond": "C \\ is \\  a \\  const \\  expression",
-                                    "name": "is_const(C)",
-                                    "type": "Condition"
-                                },
                                 {
                                     "cond": "b >= 0",
                                     "latex_cond": "b \\ge 0",
@@ -339,11 +301,11 @@
                                 }
                             ],
                             "latex_start": "-\\arctan{(b)} + C",
-                            "start": "-atan(b) + C",
+                            "start": "-atan(b) + SKOLEM_CONST(C)",
                             "steps": [
                                 {
                                     "latex_res": "C",
-                                    "res": "C",
+                                    "res": "SKOLEM_CONST(C)",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"
@@ -360,12 +322,6 @@
                 "case_2": {
                     "conds": [
                         {
-                            "cond": "is_const(C)",
-                            "latex_cond": "C \\ is \\  a \\  const \\  expression",
-                            "name": "is_const(C)",
-                            "type": "Condition"
-                        },
-                        {
                             "cond": "b >= 0",
                             "latex_cond": "b \\ge 0",
                             "name": "b >= 0",
@@ -379,11 +335,11 @@
                         }
                     ],
                     "finished": true,
-                    "goal": "I(b) = -atan(b) + C",
+                    "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
                     "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
                     "proof": {
                         "finished": true,
-                        "goal": "I(b) = -atan(b) + C",
+                        "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
                         "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
                         "start": {
                             "conds": [
@@ -407,8 +363,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "I{(b)} = \\int -(b ^ {2} + 1) ^ {-1} \\,db",
-                                    "res": "I(b) = (INT b. -((b ^ 2 + 1) ^ -1))",
+                                    "latex_res": "I{(b)} + E = \\int -(b ^ {2} + 1) ^ {-1} \\,db",
+                                    "res": "I(b) + SKOLEM_CONST(E) = (INT b. -((b ^ 2 + 1) ^ -1))",
                                     "rule": {
                                         "name": "integral both side",
                                         "str": "IntegralEquation"
@@ -416,8 +372,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "I{(b)} = -(\\int (b ^ {2} + 1) ^ {-1} \\,db)",
-                                    "res": "I(b) = -(INT b. (b ^ 2 + 1) ^ -1)",
+                                    "latex_res": "I{(b)} + E = -(\\int (b ^ {2} + 1) ^ {-1} \\,db)",
+                                    "res": "I(b) + SKOLEM_CONST(E) = -(INT b. (b ^ 2 + 1) ^ -1)",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"
@@ -425,8 +381,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "I{(b)} = -(\\arctan{(b)} + C)",
-                                    "res": "I(b) = -(atan(b) + C)",
+                                    "latex_res": "I{(b)} + E = -(\\arctan{(b)} + C)",
+                                    "res": "I(b) + SKOLEM_CONST(E) = -(atan(b) + SKOLEM_CONST(C))",
                                     "rule": {
                                         "loc": "1.0",
                                         "name": "CommonIndefiniteIntegral",
@@ -435,21 +391,11 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "I{(b)} = -(\\arctan{(b)} + -C)",
-                                    "res": "I(b) = -(atan(b) + -C)",
-                                    "rule": {
-                                        "loc": "1.0.1",
-                                        "name": "RewriteSkolemConst",
-                                        "str": "RewriteSkolemConst at 1.0.1"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
                                     "latex_res": "I{(b)} = -\\arctan{(b)} + C",
-                                    "res": "I(b) = -atan(b) + C",
+                                    "res": "I(b) = -atan(b) + SKOLEM_CONST(C)",
                                     "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
+                                        "name": "RewriteSkolemConst",
+                                        "str": "RewriteSkolemConst"
                                     },
                                     "type": "CalculationStep"
                                 }
@@ -462,12 +408,6 @@
                 },
                 "conds": [
                     {
-                        "cond": "is_const(C)",
-                        "latex_cond": "C \\ is \\  a \\  const \\  expression",
-                        "name": "is_const(C)",
-                        "type": "Condition"
-                    },
-                    {
                         "cond": "b >= 0",
                         "latex_cond": "b \\ge 0",
                         "name": "b >= 0",
@@ -475,7 +415,7 @@
                     }
                 ],
                 "finished": true,
-                "goal": "I(b) = -atan(b) + C",
+                "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
                 "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
                 "split_cond": "b = 0",
                 "type": "CaseProof"
@@ -493,12 +433,6 @@
                 "start": {
                     "conds": [
                         {
-                            "cond": "is_const(C)",
-                            "latex_cond": "C \\ is \\  a \\  const \\  expression",
-                            "name": "is_const(C)",
-                            "type": "Condition"
-                        },
-                        {
                             "cond": "b >= 0",
                             "latex_cond": "b \\ge 0",
                             "name": "b >= 0",
@@ -506,7 +440,7 @@
                         }
                     ],
                     "latex_start": "I{(b)} = -\\arctan{(b)} + C",
-                    "start": "I(b) = -atan(b) + C",
+                    "start": "I(b) = -atan(b) + SKOLEM_CONST(C)",
                     "steps": [
                         {
                             "latex_res": "I{(b)} = -\\arctan{(b)} + I{(0)}",

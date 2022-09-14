@@ -135,6 +135,10 @@ class ExprTransformer(Transformer):
         return expr.Inf(Decimal("-inf"))
 
     def fun_expr(self, func_name, *args):
+        if func_name == 'SKOLEM_CONST':
+            return expr.SkolemFunc(str(args[0]))
+        elif func_name == 'SKOLEM_FUNC':
+            return expr.SkolemFunc(str(args[0].func_name), *[arg for arg in args[0].args])
         return expr.Fun(func_name, *args)
 
     def abs_expr(self, expr):

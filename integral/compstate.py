@@ -202,12 +202,8 @@ class Goal(StateItem):
         # goal is f(b) = C for b>=0
         # case1: f(b) = C for b>=0 and b=0
         # case2: f(b) = C for b>=0 and b!=0
-        conds1, conds2 = copy.deepcopy(self.conds), copy.deepcopy(self.conds)
         e1 = parser.parse_expr(cond_str)
-        e2 = expr.neg_expr(e1)
-        conds1.add_condition(str(e1), e1)
-        conds2.add_condition(str(e2), e2)
-        self.proof = CaseProof(self.goal, split_cond=e1, conds=self.conds, conds1=conds1, conds2=conds2)
+        self.proof = CaseProof(self.goal, split_cond=e1, conds=self.conds)
         return self.proof
 
     def get_by_label(self, label: Label):
@@ -412,7 +408,7 @@ class InductionProof(StateItem):
         
         # Inductive case:
         eqI = goal.subst(induct_var, Var(induct_var) + 1).normalize()
-        induct_conds = copy(self.conds)
+        induct_conds = copy.copy(self.conds)
         induct_conds.add_condition("IH", self.goal)
         self.induct_case = Goal(eqI, conds=induct_conds)
 
@@ -460,29 +456,31 @@ class InductionProof(StateItem):
 
 class CaseProof(StateItem):
     '''proof an equation by cases'''
-    def __init__(self, goal: Expr, *, conds: Optional[Conditions], split_cond:Expr, \
-                 conds1: Optional[Conditions], conds2: Optional[Conditions]):
+    def __init__(self, goal: Expr, *, conds: Optional[Conditions], split_cond:Expr):
         if not goal.is_equals():
             print(str(goal))
             raise AssertionError("CaseProof: currently only support equation goals.")
         self.goal = goal
         self.conds = conds
         self.split_cond = split_cond
-        self.conds1 = conds1
-        self.conds2 = conds2
+        self.conds1 = copy.deepcopy(conds)
+        self.conds1.add_condition(str(split_cond), split_cond)
+        tmp = expr.neg_expr(split_cond)
+        self.conds2 = copy.deepcopy(conds)
+        self.conds2.add_condition(str(tmp), tmp)
         # case 1:
-        self.case_1 = Goal(goal, conds=conds1)
+        self.case_1 = Goal(goal, conds=self.conds1)
         # case 2:
-        self.case_2 = Goal(goal, conds=conds2)
+        self.case_2 = Goal(goal, conds=self.conds2)
 
     def __str__(self):
         if self.is_finished():
             res = "Proof by cases(finished)\n"
         else:
             res = "Proof by cases\n"
-        res += "case1: %s for %s\n" % (self.case_1.goal, self.conds1.data)
+        res += "case1: %s for %s\n" % (self.case_1.goal, self.conds1.data if self.conds1 != None else "None")
         res += str(self.case_1)
-        res += "case2: %s for %s\n" % (self.case_2.goal, self.conds2.data)
+        res += "case2: %s for %s\n" % (self.case_2.goal, self.conds2.data if self.conds2 != None else "None")
         res += str(self.case_2)
         return res
 
@@ -781,6 +779,16 @@ def parse_item(item) -> StateItem:
         res.base_case = parse_item(item['base_case'])
         res.induct_case = parse_item(item['induct_case'])
         return res
+    elif item['type'] == 'CaseProof':
+        conds = parse_conds(item)
+        goal = parser.parse_expr(item['goal'])
+        split_cond = parser.parse_expr(item['split_cond'])
+        res = CaseProof(goal, conds=conds, split_cond=split_cond)
+        res.case_1 = parse_item(item['case_1'])
+        res.case_2 = parse_item(item['case_2'])
+        return res
+    elif item['type'] == 'RewriteProof':
+        pass
     else:
         raise NotImplementedError
 

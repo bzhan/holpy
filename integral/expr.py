@@ -23,7 +23,7 @@ real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(Re
 
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF, INDEFINITEINTEGRAL, DIFFERENTIAL,\
-    SKOLEMCONST= range(13)
+    SKOLEMFUNC= range(13)
 
 op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50, "<": 50, ">": 50, "<=": 50, ">=": 50, "!=":50
@@ -220,7 +220,7 @@ class Expr:
         return Op("-", self)
 
     def size(self):
-        if self.ty in (VAR, CONST, SYMBOL, INF, SKOLEMCONST):
+        if self.ty in (VAR, CONST, SYMBOL, INF):
             return 1
         elif self.ty in (OP, FUN):
             return 1 + sum(arg.size() for arg in self.args)
@@ -232,6 +232,8 @@ class Expr:
             return 1 + self.lim.size() + self.body.size()
         elif self.ty in (DIFFERENTIAL, INDEFINITEINTEGRAL):
             return 1 + self.body.size()
+        elif self.ty == SKOLEMFUNC:
+            return 1 + len(self.dependent_vars)
         else:
             raise NotImplementedError
 
@@ -252,6 +254,9 @@ class Expr:
 
     def is_deriv(self) -> bool:
         return self.ty == DERIV
+
+    def is_skolem_func(self) -> bool:
+        return self.ty == SKOLEMFUNC
 
     def is_zero(self) -> bool:
         tmp = self.normalize()
@@ -400,7 +405,6 @@ class Expr:
         return self.ty == OP and self.op == '='
 
     def is_v_equals(self):
-        # for example b = 0 , x =f pi/2 +3
         return self.is_equals() and self.args[0].is_var() and self.args[1].is_constant()
 
     def is_not_equals(self):
@@ -432,6 +436,28 @@ class Expr:
 
     def is_inverse_trig(self):
         return self.ty == FUN and self.func_name in ("asin", "acos", "atan", "acot", "acsc", "asec")
+
+    def is_skolem_term(self):
+        if self.get_vars() != set():
+            return False
+        if not self.is_constant():
+            return True
+        else:
+            return False
+
+    def all_dependencies(self):
+        if self.ty == SKOLEMFUNC:
+            return self.dependent_vars
+        elif self.is_constant() or self.ty == VAR:
+            return set()
+        elif self.ty in (OP, FUN):
+            res = set()
+            for arg in self.args:
+                res = res.union(arg.all_dependencies())
+            return res
+        else:
+            raise NotImplementedError
+
 
     @property
     def lhs(self) -> Expr:
@@ -485,7 +511,7 @@ class Expr:
         return not self < other
 
     def priority(self):
-        if self.ty in (VAR, SYMBOL, INF, SKOLEMCONST):
+        if self.ty in (VAR, SYMBOL, INF, SKOLEMFUNC):
             return 100
         elif self.ty == CONST:
             if isinstance(self.val, Fraction) and self.val.denominator != 1:
@@ -625,7 +651,7 @@ class Expr:
                 find(e.lower, loc.append(1))
                 find(e.upper, loc.append(2))
                 find(e.body, loc.append(0))
-            elif e.ty == DERIV or e.ty == LIMIT:
+            elif e.ty == DERIV or e.ty == LIMIT or e.ty == INDEFINITEINTEGRAL:
                 find(e.body, loc.append(0))
         find(self, Location(""))
         return locations
@@ -640,7 +666,7 @@ class Expr:
                 return self
         elif self.ty == CONST:
             return self
-        elif self.ty == SKOLEMCONST:
+        elif self.ty == SKOLEMFUNC:
             return self
         elif self.ty == SYMBOL:
             return self
@@ -682,7 +708,7 @@ class Expr:
             if t.ty == VAR:
                 if t.name not in bd_vars:
                     res.add(t.name)
-            elif t.ty in (CONST, INF, SKOLEMCONST):
+            elif t.ty in (CONST, INF, SKOLEMFUNC):
                 return
             elif t.ty in (OP, FUN):
                 for arg in t.args:
@@ -714,7 +740,7 @@ class Expr:
         assert isinstance(e, Expr) and isinstance(repl_e, Expr)
         if self == e:
             return repl_e
-        elif self.ty in (VAR, CONST, INF, SKOLEMCONST):
+        elif self.ty in (VAR, CONST, INF):
             return self
         elif self.ty == OP:
             return Op(self.op, *[arg.replace(e, repl_e) for arg in self.args])
@@ -728,6 +754,19 @@ class Expr:
         elif self.ty == EVAL_AT:
             return EvalAt(self.var, self.lower.replace(e, repl_e), self.upper.replace(e, repl_e),
                           self.body.replace(e, repl_e))
+        elif self.ty == SKOLEMFUNC:
+            vars = self.dependent_vars
+            if repl_e.is_var():
+                new_vars = set()
+                for v in self.dependent_vars:
+                    new_vars.add(v.replace(e, repl_e))
+                if new_vars == set():
+                    return SkolemFunc(self.name)
+                else:
+                    return SkolemFunc(self.name, *list(new_vars))
+            else:
+                print(self)
+                raise NotImplementedError
         else:
             print(self)
             raise NotImplementedError
@@ -1060,6 +1099,8 @@ class Expr:
                 return poly.singleton(self)
             else:
                 return -poly.singleton(Inf(Decimal("inf")))
+        elif self.ty == INDEFINITEINTEGRAL:
+            return poly.singleton(expr.IndefiniteIntegral(self.var, self.body.normalize()))
         else:
             return poly.singleton(self)
 
@@ -1183,7 +1224,7 @@ class Expr:
         def findv(e, v):
             if e.ty == VAR:
                 v.append(e)
-            elif e.ty in (CONST, INF, SKOLEMCONST):
+            elif e.ty in (CONST, INF, SKOLEMFUNC):
                 return
             elif e.ty == FUN:
                 for arg in e.args:
@@ -1197,6 +1238,8 @@ class Expr:
                 findv(e.body, v)
                 findv(e.upper, v)
                 findv(e.lower, v)
+            elif e.ty == LIMIT:
+                findv(e.body, v)
             else:
                 print(e)
                 raise NotImplementedError
@@ -1323,7 +1366,7 @@ class Expr:
 
     def inst_pat(self, mapping: Dict) -> Expr:
         """Instantiate by replacing symbols in term with mapping."""
-        if self.ty in (VAR, CONST, INF, SKOLEMCONST):
+        if self.ty in (VAR, CONST, INF, SKOLEMFUNC):
             return self
         elif self.ty == SYMBOL:
             assert self in mapping, "inst_pat: %s not found" % self.name
@@ -1347,8 +1390,10 @@ class Expr:
         """Check if var occurs in self"""
         assert isinstance(var, Expr) and var.ty == VAR, \
                         "%s is not a var" % var
-        if self.ty in (VAR, CONST, SKOLEMCONST):
+        if self.ty in (VAR, CONST):
             return self == var
+        elif self.ty == SKOLEMFUNC:
+            return var in self.dependent_vars
         elif self.ty in (OP, FUN):
             return any(subexpr.has_var(var) for subexpr in self.args)
         elif self.ty == DERIV:
@@ -1486,6 +1531,9 @@ def collect_spec_expr(expr, symb):
     return c   
 
 def decompose_expr_add(e):
+    '''
+    a + b - c -> [a, b, -c]
+    '''
     res = []
     def f(e):
         tmp = []
@@ -1686,7 +1734,7 @@ def deriv(var: str, e: Expr) -> Expr:
             elif var not in y.get_vars():
                 return (y * (x ^ (y - 1)) * deriv(var, x)).normalize()
             else:
-                return (e * deriv(var, exp(y * log(x)))).normalize()
+                return deriv(var, exp(y * log(x))).normalize()
         else:
             raise NotImplementedError
     elif e.ty == FUN:
@@ -1902,7 +1950,7 @@ class Limit(Expr):
                                                 , self.body)
 
     def is_indeterminate_form(self):
-        # determine wether e is a indeterminate form limit or not
+        # determine wether e is a indeterminate form
         var, body, lim, drt = self.var, self.body.normalize(), self.lim, self.drt
         if self.drt == None:
             if body.is_constant():
@@ -1918,7 +1966,7 @@ class Limit(Expr):
                     if a0.subst(var, lim).is_const():
                         return False
             else:
-                raise NotImplementedError
+                return False
         else:
             raise NotImplementedError
 
@@ -1986,10 +2034,10 @@ class Differential(Expr):
     def __repr__(self):
         return "Differential(%s)" % repr(self.body)
 
-class SkolemConst(Expr):
+class SkolemFunc(Expr):
 
     def __init__(self, name, *dep_vars):
-        self.ty = SKOLEMCONST
+        self.ty = SKOLEMFUNC
         self.name = name
         self.dependent_vars = set(dep_vars)
 
@@ -1997,13 +2045,12 @@ class SkolemConst(Expr):
         return self.ty == other.ty and self.dependent_vars == other.dependent_vars and self.name==other.name
     def __str__(self):
         if self.dependent_vars == set():
-            return self.name
-
+            return "SKOLEM_CONST(" + self.name + ")"
         else:
             res = []
             for v in sorted(list(self.dependent_vars)):
                 res.append(str(v))
-            return self.name + "(" + ", ".join(res) +")"
+            return "SKOLEM_FUNC(" + self.name + "(" + ", ".join(res) + "))"
 
     def find_free(var:str, ex:Expr):
         res = set(ex.findVar())
@@ -2405,3 +2452,11 @@ def neg_expr(ex:Expr):
         return Op('!=', *ex.args)
     else:
         raise NotImplementedError
+
+def add(items) -> Expr:
+    if len(items) == 1:
+        return items[0]
+    res = items[0]
+    for item in items[1:]:
+        res = res + item
+    return res
