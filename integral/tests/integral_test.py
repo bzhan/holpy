@@ -860,5 +860,33 @@ class IntegralTest(unittest.TestCase):
         path = 'integral/examples/FrullaniIntegral.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testCatalanConstant01(self):
+        file = compstate.CompFile('CatalanConstant01')
+        assumption = parser.parse_expr('G = Summation(n, 0, oo, (-1)^n / (2*n+1)^2)')
+        assume01 = compstate.Assumption(assumption=assumption)
+        file.add_assumption(assume01)
+
+        e = parser.parse_expr("(INT x:[0, 1]. atan(x) / x) = G")
+        goal01 = compstate.Goal(goal=e, conds=None)
+        file.add_goal(goal01)
+        proof_of_goal01 = goal01.proof_by_calculation()
+        calc = proof_of_goal01.lhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ExpandSeries(), '0.0'))
+        old_expr = parser.parse_expr("(-1) ^ n * x ^ (2 * n + 1) / (2 * n + 1)")
+        new_expr = parser.parse_expr("((-1)^n) * (x^(2*n)) * x / (2*n+1)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr,new_expr=new_expr))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntSumExchange())
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal01.rhs_calc
+        calc.perform_rule(rules.ApplyEquation(assume01.assumption))
+        calc.perform_rule(rules.FullSimplify())
+
+        self.assertTrue(file.content[1].is_finished())
+        path = 'integral/examples/CatalanConstant01.json'
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
 if __name__ == "__main__":
     unittest.main()

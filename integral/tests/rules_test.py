@@ -33,7 +33,8 @@ class RulesTest(unittest.TestCase):
              "INT x:[4,9]. sqrt(x) * (sqrt(x) + 1)"),
             ("INT x:[0,pi/2]. (cos(x)^4 * sin(x) ^ 2) /  -(sin(x))",
              "INT x:[0,1/2 * pi]. -(cos(x) ^ 4 * sin(x))"),
-            ('(sqrt(x) - 2) * (sqrt(x) + 2)','(sqrt(x) + 2) * (sqrt(x) - 2)')
+            ('(sqrt(x) - 2) * (sqrt(x) + 2)','(sqrt(x) + 2) * (sqrt(x) - 2)'),
+            ('(-1)^n*x^(2*n+1)/(2*n+1)/x', "x ^ (2 * n) * -1 ^ n * (2 * n + 1) ^ -1"),
         ]
         rule = rules.Simplify()
         for s1, s2 in test_data:
@@ -805,6 +806,17 @@ class RulesTest(unittest.TestCase):
             s = parse_expr(s)
             rules.FullSimplify().eval(s)
             self.assertEqual(str(s), res)
+
+    def testExpandSeries(self):
+        test_data = [
+            ('exp(x)', 'SUM(n, 0, oo, x ^ n / factorial(n))'),
+            ('sin(x)', 'SUM(n, 0, oo, -1 ^ n * x ^ (2 * n + 1) / factorial(2 * n + 1))'),
+            ('atan(x)', 'SUM(n, 0, oo, -1 ^ n * x ^ (2 * n + 1) / (2 * n + 1))')
+        ]
+        for a, b in test_data:
+            e = parser.parse_expr(a)
+            res = rules.ExpandSeries().eval(e)
+            self.assertEqual(str(res), b)
 
 if __name__ == "__main__":
     unittest.main()
