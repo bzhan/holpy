@@ -23,7 +23,7 @@ real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(Re
 
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF, INDEFINITEINTEGRAL, DIFFERENTIAL,\
-    SKOLEMFUNC= range(13)
+    SKOLEMFUNC, SUMMATION= range(14)
 
 op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50, "<": 50, ">": 50, "<=": 50, ">=": 50, "!=":50
@@ -234,6 +234,8 @@ class Expr:
             return 1 + self.body.size()
         elif self.ty == SKOLEMFUNC:
             return 1 + len(self.dependent_vars)
+        elif self.ty == SUMMATION:
+            return 1 + self.lower.size() + self.upper.size() + self.body.size()
         else:
             raise NotImplementedError
 
@@ -527,7 +529,7 @@ class Expr:
                 return op_priority[self.op]
             else:
                 raise NotImplementedError
-        elif self.ty == FUN:
+        elif self.ty in (FUN, SUMMATION):
             return 95
         elif self.ty in (DERIV, INTEGRAL, EVAL_AT, INDEFINITEINTEGRAL, DIFFERENTIAL):
             return 10
@@ -653,6 +655,10 @@ class Expr:
                 find(e.body, loc.append(0))
             elif e.ty == DERIV or e.ty == LIMIT or e.ty == INDEFINITEINTEGRAL:
                 find(e.body, loc.append(0))
+            elif e.ty == SUMMATION:
+                find(e.body, loc.append(0))
+                find(e.lower, loc.append(1))
+                find(e.upper, loc.append(2))
         find(self, Location(""))
         return locations
 
@@ -684,6 +690,8 @@ class Expr:
             return Integral(self.var, self.lower.subst(var, e), self.upper.subst(var, e), self.body.subst(var, e))
         elif self.ty == EVAL_AT:
             return EvalAt(self.var, self.lower.subst(var, e), self.upper.subst(var, e), self.body.subst(var, e))
+        elif self.ty == SUMMATION:
+            return Summation(self.index_var, self.lower.subst(var, e), self.upper.subst(var,e), self.body.subst(var,e))
         else:
             print('subst on', self)
             raise NotImplementedError
@@ -724,6 +732,10 @@ class Expr:
                 rec(t.body, bd_vars + [t.var])
             elif t.ty == INDEFINITEINTEGRAL:
                 rec(t.body, bd_vars + [t.var])
+            elif t.ty == SUMMATION:
+                rec(t.lower, bd_vars + [t.index_var])
+                rec(t.upper, bd_vars + [t.index_var])
+                rec(t.body, bd_vars + [t.index_var])
             else:
                 print(t, type(t))
                 raise NotImplementedError
@@ -1240,6 +1252,10 @@ class Expr:
                 findv(e.lower, v)
             elif e.ty == LIMIT:
                 findv(e.body, v)
+            elif e.ty == SUMMATION:
+                findv(e.lower, v)
+                findv(e.upper, v)
+                findv(e.body, v)
             else:
                 print(e)
                 raise NotImplementedError
@@ -1383,6 +1399,9 @@ class Expr:
                           self.body.inst_pat(mapping))
         elif self.ty == DERIV:
             return Deriv(self.var, self.body.inst_pat(mapping))
+        elif self.ty == SUMMATION:
+            return Summation(self.index_var, self.lower.inst_pat(mapping), self.upper.inst_pat(mapping),\
+                             self.body.inst_pat(mapping))
         else:
             raise NotImplementedError
 
@@ -2245,6 +2264,23 @@ class Symbol(Expr):
     def __repr__(self):
         return "Symbol(%s, %s)" % (self.name, self.pat)
 
+
+class Summation(Expr):
+    def __init__(self, index_var:str, lower:Expr, upper:Expr, body:Expr):
+        self.ty = SUMMATION
+        self.index_var = index_var
+        self.lower = lower
+        self.upper = upper
+        self.body = body
+    def __str__(self):
+        return "SUM("+self.index_var+", "+str(self.lower)+", "+str(self.upper)+", "+str(self.body)+")"
+
+    def __eq__(self, other):
+        return self.ty == other.ty and self.index_var == other.index_var and \
+               self.lower == other.lower and \
+                self.body == other.body
+    def __hash__(self):
+        return hash((SUMMATION, self.index_var, self.ty, self.lower,self.upper,self.body))
 trigFun = {
     "TR0": (TR0, "1 to sin^2 + cos^2"),
     "TR1": (TR1, "sec-csc to cos-sin"),

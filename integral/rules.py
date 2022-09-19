@@ -12,7 +12,7 @@ from integral import poly, expr, conditions
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
     sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, \
     DERIV, decompose_expr_factor, Deriv, Inf, INF, Limit, NEG_INF, POS_INF, IndefiniteIntegral, INDEFINITEINTEGRAL, \
-    SYMBOL, log
+    SYMBOL, log, Summation, SUMMATION
 from integral import parser
 from sympy import Interval, expand_multinomial, apart
 from sympy.solvers import solvers, solveset
@@ -107,7 +107,7 @@ class Linearity(Rule):
                         b = b * f
                 c = c.normalize()
                 b = b.normalize()
-                return (c * Integral(e.var, e.lower, e.upper, b))
+                return c * Integral(e.var, e.lower, e.upper, b)
             elif e.body.is_constant() and e.body != Const(1):
                 return e.body * expr.Integral(e.var, e.lower, e.upper, Const(1))
             else:
@@ -138,6 +138,17 @@ class Linearity(Rule):
                     return e
             else:
                 return e
+        elif e.ty == SUMMATION:
+            factors = decompose_expr_factor(e.body)
+            b, c = Const(1), Const(1)
+            for f in factors:
+                if not f.contains_var(e.index_var):
+                    c = c * f
+                else:
+                    b = b * f
+            c = c.normalize()
+            b = b.normalize()
+            return (c * Summation(e.index_var, e.lower, e.upper, b)).normalize()
         else:
             return e
 
@@ -178,7 +189,7 @@ class CommonIntegral(Rule):
             return EvalAt(e.var, e.lower, e.upper, e.body * Var(e.var))
 
         x = Var(e.var)
-        c = Symbol('c', [CONST, VAR])
+        c = Symbol('c', [CONST, VAR, OP])
         # c = Symbol('c', [CONST])
         rules = [
             (Const(1), None, Var(e.var)),
@@ -186,8 +197,9 @@ class CommonIntegral(Rule):
             (x, None, (x ^ 2) / 2),
             # (x ^ c, lambda m: m[c].val != -1, lambda m: (x ^ Const(m[c].val + 1)) / (Const(m[c].val + 1))),
             # (Const(1) / x ^ c, lambda m: m[c].val != 1, (-c) / (x ^ (c + 1))),
-            (x ^ c, lambda m: isinstance(m[c], Const) and m[c].val != -1 or isinstance(m[c], Var), \
-                        lambda m: (x ^ ((m[c]+ 1).normalize())) / (m[c] + 1).normalize()),
+            (x ^ c, lambda m: isinstance(m[c], Const) and m[c].val != -1 or isinstance(m[c], Var)
+                    or isinstance(m[c], Op) and not m[c].has_var(x),
+                    lambda m: (x ^ ((m[c]+ 1).normalize())) / (m[c] + 1).normalize()),
             (Const(1) / x ^ c, lambda m: isinstance(m[c], Const) and m[c].val != 1, (-c) / (x ^ (c + 1))),
             (expr.sqrt(x), None, Fraction(2,3) * (x ^ Fraction(3,2))),
             (sin(x), None, -cos(x)),
@@ -359,7 +371,10 @@ class OnSubterm(Rule):
         elif e.ty == expr.LIMIT:
             return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, conds=conds)), conds=conds)
         elif e.ty == expr.INDEFINITEINTEGRAL:
-            return rule.eval(expr.IndefiniteIntegral(e.var, rule.eval(e.body)))
+            return rule.eval(expr.IndefiniteIntegral(e.var, self.eval(e.body)), conds=conds)
+        elif e.ty == SUMMATION:
+            return rule.eval(expr.Summation(e.index_var, self.eval(e.lower, conds=conds), self.eval(e.upper, conds=conds),
+                                            self.eval(e.body, conds=conds)), conds=conds)
         else:
             raise NotImplementedError
 
@@ -438,6 +453,16 @@ class OnLocation(Rule):
             elif cur_e.ty == INDEFINITEINTEGRAL:
                 assert loc.head == 0, "OnLocation: invalid location"
                 return IndefiniteIntegral(cur_e.var, rec(cur_e.body, loc.rest))
+            elif cur_e.ty == SUMMATION:
+                if loc.head == 0:
+                    return Summation(cur_e.index_var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest))
+                elif loc.head == 1:
+                    return Summation(cur_e.index_var, rec(cur_e.lower, loc.rest), cur_e.upper, cur_e.body)
+                elif loc.head == 2:
+                    return Summation(cur_e.index_var, cur_e.lower, rec(cur_e.upper, loc.rest), cur_e.body)
+                else:
+                    raise AssertionError("OnLocation: invalid location")
+
             else:
                 raise NotImplementedError
 
@@ -628,7 +653,7 @@ class FullSimplify(Rule):
         return current
 
 class ApplyEquation(Rule):
-    """Apply the given equation to for rewriting.
+    """Apply the given equation for rewriting.
 
     subMap is an optional map from variable name (str) to expressions.
 
@@ -2896,7 +2921,6 @@ class FoldRewrite(Rule):
         return "FoldRewrite"
 
     def eval(self, e:Expr, conds = None):
-        # patter match first : log(a*b) then rewrite as log(a) + log(b)
         a = Symbol('a', [VAR, CONST, OP, FUN])
         b = Symbol('b', [VAR, CONST, OP, FUN])
         rules = [
@@ -2904,7 +2928,6 @@ class FoldRewrite(Rule):
             (log(a / b), log(a) - log(b))
         ]
         for pat, pat_res in rules:
-            # 找到第一个匹配的位置
             pos = expr.find_pattern(e, pat)
             if len(pos) >= 1:
                 mapped_expr, loc, mapping = pos[0]
@@ -2912,8 +2935,64 @@ class FoldRewrite(Rule):
                     return pat_res.inst_pat(mapping)
                 else:
                     return OnLocation(self, loc).eval(e);
-
         return e
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class ExpandSeries(Rule):
+    '''
+    A power series expansion, provided it exists
+    '''
+    def __init__(self, index_var:str = 'n', var:str = 'x'):
+        self.name = "ExpandPowerSeries"
+        self.index_var = index_var
+        self.var = var
+
+    def __str__(self):
+        return "ExpandPowerSeries"
+
+    def eval(self, e:Expr, conds = None):
+        # patter match first : log(a*b) then rewrite as log(a) + log(b)
+        a = Symbol('a', [VAR, CONST, OP, FUN])
+        v = Var(self.var)
+        idx = Var(self.index_var)
+        rules = [
+            (Fun('exp', a), None, Summation(self.index_var, Const(0), POS_INF, (v^idx)/Fun('factorial', idx))),
+            (Fun('sin', a), None, Summation(self.index_var, Const(0), POS_INF, (Const(-1)^idx)*(v^(2*idx+1)) / Fun('factorial', 2*idx+1))),
+            (Fun('atan', a), None, Summation(self.index_var, Const(0), POS_INF, (Const(-1)^idx)*(v^(2*idx+1)) / (2*idx+1))),
+        ]
+        for pat, cond, pat_res in rules:
+            mapping = expr.match(e, pat)
+            if mapping is not None and (cond is None or cond(mapping)):
+                if isinstance(pat_res, expr.Expr):
+                    res = pat_res.inst_pat(mapping)
+                else:
+                    res = pat_res(mapping)
+                return res
+        return e
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class IntSumExchange(Rule):
+    ''' interchange the integral and summation'''
+    def __init__(self):
+        self.name = "IntSumExchange"
+
+    def __str__(self):
+        return "IntSumExchange"
+
+    def eval(self, e:Expr, conds = None):
+        if e.ty == INTEGRAL and e.body.ty == SUMMATION:
+            s = e.body
+            return Summation(s.index_var, s.lower, s.upper, Integral(e.var, e.lower, e.upper, e.body.body))
+        else:
+            raise NotImplementedError
     def export(self):
         return {
             "name": self.name,

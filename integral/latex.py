@@ -60,6 +60,8 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 elif isinstance(x, expr.Fun) and len(x.args) > 0 and x.func_name != "abs":
                     sy = convert_expr(y, mode="short")
                     return "%s^{%s}(%s)" % (x.func_name, sy, convert_expr(x.args[0]))
+                elif isinstance(x, expr.Const) and x.val<0:
+                    return "(%s)^{%s}" % (sx,sy)
                 else:
                     # Ordinary cases
                     sy = convert_expr(y, mode="short")
@@ -242,5 +244,10 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
         else:
             return e.name+'('+', '.join([str(arg) for arg in list(e.dependent_vars)])+')'
         return "%s" % str(e)
+    elif e.ty == expr.SUMMATION:
+        lower = convert_expr(e.lower, mode)
+        upper = convert_expr(e.upper, mode)
+        body = convert_expr(e.body, mode)
+        return "\\sum_{%s=%s}^{%s}{%s}" % (e.index_var, lower, upper, body)
     else:
         raise NotImplementedError

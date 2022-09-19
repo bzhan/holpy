@@ -139,6 +139,8 @@ class ExprTransformer(Transformer):
             return expr.SkolemFunc(str(args[0]))
         elif func_name == 'SKOLEM_FUNC':
             return expr.SkolemFunc(str(args[0].func_name), *[arg for arg in args[0].args])
+        elif func_name == 'Summation':
+            return expr.Summation(str(args[0]), *args[1:])
         return expr.Fun(func_name, *args)
 
     def abs_expr(self, expr):
