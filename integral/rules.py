@@ -1069,6 +1069,9 @@ class Equation(Rule):
             loc = find_res[0]
             return OnLocation(self, loc).eval(e)
         if old_expr == e:
+            r = FullSimplify()
+            if r.eval(e) == r.eval(self.new_expr):
+                return self.new_expr
             if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
                     expand_multinomial(expr.sympy_style(self.old_expr.normalize()).simplify()):
                 raise AssertionError("Rewriting by equation failed")
@@ -1486,8 +1489,8 @@ class LHopital(Rule):
 
         if not (isinstance(e.body, expr.Op) and e.body.op == '/'):
             return e
-        if not e.is_indeterminate_form():
-            return e
+        # if not e.is_indeterminate_form():
+        #     return e
         numerator, denominator = e.body.args
         rule = DerivativeSimplify()
         return expr.Limit(e.var, e.lim, Op('/', rule.eval(Deriv(e.var,numerator)),
@@ -2960,9 +2963,10 @@ class ExpandSeries(Rule):
         v = Var(self.var)
         idx = Var(self.index_var)
         rules = [
-            (Fun('exp', a), None, Summation(self.index_var, Const(0), POS_INF, (v^idx)/Fun('factorial', idx))),
-            (Fun('sin', a), None, Summation(self.index_var, Const(0), POS_INF, (Const(-1)^idx)*(v^(2*idx+1)) / Fun('factorial', 2*idx+1))),
-            (Fun('atan', a), None, Summation(self.index_var, Const(0), POS_INF, (Const(-1)^idx)*(v^(2*idx+1)) / (2*idx+1))),
+            (Fun('exp', a), None, Summation(self.index_var, Const(0), POS_INF, (a^idx)/Fun('factorial', idx))),
+            (Fun('sin', a), None, Summation(self.index_var, Const(0), POS_INF, (Const(-1)^idx)*(a^(2*idx+1)) / Fun('factorial', 2*idx+1))),
+            (Fun('atan', a), None, Summation(self.index_var, Const(0), POS_INF, (Const(-1)^idx)*(a^(2*idx+1)) / (2*idx+1))),
+            ((1+a)^-1, None, Summation(self.index_var, Const(0), POS_INF, (Const(-1)^idx)*(a^idx))),
         ]
         for pat, cond, pat_res in rules:
             mapping = expr.match(e, pat)

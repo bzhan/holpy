@@ -564,6 +564,17 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
             return Limit(-expr.pi/2, side=FROM_ABOVE)
         else:
             return Limit(expr.Fun('atan', l.e))
+    elif e.is_fun() and e.func_name == 'log':
+        l = limit_of_expr(e.args[0], var_name, conds = conds)
+        if l.e is None or l.e == NEG_INF or is_negative(l.e, conds=conds) or \
+            l.e.is_const() and l.e.val==0 and l.side == FROM_BELOW:
+            return Limit(None)
+        elif l.e.is_const() and l.e.val==0 and l.side == FROM_ABOVE:
+            return Limit(NEG_INF, asymp = PolyLog(0, *l.asymp.order), side=FROM_ABOVE)
+        elif l.e == POS_INF:
+            return Limit(POS_INF, asymp=PolyLog(0, *l.asymp.order), side=FROM_BELOW)
+        else:
+            return Limit(expr.Fun('log', l.e))
     else:
         # TODO: add support for other functions
         return Limit(None)

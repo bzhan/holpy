@@ -106,7 +106,7 @@
             "steps": [
                 {
                     "latex_res": "\\lim\\limits_{x\\to 3} (\\,\\frac{-x ^ {-2}}{2 x}\\,)",
-                    "res": "LIM {x -> 3 }. -(x ^ -2) / (2 * x)",
+                    "res": "LIM {x -> 3 }. -(x ^ (-2)) / (2 * x)",
                     "rule": {
                         "name": "LHopital",
                         "str": "l'Hopital's rule"

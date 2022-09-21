@@ -95,10 +95,14 @@ def is_negative(e: Expr, conds: Conditions) -> bool:
             a = e.args[0].args[0]
             if a.ty == expr.OP and a.op == '^' and a.args[1].is_const and a.args[1].val % 2 == 0:
                 return True
+    if conds == None:
+        return False
     for _, cond in conds.data.items():
         if cond.is_less() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val <= 0:
             return True
         if cond.is_less_eq() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val < 0:
+            return True
+        if cond.is_greater() and (cond.args[1] - cond.args[0]).normalize() == e.normalize():
             return True
     return False
 

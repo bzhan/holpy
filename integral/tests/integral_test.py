@@ -888,5 +888,102 @@ class IntegralTest(unittest.TestCase):
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
+    def testCatalanConstant02(self):
+        # goal : INT x:[1,oo]. log(x) / (x^2 + 1)
+        file = compstate.CompFile('CatalanConstant01')
+        assumption = parser.parse_expr('G = Summation(n, 0, oo, (-1)^n / (2*n+1)^2)')
+        assume01 = compstate.Assumption(assumption=assumption)
+        file.add_assumption(assume01)
+        e = parser.parse_expr("I(k) = INT x:[1,oo]. log(x) / (x^k)")
+        conds_of_Idef = compstate.Conditions()
+        e2 = parser.parse_expr("k>1")
+        conds_of_Idef.add_condition(str(e2), e2)
+        Idef = compstate.FuncDef(e,conds=conds_of_Idef)
+        file.add_definition(Idef)
+        e = parser.parse_expr("I(k) = 1/(k-1)^2")
+        conds_of_goal1 = compstate.Conditions()
+        e2 = parser.parse_expr("k>1")
+        conds_of_goal1.add_condition(str(e2), e2)
+        goal1 = compstate.Goal(e, conds=conds_of_goal1)
+        file.add_goal(goal1)
+        proof_of_goal1 = goal1.proof_by_calculation()
+        calc = proof_of_goal1.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        u = parser.parse_expr("log(x)")
+        v = parser.parse_expr("(x^(1-k)) / (1-k)")
+        calc.perform_rule(rules.ElimInfInterval())
+        calc.perform_rule(rules.OnLocation(rules.IntegrationByParts(u=u,v=v), '0'))
+        calc.perform_rule(rules.FullSimplify())
+        old_expr = parser.parse_expr("t ^ (-k + 1) * log(t)")
+        new_expr = parser.parse_expr("log(t) / t^(k-1)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.OnLocation(rules.LHopital(), '0.1'))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal1.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        old_expr=parser.parse_expr("(k-1)^-2")
+        new_expr=parser.parse_expr("(-k+1)^-2")
+        calc.perform_rule(rules.Equation(old_expr=old_expr,new_expr=new_expr))
+
+        e = parser.parse_expr("I(2 * n + 2) = 1/(2*n+1)^2")
+        goal2 = compstate.Goal(e)
+        file.add_goal(goal2)
+        proof_of_goal2 = goal2.proof_by_calculation()
+        calc = proof_of_goal2.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(goal1.goal))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal2.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("I(2*n+2) = INT x:[1,oo]. log(x) / (x^(2*n+2))")
+        goal3 = compstate.Goal(e)
+        file.add_goal(goal3)
+        proof_of_goal3 = goal3.proof_by_calculation()
+        calc = proof_of_goal3.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal3.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("(INT x:[1,oo]. log(x) / x^(2*n+2)) = 1/(2*n+1)^2")
+        goal4 = compstate.Goal(e)
+        file.add_goal(goal4)
+        proof_of_goal4 = goal4.proof_by_calculation()
+        calc = proof_of_goal4.lhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal4.rhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal2.goal))
+        calc.perform_rule(rules.ApplyEquation(goal3.goal))
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("(INT x:[1,oo]. log(x) / (x^2+1)) = G")
+        goal5 = compstate.Goal(e)
+        file.add_goal(goal5)
+        proof_of_goal5 = goal5.proof_by_calculation()
+        calc = proof_of_goal5.lhs_calc
+        old_expr = parser.parse_expr("log(x)/(x^2+1)")
+        new_expr = parser.parse_expr("log(x) * (x^-2) * (1 + (1/x^2))^-1")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.OnLocation(rules.ExpandSeries(), '0.1'))
+        old_expr = parser.parse_expr("log(x) * x ^ (-2) * Summation(n, 0, oo, (-1) ^ n * (1 / x ^ 2) ^ n)")
+        new_expr = parser.parse_expr("Summation(n, 0, oo, (-1) ^ n * ((1 / x ^ 2) ^ n) * log(x) * x ^ -2)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.IntSumExchange())
+        calc.perform_rule(rules.FullSimplify())
+        old_expr = parser.parse_expr("x ^ (-2 * n - 2) * log(x)")
+        new_expr = parser.parse_expr("log(x) / x^(2*n+2)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), '0.1'))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal5.rhs_calc
+        calc.perform_rule(rules.ApplyAssumption(assumption=assume01.assumption, conds=None))
+        calc.perform_rule(rules.FullSimplify())
+
+        for i in range(2,7):
+            self.assertTrue(file.content[i].is_finished())
+        path = 'integral/examples/CatalanConstant02.json'
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
 if __name__ == "__main__":
     unittest.main()
