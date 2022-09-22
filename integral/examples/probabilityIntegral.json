@@ -163,7 +163,7 @@
                         },
                         {
                             "latex_res": "2 (\\int_{0}^{1} t e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 (\\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx) (e^{-1/2\\cdot t ^ {2}} + (\\int_{0}^{t} 0 \\,dx))",
-                            "res": "2 * (INT y:[0,1]. t * exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1 * (-(y ^ 2) - 1)) + 2 * (INT x:[0,t]. exp(-1/2 * x ^ 2)) * (exp(-1/2 * t ^ 2) + (INT x:[0,t]. 0))",
+                            "res": "2 * (INT y:[0,1]. t * exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1) * (-(y ^ 2) - 1)) + 2 * (INT x:[0,t]. exp(-1/2 * x ^ 2)) * (exp(-1/2 * t ^ 2) + (INT x:[0,t]. 0))",
                             "rule": {
                                 "name": "DerivativeSimplify",
                                 "str": "simplify derivative"
@@ -172,7 +172,7 @@
                         },
                         {
                             "latex_res": "2 t (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx)",
-                            "res": "2 * t * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1 * (-(y ^ 2) - 1)) + 2 * exp(-1/2 * t ^ 2) * (INT x:[0,t]. exp(-1/2 * x ^ 2))",
+                            "res": "2 * t * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1) * (-(y ^ 2) - 1)) + 2 * exp(-1/2 * t ^ 2) * (INT x:[0,t]. exp(-1/2 * x ^ 2))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -181,7 +181,7 @@
                         },
                         {
                             "latex_res": "2 t (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} t e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
-                            "res": "2 * t * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1 * (-(y ^ 2) - 1)) + 2 * exp(-1/2 * t ^ 2) * (INT y:[0,1]. t * exp(-1/2 * t ^ 2 * y ^ 2))",
+                            "res": "2 * t * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1) * (-(y ^ 2) - 1)) + 2 * exp(-1/2 * t ^ 2) * (INT y:[0,1]. t * exp(-1/2 * t ^ 2 * y ^ 2))",
                             "rule": {
                                 "latex_str": "substitute \\(y\\) for \\(\\frac{x}{t}\\) at 1.1",
                                 "loc": "1.1",
@@ -194,7 +194,7 @@
                         },
                         {
                             "latex_res": "2 t (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 t e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
-                            "res": "2 * t * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1 * (-(y ^ 2) - 1)) + 2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2))",
+                            "res": "2 * t * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1) * (-(y ^ 2) - 1)) + 2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -266,11 +266,11 @@
         },
         {
             "finished": true,
-            "goal": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_FUNC(C(y))",
+            "goal": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))",
             "latex_goal": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C(y)",
             "proof": {
                 "finished": true,
-                "goal": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_FUNC(C(y))",
+                "goal": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))",
                 "latex_goal": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C(y)",
                 "start": {
                     "latex_start": "\\frac{d}{dt} g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) = 0",
@@ -297,7 +297,7 @@
                         },
                         {
                             "latex_res": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} + E(y) = C",
-                            "res": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) + SKOLEM_FUNC(E(y)) = SKOLEM_CONST(C)",
+                            "res": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) + SKOLEM_FUNC(E(y)) = SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -306,7 +306,7 @@
                         },
                         {
                             "latex_res": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C(y)",
-                            "res": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_FUNC(C(y))",
+                            "res": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))",
                             "rule": {
                                 "name": "RewriteSkolemConst",
                                 "str": "RewriteSkolemConst"
@@ -374,11 +374,11 @@
                 "latex_goal": "\\frac{\\pi}{2} = C(y)",
                 "start": {
                     "latex_start": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C(y)",
-                    "start": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_FUNC(C(y))",
+                    "start": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))",
                     "steps": [
                         {
                             "latex_res": "\\lim\\limits_{t\\to 0} (\\,2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)}\\,) = \\lim\\limits_{t\\to 0} C(y)",
-                            "res": "(LIM {t -> 0 }. 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t)) = (LIM {t -> 0 }. SKOLEM_FUNC(C(y)))",
+                            "res": "(LIM {t -> 0 }. 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t)) = (LIM {t -> 0 }. SKOLEM_FUNC(C(y)))",
                             "rule": {
                                 "name": "LimitEquation",
                                 "str": "LimitEquation"
@@ -424,11 +424,11 @@
         },
         {
             "finished": true,
-            "goal": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi",
+            "goal": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi",
             "latex_goal": "g{(t)} = -2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + \\frac{1}{2} \\pi",
             "proof": {
                 "finished": true,
-                "goal": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi",
+                "goal": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi",
                 "latex_goal": "g{(t)} = -2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + \\frac{1}{2} \\pi",
                 "lhs_calc": {
                     "latex_start": "g{(t)}",
@@ -436,18 +436,18 @@
                     "steps": [
                         {
                             "latex_res": "C(y) - 2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy)",
-                            "res": "SKOLEM_FUNC(C(y)) - 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1)",
+                            "res": "SKOLEM_FUNC(C(y)) - 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1))",
                             "rule": {
-                                "eq": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_FUNC(C(y))",
+                                "eq": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))",
                                 "latex_str": "apply equation \\(2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C(y)\\)",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_FUNC(C(y))"
+                                "str": "apply equation: 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))"
                             },
                             "type": "CalculationStep"
                         },
                         {
                             "latex_res": "\\frac{\\pi}{2} - 2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy)",
-                            "res": "pi / 2 - 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1)",
+                            "res": "pi / 2 - 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1))",
                             "rule": {
                                 "eq": "pi / 2 = SKOLEM_FUNC(C(y))",
                                 "latex_str": "apply equation \\(\\frac{\\pi}{2} = C(y)\\) at 0",
@@ -459,7 +459,7 @@
                         },
                         {
                             "latex_res": "-2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + \\frac{1}{2} \\pi",
-                            "res": "-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi",
+                            "res": "-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -471,7 +471,7 @@
                 },
                 "rhs_calc": {
                     "latex_start": "-2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + \\frac{1}{2} \\pi",
-                    "start": "-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi",
+                    "start": "-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi",
                     "steps": [],
                     "type": "Calculation"
                 },
@@ -528,19 +528,19 @@
                         },
                         {
                             "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\sqrt{-2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + \\frac{1}{2} \\pi})",
-                            "res": "2 * (LIM {t -> oo}. sqrt(-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi))",
+                            "res": "2 * (LIM {t -> oo}. sqrt(-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi))",
                             "rule": {
-                                "eq": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi",
+                                "eq": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi",
                                 "latex_str": "apply equation \\(g{(t)} = -2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + \\frac{1}{2} \\pi\\) on subterms",
                                 "loc": "subterms",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi on subterms"
+                                "str": "apply equation: g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi on subterms"
                             },
                             "type": "CalculationStep"
                         },
                         {
                             "latex_res": "2 \\sqrt{\\lim\\limits_{t\\to \\infty} (\\,-2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + \\frac{1}{2} \\pi\\,)}",
-                            "res": "2 * sqrt(LIM {t -> oo}. -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi)",
+                            "res": "2 * sqrt(LIM {t -> oo}. -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi)",
                             "rule": {
                                 "loc": "1",
                                 "name": "LimFunExchange",
@@ -550,7 +550,7 @@
                         },
                         {
                             "latex_res": "2 \\sqrt{-2 (\\lim\\limits_{t\\to \\infty} \\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + \\frac{1}{2} \\pi}",
-                            "res": "2 * sqrt(-2 * (LIM {t -> oo}. INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi)",
+                            "res": "2 * sqrt(-2 * (LIM {t -> oo}. INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -559,7 +559,7 @@
                         },
                         {
                             "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1}\\,) \\,dy) + \\frac{1}{2} \\pi}",
-                            "res": "2 * sqrt(-2 * (INT y:[0,1]. LIM {t -> oo}. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi)",
+                            "res": "2 * sqrt(-2 * (INT y:[0,1]. LIM {t -> oo}. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi)",
                             "rule": {
                                 "loc": "1.0.0.1",
                                 "name": "LimIntExchange",
@@ -569,7 +569,7 @@
                         },
                         {
                             "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,e^{-1/2\\cdot t ^ {2} (y ^ {2} + 1)} (y ^ {2} + 1) ^ {-1}\\,) \\,dy) + \\frac{1}{2} \\pi}",
-                            "res": "2 * sqrt(-2 * (INT y:[0,1]. LIM {t -> oo}. exp(-1/2 * t ^ 2 * (y ^ 2 + 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi)",
+                            "res": "2 * sqrt(-2 * (INT y:[0,1]. LIM {t -> oo}. exp(-1/2 * t ^ 2 * (y ^ 2 + 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi)",
                             "rule": {
                                 "name": "Equation",
                                 "new_expr": "-1/2 * t ^ 2 * (y ^ 2 + 1)",
@@ -580,7 +580,7 @@
                         },
                         {
                             "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} (y ^ {2} + 1) ^ {-1} (\\lim\\limits_{t\\to \\infty} e^{-1/2\\cdot t ^ {2} (y ^ {2} + 1)}) \\,dy) + \\frac{1}{2} \\pi}",
-                            "res": "2 * sqrt(-2 * (INT y:[0,1]. (y ^ 2 + 1) ^ -1 * (LIM {t -> oo}. exp(-1/2 * t ^ 2 * (y ^ 2 + 1)))) + 1/2 * pi)",
+                            "res": "2 * sqrt(-2 * (INT y:[0,1]. (y ^ 2 + 1) ^ (-1) * (LIM {t -> oo}. exp(-1/2 * t ^ 2 * (y ^ 2 + 1)))) + 1/2 * pi)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -589,7 +589,7 @@
                         },
                         {
                             "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} (y ^ {2} + 1) ^ {-1}\\cdot 0 \\,dy) + \\frac{1}{2} \\pi}",
-                            "res": "2 * sqrt(-2 * (INT y:[0,1]. (y ^ 2 + 1) ^ -1 * 0) + 1/2 * pi)",
+                            "res": "2 * sqrt(-2 * (INT y:[0,1]. (y ^ 2 + 1) ^ (-1) * 0) + 1/2 * pi)",
                             "rule": {
                                 "loc": "1.0.0.1.0.1",
                                 "name": "LimitSimplify",

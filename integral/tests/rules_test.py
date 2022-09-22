@@ -34,7 +34,7 @@ class RulesTest(unittest.TestCase):
             ("INT x:[0,pi/2]. (cos(x)^4 * sin(x) ^ 2) /  -(sin(x))",
              "INT x:[0,1/2 * pi]. -(cos(x) ^ 4 * sin(x))"),
             ('(sqrt(x) - 2) * (sqrt(x) + 2)','(sqrt(x) + 2) * (sqrt(x) - 2)'),
-            ('(-1)^n*x^(2*n+1)/(2*n+1)/x', "x ^ (2 * n) * -1 ^ n * (2 * n + 1) ^ -1"),
+            ('(-1)^n*x^(2*n+1)/(2*n+1)/x', "x ^ (2 * n) * (-1) ^ n * (2 * n + 1) ^ (-1)"),
         ]
         rule = rules.Simplify()
         for s1, s2 in test_data:
@@ -53,7 +53,7 @@ class RulesTest(unittest.TestCase):
              "-2 * (INT t:[0,-1/2]. exp(t))"),
             ("INT x:[-1, 1]. u / (u^2 + 1) + 1 / (u^2 + 1)", 
              "(INT x:[-1,1]. u / (u ^ 2 + 1)) + (INT x:[-1,1]. 1 / (u ^ 2 + 1))"),
-            ("INT x:[0,1]. 1/2 * x ^ 2 * (1 + x ^ 2) ^ -1", "1/2 * (INT x:[0,1]. x ^ 2 * (x ^ 2 + 1) ^ -1)")
+            ("INT x:[0,1]. 1/2 * x ^ 2 * (1 + x ^ 2) ^ -1", "1/2 * (INT x:[0,1]. x ^ 2 * (x ^ 2 + 1) ^ (-1))")
         ]
 
         rule = rules.Linearity()
@@ -70,7 +70,7 @@ class RulesTest(unittest.TestCase):
             ("INT x:[a,b]. x ^ 3", "[x ^ 4 / 4]_x=a,b"),
             ("INT x:[a,b]. x ^ -1", "[log(abs(x))]_x=a,b"),
             ("INT x:[a,b]. 1 / x", "[log(abs(x))]_x=a,b"),
-            ("INT x:[a,b]. 1 / x ^ 2", "[x ^ -1 / -1]_x=a,b"),
+            ("INT x:[a,b]. 1 / x ^ 2", "[x ^ (-1) / -1]_x=a,b"),
             ("INT x:[a,b]. sin(x)", "[-cos(x)]_x=a,b"),
             ("INT x:[a,b]. cos(x)", "[sin(x)]_x=a,b"),
             ("INT x:[a,b]. 1 / (x ^ 2 + 1)", "[atan(x)]_x=a,b"),
@@ -140,7 +140,7 @@ class RulesTest(unittest.TestCase):
     def testSubstitution4(self):
         e = parse_expr("INT x:[1, 4]. 1/(1+sqrt(x))")
         e = rules.Substitution("u", parse_expr("sqrt(x)")).eval(e)
-        self.assertEqual(str(e), "INT u:[1,2]. 2 * u * (u + 1) ^ -1")
+        self.assertEqual(str(e), "INT u:[1,2]. 2 * u * (u + 1) ^ (-1)")
 
     def testSubstitution5(self):
         e = parse_expr("INT t:[0, 1]. t * exp(-(t^2/2))")
@@ -151,12 +151,12 @@ class RulesTest(unittest.TestCase):
         e = parse_expr("INT x:[-2, 0]. (x + 2)/(x^2 + 2*x + 2)")
         e.body = rules.Equation(e.body, parse_expr("((x+1) + 1)/((x+1)*(x+1) + 1)")).eval(e.body)
         e = rules.Substitution("u", parse_expr("x+1")).eval(e)
-        self.assertEqual(str(e), "INT u:[-1,1]. (u + 1) * ((u - 1) ^ 2 + 2 * u) ^ -1")
+        self.assertEqual(str(e), "INT u:[-1,1]. (u + 1) * ((u - 1) ^ 2 + 2 * u) ^ (-1)")
 
     def testSubstitution7(self):
         e = parse_expr("INT x:[3/4, 1]. 1/(sqrt(1-x) - 1)")
         e = rules.Substitution("u", parse_expr("sqrt(1 - x)")).eval(e)
-        self.assertEqual(str(e), "INT u:[0,1/2]. 2 * u * (u - 1) ^ -1")
+        self.assertEqual(str(e), "INT u:[0,1/2]. 2 * u * (u - 1) ^ (-1)")
 
     def testSubstitution8(self):
         e = parse_expr("INT x:[1, exp(1)]. sin(log(x))")
@@ -284,7 +284,7 @@ class RulesTest(unittest.TestCase):
     def testElimAbs2(self):
         test_data = [
             ("INT u:[-2, 3]. 2 * u / (abs(u) + abs(u + 1))",
-             "(INT u:[0,3]. 2 * u * (2 * u + 1) ^ -1) + (INT u:[-2,-1]. 2 * u * (-2 * u - 1) ^ -1) + (INT u:[-1,0]. 2 * u)")
+             "(INT u:[0,3]. 2 * u * (2 * u + 1) ^ (-1)) + (INT u:[-2,-1]. 2 * u * (-2 * u - 1) ^ (-1)) + (INT u:[-1,0]. 2 * u)")
         ]
 
         for s, res in test_data:
@@ -810,8 +810,8 @@ class RulesTest(unittest.TestCase):
     def testExpandSeries(self):
         test_data = [
             ('exp(x)', 'SUM(n, 0, oo, x ^ n / factorial(n))'),
-            ('sin(x)', 'SUM(n, 0, oo, -1 ^ n * x ^ (2 * n + 1) / factorial(2 * n + 1))'),
-            ('atan(x)', 'SUM(n, 0, oo, -1 ^ n * x ^ (2 * n + 1) / (2 * n + 1))')
+            ('sin(x)', 'SUM(n, 0, oo, (-1) ^ n * x ^ (2 * n + 1) / factorial(2 * n + 1))'),
+            ('atan(x)', 'SUM(n, 0, oo, (-1) ^ n * x ^ (2 * n + 1) / (2 * n + 1))')
         ]
         for a, b in test_data:
             e = parser.parse_expr(a)

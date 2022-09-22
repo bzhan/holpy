@@ -519,7 +519,8 @@ class Expr:
             if isinstance(self.val, Fraction) and self.val.denominator != 1:
                 return op_priority['/']
             elif self.val < 0:
-                return 80  # priority of uminus
+                # return 80  # priority of uminus
+                return 74
             else:
                 return 100
         elif self.ty == OP:

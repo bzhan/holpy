@@ -154,7 +154,7 @@
                     "steps": [
                         {
                             "latex_res": "I^{-1}(t) (\\frac{d}{dt} I{(t)}) + t",
-                            "res": "I(t) ^ -1 * (D t. I(t)) + t",
+                            "res": "I(t) ^ (-1) * (D t. I(t)) + t",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -163,7 +163,7 @@
                         },
                         {
                             "latex_res": "I^{-1}(t) (-t I{(t)}) + t",
-                            "res": "I(t) ^ -1 * (-t * I(t)) + t",
+                            "res": "I(t) ^ (-1) * (-t * I(t)) + t",
                             "rule": {
                                 "eq": "(D t. I(t)) = -t * I(t)",
                                 "latex_str": "apply equation \\(\\frac{d}{dt} I{(t)} = -t I{(t)}\\) at 0.1",

@@ -172,7 +172,7 @@
                             "steps": [
                                 {
                                     "latex_res": "\\int_{0}^{\\infty} (x ^ {2} + b) ^ {-1} \\,dx",
-                                    "res": "INT x:[0,oo]. (x ^ 2 + b) ^ -1",
+                                    "res": "INT x:[0,oo]. (x ^ 2 + b) ^ (-1)",
                                     "rule": {
                                         "func_def": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
                                         "name": "ExpandDefinition",
@@ -182,7 +182,7 @@
                                 },
                                 {
                                     "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} (x ^ {2} + b) ^ {-1} \\,dx",
-                                    "res": "LIM {t -> oo}. INT x:[0,t]. (x ^ 2 + b) ^ -1",
+                                    "res": "LIM {t -> oo}. INT x:[0,t]. (x ^ 2 + b) ^ (-1)",
                                     "rule": {
                                         "a": "0",
                                         "name": "ElimInfInterval",
@@ -192,7 +192,7 @@
                                 },
                                 {
                                     "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} ((\\sqrt{b} u) ^ {2} + b) ^ {-1} \\sqrt{b} \\,du",
-                                    "res": "LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. ((sqrt(b) * u) ^ 2 + b) ^ -1 * sqrt(b)",
+                                    "res": "LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. ((sqrt(b) * u) ^ 2 + b) ^ (-1) * sqrt(b)",
                                     "rule": {
                                         "latex_str": "inverse substitution for \\(\\sqrt{b} u\\)",
                                         "name": "SubstitutionInverse",
@@ -204,7 +204,7 @@
                                 },
                                 {
                                     "latex_res": "\\sqrt{b} (\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} (b u ^ {2} + b) ^ {-1} \\,du)",
-                                    "res": "sqrt(b) * (LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. (b * u ^ 2 + b) ^ -1)",
+                                    "res": "sqrt(b) * (LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. (b * u ^ 2 + b) ^ (-1))",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"
@@ -213,11 +213,11 @@
                                 },
                                 {
                                     "latex_res": "\\sqrt{b} (\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} b ^ {-1} (1 + u ^ {2}) ^ {-1} \\,du)",
-                                    "res": "sqrt(b) * (LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. b ^ -1 * (1 + u ^ 2) ^ -1)",
+                                    "res": "sqrt(b) * (LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. b ^ (-1) * (1 + u ^ 2) ^ (-1))",
                                     "rule": {
                                         "name": "Equation",
-                                        "new_expr": "b ^ -1 * (1 + u ^ 2) ^ -1",
-                                        "old_expr": "(b * u ^ 2 + b) ^ -1",
+                                        "new_expr": "b ^ (-1) * (1 + u ^ 2) ^ (-1)",
+                                        "old_expr": "(b * u ^ 2 + b) ^ (-1)",
                                         "str": "rewriting"
                                     },
                                     "type": "CalculationStep"
@@ -323,7 +323,7 @@
                                 },
                                 {
                                     "latex_res": "\\frac{1}{4} \\pi b ^ {-m - 3/2} 2 ^ {-2 m} (m + 1) ^ {-1} (2 m + 1) \\binom{2 m}{m}",
-                                    "res": "1/4 * pi * b ^ (-m - 3/2) * 2 ^ (-2 * m) * (m + 1) ^ -1 * (2 * m + 1) * binom(2 * m,m)",
+                                    "res": "1/4 * pi * b ^ (-m - 3/2) * 2 ^ (-2 * m) * (m + 1) ^ (-1) * (2 * m + 1) * binom(2 * m,m)",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"
@@ -357,7 +357,7 @@
                                 },
                                 {
                                     "latex_res": "\\frac{1}{4} \\pi b ^ {-m - 3/2} 2 ^ {-2 m} (m + 1) ^ {-1} (2 m + 1) \\binom{2 m}{m}",
-                                    "res": "1/4 * pi * b ^ (-m - 3/2) * 2 ^ (-2 * m) * (m + 1) ^ -1 * (2 * m + 1) * binom(2 * m,m)",
+                                    "res": "1/4 * pi * b ^ (-m - 3/2) * 2 ^ (-2 * m) * (m + 1) ^ (-1) * (2 * m + 1) * binom(2 * m,m)",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"

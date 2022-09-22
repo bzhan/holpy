@@ -1,0 +1,104 @@
+{
+    "content": [
+        {
+            "eq": "G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
+            "latex_eq": "G = \\sum_{n=0}^{\\infty}{\\frac{(-1)^{n}}{(2 n + 1) ^ {2}}}",
+            "type": "Assumption"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. atan(x) / x) = G",
+            "latex_goal": "\\int_{0}^{1} \\frac{\\arctan{(x)}}{x} \\,dx = G",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. atan(x) / x) = G",
+                "latex_goal": "\\int_{0}^{1} \\frac{\\arctan{(x)}}{x} \\,dx = G",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\frac{\\arctan{(x)}}{x} \\,dx",
+                    "start": "INT x:[0,1]. atan(x) / x",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} \\frac{\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {2 n + 1}}{2 n + 1}}}{x} \\,dx",
+                            "res": "INT x:[0,1]. SUM(n, 0, oo, (-1) ^ n * x ^ (2 * n + 1) / (2 * n + 1)) / x",
+                            "rule": {
+                                "loc": "0.0",
+                                "name": "ExpandPowerSeries",
+                                "str": "ExpandPowerSeries at 0.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} \\frac{\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {2 n} x}{2 n + 1}}}{x} \\,dx",
+                            "res": "INT x:[0,1]. SUM(n, 0, oo, (-1) ^ n * x ^ (2 * n) * x / (2 * n + 1)) / x",
+                            "rule": {
+                                "name": "Equation",
+                                "new_expr": "(-1) ^ n * x ^ (2 * n) * x / (2 * n + 1)",
+                                "old_expr": "(-1) ^ n * x ^ (2 * n + 1) / (2 * n + 1)",
+                                "str": "rewriting"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} \\sum_{n=0}^{\\infty}{x ^ {2 n} (-1)^{n} (2 n + 1) ^ {-1}} \\,dx",
+                            "res": "INT x:[0,1]. SUM(n, 0, oo, x ^ (2 * n) * (-1) ^ n * (2 * n + 1) ^ (-1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\int_{0}^{1} x ^ {2 n} (-1)^{n} (2 n + 1) ^ {-1} \\,dx}",
+                            "res": "SUM(n, 0, oo, INT x:[0,1]. x ^ (2 * n) * (-1) ^ n * (2 * n + 1) ^ (-1))",
+                            "rule": {
+                                "name": "IntSumExchange",
+                                "str": "IntSumExchange"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1)^{n} (2 n + 1) ^ {-2}}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n * (2 * n + 1) ^ (-2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "G",
+                    "start": "G",
+                    "steps": [
+                        {
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n}}{(2 n + 1) ^ {2}}}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
+                            "rule": {
+                                "eq": "G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
+                                "latex_str": "apply equation \\(G = \\sum_{n=0}^{\\infty}{\\frac{(-1)^{n}}{(2 n + 1) ^ {2}}}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1)^{n} (2 n + 1) ^ {-2}}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n * (2 * n + 1) ^ (-2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "CatalanConstant01"
+}

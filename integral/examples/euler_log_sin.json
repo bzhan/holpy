@@ -189,7 +189,7 @@
                         },
                         {
                             "latex_res": "\\frac{1}{2} \\pi \\log{(2 a ^ {-1})} + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\cos{(x)})} \\,dx) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(x)})} \\,dx)",
-                            "res": "1/2 * pi * log(2 * a ^ -1) + (INT x:[0,1/2 * pi]. log(a * cos(x))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "res": "1/2 * pi * log(2 * a ^ (-1)) + (INT x:[0,1/2 * pi]. log(a * cos(x))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -198,7 +198,7 @@
                         },
                         {
                             "latex_res": "\\frac{1}{2} \\pi \\log{(2 a ^ {-1})} + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\cos{(\\frac{1}{2} \\pi - t)})} \\,dt) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(x)})} \\,dx)",
-                            "res": "1/2 * pi * log(2 * a ^ -1) + (INT t:[0,1/2 * pi]. log(a * cos(1/2 * pi - t))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "res": "1/2 * pi * log(2 * a ^ (-1)) + (INT t:[0,1/2 * pi]. log(a * cos(1/2 * pi - t))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
                             "rule": {
                                 "latex_str": "substitute \\(t\\) for \\(\\frac{\\pi}{2} - x\\) at 0.1",
                                 "loc": "0.1",
@@ -211,7 +211,7 @@
                         },
                         {
                             "latex_res": "\\frac{1}{2} \\pi \\log{(2 a ^ {-1})} + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(x)})} \\,dx) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(x)})} \\,dx)",
-                            "res": "1/2 * pi * log(2 * a ^ -1) + (INT x:[0,1/2 * pi]. log(a * sin(x))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "res": "1/2 * pi * log(2 * a ^ (-1)) + (INT x:[0,1/2 * pi]. log(a * sin(x))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
                             "rule": {
                                 "latex_str": "substitute \\(x\\) for \\(t\\) at 0.1",
                                 "loc": "0.1",
@@ -224,7 +224,7 @@
                         },
                         {
                             "latex_res": "\\frac{1}{2} \\pi \\log{(2 a ^ {-1})} + 2 (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(x)})} \\,dx)",
-                            "res": "1/2 * pi * log(2 * a ^ -1) + 2 * (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "res": "1/2 * pi * log(2 * a ^ (-1)) + 2 * (INT x:[0,1/2 * pi]. log(a * sin(x)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -251,7 +251,7 @@
                         },
                         {
                             "latex_res": "\\frac{1}{2} \\pi \\log{(2 a ^ {-1})} + 2 (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(x)})} \\,dx)",
-                            "res": "1/2 * pi * log(2 * a ^ -1) + 2 * (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "res": "1/2 * pi * log(2 * a ^ (-1)) + 2 * (INT x:[0,1/2 * pi]. log(a * sin(x)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -301,7 +301,7 @@
                         },
                         {
                             "latex_res": "-\\frac{1}{2} \\pi \\log{(2 a ^ {-1})}",
-                            "res": "-1/2 * pi * log(2 * a ^ -1)",
+                            "res": "-1/2 * pi * log(2 * a ^ (-1))",
                             "rule": {
                                 "lhs": "I(a)",
                                 "name": "IntegrateByEquation",
@@ -311,7 +311,7 @@
                         },
                         {
                             "latex_res": "-\\frac{1}{2} \\pi (\\log{(2)} + \\log{(a ^ {-1})})",
-                            "res": "-1/2 * pi * (log(2) + log(a ^ -1))",
+                            "res": "-1/2 * pi * (log(2) + log(a ^ (-1)))",
                             "rule": {
                                 "name": "RewriteLog",
                                 "str": "RewriteLog"

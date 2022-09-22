@@ -18,11 +18,11 @@
         },
         {
             "latex_start": "\\int_{0}^{1} (3 x + 1) ^ {-2} \\,dx",
-            "start": "INT x:[0,1]. (3 * x + 1) ^ -2",
+            "start": "INT x:[0,1]. (3 * x + 1) ^ (-2)",
             "steps": [
                 {
                     "latex_res": "\\int_{1}^{4} \\frac{1}{3} u ^ {-2} \\,du",
-                    "res": "INT u:[1,4]. 1/3 * u ^ -2",
+                    "res": "INT u:[1,4]. 1/3 * u ^ (-2)",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(3 x + 1\\)",
                         "name": "Substitution",
@@ -241,7 +241,7 @@
                 },
                 {
                     "latex_res": "-45 e - \\frac{3}{2} e^{2} + \\frac{1}{3} e^{3} + \\frac{277}{6} - 123 (\\int_{4}^{e + 3} (x - 3) ^ {-1} \\,dx)",
-                    "res": "-45 * exp(1) - 3/2 * exp(2) + 1/3 * exp(3) + 277/6 - 123 * (INT x:[4,exp(1) + 3]. (x - 3) ^ -1)",
+                    "res": "-45 * exp(1) - 3/2 * exp(2) + 1/3 * exp(3) + 277/6 - 123 * (INT x:[4,exp(1) + 3]. (x - 3) ^ (-1))",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -250,7 +250,7 @@
                 },
                 {
                     "latex_res": "-45 e - \\frac{3}{2} e^{2} + \\frac{1}{3} e^{3} + \\frac{277}{6} - 123 (\\int_{1}^{e} u ^ {-1} \\,du)",
-                    "res": "-45 * exp(1) - 3/2 * exp(2) + 1/3 * exp(3) + 277/6 - 123 * (INT u:[1,exp(1)]. u ^ -1)",
+                    "res": "-45 * exp(1) - 3/2 * exp(2) + 1/3 * exp(3) + 277/6 - 123 * (INT u:[1,exp(1)]. u ^ (-1))",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(x - 3\\)",
                         "name": "Substitution",
@@ -718,7 +718,7 @@
                 },
                 {
                     "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{(u)} \\sin^{-2}(u) \\sqrt{-\\sin^{2}(u) + 1} \\,du",
-                    "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ -2 * sqrt(-(sin(u) ^ 2) + 1)",
+                    "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ (-2) * sqrt(-(sin(u) ^ 2) + 1)",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -727,7 +727,7 @@
                 },
                 {
                     "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{(u)} \\sin^{-2}(u) \\sqrt{\\cos^{2}(u)} \\,du",
-                    "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ -2 * sqrt(cos(u) ^ 2)",
+                    "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ (-2) * sqrt(cos(u) ^ 2)",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(-\\sin^{2}(u) + 1\\)",
                         "name": "RewriteTrigonometric",
@@ -739,7 +739,7 @@
                 },
                 {
                     "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{(u)} \\sin^{-2}(u) \\left| \\cos{(u)} \\right| \\,du",
-                    "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ -2 * abs(cos(u))",
+                    "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ (-2) * abs(cos(u))",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -748,7 +748,7 @@
                 },
                 {
                     "latex_res": "\\int_{\\pi/4}^{\\pi/2} \\cos{(u)} \\sin^{-2}(u) \\cos{(u)} \\,du",
-                    "res": "INT u:[pi / 4,pi / 2]. cos(u) * sin(u) ^ -2 * cos(u)",
+                    "res": "INT u:[pi / 4,pi / 2]. cos(u) * sin(u) ^ (-2) * cos(u)",
                     "rule": {
                         "name": "ElimAbs",
                         "str": "eliminate absolute values"
@@ -757,7 +757,7 @@
                 },
                 {
                     "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos^{2}(u) \\sin^{-2}(u) \\,du",
-                    "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) ^ 2 * sin(u) ^ -2",
+                    "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) ^ 2 * sin(u) ^ (-2)",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -766,7 +766,7 @@
                 },
                 {
                     "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} (1 - \\sin^{2}(u)) \\sin^{-2}(u) \\,du",
-                    "res": "INT u:[1/4 * pi,1/2 * pi]. (1 - sin(u) ^ 2) * sin(u) ^ -2",
+                    "res": "INT u:[1/4 * pi,1/2 * pi]. (1 - sin(u) ^ 2) * sin(u) ^ (-2)",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(\\cos^{2}(u)\\)",
                         "name": "RewriteTrigonometric",
@@ -778,7 +778,7 @@
                 },
                 {
                     "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\sin^{-2}(u) - 1 \\,du",
-                    "res": "INT u:[1/4 * pi,1/2 * pi]. sin(u) ^ -2 - 1",
+                    "res": "INT u:[1/4 * pi,1/2 * pi]. sin(u) ^ (-2) - 1",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -787,7 +787,7 @@
                 },
                 {
                     "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\sin^{-2}(u) \\,du) - \\frac{1}{4} \\pi",
-                    "res": "(INT u:[1/4 * pi,1/2 * pi]. sin(u) ^ -2) - 1/4 * pi",
+                    "res": "(INT u:[1/4 * pi,1/2 * pi]. sin(u) ^ (-2)) - 1/4 * pi",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -800,9 +800,9 @@
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(\\sin^{-2}(u)\\)",
                         "name": "RewriteTrigonometric",
-                        "rewrite_term": "sin(u) ^ -2",
+                        "rewrite_term": "sin(u) ^ (-2)",
                         "rule_name": "TR111",
-                        "str": "rewrite trigonometric on sin(u) ^ -2"
+                        "str": "rewrite trigonometric on sin(u) ^ (-2)"
                     },
                     "type": "CalculationStep"
                 },
@@ -861,7 +861,7 @@
             "steps": [
                 {
                     "latex_res": "\\int_{1}^{2} 2 u (u + 1) ^ {-1} \\,du",
-                    "res": "INT u:[1,2]. 2 * u * (u + 1) ^ -1",
+                    "res": "INT u:[1,2]. 2 * u * (u + 1) ^ (-1)",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(\\sqrt{x}\\)",
                         "name": "Substitution",
@@ -873,7 +873,7 @@
                 },
                 {
                     "latex_res": "\\int_{2}^{3} v ^ {-1} (2 v - 2) \\,dv",
-                    "res": "INT v:[2,3]. v ^ -1 * (2 * v - 2)",
+                    "res": "INT v:[2,3]. v ^ (-1) * (2 * v - 2)",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(u + 1\\)",
                         "name": "Substitution",
@@ -885,7 +885,7 @@
                 },
                 {
                     "latex_res": "\\int_{2}^{3} -2 v ^ {-1} + 2 \\,dv",
-                    "res": "INT v:[2,3]. -2 * v ^ -1 + 2",
+                    "res": "INT v:[2,3]. -2 * v ^ (-1) + 2",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -910,7 +910,7 @@
             "steps": [
                 {
                     "latex_res": "\\int_{0}^{1/2} 2 u (u - 1) ^ {-1} \\,du",
-                    "res": "INT u:[0,1/2]. 2 * u * (u - 1) ^ -1",
+                    "res": "INT u:[0,1/2]. 2 * u * (u - 1) ^ (-1)",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(\\sqrt{1 - x}\\)",
                         "name": "Substitution",
@@ -922,7 +922,7 @@
                 },
                 {
                     "latex_res": "\\int_{-1}^{-1/2} v ^ {-1} (2 v + 2) \\,dv",
-                    "res": "INT v:[-1,-1/2]. v ^ -1 * (2 * v + 2)",
+                    "res": "INT v:[-1,-1/2]. v ^ (-1) * (2 * v + 2)",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(u - 1\\)",
                         "name": "Substitution",
@@ -934,7 +934,7 @@
                 },
                 {
                     "latex_res": "\\int_{-1}^{-1/2} 2 v ^ {-1} + 2 \\,dv",
-                    "res": "INT v:[-1,-1/2]. 2 * v ^ -1 + 2",
+                    "res": "INT v:[-1,-1/2]. 2 * v ^ (-1) + 2",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -1026,7 +1026,7 @@
                 },
                 {
                     "latex_res": "\\int_{-1}^{1} (u + 1) (u ^ {2} + 1) ^ {-1} \\,du",
-                    "res": "INT u:[-1,1]. (u + 1) * (u ^ 2 + 1) ^ -1",
+                    "res": "INT u:[-1,1]. (u + 1) * (u ^ 2 + 1) ^ (-1)",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(x + 1\\)",
                         "name": "Substitution",
@@ -1038,7 +1038,7 @@
                 },
                 {
                     "latex_res": "\\int_{-1}^{1} u (u ^ {2} + 1) ^ {-1} + (u ^ {2} + 1) ^ {-1} \\,du",
-                    "res": "INT u:[-1,1]. u * (u ^ 2 + 1) ^ -1 + (u ^ 2 + 1) ^ -1",
+                    "res": "INT u:[-1,1]. u * (u ^ 2 + 1) ^ (-1) + (u ^ 2 + 1) ^ (-1)",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -1047,7 +1047,7 @@
                 },
                 {
                     "latex_res": "(\\int_{-1}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + \\frac{1}{2} \\pi",
-                    "res": "(INT u:[-1,1]. u * (u ^ 2 + 1) ^ -1) + 1/2 * pi",
+                    "res": "(INT u:[-1,1]. u * (u ^ 2 + 1) ^ (-1)) + 1/2 * pi",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -1056,7 +1056,7 @@
                 },
                 {
                     "latex_res": "(\\int_{-1}^{0} u (u ^ {2} + 1) ^ {-1} \\,du) + (\\int_{0}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + \\frac{1}{2} \\pi",
-                    "res": "(INT u:[-1,0]. u * (u ^ 2 + 1) ^ -1) + (INT u:[0,1]. u * (u ^ 2 + 1) ^ -1) + 1/2 * pi",
+                    "res": "(INT u:[-1,0]. u * (u ^ 2 + 1) ^ (-1)) + (INT u:[0,1]. u * (u ^ 2 + 1) ^ (-1)) + 1/2 * pi",
                     "rule": {
                         "c": "0",
                         "name": "SplitRegion",
@@ -1066,7 +1066,7 @@
                 },
                 {
                     "latex_res": "(\\int_{1}^{2} -\\frac{1}{2} v ^ {-1} \\,dv) + (\\int_{0}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + \\frac{1}{2} \\pi",
-                    "res": "(INT v:[1,2]. -1/2 * v ^ -1) + (INT u:[0,1]. u * (u ^ 2 + 1) ^ -1) + 1/2 * pi",
+                    "res": "(INT v:[1,2]. -1/2 * v ^ (-1)) + (INT u:[0,1]. u * (u ^ 2 + 1) ^ (-1)) + 1/2 * pi",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(u ^ {2} + 1\\)",
                         "name": "Substitution",
@@ -1078,7 +1078,7 @@
                 },
                 {
                     "latex_res": "(\\int_{0}^{1} u (u ^ {2} + 1) ^ {-1} \\,du) + (-\\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\pi)",
-                    "res": "(INT u:[0,1]. u * (u ^ 2 + 1) ^ -1) + (-1/2 * log(2) + 1/2 * pi)",
+                    "res": "(INT u:[0,1]. u * (u ^ 2 + 1) ^ (-1)) + (-1/2 * log(2) + 1/2 * pi)",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -1087,7 +1087,7 @@
                 },
                 {
                     "latex_res": "(\\int_{1}^{2} \\frac{1}{2} v ^ {-1} \\,dv) + (-\\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\pi)",
-                    "res": "(INT v:[1,2]. 1/2 * v ^ -1) + (-1/2 * log(2) + 1/2 * pi)",
+                    "res": "(INT v:[1,2]. 1/2 * v ^ (-1)) + (-1/2 * log(2) + 1/2 * pi)",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(u ^ {2} + 1\\)",
                         "name": "Substitution",
@@ -1457,7 +1457,7 @@
                 },
                 {
                     "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi + \\frac{1}{4} \\pi + (\\int_{1/2\\cdot \\sqrt{2}}^{1/2\\cdot \\sqrt{3}} u ^ {-1} \\,du)",
-                    "res": "-1/9 * sqrt(3) * pi + 1/4 * pi + (INT u:[1/2 * sqrt(2),1/2 * sqrt(3)]. u ^ -1)",
+                    "res": "-1/9 * sqrt(3) * pi + 1/4 * pi + (INT u:[1/2 * sqrt(2),1/2 * sqrt(3)]. u ^ (-1))",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(\\sin{(x)}\\)",
                         "name": "Substitution",
@@ -1513,7 +1513,7 @@
             "steps": [
                 {
                     "latex_res": "(\\left. \\frac{1}{2} x ^ {2} \\arctan{(x)} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{1}{2} x ^ {2} (x ^ {2} + 1) ^ {-1} \\,dx)",
-                    "res": "([1/2 * x ^ 2 * atan(x)]_x=0,1) - (INT x:[0,1]. 1/2 * x ^ 2 * (x ^ 2 + 1) ^ -1)",
+                    "res": "([1/2 * x ^ 2 * atan(x)]_x=0,1) - (INT x:[0,1]. 1/2 * x ^ 2 * (x ^ 2 + 1) ^ (-1))",
                     "rule": {
                         "latex_str": "integrate by parts \\(u \\to \\frac{\\arctan{(x)}}{2}, v \\to x ^ {2}\\)",
                         "name": "IntegrationByParts",
@@ -1525,7 +1525,7 @@
                 },
                 {
                     "latex_res": "-\\frac{1}{2} (\\int_{0}^{1} x ^ {2} (x ^ {2} + 1) ^ {-1} \\,dx) + \\frac{1}{8} \\pi",
-                    "res": "-1/2 * (INT x:[0,1]. x ^ 2 * (x ^ 2 + 1) ^ -1) + 1/8 * pi",
+                    "res": "-1/2 * (INT x:[0,1]. x ^ 2 * (x ^ 2 + 1) ^ (-1)) + 1/8 * pi",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"

@@ -6,7 +6,7 @@
             "steps": [
                 {
                     "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\sin{(\\frac{1}{2} \\pi - y)}} (\\sqrt{\\cos{(\\frac{1}{2} \\pi - y)}} + \\sqrt{\\sin{(\\frac{1}{2} \\pi - y)}}) ^ {-1} \\,dy",
-                    "res": "INT y:[0,1/2 * pi]. sqrt(sin(1/2 * pi - y)) * (sqrt(cos(1/2 * pi - y)) + sqrt(sin(1/2 * pi - y))) ^ -1",
+                    "res": "INT y:[0,1/2 * pi]. sqrt(sin(1/2 * pi - y)) * (sqrt(cos(1/2 * pi - y)) + sqrt(sin(1/2 * pi - y))) ^ (-1)",
                     "rule": {
                         "latex_str": "substitute \\(y\\) for \\(\\frac{\\pi}{2} - x\\)",
                         "name": "Substitution",
@@ -18,7 +18,7 @@
                 },
                 {
                     "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\cos{(y)}} (\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}) ^ {-1} \\,dy",
-                    "res": "INT y:[0,1/2 * pi]. sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ -1",
+                    "res": "INT y:[0,1/2 * pi]. sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1)",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -31,14 +31,14 @@
                     "rule": {
                         "name": "Equation",
                         "new_expr": "1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))",
-                        "old_expr": "sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ -1",
+                        "old_expr": "sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1)",
                         "str": "rewriting"
                     },
                     "type": "CalculationStep"
                 },
                 {
                     "latex_res": "-(\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\sin{(y)}} (\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}) ^ {-1} \\,dy) + \\frac{1}{2} \\pi",
-                    "res": "-(INT y:[0,1/2 * pi]. sqrt(sin(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ -1) + 1/2 * pi",
+                    "res": "-(INT y:[0,1/2 * pi]. sqrt(sin(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1)) + 1/2 * pi",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -49,7 +49,7 @@
                     "latex_res": "\\frac{1}{4} \\pi",
                     "res": "1/4 * pi",
                     "rule": {
-                        "lhs": "INT x:[0,1/2 * pi]. sqrt(sin(x)) * (sqrt(cos(x)) + sqrt(sin(x))) ^ -1",
+                        "lhs": "INT x:[0,1/2 * pi]. sqrt(sin(x)) * (sqrt(cos(x)) + sqrt(sin(x))) ^ (-1)",
                         "name": "IntegrateByEquation",
                         "str": "integrate by equation"
                     },
@@ -64,7 +64,7 @@
             "steps": [
                 {
                     "latex_res": "\\int_{0}^{\\pi} (\\pi - y) \\sin{(\\pi - y)} (\\cos^{2}(\\pi - y) + 1) ^ {-1} \\,dy",
-                    "res": "INT y:[0,pi]. (pi - y) * sin(pi - y) * (cos(pi - y) ^ 2 + 1) ^ -1",
+                    "res": "INT y:[0,pi]. (pi - y) * sin(pi - y) * (cos(pi - y) ^ 2 + 1) ^ (-1)",
                     "rule": {
                         "latex_str": "substitute \\(y\\) for \\(\\pi - x\\)",
                         "name": "Substitution",
@@ -76,7 +76,7 @@
                 },
                 {
                     "latex_res": "\\int_{0}^{\\pi} -y \\sin{(\\pi - y)} (\\cos^{2}(\\pi - y) + 1) ^ {-1} + \\pi \\sin{(\\pi - y)} (\\cos^{2}(\\pi - y) + 1) ^ {-1} \\,dy",
-                    "res": "INT y:[0,pi]. -(y * sin(pi - y) * (cos(pi - y) ^ 2 + 1) ^ -1) + pi * sin(pi - y) * (cos(pi - y) ^ 2 + 1) ^ -1",
+                    "res": "INT y:[0,pi]. -(y * sin(pi - y) * (cos(pi - y) ^ 2 + 1) ^ (-1)) + pi * sin(pi - y) * (cos(pi - y) ^ 2 + 1) ^ (-1)",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -85,7 +85,7 @@
                 },
                 {
                     "latex_res": "\\pi (\\int_{0}^{\\pi} \\sin{(y)} (\\cos^{2}(y) + 1) ^ {-1} \\,dy) - (\\int_{0}^{\\pi} y \\sin{(y)} (\\cos^{2}(y) + 1) ^ {-1} \\,dy)",
-                    "res": "pi * (INT y:[0,pi]. sin(y) * (cos(y) ^ 2 + 1) ^ -1) - (INT y:[0,pi]. y * sin(y) * (cos(y) ^ 2 + 1) ^ -1)",
+                    "res": "pi * (INT y:[0,pi]. sin(y) * (cos(y) ^ 2 + 1) ^ (-1)) - (INT y:[0,pi]. y * sin(y) * (cos(y) ^ 2 + 1) ^ (-1))",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -94,9 +94,9 @@
                 },
                 {
                     "latex_res": "\\frac{1}{2} \\pi (\\int_{0}^{\\pi} \\sin{(y)} (\\cos^{2}(y) + 1) ^ {-1} \\,dy)",
-                    "res": "1/2 * pi * (INT y:[0,pi]. sin(y) * (cos(y) ^ 2 + 1) ^ -1)",
+                    "res": "1/2 * pi * (INT y:[0,pi]. sin(y) * (cos(y) ^ 2 + 1) ^ (-1))",
                     "rule": {
-                        "lhs": "INT x:[0,pi]. x * sin(x) * (cos(x) ^ 2 + 1) ^ -1",
+                        "lhs": "INT x:[0,pi]. x * sin(x) * (cos(x) ^ 2 + 1) ^ (-1)",
                         "name": "IntegrateByEquation",
                         "str": "integrate by equation"
                     },
@@ -104,7 +104,7 @@
                 },
                 {
                     "latex_res": "\\frac{1}{2} \\pi (\\int_{-1}^{1} (u ^ {2} + 1) ^ {-1} \\,du)",
-                    "res": "1/2 * pi * (INT u:[-1,1]. (u ^ 2 + 1) ^ -1)",
+                    "res": "1/2 * pi * (INT u:[-1,1]. (u ^ 2 + 1) ^ (-1))",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(\\cos{(y)}\\)",
                         "name": "Substitution",
