@@ -65,6 +65,9 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
     if e.is_plus():
         if is_positive(e.args[0], conds) and e.args[1].is_power() and e.args[1].args[1].val % 2 == 0:
             return True
+        if is_not_negative(e.args[0], conds) and is_positive(e.args[1],conds):
+            return True
+
 
     if e.is_integral():
         l, h = e.lower, e.upper
@@ -80,6 +83,12 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
                 e.args[1].is_const() and cond.args[1].val + e.args[1].val > 0:
                 return True
 
+    return False
+
+def is_not_negative(e:Expr, conds) -> bool:
+    if e.is_power():
+        if e.args[1] == expr.Const(2):
+            return True
     return False
 
 def is_negative(e: Expr, conds: Conditions) -> bool:

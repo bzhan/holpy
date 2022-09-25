@@ -37,7 +37,7 @@
           <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewrite equation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('RewriteFactorial')">Factorial</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyRule('RewriteBinom')">Binomial coefficients</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="rewriteBinom">Binomial coefficients</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -213,6 +213,18 @@
           <ExprQuery v-model="item.expr"/>
         </div>
         <button v-on:click="doApplyTheoremInst">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'rewrite binom'">
+        <div class="math-text">Select subexpression:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExpr"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
+        <span class="math-text">Rewrite subexpression to</span><br/>
+        <ExprQuery v-model="expr_query1"/>
+        <button v-on:click="doRewriteEquation">OK</button>
       </div>
     </div>
     <div id="select">
@@ -733,7 +745,29 @@ export default {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
       }
-    }
+    },
+
+    rewriteBinom: function() {
+      this.r_query_mode = 'rewrite binom'
+    },
+
+    // doRewriteEquation: async function() {
+    //   const data = {
+    //     item: this.content[this.cur_id],
+    //     selected_item: this.selected_item,
+    //     rule: {
+    //       name: "Equation",
+    //       old_expr: this.selected_expr,
+    //       new_expr: this.expr_query1
+    //     }
+    //   }
+    //   const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+    //   if (response.data.status == 'ok') {
+    //     this.$set(this.content, this.cur_id, response.data.item)
+    //     this.selected_item = response.data.selected_item
+    //     this.r_query_mode = undefined
+    //   }
+    // },
   },
 
   created: function () {

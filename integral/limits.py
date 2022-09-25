@@ -246,6 +246,7 @@ class Limit:
             raise AssertionError("Limit")
         self.asymp = asymp
         self.side = side
+        self.is_bounded = None
     
     def __str__(self):
         return "Limit(%s,%s,%s)" % (self.e, self.asymp, self.side)
@@ -339,7 +340,7 @@ def limit_mult(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit:
     if conds is None:
         conds = Conditions()
 
-    if a.e is None or b.e is None:
+    if a.e is None and a.is_bounded is None or b.e is None and b.is_bounded is None:
         return Limit(None)
     elif a.e == POS_INF and b.e == POS_INF:
         return Limit(POS_INF, asymp=asymp_mult(a.asymp, b.asymp))
@@ -374,6 +375,8 @@ def limit_mult(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit:
         return limit_uminus(limit_mult(limit_uminus(a), b, conds=conds))
     elif b.e == NEG_INF:
         return limit_mult(b, a, conds=conds)
+    elif a.e == Const(0) and b.is_bounded:
+        return Limit(0)
     else:
         res_e = (a.e * b.e).normalize()
         if a.side == TWO_SIDED or b.side == TWO_SIDED:
@@ -514,6 +517,11 @@ def limit_power(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit
                 return Limit(None)
         else:
             raise NotImplementedError
+    elif a.e.ty == expr.VAR:
+        if b.e.ty == expr.CONST:
+            return Limit(a.e^b.e)
+        else:
+            return Limit(None)
     else:
         return Limit(None)
 
@@ -575,6 +583,10 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
             return Limit(POS_INF, asymp=PolyLog(0, *l.asymp.order), side=FROM_BELOW)
         else:
             return Limit(expr.Fun('log', l.e))
+    elif e.is_fun() and e.func_name == 'sin':
+        res = Limit(None)
+        res.is_bounded = True
+        return res
     else:
         # TODO: add support for other functions
         return Limit(None)
