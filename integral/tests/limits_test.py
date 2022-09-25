@@ -221,6 +221,8 @@ class LimitsTest(unittest.TestCase):
             ("exp(-x) * (x ^ 2)", "0"),
             ("(x + 1) / x", None),
             ("atan(x)", "pi/2"),
+            ("-1/2 * x ^ 2 * (y ^ 2 + 1)", "-oo"),
+            ("exp(-1 / 2 * x ^ 2) * sin(t * x)", '0'),
         ]
 
         for a, res in test_data:

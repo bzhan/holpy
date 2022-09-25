@@ -68,25 +68,6 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-t (\\lim\\limits_{u\\to \\infty} \\int_{0}^{u} e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx) + (\\lim\\limits_{u\\to \\infty} (\\,e^{-1/2\\cdot u ^ {2}} \\sin{(t u)}\\,))",
-                            "res": "-(t * (LIM {u -> oo}. INT x:[0,u]. exp(-1/2 * x ^ 2) * cos(t * x))) + (LIM {u -> oo}. exp(-1/2 * u ^ 2) * sin(t * u))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-t (\\lim\\limits_{u\\to \\infty} \\int_{0}^{u} e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx) + 0",
-                            "res": "-(t * (LIM {u -> oo}. INT x:[0,u]. exp(-1/2 * x ^ 2) * cos(t * x))) + 0",
-                            "rule": {
-                                "loc": "1",
-                                "name": "LimitSimplify",
-                                "str": "simplify limits at 1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "-t (\\lim\\limits_{u\\to \\infty} \\int_{0}^{u} e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx)",
                             "res": "-(t * (LIM {u -> oo}. INT x:[0,u]. exp(-1/2 * x ^ 2) * cos(t * x)))",
                             "rule": {

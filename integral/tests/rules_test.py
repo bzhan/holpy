@@ -413,119 +413,6 @@ class RulesTest(unittest.TestCase):
         e = r.eval(e)
         self.assertEqual(str(e), res)
 
-    def testLimitSimplify(self):
-        test_data = [
-            ("LIM {x -> 3}. (5*x*x-8*x-13)/(x*x-5)", "2"),
-            # ("LIM {x -> 2}. (3*x*x-x-10)/(x*x-4)", "11/4"), #LHopital
-            # ("LIM {x -> 3}. (x^4-81)/(2*x*x-5*x-3)", "108/7"), #LHopital
-            #("LIM {x -> -2}. ((1/x)+(1/2))/(x^3+8)", "-1/48"), #LHopital
-            #("LIM {x -> 4}. (3-sqrt(x+5))/(x-4)", "-1/6"), # rewrite
-            # ("LIM {x->27}. (x-27) / (x^(1/3)-3)", "27"),
-            # ("LIM {x->1}. (x^(1/3) - 1) / (x^(1/4)-1)", "4/3"),
-            # ("LIM {x->0}. sin(5*x) / (3*x)", "5/3"),
-            # ("LIM {x->0}. (cos(2*x) - 1) / (cos(x) - 1)", "4"),
-            # ("LIM {x->1}. (x^(1/3) - 1) / (x^(1/4)-1)", "4/3"),
-            # ("LIM {x->0}. sin(5*x) / (3*x)", "5/3"),
-            # ("LIM {x->0}. (cos(2*x) - 1) / (cos(x) - 1)", "4"),
-            # ("LIM {t -> oo}. (-1/t) + 1","1"),
-            # ('LIM {x -> oo}. 100 / (x^2+5)',"0"),
-            # ('LIM {x -> -oo}. 7 / (x^3 - 20)',"0"),
-            # ('LIM {x -> oo}. 3*x^3 - 1000*x^2',"oo"),
-            # ('LIM {x -> -oo}. x^4 + 5*x^2 + 1',"oo"),
-            # ('LIM {x -> oo}. x^5 - x^2 + x - 10',"oo"),
-            # ('LIM {x -> -oo}. (x+7) / (3*x+5)',"1/3"),
-            # ('LIM {x -> oo}. (7*x*x + x - 100) / (2*x^2 - 5 *x)',"7/2"),
-            # ("LIM {x -> oo}. (x^2 - 3*x + 7)/(x^3 + 10*x - 4)","0"),
-            # ('LIM {x -> -oo}. (7 * x * x - x + 11) / (4 - x)',"oo"),
-            # ('LIM {x -> oo}. sqrt(x^3 + 7*x)',"oo"),
-            # ('LIM {x -> oo}. log((x^6-500)/(x^6+500))',"0"),
-            # ('LIM {x -> -oo}. cos(x/(x^2+10) + pi/3)',"1/2"),
-            # ('LIM {x -> -oo}. (x+3) / sqrt(9*x*x - 5 * x)',"-1/3"),  # 分子变成 sqrt((x+3)^2)
-            # ('LIM {x -> oo}. (x+3) / sqrt(9*x*x - 5 * x)',"1/3"),
-            # ("LIM {x -> oo}. sin(x)","sin(oo)"),
-            # ('LIM {x -> oo}. x - sqrt(x*x + 7)',"0"),  # 待解决 分子分母同乘 x + sqrt(x*x + 7)
-            # ('LIM {x -> -oo}. x - sqrt(x*x + 7)',"-oo"),  # 待解决 分子分母同乘 x + sqrt(x*x + 7)
-            # ('LIM {x -> -oo}. exp(x) / (4+5*exp(3*x))',"0"),
-            # # ("LIM {x->0}. (x^3 - 7*x) / (x^3)"),  #极限不存在
-            # # ("LIM {x->1}. (x^3 - 7*x) / (x-1)^2"), #极限不存在
-            # # ("LIM {x-> (pi/2) }. tan(2*x) / (x - pi / 2)"),
-            # # ('LIM {x -> oo}. 5^x / (3^x + 2^x)'),
-            # ("LIM {x -> oo}. (5/3)^x / (1 + (2/3)^x)","oo"),
-            # # ('LIM {x -> oo}. (3^x + 3^(2*x))^(1/x)'),
-            # ('LIM {x -> oo}. 9*((1/3)^x + 1)^(1/x)',"9"),
-            # ('LIM {x -> 0}. sin(x) / x',"1"),  # 特殊极限
-            # ('LIM {x -> 0}. x / sin(x)',"1"),
-            # ('LIM {x -> oo}. (1+(1/x))^x',"exp(1)"),
-            # ('LIM {x -> oo}. ((1/x)+1)^x',"exp(1)"),
-            # ('LIM {x -> oo}. (1+x^(-1))^x',"exp(1)"),
-            # ('LIM {x -> oo}. (x^(-1)+1)^x', "exp(1)"),
-            # ("LIM {x -> 5}. 7","7"),
-            # ("LIM {x -> 10}. (3*x+5)", '35'),
-            # ("LIM {x -> (-3/2)}. (1-4*x)", '7'),
-            # ("LIM {x -> 1}. (x^2 + 3)", '4'),
-            # ("LIM {x -> (-1)}. (x^2+3)", '4'),
-            # ("LIM {x -> 2}. (3*x*x-x)", '10'),
-            # ("LIM {x -> 3}. 2/(x+3)", '1/3'),
-            # ("LIM {x -> -6}. (x+4)/(2-x)", '-1/4'),
-            # ("LIM {x -> 3}. x/(4*x-9)", '1'),
-            # ("LIM {x -> -6}. (x+4) / (2-x)", '-1/4'),
-            # ("LIM {x -> 3}. x / (4*x-9)", '1'),
-            # ("LIM {x -> 9}. (2+sqrt(x))", '5'),
-            # ("LIM {x->1}. (x*x-1)/(x*x+3*x-4)", "2/5"),
-            # ("LIM {x->4}. (x-4)/(sqrt(x)-2)", "4"),
-            # ("LIM {x->0}. sin(x) / x", "1"),
-            # ("LIM {x->0}. (3^x-2^x)/(x^2-x)", "log(2) + -log(3)"),
-            # # ('LIM {x -> oo}. 5^x / (3^x + 2^x)'),
-            # ('LIM {x->0}. (x*tan(x))/sin(3*x)', "0"),
-            # ('LIM {x->0}. (x^2*exp(x))/(tan(x))^2', "1"),
-            # ('LIM {x->0}. atan(4*x)/atan(5*x)', "4/5"),
-            # ('LIM {x->0}. sin(x*x)/(x*tan(x))', "1"),
-            # ('LIM {x->0}. (x*x*e^x)/tan(x)^2', "1"),
-            # # ('LIM {x->0}. exp(-1/x^2)/x^2'), #错误
-            ('LIM {x->oo}. exp(3*x) / 5', "oo"),
-            ('LIM {x->oo}. 1/(x^2+7)', "0"),
-            # ('LIM {x->oo}. (x^2+3*x-10)/(7*x^2-5*x+4)', "1/7"),
-            ('LIM {x->oo}. 1/(x*exp(2*x))', "0"),
-            # ('LIM {x->oo}. exp(x*(log(2)-log(3)))',"0"),
-            # # ('LIM {x->oo}. (exp(x)+2/x) / (exp(x)+5/x)')# 洛必达死循环
-            # # ("LIM {x->oo}. sqrt(x^2+1)-sqrt(x-1)"),
-            ("LIM {x->oo}. exp(-x)*sin(x)", "0"),
-            # ("LIM {x-> (pi/2) }. tan(2*x) / (x - pi / 2)", "2"),
-            ("LIM {x->oo}. atan(x) + exp(-x)", "1/2 * pi"),
-            ("LIM {x->-oo}. atan(x) + exp(x)", "-1/2 * pi"),
-            ("LIM {x->oo}. asin(x)", "asin(oo)"),
-            ("LIM {x->oo}. exp(-3*x+2)*atan(3*x^2)", "0"),
-            # ("LIM {t->-oo}. -1+(-t*exp(t))+exp(t)","-1"),
-            ("LIM {t->oo}. atan(t) - atan(sqrt(2)/2)", "-atan(sqrt(2) / 2) + 1/2 * pi"),
-            ("LIM {x -> -oo}. (1 + -5/9 * x ^ -1) ^ (-1/2)", "1")
-        ]
-
-        for a, b in test_data:
-            a = parser.parse_expr(a)
-            e = rules.LimitSimplify().eval(a)
-            # print(e)
-            if e.ty != expr.LIMIT:
-                self.assertEqual(str(e.normalize()), b, a)
-            else:
-                # print(e)
-                self.assertTrue(False)
-
-    def testComputeLimitConds(self):
-        test_data = [
-            ("b * oo", "b > 0", "oo"),
-            ("b * oo", "b < 0", "-oo"),
-            ("b ^ (-1/2) * oo", "b > 0", "oo"),
-            ("atan(b ^ (-1/2) * oo)", "b > 0", "1/2 * pi"),
-            ('exp((-(1 + y ^ 2) * oo^2) / 2)',' y > 0 ', '0'),
-        ]
-
-        for e, cond, res in test_data:
-            e = parser.parse_expr(e)
-            res = parser.parse_expr(res)
-            conds = conditions.Conditions()
-            conds.add_condition("1", parser.parse_expr(cond))
-            self.assertEqual(rules.compute_limit(e, conds)[0], res)
-
     def testComputeLimit1(self):
         s = 'LIM {t -> oo}. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1'
         e = parser.parse_expr(s)
@@ -562,8 +449,7 @@ class RulesTest(unittest.TestCase):
         v = parse_expr('-exp(-x^2/2)')
         calc.perform_rule(rules.OnLocation(rules.IntegrationByParts(u, v), '0.0'))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '1'))
-        calc.perform_rule(rules.FullSimplify())
+
         calc = Eq1_proof.rhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '1'))
         calc.perform_rule(rules.FullSimplify())
@@ -726,8 +612,6 @@ class RulesTest(unittest.TestCase):
         old_expr = parser.parse_expr("1/2 * t ^ 2 * (-(y ^ 2) - 1)")
         new_expr = parser.parse_expr("-1/2 * t^2 * (y^2+1)")
         calc.perform_rule(rules.Equation(old_expr=old_expr,new_expr=new_expr))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.LimitSimplify(), '1.0.0.1.0.1'))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_Eq6.rhs_calc
         calc.perform_rule(rules.FullSimplify())

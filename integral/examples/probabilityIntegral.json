@@ -579,25 +579,6 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} (y ^ {2} + 1) ^ {-1} (\\lim\\limits_{t\\to \\infty} e^{-1/2\\cdot t ^ {2} (y ^ {2} + 1)}) \\,dy) + \\frac{1}{2} \\pi}",
-                            "res": "2 * sqrt(-2 * (INT y:[0,1]. (y ^ 2 + 1) ^ (-1) * (LIM {t -> oo}. exp(-1/2 * t ^ 2 * (y ^ 2 + 1)))) + 1/2 * pi)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} (y ^ {2} + 1) ^ {-1}\\cdot 0 \\,dy) + \\frac{1}{2} \\pi}",
-                            "res": "2 * sqrt(-2 * (INT y:[0,1]. (y ^ 2 + 1) ^ (-1) * 0) + 1/2 * pi)",
-                            "rule": {
-                                "loc": "1.0.0.1.0.1",
-                                "name": "LimitSimplify",
-                                "str": "simplify limits at 1.0.0.1.0.1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "\\sqrt{2} \\sqrt{\\pi}",
                             "res": "sqrt(2) * sqrt(pi)",
                             "rule": {
