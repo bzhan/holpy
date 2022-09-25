@@ -2720,7 +2720,7 @@ class IntegralEquation(Rule):
     '''
         Integrate both side of an equation using some variable
         such as expression: D b. I(b) = -1/b^2, we integrate both side using var b,
-        then we get a new expression: I(b) = INT x. -1/b^2
+        then we get a new expression: I(b) + SKOLEM_CONST(E) = INT x. -1/b^2
     '''
     def __init__(self, *, var):
         self.name = "integral both side"
