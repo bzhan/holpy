@@ -747,37 +747,6 @@ class RulesTest(unittest.TestCase):
             e = r(e)
             self.assertEqual(str(e), res)
 
-    def testMul2Div(self):
-        test_data = [
-            ("x*(e^-x)", "", 1, "x / (1 / e ^ -x)"),
-            ('1 + (x*y + t*log(t))/5', "1.0.1", 1, "1 + (x * y + t / (1 / log(t))) / 5"),
-            ('1 + (x*y + t*log(t))/5', "1.0.0", 0, "1 + (y / (1 / x) + t * log(t)) / 5")
-        ]
-
-        for s, mulExprLoc, multiplierLoc, res in test_data:
-            loc = expr.Location(mulExprLoc)
-            r = rules.Mul2Div(multiplierLoc)
-            res2 = rules.OnLocation(r, loc).eval(expr.parser.parse_expr(s))
-            self.assertEqual(str(res2), res)
-
-    def testNumeratorDeominatorMulExpr(self):
-        test_data = [
-            ("sqrt(a) + sqrt(b)", "", "sqrt(a)-sqrt(b)",
-             "(sqrt(a) + sqrt(b)) * (sqrt(a) - sqrt(b)) / (sqrt(a) - sqrt(b))"),
-            ('3/2 + 1/(sqrt(x^2-2) + sqrt(x^2-1))', '1', 'sqrt(x^2-2) - sqrt(x^2-1)',
-             '3/2 + 1 / (sqrt(x ^ 2 - 2) + sqrt(x ^ 2 - 1)) * (sqrt(x ^ 2 - 2) - sqrt(x ^ 2 - 1)) / (sqrt(x ^ 2 - 2) - sqrt(x ^ 2 - 1))'),
-            ('x - sqrt(x*x + 7)', '', 'x + sqrt(x*x + 7)',\
-             '(x - sqrt(x * x + 7)) * (x + sqrt(x * x + 7)) / (x + sqrt(x * x + 7))'),
-            ('sqrt(a) / b', '', 'sqrt(a)', 'sqrt(a) / b * sqrt(a) / sqrt(a)')
-        ]
-
-        for s, loc, u, res2 in test_data:
-            s = expr.parser.parse_expr(s)
-            u = expr.parser.parse_expr(u)
-            loc = expr.Location(loc)
-            res1 = rules.OnLocation(rules.NumeratorDeominatorMulExpr(u), loc).eval(s)
-            self.assertEqual(str(res1), res2)
-
     def testLimFunExchange(self):
         test_data = [
             ("LIM {x->3}. f(x,log(x))", "f(LIM {x -> 3 }. x,LIM {x -> 3 }. log(x))"),
