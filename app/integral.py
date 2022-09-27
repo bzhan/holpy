@@ -115,6 +115,34 @@ def query_integral():
         "integrals": res
     })
 
+@app.route("/api/query-binom", methods=['POST'])
+def query_binom():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    item = compstate.parse_item(data['item'])
+    label = compstate.Label(data['selected_item'])
+    subitem = item.get_by_label(label)
+    if isinstance(subitem, compstate.CalculationStep):
+        binoms = subitem.res.separate_binom()
+    elif isinstance(subitem, compstate.Calculation):
+        binoms = subitem.start.separate_binom()
+    else:
+        return jsonify({
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
+        })
+
+    res = []
+    for e, loc in binoms:
+        res.append({
+            "expr": str(e),
+            "latex_expr": integral.latex.convert_expr(e),
+            "loc": str(loc)
+        })
+    return jsonify({
+        "status": "ok",
+        "binoms": res
+    })
+
 @app.route("/api/query-trig-identity", methods=['POST'])
 def query_trig_identity():
     data = json.loads(request.get_data().decode('UTF-8'))

@@ -1217,6 +1217,22 @@ class Expr:
         collect(self, result)
         return result
 
+    def separate_binom(self):
+        """Collect the list of all binomial coeffcients appearing in self."""
+        result = []
+        def collect(p, result):
+            if p.ty == FUN and p.func_name == 'binom':
+                p.selected = True
+                loc = self.get_location()
+                del p.selected
+                result.append([p, loc])
+            elif p.ty in (OP, FUN):
+                for arg in p.args:
+                    collect(arg, result)
+
+        collect(self, result)
+        return result
+
     def separate_limit(self):
         """Collect the list of all limits appearing in self."""
         result = []

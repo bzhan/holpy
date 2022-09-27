@@ -157,7 +157,8 @@
       </div>
       <div v-if="r_query_mode === 'backward substitution'">
         <span class="math-text">Backward substitution on: </span>
-        <MathEquation v-bind:data="'\\(' + sep_int[int_id].latex_body + '\\)'"/>
+        <MathEquation v-bind:data="'\\(' + sep_int[int_id].latex_body + '\\)'"/><br/>
+        <span class="math-text">Location: {{sep_int[int_id].loc}}</span><br/>
         <button v-bind:disabled='int_id == 0' v-on:click="int_id--">prev</button>
         <button v-bind:disabled='int_id == sep_int.length-1' v-on:click='int_id++'>next</button><br/>
         <span class="math-text">New variable </span>
@@ -215,16 +216,18 @@
         <button v-on:click="doApplyTheoremInst">OK</button>
       </div>
       <div v-if="r_query_mode === 'rewrite binom'">
-        <div class="math-text">Select subexpression:</div>
-        <input
-             class="item-text" ref="select_expr1"
-             v-bind:value="lastExpr"
-             style="width:500px" disabled="disabled"
-             @select="selectExpr"><br/>
-        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
-        <span class="math-text">Rewrite subexpression to</span><br/>
-        <ExprQuery v-model="expr_query1"/>
-        <button v-on:click="doRewriteEquation">OK</button>
+        <span class="math-text">Rewrite binomial coffcient: </span>
+        <MathEquation v-bind:data="'\\(' + sep_binom[binom_id].latex_expr + '\\)'"/><br/>
+        <span class="math-text">Location: {{sep_binom[binom_id].loc}}</span><br/>
+        <button v-bind:disabled='binom_id == 0' v-on:click="binom_id--">prev</button>
+        <button v-bind:disabled='binom_id == sep_binom.length-1' v-on:click='binom_id++'>next</button><br/>
+        <!-- <span class="math-text">New variable </span>
+        <input v-model="subst_var"><br/>
+        <span class="math-text">Substitute </span>
+        <span class="math-text-italic">{{sep_int[0].var_name}}</span>
+        <span class="math-text"> for</span><br/>
+        <ExprQuery v-model="expr_query1"/><br/> -->
+        <button v-on:click="doRewriteBinom">Rewrite</button>
       </div>
     </div>
     <div id="select">
@@ -265,6 +268,7 @@ export default {
       cur_items: [],             // Current items in state
       r_query_mode: undefined,   // Record query mode
       sep_int: [],               // All separate integrals
+      sep_binom: [],             // All binomial coeffcients
 
       // Selected goal
       selected_item: undefined,
@@ -300,6 +304,9 @@ export default {
 			
       // the index of sep-integrals
       int_id: 0,
+
+      // the index of sep-binoms
+      binom_id: 0,
     }
   },
 
@@ -747,8 +754,34 @@ export default {
       }
     },
 
-    rewriteBinom: function() {
-      this.r_query_mode = 'rewrite binom'
+    rewriteBinom: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-binom", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.sep_binom = response.data.binoms
+        this.binom_id = 0
+        this.r_query_mode = 'rewrite binom'
+      }
+    },
+    
+    doRewriteBinom: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: 'RewriteBinom',
+          loc: this.sep_binom[this.binom_id].loc
+        },
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
     },
 
     // doRewriteEquation: async function() {
