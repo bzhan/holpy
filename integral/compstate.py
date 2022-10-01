@@ -553,6 +553,14 @@ class RewriteGoalProof(StateItem):
         res += str(self.begin)
         return res
 
+    def get_by_label(self, label: Label):
+        if label.empty():
+            return self
+        elif label.tail.empty():
+            return self.begin.steps[label.head]
+        else:
+            return self.begin.steps[label.tail.head]
+
 class CompState:
     """Represents the global state of a computation proof."""
     def __init__(self, name: str, goal: Expr):
@@ -730,7 +738,7 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'RewriteExp':
         return rules.RewriteExp()
     elif item['name'] == 'integral both side':
-        return rules.IntegralEquation(var=item['var'])
+        return rules.IntegralEquation(var='x')
     elif item['name'] == 'LimEquation':
         return rules.LimitEquation()
     elif item['name'] == 'CommonIndefiniteIntegral':
@@ -813,6 +821,8 @@ def parse_item(item) -> StateItem:
             begin_conds = None
         begin_connection_symbol = '==>'
         res = RewriteGoalProof(goal = goal, conds = conds, begin = Goal(begin_goal, begin_conds))
+        for i, step in enumerate(item['start']['steps']):
+            res.begin.add_step(parse_step(step, res.begin, i))
         return res
     else:
         raise NotImplementedError
