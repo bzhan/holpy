@@ -440,7 +440,6 @@ def query_limit():
             "msg": "Selected item is not part of a calculation."
         })
     data = json.loads(request.get_data().decode('UTF-8'))
-    print("yes", flush=True)
     item = compstate.parse_item(data['item'])
     label = compstate.Label(data['selected_item'])
     subitem = item.get_by_label(label)
@@ -466,4 +465,34 @@ def query_limit():
     return jsonify({
         "status": "ok",
         "limits": res
+    })
+
+@app.route("/api/query-abs", methods=['POST'])
+def query_abs():
+    fail = jsonify({
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
+        })
+    data = json.loads(request.get_data().decode('UTF-8'))
+    item = compstate.parse_item(data['item'])
+    label = compstate.Label(data['selected_item'])
+    subitem = item.get_by_label(label)
+    if isinstance(subitem, compstate.CalculationStep):
+        abs_exprs = subitem.res.separate_abs()
+    elif isinstance(subitem, compstate.Calculation):
+        abs_exprs = subitem.start.separate_abs()
+    else:
+        return fail
+    if abs_exprs == []:
+        return fail
+    res = []
+    for e, loc in abs_exprs:
+        res.append({
+            "expr": str(e),
+            "latex_expr": integral.latex.convert_expr(e),
+            "loc": str(loc)
+        })
+    return jsonify({
+        "status": "ok",
+        "abs_exprs": res
     })

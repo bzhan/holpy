@@ -24,7 +24,7 @@
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ElimInfInterval')">Improper integral to limit</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('DerivIntExchange')">Exchange deriv and integral</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyRule('ElimAbs')">Eliminate absolute value</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="elimAbs">Eliminate absolute value</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='splitRegion'>Splitting an Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -183,6 +183,14 @@
         <button v-bind:disabled='limit_id == sep_limit.length-1' v-on:click='limit_id++'>next</button><br/>
         <button v-on:click="doRewriteLimit">OK</button>
       </div>
+      <div v-if="r_query_mode === 'elim abs'">
+        <span class="math-text">Eliminate absolute value on: </span>
+        <MathEquation v-bind:data="'\\(' + sep_abs[abs_id].latex_expr + '\\)'"/><br/>
+        <span class="math-text">Location: {{sep_abs[abs_id].loc}}</span><br/>
+        <button v-bind:disabled='abs_id == 0' v-on:click="int_id--">prev</button>
+        <button v-bind:disabled='abs_id == sep_abs.length-1' v-on:click='abs_id++'>next</button><br/>
+        <button v-on:click="doElimAbs">OK</button>
+      </div>
       <div v-if="r_query_mode === 'trig identity'">
         <div class="math-text">Select subexpression:</div>
         <input
@@ -284,6 +292,7 @@ export default {
       sep_int: [],               // All separate integrals
       sep_binom: [],             // All binomial coeffcients
       sep_limit: [],             // All limits
+      sep_abs: [],               // all integrals of abs function and abs expressions
 
       // Selected goal
       selected_item: undefined,
@@ -325,6 +334,9 @@ export default {
 
       // the index of sep-limits
       limit_id: 0,
+
+      //the index of sep-abs
+      abs_id: 0,
     }
   },
 
@@ -840,6 +852,39 @@ export default {
       }
     },
 
+    elimAbs: async function(){
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-abs", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.sep_abs = response.data.abs_exprs
+        this.abs_id = 0
+        if (response.data.abs_exprs.length == 1){
+          this.doElimAbs()
+        } else {
+          this.r_query_mode = 'elim abs'
+        }
+        // this.r_query_mode = 'elim abs'
+      }
+    },
+    doElimAbs: async function(){
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: 'ElimAbs',
+          loc: this.sep_abs[this.abs_id].loc
+        },
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
     // doRewriteEquation: async function() {
     //   const data = {
     //     item: this.content[this.cur_id],
