@@ -521,7 +521,7 @@ class RewriteGoalProof(StateItem):
     transform from a initial equation into goal using rules on both side.
     '''
     def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None, begin:Goal):
-        assert begin.is_finished()
+        # assert begin.is_finished()
         if not goal.is_equals():
             raise AssertionError("RewriteGoalProof: goal is not an equality.")
         self.goal = goal
@@ -723,8 +723,23 @@ def parse_rule(item) -> Rule:
         return rules.ApplyInductHyp(induct_hyp)
     elif item['name'] == 'RewriteLog':
         return rules.RewriteLog()
+    elif item['name'] == 'RewriteLimit':
+        return rules.RewriteLimit()
+    elif item['name'] == 'DerivativeSimplify':
+        return rules.DerivativeSimplify()
+    elif item['name'] == 'RewriteExp':
+        return rules.RewriteExp()
+    elif item['name'] == 'integral both side':
+        return rules.IntegralEquation(var=item['var'])
+    elif item['name'] == 'LimEquation':
+        return rules.LimitEquation()
+    elif item['name'] == 'CommonIndefiniteIntegral':
+        return rules.CommonIndefiniteIntegral(const_name = 'C')
+    elif item['name'] == 'RewriteSkolemConst':
+        new_expr = parser.parse_expr('SKOLEM_CONST(C)')
+        return rules.RewriteSkolemConst(new_expr=new_expr)
     else:
-        print(item['name'])
+        print(item['name'], flush=True)
         raise NotImplementedError
 
 def parse_step(item, parent: Calculation, id: int) -> CalculationStep:
@@ -787,8 +802,18 @@ def parse_item(item) -> StateItem:
         res.case_1 = parse_item(item['case_1'])
         res.case_2 = parse_item(item['case_2'])
         return res
-    elif item['type'] == 'RewriteProof':
-        pass
+    elif item['type'] == 'RewriteGoalProof':
+        conds = parse_conds(item)
+        goal = parser.parse_expr(item['goal'])
+
+        begin_goal = parser.parse_expr(item['start']['start'])
+        if 'conds' in item['start']:
+            begin_conds = parser.parse_expr(item['start']['conds'])
+        else:
+            begin_conds = None
+        begin_connection_symbol = '==>'
+        res = RewriteGoalProof(goal = goal, conds = conds, begin = Goal(begin_goal, begin_conds))
+        return res
     else:
         raise NotImplementedError
 

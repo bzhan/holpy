@@ -431,3 +431,39 @@ def query_last_expr():
         return jsonify({
             "status": "error",
         })
+
+
+@app.route("/api/query-limit", methods=['POST'])
+def query_limit():
+    fail = jsonify({
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
+        })
+    data = json.loads(request.get_data().decode('UTF-8'))
+    print("yes", flush=True)
+    item = compstate.parse_item(data['item'])
+    label = compstate.Label(data['selected_item'])
+    subitem = item.get_by_label(label)
+    if isinstance(subitem, compstate.CalculationStep):
+        limits = subitem.res.separate_limit()
+    elif isinstance(subitem, compstate.Calculation):
+        limits = subitem.start.separate_limit()
+    else:
+        return fail
+    if limits == []:
+        return fail
+    res = []
+    for e, loc in limits:
+        res.append({
+            "expr": str(e),
+            "var_name": e.var,
+            "lim": e.lim,
+            "body": str(e.body),
+            "latex_expr": integral.latex.convert_expr(e),
+            "latex_body": integral.latex.convert_expr(e.body),
+            "loc": str(loc)
+        })
+    return jsonify({
+        "status": "ok",
+        "limits": res
+    })
