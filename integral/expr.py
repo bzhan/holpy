@@ -1196,6 +1196,8 @@ class Expr:
             return self.lower.has_func(func_name) or self.upper.has_func(func_name) or self.body.has_func(func_name)
         elif self.is_deriv():
             return self.body.has_func(func_name)
+        elif self.is_limit():
+            return self.body.has_func(func_name)
         else:
             return False
 
@@ -2049,6 +2051,12 @@ class Inf(Expr):
 
     def __eq__(self, other):
         return isinstance(other, Inf) and self.t == other.t
+
+    def keys(self):
+        return ('ty', 't')
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 class Differential(Expr):
     """Differential of an expression."""
