@@ -496,3 +496,34 @@ def query_abs():
         "status": "ok",
         "abs_exprs": res
     })
+
+
+@app.route("/api/query-exp", methods=['POST'])
+def query_exp():
+    fail = jsonify({
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
+        })
+    data = json.loads(request.get_data().decode('UTF-8'))
+    item = compstate.parse_item(data['item'])
+    label = compstate.Label(data['selected_item'])
+    subitem = item.get_by_label(label)
+    if isinstance(subitem, compstate.CalculationStep):
+        exps = subitem.res.separate_exp()
+    elif isinstance(subitem, compstate.Calculation):
+        exps = subitem.start.separate_exp()
+    else:
+        return fail
+    if exps == []:
+        return fail
+    res = []
+    for e, loc in exps:
+        res.append({
+            "expr": str(e),
+            "latex_expr": integral.latex.convert_expr(e),
+            "loc": str(loc)
+        })
+    return jsonify({
+        "status": "ok",
+        "exps": res
+    })

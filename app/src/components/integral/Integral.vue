@@ -38,7 +38,8 @@
           <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('RewriteFactorial')">Factorial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteBinom">Binomial coefficients</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="rewriteLimit">Rewrite Limit</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="rewriteLimit">Rewrite limit</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="rewriteExp">Rewrite exp</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -148,7 +149,7 @@
         <button v-on:click="doIntegrateByParts">OK</button>
       </div>
       <div v-if="r_query_mode === 'forward substitution'">
-        <MathEquation v-bind:data="'\\(' + sep_int[int_id].latex_body + '\\)'"/><br/>
+        <MathEquation v-bind:data="'\\(' + sep_int[int_id].latex_expr + '\\)'"/><br/>
         <span class="math-text">Location: {{sep_int[int_id].loc}}</span><br/>
         <button v-bind:disabled='int_id == 0' v-on:click="int_id--">prev</button>
         <button v-bind:disabled='int_id == sep_int.length-1' v-on:click='int_id++'>next</button><br/>
@@ -243,14 +244,16 @@
         <span class="math-text">Location: {{sep_binom[binom_id].loc}}</span><br/>
         <button v-bind:disabled='binom_id == 0' v-on:click="binom_id--">prev</button>
         <button v-bind:disabled='binom_id == sep_binom.length-1' v-on:click='binom_id++'>next</button><br/>
-        <!-- <span class="math-text">New variable </span>
-        <input v-model="subst_var"><br/>
-        <span class="math-text">Substitute </span>
-        <span class="math-text-italic">{{sep_int[0].var_name}}</span>
-        <span class="math-text"> for</span><br/>
-        <ExprQuery v-model="expr_query1"/><br/> -->
-        <button v-on:click="doRewriteBinom">Rewrite</button>
+        <button v-on:click="doRewriteBinom">OK</button>
       </div>
+      <div v-if="r_query_mode === 'rewrite exp'">
+        <span class="math-text">Rewrite exp on: </span>
+        <MathEquation v-bind:data="'\\(' + sep_exp[exp_id].latex_expr + '\\)'"/><br/>
+        <span class="math-text">Location: {{sep_exp[exp_id].loc}}</span><br/>
+        <button v-bind:disabled='exp_id == 0' v-on:click="exp_id--">prev</button>
+        <button v-bind:disabled='exp_id == sep_exp.length-1' v-on:click='exp_id++'>next</button><br/>
+        <button v-on:click="doRewriteExp">OK</button>
+      </div> 
     </div>
     <div id="select">
     </div>
@@ -293,6 +296,7 @@ export default {
       sep_binom: [],             // All binomial coeffcients
       sep_limit: [],             // All limits
       sep_abs: [],               // all integrals of abs function and abs expressions
+      sep_exp: [],               // all exponetial expressions
 
       // Selected goal
       selected_item: undefined,
@@ -337,6 +341,9 @@ export default {
 
       //the index of sep-abs
       abs_id: 0,
+
+      //the index of sep-exp
+      exp_id: 0,
     }
   },
 
@@ -866,9 +873,9 @@ export default {
         } else {
           this.r_query_mode = 'elim abs'
         }
-        // this.r_query_mode = 'elim abs'
       }
     },
+
     doElimAbs: async function(){
       const data = {
         item: this.content[this.cur_id],
@@ -885,6 +892,41 @@ export default {
         this.r_query_mode = undefined
       }
     },
+
+    rewriteExp: async function(){
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-exp", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.sep_exp = response.data.exps
+        this.exp_id = 0
+        if (response.data.exps.length == 1){
+          this.doRewriteExp()
+        } else {
+          this.r_query_mode = 'rewrite exp'
+        }
+      }
+    },
+
+    doRewriteExp: async function(){
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: 'RewriteExp',
+          loc: this.sep_exp[this.exp_id].loc
+        },
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
     // doRewriteEquation: async function() {
     //   const data = {
     //     item: this.content[this.cur_id],

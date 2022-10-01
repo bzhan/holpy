@@ -1269,6 +1269,26 @@ class Expr:
         collect(self, result)
         return result
 
+    def separate_exp(self):
+        """Collect the list of all exponential expressions appearing in self."""
+        result = []
+
+        def collect(p, result):
+            if p.ty == FUN and p.func_name == 'exp':
+                p.selected = True
+                loc = self.get_location()
+                result.append([p, loc])
+            elif p.ty == OP:
+                for arg in p.args:
+                    collect(arg, result)
+            elif p.ty == INTEGRAL:
+                collect(p.lower, result)
+                collect(p.upper, result)
+                collect(p.body, result)
+
+        collect(self, result)
+        return result
+
     def findVar(self):
         """Find list of variables appearing in the expression."""
         v = []
