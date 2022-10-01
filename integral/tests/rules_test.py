@@ -545,7 +545,7 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr('x/t')
         calc.perform_rule(rules.OnLocation(rules.Substitution('y', e), '1.1'))
-        new_expr = parser.parse_expr('-exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) ')
+        e = parser.parse_expr('-exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) ')
         calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.1.0'))
         e = parser.parse_expr('-1/2 * t ^ 2 * y ^ 2+1/2 * t ^ 2 *  (- 1) ')
         calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.1.0.0.0'))
@@ -611,7 +611,7 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_Eq6.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        # print(file)
+
         for i in range(1, 8):
             self.assertTrue(file.content[i].is_finished())
         with open('integral/examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
