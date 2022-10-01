@@ -62,27 +62,6 @@
                                 "str": "full simplify"
                             },
                             "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx)",
-                            "res": "2 * (LIM {t -> oo}. INT x:[0,t]. exp(-1/2 * x ^ 2))",
-                            "rule": {
-                                "a": "0",
-                                "loc": "1",
-                                "name": "ElimInfInterval",
-                                "str": "eliminate improper integral at 1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 (\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx)",
-                            "res": "2 * (INT x:[0,oo]. exp(-1/2 * x ^ 2))",
-                            "rule": {
-                                "loc": "1",
-                                "name": "RewriteLimit",
-                                "str": "RewriteLimit at 1"
-                            },
-                            "type": "CalculationStep"
                         }
                     ],
                     "type": "Calculation"
@@ -158,15 +137,6 @@
                                 "loc": "0.0",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition at 0.0"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 (\\int_{0}^{1} t e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 (\\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx) (e^{-1/2\\cdot t ^ {2}} + (\\int_{0}^{t} 0 \\,dx))",
-                            "res": "2 * (INT y:[0,1]. t * exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1) * (-(y ^ 2) - 1)) + 2 * (INT x:[0,t]. exp(-1/2 * x ^ 2)) * (exp(-1/2 * t ^ 2) + (INT x:[0,t]. 0))",
-                            "rule": {
-                                "name": "DerivativeSimplify",
-                                "str": "simplify derivative"
                             },
                             "type": "CalculationStep"
                         },

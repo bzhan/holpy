@@ -529,8 +529,6 @@ class RulesTest(unittest.TestCase):
         e = parser.parse_expr('y')
         calc.perform_rule(rules.OnLocation(rules.Substitution('x', e), '0'))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ElimInfInterval(), '1'))
-        calc.perform_rule(rules.OnLocation(rules.RewriteLimit(), '1'))
         calc = Eq1_proof.rhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '1.0.0'))
         calc.perform_rule(rules.FullSimplify())
@@ -544,12 +542,10 @@ class RulesTest(unittest.TestCase):
         Eq2_proof = Eq2.proof_by_calculation()
         calc = Eq2_proof.lhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '0.0'))
-        calc.perform_rule(rules.DerivativeSimplify())
         calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr('x/t')
         calc.perform_rule(rules.OnLocation(rules.Substitution('y', e), '1.1'))
-        calc.perform_rule(rules.FullSimplify())
-        e = parser.parse_expr('-exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) ')
+        new_expr = parser.parse_expr('-exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) ')
         calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.1.0'))
         e = parser.parse_expr('-1/2 * t ^ 2 * y ^ 2+1/2 * t ^ 2 *  (- 1) ')
         calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.1.0.0.0'))
