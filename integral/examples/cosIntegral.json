@@ -124,13 +124,13 @@
         {
             "finished": true,
             "goal": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
-            "latex_goal": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0",
+            "latex_goal": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
             "proof": {
                 "finished": true,
                 "goal": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
-                "latex_goal": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0",
+                "latex_goal": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
                 "lhs_calc": {
-                    "latex_start": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2}",
+                    "latex_start": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2})",
                     "start": "D t. log(I(t)) + t ^ 2 / 2",
                     "steps": [
                         {
@@ -185,7 +185,7 @@
                 "goal": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
                 "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
                 "start": {
-                    "latex_start": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0",
+                    "latex_start": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
                     "start": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
                     "steps": [
                         {

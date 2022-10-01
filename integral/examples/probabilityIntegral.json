@@ -120,17 +120,17 @@
         {
             "finished": true,
             "goal": "(D t. g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2))) = 0",
-            "latex_goal": "\\frac{d}{dt} g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) = 0",
+            "latex_goal": "\\frac{d}{dt} (g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy)) = 0",
             "proof": {
                 "finished": true,
                 "goal": "(D t. g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2))) = 0",
-                "latex_goal": "\\frac{d}{dt} g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) = 0",
+                "latex_goal": "\\frac{d}{dt} (g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy)) = 0",
                 "lhs_calc": {
-                    "latex_start": "\\frac{d}{dt} g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy)",
+                    "latex_start": "\\frac{d}{dt} (g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy))",
                     "start": "D t. g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2))",
                     "steps": [
                         {
-                            "latex_res": "\\frac{d}{dt} (\\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx) ^ {2} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy)",
+                            "latex_res": "\\frac{d}{dt} ((\\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx) ^ {2} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy))",
                             "res": "D t. (INT x:[0,t]. exp(-1/2 * x ^ 2)) ^ 2 + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2))",
                             "rule": {
                                 "func_def": "g(t) = (INT x:[0,t]. exp(-(x ^ 2) / 2)) ^ 2",
@@ -163,17 +163,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 t (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} (-y ^ {2} - 1) \\,dy) + 2 t e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
-                            "res": "2 * t * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1) * (-(y ^ 2) - 1)) + 2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 t (\\int_{0}^{1} -e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} \\,dy) + 2 t e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
-                            "res": "2 * t * (INT y:[0,1]. -exp(1/2 * t ^ 2 * (-(y ^ 2) - 1))) + 2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2))",
+                            "latex_res": "2 t (\\int_{0}^{1} -e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} \\,dy) + 2 e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} t e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
+                            "res": "2 * t * (INT y:[0,1]. -exp(1/2 * t ^ 2 * (-(y ^ 2) - 1))) + 2 * exp(-1/2 * t ^ 2) * (INT y:[0,1]. t * exp(-1/2 * t ^ 2 * y ^ 2))",
                             "rule": {
                                 "loc": "0.1.0",
                                 "name": "Equation",
@@ -183,8 +174,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 t (\\int_{0}^{1} -e^{-1/2\\cdot t ^ {2} y ^ {2} + 1/2\\cdot t ^ {2}\\cdot -1} \\,dy) + 2 t e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
-                            "res": "2 * t * (INT y:[0,1]. -exp(-1/2 * t ^ 2 * y ^ 2 + 1/2 * t ^ 2 * -1)) + 2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2))",
+                            "latex_res": "2 t (\\int_{0}^{1} -e^{-1/2\\cdot t ^ {2} y ^ {2} + 1/2\\cdot t ^ {2}\\cdot -1} \\,dy) + 2 e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} t e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
+                            "res": "2 * t * (INT y:[0,1]. -exp(-1/2 * t ^ 2 * y ^ 2 + 1/2 * t ^ 2 * -1)) + 2 * exp(-1/2 * t ^ 2) * (INT y:[0,1]. t * exp(-1/2 * t ^ 2 * y ^ 2))",
                             "rule": {
                                 "loc": "0.1.0.0.0",
                                 "name": "Equation",
@@ -243,7 +234,7 @@
                 "goal": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))",
                 "latex_goal": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C(y)",
                 "start": {
-                    "latex_start": "\\frac{d}{dt} g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) = 0",
+                    "latex_start": "\\frac{d}{dt} (g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy)) = 0",
                     "start": "(D t. g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2))) = 0",
                     "steps": [
                         {
