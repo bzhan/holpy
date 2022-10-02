@@ -1966,27 +1966,34 @@ class IntegralEquation(Rule):
         such as expression: D b. I(b) = -1/b^2, we integrate both side using var b,
         then we get a new expression: I(b) + SKOLEM_CONST(E) = INT x. -1/b^2
     '''
-    def __init__(self, *, var):
-        self.name = "integral both side"
+    def __init__(self, *, var, left_skolem_name, right_skolem_name):
+        self.name = "IntegrateBothSide"
         self.var = var
+        self.left_skolem_name = left_skolem_name
+        self.right_skolem_name = right_skolem_name
     def eval(self, e:Expr, conds = None):
         assert e.is_equals()
         # assert e.lhs.is_deriv()
         # assert e.rhs.normalize() == Const(0)
-        if e.lhs.is_deriv() and e.lhs.var == self.var:
-            const_part = expr.SkolemFunc("E",*[arg for arg in expr.SkolemFunc.find_free(self.var, e.lhs.body)])
-            new_lhs = e.lhs.body + const_part
+        if e.lhs.is_deriv() and e.lhs.var == self.var and self.right_skolem_name == None:
+            left_const_part = expr.SkolemFunc(self.left_skolem_name, *[arg for arg in expr.SkolemFunc.find_free(self.var, e.lhs.body)])
+            new_lhs = e.lhs.body + left_const_part
             return Op('=', new_lhs,  IndefiniteIntegral(self.var, e.rhs))
         else:
             raise NotImplementedError
 
     def __str__(self):
-        return "IntegralEquation"
+        return "integrate both side"
 
     def export(self):
         return {
             "name": self.name,
-            "str": str(self)
+            "str": str(self),
+            "integral_var": self.var,
+            "left_skolem_name": self.left_skolem_name,
+            "right_skolem_name": self.right_skolem_name,
+            "left_skolem": True if self.left_skolem_name else False,
+            "right_skolem": True if self.right_skolem_name else False,
         }
 
 class LimEquation(Rule):
