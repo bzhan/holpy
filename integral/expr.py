@@ -1196,6 +1196,8 @@ class Expr:
             return self.lower.has_func(func_name) or self.upper.has_func(func_name) or self.body.has_func(func_name)
         elif self.is_deriv():
             return self.body.has_func(func_name)
+        elif self.is_limit():
+            return self.body.has_func(func_name)
         else:
             return False
 
@@ -1217,6 +1219,22 @@ class Expr:
         collect(self, result)
         return result
 
+    def separate_binom(self):
+        """Collect the list of all binomial coeffcients appearing in self."""
+        result = []
+        def collect(p, result):
+            if p.ty == FUN and p.func_name == 'binom':
+                p.selected = True
+                loc = self.get_location()
+                del p.selected
+                result.append([p, loc])
+            elif p.ty in (OP, FUN):
+                for arg in p.args:
+                    collect(arg, result)
+
+        collect(self, result)
+        return result
+
     def separate_limit(self):
         """Collect the list of all limits appearing in self."""
         result = []
@@ -1230,7 +1248,47 @@ class Expr:
                     collect(arg, result)
         collect(self, result)
         return result
-    
+
+    def separate_abs(self):
+        """Collect the list of all integral of abs expressions and abs expressions appearing in self."""
+        result = []
+
+        def collect(p, result):
+            if p.ty == INTEGRAL and p.body.ty == FUN and p.body.func_name=='abs':
+                p.selected = True
+                loc = self.get_location()
+                result.append([p, loc])
+            elif p.ty == FUN and p.func_name == 'abs':
+                p.selected = True
+                loc = self.get_location()
+                result.append([p, loc])
+            elif p.ty == OP:
+                for arg in p.args:
+                    collect(arg, result)
+
+        collect(self, result)
+        return result
+
+    def separate_exp(self):
+        """Collect the list of all exponential expressions appearing in self."""
+        result = []
+
+        def collect(p, result):
+            if p.ty == FUN and p.func_name == 'exp':
+                p.selected = True
+                loc = self.get_location()
+                result.append([p, loc])
+            elif p.ty == OP:
+                for arg in p.args:
+                    collect(arg, result)
+            elif p.ty == INTEGRAL:
+                collect(p.lower, result)
+                collect(p.upper, result)
+                collect(p.body, result)
+
+        collect(self, result)
+        return result
+
     def findVar(self):
         """Find list of variables appearing in the expression."""
         v = []
@@ -2033,6 +2091,12 @@ class Inf(Expr):
 
     def __eq__(self, other):
         return isinstance(other, Inf) and self.t == other.t
+
+    def keys(self):
+        return ('ty', 't')
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 class Differential(Expr):
     """Differential of an expression."""

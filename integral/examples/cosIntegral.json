@@ -124,13 +124,13 @@
         {
             "finished": true,
             "goal": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
-            "latex_goal": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0",
+            "latex_goal": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
             "proof": {
                 "finished": true,
                 "goal": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
-                "latex_goal": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0",
+                "latex_goal": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
                 "lhs_calc": {
-                    "latex_start": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2}",
+                    "latex_start": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2})",
                     "start": "D t. log(I(t)) + t ^ 2 / 2",
                     "steps": [
                         {
@@ -185,15 +185,20 @@
                 "goal": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
                 "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
                 "start": {
-                    "latex_start": "\\frac{d}{dt} \\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0",
+                    "latex_start": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
                     "start": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
                     "steps": [
                         {
                             "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} + E = \\int 0 \\,dt",
                             "res": "log(I(t)) + t ^ 2 / 2 + SKOLEM_CONST(E) = (INT t. 0)",
                             "rule": {
-                                "name": "integral both side",
-                                "str": "IntegralEquation"
+                                "integral_var": "t",
+                                "left_skolem": true,
+                                "left_skolem_name": "E",
+                                "name": "IntegrateBothSide",
+                                "right_skolem": false,
+                                "right_skolem_name": null,
+                                "str": "integrate both side"
                             },
                             "type": "CalculationStep"
                         },

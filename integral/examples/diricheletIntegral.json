@@ -366,8 +366,13 @@
                                     "latex_res": "I{(b)} + E = \\int -(b ^ {2} + 1) ^ {-1} \\,db",
                                     "res": "I(b) + SKOLEM_CONST(E) = (INT b. -((b ^ 2 + 1) ^ (-1)))",
                                     "rule": {
-                                        "name": "integral both side",
-                                        "str": "IntegralEquation"
+                                        "integral_var": "b",
+                                        "left_skolem": true,
+                                        "left_skolem_name": "E",
+                                        "name": "IntegrateBothSide",
+                                        "right_skolem": false,
+                                        "right_skolem_name": null,
+                                        "str": "integrate both side"
                                     },
                                     "type": "CalculationStep"
                                 },

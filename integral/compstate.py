@@ -521,7 +521,7 @@ class RewriteGoalProof(StateItem):
     transform from a initial equation into goal using rules on both side.
     '''
     def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None, begin:Goal):
-        assert begin.is_finished()
+        # assert begin.is_finished()
         if not goal.is_equals():
             raise AssertionError("RewriteGoalProof: goal is not an equality.")
         self.goal = goal
@@ -541,7 +541,7 @@ class RewriteGoalProof(StateItem):
             "finished": self.is_finished()
         }
 
-    def clean(self):
+    def clear(self):
         self.begin.clear()
 
     def __str__(self):
@@ -552,6 +552,14 @@ class RewriteGoalProof(StateItem):
 
         res += str(self.begin)
         return res
+
+    def get_by_label(self, label: Label):
+        if label.empty() or len(label.data) == 1:
+            return self
+        elif not label.tail.empty():
+            return self.begin.steps[label.tail.head]
+        else:
+            raise AssertionError("get_by_label: invalid label")
 
 class CompState:
     """Represents the global state of a computation proof."""
@@ -723,8 +731,26 @@ def parse_rule(item) -> Rule:
         return rules.ApplyInductHyp(induct_hyp)
     elif item['name'] == 'RewriteLog':
         return rules.RewriteLog()
+    elif item['name'] == 'RewriteLimit':
+        return rules.RewriteLimit()
+    elif item['name'] == 'DerivativeSimplify':
+        return rules.DerivativeSimplify()
+    elif item['name'] == 'RewriteExp':
+        return rules.RewriteExp()
+    elif item['name'] == 'IntegrateBothSide':
+        var = item['integral_var']
+        left_skolem_name = item['left_skolem_name'] if 'left_skolem_name' in item else None
+        right_skolem_name = item['right_skolem_name'] if 'right_skolem_name' in item else None
+        return rules.IntegralEquation(var=var,left_skolem_name=left_skolem_name,right_skolem_name=right_skolem_name)
+    elif item['name'] == 'LimEquation':
+        return rules.LimitEquation()
+    elif item['name'] == 'CommonIndefiniteIntegral':
+        return rules.CommonIndefiniteIntegral(const_name = 'C')
+    elif item['name'] == 'RewriteSkolemConst':
+        new_expr = parser.parse_expr('SKOLEM_CONST(C)')
+        return rules.RewriteSkolemConst(new_expr=new_expr)
     else:
-        print(item['name'])
+        print(item['name'], flush=True)
         raise NotImplementedError
 
 def parse_step(item, parent: Calculation, id: int) -> CalculationStep:
@@ -787,8 +813,20 @@ def parse_item(item) -> StateItem:
         res.case_1 = parse_item(item['case_1'])
         res.case_2 = parse_item(item['case_2'])
         return res
-    elif item['type'] == 'RewriteProof':
-        pass
+    elif item['type'] == 'RewriteGoalProof':
+        conds = parse_conds(item)
+        goal = parser.parse_expr(item['goal'])
+
+        begin_goal = parser.parse_expr(item['start']['start'])
+        if 'conds' in item['start']:
+            begin_conds = parser.parse_expr(item['start']['conds'])
+        else:
+            begin_conds = None
+        begin_connection_symbol = '==>'
+        res = RewriteGoalProof(goal = goal, conds = conds, begin = Goal(begin_goal, begin_conds))
+        for i, step in enumerate(item['start']['steps']):
+            res.begin.add_step(parse_step(step, res.begin, i))
+        return res
     else:
         raise NotImplementedError
 
@@ -804,5 +842,7 @@ def get_next_step_label(step: Union[Calculation, CalculationStep], label: Label)
         return Label(label.data + [0])
     elif isinstance(step, CalculationStep):
         return Label(label.data[:-1] + [label.data[-1] + 1])
+    elif isinstance(step, RewriteGoalProof):
+        return Label(label.data + [0])
     else:
         raise NotImplementedError

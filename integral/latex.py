@@ -234,7 +234,10 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
         else:
             return "\\lim\\limits_{%s\\to %s} %s" % (e.var, lim, body)
     elif e.ty == expr.DERIV:
-        return "\\frac{d}{d%s} %s" % (e.var, convert_expr(e.body, mode))
+        if e.body.ty == expr.OP and e.body.op in ('+', '-'):
+            return "\\frac{d}{d%s} (%s)" % (e.var, convert_expr(e.body, mode))
+        else:
+            return "\\frac{d}{d%s} %s" % (e.var, convert_expr(e.body, mode))
     elif e.ty == expr.INDEFINITEINTEGRAL:
         body = convert_expr(e.body, mode)
         return "\\int %s \\,d%s" % (body, e.var)

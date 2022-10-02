@@ -24,7 +24,7 @@
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ElimInfInterval')">Improper integral to limit</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('DerivIntExchange')">Exchange deriv and integral</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyRule('ElimAbs')">Eliminate absolute value</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="elimAbs">Eliminate absolute value</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='splitRegion'>Splitting an Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -38,6 +38,9 @@
           <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('RewriteFactorial')">Factorial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteBinom">Binomial coefficients</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="rewriteLimit">Rewrite limit</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="rewriteExp">Rewrite exp</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="integrateBothSide0">Integrate both side</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -147,26 +150,48 @@
         <button v-on:click="doIntegrateByParts">OK</button>
       </div>
       <div v-if="r_query_mode === 'forward substitution'">
+        <MathEquation v-bind:data="'\\(' + sep_int[int_id].latex_expr + '\\)'"/><br/>
+        <span class="math-text">Location: {{sep_int[int_id].loc}}</span><br/>
+        <button v-bind:disabled='int_id == 0' v-on:click="int_id--">prev</button>
+        <button v-bind:disabled='int_id == sep_int.length-1' v-on:click='int_id++'>next</button><br/>
         <span class="math-text">Substitution on: </span>
-        <MathEquation v-bind:data="'\\(' + sep_int[0].latex_body + '\\)'"/><br/>
+        <MathEquation v-bind:data="'\\(' + sep_int[int_id].latex_body + '\\)'"/><br/>
         <span class="math-text">Substitute </span>
         <input v-model="subst_var"><br/>
         <span class="math-text"> for</span><br/>
         <ExprQuery v-model="expr_query1"/><br/>
         <button v-on:click="doForwardSubstitution">OK</button>
+
       </div>
       <div v-if="r_query_mode === 'backward substitution'">
         <span class="math-text">Backward substitution on: </span>
-        <MathEquation v-bind:data="'\\(' + sep_int[int_id].latex_body + '\\)'"/>
+        <MathEquation v-bind:data="'\\(' + sep_int[int_id].latex_body + '\\)'"/><br/>
+        <span class="math-text">Location: {{sep_int[int_id].loc}}</span><br/>
         <button v-bind:disabled='int_id == 0' v-on:click="int_id--">prev</button>
         <button v-bind:disabled='int_id == sep_int.length-1' v-on:click='int_id++'>next</button><br/>
         <span class="math-text">New variable </span>
         <input v-model="subst_var"><br/>
         <span class="math-text">Substitute </span>
-        <span class="math-text-italic">{{sep_int[0].var_name}}</span>
+        <span class="math-text-italic">{{sep_int[int_id].var_name}}</span>
         <span class="math-text"> for</span><br/>
         <ExprQuery v-model="expr_query1"/><br/>
         <button v-on:click="doBackwardSubstitution">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'rewrite limit'">
+        <span class="math-text">Rewrite limit on: </span>
+        <MathEquation v-bind:data="'\\(' + sep_limit[limit_id].latex_expr + '\\)'"/><br/>
+        <span class="math-text">Location: {{sep_limit[limit_id].loc}}</span><br/>
+        <button v-bind:disabled='limit_id == 0' v-on:click="int_id--">prev</button>
+        <button v-bind:disabled='limit_id == sep_limit.length-1' v-on:click='limit_id++'>next</button><br/>
+        <button v-on:click="doRewriteLimit">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'elim abs'">
+        <span class="math-text">Eliminate absolute value on: </span>
+        <MathEquation v-bind:data="'\\(' + sep_abs[abs_id].latex_expr + '\\)'"/><br/>
+        <span class="math-text">Location: {{sep_abs[abs_id].loc}}</span><br/>
+        <button v-bind:disabled='abs_id == 0' v-on:click="int_id--">prev</button>
+        <button v-bind:disabled='abs_id == sep_abs.length-1' v-on:click='abs_id++'>next</button><br/>
+        <button v-on:click="doElimAbs">OK</button>
       </div>
       <div v-if="r_query_mode === 'trig identity'">
         <div class="math-text">Select subexpression:</div>
@@ -215,17 +240,34 @@
         <button v-on:click="doApplyTheoremInst">OK</button>
       </div>
       <div v-if="r_query_mode === 'rewrite binom'">
-        <div class="math-text">Select subexpression:</div>
-        <input
-             class="item-text" ref="select_expr1"
-             v-bind:value="lastExpr"
-             style="width:500px" disabled="disabled"
-             @select="selectExpr"><br/>
-        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
-        <span class="math-text">Rewrite subexpression to</span><br/>
-        <ExprQuery v-model="expr_query1"/>
-        <button v-on:click="doRewriteEquation">OK</button>
+        <span class="math-text">Rewrite binomial coffcient: </span>
+        <MathEquation v-bind:data="'\\(' + sep_binom[binom_id].latex_expr + '\\)'"/><br/>
+        <span class="math-text">Location: {{sep_binom[binom_id].loc}}</span><br/>
+        <button v-bind:disabled='binom_id == 0' v-on:click="binom_id--">prev</button>
+        <button v-bind:disabled='binom_id == sep_binom.length-1' v-on:click='binom_id++'>next</button><br/>
+        <button v-on:click="doRewriteBinom">OK</button>
       </div>
+      <div v-if="r_query_mode === 'rewrite exp'">
+        <span class="math-text">Rewrite exp on: </span>
+        <MathEquation v-bind:data="'\\(' + sep_exp[exp_id].latex_expr + '\\)'"/><br/>
+        <span class="math-text">Location: {{sep_exp[exp_id].loc}}</span><br/>
+        <button v-bind:disabled='exp_id == 0' v-on:click="exp_id--">prev</button>
+        <button v-bind:disabled='exp_id == sep_exp.length-1' v-on:click='exp_id++'>next</button><br/>
+        <button v-on:click="doRewriteExp">OK</button>
+      </div> 
+      <div v-if="r_query_mode === 'integrate both side0'">
+        <span class="math-text">Integrate both side on: </span>
+        <MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'"/><br/>
+        <span class="math-text">Integral variable:</span><input v-model="integral_var"><br/>
+        <button v-on:click="integrateBothSide1">OK</button>
+      </div> 
+      <div v-if="r_query_mode === 'integrate both side1'">
+        <span class="math-text">Integrate both side on: </span>
+        <MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'"/><br/>
+        <div v-if="left_skolem === true"><span class="math-text">Left skolem const name:</span><input v-model="left_skolem_name"><br/></div>
+        <div v-if="right_skolem === true"><span class="math-text">Right skolem const name:</span><input v-model="right_skolem_name"><br/></div>
+        <button v-on:click="doIntegrateBothSide">OK</button>
+      </div> 
     </div>
     <div id="select">
     </div>
@@ -265,6 +307,10 @@ export default {
       cur_items: [],             // Current items in state
       r_query_mode: undefined,   // Record query mode
       sep_int: [],               // All separate integrals
+      sep_binom: [],             // All binomial coeffcients
+      sep_limit: [],             // All limits
+      sep_abs: [],               // all integrals of abs function and abs expressions
+      sep_exp: [],               // all exponetial expressions
 
       // Selected goal
       selected_item: undefined,
@@ -300,6 +346,24 @@ export default {
 			
       // the index of sep-integrals
       int_id: 0,
+
+      // the index of sep-binoms
+      binom_id: 0,
+
+      // the index of sep-limits
+      limit_id: 0,
+
+      //the index of sep-abs
+      abs_id: 0,
+
+      //the index of sep-exp
+      exp_id: 0,
+
+      integral_var: undefined,
+      left_skolem: false,
+      right_skolem: false,
+      left_skolem_name: undefined,
+      right_skolem_name: undefined,
     }
   },
 
@@ -492,6 +556,9 @@ export default {
         prev_items: this.content.slice(0, this.cur_id),
         selected_item: this.selected_item,
       }
+      console.log(this.content[this.cur_id])
+      console.log(this.content.slice(0, this.cur_id))
+      console.log(this.selected_item)
       const response = await axios.post("http://127.0.0.1:5000/api/expand-definition", JSON.stringify(data))
       if (response.data.status == 'ok') {
         this.$set(this.content, this.cur_id, response.data.item)
@@ -586,7 +653,8 @@ export default {
         rule: {
           name: 'Substitution',
           var_name: this.subst_var,
-          var_subst: this.expr_query1
+          var_subst: this.expr_query1,
+          loc: this.sep_int[this.int_id].loc,
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
@@ -619,6 +687,40 @@ export default {
           var_name: this.subst_var,
           var_subst: this.expr_query1,
           loc: this.sep_int[this.int_id].loc
+        },
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    rewriteLimit: async function(){
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-limit", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.sep_limit = response.data.limits
+        this.limit_id = 0
+        if (response.data.limits.length == 1){
+          this.doRewriteLimit()
+        } else {
+          this.r_query_mode = 'rewrite limit'
+        }
+      }
+    },
+
+    doRewriteLimit: async function(){
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: 'RewriteLimit',
+          loc: this.sep_limit[this.limit_id].loc
         },
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
@@ -747,10 +849,158 @@ export default {
       }
     },
 
-    rewriteBinom: function() {
-      this.r_query_mode = 'rewrite binom'
+    rewriteBinom: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-binom", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.sep_binom = response.data.binoms
+        this.binom_id = 0
+        this.r_query_mode = 'rewrite binom'
+      }
+    },
+    
+    doRewriteBinom: async function() {
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: 'RewriteBinom',
+          loc: this.sep_binom[this.binom_id].loc
+        },
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
     },
 
+    elimAbs: async function(){
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-abs", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.sep_abs = response.data.abs_exprs
+        this.abs_id = 0
+        if (response.data.abs_exprs.length == 1){
+          this.doElimAbs()
+        } else {
+          this.r_query_mode = 'elim abs'
+        }
+      }
+    },
+
+    doElimAbs: async function(){
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: 'ElimAbs',
+          loc: this.sep_abs[this.abs_id].loc
+        },
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    rewriteExp: async function(){
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-exp", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.sep_exp = response.data.exps
+        this.exp_id = 0
+        if (response.data.exps.length == 1){
+          this.doRewriteExp()
+        } else {
+          this.r_query_mode = 'rewrite exp'
+        }
+      }
+    },
+
+    doRewriteExp: async function(){
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: 'RewriteExp',
+          loc: this.sep_exp[this.exp_id].loc
+        },
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    integrateBothSide0: async function(){
+      console.log("integrate both side0")
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-last-expr", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.latex_selected_expr = response.data.latex_expr
+        this.r_query_mode = 'integrate both side0'
+      }
+    },
+
+    integrateBothSide1: async function(){
+      console.log("integrate both side1")
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        integral_var: this.integral_var,
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-integrate-both-side", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.left_skolem = response.data.left_skolem
+        this.right_skolem = response.data.right_skolem
+        this.r_query_mode = 'integrate both side1'
+      }
+    },
+
+    doIntegrateBothSide: async function(){
+      const data = {
+        item: this.content[this.cur_id],
+        selected_item: this.selected_item,
+        rule: {
+          name: 'IntegrateBothSide',
+          integral_var: this.integral_var,
+          left_skolem: this.left_skolem,
+          right_skolem: this.right_skolem,
+          left_skolem_name: this.left_skolem_name,
+          right_skolem_name: this.right_skolem_name,
+        },
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+        this.integral_var = undefined
+        this.left_skolem = false
+        this.right_skolem = false
+        this.left_skolem_name = undefined
+        this.right_skolem_name = undefined
+
+      }
+    },
     // doRewriteEquation: async function() {
     //   const data = {
     //     item: this.content[this.cur_id],

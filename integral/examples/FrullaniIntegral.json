@@ -235,8 +235,13 @@
                             "latex_res": "I(a,b) + E(b) = \\int \\frac{\\pi}{2 a} \\,da",
                             "res": "I(a,b) + SKOLEM_FUNC(E(b)) = (INT a. pi / (2 * a))",
                             "rule": {
-                                "name": "integral both side",
-                                "str": "IntegralEquation"
+                                "integral_var": "a",
+                                "left_skolem": true,
+                                "left_skolem_name": "E",
+                                "name": "IntegrateBothSide",
+                                "right_skolem": false,
+                                "right_skolem_name": null,
+                                "str": "integrate both side"
                             },
                             "type": "CalculationStep"
                         },

@@ -468,7 +468,7 @@ class RulesTest(unittest.TestCase):
         st.add_goal(Eq3)
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
-        calc.perform_rule(rules.IntegralEquation(var='t'))
+        calc.perform_rule(rules.IntegralEquation(var='t', left_skolem_name='E', right_skolem_name=None))
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral(const_name='C'), '1'))
         new_expr = parser.parse_expr("SKOLEM_CONST(C)")
         calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
@@ -529,8 +529,6 @@ class RulesTest(unittest.TestCase):
         e = parser.parse_expr('y')
         calc.perform_rule(rules.OnLocation(rules.Substitution('x', e), '0'))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ElimInfInterval(), '1'))
-        calc.perform_rule(rules.OnLocation(rules.RewriteLimit(), '1'))
         calc = Eq1_proof.rhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '1.0.0'))
         calc.perform_rule(rules.FullSimplify())
@@ -544,11 +542,9 @@ class RulesTest(unittest.TestCase):
         Eq2_proof = Eq2.proof_by_calculation()
         calc = Eq2_proof.lhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '0.0'))
-        calc.perform_rule(rules.DerivativeSimplify())
         calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr('x/t')
         calc.perform_rule(rules.OnLocation(rules.Substitution('y', e), '1.1'))
-        calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr('-exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) ')
         calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.1.0'))
         e = parser.parse_expr('-1/2 * t ^ 2 * y ^ 2+1/2 * t ^ 2 *  (- 1) ')
@@ -562,7 +558,7 @@ class RulesTest(unittest.TestCase):
         file.add_goal(Eq3)
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
-        calc.perform_rule(rules.IntegralEquation(var = 't'))
+        calc.perform_rule(rules.IntegralEquation(var = 't',left_skolem_name='E',right_skolem_name=None))
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral(const_name='C'), '1'))
         calc.perform_rule(rules.FullSimplify())
         new_expr = parser.parse_expr("SKOLEM_FUNC(C(y))")
@@ -615,7 +611,7 @@ class RulesTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_Eq6.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        # print(file)
+
         for i in range(1, 8):
             self.assertTrue(file.content[i].is_finished())
         with open('integral/examples/probabilityIntegral.json', 'w', encoding='utf-8') as f:
