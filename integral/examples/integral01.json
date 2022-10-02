@@ -187,8 +187,13 @@
                             "latex_res": "I{(a)} + E = \\int \\frac{1}{a + 1} \\,da",
                             "res": "I(a) + SKOLEM_CONST(E) = (INT a. 1 / (a + 1))",
                             "rule": {
-                                "name": "integral both side",
-                                "str": "IntegralEquation"
+                                "integral_var": "a",
+                                "left_skolem": true,
+                                "left_skolem_name": "E",
+                                "name": "IntegrateBothSide",
+                                "right_skolem": false,
+                                "right_skolem_name": null,
+                                "str": "integrate both side"
                             },
                             "type": "CalculationStep"
                         },

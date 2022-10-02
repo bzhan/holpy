@@ -654,7 +654,8 @@ class IntegralTest(unittest.TestCase):
         case_2_proof = proof.case_2.proof_by_rewrite_goal(begin=goal1)
         calc = case_2_proof.begin
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.IntegralEquation(var='b'))
+        left_skolem_name = 'E'
+        calc.perform_rule(rules.IntegralEquation(var='b', left_skolem_name=left_skolem_name, right_skolem_name=None))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral('C'), '1.0'))
         new_expr = parser.parse_expr("SKOLEM_CONST(C)")
@@ -727,7 +728,8 @@ class IntegralTest(unittest.TestCase):
         file.add_goal(goal3)
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal1)
         calc = proof_of_goal3.begin
-        calc.perform_rule(rules.IntegralEquation(var='a'))
+        left_skolem_name = 'E'
+        calc.perform_rule(rules.IntegralEquation(var='a', left_skolem_name='E', right_skolem_name=None))
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral('C'), '1'))
         calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
         new_expr = parser.parse_expr("SKOLEM_CONST(C)")
@@ -809,7 +811,8 @@ class IntegralTest(unittest.TestCase):
         file.add_goal(goal3)
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin = goal2)
         calc = proof_of_goal3.begin
-        calc.perform_rule(rules.IntegralEquation(var = 'a'))
+        left_skolem_name = 'E'
+        calc.perform_rule(rules.IntegralEquation(var = 'a', left_skolem_name=left_skolem_name, right_skolem_name=None))
         calc.perform_rule(rules.OnLocation(rules.Simplify(), '1'))
         calc.perform_rule(rules.OnLocation(rules.Linearity(), '1'))
         calc.perform_rule(rules.OnSubterm(rules.CommonIndefiniteIntegral(const_name='C')))

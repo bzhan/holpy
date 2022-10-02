@@ -192,8 +192,13 @@
                             "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} + E = \\int 0 \\,dt",
                             "res": "log(I(t)) + t ^ 2 / 2 + SKOLEM_CONST(E) = (INT t. 0)",
                             "rule": {
-                                "name": "integral both side",
-                                "str": "IntegralEquation"
+                                "integral_var": "t",
+                                "left_skolem": true,
+                                "left_skolem_name": "E",
+                                "name": "IntegrateBothSide",
+                                "right_skolem": false,
+                                "right_skolem_name": null,
+                                "str": "integrate both side"
                             },
                             "type": "CalculationStep"
                         },

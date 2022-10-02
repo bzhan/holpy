@@ -241,8 +241,13 @@
                             "latex_res": "g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) + E(y) = \\int 0 \\,dt",
                             "res": "g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2)) + SKOLEM_FUNC(E(y)) = (INT t. 0)",
                             "rule": {
-                                "name": "integral both side",
-                                "str": "IntegralEquation"
+                                "integral_var": "t",
+                                "left_skolem": true,
+                                "left_skolem_name": "E",
+                                "name": "IntegrateBothSide",
+                                "right_skolem": false,
+                                "right_skolem_name": null,
+                                "str": "integrate both side"
                             },
                             "type": "CalculationStep"
                         },

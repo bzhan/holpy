@@ -468,7 +468,7 @@ class RulesTest(unittest.TestCase):
         st.add_goal(Eq3)
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
-        calc.perform_rule(rules.IntegralEquation(var='t'))
+        calc.perform_rule(rules.IntegralEquation(var='t', left_skolem_name='E', right_skolem_name=None))
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral(const_name='C'), '1'))
         new_expr = parser.parse_expr("SKOLEM_CONST(C)")
         calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
@@ -558,7 +558,7 @@ class RulesTest(unittest.TestCase):
         file.add_goal(Eq3)
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
-        calc.perform_rule(rules.IntegralEquation(var = 't'))
+        calc.perform_rule(rules.IntegralEquation(var = 't',left_skolem_name='E',right_skolem_name=None))
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral(const_name='C'), '1'))
         calc.perform_rule(rules.FullSimplify())
         new_expr = parser.parse_expr("SKOLEM_FUNC(C(y))")
