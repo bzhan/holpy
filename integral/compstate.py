@@ -541,7 +541,7 @@ class RewriteGoalProof(StateItem):
             "finished": self.is_finished()
         }
 
-    def clean(self):
+    def clear(self):
         self.begin.clear()
 
     def __str__(self):
@@ -554,12 +554,12 @@ class RewriteGoalProof(StateItem):
         return res
 
     def get_by_label(self, label: Label):
-        if label.empty():
+        if label.empty() or len(label.data) == 1:
             return self
-        elif label.tail.empty():
-            return self.begin.steps[label.head]
-        else:
+        elif not label.tail.empty():
             return self.begin.steps[label.tail.head]
+        else:
+            raise AssertionError("get_by_label: invalid label")
 
 class CompState:
     """Represents the global state of a computation proof."""
