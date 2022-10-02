@@ -737,8 +737,11 @@ def parse_rule(item) -> Rule:
         return rules.DerivativeSimplify()
     elif item['name'] == 'RewriteExp':
         return rules.RewriteExp()
-    elif item['name'] == 'integral both side':
-        return rules.IntegralEquation(var='x')
+    elif item['name'] == 'IntegrateBothSide':
+        var = item['integral_var']
+        left_skolem_name = item['left_skolem_name'] if 'left_skolem_name' in item else None
+        right_skolem_name = item['right_skolem_name'] if 'right_skolem_name' in item else None
+        return rules.IntegralEquation(var=var,left_skolem_name=left_skolem_name,right_skolem_name=right_skolem_name)
     elif item['name'] == 'LimEquation':
         return rules.LimitEquation()
     elif item['name'] == 'CommonIndefiniteIntegral':
@@ -839,5 +842,7 @@ def get_next_step_label(step: Union[Calculation, CalculationStep], label: Label)
         return Label(label.data + [0])
     elif isinstance(step, CalculationStep):
         return Label(label.data[:-1] + [label.data[-1] + 1])
+    elif isinstance(step, RewriteGoalProof):
+        return Label(label.data + [0])
     else:
         raise NotImplementedError

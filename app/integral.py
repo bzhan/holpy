@@ -315,16 +315,18 @@ def integral_perform_step():
     subitem = item.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
         subitem.perform_rule(rule)
-        return jsonify({
-            "status": "ok",
-            "item": item.export(),
-            "selected_item": str(compstate.get_next_step_label(subitem, label))
-        })
+    elif isinstance(subitem, compstate.RewriteGoalProof):
+        subitem.begin.perform_rule(rule)
     else:
         return jsonify({
             "status": "error",
             "msg": "Selected item is not part of a calculation."
         })
+    return jsonify({
+        "status": "ok",
+        "item": item.export(),
+        "selected_item": str(compstate.get_next_step_label(subitem, label))
+    })
 
 @app.route("/api/query-theorems", methods=["POST"])
 def integral_query_theorems():
@@ -423,14 +425,17 @@ def query_last_expr():
     subitem = item.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep,compstate.Calculation)):
         res = subitem.res if isinstance(subitem, compstate.CalculationStep) else subitem.start
-        return jsonify({
-            "last_expr": str(res),
-            "status": "ok",
-        })
+    elif isinstance(subitem, compstate.RewriteGoalProof):
+        res = subitem.begin.start
     else:
         return jsonify({
             "status": "error",
         })
+    return jsonify({
+        "last_expr": str(res),
+        "latex_expr": integral.latex.convert_expr(res),
+        "status": "ok",
+    })
 
 
 @app.route("/api/query-limit", methods=['POST'])
@@ -526,4 +531,36 @@ def query_exp():
     return jsonify({
         "status": "ok",
         "exps": res
+    })
+
+@app.route("/api/query-integrate-both-side", methods=['POST'])
+def query_integrate_both_side():
+    fail = jsonify({
+            "status": "error",
+            "msg": "Selected item is not part of a calculation."
+        })
+    data = json.loads(request.get_data().decode('UTF-8'))
+    item = compstate.parse_item(data['item'])
+    label = compstate.Label(data['selected_item'])
+    subitem = item.get_by_label(label)
+    integral_var = data['integral_var']
+    if isinstance(subitem, compstate.CalculationStep):
+        e = subitem.res
+    elif isinstance(subitem, compstate.Calculation):
+        e = subitem.start
+    elif isinstance(subitem, compstate.RewriteGoalProof):
+        e = subitem.begin.start
+    else:
+        return fail
+    if not e.is_equals():
+        return fail
+    left_skolem = right_skolem = False
+    if e.lhs.is_deriv() and e.lhs.var == integral_var:
+        left_skolem = True
+    if e.rhs.is_deriv() and e.rhs.var == integral_var:
+        right_skolem = True
+    return jsonify({
+        "status": "ok",
+        "left_skolem": left_skolem,
+        "right_skolem": right_skolem,
     })
