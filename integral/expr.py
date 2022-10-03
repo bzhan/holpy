@@ -1215,6 +1215,8 @@ class Expr:
                     collect(arg, result)
             elif p.ty == LIMIT:
                 collect(p.body, result)
+            elif p.ty == DERIV:
+                collect(p.body, result)
 
         collect(self, result)
         return result
