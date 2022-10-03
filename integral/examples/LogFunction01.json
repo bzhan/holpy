@@ -1,0 +1,115 @@
+{
+    "content": [
+        {
+            "conds": [
+                {
+                    "cond": "abs(x) < 1",
+                    "latex_cond": "\\left| x \\right| < 1",
+                    "name": "abs(x) < 1",
+                    "type": "Condition"
+                }
+            ],
+            "eq": "log(1 + x) = SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
+            "latex_eq": "\\log{(1 + x)} = \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",
+            "type": "Lemma"
+        },
+        {
+            "eq": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) = pi ^ 2 / 12",
+            "latex_eq": "\\sum_{k=0}^{\\infty}{(-1)^{k} (k + 1) ^ {-2}} = \\frac{\\pi ^ {2}}{12}",
+            "type": "Lemma"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. log(x + 1) / x) = pi ^ 2 / 12",
+            "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x} \\,dx = \\frac{\\pi ^ {2}}{12}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. log(x + 1) / x) = pi ^ 2 / 12",
+                "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x} \\,dx = \\frac{\\pi ^ {2}}{12}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x} \\,dx",
+                    "start": "INT x:[0,1]. log(x + 1) / x",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} \\frac{\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}}{x} \\,dx",
+                            "res": "INT x:[0,1]. SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1)) / x",
+                            "rule": {
+                                "loc": "subterms",
+                                "name": "ApplyLemma",
+                                "str": "apply lemma on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1} (\\frac{1}{x})} \\,dx",
+                            "res": "INT x:[0,1]. SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1) * (1 / x))",
+                            "rule": {
+                                "name": "Equation",
+                                "new_expr": "SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1) * (1 / x))",
+                                "old_expr": "SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1)) / x",
+                                "str": "rewriting"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(-1)^{k} x ^ {k + 1}}{k + 1} (\\frac{1}{x}) \\,dx}",
+                            "res": "SUM(k, 0, oo, INT x:[0,1]. (-1) ^ k * x ^ (k + 1) / (k + 1) * (1 / x))",
+                            "rule": {
+                                "name": "IntSumExchange",
+                                "str": "IntSumExchange"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(-1)^{k} (k + 1) ^ {-2}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\pi ^ {2}}{12}",
+                            "res": "pi ^ 2 / 12",
+                            "rule": {
+                                "name": "ApplyLemma",
+                                "str": "apply lemma"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{12} \\pi ^ {2}",
+                            "res": "1/12 * pi ^ 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi ^ {2}}{12}",
+                    "start": "pi ^ 2 / 12",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{1}{12} \\pi ^ {2}",
+                            "res": "1/12 * pi ^ 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "LogFunction01"
+}

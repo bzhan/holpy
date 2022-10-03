@@ -1016,7 +1016,11 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal01.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        print(file)
+
+        self.assertTrue(file.content[2].is_finished())
+        path = 'integral/examples/LogFunction01.json'
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
 if __name__ == "__main__":
     unittest.main()
