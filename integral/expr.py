@@ -2345,7 +2345,8 @@ class Summation(Expr):
     def __eq__(self, other):
         return self.ty == other.ty and self.index_var == other.index_var and \
                self.lower == other.lower and \
-                self.body == other.body
+               self.upper == other.upper and \
+               self.body == other.body
     def __hash__(self):
         return hash((SUMMATION, self.index_var, self.ty, self.lower,self.upper,self.body))
 trigFun = {
