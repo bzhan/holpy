@@ -9,7 +9,7 @@
         {
             "eq": "I(0) = sqrt(pi / 2)",
             "latex_eq": "I{(0)} = \\sqrt{\\frac{\\pi}{2}}",
-            "type": "Assumption"
+            "type": "Lemma"
         },
         {
             "finished": true,
@@ -263,8 +263,8 @@
                             "res": "log(sqrt(pi / 2)) = SKOLEM_CONST(C)",
                             "rule": {
                                 "loc": "0.0",
-                                "name": "ApplyAssumption",
-                                "str": "apply assumption at 0.0"
+                                "name": "ApplyLemma",
+                                "str": "apply lemma at 0.0"
                             },
                             "type": "CalculationStep"
                         }

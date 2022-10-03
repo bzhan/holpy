@@ -433,8 +433,8 @@ class RulesTest(unittest.TestCase):
         conds = conditions.Conditions()
 
         e = parse_expr('I(0) = sqrt(pi/2)')
-        As1 = compstate.Assumption(e)
-        st.add_assumption(As1)
+        lemma1 = compstate.Lemma(e)
+        st.add_lemma(lemma1)
 
         # Prove the following equality
         e = parser.parse_expr('(D t. I(t)) = -t*I(t)')
@@ -480,7 +480,7 @@ class RulesTest(unittest.TestCase):
         calc = Eq4_proof.begin
         calc.perform_rule(rules.LimitEquation('t', Const(0)))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyAssumption(assumption=As1.assumption, conds=None), '0.0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma=lemma1.lemma, conds=None), '0.0'))
 
         e = parse_expr('log(I(t)) = -t ^ 2 / 2 + log(sqrt(pi / 2))')
         Eq5 = compstate.Goal(e, conds=conds)

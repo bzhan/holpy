@@ -110,18 +110,18 @@ class FuncDef(StateItem):
     def get_facts(self):
         return [self.eq]
 
-class Assumption(StateItem):
+class Lemma(StateItem):
     """
-    introduce assumption assisting proof
+    introduce lemma assisting proof
     """
-    def __init__(self, assumption:Expr, conds:Conditions = None):
-        '''assumption usually is an equation and
-        conds represents the conditions under which the assumption holds'''
-        self.assumption = conditions.replaceByConds(assumption, conds)
+    def __init__(self, lemma:Expr, conds:Conditions = None):
+        '''lemma usually is an equation and
+        conds represents the conditions make the lemma hold'''
+        self.lemma = conditions.replaceByConds(lemma, conds)
         self.conds = conds
 
     def __str__(self):
-        res = "Assumption\n"
+        res = "Lemma\n"
         res2 = ""
         first = True
         if self.conds != None:
@@ -130,14 +130,14 @@ class Assumption(StateItem):
                     res2 += str(v)
                 else:
                     res2 += ", "+str(v)
-        res += "  %s%s\n" % (self.assumption, (" for "+ res2) if self.conds!=None else "")
+        res += "  %s%s\n" % (self.lemma, (" for "+ res2) if self.conds!=None else "")
         return res
 
     def export(self):
         res = {
-            "type": "Assumption",
-            "eq": str(self.assumption),
-            "latex_eq": latex.convert_expr(self.assumption)
+            "type": "Lemma",
+            "eq": str(self.lemma),
+            "latex_eq": latex.convert_expr(self.lemma)
         }
         if self.conds!=None and self.conds.data:
             res["conds"] = self.conds.export()
@@ -317,7 +317,7 @@ class Calculation(StateItem):
 
 class CalculationProof(StateItem):
     """Proof for an equation by calculation.
-    
+
     The proof consists of calculation of left and right sides.
 
     """
@@ -378,7 +378,7 @@ class CalculationProof(StateItem):
 
 class InductionProof(StateItem):
     """Proof for an equation by induction on natural numbers.
-    
+
     This breaks the equation goal into two goals, corresponding to the
     base case and inductive case.
 
@@ -405,7 +405,7 @@ class InductionProof(StateItem):
         # Base case: n = 0
         eq0 = goal.subst(induct_var, self.start).normalize()
         self.base_case = Goal(eq0, conds=self.conds)
-        
+
         # Inductive case:
         eqI = goal.subst(induct_var, Var(induct_var) + 1).normalize()
         induct_conds = copy.copy(self.conds)
@@ -643,9 +643,9 @@ class CompFile:
         """Add a goal."""
         self.content.append(goal)
 
-    def add_assumption(self, assume: Assumption):
+    def add_lemma(self, lemma: Lemma):
         """Add a assumption"""
-        self.content.append(assume)
+        self.content.append(lemma)
 
     def export(self):
         self.name = self.name
@@ -767,7 +767,7 @@ def parse_conds(item) -> Conditions:
     if 'conds' in item:
         for subitem in item['conds']:
             if subitem['type'] != 'Condition':
-                raise AssertionError('parse_conds')        
+                raise AssertionError('parse_conds')
             res.add_condition(subitem['name'], parser.parse_expr(subitem['cond']))
     return res
 

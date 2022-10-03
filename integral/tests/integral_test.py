@@ -592,20 +592,20 @@ class IntegralTest(unittest.TestCase):
         file.add_definition(Idef)
 
         e = parser.parse_expr("I(0) = SKOLEM_CONST(C)")
-        assume1 = compstate.Assumption(e)
-        file.add_assumption(assume1)
+        lemma1 = compstate.Lemma(e)
+        file.add_lemma(lemma1)
 
 
         e = parser.parse_expr("(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1/(b^2+1)")  # for b > 0
-        conds_of_assume2 = compstate.Conditions()
+        conds_of_lemma2 = compstate.Conditions()
         e2 = parser.parse_expr("b>0")
-        conds_of_assume2.add_condition(str(e2), e2)
-        assume2 = compstate.Assumption(e, conds_of_assume2)
-        file.add_assumption(assume2)
+        conds_of_lemma2.add_condition(str(e2), e2)
+        lemma2 = compstate.Lemma(e, conds_of_lemma2)
+        file.add_lemma(lemma2)
 
         e = parser.parse_expr("(LIM {b -> oo}. INT x:[0,oo]. x ^ -1 * exp(-(b * x)) * sin(x)) = 0")
-        assume3 = compstate.Assumption(e)
-        file.add_assumption(assume3)
+        lemma3 = compstate.Lemma(e)
+        file.add_lemma(lemma3)
 
         # goal: D b. I(b) = -1/(b^2+1)
         e = parser.parse_expr("(D b. I(b)) = -1/(b^2+1)")
@@ -619,7 +619,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.DerivIntExchange())
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyAssumption(assume2.assumption, assume2.conds), '0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma2.lemma, lemma2.conds), '0'))
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -648,7 +648,7 @@ class IntegralTest(unittest.TestCase):
         case_1_proof = proof.case_1.proof_by_calculation()
         calc = case_1_proof.lhs_calc
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.ApplyAssumption(assume1.assumption,assume1.conds))
+        calc.perform_rule(rules.ApplyLemma(lemma1.lemma,lemma1.conds))
         calc = case_1_proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
         case_2_proof = proof.case_2.proof_by_rewrite_goal(begin=goal1)
@@ -666,11 +666,11 @@ class IntegralTest(unittest.TestCase):
         file.add_goal(goal4)
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
         calc = proof_of_goal4.begin
-        calc.perform_rule(rules.OnLocation(rules.ApplyAssumption(assume1.assumption, assume1.conds), '1.1'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma1.lemma, lemma1.conds), '1.1'))
         calc.perform_rule(rules.LimitEquation(var='b', lim=expr.POS_INF))
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(assume3.assumption), '0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(lemma3.lemma), '0'))
 
         e = parser.parse_expr("(INT x:[0,oo]. x ^ -1 * sin(x)) = 1/2 * pi")
         goal5 = compstate.Goal(e)
@@ -866,9 +866,9 @@ class IntegralTest(unittest.TestCase):
 
     def testCatalanConstant01(self):
         file = compstate.CompFile('CatalanConstant01')
-        assumption = parser.parse_expr('G = Summation(n, 0, oo, (-1)^n / (2*n+1)^2)')
-        assume01 = compstate.Assumption(assumption=assumption)
-        file.add_assumption(assume01)
+        lemma = parser.parse_expr('G = Summation(n, 0, oo, (-1)^n / (2*n+1)^2)')
+        lemma01 = compstate.Lemma(lemma=lemma)
+        file.add_lemma(lemma01)
 
         e = parser.parse_expr("(INT x:[0, 1]. atan(x) / x) = G")
         goal01 = compstate.Goal(goal=e, conds=None)
@@ -883,7 +883,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.IntSumExchange())
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal01.rhs_calc
-        calc.perform_rule(rules.ApplyEquation(assume01.assumption))
+        calc.perform_rule(rules.ApplyEquation(lemma01.lemma))
         calc.perform_rule(rules.FullSimplify())
 
         self.assertTrue(file.content[1].is_finished())
@@ -894,9 +894,9 @@ class IntegralTest(unittest.TestCase):
     def testCatalanConstant02(self):
         # goal : INT x:[1,oo]. log(x) / (x^2 + 1)
         file = compstate.CompFile('CatalanConstant01')
-        assumption = parser.parse_expr('G = Summation(n, 0, oo, (-1)^n / (2*n+1)^2)')
-        assume01 = compstate.Assumption(assumption=assumption)
-        file.add_assumption(assume01)
+        lemma = parser.parse_expr('G = Summation(n, 0, oo, (-1)^n / (2*n+1)^2)')
+        lemma01 = compstate.Lemma(lemma=lemma)
+        file.add_lemma(lemma01)
         e = parser.parse_expr("I(k) = INT x:[1,oo]. log(x) / (x^k)")
         conds_of_Idef = compstate.Conditions()
         e2 = parser.parse_expr("k>1")
@@ -979,7 +979,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), '0.1'))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal5.rhs_calc
-        calc.perform_rule(rules.ApplyAssumption(assumption=assume01.assumption, conds=None))
+        calc.perform_rule(rules.ApplyLemma(lemma=lemma01.lemma, conds=None))
         calc.perform_rule(rules.FullSimplify())
 
         for i in range(2,7):

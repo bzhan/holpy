@@ -754,17 +754,17 @@ class ApplyEquation(Rule):
                 new_eq = new_eq.subst(var, e2)
             return ApplyEquation(new_eq).eval(e)
 
-class ApplyAssumption(Rule):
-    """Apply assumption"""
+class ApplyLemma(Rule):
+    """Apply lemma"""
 
-    def __init__(self, assumption: Expr, conds: Conditions):
-        assert isinstance(assumption, Expr)
-        self.name = "ApplyAssumption"
-        self.assumption = assumption
+    def __init__(self, lemma: Expr, conds: Conditions):
+        assert isinstance(lemma, Expr)
+        self.name = "ApplyLemma"
+        self.lemma = lemma
         self.conds = conds
 
     def __str__(self):
-        return "apply assumption"
+        return "apply lemma"
 
     def export(self):
         return {
@@ -776,6 +776,7 @@ class ApplyAssumption(Rule):
         # if assumption holds under this expression
         # then apply assumption
         flag = False if conds != None else True
+        # conditions check
         if not flag:
             if self.conds != None:
                 items = self.conds.data.items()
@@ -792,7 +793,7 @@ class ApplyAssumption(Rule):
                 flag = True
         if not flag:
             return e
-        rule = ApplyEquation(self.assumption)
+        rule = ApplyEquation(self.lemma)
         return rule.eval(e, conds)
 
 class ApplyInductHyp(Rule):
