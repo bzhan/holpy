@@ -510,7 +510,7 @@
                             "rule": {
                                 "loc": "1",
                                 "name": "LimFunExchange",
-                                "str": "exchange of limit and function application at 1"
+                                "str": "exchange limit and function at 1"
                             },
                             "type": "CalculationStep"
                         },

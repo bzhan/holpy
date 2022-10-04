@@ -3,14 +3,12 @@
 import unittest
 from decimal import Decimal
 from fractions import Fraction
-import copy
 
-import integral
 from logic import basic
 from logic import context
-from integral import expr, proof
+from integral import expr
 from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt, Symbol, \
-    VAR, CONST, OP, FUN, match, pi, Const, expr_to_holpy
+    VAR, CONST, OP, FUN, match, pi, Const
 from integral.parser import parse_expr
 
 basic.load_theory('transcendentals')

@@ -21,18 +21,19 @@ evalat = term.Const('evalat', TFun(TFun(RealType, RealType), RealType, RealType,
 real_derivative = term.Const('real_derivative', TFun(TFun(RealType, RealType), RealType, RealType))
 real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(RealType, RealType), RealType))
 
-
-VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF, INDEFINITEINTEGRAL, DIFFERENTIAL,\
-    SKOLEMFUNC, SUMMATION= range(14)
+VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF, INDEFINITEINTEGRAL, DIFFERENTIAL, \
+SKOLEMFUNC, SUMMATION = range(14)
 
 op_priority = {
-    "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50, "<": 50, ">": 50, "<=": 50, ">=": 50, "!=":50
+    "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50, "<": 50, ">": 50, "<=": 50, ">=": 50, "!=": 50
 }
 
 trig_identity = []
 
+
 def is_square(r):
     return math.sqrt(r) * math.sqrt(r) == r
+
 
 sin_table = {
     "0": "0",
@@ -133,8 +134,10 @@ acsc_table = {
     "2": "1/6 * pi",
 }
 
+
 class Location:
     """Location within an expression."""
+
     def __init__(self, data):
         if isinstance(data, Iterable) and all(isinstance(n, int) for n in data):
             self.data = tuple(data)
@@ -171,6 +174,7 @@ class Location:
 
 class Expr:
     """Expressions."""
+
     def __add__(self, other):
         if isinstance(other, (int, Fraction)):
             other = Const(other)
@@ -306,7 +310,7 @@ class Expr:
     def is_times(self):
         return self.ty == OP and self.op == '*'
 
-    def is_odd_function(self, var:str):
+    def is_odd_function(self, var: str):
         if self.is_constant():
             return False
         elif self.is_var():
@@ -329,7 +333,7 @@ class Expr:
         else:
             raise NotImplementedError
 
-    def is_even_function(self, var:str):
+    def is_even_function(self, var: str):
         if self.is_constant():
             return True
         elif self.is_var():
@@ -350,7 +354,7 @@ class Expr:
             else:
                 raise False
         elif self.is_plus():
-            a1,a2 = self.args
+            a1, a2 = self.args
             if a1.is_even_function(var) and a2.is_even_function(var):
                 return True
             else:
@@ -425,7 +429,7 @@ class Expr:
         return self.ty == OP and self.op == ">="
 
     def is_inf(self):
-        return self.ty == INF and  (self.t == Decimal("inf") or self.t == Decimal("-inf"))
+        return self.ty == INF and (self.t == Decimal("inf") or self.t == Decimal("-inf"))
 
     def is_pos_inf(self):
         return self.ty == INF and self.t == Decimal("inf")
@@ -460,7 +464,6 @@ class Expr:
         else:
             raise NotImplementedError
 
-
     @property
     def lhs(self) -> Expr:
         if self.is_equals():
@@ -484,7 +487,7 @@ class Expr:
 
         if self.ty != other.ty:
             return self.ty <= other.ty
-        
+
         if self.ty == VAR:
             return self.name <= other.name
         elif self.ty == CONST:
@@ -497,7 +500,7 @@ class Expr:
             return (self.body, self.var) <= (other.body, other.var)
         elif self.ty == INTEGRAL or self.ty == EVAL_AT:
             return (self.body, self.lower, self.upper, self.var) <= \
-                (other.body, other.lower, other.upper, other.var)
+                   (other.body, other.lower, other.upper, other.var)
         elif self.ty == SYMBOL:
             return sum(self.ty) <= sum(other.ty)
         else:
@@ -566,7 +569,7 @@ class Expr:
         elif self.ty == LIMIT:
             assert loc.head == 0, "get_subexpr: invalid location"
             return self.body.get_subexpr(loc.rest)
-                
+
         else:
             raise NotImplementedError
 
@@ -613,7 +616,7 @@ class Expr:
                 return EvalAt(self.var, self.lower, self.upper.replace_expr(loc.rest, new_expr), self.body)
             else:
                 raise AssertionError("replace_expr: invalid location")
-        elif self.ty == DERIV:      
+        elif self.ty == DERIV:
             assert loc.head == 0, "replace_expr: invalid location"
             return Deriv(self.var, self.body.replace_expr(loc.rest, new_expr))
         elif self.ty == LIMIT:
@@ -625,25 +628,28 @@ class Expr:
     def get_location(self):
         """Returns the location at which the 'selected' field is True."""
         location = []
-        def get(exp, loc = ''):
+
+        def get(exp, loc=''):
             if hasattr(exp, 'selected') and exp.selected == True:
                 location.append(loc[1:])
-                exp.selected = False #Once it is found, restore it.
+                exp.selected = False  # Once it is found, restore it.
             elif exp.ty == OP or exp.ty == FUN:
                 for i in range(len(exp.args)):
-                    get(exp.args[i], loc+"."+str(i))
+                    get(exp.args[i], loc + "." + str(i))
             elif exp.ty == INTEGRAL or exp.ty == EVAL_AT:
-                get(exp.lower, loc+".1")
-                get(exp.upper, loc+".2")
-                get(exp.body, loc+".0")
+                get(exp.lower, loc + ".1")
+                get(exp.upper, loc + ".2")
+                get(exp.body, loc + ".0")
             elif exp.ty == DERIV or exp.ty == LIMIT:
-                get(exp.body, loc+".0")
+                get(exp.body, loc + ".0")
+
         get(self)
         return location[0]
 
     def find_subexpr(self, subexpr: Expr) -> List[Location]:
         """Returns the location of a subexpression."""
         locations = []
+
         def find(e, loc: Location):
             if e == subexpr:
                 locations.append(Location(loc))
@@ -660,6 +666,7 @@ class Expr:
                 find(e.body, loc.append(0))
                 find(e.lower, loc.append(1))
                 find(e.upper, loc.append(2))
+
         find(self, Location(""))
         return locations
 
@@ -692,7 +699,8 @@ class Expr:
         elif self.ty == EVAL_AT:
             return EvalAt(self.var, self.lower.subst(var, e), self.upper.subst(var, e), self.body.subst(var, e))
         elif self.ty == SUMMATION:
-            return Summation(self.index_var, self.lower.subst(var, e), self.upper.subst(var,e), self.body.subst(var,e))
+            return Summation(self.index_var, self.lower.subst(var, e), self.upper.subst(var, e),
+                             self.body.subst(var, e))
         else:
             print('subst on', self)
             raise NotImplementedError
@@ -713,6 +721,7 @@ class Expr:
     def get_vars(self) -> Set[str]:
         """Obtain the set of variables in self."""
         res = set()
+
         def rec(t, bd_vars):
             if t.ty == VAR:
                 if t.name not in bd_vars:
@@ -780,15 +789,17 @@ class Expr:
             else:
                 print(self)
                 raise NotImplementedError
+        elif self.ty == SUMMATION:
+            return Summation(self.index_var, self.lower, self.upper, self.body.replace(e, repl_e))
         else:
             print(self)
             raise NotImplementedError
 
     def to_const_poly(self) -> ConstantPolynomial:
         """Normalize a constant expression.
-        
+
         Assume self.is_constant() = True in this function.
-        
+
         """
         if self.ty == VAR:
             raise ValueError
@@ -801,7 +812,7 @@ class Expr:
 
         elif self.is_plus():
             return self.args[0].to_const_poly() + self.args[1].to_const_poly()
-        
+
         elif self.is_uminus():
             return -self.args[0].to_const_poly()
 
@@ -843,7 +854,7 @@ class Expr:
             if a.is_fraction() and is_square(a.get_fraction()):  # is square
                 return poly.const_fraction(Fraction(math.sqrt(a.get_fraction())))
             elif a.is_monomial():
-                return a ** Fraction(1/2)
+                return a ** Fraction(1 / 2)
             else:
                 return poly.const_singleton(sqrt(from_const_poly(a)))
 
@@ -860,7 +871,7 @@ class Expr:
                 return self.args[0].args[0].to_const_poly()
             else:
                 return poly.const_singleton(exp(from_const_poly(a)))
-        
+
         elif self.ty == FUN and self.func_name == 'log':
             a = self.args[0].to_const_poly()
             if a.is_fraction() and a.get_fraction() == 1:
@@ -910,7 +921,7 @@ class Expr:
                 if n % 2 == 0:
                     norm_a = Const(x.val - n) * pi
                 else:
-                    norm_a = Const(x.val - (n+1)) * pi if n > 0 else Const(x.val - (n-1)) * pi
+                    norm_a = Const(x.val - (n + 1)) * pi if n > 0 else Const(x.val - (n - 1)) * pi
             elif norm_a == -pi:
                 norm_a = pi
             table = trig_table()[self.func_name]
@@ -950,7 +961,7 @@ class Expr:
                     return -a
             else:
                 return poly.const_singleton(self)
-        
+
         elif self.ty == FUN and self.func_name == "binom":
             a = self.args[0].to_const_poly()
             norm_a = from_const_poly(a)
@@ -963,11 +974,13 @@ class Expr:
         elif self.ty == FUN and self.func_name == 'factorial':
             a = self.args[0].to_const_poly()
             norm_a = from_const_poly(a)
+
             def rec(n):
-                if n==0 or n == 1:
+                if n == 0 or n == 1:
                     return 1
                 else:
-                    return n * rec(n-1)
+                    return n * rec(n - 1)
+
             if norm_a.is_const() and int(norm_a.val) == float(norm_a.val):
                 return Const(rec(norm_a.val)).to_const_poly()
             else:
@@ -993,10 +1006,10 @@ class Expr:
         elif self.is_constant():
             # Consists of CONST, OP and FUN only.
             return poly.constant(self.to_const_poly())
-        
+
         elif self.is_plus():
             return self.args[0].to_poly() + self.args[1].to_poly()
-        
+
         elif self.is_uminus():
             return -self.args[0].to_poly()
 
@@ -1015,7 +1028,7 @@ class Expr:
                 return b * poly.singleton(from_poly(a))
             else:
                 return poly.singleton(from_poly(a)) * poly.singleton(from_poly(b))
-        
+
         elif self.is_divides():
             a, b = self.args[0].to_poly(), self.args[1].to_poly()
             if a.is_fraction() and a.get_fraction() == 0:
@@ -1030,7 +1043,7 @@ class Expr:
                 return poly.singleton(from_poly(a)) / b
             else:
                 return poly.singleton(from_poly(a)) / poly.singleton(from_poly(b))
-        
+
         elif self.is_power():
             a, b = self.args[0].to_poly(), self.args[1].to_poly()
             if a.is_monomial() and b.is_fraction():
@@ -1135,7 +1148,7 @@ class Expr:
 
     def replace_trig(self, trig_old: Expr, trig_new: Expr):
         """Replace trigonometric expression with its equivalent form in e.
-        
+
         Compared to regular substitution, it makes special consideration of
         powers in trig_old. For example, if original expression is sin(x)^4,
         trig_old is sin(x)^2 and trig_new is 1-cos(x)^2, then the returned
@@ -1152,7 +1165,7 @@ class Expr:
                 return Op(self.op, new_arg)
             elif len(self.args) == 2:
                 if self.op == "^" and trig_old.ty == OP and trig_old.op == "^" \
-                    and self.args[0] == trig_old.args[0]:
+                        and self.args[0] == trig_old.args[0]:
                     # The main additional case
                     return Op(self.op, trig_new, (self.args[1] / trig_old.args[1]).normalize())
                 else:
@@ -1176,7 +1189,7 @@ class Expr:
         else:
             return self
 
-    def has_func(self, func_name:str) -> bool:
+    def has_func(self, func_name: str) -> bool:
         # determine whether expression has function called func_name
 
         if self.is_op():
@@ -1185,7 +1198,7 @@ class Expr:
                 if a.has_func(func_name):
                     return True
         elif self.is_fun():
-            if(self.func_name == func_name):
+            if (self.func_name == func_name):
                 return True
             else:
                 args = self.args
@@ -1204,6 +1217,7 @@ class Expr:
     def separate_integral(self):
         """Collect the list of all integrals appearing in self."""
         result = []
+
         def collect(p, result):
             if p.ty == INTEGRAL:
                 p.selected = True
@@ -1224,6 +1238,7 @@ class Expr:
     def separate_binom(self):
         """Collect the list of all binomial coeffcients appearing in self."""
         result = []
+
         def collect(p, result):
             if p.ty == FUN and p.func_name == 'binom':
                 p.selected = True
@@ -1240,6 +1255,7 @@ class Expr:
     def separate_limit(self):
         """Collect the list of all limits appearing in self."""
         result = []
+
         def collect(p, result):
             if p.ty == LIMIT:
                 p.selected = True
@@ -1248,6 +1264,7 @@ class Expr:
             elif p.ty == OP:
                 for arg in p.args:
                     collect(arg, result)
+
         collect(self, result)
         return result
 
@@ -1256,7 +1273,7 @@ class Expr:
         result = []
 
         def collect(p, result):
-            if p.ty == INTEGRAL and p.body.ty == FUN and p.body.func_name=='abs':
+            if p.ty == INTEGRAL and p.body.ty == FUN and p.body.func_name == 'abs':
                 p.selected = True
                 loc = self.get_location()
                 result.append([p, loc])
@@ -1294,6 +1311,7 @@ class Expr:
     def findVar(self):
         """Find list of variables appearing in the expression."""
         v = []
+
         def findv(e, v):
             if e.ty == VAR:
                 v.append(e)
@@ -1320,12 +1338,14 @@ class Expr:
             else:
                 print(e)
                 raise NotImplementedError
+
         findv(self, v)
         return v
 
     @property
     def depth(self):
         """Return the depth of expression as an estimate of problem difficulty."""
+
         def d(expr):
             if expr.ty in (VAR, CONST):
                 return 0
@@ -1337,6 +1357,7 @@ class Expr:
                 return d(expr.body)
             elif expr.ty == SYMBOL:
                 raise TypeError
+
         return d(self)
 
     def ranges(self, var, lower, upper):
@@ -1358,11 +1379,13 @@ class Expr:
                 return []
             else:
                 raise NotImplementedError
+
         g, s = to_holpy(greater_zero), to_holpy(smaller_zero)
 
         # Because sympy use e represent exp, so need to convert it to exp(1).
         def e_exp(e):
             return Fun("exp", Const(1)) if e == Var("E") else e
+
         g = [(e_exp(i), e_exp(j)) for i, j in g]
         s = [(e_exp(i), e_exp(j)) for i, j in s]
         return g, s
@@ -1370,6 +1393,7 @@ class Expr:
     def get_abs(self):
         """Collect all absolute value in expression."""
         abs_value = []
+
         def abs_collect(expr):
             if expr.ty == FUN and expr.func_name == "abs":
                 abs_value.append(expr)
@@ -1378,6 +1402,7 @@ class Expr:
                     abs_collect(arg)
             elif expr.ty in (INTEGRAL, EVAL_AT, DERIV):
                 abs_collect(expr.body)
+
         abs_collect(self)
         return abs_value
 
@@ -1387,6 +1412,7 @@ class Expr:
         pat1 = sin(v)
         if len(find_pattern(self, pat1)) != 1:
             return False
+
         def rec(ex):
             if ex.ty == CONST:
                 return True
@@ -1398,6 +1424,7 @@ class Expr:
                 return True if ex.func_name == fun_name else False
             else:
                 return False
+
         return rec(self)
 
     def nonlinear_subexpr(self):
@@ -1406,7 +1433,8 @@ class Expr:
         a = Symbol('a', [CONST])
         b = Symbol('b', [CONST])
         x = Symbol('x', [VAR])
-        patterns = [a * x, a*x +b, a*x - b, x, b + a*x, a + x, x + a]
+        patterns = [a * x, a * x + b, a * x - b, x, b + a * x, a + x, x + a]
+
         def traverse(exp):
             table = [match(exp, p) for p in patterns]
             is_linear = functools.reduce(lambda x, y: x or y, table)
@@ -1418,6 +1446,7 @@ class Expr:
                     traverse(arg)
             elif exp.ty in (INTEGRAL, EVAL_AT, DERIV):
                 traverse(exp.body)
+
         traverse(self)
         subs.remove(self)
         return tuple(subs)
@@ -1435,7 +1464,7 @@ class Expr:
             exp = s.args[1].val
             if isinstance(exp, int) and exp > 1:
                 pw = base
-                for i in range(exp-1):
+                for i in range(exp - 1):
                     pw = pw * base
                 expand_expr = expand_expr.replace_trig(s, from_poly(pw))
 
@@ -1461,7 +1490,7 @@ class Expr:
         elif self.ty == DERIV:
             return Deriv(self.var, self.body.inst_pat(mapping))
         elif self.ty == SUMMATION:
-            return Summation(self.index_var, self.lower.inst_pat(mapping), self.upper.inst_pat(mapping),\
+            return Summation(self.index_var, self.lower.inst_pat(mapping), self.upper.inst_pat(mapping), \
                              self.body.inst_pat(mapping))
         else:
             raise NotImplementedError
@@ -1469,7 +1498,7 @@ class Expr:
     def has_var(self, var):
         """Check if var occurs in self"""
         assert isinstance(var, Expr) and var.ty == VAR, \
-                        "%s is not a var" % var
+            "%s is not a var" % var
         if self.ty in (VAR, CONST):
             return self == var
         elif self.ty == SKOLEMFUNC:
@@ -1480,24 +1509,28 @@ class Expr:
             return self.body.has_var(var)
         elif self.ty == INTEGRAL:
             return self.lower.has_var(var) or self.upper.has_var(var) or \
-                self.body.has_var(var)
+                   self.body.has_var(var)
         elif self.ty == EVAL_AT:
             return self.var != str(var) and (self.body.has_var(var) or \
-                self.upper.has_var(var) or self.lower.has_var(var))
+                                             self.upper.has_var(var) or self.lower.has_var(var))
         else:
             raise NotImplementedError
+
 
 def sympy_style(s):
     """Transform expr to sympy object."""
     return sympy_parser.parse_expr(str(s).replace("^", "**"))
 
+
 def holpy_style(s):
     """Transform sympy object to expr."""
     return parser.parse_expr(str(s).replace("**", "^")).replace_trig(Var("E"), Fun("exp", Const(1)))
 
+
 def factor_polynomial(e):
     """Factorize a polynomial expr."""
     return holpy_style(sympy.factor(sympy_style(e)))
+
 
 def is_polynomial(e):
     """Detect polynomials in x."""
@@ -1510,12 +1543,13 @@ def is_polynomial(e):
     else:
         return False
 
+
 def trig_transform(trig: Expr, var: str, rule_list=None):
     """Compute all possible trig function equal to trig"""
     poss = set()
     poss_expr = set()
     if trig.ty == CONST:
-        poss.add((trig * ((sin(Var(var)) ^ Const(2)) + (cos(Var(var))^Const(2))), "TR0"))
+        poss.add((trig * ((sin(Var(var)) ^ Const(2)) + (cos(Var(var)) ^ Const(2))), "TR0"))
         return poss
     i = sympy_parser.parse_expr(str(trig).replace("^", "**"))
     for rule_name, (f, rule) in trigFun.items():
@@ -1528,14 +1562,16 @@ def trig_transform(trig: Expr, var: str, rule_list=None):
     poss.add((holpy_style(i), "Unchanged"))
     return poss
 
+
 def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
-    """Match expr with given pattern. 
-    
+    """Match expr with given pattern.
+
     If successful, return a dictionary mapping symbols to expressions.
     Otherwise returns None.
 
     """
     d = dict()
+
     def rec(exp, pattern):
         if isinstance(pattern, Symbol):
             if pattern in d:
@@ -1574,6 +1610,7 @@ def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
     else:
         return None
 
+
 def expr_to_pattern(e: Expr) -> Expr:
     """Convert an expression to pattern."""
     vars = e.get_vars()
@@ -1581,15 +1618,17 @@ def expr_to_pattern(e: Expr) -> Expr:
         e = e.subst(var, Symbol(var, [VAR, CONST, OP, FUN]))
     return e
 
+
 def find_pattern(expr, pat, transform=None):
     """Find all subexpr can be matched with the given pattern.
 
     Return a list of: matched expression, location, mapping of symbols.
     If the transform function is provided, first apply it to the mapping
     of symbols.
- 
+
     """
     c = []
+
     def rec(e, pat, cur_loc):
         mapping = match(e, pat)
         if mapping:
@@ -1606,15 +1645,18 @@ def find_pattern(expr, pat, transform=None):
     rec(expr, pat, tuple())
     return c
 
+
 def collect_spec_expr(expr, symb):
     c = [p.args[0] for p, _, _ in find_pattern(expr, symb) if len(p.args) != 0]
-    return c   
+    return c
+
 
 def decompose_expr_add(e):
     '''
     a + b - c -> [a, b, -c]
     '''
     res = []
+
     def f(e):
         tmp = []
         if e.ty == OP and e.op == '+':
@@ -1634,11 +1676,12 @@ def decompose_expr_add(e):
 
 def decompose_expr_factor(e):
     """Get production factors from expr.
-    
+
     """
     factors = []
     if e.ty == OP and e.op == "/":
         e = e.args[0] * Op("^", e.args[1], Const(-1))
+
     def f(e):
         tmp = []
         if e.ty == OP and e.op == '*':
@@ -1650,8 +1693,10 @@ def decompose_expr_factor(e):
         else:
             tmp.extend([e])
         return copy.copy(tmp)
+
     return f(e)
     # return factors
+
 
 def from_const_mono(m: ConstantMonomial) -> Expr:
     """Convert a ConstantMonomial to an expression."""
@@ -1666,11 +1711,11 @@ def from_const_mono(m: ConstantMonomial) -> Expr:
                 raise ValueError
             if power == 1:
                 factors.append(base)
-            elif power == Fraction(1/2):
+            elif power == Fraction(1 / 2):
                 factors.append(sqrt(base))
             else:
                 factors.append(base ** Const(power))
-    
+
     if len(factors) == 0:
         return Const(m.coeff)
     elif m.coeff == 1:
@@ -1679,6 +1724,7 @@ def from_const_mono(m: ConstantMonomial) -> Expr:
         return - functools.reduce(operator.mul, factors[1:], factors[0])
     else:
         return functools.reduce(operator.mul, factors, Const(m.coeff))
+
 
 def rsize(e: Expr) -> int:
     if e.is_const():
@@ -1689,6 +1735,7 @@ def rsize(e: Expr) -> int:
         return rsize(e.args[1])
     else:
         return e.size()
+
 
 def from_const_poly(p: ConstantPolynomial) -> Expr:
     """Convert a ConstantPolynomial to an expression."""
@@ -1711,8 +1758,9 @@ def from_const_poly(p: ConstantPolynomial) -> Expr:
                 res = res + mono
         return res
 
+
 def from_mono(m: Monomial) -> Expr:
-    """Convert a monomial to an expression.""" 
+    """Convert a monomial to an expression."""
     factors = []
     for base, power in m.factors:
         if isinstance(base, expr.Expr) and base == E:
@@ -1723,7 +1771,7 @@ def from_mono(m: Monomial) -> Expr:
         else:
             if power == 1:
                 factors.append(base)
-            elif power == Fraction(1/2):
+            elif power == Fraction(1 / 2):
                 factors.append(sqrt(base))
             elif isinstance(power, (int, Fraction)):
                 factors.append(base ** Const(power))
@@ -1740,6 +1788,7 @@ def from_mono(m: Monomial) -> Expr:
         return - functools.reduce(operator.mul, factors[1:], factors[0])
     else:
         return functools.reduce(operator.mul, factors, from_const_poly(m.coeff))
+
 
 def from_poly(p: Polynomial) -> Expr:
     """Convert a polynomial to an expression."""
@@ -1762,6 +1811,7 @@ def from_poly(p: Polynomial) -> Expr:
             else:
                 res = res + mono
         return res
+
 
 def deriv(var: str, e: Expr) -> Expr:
     """Compute the derivative of e with respect to variable
@@ -1834,7 +1884,7 @@ def deriv(var: str, e: Expr) -> Expr:
             x, = e.args
             return (-csc(x) * cot(x) * deriv(var, x)).normalize()
         elif e.func_name == "cot":
-            x,  = e.args
+            x, = e.args
             return (-(csc(x) ^ Const(2))).normalize()
         elif e.func_name == "cot":
             x, = e.args
@@ -1851,7 +1901,7 @@ def deriv(var: str, e: Expr) -> Expr:
             if e.args[0].ty == CONST:
                 return Const(0)
             else:
-                return (deriv(var, e.args[0] ^ Const(Fraction(1/2)))).normalize()
+                return (deriv(var, e.args[0] ^ Const(Fraction(1 / 2)))).normalize()
         elif e.func_name == "atan":
             x, = e.args
             return (deriv(var, x) / (Const(1) + (x ^ Const(2)))).normalize()
@@ -1876,11 +1926,16 @@ def deriv(var: str, e: Expr) -> Expr:
                 - e.body.subst(e.var, e.lower) * deriv(var, e.lower)).normalize()
     elif e.ty == LIMIT:
         return Limit(e.var, e.lim, deriv(var, e.body))
+    elif e.ty == SUMMATION:
+        return Summation(e.index_var, e.lower, e.upper, deriv(var, e.body))
     else:
+        print(e)
         raise NotImplementedError
+
 
 class Var(Expr):
     """Variable."""
+
     def __init__(self, name: str):
         assert isinstance(name, str)
         self.ty = VAR
@@ -1898,8 +1953,10 @@ class Var(Expr):
     def __repr__(self):
         return "Var(%s)" % self.name
 
+
 class Const(Expr):
     """Constants."""
+
     def __init__(self, val: Union[int, Decimal, Fraction]):
         assert isinstance(val, (int, Decimal, Fraction))
         self.ty = CONST
@@ -1919,8 +1976,10 @@ class Const(Expr):
     def __repr__(self):
         return "Const(%s)" % str(self.val)
 
+
 class Op(Expr):
     """Operators."""
+
     def __init__(self, op: str, *args):
         assert isinstance(op, str) and all(isinstance(arg, Expr) for arg in args)
         if len(args) == 1:
@@ -1955,6 +2014,9 @@ class Op(Expr):
                 s1 = "(%s)" % s1
             if b.priority() <= op_priority[self.op]:
                 s2 = "(%s)" % s2
+            if a.priority() > op_priority[self.op]:
+                if a.ty == OP and a.is_uminus() and self.op == '^':
+                    s1 = "(%s)" % s1
             return "%s %s %s" % (s1, self.op, s2)
         else:
             raise NotImplementedError
@@ -1962,8 +2024,10 @@ class Op(Expr):
     def __repr__(self):
         return "Op(%s,%s)" % (self.op, ",".join(repr(arg) for arg in self.args))
 
+
 class Fun(Expr):
     """Functions."""
+
     def __init__(self, func_name: str, *args):
         assert isinstance(func_name, str) and all(isinstance(arg, Expr) for arg in args)
 
@@ -1989,15 +2053,17 @@ class Fun(Expr):
         else:
             return "Fun(%s)" % self.func_name
 
+
 class Limit(Expr):
     """Limit expression.
-    
+
     - var: variable which approaches the limit
-    - lim: variable 
+    - lim: variable
     - body: expression
     - dir: limit side
 
     """
+
     def __init__(self, var: str, lim: Expr, body: Expr, drt=None):
         assert isinstance(var, str) and isinstance(lim, Expr) and isinstance(body, Expr), \
             "Illegal expression: %s %s %s" % (type(var), type(lim), type(body))
@@ -2007,26 +2073,25 @@ class Limit(Expr):
         self.body = body
         self.drt = drt
 
-
     def __eq__(self, other):
         return isinstance(other, Limit) and other.var == self.var and \
-                other.drt == self.drt and self.lim == other.lim and \
-                self.body == other.body
+               other.drt == self.drt and self.lim == other.lim and \
+               self.body == other.body
 
     def __hash__(self):
         return hash((LIMIT, self.var, self.lim, self.body, self.drt))
 
     def __str__(self):
         if self.lim == inf() or self.lim == neg_inf():
-            return "LIM {%s -> %s}. %s" % (self.var,self.lim, self.body)
+            return "LIM {%s -> %s}. %s" % (self.var, self.lim, self.body)
         else:
-            return "LIM {%s -> %s %s}. %s" % (self.var,self.lim, self.drt if self.drt!=None else "", self.body)
+            return "LIM {%s -> %s %s}. %s" % (self.var, self.lim, self.drt if self.drt != None else "", self.body)
 
     def __repr__(self):
         if self.lim == inf() or self.lim == neg_inf():
             return "Limit(%s, %s, %s)" % (self.var, self.lim, self.body)
         else:
-            return "Limit(%s, %s%s, %s)" % (self.var, self.lim, "" if self.drt == None else self.drt\
+            return "Limit(%s, %s%s, %s)" % (self.var, self.lim, "" if self.drt == None else self.drt \
                                                 , self.body)
 
     def is_indeterminate_form(self):
@@ -2063,21 +2128,22 @@ class Limit(Expr):
         elif lim == neg_inf():
             bd = self.body.replace_trig(v, -self.var)
         elif self.drt == "+":
-            bd = self.body.replace_trig(v, self.lim + 1/v)
+            bd = self.body.replace_trig(v, self.lim + 1 / v)
         elif self.drt == "-":
-            bd = self.body.replace_trig(v, self.lim - 1/v)
+            bd = self.body.replace_trig(v, self.lim - 1 / v)
         else:
             raise NotImplementedError("dir must be + or -.")
-        
+
         return Limit(self.var, inf, bd.normalize())
+
 
 class Inf(Expr):
     """The infinity."""
+
     def __init__(self, t):
         assert t in (Decimal("inf"), Decimal("-inf"))
         self.ty = INF
         self.t = t
-
 
     def __str__(self):
         if self.t == Decimal("inf"):
@@ -2100,6 +2166,7 @@ class Inf(Expr):
     def __getitem__(self, item):
         return getattr(self, item)
 
+
 class Differential(Expr):
     """Differential of an expression."""
 
@@ -2120,6 +2187,7 @@ class Differential(Expr):
     def __repr__(self):
         return "Differential(%s)" % repr(self.body)
 
+
 class SkolemFunc(Expr):
 
     def __init__(self, name, *dep_vars):
@@ -2128,7 +2196,8 @@ class SkolemFunc(Expr):
         self.dependent_vars = set(dep_vars)
 
     def __eq__(self, other):
-        return self.ty == other.ty and self.dependent_vars == other.dependent_vars and self.name==other.name
+        return self.ty == other.ty and self.dependent_vars == other.dependent_vars and self.name == other.name
+
     def __str__(self):
         if self.dependent_vars == set():
             return "SKOLEM_CONST(" + self.name + ")"
@@ -2138,79 +2207,98 @@ class SkolemFunc(Expr):
                 res.append(str(v))
             return "SKOLEM_FUNC(" + self.name + "(" + ", ".join(res) + "))"
 
-    def find_free(var:str, ex:Expr):
+    def find_free(var: str, ex: Expr):
         res = set(ex.findVar())
         if Var(var) in res:
             res.remove(Var(var))
         return res
+
     def __hash__(self):
         return hash((self.name, *list(self.dependent_vars), self.ty))
-
-
 
 
 NEG_INF = Inf(Decimal('-inf'))
 POS_INF = Inf(Decimal('inf'))
 ZERO = Const(0)
 
+
 def inf():
     return Inf(Decimal("inf"))
+
 
 def neg_inf():
     return Inf(Decimal("-inf"))
 
+
 def sin(e):
     return Fun("sin", e)
+
 
 def sec(e):
     return Fun("sec", e)
 
+
 def cos(e):
     return Fun("cos", e)
+
 
 def csc(e):
     return Fun("csc", e)
 
+
 def tan(e):
     return Fun("tan", e)
+
 
 def cot(e):
     return Fun("cot", e)
 
+
 def log(e):
     return Fun("log", e)
+
 
 def exp(e):
     return Fun("exp", e)
 
+
 def arcsin(e):
     return Fun("asin", e)
+
 
 def arctan(e):
     return Fun("atan", e)
 
+
 def arccos(e):
     return Fun("acos", e)
 
+
 def sqrt(e):
     return Fun("sqrt", e)
+
 
 def binom(e1: Expr, e2: Expr) -> Expr:
     """Binomial coefficients"""
     return Fun("binom", e1, e2)
 
+
 def factorial(e: Expr) -> Expr:
     """Factorial of e"""
     return Fun('factorial', e)
 
+
 pi = Fun("pi")
 E = Fun("exp", Const(1))
+
 
 def Eq(s: Expr, t: Expr) -> Expr:
     return Op("=", s, t)
 
+
 class Deriv(Expr):
     """Derivative of an expression."""
+
     def __init__(self, var: str, body: Expr):
         assert isinstance(var, str) and isinstance(body, Expr)
         self.ty = DERIV
@@ -2232,6 +2320,7 @@ class Deriv(Expr):
 
 class IndefiniteIntegral(Expr):
     """Indefinite integral of an expression."""
+
     def __init__(self, var: str, body: Expr):
         assert isinstance(var, str) and isinstance(body, Expr)
         self.ty = INDEFINITEINTEGRAL
@@ -2258,9 +2347,10 @@ class IndefiniteIntegral(Expr):
 
 class Integral(Expr):
     """Integral of an expression."""
+
     def __init__(self, var: str, lower: Expr, upper: Expr, body: Expr):
         assert isinstance(var, str) and isinstance(lower, Expr) and \
-            isinstance(upper, Expr) and isinstance(body, Expr)
+               isinstance(upper, Expr) and isinstance(body, Expr)
         self.ty = INTEGRAL
         self.var = var
         self.lower = lower
@@ -2288,9 +2378,10 @@ class Integral(Expr):
 
 class EvalAt(Expr):
     """Evaluation at upper and lower, then subtract."""
+
     def __init__(self, var: str, lower: Expr, upper: Expr, body: Expr):
         assert isinstance(var, str) and isinstance(lower, Expr) and \
-            isinstance(upper, Expr) and isinstance(body, Expr)
+               isinstance(upper, Expr) and isinstance(body, Expr)
         self.ty = EVAL_AT
         self.var = var
         self.lower = lower
@@ -2302,7 +2393,7 @@ class EvalAt(Expr):
 
     def __eq__(self, other):
         return isinstance(other, EvalAt) and self.var == other.var and \
-            self.lower == other.lower and self.upper == other.upper and self.body == other.body
+               self.lower == other.lower and self.upper == other.upper and self.body == other.body
 
     def __str__(self):
         return "[%s]_%s=%s,%s" % (str(self.body), self.var, str(self.lower), str(self.upper))
@@ -2314,6 +2405,7 @@ class EvalAt(Expr):
 class Symbol(Expr):
     """Pattern expression. It can be used to find expression with the given specific structure.
     """
+
     def __init__(self, name: str, pat: List[str]):
         self.ty = SYMBOL
         self.name = name
@@ -2324,31 +2416,38 @@ class Symbol(Expr):
 
     def __hash__(self):
         return hash((SYMBOL, self.name, self.ty, sum(self.pat)))
-    
+
     def __str__(self):
         return "%s" % (self.name)
-    
+
     def __repr__(self):
         return "Symbol(%s, %s)" % (self.name, self.pat)
 
 
 class Summation(Expr):
-    def __init__(self, index_var:str, lower:Expr, upper:Expr, body:Expr):
+    def __init__(self, index_var: str, lower: Expr, upper: Expr, body: Expr):
         self.ty = SUMMATION
         self.index_var = index_var
         self.lower = lower
         self.upper = upper
         self.body = body
+
     def __str__(self):
-        return "SUM("+self.index_var+", "+str(self.lower)+", "+str(self.upper)+", "+str(self.body)+")"
+        return "SUM(" + self.index_var + ", " + str(self.lower) + ", " + str(self.upper) + ", " + str(self.body) + ")"
 
     def __eq__(self, other):
         return self.ty == other.ty and self.index_var == other.index_var and \
                self.lower == other.lower and \
                self.upper == other.upper and \
                self.body == other.body
+
     def __hash__(self):
-        return hash((SUMMATION, self.index_var, self.ty, self.lower,self.upper,self.body))
+        return hash((SUMMATION, self.index_var, self.ty, self.lower, self.upper, self.body))
+
+    def alpha_convert(self, new_var):
+        assert isinstance(new_var, str), "alpha_convert"
+        return Summation(new_var, self.lower, self.upper, self.body.subst(self.var, Var(new_var)))
+
 trigFun = {
     "TR0": (TR0, "1 to sin^2 + cos^2"),
     "TR1": (TR1, "sec-csc to cos-sin"),
@@ -2375,34 +2474,40 @@ trigFun = {
 }
 
 trig_table_cache = None
+
+
 def trig_table():
     """Trigonometric value table on 0,pi/6,pi/4,pi/3,pi/2,(2/3)*pi,(3/4)*pi,(5/6)*pi,pi."""
     global trig_table_cache
     if trig_table_cache is None:
         trig_table_cache = {
-            "sin": {parser.parse_expr(key):parser.parse_expr(value) for key, value in sin_table.items()},
-            "cos": {parser.parse_expr(key):parser.parse_expr(value) for key, value in cos_table.items()},
-            "tan": {parser.parse_expr(key):parser.parse_expr(value) for key, value in tan_table.items()},
-            "cot": {parser.parse_expr(key):parser.parse_expr(value) for key, value in cot_table.items()},
-            "csc": {parser.parse_expr(key):parser.parse_expr(value) for key, value in csc_table.items()},
-            "sec": {parser.parse_expr(key):parser.parse_expr(value) for key, value in sec_table.items()},
+            "sin": {parser.parse_expr(key): parser.parse_expr(value) for key, value in sin_table.items()},
+            "cos": {parser.parse_expr(key): parser.parse_expr(value) for key, value in cos_table.items()},
+            "tan": {parser.parse_expr(key): parser.parse_expr(value) for key, value in tan_table.items()},
+            "cot": {parser.parse_expr(key): parser.parse_expr(value) for key, value in cot_table.items()},
+            "csc": {parser.parse_expr(key): parser.parse_expr(value) for key, value in csc_table.items()},
+            "sec": {parser.parse_expr(key): parser.parse_expr(value) for key, value in sec_table.items()},
         }
     return trig_table_cache
 
+
 inverse_trig_table_cache = None
+
+
 def inverse_trig_table():
     """Inverse trigonometric value table."""
     global inverse_trig_table_cache
     if inverse_trig_table_cache is None:
         inverse_trig_table_cache = {
-            "asin": {parser.parse_expr(key):parser.parse_expr(value) for key, value in asin_table.items()},
-            "acos": {parser.parse_expr(value):parser.parse_expr(key) for key, value in cos_table.items()},
-            "atan": {parser.parse_expr(key):parser.parse_expr(value) for key, value in atan_table.items()},
-            "acot": {parser.parse_expr(value):parser.parse_expr(key) for key, value in cot_table.items()},
-            "acsc": {parser.parse_expr(key):parser.parse_expr(value) for key, value in acsc_table.items()},
-            "asec": {parser.parse_expr(value):parser.parse_expr(key) for key, value in sec_table.items()},
+            "asin": {parser.parse_expr(key): parser.parse_expr(value) for key, value in asin_table.items()},
+            "acos": {parser.parse_expr(value): parser.parse_expr(key) for key, value in cos_table.items()},
+            "atan": {parser.parse_expr(key): parser.parse_expr(value) for key, value in atan_table.items()},
+            "acot": {parser.parse_expr(value): parser.parse_expr(key) for key, value in cot_table.items()},
+            "acsc": {parser.parse_expr(key): parser.parse_expr(value) for key, value in acsc_table.items()},
+            "asec": {parser.parse_expr(value): parser.parse_expr(key) for key, value in sec_table.items()},
         }
     return inverse_trig_table_cache
+
 
 def expr_to_holpy(expr: Expr) -> term.Term:
     """Convert an expression to holpy term."""
@@ -2437,7 +2542,7 @@ def expr_to_holpy(expr: Expr) -> term.Term:
     elif expr.is_fun():
         if expr.func_name == 'pi':
             return real.pi
-        
+
         if len(expr.args) != 1:
             raise NotImplementedError
 
@@ -2481,6 +2586,7 @@ def expr_to_holpy(expr: Expr) -> term.Term:
     else:
         print("expr_to_holpy: unknown expression %s" % expr)
         raise NotImplementedError
+
 
 def holpy_to_expr(t: term.Term) -> Expr:
     """Convert a HOL term to expression."""
@@ -2532,6 +2638,7 @@ def holpy_to_expr(t: term.Term) -> Expr:
     else:
         raise NotImplementedError
 
+
 def eval_hol_expr(t: term.Term):
     """Evaluate an HOL term of type real.
 
@@ -2543,19 +2650,21 @@ def eval_hol_expr(t: term.Term):
         res = real.real_eval(t)
     except ConvException:
         res = real.real_approx_eval(t)
-    
+
     return res
+
 
 def eval_expr(e: Expr):
     t = expr_to_holpy(e)
     return eval_hol_expr(t)
 
 
-def neg_expr(ex:Expr):
+def neg_expr(ex: Expr):
     if ex.is_op() and ex.op == '=':
         return Op('!=', *ex.args)
     else:
         raise NotImplementedError
+
 
 def add(items) -> Expr:
     if len(items) == 1:

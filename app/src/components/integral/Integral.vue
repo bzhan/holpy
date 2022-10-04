@@ -60,8 +60,8 @@
               v-bind:data="'\\(' + item.latex_eq + '\\)'"
               style="cursor:pointer"/>
           </div>
-          <div v-if="'type' in item && item.type == 'Assumption'">
-            <div class="math-text">Assumption</div>
+          <div v-if="'type' in item && item.type == 'Lemma'">
+            <div class="math-text">Lemma</div>
             <MathEquation
               v-on:click.native="initialize(index)"
               v-bind:data="'\\(' + item.latex_eq + '\\)'"
@@ -91,8 +91,8 @@
           v-bind:selected_item="selected_item"
           v-bind:selected_facts="selected_facts"/>
       </div>
-      <div v-if="'type' in content[cur_id] && content[cur_id].type == 'Assumption'">
-        <Assumption v-bind:item="content[cur_id]" v-bind:label="''"
+      <div v-if="'type' in content[cur_id] && content[cur_id].type == 'Lemma'">
+        <Lemma v-bind:item="content[cur_id]" v-bind:label="''"
           v-bind:selected_item="selected_item"
           v-bind:selected_facts="selected_facts"/>
       </div>
@@ -280,7 +280,7 @@ import MathEquation from '../util/MathEquation.vue'
 import FuncDef from './FuncDef.vue'
 import ExprQuery from './ExprQuery.vue'
 import Goal from "./Goal.vue"
-import Assumption from "./Assumption.vue"
+import Lemma from "./Lemma.vue"
 import Calculation from "./Calculation.vue"
 
 export default {
@@ -291,7 +291,7 @@ export default {
     Goal,
     Calculation,
     ExprQuery,
-    Assumption
+    Lemma,
   },
 
   props: [

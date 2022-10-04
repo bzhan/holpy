@@ -629,7 +629,9 @@ class RulesTest(unittest.TestCase):
                      ('SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1) * (1/x))',
                       'x ^ (-1) * SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))'),
                      ('SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1)) / x',
-                      "x ^ (-1) * SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))"),]
+                      "x ^ (-1) * SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))"),
+                     ("SUM(k, 0, oo, (-1) ^ (2*k+1) * x ^ (k + 1) / (k+1))",
+                      "-SUM(k, 0, oo, x ^ (k + 1) * (k + 1) ^ (-1))"),]
         r = rules.FullSimplify()
         for s, res in test_data:
             e = parse_expr(s)
