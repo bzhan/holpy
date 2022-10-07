@@ -17,7 +17,7 @@
         {
             "eq": "I(0) = SKOLEM_CONST(C)",
             "latex_eq": "I{(0)} = C",
-            "type": "Assumption"
+            "type": "Lemma"
         },
         {
             "conds": [
@@ -30,12 +30,12 @@
             ],
             "eq": "(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1 / (b ^ 2 + 1)",
             "latex_eq": "\\int_{0}^{\\infty} e^{-b x} \\sin{(x)} \\,dx = \\frac{1}{b ^ {2} + 1}",
-            "type": "Assumption"
+            "type": "Lemma"
         },
         {
             "eq": "(LIM {b -> oo}. INT x:[0,oo]. x ^ (-1) * exp(-(b * x)) * sin(x)) = 0",
             "latex_eq": "\\lim\\limits_{b\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx = 0",
-            "type": "Assumption"
+            "type": "Lemma"
         },
         {
             "conds": [
@@ -107,8 +107,8 @@
                             "res": "-(1 / (b ^ 2 + 1))",
                             "rule": {
                                 "loc": "0",
-                                "name": "ApplyAssumption",
-                                "str": "apply assumption at 0"
+                                "name": "ApplyLemma",
+                                "str": "apply lemma at 0"
                             },
                             "type": "CalculationStep"
                         },
@@ -277,8 +277,8 @@
                                     "latex_res": "C",
                                     "res": "SKOLEM_CONST(C)",
                                     "rule": {
-                                        "name": "ApplyAssumption",
-                                        "str": "apply assumption"
+                                        "name": "ApplyLemma",
+                                        "str": "apply lemma"
                                     },
                                     "type": "CalculationStep"
                                 }
@@ -452,8 +452,8 @@
                             "res": "I(b) = -atan(b) + I(0)",
                             "rule": {
                                 "loc": "1.1",
-                                "name": "ApplyAssumption",
-                                "str": "apply assumption at 1.1"
+                                "name": "ApplyLemma",
+                                "str": "apply lemma at 1.1"
                             },
                             "type": "CalculationStep"
                         },

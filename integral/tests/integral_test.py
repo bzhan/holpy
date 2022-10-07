@@ -15,7 +15,7 @@ class IntegralTest(unittest.TestCase):
     def testInteresting(self):
         file = compstate.CompFile("Interesting")
 
-        # Problem (2.2.a)        
+        # Problem (2.2.a)
         calc = file.add_calculation("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")
         calc.perform_rule(rules.Substitution("y", parser.parse_expr("pi / 2 - x")))
         calc.perform_rule(rules.FullSimplify())
@@ -592,20 +592,20 @@ class IntegralTest(unittest.TestCase):
         file.add_definition(Idef)
 
         e = parser.parse_expr("I(0) = SKOLEM_CONST(C)")
-        assume1 = compstate.Assumption(e)
-        file.add_assumption(assume1)
+        lemma1 = compstate.Lemma(e)
+        file.add_lemma(lemma1)
 
 
         e = parser.parse_expr("(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1/(b^2+1)")  # for b > 0
-        conds_of_assume2 = compstate.Conditions()
+        conds_of_lemma2 = compstate.Conditions()
         e2 = parser.parse_expr("b>0")
-        conds_of_assume2.add_condition(str(e2), e2)
-        assume2 = compstate.Assumption(e, conds_of_assume2)
-        file.add_assumption(assume2)
+        conds_of_lemma2.add_condition(str(e2), e2)
+        lemma2 = compstate.Lemma(e, conds_of_lemma2)
+        file.add_lemma(lemma2)
 
         e = parser.parse_expr("(LIM {b -> oo}. INT x:[0,oo]. x ^ -1 * exp(-(b * x)) * sin(x)) = 0")
-        assume3 = compstate.Assumption(e)
-        file.add_assumption(assume3)
+        lemma3 = compstate.Lemma(e)
+        file.add_lemma(lemma3)
 
         # goal: D b. I(b) = -1/(b^2+1)
         e = parser.parse_expr("(D b. I(b)) = -1/(b^2+1)")
@@ -619,7 +619,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.DerivIntExchange())
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyAssumption(assume2.assumption, assume2.conds), '0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma2.lemma, lemma2.conds), '0'))
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -648,7 +648,7 @@ class IntegralTest(unittest.TestCase):
         case_1_proof = proof.case_1.proof_by_calculation()
         calc = case_1_proof.lhs_calc
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.ApplyAssumption(assume1.assumption,assume1.conds))
+        calc.perform_rule(rules.ApplyLemma(lemma1.lemma,lemma1.conds))
         calc = case_1_proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
         case_2_proof = proof.case_2.proof_by_rewrite_goal(begin=goal1)
@@ -666,11 +666,11 @@ class IntegralTest(unittest.TestCase):
         file.add_goal(goal4)
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
         calc = proof_of_goal4.begin
-        calc.perform_rule(rules.OnLocation(rules.ApplyAssumption(assume1.assumption, assume1.conds), '1.1'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma1.lemma, lemma1.conds), '1.1'))
         calc.perform_rule(rules.LimitEquation(var='b', lim=expr.POS_INF))
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(assume3.assumption), '0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(lemma3.lemma), '0'))
 
         e = parser.parse_expr("(INT x:[0,oo]. x ^ -1 * sin(x)) = 1/2 * pi")
         goal5 = compstate.Goal(e)
@@ -866,9 +866,9 @@ class IntegralTest(unittest.TestCase):
 
     def testCatalanConstant01(self):
         file = compstate.CompFile('CatalanConstant01')
-        assumption = parser.parse_expr('G = Summation(n, 0, oo, (-1)^n / (2*n+1)^2)')
-        assume01 = compstate.Assumption(assumption=assumption)
-        file.add_assumption(assume01)
+        lemma = parser.parse_expr('G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)')
+        lemma01 = compstate.Lemma(lemma=lemma)
+        file.add_lemma(lemma01)
 
         e = parser.parse_expr("(INT x:[0, 1]. atan(x) / x) = G")
         goal01 = compstate.Goal(goal=e, conds=None)
@@ -883,7 +883,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.IntSumExchange())
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal01.rhs_calc
-        calc.perform_rule(rules.ApplyEquation(assume01.assumption))
+        calc.perform_rule(rules.ApplyEquation(lemma01.lemma))
         calc.perform_rule(rules.FullSimplify())
 
         self.assertTrue(file.content[1].is_finished())
@@ -894,9 +894,9 @@ class IntegralTest(unittest.TestCase):
     def testCatalanConstant02(self):
         # goal : INT x:[1,oo]. log(x) / (x^2 + 1)
         file = compstate.CompFile('CatalanConstant01')
-        assumption = parser.parse_expr('G = Summation(n, 0, oo, (-1)^n / (2*n+1)^2)')
-        assume01 = compstate.Assumption(assumption=assumption)
-        file.add_assumption(assume01)
+        lemma = parser.parse_expr('G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)')
+        lemma01 = compstate.Lemma(lemma=lemma)
+        file.add_lemma(lemma01)
         e = parser.parse_expr("I(k) = INT x:[1,oo]. log(x) / (x^k)")
         conds_of_Idef = compstate.Conditions()
         e2 = parser.parse_expr("k>1")
@@ -968,8 +968,8 @@ class IntegralTest(unittest.TestCase):
         new_expr = parser.parse_expr("log(x) * (x^-2) * (1 + (1/x^2))^-1")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         calc.perform_rule(rules.OnLocation(rules.ExpandSeries(), '0.1'))
-        old_expr = parser.parse_expr("log(x) * x ^ (-2) * Summation(n, 0, oo, (-1) ^ n * (1 / x ^ 2) ^ n)")
-        new_expr = parser.parse_expr("Summation(n, 0, oo, (-1) ^ n * ((1 / x ^ 2) ^ n) * log(x) * x ^ -2)")
+        old_expr = parser.parse_expr("log(x) * x ^ (-2) * SUM(n, 0, oo, (-1) ^ n * (1 / x ^ 2) ^ n)")
+        new_expr = parser.parse_expr("SUM(n, 0, oo, (-1) ^ n * ((1 / x ^ 2) ^ n) * log(x) * x ^ -2)")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         calc.perform_rule(rules.IntSumExchange())
         calc.perform_rule(rules.FullSimplify())
@@ -979,7 +979,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), '0.1'))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal5.rhs_calc
-        calc.perform_rule(rules.ApplyAssumption(assumption=assume01.assumption, conds=None))
+        calc.perform_rule(rules.ApplyLemma(lemma=lemma01.lemma, conds=None))
         calc.perform_rule(rules.FullSimplify())
 
         for i in range(2,7):
@@ -987,6 +987,146 @@ class IntegralTest(unittest.TestCase):
         path = 'integral/examples/CatalanConstant02.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testLogFunction01(self):
+        file = compstate.CompFile("LogFunction01")
+        conds_of_lemma01 = compstate.Conditions()
+        e = parser.parse_expr("abs(x) < 1")
+        conds_of_lemma01.add_condition(str(e), e)
+        e = parser.parse_expr("log(1+x) = SUM(k,0,oo,(-1)^k * (x^(k+1))/(k+1))")
+        lemma01 = compstate.Lemma(lemma = e,conds = conds_of_lemma01)
+        file.add_lemma(lemma01)
+
+        e = parser.parse_expr("SUM(k,0,oo,(-1)^k * (k+1)^(-2))  = (pi^2) / 12")
+        lemma02 = compstate.Lemma(lemma = e, conds = None)
+        file.add_lemma(lemma02)
+
+        e = parser.parse_expr("(INT x:[0,1]. log(x+1) / x) = (pi^2) / 12")
+        goal01 = compstate.Goal(goal = e, conds = None)
+        file.add_goal(goal01)
+        proof_of_goal01 = goal01.proof_by_calculation()
+        calc = proof_of_goal01.lhs_calc
+
+        # TODO: condition check
+        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=lemma01.lemma, conds=None)))
+        old_expr = parser.parse_expr("SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1)) / x")
+        new_expr = parser.parse_expr("SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1) * (1/x))")
+        calc.perform_rule(rules.Equation(old_expr = old_expr, new_expr = new_expr))
+        calc.perform_rule(rules.IntSumExchange())
+        calc.perform_rule(rules.FullSimplify())
+
+        calc.perform_rule(rules.ApplyLemma(lemma = lemma02.lemma, conds = None))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal01.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        self.assertTrue(file.content[2].is_finished())
+        path = 'integral/examples/LogFunction01.json'
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testLogFunction02(self):
+        file = compstate.CompFile('LogFunction02')
+
+        conds_of_lemma01 = compstate.Conditions()
+        e = parser.parse_expr("abs(x) < 1")
+        conds_of_lemma01.add_condition(str(e), e)
+        e = parser.parse_expr("log(1+x) = SUM(k,0,oo,(-1)^k * (x^(k+1))/(k+1))")
+        lemma01 = compstate.Lemma(lemma=e, conds=conds_of_lemma01)
+        file.add_lemma(lemma01)
+
+        e = parser.parse_expr("SUM(k,0,oo,(k+1)^(-2))  = (pi^2) / 6")
+        lemma02 = compstate.Lemma(lemma=e, conds=None)
+        file.add_lemma(lemma02)
+
+        e = parser.parse_expr("sin(acos(x)) = sqrt(1-x^2)")
+        lemma03 = compstate.Lemma(lemma=e, conds=None)
+        file.add_lemma(lemma03)
+
+        e = parser.parse_expr("(INT x:[0,1]. x ^ k * log(x)) = -1/(k+1)^2")
+        lemma04 = compstate.Lemma(lemma=e, conds=None)
+        file.add_lemma(lemma04)
+
+        e = parser.parse_expr("(INT x:[0,1]. (-x) ^ k * log(x)) = -(-1)^ k /(k+1)^2")
+        lemma05 = compstate.Lemma(lemma=e, conds=None)
+        file.add_lemma(lemma05)
+
+        e = parser.parse_expr("SUM(k,0,oo,(-1)^k * (k+1)^(-2))  = (pi^2) /12")
+        lemma06 = compstate.Lemma(lemma=e, conds=None)
+        file.add_lemma(lemma06)
+
+        conds_of_goal01 = compstate.Conditions()
+        e = parser.parse_expr("abs(x) < 1")
+        conds_of_goal01.add_condition(str(e), e)
+        s = "-log(1-x) - log(1+x) = \
+                -SUM(k,0,oo,(-1)^k*(-x)^(k+1) / (k+1))-SUM(k,0,oo,(-1)^k*x^(k+1)/(k+1))"
+        e = parser.parse_expr(s)
+        goal01 = compstate.Goal(goal = e, conds = conds_of_goal01)
+        file.add_goal(goal01)
+        proof_of_goal01 = goal01.proof_by_calculation()
+        calc = proof_of_goal01.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandSeries(index_var = 'k', var = 'x')))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal01.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        s = "x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, (-1) ^ k * (-x) ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)"
+        e = parser.parse_expr(s)
+        goal02 = compstate.Goal(goal = e, conds = None)
+        file.add_goal(goal02)
+        proof_of_goal02 = goal02.proof_by_rewrite_goal(begin = goal01)
+        calc = proof_of_goal02.begin
+
+        calc.perform_rule(rules.DerivEquation('x'))
+        calc.perform_rule(rules.FullSimplify())
+        old_expr = parser.parse_expr("(-x + 1) ^ (-1) - (x + 1) ^ (-1)")
+        new_expr = parser.parse_expr("2 * (x / (1-x^2))")
+        calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
+        e = parser.parse_expr('1/2')
+        calc.perform_rule(rules.MulEquation(e = e))
+
+        e = parser.parse_expr("(INT x:[0, pi/2]. cos(x)/sin(x) * log(1/cos(x))) = pi^2/24")
+        goal03 = compstate.Goal(goal = e, conds = None)
+        file.add_goal(goal03)
+        proof_of_goal03 = goal03.proof_by_calculation()
+        calc = proof_of_goal03.lhs_calc
+        e = parser.parse_expr("cos(x)")
+        calc.perform_rule(rules.Substitution(var_name='t', var_subst=e))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma03.lemma, conds=None)))
+        calc.perform_rule(rules.FullSimplify())
+        e = parser.parse_expr("t")
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name='x', var_subst=e), '0'))
+        old_expr = parser.parse_expr("x * log(x) * (-(x ^ 2) + 1) ^ (-1)")
+        new_expr = parser.parse_expr("log(x) * (x * (-(x ^ 2) + 1) ^ (-1))")
+        calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal02.goal)))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
+        calc.perform_rule(rules.FullSimplify())
+        old_expr = parser.parse_expr("log(x) * SUM(k, 0, oo, (-1) ^ k * (-x) ^ k)")
+        new_expr = parser.parse_expr("SUM(k, 0, oo, log(x)*(-1) ^ k * (-x) ^ k)")
+        calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
+        old_expr = parser.parse_expr("log(x) * SUM(k, 0, oo, x ^ k * (-1) ^ k)")
+        new_expr = parser.parse_expr("SUM(k, 0, oo, log(x) * x ^ k * (-1) ^ k)")
+        calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
+        calc.perform_rule(rules.OnSubterm(rules.IntSumExchange()))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=lemma04.lemma, conds=None)))
+        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma=lemma05.lemma, conds=None), '0.1.0.1'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=lemma02.lemma, conds=None)))
+        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma=lemma06.lemma, conds=None), '0.1'))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal03.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        # print(file)
+        for i in range(6,9):
+            self.assertTrue(file.content[i].is_finished())
+        path = 'integral/examples/LogFunction02.json'
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+
 
 if __name__ == "__main__":
     unittest.main()

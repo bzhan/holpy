@@ -2,7 +2,7 @@
     <div class="indented-label">
       <span class="math-text">{{label}}</span>&nbsp;
       <div>
-        <span class="math-text">Introduce assumption</span>
+        <span class="math-text">Introduce lemma</span>
         <div @click.exact="$emit('select', label)"
              @click.ctrl="$emit('select_fact', label)"
              :class="{selected: selected_item === label,

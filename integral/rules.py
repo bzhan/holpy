@@ -28,8 +28,9 @@ class Rule:
     Represents a rule for integration. It takes an integral
     to be evaluated (as an expression), then outputs a new
     expression that it is equal to.
-    
+
     """
+
     def eval(self, e: Expr, conds: Optional[Conditions] = None) -> Expr:
         """Evaluation of the rule on the given expression. Returns
         a new expression.
@@ -41,14 +42,16 @@ class Rule:
         """Returns the JSON representation of the rule."""
         raise NotImplementedError
 
+
 class Simplify(Rule):
     """Perform algebraic simplification. This treats the
     expression as a polynomial, and normalizes the polynomial.
 
     """
+
     def __init__(self):
         self.name = "Simplify"
-    
+
     def __str__(self):
         return "simplify"
 
@@ -62,6 +65,7 @@ class Simplify(Rule):
         res = e.normalize()
         return res
 
+
 class Linearity(Rule):
     """Applies linearity rules:
 
@@ -70,9 +74,10 @@ class Linearity(Rule):
     INT (c / a) = c * INT 1 / a  (where c is a constant).
 
     """
+
     def __init__(self):
         self.name = "Linearity"
-    
+
     def __str__(self):
         return "linearity"
 
@@ -115,8 +120,9 @@ class Linearity(Rule):
             if e.body.is_times():
                 factors = decompose_expr_factor(e.body)
                 if conditions.is_const(factors[0], conds):
-                    return factors[0] * rec(expr.IndefiniteIntegral(e.var,\
-                                functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
+                    return factors[0] * rec(expr.IndefiniteIntegral(e.var, \
+                                                                    functools.reduce(lambda x, y: x * y, factors[2:],
+                                                                                     factors[1])))
                 else:
                     return e
             elif e.body.is_uminus():
@@ -127,17 +133,20 @@ class Linearity(Rule):
                 return e
         elif e.is_limit():
             if e.body.is_uminus():
-                return -Limit(e.var,e.lim,e.body.args[0])
+                return -Limit(e.var, e.lim, e.body.args[0])
             elif e.body.is_times():
                 factors = decompose_expr_factor(e.body)
                 if not factors[0].contains_var(e.var):
                     return factors[0] * rec(expr.Limit(e.var, e.lim, \
-                                        functools.reduce(lambda x, y: x * y, factors[2:],factors[1])))
+                                                       functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
                 else:
                     return e
             else:
                 return e
         elif e.ty == SUMMATION:
+            v,l,u,body = e.index_var, e.lower, e.upper, e.body
+            if e.body.is_minus():
+                return Summation(v, l, u, body.args[0]) - Summation(v, l,u,body.args[1])
             factors = decompose_expr_factor(e.body)
             b, c = Const(1), Const(1)
             for f in factors:
@@ -151,13 +160,14 @@ class Linearity(Rule):
         else:
             return e
 
+
 class CommonIntegral(Rule):
     """Applies common integrals:
 
     INT c = c * x,
     INT x ^ n = x ^ (n + 1) / (n + 1),  (where n != -1, c is a constant)
     INT 1 / x ^ n = (-n) / x ^ (n + 1), (where n != 1)
-    INT sqrt(x) = 2/3 * x ^ (3/2) 
+    INT sqrt(x) = 2/3 * x ^ (3/2)
     INT sin(x) = -cos(x),
     INT cos(x) = sin(x),
     INT 1 / x = log(|x|)
@@ -167,6 +177,7 @@ class CommonIntegral(Rule):
     INT csc(x)^2 = -cot(x)
 
     """
+
     def __init__(self):
         self.name = "CommonIntegral"
 
@@ -191,15 +202,15 @@ class CommonIntegral(Rule):
         # c = Symbol('c', [CONST])
         rules = [
             (Const(1), None, Var(e.var)),
-            (c, lambda m: isinstance(m[c], Const) or isinstance(m[c], Var) and m[c]!=x, c * Var(e.var)),
+            (c, lambda m: isinstance(m[c], Const) or isinstance(m[c], Var) and m[c] != x, c * Var(e.var)),
             (x, None, (x ^ 2) / 2),
             # (x ^ c, lambda m: m[c].val != -1, lambda m: (x ^ Const(m[c].val + 1)) / (Const(m[c].val + 1))),
             # (Const(1) / x ^ c, lambda m: m[c].val != 1, (-c) / (x ^ (c + 1))),
             (x ^ c, lambda m: isinstance(m[c], Const) and m[c].val != -1 or isinstance(m[c], Var)
-                    or isinstance(m[c], Op) and not m[c].has_var(x),
-                    lambda m: (x ^ ((m[c]+ 1).normalize())) / (m[c] + 1).normalize()),
+                              or isinstance(m[c], Op) and not m[c].has_var(x),
+             lambda m: (x ^ ((m[c] + 1).normalize())) / (m[c] + 1).normalize()),
             (Const(1) / x ^ c, lambda m: isinstance(m[c], Const) and m[c].val != 1, (-c) / (x ^ (c + 1))),
-            (expr.sqrt(x), None, Fraction(2,3) * (x ^ Fraction(3,2))),
+            (expr.sqrt(x), None, Fraction(2, 3) * (x ^ Fraction(3, 2))),
             (sin(x), None, -cos(x)),
             (cos(x), None, sin(x)),
             (expr.exp(x), None, expr.exp(x)),
@@ -221,6 +232,7 @@ class CommonIntegral(Rule):
 
         return e
 
+
 class CommonIndefiniteIntegral(Rule):
 
     def __init__(self, const_name):
@@ -230,7 +242,7 @@ class CommonIndefiniteIntegral(Rule):
     def __str__(self):
         return "common indefinite integrals"
 
-    def eval(self, e:Expr, conds=None) -> Expr:
+    def eval(self, e: Expr, conds=None) -> Expr:
         if e.ty != INDEFINITEINTEGRAL:
             return e
         C = expr.SkolemFunc(self.const_name, *[arg for arg in expr.SkolemFunc.find_free(e.var, e.body)])
@@ -251,7 +263,7 @@ class CommonIndefiniteIntegral(Rule):
             (cos(x), None, sin(x)),
             (expr.exp(x), None, expr.exp(x)),
             (Const(1) / x, None, expr.log(expr.Fun('abs', x))),
-            (Const(1) / (x+c), None, expr.log(expr.Fun('abs', x+c))),
+            (Const(1) / (x + c), None, expr.log(expr.Fun('abs', x + c))),
             (x ^ Const(-1), None, expr.log(expr.Fun('abs', x))),
             (((x ^ Const(2)) + 1) ^ Const(-1), None, expr.arctan(x)),
             (expr.sec(x) ^ Const(2), None, expr.tan(x)),
@@ -274,8 +286,10 @@ class CommonIndefiniteIntegral(Rule):
             "str": str(self)
         }
 
+
 class DerivativeSimplify(Rule):
     """Simplify the derivative of an expression"""
+
     def __init__(self):
         self.name = "DerivativeSimplify"
 
@@ -293,8 +307,10 @@ class DerivativeSimplify(Rule):
             return e
         return expr.deriv(e.var, e.body)
 
+
 class TrigSimplify(Rule):
     """Simplifications in trigonometry."""
+
     def __init__(self):
         self.name = "TrigSimplify"
 
@@ -310,8 +326,8 @@ class TrigSimplify(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         u = Symbol('u', [VAR, CONST, OP, FUN])
         rules = [
-            (sin(Const(Fraction(1/2)) * expr.pi - u), cos(u)),
-            (cos(Const(Fraction(1/2)) * expr.pi - u), sin(u)),
+            (sin(Const(Fraction(1 / 2)) * expr.pi - u), cos(u)),
+            (cos(Const(Fraction(1 / 2)) * expr.pi - u), sin(u)),
             (sin(expr.pi - u), sin(u)),
             (cos(expr.pi - u), -cos(u)),
         ]
@@ -322,13 +338,15 @@ class TrigSimplify(Rule):
                 e = pat_res.inst_pat(mapping)
         return e
 
+
 class OnSubterm(Rule):
     """Apply given rule on subterms.
-    
+
     The traversal order is similar to bottom-conv: first traverse each subterm
     of the term recursively, then apply the rule to the term itself.
 
     """
+
     def __init__(self, rule: Rule):
         assert isinstance(rule, Rule)
         self.rule = rule
@@ -369,13 +387,16 @@ class OnSubterm(Rule):
         elif e.ty == expr.INDEFINITEINTEGRAL:
             return rule.eval(expr.IndefiniteIntegral(e.var, self.eval(e.body)), conds=conds)
         elif e.ty == SUMMATION:
-            return rule.eval(expr.Summation(e.index_var, self.eval(e.lower, conds=conds), self.eval(e.upper, conds=conds),
-                                            self.eval(e.body, conds=conds)), conds=conds)
+            return rule.eval(
+                expr.Summation(e.index_var, self.eval(e.lower, conds=conds), self.eval(e.upper, conds=conds),
+                               self.eval(e.body, conds=conds)), conds=conds)
         else:
             raise NotImplementedError
 
+
 class OnLocation(Rule):
     """Apply given rule on subterm specified by given location."""
+
     def __init__(self, rule: Rule, loc):
         assert isinstance(rule, Rule)
         self.rule = rule
@@ -463,6 +484,7 @@ class OnLocation(Rule):
 
         return rec(e, self.loc)
 
+
 class CompositePower(Rule):
     def __init__(self):
         self.name = "CompositePower"
@@ -478,13 +500,14 @@ class CompositePower(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         if e.is_times() and e.args[1].is_power() and e.args[0] == e.args[1].args[0]:
-            return e.args[0] ^ (e.args[1].args[1]+1)
+            return e.args[0] ^ (e.args[1].args[1] + 1)
         else:
             raise NotImplementedError
 
+
 class SimplifyPower(Rule):
     """Apply the following simplifications on powers:
-    
+
     1. Collect repeated powers
         x ^ a ^ b => x ^ (a * b).
 
@@ -497,6 +520,7 @@ class SimplifyPower(Rule):
 
     4. 0 ^ m = 0 where m is a positive number
     """
+
     def __init__(self):
         self.name = "SimplifyPower"
 
@@ -510,7 +534,7 @@ class SimplifyPower(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if not e.is_power() and not (e.is_fun() and e.func_name=='exp'):
+        if not e.is_power() and not (e.is_fun() and e.func_name == 'exp'):
             return e
         if e.is_fun() and e.func_name == 'exp':
             arg = e.args[0]
@@ -543,8 +567,10 @@ class SimplifyPower(Rule):
         else:
             return e
 
+
 class ReduceInfLimit(Rule):
     """Reduce limit to infinity using asymptotic growth compuations."""
+
     def __init__(self):
         self.name = "ReduceInfLimit"
 
@@ -556,15 +582,17 @@ class ReduceInfLimit(Rule):
             "name": self.name,
             "str": str(self)
         }
-    
+
     def eval(self, e: Expr, conds=None) -> Expr:
         if e.is_limit() and e.lim == POS_INF:
             return limits.reduce_inf_limit(e.body, e.var, conds=conds)
         else:
             return e
 
+
 class ReduceTrivLimit(Rule):
     """Reduce limits that do not involve zeros or infinities."""
+
     def __init__(self):
         self.name = "ReduceTrivLimit"
 
@@ -599,7 +627,7 @@ class ReduceTrivLimit(Rule):
 
 class FullSimplify(Rule):
     """Perform simplification by applying the following rules repeatedly:
-    
+
     - Simplify
     - CommonIntegral
     - Linearity
@@ -608,6 +636,7 @@ class FullSimplify(Rule):
     - ReduceInfLimit
 
     """
+
     def __init__(self):
         self.name = "FullSimplify"
 
@@ -625,7 +654,7 @@ class FullSimplify(Rule):
         current = e
         while True:
             s = OnSubterm(Linearity()).eval(current, conds)
-            if conds!=None:
+            if conds != None:
                 for a, b in conds.data.items():
                     if b.is_v_equals():
                         s = s.subst(str(b.args[0]), b.args[1])
@@ -634,10 +663,11 @@ class FullSimplify(Rule):
             s = OnSubterm(DerivativeSimplify()).eval(s, conds)
             s = OnSubterm(SimplifyPower()).eval(s, conds)
             s = OnSubterm(SimplifyInfinity()).eval(s, conds)
-            s = OnSubterm(IntegralSimplify()).eval(s,conds)
+            s = OnSubterm(IntegralSimplify()).eval(s, conds)
             s = OnSubterm(ReduceInfLimit()).eval(s, conds)
             s = OnSubterm(ReduceTrivLimit()).eval(s, conds)
             s = OnSubterm(TrigSimplify()).eval(s, conds)
+            s = OnSubterm(SummationSimplify()).eval(s, conds)
             if s == current:
                 break
             current = s
@@ -646,12 +676,14 @@ class FullSimplify(Rule):
                 raise AssertionError("Loop in FullSimplify")
         return current
 
+
 class ApplyEquation(Rule):
     """Apply the given equation for rewriting.
 
     subMap is an optional map from variable name (str) to expressions.
 
     """
+
     def __init__(self, eq: Union[Expr, str], subMap: dict = None):
         self.name = "ApplyEquation"
         self.eq = eq
@@ -667,7 +699,7 @@ class ApplyEquation(Rule):
                     s = s + " where %s -> %s" % (a, b)
                 else:
                     s = s + ', %s -> %s' % (a, b)
-        return "apply equation: "+ str(self.eq) + s
+        return "apply equation: " + str(self.eq) + s
 
     def latex_str(self):
         s = ""
@@ -754,17 +786,18 @@ class ApplyEquation(Rule):
                 new_eq = new_eq.subst(var, e2)
             return ApplyEquation(new_eq).eval(e)
 
-class ApplyAssumption(Rule):
-    """Apply assumption"""
 
-    def __init__(self, assumption: Expr, conds: Conditions):
-        assert isinstance(assumption, Expr)
-        self.name = "ApplyAssumption"
-        self.assumption = assumption
+class ApplyLemma(Rule):
+    """Apply lemma"""
+
+    def __init__(self, lemma: Expr, conds: Conditions):
+        assert isinstance(lemma, Expr)
+        self.name = "ApplyLemma"
+        self.lemma = lemma
         self.conds = conds
 
     def __str__(self):
-        return "apply assumption"
+        return "apply lemma"
 
     def export(self):
         return {
@@ -776,27 +809,30 @@ class ApplyAssumption(Rule):
         # if assumption holds under this expression
         # then apply assumption
         flag = False if conds != None else True
+        # conditions check
         if not flag:
             if self.conds != None:
                 items = self.conds.data.items()
                 for k, v in conds.data.items():
-                    if (k,v) in items:
+                    if (k, v) in items:
                         flag = True
                         break
                     if v.op == '>':
                         e1, e2 = Op('>=', *v.args), Op('!=', *v.args)
                         if (str(e1), e1) in items and (str(e2), e2) in items:
-                            flag =True;
+                            flag = True;
                             break
             else:
                 flag = True
         if not flag:
             return e
-        rule = ApplyEquation(self.assumption)
+        rule = ApplyEquation(self.lemma)
         return rule.eval(e, conds)
+
 
 class ApplyInductHyp(Rule):
     """Apply induction hypothesis."""
+
     def __init__(self, induct_hyp: Expr):
         self.name = "ApplyInductHyp"
         self.induct_hyp = induct_hyp
@@ -820,17 +856,19 @@ class ApplyInductHyp(Rule):
         else:
             return e
 
+
 class Substitution(Rule):
     """Apply substitution u = g(x).
-    
+
     var_name - str: name of the new variable.
     var_subst - Expr: expression in the original integral to be substituted.
 
     The identity to be applied is:
-    
+
     INT x:[a, b]. f(g(x)) * g(x)' = INT u:[g(a), g(b)]. f(u)
-    
+
     """
+
     def __init__(self, var_name: str, var_subst: Expr):
         assert isinstance(var_name, str) and isinstance(var_subst, Expr)
         self.name = "Substitution"
@@ -848,7 +886,7 @@ class Substitution(Rule):
             "var_subst": str(self.var_subst),
             "str": str(self),
             "latex_str": "substitute \\(%s\\) for \\(%s\\)" % \
-                (self.var_name, latex.convert_expr(self.var_subst))
+                         (self.var_name, latex.convert_expr(self.var_subst))
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
@@ -875,7 +913,7 @@ class Substitution(Rule):
         var_subst = self.var_subst
 
         dfx = expr.deriv(e.var, var_subst)
-        body = holpy_style(sympy_style(e.body/dfx))
+        body = holpy_style(sympy_style(e.body / dfx))
         body_subst = body.replace_trig(var_subst, var_name)
         if body_subst == body:
             body_subst = body.replace_trig(var_subst, var_name)
@@ -901,7 +939,7 @@ class Substitution(Rule):
             gu = gu[-1] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
             c = e.body.replace_trig(parser.parse_expr(e.var), gu)
-            new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu))
+            new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu) * expr.deriv(str(var_name), gu))
             lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
             upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
             self.f = new_problem_body
@@ -913,13 +951,15 @@ class Substitution(Rule):
             except TypeError as e:
                 return Integral(self.var_name, lower, upper, new_problem_body).normalize()
 
+
 class SubstitutionInverse(Rule):
     """Apply substitution x = f(u).
-    
+
     var_name - str: name of the new variable u.
     var_subst - Expr: expression containing the new variable.
 
     """
+
     def __init__(self, var_name: str, var_subst: Expr):
         self.name = "SubstitutionInverse"
         self.var_name = var_name
@@ -969,8 +1009,10 @@ class SubstitutionInverse(Rule):
 
         return expr.Integral(self.var_name, expr.holpy_style(lower), expr.holpy_style(upper), new_e_body)
 
+
 class ExpandPolynomial(Rule):
     """Expand multiplication and power."""
+
     def __init__(self):
         self.name = "ExpandPolynomial"
 
@@ -985,11 +1027,11 @@ class ExpandPolynomial(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         if e.is_power() and e.args[1].is_const() and e.args[1].val > 1 and \
-            int(e.args[1].val) == e.args[1].val:
+                int(e.args[1].val) == e.args[1].val:
             n = int(e.args[1].val)
             base = self.eval(e.args[0]).to_poly()
             res = base
-            for i in range(n-1):
+            for i in range(n - 1):
                 res = res * base
             return expr.from_poly(res)
         elif e.is_times():
@@ -1000,8 +1042,10 @@ class ExpandPolynomial(Rule):
         else:
             return e
 
+
 class UnfoldPower(Rule):
     """Unfold power"""
+
     def __init__(self):
         self.name = "UnfoldPower"
 
@@ -1020,15 +1064,17 @@ class UnfoldPower(Rule):
         else:
             return e.expand()
 
+
 class Equation(Rule):
     """Apply substitution for equal expressions"""
+
     def __init__(self, new_expr: Expr, denom=None, old_expr: Optional[Expr] = None):
         self.name = "Equation"
         assert isinstance(new_expr, Expr)
         self.new_expr = new_expr
         self.denom = denom
         self.old_expr = old_expr
-    
+
     def __str__(self):
         return "rewriting"
 
@@ -1045,11 +1091,11 @@ class Equation(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         # Rewrite on a subterm
         # if self.old_expr is not None and self.old_expr != e:
-            # find_res = e.find_subexpr(self.old_expr)
-            # if len(find_res) == 0:
-            #     raise AssertionError("Equation: old expression not found")
-            # loc = find_res[0]
-            # return OnLocation(self, loc).eval(e)
+        # find_res = e.find_subexpr(self.old_expr)
+        # if len(find_res) == 0:
+        #     raise AssertionError("Equation: old expression not found")
+        # loc = find_res[0]
+        # return OnLocation(self, loc).eval(e)
         old_expr = self.old_expr
         if old_expr is not None and old_expr != e:
             find_res = e.find_subexpr(old_expr)
@@ -1068,7 +1114,7 @@ class Equation(Rule):
         # Currently rewrite using SymPy.
         # TODO: change to own implementation.
         if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
-           expand_multinomial(expr.sympy_style(e.normalize()).simplify()):
+                expand_multinomial(expr.sympy_style(e.normalize()).simplify()):
             raise AssertionError("Rewriting by equation failed")
 
         # if self.denom is None:
@@ -1079,9 +1125,11 @@ class Equation(Rule):
         #         raise AssertionError("Rewriting by equation failed")
         return self.new_expr
 
+
 class RewriteBinom(Rule):
     """Rewrite binomial coefficients."""
-    def __init__(self, old_expr:Expr=None, new_expr:Expr=None):
+
+    def __init__(self, old_expr: Expr = None, new_expr: Expr = None):
         self.name = "RewriteBinom"
         self.old_expr = old_expr
         self.new_expr = new_expr
@@ -1104,16 +1152,18 @@ class RewriteBinom(Rule):
                 m.args[0] == 2 * n.args[0]:
             # Case binom(2*k+2, k+1) = binom(2*k, k) * 2 * (2*k+1) / (k+1)
             k = n.args[0]
-            return 2 * expr.binom(2*k, k) * ((2*k+1) / (k+1))
+            return 2 * expr.binom(2 * k, k) * ((2 * k + 1) / (k + 1))
         else:
             return e
 
+
 class IntegrationByParts(Rule):
     """Apply integration by parts.
-    
+
     The arguments u and v should satisfy u * dv equals the integrand.
 
     """
+
     def __init__(self, u: Expr, v: Expr):
         self.name = "IntegrationByParts"
         assert isinstance(u, Expr) and isinstance(v, Expr)
@@ -1130,7 +1180,7 @@ class IntegrationByParts(Rule):
             "v": str(self.v),
             "str": str(self),
             "latex_str": "integrate by parts \\(u \\to %s, v \\to %s\\)" % \
-                (latex.convert_expr(self.u), latex.convert_expr(self.v))
+                         (latex.convert_expr(self.u), latex.convert_expr(self.v))
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
@@ -1152,9 +1202,11 @@ class IntegrationByParts(Rule):
             print("%s != %s" % (str(udv), str(e.body)))
             raise NotImplementedError("%s != %s" % (str(udv), str(e.body)))
 
+
 class PolynomialDivision(Rule):
     """Simplify the representation of polynomial divided by polynomial.
     """
+
     def __init__(self):
         self.name = "PolynomialDivision"
 
@@ -1179,8 +1231,10 @@ class PolynomialDivision(Rule):
         new_expr = expr.holpy_style(result)
         return expr.Integral(e.var, e.lower, e.upper, new_expr)
 
+
 class RewriteTrigonometric(Rule):
     """Rewrite using one of Fu's rules."""
+
     def __init__(self, rule_name: str, rewrite_term: Optional[Expr] = None):
         self.name = "RewriteTrigonometric"
         self.rule_name = rule_name
@@ -1201,7 +1255,7 @@ class RewriteTrigonometric(Rule):
         if self.rewrite_term is not None:
             res['rewrite_term'] = str(self.rewrite_term)
             res['latex_str'] = "rewrite trigonometric on \\(%s\\)" % \
-                latex.convert_expr(self.rewrite_term)
+                               latex.convert_expr(self.rewrite_term)
         return res
 
     def eval(self, e: Expr, conds=None) -> Expr:
@@ -1218,6 +1272,7 @@ class RewriteTrigonometric(Rule):
         sympy_result = rule_fun(expr.sympy_style(e))
         result = expr.holpy_style(sympy_result)
         return result
+
 
 class ElimAbs(Rule):
     """Eliminate abstract value."""
@@ -1292,8 +1347,10 @@ class ElimAbs(Rule):
             else:
                 return OnLocation(self, sep_ints[0][1]).eval(e)
 
+
 class SplitRegion(Rule):
     """Split integral into two parts at a point."""
+
     def __init__(self, c: Expr):
         self.name = "SplitRegion"
         self.c = c
@@ -1308,7 +1365,7 @@ class SplitRegion(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, conds=None) -> Expr:        
+    def eval(self, e: Expr, conds=None) -> Expr:
         if not e.is_integral():
             sep_ints = e.separate_integral()
             if len(sep_ints) == 0:
@@ -1317,19 +1374,21 @@ class SplitRegion(Rule):
                 return OnLocation(self, sep_ints[0][1]).eval(e)
 
         if expr.sympy_style(e.upper) <= expr.sympy_style(self.c) or \
-           expr.sympy_style(e.lower) >= expr.sympy_style(self.c):
+                expr.sympy_style(e.lower) >= expr.sympy_style(self.c):
             raise AssertionError("Split region")
 
         return expr.Integral(e.var, e.lower, self.c, e.body) + expr.Integral(e.var, self.c, e.upper, e.body)
 
+
 class IntegrateByEquation(Rule):
     """When the initial integral occurs in the steps."""
+
     def __init__(self, lhs: Expr):
         self.name = "IntegrateByEquation"
         # assert isinstance(lhs, Integral)
         self.lhs = lhs.normalize()
         self.coeff = None
-    
+
     def __str__(self):
         return "integrate by equation"
 
@@ -1354,6 +1413,7 @@ class IntegrateByEquation(Rule):
         """Eliminate the lhs's integral in rhs by solving equation."""
         norm_e = e.normalize()
         rhs_var = None
+
         def get_coeff(t):
             nonlocal rhs_var
             if t == self.lhs:
@@ -1383,11 +1443,12 @@ class IntegrateByEquation(Rule):
             return e
 
         if rhs_var != None:
-            new_rhs = (norm_e + (Const(-coeff)*self.lhs.alpha_convert(rhs_var))).normalize()
+            new_rhs = (norm_e + (Const(-coeff) * self.lhs.alpha_convert(rhs_var))).normalize()
         else:
             new_rhs = (norm_e + (Const(-coeff) * self.lhs)).normalize()
         self.coeff = (-Const(coeff)).normalize()
-        return (new_rhs/(Const(1-coeff))).normalize()
+        return (new_rhs / (Const(1 - coeff))).normalize()
+
 
 class ElimInfInterval(Rule):
     """Convert improper integral with infinite upper or lower limits to
@@ -1397,7 +1458,8 @@ class ElimInfInterval(Rule):
     provided.
 
     """
-    def __init__(self, a=Const(0),new_var = 't'):
+
+    def __init__(self, a=Const(0), new_var='t'):
         self.name = "ElimInfInterval"
         self.a = a
         self.new_var = new_var
@@ -1413,8 +1475,8 @@ class ElimInfInterval(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        def gen_lim_expr(new_var, lim, lower, upper, drt = None):
-            return expr.Limit(new_var, lim, expr.Integral(e.var, lower, upper, e.body),drt)
+        def gen_lim_expr(new_var, lim, lower, upper, drt=None):
+            return expr.Limit(new_var, lim, expr.Integral(e.var, lower, upper, e.body), drt)
 
         if not e.is_integral():
             sep_ints = e.separate_integral()
@@ -1453,8 +1515,10 @@ class ElimInfInterval(Rule):
         else:
             raise NotImplementedError
 
+
 class LHopital(Rule):
     """Apply L'Hoptial rule."""
+
     def __init__(self):
         self.name = "LHopital"
 
@@ -1477,8 +1541,9 @@ class LHopital(Rule):
         #     return e
         numerator, denominator = e.body.args
         rule = DerivativeSimplify()
-        return expr.Limit(e.var, e.lim, Op('/', rule.eval(Deriv(e.var,numerator)),
-                                                rule.eval(Deriv(e.var,denominator))), e.drt)
+        return expr.Limit(e.var, e.lim, Op('/', rule.eval(Deriv(e.var, numerator)),
+                                           rule.eval(Deriv(e.var, denominator))), e.drt)
+
 
 class LimSep(Rule):
     """Perform the following rewrites:
@@ -1489,6 +1554,7 @@ class LimSep(Rule):
         Lim (exp1 / exp2) -> (Lim exp1) / (Lim exp2)
 
     """
+
     def __init__(self):
         self.name = "LimSep"
 
@@ -1503,15 +1569,16 @@ class LimSep(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         if not (isinstance(e, expr.Limit) and isinstance(e.body, expr.Op) and \
-                e.body.op in ('+', '-' ,'*', '/') and len(e.body.args) == 2):
+                e.body.op in ('+', '-', '*', '/') and len(e.body.args) == 2):
             return e
         return expr.Op(e.body.op, expr.Limit(e.var, e.lim, e.body.args[0], e.drt),
-                                  expr.Limit(e.var, e.lim, e.body.args[1], e.drt))
+                       expr.Limit(e.var, e.lim, e.body.args[1], e.drt))
+
 
 def check_item(item, target=None, *, debug=False):
     """Check application of rules in the item."""
     problem = parser.parse_expr(item['problem'])
-    
+
     if debug:
         print("\n%s: %s" % (item['name'], problem))
 
@@ -1524,7 +1591,7 @@ def check_item(item, target=None, *, debug=False):
 
         if reason == 'Initial':
             result = current
-        
+
         elif reason == 'Simplification':
             if "location" in step:
                 result = OnLocation(FullSimplify(), step["location"]).eval(current)
@@ -1635,11 +1702,14 @@ def check_item(item, target=None, *, debug=False):
             print("Result: %s" % current)
             raise AssertionError("Error on final answer")
 
+
 class DerivIntExchange(Rule):
     """Exchanging derivative and integral"""
-    def __init__(self, const_var = None):
+
+    def __init__(self, const_var=None):
         self.name = "DerivIntExchange"
         self.const_var = const_var
+
     def __str__(self):
         s = ""
         if self.const_var != None:
@@ -1662,7 +1732,7 @@ class DerivIntExchange(Rule):
             if conds != None:
                 const_vname = self.const_var
                 const_v = Var(const_vname)
-                conds.add_condition(const_vname, parser.parse_expr("isConst("+const_vname+")"), isAssume=True)
+                conds.add_condition(const_vname, parser.parse_expr("isConst(" + const_vname + ")"), isAssume=True)
                 ne = IndefiniteIntegral(e.var, Deriv(e.var, e.body.body)) + const_v
                 return ne
             else:
@@ -1676,8 +1746,10 @@ class DerivIntExchange(Rule):
         else:
             raise NotImplementedError
 
+
 class ExpandDefinition(Rule):
     """Expand a definition"""
+
     def __init__(self, func_def: Expr):
         self.name = "ExpandDefinition"
         self.func_def = func_def
@@ -1699,7 +1771,7 @@ class ExpandDefinition(Rule):
             for arg, val in zip(self.func_def.lhs.args, e.args):
                 body = body.replace(arg, val)
             return body.normalize()
-        elif e.is_skolem_func() and self.func_def.lhs.is_skolem_func() and\
+        elif e.is_skolem_func() and self.func_def.lhs.is_skolem_func() and \
                 e.name == self.func_def.lhs.name:
             body = self.func_def.rhs
             for arg, val in zip(self.func_def.lhs.dependent_vars, e.dependent_vars):
@@ -1707,6 +1779,7 @@ class ExpandDefinition(Rule):
             return body.normalize()
         else:
             return e
+
 
 class LimFunExchange(Rule):
     '''Compound function limit rule
@@ -1717,7 +1790,7 @@ class LimFunExchange(Rule):
         self.name = "LimFunExchange"
 
     def __str__(self):
-        return "exchange of limit and function application"
+        return "exchange limit and function"
 
     def export(self):
         return {
@@ -1740,8 +1813,9 @@ class LimFunExchange(Rule):
                     return Limit(e.var, e.lim, e.body.args[0]) ^ e.body.args[1]
         else:
             if e.ty == OP and e.op == '-' and len(e.args) == 1 and e.args[0].ty == LIMIT:
-                return Limit(e.args[0].var,e.args[0].lim,-e.args[0].body)
+                return Limit(e.args[0].var, e.args[0].lim, -e.args[0].body)
             return e;
+
 
 class RootFractionReWrite(Rule):
     '''
@@ -1767,7 +1841,7 @@ class RootFractionReWrite(Rule):
             raise AssertionError("RootFractionReWrite: wrong form for e.")
         if e.ty != OP and e.op != '/':
             return e
-        a,b = e.args
+        a, b = e.args
         if a.ty == FUN and a.func_name == 'sqrt':
             n = 2
             a = a.args[0]
@@ -1775,7 +1849,7 @@ class RootFractionReWrite(Rule):
             c = a.args[1]
             if c.ty == CONST:
                 c = Fraction(c.val)
-            if isinstance(c,Fraction) and c.numerator == 1 and isinstance(c.denominator,int):
+            if isinstance(c, Fraction) and c.numerator == 1 and isinstance(c.denominator, int):
                 n = c.denominator
                 a = a.args[0]
             else:
@@ -1790,15 +1864,16 @@ class RootFractionReWrite(Rule):
             c = b.args[1]
             if c.ty == CONST:
                 c = Fraction(c.val)
-            if isinstance(c,Fraction) and c.numerator == 1 and isinstance(c.denominator,int):
+            if isinstance(c, Fraction) and c.numerator == 1 and isinstance(c.denominator, int):
                 m = c.denominator
                 b = b.args[0]
             else:
                 raise NotImplementedError
         else:
             m = 1
-        l = int(sympy.lcm(n,m))
-        return ((a^ fractions.Fraction(l,n)) / (b^fractions.Fraction(l,m)))^Fraction(1,l);
+        l = int(sympy.lcm(n, m))
+        return ((a ^ fractions.Fraction(l, n)) / (b ^ fractions.Fraction(l, m))) ^ Fraction(1, l);
+
 
 class ExtractFromRoot(Rule):
     '''
@@ -1828,9 +1903,10 @@ class ExtractFromRoot(Rule):
             raise AssertionError("ExtractFromRoot: wrong form for e.")
         if e.ty == FUN and e.func_name == 'sqrt':
             if self.sign == -1:
-                return -self.u * expr.Fun('sqrt', e.args[0]/(self.u^2))
+                return -self.u * expr.Fun('sqrt', e.args[0] / (self.u ^ 2))
         else:
             raise NotImplementedError
+
 
 class RewriteExp(Rule):
     def __init__(self):
@@ -1850,16 +1926,18 @@ class RewriteExp(Rule):
             return e
         b = e.args[0]
         if b.ty == OP and b.op == '+':
-            a1,a2 = b.args
-            return Fun('exp',a1) * Fun('exp',a2)
+            a1, a2 = b.args
+            return Fun('exp', a1) * Fun('exp', a2)
         elif b.ty == OP and b.is_minus():
             a1, a2 = b.args
-            return Fun('exp',a1) * Fun('exp',-a2)
+            return Fun('exp', a1) * Fun('exp', -a2)
         else:
             raise NotImplementedError
 
+
 class LimIntExchange(Rule):
     '''LIM INT f(x) = LIM INT f(x)'''
+
     def __init__(self):
         self.name = "LimIntExchange"
 
@@ -1878,10 +1956,12 @@ class LimIntExchange(Rule):
         else:
             raise NotImplementedError
 
+
 class RewriteFactorial(Rule):
     '''
     1. (m+1) * m! = (m+1)!
     '''
+
     def __init__(self):
         self.name = "RewriteFactorial"
 
@@ -1899,14 +1979,14 @@ class RewriteFactorial(Rule):
             if e.args[0].is_plus():
                 # (m + 1) * m! = (m + 1)!
                 m0, m1, c = e.args[1].args[0], e.args[0].args[0], e.args[0].args[1]
-                if m0.is_var() and m0 == m1 and c==Const(1):
+                if m0.is_var() and m0 == m1 and c == Const(1):
                     return Fun('factorial', e.args[0])
                 else:
                     return e
             elif e.args[0].is_var():
                 # m * (m - 1)! = m!
                 m0, m1 = e.args[0], e.args[1].args[0]
-                if (m0-m1).normalize() == Const(1):
+                if (m0 - m1).normalize() == Const(1):
                     return Fun('factorial', m0)
                 else:
                     return e
@@ -1915,11 +1995,13 @@ class RewriteFactorial(Rule):
         else:
             return e
 
+
 class SimplifyInfinity(Rule):
     '''
     1. oo^3 = oo
 
     '''
+
     def __init__(self):
         self.name = "SimplifyInfinity"
 
@@ -1937,6 +2019,7 @@ class SimplifyInfinity(Rule):
             return Inf(Decimal('inf'))
         else:
             return e
+
 
 class RewriteDifferential(Rule):
     '''
@@ -1960,25 +2043,29 @@ class RewriteDifferential(Rule):
             return Deriv(e.args[1].body.name, e.args[0].body)
         raise NotImplementedError
 
+
 class IntegralEquation(Rule):
     '''
         Integrate both side of an equation using some variable
         such as expression: D b. I(b) = -1/b^2, we integrate both side using var b,
         then we get a new expression: I(b) + SKOLEM_CONST(E) = INT x. -1/b^2
     '''
+
     def __init__(self, *, var, left_skolem_name, right_skolem_name):
         self.name = "IntegrateBothSide"
         self.var = var
         self.left_skolem_name = left_skolem_name
         self.right_skolem_name = right_skolem_name
-    def eval(self, e:Expr, conds = None):
+
+    def eval(self, e: Expr, conds=None):
         assert e.is_equals()
         # assert e.lhs.is_deriv()
         # assert e.rhs.normalize() == Const(0)
         if e.lhs.is_deriv() and e.lhs.var == self.var and self.right_skolem_name == None:
-            left_const_part = expr.SkolemFunc(self.left_skolem_name, *[arg for arg in expr.SkolemFunc.find_free(self.var, e.lhs.body)])
+            left_const_part = expr.SkolemFunc(self.left_skolem_name,
+                                              *[arg for arg in expr.SkolemFunc.find_free(self.var, e.lhs.body)])
             new_lhs = e.lhs.body + left_const_part
-            return Op('=', new_lhs,  IndefiniteIntegral(self.var, e.rhs))
+            return Op('=', new_lhs, IndefiniteIntegral(self.var, e.rhs))
         else:
             raise NotImplementedError
 
@@ -1996,23 +2083,26 @@ class IntegralEquation(Rule):
             "right_skolem": True if self.right_skolem_name else False,
         }
 
+
 class LimEquation(Rule):
     '''
         a = b
         ->  LIM {var->lim}. a = LIM {var->lim}. b
     '''
+
     def __init__(self, var, lim):
         self.name = "LimEquation"
         self.var = var
         self.lim = lim
-    def eval(self, e:Expr, conds = None):
-        var,lim = self.var,self.lim
+
+    def eval(self, e: Expr, conds=None):
+        var, lim = self.var, self.lim
         a = Limit(var, lim, e.lhs)
         b = Limit(var, lim, e.rhs)
         r = FullSimplify()
         a = r.eval(a)
         b = r.eval(b)
-        return Op('=',a,b)
+        return Op('=', a, b)
 
     def __str__(self):
         return "LimEquation"
@@ -2023,18 +2113,21 @@ class LimEquation(Rule):
             "str": str(self)
         }
 
+
 class IntegralSimplify(Rule):
     '''
     1. INT x:[-a,a]. even_function(x) = 2 * INT x:[0,a]. even_function(x)
 
     '''
+
     def __init__(self):
         self.name = "IntegralSimplify"
-    def eval(self, e:expr.Integral, conds = None):
+
+    def eval(self, e: expr.Integral, conds=None):
         if not isinstance(e, expr.Integral):
             return e
         if (e.lower * -1).normalize() == (e.upper).normalize() and e.body.is_even_function(e.var):
-            return 2*Integral(e.var, Const(0), e.upper, e.body)
+            return 2 * Integral(e.var, Const(0), e.upper, e.body)
         else:
             return e
 
@@ -2047,13 +2140,15 @@ class IntegralSimplify(Rule):
             "str": str(self)
         }
 
+
 class ExpEquation(Rule):
     def __init__(self):
         self.name = "ExpEquation"
+
     def __str__(self):
         return "ExpEquation"
 
-    def eval(self, e:Expr, conds = None):
+    def eval(self, e: Expr, conds=None):
         r = FullSimplify()
         a = Fun('exp', e.lhs)
         b = Fun('exp', e.rhs)
@@ -2067,25 +2162,28 @@ class ExpEquation(Rule):
             "str": str(self)
         }
 
+
 class RewriteLog(Rule):
     "log(ab) = log(a) + log(b)"
+
     def __init__(self):
         self.name = "RewriteLog"
+
     def __str__(self):
         return "RewriteLog"
 
-    def eval(self, e:Expr, conds = None):
+    def eval(self, e: Expr, conds=None):
         # patter match first : log(a*b) then rewrite as log(a) + log(b)
         a = Symbol('a', [VAR, CONST, OP, FUN])
         b = Symbol('b', [VAR, CONST, OP, FUN])
         rules = [
-            (log(a*b), log(a) + log(b)),
-            (log(a/b), log(a) - log(b))
+            (log(a * b), log(a) + log(b)),
+            (log(a / b), log(a) - log(b))
         ]
         for pat, pat_res in rules:
             pos = expr.find_pattern(e, pat)
             if len(pos) >= 1:
-                mapped_expr,loc,mapping = pos[0]
+                mapped_expr, loc, mapping = pos[0]
                 if mapped_expr == e:
                     return pat_res.inst_pat(mapping)
                 else:
@@ -2099,15 +2197,16 @@ class RewriteLog(Rule):
             "str": str(self)
         }
 
+
 class RewriteSkolemConst(Rule):
-    def __init__(self, new_expr:Expr):
+    def __init__(self, new_expr: Expr):
         self.name = "RewriteSkolemConst"
         self.new_expr = new_expr
 
     def __str__(self):
         return "RewriteSkolemConst"
 
-    def eval(self, e:Expr, conds = None):
+    def eval(self, e: Expr, conds=None):
         if e.is_equals():
             res = set()
             res_lhs, res_rhs = list(), list()
@@ -2144,8 +2243,9 @@ class RewriteSkolemConst(Rule):
             "str": str(self)
         }
 
+
 class LimitEquation(Rule):
-    def __init__(self, var:str, lim:Expr):
+    def __init__(self, var: str, lim: Expr):
         self.name = "LimitEquation"
         self.var = var
         self.lim = lim
@@ -2153,7 +2253,7 @@ class LimitEquation(Rule):
     def __str__(self):
         return "LimitEquation"
 
-    def eval(self, e:Expr, conds = None):
+    def eval(self, e: Expr, conds=None):
         v, lim = self.var, self.lim
         lim1 = Limit(v, lim, e.lhs)
         lim2 = Limit(v, lim, e.rhs)
@@ -2165,6 +2265,7 @@ class LimitEquation(Rule):
             "str": str(self)
         }
 
+
 class FoldRewrite(Rule):
     def __init__(self):
         self.name = "FoldRewrite"
@@ -2172,7 +2273,7 @@ class FoldRewrite(Rule):
     def __str__(self):
         return "FoldRewrite"
 
-    def eval(self, e:Expr, conds = None):
+    def eval(self, e: Expr, conds=None):
         a = Symbol('a', [VAR, CONST, OP, FUN])
         b = Symbol('b', [VAR, CONST, OP, FUN])
         rules = [
@@ -2188,17 +2289,20 @@ class FoldRewrite(Rule):
                 else:
                     return OnLocation(self, loc).eval(e);
         return e
+
     def export(self):
         return {
             "name": self.name,
             "str": str(self)
         }
 
+
 class ExpandSeries(Rule):
     '''
     A power series expansion, provided it exists
     '''
-    def __init__(self, index_var:str = 'n', var:str = 'x'):
+
+    def __init__(self, index_var: str = 'n', var: str = 'x'):
         self.name = "ExpandPowerSeries"
         self.index_var = index_var
         self.var = var
@@ -2206,16 +2310,22 @@ class ExpandSeries(Rule):
     def __str__(self):
         return "ExpandPowerSeries"
 
-    def eval(self, e:Expr, conds = None):
+    def eval(self, e: Expr, conds=None):
         # patter match first : log(a*b) then rewrite as log(a) + log(b)
         a = Symbol('a', [VAR, CONST, OP, FUN])
         v = Var(self.var)
         idx = Var(self.index_var)
         rules = [
-            (Fun('exp', a), None, Summation(self.index_var, Const(0), POS_INF, (a^idx)/Fun('factorial', idx))),
-            (Fun('sin', a), None, Summation(self.index_var, Const(0), POS_INF, (Const(-1)^idx)*(a^(2*idx+1)) / Fun('factorial', 2*idx+1))),
-            (Fun('atan', a), None, Summation(self.index_var, Const(0), POS_INF, (Const(-1)^idx)*(a^(2*idx+1)) / (2*idx+1))),
-            ((1+a)^-1, None, Summation(self.index_var, Const(0), POS_INF, (Const(-1)^idx)*(a^idx))),
+            (Fun('exp', a), None, Summation(self.index_var, Const(0), POS_INF, (a ^ idx) / Fun('factorial', idx))),
+            (Fun('sin', a), None, Summation(self.index_var, Const(0), POS_INF,
+                                            (Const(-1) ^ idx) * (a ^ (2 * idx + 1)) / Fun('factorial', 2 * idx + 1))),
+            (Fun('atan', a), None,
+             Summation(self.index_var, Const(0), POS_INF, (Const(-1) ^ idx) * (a ^ (2 * idx + 1)) / (2 * idx + 1))),
+            ((1 + a) ^ -1, None, Summation(self.index_var, Const(0), POS_INF, (Const(-1) ^ idx) * (a ^ idx))),
+            (log(Const(1) + a), None,
+             Summation(self.index_var, Const(0), POS_INF, (Const(-1) ^ idx) * (a ^ (idx + 1)) / (idx + 1))),
+            (log(Const(1) - a), None,
+             Summation(self.index_var, Const(0), POS_INF, (Const(-1) ^ idx) * ((-a) ^ (idx + 1)) / (idx + 1))),
         ]
         for pat, cond, pat_res in rules:
             mapping = expr.match(e, pat)
@@ -2226,44 +2336,49 @@ class ExpandSeries(Rule):
                     res = pat_res(mapping)
                 return res
         return e
+
     def export(self):
         return {
             "name": self.name,
             "str": str(self)
         }
 
+
 class IntSumExchange(Rule):
     ''' interchange the integral and summation'''
+
     def __init__(self):
         self.name = "IntSumExchange"
 
     def __str__(self):
         return "IntSumExchange"
 
-    def eval(self, e:Expr, conds = None):
+    def eval(self, e: Expr, conds=None):
         if e.ty == INTEGRAL and e.body.ty == SUMMATION:
             s = e.body
             return Summation(s.index_var, s.lower, s.upper, Integral(e.var, e.lower, e.upper, e.body.body))
         else:
-            raise NotImplementedError
+            return e
+
     def export(self):
         return {
             "name": self.name,
             "str": str(self)
         }
 
+
 class VarSubsOfEquation(Rule):
     '''
         if e is a equation, we can replace some var with any expression
     '''
 
-    def __init__(self, var:str, var_subs:Expr):
+    def __init__(self, var: str, var_subs: Expr):
         self.name = "VarSubsOfEquation"
         self.var = var
         self.var_subs = var_subs
 
     def __str__(self):
-        return "VarSubsOfEquation: substitute "+str(self.var)+" for "+str(self.var_subs)
+        return "VarSubsOfEquation: substitute " + str(self.var) + " for " + str(self.var_subs)
 
     def export(self):
         return {
@@ -2277,8 +2392,10 @@ class VarSubsOfEquation(Rule):
         else:
             return e
 
+
 class RewriteLimit(Rule):
     ''' LIM {x->a}. f(x) = f(a)'''
+
     def __init__(self):
         self.name = "RewriteLimit"
 
@@ -2293,3 +2410,141 @@ class RewriteLimit(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         return e.body.replace(Var(e.var), e.lim)
+
+class RewritePower(Rule):
+    '''(-x) ^ k = (-1) ^ k * x^k'''
+
+    def __init__(self, old_expr, new_expr):
+        self.name = "RewritePower"
+        self.old_expr = old_expr
+        self.new_expr = new_expr
+
+    def __str__(self):
+        return "rewrite power"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        old_expr = self.old_expr
+        if old_expr is not None and old_expr != e:
+            find_res = e.find_subexpr(old_expr)
+            if len(find_res) == 0:
+                raise AssertionError("Equation: old expression not found")
+            loc = find_res[0]
+            return OnLocation(self, loc).eval(e)
+        if old_expr == e:
+            a = Symbol('a', [VAR, OP, FUN])
+            b = Symbol('b', [VAR, OP, FUN])
+            rules = [
+                ((-a)^b, ((Const(-1))^b) * (a^b)),
+                ]
+            rule = FullSimplify()
+            for pat, pat_res in rules:
+                mapping = expr.match(e, pat)
+                if mapping is not None:
+                    res = pat_res.inst_pat(mapping)
+                    if rule.eval(res) == rule.eval(self.new_expr):
+                        return self.new_expr
+        return e
+
+class MergeSummation(Rule):
+    "SUM(u,0,oo, body1) + SUM(k,0,oo,body2) = SUM(u, 0, oo, body1+body2)"
+    def __init__(self):
+        self.name = "MergeSummation"
+
+    def __str__(self):
+        return "merge summation"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if not(e.ty == OP and e.op in ('+', '-') and all([isinstance(arg, Summation) for arg in e.args])):
+            return e
+        a, b = e.args
+        if not(a.lower == b.lower and a.upper == b.upper):
+            return e
+        if a.index_var != b.index_var:
+            b = b.alpha_convert(a.index_var)
+        return Summation(a.index_var, a.lower, a.upper, Op(e.op, a.body, b.body))
+
+class SummationSimplify(Rule):
+
+    def __init__(self):
+        self.name = "SummationSimplify"
+
+    def __str__(self):
+        return "summation simplify"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.ty != SUMMATION:
+            return e
+        e = e.replace((Const(-1))^(Const(2)*Var(e.index_var)), Const(1))
+        return e
+
+class DerivEquation(Rule):
+    def __init__(self, var):
+        self.name = "DerivEquation"
+        self.var = var
+    def __str__(self):
+        return "derivate both side"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if not e.is_equals():
+            return e
+        return Op('=', Deriv(self.var, e.lhs), Deriv(self.var, e.rhs))
+
+
+class DerivSumExchange(Rule):
+    def __init__(self):
+        self.name = "DerivSumExchange"
+    def __str__(self):
+        return "exchange derivative and summation"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        if e.ty == DERIV and e.body.ty == SUMMATION:
+            return Summation(e.body.index_var, e.body.lower, e.body.upper, Deriv(e.var, e.body.body))
+        else:
+            return e
+
+
+class MulEquation(Rule):
+    def __init__(self, e:Expr):
+        self.name = "MulEquation"
+        self.e = e
+    def __str__(self):
+        return "multiply an expression on both side"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        return Op('=', e.lhs * self.e, e.rhs * self.e).normalize()

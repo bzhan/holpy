@@ -25,6 +25,7 @@ class ParserTest(unittest.TestCase):
             "x ^ (1/2)",
             '(-2) ^ n',
             '(-2) ^ (n + 1)',
+            'a ^ b * c ^ d',
         ]
 
         for s in test_data:
@@ -39,7 +40,10 @@ class ParserTest(unittest.TestCase):
             ("-1/2", Const(Fraction(-1) / 2)),
             ("0.5", Const(Decimal("0.5"))),
             ("pi", Fun("pi")),
-            ("-x^2", Op("-", Op("^", Var("x"), Const(2))))
+            ("-x^2", Op("-", Op("^", Var("x"), Const(2)))),
+            ('a ^ b * c ^ d', Op('*', Op('^', Var('a'), Var('b')), Op('^', Var('c'), Var('d')))),
+            ('a * -b', Op('*', Var('a'), Op('-', Var('b')))),
+            ('(-x) ^ k * log(x)', Op('*', Op('^', Op('-',Var('x')), Var('k')), Fun('log', Var('x')))),
         ]
 
         for s, e, in test_data:

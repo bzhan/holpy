@@ -51,9 +51,14 @@ class RulesTest(unittest.TestCase):
              "8 ^ (1/2) * (INT t:[-pi / 4,pi / 4]. 1)"),
             ("(INT t:[0,-1/2]. (-2)*exp(t))",
              "-2 * (INT t:[0,-1/2]. exp(t))"),
-            ("INT x:[-1, 1]. u / (u^2 + 1) + 1 / (u^2 + 1)", 
+            ("INT x:[-1, 1]. u / (u^2 + 1) + 1 / (u^2 + 1)",
              "(INT x:[-1,1]. u / (u ^ 2 + 1)) + (INT x:[-1,1]. 1 / (u ^ 2 + 1))"),
-            ("INT x:[0,1]. 1/2 * x ^ 2 * (1 + x ^ 2) ^ -1", "1/2 * (INT x:[0,1]. x ^ 2 * (x ^ 2 + 1) ^ (-1))")
+            ("INT x:[0,1]. 1/2 * x ^ 2 * (1 + x ^ 2) ^ -1",
+             "1/2 * (INT x:[0,1]. x ^ 2 * (x ^ 2 + 1) ^ (-1))"),
+            ('SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1)) / x',
+             'SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1)) / x'),
+            ("SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1) * (1/x))",
+             'x ^ (-1) * SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))'),
         ]
 
         rule = rules.Linearity()
@@ -433,8 +438,8 @@ class RulesTest(unittest.TestCase):
         conds = conditions.Conditions()
 
         e = parse_expr('I(0) = sqrt(pi/2)')
-        As1 = compstate.Assumption(e)
-        st.add_assumption(As1)
+        lemma1 = compstate.Lemma(e)
+        st.add_lemma(lemma1)
 
         # Prove the following equality
         e = parser.parse_expr('(D t. I(t)) = -t*I(t)')
@@ -480,7 +485,7 @@ class RulesTest(unittest.TestCase):
         calc = Eq4_proof.begin
         calc.perform_rule(rules.LimitEquation('t', Const(0)))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyAssumption(assumption=As1.assumption, conds=None), '0.0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma=lemma1.lemma, conds=None), '0.0'))
 
         e = parse_expr('log(I(t)) = -t ^ 2 / 2 + log(sqrt(pi / 2))')
         Eq5 = compstate.Goal(e, conds=conds)
@@ -618,15 +623,20 @@ class RulesTest(unittest.TestCase):
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testFullSimplify(self):
-        test_data = [('LIM {x -> 1 }. (x ^ 2 - 1) / (x ^ 2 + 3 * x - 4)', "LIM {x -> 1 }. (x ^ 2 - 1) * (x ^ 2 + 3 * x - 4) ^ -1"),
+        test_data = [('LIM {x -> 1 }. (x ^ 2 - 1) / (x ^ 2 + 3 * x - 4)', "LIM {x -> 1 }. (x ^ 2 - 1) * (x ^ 2 + 3 * x - 4) ^ (-1)"),
                      ('LIM {x -> 1 }. (x-1) * tan(pi/2 * x)', "LIM {x -> 1 }. (x - 1) * tan(1/2 * pi * x)"),
-                     ('LIM {x -> 0 }. sin(x) / x', "LIM {x -> 0 }. x ^ -1 * sin(x)"),]
-        r = rules.FullSimplify().eval
+                     ('LIM {x -> 0 }. sin(x) / x', "LIM {x -> 0 }. x ^ (-1) * sin(x)"),
+                     ('SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1) * (1/x))',
+                      'x ^ (-1) * SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))'),
+                     ('SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1)) / x',
+                      "x ^ (-1) * SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))"),
+                     ("SUM(k, 0, oo, (-1) ^ (2*k+1) * x ^ (k + 1) / (k+1))",
+                      "-SUM(k, 0, oo, x ^ (k + 1) * (k + 1) ^ (-1))"),]
+        r = rules.FullSimplify()
         for s, res in test_data:
             e = parse_expr(s)
-            e = r(e)
+            e = r.eval(e)
             self.assertEqual(str(e), res)
-
     def testLimFunExchange(self):
         test_data = [
             ("LIM {x->3}. f(x,log(x))", "f(LIM {x -> 3 }. x,LIM {x -> 3 }. log(x))"),
@@ -649,12 +659,14 @@ class RulesTest(unittest.TestCase):
             e = rules.RootFractionReWrite().eval(s)
             self.assertEqual(str(e), s2)
 
-    def testFullSimplify(self):
-        test_data = [("INT x:[0, oo].D b.(x ^ 2 + b) ^ (-m - 1)","INT x:[0,oo]. D b. (x ^ 2 + b) ^ (-m - 1)")]
+    def testFullSimplify2(self):
+        test_data = [("INT x:[0, oo].D b.(x ^ 2 + b) ^ (-m - 1)","INT x:[0,oo]. D b. (x ^ 2 + b) ^ (-m - 1)"),
+                     ]
         for s,res in test_data:
             s = parse_expr(s)
             rules.FullSimplify().eval(s)
             self.assertEqual(str(s), res)
+
 
     def testExpandSeries(self):
         test_data = [
