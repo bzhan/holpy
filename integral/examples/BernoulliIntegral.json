@@ -1,0 +1,200 @@
+{
+    "content": [
+        {
+            "eq": "f(m,n) = (INT x:[0,1]. x ^ m * log(x) ^ n)",
+            "latex_eq": "f(m,n) = \\int_{0}^{1} x ^ {m} log^{n}(x) \\,dx",
+            "latex_lhs": "f(m,n)",
+            "type": "FuncDef"
+        },
+        {
+            "eq": "f(m,n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
+            "latex_eq": "f(m,n) = \\frac{(-1)^{n} n!}{(m + 1) ^ {n + 1}}",
+            "type": "Lemma"
+        },
+        {
+            "finished": true,
+            "goal": "f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k)",
+            "latex_goal": "f(a k,k) = \\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx",
+            "proof": {
+                "finished": true,
+                "goal": "f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k)",
+                "latex_goal": "f(a k,k) = \\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx",
+                "lhs_calc": {
+                    "latex_start": "f(a k,k)",
+                    "start": "f(a * k,k)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx",
+                            "res": "INT x:[0,1]. x ^ (a * k) * log(x) ^ k",
+                            "rule": {
+                                "func_def": "f(m,n) = (INT x:[0,1]. x ^ m * log(x) ^ n)",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx",
+                    "start": "INT x:[0,1]. x ^ (a * k) * log(x) ^ k",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
+            "latex_goal": "\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{-c ^ {k}}{(k a + 1) ^ {k + 1}}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
+                "latex_goal": "\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{-c ^ {k}}{(k a + 1) ^ {k + 1}}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx",
+                    "start": "INT x:[0,1]. x ^ (c * x ^ a)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} e^{\\log{(x ^ {c x ^ {a}})}} \\,dx",
+                            "res": "INT x:[0,1]. exp(log(x ^ (c * x ^ a)))",
+                            "rule": {
+                                "name": "Equation",
+                                "new_expr": "exp(log(x ^ (c * x ^ a)))",
+                                "old_expr": "x ^ (c * x ^ a)",
+                                "str": "rewriting"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\frac{log^{k}(x ^ {c x ^ {a}})}{k!}} \\,dx",
+                            "res": "INT x:[0,1]. SUM(k, 0, oo, log(x ^ (c * x ^ a)) ^ k / factorial(k))",
+                            "rule": {
+                                "loc": "subterms",
+                                "name": "ExpandPowerSeries",
+                                "str": "ExpandPowerSeries on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{log^{k}(x ^ {c x ^ {a}})}{k!} \\,dx}",
+                            "res": "SUM(k, 0, oo, INT x:[0,1]. log(x ^ (c * x ^ a)) ^ k / factorial(k))",
+                            "rule": {
+                                "name": "IntSumExchange",
+                                "str": "IntSumExchange"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(c x ^ {a} \\log{(x)}) ^ {k}}{k!} \\,dx}",
+                            "res": "SUM(k, 0, oo, INT x:[0,1]. (c * x ^ a * log(x)) ^ k / factorial(k))",
+                            "rule": {
+                                "name": "Equation",
+                                "new_expr": "c * x ^ a * log(x)",
+                                "old_expr": "log(x ^ (c * x ^ a))",
+                                "str": "rewriting"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(c x ^ {a}) ^ {k} log^{k}(x)}{k!} \\,dx}",
+                            "res": "SUM(k, 0, oo, INT x:[0,1]. (c * x ^ a) ^ k * log(x) ^ k / factorial(k))",
+                            "rule": {
+                                "name": "Equation",
+                                "new_expr": "(c * x ^ a) ^ k * log(x) ^ k",
+                                "old_expr": "(c * x ^ a * log(x)) ^ k",
+                                "str": "rewriting"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{c ^ {k} (x ^ {a}) ^ {k} log^{k}(x)}{k!} \\,dx}",
+                            "res": "SUM(k, 0, oo, INT x:[0,1]. c ^ k * x ^ a ^ k * log(x) ^ k / factorial(k))",
+                            "rule": {
+                                "name": "Equation",
+                                "new_expr": "c ^ k * x ^ a ^ k",
+                                "old_expr": "(c * x ^ a) ^ k",
+                                "str": "rewriting"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} factorial^{-1}(k) (\\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx)}",
+                            "res": "SUM(k, 0, oo, c ^ k * factorial(k) ^ (-1) * (INT x:[0,1]. x ^ (a * k) * log(x) ^ k))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} factorial^{-1}(k) f(a k,k)}",
+                            "res": "SUM(k, 0, oo, c ^ k * factorial(k) ^ (-1) * f(a * k,k))",
+                            "rule": {
+                                "eq": "f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k)",
+                                "latex_str": "apply equation \\(f(a k,k) = \\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx\\) on subterms",
+                                "loc": "subterms",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k) on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} factorial^{-1}(k) ((-1)^{k} k! (a k + 1) ^ {-k - 1})}",
+                            "res": "SUM(k, 0, oo, c ^ k * factorial(k) ^ (-1) * ((-1) ^ k * factorial(k) * (a * k + 1) ^ (-k - 1)))",
+                            "rule": {
+                                "loc": "subterms",
+                                "name": "ApplyLemma",
+                                "str": "apply lemma on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} (-1)^{k} (a k + 1) ^ {-k - 1}}",
+                            "res": "SUM(k, 0, oo, c ^ k * (-1) ^ k * (a * k + 1) ^ (-k - 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{-c ^ {k} (a k + 1) ^ {-k - 1}}",
+                            "res": "SUM(k, 0, oo, (-c) ^ k * (a * k + 1) ^ (-k - 1))",
+                            "rule": {
+                                "name": "Equation",
+                                "new_expr": "(-c) ^ k",
+                                "old_expr": "c ^ k * (-1) ^ k",
+                                "str": "rewriting"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\sum_{k=0}^{\\infty}{\\frac{-c ^ {k}}{(k a + 1) ^ {k + 1}}}",
+                    "start": "SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
+                    "steps": [
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{-c ^ {k} (a k + 1) ^ {-k - 1}}",
+                            "res": "SUM(k, 0, oo, (-c) ^ k * (a * k + 1) ^ (-k - 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "Bernoulli's Integral"
+}

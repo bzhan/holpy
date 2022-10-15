@@ -826,7 +826,12 @@ class ApplyLemma(Rule):
                 flag = True
         if not flag:
             return e
-        rule = ApplyEquation(self.lemma)
+        if e.is_fun() and self.lemma.lhs.is_fun() and \
+                e.func_name == self.lemma.lhs.func_name and \
+                all(isinstance(arg, Var) for arg in self.lemma.lhs.args):
+            rule = ExpandDefinition(self.lemma)
+        else:
+            rule = ApplyEquation(self.lemma)
         return rule.eval(e, conds)
 
 
@@ -1107,6 +1112,21 @@ class Equation(Rule):
             r = FullSimplify()
             if r.eval(e) == r.eval(self.new_expr):
                 return self.new_expr
+            a = Symbol('a', [VAR, CONST, OP, FUN])
+            b = Symbol('b', [VAR, CONST, OP, FUN])
+            c = Symbol('c', [VAR, CONST, OP, FUN])
+            rules = [
+                (log(a ^ b), b * log(a)),
+                ((a * b) ^ c, (a ^ c) * (b ^ c)),
+                ((a ^ c) * (b ^ c), (a * b) ^ c),
+            ]
+            for pat, pat_res in rules:
+                pos = expr.find_pattern(e, pat)
+                if len(pos) >= 1:
+                    mapped_expr, loc, mapping = pos[0]
+                    if mapped_expr == e:
+                        if r.eval(pat_res.inst_pat(mapping)) == r.eval(self.new_expr):
+                            return self.new_expr
             if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
                     expand_multinomial(expr.sympy_style(self.old_expr.normalize()).simplify()):
                 raise AssertionError("Rewriting by equation failed")
