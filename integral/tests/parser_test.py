@@ -26,6 +26,12 @@ class ParserTest(unittest.TestCase):
             '(-2) ^ n',
             '(-2) ^ (n + 1)',
             'a ^ b * c ^ d',
+            '(-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)',
+            'x ^ m * log(x) ^ n',
+            '(-c) ^ k / (k * a + 1) ^ (k + 1)',
+            'x ^ (c * x ^ a)',
+            '(c * x ^ a * log(x)) ^ k',
+            '(c * x ^ a) ^ k * log(x) ^ k',
         ]
 
         for s in test_data:
@@ -44,6 +50,9 @@ class ParserTest(unittest.TestCase):
             ('a ^ b * c ^ d', Op('*', Op('^', Var('a'), Var('b')), Op('^', Var('c'), Var('d')))),
             ('a * -b', Op('*', Var('a'), Op('-', Var('b')))),
             ('(-x) ^ k * log(x)', Op('*', Op('^', Op('-',Var('x')), Var('k')), Fun('log', Var('x')))),
+            ("x^m * log(x) ^ n", Op('*', Op('^', Var('x'), Var('m')), Op('^', Fun('log',Var('x')), Var('n')))),
+            ("(-1)^n * factorial(n) / (m+1) ^ (n+1)", Op('/', Op('*', Op('^', Const(-1), Var('n')), Fun("factorial", Var('n'))), Op('^', Op('+', Var('m'), Const(1)), Op('+', Var('n'), Const(1))))),
+            ("(-c) ^ k / (k * a + 1) ^ (k + 1)", Op('/', Op('^', Op('-', Var('c')), Var('k')), Op('^', Op('+', Op('*', Var('k'), Var('a')), Const(1)), Op('+', Var('k'), Const(1))))),
         ]
 
         for s, e, in test_data:

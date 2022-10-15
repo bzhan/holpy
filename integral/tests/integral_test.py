@@ -1127,6 +1127,62 @@ class IntegralTest(unittest.TestCase):
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
 
+    def testBernoulliIntegral(self):
+        file = compstate.CompFile("Bernoulli's Integral")
+
+        e = parser.parse_expr("f(m, n) = INT x:[0, 1]. x^m * log(x) ^ n")
+        Idef = compstate.FuncDef(e)
+        file.add_definition(Idef)
+
+        e = parser.parse_expr("f(m, n) = (-1)^n * factorial(n) / (m+1) ^ (n+1)")
+        lemma = compstate.Lemma(lemma=e, conds=None)
+        file.add_lemma(lemma)
+
+        e = parser.parse_expr("f(a*k, k) = INT x:[0, 1]. x^(a*k) * log(x)^k")
+        goal01 = compstate.Goal(goal=e, conds=None)
+        file.add_goal(goal01)
+        proof_of_goal01 = goal01.proof_by_calculation()
+        calc = proof_of_goal01.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+
+        e = parser.parse_expr("(INT x:[0,1]. x^(c*x^a)) = SUM(k,0,oo,(-c)^k / (k*a+1)^(k+1))")
+        goal02 = compstate.Goal(goal=e, conds=None)
+        file.add_goal(goal02)
+
+        proof_of_goal02 = goal02.proof_by_calculation()
+        calc = proof_of_goal02.lhs_calc
+        old_expr = parser.parse_expr("x^(c*x^a)")
+        new_expr = parser.parse_expr("exp(log(x^(c*x^a)))")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandSeries(index_var='k', var='x')))
+        calc.perform_rule(rules.IntSumExchange())
+
+        old_expr = parser.parse_expr("log(x ^ (c * x ^ a))")
+        new_expr = parser.parse_expr("(c*x^a) * log(x)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+
+        old_expr = parser.parse_expr("(c * x ^ a * log(x)) ^ k")
+        new_expr = parser.parse_expr("(c * x ^ a)^k * log(x) ^ k")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+
+        old_expr = parser.parse_expr("(c * x ^ a)^k")
+        new_expr = parser.parse_expr("(c^k * x ^ a^k)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal01.goal)))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=lemma.lemma, conds=None)))
+        calc.perform_rule(rules.FullSimplify())
+        old_expr = parser.parse_expr("c ^ k * (-1) ^ k")
+        new_expr = parser.parse_expr("(-c)^k")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc = proof_of_goal02.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        # print(file)
+        for i in range(2,4):
+            self.assertTrue(file.content[i].is_finished())
+        path = 'integral/examples/BernoulliIntegral.json'
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
 if __name__ == "__main__":
     unittest.main()
