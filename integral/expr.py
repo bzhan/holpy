@@ -746,6 +746,9 @@ class Expr:
                 rec(t.lower, bd_vars + [t.index_var])
                 rec(t.upper, bd_vars + [t.index_var])
                 rec(t.body, bd_vars + [t.index_var])
+            elif t.is_equals():
+                rec(t.bd_vars)
+                rec(t.rhs, bd_vars)
             else:
                 print(t, type(t))
                 raise NotImplementedError
@@ -1107,8 +1110,11 @@ class Expr:
             return poly.singleton(Fun(self.func_name, *args_norm))
 
         elif self.ty == EVAL_AT:
-            upper = self.body.subst(self.var, self.upper)
-            lower = self.body.subst(self.var, self.lower)
+            # upper = self.body.subst(self.var, self.upper)
+            # lower = self.body.subst(self.var, self.lower)
+            # TODO: improper integral
+            upper = self.body.subst(self.var, self.upper) if self.upper not in (POS_INF, NEG_INF) else Limit(self.var, self.upper, self.body)
+            lower = self.body.subst(self.var, self.lower) if self.lower not in (POS_INF, NEG_INF) else Limit(self.var, self.lower, self.body)
             return (upper.normalize() - lower.normalize()).to_poly()
 
         elif self.ty == INTEGRAL:
