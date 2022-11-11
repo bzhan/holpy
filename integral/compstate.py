@@ -117,6 +117,7 @@ class Lemma(StateItem):
     def __init__(self, lemma:Expr, conds:Conditions = None):
         '''lemma usually is an equation and
         conds represents the conditions make the lemma hold'''
+        assert isinstance(lemma, Expr)
         self.lemma = conditions.replaceByConds(lemma, conds)
         self.conds = conds
 
@@ -185,6 +186,7 @@ class Goal(StateItem):
             res['conds'] = self.conds.export()
         return res
 
+    # begin is Goal type
     def proof_by_rewrite_goal(self, *, begin):
         self.proof = RewriteGoalProof(self.goal, begin=begin, conds=self.conds)
         return self.proof

@@ -587,6 +587,22 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
         res = Limit(None)
         res.is_bounded = True
         return res
+    elif e.is_fun() and e.func_name == 'sqrt':
+        l = limit_of_expr(e.args[0], var_name, conds)
+        if l.e == None:
+            return Limit(None)
+        # if l.e < 0 raise error
+        elif conditions.is_negative(e=l.e, conds=conds):
+            raise AssertionError("sqrt: arg is negtive")
+        else:
+            if isinstance(l.asymp, Unknown):
+                return Limit(expr.Fun('sqrt', l.e), asymp=Unknown(), side=l.side)
+            elif isinstance(l.asymp, PolyLog):
+                return Limit(expr.Fun('sqrt', l.e), asymp=PolyLog(*[1/2 * a for a in l.asymp.order]), side=l.side)
+            elif isinstance(l.asymp, Exp):
+                return Limit(expr.Fun('sqrt', l.e), asymp=Exp(1/2 *l.asymp.order), side=l.side)
+            else:
+                raise AssertionError("Unknown asymptote!")
     else:
         # TODO: add support for other functions
         return Limit(None)

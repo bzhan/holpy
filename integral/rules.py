@@ -193,6 +193,8 @@ class CommonIntegral(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         if e.ty != expr.INTEGRAL:
             return e
+        if isinstance(e.body, Deriv) and e.body.var == e.var:
+            return EvalAt(e.var, e.lower, e.upper, e.body.body)
         v = Var(e.var)
         if (e.body.is_constant() or v not in e.body.findVar()) and e.body != Const(1):
             return EvalAt(e.var, e.lower, e.upper, e.body * Var(e.var))
@@ -806,7 +808,7 @@ class ApplyLemma(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        # if assumption holds under this expression
+        # if assumption holds
         # then apply assumption
         flag = False if conds != None else True
         # conditions check
@@ -1127,8 +1129,13 @@ class Equation(Rule):
                     if mapped_expr == e:
                         if r.eval(pat_res.inst_pat(mapping)) == r.eval(self.new_expr):
                             return self.new_expr
-            if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
-                    expand_multinomial(expr.sympy_style(self.old_expr.normalize()).simplify()):
+            def rec(se):
+                return rec(se.expand()) if (se.expand() != se) else se
+
+
+
+            if expand_multinomial(rec(rec(expr.sympy_style(self.new_expr)).simplify())) != \
+                    expand_multinomial(rec(rec(expr.sympy_style(self.old_expr)).simplify())):
                 raise AssertionError("Rewriting by equation failed")
             return self.new_expr
         # Currently rewrite using SymPy.
@@ -1215,6 +1222,10 @@ class IntegrationByParts(Rule):
         du = expr.deriv(e.var, self.u)
         dv = expr.deriv(e.var, self.v)
         udv = (self.u * dv).normalize()
+        # d atan(x/sqrt(2+x^2)) -> 1/((1+x^2)*sqrt(2+x^2))
+        se = expr.sympy_style(udv).simplify()
+        udv = expr.holpy_style(se).normalize()
+
         if udv == e.body:
             return expr.EvalAt(e.var, e.lower, e.upper, (self.u * self.v).normalize()) - \
                    expr.Integral(e.var, e.lower, e.upper, (self.v * du).normalize())
@@ -2568,3 +2579,67 @@ class MulEquation(Rule):
 
     def eval(self, e: Expr, conds=None) -> Expr:
         return Op('=', e.lhs * self.e, e.rhs * self.e).normalize()
+
+
+class RewriteMulPower(Rule):
+    '''
+    a * sqrt(b) -> sqrt(a^2 * b) if be_merged_inx = 0
+    (x+3)^(-2) * y -> ((x+3) * y^(-1/2))^(-2) if be_merged_idx = 1
+    '''
+    def __init__(self, be_merged_idx:int):
+        assert be_merged_idx in (0, 1)
+        self.be_merged_idx = be_merged_idx
+        self.name = "RewriteMulPower"
+
+    def eval(self, e: Expr, conds = None):
+        if not isinstance(e, Op) or not e.op == '*':
+            return e
+        idx = self.be_merged_idx
+        res = e
+        r = ExpandPolynomial()
+        if e.args[idx ^ 1].is_fun() and e.args[idx ^ 1].func_name == 'sqrt':
+            res = Fun('sqrt', r.eval(((e.args[idx] ^ 2) * e.args[idx ^ 1].args[0]).normalize()))
+        elif e.args[idx ^ 1].is_power():
+            res = Op('^',r.eval(((e.args[idx] ^ (1 / e.args[idx ^ 1].args[1])) * e.args[idx ^ 1].args[0]).normalize()),
+                     e.args[idx ^ 1].args[1])
+        return res
+
+    def __str__(self):
+        return "rewrite expression multiplied a power expression"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+class SolveEquation(Rule):
+    def __init__(self, be_solved_expr:Expr):
+        self.be_solved_expr = be_solved_expr
+        self.name = "SolveEquation"
+    def eval(self, e:Expr, conds = None):
+        assert e.is_equals()
+        all_vars = e.get_vars()
+        var_name = ""
+        if len(all_vars) == 0:
+            var_name = "x"
+        else:
+            for v in all_vars:
+                var_name = var_name + v
+        var = Var(var_name)
+        e = e.replace(self.be_solved_expr, var)
+        e = e.lhs - e.rhs
+        res = sympy.solvers.solve(sympy_style(e), sympy_style(var))
+        if len(res)==0:
+            raise AssertionError("can't solve")
+        else:
+            return Op('=', self.be_solved_expr, holpy_style(res[0]))
+
+    def __str__(self):
+        return "solve equation"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }

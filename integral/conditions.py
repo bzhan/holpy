@@ -53,12 +53,13 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
     if e.is_const():
         return e.val > 0
 
+    if e.is_fun() and e.func_name == 'sqrt':
+        if is_positive(e.args[0],conds):
+            return True
     if e.is_fun() and e.func_name == 'exp':
         return True
-
     if e == expr.E:
         return True
-
     if e.is_power():
         if is_positive(e.args[0], conds):
             return True
@@ -67,8 +68,6 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
             return True
         if is_not_negative(e.args[0], conds) and is_positive(e.args[1],conds):
             return True
-
-
     if e.is_integral():
         l, h = e.lower, e.upper
         if is_positive(e.body, conds) and l.is_const() and h.is_inf() or l.is_const() and h.is_const() and l<h:
@@ -86,13 +85,26 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
     return False
 
 def is_not_negative(e:Expr, conds) -> bool:
-    if e.is_power():
+    if e.is_const():
+        return True if e.val >= 0 else False
+    elif e.is_plus():
+        if all(is_not_negative(arg,conds) for arg in e.args):
+            return True
+    elif e.is_times():
+        # a * a >= 0
+        if e.args[0] == e.args[1]:
+            return True
+    elif e.is_power():
         if e.args[1] == expr.Const(2):
             return True
-    return False
+    else:
+        # TODO: many cases are missing
+        return False
 
 def is_negative(e: Expr, conds: Conditions) -> bool:
     """Return whether conditions imply e is negative."""
+    if is_not_negative(e, conds):
+        return False
     if e.is_const():
         return e.val < 0
 
