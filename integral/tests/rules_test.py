@@ -209,11 +209,14 @@ class RulesTest(unittest.TestCase):
 
     def testEquation(self):
         test_data = [
-            "sin(x) ^ 3", "sin(x)^2 * sin(x)"
+            ("sin(x) ^ 3", "sin(x)^2 * sin(x)","sin(x) ^ 2 * sin(x)"),
+            ("5 * x ^ 2 + 4 * x ^ 4 + x ^ 6 + 2", "(1+x^2)^2 * (2+x^2)","(1 + x ^ 2) ^ 2 * (2 + x ^ 2)")
         ]
-        e = parse_expr("INT x:[0, pi]. sin(x) ^ 3")
-        e.body = rules.Equation(parse_expr("sin(x) ^ 2 * sin(x)")).eval(e.body)
-        self.assertEqual(e, parse_expr("INT x:[0, pi]. sin(x) ^ 2 * sin(x)"))
+        for a, b, c in test_data:
+            e = parse_expr(a)
+            ee = parse_expr(b)
+            res = rules.Equation(old_expr=e, new_expr=ee).eval(e)
+            self.assertEqual(str(res), c)
 
     def testSubstitutionInverse(self):
         e = parse_expr("INT x:[0, sqrt(2)]. sqrt(2 - x^2)")
@@ -680,5 +683,33 @@ class RulesTest(unittest.TestCase):
             res = rules.ExpandSeries().eval(e)
             self.assertEqual(str(res), b)
 
+    def testRewrteMulPower(self):
+        test_data = [
+            ('a * sqrt(b+3)', 0, 'sqrt(a ^ 2 * b + 3 * a ^ 2)'),
+            ('x^(-1)*(2*x^(-2)+1)^(-1/2)', 0, '(x ^ 2 + 2) ^ (-1/2)'),
+            ('x^(-3)*(x^(-2)+1)^(-1)', 0, '(x ^ 3 + x) ^ (-1)'),
+            ('(x^3+x)^(-1)*(2*x^(-2)+1)^(-1/2)', 0, '(5 * x ^ 2 + 4 * x ^ 4 + x ^ 6 + 2) ^ (-1/2)')
+        ]
+        for a, b, c in test_data:
+            e = parser.parse_expr(a)
+            res = rules.RewriteMulPower(b).eval(e)
+            self.assertEqual(str(res), c)
+
+    def testExpandPolynomial(self):
+        test_data = [
+            ('x ^ 3 * (x ^ (-2) + 1)', 'x ^ 3 + x'),
+        ]
+        for a, b in test_data:
+            e = parser.parse_expr(a)
+            res = rules.ExpandPolynomial().eval(e)
+            self.assertEqual(str(res), b)
+    def testSolveEquation(self):
+        test_data = [('a+I(1) = b-I(1)', "I(1)",""),
+                     ]
+        print()
+        for a, b, c in test_data:
+            e = parse_expr(a)
+            res = rules.SolveEquation(parse_expr(b)).eval(e)
+            print(res)
 if __name__ == "__main__":
     unittest.main()
