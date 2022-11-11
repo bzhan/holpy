@@ -1162,7 +1162,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
 
         old_expr = parser.parse_expr("(c * x ^ a * log(x)) ^ k")
-        new_expr = parser.parse_expr("(c * x ^ a)^k * log(x) ^ k")
+        new_expr = parser.parse_expr("(c * x ^ a) ^ k * log(x) ^ k")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
 
         old_expr = parser.parse_expr("(c * x ^ a)^k")
@@ -1184,5 +1184,143 @@ class IntegralTest(unittest.TestCase):
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
+    def testAhamedIntegral(self):
+        file = compstate.CompFile("Ahamed Integral")
+
+        conds_of_Idef = compstate.Conditions()
+        e = parser.parse_expr("u>0")
+        conds_of_Idef.add_condition(str(e), e)
+
+        s = "I(u) = (INT x:[0,1]. atan(u * sqrt(2+x*x)) / ((1+x*x)*sqrt(2+x*x)))"
+        e = parser.parse_expr(s)
+
+        Idef = compstate.FuncDef(eq=e, conds=conds_of_Idef)
+        file.add_definition(Idef)
+
+        e = "atan(sqrt(x ^ 2 + 2) ^ (-1)) = pi/2 - atan(sqrt(x^2+2))"
+        lemma01 = compstate.Lemma(lemma=parser.parse_expr(e))
+        file.add_lemma(lemma01)
+
+        e = "I(1) = INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))"
+        goal001 = compstate.Goal(parser.parse_expr(e))
+        file.add_goal(goal = goal001)
+        proof = goal001.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        calc.perform_rule(rules.FullSimplify())
+        e = "(LIM {u->oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))"
+        conds_of_goal002 = compstate.Conditions()
+        ce = parser.parse_expr("u>0")
+        conds_of_goal002.add_condition(str(ce), ce)
+        goal002 = compstate.Goal(parser.parse_expr(e))
+        file.add_goal(goal = goal002)
+        proof = goal002.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
+        calc.perform_rule(rules.LimIntExchange())
+        calc.perform_rule(rules.FullSimplify())
+
+        e = "(LIM {u->oo}. I(u)) = pi^2 / 12"
+        goal01 = compstate.Goal(goal=parser.parse_expr(e))
+        file.add_goal(goal=goal01)
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
+        calc.perform_rule(rules.LimIntExchange())
+        calc.perform_rule(rules.FullSimplify())
+        u = expr.Const(1)
+        v = parser.parse_expr("atan(x/sqrt(2+x*x))")
+        calc.perform_rule(rules.OnLocation(rules.IntegrationByParts(u=u,v=v), "1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("(D u. I(u)) = (1+u^2)^(-1) * (pi/4 - u * sqrt(1+2*u^2)^(-1)*atan(u/sqrt(1+2*u^2)))")
+        conds_of_goal02 = compstate.Conditions()
+        ce = parser.parse_expr("u>0")
+        conds_of_goal02.add_condition(str(ce), ce)
+        goal02 = compstate.Goal(e, conds=conds_of_goal02)
+        file.add_goal(goal02)
+        proof = goal02.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
+        calc.perform_rule(rules.DerivIntExchange())
+        calc.perform_rule(rules.FullSimplify())
+        new_expr = parser.parse_expr("(1+u^2)^(-1) * ((1+x^2)^(-1) - u^2 / (1+2*u^2+u^2*x^2))")
+        old_expr = parser.parse_expr("(x ^ 2 + 1) ^ (-1) * (u ^ 2 * (x ^ 2 + 2) + 1) ^ (-1)")
+        calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
+        calc.perform_rule(rules.FullSimplify())
+        new_expr = parser.parse_expr("u^(-2) * (x ^ 2 + (2 * u ^ 2 + 1)/u^2) ^ (-1)")
+        old_expr = parser.parse_expr("(u ^ 2 * x ^ 2 + 2 * u ^ 2 + 1) ^ (-1)")
+        calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
+        calc.perform_rule(rules.FullSimplify())
+        e = parser.parse_expr("y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))")
+        calc.perform_rule(rules.SubstitutionInverse(var_name='y', var_subst=e))
+        calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
+        old_expr = parser.parse_expr("(u ^ (-2) * (2 * u ^ 2 + 1) + (y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))) ^ 2) ^ (-1)")
+        new_expr = parser.parse_expr("(u^(-2) * (2*u^2+1))^(-1) * (1+y^2)^(-1)")
+        calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("(INT u:[1, oo]. D u. I(u)) = pi^2/12 - I(1)")
+        goal03 = compstate.Goal(e)
+        file.add_goal(goal03)
+        proof = goal03.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(eq=goal01.goal)))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("(INT u:[1,oo]. D u. I(u)) = - (pi^2 / 48) + I(1)")
+        goal04 = compstate.Goal(e)
+        file.add_goal(goal04)
+        proof_of_goal04 = goal04.proof_by_calculation()
+        calc = proof_of_goal04.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal02.goal)))
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(),'0'))
+        calc.perform_rule(rules.FullSimplify())
+        e = parser.parse_expr("1/x")
+
+        calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse(var_name='x', var_subst=e), '0.0'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnSubterm(rules.RewriteMulPower(0)))
+        old_expr = parser.parse_expr("5 * x ^ 2 + 4 * x ^ 4 + x ^ 6 + 2")
+        new_expr = parser.parse_expr("(1+x^2)^2*(2+x^2)")
+        calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
+        old_expr = parser.parse_expr("(x ^ 2 + 2) ^ (-1/2)")
+        new_expr = parser.parse_expr("sqrt(x^2+2) ^ (-1)")
+        calc.perform_rule(rules.OnLocation(rules.Equation(new_expr=new_expr, old_expr=old_expr), '0.0.0.1.0'))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=lemma01.lemma,conds=lemma01.conds)))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(eq = goal001.goal)))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(eq = goal002.goal)))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(eq = goal01.goal)))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal04.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("I(1) = 5*pi^2/96")
+        goal05 = compstate.Goal(e)
+        file.add_goal(goal05)
+        proof_of_goal05 = goal05.proof_by_rewrite_goal(begin=goal03)
+        calc = proof_of_goal05.begin
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal04.goal), '0'))
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("I(1)")))
+
+        for i in range(2,9):
+            self.assertTrue(file.content[i].is_finished())
+        # path = 'integral/examples/AhamedIntegral.json'
+        path = '../examples/AhamedIntegral.json'
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        # print()
+        # print(file)
 if __name__ == "__main__":
     unittest.main()

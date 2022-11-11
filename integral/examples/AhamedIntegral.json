@@ -1,0 +1,705 @@
+{
+    "content": [
+        {
+            "conds": [
+                {
+                    "cond": "u > 0",
+                    "latex_cond": "u > 0",
+                    "name": "u > 0",
+                    "type": "Condition"
+                }
+            ],
+            "eq": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x * x)) / ((1 + x * x) * sqrt(2 + x * x)))",
+            "latex_eq": "I{(u)} = \\int_{0}^{1} \\frac{\\arctan{(u \\sqrt{2 + x x})}}{(1 + x x) \\sqrt{2 + x x}} \\,dx",
+            "latex_lhs": "I{(u)}",
+            "type": "FuncDef"
+        },
+        {
+            "eq": "atan(sqrt(x ^ 2 + 2) ^ (-1)) = pi / 2 - atan(sqrt(x ^ 2 + 2))",
+            "latex_eq": "\\arctan{(\\sqrt{x ^ {2} + 2} ^ {-1})} = \\frac{\\pi}{2} - \\arctan{(\\sqrt{x ^ {2} + 2})}",
+            "type": "Lemma"
+        },
+        {
+            "finished": true,
+            "goal": "I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2)))",
+            "latex_goal": "I{(1)} = \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(\\sqrt{x ^ {2} + 2})} \\,dx",
+            "proof": {
+                "finished": true,
+                "goal": "I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2)))",
+                "latex_goal": "I{(1)} = \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(\\sqrt{x ^ {2} + 2})} \\,dx",
+                "lhs_calc": {
+                    "latex_start": "I{(1)}",
+                    "start": "I(1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(\\sqrt{x ^ {2} + 2})} \\,dx",
+                            "res": "INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))",
+                            "rule": {
+                                "func_def": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x * x)) / ((1 + x * x) * sqrt(2 + x * x)))",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(\\sqrt{x ^ {2} + 2})} \\,dx",
+                            "res": "INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(\\sqrt{x ^ {2} + 2})} \\,dx",
+                    "start": "INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
+            "latex_goal": "\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
+            "proof": {
+                "finished": true,
+                "goal": "(LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
+                "latex_goal": "\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
+                "lhs_calc": {
+                    "latex_start": "\\lim\\limits_{u\\to \\infty} I{(u)}",
+                    "start": "LIM {u -> oo}. I(u)",
+                    "steps": [
+                        {
+                            "latex_res": "\\lim\\limits_{u\\to \\infty} \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(u \\sqrt{x ^ {2} + 2})} \\,dx",
+                            "res": "LIM {u -> oo}. INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
+                            "rule": {
+                                "func_def": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x * x)) / ((1 + x * x) * sqrt(2 + x * x)))",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} \\lim\\limits_{u\\to \\infty} (\\,(x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(u \\sqrt{x ^ {2} + 2})}\\,) \\,dx",
+                            "res": "INT x:[0,1]. LIM {u -> oo}. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
+                            "rule": {
+                                "name": "LimIntExchange",
+                                "str": "LimIntExchange"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
+                            "res": "1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
+                    "start": "1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(LIM {u -> oo}. I(u)) = pi ^ 2 / 12",
+            "latex_goal": "\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}",
+            "proof": {
+                "finished": true,
+                "goal": "(LIM {u -> oo}. I(u)) = pi ^ 2 / 12",
+                "latex_goal": "\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}",
+                "lhs_calc": {
+                    "latex_start": "\\lim\\limits_{u\\to \\infty} I{(u)}",
+                    "start": "LIM {u -> oo}. I(u)",
+                    "steps": [
+                        {
+                            "latex_res": "\\lim\\limits_{u\\to \\infty} \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(u \\sqrt{x ^ {2} + 2})} \\,dx",
+                            "res": "LIM {u -> oo}. INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
+                            "rule": {
+                                "func_def": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x * x)) / ((1 + x * x) * sqrt(2 + x * x)))",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} \\lim\\limits_{u\\to \\infty} (\\,(x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(u \\sqrt{x ^ {2} + 2})}\\,) \\,dx",
+                            "res": "INT x:[0,1]. LIM {u -> oo}. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
+                            "rule": {
+                                "name": "LimIntExchange",
+                                "str": "LimIntExchange"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
+                            "res": "1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} \\pi ((\\left. \\arctan{(x (x ^ {2} + 2) ^ {-1/2})} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} 0 \\,dx))",
+                            "res": "1/2 * pi * (([atan(x * (x ^ 2 + 2) ^ (-1/2))]_x=0,1) - (INT x:[0,1]. 0))",
+                            "rule": {
+                                "latex_str": "integrate by parts \\(u \\to 1, v \\to \\arctan{(\\frac{x}{\\sqrt{2 + x x}})}\\) at 1",
+                                "loc": "1",
+                                "name": "IntegrationByParts",
+                                "str": "integrate by parts u -> 1, v -> atan(x / sqrt(2 + x * x)) at 1",
+                                "u": "1",
+                                "v": "atan(x / sqrt(2 + x * x))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{12} \\pi ^ {2}",
+                            "res": "1/12 * pi ^ 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi ^ {2}}{12}",
+                    "start": "pi ^ 2 / 12",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{1}{12} \\pi ^ {2}",
+                            "res": "1/12 * pi ^ 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "u > 0",
+                    "latex_cond": "u > 0",
+                    "name": "u > 0",
+                    "type": "Condition"
+                }
+            ],
+            "finished": true,
+            "goal": "(D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
+            "latex_goal": "\\frac{d}{du} I{(u)} = (1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\arctan{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})",
+            "proof": {
+                "conds": [
+                    {
+                        "cond": "u > 0",
+                        "latex_cond": "u > 0",
+                        "name": "u > 0",
+                        "type": "Condition"
+                    }
+                ],
+                "finished": true,
+                "goal": "(D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
+                "latex_goal": "\\frac{d}{du} I{(u)} = (1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\arctan{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})",
+                "lhs_calc": {
+                    "conds": [
+                        {
+                            "cond": "u > 0",
+                            "latex_cond": "u > 0",
+                            "name": "u > 0",
+                            "type": "Condition"
+                        }
+                    ],
+                    "latex_start": "\\frac{d}{du} I{(u)}",
+                    "start": "D u. I(u)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{d}{du} \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(u \\sqrt{x ^ {2} + 2})} \\,dx",
+                            "res": "D u. INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
+                            "rule": {
+                                "func_def": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x * x)) / ((1 + x * x) * sqrt(2 + x * x)))",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} \\frac{d}{du} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(u \\sqrt{x ^ {2} + 2})} \\,dx",
+                            "res": "INT x:[0,1]. D u. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
+                            "rule": {
+                                "name": "DerivIntExchange",
+                                "str": "exchange derivative and integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (u ^ {2} (x ^ {2} + 2) + 1) ^ {-1} \\,dx",
+                            "res": "INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (u ^ 2 * (x ^ 2 + 2) + 1) ^ (-1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} (1 + u ^ {2}) ^ {-1} ((1 + x ^ {2}) ^ {-1} - \\frac{u ^ {2}}{1 + 2 u ^ {2} + u ^ {2} x ^ {2}}) \\,dx",
+                            "res": "INT x:[0,1]. (1 + u ^ 2) ^ (-1) * ((1 + x ^ 2) ^ (-1) - u ^ 2 / (1 + 2 * u ^ 2 + u ^ 2 * x ^ 2))",
+                            "rule": {
+                                "name": "Equation",
+                                "new_expr": "(1 + u ^ 2) ^ (-1) * ((1 + x ^ 2) ^ (-1) - u ^ 2 / (1 + 2 * u ^ 2 + u ^ 2 * x ^ 2))",
+                                "old_expr": "(x ^ 2 + 1) ^ (-1) * (u ^ 2 * (x ^ 2 + 2) + 1) ^ (-1)",
+                                "str": "rewriting"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(u ^ {2} + 1) ^ {-1} (-u ^ {2} (\\int_{0}^{1} (u ^ {2} x ^ {2} + 2 u ^ {2} + 1) ^ {-1} \\,dx) + \\frac{1}{4} \\pi)",
+                            "res": "(u ^ 2 + 1) ^ (-1) * (-(u ^ 2 * (INT x:[0,1]. (u ^ 2 * x ^ 2 + 2 * u ^ 2 + 1) ^ (-1))) + 1/4 * pi)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(u ^ {2} + 1) ^ {-1} (-u ^ {2} (\\int_{0}^{1} u ^ {-2} (x ^ {2} + \\frac{2 u ^ {2} + 1}{u ^ {2}}) ^ {-1} \\,dx) + \\frac{1}{4} \\pi)",
+                            "res": "(u ^ 2 + 1) ^ (-1) * (-(u ^ 2 * (INT x:[0,1]. u ^ (-2) * (x ^ 2 + (2 * u ^ 2 + 1) / u ^ 2) ^ (-1))) + 1/4 * pi)",
+                            "rule": {
+                                "name": "Equation",
+                                "new_expr": "u ^ (-2) * (x ^ 2 + (2 * u ^ 2 + 1) / u ^ 2) ^ (-1)",
+                                "old_expr": "(u ^ 2 * x ^ 2 + 2 * u ^ 2 + 1) ^ (-1)",
+                                "str": "rewriting"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(u ^ {2} + 1) ^ {-1} (-(\\int_{0}^{1} (u ^ {-2} (2 u ^ {2} + 1) + x ^ {2}) ^ {-1} \\,dx) + \\frac{1}{4} \\pi)",
+                            "res": "(u ^ 2 + 1) ^ (-1) * (-(INT x:[0,1]. (u ^ (-2) * (2 * u ^ 2 + 1) + x ^ 2) ^ (-1)) + 1/4 * pi)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(u ^ {2} + 1) ^ {-1} (-(\\int_{0}^{\\left| u \\right| (2 u ^ {2} + 1) ^ {-1/2}} (u ^ {-2} (2 u ^ {2} + 1) + (y \\sqrt{u ^ {-2} (2 u ^ {2} + 1)}) ^ {2}) ^ {-1} (\\left| u \\right| ^ {-1} \\sqrt{2 u ^ {2} + 1}) \\,dy) + \\frac{1}{4} \\pi)",
+                            "res": "(u ^ 2 + 1) ^ (-1) * (-(INT y:[0,abs(u) * (2 * u ^ 2 + 1) ^ (-1/2)]. (u ^ (-2) * (2 * u ^ 2 + 1) + (y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))) ^ 2) ^ (-1) * (abs(u) ^ (-1) * sqrt(2 * u ^ 2 + 1))) + 1/4 * pi)",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(y \\sqrt{u ^ {-2} (2 u ^ {2} + 1)}\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))",
+                                "var_name": "y",
+                                "var_subst": "y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(u ^ {2} + 1) ^ {-1} (-(\\int_{0}^{u (2 u ^ {2} + 1) ^ {-1/2}} (u ^ {-2} (2 u ^ {2} + 1) + (y \\sqrt{u ^ {-2} (2 u ^ {2} + 1)}) ^ {2}) ^ {-1} (u ^ {-1} \\sqrt{2 u ^ {2} + 1}) \\,dy) + \\frac{1}{4} \\pi)",
+                            "res": "(u ^ 2 + 1) ^ (-1) * (-(INT y:[0,u * (2 * u ^ 2 + 1) ^ (-1/2)]. (u ^ (-2) * (2 * u ^ 2 + 1) + (y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))) ^ 2) ^ (-1) * (u ^ (-1) * sqrt(2 * u ^ 2 + 1))) + 1/4 * pi)",
+                            "rule": {
+                                "loc": "subterms",
+                                "name": "ElimAbs",
+                                "str": "eliminate absolute values on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(u ^ {2} + 1) ^ {-1} (-(\\int_{0}^{u (2 u ^ {2} + 1) ^ {-1/2}} (u ^ {-2} (2 u ^ {2} + 1)) ^ {-1} (1 + y ^ {2}) ^ {-1} (u ^ {-1} \\sqrt{2 u ^ {2} + 1}) \\,dy) + \\frac{1}{4} \\pi)",
+                            "res": "(u ^ 2 + 1) ^ (-1) * (-(INT y:[0,u * (2 * u ^ 2 + 1) ^ (-1/2)]. (u ^ (-2) * (2 * u ^ 2 + 1)) ^ (-1) * (1 + y ^ 2) ^ (-1) * (u ^ (-1) * sqrt(2 * u ^ 2 + 1))) + 1/4 * pi)",
+                            "rule": {
+                                "name": "Equation",
+                                "new_expr": "(u ^ (-2) * (2 * u ^ 2 + 1)) ^ (-1) * (1 + y ^ 2) ^ (-1)",
+                                "old_expr": "(u ^ (-2) * (2 * u ^ 2 + 1) + (y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))) ^ 2) ^ (-1)",
+                                "str": "rewriting"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(u ^ {2} + 1) ^ {-1} (-u (2 u ^ {2} + 1) ^ {-1/2} \\arctan{(u (2 u ^ {2} + 1) ^ {-1/2})} + \\frac{1}{4} \\pi)",
+                            "res": "(u ^ 2 + 1) ^ (-1) * (-(u * (2 * u ^ 2 + 1) ^ (-1/2) * atan(u * (2 * u ^ 2 + 1) ^ (-1/2))) + 1/4 * pi)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "conds": [
+                        {
+                            "cond": "u > 0",
+                            "latex_cond": "u > 0",
+                            "name": "u > 0",
+                            "type": "Condition"
+                        }
+                    ],
+                    "latex_start": "(1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\arctan{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})",
+                    "start": "(1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
+                    "steps": [
+                        {
+                            "latex_res": "(u ^ {2} + 1) ^ {-1} (-u (2 u ^ {2} + 1) ^ {-1/2} \\arctan{(u (2 u ^ {2} + 1) ^ {-1/2})} + \\frac{1}{4} \\pi)",
+                            "res": "(u ^ 2 + 1) ^ (-1) * (-(u * (2 * u ^ 2 + 1) ^ (-1/2) * atan(u * (2 * u ^ 2 + 1) ^ (-1/2))) + 1/4 * pi)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT u:[1,oo]. D u. I(u)) = pi ^ 2 / 12 - I(1)",
+            "latex_goal": "\\int_{1}^{\\infty} \\frac{d}{du} I{(u)} \\,du = \\frac{\\pi ^ {2}}{12} - I{(1)}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT u:[1,oo]. D u. I(u)) = pi ^ 2 / 12 - I(1)",
+                "latex_goal": "\\int_{1}^{\\infty} \\frac{d}{du} I{(u)} \\,du = \\frac{\\pi ^ {2}}{12} - I{(1)}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{1}^{\\infty} \\frac{d}{du} I{(u)} \\,du",
+                    "start": "INT u:[1,oo]. D u. I(u)",
+                    "steps": [
+                        {
+                            "latex_res": "(\\lim\\limits_{u\\to \\infty} I{(u)}) - I{(1)}",
+                            "res": "(LIM {u -> oo}. I(u)) - I(1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\pi ^ {2}}{12} - I{(1)}",
+                            "res": "pi ^ 2 / 12 - I(1)",
+                            "rule": {
+                                "eq": "(LIM {u -> oo}. I(u)) = pi ^ 2 / 12",
+                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}\\) on subterms",
+                                "loc": "subterms",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (LIM {u -> oo}. I(u)) = pi ^ 2 / 12 on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{12} \\pi ^ {2} - I{(1)}",
+                            "res": "1/12 * pi ^ 2 - I(1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi ^ {2}}{12} - I{(1)}",
+                    "start": "pi ^ 2 / 12 - I(1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{1}{12} \\pi ^ {2} - I{(1)}",
+                            "res": "1/12 * pi ^ 2 - I(1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT u:[1,oo]. D u. I(u)) = -(pi ^ 2 / 48) + I(1)",
+            "latex_goal": "\\int_{1}^{\\infty} \\frac{d}{du} I{(u)} \\,du = -\\frac{\\pi ^ {2}}{48} + I{(1)}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT u:[1,oo]. D u. I(u)) = -(pi ^ 2 / 48) + I(1)",
+                "latex_goal": "\\int_{1}^{\\infty} \\frac{d}{du} I{(u)} \\,du = -\\frac{\\pi ^ {2}}{48} + I{(1)}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{1}^{\\infty} \\frac{d}{du} I{(u)} \\,du",
+                    "start": "INT u:[1,oo]. D u. I(u)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{1}^{\\infty} (1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\arctan{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})}) \\,du",
+                            "res": "INT u:[1,oo]. (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
+                            "rule": {
+                                "eq": "(D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
+                                "latex_str": "apply equation \\(\\frac{d}{du} I{(u)} = (1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\arctan{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})\\) on subterms",
+                                "loc": "subterms",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2))) on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{1}^{\\infty} -u (u ^ {2} + 1) ^ {-1} (2 u ^ {2} + 1) ^ {-1/2} \\arctan{(u (2 u ^ {2} + 1) ^ {-1/2})} + \\frac{1}{4} \\pi (u ^ {2} + 1) ^ {-1} \\,du",
+                            "res": "INT u:[1,oo]. -(u * (u ^ 2 + 1) ^ (-1) * (2 * u ^ 2 + 1) ^ (-1/2) * atan(u * (2 * u ^ 2 + 1) ^ (-1/2))) + 1/4 * pi * (u ^ 2 + 1) ^ (-1)",
+                            "rule": {
+                                "loc": "0",
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{1}^{\\infty} u (u ^ {2} + 1) ^ {-1} (2 u ^ {2} + 1) ^ {-1/2} \\arctan{(u (2 u ^ {2} + 1) ^ {-1/2})} \\,du) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "-(INT u:[1,oo]. u * (u ^ 2 + 1) ^ (-1) * (2 * u ^ 2 + 1) ^ (-1/2) * atan(u * (2 * u ^ 2 + 1) ^ (-1/2))) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "--(\\int_{0}^{1} \\frac{1}{x} ((\\frac{1}{x}) ^ {2} + 1) ^ {-1} (2 (\\frac{1}{x}) ^ {2} + 1) ^ {-1/2} \\arctan{(\\frac{1}{x} (2 (\\frac{1}{x}) ^ {2} + 1) ^ {-1/2})} -x ^ {-2} \\,dx) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "--(INT x:[0,1]. 1 / x * ((1 / x) ^ 2 + 1) ^ (-1) * (2 * (1 / x) ^ 2 + 1) ^ (-1/2) * atan(1 / x * (2 * (1 / x) ^ 2 + 1) ^ (-1/2)) * -(x ^ (-2))) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(\\frac{1}{x}\\) at 0.0",
+                                "loc": "0.0",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for 1 / x at 0.0",
+                                "var_name": "x",
+                                "var_subst": "1 / x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1} x ^ {-3} (x ^ {-2} + 1) ^ {-1} (2 x ^ {-2} + 1) ^ {-1/2} \\arctan{(x ^ {-1} (2 x ^ {-2} + 1) ^ {-1/2})} \\,dx) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "-(INT x:[0,1]. x ^ (-3) * (x ^ (-2) + 1) ^ (-1) * (2 * x ^ (-2) + 1) ^ (-1/2) * atan(x ^ (-1) * (2 * x ^ (-2) + 1) ^ (-1/2))) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1} (5 x ^ {2} + 4 x ^ {4} + x ^ {6} + 2) ^ {-1/2} \\arctan{((x ^ {2} + 2) ^ {-1/2})} \\,dx) + (\\frac{1}{4} \\pi) ^ {2}",
+                            "res": "-(INT x:[0,1]. (5 * x ^ 2 + 4 * x ^ 4 + x ^ 6 + 2) ^ (-1/2) * atan((x ^ 2 + 2) ^ (-1/2))) + (1/4 * pi) ^ 2",
+                            "rule": {
+                                "loc": "subterms",
+                                "name": "RewriteMulPower",
+                                "str": "rewrite expression multiplied a power expression on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1} ((1 + x ^ {2}) ^ {2} (2 + x ^ {2})) ^ {-1/2} \\arctan{((x ^ {2} + 2) ^ {-1/2})} \\,dx) + (\\frac{1}{4} \\pi) ^ {2}",
+                            "res": "-(INT x:[0,1]. ((1 + x ^ 2) ^ 2 * (2 + x ^ 2)) ^ (-1/2) * atan((x ^ 2 + 2) ^ (-1/2))) + (1/4 * pi) ^ 2",
+                            "rule": {
+                                "name": "Equation",
+                                "new_expr": "(1 + x ^ 2) ^ 2 * (2 + x ^ 2)",
+                                "old_expr": "5 * x ^ 2 + 4 * x ^ 4 + x ^ 6 + 2",
+                                "str": "rewriting"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1} (x ^ {2} + 2) ^ {-1/2} \\left| x ^ {2} + 1 \\right| ^ {-1} \\arctan{((x ^ {2} + 2) ^ {-1/2})} \\,dx) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "-(INT x:[0,1]. (x ^ 2 + 2) ^ (-1/2) * abs(x ^ 2 + 1) ^ (-1) * atan((x ^ 2 + 2) ^ (-1/2))) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1} (x ^ {2} + 2) ^ {-1/2} (x ^ {2} + 1) ^ {-1} \\arctan{((x ^ {2} + 2) ^ {-1/2})} \\,dx) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "-(INT x:[0,1]. (x ^ 2 + 2) ^ (-1/2) * (x ^ 2 + 1) ^ (-1) * atan((x ^ 2 + 2) ^ (-1/2))) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "loc": "subterms",
+                                "name": "ElimAbs",
+                                "str": "eliminate absolute values on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1} (x ^ {2} + 2) ^ {-1/2} (x ^ {2} + 1) ^ {-1} \\arctan{(\\sqrt{x ^ {2} + 2} ^ {-1})} \\,dx) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "-(INT x:[0,1]. (x ^ 2 + 2) ^ (-1/2) * (x ^ 2 + 1) ^ (-1) * atan(sqrt(x ^ 2 + 2) ^ (-1))) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "loc": "0.0.0.1.0",
+                                "name": "Equation",
+                                "new_expr": "sqrt(x ^ 2 + 2) ^ (-1)",
+                                "old_expr": "(x ^ 2 + 2) ^ (-1/2)",
+                                "str": "rewriting at 0.0.0.1.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1} (x ^ {2} + 2) ^ {-1/2} (x ^ {2} + 1) ^ {-1} (\\frac{\\pi}{2} - \\arctan{(\\sqrt{x ^ {2} + 2})}) \\,dx) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "-(INT x:[0,1]. (x ^ 2 + 2) ^ (-1/2) * (x ^ 2 + 1) ^ (-1) * (pi / 2 - atan(sqrt(x ^ 2 + 2)))) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "loc": "subterms",
+                                "name": "ApplyLemma",
+                                "str": "apply lemma on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1} -(x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(\\sqrt{x ^ {2} + 2})} + \\frac{1}{2} \\pi (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "-(INT x:[0,1]. -((x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))) + 1/2 * pi * (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2)) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "loc": "subterms",
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(\\sqrt{x ^ {2} + 2})} \\,dx) + -\\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "(INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))) + -1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2)) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I{(1)} + -\\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "I(1) + -1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2)) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "eq": "I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2)))",
+                                "latex_str": "apply equation \\(I{(1)} = \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(\\sqrt{x ^ {2} + 2})} \\,dx\\) on subterms",
+                                "loc": "subterms",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))) on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I{(1)} + -\\frac{1}{2} \\pi (\\frac{1}{\\frac{1}{2} \\pi} (\\lim\\limits_{u\\to \\infty} I{(u)})) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "I(1) + -1/2 * pi * (1 / (1/2 * pi) * (LIM {u -> oo}. I(u))) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "eq": "(LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
+                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)\\) on subterms",
+                                "loc": "subterms",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2)) on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I{(1)} + -\\frac{1}{2} \\pi (\\frac{1}{\\frac{1}{2} \\pi} (\\frac{\\pi ^ {2}}{12})) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "I(1) + -1/2 * pi * (1 / (1/2 * pi) * (pi ^ 2 / 12)) + 1/16 * pi ^ 2",
+                            "rule": {
+                                "eq": "(LIM {u -> oo}. I(u)) = pi ^ 2 / 12",
+                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}\\) on subterms",
+                                "loc": "subterms",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (LIM {u -> oo}. I(u)) = pi ^ 2 / 12 on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{1}{48} \\pi ^ {2} + I{(1)}",
+                            "res": "-1/48 * pi ^ 2 + I(1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "-\\frac{\\pi ^ {2}}{48} + I{(1)}",
+                    "start": "-(pi ^ 2 / 48) + I(1)",
+                    "steps": [
+                        {
+                            "latex_res": "-\\frac{1}{48} \\pi ^ {2} + I{(1)}",
+                            "res": "-1/48 * pi ^ 2 + I(1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "I(1) = 5 * pi ^ 2 / 96",
+            "latex_goal": "I{(1)} = \\frac{5 \\pi ^ {2}}{96}",
+            "proof": {
+                "finished": true,
+                "goal": "I(1) = 5 * pi ^ 2 / 96",
+                "latex_goal": "I{(1)} = \\frac{5 \\pi ^ {2}}{96}",
+                "start": {
+                    "latex_start": "\\int_{1}^{\\infty} \\frac{d}{du} I{(u)} \\,du = \\frac{\\pi ^ {2}}{12} - I{(1)}",
+                    "start": "(INT u:[1,oo]. D u. I(u)) = pi ^ 2 / 12 - I(1)",
+                    "steps": [
+                        {
+                            "latex_res": "-\\frac{\\pi ^ {2}}{48} + I{(1)} = \\frac{\\pi ^ {2}}{12} - I{(1)}",
+                            "res": "-(pi ^ 2 / 48) + I(1) = pi ^ 2 / 12 - I(1)",
+                            "rule": {
+                                "eq": "(INT u:[1,oo]. D u. I(u)) = -(pi ^ 2 / 48) + I(1)",
+                                "latex_str": "apply equation \\(\\int_{1}^{\\infty} \\frac{d}{du} I{(u)} \\,du = -\\frac{\\pi ^ {2}}{48} + I{(1)}\\) at 0",
+                                "loc": "0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT u:[1,oo]. D u. I(u)) = -(pi ^ 2 / 48) + I(1) at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I{(1)} = \\frac{5 \\pi ^ {2}}{96}",
+                            "res": "I(1) = 5 * pi ^ 2 / 96",
+                            "rule": {
+                                "name": "SolveEquation",
+                                "str": "solve equation"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "Ahamed Integral"
+}
