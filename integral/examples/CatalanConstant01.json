@@ -23,7 +23,7 @@
                             "rule": {
                                 "loc": "0.0",
                                 "name": "ExpandPowerSeries",
-                                "str": "ExpandPowerSeries at 0.0"
+                                "str": "expand power series at 0.0"
                             },
                             "type": "CalculationStep"
                         },
@@ -52,7 +52,7 @@
                             "res": "SUM(n, 0, oo, INT x:[0,1]. x ^ (2 * n) * (-1) ^ n * (2 * n + 1) ^ (-1))",
                             "rule": {
                                 "name": "IntSumExchange",
-                                "str": "IntSumExchange"
+                                "str": "exchange integral and sum"
                             },
                             "type": "CalculationStep"
                         },

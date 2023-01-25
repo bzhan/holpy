@@ -359,7 +359,7 @@
                             "res": "exp(log(I(t))) = exp(-(t ^ 2) / 2 + log(sqrt(pi / 2)))",
                             "rule": {
                                 "name": "ExpEquation",
-                                "str": "ExpEquation"
+                                "str": "apply exponential to equation"
                             },
                             "type": "CalculationStep"
                         },

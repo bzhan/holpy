@@ -1754,9 +1754,7 @@ class DerivIntExchange(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        # if not e.is_deriv() or not e.body.is_integral():
-        #     raise AssertionError("DerivIntExchange: unexpected form of input")
-        if e.is_deriv and e.body.is_integral():
+        if e.is_deriv() and e.body.is_integral():
             v1, v2 = e.var, e.body.var
             return Integral(v2, e.body.lower, e.body.upper, Deriv(v1, e.body.body))
         elif e.is_deriv() and e.body.is_indefinite_integral():
@@ -1783,7 +1781,7 @@ class ExpandDefinition(Rule):
 
     def __init__(self, func_def: Expr):
         self.name = "ExpandDefinition"
-        self.func_def = func_def
+        self.func_def: Expr = func_def
 
     def __str__(self):
         return "expand definition"
@@ -1813,10 +1811,16 @@ class ExpandDefinition(Rule):
 
 
 class LimFunExchange(Rule):
-    '''Compound function limit rule
-        lim {x->a}. f(g(x)) = f(lim {x->a}. g(x))
-    '''
+    """Compound function limit rule
 
+        lim {x->a}. f(g(x)) = f(lim {x->a}. g(x))
+
+    This rule handles rewriting in both directions, and also the cases
+    where f is arithmetic operation.
+
+    More care need to be taken if f may not be a continuous function.
+
+    """
     def __init__(self):
         self.name = "LimFunExchange"
 
@@ -1830,31 +1834,35 @@ class LimFunExchange(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if not isinstance(e, Expr):
-            raise AssertionError("LimFunExchange: wrong form for e.")
-        if e.ty == LIMIT:
-
-            if e.body.ty == FUN:
+        if e.is_limit():
+            # Limit is outside
+            if e.body.is_fun():
+                # Function application case
                 func_name, args = e.body.func_name, e.body.args
                 return expr.Fun(func_name, *[Limit(e.var, e.lim, arg) for arg in args])
-            if e.body.ty == OP and e.body.op == '-' and len(e.body.args) == 1:
+            if e.body.is_uminus():
+                # Unary minus case
                 return -(Limit(e.var, e.lim, e.body.args[0]))
-            if e.body.ty == OP and e.body.op == '^':
-                if e.body.args[1].is_constant():
-                    return Limit(e.var, e.lim, e.body.args[0]) ^ e.body.args[1]
+            if e.body.is_power() and e.body.args[1].is_constant():
+                # Power case, where exponent is a constant
+                return Limit(e.var, e.lim, e.body.args[0]) ^ e.body.args[1]
         else:
-            if e.ty == OP and e.op == '-' and len(e.args) == 1 and e.args[0].ty == LIMIT:
+            # Function application is outside
+            if e.is_uminus() and e.args[0].is_limit():
+                # Unary minus case
                 return Limit(e.args[0].var, e.args[0].lim, -e.args[0].body)
-            return e;
+
+        # Default do nothing
+        return e
 
 
 class RootFractionReWrite(Rule):
-    '''
-       rewrite nth root fraction
-       a^(1/n) / b^(1/m)  -> (a^(x) / b^(y))^(1/z)
-       z = lcm(n,m), x = z/n, y = z/m
-    '''
+    """Rewrite nth root fraction
 
+        a^(1/n) / b^(1/m)  ->  (a^(x) / b^(y))^(1/z), where
+        z = lcm(n,m), x = z/n, y = z/m
+
+    """
     def __init__(self):
         self.name = "RootFractionReWrite"
 
@@ -1868,10 +1876,9 @@ class RootFractionReWrite(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if not isinstance(e, Expr):
-            raise AssertionError("RootFractionReWrite: wrong form for e.")
         if e.ty != OP and e.op != '/':
             return e
+
         a, b = e.args
         if a.ty == FUN and a.func_name == 'sqrt':
             n = 2
@@ -1907,13 +1914,13 @@ class RootFractionReWrite(Rule):
 
 
 class ExtractFromRoot(Rule):
-    '''
-           extract a expression u from root expression e
-           e = sqrt(x*x + x)
-           u = x and x<0
-           e -> -x * sqrt(x*x / x^2 + x/x^2)
-        '''
+    """Extract a expression u from root expression e
 
+        e = sqrt(x*x + x)
+        u = x and x<0
+        e -> -x * sqrt(x*x / x^2 + x/x^2)
+
+    """
     # sign : positive is 1, negative is -1
     def __init__(self, u: Expr):
         self.name = "ExtractFromRoot"
@@ -1940,6 +1947,14 @@ class ExtractFromRoot(Rule):
 
 
 class RewriteExp(Rule):
+    """Rewrite exponential term.
+
+    Current rules include:
+
+    * exp(a + b) -> exp(a) * exp(b)
+    * exp(a - b) -> exp(a) * exp(-b)
+
+    """
     def __init__(self):
         self.name = "RewriteExp"
 
@@ -1957,9 +1972,11 @@ class RewriteExp(Rule):
             return e
         b = e.args[0]
         if b.ty == OP and b.op == '+':
+            # exp(a + b) -> exp(a) * exp(b)
             a1, a2 = b.args
             return Fun('exp', a1) * Fun('exp', a2)
         elif b.ty == OP and b.is_minus():
+            # exp(a - b) -> exp(a) * exp(-b)
             a1, a2 = b.args
             return Fun('exp', a1) * Fun('exp', -a2)
         else:
@@ -1967,13 +1984,16 @@ class RewriteExp(Rule):
 
 
 class LimIntExchange(Rule):
-    '''LIM INT f(x) = LIM INT f(x)'''
-
+    """Exchange limit and integral.
+    
+        LIM INT f(x) = LIM INT f(x)
+    
+    """
     def __init__(self):
         self.name = "LimIntExchange"
 
     def __str__(self):
-        return "LimIntExchange"
+        return "exchange limit and integral"
 
     def export(self):
         return {
@@ -1982,17 +2002,21 @@ class LimIntExchange(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if e.ty == LIMIT and e.body.is_integral():
+        if e.is_limit() and e.body.is_integral():
             return Integral(e.body.var, e.body.lower, e.body.upper, Limit(e.var, e.lim, e.body.body))
         else:
             raise NotImplementedError
 
 
 class RewriteFactorial(Rule):
-    '''
-    1. (m+1) * m! = (m+1)!
-    '''
+    """Rewrite terms involving a factorial.
 
+    Current rules include:
+    
+    1. (m+1) * m! = (m+1)!
+    2. m * (m-1)! = m!
+
+    """
     def __init__(self):
         self.name = "RewriteFactorial"
 
@@ -2052,29 +2076,6 @@ class SimplifyInfinity(Rule):
             return e
 
 
-class RewriteDifferential(Rule):
-    '''
-        1. DIFF. f(t) / DIFF. t = D t. f(t)
-    '''
-
-    def __init__(self):
-        self.name = "RewriteFactorial"
-
-    def __str__(self):
-        return "RewriteFactorial"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, conds=None) -> Expr:
-        if e.is_divides() and e.args[0].is_diff() and e.args[1].is_diff() and e.args[1].body.is_var():
-            return Deriv(e.args[1].body.name, e.args[0].body)
-        raise NotImplementedError
-
-
 class IntegralEquation(Rule):
     '''
         Integrate both side of an equation using some variable
@@ -2116,11 +2117,12 @@ class IntegralEquation(Rule):
 
 
 class LimEquation(Rule):
-    '''
-        a = b
-        ->  LIM {var->lim}. a = LIM {var->lim}. b
-    '''
+    """Apply limit to both sides of an equality.
 
+        a = b
+    ->  LIM {var->lim}. a = LIM {var->lim}. b
+
+    """
     def __init__(self, var, lim):
         self.name = "LimEquation"
         self.var = var
@@ -2136,7 +2138,7 @@ class LimEquation(Rule):
         return Op('=', a, b)
 
     def __str__(self):
-        return "LimEquation"
+        return "apply limit to equation"
 
     def export(self):
         return {
@@ -2146,11 +2148,13 @@ class LimEquation(Rule):
 
 
 class IntegralSimplify(Rule):
-    '''
+    """Simplify integral for even and odd functions.
+
+    Current rules are:
+
     1. INT x:[-a,a]. even_function(x) = 2 * INT x:[0,a]. even_function(x)
 
-    '''
-
+    """
     def __init__(self):
         self.name = "IntegralSimplify"
 
@@ -2158,12 +2162,13 @@ class IntegralSimplify(Rule):
         if not isinstance(e, expr.Integral):
             return e
         if (e.lower * -1).normalize() == (e.upper).normalize() and e.body.is_even_function(e.var):
+            # Interval is [-a, a], body is even function
             return 2 * Integral(e.var, Const(0), e.upper, e.body)
         else:
             return e
 
     def __str__(self):
-        return "IntegralSimplify"
+        return "simplify even and odd integrals"
 
     def export(self):
         return {
@@ -2173,11 +2178,12 @@ class IntegralSimplify(Rule):
 
 
 class ExpEquation(Rule):
+    """Apply exponential to both sides of an equation."""
     def __init__(self):
         self.name = "ExpEquation"
 
     def __str__(self):
-        return "ExpEquation"
+        return "apply exponential to equation"
 
     def eval(self, e: Expr, conds=None):
         r = FullSimplify()
@@ -2195,16 +2201,22 @@ class ExpEquation(Rule):
 
 
 class RewriteLog(Rule):
-    "log(ab) = log(a) + log(b)"
+    """Rewriting rules for logarithms.
+    
+    Current rules are:
+    
+    1. log(a * b) = log(a) + log(b)
+    2. log(a / b) = log(a) - log(b)
 
+    """
     def __init__(self):
         self.name = "RewriteLog"
 
     def __str__(self):
-        return "RewriteLog"
+        return "rewrite logarithm"
 
     def eval(self, e: Expr, conds=None):
-        # patter match first : log(a*b) then rewrite as log(a) + log(b)
+        # pattern match first : log(a*b) then rewrite as log(a) + log(b)
         a = Symbol('a', [VAR, CONST, OP, FUN])
         b = Symbol('b', [VAR, CONST, OP, FUN])
         rules = [
@@ -2339,7 +2351,7 @@ class ExpandSeries(Rule):
         self.var = var
 
     def __str__(self):
-        return "ExpandPowerSeries"
+        return "expand power series"
 
     def eval(self, e: Expr, conds=None):
         # patter match first : log(a*b) then rewrite as log(a) + log(b)
@@ -2382,7 +2394,7 @@ class IntSumExchange(Rule):
         self.name = "IntSumExchange"
 
     def __str__(self):
-        return "IntSumExchange"
+        return "exchange integral and sum"
 
     def eval(self, e: Expr, conds=None):
         if e.ty == INTEGRAL and e.body.ty == SUMMATION:
@@ -2431,7 +2443,7 @@ class RewriteLimit(Rule):
         self.name = "RewriteLimit"
 
     def __str__(self):
-        return "RewriteLimit"
+        return "rewrite limit"
 
     def export(self):
         return {

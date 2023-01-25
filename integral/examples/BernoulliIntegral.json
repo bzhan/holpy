@@ -75,7 +75,7 @@
                             "rule": {
                                 "loc": "subterms",
                                 "name": "ExpandPowerSeries",
-                                "str": "ExpandPowerSeries on subterms"
+                                "str": "expand power series on subterms"
                             },
                             "type": "CalculationStep"
                         },
@@ -84,7 +84,7 @@
                             "res": "SUM(k, 0, oo, INT x:[0,1]. log(x ^ (c * x ^ a)) ^ k / factorial(k))",
                             "rule": {
                                 "name": "IntSumExchange",
-                                "str": "IntSumExchange"
+                                "str": "exchange integral and sum"
                             },
                             "type": "CalculationStep"
                         },

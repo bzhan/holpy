@@ -80,7 +80,7 @@
                             "rule": {
                                 "loc": "subterms",
                                 "name": "ExpandPowerSeries",
-                                "str": "ExpandPowerSeries on subterms"
+                                "str": "expand power series on subterms"
                             },
                             "type": "CalculationStep"
                         },
@@ -324,7 +324,7 @@
                             "rule": {
                                 "loc": "subterms",
                                 "name": "IntSumExchange",
-                                "str": "IntSumExchange on subterms"
+                                "str": "exchange integral and sum on subterms"
                             },
                             "type": "CalculationStep"
                         },

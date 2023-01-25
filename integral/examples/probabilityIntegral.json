@@ -96,7 +96,7 @@
                             "rule": {
                                 "loc": "1",
                                 "name": "RewriteLimit",
-                                "str": "RewriteLimit at 1"
+                                "str": "rewrite limit at 1"
                             },
                             "type": "CalculationStep"
                         },
@@ -529,7 +529,7 @@
                             "rule": {
                                 "loc": "1.0.0.1",
                                 "name": "LimIntExchange",
-                                "str": "LimIntExchange at 1.0.0.1"
+                                "str": "exchange limit and integral at 1.0.0.1"
                             },
                             "type": "CalculationStep"
                         },

@@ -1,7 +1,7 @@
 """Expressions."""
 import copy
 import functools, operator
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, TypeGuard
 from sympy import solveset, re, Interval, Eq, EmptySet
 from sympy.simplify.fu import *
 from sympy.parsing import sympy_parser
@@ -226,9 +226,9 @@ class Expr:
     def size(self):
         if self.ty in (VAR, CONST, SYMBOL, INF):
             return 1
-        elif self.ty in (OP, FUN):
+        elif self.is_op() or self.is_fun():
             return 1 + sum(arg.size() for arg in self.args)
-        elif self.ty == DERIV:
+        elif self.is_deriv():
             return 1 + self.body.size()
         elif self.ty in (INTEGRAL, EVAL_AT):
             return 1 + self.lower.size() + self.upper.size() + self.body.size()
@@ -252,13 +252,13 @@ class Expr:
     def is_const(self) -> bool:
         return self.ty == CONST
 
-    def is_op(self) -> bool:
+    def is_op(self) -> TypeGuard["Op"]:
         return self.ty == OP
 
-    def is_fun(self) -> bool:
+    def is_fun(self) -> TypeGuard["Fun"]:
         return self.ty == FUN
 
-    def is_deriv(self) -> bool:
+    def is_deriv(self) -> TypeGuard["Deriv"]:
         return self.ty == DERIV
 
     def is_skolem_func(self) -> bool:
@@ -2195,14 +2195,15 @@ class Differential(Expr):
 
 
 class SkolemFunc(Expr):
-
+    """Skolem variable or function"""
     def __init__(self, name, *dep_vars):
         self.ty = SKOLEMFUNC
         self.name = name
         self.dependent_vars = set(dep_vars)
 
     def __eq__(self, other):
-        return self.ty == other.ty and self.dependent_vars == other.dependent_vars and self.name == other.name
+        return isinstance(other, SkolemFunc) and \
+            self.dependent_vars == other.dependent_vars and self.name == other.name
 
     def __str__(self):
         if self.dependent_vars == set():
@@ -2214,13 +2215,14 @@ class SkolemFunc(Expr):
             return "SKOLEM_FUNC(" + self.name + "(" + ", ".join(res) + "))"
 
     def find_free(var: str, ex: Expr):
+        """Find set of free variables in ex except var."""
         res = set(ex.findVar())
         if Var(var) in res:
             res.remove(Var(var))
         return res
 
     def __hash__(self):
-        return hash((self.name, *list(self.dependent_vars), self.ty))
+        return hash((self.name, tuple(self.dependent_vars), self.ty))
 
 
 NEG_INF = Inf(Decimal('-inf'))
@@ -2308,8 +2310,8 @@ class Deriv(Expr):
     def __init__(self, var: str, body: Expr):
         assert isinstance(var, str) and isinstance(body, Expr)
         self.ty = DERIV
-        self.var = var
-        self.body = body
+        self.var: str = var
+        self.body: Expr = body
 
     def __hash__(self):
         return hash((DERIV, self.var, self.body))
@@ -2343,9 +2345,9 @@ class IndefiniteIntegral(Expr):
         return "INT %s. %s" % (self.var, str(self.body))
 
     def __repr__(self):
-        return "Indefinite integral(%s,%s)" % (self.var, repr(self.body))
+        return "IndefiniteIntegral(%s,%s)" % (self.var, repr(self.body))
 
-    def alpha_convert(self, new_name):
+    def alpha_convert(self, new_name: str):
         """Change the variable of integration to new_name."""
         assert isinstance(new_name, str), "alpha_convert"
         return IndefiniteIntegral(new_name, self.body.subst(self.var, Var(new_name)))
@@ -2431,18 +2433,19 @@ class Symbol(Expr):
 
 
 class Summation(Expr):
+    """Summation of integers over some range."""
     def __init__(self, index_var: str, lower: Expr, upper: Expr, body: Expr):
         self.ty = SUMMATION
-        self.index_var = index_var
-        self.lower = lower
-        self.upper = upper
-        self.body = body
+        self.index_var: str = index_var
+        self.lower: Expr = lower
+        self.upper: Expr = upper
+        self.body: Expr = body
 
     def __str__(self):
         return "SUM(" + self.index_var + ", " + str(self.lower) + ", " + str(self.upper) + ", " + str(self.body) + ")"
 
     def __eq__(self, other):
-        return self.ty == other.ty and self.index_var == other.index_var and \
+        return isinstance(other, Summation) and self.index_var == other.index_var and \
                self.lower == other.lower and \
                self.upper == other.upper and \
                self.body == other.body
@@ -2450,9 +2453,11 @@ class Summation(Expr):
     def __hash__(self):
         return hash((SUMMATION, self.index_var, self.ty, self.lower, self.upper, self.body))
 
-    def alpha_convert(self, new_var):
+    def alpha_convert(self, new_var: str):
+        """Rename the bound variable of a summation."""
         assert isinstance(new_var, str), "alpha_convert"
-        return Summation(new_var, self.lower, self.upper, self.body.subst(self.var, Var(new_var)))
+        return Summation(new_var, self.lower, self.upper, self.body.subst(self.index_var, Var(new_var)))
+
 
 trigFun = {
     "TR0": (TR0, "1 to sin^2 + cos^2"),

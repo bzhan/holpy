@@ -91,7 +91,7 @@
                             "res": "INT x:[0,1]. LIM {u -> oo}. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
                             "rule": {
                                 "name": "LimIntExchange",
-                                "str": "LimIntExchange"
+                                "str": "exchange limit and integral"
                             },
                             "type": "CalculationStep"
                         },
@@ -145,7 +145,7 @@
                             "res": "INT x:[0,1]. LIM {u -> oo}. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
                             "rule": {
                                 "name": "LimIntExchange",
-                                "str": "LimIntExchange"
+                                "str": "exchange limit and integral"
                             },
                             "type": "CalculationStep"
                         },

@@ -372,7 +372,7 @@
                             "rule": {
                                 "loc": "0.1",
                                 "name": "ExpandPowerSeries",
-                                "str": "ExpandPowerSeries at 0.1"
+                                "str": "expand power series at 0.1"
                             },
                             "type": "CalculationStep"
                         },
@@ -392,7 +392,7 @@
                             "res": "SUM(n, 0, oo, INT x:[1,oo]. (-1) ^ n * (1 / x ^ 2) ^ n * log(x) * x ^ (-2))",
                             "rule": {
                                 "name": "IntSumExchange",
-                                "str": "IntSumExchange"
+                                "str": "exchange integral and sum"
                             },
                             "type": "CalculationStep"
                         },

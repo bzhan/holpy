@@ -56,7 +56,7 @@
                             "res": "SUM(k, 0, oo, INT x:[0,1]. (-1) ^ k * x ^ (k + 1) / (k + 1) * (1 / x))",
                             "rule": {
                                 "name": "IntSumExchange",
-                                "str": "IntSumExchange"
+                                "str": "exchange integral and sum"
                             },
                             "type": "CalculationStep"
                         },
