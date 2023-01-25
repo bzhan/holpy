@@ -1,9 +1,5 @@
 # Author: Bohua Zhan
 
-from typing import Dict
-
-from kernel.type import Type
-from kernel.term import Term
 from kernel.thm import Thm
 from kernel.proofterm import ProofTerm
 

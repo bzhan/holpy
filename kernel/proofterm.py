@@ -7,7 +7,6 @@ from kernel.term import Term, Var, Inst
 from kernel.type import TyInst
 from kernel.thm import Thm, primitive_deriv
 from kernel.proof import Proof, ItemID
-from kernel.report import ProofReport
 from kernel import theory
 from util import typecheck
 

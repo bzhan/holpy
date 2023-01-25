@@ -1184,8 +1184,8 @@ class IntegralTest(unittest.TestCase):
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
-    def testAhamedIntegral(self):
-        file = compstate.CompFile("Ahamed Integral")
+    def testAhmedIntegral(self):
+        file = compstate.CompFile("Ahmed Integral")
 
         conds_of_Idef = compstate.Conditions()
         e = parser.parse_expr("u>0")
@@ -1316,11 +1316,10 @@ class IntegralTest(unittest.TestCase):
 
         for i in range(2,9):
             self.assertTrue(file.content[i].is_finished())
-        # path = 'integral/examples/AhamedIntegral.json'
-        path = '../examples/AhamedIntegral.json'
+        path = 'integral/examples/AhmedIntegral.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
-        # print()
-        # print(file)
+
+
 if __name__ == "__main__":
     unittest.main()

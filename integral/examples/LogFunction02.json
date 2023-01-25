@@ -223,7 +223,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-(\\int_{0}^{1} t \\log{(t)} sqrt^{-1}(1 - t ^ {2}) (-t ^ {2} + 1) ^ {-1/2} \\,dt)",
+                            "latex_res": "-(\\int_{0}^{1} t \\log{(t)} \\sqrt{1 - t ^ {2}} ^ {-1} (-t ^ {2} + 1) ^ {-1/2} \\,dt)",
                             "res": "-(INT t:[0,1]. t * log(t) * sqrt(1 - t ^ 2) ^ (-1) * (-(t ^ 2) + 1) ^ (-1/2))",
                             "rule": {
                                 "loc": "subterms",

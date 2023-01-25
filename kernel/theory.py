@@ -8,7 +8,6 @@ from kernel.type import Type, TVar, TFun, BoolType, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofStateException
-from kernel.macro import Macro
 from kernel import extension
 from kernel.report import ExtensionReport
 
@@ -572,7 +571,7 @@ It is added to the theory only when a theory file contains an
 extension adding it by name.
 
 """
-global_macros: Dict[str, Macro] = dict()
+global_macros = dict()  # type Dict[str, Macro]
 
 def has_macro(name: str) -> bool:
     """Return whether a macro with the given name exists and is available
@@ -585,7 +584,7 @@ def has_macro(name: str) -> bool:
     else:
         return False
 
-def get_macro(name: str) -> Macro:
+def get_macro(name: str):  # return Macro
     """Obtain the macro with the given name."""
     assert has_macro(name), "get_macro: %s is not available." % name
     return global_macros[name]
