@@ -245,7 +245,7 @@
                             "res": "(LIM {t -> 0 }. 1/2 * t ^ 2 + log(I(t))) = (LIM {t -> 0 }. SKOLEM_CONST(C))",
                             "rule": {
                                 "name": "LimitEquation",
-                                "str": "LimitEquation"
+                                "str": "apply limit to equation"
                             },
                             "type": "CalculationStep"
                         },

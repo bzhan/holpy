@@ -462,7 +462,7 @@
                             "res": "(LIM {b -> oo}. I(b)) = (LIM {b -> oo}. -atan(b) + I(0))",
                             "rule": {
                                 "name": "LimitEquation",
-                                "str": "LimitEquation"
+                                "str": "apply limit to equation"
                             },
                             "type": "CalculationStep"
                         },

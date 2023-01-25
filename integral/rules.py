@@ -1489,7 +1489,6 @@ class ElimInfInterval(Rule):
     provided.
 
     """
-
     def __init__(self, a=Const(0), new_var='t'):
         self.name = "ElimInfInterval"
         self.a = a
@@ -2116,37 +2115,6 @@ class IntegralEquation(Rule):
         }
 
 
-class LimEquation(Rule):
-    """Apply limit to both sides of an equality.
-
-        a = b
-    ->  LIM {var->lim}. a = LIM {var->lim}. b
-
-    """
-    def __init__(self, var, lim):
-        self.name = "LimEquation"
-        self.var = var
-        self.lim = lim
-
-    def eval(self, e: Expr, conds=None):
-        var, lim = self.var, self.lim
-        a = Limit(var, lim, e.lhs)
-        b = Limit(var, lim, e.rhs)
-        r = FullSimplify()
-        a = r.eval(a)
-        b = r.eval(b)
-        return Op('=', a, b)
-
-    def __str__(self):
-        return "apply limit to equation"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-
 class IntegralSimplify(Rule):
     """Simplify integral for even and odd functions.
 
@@ -2242,6 +2210,18 @@ class RewriteLog(Rule):
 
 
 class RewriteSkolemConst(Rule):
+    """Rewrite or combine Skolem terms.
+    
+    Two cases are handled:
+
+    1. Input is an equality A = B, where both A and B may contain
+       Skolem constants, combine these into a single Skolem constant
+       on the right side. The dependencies are combined.
+       
+    2. Input is a Skolem constant, rename it into another Skolem constant
+       with the same dependencies.
+
+    """
     def __init__(self, new_expr: Expr):
         self.name = "RewriteSkolemConst"
         self.new_expr = new_expr
@@ -2251,6 +2231,7 @@ class RewriteSkolemConst(Rule):
 
     def eval(self, e: Expr, conds=None):
         if e.is_equals():
+            # Case of equation A = B.
             res = set()
             res_lhs, res_rhs = list(), list()
 
@@ -2273,6 +2254,7 @@ class RewriteSkolemConst(Rule):
             else:
                 return e
         elif e.is_skolem_term():
+            # Case of single Skolem term
             if self.new_expr.all_dependencies() == e.all_dependencies():
                 return self.new_expr
             else:
@@ -2288,13 +2270,18 @@ class RewriteSkolemConst(Rule):
 
 
 class LimitEquation(Rule):
+    """Apply limit to both sides of the equation.
+    
+        A = B -> LIM {x -> a}. A = LIM {x -> a}. B
+
+    """
     def __init__(self, var: str, lim: Expr):
         self.name = "LimitEquation"
         self.var = var
         self.lim = lim
 
     def __str__(self):
-        return "LimitEquation"
+        return "apply limit to equation"
 
     def eval(self, e: Expr, conds=None):
         v, lim = self.var, self.lim
@@ -2309,42 +2296,13 @@ class LimitEquation(Rule):
         }
 
 
-class FoldRewrite(Rule):
-    def __init__(self):
-        self.name = "FoldRewrite"
-
-    def __str__(self):
-        return "FoldRewrite"
-
-    def eval(self, e: Expr, conds=None):
-        a = Symbol('a', [VAR, CONST, OP, FUN])
-        b = Symbol('b', [VAR, CONST, OP, FUN])
-        rules = [
-            (log(a * b), log(a) + log(b)),
-            (log(a / b), log(a) - log(b))
-        ]
-        for pat, pat_res in rules:
-            pos = expr.find_pattern(e, pat)
-            if len(pos) >= 1:
-                mapped_expr, loc, mapping = pos[0]
-                if mapped_expr == e:
-                    return pat_res.inst_pat(mapping)
-                else:
-                    return OnLocation(self, loc).eval(e);
-        return e
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-
 class ExpandSeries(Rule):
-    '''
-    A power series expansion, provided it exists
-    '''
+    """Power series expansion.
 
+    Currently include rules for exp(x), sin(x), atan(x), 1/(1+a),
+    log(1+a) and log(1-a).
+
+    """
     def __init__(self, index_var: str = 'n', var: str = 'x'):
         self.name = "ExpandPowerSeries"
         self.index_var = index_var
@@ -2354,7 +2312,6 @@ class ExpandSeries(Rule):
         return "expand power series"
 
     def eval(self, e: Expr, conds=None):
-        # patter match first : log(a*b) then rewrite as log(a) + log(b)
         a = Symbol('a', [VAR, CONST, OP, FUN])
         v = Var(self.var)
         idx = Var(self.index_var)
@@ -2388,7 +2345,7 @@ class ExpandSeries(Rule):
 
 
 class IntSumExchange(Rule):
-    ''' interchange the integral and summation'''
+    """Exchange integral and summation"""
 
     def __init__(self):
         self.name = "IntSumExchange"
@@ -2397,7 +2354,7 @@ class IntSumExchange(Rule):
         return "exchange integral and sum"
 
     def eval(self, e: Expr, conds=None):
-        if e.ty == INTEGRAL and e.body.ty == SUMMATION:
+        if e.is_integral() and e.body.is_summation():
             s = e.body
             return Summation(s.index_var, s.lower, s.upper, Integral(e.var, e.lower, e.upper, e.body.body))
         else:
@@ -2411,9 +2368,8 @@ class IntSumExchange(Rule):
 
 
 class VarSubsOfEquation(Rule):
-    '''
-        if e is a equation, we can replace some var with any expression
-    '''
+    """Substitute variable for any expression in an equation.
+    """
 
     def __init__(self, var: str, var_subs: Expr):
         self.name = "VarSubsOfEquation"
@@ -2421,7 +2377,7 @@ class VarSubsOfEquation(Rule):
         self.var_subs = var_subs
 
     def __str__(self):
-        return "VarSubsOfEquation: substitute " + str(self.var) + " for " + str(self.var_subs)
+        return "substitute " + str(self.var) + " for " + str(self.var_subs) + " in equation"
 
     def export(self):
         return {
@@ -2437,8 +2393,12 @@ class VarSubsOfEquation(Rule):
 
 
 class RewriteLimit(Rule):
-    ''' LIM {x->a}. f(x) = f(a)'''
+    """LIM {x->a}. f(x) = f(a)
+    
+    Note the term a may be infinity. This can be used to convert
+    limit to improper integral.
 
+    """
     def __init__(self):
         self.name = "RewriteLimit"
 
@@ -2493,6 +2453,7 @@ class RewritePower(Rule):
                     if rule.eval(res) == rule.eval(self.new_expr):
                         return self.new_expr
         return e
+
 
 class MergeSummation(Rule):
     "SUM(u,0,oo, body1) + SUM(k,0,oo,body2) = SUM(u, 0, oo, body1+body2)"

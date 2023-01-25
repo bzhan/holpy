@@ -258,7 +258,7 @@
                             "res": "I(0) = log(0 + 1) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "VarSubsOfEquation",
-                                "str": "VarSubsOfEquation: substitute a for 0"
+                                "str": "substitute a for 0 in equation"
                             },
                             "type": "CalculationStep"
                         },

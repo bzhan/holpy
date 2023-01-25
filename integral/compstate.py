@@ -744,7 +744,7 @@ def parse_rule(item) -> Rule:
         left_skolem_name = item['left_skolem_name'] if 'left_skolem_name' in item else None
         right_skolem_name = item['right_skolem_name'] if 'right_skolem_name' in item else None
         return rules.IntegralEquation(var=var,left_skolem_name=left_skolem_name,right_skolem_name=right_skolem_name)
-    elif item['name'] == 'LimEquation':
+    elif item['name'] == 'LimitEquation':
         return rules.LimitEquation()
     elif item['name'] == 'CommonIndefiniteIntegral':
         return rules.CommonIndefiniteIntegral(const_name = 'C')

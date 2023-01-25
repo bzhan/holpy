@@ -452,6 +452,7 @@ class Expr:
             return False
 
     def all_dependencies(self):
+        """Return the set of all dependent variables in Skolem terms."""
         if self.ty == SKOLEMFUNC:
             return self.dependent_vars
         elif self.is_constant() or self.ty == VAR:
@@ -463,6 +464,9 @@ class Expr:
             return res
         else:
             raise NotImplementedError
+        
+    def is_summation(self):
+        return self.ty == SUMMATION
 
     @property
     def lhs(self) -> Expr:
@@ -1657,20 +1661,23 @@ def collect_spec_expr(expr, symb):
     return c
 
 
-def decompose_expr_add(e):
-    '''
-    a + b - c -> [a, b, -c]
-    '''
-    res = []
+def decompose_expr_add(e: Expr) -> List[Expr]:
+    """Decompose expression into a sum of expressions.
 
+    Recognize +, - (unary and binary).
+
+    Example:
+        a + b - c -> [a, b, -c]
+
+    """
     def f(e):
         tmp = []
-        if e.ty == OP and e.op == '+':
+        if e.is_plus():
             tmp.extend(f(e.args[0]))
             tmp.extend(f(e.args[1]))
         elif e.is_uminus():
             tmp.extend([-item for item in f(e.args[0])])
-        elif e.ty == OP and e.op == '-' and len(e.args) == 2:
+        elif e.is_minus():
             tmp.extend(f(e.args[0]))
             tmp.extend([-item for item in f(e.args[1])])
         else:
