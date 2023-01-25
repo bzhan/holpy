@@ -51,7 +51,7 @@
                     "start": "D a. I(a)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{d}{da} \\int_{0}^{1} log^{-1}(x) (x ^ {a} - 1) \\,dx",
+                            "latex_res": "\\frac{d}{da} \\int_{0}^{1} \\log^{-1}(x) (x ^ {a} - 1) \\,dx",
                             "res": "D a. INT x:[0,1]. log(x) ^ (-1) * (x ^ a - 1)",
                             "rule": {
                                 "func_def": "I(a) = (INT x:[0,1]. (x ^ a - 1) / log(x))",
@@ -62,7 +62,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1} \\frac{d}{da} log^{-1}(x) (x ^ {a} - 1) \\,dx",
+                            "latex_res": "\\int_{0}^{1} \\frac{d}{da} \\log^{-1}(x) (x ^ {a} - 1) \\,dx",
                             "res": "INT x:[0,1]. D a. log(x) ^ (-1) * (x ^ a - 1)",
                             "rule": {
                                 "name": "DerivIntExchange",

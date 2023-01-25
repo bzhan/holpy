@@ -2,7 +2,7 @@
     "content": [
         {
             "eq": "f(m,n) = (INT x:[0,1]. x ^ m * log(x) ^ n)",
-            "latex_eq": "f(m,n) = \\int_{0}^{1} x ^ {m} log^{n}(x) \\,dx",
+            "latex_eq": "f(m,n) = \\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx",
             "latex_lhs": "f(m,n)",
             "type": "FuncDef"
         },
@@ -14,17 +14,17 @@
         {
             "finished": true,
             "goal": "f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k)",
-            "latex_goal": "f(a k,k) = \\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx",
+            "latex_goal": "f(a k,k) = \\int_{0}^{1} x ^ {a k} \\log^{k}(x) \\,dx",
             "proof": {
                 "finished": true,
                 "goal": "f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k)",
-                "latex_goal": "f(a k,k) = \\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx",
+                "latex_goal": "f(a k,k) = \\int_{0}^{1} x ^ {a k} \\log^{k}(x) \\,dx",
                 "lhs_calc": {
                     "latex_start": "f(a k,k)",
                     "start": "f(a * k,k)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx",
+                            "latex_res": "\\int_{0}^{1} x ^ {a k} \\log^{k}(x) \\,dx",
                             "res": "INT x:[0,1]. x ^ (a * k) * log(x) ^ k",
                             "rule": {
                                 "func_def": "f(m,n) = (INT x:[0,1]. x ^ m * log(x) ^ n)",
@@ -37,7 +37,7 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx",
+                    "latex_start": "\\int_{0}^{1} x ^ {a k} \\log^{k}(x) \\,dx",
                     "start": "INT x:[0,1]. x ^ (a * k) * log(x) ^ k",
                     "steps": [],
                     "type": "Calculation"
@@ -70,7 +70,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\frac{log^{k}(x ^ {c x ^ {a}})}{k!}} \\,dx",
+                            "latex_res": "\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\frac{\\log^{k}(x ^ {c x ^ {a}})}{k!}} \\,dx",
                             "res": "INT x:[0,1]. SUM(k, 0, oo, log(x ^ (c * x ^ a)) ^ k / factorial(k))",
                             "rule": {
                                 "loc": "subterms",
@@ -80,7 +80,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{log^{k}(x ^ {c x ^ {a}})}{k!} \\,dx}",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{\\log^{k}(x ^ {c x ^ {a}})}{k!} \\,dx}",
                             "res": "SUM(k, 0, oo, INT x:[0,1]. log(x ^ (c * x ^ a)) ^ k / factorial(k))",
                             "rule": {
                                 "name": "IntSumExchange",
@@ -100,7 +100,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(c x ^ {a}) ^ {k} log^{k}(x)}{k!} \\,dx}",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(c x ^ {a}) ^ {k} \\log^{k}(x)}{k!} \\,dx}",
                             "res": "SUM(k, 0, oo, INT x:[0,1]. (c * x ^ a) ^ k * log(x) ^ k / factorial(k))",
                             "rule": {
                                 "name": "Equation",
@@ -111,7 +111,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{c ^ {k} (x ^ {a}) ^ {k} log^{k}(x)}{k!} \\,dx}",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{c ^ {k} (x ^ {a}) ^ {k} \\log^{k}(x)}{k!} \\,dx}",
                             "res": "SUM(k, 0, oo, INT x:[0,1]. c ^ k * x ^ a ^ k * log(x) ^ k / factorial(k))",
                             "rule": {
                                 "name": "Equation",
@@ -122,7 +122,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} (k!)^{-1} (\\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx)}",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} (k!)^{-1} (\\int_{0}^{1} x ^ {a k} \\log^{k}(x) \\,dx)}",
                             "res": "SUM(k, 0, oo, c ^ k * factorial(k) ^ (-1) * (INT x:[0,1]. x ^ (a * k) * log(x) ^ k))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -135,7 +135,7 @@
                             "res": "SUM(k, 0, oo, c ^ k * factorial(k) ^ (-1) * f(a * k,k))",
                             "rule": {
                                 "eq": "f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k)",
-                                "latex_str": "apply equation \\(f(a k,k) = \\int_{0}^{1} x ^ {a k} log^{k}(x) \\,dx\\) on subterms",
+                                "latex_str": "apply equation \\(f(a k,k) = \\int_{0}^{1} x ^ {a k} \\log^{k}(x) \\,dx\\) on subterms",
                                 "loc": "subterms",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k) on subterms"
