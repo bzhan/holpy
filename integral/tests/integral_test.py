@@ -883,50 +883,74 @@ class IntegralTest(unittest.TestCase):
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testCatalanConstant01(self):
-        file = compstate.CompFile('CatalanConstant01')
-        lemma = parser.parse_expr('G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)')
-        lemma01 = compstate.Lemma(lemma=lemma)
-        file.add_lemma(lemma01)
+        # Reference:
+        # Inside interesting integrals, Section 5.1, example #1
 
+        file = compstate.CompFile('CatalanConstant01')
+
+        # Define Catalan's constant
+        e = parser.parse_expr('G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)')
+        Gdef = compstate.FuncDef(e)
+        file.add_definition(Gdef)
+
+        # Evaluate integral of atan(x) / x
         e = parser.parse_expr("(INT x:[0, 1]. atan(x) / x) = G")
         goal01 = compstate.Goal(goal=e, conds=None)
         file.add_goal(goal01)
         proof_of_goal01 = goal01.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandSeries(), '0.0'))
-        old_expr = parser.parse_expr("(-1) ^ n * x ^ (2 * n + 1) / (2 * n + 1)")
-        new_expr = parser.parse_expr("((-1)^n) * (x^(2*n)) * x / (2*n+1)")
+        old_expr = parser.parse_expr("x ^ (2 * n + 1)")
+        new_expr = parser.parse_expr("x^ (2*n) * x")
         calc.perform_rule(rules.Equation(old_expr=old_expr,new_expr=new_expr))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.IntSumExchange())
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal01.rhs_calc
-        calc.perform_rule(rules.ApplyEquation(lemma01.lemma))
+        calc.perform_rule(rules.ApplyEquation(Gdef.eq))
         calc.perform_rule(rules.FullSimplify())
 
-        self.assertTrue(file.content[1].is_finished())
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
         path = 'integral/examples/CatalanConstant01.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testCatalanConstant02(self):
-        # goal : INT x:[1,oo]. log(x) / (x^2 + 1)
-        file = compstate.CompFile('CatalanConstant01')
-        lemma = parser.parse_expr('G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)')
-        lemma01 = compstate.Lemma(lemma=lemma)
-        file.add_lemma(lemma01)
+        # Reference:
+        # Inside interesting integrals, Section 5.1, example #2
+
+        file = compstate.CompFile('CatalanConstant02')
+
+        # Define Catalan's constant
+        e = parser.parse_expr('G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)')
+        Gdef = compstate.FuncDef(e)
+        file.add_definition(Gdef)
+
+        # Define I(k)
         e = parser.parse_expr("I(k) = INT x:[1,oo]. log(x) / (x^k)")
         conds_of_Idef = compstate.Conditions()
-        e2 = parser.parse_expr("k>1")
-        conds_of_Idef.add_condition(str(e2), e2)
+        e2 = parser.parse_expr("k > 1")
+        conds_of_Idef.add_condition("k", e2)
         Idef = compstate.FuncDef(e,conds=conds_of_Idef)
         file.add_definition(Idef)
+
+        # Evaluate I(k)
         e = parser.parse_expr("I(k) = 1/(k-1)^2")
         conds_of_goal1 = compstate.Conditions()
-        e2 = parser.parse_expr("k>1")
-        conds_of_goal1.add_condition(str(e2), e2)
+        e2 = parser.parse_expr("k > 1")
+        conds_of_goal1.add_condition("k", e2)
         goal1 = compstate.Goal(e, conds=conds_of_goal1)
         file.add_goal(goal1)
+
         proof_of_goal1 = goal1.proof_by_calculation()
         calc = proof_of_goal1.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(Idef.eq))
@@ -946,26 +970,28 @@ class IntegralTest(unittest.TestCase):
         new_expr=parser.parse_expr("(-k+1)^-2")
         calc.perform_rule(rules.Equation(old_expr=old_expr,new_expr=new_expr))
 
+        # Special case of I(2*n+2)
         e = parser.parse_expr("I(2 * n + 2) = 1/(2*n+1)^2")
         goal2 = compstate.Goal(e)
         file.add_goal(goal2)
         proof_of_goal2 = goal2.proof_by_calculation()
         calc = proof_of_goal2.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(goal1.goal))
-        calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal2.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
+        # Definition of I(2*n+2)
         e = parser.parse_expr("I(2*n+2) = INT x:[1,oo]. log(x) / (x^(2*n+2))")
         goal3 = compstate.Goal(e)
         file.add_goal(goal3)
         proof_of_goal3 = goal3.proof_by_calculation()
         calc = proof_of_goal3.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(Idef.eq))
-        calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal3.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
+        # Combine previous two results
+        # TODO: can simplify these three parts
         e = parser.parse_expr("(INT x:[1,oo]. log(x) / x^(2*n+2)) = 1/(2*n+1)^2")
         goal4 = compstate.Goal(e)
         file.add_goal(goal4)
@@ -997,11 +1023,19 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), '0.1'))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal5.rhs_calc
-        calc.perform_rule(rules.ApplyLemma(lemma=lemma01.lemma, conds=None))
+        calc.perform_rule(rules.ApplyEquation(eq=Gdef.eq))
         calc.perform_rule(rules.FullSimplify())
 
-        for i in range(2,7):
-            self.assertTrue(file.content[i].is_finished())
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
         path = 'integral/examples/CatalanConstant02.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
@@ -1083,7 +1117,7 @@ class IntegralTest(unittest.TestCase):
         file.add_goal(goal01)
         proof_of_goal01 = goal01.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
-        calc.perform_rule(rules.OnSubterm(rules.ExpandSeries(index_var = 'k', var = 'x')))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandSeries(index_var='k')))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal01.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -1172,7 +1206,7 @@ class IntegralTest(unittest.TestCase):
         old_expr = parser.parse_expr("x^(c*x^a)")
         new_expr = parser.parse_expr("exp(log(x^(c*x^a)))")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
-        calc.perform_rule(rules.OnSubterm(rules.ExpandSeries(index_var='k', var='x')))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandSeries(index_var='k')))
         calc.perform_rule(rules.IntSumExchange())
 
         old_expr = parser.parse_expr("log(x ^ (c * x ^ a))")

@@ -3,7 +3,8 @@
         {
             "eq": "G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
             "latex_eq": "G = \\sum_{n=0}^{\\infty}{\\frac{(-1)^{n}}{(2 n + 1) ^ {2}}}",
-            "type": "Lemma"
+            "latex_lhs": "G",
+            "type": "FuncDef"
         },
         {
             "finished": true,
@@ -21,6 +22,7 @@
                             "latex_res": "\\int_{0}^{1} \\frac{\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {2 n + 1}}{2 n + 1}}}{x} \\,dx",
                             "res": "INT x:[0,1]. SUM(n, 0, oo, (-1) ^ n * x ^ (2 * n + 1) / (2 * n + 1)) / x",
                             "rule": {
+                                "index_var": "n",
                                 "loc": "0.0",
                                 "name": "ExpandPowerSeries",
                                 "str": "expand power series at 0.0"
@@ -28,13 +30,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1} \\frac{\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {2 n} x}{2 n + 1}}}{x} \\,dx",
-                            "res": "INT x:[0,1]. SUM(n, 0, oo, (-1) ^ n * x ^ (2 * n) * x / (2 * n + 1)) / x",
+                            "latex_res": "\\int_{0}^{1} \\frac{\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} (x ^ {2 n} x)}{2 n + 1}}}{x} \\,dx",
+                            "res": "INT x:[0,1]. SUM(n, 0, oo, (-1) ^ n * (x ^ (2 * n) * x) / (2 * n + 1)) / x",
                             "rule": {
+                                "latex_str": "rewriting \\(x ^ {2 n + 1}\\) to \\(x ^ {2 n} x\\)",
                                 "name": "Equation",
-                                "new_expr": "(-1) ^ n * x ^ (2 * n) * x / (2 * n + 1)",
-                                "old_expr": "(-1) ^ n * x ^ (2 * n + 1) / (2 * n + 1)",
-                                "str": "rewriting"
+                                "new_expr": "x ^ (2 * n) * x",
+                                "old_expr": "x ^ (2 * n + 1)",
+                                "str": "rewriting x ^ (2 * n + 1) to x ^ (2 * n) * x"
                             },
                             "type": "CalculationStep"
                         },

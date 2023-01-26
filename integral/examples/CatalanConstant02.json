@@ -3,14 +3,15 @@
         {
             "eq": "G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
             "latex_eq": "G = \\sum_{n=0}^{\\infty}{\\frac{(-1)^{n}}{(2 n + 1) ^ {2}}}",
-            "type": "Lemma"
+            "latex_lhs": "G",
+            "type": "FuncDef"
         },
         {
             "conds": [
                 {
                     "cond": "k > 1",
                     "latex_cond": "k > 1",
-                    "name": "k > 1",
+                    "name": "k",
                     "type": "Condition"
                 }
             ],
@@ -24,7 +25,7 @@
                 {
                     "cond": "k > 1",
                     "latex_cond": "k > 1",
-                    "name": "k > 1",
+                    "name": "k",
                     "type": "Condition"
                 }
             ],
@@ -36,7 +37,7 @@
                     {
                         "cond": "k > 1",
                         "latex_cond": "k > 1",
-                        "name": "k > 1",
+                        "name": "k",
                         "type": "Condition"
                     }
                 ],
@@ -48,7 +49,7 @@
                         {
                             "cond": "k > 1",
                             "latex_cond": "k > 1",
-                            "name": "k > 1",
+                            "name": "k",
                             "type": "Condition"
                         }
                     ],
@@ -101,10 +102,11 @@
                             "latex_res": "(-k + 1) ^ {-1} (\\lim\\limits_{t\\to \\infty} (\\,\\frac{\\log{(t)}}{t ^ {k - 1}}\\,)) + (-k + 1) ^ {-2}",
                             "res": "(-k + 1) ^ (-1) * (LIM {t -> oo}. log(t) / t ^ (k - 1)) + (-k + 1) ^ (-2)",
                             "rule": {
+                                "latex_str": "rewriting \\(t ^ {-k + 1} \\log{(t)}\\) to \\(\\frac{\\log{(t)}}{t ^ {k - 1}}\\)",
                                 "name": "Equation",
                                 "new_expr": "log(t) / t ^ (k - 1)",
                                 "old_expr": "t ^ (-k + 1) * log(t)",
-                                "str": "rewriting"
+                                "str": "rewriting t ^ (-k + 1) * log(t) to log(t) / t ^ (k - 1)"
                             },
                             "type": "CalculationStep"
                         },
@@ -135,7 +137,7 @@
                         {
                             "cond": "k > 1",
                             "latex_cond": "k > 1",
-                            "name": "k > 1",
+                            "name": "k",
                             "type": "Condition"
                         }
                     ],
@@ -155,10 +157,11 @@
                             "latex_res": "(-k + 1) ^ {-2}",
                             "res": "(-k + 1) ^ (-2)",
                             "rule": {
+                                "latex_str": "rewriting \\((k - 1) ^ {-2}\\) to \\((-k + 1) ^ {-2}\\)",
                                 "name": "Equation",
                                 "new_expr": "(-k + 1) ^ (-2)",
                                 "old_expr": "(k - 1) ^ (-2)",
-                                "str": "rewriting"
+                                "str": "rewriting (k - 1) ^ (-2) to (-k + 1) ^ (-2)"
                             },
                             "type": "CalculationStep"
                         }
@@ -188,15 +191,6 @@
                                 "func_def": "I(k) = 1 / (k - 1) ^ 2",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "(2 n + 1) ^ {-2}",
-                            "res": "(2 * n + 1) ^ (-2)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         }
@@ -242,15 +236,6 @@
                                 "func_def": "I(k) = (INT x:[1,oo]. log(x) / x ^ k)",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\int_{1}^{\\infty} x ^ {-2 n - 2} \\log{(x)} \\,dx",
-                            "res": "INT x:[1,oo]. x ^ (-2 * n - 2) * log(x)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         }
@@ -359,10 +344,11 @@
                             "latex_res": "\\int_{1}^{\\infty} \\log{(x)} x ^ {-2} (1 + \\frac{1}{x ^ {2}}) ^ {-1} \\,dx",
                             "res": "INT x:[1,oo]. log(x) * x ^ (-2) * (1 + 1 / x ^ 2) ^ (-1)",
                             "rule": {
+                                "latex_str": "rewriting \\(\\frac{\\log{(x)}}{x ^ {2} + 1}\\) to \\(\\log{(x)} x ^ {-2} (1 + \\frac{1}{x ^ {2}}) ^ {-1}\\)",
                                 "name": "Equation",
                                 "new_expr": "log(x) * x ^ (-2) * (1 + 1 / x ^ 2) ^ (-1)",
                                 "old_expr": "log(x) / (x ^ 2 + 1)",
-                                "str": "rewriting"
+                                "str": "rewriting log(x) / (x ^ 2 + 1) to log(x) * x ^ (-2) * (1 + 1 / x ^ 2) ^ (-1)"
                             },
                             "type": "CalculationStep"
                         },
@@ -370,6 +356,7 @@
                             "latex_res": "\\int_{1}^{\\infty} \\log{(x)} x ^ {-2} \\sum_{n=0}^{\\infty}{(-1)^{n} (\\frac{1}{x ^ {2}}) ^ {n}} \\,dx",
                             "res": "INT x:[1,oo]. log(x) * x ^ (-2) * SUM(n, 0, oo, (-1) ^ n * (1 / x ^ 2) ^ n)",
                             "rule": {
+                                "index_var": "n",
                                 "loc": "0.1",
                                 "name": "ExpandPowerSeries",
                                 "str": "expand power series at 0.1"
@@ -380,10 +367,11 @@
                             "latex_res": "\\int_{1}^{\\infty} \\sum_{n=0}^{\\infty}{(-1)^{n} (\\frac{1}{x ^ {2}}) ^ {n} \\log{(x)} x ^ {-2}} \\,dx",
                             "res": "INT x:[1,oo]. SUM(n, 0, oo, (-1) ^ n * (1 / x ^ 2) ^ n * log(x) * x ^ (-2))",
                             "rule": {
+                                "latex_str": "rewriting \\(\\log{(x)} x ^ {-2} \\sum_{n=0}^{\\infty}{(-1)^{n} (\\frac{1}{x ^ {2}}) ^ {n}}\\) to \\(\\sum_{n=0}^{\\infty}{(-1)^{n} (\\frac{1}{x ^ {2}}) ^ {n} \\log{(x)} x ^ {-2}}\\)",
                                 "name": "Equation",
                                 "new_expr": "SUM(n, 0, oo, (-1) ^ n * (1 / x ^ 2) ^ n * log(x) * x ^ (-2))",
                                 "old_expr": "log(x) * x ^ (-2) * SUM(n, 0, oo, (-1) ^ n * (1 / x ^ 2) ^ n)",
-                                "str": "rewriting"
+                                "str": "rewriting log(x) * x ^ (-2) * SUM(n, 0, oo, (-1) ^ n * (1 / x ^ 2) ^ n) to SUM(n, 0, oo, (-1) ^ n * (1 / x ^ 2) ^ n * log(x) * x ^ (-2))"
                             },
                             "type": "CalculationStep"
                         },
@@ -409,10 +397,11 @@
                             "latex_res": "\\sum_{n=0}^{\\infty}{(-1)^{n} (\\int_{1}^{\\infty} \\frac{\\log{(x)}}{x ^ {2 n + 2}} \\,dx)}",
                             "res": "SUM(n, 0, oo, (-1) ^ n * (INT x:[1,oo]. log(x) / x ^ (2 * n + 2)))",
                             "rule": {
+                                "latex_str": "rewriting \\(x ^ {-2 n - 2} \\log{(x)}\\) to \\(\\frac{\\log{(x)}}{x ^ {2 n + 2}}\\)",
                                 "name": "Equation",
                                 "new_expr": "log(x) / x ^ (2 * n + 2)",
                                 "old_expr": "x ^ (-2 * n - 2) * log(x)",
-                                "str": "rewriting"
+                                "str": "rewriting x ^ (-2 * n - 2) * log(x) to log(x) / x ^ (2 * n + 2)"
                             },
                             "type": "CalculationStep"
                         },
@@ -448,8 +437,10 @@
                             "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n}}{(2 n + 1) ^ {2}}}",
                             "res": "SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
                             "rule": {
-                                "name": "ApplyLemma",
-                                "str": "apply lemma"
+                                "eq": "G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
+                                "latex_str": "apply equation \\(G = \\sum_{n=0}^{\\infty}{\\frac{(-1)^{n}}{(2 n + 1) ^ {2}}}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)"
                             },
                             "type": "CalculationStep"
                         },
@@ -470,5 +461,5 @@
             "type": "Goal"
         }
     ],
-    "name": "CatalanConstant01"
+    "name": "CatalanConstant02"
 }

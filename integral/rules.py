@@ -792,7 +792,7 @@ class ApplyEquation(Rule):
 class ApplyLemma(Rule):
     """Apply lemma"""
 
-    def __init__(self, lemma: Expr, conds: Conditions):
+    def __init__(self, lemma: Expr, conds: Conditions = None):
         assert isinstance(lemma, Expr)
         self.name = "ApplyLemma"
         self.lemma = lemma
@@ -805,6 +805,7 @@ class ApplyLemma(Rule):
         return {
             "name": self.name,
             "str": str(self),
+            "lemma": str(self.lemma)
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
@@ -1083,13 +1084,15 @@ class Equation(Rule):
         self.old_expr = old_expr
 
     def __str__(self):
-        return "rewriting"
+        return "rewriting %s to %s" % (self.old_expr, self.new_expr)
 
     def export(self):
         res = {
             "name": self.name,
             "new_expr": str(self.new_expr),
-            "str": str(self)
+            "str": str(self),
+            "latex_str": "rewriting \\(%s\\) to \\(%s\\)" %
+                (latex.convert_expr(self.old_expr), latex.convert_expr(self.new_expr))
         }
         if self.old_expr:
             res['old_expr'] = str(self.old_expr)
@@ -2307,17 +2310,15 @@ class ExpandSeries(Rule):
     log(1+a) and log(1-a).
 
     """
-    def __init__(self, index_var: str = 'n', var: str = 'x'):
+    def __init__(self, index_var: str = 'n'):
         self.name = "ExpandPowerSeries"
         self.index_var = index_var
-        self.var = var
 
     def __str__(self):
         return "expand power series"
 
     def eval(self, e: Expr, conds=None):
         a = Symbol('a', [VAR, CONST, OP, FUN])
-        v = Var(self.var)
         idx = Var(self.index_var)
         rules = [
             (Fun('exp', a), None, Summation(self.index_var, Const(0), POS_INF, (a ^ idx) / Fun('factorial', idx))),
@@ -2344,6 +2345,7 @@ class ExpandSeries(Rule):
     def export(self):
         return {
             "name": self.name,
+            "index_var": self.index_var,
             "str": str(self)
         }
 

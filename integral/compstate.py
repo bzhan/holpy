@@ -72,12 +72,18 @@ class StateItem:
 class FuncDef(StateItem):
     """Introduce a new function definition."""
     def __init__(self, eq: Expr, conds: Optional[Conditions] = None):
-        if not (eq.is_equals() and eq.lhs.is_fun()):
-            raise AssertionError("FuncDef: left side should be a function")
+        if not eq.is_equals():
+            raise AssertionError("FuncDef: input should be an equation")
 
         self.eq = eq
-        self.symb = self.eq.lhs.func_name
-        self.args = self.eq.lhs.args
+        if self.eq.lhs.is_fun():
+            self.symb = self.eq.lhs.func_name
+            self.args = self.eq.lhs.args
+        elif self.eq.lhs.is_var():
+            self.symb = self.eq.lhs.name
+            self.args = []
+        else:
+            raise AssertionError("FuncDef: left side of equation must be variable or function")
         self.body = self.eq.rhs
 
         if any(not arg.is_var() for arg in self.args) or len(self.args) != len(set(self.args)):
@@ -756,6 +762,14 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'RewriteSkolemConst':
         new_expr = parser.parse_expr('SKOLEM_CONST(C)')
         return rules.RewriteSkolemConst(new_expr=new_expr)
+    elif item['name'] == 'ExpandPowerSeries':
+        index_var = item['index_var']
+        return rules.ExpandSeries(index_var=index_var)
+    elif item['name'] == 'IntSumExchange':
+        return rules.IntSumExchange()
+    elif item['name'] == 'ApplyLemma':
+        lemma = parser.parse_expr(item['lemma'])
+        return rules.ApplyLemma(lemma=lemma)
     else:
         print(item['name'], flush=True)
         raise NotImplementedError
