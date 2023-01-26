@@ -5,18 +5,20 @@
                 {
                     "cond": "abs(x) < 1",
                     "latex_cond": "\\left| x \\right| < 1",
-                    "name": "abs(x) < 1",
+                    "name": "x",
                     "type": "Condition"
                 }
             ],
-            "eq": "log(1 + x) = SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
-            "latex_eq": "\\log{(1 + x)} = \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",
-            "type": "Lemma"
+            "finished": false,
+            "goal": "log(1 + x) = SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
+            "latex_goal": "\\log{(1 + x)} = \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",
+            "type": "Goal"
         },
         {
-            "eq": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) = pi ^ 2 / 12",
-            "latex_eq": "\\sum_{k=0}^{\\infty}{(-1)^{k} (k + 1) ^ {-2}} = \\frac{\\pi ^ {2}}{12}",
-            "type": "Lemma"
+            "finished": false,
+            "goal": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) = pi ^ 2 / 12",
+            "latex_goal": "\\sum_{k=0}^{\\infty}{(-1)^{k} (k + 1) ^ {-2}} = \\frac{\\pi ^ {2}}{12}",
+            "type": "Goal"
         },
         {
             "finished": true,
@@ -34,6 +36,7 @@
                             "latex_res": "\\int_{0}^{1} \\frac{\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}}{x} \\,dx",
                             "res": "INT x:[0,1]. SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1)) / x",
                             "rule": {
+                                "lemma": "log(1 + x) = SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
                                 "loc": "subterms",
                                 "name": "ApplyLemma",
                                 "str": "apply lemma on subterms"
@@ -44,10 +47,11 @@
                             "latex_res": "\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1} (\\frac{1}{x})} \\,dx",
                             "res": "INT x:[0,1]. SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1) * (1 / x))",
                             "rule": {
+                                "latex_str": "rewriting \\(\\frac{\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}}{x}\\) to \\(\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1} (\\frac{1}{x})}\\)",
                                 "name": "Equation",
                                 "new_expr": "SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1) * (1 / x))",
                                 "old_expr": "SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1)) / x",
-                                "str": "rewriting"
+                                "str": "rewriting SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1)) / x to SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1) * (1 / x))"
                             },
                             "type": "CalculationStep"
                         },
@@ -73,6 +77,7 @@
                             "latex_res": "\\frac{\\pi ^ {2}}{12}",
                             "res": "pi ^ 2 / 12",
                             "rule": {
+                                "lemma": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) = pi ^ 2 / 12",
                                 "name": "ApplyLemma",
                                 "str": "apply lemma"
                             },

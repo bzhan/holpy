@@ -1041,43 +1041,65 @@ class IntegralTest(unittest.TestCase):
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testLogFunction01(self):
+        # Reference:
+        # Inside interesting integrals, Section 5.2, example #1
+
         file = compstate.CompFile("LogFunction01")
-        conds_of_lemma01 = compstate.Conditions()
+
+        # Series expansion for log(1+x)
+        # TODO: add derivation
+        conds_of_goal1 = compstate.Conditions()
         e = parser.parse_expr("abs(x) < 1")
-        conds_of_lemma01.add_condition(str(e), e)
+        conds_of_goal1.add_condition("x", e)
         e = parser.parse_expr("log(1+x) = SUM(k,0,oo,(-1)^k * (x^(k+1))/(k+1))")
-        lemma01 = compstate.Lemma(lemma = e,conds = conds_of_lemma01)
-        file.add_lemma(lemma01)
+        goal1 = compstate.Goal(goal=e, conds=conds_of_goal1)
+        file.add_goal(goal1)
 
+        # Series sum for alternating reciprocal of squares
+        # TODO: add derivation
         e = parser.parse_expr("SUM(k,0,oo,(-1)^k * (k+1)^(-2))  = (pi^2) / 12")
-        lemma02 = compstate.Lemma(lemma = e, conds = None)
-        file.add_lemma(lemma02)
+        goal2 = compstate.Goal(goal=e)
+        file.add_lemma(goal2)
 
+        # Main result
         e = parser.parse_expr("(INT x:[0,1]. log(x+1) / x) = (pi^2) / 12")
-        goal01 = compstate.Goal(goal = e, conds = None)
-        file.add_goal(goal01)
-        proof_of_goal01 = goal01.proof_by_calculation()
+        goal = compstate.Goal(goal=e)
+        file.add_goal(goal)
+        proof_of_goal01 = goal.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
 
         # TODO: condition check
-        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=lemma01.lemma, conds=None)))
+        # the domain of x is (0, 1), so the condition abs(x) < 1 is satisfied
+        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=goal1.goal)))
         old_expr = parser.parse_expr("SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1)) / x")
         new_expr = parser.parse_expr("SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1) * (1/x))")
-        calc.perform_rule(rules.Equation(old_expr = old_expr, new_expr = new_expr))
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         calc.perform_rule(rules.IntSumExchange())
         calc.perform_rule(rules.FullSimplify())
 
-        calc.perform_rule(rules.ApplyLemma(lemma = lemma02.lemma, conds = None))
+        calc.perform_rule(rules.ApplyLemma(lemma=goal2.goal))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal01.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        self.assertTrue(file.content[2].is_finished())
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content[2:]:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
         path = 'integral/examples/LogFunction01.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testLogFunction02(self):
+        # Reference:
+        # Inside interesting integrals, Section 5.2, example #2
+
         file = compstate.CompFile('LogFunction02')
 
         conds_of_lemma01 = compstate.Conditions()
@@ -1171,9 +1193,17 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal03.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        # print(file)
-        for i in range(6,9):
-            self.assertTrue(file.content[i].is_finished())
+
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
         path = 'integral/examples/LogFunction02.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)

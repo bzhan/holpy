@@ -122,12 +122,8 @@ class FuncDef(StateItem):
 
 
 class Lemma(StateItem):
-    """
-    introduce lemma assisting proof
-    """
-    def __init__(self, lemma:Expr, conds:Conditions = None):
-        '''lemma usually is an equation and
-        conds represents the conditions make the lemma hold'''
+    """Introduce lemma for assisting proof"""
+    def __init__(self, lemma: Expr, conds: Conditions = None):
         assert isinstance(lemma, Expr)
         self.lemma = conditions.replaceByConds(lemma, conds)
         self.conds = conds
@@ -141,7 +137,7 @@ class Lemma(StateItem):
                 if first:
                     res2 += str(v)
                 else:
-                    res2 += ", "+str(v)
+                    res2 += ", " + str(v)
         res += "  %s%s\n" % (self.lemma, (" for "+ res2) if self.conds!=None else "")
         return res
 
@@ -151,9 +147,10 @@ class Lemma(StateItem):
             "eq": str(self.lemma),
             "latex_eq": latex.convert_expr(self.lemma)
         }
-        if self.conds!=None and self.conds.data:
+        if self.conds is not None and self.conds.data:
             res["conds"] = self.conds.export()
         return res
+
 
 class Goal(StateItem):
     """Goal to be proved."""
@@ -770,6 +767,12 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'ApplyLemma':
         lemma = parser.parse_expr(item['lemma'])
         return rules.ApplyLemma(lemma=lemma)
+    elif item['name'] == 'DerivEquation':
+        var = item['var']
+        return rules.DerivEquation(var)
+    elif item['name'] == 'MulEquation':
+        e = parser.parse_expr(item['expr'])
+        return rules.MulEquation(e)
     else:
         print(item['name'], flush=True)
         raise NotImplementedError
@@ -803,6 +806,11 @@ def parse_item(item) -> StateItem:
         res = Goal(goal, conds=conds)
         if 'proof' in item:
             res.proof = parse_item(item['proof'])
+        return res
+    elif item['type'] == 'Lemma':
+        eq = parser.parse_expr(item['eq'])
+        conds = parse_conds(item)
+        res = Lemma(eq, conds=conds)
         return res
     elif item['type'] == 'CalculationProof':
         conds = parse_conds(item)
@@ -845,6 +853,7 @@ def parse_item(item) -> StateItem:
             res.begin.add_step(parse_step(step, res.begin, i))
         return res
     else:
+        print(item['type'])
         raise NotImplementedError
 
 def parse_state(name: str, problem: str, items) -> CompState:

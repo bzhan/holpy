@@ -2474,17 +2474,18 @@ class SummationSimplify(Rule):
 class DerivEquation(Rule):
     """Differentiate both sides with respect to some variable."""
 
-    def __init__(self, var):
+    def __init__(self, var: str):
         self.name = "DerivEquation"
-        self.var = var
+        self.var: str = var
 
     def __str__(self):
-        return "derivate both side"
+        return "derivate both sides"
 
     def export(self):
         return {
             "name": self.name,
-            "str": str(self)
+            "str": str(self),
+            "var": self.var
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
@@ -2526,7 +2527,8 @@ class MulEquation(Rule):
     def export(self):
         return {
             "name": self.name,
-            "str": str(self)
+            "str": str(self),
+            "expr": str(self.e)
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
