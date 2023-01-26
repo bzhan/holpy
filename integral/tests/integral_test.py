@@ -751,9 +751,12 @@ class IntegralTest(unittest.TestCase):
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
-    def testIntegral01(self):
+    def testFlipside03(self):
+        # Reference:
+        # Inside interesting integrals, Section 3.4, example #3
+
         # goal: INT x:[0, 1]. (x ^ a - 1) / log(x) = log(a + 1)
-        file = compstate.CompFile("Integral01")
+        file = compstate.CompFile("Flipside03")
 
         # introduce definition
         e = parser.parse_expr("I(a) = INT x:[0, 1]. (x ^ a - 1) / log(x)")
@@ -819,9 +822,17 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), '1'))
         calc.perform_rule(rules.FullSimplify())
 
-        for i in range(1, 6):
-            self.assertTrue(file.content[i].is_finished())
-        path = 'integral/examples/integral01.json'
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
+        path = 'integral/examples/flipside03.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 

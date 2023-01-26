@@ -257,8 +257,11 @@
                             "latex_res": "I{(0)} = \\log{(0 + 1)} + C",
                             "res": "I(0) = log(0 + 1) + SKOLEM_CONST(C)",
                             "rule": {
+                                "latex_str": "substitute \\(a\\) for \\(0\\) in equation",
                                 "name": "VarSubsOfEquation",
-                                "str": "substitute a for 0 in equation"
+                                "str": "substitute a for 0 in equation",
+                                "var": "a",
+                                "var_subs": "0"
                             },
                             "type": "CalculationStep"
                         },
@@ -380,5 +383,5 @@
             "type": "Goal"
         }
     ],
-    "name": "Integral01"
+    "name": "Flipside03"
 }

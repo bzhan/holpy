@@ -783,6 +783,10 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'SolveEquation':
         solve_for = parser.parse_expr(item['solve_for'])
         return rules.SolveEquation(solve_for)
+    elif item['name'] == 'VarSubsOfEquation':
+        var = item['var']
+        var_subs = parser.parse_expr(item['var_subs'])
+        return rules.VarSubsOfEquation(var, var_subs=var_subs)
     else:
         print(item['name'], flush=True)
         raise NotImplementedError

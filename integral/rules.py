@@ -2392,7 +2392,10 @@ class VarSubsOfEquation(Rule):
     def export(self):
         return {
             "name": self.name,
-            "str": str(self)
+            "str": str(self),
+            "var": self.var,
+            "var_subs": str(self.var_subs),
+            "latex_str": "substitute \\(%s\\) for \\(%s\\) in equation" % (self.var, latex.convert_expr(self.var_subs))
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
