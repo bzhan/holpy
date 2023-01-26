@@ -17,6 +17,9 @@ class Conditions:
             for i, cond in enumerate(conds):
                 self.data['C' + str(i+1)] = cond
 
+    def __str__(self):
+        return ", ".join("%s: %s" % (name, cond) for name, cond in self.data.items())
+
     def add_condition(self, name: str, cond: Expr, isAssume:bool = False):
         self.data[name] = cond
         self.is_assume[name] = isAssume

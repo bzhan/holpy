@@ -5,13 +5,13 @@
                 {
                     "cond": "a > 0",
                     "latex_cond": "a > 0",
-                    "name": "a > 0",
+                    "name": "a",
                     "type": "Condition"
                 },
                 {
                     "cond": "b > 0",
                     "latex_cond": "b > 0",
-                    "name": "b > 0",
+                    "name": "b",
                     "type": "Condition"
                 }
             ],
@@ -69,7 +69,7 @@
                 {
                     "cond": "a > 0",
                     "latex_cond": "a > 0",
-                    "name": "a > 0",
+                    "name": "a",
                     "type": "Condition"
                 }
             ],
@@ -81,7 +81,7 @@
                     {
                         "cond": "a > 0",
                         "latex_cond": "a > 0",
-                        "name": "a > 0",
+                        "name": "a",
                         "type": "Condition"
                     }
                 ],
@@ -93,7 +93,7 @@
                         {
                             "cond": "a > 0",
                             "latex_cond": "a > 0",
-                            "name": "a > 0",
+                            "name": "a",
                             "type": "Condition"
                         }
                     ],
@@ -180,7 +180,7 @@
                         {
                             "cond": "a > 0",
                             "latex_cond": "a > 0",
-                            "name": "a > 0",
+                            "name": "a",
                             "type": "Condition"
                         }
                     ],
@@ -208,7 +208,7 @@
                 {
                     "cond": "a > 0",
                     "latex_cond": "a > 0",
-                    "name": "a > 0",
+                    "name": "a",
                     "type": "Condition"
                 }
             ],
@@ -224,7 +224,7 @@
                         {
                             "cond": "a > 0",
                             "latex_cond": "a > 0",
-                            "name": "a > 0",
+                            "name": "a",
                             "type": "Condition"
                         }
                     ],
@@ -246,28 +246,18 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I(a,b) + E(b) = \\int \\frac{1}{2} \\pi a ^ {-1} \\,da",
-                            "res": "I(a,b) + SKOLEM_FUNC(E(b)) = (INT a. 1/2 * pi * a ^ (-1))",
+                            "latex_res": "I(a,b) + E(b) = \\frac{1}{2} \\pi (\\int a ^ {-1} \\,da)",
+                            "res": "I(a,b) + SKOLEM_FUNC(E(b)) = 1/2 * pi * (INT a. a ^ (-1))",
                             "rule": {
                                 "loc": "1",
-                                "name": "Simplify",
-                                "str": "simplify at 1"
+                                "name": "FullSimplify",
+                                "str": "full simplify at 1"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I(a,b) + E(b) = \\frac{1}{2} (\\pi (\\int a ^ {-1} \\,da))",
-                            "res": "I(a,b) + SKOLEM_FUNC(E(b)) = 1/2 * (pi * (INT a. a ^ (-1)))",
-                            "rule": {
-                                "loc": "1",
-                                "name": "Linearity",
-                                "str": "linearity at 1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "I(a,b) + E(b) = \\frac{1}{2} (\\pi (\\log{(\\left| a \\right|)} + C))",
-                            "res": "I(a,b) + SKOLEM_FUNC(E(b)) = 1/2 * (pi * (log(abs(a)) + SKOLEM_CONST(C)))",
+                            "latex_res": "I(a,b) + E(b) = \\frac{1}{2} \\pi (\\log{(\\left| a \\right|)} + C)",
+                            "res": "I(a,b) + SKOLEM_FUNC(E(b)) = 1/2 * pi * (log(abs(a)) + SKOLEM_CONST(C))",
                             "rule": {
                                 "loc": "subterms",
                                 "name": "CommonIndefiniteIntegral",

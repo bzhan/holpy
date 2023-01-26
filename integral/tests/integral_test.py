@@ -496,24 +496,23 @@ class IntegralTest(unittest.TestCase):
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testEulerLogSineIntegral(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.4
         file = compstate.CompFile("EulerLogSine")
 
-        # Condition
-        conds = conditions.Conditions()
-
-        # Definition
+        # Define I(a)
         e = parser.parse_expr('I(a) = INT x:[0,pi/2]. log(a * sin(x))')
-        Idef1 = compstate.FuncDef(e, conds=conds)
+        Idef1 = compstate.FuncDef(e)
         file.add_definition(Idef1)
+
+        # Define J(a)
         e = parser.parse_expr('J(a) = INT x:[0,pi/2]. log(a * sin(2*x))')
-        Idef2 = compstate.FuncDef(e, conds=conds)
+        Idef2 = compstate.FuncDef(e)
         file.add_definition(Idef2)
 
-        # Recursive equation for gamma function
-        # goal1 = compstate.Goal(parser.parse_expr("Gamma(n+1) = n * Gamma(n)"), conds=conds)
-        # file.add_compstate(goal1)
+        # Prove J(a) = I(a)
         e = parser.parse_expr("J(a) = I(a)")
-        goal1 = compstate.Goal(e, conds=conds)
+        goal1 = compstate.Goal(e)
         file.add_compstate(goal1)
 
         proof = goal1.proof_by_calculation()
@@ -529,16 +528,17 @@ class IntegralTest(unittest.TestCase):
         calc = proof.rhs_calc
         calc.perform_rule(rules.ExpandDefinition(Idef1.eq))
 
-        e = parser.parse_expr("J(a) = pi/2*log(2/a)+2*I(a)")
-        goal2 = compstate.Goal(e, conds=conds)
+        # Prove J(a) = pi/2 * log(2/a) + 2 * I(a)
+        e = parser.parse_expr("J(a) = pi/2 * log(2/a) + 2 * I(a)")
+        goal2 = compstate.Goal(e)
         file.add_compstate(goal2)
 
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(Idef2.eq))
         calc.perform_rule(rules.RewriteTrigonometric("TR11", parser.parse_expr("sin(2*x)")))
-        calc.perform_rule(rules.Equation(new_expr = parser.parse_expr("(2/a) *(a*sin(x))*(a*cos(x))"),\
-                                         old_expr=parser.parse_expr("a * (2 * sin(x) * cos(x))")))
+        calc.perform_rule(rules.Equation(new_expr = parser.parse_expr("(2/a) * (a*sin(x)) * (a*cos(x))"),\
+                                         old_expr = parser.parse_expr("a * (2 * sin(x) * cos(x))")))
         calc.perform_rule(rules.RewriteLog())
         calc.perform_rule(rules.RewriteLog())
         calc.perform_rule(rules.FullSimplify())
@@ -551,8 +551,9 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef1.eq)))
         calc.perform_rule(rules.FullSimplify())
 
+        # Finally show I(a) = pi/2 * log(a/2)
         e = parser.parse_expr("I(a) = pi/2 * log(a/2)")
-        goal3 = compstate.Goal(e, conds=conds)
+        goal3 = compstate.Goal(e)
         file.add_compstate(goal3)
 
         proof = goal3.proof_by_calculation()
@@ -565,7 +566,6 @@ class IntegralTest(unittest.TestCase):
         calc = proof.rhs_calc
         calc.perform_rule(rules.RewriteLog())
         calc.perform_rule(rules.ExpandPolynomial())
-        # print(file)
 
         # Test parsing of json file
         json_file = file.export()
@@ -573,8 +573,10 @@ class IntegralTest(unittest.TestCase):
             self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
 
         # Test goals are finished
-        for i in range(2,5):
-            self.assertTrue(file.content[i].is_finished())
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
         with open('integral/examples/euler_log_sin.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
@@ -756,7 +758,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), '1'))
         calc.perform_rule(rules.FullSimplify())
 
-        # print(file)
         for i in range(1, 6):
             self.assertTrue(file.content[i].is_finished())
         path = 'integral/examples/integral01.json'
@@ -764,17 +765,22 @@ class IntegralTest(unittest.TestCase):
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testFrullaniIntegral(self):
+        # Reference:
+        # Inside interesting integrals, Section 3.3
+
         file = compstate.CompFile("Frullani Integral")
 
-        e = parser.parse_expr("I(a, b) = INT x:[0, oo]. (atan(a*x) - atan(b*x))/x")
+        # Define I(a, b)
+        e = parser.parse_expr("I(a, b) = INT x:[0,oo]. (atan(a*x) - atan(b*x))/x")
         conds_of_Idef = compstate.Conditions()
-        e2 = parser.parse_expr("a>0")
-        conds_of_Idef.add_condition(str(e2), e2)
-        e2 = parser.parse_expr("b>0")
-        conds_of_Idef.add_condition(str(e2), e2)
+        e2 = parser.parse_expr("a > 0")
+        conds_of_Idef.add_condition("a", e2)
+        e2 = parser.parse_expr("b > 0")
+        conds_of_Idef.add_condition("b", e2)
         Idef = compstate.FuncDef(e, conds_of_Idef)
         file.add_definition(Idef)
 
+        # Show I(a, a) = 0
         e = parser.parse_expr("I(a, a) = 0")
         goal1 = compstate.Goal(e)
         file.add_goal(goal1)
@@ -783,10 +789,11 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ExpandDefinition(Idef.eq))
         calc.perform_rule(rules.FullSimplify())
 
+        # Evalute D a. I(a, b) for a > 0
         e = parser.parse_expr("(D a. I(a,b)) = pi / (2*a)")
         conds_of_goal2 = compstate.Conditions()
-        e2 = parser.parse_expr("a>0")
-        conds_of_goal2.add_condition(str(e2), e2)
+        e2 = parser.parse_expr("a > 0")
+        conds_of_goal2.add_condition("a", e2)
         goal2 = compstate.Goal(e, conds_of_goal2)
         file.add_goal(goal2)
         proof_of_goal2 = goal2.proof_by_calculation()
@@ -795,34 +802,35 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.DerivIntExchange())
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.ElimInfInterval())
-        new_expr = parser.parse_expr('(a*x)^2')
-        old_expr = parser.parse_expr("a^2*x^2")
-        calc.perform_rule(rules.Equation(new_expr = new_expr, old_expr = old_expr))
+        new_expr = parser.parse_expr('(a*x) ^ 2')
+        old_expr = parser.parse_expr("a^2 * x^2")
+        calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
         calc.perform_rule(rules.OnLocation(rules.Substitution('u' , parser.parse_expr("a*x")) ,'0'))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal2.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
+        # Integrate the previous result to get formula for I(a,b)
+        # TODO: can simplify
         e = parser.parse_expr("I(a,b) = 1/2 * pi * log(a) - SKOLEM_FUNC(C(b))")
         conds_of_goal3 = compstate.Conditions()
-        e2 = parser.parse_expr("a>0")
-        conds_of_goal3.add_condition(str(e2), e2)
+        e2 = parser.parse_expr("a > 0")
+        conds_of_goal3.add_condition("a", e2)
         goal3 = compstate.Goal(e, conds_of_goal3)
         file.add_goal(goal3)
-        proof_of_goal3 = goal3.proof_by_rewrite_goal(begin = goal2)
+        proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal2)
         calc = proof_of_goal3.begin
         left_skolem_name = 'E'
-        calc.perform_rule(rules.IntegralEquation(var = 'a', left_skolem_name=left_skolem_name, right_skolem_name=None))
-        calc.perform_rule(rules.OnLocation(rules.Simplify(), '1'))
-        calc.perform_rule(rules.OnLocation(rules.Linearity(), '1'))
+        calc.perform_rule(rules.IntegralEquation(var='a', left_skolem_name=left_skolem_name, right_skolem_name=None))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '1'))
         calc.perform_rule(rules.OnSubterm(rules.CommonIndefiniteIntegral(const_name='C')))
         calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), '1'))
         new_expr = parser.parse_expr("-SKOLEM_FUNC(C(b))")
         calc.perform_rule(rules.RewriteSkolemConst(new_expr = new_expr))
         calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
         calc.perform_rule(rules.FullSimplify())
-        # calc.perform_rule(rules.OnSubterm(rules.UnfoldRewrite()))
 
+        # Special case I(a,a)
         e = parser.parse_expr("I(a,a) = 1/2 * pi * log(a) - SKOLEM_FUNC(C(a))")
         conds_of_goal4 = compstate.Conditions()
         e2 = parser.parse_expr("a>0")
@@ -833,6 +841,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_goal4.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(goal3.goal))
 
+        # Obtain value of Skolem function
         e = parser.parse_expr("SKOLEM_FUNC(C(a)) = 1/2 * pi * log(a)")
         conds_of_goal5 = compstate.Conditions()
         e2 = parser.parse_expr("a>0")
@@ -845,6 +854,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal1.goal)))
         calc.perform_rule(rules.FullSimplify())
 
+        # Final result
         e = parser.parse_expr("I(a, b) = 1/2 * pi * log(a) - 1/2 * pi * log(b)")
         conds_of_goal6 = compstate.Conditions()
         e2 = parser.parse_expr("a>0")
@@ -857,9 +867,17 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_goal6.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal3.goal))
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(goal5.goal)))
-        # print(file)
-        for i in range(1, 7):
-            self.assertTrue(file.content[i].is_finished())
+
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
         path = 'integral/examples/FrullaniIntegral.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)

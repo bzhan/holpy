@@ -1,7 +1,7 @@
 """State of computation"""
 
 import copy
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 from integral.expr import Expr, Var, Const
 from integral import rules, expr
@@ -64,6 +64,10 @@ class StateItem:
         """Clear itself."""
         pass
 
+    def is_finished(self):
+        """Whether the proof in the item is finished. Default to true."""
+        return True
+
 
 class FuncDef(StateItem):
     """Introduce a new function definition."""
@@ -109,6 +113,7 @@ class FuncDef(StateItem):
 
     def get_facts(self):
         return [self.eq]
+
 
 class Lemma(StateItem):
     """
@@ -522,7 +527,7 @@ class RewriteGoalProof(StateItem):
     proof an equation by rewrting equation,
     transform from a initial equation into goal using rules on both side.
     '''
-    def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None, begin:Goal):
+    def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None, begin: Goal):
         # assert begin.is_finished()
         if not goal.is_equals():
             raise AssertionError("RewriteGoalProof: goal is not an equality.")
@@ -612,8 +617,8 @@ class CompState:
 class CompFile:
     """Represent a file containing multiple CompState objects."""
     def __init__(self, name: str):
-        self.name = name
-        self.content = []
+        self.name: str = name
+        self.content: List[StateItem] = []
 
     def __str__(self):
         res = "File %s\n" % self.name
@@ -820,12 +825,8 @@ def parse_item(item) -> StateItem:
         goal = parser.parse_expr(item['goal'])
 
         begin_goal = parser.parse_expr(item['start']['start'])
-        if 'conds' in item['start']:
-            begin_conds = parser.parse_expr(item['start']['conds'])
-        else:
-            begin_conds = None
-        begin_connection_symbol = '==>'
-        res = RewriteGoalProof(goal = goal, conds = conds, begin = Goal(begin_goal, begin_conds))
+        begin_conds = parse_conds(item['start'])
+        res = RewriteGoalProof(goal=goal, conds=conds, begin=Goal(begin_goal, begin_conds))
         for i, step in enumerate(item['start']['steps']):
             res.begin.add_step(parse_step(step, res.begin, i))
         return res
