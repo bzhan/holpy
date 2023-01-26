@@ -178,7 +178,7 @@
                             "res": "x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, (-1) ^ k * (-x) ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)",
                             "rule": {
                                 "name": "MulEquation",
-                                "str": "multiply an expression on both side"
+                                "str": "multiply an expression on both sides"
                             },
                             "type": "CalculationStep"
                         }

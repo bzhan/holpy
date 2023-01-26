@@ -1320,7 +1320,7 @@ class ElimAbs(Rule):
             "str": str(self)
         }
 
-    def check_zero_point(self, e):
+    def check_zero_point(self, e: Expr):
         integrals = e.separate_integral()
         # print("e.sep:",integrals)
         if not integrals:
@@ -1355,9 +1355,11 @@ class ElimAbs(Rule):
             if len(abs_expr) == 0:
                 return e
 
-            abs_expr = abs_expr[0]  # only consider the first absolute value
+            # Only consider the first absolute value
+            abs_expr = abs_expr[0]
 
-            g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper)  # g: value in abs > 0, s: value in abs < 0
+            # g: value in abs > 0, s: value in abs < 0
+            g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper)
             new_integral = []
             for l, h in g:
                 new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, abs_expr.args[0])))
@@ -1365,12 +1367,14 @@ class ElimAbs(Rule):
                 new_integral.append(
                     expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
             return sum(new_integral[1:], new_integral[0])
+
         elif e.ty == expr.FUN and e.func_name == 'abs':
             if conds != None and is_positive(e.args[0], conds):
                 conds.del_assume(Op('>', e.args[0], Const(0)))
                 return e.args[0]
             else:
                 return e
+
         else:
             sep_ints = e.separate_integral()
             if len(sep_ints) == 0:
@@ -2414,46 +2418,6 @@ class RewriteLimit(Rule):
     def eval(self, e: Expr, conds=None) -> Expr:
         return e.body.replace(Var(e.var), e.lim)
 
-class RewritePower(Rule):
-    '''(-x) ^ k = (-1) ^ k * x^k'''
-
-    def __init__(self, old_expr, new_expr):
-        self.name = "RewritePower"
-        self.old_expr = old_expr
-        self.new_expr = new_expr
-
-    def __str__(self):
-        return "rewrite power"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, conds=None) -> Expr:
-        old_expr = self.old_expr
-        if old_expr is not None and old_expr != e:
-            find_res = e.find_subexpr(old_expr)
-            if len(find_res) == 0:
-                raise AssertionError("Equation: old expression not found")
-            loc = find_res[0]
-            return OnLocation(self, loc).eval(e)
-        if old_expr == e:
-            a = Symbol('a', [VAR, OP, FUN])
-            b = Symbol('b', [VAR, OP, FUN])
-            rules = [
-                ((-a)^b, ((Const(-1))^b) * (a^b)),
-                ]
-            rule = FullSimplify()
-            for pat, pat_res in rules:
-                mapping = expr.match(e, pat)
-                if mapping is not None:
-                    res = pat_res.inst_pat(mapping)
-                    if rule.eval(res) == rule.eval(self.new_expr):
-                        return self.new_expr
-        return e
-
 
 class MergeSummation(Rule):
     "SUM(u,0,oo, body1) + SUM(k,0,oo,body2) = SUM(u, 0, oo, body1+body2)"
@@ -2479,8 +2443,13 @@ class MergeSummation(Rule):
             b = b.alpha_convert(a.index_var)
         return Summation(a.index_var, a.lower, a.upper, Op(e.op, a.body, b.body))
 
-class SummationSimplify(Rule):
 
+class SummationSimplify(Rule):
+    """Replace (-1)^(2x) by 1 in the body of summation.
+    
+    TODO: replace with more robust tactic.
+    
+    """
     def __init__(self):
         self.name = "SummationSimplify"
 
@@ -2499,10 +2468,14 @@ class SummationSimplify(Rule):
         e = e.replace((Const(-1))^(Const(2)*Var(e.index_var)), Const(1))
         return e
 
+
 class DerivEquation(Rule):
+    """Differentiate both sides with respect to some variable."""
+
     def __init__(self, var):
         self.name = "DerivEquation"
         self.var = var
+
     def __str__(self):
         return "derivate both side"
 
@@ -2519,8 +2492,10 @@ class DerivEquation(Rule):
 
 
 class DerivSumExchange(Rule):
+    """Exchange derivative and summation."""
     def __init__(self):
         self.name = "DerivSumExchange"
+
     def __str__(self):
         return "exchange derivative and summation"
 
@@ -2531,18 +2506,20 @@ class DerivSumExchange(Rule):
         }
 
     def eval(self, e: Expr, conds=None) -> Expr:
-        if e.ty == DERIV and e.body.ty == SUMMATION:
+        if e.is_deriv() and e.body.is_summation():
             return Summation(e.body.index_var, e.body.lower, e.body.upper, Deriv(e.var, e.body.body))
         else:
             return e
 
 
 class MulEquation(Rule):
-    def __init__(self, e:Expr):
+    """Multiply both sides of equality by an expression."""
+    def __init__(self, e: Expr):
         self.name = "MulEquation"
         self.e = e
+
     def __str__(self):
-        return "multiply an expression on both side"
+        return "multiply an expression on both sides"
 
     def export(self):
         return {
@@ -2555,14 +2532,19 @@ class MulEquation(Rule):
 
 
 class RewriteMulPower(Rule):
-    '''
-    a * sqrt(b) -> sqrt(a^2 * b) if be_merged_inx = 0
-    (x+3)^(-2) * y -> ((x+3) * y^(-1/2))^(-2) if be_merged_idx = 1
-    '''
-    def __init__(self, be_merged_idx:int):
+    """Merge expression into a power expression.
+
+        a * sqrt(b) -> sqrt(a^2 * b) if be_merged_idx = 0
+        (x+3)^(-2) * y -> ((x+3) * y^(-1/2))^(-2) if be_merged_idx = 1
+
+    """
+    def __init__(self, be_merged_idx: int):
         assert be_merged_idx in (0, 1)
         self.be_merged_idx = be_merged_idx
         self.name = "RewriteMulPower"
+
+    def __str__(self):
+        return "rewrite expression multiplied a power expression"
 
     def eval(self, e: Expr, conds = None):
         if not isinstance(e, Op) or not e.op == '*':
@@ -2570,15 +2552,12 @@ class RewriteMulPower(Rule):
         idx = self.be_merged_idx
         res = e
         r = ExpandPolynomial()
-        if e.args[idx ^ 1].is_fun() and e.args[idx ^ 1].func_name == 'sqrt':
-            res = Fun('sqrt', r.eval(((e.args[idx] ^ 2) * e.args[idx ^ 1].args[0]).normalize()))
-        elif e.args[idx ^ 1].is_power():
-            res = Op('^',r.eval(((e.args[idx] ^ (1 / e.args[idx ^ 1].args[1])) * e.args[idx ^ 1].args[0]).normalize()),
-                     e.args[idx ^ 1].args[1])
+        if e.args[1 - idx].is_fun() and e.args[1 - idx].func_name == 'sqrt':
+            res = Fun('sqrt', r.eval(((e.args[idx] ^ 2) * e.args[1 - idx].args[0]).normalize()))
+        elif e.args[1 - idx].is_power():
+            res = Op('^', r.eval(((e.args[idx] ^ (1 / e.args[1 - idx].args[1])) * e.args[1 - idx].args[0]).normalize()),
+                     e.args[1 - idx].args[1])
         return res
-
-    def __str__(self):
-        return "rewrite expression multiplied a power expression"
 
     def export(self):
         return {
@@ -2586,11 +2565,15 @@ class RewriteMulPower(Rule):
             "str": str(self)
         }
 
+
 class SolveEquation(Rule):
-    def __init__(self, be_solved_expr:Expr):
+    """Solve equation for the given expression."""
+
+    def __init__(self, be_solved_expr: Expr):
         self.be_solved_expr = be_solved_expr
         self.name = "SolveEquation"
-    def eval(self, e:Expr, conds = None):
+
+    def eval(self, e: Expr, conds = None):
         assert e.is_equals()
         all_vars = e.get_vars()
         var_name = ""
@@ -2603,7 +2586,7 @@ class SolveEquation(Rule):
         e = e.replace(self.be_solved_expr, var)
         e = e.lhs - e.rhs
         res = sympy.solvers.solve(sympy_style(e), sympy_style(var))
-        if len(res)==0:
+        if len(res) == 0:
             raise AssertionError("can't solve")
         else:
             return Op('=', self.be_solved_expr, holpy_style(res[0]))

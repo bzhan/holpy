@@ -279,7 +279,7 @@ class RulesTest(unittest.TestCase):
             ("INT u:[1,3]. u * abs(u) ^ -1",
              "INT u:[1,3]. 1"),
             ("INT u:[1,4]. 2 * u / (1 + abs(u))",
-             "INT u:[1,4]. 2 * u * (u + 1) ^ -1"),
+             "INT u:[1,4]. 2 * u * (u + 1) ^ (-1)"),
             ("INT x:[1/exp(1), 1]. abs(log(x))", "INT x:[exp(-1),1]. -log(x)"),
             ("INT x:[1,exp(1)]. abs(log(x))", "INT x:[1,exp(1)]. log(x)")
         ]
@@ -626,21 +626,24 @@ class RulesTest(unittest.TestCase):
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testFullSimplify(self):
-        test_data = [('LIM {x -> 1 }. (x ^ 2 - 1) / (x ^ 2 + 3 * x - 4)', "LIM {x -> 1 }. (x ^ 2 - 1) * (x ^ 2 + 3 * x - 4) ^ (-1)"),
-                     ('LIM {x -> 1 }. (x-1) * tan(pi/2 * x)', "LIM {x -> 1 }. (x - 1) * tan(1/2 * pi * x)"),
-                     ('LIM {x -> 0 }. sin(x) / x', "LIM {x -> 0 }. x ^ (-1) * sin(x)"),
-                     ('SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1) * (1/x))',
-                      'x ^ (-1) * SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))'),
-                     ('SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1)) / x',
-                      "x ^ (-1) * SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))"),
-                     ("SUM(k, 0, oo, (-1) ^ (2*k+1) * x ^ (k + 1) / (k+1))",
-                      "-SUM(k, 0, oo, x ^ (k + 1) * (k + 1) ^ (-1))"),
-                     ("(c * x ^ a) ^ k * log(x) ^ k", "log(x) ^ k * (c * x ^ a) ^ k"),]
-        r = rules.FullSimplify()
+        test_data = [
+            ('LIM {x -> 1 }. (x ^ 2 - 1) / (x ^ 2 + 3 * x - 4)', "LIM {x -> 1 }. (x ^ 2 - 1) * (x ^ 2 + 3 * x - 4) ^ (-1)"),
+            ('LIM {x -> 1 }. (x-1) * tan(pi/2 * x)', "LIM {x -> 1 }. (x - 1) * tan(1/2 * pi * x)"),
+            ('LIM {x -> 0 }. sin(x) / x', "LIM {x -> 0 }. x ^ (-1) * sin(x)"),
+            ('SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1) * (1/x))',
+             'x ^ (-1) * SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))'),
+            ('SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1)) / x',
+             "x ^ (-1) * SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))"),
+            ("SUM(k, 0, oo, (-1) ^ (2*k+1) * x ^ (k + 1) / (k+1))",
+             "-SUM(k, 0, oo, x ^ (k + 1) * (k + 1) ^ (-1))"),
+            ("(c * x ^ a) ^ k * log(x) ^ k", "log(x) ^ k * (c * x ^ a) ^ k"),
+        ]
+
         for s, res in test_data:
             e = parse_expr(s)
-            e = r.eval(e)
+            e = rules.FullSimplify().eval(e)
             self.assertEqual(str(e), res)
+
     def testLimFunExchange(self):
         test_data = [
             ("LIM {x->3}. f(x,log(x))", "f(LIM {x -> 3 }. x,LIM {x -> 3 }. log(x))"),
@@ -664,8 +667,9 @@ class RulesTest(unittest.TestCase):
             self.assertEqual(str(e), s2)
 
     def testFullSimplify2(self):
-        test_data = [("INT x:[0, oo].D b.(x ^ 2 + b) ^ (-m - 1)","INT x:[0,oo]. D b. (x ^ 2 + b) ^ (-m - 1)"),
-                     ]
+        test_data = [
+            ("INT x:[0,oo]. D b. (x ^ 2 + b) ^ (-m - 1)", "INT x:[0,oo]. D b. (x ^ 2 + b) ^ (-m - 1)"),
+        ]
         for s,res in test_data:
             s = parse_expr(s)
             rules.FullSimplify().eval(s)
@@ -683,7 +687,7 @@ class RulesTest(unittest.TestCase):
             res = rules.ExpandSeries().eval(e)
             self.assertEqual(str(res), b)
 
-    def testRewrteMulPower(self):
+    def testRewriteMulPower(self):
         test_data = [
             ('a * sqrt(b+3)', 0, 'sqrt(a ^ 2 * b + 3 * a ^ 2)'),
             ('x^(-1)*(2*x^(-2)+1)^(-1/2)', 0, '(x ^ 2 + 2) ^ (-1/2)'),
@@ -699,17 +703,22 @@ class RulesTest(unittest.TestCase):
         test_data = [
             ('x ^ 3 * (x ^ (-2) + 1)', 'x ^ 3 + x'),
         ]
+
         for a, b in test_data:
             e = parser.parse_expr(a)
             res = rules.ExpandPolynomial().eval(e)
             self.assertEqual(str(res), b)
+
     def testSolveEquation(self):
-        test_data = [('a+I(1) = b-I(1)', "I(1)",""),
-                     ]
-        print()
+        test_data = [
+            ("a + I(1) = b - I(1)", "I(1)", "I(1) = -a / 2 + b / 2"),
+        ]
+
         for a, b, c in test_data:
             e = parse_expr(a)
             res = rules.SolveEquation(parse_expr(b)).eval(e)
-            print(res)
+            self.assertEqual(str(res), c)
+
+
 if __name__ == "__main__":
     unittest.main()

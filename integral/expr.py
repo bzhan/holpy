@@ -1377,7 +1377,7 @@ class Expr:
         lower = sympy_style(lower)
         upper = sympy_style(upper)
         greater_zero = solveset(re(e) > 0, var, Interval(lower, upper, left_open=True, right_open=True))
-        smaller_zero = solveset(re(e) < 0, var, Interval(lower, upper, left_open=True, right_open=True))
+        smaller_zero = Interval(lower, upper, left_open=True, right_open=True) - greater_zero
 
         # Convert results SymPy's solveset into holpy style.
         def to_holpy(l):
