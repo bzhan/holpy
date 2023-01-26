@@ -12,37 +12,6 @@ from integral import conditions
 
 
 class IntegralTest(unittest.TestCase):
-    def testInteresting(self):
-        file = compstate.CompFile("Interesting")
-
-        # Problem (2.2.a)
-        calc = file.add_calculation("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")
-        calc.perform_rule(rules.Substitution("y", parser.parse_expr("pi / 2 - x")))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Equation(parser.parse_expr("1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))"),
-                                         old_expr=parser.parse_expr("sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y)))^-1")))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")))
-        self.assertEqual(str(calc.last_expr), "1/4 * pi")
-
-        # Problem (2.2.b)
-        calc = file.add_calculation("INT x:[0,pi]. x * sin(x) / (1 + cos(x)^2)")
-        calc.perform_rule(rules.Substitution("y", parser.parse_expr("pi - x")))
-        calc.perform_rule(rules.ExpandPolynomial())
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,pi]. x * sin(x) / (1 + cos(x)^2)")))
-        calc.perform_rule(rules.Substitution("u", parser.parse_expr("cos(y)")))
-        calc.perform_rule(rules.FullSimplify())
-        self.assertEqual(str(calc.last_expr), "1/4 * pi ^ 2")
-
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        with open('integral/examples/interesting.json', 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
-
     def testTongji(self):
         basic.load_theory('interval_arith')
 
@@ -493,6 +462,62 @@ class IntegralTest(unittest.TestCase):
         self.assertEqual(str(file.content[3].last_expr), "Gamma(4/3)")
 
         with open('integral/examples/GammaBeta.json', 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testTrick2a(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.2, example 1
+
+        file = compstate.CompFile("Trick2a")
+
+        calc = file.add_calculation("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")
+        calc.perform_rule(rules.Substitution("y", parser.parse_expr("pi / 2 - x")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation(parser.parse_expr("1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))"),
+                                         old_expr=parser.parse_expr("sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y)))^-1")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")))
+        self.assertEqual(str(calc.last_expr), "1/4 * pi")
+
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
+        with open('integral/examples/trick2a.json', 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testTrick2b(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.2, example 2
+
+        file = compstate.CompFile("Trick2a")
+
+        calc = file.add_calculation("INT x:[0,pi]. x * sin(x) / (1 + cos(x)^2)")
+        calc.perform_rule(rules.Substitution("y", parser.parse_expr("pi - x")))
+        calc.perform_rule(rules.ExpandPolynomial())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,pi]. x * sin(x) / (1 + cos(x)^2)")))
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("cos(y)")))
+        calc.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(calc.last_expr), "1/4 * pi ^ 2")
+
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
+        with open('integral/examples/trick2b.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testLeibniz01(self):
