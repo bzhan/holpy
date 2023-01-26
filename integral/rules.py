@@ -1084,15 +1084,22 @@ class Equation(Rule):
         self.old_expr = old_expr
 
     def __str__(self):
-        return "rewriting %s to %s" % (self.old_expr, self.new_expr)
+        if self.old_expr is None:
+            return "rewriting to %s" % self.new_expr
+        else:
+            return "rewriting %s to %s" % (self.old_expr, self.new_expr)
 
     def export(self):
+        if self.old_expr is None:
+            latex_str = "rewriting to \\(%s\\)" % latex.convert_expr(self.new_expr)
+        else:
+            latex_str = "rewriting \\(%s\\) to \\(%s\\)" % \
+                (latex.convert_expr(self.old_expr), latex.convert_expr(self.new_expr))
         res = {
             "name": self.name,
             "new_expr": str(self.new_expr),
             "str": str(self),
-            "latex_str": "rewriting \\(%s\\) to \\(%s\\)" %
-                (latex.convert_expr(self.old_expr), latex.convert_expr(self.new_expr))
+            "latex_str": latex_str
         }
         if self.old_expr:
             res['old_expr'] = str(self.old_expr)

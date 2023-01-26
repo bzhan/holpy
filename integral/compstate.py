@@ -775,6 +775,10 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'MulEquation':
         e = parser.parse_expr(item['expr'])
         return rules.MulEquation(e)
+    elif item['name'] == 'ExpEquation':
+        return rules.ExpEquation()
+    elif item['name'] == 'LimFunExchange':
+        return rules.LimFunExchange()
     elif item['name'] == 'LimIntExchange':
         return rules.LimIntExchange()
     elif item['name'] == 'RewriteMulPower':

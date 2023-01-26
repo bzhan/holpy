@@ -244,8 +244,11 @@
                             "latex_res": "\\lim\\limits_{t\\to 0} (\\,\\frac{1}{2} t ^ {2} + \\log{(I{(t)})}\\,) = \\lim\\limits_{t\\to 0} C",
                             "res": "(LIM {t -> 0 }. 1/2 * t ^ 2 + log(I(t))) = (LIM {t -> 0 }. SKOLEM_CONST(C))",
                             "rule": {
+                                "latex_str": "apply limit \\(t \\to 0\\) to equation",
+                                "lim": "0",
                                 "name": "LimitEquation",
-                                "str": "apply limit to equation"
+                                "str": "apply limit t -> 0 to equation",
+                                "var": "t"
                             },
                             "type": "CalculationStep"
                         },
@@ -262,6 +265,7 @@
                             "latex_res": "\\log{(\\sqrt{\\frac{\\pi}{2}})} = C",
                             "res": "log(sqrt(pi / 2)) = SKOLEM_CONST(C)",
                             "rule": {
+                                "lemma": "I(0) = sqrt(pi / 2)",
                                 "loc": "0.0",
                                 "name": "ApplyLemma",
                                 "str": "apply lemma at 0.0"
@@ -390,5 +394,5 @@
             "type": "Goal"
         }
     ],
-    "name": "Integral1"
+    "name": "Leibniz02"
 }

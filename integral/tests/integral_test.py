@@ -552,6 +552,220 @@ class IntegralTest(unittest.TestCase):
         with open('integral/examples/leibniz01.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
+    def testLeibniz02(self):
+        file = compstate.CompFile('leibniz02')
+
+        # Overall goal: (INT x:[-oo,oo]. exp(-(x^2)/2)) = sqrt(2*pi)
+
+        # Make definition
+        e = parser.parse_expr("g(t) = (INT x:[0,t].exp(-(x^2)/2))^2")
+        Idef = compstate.FuncDef(e)
+        file.add_definition(Idef)
+
+        e = parser.parse_expr("(INT x:[-oo,oo]. exp(-x^2/2)) = 2 * LIM {t->oo}. sqrt(g(t))")
+        Eq1 = compstate.Goal(e)
+        file.add_goal(Eq1)
+        Eq1_proof = Eq1.proof_by_calculation()
+        calc = Eq1_proof.lhs_calc
+        calc.perform_rule(rules.SplitRegion(expr.Const(0)))
+        e = parser.parse_expr('-x')
+        calc.perform_rule(rules.OnLocation(rules.Substitution('y', e), '0'))
+        e = parser.parse_expr('y')
+        calc.perform_rule(rules.OnLocation(rules.Substitution('x', e), '0'))
+        calc.perform_rule(rules.FullSimplify())
+        calc = Eq1_proof.rhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '1.0.0'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.RewriteLimit(), '1'))
+        calc.perform_rule(rules.OnLocation(rules.ElimAbs(), '1'))
+
+        e = '(D t. g(t) + 2 * INT y:[0, 1].exp(-(1+y^2)*t^2/2)/(1+y^2)) = 0'
+        e = parser.parse_expr(e)
+        Eq2 = compstate.Goal(e)
+        file.add_goal(Eq2)
+        Eq2_proof = Eq2.proof_by_calculation()
+        calc = Eq2_proof.lhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '0.0'))
+        calc.perform_rule(rules.FullSimplify())
+        e = parser.parse_expr('x/t')
+        calc.perform_rule(rules.OnLocation(rules.Substitution('y', e), '1.1'))
+        e = parser.parse_expr('-exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) ')
+        calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.1.0'))
+        e = parser.parse_expr('-1/2 * t ^ 2 * y ^ 2+1/2 * t ^ 2 *  (- 1) ')
+        calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.1.0.0.0'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1.1.0'))
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr('2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_FUNC(C(y))')
+        Eq3 = compstate.Goal(e)
+        file.add_goal(Eq3)
+        Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
+        calc = Eq3_proof.begin
+        calc.perform_rule(rules.IntegralEquation(var = 't',left_skolem_name='E',right_skolem_name=None))
+        calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral(const_name='C'), '1'))
+        calc.perform_rule(rules.FullSimplify())
+        new_expr = parser.parse_expr("SKOLEM_FUNC(C(y))")
+        calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
+
+        e = parser.parse_expr("g(0) = 0")
+        Eq4 = compstate.Goal(e)
+        file.add_goal(Eq4)
+        proof_of_Eq4 = Eq4.proof_by_calculation()
+        calc = proof_of_Eq4.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("pi/2 = SKOLEM_FUNC(C(y))")
+        Eq5 = compstate.Goal(e)
+        file.add_goal(Eq5)
+        proof_of_Eq5 = Eq5.proof_by_rewrite_goal(begin = Eq3)
+        calc = proof_of_Eq5.begin
+        calc.perform_rule(rules.LimitEquation('t', expr.Const(0)))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq4.goal), "0.0"))
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi")
+        Eq6 = compstate.Goal(e)
+        file.add_goal(Eq6)
+        proof_of_Eq6 = Eq6.proof_by_calculation()
+        calc = proof_of_Eq6.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(Eq3.goal))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq5.goal), '0'))
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr("(INT x:[-oo,oo]. exp(-x^2/2)) = sqrt(2*pi)")
+        conds_of_Eq7 = compstate.Conditions()
+        e2 = parser.parse_expr("y^2 + 1 > 0")
+        conds_of_Eq7.add_condition(str(e2), e2)
+        Eq7 = compstate.Goal(e, conds_of_Eq7)
+        file.add_goal(Eq7)
+        proof_of_Eq6 = Eq7.proof_by_calculation()
+        calc = proof_of_Eq6.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(Eq1.goal))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(Eq6.goal)))
+        calc.perform_rule(rules.OnLocation(rules.LimFunExchange(), '1'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.LimIntExchange(), '1.0.0.1'))
+        old_expr = parser.parse_expr("1/2 * t ^ 2 * (-(y ^ 2) - 1)")
+        new_expr = parser.parse_expr("-1/2 * t^2 * (y^2+1)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr,new_expr=new_expr))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_Eq6.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
+        with open('integral/examples/leibniz02.json', 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testLeibniz03(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.1, example #3
+
+        # Overall goal: INT x:[0, oo]. cos(tx)*exp(-(x^2)/2) = sqrt(pi/2)*exp(-(t^2)/2)
+
+        # Initial state
+        file = compstate.CompFile('Leibniz02')
+
+        # Make definition
+        e = parser.parse_expr("I(t) = INT x:[0, oo]. cos(t*x)*exp(-(x^2)/2)")
+        Idef = compstate.FuncDef(e)
+        file.add_definition(Idef)
+        conds = conditions.Conditions()
+
+        e = parser.parse_expr('I(0) = sqrt(pi/2)')
+        lemma1 = compstate.Lemma(e)
+        file.add_lemma(lemma1)
+
+        # Prove the following equality
+        e = parser.parse_expr('(D t. I(t)) = -t*I(t)')
+        Eq1 = compstate.Goal(e, conds=conds)
+        file.add_goal(Eq1)
+        Eq1_proof = Eq1.proof_by_calculation()
+        calc = Eq1_proof.lhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '0'))
+        calc.perform_rule(rules.OnLocation(rules.ElimInfInterval(new_var='u'), '0'))
+        calc.perform_rule(rules.FullSimplify())
+        u = parser.parse_expr('sin(t*x)')
+        v = parser.parse_expr('-exp(-x^2/2)')
+        calc.perform_rule(rules.OnLocation(rules.IntegrationByParts(u, v), '0.0'))
+        calc.perform_rule(rules.FullSimplify())
+
+        calc = Eq1_proof.rhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '1'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ElimInfInterval(new_var='u'), '0.1'))
+
+        Eq2 = compstate.Goal(parser.parse_expr('(D t. log(I(t)) + t^2/2) = 0'), conds=conds)
+        file.add_goal(Eq2)
+        Eq2_proof = Eq2.proof_by_calculation()
+        calc = Eq2_proof.lhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq1.goal), '0.1'))
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr('1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)')
+        Eq3 = compstate.Goal(e, conds=conds)
+        file.add_goal(Eq3)
+        Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
+        calc = Eq3_proof.begin
+        calc.perform_rule(rules.IntegralEquation(var='t', left_skolem_name='E', right_skolem_name=None))
+        calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral(const_name='C'), '1'))
+        new_expr = parser.parse_expr("SKOLEM_CONST(C)")
+        calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
+
+        e = parser.parse_expr('log(sqrt(pi / 2)) = SKOLEM_CONST(C)')
+        Eq4 = compstate.Goal(e, conds=conds)
+        file.add_goal(Eq4)
+        Eq4_proof = Eq4.proof_by_rewrite_goal(begin=Eq3)
+        calc = Eq4_proof.begin
+        calc.perform_rule(rules.LimitEquation('t', expr.Const(0)))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma=lemma1.lemma, conds=None), '0.0'))
+
+        e = parser.parse_expr('log(I(t)) = -t ^ 2 / 2 + log(sqrt(pi / 2))')
+        Eq5 = compstate.Goal(e, conds=conds)
+        file.add_goal(Eq5)
+        Eq5_proof = Eq5.proof_by_calculation()
+        calc = Eq5_proof.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(Eq3.goal))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq4.goal), '0'))
+        calc.perform_rule(rules.FullSimplify())
+        calc = Eq5_proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        e = parser.parse_expr('I(t) = sqrt(pi/2) * exp(-t^2/2)')
+        Eq6 = compstate.Goal(e, conds=conds)
+        file.add_goal(Eq6)
+        Eq6_proof = Eq6.proof_by_rewrite_goal(begin=Eq5)
+        calc = Eq6_proof.begin
+        calc.perform_rule(rules.ExpEquation())
+        calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1'))
+        calc.perform_rule(rules.FullSimplify())
+
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
+        with open('integral/examples/leibniz03.json', 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
     def testEulerLogSineIntegral(self):
         # Reference:
         # Inside interesting integrals, Section 2.4

@@ -166,10 +166,11 @@
                             "latex_res": "2 t (\\int_{0}^{1} -e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} \\,dy) + 2 e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} t e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
                             "res": "2 * t * (INT y:[0,1]. -exp(1/2 * t ^ 2 * (-(y ^ 2) - 1))) + 2 * exp(-1/2 * t ^ 2) * (INT y:[0,1]. t * exp(-1/2 * t ^ 2 * y ^ 2))",
                             "rule": {
+                                "latex_str": "rewriting to \\(-e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}\\) at 0.1.0",
                                 "loc": "0.1.0",
                                 "name": "Equation",
                                 "new_expr": "-exp(1/2 * t ^ 2 * (-(y ^ 2) - 1))",
-                                "str": "rewriting at 0.1.0"
+                                "str": "rewriting to -exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) at 0.1.0"
                             },
                             "type": "CalculationStep"
                         },
@@ -177,10 +178,11 @@
                             "latex_res": "2 t (\\int_{0}^{1} -e^{-1/2\\cdot t ^ {2} y ^ {2} + 1/2\\cdot t ^ {2}\\cdot -1} \\,dy) + 2 e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} t e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy)",
                             "res": "2 * t * (INT y:[0,1]. -exp(-1/2 * t ^ 2 * y ^ 2 + 1/2 * t ^ 2 * -1)) + 2 * exp(-1/2 * t ^ 2) * (INT y:[0,1]. t * exp(-1/2 * t ^ 2 * y ^ 2))",
                             "rule": {
+                                "latex_str": "rewriting to \\(-\\frac{1}{2} t ^ {2} y ^ {2} + \\frac{1}{2} t ^ {2}\\cdot -1\\) at 0.1.0.0.0",
                                 "loc": "0.1.0.0.0",
                                 "name": "Equation",
                                 "new_expr": "-1/2 * t ^ 2 * y ^ 2 + 1/2 * t ^ 2 * -1",
-                                "str": "rewriting at 0.1.0.0.0"
+                                "str": "rewriting to -1/2 * t ^ 2 * y ^ 2 + 1/2 * t ^ 2 * -1 at 0.1.0.0.0"
                             },
                             "type": "CalculationStep"
                         },
@@ -346,8 +348,11 @@
                             "latex_res": "\\lim\\limits_{t\\to 0} (\\,2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)}\\,) = \\lim\\limits_{t\\to 0} C(y)",
                             "res": "(LIM {t -> 0 }. 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t)) = (LIM {t -> 0 }. SKOLEM_FUNC(C(y)))",
                             "rule": {
+                                "latex_str": "apply limit \\(t \\to 0\\) to equation",
+                                "lim": "0",
                                 "name": "LimitEquation",
-                                "str": "apply limit to equation"
+                                "str": "apply limit t -> 0 to equation",
+                                "var": "t"
                             },
                             "type": "CalculationStep"
                         },
@@ -537,10 +542,11 @@
                             "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,e^{-1/2\\cdot t ^ {2} (y ^ {2} + 1)} (y ^ {2} + 1) ^ {-1}\\,) \\,dy) + \\frac{1}{2} \\pi}",
                             "res": "2 * sqrt(-2 * (INT y:[0,1]. LIM {t -> oo}. exp(-1/2 * t ^ 2 * (y ^ 2 + 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi)",
                             "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{2} t ^ {2} (-y ^ {2} - 1)\\) to \\(-\\frac{1}{2} t ^ {2} (y ^ {2} + 1)\\)",
                                 "name": "Equation",
                                 "new_expr": "-1/2 * t ^ 2 * (y ^ 2 + 1)",
                                 "old_expr": "1/2 * t ^ 2 * (-(y ^ 2) - 1)",
-                                "str": "rewriting"
+                                "str": "rewriting 1/2 * t ^ 2 * (-(y ^ 2) - 1) to -1/2 * t ^ 2 * (y ^ 2 + 1)"
                             },
                             "type": "CalculationStep"
                         },
@@ -585,5 +591,5 @@
             "type": "Goal"
         }
     ],
-    "name": "probability integral"
+    "name": "leibniz02"
 }
