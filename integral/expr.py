@@ -1941,6 +1941,8 @@ def deriv(var: str, e: Expr) -> Expr:
         return Limit(e.var, e.lim, deriv(var, e.body))
     elif e.ty == SUMMATION:
         return Summation(e.index_var, e.lower, e.upper, deriv(var, e.body))
+    elif e.ty == INF:
+        return Const(0)
     else:
         print(e)
         raise NotImplementedError

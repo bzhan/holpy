@@ -4,10 +4,8 @@ import unittest
 import json
 from fractions import Fraction
 
-import backcall
-
-from integral import expr, parser
-from integral.expr import Const, deriv, neg_inf, Inf
+from integral import parser
+from integral.expr import Const
 from integral.parser import parse_expr
 from integral import rules
 from integral import compstate

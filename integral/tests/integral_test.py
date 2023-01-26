@@ -495,6 +495,63 @@ class IntegralTest(unittest.TestCase):
         with open('integral/examples/GammaBeta.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
+    def testLeibniz01(self):
+        # Reference
+        # Inside interesting integrals, Section 2.1, example 1
+        file = compstate.CompFile("Leibniz01")
+
+        # Basic result: integral of 1 / (x^2 + a^2)
+        e = parser.parse_expr("(INT x:[0,oo]. 1 / (x^2 + a^2)) = pi / (2 * a)")
+        conds = compstate.Conditions()
+        conds.add_condition("a", parser.parse_expr("a > 0"))
+        goal1 = compstate.Goal(e, conds=conds)
+        file.add_compstate(goal1)
+
+        proof = goal1.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ElimInfInterval())
+        calc.perform_rule(rules.SubstitutionInverse("u", parser.parse_expr("a * u")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("(a ^ 2 * u ^ 2 + a ^ 2) ^ (-1)"),
+                                         new_expr=parser.parse_expr("(u^2 + 1) ^ (-1) / (a ^ 2)")))
+        calc.perform_rule(rules.FullSimplify())
+
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        # Derivate to get integral of 1 / (x^2 + a^2)^2
+        e = parser.parse_expr("(INT x:[0,oo]. 1 / (x^2 + a^2)^2) = pi / (4 * a^3)")
+        goal2 = compstate.Goal(e, conds=conds)
+        file.add_compstate(goal2)
+        proof = goal2.proof_by_rewrite_goal(begin=goal1)
+        calc = proof.begin
+        calc.perform_rule(rules.DerivEquation('a'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.MulEquation(parser.parse_expr("1 / (-2 * a)")))
+
+        # Derivate again:
+        e = parser.parse_expr("(INT x:[0,oo]. 1 / (x^2 + a^2)^3) = 3*pi / (16 * a^5)")
+        goal3 = compstate.Goal(e, conds=conds)
+        file.add_compstate(goal3)
+        proof = goal3.proof_by_rewrite_goal(begin=goal2)
+        calc = proof.begin
+        calc.perform_rule(rules.DerivEquation('a'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.MulEquation(parser.parse_expr("1 / (-4 * a)")))
+
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
+        with open('integral/examples/leibniz01.json', 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
     def testEulerLogSineIntegral(self):
         # Reference:
         # Inside interesting integrals, Section 2.4
