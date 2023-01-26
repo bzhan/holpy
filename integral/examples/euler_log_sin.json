@@ -162,10 +162,11 @@
                             "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(\\frac{2}{a} (a \\sin{(x)}) (a \\cos{(x)}))} \\,dx",
                             "res": "INT x:[0,1/2 * pi]. log(2 / a * (a * sin(x)) * (a * cos(x)))",
                             "rule": {
+                                "latex_str": "rewriting \\(a (2 \\sin{(x)} \\cos{(x)})\\) to \\(\\frac{2}{a} (a \\sin{(x)}) (a \\cos{(x)})\\)",
                                 "name": "Equation",
                                 "new_expr": "2 / a * (a * sin(x)) * (a * cos(x))",
                                 "old_expr": "a * (2 * sin(x) * cos(x))",
-                                "str": "rewriting"
+                                "str": "rewriting a * (2 * sin(x) * cos(x)) to 2 / a * (a * sin(x)) * (a * cos(x))"
                             },
                             "type": "CalculationStep"
                         },

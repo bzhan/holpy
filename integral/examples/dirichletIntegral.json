@@ -5,7 +5,7 @@
                 {
                     "cond": "b >= 0",
                     "latex_cond": "b \\ge 0",
-                    "name": "b>=0",
+                    "name": "b",
                     "type": "Condition"
                 }
             ],
@@ -106,6 +106,7 @@
                             "latex_res": "-\\frac{1}{b ^ {2} + 1}",
                             "res": "-(1 / (b ^ 2 + 1))",
                             "rule": {
+                                "lemma": "(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1 / (b ^ 2 + 1)",
                                 "loc": "0",
                                 "name": "ApplyLemma",
                                 "str": "apply lemma at 0"
@@ -277,6 +278,7 @@
                                     "latex_res": "C",
                                     "res": "SKOLEM_CONST(C)",
                                     "rule": {
+                                        "lemma": "I(0) = SKOLEM_CONST(C)",
                                         "name": "ApplyLemma",
                                         "str": "apply lemma"
                                     },
@@ -451,6 +453,7 @@
                             "latex_res": "I{(b)} = -\\arctan{(b)} + I{(0)}",
                             "res": "I(b) = -atan(b) + I(0)",
                             "rule": {
+                                "lemma": "I(0) = SKOLEM_CONST(C)",
                                 "loc": "1.1",
                                 "name": "ApplyLemma",
                                 "str": "apply lemma at 1.1"
@@ -461,8 +464,11 @@
                             "latex_res": "\\lim\\limits_{b\\to \\infty} I{(b)} = \\lim\\limits_{b\\to \\infty} (\\,-\\arctan{(b)} + I{(0)}\\,)",
                             "res": "(LIM {b -> oo}. I(b)) = (LIM {b -> oo}. -atan(b) + I(0))",
                             "rule": {
+                                "latex_str": "apply limit \\(b \\to \\infty\\) to equation",
+                                "lim": "oo",
                                 "name": "LimitEquation",
-                                "str": "apply limit to equation"
+                                "str": "apply limit b -> oo to equation",
+                                "var": "b"
                             },
                             "type": "CalculationStep"
                         },
@@ -551,5 +557,5 @@
             "type": "Goal"
         }
     ],
-    "name": "DiricheletIntegral"
+    "name": "DirichletIntegral"
 }

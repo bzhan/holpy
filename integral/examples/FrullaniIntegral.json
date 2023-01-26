@@ -143,10 +143,11 @@
                             "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} ((a x) ^ {2} + 1) ^ {-1} \\,dx",
                             "res": "LIM {t -> oo}. INT x:[0,t]. ((a * x) ^ 2 + 1) ^ (-1)",
                             "rule": {
+                                "latex_str": "rewriting \\(a ^ {2} x ^ {2}\\) to \\((a x) ^ {2}\\)",
                                 "name": "Equation",
                                 "new_expr": "(a * x) ^ 2",
                                 "old_expr": "a ^ 2 * x ^ 2",
-                                "str": "rewriting"
+                                "str": "rewriting a ^ 2 * x ^ 2 to (a * x) ^ 2"
                             },
                             "type": "CalculationStep"
                         },

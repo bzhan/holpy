@@ -317,10 +317,11 @@
                     "latex_res": "-(\\int_{0}^{\\pi} \\sin{(x)} \\sin^{2}(x) \\,dx) + \\pi",
                     "res": "-(INT x:[0,pi]. sin(x) * sin(x) ^ 2) + pi",
                     "rule": {
+                        "latex_str": "rewriting \\(\\sin^{3}(x)\\) to \\(\\sin{(x)} \\sin^{2}(x)\\)",
                         "name": "Equation",
                         "new_expr": "sin(x) * sin(x) ^ 2",
                         "old_expr": "sin(x) ^ 3",
-                        "str": "rewriting"
+                        "str": "rewriting sin(x) ^ 3 to sin(x) * sin(x) ^ 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -1017,10 +1018,11 @@
                     "latex_res": "\\int_{-2}^{0} \\frac{x + 2}{(x + 1) ^ {2} + 1} \\,dx",
                     "res": "INT x:[-2,0]. (x + 2) / ((x + 1) ^ 2 + 1)",
                     "rule": {
+                        "latex_str": "rewriting \\(x ^ {2} + 2 x + 2\\) to \\((x + 1) ^ {2} + 1\\)",
                         "name": "Equation",
                         "new_expr": "(x + 1) ^ 2 + 1",
                         "old_expr": "x ^ 2 + 2 * x + 2",
-                        "str": "rewriting"
+                        "str": "rewriting x ^ 2 + 2 * x + 2 to (x + 1) ^ 2 + 1"
                     },
                     "type": "CalculationStep"
                 },
@@ -1117,10 +1119,11 @@
                     "latex_res": "\\int_{-\\pi/2}^{\\pi/2} (\\cos^{2}(x)) ^ {2} \\,dx",
                     "res": "INT x:[-pi / 2,pi / 2]. cos(x) ^ 2 ^ 2",
                     "rule": {
+                        "latex_str": "rewriting \\(\\cos^{4}(x)\\) to \\((\\cos^{2}(x)) ^ {2}\\)",
                         "name": "Equation",
                         "new_expr": "cos(x) ^ 2 ^ 2",
                         "old_expr": "cos(x) ^ 4",
-                        "str": "rewriting"
+                        "str": "rewriting cos(x) ^ 4 to cos(x) ^ 2 ^ 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -1210,10 +1213,11 @@
                     "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} (1 - \\cos^{2}(x))} \\,dx",
                     "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * (1 - cos(x) ^ 2))",
                     "rule": {
+                        "latex_str": "rewriting \\(\\cos{(x)} - \\cos^{3}(x)\\) to \\(\\cos{(x)} (1 - \\cos^{2}(x))\\)",
                         "name": "Equation",
                         "new_expr": "cos(x) * (1 - cos(x) ^ 2)",
                         "old_expr": "cos(x) - cos(x) ^ 3",
-                        "str": "rewriting"
+                        "str": "rewriting cos(x) - cos(x) ^ 3 to cos(x) * (1 - cos(x) ^ 2)"
                     },
                     "type": "CalculationStep"
                 },

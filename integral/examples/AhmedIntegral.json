@@ -272,10 +272,11 @@
                             "latex_res": "\\int_{0}^{1} (1 + u ^ {2}) ^ {-1} ((1 + x ^ {2}) ^ {-1} - \\frac{u ^ {2}}{1 + 2 u ^ {2} + u ^ {2} x ^ {2}}) \\,dx",
                             "res": "INT x:[0,1]. (1 + u ^ 2) ^ (-1) * ((1 + x ^ 2) ^ (-1) - u ^ 2 / (1 + 2 * u ^ 2 + u ^ 2 * x ^ 2))",
                             "rule": {
+                                "latex_str": "rewriting \\((x ^ {2} + 1) ^ {-1} (u ^ {2} (x ^ {2} + 2) + 1) ^ {-1}\\) to \\((1 + u ^ {2}) ^ {-1} ((1 + x ^ {2}) ^ {-1} - \\frac{u ^ {2}}{1 + 2 u ^ {2} + u ^ {2} x ^ {2}})\\)",
                                 "name": "Equation",
                                 "new_expr": "(1 + u ^ 2) ^ (-1) * ((1 + x ^ 2) ^ (-1) - u ^ 2 / (1 + 2 * u ^ 2 + u ^ 2 * x ^ 2))",
                                 "old_expr": "(x ^ 2 + 1) ^ (-1) * (u ^ 2 * (x ^ 2 + 2) + 1) ^ (-1)",
-                                "str": "rewriting"
+                                "str": "rewriting (x ^ 2 + 1) ^ (-1) * (u ^ 2 * (x ^ 2 + 2) + 1) ^ (-1) to (1 + u ^ 2) ^ (-1) * ((1 + x ^ 2) ^ (-1) - u ^ 2 / (1 + 2 * u ^ 2 + u ^ 2 * x ^ 2))"
                             },
                             "type": "CalculationStep"
                         },
@@ -292,10 +293,11 @@
                             "latex_res": "(u ^ {2} + 1) ^ {-1} (-u ^ {2} (\\int_{0}^{1} u ^ {-2} (x ^ {2} + \\frac{2 u ^ {2} + 1}{u ^ {2}}) ^ {-1} \\,dx) + \\frac{1}{4} \\pi)",
                             "res": "(u ^ 2 + 1) ^ (-1) * (-(u ^ 2 * (INT x:[0,1]. u ^ (-2) * (x ^ 2 + (2 * u ^ 2 + 1) / u ^ 2) ^ (-1))) + 1/4 * pi)",
                             "rule": {
+                                "latex_str": "rewriting \\((u ^ {2} x ^ {2} + 2 u ^ {2} + 1) ^ {-1}\\) to \\(u ^ {-2} (x ^ {2} + \\frac{2 u ^ {2} + 1}{u ^ {2}}) ^ {-1}\\)",
                                 "name": "Equation",
                                 "new_expr": "u ^ (-2) * (x ^ 2 + (2 * u ^ 2 + 1) / u ^ 2) ^ (-1)",
                                 "old_expr": "(u ^ 2 * x ^ 2 + 2 * u ^ 2 + 1) ^ (-1)",
-                                "str": "rewriting"
+                                "str": "rewriting (u ^ 2 * x ^ 2 + 2 * u ^ 2 + 1) ^ (-1) to u ^ (-2) * (x ^ 2 + (2 * u ^ 2 + 1) / u ^ 2) ^ (-1)"
                             },
                             "type": "CalculationStep"
                         },
@@ -334,10 +336,11 @@
                             "latex_res": "(u ^ {2} + 1) ^ {-1} (-(\\int_{0}^{u (2 u ^ {2} + 1) ^ {-1/2}} (u ^ {-2} (2 u ^ {2} + 1)) ^ {-1} (1 + y ^ {2}) ^ {-1} (u ^ {-1} \\sqrt{2 u ^ {2} + 1}) \\,dy) + \\frac{1}{4} \\pi)",
                             "res": "(u ^ 2 + 1) ^ (-1) * (-(INT y:[0,u * (2 * u ^ 2 + 1) ^ (-1/2)]. (u ^ (-2) * (2 * u ^ 2 + 1)) ^ (-1) * (1 + y ^ 2) ^ (-1) * (u ^ (-1) * sqrt(2 * u ^ 2 + 1))) + 1/4 * pi)",
                             "rule": {
+                                "latex_str": "rewriting \\((u ^ {-2} (2 u ^ {2} + 1) + (y \\sqrt{u ^ {-2} (2 u ^ {2} + 1)}) ^ {2}) ^ {-1}\\) to \\((u ^ {-2} (2 u ^ {2} + 1)) ^ {-1} (1 + y ^ {2}) ^ {-1}\\)",
                                 "name": "Equation",
                                 "new_expr": "(u ^ (-2) * (2 * u ^ 2 + 1)) ^ (-1) * (1 + y ^ 2) ^ (-1)",
                                 "old_expr": "(u ^ (-2) * (2 * u ^ 2 + 1) + (y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))) ^ 2) ^ (-1)",
-                                "str": "rewriting"
+                                "str": "rewriting (u ^ (-2) * (2 * u ^ 2 + 1) + (y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))) ^ 2) ^ (-1) to (u ^ (-2) * (2 * u ^ 2 + 1)) ^ (-1) * (1 + y ^ 2) ^ (-1)"
                             },
                             "type": "CalculationStep"
                         },
@@ -516,6 +519,7 @@
                             "res": "-(INT x:[0,1]. (5 * x ^ 2 + 4 * x ^ 4 + x ^ 6 + 2) ^ (-1/2) * atan((x ^ 2 + 2) ^ (-1/2))) + (1/4 * pi) ^ 2",
                             "rule": {
                                 "loc": "subterms",
+                                "merged_idx": 0,
                                 "name": "RewriteMulPower",
                                 "str": "rewrite expression multiplied a power expression on subterms"
                             },
@@ -525,10 +529,11 @@
                             "latex_res": "-(\\int_{0}^{1} ((1 + x ^ {2}) ^ {2} (2 + x ^ {2})) ^ {-1/2} \\arctan{((x ^ {2} + 2) ^ {-1/2})} \\,dx) + (\\frac{1}{4} \\pi) ^ {2}",
                             "res": "-(INT x:[0,1]. ((1 + x ^ 2) ^ 2 * (2 + x ^ 2)) ^ (-1/2) * atan((x ^ 2 + 2) ^ (-1/2))) + (1/4 * pi) ^ 2",
                             "rule": {
+                                "latex_str": "rewriting \\(5 x ^ {2} + 4 x ^ {4} + x ^ {6} + 2\\) to \\((1 + x ^ {2}) ^ {2} (2 + x ^ {2})\\)",
                                 "name": "Equation",
                                 "new_expr": "(1 + x ^ 2) ^ 2 * (2 + x ^ 2)",
                                 "old_expr": "5 * x ^ 2 + 4 * x ^ 4 + x ^ 6 + 2",
-                                "str": "rewriting"
+                                "str": "rewriting 5 * x ^ 2 + 4 * x ^ 4 + x ^ 6 + 2 to (1 + x ^ 2) ^ 2 * (2 + x ^ 2)"
                             },
                             "type": "CalculationStep"
                         },
@@ -555,11 +560,12 @@
                             "latex_res": "-(\\int_{0}^{1} (x ^ {2} + 2) ^ {-1/2} (x ^ {2} + 1) ^ {-1} \\arctan{(\\sqrt{x ^ {2} + 2} ^ {-1})} \\,dx) + \\frac{1}{16} \\pi ^ {2}",
                             "res": "-(INT x:[0,1]. (x ^ 2 + 2) ^ (-1/2) * (x ^ 2 + 1) ^ (-1) * atan(sqrt(x ^ 2 + 2) ^ (-1))) + 1/16 * pi ^ 2",
                             "rule": {
+                                "latex_str": "rewriting \\((x ^ {2} + 2) ^ {-1/2}\\) to \\(\\sqrt{x ^ {2} + 2} ^ {-1}\\) at 0.0.0.1.0",
                                 "loc": "0.0.0.1.0",
                                 "name": "Equation",
                                 "new_expr": "sqrt(x ^ 2 + 2) ^ (-1)",
                                 "old_expr": "(x ^ 2 + 2) ^ (-1/2)",
-                                "str": "rewriting at 0.0.0.1.0"
+                                "str": "rewriting (x ^ 2 + 2) ^ (-1/2) to sqrt(x ^ 2 + 2) ^ (-1) at 0.0.0.1.0"
                             },
                             "type": "CalculationStep"
                         },
@@ -567,6 +573,7 @@
                             "latex_res": "-(\\int_{0}^{1} (x ^ {2} + 2) ^ {-1/2} (x ^ {2} + 1) ^ {-1} (\\frac{\\pi}{2} - \\arctan{(\\sqrt{x ^ {2} + 2})}) \\,dx) + \\frac{1}{16} \\pi ^ {2}",
                             "res": "-(INT x:[0,1]. (x ^ 2 + 2) ^ (-1/2) * (x ^ 2 + 1) ^ (-1) * (pi / 2 - atan(sqrt(x ^ 2 + 2)))) + 1/16 * pi ^ 2",
                             "rule": {
+                                "lemma": "atan(sqrt(x ^ 2 + 2) ^ (-1)) = pi / 2 - atan(sqrt(x ^ 2 + 2))",
                                 "loc": "subterms",
                                 "name": "ApplyLemma",
                                 "str": "apply lemma on subterms"
@@ -688,8 +695,10 @@
                             "latex_res": "I{(1)} = \\frac{5 \\pi ^ {2}}{96}",
                             "res": "I(1) = 5 * pi ^ 2 / 96",
                             "rule": {
+                                "latex_str": "solve equation for \\(I{(1)}\\)",
                                 "name": "SolveEquation",
-                                "str": "solve equation"
+                                "solve_for": "I(1)",
+                                "str": "solve equation for I(1)"
                             },
                             "type": "CalculationStep"
                         }

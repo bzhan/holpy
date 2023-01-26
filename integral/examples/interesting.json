@@ -29,10 +29,11 @@
                     "latex_res": "\\int_{0}^{1/2\\cdot \\pi} 1 - \\frac{\\sqrt{\\sin{(y)}}}{\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}} \\,dy",
                     "res": "INT y:[0,1/2 * pi]. 1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))",
                     "rule": {
+                        "latex_str": "rewriting \\(\\sqrt{\\cos{(y)}} (\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}) ^ {-1}\\) to \\(1 - \\frac{\\sqrt{\\sin{(y)}}}{\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}}\\)",
                         "name": "Equation",
                         "new_expr": "1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))",
                         "old_expr": "sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1)",
-                        "str": "rewriting"
+                        "str": "rewriting sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1) to 1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))"
                     },
                     "type": "CalculationStep"
                 },

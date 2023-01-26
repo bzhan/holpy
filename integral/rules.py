@@ -2284,11 +2284,11 @@ class LimitEquation(Rule):
     """
     def __init__(self, var: str, lim: Expr):
         self.name = "LimitEquation"
-        self.var = var
-        self.lim = lim
+        self.var: str = var
+        self.lim: Expr = lim
 
     def __str__(self):
-        return "apply limit to equation"
+        return "apply limit %s -> %s to equation" % (self.var, self.lim)
 
     def eval(self, e: Expr, conds=None):
         v, lim = self.var, self.lim
@@ -2299,7 +2299,11 @@ class LimitEquation(Rule):
     def export(self):
         return {
             "name": self.name,
-            "str": str(self)
+            "str": str(self),
+            "var": self.var,
+            "lim": str(self.lim),
+            "latex_str": "apply limit \\(%s \\to %s\\) to equation" %
+                (self.var, latex.convert_expr(self.lim))
         }
 
 
@@ -2566,7 +2570,8 @@ class RewriteMulPower(Rule):
     def export(self):
         return {
             "name": self.name,
-            "str": str(self)
+            "str": str(self),
+            "merged_idx": self.be_merged_idx
         }
 
 
@@ -2596,10 +2601,12 @@ class SolveEquation(Rule):
             return Op('=', self.be_solved_expr, holpy_style(res[0]))
 
     def __str__(self):
-        return "solve equation"
+        return "solve equation for %s" % str(self.be_solved_expr)
 
     def export(self):
         return {
             "name": self.name,
-            "str": str(self)
+            "str": str(self),
+            "solve_for": str(self.be_solved_expr),
+            "latex_str": "solve equation for \\(%s\\)" % latex.convert_expr(self.be_solved_expr)
         }

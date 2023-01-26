@@ -580,23 +580,22 @@ class IntegralTest(unittest.TestCase):
         with open('integral/examples/euler_log_sin.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
-    def testDiricheletIntegral(self):
-        file = compstate.CompFile("DiricheletIntegral")
+    def testDirichletIntegral(self):
+        # Reference:
+        # Inside interesting integrals, Section 3.2
 
-        # Condition
-        conds = conditions.Conditions()
+        file = compstate.CompFile("DirichletIntegral")
 
-        # Definition
+        # Define I(b)
         e = parser.parse_expr('I(b) = INT x:[0,oo]. sin(x) / x * exp(-b * x)')
-        # add condition b>=0
-        conds.add_condition("b>=0", parser.parse_expr("b>=0"))
+        conds = conditions.Conditions()
+        conds.add_condition("b", parser.parse_expr("b>=0"))
         Idef = compstate.FuncDef(e, conds=conds)
         file.add_definition(Idef)
 
         e = parser.parse_expr("I(0) = SKOLEM_CONST(C)")
         lemma1 = compstate.Lemma(e)
         file.add_lemma(lemma1)
-
 
         e = parser.parse_expr("(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1/(b^2+1)")  # for b > 0
         conds_of_lemma2 = compstate.Conditions()
@@ -625,8 +624,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        #
-        #
+
         # goal: I(0) = INT x:[0, oo]. sin(x) / x
         e = parser.parse_expr("I(0) = INT x:[0, oo]. sin(x) / x")
         goal2 = compstate.Goal(e)
@@ -682,11 +680,17 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(goal4.goal))
         calc.perform_rule(rules.FullSimplify())
 
-        # print(file)
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
         # Test goals are finished
-        for i in range(4, 9):
-            self.assertTrue(file.content[i].is_finished())
-        path = 'integral/examples/diricheletIntegral.json'
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
+        path = 'integral/examples/dirichletIntegral.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
@@ -1210,6 +1214,9 @@ class IntegralTest(unittest.TestCase):
 
 
     def testBernoulliIntegral(self):
+        # Reference:
+        # Inside interesting integrals, Section 6.1
+
         file = compstate.CompFile("Bernoulli's Integral")
 
         e = parser.parse_expr("f(m, n) = INT x:[0, 1]. x^m * log(x) ^ n")
@@ -1259,14 +1266,24 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         calc = proof_of_goal02.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        # print(file)
-        for i in range(2,4):
-            self.assertTrue(file.content[i].is_finished())
+
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
         path = 'integral/examples/BernoulliIntegral.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testAhmedIntegral(self):
+        # Reference:
+        # Inside interesting integrals, Section 6.2
         file = compstate.CompFile("Ahmed Integral")
 
         conds_of_Idef = compstate.Conditions()
@@ -1396,8 +1413,16 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal04.goal), '0'))
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("I(1)")))
 
-        for i in range(2,9):
-            self.assertTrue(file.content[i].is_finished())
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
         path = 'integral/examples/AhmedIntegral.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)

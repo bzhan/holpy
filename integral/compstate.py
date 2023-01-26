@@ -753,7 +753,9 @@ def parse_rule(item) -> Rule:
         right_skolem_name = item['right_skolem_name'] if 'right_skolem_name' in item else None
         return rules.IntegralEquation(var=var,left_skolem_name=left_skolem_name,right_skolem_name=right_skolem_name)
     elif item['name'] == 'LimitEquation':
-        return rules.LimitEquation()
+        var = item['var']
+        lim = parser.parse_expr(item['lim'])
+        return rules.LimitEquation(var, lim)
     elif item['name'] == 'CommonIndefiniteIntegral':
         return rules.CommonIndefiniteIntegral(const_name = 'C')
     elif item['name'] == 'RewriteSkolemConst':
@@ -773,6 +775,14 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'MulEquation':
         e = parser.parse_expr(item['expr'])
         return rules.MulEquation(e)
+    elif item['name'] == 'LimIntExchange':
+        return rules.LimIntExchange()
+    elif item['name'] == 'RewriteMulPower':
+        merged_idx = item['merged_idx']
+        return rules.RewriteMulPower(merged_idx)
+    elif item['name'] == 'SolveEquation':
+        solve_for = parser.parse_expr(item['solve_for'])
+        return rules.SolveEquation(solve_for)
     else:
         print(item['name'], flush=True)
         raise NotImplementedError

@@ -215,10 +215,11 @@
                                     "latex_res": "\\sqrt{b} (\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} b ^ {-1} (1 + u ^ {2}) ^ {-1} \\,du)",
                                     "res": "sqrt(b) * (LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. b ^ (-1) * (1 + u ^ 2) ^ (-1))",
                                     "rule": {
+                                        "latex_str": "rewriting \\((b u ^ {2} + b) ^ {-1}\\) to \\(b ^ {-1} (1 + u ^ {2}) ^ {-1}\\)",
                                         "name": "Equation",
                                         "new_expr": "b ^ (-1) * (1 + u ^ 2) ^ (-1)",
                                         "old_expr": "(b * u ^ 2 + b) ^ (-1)",
-                                        "str": "rewriting"
+                                        "str": "rewriting (b * u ^ 2 + b) ^ (-1) to b ^ (-1) * (1 + u ^ 2) ^ (-1)"
                                     },
                                     "type": "CalculationStep"
                                 },

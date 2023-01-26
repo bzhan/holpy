@@ -62,10 +62,11 @@
                             "latex_res": "\\int_{0}^{1} e^{\\log{(x ^ {c x ^ {a}})}} \\,dx",
                             "res": "INT x:[0,1]. exp(log(x ^ (c * x ^ a)))",
                             "rule": {
+                                "latex_str": "rewriting \\(x ^ {c x ^ {a}}\\) to \\(e^{\\log{(x ^ {c x ^ {a}})}}\\)",
                                 "name": "Equation",
                                 "new_expr": "exp(log(x ^ (c * x ^ a)))",
                                 "old_expr": "x ^ (c * x ^ a)",
-                                "str": "rewriting"
+                                "str": "rewriting x ^ (c * x ^ a) to exp(log(x ^ (c * x ^ a)))"
                             },
                             "type": "CalculationStep"
                         },
@@ -73,6 +74,7 @@
                             "latex_res": "\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\frac{\\log^{k}(x ^ {c x ^ {a}})}{k!}} \\,dx",
                             "res": "INT x:[0,1]. SUM(k, 0, oo, log(x ^ (c * x ^ a)) ^ k / factorial(k))",
                             "rule": {
+                                "index_var": "k",
                                 "loc": "subterms",
                                 "name": "ExpandPowerSeries",
                                 "str": "expand power series on subterms"
@@ -92,10 +94,11 @@
                             "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(c x ^ {a} \\log{(x)}) ^ {k}}{k!} \\,dx}",
                             "res": "SUM(k, 0, oo, INT x:[0,1]. (c * x ^ a * log(x)) ^ k / factorial(k))",
                             "rule": {
+                                "latex_str": "rewriting \\(\\log{(x ^ {c x ^ {a}})}\\) to \\(c x ^ {a} \\log{(x)}\\)",
                                 "name": "Equation",
                                 "new_expr": "c * x ^ a * log(x)",
                                 "old_expr": "log(x ^ (c * x ^ a))",
-                                "str": "rewriting"
+                                "str": "rewriting log(x ^ (c * x ^ a)) to c * x ^ a * log(x)"
                             },
                             "type": "CalculationStep"
                         },
@@ -103,10 +106,11 @@
                             "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(c x ^ {a}) ^ {k} \\log^{k}(x)}{k!} \\,dx}",
                             "res": "SUM(k, 0, oo, INT x:[0,1]. (c * x ^ a) ^ k * log(x) ^ k / factorial(k))",
                             "rule": {
+                                "latex_str": "rewriting \\((c x ^ {a} \\log{(x)}) ^ {k}\\) to \\((c x ^ {a}) ^ {k} \\log^{k}(x)\\)",
                                 "name": "Equation",
                                 "new_expr": "(c * x ^ a) ^ k * log(x) ^ k",
                                 "old_expr": "(c * x ^ a * log(x)) ^ k",
-                                "str": "rewriting"
+                                "str": "rewriting (c * x ^ a * log(x)) ^ k to (c * x ^ a) ^ k * log(x) ^ k"
                             },
                             "type": "CalculationStep"
                         },
@@ -114,10 +118,11 @@
                             "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{c ^ {k} (x ^ {a}) ^ {k} \\log^{k}(x)}{k!} \\,dx}",
                             "res": "SUM(k, 0, oo, INT x:[0,1]. c ^ k * x ^ a ^ k * log(x) ^ k / factorial(k))",
                             "rule": {
+                                "latex_str": "rewriting \\((c x ^ {a}) ^ {k}\\) to \\(c ^ {k} (x ^ {a}) ^ {k}\\)",
                                 "name": "Equation",
                                 "new_expr": "c ^ k * x ^ a ^ k",
                                 "old_expr": "(c * x ^ a) ^ k",
-                                "str": "rewriting"
+                                "str": "rewriting (c * x ^ a) ^ k to c ^ k * x ^ a ^ k"
                             },
                             "type": "CalculationStep"
                         },
@@ -146,6 +151,7 @@
                             "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} (k!)^{-1} ((-1)^{k} k! (a k + 1) ^ {-k - 1})}",
                             "res": "SUM(k, 0, oo, c ^ k * factorial(k) ^ (-1) * ((-1) ^ k * factorial(k) * (a * k + 1) ^ (-k - 1)))",
                             "rule": {
+                                "lemma": "f(m,n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
                                 "loc": "subterms",
                                 "name": "ApplyLemma",
                                 "str": "apply lemma on subterms"
@@ -165,10 +171,11 @@
                             "latex_res": "\\sum_{k=0}^{\\infty}{-c ^ {k} (a k + 1) ^ {-k - 1}}",
                             "res": "SUM(k, 0, oo, (-c) ^ k * (a * k + 1) ^ (-k - 1))",
                             "rule": {
+                                "latex_str": "rewriting \\(c ^ {k} (-1)^{k}\\) to \\(-c ^ {k}\\)",
                                 "name": "Equation",
                                 "new_expr": "(-c) ^ k",
                                 "old_expr": "c ^ k * (-1) ^ k",
-                                "str": "rewriting"
+                                "str": "rewriting c ^ k * (-1) ^ k to (-c) ^ k"
                             },
                             "type": "CalculationStep"
                         }
