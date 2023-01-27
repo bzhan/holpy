@@ -8,6 +8,7 @@ from integral import compstate
 from integral import rules
 from integral import parser
 from integral import conditions
+from integral import context
 
 
 class IntegralTest(unittest.TestCase):
@@ -24,6 +25,20 @@ class IntegralTest(unittest.TestCase):
         # Output to file
         with open('integral/examples/' + filename + '.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testStandard(self):
+        ctx = context.Context()
+        ctx.load_book("base")
+
+        file = compstate.CompFile("standard")
+
+        calc = file.add_calculation("INT x. 1 / (x + a)")
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("x + a")))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity(ctx))
+        calc.perform_rule(rules.ReplaceSubstitution("u", parser.parse_expr("x + a")))
+        self.assertEqual(str(calc.last_expr), "log(abs(x + a))")
+
+        print(file)
 
     def testTongji(self):
         file = compstate.CompFile("Tongji")

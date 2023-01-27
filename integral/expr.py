@@ -261,8 +261,11 @@ class Expr:
     def is_deriv(self) -> TypeGuard["Deriv"]:
         return self.ty == DERIV
 
-    def is_skolem_func(self) -> bool:
+    def is_skolem_func(self) -> TypeGuard["SkolemFunc"]:
         return self.ty == SKOLEMFUNC
+    
+    def is_symbol(self) -> TypeGuard["Symbol"]:
+        return self.ty == SYMBOL
 
     def is_zero(self) -> bool:
         tmp = self.normalize()
@@ -677,32 +680,34 @@ class Expr:
     def subst(self, var: str, e: Expr) -> Expr:
         """Substitute occurrence of var for e in self."""
         assert isinstance(var, str) and isinstance(e, Expr)
-        if self.ty == VAR:
+        if self.is_var():
             if self.name == var:
                 return e
             else:
                 return self
-        elif self.ty == CONST:
+        elif self.is_const():
             return self
-        elif self.ty == SKOLEMFUNC:
+        elif self.is_skolem_func():
             return self
-        elif self.ty == SYMBOL:
+        elif self.is_symbol():
             return self
-        elif self.ty == OP:
+        elif self.is_op():
             return Op(self.op, *[arg.subst(var, e) for arg in self.args])
-        elif self.ty == FUN:
+        elif self.is_fun():
             return Fun(self.func_name, *[arg.subst(var, e) for arg in self.args])
-        elif self.ty == DERIV:
+        elif self.is_deriv():
             return Deriv(self.var, self.body.subst(var, e))
-        elif self.ty == LIMIT:
+        elif self.is_limit():
             return Limit(self.var, self.lim.subst(var, e), self.body.subst(var, e))
-        elif self.ty == INF:
+        elif self.is_inf():
             return self
-        elif self.ty == INTEGRAL:
+        elif self.is_integral():
             return Integral(self.var, self.lower.subst(var, e), self.upper.subst(var, e), self.body.subst(var, e))
-        elif self.ty == EVAL_AT:
+        elif self.is_indefinite_integral():
+            return IndefiniteIntegral(self.var, self.body.subst(var, e))
+        elif self.is_evalat():
             return EvalAt(self.var, self.lower.subst(var, e), self.upper.subst(var, e), self.body.subst(var, e))
-        elif self.ty == SUMMATION:
+        elif self.is_summation():
             return Summation(self.index_var, self.lower.subst(var, e), self.upper.subst(var, e),
                              self.body.subst(var, e))
         else:
@@ -1228,8 +1233,8 @@ class Expr:
         """Collect the list of all integrals appearing in self."""
         result = []
 
-        def collect(p, result):
-            if p.ty == INTEGRAL:
+        def collect(p: Expr, result):
+            if p.is_integral() or p.is_indefinite_integral():
                 p.selected = True
                 loc = self.get_location()
                 del p.selected
@@ -1485,8 +1490,8 @@ class Expr:
         if self.ty in (VAR, CONST, INF, SKOLEMFUNC):
             return self
         elif self.ty == SYMBOL:
-            assert self in mapping, "inst_pat: %s not found" % self.name
-            return mapping[self]
+            assert self.name in mapping, "inst_pat: %s not found" % self.name
+            return mapping[self.name]
         elif self.ty == OP:
             return Op(self.op, *(arg.inst_pat(mapping) for arg in self.args))
         elif self.ty == FUN:
@@ -1582,40 +1587,50 @@ def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
     """
     d = dict()
 
-    def rec(exp, pattern):
+    def rec(exp: Expr, pattern: Expr, bd_vars: Dict[str, str]):
         if isinstance(pattern, Symbol):
             if pattern in d:
-                return exp == d[pattern]
-            elif exp.ty in pattern.pat:
-                d[pattern] = exp
+                return exp == d[pattern.name]
+            # Check exp does not contain bound variables
+            for var in exp.get_vars():
+                if var in bd_vars.values():
+                    return False
+            if exp.ty in pattern.pat:
+                d[pattern.name] = exp
                 return True
             else:
                 return False
         if exp.ty != pattern.ty:
             return False
-        if exp.ty == VAR:
-            return pattern.name == exp.name
-        elif exp.ty == CONST:
+        if exp.is_var():
+            return pattern.name == exp.name or bd_vars[pattern.name] == exp.name
+        elif exp.is_const():
             return pattern.val == exp.val
-        elif exp.ty == OP:
+        elif exp.is_op():
             if exp.op != pattern.op or len(exp.args) != len(pattern.args):
                 return False
             for i in range(len(exp.args)):
-                if not rec(exp.args[i], pattern.args[i]):
+                if not rec(exp.args[i], pattern.args[i], bd_vars):
                     return False
             return True
-        elif exp.ty == FUN:
+        elif exp.is_fun():
             if exp.func_name != pattern.func_name or len(exp.args) != len(pattern.args):
                 return False
             for i in range(len(exp.args)):
-                if not rec(exp.args[i], pattern.args[i]):
+                if not rec(exp.args[i], pattern.args[i], bd_vars):
                     return False
             return True
+        elif exp.is_indefinite_integral():
+            bd_vars[pattern.var] = exp.var
+            res = rec(exp.body, pattern.body, bd_vars)
+            del bd_vars[pattern.var]
+            return res
         else:
             # Currently not implemented
             return False
 
-    if rec(exp, pattern):
+    bd_vars = dict()
+    if rec(exp, pattern, bd_vars):
         return d
     else:
         return None
@@ -2435,7 +2450,7 @@ class Symbol(Expr):
         return hash((SYMBOL, self.name, self.ty, sum(self.pat)))
 
     def __str__(self):
-        return "%s" % (self.name)
+        return "?%s" % self.name
 
     def __repr__(self):
         return "Symbol(%s, %s)" % (self.name, self.pat)

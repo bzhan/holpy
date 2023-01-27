@@ -1,12 +1,10 @@
 """Rules for integration."""
-import copy
+
 import fractions
-import math
 from decimal import Decimal
 from typing import Optional, Union
 import sympy
 import functools
-import sympy.series.limits
 
 from integral import poly, expr, conditions
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
@@ -21,6 +19,7 @@ from integral.solve import solve_equation
 from integral.conditions import Conditions, is_positive, is_negative
 from integral import latex
 from integral import limits
+from integral import context
 
 
 class Rule:
@@ -287,6 +286,44 @@ class CommonIndefiniteIntegral(Rule):
             "name": self.name,
             "str": str(self)
         }
+
+class IndefiniteIntegralIdentity(Rule):
+    """Apply identity in current theory"""
+    def __init__(self, ctx: context.Context):
+        self.name = "IndefiniteIntegralIdentity"
+        self.ctx = ctx
+
+    def __str__(self):
+        return "apply indefinite integral"
+    
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        return self.ctx.apply_indefinite_integral(e)
+
+
+class ReplaceSubstitution(Rule):
+    """Replace previously performed substitution"""
+    def __init__(self, var: str, expr: Expr):
+        self.name = "ReplaceSubstitution"
+        self.var = var
+        self.expr = expr
+
+    def __str__(self):
+        return "replace substitution"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, conds=None) -> Expr:
+        return e.subst(self.var, self.expr)
 
 
 class DerivativeSimplify(Rule):
@@ -907,7 +944,7 @@ class Substitution(Rule):
         specify the substitution.
 
         """
-        if not e.is_integral():
+        if not (e.is_integral() or e.is_indefinite_integral):
             sep_ints = e.separate_integral()
             if len(sep_ints) == 0:
                 return e
@@ -925,39 +962,46 @@ class Substitution(Rule):
         body_subst = body.replace_trig(var_subst, var_name)
         if body_subst == body:
             body_subst = body.replace_trig(var_subst, var_name)
-        lower = var_subst.subst(e.var, e.lower).normalize()
-        upper = var_subst.subst(e.var, e.upper).normalize()
         if parser.parse_expr(e.var) not in body_subst.findVar():
             # Substitution is able to clear all x in original integrand
-            # print('Substitution: case 1')
             self.f = body_subst
-            try:
-                if sympy_style(lower) <= sympy_style(upper):
+            if e.is_integral():
+                lower = var_subst.subst(e.var, e.lower).normalize()
+                upper = var_subst.subst(e.var, e.upper).normalize()
+                try:
+                    if sympy_style(lower) <= sympy_style(upper):
+                        return Integral(self.var_name, lower, upper, body_subst).normalize()
+                    else:
+                        return Integral(self.var_name, upper, lower, Op("-", body_subst)).normalize()
+                except:
                     return Integral(self.var_name, lower, upper, body_subst).normalize()
-                else:
-                    return Integral(self.var_name, upper, lower, Op("-", body_subst)).normalize()
-            except:
-                return Integral(self.var_name, lower, upper, body_subst).normalize()
+            elif e.is_indefinite_integral():
+                return IndefiniteIntegral(self.var_name, body_subst).normalize()
+            else:
+                raise TypeError
         else:
             # Substitution is unable to clear x, need to solve for x
-            # print('Substitution: case 2')
             gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
             if gu == []:  # sympy can't solve the equation
                 return e
             gu = gu[-1] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
             c = e.body.replace_trig(parser.parse_expr(e.var), gu)
-            new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu) * expr.deriv(str(var_name), gu))
-            lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
-            upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
+            new_problem_body = (c * expr.deriv(str(var_name), gu))
             self.f = new_problem_body
-            try:
-                if sympy_style(lower) < sympy_style(upper):
+
+            if e.is_integral():
+                lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
+                upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
+                try:
+                    if sympy_style(lower) < sympy_style(upper):
+                        return Integral(self.var_name, lower, upper, new_problem_body).normalize()
+                    else:
+                        return Integral(self.var_name, upper, lower, Op("-", new_problem_body)).normalize()
+                except TypeError as e:
                     return Integral(self.var_name, lower, upper, new_problem_body).normalize()
-                else:
-                    return Integral(self.var_name, upper, lower, Op("-", new_problem_body)).normalize()
-            except TypeError as e:
-                return Integral(self.var_name, lower, upper, new_problem_body).normalize()
+            elif e.is_indefinite_integral():
+                return IndefiniteIntegral(self.var_name, new_problem_body).normalize()
 
 
 class SubstitutionInverse(Rule):

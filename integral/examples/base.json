@@ -11,14 +11,14 @@
         },
         {
             "type": "axiom",
+            "expr": "(INT x. x ^ (-1)) = log(abs(x))"
+        },
+        {
+            "type": "axiom",
             "expr": "(INT x. x ^ n) = x ^ (n + 1) / (n + 1)",
             "conds": [
                 "n != -1"
             ]
-        },
-        {
-            "type": "axiom",
-            "expr": "(INT x. 1 / x) = log(abs(x))"
         },
         {
             "type": "axiom",

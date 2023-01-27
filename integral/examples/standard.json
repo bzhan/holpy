@@ -1,0 +1,14 @@
+{
+    "content": [
+        {
+            "type": "header",
+            "name": "Common integrals",
+            "level": 1
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x. 1 / (x + a)) = log(abs(x + a))"
+        }
+    ],
+    "name": "Standard integrals"
+}
