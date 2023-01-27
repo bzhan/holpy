@@ -125,7 +125,7 @@ class Lemma(StateItem):
     """Introduce lemma for assisting proof"""
     def __init__(self, lemma: Expr, conds: Conditions = None):
         assert isinstance(lemma, Expr)
-        self.lemma = conditions.replaceByConds(lemma, conds)
+        self.lemma = lemma
         self.conds = conds
 
     def __str__(self):
@@ -156,7 +156,7 @@ class Goal(StateItem):
     """Goal to be proved."""
     def __init__(self, goal: Expr, conds: Optional[Conditions] = None):
 
-        self.goal = conditions.replaceByConds(goal, conds)
+        self.goal = goal
         if conds is None:
             conds = Conditions()
         self.conds = conds
@@ -194,8 +194,7 @@ class Goal(StateItem):
             res['conds'] = self.conds.export()
         return res
 
-    # begin is Goal type
-    def proof_by_rewrite_goal(self, *, begin):
+    def proof_by_rewrite_goal(self, *, begin: "Goal"):
         self.proof = RewriteGoalProof(self.goal, begin=begin, conds=self.conds)
         return self.proof
 
@@ -203,11 +202,11 @@ class Goal(StateItem):
         self.proof = CalculationProof(self.goal, conds=self.conds)
         return self.proof
 
-    def proof_by_induction(self, induct_var: str, start:int=0):
+    def proof_by_induction(self, induct_var: str, start: int = 0):
         self.proof = InductionProof(self.goal, induct_var, conds=self.conds,start = start)
         return self.proof
 
-    def proof_by_case(self, cond_str:str):
+    def proof_by_case(self, cond_str: str):
         # cond_str: b = 0
         # goal is f(b) = C for b>=0
         # case1: f(b) = C for b>=0 and b=0
@@ -226,6 +225,7 @@ class Goal(StateItem):
 
     def get_facts(self):
         return [self.goal]
+
 
 class CalculationStep(StateItem):
     """A step in the calculation."""

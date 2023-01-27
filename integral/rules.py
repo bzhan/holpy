@@ -118,10 +118,9 @@ class Linearity(Rule):
         elif e.ty == INDEFINITEINTEGRAL:
             if e.body.is_times():
                 factors = decompose_expr_factor(e.body)
-                if conditions.is_const(factors[0], conds):
-                    return factors[0] * rec(expr.IndefiniteIntegral(e.var, \
-                                                                    functools.reduce(lambda x, y: x * y, factors[2:],
-                                                                                     factors[1])))
+                if not factors[0].contains_var(e.var):
+                    return factors[0] * rec(expr.IndefiniteIntegral(
+                        e.var, functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
                 else:
                     return e
             elif e.body.is_uminus():
@@ -794,18 +793,10 @@ class ApplyEquation(Rule):
                 return self.eq.rhs.args[0] - self.eq.lhs
             elif self.eq.rhs.is_plus() and self.eq.rhs.args[1] == e:
                 # e' = f + e
-                res = self.eq.lhs - self.eq.rhs.args[0]
-                if conditions.is_const(e, conds):
-                    conds.add_condition(str(res) + ' is const', Fun('isConst', res), isAssume=True)
-                    # remove condition is isConst(e) is assume
-                    conds.del_assume(Fun('isConst', e))
-                return res
+                return self.eq.lhs - self.eq.rhs.args[0]
             elif self.eq.rhs.is_plus() and self.eq.rhs.args[0] == e:
                 # e' = e + f
-                res = self.eq.lhs - self.eq.rhs.args[1]
-                if conditions.is_const(e, conds):
-                    conds.add_condition(str(res), Fun('isConst', res))
-                return res
+                return self.eq.lhs - self.eq.rhs.args[1]
             elif self.eq.lhs.is_plus() and self.eq.lhs.args[0].normalize() == e.normalize():
                 return self.eq.rhs - self.eq.lhs.args[1]
             elif self.eq.lhs.is_plus() and self.eq.lhs.args[1].normalize() == e.normalize():
@@ -1792,15 +1783,11 @@ def check_item(item, target=None, *, debug=False):
 class DerivIntExchange(Rule):
     """Exchanging derivative and integral"""
 
-    def __init__(self, const_var=None):
+    def __init__(self):
         self.name = "DerivIntExchange"
-        self.const_var = const_var
 
     def __str__(self):
-        s = ""
-        if self.const_var != None:
-            s = ', ' + self.const_var + ' is const'
-        return "exchange derivative and integral" + s
+        return "exchange derivative and integral"
 
     def export(self):
         return {
@@ -1813,20 +1800,9 @@ class DerivIntExchange(Rule):
             v1, v2 = e.var, e.body.var
             return Integral(v2, e.body.lower, e.body.upper, Deriv(v1, e.body.body))
         elif e.is_deriv() and e.body.is_indefinite_integral():
-            if conds != None:
-                const_vname = self.const_var
-                const_v = Var(const_vname)
-                conds.add_condition(const_vname, parser.parse_expr("isConst(" + const_vname + ")"), isAssume=True)
-                ne = IndefiniteIntegral(e.var, Deriv(e.var, e.body.body)) + const_v
-                return ne
-            else:
-                raise NotImplementedError
+            return IndefiniteIntegral(e.var, Deriv(e.var, e.body.body))
         elif e.is_indefinite_integral() and e.body.is_deriv():
-            const_vname = self.const_var
-            const_v = Var(const_vname)
-            conds.add_condition(const_vname, parser.parse_expr("isConst(" + const_vname + ")"), True)
-            ne = Deriv(e.var, IndefiniteIntegral(e.var, e.body.body)) + const_v
-            return ne
+            return Deriv(e.var, IndefiniteIntegral(e.var, e.body.body))
         else:
             raise NotImplementedError
 

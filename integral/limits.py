@@ -5,7 +5,7 @@ from typing import Optional, Union
 
 from integral import conditions
 from integral import expr
-from integral.conditions import Conditions, is_const, is_negative, is_positive
+from integral.conditions import Conditions, is_negative, is_positive
 from integral.expr import NEG_INF, POS_INF, Const, Expr
 
 
