@@ -9,8 +9,6 @@ import pathlib
 import os
 import integral
 from logic import basic
-from integral import slagle
-from integral import proof
 from integral import compstate
 from app.app import app
 
@@ -18,11 +16,30 @@ basic.load_theory('interval_arith')
 
 dirname = os.path.dirname(__file__)
 
+@app.route("/api/integral-load-book-content", methods=['POST'])
+def integral_load_book_content():
+    data = json.loads(request.get_data().decode('utf-8'))
+    file_name = os.path.join(dirname, "../integral/examples/" + data['bookname'] + '.json')
+
+    # Load raw data
+    with open(file_name, 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
+
+    # For each expression, load its latex form
+    for item in f_data['content']:
+        if 'expr' in item:
+            e = integral.parser.parse_expr(item['expr'])
+            latex_str = integral.latex.convert_expr(e)
+            item['latex_str'] = latex_str
+
+    return jsonify(f_data)
+
 @app.route("/api/integral-load-file-list", methods=['POST'])
 def integral_load_file_list():
     json_files = []
     for res in pathlib.Path('../integral/examples').rglob('*.json'):
-        json_files.append(str(res.relative_to('../integral/examples')))
+        # remove .json
+        json_files.append(str(res.relative_to('../integral/examples'))[:-5])
     return jsonify({
         'file_list': tuple(json_files)
     })
@@ -30,7 +47,7 @@ def integral_load_file_list():
 @app.route("/api/integral-open-file", methods=['POST'])
 def integral_open_file():
     data = json.loads(request.get_data().decode('utf-8'))
-    file_name = os.path.join(dirname, "../integral/examples/" + data['filename'])
+    file_name = os.path.join(dirname, "../integral/examples/" + data['filename'] + '.json')
     with open(file_name, 'r', encoding='utf-8') as f:
         f_data = json.load(f)
 

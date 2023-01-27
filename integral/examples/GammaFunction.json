@@ -1,263 +1,90 @@
 {
     "content": [
         {
-            "eq": "I(m) = (INT x:[0,oo]. x ^ (m - 1) * exp(-x))",
-            "latex_eq": "I{(m)} = \\int_{0}^{\\infty} x ^ {m - 1} e^{-x} \\,dx",
-            "latex_lhs": "I{(m)}",
+            "conds": [
+                {
+                    "cond": "n > 0",
+                    "latex_cond": "n > 0",
+                    "name": "n",
+                    "type": "Condition"
+                }
+            ],
+            "eq": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+            "latex_eq": "\\Gamma{(n)} = \\int_{0}^{\\infty} e^{-x} x ^ {n - 1} \\,dx",
+            "latex_lhs": "\\Gamma{(n)}",
             "type": "FuncDef"
         },
         {
             "conds": [
                 {
-                    "cond": "m > 0",
-                    "latex_cond": "m > 0",
-                    "name": "m greater than 0",
+                    "cond": "n > 0",
+                    "latex_cond": "n > 0",
+                    "name": "n",
                     "type": "Condition"
                 }
             ],
-            "goal": "(LIM {t -> oo}. exp(-t) * t ^ m) = 0",
-            "latex_goal": "\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {m}\\,) = 0",
+            "finished": true,
+            "goal": "Gamma(n + 1) = n * Gamma(n)",
+            "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
             "proof": {
-                "base_case": {
-                    "conds": [
-                        {
-                            "cond": "m > 0",
-                            "latex_cond": "m > 0",
-                            "name": "m greater than 0",
-                            "type": "Condition"
-                        }
-                    ],
-                    "goal": "(LIM {t -> oo}. t * exp(-t)) = 0",
-                    "latex_goal": "\\lim\\limits_{t\\to \\infty} (\\,t e^{-t}\\,) = 0",
-                    "proof": {
-                        "finished": true,
-                        "goal": "(LIM {t -> oo}. t * exp(-t)) = 0",
-                        "latex_goal": "\\lim\\limits_{t\\to \\infty} (\\,t e^{-t}\\,) = 0",
-                        "lhs_calc": {
-                            "latex_start": "\\lim\\limits_{t\\to \\infty} (\\,t e^{-t}\\,)",
-                            "start": "LIM {t -> oo}. t * exp(-t)",
-                            "steps": [
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,t e^{-t}\\,)",
-                                    "res": "LIM {t -> oo}. t * exp(-t)",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\frac{t}{\\frac{1}{e^{-t}}}\\,)",
-                                    "res": "LIM {t -> oo}. t / (1 / exp(-t))",
-                                    "rule": {
-                                        "loc": "0",
-                                        "multiplierLoc": "1",
-                                        "name": "Mul2Div",
-                                        "str": "rewrite multiplication to division at 0"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\frac{t}{e^{t}}\\,)",
-                                    "res": "LIM {t -> oo}. t / exp(t)",
-                                    "rule": {
-                                        "loc": "0.1",
-                                        "name": "FullSimplify",
-                                        "str": "full simplify at 0.1"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\frac{1}{e^{t} 1}\\,)",
-                                    "res": "LIM {t -> oo}. 1 / (exp(t) * 1)",
-                                    "rule": {
-                                        "name": "LHopital",
-                                        "str": "l'Hopital's rule"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "0",
-                                    "res": "0",
-                                    "rule": {
-                                        "name": "LimitSimplify",
-                                        "str": "simplify limits"
-                                    },
-                                    "type": "CalculationStep"
-                                }
-                            ],
-                            "type": "Calculation"
-                        },
-                        "rhs_calc": {
-                            "latex_start": "0",
-                            "start": "0",
-                            "steps": [],
-                            "type": "Calculation"
-                        },
-                        "type": "CalculationProof"
-                    },
-                    "type": "Goal"
-                },
-                "goal": "(LIM {t -> oo}. exp(-t) * t ^ m) = 0",
-                "induct_case": {
-                    "conds": [
-                        {
-                            "cond": "(LIM {t -> oo}. exp(-t) * t ^ m) = 0",
-                            "latex_cond": "\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {m}\\,) = 0",
-                            "name": "IH",
-                            "type": "Condition"
-                        }
-                    ],
-                    "goal": "(LIM {t -> oo}. exp(-t) * t ^ (1 + m)) = 0",
-                    "latex_goal": "\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {1 + m}\\,) = 0",
-                    "proof": {
-                        "finished": true,
-                        "goal": "(LIM {t -> oo}. exp(-t) * t ^ (1 + m)) = 0",
-                        "latex_goal": "\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {1 + m}\\,) = 0",
-                        "lhs_calc": {
-                            "latex_start": "\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {1 + m}\\,)",
-                            "start": "LIM {t -> oo}. exp(-t) * t ^ (1 + m)",
-                            "steps": [
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\frac{t ^ {1 + m}}{\\frac{1}{e^{-t}}}\\,)",
-                                    "res": "LIM {t -> oo}. t ^ (1 + m) / (1 / exp(-t))",
-                                    "rule": {
-                                        "loc": "0",
-                                        "multiplierLoc": "0",
-                                        "name": "Mul2Div",
-                                        "str": "rewrite multiplication to division at 0"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\frac{t ^ {1 + m}}{e^{t}}\\,)",
-                                    "res": "LIM {t -> oo}. t ^ (1 + m) / exp(t)",
-                                    "rule": {
-                                        "loc": "0.1",
-                                        "name": "FullSimplify",
-                                        "str": "full simplify at 0.1"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,\\frac{(1 + m) t ^ {1 + m - 1} 1}{e^{t} 1}\\,)",
-                                    "res": "LIM {t -> oo}. ((1 + m) * t ^ ((1 + m) - 1) * 1) / (exp(t) * 1)",
-                                    "rule": {
-                                        "name": "LHopital",
-                                        "str": "l'Hopital's rule"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,m e^{-t} t ^ {m} + e^{-t} t ^ {m}\\,)",
-                                    "res": "LIM {t -> oo}. m * exp(-t) * t ^ m + exp(-t) * t ^ m",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "(\\lim\\limits_{t\\to \\infty} (\\,m e^{-t} t ^ {m}\\,)) + (\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {m}\\,))",
-                                    "res": "(LIM {t -> oo}. m * exp(-t) * t ^ m) + (LIM {t -> oo}. exp(-t) * t ^ m)",
-                                    "rule": {
-                                        "name": "LimSep",
-                                        "str": "separate limits"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "m (\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {m}\\,)) + (\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {m}\\,))",
-                                    "res": "m * (LIM {t -> oo}. exp(-t) * t ^ m) + (LIM {t -> oo}. exp(-t) * t ^ m)",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "m 0 + (\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {m}\\,))",
-                                    "res": "m * 0 + (LIM {t -> oo}. exp(-t) * t ^ m)",
-                                    "rule": {
-                                        "eq": "(LIM {t -> oo}. exp(-t) * t ^ m) = 0",
-                                        "loc": "0.1",
-                                        "name": "ApplyEquation",
-                                        "str": "apply equation:(LIM {t -> oo}. exp(-t) * t ^ m) = 0 at 0.1"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "m 0 + 0",
-                                    "res": "m * 0 + 0",
-                                    "rule": {
-                                        "eq": "(LIM {t -> oo}. exp(-t) * t ^ m) = 0",
-                                        "loc": "1",
-                                        "name": "ApplyEquation",
-                                        "str": "apply equation:(LIM {t -> oo}. exp(-t) * t ^ m) = 0 at 1"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "0",
-                                    "res": "0",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                }
-                            ],
-                            "type": "Calculation"
-                        },
-                        "rhs_calc": {
-                            "latex_start": "0",
-                            "start": "0",
-                            "steps": [],
-                            "type": "Calculation"
-                        },
-                        "type": "CalculationProof"
-                    },
-                    "type": "Goal"
-                },
-                "induct_var": "m",
-                "latex_goal": "\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {m}\\,) = 0",
-                "type": "InductionProof"
-            },
-            "type": "Goal"
-        },
-        {
-            "conds": [
-                {
-                    "cond": "m > 0",
-                    "latex_cond": "m > 0",
-                    "name": "m greater than 0",
-                    "type": "Condition"
-                }
-            ],
-            "goal": "m * I(m) = I(m + 1)",
-            "latex_goal": "m I{(m)} = I{(m + 1)}",
-            "proof": {
+                "conds": [
+                    {
+                        "cond": "n > 0",
+                        "latex_cond": "n > 0",
+                        "name": "n",
+                        "type": "Condition"
+                    }
+                ],
                 "finished": true,
-                "goal": "m * I(m) = I(m + 1)",
-                "latex_goal": "m I{(m)} = I{(m + 1)}",
+                "goal": "Gamma(n + 1) = n * Gamma(n)",
+                "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
                 "lhs_calc": {
-                    "latex_start": "m I{(m)}",
-                    "start": "m * I(m)",
+                    "conds": [
+                        {
+                            "cond": "n > 0",
+                            "latex_cond": "n > 0",
+                            "name": "n",
+                            "type": "Condition"
+                        }
+                    ],
+                    "latex_start": "\\Gamma{(n + 1)}",
+                    "start": "Gamma(n + 1)",
                     "steps": [
                         {
-                            "latex_res": "m (\\int_{0}^{\\infty} x ^ {m - 1} e^{-x} \\,dx)",
-                            "res": "m * (INT x:[0,oo]. x ^ (m - 1) * exp(-x))",
+                            "latex_res": "\\int_{0}^{\\infty} x ^ {n} e^{-x} \\,dx",
+                            "res": "INT x:[0,oo]. x ^ n * exp(-x)",
                             "rule": {
-                                "func_def": "I(m) = (INT x:[0,oo]. x ^ (m - 1) * exp(-x))",
-                                "loc": "1",
+                                "func_def": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
                                 "name": "ExpandDefinition",
-                                "str": "expand definition at 1"
+                                "str": "expand definition"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "m (\\int_{0}^{\\infty} x ^ {-1} e^{-x} x ^ {m} \\,dx)",
-                            "res": "m * (INT x:[0,oo]. x ^ -1 * exp(-x) * x ^ m)",
+                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} x ^ {n} e^{-x} \\,dx",
+                            "res": "LIM {t -> oo}. INT x:[0,t]. x ^ n * exp(-x)",
+                            "rule": {
+                                "a": "0",
+                                "name": "ElimInfInterval",
+                                "str": "eliminate improper integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. -x ^ {n} e^{-x} \\right\\vert_{x=0}^{t}) - (\\int_{0}^{t} -n x ^ {n - 1} e^{-x} \\,dx)\\,)",
+                            "res": "LIM {t -> oo}. ([-(x ^ n * exp(-x))]_x=0,t) - (INT x:[0,t]. -(n * x ^ (n - 1) * exp(-x)))",
+                            "rule": {
+                                "latex_str": "integrate by parts \\(u \\to x ^ {n}, v \\to -e^{-x}\\)",
+                                "name": "IntegrationByParts",
+                                "str": "integrate by parts u -> x ^ n, v -> -exp(-x)",
+                                "u": "x ^ n",
+                                "v": "-exp(-x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "n (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} x ^ {n - 1} e^{-x} \\,dx)",
+                            "res": "n * (LIM {t -> oo}. INT x:[0,t]. x ^ (n - 1) * exp(-x))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -268,115 +95,35 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "I{(m + 1)}",
-                    "start": "I(m + 1)",
+                    "conds": [
+                        {
+                            "cond": "n > 0",
+                            "latex_cond": "n > 0",
+                            "name": "n",
+                            "type": "Condition"
+                        }
+                    ],
+                    "latex_start": "n \\Gamma{(n)}",
+                    "start": "n * Gamma(n)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\infty} x ^ {m + 1 - 1} e^{-x} \\,dx",
-                            "res": "INT x:[0,oo]. x ^ ((m + 1) - 1) * exp(-x)",
+                            "latex_res": "n (\\int_{0}^{\\infty} x ^ {n - 1} e^{-x} \\,dx)",
+                            "res": "n * (INT x:[0,oo]. x ^ (n - 1) * exp(-x))",
                             "rule": {
-                                "func_def": "I(m) = (INT x:[0,oo]. x ^ (m - 1) * exp(-x))",
+                                "func_def": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+                                "loc": "subterms",
                                 "name": "ExpandDefinition",
-                                "str": "expand definition"
+                                "str": "expand definition on subterms"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} e^{-x} x ^ {m} \\,dx",
-                            "res": "INT x:[0,oo]. exp(-x) * x ^ m",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\int_{0}^{\\infty} x ^ {m} e^{-x} \\,dx",
-                            "res": "INT x:[0,oo]. x ^ m * exp(-x)",
-                            "rule": {
-                                "loc": "0",
-                                "name": "Swap",
-                                "str": "Swap at 0"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} e^{-x} x ^ {m} \\,dx",
-                            "res": "LIM {t -> oo}. INT x:[0,t]. exp(-x) * x ^ m",
+                            "latex_res": "n (\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} x ^ {n - 1} e^{-x} \\,dx)",
+                            "res": "n * (LIM {t -> oo}. INT x:[0,t]. x ^ (n - 1) * exp(-x))",
                             "rule": {
                                 "a": "0",
                                 "name": "ElimInfInterval",
                                 "str": "eliminate improper integral"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. -e^{-x} x ^ {m} \\right\\vert_{x=0}^{t}) - (\\int_{0}^{t} -m e^{-x} x ^ {-1 + m} \\,dx)\\,)",
-                            "res": "LIM {t -> oo}. ([-(exp(-x) * x ^ m)]_x=0,t) - (INT x:[0,t]. -(m * exp(-x) * x ^ (-1 + m)))",
-                            "rule": {
-                                "loc": "0",
-                                "name": "IntegrationByParts",
-                                "str": "integrate by parts at 0",
-                                "u": "x ^ m",
-                                "v": "-exp(-x)"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,m (\\int_{0}^{t} x ^ {-1} e^{-x} x ^ {m} \\,dx) + -e^{-t} t ^ {m}\\,)",
-                            "res": "LIM {t -> oo}. m * (INT x:[0,t]. x ^ -1 * exp(-x) * x ^ m) + -(exp(-t) * t ^ m)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "(\\lim\\limits_{t\\to \\infty} (\\,m (\\int_{0}^{t} x ^ {-1} e^{-x} x ^ {m} \\,dx)\\,)) + (\\lim\\limits_{t\\to \\infty} -e^{-t} t ^ {m})",
-                            "res": "(LIM {t -> oo}. m * (INT x:[0,t]. x ^ -1 * exp(-x) * x ^ m)) + (LIM {t -> oo}. -(exp(-t) * t ^ m))",
-                            "rule": {
-                                "name": "LimSep",
-                                "str": "separate limits"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "(\\lim\\limits_{t\\to \\infty} (\\,m (\\int_{0}^{t} x ^ {-1} e^{-x} x ^ {m} \\,dx)\\,)) + -(\\lim\\limits_{t\\to \\infty} (\\,e^{-t} t ^ {m}\\,))",
-                            "res": "(LIM {t -> oo}. m * (INT x:[0,t]. x ^ -1 * exp(-x) * x ^ m)) + -(LIM {t -> oo}. exp(-t) * t ^ m)",
-                            "rule": {
-                                "loc": "1",
-                                "name": "LimFunExchange",
-                                "str": "exchange of limit and function application at 1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "(\\lim\\limits_{t\\to \\infty} (\\,m (\\int_{0}^{t} x ^ {-1} e^{-x} x ^ {m} \\,dx)\\,)) + -0",
-                            "res": "(LIM {t -> oo}. m * (INT x:[0,t]. x ^ -1 * exp(-x) * x ^ m)) + -0",
-                            "rule": {
-                                "eq": "(LIM {t -> oo}. exp(-t) * t ^ m) = 0",
-                                "loc": "1.0",
-                                "name": "ApplyEquation",
-                                "str": "apply equation:(LIM {t -> oo}. exp(-t) * t ^ m) = 0 at 1.0"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "m (\\int_{0}^{\\infty} x ^ {-1} e^{-x} x ^ {m} \\,dx) + -0",
-                            "res": "m * (INT x:[0,oo]. x ^ -1 * exp(-x) * x ^ m) + -0",
-                            "rule": {
-                                "loc": "0",
-                                "name": "RewriteLimit",
-                                "str": "RewriteLimit at 0"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "m (\\int_{0}^{\\infty} x ^ {-1} e^{-x} x ^ {m} \\,dx)",
-                            "res": "m * (INT x:[0,oo]. x ^ -1 * exp(-x) * x ^ m)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         }
@@ -388,49 +135,35 @@
             "type": "Goal"
         },
         {
-            "conds": [
-                {
-                    "cond": "m > 0",
-                    "latex_cond": "m > 0",
-                    "name": "m greater than 0",
-                    "type": "Condition"
-                }
-            ],
-            "goal": "I(m) = factorial(m - 1)",
-            "latex_goal": "I{(m)} = (m - 1)!",
+            "finished": true,
+            "goal": "Gamma(n + 1) = factorial(n)",
+            "latex_goal": "\\Gamma{(n + 1)} = n!",
             "proof": {
                 "base_case": {
-                    "conds": [
-                        {
-                            "cond": "m > 0",
-                            "latex_cond": "m > 0",
-                            "name": "m greater than 0",
-                            "type": "Condition"
-                        }
-                    ],
-                    "goal": "I(1) = 1",
-                    "latex_goal": "I{(1)} = 1",
+                    "finished": true,
+                    "goal": "Gamma(1) = 1",
+                    "latex_goal": "\\Gamma{(1)} = 1",
                     "proof": {
                         "finished": true,
-                        "goal": "I(1) = 1",
-                        "latex_goal": "I{(1)} = 1",
+                        "goal": "Gamma(1) = 1",
+                        "latex_goal": "\\Gamma{(1)} = 1",
                         "lhs_calc": {
-                            "latex_start": "I{(1)}",
-                            "start": "I(1)",
+                            "latex_start": "\\Gamma{(1)}",
+                            "start": "Gamma(1)",
                             "steps": [
                                 {
-                                    "latex_res": "\\int_{0}^{\\infty} x ^ {1 - 1} e^{-x} \\,dx",
-                                    "res": "INT x:[0,oo]. x ^ (1 - 1) * exp(-x)",
+                                    "latex_res": "\\int_{0}^{\\infty} e^{-x} \\,dx",
+                                    "res": "INT x:[0,oo]. exp(-x)",
                                     "rule": {
-                                        "func_def": "I(m) = (INT x:[0,oo]. x ^ (m - 1) * exp(-x))",
+                                        "func_def": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
                                         "name": "ExpandDefinition",
                                         "str": "expand definition"
                                     },
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} x ^ {1 - 1} e^{-x} \\,dx",
-                                    "res": "LIM {t -> oo}. INT x:[0,t]. x ^ (1 - 1) * exp(-x)",
+                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} e^{-x} \\,dx",
+                                    "res": "LIM {t -> oo}. INT x:[0,t]. exp(-x)",
                                     "rule": {
                                         "a": "0",
                                         "name": "ElimInfInterval",
@@ -439,43 +172,14 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} e^{-x} \\,dx",
-                                    "res": "LIM {t -> oo}. INT x:[0,t]. exp(-x)",
+                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{-t} -e^{u} \\,du",
+                                    "res": "LIM {t -> oo}. INT u:[0,-t]. -exp(u)",
                                     "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{-t} -e^{y} \\,dy",
-                                    "res": "LIM {t -> oo}. INT y:[0,-t]. -exp(y)",
-                                    "rule": {
-                                        "latex_str": "substitute \\(y\\) for \\(-x\\) at 0",
-                                        "loc": "0",
+                                        "latex_str": "substitute \\(u\\) for \\(-x\\)",
                                         "name": "Substitution",
-                                        "str": "substitute y for -x at 0",
-                                        "var_name": "y",
+                                        "str": "substitute u for -x",
+                                        "var_name": "u",
                                         "var_subst": "-x"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "-(\\lim\\limits_{t\\to \\infty} (\\,-1 + e^{-t}\\,))",
-                                    "res": "-(LIM {t -> oo}. -1 + exp(-t))",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "--1",
-                                    "res": "--1",
-                                    "rule": {
-                                        "loc": "0",
-                                        "name": "LimitSimplify",
-                                        "str": "simplify limits at 0"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -501,53 +205,79 @@
                     },
                     "type": "Goal"
                 },
-                "goal": "I(m) = factorial(m - 1)",
+                "finished": true,
+                "goal": "Gamma(n + 1) = factorial(n)",
                 "induct_case": {
                     "conds": [
                         {
-                            "cond": "I(m) = factorial(m - 1)",
-                            "latex_cond": "I{(m)} = (m - 1)!",
+                            "cond": "Gamma(n + 1) = factorial(n)",
+                            "latex_cond": "\\Gamma{(n + 1)} = n!",
                             "name": "IH",
                             "type": "Condition"
                         }
                     ],
-                    "goal": "I(m + 1) = factorial(m)",
-                    "latex_goal": "I{(m + 1)} = m!",
+                    "finished": true,
+                    "goal": "Gamma(n + 2) = factorial(n + 1)",
+                    "latex_goal": "\\Gamma{(n + 2)} = (n + 1)!",
                     "proof": {
+                        "conds": [
+                            {
+                                "cond": "Gamma(n + 1) = factorial(n)",
+                                "latex_cond": "\\Gamma{(n + 1)} = n!",
+                                "name": "IH",
+                                "type": "Condition"
+                            }
+                        ],
                         "finished": true,
-                        "goal": "I(m + 1) = factorial(m)",
-                        "latex_goal": "I{(m + 1)} = m!",
+                        "goal": "Gamma(n + 2) = factorial(n + 1)",
+                        "latex_goal": "\\Gamma{(n + 2)} = (n + 1)!",
                         "lhs_calc": {
-                            "latex_start": "I{(m + 1)}",
-                            "start": "I(m + 1)",
+                            "conds": [
+                                {
+                                    "cond": "Gamma(n + 1) = factorial(n)",
+                                    "latex_cond": "\\Gamma{(n + 1)} = n!",
+                                    "name": "IH",
+                                    "type": "Condition"
+                                }
+                            ],
+                            "latex_start": "\\Gamma{(n + 2)}",
+                            "start": "Gamma(n + 2)",
                             "steps": [
                                 {
-                                    "latex_res": "m I{(m)}",
-                                    "res": "m * I(m)",
+                                    "latex_res": "(n + 1) \\Gamma{(n + 1)}",
+                                    "res": "(n + 1) * Gamma(n + 1)",
                                     "rule": {
-                                        "eq": "m * I(m) = I(m + 1)",
+                                        "eq": "Gamma(n + 1) = n * Gamma(n)",
+                                        "latex_str": "apply equation \\(\\Gamma{(n + 1)} = n \\Gamma{(n)}\\) where \\(n \\to n + 1\\)",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation:m * I(m) = I(m + 1)"
+                                        "str": "apply equation: Gamma(n + 1) = n * Gamma(n) where n -> n + 1",
+                                        "subMap": [
+                                            {
+                                                "expr": "n + 1",
+                                                "latex_expr": "n + 1",
+                                                "var": "n"
+                                            }
+                                        ]
                                     },
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "m (m - 1)!",
-                                    "res": "m * factorial(m - 1)",
+                                    "latex_res": "(n + 1) n!",
+                                    "res": "(n + 1) * factorial(n)",
                                     "rule": {
-                                        "eq": "I(m) = factorial(m - 1)",
-                                        "loc": "1",
-                                        "name": "ApplyEquation",
-                                        "str": "apply equation:I(m) = factorial(m - 1) at 1"
+                                        "induct_hyp": "Gamma(n + 1) = factorial(n)",
+                                        "loc": "subterms",
+                                        "name": "ApplyInductHyp",
+                                        "str": "apply induction hypothesis on subterms"
                                     },
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "m!",
-                                    "res": "factorial(m)",
+                                    "latex_res": "(n + 1)!",
+                                    "res": "factorial(n + 1)",
                                     "rule": {
                                         "name": "RewriteFactorial",
-                                        "str": "RewriteFactorial"
+                                        "str": "rewrite factorial"
                                     },
                                     "type": "CalculationStep"
                                 }
@@ -555,113 +285,95 @@
                             "type": "Calculation"
                         },
                         "rhs_calc": {
-                            "latex_start": "m!",
-                            "start": "factorial(m)",
-                            "steps": [
+                            "conds": [
                                 {
-                                    "latex_res": "m!",
-                                    "res": "factorial(m)",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
+                                    "cond": "Gamma(n + 1) = factorial(n)",
+                                    "latex_cond": "\\Gamma{(n + 1)} = n!",
+                                    "name": "IH",
+                                    "type": "Condition"
                                 }
                             ],
+                            "latex_start": "(n + 1)!",
+                            "start": "factorial(n + 1)",
+                            "steps": [],
                             "type": "Calculation"
                         },
                         "type": "CalculationProof"
                     },
                     "type": "Goal"
                 },
-                "induct_var": "m",
-                "latex_goal": "I{(m)} = (m - 1)!",
+                "induct_var": "n",
+                "latex_goal": "\\Gamma{(n + 1)} = n!",
                 "type": "InductionProof"
             },
             "type": "Goal"
         },
         {
-            "conds": [
+            "latex_start": "\\int_{0}^{\\infty} e^{-x ^ {3}} \\,dx",
+            "start": "INT x:[0,oo]. exp(-(x ^ 3))",
+            "steps": [
                 {
-                    "cond": "m > 0",
-                    "latex_cond": "m > 0",
-                    "name": "m greater than 0",
-                    "type": "Condition"
+                    "latex_res": "\\int_{0}^{\\infty ^ {3}} \\frac{1}{3} y ^ {-2/3} e^{-y} \\,dy",
+                    "res": "INT y:[0,oo ^ 3]. 1/3 * y ^ (-2/3) * exp(-y)",
+                    "rule": {
+                        "latex_str": "substitute \\(y\\) for \\(x ^ {3}\\)",
+                        "name": "Substitution",
+                        "str": "substitute y for x ^ 3",
+                        "var_name": "y",
+                        "var_subst": "x ^ 3"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\frac{1}{3} (\\int_{0}^{\\infty} y ^ {-2/3} e^{-y} \\,dy)",
+                    "res": "1/3 * (INT y:[0,oo]. y ^ (-2/3) * exp(-y))",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\frac{1}{3} \\Gamma{(\\frac{1}{3})}",
+                    "res": "1/3 * Gamma(1/3)",
+                    "rule": {
+                        "eq": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+                        "latex_str": "apply equation \\(\\Gamma{(n)} = \\int_{0}^{\\infty} e^{-x} x ^ {n - 1} \\,dx\\) where \\(n \\to \\frac{1}{3}\\) on subterms",
+                        "loc": "subterms",
+                        "name": "ApplyEquation",
+                        "str": "apply equation: Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1)) where n -> 1/3 on subterms",
+                        "subMap": [
+                            {
+                                "expr": "1/3",
+                                "latex_expr": "\\frac{1}{3}",
+                                "var": "n"
+                            }
+                        ]
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\Gamma{(\\frac{1}{3} + 1)}",
+                    "res": "Gamma(1/3 + 1)",
+                    "rule": {
+                        "eq": "Gamma(n + 1) = n * Gamma(n)",
+                        "latex_str": "apply equation \\(\\Gamma{(n + 1)} = n \\Gamma{(n)}\\)",
+                        "name": "ApplyEquation",
+                        "str": "apply equation: Gamma(n + 1) = n * Gamma(n)"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\Gamma{(\\frac{4}{3})}",
+                    "res": "Gamma(4/3)",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
                 }
             ],
-            "goal": "(INT x:[0,oo]. exp(-(x ^ 3))) = I(4/3)",
-            "latex_goal": "\\int_{0}^{\\infty} e^{-x ^ {3}} \\,dx = I{(\\frac{4}{3})}",
-            "proof": {
-                "finished": true,
-                "goal": "(INT x:[0,oo]. exp(-(x ^ 3))) = I(4/3)",
-                "latex_goal": "\\int_{0}^{\\infty} e^{-x ^ {3}} \\,dx = I{(\\frac{4}{3})}",
-                "lhs_calc": {
-                    "latex_start": "\\int_{0}^{\\infty} e^{-x ^ {3}} \\,dx",
-                    "start": "INT x:[0,oo]. exp(-(x ^ 3))",
-                    "steps": [
-                        {
-                            "latex_res": "\\int_{0}^{\\infty ^ {3}} \\frac{1}{3} y ^ {-2/3} e^{-y} \\,dy",
-                            "res": "INT y:[0,oo ^ 3]. 1/3 * y ^ (-2/3) * exp(-y)",
-                            "rule": {
-                                "latex_str": "substitute \\(y\\) for \\(x ^ {3}\\)",
-                                "name": "Substitution",
-                                "str": "substitute y for x ^ 3",
-                                "var_name": "y",
-                                "var_subst": "x ^ 3"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{3} (\\int_{0}^{\\infty} y ^ {-2/3} e^{-y} \\,dy)",
-                            "res": "1/3 * (INT y:[0,oo]. y ^ (-2/3) * exp(-y))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{3} I{(\\frac{1}{3})}",
-                            "res": "1/3 * I(1/3)",
-                            "rule": {
-                                "loc": "1",
-                                "name": "FoldDefinition",
-                                "str": "FoldDefinition: m=1/3 at 1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "I{(\\frac{1}{3} + 1)}",
-                            "res": "I(1/3 + 1)",
-                            "rule": {
-                                "eq": "m * I(m) = I(m + 1)",
-                                "name": "ApplyEquation",
-                                "str": "apply equation:m * I(m) = I(m + 1) where m=1/3"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "I{(\\frac{4}{3})}",
-                            "res": "I(4/3)",
-                            "rule": {
-                                "loc": "0",
-                                "name": "FullSimplify",
-                                "str": "full simplify at 0"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "rhs_calc": {
-                    "latex_start": "I{(\\frac{4}{3})}",
-                    "start": "I(4/3)",
-                    "steps": [],
-                    "type": "Calculation"
-                },
-                "type": "CalculationProof"
-            },
-            "type": "Goal"
+            "type": "Calculation"
         }
     ],
     "name": "GammaFunction"

@@ -397,8 +397,11 @@ class IntegralTest(unittest.TestCase):
         with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
-    def testGammaBeta(self):
-        file = compstate.CompFile("GammaBeta")
+    def testGammaFunction(self):
+        # Reference:
+        # Inside interesting integrals, Section 4.1
+
+        file = compstate.CompFile("GammaFunction")
 
         # Condition n > 0
         conds = conditions.Conditions()
@@ -461,7 +464,7 @@ class IntegralTest(unittest.TestCase):
         self.assertTrue(file.content[2].is_finished())
         self.assertEqual(str(file.content[3].last_expr), "Gamma(4/3)")
 
-        with open('integral/examples/GammaBeta.json', 'w', encoding='utf-8') as f:
+        with open('integral/examples/GammaFunction.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testTrick2a(self):
@@ -522,7 +525,7 @@ class IntegralTest(unittest.TestCase):
 
     def testLeibniz01(self):
         # Reference
-        # Inside interesting integrals, Section 2.1, example 1
+        # Inside interesting integrals, Section 3.1, example 1
         file = compstate.CompFile("Leibniz01")
 
         # Basic result: integral of 1 / (x^2 + a^2)
@@ -578,6 +581,8 @@ class IntegralTest(unittest.TestCase):
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testLeibniz02(self):
+        # Reference
+        # Inside interesting integrals, Section 3.1, example 2
         file = compstate.CompFile('leibniz02')
 
         # Overall goal: (INT x:[-oo,oo]. exp(-(x^2)/2)) = sqrt(2*pi)
@@ -695,12 +700,12 @@ class IntegralTest(unittest.TestCase):
 
     def testLeibniz03(self):
         # Reference:
-        # Inside interesting integrals, Section 2.1, example #3
+        # Inside interesting integrals, Section 3.1, example #3
 
-        # Overall goal: INT x:[0, oo]. cos(tx)*exp(-(x^2)/2) = sqrt(pi/2)*exp(-(t^2)/2)
+        # Overall goal: INT x:[0,oo]. cos(tx)*exp(-(x^2)/2) = sqrt(pi/2)*exp(-(t^2)/2)
 
         # Initial state
-        file = compstate.CompFile('Leibniz02')
+        file = compstate.CompFile('Leibniz03')
 
         # Make definition
         e = parser.parse_expr("I(t) = INT x:[0, oo]. cos(t*x)*exp(-(x^2)/2)")

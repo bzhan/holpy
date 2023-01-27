@@ -1,0 +1,200 @@
+{
+    "content": [
+        {
+            "type": "header",
+            "name": "2. 'Easy' integrals",
+            "level": 1
+        },
+        {
+            "type": "header",
+            "name": "2.1 Six 'Easy' Warm-Ups",
+            "level": 2
+        },
+        {
+            "type": "header",
+            "name": "2.2 A New Trick",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))",
+            "path": "trick2a"
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0,pi]. x * sin(x) / (1 + cos(x)^2)",
+            "path": "trick2b"
+        },
+        {
+            "type": "header",
+            "name": "2.3 Two Old Tricks, Plus a New One",
+            "level": 2
+        },
+        {
+            "type": "header",
+            "name": "2.4 Another Old Trick: Euler's Log-Sine Integral",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,pi/2]. log(a * sin(x))) = pi/2 * log(a/2)",
+            "path": "euler_log_sin"
+        },
+        {
+            "type": "header",
+            "name": "3. Feynman's Favorite Trick",
+            "level": 1
+        },
+        {
+            "type": "header",
+            "name": "3.1 Leibniz's Formula",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. 1 / (x^2 + a^2)) = pi / (2 * a)",
+            "path": "leibniz01"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. 1 / (x^2 + a^2)^2) = pi / (4 * a^3)",
+            "path": "leibniz01"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. 1 / (x^2 + a^2)^3) = 3*pi / (16 * a^5)",
+            "path": "leibniz01"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[-oo,oo]. exp(-(x^2)/2)) = sqrt(2*pi)",
+            "path": "leibniz02"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, oo]. cos(tx)*exp(-(x^2)/2)) = sqrt(pi/2)*exp(-(t^2)/2)",
+            "path": "leibniz03"
+        },
+        {
+            "type": "header",
+            "name": "3.2 An Amazing Integral",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. x ^ -1 * sin(x)) = 1/2 * pi",
+            "path": "dirichletIntegral"
+        },
+        {
+            "type": "header",
+            "name": "3.3 Frullani's Integral",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. (atan(a*x) - atan(b*x))/x) = 1/2 * pi * log(a) - 1/2 * pi * log(b)",
+            "path": "FrullaniIntegral"
+        },
+        {
+            "type": "header",
+            "name": "3.4 The Flip-Side of Feynman's Trick",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, 1]. (x ^ a - 1) / log(x)) = log(a + 1)",
+            "path": "flipside03"
+        },
+        {
+            "type": "header",
+            "name": "4. Gamma and Beta Function Integrals",
+            "level": 1
+        },
+        {
+            "type": "header",
+            "name": "4.1 Euler's Gamma Function",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "Gamma(n+1) = factorial(n)",
+            "path": "GammaFunction"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. exp(-x^3)) = Gamma(4/3)",
+            "path": "GammaFunction"
+        },
+        {
+            "type": "header",
+            "name": "4.2 Wallis' Integral and the Beta Function",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. 1/(x^2+b)^(m+1)) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))",
+            "path": "wallis"
+        },
+        {
+            "type": "header",
+            "name": "5. Using Power Series to Evaluate Integrals",
+            "level": 1
+        },
+        {
+            "type": "header",
+            "name": "5.1 Catalan's Constant",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, 1]. atan(x) / x) = G",
+            "path": "CatalanConstant01"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[1,oo]. log(x) / (x^2+1)) = G",
+            "path": "CatalanConstant02"
+        },
+        {
+            "type": "header",
+            "name": "5.2 Power Series for the Log Function",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,1]. log(x+1) / x) = (pi^2) / 12",
+            "path": "LogFunction01"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, pi/2]. cos(x)/sin(x) * log(1/cos(x))) = pi^2/24",
+            "path": "LogFunction02"
+        },
+        {
+            "type": "header",
+            "name": "6. Seven Not-So-Easy Integrals",
+            "level": 1
+        },
+        {
+            "type": "header",
+            "name": "6.1 Bernoulli's Integral",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,1]. x^(c*x^a)) = SUM(k,0,oo,(-c)^k / (k*a+1)^(k+1))",
+            "path": "BernoulliIntegral"
+        },
+        {
+            "type": "header",
+            "name": "6.2 Ahmed's Integral",
+            "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,1]. atan(sqrt(2+x*x)) / ((1+x*x)*sqrt(2+x*x))) = 5*pi^2/96",
+            "path": "AhmedIntegral"
+        }
+    ],
+    "name": "Inside interesting integrals"
+}

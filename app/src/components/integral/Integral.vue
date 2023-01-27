@@ -2,7 +2,7 @@
   <div>
     <!-- Menu -->
     <b-navbar type="light" variant="info">
-      <b-navbar-brand href="#">Integral</b-navbar-brand>
+      <b-navbar-brand href="#" v-on:click='load_file_list'>Integral</b-navbar-brand>
       <b-navbar-nav>
         <b-nav-item-dropdown text="File" left>
           <b-dropdown-item href="#" v-on:click='load_file_list'>Open file</b-dropdown-item>
@@ -85,7 +85,7 @@
       </div>
     </div>
     <!-- Main panel showing calculation -->
-    <div v-if="cur_id !== undefined" id="problem">
+    <div v-if="content.length > 0 && cur_id !== undefined" id="problem">
       <div v-if="'type' in content[cur_id] && content[cur_id].type == 'FuncDef'">
         <FuncDef v-bind:item="content[cur_id]" v-bind:label="''"
           v-bind:selected_item="selected_item"
@@ -109,6 +109,26 @@
           @select_fact="selectFact"
           v-bind:selected_item="selected_item"
           v-bind:selected_facts="selected_facts"/>
+      </div>
+    </div>
+    <div v-if="content.length == 0" id="problem">
+      <div class="book-title">
+        {{book_content.name}}
+      </div>
+      <div v-for="(item, index) in book_content.content" :key="index">
+        <div v-if="item.type == 'header'">
+          <div v-if="item.level == 1" class="book-header1">
+            {{item.name}}
+          </div>
+          <div v-if="item.level == 2" class="book-header2">
+            {{item.name}}
+          </div>
+        </div>
+        <div v-if="item.type == 'problem'">
+          <MathEquation v-bind:data="'\\(' + item.latex_str + '\\)'" class="indented-text"
+            v-on:click.native="openFile(item.path)"
+            style="cursor:pointer"/>
+        </div>
       </div>
     </div>
     <div id="dialog">
@@ -300,6 +320,8 @@ export default {
   data: function () {
     return {
       filename: 'tongji7',       // Currently opened file
+
+      book_content: {},          // Content of the currently opened book
       content: [],               // List of problems
       file_list: [],             // List of integral list
       content_state: undefined,  // Display items in content or json files in file list
@@ -369,12 +391,24 @@ export default {
 
   computed: {
     lastExpr: function() {
-      this.query_last_expr()
-      return this.last_expr
+      if (this.content.size() > 0 && this.cur_id !== undefined) {
+        this.query_last_expr()
+        return this.last_expr
+      } else {
+        return ""
+      }
     }
   },
 
   methods: {
+    loadBookContent: async function () {
+      const data = {
+        bookname: 'interesting'
+      }
+      const response = await axios.post('http://127.0.0.1:5000/api/integral-load-book-content', JSON.stringify(data))
+      this.book_content = response.data
+    },
+
     query_last_expr: async function(){
         const data = {
           item: this.content[this.cur_id],
@@ -1022,18 +1056,25 @@ export default {
 
   created: function () {
     this.load_file_list()
+    this.loadBookContent()
   }
 }
 </script>
 
 <style scoped>
 
-.calc-reason {
-    margin-left: 50px;
+.book-title {
+  text-align: center
 }
 
-.calc-equation {
-    margin-left: 20px;
+.book-header1 {
+  font-size: x-large;
+  font-weight: 500;
+}
+
+.book-header2 {
+  font-size: large;
+  font-weight: 500;
 }
 
 #content {
