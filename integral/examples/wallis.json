@@ -266,6 +266,12 @@
                 "induct_case": {
                     "conds": [
                         {
+                            "cond": "b > 0",
+                            "latex_cond": "b > 0",
+                            "name": "b",
+                            "type": "Condition"
+                        },
+                        {
                             "cond": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                             "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
                             "name": "IH",
@@ -278,6 +284,12 @@
                     "proof": {
                         "conds": [
                             {
+                                "cond": "b > 0",
+                                "latex_cond": "b > 0",
+                                "name": "b",
+                                "type": "Condition"
+                            },
+                            {
                                 "cond": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                                 "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
                                 "name": "IH",
@@ -289,6 +301,12 @@
                         "latex_goal": "I(m + 1,b) = \\pi b ^ {-1/2\\cdot (2 m + 3)} 2 ^ {-2 m - 3} \\binom{2 m + 2}{m + 1}",
                         "lhs_calc": {
                             "conds": [
+                                {
+                                    "cond": "b > 0",
+                                    "latex_cond": "b > 0",
+                                    "name": "b",
+                                    "type": "Condition"
+                                },
                                 {
                                     "cond": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                                     "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
@@ -336,6 +354,12 @@
                         },
                         "rhs_calc": {
                             "conds": [
+                                {
+                                    "cond": "b > 0",
+                                    "latex_cond": "b > 0",
+                                    "name": "b",
+                                    "type": "Condition"
+                                },
                                 {
                                     "cond": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                                     "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",

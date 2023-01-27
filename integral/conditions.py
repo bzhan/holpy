@@ -12,7 +12,6 @@ from integral import latex
 class Conditions:
     def __init__(self, conds=None):
         self.data = dict()
-        self.is_assume = dict()
         if conds is not None:
             for i, cond in enumerate(conds):
                 self.data['C' + str(i+1)] = cond
@@ -20,9 +19,8 @@ class Conditions:
     def __str__(self):
         return ", ".join("%s: %s" % (name, cond) for name, cond in self.data.items())
 
-    def add_condition(self, name: str, cond: Expr, isAssume:bool = False):
+    def add_condition(self, name: str, cond: Expr):
         self.data[name] = cond
-        self.is_assume[name] = isAssume
 
     def __copy__(self):
         res = Conditions()
@@ -35,21 +33,14 @@ class Conditions:
     def export(self):
         res = list()
         for name, cond in self.data.items():
-            if name in self.is_assume.keys() and not self.is_assume[name]:
-                res.append({
-                    "type": "Condition",
-                    "name": name,
-                    "cond": str(cond),
-                    "latex_cond": latex.convert_expr(cond)
-                })
+            res.append({
+                "type": "Condition",
+                "name": name,
+                "cond": str(cond),
+                "latex_cond": latex.convert_expr(cond)
+            })
         return res
 
-    def del_assume(self, cond:Expr):
-        # delete assume
-        for n, c in self.data.items():
-            if c == cond and self.is_assume[n]:
-                self.data.pop(n)
-                break
 
 def is_positive(e: Expr, conds: Conditions) -> bool:
     """Return whether conditions imply e is positive."""

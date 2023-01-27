@@ -1412,8 +1412,7 @@ class ElimAbs(Rule):
             return sum(new_integral[1:], new_integral[0])
 
         elif e.ty == expr.FUN and e.func_name == 'abs':
-            if conds != None and is_positive(e.args[0], conds):
-                conds.del_assume(Op('>', e.args[0], Const(0)))
+            if conds is not None and is_positive(e.args[0], conds):
                 return e.args[0]
             else:
                 return e
