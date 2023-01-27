@@ -1,0 +1,49 @@
+{
+    "content": [
+        {
+            "type": "header",
+            "name": "Common integrals",
+            "level": 1
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. c) = c * x"
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. x ^ n) = x ^ (n + 1) / (n + 1)",
+            "conds": [
+                "n != -1"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. 1 / x) = log(abs(x))"
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. exp(x)) = exp(x)"
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. sin(x)) = -cos(x)"
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. cos(x)) = sin(x)"
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. 1 / (x^2 + 1)) = atan(x)"
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. sec(x)^2) = tan(x)"
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. csc(x)^2) = -cot(x)"
+        }
+    ],
+    "name": "Base theory"
+}

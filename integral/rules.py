@@ -165,7 +165,7 @@ class CommonIntegral(Rule):
     """Applies common integrals:
 
     INT c = c * x,
-    INT x ^ n = x ^ (n + 1) / (n + 1),  (where n != -1, c is a constant)
+    INT x ^ n = x ^ (n + 1) / (n + 1),  (where n != -1)
     INT 1 / x ^ n = (-n) / x ^ (n + 1), (where n != 1)
     INT sqrt(x) = 2/3 * x ^ (3/2)
     INT sin(x) = -cos(x),

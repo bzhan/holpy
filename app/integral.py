@@ -31,6 +31,12 @@ def integral_load_book_content():
             e = integral.parser.parse_expr(item['expr'])
             latex_str = integral.latex.convert_expr(e)
             item['latex_str'] = latex_str
+        if 'conds' in item:
+            latex_conds = []
+            for cond_str in item['conds']:
+                cond = integral.parser.parse_expr(cond_str)
+                latex_conds.append(integral.latex.convert_expr(cond))
+            item['latex_conds'] = latex_conds
 
     return jsonify(f_data)
 

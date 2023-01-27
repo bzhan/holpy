@@ -129,6 +129,16 @@
             v-on:click.native="openFile(item.path)"
             style="cursor:pointer"/>
         </div>
+        <div v-if="item.type == 'axiom'">
+          <MathEquation v-bind:data="'\\(' + item.latex_str + '\\)'" class="indented-text"/>
+          <span v-if="'latex_conds' in item && item.latex_conds.length > 0">
+            <span class="math-text indented-text">for &nbsp;</span>
+            <span v-for="(cond, index) in item.latex_conds" :key="index">
+              <span v-if="index > 0">, &nbsp;</span>
+              <MathEquation v-bind:data="'\\(' + cond + '\\)'"/>
+            </span>
+          </span>
+        </div>
       </div>
     </div>
     <div id="dialog">
@@ -403,7 +413,7 @@ export default {
   methods: {
     loadBookContent: async function () {
       const data = {
-        bookname: 'interesting'
+        bookname: 'base'
       }
       const response = await axios.post('http://127.0.0.1:5000/api/integral-load-book-content', JSON.stringify(data))
       this.book_content = response.data
