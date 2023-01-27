@@ -371,7 +371,7 @@ class IntegralTest(unittest.TestCase):
 
         # Prove the following equality
         Eq1 = compstate.Goal(parser.parse_expr("(D b. I(m,b)) = -(m+1) * I(m+1, b)"), conds=conds)
-        file.add_compstate(Eq1)
+        file.add_goal(Eq1)
         proof = Eq1.proof_by_calculation()
 
         calc = proof.lhs_calc
@@ -386,7 +386,7 @@ class IntegralTest(unittest.TestCase):
 
         # Prove the following by induction
         Eq2 = compstate.Goal(parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"), conds=conds)
-        file.add_compstate(Eq2)
+        file.add_goal(Eq2)
         proof = Eq2.proof_by_induction("m")
         proof_base = proof.base_case.proof_by_calculation()
         proof_induct = proof.induct_case.proof_by_calculation()
@@ -430,7 +430,7 @@ class IntegralTest(unittest.TestCase):
 
         # Recursive equation for gamma function
         goal1 = compstate.Goal(parser.parse_expr("Gamma(n+1) = n * Gamma(n)"), conds=conds)
-        file.add_compstate(goal1)
+        file.add_goal(goal1)
 
         proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
@@ -445,7 +445,7 @@ class IntegralTest(unittest.TestCase):
 
         # Gamma function and factorial
         goal2 = compstate.Goal(parser.parse_expr("Gamma(n+1) = factorial(n)"))
-        file.add_compstate(goal2)
+        file.add_goal(goal2)
 
         proof = goal2.proof_by_induction("n")
         proof_base = proof.base_case.proof_by_calculation()
@@ -518,7 +518,7 @@ class IntegralTest(unittest.TestCase):
         conds = compstate.Conditions()
         conds.add_condition("a", parser.parse_expr("a > 0"))
         goal1 = compstate.Goal(e, conds=conds)
-        file.add_compstate(goal1)
+        file.add_goal(goal1)
 
         proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
@@ -535,7 +535,7 @@ class IntegralTest(unittest.TestCase):
         # Derivate to get integral of 1 / (x^2 + a^2)^2
         e = parser.parse_expr("(INT x:[0,oo]. 1 / (x^2 + a^2)^2) = pi / (4 * a^3)")
         goal2 = compstate.Goal(e, conds=conds)
-        file.add_compstate(goal2)
+        file.add_goal(goal2)
         proof = goal2.proof_by_rewrite_goal(begin=goal1)
         calc = proof.begin
         calc.perform_rule(rules.DerivEquation('a'))
@@ -545,7 +545,7 @@ class IntegralTest(unittest.TestCase):
         # Derivate again:
         e = parser.parse_expr("(INT x:[0,oo]. 1 / (x^2 + a^2)^3) = 3*pi / (16 * a^5)")
         goal3 = compstate.Goal(e, conds=conds)
-        file.add_compstate(goal3)
+        file.add_goal(goal3)
         proof = goal3.proof_by_rewrite_goal(begin=goal2)
         calc = proof.begin
         calc.perform_rule(rules.DerivEquation('a'))
@@ -766,7 +766,7 @@ class IntegralTest(unittest.TestCase):
         # Prove J(a) = I(a)
         e = parser.parse_expr("J(a) = I(a)")
         goal1 = compstate.Goal(e)
-        file.add_compstate(goal1)
+        file.add_goal(goal1)
 
         proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
@@ -784,7 +784,7 @@ class IntegralTest(unittest.TestCase):
         # Prove J(a) = pi/2 * log(2/a) + 2 * I(a)
         e = parser.parse_expr("J(a) = pi/2 * log(2/a) + 2 * I(a)")
         goal2 = compstate.Goal(e)
-        file.add_compstate(goal2)
+        file.add_goal(goal2)
 
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
@@ -807,7 +807,7 @@ class IntegralTest(unittest.TestCase):
         # Finally show I(a) = pi/2 * log(a/2)
         e = parser.parse_expr("I(a) = pi/2 * log(a/2)")
         goal3 = compstate.Goal(e)
-        file.add_compstate(goal3)
+        file.add_goal(goal3)
 
         proof = goal3.proof_by_calculation()
         calc = proof.lhs_calc
@@ -870,7 +870,7 @@ class IntegralTest(unittest.TestCase):
         # goal: I(0) = INT x:[0, oo]. sin(x) / x
         e = parser.parse_expr("I(0) = INT x:[0, oo]. sin(x) / x")
         goal2 = compstate.Goal(e)
-        file.add_compstate(goal2)
+        file.add_goal(goal2)
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
         # need to check whether 0 is satisfied the condition of b

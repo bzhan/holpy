@@ -203,14 +203,12 @@ class CommonIntegral(Rule):
         # c = Symbol('c', [CONST])
         rules = [
             (Const(1), None, Var(e.var)),
-            (c, lambda m: isinstance(m[c], Const) or isinstance(m[c], Var) and m[c] != x, c * Var(e.var)),
+            (c, lambda m: isinstance(m[c.name], Const) or isinstance(m[c.name], Var) and m[c.name] != x, c * Var(e.var)),
             (x, None, (x ^ 2) / 2),
-            # (x ^ c, lambda m: m[c].val != -1, lambda m: (x ^ Const(m[c].val + 1)) / (Const(m[c].val + 1))),
-            # (Const(1) / x ^ c, lambda m: m[c].val != 1, (-c) / (x ^ (c + 1))),
-            (x ^ c, lambda m: isinstance(m[c], Const) and m[c].val != -1 or isinstance(m[c], Var)
-                              or isinstance(m[c], Op) and not m[c].has_var(x),
-             lambda m: (x ^ ((m[c] + 1).normalize())) / (m[c] + 1).normalize()),
-            (Const(1) / x ^ c, lambda m: isinstance(m[c], Const) and m[c].val != 1, (-c) / (x ^ (c + 1))),
+            (x ^ c, lambda m: isinstance(m[c.name], Const) and m[c.name].val != -1 or isinstance(m[c.name], Var)
+                              or isinstance(m[c.name], Op) and not m[c.name].has_var(x),
+             lambda m: (x ^ ((m[c.name] + 1).normalize())) / (m[c.name] + 1).normalize()),
+            (Const(1) / x ^ c, lambda m: isinstance(m[c.name], Const) and m[c.name].val != 1, (-c) / (x ^ (c + 1))),
             (expr.sqrt(x), None, Fraction(2, 3) * (x ^ Fraction(3, 2))),
             (sin(x), None, -cos(x)),
             (cos(x), None, sin(x)),
@@ -257,8 +255,8 @@ class CommonIndefiniteIntegral(Rule):
             (Const(1), None, Var(e.var)),
             (c, None, c * Var(e.var)),
             (x, None, (x ^ 2) / 2),
-            (x ^ c, lambda m: m[c].val != -1, lambda m: (x ^ Const(m[c].val + 1)) / (Const(m[c].val + 1))),
-            (Const(1) / x ^ c, lambda m: m[c].val != 1, (-c) / (x ^ (c + 1))),
+            (x ^ c, lambda m: m[c.name].val != -1, lambda m: (x ^ Const(m[c.name].val + 1)) / (Const(m[c.name].val + 1))),
+            (Const(1) / x ^ c, lambda m: m[c.name].val != 1, (-c) / (x ^ (c + 1))),
             (expr.sqrt(x), None, Fraction(2, 3) * (x ^ Fraction(3, 2))),
             (sin(x), None, -cos(x)),
             (cos(x), None, sin(x)),
@@ -944,7 +942,7 @@ class Substitution(Rule):
         specify the substitution.
 
         """
-        if not (e.is_integral() or e.is_indefinite_integral):
+        if not (e.is_integral() or e.is_indefinite_integral()):
             sep_ints = e.separate_integral()
             if len(sep_ints) == 0:
                 return e

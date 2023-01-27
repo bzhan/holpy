@@ -1603,7 +1603,8 @@ def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
         if exp.ty != pattern.ty:
             return False
         if exp.is_var():
-            return pattern.name == exp.name or bd_vars[pattern.name] == exp.name
+            return pattern.name == exp.name or \
+                (pattern.name in bd_vars and bd_vars[pattern.name] == exp.name)
         elif exp.is_const():
             return pattern.val == exp.val
         elif exp.is_op():
