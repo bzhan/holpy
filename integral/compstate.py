@@ -571,54 +571,9 @@ class RewriteGoalProof(StateItem):
         else:
             raise AssertionError("get_by_label: invalid label")
 
-class CompState:
-    """Represents the global state of a computation proof."""
-    def __init__(self, name: str, goal: Expr):
-        # Name of the proof
-        self.name = name
-
-        # Final goal of the computation
-        self.goal = goal
-
-        # List of items in the computation
-        self.items = []
-
-        # Dictionary mapping function names to their definitions
-        self.func_map = dict()
-
-    def __str__(self):
-        res = "Goal: %s\n" % self.goal
-        for item in self.items:
-            res += str(item)
-        return res
-
-    def export(self):
-        return {
-            "name": self.name,
-            "type": "CompState",
-            "problem": str(self.goal),
-            "latex_problem": latex.convert_expr(self.goal),
-            "items": [item.export() for item in self.items]
-        }
-
-    def add_item(self, item: StateItem):
-        """Add an item of computation."""
-        self.items.append(item)
-        if isinstance(item, FuncDef):
-            self.func_map[item.symb] = item
-
-    def get_by_label(self, label: Union[str, Label]):
-        """Return an item corresponding to a label"""
-        if isinstance(label, str):
-            label = Label(label)
-        if label.empty():
-            return self
-        else:
-            return self.items[label.head].get_by_label(label.tail)
-
 
 class CompFile:
-    """Represent a file containing multiple CompState objects."""
+    """Represent a file containing multiple StateItem objects."""
     def __init__(self, name: str):
         self.name: str = name
         self.content: List[StateItem] = []
@@ -632,10 +587,6 @@ class CompFile:
     def add_definition(self, funcdef: FuncDef):
         """Add a function definition."""
         self.content.append(funcdef)
-
-    def add_compstate(self, st: CompState):
-        """Add a computation proof."""
-        self.content.append(st)
 
     def add_calculation(self, calc: Union[str, Expr, Calculation]) -> Calculation:
         """Add a calculation."""
@@ -656,6 +607,10 @@ class CompFile:
     def add_lemma(self, lemma: Lemma):
         """Add a assumption"""
         self.content.append(lemma)
+
+    def add_item(self, item: StateItem):
+        """Add item of arbitrary type"""
+        self.content.append(item)
 
     def export(self):
         self.name = self.name
@@ -874,12 +829,12 @@ def parse_item(item) -> StateItem:
         print(item['type'])
         raise NotImplementedError
 
-def parse_state(name: str, problem: str, items) -> CompState:
+def parse_file(name: str, problem: str, items) -> CompFile:
     goal = parser.parse_expr(problem)
-    st = CompState(name, goal)
+    file = CompFile(name)
     for item in items:
-        st.add_item(parse_item(item))
-    return st
+        file.add_item(parse_item(item))
+    return file
 
 def get_next_step_label(step: Union[Calculation, CalculationStep], label: Label) -> Label:
     if isinstance(step, Calculation):

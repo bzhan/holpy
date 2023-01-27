@@ -199,26 +199,26 @@ def query_trig_identity():
 @app.route("/api/add-function-definition", methods=['POST'])
 def add_function_definition():
     data = json.loads(request.get_data().decode('UTF-8'))
-    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    file = compstate.parse_file(data['name'], data['problem'], data['items'])
     eq = integral.parser.parse_expr(data['eq'])
     conds = integral.conditions.Conditions(integral.parser.parse_expr(cond) for cond in data['conds'])
-    st.add_item(compstate.FuncDef(eq, conds=conds))
+    file.add_item(compstate.FuncDef(eq, conds=conds))
     return jsonify({
         "status": "ok",
-        "state": st.export(),
+        "state": file.export(),
     })
 
 @app.route("/api/add-goal", methods=["POST"])
 def add_goal():
     data = json.loads(request.get_data().decode('UTF-8'))
-    st = compstate.parse_state(data['name'], data['problem'], data['items'])
+    file = compstate.parse_file(data['name'], data['problem'], data['items'])
     goal = integral.parser.parse_expr(data['goal'])
     conds = integral.conditions.Conditions(integral.parser.parse_expr(cond) for cond in data['conds'])
-    st.add_item(compstate.Goal(goal, conds=conds))
+    file.add_item(compstate.Goal(goal, conds=conds))
     return jsonify({
         "status": "ok",
-        "state": st.export(),
-        "selected_item": str(compstate.Label([len(st.items)-1])),
+        "state": file.export(),
+        "selected_item": str(compstate.Label([len(file.items)-1])),
     })
 
 @app.route("/api/proof-by-calculation", methods=["POST"])
