@@ -4,7 +4,6 @@ import unittest
 import json
 
 from integral import expr
-from logic import basic
 from integral import compstate
 from integral import rules
 from integral import parser
@@ -12,9 +11,21 @@ from integral import conditions
 
 
 class IntegralTest(unittest.TestCase):
-    def testTongji(self):
-        basic.load_theory('interval_arith')
+    def checkAndOutput(self, file, filename):
+        # Test parsing of json file
+        json_file = file.export()
+        for i, item in enumerate(json_file['content']):
+            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
 
+        # Test goals are finished
+        for content in file.content:
+            self.assertTrue(content.is_finished())
+
+        # Output to file
+        with open('integral/examples/' + filename + '.json', 'w', encoding='utf-8') as f:
+            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    def testTongji(self):
         file = compstate.CompFile("Tongji")
 
         calc = file.add_calculation("INT x:[2,3]. 2 * x + x ^ 2")
@@ -386,16 +397,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.RewriteBinom()))
         calc.perform_rule(rules.FullSimplify())
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        self.assertTrue(file.content[1].is_finished())
-        self.assertTrue(file.content[2].is_finished())
-        with open('integral/examples/wallis.json', 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "wallis")
 
     def testGammaFunction(self):
         # Reference:
@@ -453,19 +455,9 @@ class IntegralTest(unittest.TestCase):
         goal3.perform_rule(rules.OnSubterm(rules.ApplyEquation(gamma_def.eq, subMap={"n": parser.parse_expr('1/3')})))
         goal3.perform_rule(rules.ApplyEquation(goal1.goal))
         goal3.perform_rule(rules.FullSimplify())
+        self.assertEqual(str(goal3.last_expr), "Gamma(4/3)")
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        self.assertTrue(file.content[1].is_finished())
-        self.assertTrue(file.content[2].is_finished())
-        self.assertEqual(str(file.content[3].last_expr), "Gamma(4/3)")
-
-        with open('integral/examples/GammaFunction.json', 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "GammaFunction")
 
     def testTrick2a(self):
         # Reference:
@@ -482,18 +474,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")))
         self.assertEqual(str(calc.last_expr), "1/4 * pi")
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        with open('integral/examples/trick2a.json', 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "trick2a")
 
     def testTrick2b(self):
         # Reference:
@@ -510,18 +491,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "1/4 * pi ^ 2")
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        with open('integral/examples/trick2b.json', 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "trick2b")
 
     def testLeibniz01(self):
         # Reference
@@ -567,18 +537,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.MulEquation(parser.parse_expr("1 / (-4 * a)")))
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        with open('integral/examples/leibniz01.json', 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "leibniz01")
 
     def testLeibniz02(self):
         # Reference
@@ -685,18 +644,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_Eq6.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        with open('integral/examples/leibniz02.json', 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "leibniz02")
 
     def testLeibniz03(self):
         # Reference:
@@ -783,18 +731,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1'))
         calc.perform_rule(rules.FullSimplify())
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        with open('integral/examples/leibniz03.json', 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "leibniz03")
 
     def testEulerLogSineIntegral(self):
         # Reference:
@@ -868,18 +805,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.RewriteLog())
         calc.perform_rule(rules.ExpandPolynomial())
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        with open('integral/examples/euler_log_sin.json', 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "euler_log_sin")
 
     def testDirichletIntegral(self):
         # Reference:
@@ -981,19 +907,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(goal4.goal))
         calc.perform_rule(rules.FullSimplify())
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        path = 'integral/examples/dirichletIntegral.json'
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "dirichletIntegral")
 
     def testFlipside03(self):
         # Reference:
@@ -1066,19 +980,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), '1'))
         calc.perform_rule(rules.FullSimplify())
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        path = 'integral/examples/flipside03.json'
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "flipside03")
 
     def testFrullaniIntegral(self):
         # Reference:
@@ -1184,19 +1086,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(goal3.goal))
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(goal5.goal)))
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        path = 'integral/examples/FrullaniIntegral.json'
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "FrullaniIntegral")
 
     def testCatalanConstant01(self):
         # Reference:
@@ -1226,19 +1116,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(Gdef.eq))
         calc.perform_rule(rules.FullSimplify())
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        path = 'integral/examples/CatalanConstant01.json'
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "CatalanConstant01")
 
     def testCatalanConstant02(self):
         # Reference:
@@ -1342,19 +1220,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(eq=Gdef.eq))
         calc.perform_rule(rules.FullSimplify())
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        path = 'integral/examples/CatalanConstant02.json'
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "CatalanConstant02")
 
     def testLogFunction01(self):
         # Reference:
@@ -1368,13 +1234,13 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("abs(x) < 1")
         conds_of_goal1.add_condition("x", e)
         e = parser.parse_expr("log(1+x) = SUM(k,0,oo,(-1)^k * (x^(k+1))/(k+1))")
-        goal1 = compstate.Goal(goal=e, conds=conds_of_goal1)
+        goal1 = compstate.Lemma(lemma=e, conds=conds_of_goal1)
         file.add_goal(goal1)
 
         # Series sum for alternating reciprocal of squares
         # TODO: add derivation
         e = parser.parse_expr("SUM(k,0,oo,(-1)^k * (k+1)^(-2))  = (pi^2) / 12")
-        goal2 = compstate.Goal(goal=e)
+        goal2 = compstate.Lemma(lemma=e)
         file.add_lemma(goal2)
 
         # Main result
@@ -1386,31 +1252,19 @@ class IntegralTest(unittest.TestCase):
 
         # TODO: condition check
         # the domain of x is (0, 1), so the condition abs(x) < 1 is satisfied
-        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=goal1.goal)))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=goal1.lemma)))
         old_expr = parser.parse_expr("SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1)) / x")
         new_expr = parser.parse_expr("SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1) * (1/x))")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         calc.perform_rule(rules.IntSumExchange())
         calc.perform_rule(rules.FullSimplify())
 
-        calc.perform_rule(rules.ApplyLemma(lemma=goal2.goal))
+        calc.perform_rule(rules.ApplyLemma(lemma=goal2.lemma))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal01.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content[2:]:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        path = 'integral/examples/LogFunction01.json'
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "LogFunction01")
 
     def testLogFunction02(self):
         # Reference:
@@ -1510,20 +1364,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_goal03.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        path = 'integral/examples/LogFunction02.json'
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
-
+        self.checkAndOutput(file, "LogFunction02")
 
     def testBernoulliIntegral(self):
         # Reference:
@@ -1579,19 +1420,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_goal02.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        path = 'integral/examples/BernoulliIntegral.json'
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "BernoulliIntegral")
 
     def testAhmedIntegral(self):
         # Reference:
@@ -1725,19 +1554,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal04.goal), '0'))
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("I(1)")))
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
-
-        # Output to file
-        path = 'integral/examples/AhmedIntegral.json'
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "AhmedIntegral")
 
 
 if __name__ == "__main__":

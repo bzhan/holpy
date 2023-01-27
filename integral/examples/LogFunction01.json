@@ -9,16 +9,14 @@
                     "type": "Condition"
                 }
             ],
-            "finished": false,
-            "goal": "log(1 + x) = SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
-            "latex_goal": "\\log{(1 + x)} = \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",
-            "type": "Goal"
+            "eq": "log(1 + x) = SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
+            "latex_eq": "\\log{(1 + x)} = \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",
+            "type": "Lemma"
         },
         {
-            "finished": false,
-            "goal": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) = pi ^ 2 / 12",
-            "latex_goal": "\\sum_{k=0}^{\\infty}{(-1)^{k} (k + 1) ^ {-2}} = \\frac{\\pi ^ {2}}{12}",
-            "type": "Goal"
+            "eq": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) = pi ^ 2 / 12",
+            "latex_eq": "\\sum_{k=0}^{\\infty}{(-1)^{k} (k + 1) ^ {-2}} = \\frac{\\pi ^ {2}}{12}",
+            "type": "Lemma"
         },
         {
             "finished": true,

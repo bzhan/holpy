@@ -2,11 +2,10 @@
 
 from fractions import Fraction
 import math
-import sympy
 from sympy.ntheory.factor_ import factorint
 import typing
 
-from kernel.type import TFun, BoolType, RealType
+from kernel.type import TFun, RealType
 from kernel import term
 from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod, true, false, Var, Exists, And, Implies, Not, false
 from kernel.thm import Thm
@@ -14,18 +13,21 @@ from kernel.theory import register_macro
 from kernel.macro import Macro
 from kernel.proofterm import TacticException
 from kernel import term_ord
-from data import nat, integer, proplogic
+from data import nat, integer
 from data.set import setT
+from logic import basic
 from logic import logic
 from logic import auto
 from logic import matcher
 from logic.conv import rewr_conv, binop_conv, arg1_conv, arg_conv, try_conv, Conv, ConvException, top_conv
 from logic.tactic import MacroTactic
 from kernel.proofterm import refl, ProofTerm
-from syntax import pprint, settings
+from syntax import pprint
 from server.method import Method, register_method
 from util import poly
 import functools
+
+basic.load_theory('interval_arith')
 
 # Basic definitions
 
