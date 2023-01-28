@@ -229,33 +229,28 @@
         },
         {
             "finished": true,
-            "goal": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))",
-            "latex_goal": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C(y)",
+            "goal": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_CONST(C)",
+            "latex_goal": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C()",
             "proof": {
                 "finished": true,
-                "goal": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))",
-                "latex_goal": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C(y)",
+                "goal": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_CONST(C)",
+                "latex_goal": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C()",
                 "start": {
                     "latex_start": "\\frac{d}{dt} (g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy)) = 0",
                     "start": "(D t. g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2))) = 0",
                     "steps": [
                         {
-                            "latex_res": "g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) + E(y) = \\int 0 \\,dt",
-                            "res": "g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2)) + SKOLEM_FUNC(E(y)) = (INT t. 0)",
+                            "latex_res": "g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) = \\int 0 \\,dt",
+                            "res": "g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2)) = (INT t. 0)",
                             "rule": {
-                                "integral_var": "t",
-                                "left_skolem": true,
-                                "left_skolem_name": "E",
                                 "name": "IntegrateBothSide",
-                                "right_skolem": false,
-                                "right_skolem_name": null,
                                 "str": "integrate both side"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) + E(y) = 0 t + C",
-                            "res": "g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2)) + SKOLEM_FUNC(E(y)) = 0 * t + SKOLEM_CONST(C)",
+                            "latex_res": "g{(t)} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy) = 0 t + C()",
+                            "res": "g(t) + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2)) = 0 * t + SKOLEM_CONST(C)",
                             "rule": {
                                 "loc": "1",
                                 "name": "CommonIndefiniteIntegral",
@@ -264,20 +259,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} + E(y) = C",
-                            "res": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) + SKOLEM_FUNC(E(y)) = SKOLEM_CONST(C)",
+                            "latex_res": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C()",
+                            "res": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C(y)",
-                            "res": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))",
-                            "rule": {
-                                "name": "RewriteSkolemConst",
-                                "str": "RewriteSkolemConst"
                             },
                             "type": "CalculationStep"
                         }
@@ -334,19 +320,19 @@
         },
         {
             "finished": true,
-            "goal": "pi / 2 = SKOLEM_FUNC(C(y))",
-            "latex_goal": "\\frac{\\pi}{2} = C(y)",
+            "goal": "pi / 2 = SKOLEM_CONST(C)",
+            "latex_goal": "\\frac{\\pi}{2} = C()",
             "proof": {
                 "finished": true,
-                "goal": "pi / 2 = SKOLEM_FUNC(C(y))",
-                "latex_goal": "\\frac{\\pi}{2} = C(y)",
+                "goal": "pi / 2 = SKOLEM_CONST(C)",
+                "latex_goal": "\\frac{\\pi}{2} = C()",
                 "start": {
-                    "latex_start": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C(y)",
-                    "start": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))",
+                    "latex_start": "2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C()",
+                    "start": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_CONST(C)",
                     "steps": [
                         {
-                            "latex_res": "\\lim\\limits_{t\\to 0} (\\,2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)}\\,) = \\lim\\limits_{t\\to 0} C(y)",
-                            "res": "(LIM {t -> 0 }. 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t)) = (LIM {t -> 0 }. SKOLEM_FUNC(C(y)))",
+                            "latex_res": "\\lim\\limits_{t\\to 0} (\\,2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)}\\,) = \\lim\\limits_{t\\to 0} C()",
+                            "res": "(LIM {t -> 0 }. 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t)) = (LIM {t -> 0 }. SKOLEM_CONST(C))",
                             "rule": {
                                 "latex_str": "apply limit \\(t \\to 0\\) to equation",
                                 "lim": "0",
@@ -357,8 +343,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "g{(0)} + \\frac{1}{2} \\pi = C(y)",
-                            "res": "g(0) + 1/2 * pi = SKOLEM_FUNC(C(y))",
+                            "latex_res": "g{(0)} + \\frac{1}{2} \\pi = C()",
+                            "res": "g(0) + 1/2 * pi = SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -366,8 +352,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 + \\frac{1}{2} \\pi = C(y)",
-                            "res": "0 + 1/2 * pi = SKOLEM_FUNC(C(y))",
+                            "latex_res": "0 + \\frac{1}{2} \\pi = C()",
+                            "res": "0 + 1/2 * pi = SKOLEM_CONST(C)",
                             "rule": {
                                 "eq": "g(0) = 0",
                                 "latex_str": "apply equation \\(g{(0)} = 0\\) at 0.0",
@@ -378,8 +364,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi = C(y)",
-                            "res": "1/2 * pi = SKOLEM_FUNC(C(y))",
+                            "latex_res": "\\frac{1}{2} \\pi = C()",
+                            "res": "1/2 * pi = SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -406,13 +392,13 @@
                     "start": "g(t)",
                     "steps": [
                         {
-                            "latex_res": "C(y) - 2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy)",
-                            "res": "SKOLEM_FUNC(C(y)) - 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1))",
+                            "latex_res": "C() - 2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy)",
+                            "res": "SKOLEM_CONST(C) - 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1))",
                             "rule": {
-                                "eq": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))",
-                                "latex_str": "apply equation \\(2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C(y)\\)",
+                                "eq": "2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_CONST(C)",
+                                "latex_str": "apply equation \\(2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + g{(t)} = C()\\)",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_FUNC(C(y))"
+                                "str": "apply equation: 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + g(t) = SKOLEM_CONST(C)"
                             },
                             "type": "CalculationStep"
                         },
@@ -420,11 +406,11 @@
                             "latex_res": "\\frac{\\pi}{2} - 2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy)",
                             "res": "pi / 2 - 2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1))",
                             "rule": {
-                                "eq": "pi / 2 = SKOLEM_FUNC(C(y))",
-                                "latex_str": "apply equation \\(\\frac{\\pi}{2} = C(y)\\) at 0",
+                                "eq": "pi / 2 = SKOLEM_CONST(C)",
+                                "latex_str": "apply equation \\(\\frac{\\pi}{2} = C()\\) at 0",
                                 "loc": "0",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: pi / 2 = SKOLEM_FUNC(C(y)) at 0"
+                                "str": "apply equation: pi / 2 = SKOLEM_CONST(C) at 0"
                             },
                             "type": "CalculationStep"
                         },

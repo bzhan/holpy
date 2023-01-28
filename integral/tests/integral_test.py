@@ -64,7 +64,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
         calc.perform_rule(rules.ReplaceSubstitution())
 
-        print(file)
         self.checkAndOutput(file, "standard")
 
     def testTongji(self):
@@ -604,14 +603,12 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1.1.0'))
         calc.perform_rule(rules.FullSimplify())
 
-        Eq3 = file.add_goal("2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_FUNC(C(y))")
+        Eq3 = file.add_goal("2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_CONST(C)")
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
-        calc.perform_rule(rules.IntegralEquation(var = 't',left_skolem_name='E',right_skolem_name=None))
+        calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral(const_name='C'), '1'))
         calc.perform_rule(rules.FullSimplify())
-        new_expr = parser.parse_expr("SKOLEM_FUNC(C(y))")
-        calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
 
         Eq4 = file.add_goal("g(0) = 0")
         proof_of_Eq4 = Eq4.proof_by_calculation()
@@ -619,7 +616,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ExpandDefinition(Idef.eq))
         calc.perform_rule(rules.FullSimplify())
 
-        Eq5 = file.add_goal("pi/2 = SKOLEM_FUNC(C(y))")
+        Eq5 = file.add_goal("pi/2 = SKOLEM_CONST(C)")
         proof_of_Eq5 = Eq5.proof_by_rewrite_goal(begin = Eq3)
         calc = proof_of_Eq5.begin
         calc.perform_rule(rules.LimitEquation('t', expr.Const(0)))
@@ -697,10 +694,8 @@ class IntegralTest(unittest.TestCase):
         Eq3 = file.add_goal("1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)")
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
-        calc.perform_rule(rules.IntegralEquation(var='t', left_skolem_name='E', right_skolem_name=None))
+        calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral(const_name='C'), '1'))
-        new_expr = parser.parse_expr("SKOLEM_CONST(C)")
-        calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
 
         Eq4 = file.add_goal("log(sqrt(pi / 2)) = SKOLEM_CONST(C)")
         Eq4_proof = Eq4.proof_by_rewrite_goal(begin=Eq3)
@@ -856,11 +851,9 @@ class IntegralTest(unittest.TestCase):
         case_2_proof = proof.case_2.proof_by_rewrite_goal(begin=goal1)
         calc = case_2_proof.begin
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.IntegralEquation(var='b', left_skolem_name='E', right_skolem_name=None))
+        calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral('C'), '1.0'))
-        new_expr = parser.parse_expr("SKOLEM_CONST(C)")
-        calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
 
         goal4 = file.add_goal("0 = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi")
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
@@ -914,11 +907,9 @@ class IntegralTest(unittest.TestCase):
         goal3 = file.add_goal("I(a) = log(a+1) + SKOLEM_CONST(C)", conds=["a >= 0"])
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal1)
         calc = proof_of_goal3.begin
-        calc.perform_rule(rules.IntegralEquation(var='a', left_skolem_name='E', right_skolem_name=None))
+        calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral('C'), '1'))
         calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
-        new_expr = parser.parse_expr("SKOLEM_CONST(C)")
-        calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
 
         goal4 = file.add_goal("0 = SKOLEM_CONST(C)")
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
@@ -978,39 +969,31 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         # Integrate the previous result to get formula for I(a,b)
-        # TODO: can simplify
-        goal3 = file.add_goal("I(a,b) = 1/2 * pi * log(a) - SKOLEM_FUNC(C(b))", conds=["a > 0"])
+        goal3 = file.add_goal("I(a,b) = 1/2 * pi * log(a) + 1/2 * pi * SKOLEM_FUNC(C(b))", conds=["a > 0"])
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal2)
         calc = proof_of_goal3.begin
-        calc.perform_rule(rules.IntegralEquation(var='a', left_skolem_name='E', right_skolem_name=None))
+        calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '1'))
         calc.perform_rule(rules.OnSubterm(rules.CommonIndefiniteIntegral(const_name='C')))
         calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), '1'))
-        new_expr = parser.parse_expr("-SKOLEM_FUNC(C(b))")
-        calc.perform_rule(rules.RewriteSkolemConst(new_expr = new_expr))
         calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
         calc.perform_rule(rules.FullSimplify())
 
-        # Special case I(a,a)
-        goal4 = file.add_goal("I(a,a) = 1/2 * pi * log(a) - SKOLEM_FUNC(C(a))", conds=["a > 0"])
-        proof_of_goal4 = goal4.proof_by_calculation()
-        calc = proof_of_goal4.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition(goal3.goal))
-
         # Obtain value of Skolem function
-        goal5 = file.add_goal("SKOLEM_FUNC(C(a)) = 1/2 * pi * log(a)", conds=["a > 0"])
-        proof_of_goal5 = goal5.proof_by_calculation()
-        calc = proof_of_goal5.lhs_calc
-        calc.perform_rule(rules.ApplyEquation(goal4.goal))
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal1.goal)))
-        calc.perform_rule(rules.FullSimplify())
+        goal4 = file.add_goal("SKOLEM_FUNC(C(a)) = -log(a)", conds=["a > 0"])
+        proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
+        calc = proof_of_goal4.begin
+        calc.perform_rule(rules.VarSubsOfEquation("b", parser.parse_expr("a")))
+        # calc.perform_rule(rules.SolveEquation(parser.parse_expr("SKOLEM_FUNC(C(a))")))
+        # calc.perform_rule(rules.FullSimplify())
 
         # Final result
         goal6 = file.add_goal("I(a, b) = 1/2 * pi * log(a) - 1/2 * pi * log(b)", conds=["a > 0", "b > 0"])
         proof_of_goal6 = goal6.proof_by_calculation()
         calc = proof_of_goal6.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal3.goal))
-        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(goal5.goal)))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(goal4.goal)))
+        calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file, "FrullaniIntegral")
 

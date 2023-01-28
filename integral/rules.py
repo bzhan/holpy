@@ -122,11 +122,12 @@ class Linearity(Rule):
                 factors = decompose_expr_factor(e.body)
                 if not factors[0].contains_var(e.var):
                     return factors[0] * rec(expr.IndefiniteIntegral(
-                        e.var, functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
+                        e.var, functools.reduce(lambda x, y: x * y, factors[2:], factors[1]),
+                        e.skolem_args))
                 else:
                     return e
             elif e.body.is_uminus():
-                return -IndefiniteIntegral(e.var, e.body.args[0])
+                return -IndefiniteIntegral(e.var, e.body.args[0], e.skolem_args)
             elif e.body.is_divides():
                 return e
             else:
@@ -242,11 +243,11 @@ class CommonIndefiniteIntegral(Rule):
         return "common indefinite integrals"
 
     def eval(self, e: Expr, ctx=None) -> Expr:
-        if e.ty != INDEFINITEINTEGRAL:
+        if not e.is_indefinite_integral():
             return e
-        C = expr.SkolemFunc(self.const_name, *[arg for arg in expr.SkolemFunc.find_free(e.var, e.body)])
-        v = Var(e.var)
-        if (e.body.is_constant() or v not in e.body.findVar()) and e.body != Const(1):
+
+        C = expr.SkolemFunc(self.const_name, tuple(Var(arg) for arg in e.skolem_args))
+        if e.body.is_constant() and e.body != Const(1):
             return e.body * Var(e.var) + C
 
         x = Var(e.var)
@@ -424,7 +425,7 @@ class OnSubterm(Rule):
         elif e.ty == expr.LIMIT:
             return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, ctx)), ctx)
         elif e.ty == expr.INDEFINITEINTEGRAL:
-            return rule.eval(expr.IndefiniteIntegral(e.var, self.eval(e.body)), ctx)
+            return rule.eval(expr.IndefiniteIntegral(e.var, self.eval(e.body), e.skolem_args), ctx)
         elif e.ty == SUMMATION:
             return rule.eval(
                 expr.Summation(e.index_var, self.eval(e.lower, ctx), self.eval(e.upper, ctx),
@@ -511,7 +512,7 @@ class OnLocation(Rule):
 
             elif cur_e.ty == INDEFINITEINTEGRAL:
                 assert loc.head == 0, "OnLocation: invalid location"
-                return IndefiniteIntegral(cur_e.var, rec(cur_e.body, loc.rest))
+                return IndefiniteIntegral(cur_e.var, rec(cur_e.body, loc.rest), cur_e.skolem_args)
             elif cur_e.ty == SUMMATION:
                 if loc.head == 0:
                     return Summation(cur_e.index_var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest))
@@ -970,7 +971,7 @@ class Substitution(Rule):
                 except:
                     return Integral(self.var_name, lower, upper, body_subst).normalize()
             elif e.is_indefinite_integral():
-                return IndefiniteIntegral(self.var_name, body_subst).normalize()
+                return IndefiniteIntegral(self.var_name, body_subst, e.skolem_args).normalize()
             else:
                 raise TypeError
         else:
@@ -995,7 +996,7 @@ class Substitution(Rule):
                 except TypeError as e:
                     return Integral(self.var_name, lower, upper, new_problem_body).normalize()
             elif e.is_indefinite_integral():
-                return IndefiniteIntegral(self.var_name, new_problem_body).normalize()
+                return IndefiniteIntegral(self.var_name, new_problem_body, e.skolem_args).normalize()
 
 
 class SubstitutionInverse(Rule):
@@ -1804,9 +1805,9 @@ class DerivIntExchange(Rule):
             v1, v2 = e.var, e.body.var
             return Integral(v2, e.body.lower, e.body.upper, Deriv(v1, e.body.body))
         elif e.is_deriv() and e.body.is_indefinite_integral():
-            return IndefiniteIntegral(e.var, Deriv(e.var, e.body.body))
+            return IndefiniteIntegral(e.var, Deriv(e.var, e.body.body), e.skolem_args)
         elif e.is_indefinite_integral() and e.body.is_deriv():
-            return Deriv(e.var, IndefiniteIntegral(e.var, e.body.body))
+            return Deriv(e.var, IndefiniteIntegral(e.var, e.body.body, e.skolem_args))
         else:
             raise NotImplementedError
 
@@ -2112,29 +2113,27 @@ class SimplifyInfinity(Rule):
 
 
 class IntegralEquation(Rule):
-    '''
-        Integrate both side of an equation using some variable
-        such as expression: D b. I(b) = -1/b^2, we integrate both side using var b,
-        then we get a new expression: I(b) + SKOLEM_CONST(E) = INT x. -1/b^2
-    '''
+    """Integrate an equation where the left side is a derivative.
 
-    def __init__(self, *, var, left_skolem_name, right_skolem_name):
+    Convert (D a. f(a)) = g(a) into f(a) = INT a. g(a). The right side
+    can then be evaluated to produce a Skolem constant.
+
+    """
+    def __init__(self):
         self.name = "IntegrateBothSide"
-        self.var = var
-        self.left_skolem_name = left_skolem_name
-        self.right_skolem_name = right_skolem_name
 
     def eval(self, e: Expr, ctx=None):
-        assert e.is_equals()
-        # assert e.lhs.is_deriv()
-        # assert e.rhs.normalize() == Const(0)
-        if e.lhs.is_deriv() and e.lhs.var == self.var and self.right_skolem_name == None:
-            left_const_part = expr.SkolemFunc(self.left_skolem_name,
-                                              *[arg for arg in expr.SkolemFunc.find_free(self.var, e.lhs.body)])
-            new_lhs = e.lhs.body + left_const_part
-            return Op('=', new_lhs, IndefiniteIntegral(self.var, e.rhs))
-        else:
-            raise NotImplementedError
+        assert e.is_equals() and e.lhs.is_deriv()
+
+        # Variable to differentiate, this will also be the variable
+        # of integration.
+        var = e.lhs.var
+
+        # List of Skolem arguments is the free variables on the left side
+        skolem_args = e.lhs.get_vars()
+
+        # Return f(a) = INT a. g(a)
+        return Op("=", e.lhs.body, IndefiniteIntegral(var, e.rhs, skolem_args))
 
     def __str__(self):
         return "integrate both side"
@@ -2143,11 +2142,6 @@ class IntegralEquation(Rule):
         return {
             "name": self.name,
             "str": str(self),
-            "integral_var": self.var,
-            "left_skolem_name": self.left_skolem_name,
-            "right_skolem_name": self.right_skolem_name,
-            "left_skolem": True if self.left_skolem_name else False,
-            "right_skolem": True if self.right_skolem_name else False,
         }
 
 
@@ -2237,66 +2231,6 @@ class RewriteLog(Rule):
                     return OnLocation(self, loc).eval(e);
 
         return e
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-
-class RewriteSkolemConst(Rule):
-    """Rewrite or combine Skolem terms.
-    
-    Two cases are handled:
-
-    1. Input is an equality A = B, where both A and B may contain
-       Skolem constants, combine these into a single Skolem constant
-       on the right side. The dependencies are combined.
-       
-    2. Input is a Skolem constant, rename it into another Skolem constant
-       with the same dependencies.
-
-    """
-    def __init__(self, new_expr: Expr):
-        self.name = "RewriteSkolemConst"
-        self.new_expr = new_expr
-
-    def __str__(self):
-        return "RewriteSkolemConst"
-
-    def eval(self, e: Expr, ctx=None):
-        if e.is_equals():
-            # Case of equation A = B.
-            res = set()
-            res_lhs, res_rhs = list(), list()
-
-            lhs_terms, rhs_terms = expr.decompose_expr_add(e.lhs), expr.decompose_expr_add(e.rhs)
-
-            for item in lhs_terms:
-                if item.is_skolem_term():
-                    res = res.union(item.all_dependencies())
-                else:
-                    res_lhs.append(item)
-            for item in rhs_terms:
-                if item.is_skolem_term():
-                    res = res.union(item.all_dependencies())
-                else:
-                    res_rhs.append(item)
-            if self.new_expr.all_dependencies() == res:
-                res_rhs = expr.add(res_rhs) if res_rhs != [] else Const(0)
-                res_lhs = expr.add(res_lhs) if res_lhs != [] else Const(0)
-                return Op('=', res_lhs.normalize(), (res_rhs + self.new_expr).normalize())
-            else:
-                return e
-        elif e.is_skolem_term():
-            # Case of single Skolem term
-            if self.new_expr.all_dependencies() == e.all_dependencies():
-                return self.new_expr
-            else:
-                return e
-        else:
-            raise NotImplementedError
 
     def export(self):
         return {
@@ -2609,7 +2543,6 @@ class RewriteMulPower(Rule):
 
 class SolveEquation(Rule):
     """Solve equation for the given expression."""
-
     def __init__(self, be_solved_expr: Expr):
         self.be_solved_expr = be_solved_expr
         self.name = "SolveEquation"

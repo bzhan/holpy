@@ -734,19 +734,13 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'RewriteExp':
         return rules.RewriteExp()
     elif item['name'] == 'IntegrateBothSide':
-        var = item['integral_var']
-        left_skolem_name = item['left_skolem_name'] if 'left_skolem_name' in item else None
-        right_skolem_name = item['right_skolem_name'] if 'right_skolem_name' in item else None
-        return rules.IntegralEquation(var=var,left_skolem_name=left_skolem_name,right_skolem_name=right_skolem_name)
+        return rules.IntegralEquation()
     elif item['name'] == 'LimitEquation':
         var = item['var']
         lim = parser.parse_expr(item['lim'])
         return rules.LimitEquation(var, lim)
     elif item['name'] == 'CommonIndefiniteIntegral':
         return rules.CommonIndefiniteIntegral(const_name = 'C')
-    elif item['name'] == 'RewriteSkolemConst':
-        new_expr = parser.parse_expr('SKOLEM_CONST(C)')
-        return rules.RewriteSkolemConst(new_expr=new_expr)
     elif item['name'] == 'ExpandPowerSeries':
         index_var = item['index_var']
         return rules.ExpandSeries(index_var=index_var)

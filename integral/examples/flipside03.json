@@ -136,11 +136,11 @@
             ],
             "finished": true,
             "goal": "I(a) = log(a + 1) + SKOLEM_CONST(C)",
-            "latex_goal": "I{(a)} = \\log{(a + 1)} + C",
+            "latex_goal": "I{(a)} = \\log{(a + 1)} + C()",
             "proof": {
                 "finished": true,
                 "goal": "I(a) = log(a + 1) + SKOLEM_CONST(C)",
-                "latex_goal": "I{(a)} = \\log{(a + 1)} + C",
+                "latex_goal": "I{(a)} = \\log{(a + 1)} + C()",
                 "start": {
                     "conds": [
                         {
@@ -152,22 +152,17 @@
                     "start": "(D a. I(a)) = 1 / (a + 1)",
                     "steps": [
                         {
-                            "latex_res": "I{(a)} + E = \\int \\frac{1}{a + 1} \\,da",
-                            "res": "I(a) + SKOLEM_CONST(E) = (INT a. 1 / (a + 1))",
+                            "latex_res": "I{(a)} = \\int \\frac{1}{a + 1} \\,da",
+                            "res": "I(a) = (INT a. 1 / (a + 1))",
                             "rule": {
-                                "integral_var": "a",
-                                "left_skolem": true,
-                                "left_skolem_name": "E",
                                 "name": "IntegrateBothSide",
-                                "right_skolem": false,
-                                "right_skolem_name": null,
                                 "str": "integrate both side"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(a)} + E = \\log{(\\left| a + 1 \\right|)} + C",
-                            "res": "I(a) + SKOLEM_CONST(E) = log(abs(a + 1)) + SKOLEM_CONST(C)",
+                            "latex_res": "I{(a)} = \\log{(\\left| a + 1 \\right|)} + C()",
+                            "res": "I(a) = log(abs(a + 1)) + SKOLEM_CONST(C)",
                             "rule": {
                                 "loc": "1",
                                 "name": "CommonIndefiniteIntegral",
@@ -176,21 +171,12 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(a)} + E = \\log{(a + 1)} + C",
-                            "res": "I(a) + SKOLEM_CONST(E) = log(a + 1) + SKOLEM_CONST(C)",
+                            "latex_res": "I{(a)} = \\log{(a + 1)} + C()",
+                            "res": "I(a) = log(a + 1) + SKOLEM_CONST(C)",
                             "rule": {
                                 "loc": "subterms",
                                 "name": "ElimAbs",
                                 "str": "eliminate absolute values on subterms"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "I{(a)} = \\log{(a + 1)} + C",
-                            "res": "I(a) = log(a + 1) + SKOLEM_CONST(C)",
-                            "rule": {
-                                "name": "RewriteSkolemConst",
-                                "str": "RewriteSkolemConst"
                             },
                             "type": "CalculationStep"
                         }
@@ -204,11 +190,11 @@
         {
             "finished": true,
             "goal": "0 = SKOLEM_CONST(C)",
-            "latex_goal": "0 = C",
+            "latex_goal": "0 = C()",
             "proof": {
                 "finished": true,
                 "goal": "0 = SKOLEM_CONST(C)",
-                "latex_goal": "0 = C",
+                "latex_goal": "0 = C()",
                 "start": {
                     "conds": [
                         {
@@ -216,11 +202,11 @@
                             "latex_cond": "a \\ge 0"
                         }
                     ],
-                    "latex_start": "I{(a)} = \\log{(a + 1)} + C",
+                    "latex_start": "I{(a)} = \\log{(a + 1)} + C()",
                     "start": "I(a) = log(a + 1) + SKOLEM_CONST(C)",
                     "steps": [
                         {
-                            "latex_res": "I{(0)} = \\log{(0 + 1)} + C",
+                            "latex_res": "I{(0)} = \\log{(0 + 1)} + C()",
                             "res": "I(0) = log(0 + 1) + SKOLEM_CONST(C)",
                             "rule": {
                                 "latex_str": "substitute \\(a\\) for \\(0\\) in equation",
@@ -232,7 +218,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 = \\log{(0 + 1)} + C",
+                            "latex_res": "0 = \\log{(0 + 1)} + C()",
                             "res": "0 = log(0 + 1) + SKOLEM_CONST(C)",
                             "rule": {
                                 "eq": "I(0) = 0",
@@ -244,7 +230,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 = C",
+                            "latex_res": "0 = C()",
                             "res": "0 = SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
@@ -278,11 +264,11 @@
                     "start": "I(a)",
                     "steps": [
                         {
-                            "latex_res": "\\log{(a + 1)} + C",
+                            "latex_res": "\\log{(a + 1)} + C()",
                             "res": "log(a + 1) + SKOLEM_CONST(C)",
                             "rule": {
                                 "eq": "I(a) = log(a + 1) + SKOLEM_CONST(C)",
-                                "latex_str": "apply equation \\(I{(a)} = \\log{(a + 1)} + C\\)",
+                                "latex_str": "apply equation \\(I{(a)} = \\log{(a + 1)} + C()\\)",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: I(a) = log(a + 1) + SKOLEM_CONST(C)"
                             },
@@ -293,7 +279,7 @@
                             "res": "log(a + 1) + 0",
                             "rule": {
                                 "eq": "0 = SKOLEM_CONST(C)",
-                                "latex_str": "apply equation \\(0 = C\\) at 1",
+                                "latex_str": "apply equation \\(0 = C()\\) at 1",
                                 "loc": "1",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: 0 = SKOLEM_CONST(C) at 1"

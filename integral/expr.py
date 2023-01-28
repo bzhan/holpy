@@ -1,7 +1,8 @@
 """Expressions."""
+
 import copy
 import functools, operator
-from typing import Dict, List, Optional, Set, TypeGuard
+from typing import Dict, List, Optional, Set, TypeGuard, Tuple
 from sympy import solveset, re, Interval, Eq, EmptySet
 from sympy.simplify.fu import *
 from sympy.parsing import sympy_parser
@@ -688,7 +689,7 @@ class Expr:
         elif self.is_const():
             return self
         elif self.is_skolem_func():
-            return self
+            return SkolemFunc(self.name, tuple(arg.subst(var, e) for arg in self.dependent_vars))
         elif self.is_symbol():
             return self
         elif self.is_op():
@@ -704,7 +705,7 @@ class Expr:
         elif self.is_integral():
             return Integral(self.var, self.lower.subst(var, e), self.upper.subst(var, e), self.body.subst(var, e))
         elif self.is_indefinite_integral():
-            return IndefiniteIntegral(self.var, self.body.subst(var, e))
+            return IndefiniteIntegral(self.var, self.body.subst(var, e), self.skolem_args)
         elif self.is_evalat():
             return EvalAt(self.var, self.lower.subst(var, e), self.upper.subst(var, e), self.body.subst(var, e))
         elif self.is_summation():
@@ -789,18 +790,7 @@ class Expr:
             return EvalAt(self.var, self.lower.replace(e, repl_e), self.upper.replace(e, repl_e),
                           self.body.replace(e, repl_e))
         elif self.ty == SKOLEMFUNC:
-            vars = self.dependent_vars
-            if repl_e.is_var():
-                new_vars = set()
-                for v in self.dependent_vars:
-                    new_vars.add(v.replace(e, repl_e))
-                if new_vars == set():
-                    return SkolemFunc(self.name)
-                else:
-                    return SkolemFunc(self.name, *list(new_vars))
-            else:
-                print(self)
-                raise NotImplementedError
+            return SkolemFunc(self.name, tuple(var.replace(e, repl_e) for var in self.dependent_vars))
         elif self.ty == SUMMATION:
             return Summation(self.index_var, self.lower, self.upper, self.body.replace(e, repl_e))
         else:
@@ -1141,7 +1131,7 @@ class Expr:
             else:
                 return -poly.singleton(Inf(Decimal("inf")))
         elif self.ty == INDEFINITEINTEGRAL:
-            return poly.singleton(expr.IndefiniteIntegral(self.var, self.body.normalize()))
+            return poly.singleton(expr.IndefiniteIntegral(self.var, self.body.normalize(), self.skolem_args))
         else:
             return poly.singleton(self)
 
@@ -1487,7 +1477,7 @@ class Expr:
 
     def inst_pat(self, mapping: Dict) -> Expr:
         """Instantiate by replacing symbols in term with mapping."""
-        if self.ty in (VAR, CONST, INF, SKOLEMFUNC):
+        if self.ty in (VAR, CONST, INF):
             return self
         elif self.ty == SYMBOL:
             assert self.name in mapping, "inst_pat: %s not found" % self.name
@@ -1496,6 +1486,8 @@ class Expr:
             return Op(self.op, *(arg.inst_pat(mapping) for arg in self.args))
         elif self.ty == FUN:
             return Fun(self.func_name, *(arg.inst_pat(mapping) for arg in self.args))
+        elif self.ty == SKOLEMFUNC:
+            return SkolemFunc(self.name, tuple(arg.inst_pat(mapping) for arg in self.dependent_vars))
         elif self.ty == INTEGRAL:
             return Integral(self.var, self.lower.inst_pat(mapping), self.upper.inst_pat(mapping),
                             self.body.inst_pat(mapping))
@@ -2221,30 +2213,20 @@ class Differential(Expr):
 
 class SkolemFunc(Expr):
     """Skolem variable or function"""
-    def __init__(self, name, *dep_vars):
+    def __init__(self, name, dep_vars: Tuple[Expr]):
         self.ty = SKOLEMFUNC
         self.name = name
-        self.dependent_vars = set(dep_vars)
+        self.dependent_vars = tuple(dep_vars)
 
     def __eq__(self, other):
         return isinstance(other, SkolemFunc) and \
             self.dependent_vars == other.dependent_vars and self.name == other.name
 
     def __str__(self):
-        if self.dependent_vars == set():
+        if not self.dependent_vars:
             return "SKOLEM_CONST(" + self.name + ")"
         else:
-            res = []
-            for v in sorted(list(self.dependent_vars)):
-                res.append(str(v))
-            return "SKOLEM_FUNC(" + self.name + "(" + ", ".join(res) + "))"
-
-    def find_free(var: str, ex: Expr):
-        """Find set of free variables in ex except var."""
-        res = set(ex.findVar())
-        if Var(var) in res:
-            res.remove(Var(var))
-        return res
+            return "SKOLEM_FUNC(" + self.name + "(" + ", ".join(str(var) for var in self.dependent_vars) + "))"
 
     def __hash__(self):
         return hash((self.name, tuple(self.dependent_vars), self.ty))
@@ -2354,28 +2336,33 @@ class Deriv(Expr):
 class IndefiniteIntegral(Expr):
     """Indefinite integral of an expression."""
 
-    def __init__(self, var: str, body: Expr):
+    def __init__(self, var: str, body: Expr, skolem_args: Tuple[str]):
         assert isinstance(var, str) and isinstance(body, Expr)
         self.ty = INDEFINITEINTEGRAL
         self.var = var
         self.body = body
+        self.skolem_args = tuple(skolem_args)
 
     def __hash__(self):
-        return hash((INDEFINITEINTEGRAL, self.var, self.body))
+        return hash((INDEFINITEINTEGRAL, self.var, self.body, self.skolem_args))
 
     def __eq__(self, other):
-        return isinstance(other, IndefiniteIntegral) and self.body == other.alpha_convert(self.var).body
+        return isinstance(other, IndefiniteIntegral) and self.body == other.alpha_convert(self.var).body and \
+            self.skolem_args == other.skolem_args
 
     def __str__(self):
-        return "INT %s. %s" % (self.var, str(self.body))
+        if self.skolem_args:
+            return "INT %s [%s]. %s" % (self.var, ', '.join(self.skolem_args), self.body)
+        else:
+            return "INT %s. %s" % (self.var, self.body)
 
     def __repr__(self):
-        return "IndefiniteIntegral(%s,%s)" % (self.var, repr(self.body))
+        return "IndefiniteIntegral(%s,%s,%s)" % (self.var, repr(self.body), self.skolem_args)
 
     def alpha_convert(self, new_name: str):
         """Change the variable of integration to new_name."""
         assert isinstance(new_name, str), "alpha_convert"
-        return IndefiniteIntegral(new_name, self.body.subst(self.var, Var(new_name)))
+        return IndefiniteIntegral(new_name, self.body.subst(self.var, Var(new_name)), self.skolem_args)
 
 
 class Integral(Expr):

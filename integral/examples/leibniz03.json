@@ -179,45 +179,31 @@
         {
             "finished": true,
             "goal": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
-            "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
+            "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C()",
             "proof": {
                 "finished": true,
                 "goal": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
-                "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
+                "latex_goal": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C()",
                 "start": {
                     "latex_start": "\\frac{d}{dt} (\\log{(I{(t)})} + \\frac{t ^ {2}}{2}) = 0",
                     "start": "(D t. log(I(t)) + t ^ 2 / 2) = 0",
                     "steps": [
                         {
-                            "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} + E = \\int 0 \\,dt",
-                            "res": "log(I(t)) + t ^ 2 / 2 + SKOLEM_CONST(E) = (INT t. 0)",
+                            "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = \\int 0 \\,dt",
+                            "res": "log(I(t)) + t ^ 2 / 2 = (INT t. 0)",
                             "rule": {
-                                "integral_var": "t",
-                                "left_skolem": true,
-                                "left_skolem_name": "E",
                                 "name": "IntegrateBothSide",
-                                "right_skolem": false,
-                                "right_skolem_name": null,
                                 "str": "integrate both side"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} + E = 0 t + C",
-                            "res": "log(I(t)) + t ^ 2 / 2 + SKOLEM_CONST(E) = 0 * t + SKOLEM_CONST(C)",
+                            "latex_res": "\\log{(I{(t)})} + \\frac{t ^ {2}}{2} = 0 t + C()",
+                            "res": "log(I(t)) + t ^ 2 / 2 = 0 * t + SKOLEM_CONST(C)",
                             "rule": {
                                 "loc": "1",
                                 "name": "CommonIndefiniteIntegral",
                                 "str": "common indefinite integrals at 1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
-                            "res": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
-                            "rule": {
-                                "name": "RewriteSkolemConst",
-                                "str": "RewriteSkolemConst"
                             },
                             "type": "CalculationStep"
                         }
@@ -231,17 +217,17 @@
         {
             "finished": true,
             "goal": "log(sqrt(pi / 2)) = SKOLEM_CONST(C)",
-            "latex_goal": "\\log{(\\sqrt{\\frac{\\pi}{2}})} = C",
+            "latex_goal": "\\log{(\\sqrt{\\frac{\\pi}{2}})} = C()",
             "proof": {
                 "finished": true,
                 "goal": "log(sqrt(pi / 2)) = SKOLEM_CONST(C)",
-                "latex_goal": "\\log{(\\sqrt{\\frac{\\pi}{2}})} = C",
+                "latex_goal": "\\log{(\\sqrt{\\frac{\\pi}{2}})} = C()",
                 "start": {
-                    "latex_start": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C",
+                    "latex_start": "\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C()",
                     "start": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
                     "steps": [
                         {
-                            "latex_res": "\\lim\\limits_{t\\to 0} (\\,\\frac{1}{2} t ^ {2} + \\log{(I{(t)})}\\,) = \\lim\\limits_{t\\to 0} C",
+                            "latex_res": "\\lim\\limits_{t\\to 0} (\\,\\frac{1}{2} t ^ {2} + \\log{(I{(t)})}\\,) = \\lim\\limits_{t\\to 0} C()",
                             "res": "(LIM {t -> 0 }. 1/2 * t ^ 2 + log(I(t))) = (LIM {t -> 0 }. SKOLEM_CONST(C))",
                             "rule": {
                                 "latex_str": "apply limit \\(t \\to 0\\) to equation",
@@ -253,7 +239,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\log{(I{(0)})} = C",
+                            "latex_res": "\\log{(I{(0)})} = C()",
                             "res": "log(I(0)) = SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
@@ -262,7 +248,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\log{(\\sqrt{\\frac{\\pi}{2}})} = C",
+                            "latex_res": "\\log{(\\sqrt{\\frac{\\pi}{2}})} = C()",
                             "res": "log(sqrt(pi / 2)) = SKOLEM_CONST(C)",
                             "rule": {
                                 "lemma": "I(0) = sqrt(pi / 2)",
@@ -292,11 +278,11 @@
                     "start": "log(I(t))",
                     "steps": [
                         {
-                            "latex_res": "C - \\frac{1}{2} t ^ {2}",
+                            "latex_res": "C() - \\frac{1}{2} t ^ {2}",
                             "res": "SKOLEM_CONST(C) - 1/2 * t ^ 2",
                             "rule": {
                                 "eq": "1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)",
-                                "latex_str": "apply equation \\(\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C\\)",
+                                "latex_str": "apply equation \\(\\frac{1}{2} t ^ {2} + \\log{(I{(t)})} = C()\\)",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: 1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)"
                             },
@@ -307,7 +293,7 @@
                             "res": "log(sqrt(pi / 2)) - 1/2 * t ^ 2",
                             "rule": {
                                 "eq": "log(sqrt(pi / 2)) = SKOLEM_CONST(C)",
-                                "latex_str": "apply equation \\(\\log{(\\sqrt{\\frac{\\pi}{2}})} = C\\) at 0",
+                                "latex_str": "apply equation \\(\\log{(\\sqrt{\\frac{\\pi}{2}})} = C()\\) at 0",
                                 "loc": "0",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: log(sqrt(pi / 2)) = SKOLEM_CONST(C) at 0"

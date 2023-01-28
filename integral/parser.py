@@ -26,6 +26,7 @@ grammar = r"""
         | "$" expr "$" -> trig_expr
         | "INT" CNAME ":[" expr "," expr "]." expr -> integral_expr
         | "INT" CNAME "." expr -> indefinite_integral_expr
+        | "INT" CNAME "[" CNAME ("," CNAME)* "]" "." expr -> indefinite_integral_skolem_expr
         | "DIFF" "." expr -> differential_expr
         | "[" expr "]_" CNAME "=" expr "," expr -> eval_at_expr
         | "LIM" "{" CNAME "->" expr "}" "." expr -> limit_inf_expr
@@ -136,9 +137,9 @@ class ExprTransformer(Transformer):
 
     def fun_expr(self, func_name, *args):
         if func_name == 'SKOLEM_CONST':
-            return expr.SkolemFunc(str(args[0]))
+            return expr.SkolemFunc(str(args[0]), tuple())
         elif func_name == 'SKOLEM_FUNC':
-            return expr.SkolemFunc(str(args[0].func_name), *[arg for arg in args[0].args])
+            return expr.SkolemFunc(str(args[0].func_name), tuple(arg for arg in args[0].args))
         elif func_name == 'SUM':
             return expr.Summation(str(args[0]), *args[1:])
         return expr.Fun(func_name, *args)
@@ -153,7 +154,13 @@ class ExprTransformer(Transformer):
         return expr.Integral(str(var), lower, upper, body)
 
     def indefinite_integral_expr(self, var, body):
-        return expr.IndefiniteIntegral(str(var), body)
+        return expr.IndefiniteIntegral(str(var), body, tuple())
+
+    def indefinite_integral_skolem_expr(self, *args):
+        var = args[0]
+        skolem_args = tuple(str(arg) for arg in args[1:-1])
+        body = args[-1]
+        return expr.IndefiniteIntegral(str(var), body, skolem_args)
 
     def eval_at_expr(self, body, var, lower, upper):
         return expr.EvalAt(var, lower, upper, body)
