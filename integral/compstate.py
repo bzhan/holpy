@@ -613,9 +613,27 @@ class CompFile:
             raise NotImplementedError
         return self.content[-1]
 
-    def add_goal(self, goal: Goal):
-        """Add a goal."""
-        self.content.append(goal)
+    def add_goal(self, goal: Union[str, Expr, Goal], *, conds: List[Union[str, Expr]] = None) -> Goal:
+        """Add a goal.
+        
+        conds: list of conditions for the goal. This is ignored if input goal
+               is already of type Goal.
+        """
+        if conds is not None:
+            for i in range(len(conds)):
+                if isinstance(conds[i], str):
+                    conds[i] = parser.parse_expr(conds[i])
+        else:
+            conds = []
+        if isinstance(goal, Goal):
+            self.content.append(goal)
+        elif isinstance(goal, str):
+            self.content.append(Goal(self, parser.parse_expr(goal), Conditions(conds)))
+        elif isinstance(goal, Expr):
+            self.content.append(Goal(self, goal, Conditions(conds)))
+        else:
+            raise NotImplementedError
+        return self.content[-1]
 
     def add_lemma(self, lemma: Lemma):
         """Add a assumption"""

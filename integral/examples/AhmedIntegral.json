@@ -62,6 +62,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "u > 0",
+                    "latex_cond": "u > 0"
+                }
+            ],
             "finished": true,
             "goal": "(LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
             "latex_goal": "\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
