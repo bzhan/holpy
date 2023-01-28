@@ -53,8 +53,8 @@ class Context:
         for indef in self.indefinite_integrals:
             res += str(indef) + "\n"
         res += "Conditions\n"
-        for name, cond in self.conds.data.items():
-            res += "%s: %s\n" % (name, cond)
+        for cond in self.conds.data:
+            res += str(cond) + "\n"
         return res
     
     def get_indefinite_integrals(self) -> List[IndefiniteIntegralIdentity]:
@@ -64,8 +64,8 @@ class Context:
     
     def get_conds(self) -> Conditions:
         res = self.parent.get_conds() if self.parent is not None else Conditions()
-        for name, cond in self.conds.data.items():
-            res.add_condition(name, cond)
+        for cond in self.conds.data:
+            res.add_condition(cond)
         return res
     
     def get_substs(self) -> Dict[str, Expr]:
@@ -82,12 +82,12 @@ class Context:
         symb_rhs = expr_to_pattern(eq.rhs)
         self.indefinite_integrals.append(IndefiniteIntegralIdentity(symb_lhs, symb_rhs))
 
-    def add_condition(self, name: str, cond: Expr):
-        self.conds.add_condition(name, cond)
+    def add_condition(self, cond: Expr):
+        self.conds.add_condition(cond)
 
     def extend_condition(self, conds: Conditions):
-        for name, cond in conds.data.items():
-            self.add_condition(name, cond)
+        for cond in conds.data:
+            self.add_condition(cond)
 
     def add_subst(self, var: str, expr: Expr):
         self.substs[var] = expr

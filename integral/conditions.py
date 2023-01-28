@@ -5,32 +5,26 @@ from integral.expr import Expr
 from integral import latex
 
 class Conditions:
-    """A condition is represented by a dictionary mapping condition names to
-    boolean expressions
-
-    """
+    """A condition is represented by a list of boolean expressions."""
     def __init__(self, conds=None):
-        self.data = dict()
+        self.data = list()
         if conds is not None:
-            for i, cond in enumerate(conds):
-                self.data['C' + str(i+1)] = cond
+            self.data.extend(conds)
 
     def __str__(self):
-        return ", ".join("%s: %s" % (name, cond) for name, cond in self.data.items())
+        return ", ".join(str(cond) for cond in self.data)
 
-    def add_condition(self, name: str, cond: Expr):
+    def add_condition(self, cond: Expr):
         assert isinstance(cond, Expr)
-        self.data[name] = cond
+        self.data.append(cond)
 
     def __eq__(self, other):
         return isinstance(other, Conditions) and self.data == other.data
 
     def export(self):
         res = list()
-        for name, cond in self.data.items():
+        for cond in self.data:
             res.append({
-                "type": "Condition",
-                "name": name,
                 "cond": str(cond),
                 "latex_cond": latex.convert_expr(cond)
             })
@@ -62,7 +56,7 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
         if is_positive(e.body, conds) and l.is_const() and h.is_inf() or \
                 l.is_const() and h.is_const() and l < h:
             return True
-    for _, cond in conds.data.items():
+    for cond in conds.data:
         if cond.is_greater() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val >= 0:
             return True
         if cond.is_greater_eq() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val > 0:
@@ -106,7 +100,7 @@ def is_negative(e: Expr, conds: Conditions) -> bool:
             a = e.args[0].args[0]
             if a.ty == expr.OP and a.op == '^' and a.args[1].is_const and a.args[1].val % 2 == 0:
                 return True
-    for _, cond in conds.data.items():
+    for cond in conds.data:
         if cond.is_less() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val <= 0:
             return True
         if cond.is_less_eq() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val < 0:

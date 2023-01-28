@@ -4,9 +4,7 @@
             "conds": [
                 {
                     "cond": "a >= 0",
-                    "latex_cond": "a \\ge 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a \\ge 0"
                 }
             ],
             "eq": "I(a) = (INT x:[0,1]. (x ^ a - 1) / log(x))",
@@ -18,9 +16,7 @@
             "conds": [
                 {
                     "cond": "a >= 0",
-                    "latex_cond": "a \\ge 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a \\ge 0"
                 }
             ],
             "finished": true,
@@ -135,9 +131,7 @@
             "conds": [
                 {
                     "cond": "a >= 0",
-                    "latex_cond": "a \\ge 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a \\ge 0"
                 }
             ],
             "finished": true,
@@ -151,9 +145,7 @@
                     "conds": [
                         {
                             "cond": "a >= 0",
-                            "latex_cond": "a \\ge 0",
-                            "name": "a",
-                            "type": "Condition"
+                            "latex_cond": "a \\ge 0"
                         }
                     ],
                     "latex_start": "\\frac{d}{da} I{(a)} = \\frac{1}{a + 1}",
@@ -221,9 +213,7 @@
                     "conds": [
                         {
                             "cond": "a >= 0",
-                            "latex_cond": "a \\ge 0",
-                            "name": "a",
-                            "type": "Condition"
+                            "latex_cond": "a \\ge 0"
                         }
                     ],
                     "latex_start": "I{(a)} = \\log{(a + 1)} + C",
@@ -273,9 +263,7 @@
             "conds": [
                 {
                     "cond": "a >= 0",
-                    "latex_cond": "a \\ge 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a \\ge 0"
                 }
             ],
             "finished": true,

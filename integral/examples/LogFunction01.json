@@ -4,9 +4,7 @@
             "conds": [
                 {
                     "cond": "abs(x) < 1",
-                    "latex_cond": "\\left| x \\right| < 1",
-                    "name": "x",
-                    "type": "Condition"
+                    "latex_cond": "\\left| x \\right| < 1"
                 }
             ],
             "eq": "log(1 + x) = SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",

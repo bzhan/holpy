@@ -4,9 +4,7 @@
             "conds": [
                 {
                     "cond": "a > 0",
-                    "latex_cond": "a > 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a > 0"
                 }
             ],
             "finished": true,
@@ -99,9 +97,7 @@
             "conds": [
                 {
                     "cond": "a > 0",
-                    "latex_cond": "a > 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a > 0"
                 }
             ],
             "finished": true,
@@ -115,9 +111,7 @@
                     "conds": [
                         {
                             "cond": "a > 0",
-                            "latex_cond": "a > 0",
-                            "name": "a",
-                            "type": "Condition"
+                            "latex_cond": "a > 0"
                         }
                     ],
                     "latex_start": "\\int_{0}^{\\infty} \\frac{1}{x ^ {2} + a ^ {2}} \\,dx = \\frac{\\pi}{2 a}",
@@ -163,9 +157,7 @@
             "conds": [
                 {
                     "cond": "a > 0",
-                    "latex_cond": "a > 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a > 0"
                 }
             ],
             "finished": true,
@@ -179,9 +171,7 @@
                     "conds": [
                         {
                             "cond": "a > 0",
-                            "latex_cond": "a > 0",
-                            "name": "a",
-                            "type": "Condition"
+                            "latex_cond": "a > 0"
                         }
                     ],
                     "latex_start": "\\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + a ^ {2}) ^ {2}} \\,dx = \\frac{\\pi}{4 a ^ {3}}",

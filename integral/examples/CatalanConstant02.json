@@ -10,9 +10,7 @@
             "conds": [
                 {
                     "cond": "k > 1",
-                    "latex_cond": "k > 1",
-                    "name": "k",
-                    "type": "Condition"
+                    "latex_cond": "k > 1"
                 }
             ],
             "eq": "I(k) = (INT x:[1,oo]. log(x) / x ^ k)",
@@ -24,9 +22,7 @@
             "conds": [
                 {
                     "cond": "k > 1",
-                    "latex_cond": "k > 1",
-                    "name": "k",
-                    "type": "Condition"
+                    "latex_cond": "k > 1"
                 }
             ],
             "finished": true,

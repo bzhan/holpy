@@ -4,9 +4,7 @@
             "conds": [
                 {
                     "cond": "abs(x) < 1",
-                    "latex_cond": "\\left| x \\right| < 1",
-                    "name": "abs(x) < 1",
-                    "type": "Condition"
+                    "latex_cond": "\\left| x \\right| < 1"
                 }
             ],
             "eq": "log(1 + x) = SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
@@ -42,9 +40,7 @@
             "conds": [
                 {
                     "cond": "abs(x) < 1",
-                    "latex_cond": "\\left| x \\right| < 1",
-                    "name": "abs(x) < 1",
-                    "type": "Condition"
+                    "latex_cond": "\\left| x \\right| < 1"
                 }
             ],
             "finished": true,
@@ -113,9 +109,7 @@
                     "conds": [
                         {
                             "cond": "abs(x) < 1",
-                            "latex_cond": "\\left| x \\right| < 1",
-                            "name": "abs(x) < 1",
-                            "type": "Condition"
+                            "latex_cond": "\\left| x \\right| < 1"
                         }
                     ],
                     "latex_start": "-\\log{(1 - x)} - \\log{(1 + x)} = -\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} -x ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",

@@ -4,9 +4,7 @@
             "conds": [
                 {
                     "cond": "b >= 0",
-                    "latex_cond": "b \\ge 0",
-                    "name": "b >= 0",
-                    "type": "Condition"
+                    "latex_cond": "b \\ge 0"
                 }
             ],
             "eq": "I(b) = (INT x:[0,oo]. sin(x) / x * exp(-b * x))",
@@ -23,9 +21,7 @@
             "conds": [
                 {
                     "cond": "b > 0",
-                    "latex_cond": "b > 0",
-                    "name": "b > 0",
-                    "type": "Condition"
+                    "latex_cond": "b > 0"
                 }
             ],
             "eq": "(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1 / (b ^ 2 + 1)",
@@ -41,9 +37,7 @@
             "conds": [
                 {
                     "cond": "b > 0",
-                    "latex_cond": "b > 0",
-                    "name": "b > 0",
-                    "type": "Condition"
+                    "latex_cond": "b > 0"
                 }
             ],
             "finished": true,
@@ -178,9 +172,7 @@
             "conds": [
                 {
                     "cond": "b >= 0",
-                    "latex_cond": "b \\ge 0",
-                    "name": "b >= 0",
-                    "type": "Condition"
+                    "latex_cond": "b \\ge 0"
                 }
             ],
             "finished": true,
@@ -191,9 +183,7 @@
                     "conds": [
                         {
                             "cond": "b = 0",
-                            "latex_cond": "b = 0",
-                            "name": "CaseT",
-                            "type": "Condition"
+                            "latex_cond": "b = 0"
                         }
                     ],
                     "finished": true,
@@ -253,9 +243,7 @@
                     "conds": [
                         {
                             "cond": "b != 0",
-                            "latex_cond": "b \\neq 0",
-                            "name": "CaseF",
-                            "type": "Condition"
+                            "latex_cond": "b \\neq 0"
                         }
                     ],
                     "finished": true,
@@ -269,9 +257,7 @@
                             "conds": [
                                 {
                                     "cond": "b > 0",
-                                    "latex_cond": "b > 0",
-                                    "name": "b > 0",
-                                    "type": "Condition"
+                                    "latex_cond": "b > 0"
                                 }
                             ],
                             "latex_start": "\\frac{d}{db} I{(b)} = \\frac{-1}{b ^ {2} + 1}",
@@ -355,9 +341,7 @@
                     "conds": [
                         {
                             "cond": "b >= 0",
-                            "latex_cond": "b \\ge 0",
-                            "name": "b >= 0",
-                            "type": "Condition"
+                            "latex_cond": "b \\ge 0"
                         }
                     ],
                     "latex_start": "I{(b)} = -\\arctan{(b)} + C",

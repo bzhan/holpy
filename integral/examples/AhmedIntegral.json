@@ -4,9 +4,7 @@
             "conds": [
                 {
                     "cond": "u > 0",
-                    "latex_cond": "u > 0",
-                    "name": "u > 0",
-                    "type": "Condition"
+                    "latex_cond": "u > 0"
                 }
             ],
             "eq": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x * x)) / ((1 + x * x) * sqrt(2 + x * x)))",
@@ -207,9 +205,7 @@
             "conds": [
                 {
                     "cond": "u > 0",
-                    "latex_cond": "u > 0",
-                    "name": "u > 0",
-                    "type": "Condition"
+                    "latex_cond": "u > 0"
                 }
             ],
             "finished": true,

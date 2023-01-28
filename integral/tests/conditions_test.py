@@ -20,7 +20,7 @@ class ConditionsTest(unittest.TestCase):
             e = parser.parse_expr(a)
             cond = parser.parse_expr(b)
             conds = Conditions()
-            conds.add_condition("1", cond)
+            conds.add_condition(cond)
             self.assertTrue(conditions.is_positive(e, conds))
 
 

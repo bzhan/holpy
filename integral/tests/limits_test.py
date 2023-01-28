@@ -248,7 +248,7 @@ class LimitsTest(unittest.TestCase):
 
         for a, res, cond in test_data:
             conds = Conditions()
-            conds.add_condition("n", parser.parse_expr(cond))
+            conds.add_condition(parser.parse_expr(cond))
             a = parser.parse_expr(a)
             l = limits.limit_of_expr(a, "x", conds=conds)
             if res is None:

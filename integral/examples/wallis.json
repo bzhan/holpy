@@ -4,9 +4,7 @@
             "conds": [
                 {
                     "cond": "b > 0",
-                    "latex_cond": "b > 0",
-                    "name": "b",
-                    "type": "Condition"
+                    "latex_cond": "b > 0"
                 }
             ],
             "eq": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
@@ -18,9 +16,7 @@
             "conds": [
                 {
                     "cond": "b > 0",
-                    "latex_cond": "b > 0",
-                    "name": "b",
-                    "type": "Condition"
+                    "latex_cond": "b > 0"
                 }
             ],
             "finished": true,
@@ -101,9 +97,7 @@
             "conds": [
                 {
                     "cond": "b > 0",
-                    "latex_cond": "b > 0",
-                    "name": "b",
-                    "type": "Condition"
+                    "latex_cond": "b > 0"
                 }
             ],
             "finished": true,
@@ -203,9 +197,7 @@
                     "conds": [
                         {
                             "cond": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
-                            "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
-                            "name": "IH",
-                            "type": "Condition"
+                            "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})"
                         }
                     ],
                     "finished": true,

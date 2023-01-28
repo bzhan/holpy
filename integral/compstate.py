@@ -135,7 +135,7 @@ class Lemma(StateItem):
         res2 = ""
         first = True
         if self.conds != None:
-            for k, v in self.conds.data.items():
+            for v in self.conds.data:
                 if first:
                     res2 += str(v)
                 else:
@@ -425,7 +425,7 @@ class InductionProof(StateItem):
         # Inductive case:
         eqI = goal.subst(induct_var, Var(induct_var) + 1).normalize()
         induct_conds = Conditions()
-        induct_conds.add_condition("IH", self.goal)
+        induct_conds.add_condition(self.goal)
         self.induct_case = Goal(self, eqI, conds=induct_conds)
 
     def __str__(self):
@@ -485,12 +485,12 @@ class CaseProof(StateItem):
 
         # Case 1:
         conds1 = Conditions()
-        conds1.add_condition("CaseT", split_cond)
+        conds1.add_condition(split_cond)
         self.case_1 = Goal(self, goal, conds=conds1)
 
         # Case 2:
         conds2 = Conditions()
-        conds2.add_condition("CaseF", expr.neg_expr(split_cond))
+        conds2.add_condition(expr.neg_expr(split_cond))
         self.case_2 = Goal(self, goal, conds=conds2)
 
     def __str__(self):
@@ -780,9 +780,7 @@ def parse_conds(item) -> Conditions:
     res = Conditions()
     if 'conds' in item:
         for subitem in item['conds']:
-            if subitem['type'] != 'Condition':
-                raise AssertionError('parse_conds')
-            res.add_condition(subitem['name'], parser.parse_expr(subitem['cond']))
+            res.add_condition(parser.parse_expr(subitem['cond']))
     return res
 
 def parse_item(parent, item) -> StateItem:

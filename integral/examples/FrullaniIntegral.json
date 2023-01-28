@@ -4,15 +4,11 @@
             "conds": [
                 {
                     "cond": "a > 0",
-                    "latex_cond": "a > 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a > 0"
                 },
                 {
                     "cond": "b > 0",
-                    "latex_cond": "b > 0",
-                    "name": "b",
-                    "type": "Condition"
+                    "latex_cond": "b > 0"
                 }
             ],
             "eq": "I(a,b) = (INT x:[0,oo]. (atan(a * x) - atan(b * x)) / x)",
@@ -68,9 +64,7 @@
             "conds": [
                 {
                     "cond": "a > 0",
-                    "latex_cond": "a > 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a > 0"
                 }
             ],
             "finished": true,
@@ -184,9 +178,7 @@
             "conds": [
                 {
                     "cond": "a > 0",
-                    "latex_cond": "a > 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a > 0"
                 }
             ],
             "finished": true,
@@ -200,9 +192,7 @@
                     "conds": [
                         {
                             "cond": "a > 0",
-                            "latex_cond": "a > 0",
-                            "name": "a",
-                            "type": "Condition"
+                            "latex_cond": "a > 0"
                         }
                     ],
                     "latex_start": "\\frac{d}{da} I(a,b) = \\frac{\\pi}{2 a}",
@@ -291,9 +281,7 @@
             "conds": [
                 {
                     "cond": "a > 0",
-                    "latex_cond": "a > 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a > 0"
                 }
             ],
             "finished": true,
@@ -334,9 +322,7 @@
             "conds": [
                 {
                     "cond": "a > 0",
-                    "latex_cond": "a > 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a > 0"
                 }
             ],
             "finished": true,
@@ -399,15 +385,11 @@
             "conds": [
                 {
                     "cond": "a > 0",
-                    "latex_cond": "a > 0",
-                    "name": "a",
-                    "type": "Condition"
+                    "latex_cond": "a > 0"
                 },
                 {
                     "cond": "b > 0",
-                    "latex_cond": "b > 0",
-                    "name": "b",
-                    "type": "Condition"
+                    "latex_cond": "b > 0"
                 }
             ],
             "finished": true,

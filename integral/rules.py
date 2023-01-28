@@ -698,7 +698,7 @@ class FullSimplify(Rule):
         while True:
             s = OnSubterm(Linearity()).eval(current, ctx)
             if ctx != None:
-                for a, b in ctx.get_conds().data.items():
+                for b in ctx.get_conds().data:
                     if b.is_v_equals():
                         s = s.subst(str(b.args[0]), b.args[1])
             s = OnSubterm(CommonIntegral()).eval(s, ctx)
@@ -727,7 +727,7 @@ class ApplyEquation(Rule):
 
     """
 
-    def __init__(self, eq: Union[Expr, str], subMap: dict = None):
+    def __init__(self, eq: Expr, subMap: dict = None):
         self.name = "ApplyEquation"
         self.eq = eq
         self.subMap = subMap
@@ -774,12 +774,6 @@ class ApplyEquation(Rule):
         return res
 
     def eval(self, e: Expr, ctx=None) -> Expr:
-        if isinstance(self.eq, str):
-            # If equation is given as a string, try to find it in conds.
-            conds = ctx.get_conds()
-            assert conds is not None and self.eq in conds.data, "ApplyEquation: equation not found"
-            self.eq = conds.data[self.eq]
-
         if self.subMap == None:
             # With no instantiation
             pat = expr.expr_to_pattern(self.eq)
@@ -849,14 +843,14 @@ class ApplyLemma(Rule):
         # conditions check
         if not flag:
             if self.conds != None:
-                items = self.conds.data.items()
-                for k, v in ctx.get_conds().data.items():
-                    if (k, v) in items:
+                items = self.conds.data
+                for v in ctx.get_conds().data:
+                    if v in items:
                         flag = True
                         break
                     if v.op == '>':
                         e1, e2 = Op('>=', *v.args), Op('!=', *v.args)
-                        if (str(e1), e1) in items and (str(e2), e2) in items:
+                        if e1 in items and e2 in items:
                             flag = True
                             break
             else:

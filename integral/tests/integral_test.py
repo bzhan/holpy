@@ -356,7 +356,7 @@ class IntegralTest(unittest.TestCase):
 
         # Condition b > 0
         conds = conditions.Conditions()
-        conds.add_condition("b", parser.parse_expr("b > 0"))
+        conds.add_condition(parser.parse_expr("b > 0"))
 
         # Make definition
         Idef = compstate.FuncDef(parser.parse_expr("I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))"), conds=conds)
@@ -396,7 +396,8 @@ class IntegralTest(unittest.TestCase):
         # Induction case, LHS
         calc = proof_induct.lhs_calc
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation("IH")))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(
+            parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"))))
         calc.perform_rule(rules.FullSimplify())
 
         # Induction step, RHS
@@ -415,7 +416,7 @@ class IntegralTest(unittest.TestCase):
 
         # Condition n > 0
         conds = conditions.Conditions()
-        conds.add_condition("n", parser.parse_expr("n > 0"))
+        conds.add_condition(parser.parse_expr("n > 0"))
 
         # Definition of Gamma function
         gamma_def = compstate.FuncDef(parser.parse_expr("Gamma(n) = (INT x:[0,oo]. exp(-x) * x^(n-1))"), conds=conds)
@@ -510,7 +511,7 @@ class IntegralTest(unittest.TestCase):
         # Basic result: integral of 1 / (x^2 + a^2)
         e = parser.parse_expr("(INT x:[0,oo]. 1 / (x^2 + a^2)) = pi / (2 * a)")
         conds = compstate.Conditions()
-        conds.add_condition("a", parser.parse_expr("a > 0"))
+        conds.add_condition(parser.parse_expr("a > 0"))
         goal1 = compstate.Goal(file, e, conds=conds)
         file.add_goal(goal1)
 
@@ -637,7 +638,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("(INT x:[-oo,oo]. exp(-x^2/2)) = sqrt(2*pi)")
         conds_of_Eq7 = compstate.Conditions()
         e2 = parser.parse_expr("y^2 + 1 > 0")
-        conds_of_Eq7.add_condition(str(e2), e2)
+        conds_of_Eq7.add_condition(e2)
         Eq7 = compstate.Goal(file, e, conds_of_Eq7)
         file.add_goal(Eq7)
         proof_of_Eq6 = Eq7.proof_by_calculation()
@@ -828,7 +829,7 @@ class IntegralTest(unittest.TestCase):
         # Define I(b)
         e = parser.parse_expr('I(b) = INT x:[0,oo]. sin(x) / x * exp(-b * x)')
         conds = conditions.Conditions()
-        conds.add_condition("b >= 0", parser.parse_expr("b >= 0"))
+        conds.add_condition(parser.parse_expr("b >= 0"))
         Idef = compstate.FuncDef(e, conds=conds)
         file.add_definition(Idef)
 
@@ -839,7 +840,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1/(b^2+1)")  # for b > 0
         conds_of_lemma2 = compstate.Conditions()
         e2 = parser.parse_expr("b > 0")
-        conds_of_lemma2.add_condition(str(e2), e2)
+        conds_of_lemma2.add_condition(e2)
         lemma2 = compstate.Lemma(e, conds_of_lemma2)
         file.add_lemma(lemma2)
 
@@ -851,7 +852,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("(D b. I(b)) = -1/(b^2+1)")
         conds_of_goal1 = conditions.Conditions()
         e2 = parser.parse_expr("b > 0")
-        conds_of_goal1.add_condition("b > 0", e2)
+        conds_of_goal1.add_condition(e2)
         goal1 = compstate.Goal(file, e, conds_of_goal1)
         file.add_goal(goal1)
         proof = goal1.proof_by_calculation()
@@ -879,7 +880,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("I(b) = -atan(b) + SKOLEM_CONST(C)")
         conds_of_goal3 = conditions.Conditions()
         e2 = parser.parse_expr("b >= 0")
-        conds_of_goal3.add_condition("b >= 0", e2)
+        conds_of_goal3.add_condition(e2)
         goal3 = compstate.Goal(file, e, conds=conds_of_goal3)
         file.add_goal(goal3)
         cond_str = "b = 0"
@@ -932,7 +933,7 @@ class IntegralTest(unittest.TestCase):
         # introduce definition
         e = parser.parse_expr("I(a) = INT x:[0, 1]. (x ^ a - 1) / log(x)")
         conds = compstate.Conditions()
-        conds.add_condition("a", parser.parse_expr("a>=0"))
+        conds.add_condition(parser.parse_expr("a>=0"))
         Idef = compstate.FuncDef(e, conds)
         file.add_definition(Idef)
 
@@ -960,7 +961,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("I(a) = log(a+1) + SKOLEM_CONST(C)")
         conds2 = compstate.Conditions()
         e2 = parser.parse_expr("a >= 0")
-        conds2.add_condition("a", e2)
+        conds2.add_condition(e2)
         goal3 = compstate.Goal(file, e, conds2)
         file.add_goal(goal3)
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal1)
@@ -982,7 +983,7 @@ class IntegralTest(unittest.TestCase):
 
         e = parser.parse_expr("I(a) = log(a+1)")
         conds4 = compstate.Conditions()
-        conds4.add_condition("a", parser.parse_expr("a>=0"))
+        conds4.add_condition(parser.parse_expr("a>=0"))
         goal5 = compstate.Goal(file, e, conds4)
         file.add_goal(goal5)
         proof_of_goal5 = goal5.proof_by_calculation()
@@ -1005,9 +1006,9 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("I(a, b) = INT x:[0,oo]. (atan(a*x) - atan(b*x))/x")
         conds_of_Idef = compstate.Conditions()
         e2 = parser.parse_expr("a > 0")
-        conds_of_Idef.add_condition("a", e2)
+        conds_of_Idef.add_condition(e2)
         e2 = parser.parse_expr("b > 0")
-        conds_of_Idef.add_condition("b", e2)
+        conds_of_Idef.add_condition(e2)
         Idef = compstate.FuncDef(e, conds_of_Idef)
         file.add_definition(Idef)
 
@@ -1024,7 +1025,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("(D a. I(a,b)) = pi / (2*a)")
         conds_of_goal2 = compstate.Conditions()
         e2 = parser.parse_expr("a > 0")
-        conds_of_goal2.add_condition("a", e2)
+        conds_of_goal2.add_condition(e2)
         goal2 = compstate.Goal(file, e, conds_of_goal2)
         file.add_goal(goal2)
         proof_of_goal2 = goal2.proof_by_calculation()
@@ -1046,7 +1047,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("I(a,b) = 1/2 * pi * log(a) - SKOLEM_FUNC(C(b))")
         conds_of_goal3 = compstate.Conditions()
         e2 = parser.parse_expr("a > 0")
-        conds_of_goal3.add_condition("a", e2)
+        conds_of_goal3.add_condition(e2)
         goal3 = compstate.Goal(file, e, conds_of_goal3)
         file.add_goal(goal3)
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal2)
@@ -1065,7 +1066,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("I(a,a) = 1/2 * pi * log(a) - SKOLEM_FUNC(C(a))")
         conds_of_goal4 = compstate.Conditions()
         e2 = parser.parse_expr("a > 0")
-        conds_of_goal4.add_condition("a", e2)
+        conds_of_goal4.add_condition(e2)
         goal4 = compstate.Goal(file, e, conds_of_goal4)
         file.add_goal(goal4)
         proof_of_goal4 = goal4.proof_by_calculation()
@@ -1076,7 +1077,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("SKOLEM_FUNC(C(a)) = 1/2 * pi * log(a)")
         conds_of_goal5 = compstate.Conditions()
         e2 = parser.parse_expr("a > 0")
-        conds_of_goal5.add_condition("a", e2)
+        conds_of_goal5.add_condition(e2)
         goal5 = compstate.Goal(file, e, conds_of_goal5)
         file.add_goal(goal5)
         proof_of_goal5 = goal5.proof_by_calculation()
@@ -1089,9 +1090,9 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("I(a, b) = 1/2 * pi * log(a) - 1/2 * pi * log(b)")
         conds_of_goal6 = compstate.Conditions()
         e2 = parser.parse_expr("a > 0")
-        conds_of_goal6.add_condition("a", e2)
+        conds_of_goal6.add_condition(e2)
         e2 = parser.parse_expr("b > 0")
-        conds_of_goal6.add_condition("b", e2)
+        conds_of_goal6.add_condition(e2)
         goal6 = compstate.Goal(file, e, conds_of_goal6)
         file.add_goal(goal6)
         proof_of_goal6 = goal6.proof_by_calculation()
@@ -1148,7 +1149,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("I(k) = INT x:[1,oo]. log(x) / (x^k)")
         conds_of_Idef = compstate.Conditions()
         e2 = parser.parse_expr("k > 1")
-        conds_of_Idef.add_condition("k", e2)
+        conds_of_Idef.add_condition(e2)
         Idef = compstate.FuncDef(e, conds=conds_of_Idef)
         file.add_definition(Idef)
 
@@ -1156,7 +1157,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("I(k) = 1/(k-1)^2")
         conds_of_goal1 = compstate.Conditions()
         e2 = parser.parse_expr("k > 1")
-        conds_of_goal1.add_condition("k", e2)
+        conds_of_goal1.add_condition(e2)
         goal1 = compstate.Goal(file, e, conds=conds_of_goal1)
         file.add_goal(goal1)
 
@@ -1248,7 +1249,7 @@ class IntegralTest(unittest.TestCase):
         # TODO: add derivation
         conds_of_goal1 = compstate.Conditions()
         e = parser.parse_expr("abs(x) < 1")
-        conds_of_goal1.add_condition("x", e)
+        conds_of_goal1.add_condition(e)
         e = parser.parse_expr("log(1+x) = SUM(k,0,oo,(-1)^k * (x^(k+1))/(k+1))")
         goal1 = compstate.Lemma(lemma=e, conds=conds_of_goal1)
         file.add_goal(goal1)
@@ -1291,7 +1292,7 @@ class IntegralTest(unittest.TestCase):
 
         conds_of_lemma01 = compstate.Conditions()
         e = parser.parse_expr("abs(x) < 1")
-        conds_of_lemma01.add_condition(str(e), e)
+        conds_of_lemma01.add_condition(e)
         e = parser.parse_expr("log(1+x) = SUM(k,0,oo,(-1)^k * (x^(k+1))/(k+1))")
         lemma01 = compstate.Lemma(lemma=e, conds=conds_of_lemma01)
         file.add_lemma(lemma01)
@@ -1318,7 +1319,7 @@ class IntegralTest(unittest.TestCase):
 
         conds_of_goal01 = compstate.Conditions()
         e = parser.parse_expr("abs(x) < 1")
-        conds_of_goal01.add_condition(str(e), e)
+        conds_of_goal01.add_condition(e)
         s = "-log(1-x) - log(1+x) = \
                 -SUM(k,0,oo,(-1)^k*(-x)^(k+1) / (k+1))-SUM(k,0,oo,(-1)^k*x^(k+1)/(k+1))"
         e = parser.parse_expr(s)
@@ -1449,7 +1450,7 @@ class IntegralTest(unittest.TestCase):
 
         conds_of_Idef = compstate.Conditions()
         e = parser.parse_expr("u>0")
-        conds_of_Idef.add_condition(str(e), e)
+        conds_of_Idef.add_condition(e)
 
         s = "I(u) = (INT x:[0,1]. atan(u * sqrt(2+x*x)) / ((1+x*x)*sqrt(2+x*x)))"
         e = parser.parse_expr(s)
@@ -1472,7 +1473,7 @@ class IntegralTest(unittest.TestCase):
         e = "(LIM {u->oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))"
         conds_of_goal002 = compstate.Conditions()
         ce = parser.parse_expr("u>0")
-        conds_of_goal002.add_condition(str(ce), ce)
+        conds_of_goal002.add_condition(ce)
         goal002 = compstate.Goal(file, parser.parse_expr(e))
         file.add_goal(goal = goal002)
         proof = goal002.proof_by_calculation()
@@ -1499,7 +1500,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("(D u. I(u)) = (1+u^2)^(-1) * (pi/4 - u * sqrt(1+2*u^2)^(-1)*atan(u/sqrt(1+2*u^2)))")
         conds_of_goal02 = compstate.Conditions()
         ce = parser.parse_expr("u>0")
-        conds_of_goal02.add_condition(str(ce), ce)
+        conds_of_goal02.add_condition(ce)
         goal02 = compstate.Goal(file, e, conds=conds_of_goal02)
         file.add_goal(goal02)
         proof = goal02.proof_by_calculation()
