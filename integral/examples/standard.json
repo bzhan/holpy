@@ -54,6 +54,210 @@
                 "type": "CalculationProof"
             },
             "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x. exp(a * x)) = a ^ (-1) * exp(a * x)",
+            "latex_goal": "\\int e^{a x} \\,dx = a ^ {-1} e^{a x}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x. exp(a * x)) = a ^ (-1) * exp(a * x)",
+                "latex_goal": "\\int e^{a x} \\,dx = a ^ {-1} e^{a x}",
+                "lhs_calc": {
+                    "latex_start": "\\int e^{a x} \\,dx",
+                    "start": "INT x. exp(a * x)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int a ^ {-1} e^{u} \\,du",
+                            "res": "INT u. a ^ (-1) * exp(u)",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(a x\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for a * x",
+                                "var_name": "u",
+                                "var_subst": "a * x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a ^ {-1} (\\int e^{u} \\,du)",
+                            "res": "a ^ (-1) * (INT u. exp(u))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a ^ {-1} e^{u}",
+                            "res": "a ^ (-1) * exp(u)",
+                            "rule": {
+                                "loc": "1",
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a ^ {-1} e^{a x}",
+                            "res": "a ^ (-1) * exp(a * x)",
+                            "rule": {
+                                "name": "ReplaceSubstitution",
+                                "str": "replace substitution"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "a ^ {-1} e^{a x}",
+                    "start": "a ^ (-1) * exp(a * x)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x. sin(a * x)) = -(a ^ (-1) * cos(a * x))",
+            "latex_goal": "\\int \\sin{(a x)} \\,dx = -a ^ {-1} \\cos{(a x)}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x. sin(a * x)) = -(a ^ (-1) * cos(a * x))",
+                "latex_goal": "\\int \\sin{(a x)} \\,dx = -a ^ {-1} \\cos{(a x)}",
+                "lhs_calc": {
+                    "latex_start": "\\int \\sin{(a x)} \\,dx",
+                    "start": "INT x. sin(a * x)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int a ^ {-1} \\sin{(u)} \\,du",
+                            "res": "INT u. a ^ (-1) * sin(u)",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(a x\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for a * x",
+                                "var_name": "u",
+                                "var_subst": "a * x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a ^ {-1} (\\int \\sin{(u)} \\,du)",
+                            "res": "a ^ (-1) * (INT u. sin(u))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a ^ {-1} -\\cos{(u)}",
+                            "res": "a ^ (-1) * -cos(u)",
+                            "rule": {
+                                "loc": "1",
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a ^ {-1} -\\cos{(a x)}",
+                            "res": "a ^ (-1) * -cos(a * x)",
+                            "rule": {
+                                "name": "ReplaceSubstitution",
+                                "str": "replace substitution"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-a ^ {-1} \\cos{(a x)}",
+                            "res": "-(a ^ (-1) * cos(a * x))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "-a ^ {-1} \\cos{(a x)}",
+                    "start": "-(a ^ (-1) * cos(a * x))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x. cos(a * x)) = a ^ (-1) * sin(a * x)",
+            "latex_goal": "\\int \\cos{(a x)} \\,dx = a ^ {-1} \\sin{(a x)}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x. cos(a * x)) = a ^ (-1) * sin(a * x)",
+                "latex_goal": "\\int \\cos{(a x)} \\,dx = a ^ {-1} \\sin{(a x)}",
+                "lhs_calc": {
+                    "latex_start": "\\int \\cos{(a x)} \\,dx",
+                    "start": "INT x. cos(a * x)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int a ^ {-1} \\cos{(u)} \\,du",
+                            "res": "INT u. a ^ (-1) * cos(u)",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(a x\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for a * x",
+                                "var_name": "u",
+                                "var_subst": "a * x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a ^ {-1} (\\int \\cos{(u)} \\,du)",
+                            "res": "a ^ (-1) * (INT u. cos(u))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a ^ {-1} \\sin{(u)}",
+                            "res": "a ^ (-1) * sin(u)",
+                            "rule": {
+                                "loc": "1",
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a ^ {-1} \\sin{(a x)}",
+                            "res": "a ^ (-1) * sin(a * x)",
+                            "rule": {
+                                "name": "ReplaceSubstitution",
+                                "str": "replace substitution"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "a ^ {-1} \\sin{(a x)}",
+                    "start": "a ^ (-1) * sin(a * x)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
         }
     ],
     "name": "standard"

@@ -39,6 +39,32 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.ReplaceSubstitution())
 
+        goal2 = file.add_goal("(INT x. exp(a * x)) = a ^ (-1) * exp(a * x)")
+        proof = goal2.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("a * x")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
+        calc.perform_rule(rules.ReplaceSubstitution())
+
+        goal3 = file.add_goal("(INT x. sin(a * x)) = - (a ^ (-1) * cos(a * x))")
+        proof = goal3.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("a * x")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
+        calc.perform_rule(rules.ReplaceSubstitution())
+        calc.perform_rule(rules.FullSimplify())
+
+        goal3 = file.add_goal("(INT x. cos(a * x)) = a ^ (-1) * sin(a * x)")
+        proof = goal3.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("a * x")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
+        calc.perform_rule(rules.ReplaceSubstitution())
+
+        print(file)
         self.checkAndOutput(file, "standard")
 
     def testTongji(self):
