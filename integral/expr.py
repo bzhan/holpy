@@ -1313,40 +1313,6 @@ class Expr:
         collect(self, result)
         return result
 
-    def findVar(self):
-        """Find list of variables appearing in the expression."""
-        v = []
-
-        def findv(e, v):
-            if e.ty == VAR:
-                v.append(e)
-            elif e.ty in (CONST, INF, SKOLEMFUNC):
-                return
-            elif e.ty == FUN:
-                for arg in e.args:
-                    findv(arg, v)
-            elif e.ty == OP:
-                for arg in e.args:
-                    findv(arg, v)
-            elif e.ty == DERIV:
-                findv(e.body, v)
-            elif e.ty == INTEGRAL:
-                findv(e.body, v)
-                findv(e.upper, v)
-                findv(e.lower, v)
-            elif e.ty == LIMIT:
-                findv(e.body, v)
-            elif e.ty == SUMMATION:
-                findv(e.lower, v)
-                findv(e.upper, v)
-                findv(e.body, v)
-            else:
-                print(e)
-                raise NotImplementedError
-
-        findv(self, v)
-        return v
-
     @property
     def depth(self):
         """Return the depth of expression as an estimate of problem difficulty."""

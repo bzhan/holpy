@@ -196,8 +196,7 @@ class CommonIntegral(Rule):
             return e
         if isinstance(e.body, Deriv) and e.body.var == e.var:
             return EvalAt(e.var, e.lower, e.upper, e.body.body)
-        v = Var(e.var)
-        if (e.body.is_constant() or v not in e.body.findVar()) and e.body != Const(1):
+        if e.var not in e.body.get_vars() and e.body != Const(1):
             return EvalAt(e.var, e.lower, e.upper, e.body * Var(e.var))
 
         x = Var(e.var)
@@ -247,7 +246,7 @@ class CommonIndefiniteIntegral(Rule):
             return e
 
         C = expr.SkolemFunc(self.const_name, tuple(Var(arg) for arg in e.skolem_args))
-        if e.body.is_constant() and e.body != Const(1):
+        if e.var not in e.body.get_vars() and e.body != Const(1):
             return e.body * Var(e.var) + C
 
         x = Var(e.var)
@@ -652,7 +651,7 @@ class ReduceTrivLimit(Rule):
     def eval(self, e: Expr, ctx=None) -> Expr:
         if not e.is_limit():
             return e
-        if Var(e.var) not in e.body.findVar():
+        if e.var not in e.body.get_vars():
             return e.body
         if e.lim in (POS_INF, NEG_INF):
             return e
@@ -957,7 +956,7 @@ class Substitution(Rule):
         body_subst = body.replace_trig(var_subst, var_name)
         if body_subst == body:
             body_subst = body.replace_trig(var_subst, var_name)
-        if parser.parse_expr(e.var) not in body_subst.findVar():
+        if e.var not in body_subst.get_vars():
             # Substitution is able to clear all x in original integrand
             self.f = body_subst
             if e.is_integral():
