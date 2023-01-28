@@ -325,7 +325,7 @@ class Calculation(StateItem):
             id = len(self.steps) - 1
 
         e = self.last_expr
-        new_e = rule.eval(e, conds=self.ctx.get_conds())
+        new_e = rule.eval(e, self.ctx)
         self.add_step(CalculationStep(self, rule, new_e, id+1))
 
     def get_by_label(self, label: Label) -> "StateItem":

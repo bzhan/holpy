@@ -34,7 +34,7 @@ class IntegralTest(unittest.TestCase):
 
         calc = file.add_calculation("INT x. 1 / (x + a)")
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("x + a")))
-        calc.perform_rule(rules.IndefiniteIntegralIdentity(ctx))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.ReplaceSubstitution("u", parser.parse_expr("x + a")))
         self.assertEqual(str(calc.last_expr), "log(abs(x + a))")
 
