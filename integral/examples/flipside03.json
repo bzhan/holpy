@@ -5,7 +5,7 @@
                 {
                     "cond": "a >= 0",
                     "latex_cond": "a \\ge 0",
-                    "name": "a>=0",
+                    "name": "a",
                     "type": "Condition"
                 }
             ],
@@ -19,7 +19,7 @@
                 {
                     "cond": "a >= 0",
                     "latex_cond": "a \\ge 0",
-                    "name": "a>=0",
+                    "name": "a",
                     "type": "Condition"
                 }
             ],
@@ -27,26 +27,10 @@
             "goal": "(D a. I(a)) = 1 / (a + 1)",
             "latex_goal": "\\frac{d}{da} I{(a)} = \\frac{1}{a + 1}",
             "proof": {
-                "conds": [
-                    {
-                        "cond": "a >= 0",
-                        "latex_cond": "a \\ge 0",
-                        "name": "a>=0",
-                        "type": "Condition"
-                    }
-                ],
                 "finished": true,
                 "goal": "(D a. I(a)) = 1 / (a + 1)",
                 "latex_goal": "\\frac{d}{da} I{(a)} = \\frac{1}{a + 1}",
                 "lhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "a >= 0",
-                            "latex_cond": "a \\ge 0",
-                            "name": "a>=0",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "\\frac{d}{da} I{(a)}",
                     "start": "D a. I(a)",
                     "steps": [
@@ -83,14 +67,6 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "a >= 0",
-                            "latex_cond": "a \\ge 0",
-                            "name": "a>=0",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "\\frac{1}{a + 1}",
                     "start": "1 / (a + 1)",
                     "steps": [
@@ -160,7 +136,7 @@
                 {
                     "cond": "a >= 0",
                     "latex_cond": "a \\ge 0",
-                    "name": "a >= 0",
+                    "name": "a",
                     "type": "Condition"
                 }
             ],
@@ -176,7 +152,7 @@
                         {
                             "cond": "a >= 0",
                             "latex_cond": "a \\ge 0",
-                            "name": "a>=0",
+                            "name": "a",
                             "type": "Condition"
                         }
                     ],
@@ -246,7 +222,7 @@
                         {
                             "cond": "a >= 0",
                             "latex_cond": "a \\ge 0",
-                            "name": "a >= 0",
+                            "name": "a",
                             "type": "Condition"
                         }
                     ],
@@ -298,7 +274,7 @@
                 {
                     "cond": "a >= 0",
                     "latex_cond": "a \\ge 0",
-                    "name": "a>=0",
+                    "name": "a",
                     "type": "Condition"
                 }
             ],
@@ -306,26 +282,10 @@
             "goal": "I(a) = log(a + 1)",
             "latex_goal": "I{(a)} = \\log{(a + 1)}",
             "proof": {
-                "conds": [
-                    {
-                        "cond": "a >= 0",
-                        "latex_cond": "a \\ge 0",
-                        "name": "a>=0",
-                        "type": "Condition"
-                    }
-                ],
                 "finished": true,
                 "goal": "I(a) = log(a + 1)",
                 "latex_goal": "I{(a)} = \\log{(a + 1)}",
                 "lhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "a >= 0",
-                            "latex_cond": "a \\ge 0",
-                            "name": "a>=0",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "I{(a)}",
                     "start": "I(a)",
                     "steps": [
@@ -365,14 +325,6 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "a >= 0",
-                            "latex_cond": "a \\ge 0",
-                            "name": "a>=0",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "\\log{(a + 1)}",
                     "start": "log(a + 1)",
                     "steps": [],

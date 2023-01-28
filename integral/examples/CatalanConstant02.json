@@ -33,26 +33,10 @@
             "goal": "I(k) = 1 / (k - 1) ^ 2",
             "latex_goal": "I{(k)} = \\frac{1}{(k - 1) ^ {2}}",
             "proof": {
-                "conds": [
-                    {
-                        "cond": "k > 1",
-                        "latex_cond": "k > 1",
-                        "name": "k",
-                        "type": "Condition"
-                    }
-                ],
                 "finished": true,
                 "goal": "I(k) = 1 / (k - 1) ^ 2",
                 "latex_goal": "I{(k)} = \\frac{1}{(k - 1) ^ {2}}",
                 "lhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "k > 1",
-                            "latex_cond": "k > 1",
-                            "name": "k",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "I{(k)}",
                     "start": "I(k)",
                     "steps": [
@@ -133,14 +117,6 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "k > 1",
-                            "latex_cond": "k > 1",
-                            "name": "k",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "\\frac{1}{(k - 1) ^ {2}}",
                     "start": "1 / (k - 1) ^ 2",
                     "steps": [

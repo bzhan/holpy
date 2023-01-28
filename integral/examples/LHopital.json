@@ -1,0 +1,155 @@
+{
+    "content": [
+        {
+            "latex_start": "\\lim\\limits_{x\\to 1} (\\,\\frac{x ^ {2} - 1}{x ^ {2} + 3 x - 4}\\,)",
+            "start": "LIM {x -> 1 }. (x ^ 2 - 1) / (x ^ 2 + 3 * x - 4)",
+            "steps": [
+                {
+                    "latex_res": "\\lim\\limits_{x\\to 1} (\\,\\frac{2 x}{2 x + 3}\\,)",
+                    "res": "LIM {x -> 1 }. 2 * x / (2 * x + 3)",
+                    "rule": {
+                        "name": "LHopital",
+                        "str": "l'Hopital's rule"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\frac{2}{5}",
+                    "res": "2/5",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                }
+            ],
+            "type": "Calculation"
+        },
+        {
+            "latex_start": "\\lim\\limits_{x\\to 4} (\\,\\frac{x - 4}{\\sqrt{x} - 2}\\,)",
+            "start": "LIM {x -> 4 }. (x - 4) / (sqrt(x) - 2)",
+            "steps": [
+                {
+                    "latex_res": "\\lim\\limits_{x\\to 4} (\\,\\frac{1}{\\frac{1}{2} x ^ {-1/2}}\\,)",
+                    "res": "LIM {x -> 4 }. 1 / (1/2 * x ^ (-1/2))",
+                    "rule": {
+                        "name": "LHopital",
+                        "str": "l'Hopital's rule"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "4",
+                    "res": "4",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                }
+            ],
+            "type": "Calculation"
+        },
+        {
+            "latex_start": "\\lim\\limits_{x\\to 0} (\\,\\frac{\\sin{(x)}}{x}\\,)",
+            "start": "LIM {x -> 0 }. sin(x) / x",
+            "steps": [
+                {
+                    "latex_res": "\\lim\\limits_{x\\to 0} (\\,\\frac{\\cos{(x)}}{1}\\,)",
+                    "res": "LIM {x -> 0 }. cos(x) / 1",
+                    "rule": {
+                        "name": "LHopital",
+                        "str": "l'Hopital's rule"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "1",
+                    "res": "1",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                }
+            ],
+            "type": "Calculation"
+        },
+        {
+            "latex_start": "\\lim\\limits_{x\\to 0} (\\,\\frac{3 ^ {x} - 2 ^ {x}}{x ^ {2} - x}\\,)",
+            "start": "LIM {x -> 0 }. (3 ^ x - 2 ^ x) / (x ^ 2 - x)",
+            "steps": [
+                {
+                    "latex_res": "\\lim\\limits_{x\\to 0} (\\,\\frac{-\\log{(2)} e^{\\log{(2)} x} + \\log{(3)} e^{\\log{(3)} x}}{2 x - 1}\\,)",
+                    "res": "LIM {x -> 0 }. (-log(2) * exp(log(2) * x) + log(3) * exp(log(3) * x)) / (2 * x - 1)",
+                    "rule": {
+                        "name": "LHopital",
+                        "str": "l'Hopital's rule"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\log{(2)} - \\log{(3)}",
+                    "res": "log(2) - log(3)",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                }
+            ],
+            "type": "Calculation"
+        },
+        {
+            "latex_start": "\\lim\\limits_{x\\to 3} (\\,\\frac{\\frac{1}{x} - \\frac{1}{3}}{x ^ {2} - 9}\\,)",
+            "start": "LIM {x -> 3 }. (1 / x - 1/3) / (x ^ 2 - 9)",
+            "steps": [
+                {
+                    "latex_res": "\\lim\\limits_{x\\to 3} (\\,\\frac{-x ^ {-2}}{2 x}\\,)",
+                    "res": "LIM {x -> 3 }. -(x ^ (-2)) / (2 * x)",
+                    "rule": {
+                        "name": "LHopital",
+                        "str": "l'Hopital's rule"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "-\\frac{1}{54}",
+                    "res": "-1/54",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                }
+            ],
+            "type": "Calculation"
+        },
+        {
+            "latex_start": "\\lim\\limits_{x\\to 0} (\\,\\frac{x \\tan{(x)}}{\\sin{(3 x)}}\\,)",
+            "start": "LIM {x -> 0 }. x * tan(x) / sin(3 * x)",
+            "steps": [
+                {
+                    "latex_res": "\\lim\\limits_{x\\to 0} (\\,\\frac{x \\sec^{2}(x) + \\tan{(x)}}{3 \\cos{(3 x)}}\\,)",
+                    "res": "LIM {x -> 0 }. (x * sec(x) ^ 2 + tan(x)) / (3 * cos(3 * x))",
+                    "rule": {
+                        "name": "LHopital",
+                        "str": "l'Hopital's rule"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "0",
+                    "res": "0",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                }
+            ],
+            "type": "Calculation"
+        }
+    ],
+    "name": "LHopital"
+}

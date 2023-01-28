@@ -1,15 +1,14 @@
 """Conditions"""
 
-from copy import copy
-
 from integral import expr
 from integral.expr import Expr
 from integral import latex
 
-# A condition is represented by a dictionary mapping condition names to
-# boolean expressions
-
 class Conditions:
+    """A condition is represented by a dictionary mapping condition names to
+    boolean expressions
+
+    """
     def __init__(self, conds=None):
         self.data = dict()
         if conds is not None:
@@ -20,12 +19,8 @@ class Conditions:
         return ", ".join("%s: %s" % (name, cond) for name, cond in self.data.items())
 
     def add_condition(self, name: str, cond: Expr):
+        assert isinstance(cond, Expr)
         self.data[name] = cond
-
-    def __copy__(self):
-        res = Conditions()
-        res.data = copy(self.data)
-        return res
 
     def __eq__(self, other):
         return isinstance(other, Conditions) and self.data == other.data
@@ -48,7 +43,7 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
         return e.val > 0
 
     if e.is_fun() and e.func_name == 'sqrt':
-        if is_positive(e.args[0],conds):
+        if is_positive(e.args[0], conds):
             return True
     if e.is_fun() and e.func_name == 'exp':
         return True
@@ -60,11 +55,12 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
     if e.is_plus():
         if is_positive(e.args[0], conds) and e.args[1].is_power() and e.args[1].args[1].val % 2 == 0:
             return True
-        if is_not_negative(e.args[0], conds) and is_positive(e.args[1],conds):
+        if is_not_negative(e.args[0], conds) and is_positive(e.args[1], conds):
             return True
     if e.is_integral():
         l, h = e.lower, e.upper
-        if is_positive(e.body, conds) and l.is_const() and h.is_inf() or l.is_const() and h.is_const() and l<h:
+        if is_positive(e.body, conds) and l.is_const() and h.is_inf() or \
+                l.is_const() and h.is_const() and l < h:
             return True
     for _, cond in conds.data.items():
         if cond.is_greater() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val >= 0:
@@ -78,11 +74,11 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
 
     return False
 
-def is_not_negative(e:Expr, conds) -> bool:
+def is_not_negative(e: Expr, conds: Conditions) -> bool:
     if e.is_const():
         return True if e.val >= 0 else False
     elif e.is_plus():
-        if all(is_not_negative(arg,conds) for arg in e.args):
+        if all(is_not_negative(arg, conds) for arg in e.args):
             return True
     elif e.is_times():
         # a * a >= 0
@@ -110,8 +106,6 @@ def is_negative(e: Expr, conds: Conditions) -> bool:
             a = e.args[0].args[0]
             if a.ty == expr.OP and a.op == '^' and a.args[1].is_const and a.args[1].val % 2 == 0:
                 return True
-    if conds == None:
-        return False
     for _, cond in conds.data.items():
         if cond.is_less() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val <= 0:
             return True

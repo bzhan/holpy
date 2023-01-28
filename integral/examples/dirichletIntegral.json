@@ -5,7 +5,7 @@
                 {
                     "cond": "b >= 0",
                     "latex_cond": "b \\ge 0",
-                    "name": "b",
+                    "name": "b >= 0",
                     "type": "Condition"
                 }
             ],
@@ -50,26 +50,10 @@
             "goal": "(D b. I(b)) = -1 / (b ^ 2 + 1)",
             "latex_goal": "\\frac{d}{db} I{(b)} = \\frac{-1}{b ^ {2} + 1}",
             "proof": {
-                "conds": [
-                    {
-                        "cond": "b > 0",
-                        "latex_cond": "b > 0",
-                        "name": "b > 0",
-                        "type": "Condition"
-                    }
-                ],
                 "finished": true,
                 "goal": "(D b. I(b)) = -1 / (b ^ 2 + 1)",
                 "latex_goal": "\\frac{d}{db} I{(b)} = \\frac{-1}{b ^ {2} + 1}",
                 "lhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "b > 0",
-                            "latex_cond": "b > 0",
-                            "name": "b > 0",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "\\frac{d}{db} I{(b)}",
                     "start": "D b. I(b)",
                     "steps": [
@@ -126,14 +110,6 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "b > 0",
-                            "latex_cond": "b > 0",
-                            "name": "b > 0",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "\\frac{-1}{b ^ {2} + 1}",
                     "start": "-1 / (b ^ 2 + 1)",
                     "steps": [
@@ -214,15 +190,9 @@
                 "case_1": {
                     "conds": [
                         {
-                            "cond": "b >= 0",
-                            "latex_cond": "b \\ge 0",
-                            "name": "b >= 0",
-                            "type": "Condition"
-                        },
-                        {
                             "cond": "b = 0",
                             "latex_cond": "b = 0",
-                            "name": "b = 0",
+                            "name": "CaseT",
                             "type": "Condition"
                         }
                     ],
@@ -230,38 +200,10 @@
                     "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
                     "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
                     "proof": {
-                        "conds": [
-                            {
-                                "cond": "b >= 0",
-                                "latex_cond": "b \\ge 0",
-                                "name": "b >= 0",
-                                "type": "Condition"
-                            },
-                            {
-                                "cond": "b = 0",
-                                "latex_cond": "b = 0",
-                                "name": "b = 0",
-                                "type": "Condition"
-                            }
-                        ],
                         "finished": true,
                         "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
                         "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
                         "lhs_calc": {
-                            "conds": [
-                                {
-                                    "cond": "b >= 0",
-                                    "latex_cond": "b \\ge 0",
-                                    "name": "b >= 0",
-                                    "type": "Condition"
-                                },
-                                {
-                                    "cond": "b = 0",
-                                    "latex_cond": "b = 0",
-                                    "name": "b = 0",
-                                    "type": "Condition"
-                                }
-                            ],
                             "latex_start": "I{(b)}",
                             "start": "I(b)",
                             "steps": [
@@ -288,20 +230,6 @@
                             "type": "Calculation"
                         },
                         "rhs_calc": {
-                            "conds": [
-                                {
-                                    "cond": "b >= 0",
-                                    "latex_cond": "b \\ge 0",
-                                    "name": "b >= 0",
-                                    "type": "Condition"
-                                },
-                                {
-                                    "cond": "b = 0",
-                                    "latex_cond": "b = 0",
-                                    "name": "b = 0",
-                                    "type": "Condition"
-                                }
-                            ],
                             "latex_start": "-\\arctan{(b)} + C",
                             "start": "-atan(b) + SKOLEM_CONST(C)",
                             "steps": [
@@ -324,15 +252,9 @@
                 "case_2": {
                     "conds": [
                         {
-                            "cond": "b >= 0",
-                            "latex_cond": "b \\ge 0",
-                            "name": "b >= 0",
-                            "type": "Condition"
-                        },
-                        {
                             "cond": "b != 0",
                             "latex_cond": "b \\neq 0",
-                            "name": "b != 0",
+                            "name": "CaseF",
                             "type": "Condition"
                         }
                     ],
@@ -413,14 +335,6 @@
                     },
                     "type": "Goal"
                 },
-                "conds": [
-                    {
-                        "cond": "b >= 0",
-                        "latex_cond": "b \\ge 0",
-                        "name": "b >= 0",
-                        "type": "Condition"
-                    }
-                ],
                 "finished": true,
                 "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
                 "latex_goal": "I{(b)} = -\\arctan{(b)} + C",

@@ -27,26 +27,10 @@
             "goal": "Gamma(n + 1) = n * Gamma(n)",
             "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
             "proof": {
-                "conds": [
-                    {
-                        "cond": "n > 0",
-                        "latex_cond": "n > 0",
-                        "name": "n",
-                        "type": "Condition"
-                    }
-                ],
                 "finished": true,
                 "goal": "Gamma(n + 1) = n * Gamma(n)",
                 "latex_goal": "\\Gamma{(n + 1)} = n \\Gamma{(n)}",
                 "lhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "n > 0",
-                            "latex_cond": "n > 0",
-                            "name": "n",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "\\Gamma{(n + 1)}",
                     "start": "Gamma(n + 1)",
                     "steps": [
@@ -95,14 +79,6 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "n > 0",
-                            "latex_cond": "n > 0",
-                            "name": "n",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "n \\Gamma{(n)}",
                     "start": "n * Gamma(n)",
                     "steps": [
@@ -220,26 +196,10 @@
                     "goal": "Gamma(n + 2) = factorial(n + 1)",
                     "latex_goal": "\\Gamma{(n + 2)} = (n + 1)!",
                     "proof": {
-                        "conds": [
-                            {
-                                "cond": "Gamma(n + 1) = factorial(n)",
-                                "latex_cond": "\\Gamma{(n + 1)} = n!",
-                                "name": "IH",
-                                "type": "Condition"
-                            }
-                        ],
                         "finished": true,
                         "goal": "Gamma(n + 2) = factorial(n + 1)",
                         "latex_goal": "\\Gamma{(n + 2)} = (n + 1)!",
                         "lhs_calc": {
-                            "conds": [
-                                {
-                                    "cond": "Gamma(n + 1) = factorial(n)",
-                                    "latex_cond": "\\Gamma{(n + 1)} = n!",
-                                    "name": "IH",
-                                    "type": "Condition"
-                                }
-                            ],
                             "latex_start": "\\Gamma{(n + 2)}",
                             "start": "Gamma(n + 2)",
                             "steps": [
@@ -285,14 +245,6 @@
                             "type": "Calculation"
                         },
                         "rhs_calc": {
-                            "conds": [
-                                {
-                                    "cond": "Gamma(n + 1) = factorial(n)",
-                                    "latex_cond": "\\Gamma{(n + 1)} = n!",
-                                    "name": "IH",
-                                    "type": "Condition"
-                                }
-                            ],
                             "latex_start": "(n + 1)!",
                             "start": "factorial(n + 1)",
                             "steps": [],

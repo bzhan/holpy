@@ -12,11 +12,11 @@ from integral import context
 
 
 class IntegralTest(unittest.TestCase):
-    def checkAndOutput(self, file, filename):
+    def checkAndOutput(self, file: compstate.CompFile, filename: str):
         # Test parsing of json file
         json_file = file.export()
         for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
+            self.assertEqual(compstate.parse_item(file, item).export(), file.content[i].export())
 
         # Test goals are finished
         for content in file.content:
@@ -30,7 +30,7 @@ class IntegralTest(unittest.TestCase):
         ctx = context.Context()
         ctx.load_book("base")
 
-        file = compstate.CompFile("standard")
+        file = compstate.CompFile(ctx, "standard")
 
         calc = file.add_calculation("INT x. 1 / (x + a)")
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("x + a")))
@@ -41,7 +41,8 @@ class IntegralTest(unittest.TestCase):
         print(file)
 
     def testTongji(self):
-        file = compstate.CompFile("Tongji")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "Tongji")
 
         calc = file.add_calculation("INT x:[2,3]. 2 * x + x ^ 2")
         calc.perform_rule(rules.FullSimplify())
@@ -309,16 +310,11 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "-2 * exp(-1) + 2")
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        with open('integral/examples/tongji7.json', 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "tongji7")
 
     def testLHopital(self):
-        file = compstate.CompFile("LHopital")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "LHopital")
 
         calc = file.add_calculation("LIM {x -> 1}. (x^2 - 1) / (x^2 + 3*x - 4)")
         calc.perform_rule(rules.LHopital())
@@ -350,16 +346,11 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "0")
 
-        # Test parsing of json file
-        json_file = file.export()
-        for i, item in enumerate(json_file['content']):
-            self.assertEqual(compstate.parse_item(item).export(), file.content[i].export())
-
-        with open('integral/examples/UCDAVIS/LHopital.json', 'w', encoding='utf-8') as f:
-            json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
+        self.checkAndOutput(file, "LHopital")
 
     def testWallis(self):
-        file = compstate.CompFile('Wallis')
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, 'Wallis')
 
         # Condition b > 0
         conds = conditions.Conditions()
@@ -370,14 +361,13 @@ class IntegralTest(unittest.TestCase):
         file.add_definition(Idef)
 
         # Prove the following equality
-        Eq1 = compstate.Goal(parser.parse_expr("(D b. I(m,b)) = -(m+1) * I(m+1, b)"), conds=conds)
+        Eq1 = compstate.Goal(file, parser.parse_expr("(D b. I(m,b)) = -(m+1) * I(m+1, b)"), conds=conds)
         file.add_goal(Eq1)
         proof = Eq1.proof_by_calculation()
 
         calc = proof.lhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.DerivIntExchange())
-
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
@@ -385,7 +375,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         # Prove the following by induction
-        Eq2 = compstate.Goal(parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"), conds=conds)
+        Eq2 = compstate.Goal(file, parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"), conds=conds)
         file.add_goal(Eq2)
         proof = Eq2.proof_by_induction("m")
         proof_base = proof.base_case.proof_by_calculation()
@@ -418,7 +408,8 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 4.1
 
-        file = compstate.CompFile("GammaFunction")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "GammaFunction")
 
         # Condition n > 0
         conds = conditions.Conditions()
@@ -429,7 +420,7 @@ class IntegralTest(unittest.TestCase):
         file.add_definition(gamma_def)
 
         # Recursive equation for gamma function
-        goal1 = compstate.Goal(parser.parse_expr("Gamma(n+1) = n * Gamma(n)"), conds=conds)
+        goal1 = compstate.Goal(file, parser.parse_expr("Gamma(n+1) = n * Gamma(n)"), conds=conds)
         file.add_goal(goal1)
 
         proof = goal1.proof_by_calculation()
@@ -444,7 +435,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ElimInfInterval())
 
         # Gamma function and factorial
-        goal2 = compstate.Goal(parser.parse_expr("Gamma(n+1) = factorial(n)"))
+        goal2 = compstate.Goal(file, parser.parse_expr("Gamma(n+1) = factorial(n)"))
         file.add_goal(goal2)
 
         proof = goal2.proof_by_induction("n")
@@ -463,7 +454,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.RewriteFactorial())
 
         # Application
-        goal3 = compstate.Calculation(parser.parse_expr("INT x:[0,oo]. exp(-x^3)"))
+        goal3 = compstate.Calculation(file, parser.parse_expr("INT x:[0,oo]. exp(-x^3)"))
         file.add_calculation(goal3)
         goal3.perform_rule(rules.Substitution('y', parser.parse_expr('x^3')))
         goal3.perform_rule(rules.FullSimplify())
@@ -477,8 +468,8 @@ class IntegralTest(unittest.TestCase):
     def testTrick2a(self):
         # Reference:
         # Inside interesting integrals, Section 2.2, example 1
-
-        file = compstate.CompFile("Trick2a")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "Trick2a")
 
         calc = file.add_calculation("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")
         calc.perform_rule(rules.Substitution("y", parser.parse_expr("pi / 2 - x")))
@@ -494,8 +485,8 @@ class IntegralTest(unittest.TestCase):
     def testTrick2b(self):
         # Reference:
         # Inside interesting integrals, Section 2.2, example 2
-
-        file = compstate.CompFile("Trick2a")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "Trick2a")
 
         calc = file.add_calculation("INT x:[0,pi]. x * sin(x) / (1 + cos(x)^2)")
         calc.perform_rule(rules.Substitution("y", parser.parse_expr("pi - x")))
@@ -511,13 +502,14 @@ class IntegralTest(unittest.TestCase):
     def testLeibniz01(self):
         # Reference
         # Inside interesting integrals, Section 3.1, example 1
-        file = compstate.CompFile("Leibniz01")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "Leibniz01")
 
         # Basic result: integral of 1 / (x^2 + a^2)
         e = parser.parse_expr("(INT x:[0,oo]. 1 / (x^2 + a^2)) = pi / (2 * a)")
         conds = compstate.Conditions()
         conds.add_condition("a", parser.parse_expr("a > 0"))
-        goal1 = compstate.Goal(e, conds=conds)
+        goal1 = compstate.Goal(file, e, conds=conds)
         file.add_goal(goal1)
 
         proof = goal1.proof_by_calculation()
@@ -534,7 +526,7 @@ class IntegralTest(unittest.TestCase):
 
         # Derivate to get integral of 1 / (x^2 + a^2)^2
         e = parser.parse_expr("(INT x:[0,oo]. 1 / (x^2 + a^2)^2) = pi / (4 * a^3)")
-        goal2 = compstate.Goal(e, conds=conds)
+        goal2 = compstate.Goal(file, e, conds=conds)
         file.add_goal(goal2)
         proof = goal2.proof_by_rewrite_goal(begin=goal1)
         calc = proof.begin
@@ -544,7 +536,7 @@ class IntegralTest(unittest.TestCase):
 
         # Derivate again:
         e = parser.parse_expr("(INT x:[0,oo]. 1 / (x^2 + a^2)^3) = 3*pi / (16 * a^5)")
-        goal3 = compstate.Goal(e, conds=conds)
+        goal3 = compstate.Goal(file, e, conds=conds)
         file.add_goal(goal3)
         proof = goal3.proof_by_rewrite_goal(begin=goal2)
         calc = proof.begin
@@ -557,7 +549,8 @@ class IntegralTest(unittest.TestCase):
     def testLeibniz02(self):
         # Reference
         # Inside interesting integrals, Section 3.1, example 2
-        file = compstate.CompFile('leibniz02')
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, 'leibniz02')
 
         # Overall goal: (INT x:[-oo,oo]. exp(-(x^2)/2)) = sqrt(2*pi)
 
@@ -567,7 +560,7 @@ class IntegralTest(unittest.TestCase):
         file.add_definition(Idef)
 
         e = parser.parse_expr("(INT x:[-oo,oo]. exp(-x^2/2)) = 2 * LIM {t->oo}. sqrt(g(t))")
-        Eq1 = compstate.Goal(e)
+        Eq1 = compstate.Goal(file, e)
         file.add_goal(Eq1)
         Eq1_proof = Eq1.proof_by_calculation()
         calc = Eq1_proof.lhs_calc
@@ -585,7 +578,7 @@ class IntegralTest(unittest.TestCase):
 
         e = '(D t. g(t) + 2 * INT y:[0, 1].exp(-(1+y^2)*t^2/2)/(1+y^2)) = 0'
         e = parser.parse_expr(e)
-        Eq2 = compstate.Goal(e)
+        Eq2 = compstate.Goal(file, e)
         file.add_goal(Eq2)
         Eq2_proof = Eq2.proof_by_calculation()
         calc = Eq2_proof.lhs_calc
@@ -602,7 +595,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         e = parser.parse_expr('2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_FUNC(C(y))')
-        Eq3 = compstate.Goal(e)
+        Eq3 = compstate.Goal(file, e)
         file.add_goal(Eq3)
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
@@ -613,7 +606,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
 
         e = parser.parse_expr("g(0) = 0")
-        Eq4 = compstate.Goal(e)
+        Eq4 = compstate.Goal(file, e)
         file.add_goal(Eq4)
         proof_of_Eq4 = Eq4.proof_by_calculation()
         calc = proof_of_Eq4.lhs_calc
@@ -621,7 +614,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         e = parser.parse_expr("pi/2 = SKOLEM_FUNC(C(y))")
-        Eq5 = compstate.Goal(e)
+        Eq5 = compstate.Goal(file, e)
         file.add_goal(Eq5)
         proof_of_Eq5 = Eq5.proof_by_rewrite_goal(begin = Eq3)
         calc = proof_of_Eq5.begin
@@ -631,7 +624,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         e = parser.parse_expr("g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi")
-        Eq6 = compstate.Goal(e)
+        Eq6 = compstate.Goal(file, e)
         file.add_goal(Eq6)
         proof_of_Eq6 = Eq6.proof_by_calculation()
         calc = proof_of_Eq6.lhs_calc
@@ -643,7 +636,7 @@ class IntegralTest(unittest.TestCase):
         conds_of_Eq7 = compstate.Conditions()
         e2 = parser.parse_expr("y^2 + 1 > 0")
         conds_of_Eq7.add_condition(str(e2), e2)
-        Eq7 = compstate.Goal(e, conds_of_Eq7)
+        Eq7 = compstate.Goal(file, e, conds_of_Eq7)
         file.add_goal(Eq7)
         proof_of_Eq6 = Eq7.proof_by_calculation()
         calc = proof_of_Eq6.lhs_calc
@@ -668,7 +661,8 @@ class IntegralTest(unittest.TestCase):
         # Overall goal: INT x:[0,oo]. cos(tx)*exp(-(x^2)/2) = sqrt(pi/2)*exp(-(t^2)/2)
 
         # Initial state
-        file = compstate.CompFile('Leibniz03')
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, 'Leibniz03')
 
         # Make definition
         e = parser.parse_expr("I(t) = INT x:[0, oo]. cos(t*x)*exp(-(x^2)/2)")
@@ -682,7 +676,7 @@ class IntegralTest(unittest.TestCase):
 
         # Prove the following equality
         e = parser.parse_expr('(D t. I(t)) = -t*I(t)')
-        Eq1 = compstate.Goal(e, conds=conds)
+        Eq1 = compstate.Goal(file, e, conds=conds)
         file.add_goal(Eq1)
         Eq1_proof = Eq1.proof_by_calculation()
         calc = Eq1_proof.lhs_calc
@@ -699,7 +693,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.ElimInfInterval(new_var='u'), '0.1'))
 
-        Eq2 = compstate.Goal(parser.parse_expr('(D t. log(I(t)) + t^2/2) = 0'), conds=conds)
+        Eq2 = compstate.Goal(file, parser.parse_expr('(D t. log(I(t)) + t^2/2) = 0'), conds=conds)
         file.add_goal(Eq2)
         Eq2_proof = Eq2.proof_by_calculation()
         calc = Eq2_proof.lhs_calc
@@ -708,7 +702,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         e = parser.parse_expr('1/2 * t ^ 2 + log(I(t)) = SKOLEM_CONST(C)')
-        Eq3 = compstate.Goal(e, conds=conds)
+        Eq3 = compstate.Goal(file, e, conds=conds)
         file.add_goal(Eq3)
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
@@ -718,7 +712,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
 
         e = parser.parse_expr('log(sqrt(pi / 2)) = SKOLEM_CONST(C)')
-        Eq4 = compstate.Goal(e, conds=conds)
+        Eq4 = compstate.Goal(file, e, conds=conds)
         file.add_goal(Eq4)
         Eq4_proof = Eq4.proof_by_rewrite_goal(begin=Eq3)
         calc = Eq4_proof.begin
@@ -727,7 +721,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma=lemma1.lemma, conds=None), '0.0'))
 
         e = parser.parse_expr('log(I(t)) = -t ^ 2 / 2 + log(sqrt(pi / 2))')
-        Eq5 = compstate.Goal(e, conds=conds)
+        Eq5 = compstate.Goal(file, e, conds=conds)
         file.add_goal(Eq5)
         Eq5_proof = Eq5.proof_by_calculation()
         calc = Eq5_proof.lhs_calc
@@ -738,7 +732,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         e = parser.parse_expr('I(t) = sqrt(pi/2) * exp(-t^2/2)')
-        Eq6 = compstate.Goal(e, conds=conds)
+        Eq6 = compstate.Goal(file, e, conds=conds)
         file.add_goal(Eq6)
         Eq6_proof = Eq6.proof_by_rewrite_goal(begin=Eq5)
         calc = Eq6_proof.begin
@@ -751,7 +745,8 @@ class IntegralTest(unittest.TestCase):
     def testEulerLogSineIntegral(self):
         # Reference:
         # Inside interesting integrals, Section 2.4
-        file = compstate.CompFile("EulerLogSine")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "EulerLogSine")
 
         # Define I(a)
         e = parser.parse_expr('I(a) = INT x:[0,pi/2]. log(a * sin(x))')
@@ -765,7 +760,7 @@ class IntegralTest(unittest.TestCase):
 
         # Prove J(a) = I(a)
         e = parser.parse_expr("J(a) = I(a)")
-        goal1 = compstate.Goal(e)
+        goal1 = compstate.Goal(file, e)
         file.add_goal(goal1)
 
         proof = goal1.proof_by_calculation()
@@ -783,7 +778,7 @@ class IntegralTest(unittest.TestCase):
 
         # Prove J(a) = pi/2 * log(2/a) + 2 * I(a)
         e = parser.parse_expr("J(a) = pi/2 * log(2/a) + 2 * I(a)")
-        goal2 = compstate.Goal(e)
+        goal2 = compstate.Goal(file, e)
         file.add_goal(goal2)
 
         proof = goal2.proof_by_calculation()
@@ -806,7 +801,7 @@ class IntegralTest(unittest.TestCase):
 
         # Finally show I(a) = pi/2 * log(a/2)
         e = parser.parse_expr("I(a) = pi/2 * log(a/2)")
-        goal3 = compstate.Goal(e)
+        goal3 = compstate.Goal(file, e)
         file.add_goal(goal3)
 
         proof = goal3.proof_by_calculation()
@@ -825,13 +820,13 @@ class IntegralTest(unittest.TestCase):
     def testDirichletIntegral(self):
         # Reference:
         # Inside interesting integrals, Section 3.2
-
-        file = compstate.CompFile("DirichletIntegral")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "DirichletIntegral")
 
         # Define I(b)
         e = parser.parse_expr('I(b) = INT x:[0,oo]. sin(x) / x * exp(-b * x)')
         conds = conditions.Conditions()
-        conds.add_condition("b", parser.parse_expr("b>=0"))
+        conds.add_condition("b >= 0", parser.parse_expr("b >= 0"))
         Idef = compstate.FuncDef(e, conds=conds)
         file.add_definition(Idef)
 
@@ -841,7 +836,7 @@ class IntegralTest(unittest.TestCase):
 
         e = parser.parse_expr("(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1/(b^2+1)")  # for b > 0
         conds_of_lemma2 = compstate.Conditions()
-        e2 = parser.parse_expr("b>0")
+        e2 = parser.parse_expr("b > 0")
         conds_of_lemma2.add_condition(str(e2), e2)
         lemma2 = compstate.Lemma(e, conds_of_lemma2)
         file.add_lemma(lemma2)
@@ -853,9 +848,9 @@ class IntegralTest(unittest.TestCase):
         # goal: D b. I(b) = -1/(b^2+1)
         e = parser.parse_expr("(D b. I(b)) = -1/(b^2+1)")
         conds_of_goal1 = conditions.Conditions()
-        e2 = parser.parse_expr("b>0")
-        conds_of_goal1.add_condition(str(e2), e2)
-        goal1 = compstate.Goal(e, conds_of_goal1)
+        e2 = parser.parse_expr("b > 0")
+        conds_of_goal1.add_condition("b > 0", e2)
+        goal1 = compstate.Goal(file, e, conds_of_goal1)
         file.add_goal(goal1)
         proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
@@ -869,7 +864,7 @@ class IntegralTest(unittest.TestCase):
 
         # goal: I(0) = INT x:[0, oo]. sin(x) / x
         e = parser.parse_expr("I(0) = INT x:[0, oo]. sin(x) / x")
-        goal2 = compstate.Goal(e)
+        goal2 = compstate.Goal(file, e)
         file.add_goal(goal2)
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
@@ -881,11 +876,11 @@ class IntegralTest(unittest.TestCase):
         # goal: I(b) = -atan(b) + C for C is some constant
         e = parser.parse_expr("I(b) = -atan(b) + SKOLEM_CONST(C)")
         conds_of_goal3 = conditions.Conditions()
-        e2 = parser.parse_expr("b>=0")
-        conds_of_goal3.add_condition(str(e2), e2)
-        goal3 = compstate.Goal(e, conds=conds_of_goal3)
+        e2 = parser.parse_expr("b >= 0")
+        conds_of_goal3.add_condition("b >= 0", e2)
+        goal3 = compstate.Goal(file, e, conds=conds_of_goal3)
         file.add_goal(goal3)
-        cond_str = "b=0"
+        cond_str = "b = 0"
         proof = goal3.proof_by_case(cond_str)
         case_1_proof = proof.case_1.proof_by_calculation()
         calc = case_1_proof.lhs_calc
@@ -904,7 +899,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
 
         e = parser.parse_expr("0 = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi")
-        goal4 = compstate.Goal(e)
+        goal4 = compstate.Goal(file, e)
         file.add_goal(goal4)
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
         calc = proof_of_goal4.begin
@@ -915,7 +910,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(lemma3.lemma), '0'))
 
         e = parser.parse_expr("(INT x:[0,oo]. x ^ -1 * sin(x)) = 1/2 * pi")
-        goal5 = compstate.Goal(e)
+        goal5 = compstate.Goal(file, e)
         file.add_goal(goal5)
         proof_of_goal5 = goal5.proof_by_calculation()
         calc = proof_of_goal5.lhs_calc
@@ -929,18 +924,19 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 3.4, example #3
 
         # goal: INT x:[0, 1]. (x ^ a - 1) / log(x) = log(a + 1)
-        file = compstate.CompFile("Flipside03")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "Flipside03")
 
         # introduce definition
         e = parser.parse_expr("I(a) = INT x:[0, 1]. (x ^ a - 1) / log(x)")
         conds = compstate.Conditions()
-        conds.add_condition(str("a>=0"), parser.parse_expr("a>=0"))
+        conds.add_condition("a", parser.parse_expr("a>=0"))
         Idef = compstate.FuncDef(e, conds)
         file.add_definition(Idef)
 
         # verify the following equation: D a. I(a) = 1/(a+1)
         e = parser.parse_expr("(D a. I(a)) = 1/(a+1)")
-        goal1 = compstate.Goal(e, conds)
+        goal1 = compstate.Goal(file, e, conds)
         file.add_goal(goal1)
         proof_of_goal1 = goal1.proof_by_calculation()
         calc = proof_of_goal1.lhs_calc
@@ -952,7 +948,7 @@ class IntegralTest(unittest.TestCase):
 
         # verify the following equation: I(a) = log(a+1)
         e = parser.parse_expr("I(0) = 0")
-        goal2 = compstate.Goal(e)
+        goal2 = compstate.Goal(file, e)
         file.add_goal(goal2)
         proof_of_goal2 = goal2.proof_by_calculation()
         calc = proof_of_goal2.lhs_calc
@@ -961,13 +957,12 @@ class IntegralTest(unittest.TestCase):
 
         e = parser.parse_expr("I(a) = log(a+1) + SKOLEM_CONST(C)")
         conds2 = compstate.Conditions()
-        e2 = parser.parse_expr("a>=0")
-        conds2.add_condition(str(e2),e2)
-        goal3 = compstate.Goal(e, conds2)
+        e2 = parser.parse_expr("a >= 0")
+        conds2.add_condition("a", e2)
+        goal3 = compstate.Goal(file, e, conds2)
         file.add_goal(goal3)
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal1)
         calc = proof_of_goal3.begin
-        left_skolem_name = 'E'
         calc.perform_rule(rules.IntegralEquation(var='a', left_skolem_name='E', right_skolem_name=None))
         calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral('C'), '1'))
         calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
@@ -975,7 +970,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.RewriteSkolemConst(new_expr=new_expr))
 
         e = parser.parse_expr("0 = SKOLEM_CONST(C)")
-        goal4 = compstate.Goal(e)
+        goal4 = compstate.Goal(file, e)
         file.add_goal(goal4)
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
         calc = proof_of_goal4.begin
@@ -985,8 +980,8 @@ class IntegralTest(unittest.TestCase):
 
         e = parser.parse_expr("I(a) = log(a+1)")
         conds4 = compstate.Conditions()
-        conds4.add_condition("a>=0", parser.parse_expr("a>=0"))
-        goal5 = compstate.Goal(e, conds4)
+        conds4.add_condition("a", parser.parse_expr("a>=0"))
+        goal5 = compstate.Goal(file, e, conds4)
         file.add_goal(goal5)
         proof_of_goal5 = goal5.proof_by_calculation()
         calc = proof_of_goal5.lhs_calc
@@ -1001,7 +996,8 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 3.3
 
-        file = compstate.CompFile("Frullani Integral")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "Frullani Integral")
 
         # Define I(a, b)
         e = parser.parse_expr("I(a, b) = INT x:[0,oo]. (atan(a*x) - atan(b*x))/x")
@@ -1015,7 +1011,7 @@ class IntegralTest(unittest.TestCase):
 
         # Show I(a, a) = 0
         e = parser.parse_expr("I(a, a) = 0")
-        goal1 = compstate.Goal(e)
+        goal1 = compstate.Goal(file, e)
         file.add_goal(goal1)
         proof_of_goal1 = goal1.proof_by_calculation()
         calc = proof_of_goal1.lhs_calc
@@ -1027,7 +1023,7 @@ class IntegralTest(unittest.TestCase):
         conds_of_goal2 = compstate.Conditions()
         e2 = parser.parse_expr("a > 0")
         conds_of_goal2.add_condition("a", e2)
-        goal2 = compstate.Goal(e, conds_of_goal2)
+        goal2 = compstate.Goal(file, e, conds_of_goal2)
         file.add_goal(goal2)
         proof_of_goal2 = goal2.proof_by_calculation()
         calc = proof_of_goal2.lhs_calc
@@ -1049,7 +1045,7 @@ class IntegralTest(unittest.TestCase):
         conds_of_goal3 = compstate.Conditions()
         e2 = parser.parse_expr("a > 0")
         conds_of_goal3.add_condition("a", e2)
-        goal3 = compstate.Goal(e, conds_of_goal3)
+        goal3 = compstate.Goal(file, e, conds_of_goal3)
         file.add_goal(goal3)
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal2)
         calc = proof_of_goal3.begin
@@ -1066,9 +1062,9 @@ class IntegralTest(unittest.TestCase):
         # Special case I(a,a)
         e = parser.parse_expr("I(a,a) = 1/2 * pi * log(a) - SKOLEM_FUNC(C(a))")
         conds_of_goal4 = compstate.Conditions()
-        e2 = parser.parse_expr("a>0")
-        conds_of_goal4.add_condition(str(e2), e2)
-        goal4 = compstate.Goal(e, conds_of_goal4)
+        e2 = parser.parse_expr("a > 0")
+        conds_of_goal4.add_condition("a", e2)
+        goal4 = compstate.Goal(file, e, conds_of_goal4)
         file.add_goal(goal4)
         proof_of_goal4 = goal4.proof_by_calculation()
         calc = proof_of_goal4.lhs_calc
@@ -1077,9 +1073,9 @@ class IntegralTest(unittest.TestCase):
         # Obtain value of Skolem function
         e = parser.parse_expr("SKOLEM_FUNC(C(a)) = 1/2 * pi * log(a)")
         conds_of_goal5 = compstate.Conditions()
-        e2 = parser.parse_expr("a>0")
-        conds_of_goal5.add_condition(str(e2), e2)
-        goal5 = compstate.Goal(e, conds_of_goal5)
+        e2 = parser.parse_expr("a > 0")
+        conds_of_goal5.add_condition("a", e2)
+        goal5 = compstate.Goal(file, e, conds_of_goal5)
         file.add_goal(goal5)
         proof_of_goal5 = goal5.proof_by_calculation()
         calc = proof_of_goal5.lhs_calc
@@ -1090,11 +1086,11 @@ class IntegralTest(unittest.TestCase):
         # Final result
         e = parser.parse_expr("I(a, b) = 1/2 * pi * log(a) - 1/2 * pi * log(b)")
         conds_of_goal6 = compstate.Conditions()
-        e2 = parser.parse_expr("a>0")
-        conds_of_goal6.add_condition(str(e2), e2)
-        e2 = parser.parse_expr("b>0")
-        conds_of_goal6.add_condition(str(e2), e2)
-        goal6 = compstate.Goal(e, conds_of_goal6)
+        e2 = parser.parse_expr("a > 0")
+        conds_of_goal6.add_condition("a", e2)
+        e2 = parser.parse_expr("b > 0")
+        conds_of_goal6.add_condition("b", e2)
+        goal6 = compstate.Goal(file, e, conds_of_goal6)
         file.add_goal(goal6)
         proof_of_goal6 = goal6.proof_by_calculation()
         calc = proof_of_goal6.lhs_calc
@@ -1107,7 +1103,8 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 5.1, example #1
 
-        file = compstate.CompFile('CatalanConstant01')
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, 'CatalanConstant01')
 
         # Define Catalan's constant
         e = parser.parse_expr('G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)')
@@ -1116,7 +1113,7 @@ class IntegralTest(unittest.TestCase):
 
         # Evaluate integral of atan(x) / x
         e = parser.parse_expr("(INT x:[0, 1]. atan(x) / x) = G")
-        goal01 = compstate.Goal(goal=e, conds=None)
+        goal01 = compstate.Goal(file, goal=e, conds=None)
         file.add_goal(goal01)
         proof_of_goal01 = goal01.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
@@ -1137,7 +1134,8 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 5.1, example #2
 
-        file = compstate.CompFile('CatalanConstant02')
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, 'CatalanConstant02')
 
         # Define Catalan's constant
         e = parser.parse_expr('G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)')
@@ -1149,7 +1147,7 @@ class IntegralTest(unittest.TestCase):
         conds_of_Idef = compstate.Conditions()
         e2 = parser.parse_expr("k > 1")
         conds_of_Idef.add_condition("k", e2)
-        Idef = compstate.FuncDef(e,conds=conds_of_Idef)
+        Idef = compstate.FuncDef(e, conds=conds_of_Idef)
         file.add_definition(Idef)
 
         # Evaluate I(k)
@@ -1157,7 +1155,7 @@ class IntegralTest(unittest.TestCase):
         conds_of_goal1 = compstate.Conditions()
         e2 = parser.parse_expr("k > 1")
         conds_of_goal1.add_condition("k", e2)
-        goal1 = compstate.Goal(e, conds=conds_of_goal1)
+        goal1 = compstate.Goal(file, e, conds=conds_of_goal1)
         file.add_goal(goal1)
 
         proof_of_goal1 = goal1.proof_by_calculation()
@@ -1181,7 +1179,7 @@ class IntegralTest(unittest.TestCase):
 
         # Special case of I(2*n+2)
         e = parser.parse_expr("I(2 * n + 2) = 1/(2*n+1)^2")
-        goal2 = compstate.Goal(e)
+        goal2 = compstate.Goal(file, e)
         file.add_goal(goal2)
         proof_of_goal2 = goal2.proof_by_calculation()
         calc = proof_of_goal2.lhs_calc
@@ -1191,7 +1189,7 @@ class IntegralTest(unittest.TestCase):
 
         # Definition of I(2*n+2)
         e = parser.parse_expr("I(2*n+2) = INT x:[1,oo]. log(x) / (x^(2*n+2))")
-        goal3 = compstate.Goal(e)
+        goal3 = compstate.Goal(file, e)
         file.add_goal(goal3)
         proof_of_goal3 = goal3.proof_by_calculation()
         calc = proof_of_goal3.lhs_calc
@@ -1202,7 +1200,7 @@ class IntegralTest(unittest.TestCase):
         # Combine previous two results
         # TODO: can simplify these three parts
         e = parser.parse_expr("(INT x:[1,oo]. log(x) / x^(2*n+2)) = 1/(2*n+1)^2")
-        goal4 = compstate.Goal(e)
+        goal4 = compstate.Goal(file, e)
         file.add_goal(goal4)
         proof_of_goal4 = goal4.proof_by_calculation()
         calc = proof_of_goal4.lhs_calc
@@ -1213,7 +1211,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         e = parser.parse_expr("(INT x:[1,oo]. log(x) / (x^2+1)) = G")
-        goal5 = compstate.Goal(e)
+        goal5 = compstate.Goal(file, e)
         file.add_goal(goal5)
         proof_of_goal5 = goal5.proof_by_calculation()
         calc = proof_of_goal5.lhs_calc
@@ -1241,7 +1239,8 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 5.2, example #1
 
-        file = compstate.CompFile("LogFunction01")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "LogFunction01")
 
         # Series expansion for log(1+x)
         # TODO: add derivation
@@ -1260,7 +1259,7 @@ class IntegralTest(unittest.TestCase):
 
         # Main result
         e = parser.parse_expr("(INT x:[0,1]. log(x+1) / x) = (pi^2) / 12")
-        goal = compstate.Goal(goal=e)
+        goal = compstate.Goal(file, goal=e)
         file.add_goal(goal)
         proof_of_goal01 = goal.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
@@ -1285,7 +1284,8 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 5.2, example #2
 
-        file = compstate.CompFile('LogFunction02')
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, 'LogFunction02')
 
         conds_of_lemma01 = compstate.Conditions()
         e = parser.parse_expr("abs(x) < 1")
@@ -1320,7 +1320,7 @@ class IntegralTest(unittest.TestCase):
         s = "-log(1-x) - log(1+x) = \
                 -SUM(k,0,oo,(-1)^k*(-x)^(k+1) / (k+1))-SUM(k,0,oo,(-1)^k*x^(k+1)/(k+1))"
         e = parser.parse_expr(s)
-        goal01 = compstate.Goal(goal = e, conds = conds_of_goal01)
+        goal01 = compstate.Goal(file, goal = e, conds = conds_of_goal01)
         file.add_goal(goal01)
         proof_of_goal01 = goal01.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
@@ -1331,7 +1331,7 @@ class IntegralTest(unittest.TestCase):
 
         s = "x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, (-1) ^ k * (-x) ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)"
         e = parser.parse_expr(s)
-        goal02 = compstate.Goal(goal = e, conds = None)
+        goal02 = compstate.Goal(file, goal = e, conds = None)
         file.add_goal(goal02)
         proof_of_goal02 = goal02.proof_by_rewrite_goal(begin = goal01)
         calc = proof_of_goal02.begin
@@ -1345,7 +1345,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.MulEquation(e = e))
 
         e = parser.parse_expr("(INT x:[0, pi/2]. cos(x)/sin(x) * log(1/cos(x))) = pi^2/24")
-        goal03 = compstate.Goal(goal = e, conds = None)
+        goal03 = compstate.Goal(file, goal = e, conds = None)
         file.add_goal(goal03)
         proof_of_goal03 = goal03.proof_by_calculation()
         calc = proof_of_goal03.lhs_calc
@@ -1385,7 +1385,8 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 6.1
 
-        file = compstate.CompFile("Bernoulli's Integral")
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "Bernoulli's Integral")
 
         e = parser.parse_expr("f(m, n) = INT x:[0, 1]. x^m * log(x) ^ n")
         Idef = compstate.FuncDef(e)
@@ -1396,14 +1397,14 @@ class IntegralTest(unittest.TestCase):
         file.add_lemma(lemma)
 
         e = parser.parse_expr("f(a*k, k) = INT x:[0, 1]. x^(a*k) * log(x)^k")
-        goal01 = compstate.Goal(goal=e, conds=None)
+        goal01 = compstate.Goal(file, goal=e, conds=None)
         file.add_goal(goal01)
         proof_of_goal01 = goal01.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(Idef.eq))
 
         e = parser.parse_expr("(INT x:[0,1]. x^(c*x^a)) = SUM(k,0,oo,(-c)^k / (k*a+1)^(k+1))")
-        goal02 = compstate.Goal(goal=e, conds=None)
+        goal02 = compstate.Goal(file, goal=e, conds=None)
         file.add_goal(goal02)
 
         proof_of_goal02 = goal02.proof_by_calculation()
@@ -1440,7 +1441,9 @@ class IntegralTest(unittest.TestCase):
     def testAhmedIntegral(self):
         # Reference:
         # Inside interesting integrals, Section 6.2
-        file = compstate.CompFile("Ahmed Integral")
+
+        ctx = context.Context()
+        file = compstate.CompFile(ctx, "Ahmed Integral")
 
         conds_of_Idef = compstate.Conditions()
         e = parser.parse_expr("u>0")
@@ -1457,17 +1460,18 @@ class IntegralTest(unittest.TestCase):
         file.add_lemma(lemma01)
 
         e = "I(1) = INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))"
-        goal001 = compstate.Goal(parser.parse_expr(e))
+        goal001 = compstate.Goal(file, parser.parse_expr(e))
         file.add_goal(goal = goal001)
         proof = goal001.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition(Idef.eq))
         calc.perform_rule(rules.FullSimplify())
+
         e = "(LIM {u->oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))"
         conds_of_goal002 = compstate.Conditions()
         ce = parser.parse_expr("u>0")
         conds_of_goal002.add_condition(str(ce), ce)
-        goal002 = compstate.Goal(parser.parse_expr(e))
+        goal002 = compstate.Goal(file, parser.parse_expr(e))
         file.add_goal(goal = goal002)
         proof = goal002.proof_by_calculation()
         calc = proof.lhs_calc
@@ -1476,7 +1480,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         e = "(LIM {u->oo}. I(u)) = pi^2 / 12"
-        goal01 = compstate.Goal(goal=parser.parse_expr(e))
+        goal01 = compstate.Goal(file, goal=parser.parse_expr(e))
         file.add_goal(goal=goal01)
         proof = goal01.proof_by_calculation()
         calc = proof.lhs_calc
@@ -1494,7 +1498,7 @@ class IntegralTest(unittest.TestCase):
         conds_of_goal02 = compstate.Conditions()
         ce = parser.parse_expr("u>0")
         conds_of_goal02.add_condition(str(ce), ce)
-        goal02 = compstate.Goal(e, conds=conds_of_goal02)
+        goal02 = compstate.Goal(file, e, conds=conds_of_goal02)
         file.add_goal(goal02)
         proof = goal02.proof_by_calculation()
         calc = proof.lhs_calc
@@ -1520,7 +1524,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         e = parser.parse_expr("(INT u:[1, oo]. D u. I(u)) = pi^2/12 - I(1)")
-        goal03 = compstate.Goal(e)
+        goal03 = compstate.Goal(file, e)
         file.add_goal(goal03)
         proof = goal03.proof_by_calculation()
         calc = proof.lhs_calc
@@ -1531,7 +1535,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         e = parser.parse_expr("(INT u:[1,oo]. D u. I(u)) = - (pi^2 / 48) + I(1)")
-        goal04 = compstate.Goal(e)
+        goal04 = compstate.Goal(file, e)
         file.add_goal(goal04)
         proof_of_goal04 = goal04.proof_by_calculation()
         calc = proof_of_goal04.lhs_calc
@@ -1562,7 +1566,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         e = parser.parse_expr("I(1) = 5*pi^2/96")
-        goal05 = compstate.Goal(e)
+        goal05 = compstate.Goal(file, e)
         file.add_goal(goal05)
         proof_of_goal05 = goal05.proof_by_rewrite_goal(begin=goal03)
         calc = proof_of_goal05.begin

@@ -27,26 +27,10 @@
             "goal": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
             "latex_goal": "\\frac{d}{db} I(m,b) = -(m + 1) I(m + 1,b)",
             "proof": {
-                "conds": [
-                    {
-                        "cond": "b > 0",
-                        "latex_cond": "b > 0",
-                        "name": "b",
-                        "type": "Condition"
-                    }
-                ],
                 "finished": true,
                 "goal": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
                 "latex_goal": "\\frac{d}{db} I(m,b) = -(m + 1) I(m + 1,b)",
                 "lhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "b > 0",
-                            "latex_cond": "b > 0",
-                            "name": "b",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "\\frac{d}{db} I(m,b)",
                     "start": "D b. I(m,b)",
                     "steps": [
@@ -83,14 +67,6 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "b > 0",
-                            "latex_cond": "b > 0",
-                            "name": "b",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "-(m + 1) I(m + 1,b)",
                     "start": "-(m + 1) * I(m + 1,b)",
                     "steps": [
@@ -135,38 +111,14 @@
             "latex_goal": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
             "proof": {
                 "base_case": {
-                    "conds": [
-                        {
-                            "cond": "b > 0",
-                            "latex_cond": "b > 0",
-                            "name": "b",
-                            "type": "Condition"
-                        }
-                    ],
                     "finished": true,
                     "goal": "I(0,b) = 1/2 * pi * b ^ (-1/2)",
                     "latex_goal": "I(0,b) = \\frac{1}{2} \\pi b ^ {-1/2}",
                     "proof": {
-                        "conds": [
-                            {
-                                "cond": "b > 0",
-                                "latex_cond": "b > 0",
-                                "name": "b",
-                                "type": "Condition"
-                            }
-                        ],
                         "finished": true,
                         "goal": "I(0,b) = 1/2 * pi * b ^ (-1/2)",
                         "latex_goal": "I(0,b) = \\frac{1}{2} \\pi b ^ {-1/2}",
                         "lhs_calc": {
-                            "conds": [
-                                {
-                                    "cond": "b > 0",
-                                    "latex_cond": "b > 0",
-                                    "name": "b",
-                                    "type": "Condition"
-                                }
-                            ],
                             "latex_start": "I(0,b)",
                             "start": "I(0,b)",
                             "steps": [
@@ -236,14 +188,6 @@
                             "type": "Calculation"
                         },
                         "rhs_calc": {
-                            "conds": [
-                                {
-                                    "cond": "b > 0",
-                                    "latex_cond": "b > 0",
-                                    "name": "b",
-                                    "type": "Condition"
-                                }
-                            ],
                             "latex_start": "\\frac{1}{2} \\pi b ^ {-1/2}",
                             "start": "1/2 * pi * b ^ (-1/2)",
                             "steps": [],
@@ -253,24 +197,10 @@
                     },
                     "type": "Goal"
                 },
-                "conds": [
-                    {
-                        "cond": "b > 0",
-                        "latex_cond": "b > 0",
-                        "name": "b",
-                        "type": "Condition"
-                    }
-                ],
                 "finished": true,
                 "goal": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                 "induct_case": {
                     "conds": [
-                        {
-                            "cond": "b > 0",
-                            "latex_cond": "b > 0",
-                            "name": "b",
-                            "type": "Condition"
-                        },
                         {
                             "cond": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                             "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
@@ -282,38 +212,10 @@
                     "goal": "I(m + 1,b) = pi * b ^ (-1/2 * (2 * m + 3)) * 2 ^ (-2 * m - 3) * binom(2 * m + 2,m + 1)",
                     "latex_goal": "I(m + 1,b) = \\pi b ^ {-1/2\\cdot (2 m + 3)} 2 ^ {-2 m - 3} \\binom{2 m + 2}{m + 1}",
                     "proof": {
-                        "conds": [
-                            {
-                                "cond": "b > 0",
-                                "latex_cond": "b > 0",
-                                "name": "b",
-                                "type": "Condition"
-                            },
-                            {
-                                "cond": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
-                                "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
-                                "name": "IH",
-                                "type": "Condition"
-                            }
-                        ],
                         "finished": true,
                         "goal": "I(m + 1,b) = pi * b ^ (-1/2 * (2 * m + 3)) * 2 ^ (-2 * m - 3) * binom(2 * m + 2,m + 1)",
                         "latex_goal": "I(m + 1,b) = \\pi b ^ {-1/2\\cdot (2 m + 3)} 2 ^ {-2 m - 3} \\binom{2 m + 2}{m + 1}",
                         "lhs_calc": {
-                            "conds": [
-                                {
-                                    "cond": "b > 0",
-                                    "latex_cond": "b > 0",
-                                    "name": "b",
-                                    "type": "Condition"
-                                },
-                                {
-                                    "cond": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
-                                    "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
-                                    "name": "IH",
-                                    "type": "Condition"
-                                }
-                            ],
                             "latex_start": "I(m + 1,b)",
                             "start": "I(m + 1,b)",
                             "steps": [
@@ -353,20 +255,6 @@
                             "type": "Calculation"
                         },
                         "rhs_calc": {
-                            "conds": [
-                                {
-                                    "cond": "b > 0",
-                                    "latex_cond": "b > 0",
-                                    "name": "b",
-                                    "type": "Condition"
-                                },
-                                {
-                                    "cond": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
-                                    "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})",
-                                    "name": "IH",
-                                    "type": "Condition"
-                                }
-                            ],
                             "latex_start": "\\pi b ^ {-1/2\\cdot (2 m + 3)} 2 ^ {-2 m - 3} \\binom{2 m + 2}{m + 1}",
                             "start": "pi * b ^ (-1/2 * (2 * m + 3)) * 2 ^ (-2 * m - 3) * binom(2 * m + 2,m + 1)",
                             "steps": [

@@ -463,26 +463,10 @@
             "goal": "(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)",
             "latex_goal": "\\int_{-\\infty}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{2 \\pi}",
             "proof": {
-                "conds": [
-                    {
-                        "cond": "y ^ 2 + 1 > 0",
-                        "latex_cond": "y ^ {2} + 1 > 0",
-                        "name": "y ^ 2 + 1 > 0",
-                        "type": "Condition"
-                    }
-                ],
                 "finished": true,
                 "goal": "(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)",
                 "latex_goal": "\\int_{-\\infty}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{2 \\pi}",
                 "lhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "y ^ 2 + 1 > 0",
-                            "latex_cond": "y ^ {2} + 1 > 0",
-                            "name": "y ^ 2 + 1 > 0",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "\\int_{-\\infty}^{\\infty} e^{-x ^ {2}/2} \\,dx",
                     "start": "INT x:[-oo,oo]. exp(-(x ^ 2) / 2)",
                     "steps": [
@@ -563,14 +547,6 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "conds": [
-                        {
-                            "cond": "y ^ 2 + 1 > 0",
-                            "latex_cond": "y ^ {2} + 1 > 0",
-                            "name": "y ^ 2 + 1 > 0",
-                            "type": "Condition"
-                        }
-                    ],
                     "latex_start": "\\sqrt{2 \\pi}",
                     "start": "sqrt(2 * pi)",
                     "steps": [

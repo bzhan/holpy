@@ -7,7 +7,7 @@ from integral.expr import Expr, Var, Const
 from integral import rules, expr
 from integral.rules import Rule
 from integral.conditions import Conditions
-from integral import conditions
+from integral.context import Context
 from integral import latex
 from integral import parser
 
@@ -48,11 +48,13 @@ class Label:
 
 class StateItem:
     """Items in a state of computation"""
+    ctx: Context
+
     def export(self):
         """Obtain the JSON representation of the item."""
         raise NotImplementedError
 
-    def get_by_label(self, label) -> "StateItem":
+    def get_by_label(self, label: Label) -> "StateItem":
         """Return the object at the given label."""
         raise NotImplementedError
 
@@ -154,13 +156,16 @@ class Lemma(StateItem):
 
 class Goal(StateItem):
     """Goal to be proved."""
-    def __init__(self, goal: Expr, conds: Optional[Conditions] = None):
-
+    def __init__(self, parent, goal: Expr, conds: Optional[Conditions] = None):
+        self.parent = parent
         self.goal = goal
         if conds is None:
             conds = Conditions()
         self.conds = conds
         self.proof = None
+
+        self.ctx = Context(parent.ctx)
+        self.ctx.extend_condition(self.conds)
 
     def __str__(self):
         if self.is_finished():
@@ -195,15 +200,15 @@ class Goal(StateItem):
         return res
 
     def proof_by_rewrite_goal(self, *, begin: "Goal"):
-        self.proof = RewriteGoalProof(self.goal, begin=begin, conds=self.conds)
+        self.proof = RewriteGoalProof(self, self.goal, begin=begin)
         return self.proof
 
     def proof_by_calculation(self):
-        self.proof = CalculationProof(self.goal, conds=self.conds)
+        self.proof = CalculationProof(self, self.goal)
         return self.proof
 
     def proof_by_induction(self, induct_var: str, start: int = 0):
-        self.proof = InductionProof(self.goal, induct_var, conds=self.conds,start = start)
+        self.proof = InductionProof(self, self.goal, induct_var, start=start)
         return self.proof
 
     def proof_by_case(self, cond_str: str):
@@ -212,7 +217,7 @@ class Goal(StateItem):
         # case1: f(b) = C for b>=0 and b=0
         # case2: f(b) = C for b>=0 and b!=0
         e1 = parser.parse_expr(cond_str)
-        self.proof = CaseProof(self.goal, split_cond=e1, conds=self.conds)
+        self.proof = CaseProof(self, self.goal, split_cond=e1)
         return self.proof
 
     def get_by_label(self, label: Label):
@@ -229,11 +234,12 @@ class Goal(StateItem):
 
 class CalculationStep(StateItem):
     """A step in the calculation."""
-    def __init__(self, rule: Rule, res: Expr, parent: "Calculation", id: int):
+    def __init__(self, parent: "Calculation", rule: Rule, res: Expr, id: int):
+        self.parent = parent
         self.rule = rule
         self.res = res
-        self.parent = parent
         self.id = id
+        self.ctx = parent.ctx
 
     def __str__(self):
         return "%s (%s)" % (self.res, self.rule)
@@ -264,13 +270,19 @@ class Calculation(StateItem):
         is carried out.
 
     """
-    def __init__(self, start: Expr, connection_symbol = '=', *, conds: Optional[Conditions] = None):
+    def __init__(self, parent, start: Expr, *, connection_symbol = '=', conds: Optional[Conditions] = None):
+        self.parent = parent
         self.start = start
         self.steps = []
         if conds is None:
             conds = Conditions()
         self.conds = conds
         self.connection_symbol = connection_symbol
+        if conds is None:
+            self.ctx = parent.ctx
+        else:
+            self.ctx = Context(parent.ctx)
+            self.ctx.extend_condition(self.conds)
 
     def __str__(self):
         res = "  " + str(self.start) + "\n"
@@ -313,8 +325,8 @@ class Calculation(StateItem):
             id = len(self.steps) - 1
 
         e = self.last_expr
-        new_e = rule.eval(e, conds=self.conds)
-        self.add_step(CalculationStep(rule, new_e, self, id+1))
+        new_e = rule.eval(e, conds=self.ctx.get_conds())
+        self.add_step(CalculationStep(self, rule, new_e, id+1))
 
     def get_by_label(self, label: Label) -> "StateItem":
         if label.empty():
@@ -331,17 +343,16 @@ class CalculationProof(StateItem):
     The proof consists of calculation of left and right sides.
 
     """
-    def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None):
+    def __init__(self, parent, goal: Expr):
         if not goal.is_equals():
             raise AssertionError("CalculationProof: goal is not an equality.")
 
+        self.parent = parent
         self.goal = goal
-        if conds is None:
-            conds = Conditions()
-        self.conds = conds
+        self.ctx = parent.ctx
 
-        self.lhs_calc = Calculation(self.goal.lhs, conds=self.conds)
-        self.rhs_calc = Calculation(self.goal.rhs, conds=self.conds)
+        self.lhs_calc = Calculation(self, self.goal.lhs)
+        self.rhs_calc = Calculation(self, self.goal.rhs)
 
     def __str__(self):
         if self.is_finished():
@@ -360,7 +371,7 @@ class CalculationProof(StateItem):
         return self.lhs_calc.last_expr == self.rhs_calc.last_expr
 
     def export(self):
-        res = {
+        return {
             "type": "CalculationProof",
             "goal": str(self.goal),
             "latex_goal": latex.convert_expr(self.goal),
@@ -368,9 +379,6 @@ class CalculationProof(StateItem):
             "rhs_calc": self.rhs_calc.export(),
             "finished": self.is_finished()
         }
-        if self.conds.data:
-            res["conds"] = self.conds.export()
-        return res
 
     def clear(self):
         self.lhs_calc.clear()
@@ -393,17 +401,15 @@ class InductionProof(StateItem):
     base case and inductive case.
 
     """
-    def __init__(self, goal: Expr, induct_var: str, *, conds: Optional[Conditions] = None,
-                 start: Union[int, Expr] = 0):
+    def __init__(self, parent, goal: Expr, induct_var: str, *, start: Union[int, Expr] = 0):
         if not goal.is_equals():
             print(str(goal))
             raise AssertionError("InductionProof: currently only support equation goals.")
 
+        self.parent = parent
         self.goal = goal
         self.induct_var = induct_var
-        if conds is None:
-            conds = Conditions()
-        self.conds = conds
+        self.ctx = parent.ctx
 
         if isinstance(start, int):
             self.start = Const(start)
@@ -414,13 +420,13 @@ class InductionProof(StateItem):
 
         # Base case: n = 0
         eq0 = goal.subst(induct_var, self.start).normalize()
-        self.base_case = Goal(eq0, conds=self.conds)
+        self.base_case = Goal(self, eq0)
 
         # Inductive case:
         eqI = goal.subst(induct_var, Var(induct_var) + 1).normalize()
-        induct_conds = copy.copy(self.conds)
+        induct_conds = Conditions()
         induct_conds.add_condition("IH", self.goal)
-        self.induct_case = Goal(eqI, conds=induct_conds)
+        self.induct_case = Goal(self, eqI, conds=induct_conds)
 
     def __str__(self):
         if self.is_finished():
@@ -437,7 +443,7 @@ class InductionProof(StateItem):
         return self.base_case.is_finished() and self.induct_case.is_finished()
 
     def export(self):
-        res = {
+        return {
             "type": "InductionProof",
             "goal": str(self.goal),
             "latex_goal": latex.convert_expr(self.goal),
@@ -446,9 +452,6 @@ class InductionProof(StateItem):
             "induct_case": self.induct_case.export(),
             "finished": self.is_finished()
         }
-        if self.conds.data:
-            res["conds"] = self.conds.export()
-        return res
 
     def clear(self):
         self.base_case.clear()
@@ -465,32 +468,39 @@ class InductionProof(StateItem):
             raise AssertionError("get_by_label: invalid label")
 
 class CaseProof(StateItem):
-    '''proof an equation by cases'''
-    def __init__(self, goal: Expr, *, conds: Optional[Conditions], split_cond:Expr):
+    """Prove an equation by cases.
+    
+    The two cases correspond to split_cond being true and false, respectively.
+    
+    """
+    def __init__(self, parent, goal: Expr, *, split_cond: Expr):
         if not goal.is_equals():
             print(str(goal))
             raise AssertionError("CaseProof: currently only support equation goals.")
+
+        self.parent = parent
         self.goal = goal
-        self.conds = conds
+        self.ctx = parent.ctx
         self.split_cond = split_cond
-        self.conds1 = copy.deepcopy(conds)
-        self.conds1.add_condition(str(split_cond), split_cond)
-        tmp = expr.neg_expr(split_cond)
-        self.conds2 = copy.deepcopy(conds)
-        self.conds2.add_condition(str(tmp), tmp)
-        # case 1:
-        self.case_1 = Goal(goal, conds=self.conds1)
-        # case 2:
-        self.case_2 = Goal(goal, conds=self.conds2)
+
+        # Case 1:
+        conds1 = Conditions()
+        conds1.add_condition("CaseT", split_cond)
+        self.case_1 = Goal(self, goal, conds=conds1)
+
+        # Case 2:
+        conds2 = Conditions()
+        conds2.add_condition("CaseF", expr.neg_expr(split_cond))
+        self.case_2 = Goal(self, goal, conds=conds2)
 
     def __str__(self):
         if self.is_finished():
-            res = "Proof by cases(finished)\n"
+            res = "Proof by cases (finished)\n"
         else:
             res = "Proof by cases\n"
-        res += "case1: %s for %s\n" % (self.case_1.goal, self.conds1.data if self.conds1 != None else "None")
+        res += "case1: %s for %s\n" % (self.case_1.goal, self.split_cond)
         res += str(self.case_1)
-        res += "case2: %s for %s\n" % (self.case_2.goal, self.conds2.data if self.conds2 != None else "None")
+        res += "case2: %s for %s\n" % (self.case_2.goal, expr.neg_expr(self.split_cond))
         res += str(self.case_2)
         return res
 
@@ -498,7 +508,7 @@ class CaseProof(StateItem):
         return self.case_1.is_finished() and self.case_2.is_finished()
 
     def export(self):
-        res = {
+        return {
             "type": "CaseProof",
             "goal": str(self.goal),
             "latex_goal": latex.convert_expr(self.goal),
@@ -507,9 +517,6 @@ class CaseProof(StateItem):
             "split_cond": latex.convert_expr(self.split_cond),
             "finished": self.is_finished()
         }
-        if self.conds != None and self.conds.data:
-            res["conds"] = self.conds.export()
-        return res
 
     def clear(self):
         self.case_1.clear()
@@ -526,16 +533,16 @@ class CaseProof(StateItem):
             raise AssertionError("get_by_label: invalid label")
 
 class RewriteGoalProof(StateItem):
-    '''
-    proof an equation by rewrting equation,
-    transform from a initial equation into goal using rules on both side.
-    '''
-    def __init__(self, goal: Expr, *, conds: Optional[Conditions] = None, begin: Goal):
-        # assert begin.is_finished()
+    """Prove an equation by transforming an initial equation.
+    """
+    def __init__(self, parent, goal: Expr, *, begin: Goal):
         if not goal.is_equals():
             raise AssertionError("RewriteGoalProof: goal is not an equality.")
+
+        self.parent = parent
         self.goal = goal
-        self.begin = Calculation(begin.goal, conds=begin.conds, connection_symbol = '==>')
+        self.ctx = parent.ctx
+        self.begin = Calculation(parent, begin.goal, conds=begin.conds, connection_symbol = '==>')
 
     def is_finished(self):
         f1 = self.begin.last_expr.lhs.normalize() == self.goal.lhs.normalize()
@@ -573,8 +580,14 @@ class RewriteGoalProof(StateItem):
 
 
 class CompFile:
-    """Represent a file containing multiple StateItem objects."""
-    def __init__(self, name: str):
+    """Represent a file containing multiple StateItem objects.
+    
+    ctx - initial context of the file.
+    name - name of the file.
+
+    """
+    def __init__(self, ctx: Context, name: str):
+        self.ctx = ctx
         self.name: str = name
         self.content: List[StateItem] = []
 
@@ -591,9 +604,9 @@ class CompFile:
     def add_calculation(self, calc: Union[str, Expr, Calculation]) -> Calculation:
         """Add a calculation."""
         if isinstance(calc, str):
-            self.content.append(Calculation(parser.parse_expr(calc)))
+            self.content.append(Calculation(self, parser.parse_expr(calc)))
         elif isinstance(calc, Expr):
-            self.content.append(Calculation(calc))
+            self.content.append(Calculation(self, calc))
         elif isinstance(calc, Calculation):
             self.content.append(calc)
         else:
@@ -750,13 +763,13 @@ def parse_rule(item) -> Rule:
         print(item['name'], flush=True)
         raise NotImplementedError
 
-def parse_step(item, parent: Calculation, id: int) -> CalculationStep:
+def parse_step(parent: Calculation, item, id: int) -> CalculationStep:
     if item['type'] != 'CalculationStep':
         raise AssertionError('parse_step')
 
     rule = parse_rule(item['rule'])
     res = parser.parse_expr(item['res'])
-    step = CalculationStep(rule, res, parent, id)
+    step = CalculationStep(parent, rule, res, id)
     return step
 
 def parse_conds(item) -> Conditions:
@@ -768,7 +781,7 @@ def parse_conds(item) -> Conditions:
             res.add_condition(subitem['name'], parser.parse_expr(subitem['cond']))
     return res
 
-def parse_item(item) -> StateItem:
+def parse_item(parent, item) -> StateItem:
     if item['type'] == 'FuncDef':
         conds = parse_conds(item)
         eq = parser.parse_expr(item['eq'])
@@ -776,9 +789,9 @@ def parse_item(item) -> StateItem:
     elif item['type'] == 'Goal':
         goal = parser.parse_expr(item['goal'])
         conds = parse_conds(item)
-        res = Goal(goal, conds=conds)
+        res = Goal(parent, goal, conds=conds)
         if 'proof' in item:
-            res.proof = parse_item(item['proof'])
+            res.proof = parse_item(res, item['proof'])
         return res
     elif item['type'] == 'Lemma':
         eq = parser.parse_expr(item['eq'])
@@ -786,44 +799,38 @@ def parse_item(item) -> StateItem:
         res = Lemma(eq, conds=conds)
         return res
     elif item['type'] == 'CalculationProof':
-        conds = parse_conds(item)
         goal = parser.parse_expr(item['goal'])
-        res = CalculationProof(goal, conds=conds)
-        res.lhs_calc = parse_item(item['lhs_calc'])
-        res.rhs_calc = parse_item(item['rhs_calc'])
+        res = CalculationProof(parent, goal)
+        res.lhs_calc = parse_item(res, item['lhs_calc'])
+        res.rhs_calc = parse_item(res, item['rhs_calc'])
         return res
     elif item['type'] == 'Calculation':
-        conds = parse_conds(item)
         start = parser.parse_expr(item['start'])
-        res = Calculation(start, conds=conds)
+        res = Calculation(parent, start)
         for i, step in enumerate(item['steps']):
-            res.add_step(parse_step(step, res, i))
+            res.add_step(parse_step(res, step, i))
         return res
     elif item['type'] == 'InductionProof':
-        conds = parse_conds(item)
         goal = parser.parse_expr(item['goal'])
         induct_var = item['induct_var']
-        res = InductionProof(goal, induct_var, conds=conds)
-        res.base_case = parse_item(item['base_case'])
-        res.induct_case = parse_item(item['induct_case'])
+        res = InductionProof(parent, goal, induct_var)
+        res.base_case = parse_item(res, item['base_case'])
+        res.induct_case = parse_item(res, item['induct_case'])
         return res
     elif item['type'] == 'CaseProof':
-        conds = parse_conds(item)
         goal = parser.parse_expr(item['goal'])
         split_cond = parser.parse_expr(item['split_cond'])
-        res = CaseProof(goal, conds=conds, split_cond=split_cond)
-        res.case_1 = parse_item(item['case_1'])
-        res.case_2 = parse_item(item['case_2'])
+        res = CaseProof(parent, goal, split_cond=split_cond)
+        res.case_1 = parse_item(res, item['case_1'])
+        res.case_2 = parse_item(res, item['case_2'])
         return res
     elif item['type'] == 'RewriteGoalProof':
-        conds = parse_conds(item)
         goal = parser.parse_expr(item['goal'])
-
         begin_goal = parser.parse_expr(item['start']['start'])
         begin_conds = parse_conds(item['start'])
-        res = RewriteGoalProof(goal=goal, conds=conds, begin=Goal(begin_goal, begin_conds))
+        res = RewriteGoalProof(parent, goal=goal, begin=Goal(parent, begin_goal, begin_conds))
         for i, step in enumerate(item['start']['steps']):
-            res.begin.add_step(parse_step(step, res.begin, i))
+            res.begin.add_step(parse_step(res.begin, step, i))
         return res
     else:
         print(item['type'])
@@ -833,7 +840,7 @@ def parse_file(name: str, problem: str, items) -> CompFile:
     goal = parser.parse_expr(problem)
     file = CompFile(name)
     for item in items:
-        file.add_item(parse_item(item))
+        file.add_item(parse_item(file, item))
     return file
 
 def get_next_step_label(step: Union[Calculation, CalculationStep], label: Label) -> Label:
