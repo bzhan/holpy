@@ -67,6 +67,12 @@ class Context:
         for name, cond in self.conds.data.items():
             res.add_condition(name, cond)
         return res
+    
+    def get_substs(self) -> Dict[str, Expr]:
+        res = self.parent.get_substs() if self.parent is not None else dict()
+        for var, expr in self.substs.items():
+            res[var] = expr
+        return res
 
     def add_indefinite_integral(self, eq: Expr):
         if not (eq.is_equals() and eq.lhs.is_indefinite_integral()):
@@ -82,6 +88,13 @@ class Context:
     def extend_condition(self, conds: Conditions):
         for name, cond in conds.data.items():
             self.add_condition(name, cond)
+
+    def add_subst(self, var: str, expr: Expr):
+        self.substs[var] = expr
+
+    def extend_substs(self, substs: Dict[str, Expr]):
+        for var, expr in substs.items():
+            self.substs[var] = expr
 
     def load_book(self, content):
         if isinstance(content, str):

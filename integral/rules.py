@@ -2,7 +2,7 @@
 
 import fractions
 from decimal import Decimal
-from typing import Optional, Union
+from typing import Optional, Union, Dict
 import sympy
 import functools
 
@@ -41,6 +41,10 @@ class Rule:
     def export(self):
         """Returns the JSON representation of the rule."""
         raise NotImplementedError
+    
+    def get_substs(self) -> Dict[str, Expr]:
+        """Return dictionary of variable substitutions produced by the rule."""
+        return dict()
 
 
 class Simplify(Rule):
@@ -301,10 +305,8 @@ class IndefiniteIntegralIdentity(Rule):
 
 class ReplaceSubstitution(Rule):
     """Replace previously performed substitution"""
-    def __init__(self, var: str, expr: Expr):
+    def __init__(self):
         self.name = "ReplaceSubstitution"
-        self.var = var
-        self.expr = expr
 
     def __str__(self):
         return "replace substitution"
@@ -316,7 +318,9 @@ class ReplaceSubstitution(Rule):
         }
 
     def eval(self, e: Expr, ctx=None) -> Expr:
-        return e.subst(self.var, self.expr)
+        for var, expr in ctx.get_substs().items():
+            e = e.subst(var, expr)
+        return e
 
 
 class DerivativeSimplify(Rule):
@@ -394,6 +398,9 @@ class OnSubterm(Rule):
             res['latex_str'] += ' on subterms'
         return res
 
+    def get_substs(self):
+        return self.rule.get_substs()
+
     def eval(self, e: Expr, ctx=None) -> Expr:
         rule = self.rule
         if e.ty in (expr.VAR, expr.CONST, expr.INF, expr.SKOLEMFUNC):
@@ -431,6 +438,7 @@ class OnLocation(Rule):
 
     def __init__(self, rule: Rule, loc):
         assert isinstance(rule, Rule)
+        self.name = "OnLocation"
         self.rule = rule
         self.loc = expr.Location(loc)
 
@@ -444,6 +452,9 @@ class OnLocation(Rule):
         if 'latex_str' in res:
             res['latex_str'] += ' at ' + str(self.loc)
         return res
+
+    def get_substs(self):
+        return self.rule.get_substs()
 
     def eval(self, e: Expr, ctx=None) -> Expr:
         def rec(cur_e, loc):
@@ -919,6 +930,9 @@ class Substitution(Rule):
             "latex_str": "substitute \\(%s\\) for \\(%s\\)" % \
                          (self.var_name, latex.convert_expr(self.var_subst))
         }
+    
+    def get_substs(self):
+        return {self.var_name: self.var_subst}
 
     def eval(self, e: Expr, ctx=None) -> Expr:
         """

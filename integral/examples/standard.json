@@ -1,14 +1,60 @@
 {
     "content": [
         {
-            "type": "header",
-            "name": "Common integrals",
-            "level": 1
-        },
-        {
-            "type": "problem",
-            "expr": "(INT x. 1 / (x + a)) = log(abs(x + a))"
+            "finished": true,
+            "goal": "(INT x. 1 / (x + a)) = log(abs(x + a))",
+            "latex_goal": "\\int \\frac{1}{x + a} \\,dx = \\log{(\\left| x + a \\right|)}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x. 1 / (x + a)) = log(abs(x + a))",
+                "latex_goal": "\\int \\frac{1}{x + a} \\,dx = \\log{(\\left| x + a \\right|)}",
+                "lhs_calc": {
+                    "latex_start": "\\int \\frac{1}{x + a} \\,dx",
+                    "start": "INT x. 1 / (x + a)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int u ^ {-1} \\,du",
+                            "res": "INT u. u ^ (-1)",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(x + a\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for x + a",
+                                "var_name": "u",
+                                "var_subst": "x + a"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\log{(\\left| u \\right|)}",
+                            "res": "log(abs(u))",
+                            "rule": {
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\log{(\\left| x + a \\right|)}",
+                            "res": "log(abs(x + a))",
+                            "rule": {
+                                "name": "ReplaceSubstitution",
+                                "str": "replace substitution"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\log{(\\left| x + a \\right|)}",
+                    "start": "log(abs(x + a))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
         }
     ],
-    "name": "Standard integrals"
+    "name": "standard"
 }

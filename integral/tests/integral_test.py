@@ -32,13 +32,15 @@ class IntegralTest(unittest.TestCase):
 
         file = compstate.CompFile(ctx, "standard")
 
-        calc = file.add_calculation("INT x. 1 / (x + a)")
+        goal1 = compstate.Goal(file, parser.parse_expr("(INT x. 1 / (x + a)) = log(abs(x + a))"))
+        file.add_goal(goal1)
+        proof = goal1.proof_by_calculation()
+        calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("x + a")))
         calc.perform_rule(rules.IndefiniteIntegralIdentity())
-        calc.perform_rule(rules.ReplaceSubstitution("u", parser.parse_expr("x + a")))
-        self.assertEqual(str(calc.last_expr), "log(abs(x + a))")
+        calc.perform_rule(rules.ReplaceSubstitution())
 
-        print(file)
+        self.checkAndOutput(file, "standard")
 
     def testTongji(self):
         ctx = context.Context()

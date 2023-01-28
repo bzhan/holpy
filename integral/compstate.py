@@ -258,9 +258,6 @@ class CalculationStep(StateItem):
     def clear(self):
         self.parent.clear(id=self.id)
 
-    def perform_rule(self, rule: Rule):
-        self.parent.perform_rule(rule, id=self.id)
-
 
 class Calculation(StateItem):
     """Calculation starting from an expression.
@@ -273,7 +270,7 @@ class Calculation(StateItem):
     def __init__(self, parent, start: Expr, *, connection_symbol = '=', conds: Optional[Conditions] = None):
         self.parent = parent
         self.start = start
-        self.steps = []
+        self.steps: List[CalculationStep] = []
         if conds is None:
             conds = Conditions()
         self.conds = conds
@@ -325,7 +322,10 @@ class Calculation(StateItem):
             id = len(self.steps) - 1
 
         e = self.last_expr
-        new_e = rule.eval(e, self.ctx)
+        ctx = Context(self.ctx)
+        for step in self.steps:
+            ctx.extend_substs(step.rule.get_substs())
+        new_e = rule.eval(e, ctx)
         self.add_step(CalculationStep(self, rule, new_e, id+1))
 
     def get_by_label(self, label: Label) -> "StateItem":
@@ -759,6 +759,10 @@ def parse_rule(item) -> Rule:
         var = item['var']
         var_subs = parser.parse_expr(item['var_subs'])
         return rules.VarSubsOfEquation(var, var_subs=var_subs)
+    elif item['name'] == 'IndefiniteIntegralIdentity':
+        return rules.IndefiniteIntegralIdentity()
+    elif item['name'] == 'ReplaceSubstitution':
+        return rules.ReplaceSubstitution()
     else:
         print(item['name'], flush=True)
         raise NotImplementedError
