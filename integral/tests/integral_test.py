@@ -970,6 +970,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 3.3
 
         ctx = context.Context()
+        ctx.load_book("base")
         file = compstate.CompFile(ctx, "Frullani Integral")
 
         # Define I(a, b)
@@ -981,13 +982,6 @@ class IntegralTest(unittest.TestCase):
         conds_of_Idef.add_condition(e2)
         Idef = compstate.FuncDef(e, conds_of_Idef)
         file.add_definition(Idef)
-
-        # Show I(a, a) = 0
-        goal1 = file.add_goal("I(a, a) = 0")
-        proof_of_goal1 = goal1.proof_by_calculation()
-        calc = proof_of_goal1.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
-        calc.perform_rule(rules.FullSimplify())
 
         # Evalute D a. I(a, b) for a > 0
         goal2 = file.add_goal("(D a. I(a,b)) = pi / (2*a)", conds=["a > 0"])
@@ -1006,23 +1000,24 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         # Integrate the previous result to get formula for I(a,b)
-        goal3 = file.add_goal("I(a,b) = 1/2 * pi * log(a) + 1/2 * pi * SKOLEM_FUNC(C(b))", conds=["a > 0"])
+        goal3 = file.add_goal("I(a,b) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(b))", conds=["a > 0"])
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal2)
         calc = proof_of_goal3.begin
         calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '1'))
-        calc.perform_rule(rules.OnSubterm(rules.CommonIndefiniteIntegral(const_name='C')))
+        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
         calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), '1'))
         calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
         calc.perform_rule(rules.FullSimplify())
 
         # Obtain value of Skolem function
-        goal4 = file.add_goal("SKOLEM_FUNC(C(a)) = -log(a)", conds=["a > 0"])
+        goal4 = file.add_goal("SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a)", conds=["a > 0"])
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
         calc = proof_of_goal4.begin
         calc.perform_rule(rules.VarSubsOfEquation("b", parser.parse_expr("a")))
-        # calc.perform_rule(rules.SolveEquation(parser.parse_expr("SKOLEM_FUNC(C(a))")))
-        # calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("SKOLEM_FUNC(C(a))")))
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), "1.0"))
+        calc.perform_rule(rules.FullSimplify())
 
         # Final result
         goal6 = file.add_goal("I(a, b) = 1/2 * pi * log(a) - 1/2 * pi * log(b)", conds=["a > 0", "b > 0"])
@@ -1030,7 +1025,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_goal6.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal3.goal))
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(goal4.goal)))
-        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation(new_expr=parser.parse_expr("1/2 * pi * log(a) - 1/2 * pi * log(b)")))
 
         self.checkAndOutput(file, "FrullaniIntegral")
 

@@ -1580,6 +1580,7 @@ def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
                     return False
             return True
         elif exp.is_indefinite_integral():
+            # Note this ignores set of skolem arguments
             bd_vars[pattern.var] = exp.var
             res = rec(exp.body, pattern.body, bd_vars)
             del bd_vars[pattern.var]

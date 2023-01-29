@@ -1434,7 +1434,7 @@ class ElimAbs(Rule):
         return holpy_style(zero_point[0])
 
     def eval(self, e: Expr, ctx=None) -> Expr:
-        if e.ty == expr.INTEGRAL:
+        if e.is_integral():
             abs_expr = e.body.get_abs()
             if len(abs_expr) == 0:
                 return e
@@ -1451,6 +1451,10 @@ class ElimAbs(Rule):
                 new_integral.append(
                     expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
             return sum(new_integral[1:], new_integral[0])
+        
+        elif e.is_indefinite_integral():
+            # No need to do anything
+            return e
 
         elif e.ty == expr.FUN and e.func_name == 'abs':
             if ctx is not None and is_positive(e.args[0], ctx.get_conds()):
@@ -2577,6 +2581,11 @@ class SolveEquation(Rule):
 
     def eval(self, e: Expr, ctx=None):
         assert e.is_equals()
+
+        # Try something simple
+        if e.rhs.is_plus() and e.rhs.args[1] == self.be_solved_expr:
+            return Op("=", self.be_solved_expr, e.lhs - e.rhs.args[0])
+
         all_vars = e.get_vars()
         var_name = ""
         if len(all_vars) == 0:
