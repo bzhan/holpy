@@ -766,6 +766,23 @@ class Expr:
         rec(self, [])
         return res
 
+    def has_symbol(self) -> bool:
+        if isinstance(self, Symbol):
+            return True
+        elif isinstance(self, Union[Var, Const, Inf, SkolemFunc]):
+            return False
+        elif isinstance(self, Integral):
+            return self.upper.has_symbol() or self.lower.has_symbol() or self.body.has_symbol()
+        elif isinstance(self, IndefiniteIntegral):
+            return self.body.has_symbol()
+        elif isinstance(self, Union[Op, Fun]):
+            return any([arg.has_symbol for arg in self.args])
+        elif isinstance(self, Summation):
+            return self.body.has_symbol()
+        else:
+            print(self)
+            raise NotImplementedError
+
     def contains_var(self, x: str) -> bool:
         """Whether self contains variable x."""
         return x in self.get_vars()
@@ -1446,8 +1463,11 @@ class Expr:
         if self.ty in (VAR, CONST, INF):
             return self
         elif self.ty == SYMBOL:
-            assert self.name in mapping, "inst_pat: %s not found" % self.name
-            return mapping[self.name]
+            # assert self.name in mapping, "inst_pat: %s not found" % self.name
+            if self.name in mapping:
+                return mapping[self.name]
+            else:
+                return self
         elif self.ty == OP:
             return Op(self.op, *(arg.inst_pat(mapping) for arg in self.args))
         elif self.ty == FUN:
@@ -1584,6 +1604,13 @@ def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
             res = rec(exp.body, pattern.body, bd_vars)
             del bd_vars[pattern.var]
             return res
+        elif isinstance(exp, Integral):
+            bd_vars[pattern.var] = exp.var
+            res1 = rec(exp.upper, pattern.upper, bd_vars)
+            res2 = rec(exp.lower, pattern.lower, bd_vars)
+            res3 = rec(exp.body, pattern.body, bd_vars)
+            del bd_vars[pattern.var]
+            return res1 and res2 and res3
         else:
             # Currently not implemented
             return False
