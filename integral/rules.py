@@ -1467,7 +1467,6 @@ class IntegrateByEquation(Rule):
 
     def __init__(self, lhs: Expr):
         self.name = "IntegrateByEquation"
-        # assert isinstance(lhs, Integral)
         self.lhs = lhs.normalize()
         self.coeff = None
 
@@ -1496,18 +1495,12 @@ class IntegrateByEquation(Rule):
         norm_e = e.normalize()
         rhs_var = None
 
-        def get_coeff(t):
+        def get_coeff(t: Expr):
             nonlocal rhs_var
             if t == self.lhs:
-                if t.ty == INTEGRAL:
+                if t.is_integral():
                     rhs_var = t.var
-                return 1
-            # if t.ty == INTEGRAL:
-            #     if t == self.lhs:
-            #         rhs_var = t.var
-            #         return 1
-            #     else:
-            #         return 0
+                return Const(1)
 
             if t.is_plus():
                 return get_coeff(t.args[0]) + get_coeff(t.args[1])
@@ -1515,21 +1508,21 @@ class IntegrateByEquation(Rule):
                 return get_coeff(t.args[0]) - get_coeff(t.args[1])
             elif t.is_uminus():
                 return -get_coeff(t.args[0])
-            elif t.is_times() and t.args[0].ty == CONST:
-                return t.args[0].val * get_coeff(t.args[1])
+            elif t.is_times():
+                return t.args[0] * get_coeff(t.args[1])
             else:
-                return 0
+                return Const(0)
 
-        coeff = get_coeff(norm_e)
-        if coeff == 0:
+        coeff = get_coeff(norm_e).normalize()
+        if coeff == Const(0):
             return e
 
         if rhs_var != None:
-            new_rhs = (norm_e + (Const(-coeff) * self.lhs.alpha_convert(rhs_var))).normalize()
+            new_rhs = (norm_e + ((-coeff) * self.lhs.alpha_convert(rhs_var))).normalize()
         else:
-            new_rhs = (norm_e + (Const(-coeff) * self.lhs)).normalize()
-        self.coeff = (-Const(coeff)).normalize()
-        return (new_rhs / (Const(1 - coeff))).normalize()
+            new_rhs = (norm_e + ((-coeff) * self.lhs)).normalize()
+        self.coeff = (-(coeff)).normalize()
+        return (new_rhs / ((Const(1) - coeff))).normalize()
 
 
 class ElimInfInterval(Rule):

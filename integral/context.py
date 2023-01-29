@@ -96,13 +96,15 @@ class Context:
         for var, expr in substs.items():
             self.substs[var] = expr
 
-    def load_book(self, content):
+    def load_book(self, content, upto: Optional[str] = None):
         if isinstance(content, str):
             filename = os.path.join(dirname, "../integral/examples/" + content + '.json')
             with open(filename, 'r', encoding='utf-8') as f:
                 content = json.load(f)['content']
 
         for item in content:
+            if upto is not None and "path" in item and item['path'] == upto:
+                break
             if item['type'] == 'axiom' or item['type'] == 'problem':
                 e = parser.parse_expr(item['expr'])
                 if e.is_equals() and e.lhs.is_indefinite_integral():

@@ -231,9 +231,9 @@ class Limit:
     asymp: Asymptote - asymptotic growth/decay rate of the limit,
     valid only when the limit is oo, -oo or 0.
 
-    side: int - one of FROM_ABOVE, FROM_BELOW and TWO_SIDED. This is used
-    only when e is a finite value. TWO_SIDED is the most general case and
-    can be used when the side is unknown.
+    side: int - one of AT_CONST, FROM_ABOVE, FROM_BELOW and TWO_SIDED.
+    This is used only when e is a finite value. TWO_SIDED is the most
+    general case and can be used when the side is unknown.
 
     """
     def __init__(self, e: Optional[Union[int, Fraction, Expr]], *,
@@ -396,7 +396,7 @@ def limit_mult(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit:
         else:
             raise NotImplementedError
 
-def limit_inverse(a: Limit) -> Limit:
+def limit_inverse(a: Limit, conds: Optional[Conditions] = None) -> Limit:
     """Inverse of a limit"""
     if a.e is None:
         return Limit(None)
@@ -428,7 +428,7 @@ def limit_inverse(a: Limit) -> Limit:
 
 def limit_div(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit:
     """Compute the quotient of two limits."""
-    return limit_mult(a, limit_inverse(b), conds=conds)
+    return limit_mult(a, limit_inverse(b, conds=conds), conds=conds)
 
 def limit_power(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit:
     """Compute a limit raised to another limit.
@@ -535,7 +535,7 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
         if e.name == var_name:
             return Limit(POS_INF, asymp=PolyLog(Const(1)))
         else:
-            return Limit(e)
+            return Limit(e, side=AT_CONST)
     elif e.is_plus():
         l1 = limit_of_expr(e.args[0], var_name, conds=conds)
         l2 = limit_of_expr(e.args[1], var_name, conds=conds)
@@ -556,9 +556,13 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
         l2 = limit_of_expr(e.args[1], var_name, conds=conds)
         return limit_div(l1, l2, conds=conds)
     elif e.is_power():
-        l1 = limit_of_expr(e.args[0], var_name, conds=conds)
-        l2 = limit_of_expr(e.args[1], var_name, conds=conds)
-        return limit_power(l1, l2, conds=conds)
+        if e.args[1] == Const(-1):
+            l1 = limit_of_expr(e.args[0], var_name, conds=conds)
+            return limit_inverse(l1, conds=conds)
+        else:
+            l1 = limit_of_expr(e.args[0], var_name, conds=conds)
+            l2 = limit_of_expr(e.args[1], var_name, conds=conds)
+            return limit_power(l1, l2, conds=conds)
     elif e.is_fun() and e.func_name == 'exp':
         l = limit_of_expr(e.args[0], var_name, conds=conds)
         return limit_power(Limit(expr.E, side=AT_CONST), l)
@@ -584,6 +588,10 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
         else:
             return Limit(expr.Fun('log', l.e))
     elif e.is_fun() and e.func_name == 'sin':
+        res = Limit(None)
+        res.is_bounded = True
+        return res
+    elif e.is_fun() and e.func_name == 'cos':
         res = Limit(None)
         res.is_bounded = True
         return res

@@ -92,7 +92,14 @@ def is_negative(e: Expr, conds: Conditions) -> bool:
     if e.is_const():
         return e.val < 0
 
-    if e.ty == expr.OP and e.op == '-' and len(e.args) == 1 and is_positive(e.args[0],conds):
+    if e.is_uminus() and is_positive(e.args[0], conds):
+        # e = -x
+        return True
+    if e.is_divides() and is_positive(e.args[0], conds) and is_negative(e.args[1], conds):
+        # e = a / b
+        return True
+    if e.is_power() and is_negative(e.args[0], conds) and e.args[1] == expr.Const(-1):
+        # e = b ^ -1
         return True
     if e.is_minus() and e.args[1].is_const() and e.args[1].val > 0:
         # -y^2 - 1

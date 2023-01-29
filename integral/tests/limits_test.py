@@ -223,7 +223,7 @@ class LimitsTest(unittest.TestCase):
             ("atan(x)", "pi/2"),
             ("-1/2 * x ^ 2 * (y ^ 2 + 1)", "-oo"),
             ("exp(-1 / 2 * x ^ 2) * sin(t * x)", '0'),
-            ("atan(x * sqrt(u ^ 2 + 2))", 'pi / 2')
+            ("atan(x * sqrt(u ^ 2 + 2))", 'pi / 2'),
         ]
 
         for a, res in test_data:
@@ -243,7 +243,11 @@ class LimitsTest(unittest.TestCase):
             ("exp(-x) / (x ^ n)", "0", "n < 0"),
             ("atan(b * x)", "pi/2", "b > 0"),
             ("atan(-b * x)", "-pi/2", "b > 0"),
+            ("atan(x / b)", "pi/2", "b > 0"),
+            ("atan(x / b)", "-pi/2", "b < 0"),
+            ("atan(b ^ (-1) * x)", "-pi/2", "b < 0"),
             ("atan(b ^ (-1/2) * x)", "pi/2", "b > 0"),
+            ("exp(-(x * y)) * cos(a * x)", "0", "y > 0"),
         ]
 
         for a, res, cond in test_data:

@@ -28,7 +28,7 @@ class IntegralTest(unittest.TestCase):
 
     def testStandard(self):
         ctx = context.Context()
-        ctx.load_book("base")
+        ctx.load_book("base", upto="standard")
 
         file = compstate.CompFile(ctx, "standard")
 
@@ -56,11 +56,23 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ReplaceSubstitution())
         calc.perform_rule(rules.FullSimplify())
 
-        goal3 = file.add_goal("(INT x. cos(a * x)) = a ^ (-1) * sin(a * x)")
-        proof = goal3.proof_by_calculation()
+        goal4 = file.add_goal("(INT x. cos(a * x)) = a ^ (-1) * sin(a * x)")
+        proof = goal4.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("a * x")))
         calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
+        calc.perform_rule(rules.ReplaceSubstitution())
+
+        goal5 = file.add_goal("(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a)", conds=["a != 0"])
+        proof = goal5.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("x / a")))
+        calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("(a ^ 2 * u ^ 2 + a ^ 2) ^ (-1)"),
+                                         new_expr=parser.parse_expr("a ^ (-2) * (u ^ 2 + 1) ^ (-1)")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("(u ^ 2 + 1) ^ (-1)"),
+                                         new_expr=parser.parse_expr("1 / (u ^ 2 + 1)")))
         calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
         calc.perform_rule(rules.ReplaceSubstitution())
 
@@ -792,82 +804,107 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 3.2
         ctx = context.Context()
+        ctx.load_book("base")
         file = compstate.CompFile(ctx, "DirichletIntegral")
 
-        # Define I(b)
-        e = parser.parse_expr('I(b) = INT x:[0,oo]. sin(x) / x * exp(-b * x)')
+        # Define g(y)
+        e = parser.parse_expr('g(y, a) = INT x:[0,oo]. exp(-x * y) * sin(a * x) / x')
         conds = conditions.Conditions()
-        conds.add_condition(parser.parse_expr("b >= 0"))
-        Idef = compstate.FuncDef(e, conds=conds)
-        file.add_definition(Idef)
+        conds.add_condition(parser.parse_expr("y >= 0"))
+        gdef = compstate.FuncDef(e, conds=conds)
+        file.add_definition(gdef)
 
-        e = parser.parse_expr("I(0) = SKOLEM_CONST(C)")
-        lemma1 = compstate.Lemma(e)
-        file.add_lemma(lemma1)
-
-        e = parser.parse_expr("(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1/(b^2+1)")  # for b > 0
-        conds_of_lemma2 = compstate.Conditions()
-        e2 = parser.parse_expr("b > 0")
-        conds_of_lemma2.add_condition(e2)
-        lemma2 = compstate.Lemma(e, conds_of_lemma2)
-        file.add_lemma(lemma2)
-
-        e = parser.parse_expr("(LIM {b -> oo}. INT x:[0,oo]. x ^ -1 * exp(-(b * x)) * sin(x)) = 0")
-        lemma3 = compstate.Lemma(e)
-        file.add_lemma(lemma3)
-
-        # goal: D b. I(b) = -1/(b^2+1)
-        goal1 = file.add_goal("(D b. I(b)) = -1/(b^2+1)", conds=["b > 0"])
+        goal1 = file.add_goal("(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)", conds=["y > 0"])
         proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
-        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
-        calc.perform_rule(rules.DerivIntExchange())
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("exp(-(x * y))"), parser.parse_expr("-cos(a * x) / a")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma2.lemma, lemma2.conds), '0'))
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("exp(-(x * y))"), parser.parse_expr("sin(a * x) / a")))
         calc.perform_rule(rules.FullSimplify())
-        calc = proof.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,oo]. exp(-(x * y)) * sin(a * x)")))
+        calc.perform_rule(rules.Equation(new_expr=parser.parse_expr("a / (a ^ 2 + y ^ 2)")))
 
-        # goal: I(0) = INT x:[0, oo]. sin(x) / x
-        goal2 = file.add_goal("I(0) = INT x:[0, oo]. sin(x) / x")
+        # Differentiate g(y)
+        goal2 = file.add_goal("(D y. g(y, a)) = - a / (a ^ 2 + y ^ 2)", conds=["y > 0"])
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
-        # need to check whether 0 is satisfied the condition of b
-        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(gdef.eq)))
+        calc.perform_rule(rules.DerivIntExchange())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(goal1.goal, goal1.conds), '0'))
+        calc.perform_rule(rules.FullSimplify())
+
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        # goal: I(b) = -atan(b) + C for C is some constant
-        goal3 = file.add_goal("I(b) = -atan(b) + SKOLEM_CONST(C)", conds=["b >= 0"])
-        proof = goal3.proof_by_case("b = 0")
-
-        case_1_proof = proof.case_1.proof_by_calculation()
-        calc = case_1_proof.lhs_calc
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.ApplyLemma(lemma1.lemma,lemma1.conds))
-        calc = case_1_proof.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
-
-        case_2_proof = proof.case_2.proof_by_rewrite_goal(begin=goal1)
-        calc = case_2_proof.begin
-        calc.perform_rule(rules.FullSimplify())
+        # Integrate the previous equation on both sides
+        goal3 = file.add_goal("g(y, a) = -atan(y / a) + C(a)", conds=["y > 0", "a != 0"])
+        proof = goal3.proof_by_rewrite_goal(begin=goal2)
+        calc = proof.begin
         calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral('C'), '1.0'))
-
-        goal4 = file.add_goal("0 = (INT x:[0,oo]. x ^ -1 * sin(x)) - 1/2 * pi")
-        proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
-        calc = proof_of_goal4.begin
-        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma1.lemma, lemma1.conds), '1.1'))
-        calc.perform_rule(rules.LimitEquation(var='b', lim=expr.POS_INF))
-        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
+        calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("(a ^ 2 + y ^ 2) ^ (-1)"),
+                                         new_expr=parser.parse_expr("1 / (a ^ 2 + y ^ 2)")))
+        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1.0.1"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(lemma3.lemma), '0'))
 
-        goal5 = file.add_goal("(INT x:[0,oo]. x ^ -1 * sin(x)) = 1/2 * pi")
-        proof_of_goal5 = goal5.proof_by_calculation()
-        calc = proof_of_goal5.lhs_calc
-        calc.perform_rule(rules.ApplyEquation(goal4.goal))
+        # Evaluate the case y = oo
+        # TODO: remove condition x > 0
+        goal4 = file.add_goal("(LIM {y -> oo}. g(y, a)) = 0", conds=["y >= 0", "x > 0"])
+        proof = goal4.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(gdef.eq)))
+        calc.perform_rule(rules.LimIntExchange())
+        calc.perform_rule(rules.FullSimplify())
+
+        # Evaluate C(a) for a > 0
+        goal5 = file.add_goal("C(a) = 1/2 * pi", conds=["a > 0"])
+        proof = goal5.proof_by_rewrite_goal(begin=goal3)
+        calc = proof.begin
+        calc.perform_rule(rules.LimitEquation("y", parser.parse_expr("oo")))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(parser.parse_expr("(LIM {y -> oo}. g(y, a)) = 0")), "0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("C(a)")))
+
+        # Evaluate C(a) for a < 0
+        goal6 = file.add_goal("C(a) = - 1/2 * pi", conds=["a < 0"])
+        proof = goal6.proof_by_rewrite_goal(begin=goal3)
+        calc = proof.begin
+        calc.perform_rule(rules.LimitEquation("y", parser.parse_expr("oo")))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(parser.parse_expr("(LIM {y -> oo}. g(y, a)) = 0")), "0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("C(a)")))
+
+        # Case y = 0: g(0) = INT x:[0, oo]. sin(a * x) / x
+        goal7 = file.add_goal("g(0, a) = INT x:[0,oo]. sin(a * x) / x")
+        proof = goal7.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(gdef.eq))  # check 0 satisfies condition y >= 0
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        # Final result: case a > 0
+        goal8 = file.add_goal("(INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi", conds=["a > 0"])
+        proof = goal8.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal7.goal))
+        calc.perform_rule(rules.ApplyEquation(goal3.goal))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal5.goal), "1"))
+        calc.perform_rule(rules.FullSimplify())
+
+        # Final result: case a < 0
+        goal9 = file.add_goal("(INT x:[0,oo]. sin(a * x) / x) = -1/2 * pi", conds=["a < 0"])
+        proof = goal9.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal7.goal))
+        calc.perform_rule(rules.ApplyEquation(goal3.goal))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal6.goal), "1"))
+        calc.perform_rule(rules.FullSimplify())
+
+        # Final result: case a = 0
+        goal10 = file.add_goal("(INT x:[0,oo]. sin(a * x) / x) = 0", conds=["a = 0"])
+        proof = goal10.proof_by_calculation()
+        calc = proof.lhs_calc
         calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file, "dirichletIntegral")

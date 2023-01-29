@@ -43,6 +43,34 @@
         {
             "type": "axiom",
             "expr": "(INT x. csc(x)^2) = -cot(x)"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x. 1 / (x + a)) = log(abs(x + a))",
+            "path": "standard"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x. exp(a * x)) = a ^ (-1) * exp(a * x)",
+            "path": "standard"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x. sin(a * x)) = - (a ^ (-1) * cos(a * x))",
+            "path": "standard"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x. cos(a * x)) = a ^ (-1) * sin(a * x)",
+            "path": "standard"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a)",
+            "conds": [
+                "a != 0"
+            ],
+            "path": "standard"
         }
     ],
     "name": "Base theory"
