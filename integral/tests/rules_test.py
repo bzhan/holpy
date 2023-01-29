@@ -291,6 +291,14 @@ class RulesTest(unittest.TestCase):
             e = rules.ElimAbs().eval(s).normalize()
             self.assertEqual(str(e), res)
 
+    def testApplyEquation(self):
+        test_data = [("U = (INT x:[0, h/a]. (f(a*x) - f(0)) / x)", "U", "INT x:[0,h / a]. (f(a * x) - f(0)) / x"),
+                     ("f(a,b) = a + b + 3", "f(a,2)", "a + 2 + 3"),
+                     ("a = 3", "a", "3"),]
+        for eq, e, res in test_data:
+            r = rules.ApplyEquation(parser.parse_expr(eq))
+            self.assertEqual(res, str(r.eval(parser.parse_expr(e))))
+
     def testElimAbs2(self):
         test_data = [
             ("INT u:[-2, 3]. 2 * u / (abs(u) + abs(u + 1))",

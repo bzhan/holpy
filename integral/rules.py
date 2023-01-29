@@ -816,9 +816,19 @@ class ApplyEquation(Rule):
             inst_lhs = expr.match(e, pat.lhs)
             inst_rhs = expr.match(e, pat.rhs)
             if inst_lhs is not None:
-                return pat.rhs.inst_pat(inst_lhs)
+                tmp = pat.rhs.inst_pat(inst_lhs)
+                if not tmp.has_symbol():
+                    return tmp
+                else:
+                    tmp_inst_rhs = expr.match(self.eq.rhs, pat.rhs)
+                    return tmp.inst_pat(tmp_inst_rhs)
             elif inst_rhs is not None:
-                return pat.lhs.inst_pat(inst_rhs)
+                tmp = pat.lhs.inst_pat(inst_rhs)
+                if not tmp.has_symbol():
+                    return tmp
+                else:
+                    tmp_inst_lhs = expr.match(self.eq.lhs, pat.lhs)
+                    return tmp.inst_pat(tmp_inst_lhs)
             elif self.eq.lhs.normalize() == e.normalize():
                 return self.eq.rhs
             elif self.eq.rhs.normalize() == e.normalize():
