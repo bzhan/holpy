@@ -2389,9 +2389,11 @@ class EvalAt(Expr):
 
 
 class Symbol(Expr):
-    """Pattern expression. It can be used to find expression with the given specific structure.
+    """Pattern expression.
+    
+    It can be used to find expression with the given specific structure.
+    
     """
-
     def __init__(self, name: str, pat: List[str]):
         self.ty = SYMBOL
         self.name = name

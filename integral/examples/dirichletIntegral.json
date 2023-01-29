@@ -3,59 +3,132 @@
         {
             "conds": [
                 {
-                    "cond": "b >= 0",
-                    "latex_cond": "b \\ge 0"
+                    "cond": "y >= 0",
+                    "latex_cond": "y \\ge 0"
                 }
             ],
-            "eq": "I(b) = (INT x:[0,oo]. sin(x) / x * exp(-b * x))",
-            "latex_eq": "I{(b)} = \\int_{0}^{\\infty} \\frac{\\sin{(x)}}{x} e^{-b x} \\,dx",
-            "latex_lhs": "I{(b)}",
+            "eq": "g(y,a) = (INT x:[0,oo]. exp(-x * y) * sin(a * x) / x)",
+            "latex_eq": "g(y,a) = \\int_{0}^{\\infty} \\frac{e^{-x y} \\sin{(a x)}}{x} \\,dx",
+            "latex_lhs": "g(y,a)",
             "type": "FuncDef"
         },
         {
-            "eq": "I(0) = SKOLEM_CONST(C)",
-            "latex_eq": "I{(0)} = C",
-            "type": "Lemma"
-        },
-        {
             "conds": [
                 {
-                    "cond": "b > 0",
-                    "latex_cond": "b > 0"
-                }
-            ],
-            "eq": "(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1 / (b ^ 2 + 1)",
-            "latex_eq": "\\int_{0}^{\\infty} e^{-b x} \\sin{(x)} \\,dx = \\frac{1}{b ^ {2} + 1}",
-            "type": "Lemma"
-        },
-        {
-            "eq": "(LIM {b -> oo}. INT x:[0,oo]. x ^ (-1) * exp(-(b * x)) * sin(x)) = 0",
-            "latex_eq": "\\lim\\limits_{b\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx = 0",
-            "type": "Lemma"
-        },
-        {
-            "conds": [
-                {
-                    "cond": "b > 0",
-                    "latex_cond": "b > 0"
+                    "cond": "y > 0",
+                    "latex_cond": "y > 0"
                 }
             ],
             "finished": true,
-            "goal": "(D b. I(b)) = -1 / (b ^ 2 + 1)",
-            "latex_goal": "\\frac{d}{db} I{(b)} = \\frac{-1}{b ^ {2} + 1}",
+            "goal": "(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)",
+            "latex_goal": "\\int_{0}^{\\infty} e^{-x y} \\sin{(a x)} \\,dx = \\frac{a}{a ^ {2} + y ^ {2}}",
             "proof": {
                 "finished": true,
-                "goal": "(D b. I(b)) = -1 / (b ^ 2 + 1)",
-                "latex_goal": "\\frac{d}{db} I{(b)} = \\frac{-1}{b ^ {2} + 1}",
+                "goal": "(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)",
+                "latex_goal": "\\int_{0}^{\\infty} e^{-x y} \\sin{(a x)} \\,dx = \\frac{a}{a ^ {2} + y ^ {2}}",
                 "lhs_calc": {
-                    "latex_start": "\\frac{d}{db} I{(b)}",
-                    "start": "D b. I(b)",
+                    "latex_start": "\\int_{0}^{\\infty} e^{-x y} \\sin{(a x)} \\,dx",
+                    "start": "INT x:[0,oo]. exp(-(x * y)) * sin(a * x)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{d}{db} \\int_{0}^{\\infty} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx",
-                            "res": "D b. INT x:[0,oo]. x ^ (-1) * exp(-(b * x)) * sin(x)",
+                            "latex_res": "(\\left. -a ^ {-1} e^{-x y} \\cos{(a x)} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} a ^ {-1} y e^{-x y} \\cos{(a x)} \\,dx)",
+                            "res": "([-(a ^ (-1) * exp(-(x * y)) * cos(a * x))]_x=0,oo) - (INT x:[0,oo]. a ^ (-1) * y * exp(-(x * y)) * cos(a * x))",
                             "rule": {
-                                "func_def": "I(b) = (INT x:[0,oo]. sin(x) / x * exp(-b * x))",
+                                "latex_str": "integrate by parts \\(u \\to e^{-x y}, v \\to \\frac{-\\cos{(a x)}}{a}\\)",
+                                "name": "IntegrationByParts",
+                                "str": "integrate by parts u -> exp(-(x * y)), v -> -cos(a * x) / a",
+                                "u": "exp(-(x * y))",
+                                "v": "-cos(a * x) / a"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-a ^ {-1} y (\\int_{0}^{\\infty} e^{-x y} \\cos{(a x)} \\,dx) + a ^ {-1}",
+                            "res": "-(a ^ (-1) * y * (INT x:[0,oo]. exp(-(x * y)) * cos(a * x))) + a ^ (-1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-a ^ {-1} y ((\\left. a ^ {-1} e^{-x y} \\sin{(a x)} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} -a ^ {-1} y e^{-x y} \\sin{(a x)} \\,dx)) + a ^ {-1}",
+                            "res": "-(a ^ (-1) * y * (([a ^ (-1) * exp(-(x * y)) * sin(a * x)]_x=0,oo) - (INT x:[0,oo]. -(a ^ (-1) * y * exp(-(x * y)) * sin(a * x))))) + a ^ (-1)",
+                            "rule": {
+                                "latex_str": "integrate by parts \\(u \\to e^{-x y}, v \\to \\frac{\\sin{(a x)}}{a}\\)",
+                                "name": "IntegrationByParts",
+                                "str": "integrate by parts u -> exp(-(x * y)), v -> sin(a * x) / a",
+                                "u": "exp(-(x * y))",
+                                "v": "sin(a * x) / a"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-a ^ {-2} y ^ {2} (\\int_{0}^{\\infty} e^{-x y} \\sin{(a x)} \\,dx) + a ^ {-1}",
+                            "res": "-(a ^ (-2) * y ^ 2 * (INT x:[0,oo]. exp(-(x * y)) * sin(a * x))) + a ^ (-1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a ^ {-1} (a ^ {-2} y ^ {2} + 1) ^ {-1}",
+                            "res": "a ^ (-1) * (a ^ (-2) * y ^ 2 + 1) ^ (-1)",
+                            "rule": {
+                                "lhs": "INT x:[0,oo]. exp(-(x * y)) * sin(a * x)",
+                                "name": "IntegrateByEquation",
+                                "str": "integrate by equation"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{a}{a ^ {2} + y ^ {2}}",
+                            "res": "a / (a ^ 2 + y ^ 2)",
+                            "rule": {
+                                "latex_str": "rewriting to \\(\\frac{a}{a ^ {2} + y ^ {2}}\\)",
+                                "name": "Equation",
+                                "new_expr": "a / (a ^ 2 + y ^ 2)",
+                                "str": "rewriting to a / (a ^ 2 + y ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{a}{a ^ {2} + y ^ {2}}",
+                    "start": "a / (a ^ 2 + y ^ 2)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "y > 0",
+                    "latex_cond": "y > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(D y. g(y,a)) = -a / (a ^ 2 + y ^ 2)",
+            "latex_goal": "\\frac{d}{dy} g(y,a) = \\frac{-a}{a ^ {2} + y ^ {2}}",
+            "proof": {
+                "finished": true,
+                "goal": "(D y. g(y,a)) = -a / (a ^ 2 + y ^ 2)",
+                "latex_goal": "\\frac{d}{dy} g(y,a) = \\frac{-a}{a ^ {2} + y ^ {2}}",
+                "lhs_calc": {
+                    "latex_start": "\\frac{d}{dy} g(y,a)",
+                    "start": "D y. g(y,a)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{d}{dy} \\int_{0}^{\\infty} x ^ {-1} e^{-x y} \\sin{(a x)} \\,dx",
+                            "res": "D y. INT x:[0,oo]. x ^ (-1) * exp(-(x * y)) * sin(a * x)",
+                            "rule": {
+                                "func_def": "g(y,a) = (INT x:[0,oo]. exp(-x * y) * sin(a * x) / x)",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"
@@ -63,8 +136,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{db} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx",
-                            "res": "INT x:[0,oo]. D b. x ^ (-1) * exp(-(b * x)) * sin(x)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{dy} x ^ {-1} e^{-x y} \\sin{(a x)} \\,dx",
+                            "res": "INT x:[0,oo]. D y. x ^ (-1) * exp(-(x * y)) * sin(a * x)",
                             "rule": {
                                 "name": "DerivIntExchange",
                                 "str": "exchange derivative and integral"
@@ -72,8 +145,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-(\\int_{0}^{\\infty} e^{-b x} \\sin{(x)} \\,dx)",
-                            "res": "-(INT x:[0,oo]. exp(-(b * x)) * sin(x))",
+                            "latex_res": "-(\\int_{0}^{\\infty} e^{-x y} \\sin{(a x)} \\,dx)",
+                            "res": "-(INT x:[0,oo]. exp(-(x * y)) * sin(a * x))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -81,10 +154,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{1}{b ^ {2} + 1}",
-                            "res": "-(1 / (b ^ 2 + 1))",
+                            "latex_res": "-\\frac{a}{a ^ {2} + y ^ {2}}",
+                            "res": "-(a / (a ^ 2 + y ^ 2))",
                             "rule": {
-                                "lemma": "(INT x:[0,oo]. exp(-(b * x)) * sin(x)) = 1 / (b ^ 2 + 1)",
+                                "lemma": "(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)",
                                 "loc": "0",
                                 "name": "ApplyLemma",
                                 "str": "apply lemma at 0"
@@ -92,8 +165,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-(b ^ {2} + 1) ^ {-1}",
-                            "res": "-((b ^ 2 + 1) ^ (-1))",
+                            "latex_res": "-a (a ^ {2} + y ^ {2}) ^ {-1}",
+                            "res": "-(a * (a ^ 2 + y ^ 2) ^ (-1))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -104,57 +177,12 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\frac{-1}{b ^ {2} + 1}",
-                    "start": "-1 / (b ^ 2 + 1)",
+                    "latex_start": "\\frac{-a}{a ^ {2} + y ^ {2}}",
+                    "start": "-a / (a ^ 2 + y ^ 2)",
                     "steps": [
                         {
-                            "latex_res": "-(b ^ {2} + 1) ^ {-1}",
-                            "res": "-((b ^ 2 + 1) ^ (-1))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "type": "CalculationProof"
-            },
-            "type": "Goal"
-        },
-        {
-            "finished": true,
-            "goal": "I(0) = (INT x:[0,oo]. sin(x) / x)",
-            "latex_goal": "I{(0)} = \\int_{0}^{\\infty} \\frac{\\sin{(x)}}{x} \\,dx",
-            "proof": {
-                "finished": true,
-                "goal": "I(0) = (INT x:[0,oo]. sin(x) / x)",
-                "latex_goal": "I{(0)} = \\int_{0}^{\\infty} \\frac{\\sin{(x)}}{x} \\,dx",
-                "lhs_calc": {
-                    "latex_start": "I{(0)}",
-                    "start": "I(0)",
-                    "steps": [
-                        {
-                            "latex_res": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx",
-                            "res": "INT x:[0,oo]. x ^ (-1) * sin(x)",
-                            "rule": {
-                                "func_def": "I(b) = (INT x:[0,oo]. sin(x) / x * exp(-b * x))",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "rhs_calc": {
-                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(x)}}{x} \\,dx",
-                    "start": "INT x:[0,oo]. sin(x) / x",
-                    "steps": [
-                        {
-                            "latex_res": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx",
-                            "res": "INT x:[0,oo]. x ^ (-1) * sin(x)",
+                            "latex_res": "-a (a ^ {2} + y ^ {2}) ^ {-1}",
+                            "res": "-(a * (a ^ 2 + y ^ 2) ^ (-1))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -171,219 +199,43 @@
         {
             "conds": [
                 {
-                    "cond": "b >= 0",
-                    "latex_cond": "b \\ge 0"
+                    "cond": "y > 0",
+                    "latex_cond": "y > 0"
+                },
+                {
+                    "cond": "a != 0",
+                    "latex_cond": "a \\neq 0"
                 }
             ],
             "finished": true,
-            "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
-            "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
-            "proof": {
-                "case_1": {
-                    "conds": [
-                        {
-                            "cond": "b = 0",
-                            "latex_cond": "b = 0"
-                        }
-                    ],
-                    "finished": true,
-                    "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
-                    "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
-                    "proof": {
-                        "finished": true,
-                        "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
-                        "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
-                        "lhs_calc": {
-                            "latex_start": "I{(b)}",
-                            "start": "I(b)",
-                            "steps": [
-                                {
-                                    "latex_res": "I{(0)}",
-                                    "res": "I(0)",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "C",
-                                    "res": "SKOLEM_CONST(C)",
-                                    "rule": {
-                                        "lemma": "I(0) = SKOLEM_CONST(C)",
-                                        "name": "ApplyLemma",
-                                        "str": "apply lemma"
-                                    },
-                                    "type": "CalculationStep"
-                                }
-                            ],
-                            "type": "Calculation"
-                        },
-                        "rhs_calc": {
-                            "latex_start": "-\\arctan{(b)} + C",
-                            "start": "-atan(b) + SKOLEM_CONST(C)",
-                            "steps": [
-                                {
-                                    "latex_res": "C",
-                                    "res": "SKOLEM_CONST(C)",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                }
-                            ],
-                            "type": "Calculation"
-                        },
-                        "type": "CalculationProof"
-                    },
-                    "type": "Goal"
-                },
-                "case_2": {
-                    "conds": [
-                        {
-                            "cond": "b != 0",
-                            "latex_cond": "b \\neq 0"
-                        }
-                    ],
-                    "finished": true,
-                    "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
-                    "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
-                    "proof": {
-                        "finished": true,
-                        "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
-                        "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
-                        "start": {
-                            "conds": [
-                                {
-                                    "cond": "b > 0",
-                                    "latex_cond": "b > 0"
-                                }
-                            ],
-                            "latex_start": "\\frac{d}{db} I{(b)} = \\frac{-1}{b ^ {2} + 1}",
-                            "start": "(D b. I(b)) = -1 / (b ^ 2 + 1)",
-                            "steps": [
-                                {
-                                    "latex_res": "\\frac{d}{db} I{(b)} = -(b ^ {2} + 1) ^ {-1}",
-                                    "res": "(D b. I(b)) = -((b ^ 2 + 1) ^ (-1))",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "I{(b)} + E = \\int -(b ^ {2} + 1) ^ {-1} \\,db",
-                                    "res": "I(b) + SKOLEM_CONST(E) = (INT b. -((b ^ 2 + 1) ^ (-1)))",
-                                    "rule": {
-                                        "integral_var": "b",
-                                        "left_skolem": true,
-                                        "left_skolem_name": "E",
-                                        "name": "IntegrateBothSide",
-                                        "right_skolem": false,
-                                        "right_skolem_name": null,
-                                        "str": "integrate both side"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "I{(b)} + E = -(\\int (b ^ {2} + 1) ^ {-1} \\,db)",
-                                    "res": "I(b) + SKOLEM_CONST(E) = -(INT b. (b ^ 2 + 1) ^ (-1))",
-                                    "rule": {
-                                        "name": "FullSimplify",
-                                        "str": "full simplify"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "I{(b)} + E = -(\\arctan{(b)} + C)",
-                                    "res": "I(b) + SKOLEM_CONST(E) = -(atan(b) + SKOLEM_CONST(C))",
-                                    "rule": {
-                                        "loc": "1.0",
-                                        "name": "CommonIndefiniteIntegral",
-                                        "str": "common indefinite integrals at 1.0"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "I{(b)} = -\\arctan{(b)} + C",
-                                    "res": "I(b) = -atan(b) + SKOLEM_CONST(C)",
-                                    "rule": {
-                                        "name": "RewriteSkolemConst",
-                                        "str": "RewriteSkolemConst"
-                                    },
-                                    "type": "CalculationStep"
-                                }
-                            ],
-                            "type": "Calculation"
-                        },
-                        "type": "RewriteGoalProof"
-                    },
-                    "type": "Goal"
-                },
-                "finished": true,
-                "goal": "I(b) = -atan(b) + SKOLEM_CONST(C)",
-                "latex_goal": "I{(b)} = -\\arctan{(b)} + C",
-                "split_cond": "b = 0",
-                "type": "CaseProof"
-            },
-            "type": "Goal"
-        },
-        {
-            "finished": true,
-            "goal": "0 = (INT x:[0,oo]. x ^ (-1) * sin(x)) - 1/2 * pi",
-            "latex_goal": "0 = (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx) - \\frac{1}{2} \\pi",
+            "goal": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
+            "latex_goal": "g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)",
             "proof": {
                 "finished": true,
-                "goal": "0 = (INT x:[0,oo]. x ^ (-1) * sin(x)) - 1/2 * pi",
-                "latex_goal": "0 = (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx) - \\frac{1}{2} \\pi",
+                "goal": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
+                "latex_goal": "g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)",
                 "start": {
                     "conds": [
                         {
-                            "cond": "b >= 0",
-                            "latex_cond": "b \\ge 0"
+                            "cond": "y > 0",
+                            "latex_cond": "y > 0"
                         }
                     ],
-                    "latex_start": "I{(b)} = -\\arctan{(b)} + C",
-                    "start": "I(b) = -atan(b) + SKOLEM_CONST(C)",
+                    "latex_start": "\\frac{d}{dy} g(y,a) = \\frac{-a}{a ^ {2} + y ^ {2}}",
+                    "start": "(D y. g(y,a)) = -a / (a ^ 2 + y ^ 2)",
                     "steps": [
                         {
-                            "latex_res": "I{(b)} = -\\arctan{(b)} + I{(0)}",
-                            "res": "I(b) = -atan(b) + I(0)",
+                            "latex_res": "g(y,a) = \\int \\frac{-a}{a ^ {2} + y ^ {2}} \\,dy",
+                            "res": "g(y,a) = (INT y [a]. -a / (a ^ 2 + y ^ 2))",
                             "rule": {
-                                "lemma": "I(0) = SKOLEM_CONST(C)",
-                                "loc": "1.1",
-                                "name": "ApplyLemma",
-                                "str": "apply lemma at 1.1"
+                                "name": "IntegrateBothSide",
+                                "str": "integrate both side"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\lim\\limits_{b\\to \\infty} I{(b)} = \\lim\\limits_{b\\to \\infty} (\\,-\\arctan{(b)} + I{(0)}\\,)",
-                            "res": "(LIM {b -> oo}. I(b)) = (LIM {b -> oo}. -atan(b) + I(0))",
-                            "rule": {
-                                "latex_str": "apply limit \\(b \\to \\infty\\) to equation",
-                                "lim": "oo",
-                                "name": "LimitEquation",
-                                "str": "apply limit b -> oo to equation",
-                                "var": "b"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\lim\\limits_{b\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx = \\lim\\limits_{b\\to \\infty} (\\,-\\arctan{(b)} + (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx)\\,)",
-                            "res": "(LIM {b -> oo}. INT x:[0,oo]. x ^ (-1) * exp(-(b * x)) * sin(x)) = (LIM {b -> oo}. -atan(b) + (INT x:[0,oo]. x ^ (-1) * sin(x)))",
-                            "rule": {
-                                "func_def": "I(b) = (INT x:[0,oo]. sin(x) / x * exp(-b * x))",
-                                "loc": "subterms",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition on subterms"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\lim\\limits_{b\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx = (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx) - \\frac{1}{2} \\pi",
-                            "res": "(LIM {b -> oo}. INT x:[0,oo]. x ^ (-1) * exp(-(b * x)) * sin(x)) = (INT x:[0,oo]. x ^ (-1) * sin(x)) - 1/2 * pi",
+                            "latex_res": "g(y,a) = -a (\\int (a ^ {2} + y ^ {2}) ^ {-1} \\,dy)",
+                            "res": "g(y,a) = -(a * (INT y [a]. (a ^ 2 + y ^ 2) ^ (-1)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -391,14 +243,255 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 = (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx) - \\frac{1}{2} \\pi",
-                            "res": "0 = (INT x:[0,oo]. x ^ (-1) * sin(x)) - 1/2 * pi",
+                            "latex_res": "g(y,a) = -a (\\int \\frac{1}{a ^ {2} + y ^ {2}} \\,dy)",
+                            "res": "g(y,a) = -(a * (INT y [a]. 1 / (a ^ 2 + y ^ 2)))",
                             "rule": {
-                                "eq": "(LIM {b -> oo}. INT x:[0,oo]. x ^ (-1) * exp(-(b * x)) * sin(x)) = 0",
-                                "latex_str": "apply equation \\(\\lim\\limits_{b\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-b x} \\sin{(x)} \\,dx = 0\\) at 0",
+                                "latex_str": "rewriting \\((a ^ {2} + y ^ {2}) ^ {-1}\\) to \\(\\frac{1}{a ^ {2} + y ^ {2}}\\)",
+                                "name": "Equation",
+                                "new_expr": "1 / (a ^ 2 + y ^ 2)",
+                                "old_expr": "(a ^ 2 + y ^ 2) ^ (-1)",
+                                "str": "rewriting (a ^ 2 + y ^ 2) ^ (-1) to 1 / (a ^ 2 + y ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "g(y,a) = -a (a ^ {-1} \\arctan{(\\frac{y}{a})}) + C(a)",
+                            "res": "g(y,a) = -(a * (a ^ (-1) * atan(y / a))) + SKOLEM_FUNC(C(a))",
+                            "rule": {
+                                "loc": "1",
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "g(y,a) = -\\arctan{(a ^ {-1} y)} + C(a)",
+                            "res": "g(y,a) = -atan(a ^ (-1) * y) + SKOLEM_FUNC(C(a))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "y >= 0",
+                    "latex_cond": "y \\ge 0"
+                },
+                {
+                    "cond": "x > 0",
+                    "latex_cond": "x > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(LIM {y -> oo}. g(y,a)) = 0",
+            "latex_goal": "\\lim\\limits_{y\\to \\infty} g(y,a) = 0",
+            "proof": {
+                "finished": true,
+                "goal": "(LIM {y -> oo}. g(y,a)) = 0",
+                "latex_goal": "\\lim\\limits_{y\\to \\infty} g(y,a) = 0",
+                "lhs_calc": {
+                    "latex_start": "\\lim\\limits_{y\\to \\infty} g(y,a)",
+                    "start": "LIM {y -> oo}. g(y,a)",
+                    "steps": [
+                        {
+                            "latex_res": "\\lim\\limits_{y\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-x y} \\sin{(a x)} \\,dx",
+                            "res": "LIM {y -> oo}. INT x:[0,oo]. x ^ (-1) * exp(-(x * y)) * sin(a * x)",
+                            "rule": {
+                                "func_def": "g(y,a) = (INT x:[0,oo]. exp(-x * y) * sin(a * x) / x)",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\lim\\limits_{y\\to \\infty} (\\,x ^ {-1} e^{-x y} \\sin{(a x)}\\,) \\,dx",
+                            "res": "INT x:[0,oo]. LIM {y -> oo}. x ^ (-1) * exp(-(x * y)) * sin(a * x)",
+                            "rule": {
+                                "name": "LimIntExchange",
+                                "str": "exchange limit and integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "0",
+                            "res": "0",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "0",
+                    "start": "0",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "SKOLEM_FUNC(C(a)) = 1/2 * pi",
+            "latex_goal": "C(a) = \\frac{1}{2} \\pi",
+            "proof": {
+                "finished": true,
+                "goal": "SKOLEM_FUNC(C(a)) = 1/2 * pi",
+                "latex_goal": "C(a) = \\frac{1}{2} \\pi",
+                "start": {
+                    "conds": [
+                        {
+                            "cond": "y > 0",
+                            "latex_cond": "y > 0"
+                        },
+                        {
+                            "cond": "a != 0",
+                            "latex_cond": "a \\neq 0"
+                        }
+                    ],
+                    "latex_start": "g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)",
+                    "start": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
+                    "steps": [
+                        {
+                            "latex_res": "\\lim\\limits_{y\\to \\infty} g(y,a) = \\lim\\limits_{y\\to \\infty} (\\,-\\arctan{(\\frac{y}{a})} + C(a)\\,)",
+                            "res": "(LIM {y -> oo}. g(y,a)) = (LIM {y -> oo}. -atan(y / a) + SKOLEM_FUNC(C(a)))",
+                            "rule": {
+                                "latex_str": "apply limit \\(y \\to \\infty\\) to equation",
+                                "lim": "oo",
+                                "name": "LimitEquation",
+                                "str": "apply limit y -> oo to equation",
+                                "var": "y"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "0 = \\lim\\limits_{y\\to \\infty} (\\,-\\arctan{(\\frac{y}{a})} + C(a)\\,)",
+                            "res": "0 = (LIM {y -> oo}. -atan(y / a) + SKOLEM_FUNC(C(a)))",
+                            "rule": {
+                                "eq": "(LIM {y -> oo}. g(y,a)) = 0",
+                                "latex_str": "apply equation \\(\\lim\\limits_{y\\to \\infty} g(y,a) = 0\\) at 0",
                                 "loc": "0",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: (LIM {b -> oo}. INT x:[0,oo]. x ^ (-1) * exp(-(b * x)) * sin(x)) = 0 at 0"
+                                "str": "apply equation: (LIM {y -> oo}. g(y,a)) = 0 at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "0 = C(a) - \\frac{1}{2} \\pi",
+                            "res": "0 = SKOLEM_FUNC(C(a)) - 1/2 * pi",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "C(a) = \\frac{\\pi}{2}",
+                            "res": "SKOLEM_FUNC(C(a)) = pi / 2",
+                            "rule": {
+                                "latex_str": "solve equation for \\(C(a)\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "SKOLEM_FUNC(C(a))",
+                                "str": "solve equation for SKOLEM_FUNC(C(a))"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a < 0",
+                    "latex_cond": "a < 0"
+                }
+            ],
+            "finished": true,
+            "goal": "SKOLEM_FUNC(C(a)) = -1/2 * pi",
+            "latex_goal": "C(a) = -\\frac{1}{2} \\pi",
+            "proof": {
+                "finished": true,
+                "goal": "SKOLEM_FUNC(C(a)) = -1/2 * pi",
+                "latex_goal": "C(a) = -\\frac{1}{2} \\pi",
+                "start": {
+                    "conds": [
+                        {
+                            "cond": "y > 0",
+                            "latex_cond": "y > 0"
+                        },
+                        {
+                            "cond": "a != 0",
+                            "latex_cond": "a \\neq 0"
+                        }
+                    ],
+                    "latex_start": "g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)",
+                    "start": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
+                    "steps": [
+                        {
+                            "latex_res": "\\lim\\limits_{y\\to \\infty} g(y,a) = \\lim\\limits_{y\\to \\infty} (\\,-\\arctan{(\\frac{y}{a})} + C(a)\\,)",
+                            "res": "(LIM {y -> oo}. g(y,a)) = (LIM {y -> oo}. -atan(y / a) + SKOLEM_FUNC(C(a)))",
+                            "rule": {
+                                "latex_str": "apply limit \\(y \\to \\infty\\) to equation",
+                                "lim": "oo",
+                                "name": "LimitEquation",
+                                "str": "apply limit y -> oo to equation",
+                                "var": "y"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "0 = \\lim\\limits_{y\\to \\infty} (\\,-\\arctan{(\\frac{y}{a})} + C(a)\\,)",
+                            "res": "0 = (LIM {y -> oo}. -atan(y / a) + SKOLEM_FUNC(C(a)))",
+                            "rule": {
+                                "eq": "(LIM {y -> oo}. g(y,a)) = 0",
+                                "latex_str": "apply equation \\(\\lim\\limits_{y\\to \\infty} g(y,a) = 0\\) at 0",
+                                "loc": "0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (LIM {y -> oo}. g(y,a)) = 0 at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "0 = C(a) + \\frac{1}{2} \\pi",
+                            "res": "0 = SKOLEM_FUNC(C(a)) + 1/2 * pi",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "C(a) = \\frac{-\\pi}{2}",
+                            "res": "SKOLEM_FUNC(C(a)) = -pi / 2",
+                            "rule": {
+                                "latex_str": "solve equation for \\(C(a)\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "SKOLEM_FUNC(C(a))",
+                                "str": "solve equation for SKOLEM_FUNC(C(a))"
                             },
                             "type": "CalculationStep"
                         }
@@ -411,24 +504,98 @@
         },
         {
             "finished": true,
-            "goal": "(INT x:[0,oo]. x ^ (-1) * sin(x)) = 1/2 * pi",
-            "latex_goal": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx = \\frac{1}{2} \\pi",
+            "goal": "g(0,a) = (INT x:[0,oo]. sin(a * x) / x)",
+            "latex_goal": "g(0,a) = \\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx",
             "proof": {
                 "finished": true,
-                "goal": "(INT x:[0,oo]. x ^ (-1) * sin(x)) = 1/2 * pi",
-                "latex_goal": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx = \\frac{1}{2} \\pi",
+                "goal": "g(0,a) = (INT x:[0,oo]. sin(a * x) / x)",
+                "latex_goal": "g(0,a) = \\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx",
                 "lhs_calc": {
-                    "latex_start": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx",
-                    "start": "INT x:[0,oo]. x ^ (-1) * sin(x)",
+                    "latex_start": "g(0,a)",
+                    "start": "g(0,a)",
                     "steps": [
                         {
-                            "latex_res": "0 + \\frac{1}{2} \\pi",
-                            "res": "0 + 1/2 * pi",
+                            "latex_res": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(a x)} \\,dx",
+                            "res": "INT x:[0,oo]. x ^ (-1) * sin(a * x)",
                             "rule": {
-                                "eq": "0 = (INT x:[0,oo]. x ^ (-1) * sin(x)) - 1/2 * pi",
-                                "latex_str": "apply equation \\(0 = (\\int_{0}^{\\infty} x ^ {-1} \\sin{(x)} \\,dx) - \\frac{1}{2} \\pi\\)",
+                                "func_def": "g(y,a) = (INT x:[0,oo]. exp(-x * y) * sin(a * x) / x)",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx",
+                    "start": "INT x:[0,oo]. sin(a * x) / x",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(a x)} \\,dx",
+                            "res": "INT x:[0,oo]. x ^ (-1) * sin(a * x)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = \\frac{1}{2} \\pi",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = \\frac{1}{2} \\pi",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx",
+                    "start": "INT x:[0,oo]. sin(a * x) / x",
+                    "steps": [
+                        {
+                            "latex_res": "g(0,a)",
+                            "res": "g(0,a)",
+                            "rule": {
+                                "eq": "g(0,a) = (INT x:[0,oo]. sin(a * x) / x)",
+                                "latex_str": "apply equation \\(g(0,a) = \\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx\\)",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: 0 = (INT x:[0,oo]. x ^ (-1) * sin(x)) - 1/2 * pi"
+                                "str": "apply equation: g(0,a) = (INT x:[0,oo]. sin(a * x) / x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\arctan{(\\frac{0}{a})} + C(a)",
+                            "res": "-atan(0 / a) + SKOLEM_FUNC(C(a))",
+                            "rule": {
+                                "eq": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
+                                "latex_str": "apply equation \\(g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\arctan{(\\frac{0}{a})} + \\frac{1}{2} \\pi",
+                            "res": "-atan(0 / a) + 1/2 * pi",
+                            "rule": {
+                                "eq": "SKOLEM_FUNC(C(a)) = 1/2 * pi",
+                                "latex_str": "apply equation \\(C(a) = \\frac{1}{2} \\pi\\) at 1",
+                                "loc": "1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: SKOLEM_FUNC(C(a)) = 1/2 * pi at 1"
                             },
                             "type": "CalculationStep"
                         },
@@ -447,6 +614,120 @@
                 "rhs_calc": {
                     "latex_start": "\\frac{1}{2} \\pi",
                     "start": "1/2 * pi",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a < 0",
+                    "latex_cond": "a < 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(INT x:[0,oo]. sin(a * x) / x) = -1/2 * pi",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = -\\frac{1}{2} \\pi",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,oo]. sin(a * x) / x) = -1/2 * pi",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = -\\frac{1}{2} \\pi",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx",
+                    "start": "INT x:[0,oo]. sin(a * x) / x",
+                    "steps": [
+                        {
+                            "latex_res": "g(0,a)",
+                            "res": "g(0,a)",
+                            "rule": {
+                                "eq": "g(0,a) = (INT x:[0,oo]. sin(a * x) / x)",
+                                "latex_str": "apply equation \\(g(0,a) = \\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: g(0,a) = (INT x:[0,oo]. sin(a * x) / x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\arctan{(\\frac{0}{a})} + C(a)",
+                            "res": "-atan(0 / a) + SKOLEM_FUNC(C(a))",
+                            "rule": {
+                                "eq": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
+                                "latex_str": "apply equation \\(g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\arctan{(\\frac{0}{a})} + -\\frac{1}{2} \\pi",
+                            "res": "-atan(0 / a) + -1/2 * pi",
+                            "rule": {
+                                "eq": "SKOLEM_FUNC(C(a)) = -1/2 * pi",
+                                "latex_str": "apply equation \\(C(a) = -\\frac{1}{2} \\pi\\) at 1",
+                                "loc": "1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: SKOLEM_FUNC(C(a)) = -1/2 * pi at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{1}{2} \\pi",
+                            "res": "-1/2 * pi",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "-\\frac{1}{2} \\pi",
+                    "start": "-1/2 * pi",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a = 0",
+                    "latex_cond": "a = 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(INT x:[0,oo]. sin(a * x) / x) = 0",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = 0",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,oo]. sin(a * x) / x) = 0",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = 0",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx",
+                    "start": "INT x:[0,oo]. sin(a * x) / x",
+                    "steps": [
+                        {
+                            "latex_res": "0",
+                            "res": "0",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "0",
+                    "start": "0",
                     "steps": [],
                     "type": "Calculation"
                 },

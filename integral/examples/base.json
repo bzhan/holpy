@@ -7,66 +7,66 @@
         },
         {
             "type": "axiom",
-            "expr": "(INT x. c) = c * x"
+            "expr": "(INT x. c) = c * x + C"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. x ^ (-1)) = log(abs(x))"
+            "expr": "(INT x. x ^ (-1)) = log(abs(x)) + C"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. x ^ n) = x ^ (n + 1) / (n + 1)",
+            "expr": "(INT x. x ^ n) = x ^ (n + 1) / (n + 1) + C",
             "conds": [
                 "n != -1"
             ]
         },
         {
             "type": "axiom",
-            "expr": "(INT x. exp(x)) = exp(x)"
+            "expr": "(INT x. exp(x)) = exp(x) + C"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. sin(x)) = -cos(x)"
+            "expr": "(INT x. sin(x)) = -cos(x) + C"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. cos(x)) = sin(x)"
+            "expr": "(INT x. cos(x)) = sin(x) + C"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. 1 / (x^2 + 1)) = atan(x)"
+            "expr": "(INT x. 1 / (x^2 + 1)) = atan(x) + C"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. sec(x)^2) = tan(x)"
+            "expr": "(INT x. sec(x)^2) = tan(x) + C"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. csc(x)^2) = -cot(x)"
+            "expr": "(INT x. csc(x)^2) = -cot(x) + C"
         },
         {
             "type": "problem",
-            "expr": "(INT x. 1 / (x + a)) = log(abs(x + a))",
+            "expr": "(INT x. 1 / (x + a)) = log(abs(x + a)) + C",
             "path": "standard"
         },
         {
             "type": "problem",
-            "expr": "(INT x. exp(a * x)) = a ^ (-1) * exp(a * x)",
+            "expr": "(INT x. exp(a * x)) = a ^ (-1) * exp(a * x) + C",
             "path": "standard"
         },
         {
             "type": "problem",
-            "expr": "(INT x. sin(a * x)) = - (a ^ (-1) * cos(a * x))",
+            "expr": "(INT x. sin(a * x)) = - (a ^ (-1) * cos(a * x)) + C",
             "path": "standard"
         },
         {
             "type": "problem",
-            "expr": "(INT x. cos(a * x)) = a ^ (-1) * sin(a * x)",
+            "expr": "(INT x. cos(a * x)) = a ^ (-1) * sin(a * x) + C",
             "path": "standard"
         },
         {
             "type": "problem",
-            "expr": "(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a)",
+            "expr": "(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a) + C",
             "conds": [
                 "a != 0"
             ],

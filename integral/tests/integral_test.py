@@ -32,39 +32,39 @@ class IntegralTest(unittest.TestCase):
 
         file = compstate.CompFile(ctx, "standard")
 
-        goal1 = file.add_goal("(INT x. 1 / (x + a)) = log(abs(x + a))")
+        goal1 = file.add_goal("(INT x. 1 / (x + a)) = log(abs(x + a)) + SKOLEM_CONST(C)")
         proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("x + a")))
         calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.ReplaceSubstitution())
 
-        goal2 = file.add_goal("(INT x. exp(a * x)) = a ^ (-1) * exp(a * x)")
+        goal2 = file.add_goal("(INT x. exp(a * x)) = a ^ (-1) * exp(a * x) + SKOLEM_CONST(C)")
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("a * x")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.ReplaceSubstitution())
 
-        goal3 = file.add_goal("(INT x. sin(a * x)) = - (a ^ (-1) * cos(a * x))")
+        goal3 = file.add_goal("(INT x. sin(a * x)) = - (a ^ (-1) * cos(a * x)) + SKOLEM_CONST(C)")
         proof = goal3.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("a * x")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.ReplaceSubstitution())
         calc.perform_rule(rules.FullSimplify())
 
-        goal4 = file.add_goal("(INT x. cos(a * x)) = a ^ (-1) * sin(a * x)")
+        goal4 = file.add_goal("(INT x. cos(a * x)) = a ^ (-1) * sin(a * x) + SKOLEM_CONST(C)")
         proof = goal4.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("a * x")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.ReplaceSubstitution())
 
-        goal5 = file.add_goal("(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a)", conds=["a != 0"])
+        goal5 = file.add_goal("(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a) + SKOLEM_CONST(C)", conds=["a != 0"])
         proof = goal5.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("x / a")))
@@ -73,7 +73,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("(u ^ 2 + 1) ^ (-1)"),
                                          new_expr=parser.parse_expr("1 / (u ^ 2 + 1)")))
-        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.ReplaceSubstitution())
 
         self.checkAndOutput(file, "standard")
@@ -838,14 +838,14 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         # Integrate the previous equation on both sides
-        goal3 = file.add_goal("g(y, a) = -atan(y / a) + C(a)", conds=["y > 0", "a != 0"])
+        goal3 = file.add_goal("g(y, a) = -atan(y / a) + SKOLEM_FUNC(C(a))", conds=["y > 0", "a != 0"])
         proof = goal3.proof_by_rewrite_goal(begin=goal2)
         calc = proof.begin
         calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("(a ^ 2 + y ^ 2) ^ (-1)"),
                                          new_expr=parser.parse_expr("1 / (a ^ 2 + y ^ 2)")))
-        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1.0.1"))
+        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
         calc.perform_rule(rules.FullSimplify())
 
         # Evaluate the case y = oo
@@ -858,22 +858,22 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         # Evaluate C(a) for a > 0
-        goal5 = file.add_goal("C(a) = 1/2 * pi", conds=["a > 0"])
+        goal5 = file.add_goal("SKOLEM_FUNC(C(a)) = 1/2 * pi", conds=["a > 0"])
         proof = goal5.proof_by_rewrite_goal(begin=goal3)
         calc = proof.begin
         calc.perform_rule(rules.LimitEquation("y", parser.parse_expr("oo")))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(parser.parse_expr("(LIM {y -> oo}. g(y, a)) = 0")), "0"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.SolveEquation(parser.parse_expr("C(a)")))
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("SKOLEM_FUNC(C(a))")))
 
         # Evaluate C(a) for a < 0
-        goal6 = file.add_goal("C(a) = - 1/2 * pi", conds=["a < 0"])
+        goal6 = file.add_goal("SKOLEM_FUNC(C(a)) = - 1/2 * pi", conds=["a < 0"])
         proof = goal6.proof_by_rewrite_goal(begin=goal3)
         calc = proof.begin
         calc.perform_rule(rules.LimitEquation("y", parser.parse_expr("oo")))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(parser.parse_expr("(LIM {y -> oo}. g(y, a)) = 0")), "0"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.SolveEquation(parser.parse_expr("C(a)")))
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("SKOLEM_FUNC(C(a))")))
 
         # Case y = 0: g(0) = INT x:[0, oo]. sin(a * x) / x
         goal7 = file.add_goal("g(0, a) = INT x:[0,oo]. sin(a * x) / x")

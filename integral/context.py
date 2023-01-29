@@ -109,14 +109,3 @@ class Context:
                 e = parser.parse_expr(item['expr'])
                 if e.is_equals() and e.lhs.is_indefinite_integral():
                     self.add_indefinite_integral(e)
-
-    def apply_indefinite_integral(self, e: Expr) -> Expr:
-        for indef in self.get_indefinite_integrals():
-            inst = match(e, indef.lhs)
-            if inst is None:
-                continue
-            inst['x'] = Var(e.var)
-            return indef.rhs.inst_pat(inst)
-
-        # No matching identity found
-        return e

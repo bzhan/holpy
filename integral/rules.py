@@ -93,7 +93,7 @@ class Linearity(Rule):
 
     def eval(self, e: Expr, ctx=None) -> Expr:
         rec = Linearity().eval
-        if e.ty == expr.INTEGRAL:
+        if e.is_integral():
             if e.body.is_plus():
                 return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) + \
                        rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
@@ -117,7 +117,7 @@ class Linearity(Rule):
                 return e.body * expr.Integral(e.var, e.lower, e.upper, Const(1))
             else:
                 return e
-        elif e.ty == INDEFINITEINTEGRAL:
+        elif e.is_indefinite_integral():
             if e.body.is_times():
                 factors = decompose_expr_factor(e.body)
                 if not factors[0].contains_var(e.var):
@@ -144,8 +144,8 @@ class Linearity(Rule):
                     return e
             else:
                 return e
-        elif e.ty == SUMMATION:
-            v,l,u,body = e.index_var, e.lower, e.upper, e.body
+        elif e.is_summation():
+            v, l, u, body = e.index_var, e.lower, e.upper, e.body
             if e.body.is_minus():
                 return Summation(v, l, u, body.args[0]) - Summation(v, l,u,body.args[1])
             factors = decompose_expr_factor(e.body)
@@ -300,7 +300,43 @@ class IndefiniteIntegralIdentity(Rule):
         }
 
     def eval(self, e: Expr, ctx=None) -> Expr:
-        return ctx.apply_indefinite_integral(e)
+        """Apply indefinite integral identity to expression."""
+
+        def apply(e: Expr):
+            for indef in ctx.get_indefinite_integrals():
+                inst = expr.match(e, indef.lhs)
+                if inst is None:
+                    continue
+
+                inst['x'] = Var(e.var)
+                assert indef.rhs.is_plus() and indef.rhs.args[1].is_symbol() and \
+                    indef.rhs.args[1].name == "C"
+                return indef.rhs.args[0].inst_pat(inst)
+
+            # No matching identity found
+            return e
+
+        def rec(e: Expr):
+            if e.is_indefinite_integral():
+                new_e = apply(e)
+                if new_e == e:
+                    return e, None
+                else:
+                    return new_e, expr.SkolemFunc("C", tuple(Var(arg) for arg in e.skolem_args))
+            elif e.is_times():
+                res, skolem = rec(e.args[1])
+                return e.args[0] * res, skolem
+            elif e.is_uminus():
+                res, skolem = rec(e.args[0])
+                return -res, skolem
+            else:
+                return e, None
+            
+        res, skolem = rec(e)
+        if skolem is not None:
+            return res + skolem
+        else:
+            return res
 
 
 class ReplaceSubstitution(Rule):
