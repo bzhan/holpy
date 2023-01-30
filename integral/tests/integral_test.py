@@ -1173,12 +1173,6 @@ class IntegralTest(unittest.TestCase):
         ctx.load_book("base")
         file = compstate.CompFile(ctx, "LogFunction01")
 
-        # Series sum for alternating reciprocal of squares
-        # TODO: add derivation
-        e = parser.parse_expr("SUM(n,0,oo,(-1)^n * (n+1)^(-2))  = (pi^2) / 12")
-        goal2 = compstate.Lemma(lemma=e)
-        file.add_lemma(goal2)
-
         # Main result
         goal = file.add_goal("(INT x:[0,1]. log(1 + x) / x) = (pi^2) / 12")
         proof_of_goal01 = goal.proof_by_calculation()
@@ -1189,8 +1183,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         calc.perform_rule(rules.IntSumExchange())
         calc.perform_rule(rules.FullSimplify())
-
-        calc.perform_rule(rules.ApplyLemma(lemma=goal2.lemma))
+        calc.perform_rule(rules.SeriesEvaluationIdentity())
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal01.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -1205,10 +1198,6 @@ class IntegralTest(unittest.TestCase):
         ctx.load_book('base')
         file = compstate.CompFile(ctx, 'LogFunction02')
 
-        e = parser.parse_expr("SUM(k,0,oo,(k+1)^(-2))  = (pi^2) / 6")
-        lemma02 = compstate.Lemma(lemma=e, conds=None)
-        file.add_lemma(lemma02)
-
         e = parser.parse_expr("sin(acos(x)) = sqrt(1-x^2)")
         lemma03 = compstate.Lemma(lemma=e, conds=None)
         file.add_lemma(lemma03)
@@ -1220,10 +1209,6 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("(INT x:[0,1]. (-x) ^ k * log(x)) = -(-1)^ k /(k+1)^2")
         lemma05 = compstate.Lemma(lemma=e, conds=None)
         file.add_lemma(lemma05)
-
-        e = parser.parse_expr("SUM(k,0,oo,(-1)^k * (k+1)^(-2))  = (pi^2) /12")
-        lemma06 = compstate.Lemma(lemma=e, conds=None)
-        file.add_lemma(lemma06)
 
         goal01 = file.add_goal("-log(1-x) - log(1+x) = \
                 -SUM(k,0,oo,(-1)^k*(-x)^(k+1) / (k+1))-SUM(k,0,oo,(-1)^k*x^(k+1)/(k+1))", conds=["abs(x) < 1"])
@@ -1275,8 +1260,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=lemma04.lemma, conds=None)))
         calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma=lemma05.lemma, conds=None), '0.1.0.1'))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=lemma02.lemma, conds=None)))
-        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma=lemma06.lemma, conds=None), '0.1'))
+        calc.perform_rule(rules.OnSubterm(rules.SeriesEvaluationIdentity()))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal03.rhs_calc
         calc.perform_rule(rules.FullSimplify())

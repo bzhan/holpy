@@ -775,6 +775,8 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'SeriesExpansionIdentity':
         index_var = item['index_var']
         return rules.SeriesExpansionIdentity(index_var=index_var)
+    elif item['name'] == 'SeriesEvaluationIdentity':
+        return rules.SeriesEvaluationIdentity()
     elif item['name'] == 'ReplaceSubstitution':
         return rules.ReplaceSubstitution()
     else:

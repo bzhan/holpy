@@ -343,6 +343,32 @@ class SeriesExpansionIdentity(Rule):
         return e
 
 
+class SeriesEvaluationIdentity(Rule):
+    """Apply series evaluation in the current theory."""
+    def __init__(self):
+        self.name = "SeriesEvaluationIdentity"
+
+    def __str__(self):
+        return "apply series evaluation"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, ctx=None) -> Expr:
+        for identity in ctx.get_series_evaluations():
+            inst = expr.match(e, identity.lhs)
+            if inst is None:
+                continue
+
+            return identity.rhs.inst_pat(inst)
+
+        # No matching identity found
+        return e
+
+
 class IndefiniteIntegralIdentity(Rule):
     """Apply indefinite integral identity in current theory."""
     def __init__(self):

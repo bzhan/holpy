@@ -1,11 +1,6 @@
 {
     "content": [
         {
-            "eq": "SUM(n, 0, oo, (-1) ^ n * (n + 1) ^ (-2)) = pi ^ 2 / 12",
-            "latex_eq": "\\sum_{n=0}^{\\infty}{(-1)^{n} (n + 1) ^ {-2}} = \\frac{\\pi ^ {2}}{12}",
-            "type": "Lemma"
-        },
-        {
             "finished": true,
             "goal": "(INT x:[0,1]. log(1 + x) / x) = pi ^ 2 / 12",
             "latex_goal": "\\int_{0}^{1} \\frac{\\log{(1 + x)}}{x} \\,dx = \\frac{\\pi ^ {2}}{12}",
@@ -62,9 +57,8 @@
                             "latex_res": "\\frac{\\pi ^ {2}}{12}",
                             "res": "pi ^ 2 / 12",
                             "rule": {
-                                "lemma": "SUM(n, 0, oo, (-1) ^ n * (n + 1) ^ (-2)) = pi ^ 2 / 12",
-                                "name": "ApplyLemma",
-                                "str": "apply lemma"
+                                "name": "SeriesEvaluationIdentity",
+                                "str": "apply series evaluation"
                             },
                             "type": "CalculationStep"
                         },

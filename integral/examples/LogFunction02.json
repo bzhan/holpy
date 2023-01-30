@@ -1,11 +1,6 @@
 {
     "content": [
         {
-            "eq": "SUM(k, 0, oo, (k + 1) ^ (-2)) = pi ^ 2 / 6",
-            "latex_eq": "\\sum_{k=0}^{\\infty}{(k + 1) ^ {-2}} = \\frac{\\pi ^ {2}}{6}",
-            "type": "Lemma"
-        },
-        {
             "eq": "sin(acos(x)) = sqrt(1 - x ^ 2)",
             "latex_eq": "\\sin{(\\arccos{(x)})} = \\sqrt{1 - x ^ {2}}",
             "type": "Lemma"
@@ -18,11 +13,6 @@
         {
             "eq": "(INT x:[0,1]. (-x) ^ k * log(x)) = -((-1) ^ k) / (k + 1) ^ 2",
             "latex_eq": "\\int_{0}^{1} (-x) ^ {k} \\log{(x)} \\,dx = \\frac{-(-1)^{k}}{(k + 1) ^ {2}}",
-            "type": "Lemma"
-        },
-        {
-            "eq": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) = pi ^ 2 / 12",
-            "latex_eq": "\\sum_{k=0}^{\\infty}{(-1)^{k} (k + 1) ^ {-2}} = \\frac{\\pi ^ {2}}{12}",
             "type": "Lemma"
         },
         {
@@ -347,24 +337,12 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1)^{k} (k + 1) ^ {-2}} + \\frac{1}{2} (\\frac{\\pi ^ {2}}{6})",
-                            "res": "-1/2 * SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) + 1/2 * (pi ^ 2 / 6)",
-                            "rule": {
-                                "lemma": "SUM(k, 0, oo, (k + 1) ^ (-2)) = pi ^ 2 / 6",
-                                "loc": "subterms",
-                                "name": "ApplyLemma",
-                                "str": "apply lemma on subterms"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "-\\frac{1}{2} (\\frac{\\pi ^ {2}}{12}) + \\frac{1}{2} (\\frac{\\pi ^ {2}}{6})",
                             "res": "-1/2 * (pi ^ 2 / 12) + 1/2 * (pi ^ 2 / 6)",
                             "rule": {
-                                "lemma": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) = pi ^ 2 / 12",
-                                "loc": "0.1",
-                                "name": "ApplyLemma",
-                                "str": "apply lemma at 0.1"
+                                "loc": "subterms",
+                                "name": "SeriesEvaluationIdentity",
+                                "str": "apply series evaluation on subterms"
                             },
                             "type": "CalculationStep"
                         },

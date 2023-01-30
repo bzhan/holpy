@@ -93,6 +93,19 @@
         },
         {
             "type": "header",
+            "name": "Common series evaluations",
+            "level": 1
+        },
+        {
+            "type": "axiom",
+            "expr": "SUM(n, 0, oo, (n+1)^(-2)) = (pi^2) / 6"
+        },
+        {
+            "type": "axiom",
+            "expr": "SUM(n, 0, oo, (-1)^n * (n+1)^(-2)) = (pi^2) / 12"
+        },
+        {
+            "type": "header",
             "name": "Common derived integrals",
             "level": 1
         },

@@ -1614,6 +1614,13 @@ def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
             res3 = rec(exp.body, pattern.body, bd_vars)
             del bd_vars[pattern.var]
             return res1 and res2 and res3
+        elif exp.is_summation():
+            bd_vars[pattern.index_var] = exp.index_var
+            res1 = rec(exp.upper, pattern.upper, bd_vars)
+            res2 = rec(exp.lower, pattern.lower, bd_vars)
+            res3 = rec(exp.body, pattern.body, bd_vars)
+            del bd_vars[pattern.index_var]
+            return res1 and res2 and res3
         elif exp.is_inf():
             return exp.t == pattern.t
         else:

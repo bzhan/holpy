@@ -47,6 +47,9 @@ class Context:
         # List of series expansions
         self.series_expansions: List[Identity] = list()
 
+        # List of series evaluations
+        self.series_evaluations: List[Identity] = list()
+
         # List of assumptions
         self.conds: Conditions = Conditions()
 
@@ -63,6 +66,9 @@ class Context:
             res += str(identity) + "\n"
         res += "Series expansions\n"
         for identity in self.series_expansions:
+            res += str(identity) + "\n"
+        res += "Series evaluations\n"
+        for identity in self.series_evaluations:
             res += str(identity) + "\n"
         res += "Conditions\n"
         for cond in self.conds.data:
@@ -82,6 +88,11 @@ class Context:
     def get_series_expansions(self) -> List[Identity]:
         res = self.parent.get_series_expansions() if self.parent is not None else []
         res.extend(self.series_expansions)
+        return res
+
+    def get_series_evaluations(self) -> List[Identity]:
+        res = self.parent.get_series_evaluations() if self.parent is not None else []
+        res.extend(self.series_evaluations)
         return res
 
     def get_conds(self) -> Conditions:
@@ -120,6 +131,14 @@ class Context:
         symb_rhs = expr_to_pattern(eq.rhs)
         self.series_expansions.append(Identity(symb_lhs, symb_rhs))
 
+    def add_series_evaluation(self, eq: Expr):
+        if not (eq.is_equals() and eq.lhs.is_summation() and not eq.rhs.is_summation()):
+            raise TypeError
+        
+        symb_lhs = expr_to_pattern(eq.lhs)
+        symb_rhs = expr_to_pattern(eq.rhs)
+        self.series_evaluations.append(Identity(symb_lhs, symb_rhs))
+
     def add_condition(self, cond: Expr):
         self.conds.add_condition(cond)
 
@@ -151,5 +170,7 @@ class Context:
                     self.add_definite_integral(e)
                 if e.is_equals() and not e.lhs.is_summation() and e.rhs.is_summation():
                     self.add_series_expansion(e)
+                if e.is_equals() and e.lhs.is_summation() and not e.rhs.is_summation():
+                    self.add_series_evaluation(e)
 
         return
