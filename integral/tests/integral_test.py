@@ -874,7 +874,6 @@ class IntegralTest(unittest.TestCase):
         proof = goal4.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("g")))
-        calc.perform_rule(rules.LimIntExchange())
         calc.perform_rule(rules.FullSimplify())
 
         # Evaluate C(a) for a > 0
@@ -1342,14 +1341,12 @@ class IntegralTest(unittest.TestCase):
         proof = goal002.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
-        calc.perform_rule(rules.LimIntExchange())
         calc.perform_rule(rules.FullSimplify())
 
         goal01 = file.add_goal("(LIM {u->oo}. I(u)) = pi^2 / 12")
         proof = goal01.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
-        calc.perform_rule(rules.LimIntExchange())
         calc.perform_rule(rules.FullSimplify())
         u = expr.Const(1)
         v = parser.parse_expr("atan(x/sqrt(2+x^2))")

@@ -527,7 +527,7 @@ def limit_power(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit
 
 def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) -> Limit:
     """Compute the limit of an expression as variable goes to infinity."""
-    if e.is_const():
+    if e.is_const() or e.is_inf():
         return Limit(e)
     elif e.is_fun() and len(e.args) == 0:
         return Limit(e)
@@ -612,12 +612,14 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
             else:
                 raise AssertionError("Unknown asymptote!")
     elif e.is_fun() and len(e.args) == 1:
+        # TODO: currently assumes continuity of functions 
         l = limit_of_expr(e.args[0], var_name, conds)
         if l.e is None or l.e.is_inf():
             return Limit(None)
         else:
             return Limit(expr.Fun(e.func_name, l.e))
     elif e.is_integral():
+        # TODO: in the case of limit on body, assumes uniform convergence
         body = limit_of_expr(e.body, var_name, conds)
         lower = limit_of_expr(e.lower, var_name, conds)
         upper = limit_of_expr(e.upper, var_name, conds)

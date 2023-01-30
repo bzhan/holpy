@@ -86,15 +86,6 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1} \\lim\\limits_{u\\to \\infty} (\\,(x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(u \\sqrt{x ^ {2} + 2})}\\,) \\,dx",
-                            "res": "INT x:[0,1]. LIM {u -> oo}. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
-                            "rule": {
-                                "name": "LimIntExchange",
-                                "str": "exchange limit and integral"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "\\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
                             "res": "1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
                             "rule": {
@@ -136,15 +127,6 @@
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\int_{0}^{1} \\lim\\limits_{u\\to \\infty} (\\,(x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(u \\sqrt{x ^ {2} + 2})}\\,) \\,dx",
-                            "res": "INT x:[0,1]. LIM {u -> oo}. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
-                            "rule": {
-                                "name": "LimIntExchange",
-                                "str": "exchange limit and integral"
                             },
                             "type": "CalculationStep"
                         },

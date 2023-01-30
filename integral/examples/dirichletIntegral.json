@@ -314,15 +314,6 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\lim\\limits_{y\\to \\infty} (\\,x ^ {-1} e^{-x y} \\sin{(a x)}\\,) \\,dx",
-                            "res": "INT x:[0,oo]. LIM {y -> oo}. x ^ (-1) * exp(-(x * y)) * sin(a * x)",
-                            "rule": {
-                                "name": "LimIntExchange",
-                                "str": "exchange limit and integral"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "0",
                             "res": "0",
                             "rule": {
