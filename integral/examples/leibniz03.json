@@ -262,8 +262,8 @@
                             "res": "log(I(t)) + t ^ 2 / 2 = 0 * t + SKOLEM_CONST(C)",
                             "rule": {
                                 "loc": "1",
-                                "name": "CommonIndefiniteIntegral",
-                                "str": "common indefinite integrals at 1"
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral at 1"
                             },
                             "type": "CalculationStep"
                         }

@@ -739,8 +739,6 @@ def parse_rule(item) -> Rule:
         var = item['var']
         lim = parser.parse_expr(item['lim'])
         return rules.LimitEquation(var, lim)
-    elif item['name'] == 'CommonIndefiniteIntegral':
-        return rules.CommonIndefiniteIntegral(const_name = 'C')
     elif item['name'] == 'IntSumExchange':
         return rules.IntSumExchange()
     elif item['name'] == 'ApplyLemma':

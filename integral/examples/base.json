@@ -106,7 +106,17 @@
         },
         {
             "type": "header",
-            "name": "Common derived integrals",
+            "name": "Trigonometric identities",
+            "level": 1
+        },
+        {
+            "type": "axiom",
+            "expr": "atan(x ^ -1) = pi/2 - atan(x)",
+            "category": "trigonometry"
+        },
+        {
+            "type": "header",
+            "name": "Derived integrals",
             "level": 1
         },
         {

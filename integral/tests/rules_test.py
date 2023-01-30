@@ -11,15 +11,17 @@ from integral.context import Context
 
 
 class RulesTest(unittest.TestCase):
-    def testCommonIndefiniteIntegral(self):
+    def testIndefiniteIntegralIdentity(self):
         test_data = [
-            ("INT x. 1 / x", 'D', 'log(abs(x)) + SKOLEM_CONST(D)'),
-            ("INT x [a, y]. a / (1 + y^2)", "C", "a / (1 + y ^ 2) * x + SKOLEM_FUNC(C(a, y))"),
+            ("INT x. x ^ -1", 'log(abs(x)) + SKOLEM_CONST(C)'),
+            ("INT x [a, y]. a / (1 + y^2)", "a / (1 + y ^ 2) * x + SKOLEM_FUNC(C(a, y))"),
         ]
 
-        for s, c_name, res in test_data:
+        ctx = Context()
+        ctx.load_book('base')
+        for s, res in test_data:
             e = parse_expr(s)
-            e = rules.CommonIndefiniteIntegral(c_name).eval(e)
+            e = rules.IndefiniteIntegralIdentity().eval(e, ctx=ctx)
             self.assertEqual(str(e), res)
 
     def testSimplify(self):

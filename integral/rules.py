@@ -232,60 +232,6 @@ class CommonIntegral(Rule):
         return e
 
 
-class CommonIndefiniteIntegral(Rule):
-    """Evaluate common indefinite integrals."""
-    def __init__(self, const_name):
-        self.name = "CommonIndefiniteIntegral"
-        self.const_name = const_name
-
-    def __str__(self):
-        return "common indefinite integrals"
-
-    def eval(self, e: Expr, ctx=None) -> Expr:
-        if not e.is_indefinite_integral():
-            return e
-
-        C = expr.SkolemFunc(self.const_name, tuple(Var(arg) for arg in e.skolem_args))
-        if e.var not in e.body.get_vars() and e.body != Const(1):
-            return e.body * Var(e.var) + C
-
-        x = Var(e.var)
-        c = Symbol('c', [CONST])
-        rules = [
-            (Const(1), None, Var(e.var)),
-            (c, None, c * Var(e.var)),
-            (x, None, (x ^ 2) / 2),
-            (x ^ c, lambda m: m[c.name].val != -1, lambda m: (x ^ Const(m[c.name].val + 1)) / (Const(m[c.name].val + 1))),
-            (Const(1) / x ^ c, lambda m: m[c.name].val != 1, (-c) / (x ^ (c + 1))),
-            (expr.sqrt(x), None, Fraction(2, 3) * (x ^ Fraction(3, 2))),
-            (sin(x), None, -cos(x)),
-            (cos(x), None, sin(x)),
-            (expr.exp(x), None, expr.exp(x)),
-            (Const(1) / x, None, expr.log(expr.Fun('abs', x))),
-            (Const(1) / (x + c), None, expr.log(expr.Fun('abs', x + c))),
-            (x ^ Const(-1), None, expr.log(expr.Fun('abs', x))),
-            (((x ^ Const(2)) + 1) ^ Const(-1), None, expr.arctan(x)),
-            (expr.sec(x) ^ Const(2), None, expr.tan(x)),
-            (expr.csc(x) ^ Const(2), None, -expr.cot(x)),
-        ]
-
-        for pat, cond, pat_res in rules:
-            mapping = expr.match(e.body, pat)
-            if mapping is not None and (cond is None or cond(mapping)):
-                if isinstance(pat_res, expr.Expr):
-                    integral = pat_res.inst_pat(mapping)
-                else:
-                    integral = pat_res(mapping)
-                return integral + C
-        return e
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-
 class DefiniteIntegralIdentity(Rule):
     """Apply definite integral identity in current theory."""
     def __init__(self):

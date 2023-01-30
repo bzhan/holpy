@@ -576,6 +576,7 @@ class IntegralTest(unittest.TestCase):
         # Reference
         # Inside interesting integrals, Section 3.1, example 2
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, 'leibniz02')
 
         # Overall goal: (INT x:[-oo,oo]. exp(-(x^2)/2)) = sqrt(2*pi)
@@ -617,7 +618,7 @@ class IntegralTest(unittest.TestCase):
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
         calc.perform_rule(rules.IntegralEquation())
-        calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral(const_name='C'), '1'))
+        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
         calc.perform_rule(rules.FullSimplify())
 
         Eq4 = file.add_goal("g(0) = 0")
@@ -721,7 +722,7 @@ class IntegralTest(unittest.TestCase):
         Eq3_proof = Eq3.proof_by_rewrite_goal(begin=Eq2)
         calc = Eq3_proof.begin
         calc.perform_rule(rules.IntegralEquation())
-        calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral(const_name='C'), '1'))
+        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
 
         Eq4 = file.add_goal("log(sqrt(pi / 2)) = SKOLEM_CONST(C)")
         Eq4_proof = Eq4.proof_by_rewrite_goal(begin=Eq3)
@@ -929,6 +930,7 @@ class IntegralTest(unittest.TestCase):
 
         # goal: INT x:[0, 1]. (x ^ a - 1) / log(x) = log(a + 1)
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, "Flipside03")
 
         # introduce definition
@@ -959,7 +961,7 @@ class IntegralTest(unittest.TestCase):
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal1)
         calc = proof_of_goal3.begin
         calc.perform_rule(rules.IntegralEquation())
-        calc.perform_rule(rules.OnLocation(rules.CommonIndefiniteIntegral('C'), '1'))
+        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
         calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
 
         goal4 = file.add_goal("0 = SKOLEM_CONST(C)")
