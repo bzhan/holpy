@@ -11,14 +11,19 @@ from integral.conditions import Conditions
 dirname = os.path.dirname(__file__)
 
 class Identity:
-    def __init__(self, lhs: Expr, rhs: Expr, *, conds: Optional[Conditions] = None, simp_level: int = 1):
+    def __init__(self, lhs: Expr, rhs: Expr, *,
+                 conds: Optional[Conditions] = None, simp_level: int = 1, category: str = ""):
         self.lhs = lhs
         self.rhs = rhs
         self.conds = conds
         self.simp_level = simp_level
+        self.category = category
 
     def __str__(self):
-        return "%s => %s" % (self.lhs, self.rhs)
+        if self.category != "":
+            return "%s => %s  (%s)" % (self.lhs, self.rhs, self.category)
+        else:
+            return "%s => %s" % (self.lhs, self.rhs)
 
 
 class Context:
@@ -50,6 +55,9 @@ class Context:
         # List of series evaluations
         self.series_evaluations: List[Identity] = list()
 
+        # List of other identities (trigonometric, etc)
+        self.other_identities: List[Identity] = list()
+
         # List of assumptions
         self.conds: Conditions = Conditions()
 
@@ -69,6 +77,9 @@ class Context:
             res += str(identity) + "\n"
         res += "Series evaluations\n"
         for identity in self.series_evaluations:
+            res += str(identity) + "\n"
+        res += "Other identities\n"
+        for identity in self.other_identities:
             res += str(identity) + "\n"
         res += "Conditions\n"
         for cond in self.conds.data:
@@ -93,6 +104,11 @@ class Context:
     def get_series_evaluations(self) -> List[Identity]:
         res = self.parent.get_series_evaluations() if self.parent is not None else []
         res.extend(self.series_evaluations)
+        return res
+
+    def get_other_identities(self) -> List[Identity]:
+        res = self.parent.get_other_identities() if self.parent is not None else []
+        res.extend(self.other_identities)
         return res
 
     def get_conds(self) -> Conditions:
@@ -139,6 +155,14 @@ class Context:
         symb_rhs = expr_to_pattern(eq.rhs)
         self.series_evaluations.append(Identity(symb_lhs, symb_rhs))
 
+    def add_other_identities(self, eq: Expr, category: str):
+        if not eq.is_equals():
+            raise TypeError
+        
+        symb_lhs = expr_to_pattern(eq.lhs)
+        symb_rhs = expr_to_pattern(eq.rhs)
+        self.other_identities.append(Identity(symb_lhs, symb_rhs, category=category))
+
     def add_condition(self, cond: Expr):
         self.conds.add_condition(cond)
 
@@ -166,11 +190,13 @@ class Context:
                 e = parser.parse_expr(item['expr'])
                 if e.is_equals() and e.lhs.is_indefinite_integral():
                     self.add_indefinite_integral(e)
-                if e.is_equals() and e.lhs.is_integral():
+                elif e.is_equals() and e.lhs.is_integral():
                     self.add_definite_integral(e)
-                if e.is_equals() and not e.lhs.is_summation() and e.rhs.is_summation():
+                elif e.is_equals() and not e.lhs.is_summation() and e.rhs.is_summation():
                     self.add_series_expansion(e)
-                if e.is_equals() and e.lhs.is_summation() and not e.rhs.is_summation():
+                elif e.is_equals() and e.lhs.is_summation() and not e.rhs.is_summation():
                     self.add_series_evaluation(e)
+                elif e.is_equals() and 'category' in item:
+                    self.add_other_identities(e, item['category'])
 
         return

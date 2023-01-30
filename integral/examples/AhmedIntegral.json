@@ -13,11 +13,6 @@
             "type": "FuncDef"
         },
         {
-            "eq": "atan(sqrt(x ^ 2 + 2) ^ (-1)) = pi / 2 - atan(sqrt(x ^ 2 + 2))",
-            "latex_eq": "\\arctan{(\\sqrt{x ^ {2} + 2} ^ {-1})} = \\frac{\\pi}{2} - \\arctan{(\\sqrt{x ^ {2} + 2})}",
-            "type": "Lemma"
-        },
-        {
             "finished": true,
             "goal": "I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2)))",
             "latex_goal": "I{(1)} = \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(\\sqrt{x ^ {2} + 2})} \\,dx",
@@ -551,10 +546,11 @@
                             "latex_res": "-(\\int_{0}^{1} (x ^ {2} + 2) ^ {-1/2} (x ^ {2} + 1) ^ {-1} (\\frac{\\pi}{2} - \\arctan{(\\sqrt{x ^ {2} + 2})}) \\,dx) + \\frac{1}{16} \\pi ^ {2}",
                             "res": "-(INT x:[0,1]. (x ^ 2 + 2) ^ (-1/2) * (x ^ 2 + 1) ^ (-1) * (pi / 2 - atan(sqrt(x ^ 2 + 2)))) + 1/16 * pi ^ 2",
                             "rule": {
-                                "lemma": "atan(sqrt(x ^ 2 + 2) ^ (-1)) = pi / 2 - atan(sqrt(x ^ 2 + 2))",
-                                "loc": "subterms",
-                                "name": "ApplyLemma",
-                                "str": "apply lemma on subterms"
+                                "latex_str": "rewrite to \\(\\frac{\\pi}{2} - \\arctan{(\\sqrt{x ^ {2} + 2})}\\) using identity at 0.0.0.1",
+                                "loc": "0.0.0.1",
+                                "name": "ApplyIdentity",
+                                "str": "rewrite to pi / 2 - atan(sqrt(x ^ 2 + 2)) using identity at 0.0.0.1",
+                                "target": "pi / 2 - atan(sqrt(x ^ 2 + 2))"
                             },
                             "type": "CalculationStep"
                         },

@@ -232,6 +232,43 @@ class CommonIntegral(Rule):
         return e
 
 
+class ApplyIdentity(Rule):
+    """Apply identities (trigonometric, etc) to the current term.
+    
+    The term that is rewritten to is always supplied, because there may
+    be multiple options.
+
+    """
+    def __init__(self, target: Expr):
+        self.name = "ApplyIdentity"
+        self.target = target
+
+    def __str__(self):
+        return "rewrite to %s using identity" % self.target
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self),
+            "target": str(self.target),
+            "latex_str": "rewrite to \\(%s\\) using identity" % latex.convert_expr(self.target)
+        }
+
+    def eval(self, e: Expr, ctx=None) -> Expr:
+        for identity in ctx.get_other_identities():
+            inst = expr.match(e, identity.lhs)
+            if inst is None:
+                continue
+
+            expected_rhs = identity.rhs.inst_pat(inst)
+            if expected_rhs.normalize() == self.target.normalize():
+                return self.target
+            else:
+                continue
+        
+        raise AssertionError("ApplyIdentity: no matching identity for %s" % e)
+
+
 class DefiniteIntegralIdentity(Rule):
     """Apply definite integral identity in current theory."""
     def __init__(self):

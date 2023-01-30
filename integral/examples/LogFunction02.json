@@ -1,11 +1,6 @@
 {
     "content": [
         {
-            "eq": "sin(acos(x)) = sqrt(1 - x ^ 2)",
-            "latex_eq": "\\sin{(\\arccos{(x)})} = \\sqrt{1 - x ^ {2}}",
-            "type": "Lemma"
-        },
-        {
             "eq": "(INT x:[0,1]. x ^ k * log(x)) = -1 / (k + 1) ^ 2",
             "latex_eq": "\\int_{0}^{1} x ^ {k} \\log{(x)} \\,dx = \\frac{-1}{(k + 1) ^ {2}}",
             "type": "Lemma"
@@ -190,10 +185,11 @@
                             "latex_res": "-(\\int_{0}^{1} t \\log{(t)} \\sqrt{1 - t ^ {2}} ^ {-1} (-t ^ {2} + 1) ^ {-1/2} \\,dt)",
                             "res": "-(INT t:[0,1]. t * log(t) * sqrt(1 - t ^ 2) ^ (-1) * (-(t ^ 2) + 1) ^ (-1/2))",
                             "rule": {
-                                "lemma": "sin(acos(x)) = sqrt(1 - x ^ 2)",
-                                "loc": "subterms",
-                                "name": "ApplyLemma",
-                                "str": "apply lemma on subterms"
+                                "latex_str": "rewrite to \\(\\sqrt{1 - t ^ {2}}\\) using identity at 0.0.0.1.0",
+                                "loc": "0.0.0.1.0",
+                                "name": "ApplyIdentity",
+                                "str": "rewrite to sqrt(1 - t ^ 2) using identity at 0.0.0.1.0",
+                                "target": "sqrt(1 - t ^ 2)"
                             },
                             "type": "CalculationStep"
                         },

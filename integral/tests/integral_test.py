@@ -1200,10 +1200,6 @@ class IntegralTest(unittest.TestCase):
         ctx.load_book('base')
         file = compstate.CompFile(ctx, 'LogFunction02')
 
-        e = parser.parse_expr("sin(acos(x)) = sqrt(1-x^2)")
-        lemma03 = compstate.Lemma(lemma=e, conds=None)
-        file.add_lemma(lemma03)
-
         e = parser.parse_expr("(INT x:[0,1]. x ^ k * log(x)) = -1/(k+1)^2")
         lemma04 = compstate.Lemma(lemma=e, conds=None)
         file.add_lemma(lemma04)
@@ -1241,7 +1237,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("cos(x)")
         calc.perform_rule(rules.Substitution(var_name='t', var_subst=e))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma03.lemma, conds=None)))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(target=parser.parse_expr("sqrt(1 - t^2)")), "0.0.0.1.0"))
         calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr("t")
         calc.perform_rule(rules.OnLocation(rules.Substitution(var_name='x', var_subst=e), '0'))
@@ -1327,6 +1323,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 6.2
 
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, "Ahmed Integral")
 
         conds_of_Idef = compstate.Conditions()
@@ -1338,10 +1335,6 @@ class IntegralTest(unittest.TestCase):
 
         Idef = compstate.FuncDef(eq=e, conds=conds_of_Idef)
         file.add_definition(Idef)
-
-        e = "atan(sqrt(x ^ 2 + 2) ^ (-1)) = pi/2 - atan(sqrt(x^2+2))"
-        lemma01 = compstate.Lemma(lemma=parser.parse_expr(e))
-        file.add_lemma(lemma01)
 
         goal001 = file.add_goal("I(1) = INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))")
         proof = goal001.proof_by_calculation()
@@ -1423,7 +1416,7 @@ class IntegralTest(unittest.TestCase):
         old_expr = parser.parse_expr("(x ^ 2 + 2) ^ (-1/2)")
         new_expr = parser.parse_expr("sqrt(x^2+2) ^ (-1)")
         calc.perform_rule(rules.OnLocation(rules.Equation(new_expr=new_expr, old_expr=old_expr), '0.0.0.1.0'))
-        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=lemma01.lemma,conds=lemma01.conds)))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(target=parser.parse_expr("pi/2 - atan(sqrt(x^2 + 2))")), "0.0.0.1"))
         calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(eq = goal001.goal)))

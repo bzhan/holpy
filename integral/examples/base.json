@@ -112,7 +112,12 @@
         {
             "type": "axiom",
             "expr": "atan(x ^ -1) = pi/2 - atan(x)",
-            "category": "trigonometry"
+            "category": "trigonometric"
+        },
+        {
+            "type": "axiom",
+            "expr": "sin(acos(x)) = sqrt(1-x^2)",
+            "category": "trigonometric"
         },
         {
             "type": "header",
