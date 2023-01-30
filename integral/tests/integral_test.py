@@ -488,13 +488,11 @@ class IntegralTest(unittest.TestCase):
         proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("Gamma"))
-        calc.perform_rule(rules.ElimInfInterval())
         calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("x^n"), parser.parse_expr("-exp(-x)")))
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("Gamma")))
-        calc.perform_rule(rules.ElimInfInterval())
 
         # Gamma function and factorial
         goal2 = file.add_goal("Gamma(n+1) = factorial(n)")
@@ -721,17 +719,15 @@ class IntegralTest(unittest.TestCase):
         Eq1_proof = Eq1.proof_by_calculation()
         calc = Eq1_proof.lhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
-        calc.perform_rule(rules.OnLocation(rules.ElimInfInterval(new_var='u'), '0'))
         calc.perform_rule(rules.FullSimplify())
         u = parser.parse_expr('sin(t*x)')
         v = parser.parse_expr('-exp(-x^2/2)')
-        calc.perform_rule(rules.OnLocation(rules.IntegrationByParts(u, v), '0.0'))
+        calc.perform_rule(rules.IntegrationByParts(u, v))
         calc.perform_rule(rules.FullSimplify())
 
         calc = Eq1_proof.rhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ElimInfInterval(new_var='u'), '0.1'))
 
         Eq2 = file.add_goal("(D t. log(I(t)) + t^2/2) = 0")
         Eq2_proof = Eq2.proof_by_calculation()

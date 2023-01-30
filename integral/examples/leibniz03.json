@@ -95,19 +95,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{d}{dt} \\lim\\limits_{u\\to \\infty} \\int_{0}^{u} e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx",
-                            "res": "D t. LIM {u -> oo}. INT x:[0,u]. exp(-1/2 * x ^ 2) * cos(t * x)",
-                            "rule": {
-                                "a": "0",
-                                "loc": "0",
-                                "name": "ElimInfInterval",
-                                "str": "eliminate improper integral at 0"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-(\\lim\\limits_{u\\to \\infty} \\int_{0}^{u} x e^{-1/2\\cdot x ^ {2}} \\sin{(t x)} \\,dx)",
-                            "res": "-(LIM {u -> oo}. INT x:[0,u]. x * exp(-1/2 * x ^ 2) * sin(t * x))",
+                            "latex_res": "-(\\int_{0}^{\\infty} x e^{-1/2\\cdot x ^ {2}} \\sin{(t x)} \\,dx)",
+                            "res": "-(INT x:[0,oo]. x * exp(-1/2 * x ^ 2) * sin(t * x))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -115,21 +104,20 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-(\\lim\\limits_{u\\to \\infty} (\\,(\\left. -e^{-1/2\\cdot x ^ {2}} \\sin{(t x)} \\right\\vert_{x=0}^{u}) - (\\int_{0}^{u} -t e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx)\\,))",
-                            "res": "-(LIM {u -> oo}. ([-(exp(-1/2 * x ^ 2) * sin(t * x))]_x=0,u) - (INT x:[0,u]. -(t * exp(-1/2 * x ^ 2) * cos(t * x))))",
+                            "latex_res": "-((\\left. -e^{-1/2\\cdot x ^ {2}} \\sin{(t x)} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} -t e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx))",
+                            "res": "-(([-(exp(-1/2 * x ^ 2) * sin(t * x))]_x=0,oo) - (INT x:[0,oo]. -(t * exp(-1/2 * x ^ 2) * cos(t * x))))",
                             "rule": {
-                                "latex_str": "integrate by parts \\(u \\to \\sin{(t x)}, v \\to -e^{-x ^ {2}/2}\\) at 0.0",
-                                "loc": "0.0",
+                                "latex_str": "integrate by parts \\(u \\to \\sin{(t x)}, v \\to -e^{-x ^ {2}/2}\\)",
                                 "name": "IntegrationByParts",
-                                "str": "integrate by parts u -> sin(t * x), v -> -exp(-(x ^ 2) / 2) at 0.0",
+                                "str": "integrate by parts u -> sin(t * x), v -> -exp(-(x ^ 2) / 2)",
                                 "u": "sin(t * x)",
                                 "v": "-exp(-(x ^ 2) / 2)"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-t (\\lim\\limits_{u\\to \\infty} \\int_{0}^{u} e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx)",
-                            "res": "-(t * (LIM {u -> oo}. INT x:[0,u]. exp(-1/2 * x ^ 2) * cos(t * x)))",
+                            "latex_res": "-t (\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx)",
+                            "res": "-(t * (INT x:[0,oo]. exp(-1/2 * x ^ 2) * cos(t * x)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -160,17 +148,6 @@
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-t (\\lim\\limits_{u\\to \\infty} \\int_{0}^{u} e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx)",
-                            "res": "-(t * (LIM {u -> oo}. INT x:[0,u]. exp(-1/2 * x ^ 2) * cos(t * x)))",
-                            "rule": {
-                                "a": "0",
-                                "loc": "0.1",
-                                "name": "ElimInfInterval",
-                                "str": "eliminate improper integral at 0.1"
                             },
                             "type": "CalculationStep"
                         }
