@@ -950,13 +950,6 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_goal1.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        # verify the following equation: I(a) = log(a+1)
-        goal2 = file.add_goal("I(0) = 0")
-        proof_of_goal2 = goal2.proof_by_calculation()
-        calc = proof_of_goal2.lhs_calc
-        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
-        calc.perform_rule(rules.FullSimplify())
-
         goal3 = file.add_goal("I(a) = log(a+1) + SKOLEM_CONST(C)", conds=["a >= 0"])
         proof_of_goal3 = goal3.proof_by_rewrite_goal(begin=goal1)
         calc = proof_of_goal3.begin
@@ -964,18 +957,18 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
         calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
 
-        goal4 = file.add_goal("0 = SKOLEM_CONST(C)")
+        goal4 = file.add_goal("SKOLEM_CONST(C) = 0")
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
         calc = proof_of_goal4.begin
         calc.perform_rule(rules.VarSubsOfEquation('a', expr.Const(0)))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal2.goal), '0'))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
         calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("SKOLEM_CONST(C)")))
 
         goal5 = file.add_goal("I(a) = log(a+1)", conds=["a >= 0"])
         proof_of_goal5 = goal5.proof_by_calculation()
         calc = proof_of_goal5.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal3.goal))
-        # didn't check condition about goal4
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), '1'))
         calc.perform_rule(rules.FullSimplify())
 

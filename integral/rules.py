@@ -2509,6 +2509,9 @@ class SolveEquation(Rule):
         assert e.is_equals()
 
         # Try something simple
+        if e.rhs == self.be_solved_expr:
+            return Op("=", self.be_solved_expr, e.lhs)
+
         if e.rhs.is_plus() and e.rhs.args[1] == self.be_solved_expr:
             return Op("=", self.be_solved_expr, (e.lhs - e.rhs.args[0]).normalize())
 

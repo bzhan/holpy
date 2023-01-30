@@ -83,51 +83,6 @@
             "type": "Goal"
         },
         {
-            "finished": true,
-            "goal": "I(0) = 0",
-            "latex_goal": "I{(0)} = 0",
-            "proof": {
-                "finished": true,
-                "goal": "I(0) = 0",
-                "latex_goal": "I{(0)} = 0",
-                "lhs_calc": {
-                    "latex_start": "I{(0)}",
-                    "start": "I(0)",
-                    "steps": [
-                        {
-                            "latex_res": "\\int_{0}^{1} 0 \\,dx",
-                            "res": "INT x:[0,1]. 0",
-                            "rule": {
-                                "func_name": "I",
-                                "loc": "subterms",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition on subterms"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "0",
-                            "res": "0",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "rhs_calc": {
-                    "latex_start": "0",
-                    "start": "0",
-                    "steps": [],
-                    "type": "Calculation"
-                },
-                "type": "CalculationProof"
-            },
-            "type": "Goal"
-        },
-        {
             "conds": [
                 {
                     "cond": "a >= 0",
@@ -189,12 +144,12 @@
         },
         {
             "finished": true,
-            "goal": "0 = SKOLEM_CONST(C)",
-            "latex_goal": "0 = C",
+            "goal": "SKOLEM_CONST(C) = 0",
+            "latex_goal": "C = 0",
             "proof": {
                 "finished": true,
-                "goal": "0 = SKOLEM_CONST(C)",
-                "latex_goal": "0 = C",
+                "goal": "SKOLEM_CONST(C) = 0",
+                "latex_goal": "C = 0",
                 "start": {
                     "conds": [
                         {
@@ -218,14 +173,13 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 = \\log{(0 + 1)} + C",
-                            "res": "0 = log(0 + 1) + SKOLEM_CONST(C)",
+                            "latex_res": "\\int_{0}^{1} 0 \\,dx = \\log{(0 + 1)} + C",
+                            "res": "(INT x:[0,1]. 0) = log(0 + 1) + SKOLEM_CONST(C)",
                             "rule": {
-                                "eq": "I(0) = 0",
-                                "latex_str": "apply equation \\(I{(0)} = 0\\) at 0",
-                                "loc": "0",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: I(0) = 0 at 0"
+                                "func_name": "I",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
                             },
                             "type": "CalculationStep"
                         },
@@ -235,6 +189,17 @@
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "C = 0",
+                            "res": "SKOLEM_CONST(C) = 0",
+                            "rule": {
+                                "latex_str": "solve equation for \\(C\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "SKOLEM_CONST(C)",
+                                "str": "solve equation for SKOLEM_CONST(C)"
                             },
                             "type": "CalculationStep"
                         }
@@ -278,11 +243,11 @@
                             "latex_res": "\\log{(a + 1)} + 0",
                             "res": "log(a + 1) + 0",
                             "rule": {
-                                "eq": "0 = SKOLEM_CONST(C)",
-                                "latex_str": "apply equation \\(0 = C\\) at 1",
+                                "eq": "SKOLEM_CONST(C) = 0",
+                                "latex_str": "apply equation \\(C = 0\\) at 1",
                                 "loc": "1",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: 0 = SKOLEM_CONST(C) at 1"
+                                "str": "apply equation: SKOLEM_CONST(C) = 0 at 1"
                             },
                             "type": "CalculationStep"
                         },
