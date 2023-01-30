@@ -1512,14 +1512,14 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{0}^{1} x \\arctan{x} \\,dx",
+            "latex_start": "\\int_{0}^{1} x \\tan^{-1}{x} \\,dx",
             "start": "INT x:[0,1]. x * atan(x)",
             "steps": [
                 {
-                    "latex_res": "(\\left. \\frac{1}{2} x ^ {2} \\arctan{x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{1}{2} x ^ {2} (x ^ {2} + 1) ^ {-1} \\,dx)",
+                    "latex_res": "(\\left. \\frac{1}{2} x ^ {2} \\tan^{-1}{x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{1}{2} x ^ {2} (x ^ {2} + 1) ^ {-1} \\,dx)",
                     "res": "([1/2 * x ^ 2 * atan(x)]_x=0,1) - (INT x:[0,1]. 1/2 * x ^ 2 * (x ^ 2 + 1) ^ (-1))",
                     "rule": {
-                        "latex_str": "integrate by parts \\(u \\to \\frac{\\arctan{x}}{2}, v \\to x ^ {2}\\)",
+                        "latex_str": "integrate by parts \\(u \\to \\frac{\\tan^{-1}{x}}{2}, v \\to x ^ {2}\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> atan(x) / 2, v -> x ^ 2",
                         "u": "atan(x) / 2",

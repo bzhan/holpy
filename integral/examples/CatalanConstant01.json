@@ -9,13 +9,13 @@
         {
             "finished": true,
             "goal": "(INT x:[0,1]. atan(x) / x) = G",
-            "latex_goal": "\\int_{0}^{1} \\frac{\\arctan{x}}{x} \\,dx = G",
+            "latex_goal": "\\int_{0}^{1} \\frac{\\tan^{-1}{x}}{x} \\,dx = G",
             "proof": {
                 "finished": true,
                 "goal": "(INT x:[0,1]. atan(x) / x) = G",
-                "latex_goal": "\\int_{0}^{1} \\frac{\\arctan{x}}{x} \\,dx = G",
+                "latex_goal": "\\int_{0}^{1} \\frac{\\tan^{-1}{x}}{x} \\,dx = G",
                 "lhs_calc": {
-                    "latex_start": "\\int_{0}^{1} \\frac{\\arctan{x}}{x} \\,dx",
+                    "latex_start": "\\int_{0}^{1} \\frac{\\tan^{-1}{x}}{x} \\,dx",
                     "start": "INT x:[0,1]. atan(x) / x",
                     "steps": [
                         {

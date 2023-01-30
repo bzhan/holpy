@@ -171,7 +171,7 @@
                     "start": "D t. log(I(t)) + t ^ 2 / 2",
                     "steps": [
                         {
-                            "latex_res": "I^{-1}(t) (\\frac{d}{dt} I{(t)}) + t",
+                            "latex_res": "I{(t)} ^ {-1} (\\frac{d}{dt} I{(t)}) + t",
                             "res": "I(t) ^ (-1) * (D t. I(t)) + t",
                             "rule": {
                                 "name": "FullSimplify",
@@ -180,7 +180,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I^{-1}(t) (-t I{(t)}) + t",
+                            "latex_res": "I{(t)} ^ {-1} (-t I{(t)}) + t",
                             "res": "I(t) ^ (-1) * (-t * I(t)) + t",
                             "rule": {
                                 "eq": "(D t. I(t)) = -t * I(t)",

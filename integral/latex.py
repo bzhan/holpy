@@ -3,7 +3,6 @@
 from decimal import Decimal
 from fractions import Fraction
 from integral import expr
-from integral.expr import EVAL_AT, OP, CONST, FUN, Const, Op
 
 
 def convert_expr(e: expr.Expr, mode: str = "large") -> str:
@@ -46,24 +45,26 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
             sx = convert_expr(x, mode)
             sy = convert_expr(y, mode)
             if e.op == '^':
-                if y.ty == expr.CONST and isinstance(y.val, Fraction) and y.val.numerator == 1:
+                if y.is_const() and isinstance(y.val, Fraction) and y.val.numerator == 1:
                     # Square root and other root cases
                     if y.val.denominator == 2:
                         return "\\sqrt{%s}" % sx
                     else:
                         return "\\sqrt[%s]{%s}" % (y.val.denominator, sx)
-                elif isinstance(x, expr.Fun) and len(x.args) > 0 and x.func_name != "abs" \
-                        and x.func_name in ('log', 'cos', 'sin', 'tan', 'sec', 'csc', 'cot'):
-                    # If base is logarithmic or trigonometric function, use special format
+                elif x.is_fun() and len(x.args) > 0 and x.func_name == 'log':
+                    # Logarithmic function
                     sy = convert_expr(y, mode="short")
                     return "\%s^{%s}(%s)" % (x.func_name, sy, convert_expr(x.args[0]))
-                elif isinstance(x, expr.Fun) and len(x.args) > 0 and \
-                        x.func_name not in ("abs", "factorial", "sqrt"):
+                elif x.is_fun() and x.func_name in ('cos', 'sin', 'tan', 'sec', 'csc', 'cot') \
+                        and y not in (expr.Const(-1), -expr.Const(1)):
+                    # For trigonometric function, use special format.
+                    # This should NOT be used when the exponent is -1, since this conflicts with
+                    # usual notation for inverse trigonometric functions
                     sy = convert_expr(y, mode="short")
-                    return "%s^{%s}(%s)" % (x.func_name, sy, convert_expr(x.args[0]))
-                elif isinstance(x, expr.Const) and x.val < 0:
+                    return "\%s^{%s}(%s)" % (x.func_name, sy, convert_expr(x.args[0]))
+                elif x.is_const() and x.val < 0:
                     return "(%s) ^ {%s}" % (sx,sy)
-                elif isinstance(x, expr.Fun) and x.func_name == 'factorial':
+                elif x.is_fun() and x.func_name == 'factorial':
                     return "(%s)^{%s}" % (sx,sy)
                 else:
                     # Ordinary cases
@@ -138,15 +139,15 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
             elif e.func_name == "atan":
                 if not x.is_var():
                     sx = "(" + sx + ")"
-                return "\\arctan{%s}" % sx
+                return "\\tan^{-1}{%s}" % sx
             elif e.func_name == "asin":
                 if not x.is_var():
                     sx = "(" + sx + ")"
-                return "\\arcsin{%s}" % sx
+                return "\\sin^{-1}{%s}" % sx
             elif e.func_name == "acos":
                 if not x.is_var():
                     sx = "(" + sx + ")"
-                return "\\arccos{%s}" % sx
+                return "\\cos^{-1}{%s}" % sx
             elif e.func_name in ('log', 'sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
                 if not x.is_var():
                     sx = "(" + sx + ")"
@@ -198,7 +199,6 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
             return e.name
         else:
             return e.name+'('+', '.join([str(arg) for arg in list(e.dependent_vars)])+')'
-        return "%s" % str(e)
     elif e.is_summation():
         lower = convert_expr(e.lower, mode)
         upper = convert_expr(e.upper, mode)

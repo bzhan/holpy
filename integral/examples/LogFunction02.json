@@ -151,7 +151,7 @@
                     "start": "INT x:[0,pi / 2]. cos(x) / sin(x) * log(1 / cos(x))",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1} t \\sin^{-1}(\\arccos{t}) \\log{(t ^ {-1})} (-t ^ {2} + 1) ^ {-1/2} \\,dt",
+                            "latex_res": "\\int_{0}^{1} t \\sin{(\\cos^{-1}{t})} ^ {-1} \\log{(t ^ {-1})} (-t ^ {2} + 1) ^ {-1/2} \\,dt",
                             "res": "INT t:[0,1]. t * sin(acos(t)) ^ (-1) * log(t ^ (-1)) * (-(t ^ 2) + 1) ^ (-1/2)",
                             "rule": {
                                 "latex_str": "substitute \\(t\\) for \\(\\cos{x}\\)",
@@ -163,7 +163,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-(\\int_{0}^{1} t \\log{t} \\sin^{-1}(\\arccos{t}) (-t ^ {2} + 1) ^ {-1/2} \\,dt)",
+                            "latex_res": "-(\\int_{0}^{1} t \\log{t} \\sin{(\\cos^{-1}{t})} ^ {-1} (-t ^ {2} + 1) ^ {-1/2} \\,dt)",
                             "res": "-(INT t:[0,1]. t * log(t) * sin(acos(t)) ^ (-1) * (-(t ^ 2) + 1) ^ (-1/2))",
                             "rule": {
                                 "name": "FullSimplify",

@@ -12,7 +12,7 @@
                 }
             ],
             "eq": "I(a,b) = (INT x:[0,oo]. (atan(a * x) - atan(b * x)) / x)",
-            "latex_eq": "I(a,b) = \\int_{0}^{\\infty} \\frac{\\arctan{(a x)} - \\arctan{(b x)}}{x} \\,dx",
+            "latex_eq": "I(a,b) = \\int_{0}^{\\infty} \\frac{\\tan^{-1}{(a x)} - \\tan^{-1}{(b x)}}{x} \\,dx",
             "latex_lhs": "I(a,b)",
             "type": "FuncDef"
         },
@@ -35,7 +35,7 @@
                     "start": "D a. I(a,b)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{d}{da} \\int_{0}^{\\infty} x ^ {-1} (\\arctan{(a x)} - \\arctan{(b x)}) \\,dx",
+                            "latex_res": "\\frac{d}{da} \\int_{0}^{\\infty} x ^ {-1} (\\tan^{-1}{(a x)} - \\tan^{-1}{(b x)}) \\,dx",
                             "res": "D a. INT x:[0,oo]. x ^ (-1) * (atan(a * x) - atan(b * x))",
                             "rule": {
                                 "func_name": "I",
@@ -46,7 +46,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{da} x ^ {-1} (\\arctan{(a x)} - \\arctan{(b x)}) \\,dx",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{da} x ^ {-1} (\\tan^{-1}{(a x)} - \\tan^{-1}{(b x)}) \\,dx",
                             "res": "INT x:[0,oo]. D a. x ^ (-1) * (atan(a * x) - atan(b * x))",
                             "rule": {
                                 "name": "DerivIntExchange",

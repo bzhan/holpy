@@ -209,11 +209,11 @@
             ],
             "finished": true,
             "goal": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
-            "latex_goal": "g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)",
+            "latex_goal": "g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)",
             "proof": {
                 "finished": true,
                 "goal": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
-                "latex_goal": "g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)",
+                "latex_goal": "g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)",
                 "start": {
                     "conds": [
                         {
@@ -255,7 +255,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "g(y,a) = -a (a ^ {-1} \\arctan{(\\frac{y}{a})}) + C(a)",
+                            "latex_res": "g(y,a) = -a (a ^ {-1} \\tan^{-1}{(\\frac{y}{a})}) + C(a)",
                             "res": "g(y,a) = -(a * (a ^ (-1) * atan(y / a))) + SKOLEM_FUNC(C(a))",
                             "rule": {
                                 "loc": "1",
@@ -265,7 +265,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "g(y,a) = -\\arctan{(a ^ {-1} y)} + C(a)",
+                            "latex_res": "g(y,a) = -\\tan^{-1}{(a ^ {-1} y)} + C(a)",
                             "res": "g(y,a) = -atan(a ^ (-1) * y) + SKOLEM_FUNC(C(a))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -369,11 +369,11 @@
                             "latex_cond": "a \\neq 0"
                         }
                     ],
-                    "latex_start": "g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)",
+                    "latex_start": "g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)",
                     "start": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
                     "steps": [
                         {
-                            "latex_res": "\\lim\\limits_{y\\to \\infty} g(y,a) = \\lim\\limits_{y\\to \\infty} (\\,-\\arctan{(\\frac{y}{a})} + C(a)\\,)",
+                            "latex_res": "\\lim\\limits_{y\\to \\infty} g(y,a) = \\lim\\limits_{y\\to \\infty} (\\,-\\tan^{-1}{(\\frac{y}{a})} + C(a)\\,)",
                             "res": "(LIM {y -> oo}. g(y,a)) = (LIM {y -> oo}. -atan(y / a) + SKOLEM_FUNC(C(a)))",
                             "rule": {
                                 "latex_str": "apply limit \\(y \\to \\infty\\) to equation",
@@ -385,7 +385,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 = \\lim\\limits_{y\\to \\infty} (\\,-\\arctan{(\\frac{y}{a})} + C(a)\\,)",
+                            "latex_res": "0 = \\lim\\limits_{y\\to \\infty} (\\,-\\tan^{-1}{(\\frac{y}{a})} + C(a)\\,)",
                             "res": "0 = (LIM {y -> oo}. -atan(y / a) + SKOLEM_FUNC(C(a)))",
                             "rule": {
                                 "eq": "(LIM {y -> oo}. g(y,a)) = 0",
@@ -448,11 +448,11 @@
                             "latex_cond": "a \\neq 0"
                         }
                     ],
-                    "latex_start": "g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)",
+                    "latex_start": "g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)",
                     "start": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
                     "steps": [
                         {
-                            "latex_res": "\\lim\\limits_{y\\to \\infty} g(y,a) = \\lim\\limits_{y\\to \\infty} (\\,-\\arctan{(\\frac{y}{a})} + C(a)\\,)",
+                            "latex_res": "\\lim\\limits_{y\\to \\infty} g(y,a) = \\lim\\limits_{y\\to \\infty} (\\,-\\tan^{-1}{(\\frac{y}{a})} + C(a)\\,)",
                             "res": "(LIM {y -> oo}. g(y,a)) = (LIM {y -> oo}. -atan(y / a) + SKOLEM_FUNC(C(a)))",
                             "rule": {
                                 "latex_str": "apply limit \\(y \\to \\infty\\) to equation",
@@ -464,7 +464,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 = \\lim\\limits_{y\\to \\infty} (\\,-\\arctan{(\\frac{y}{a})} + C(a)\\,)",
+                            "latex_res": "0 = \\lim\\limits_{y\\to \\infty} (\\,-\\tan^{-1}{(\\frac{y}{a})} + C(a)\\,)",
                             "res": "0 = (LIM {y -> oo}. -atan(y / a) + SKOLEM_FUNC(C(a)))",
                             "rule": {
                                 "eq": "(LIM {y -> oo}. g(y,a)) = 0",
@@ -577,18 +577,18 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\arctan{(\\frac{0}{a})} + C(a)",
+                            "latex_res": "-\\tan^{-1}{(\\frac{0}{a})} + C(a)",
                             "res": "-atan(0 / a) + SKOLEM_FUNC(C(a))",
                             "rule": {
                                 "eq": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
-                                "latex_str": "apply equation \\(g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)\\)",
+                                "latex_str": "apply equation \\(g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)\\)",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\arctan{(\\frac{0}{a})} + \\frac{1}{2} \\pi",
+                            "latex_res": "-\\tan^{-1}{(\\frac{0}{a})} + \\frac{1}{2} \\pi",
                             "res": "-atan(0 / a) + 1/2 * pi",
                             "rule": {
                                 "eq": "SKOLEM_FUNC(C(a)) = 1/2 * pi",
@@ -651,18 +651,18 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\arctan{(\\frac{0}{a})} + C(a)",
+                            "latex_res": "-\\tan^{-1}{(\\frac{0}{a})} + C(a)",
                             "res": "-atan(0 / a) + SKOLEM_FUNC(C(a))",
                             "rule": {
                                 "eq": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
-                                "latex_str": "apply equation \\(g(y,a) = -\\arctan{(\\frac{y}{a})} + C(a)\\)",
+                                "latex_str": "apply equation \\(g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)\\)",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\arctan{(\\frac{0}{a})} + -\\frac{1}{2} \\pi",
+                            "latex_res": "-\\tan^{-1}{(\\frac{0}{a})} + -\\frac{1}{2} \\pi",
                             "res": "-atan(0 / a) + -1/2 * pi",
                             "rule": {
                                 "eq": "SKOLEM_FUNC(C(a)) = -1/2 * pi",
