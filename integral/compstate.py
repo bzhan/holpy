@@ -123,37 +123,6 @@ class FuncDef(StateItem):
         return [self.eq]
 
 
-class Lemma(StateItem):
-    """Introduce lemma for assisting proof"""
-    def __init__(self, lemma: Expr, conds: Conditions = None):
-        assert isinstance(lemma, Expr)
-        self.lemma = lemma
-        self.conds = conds
-
-    def __str__(self):
-        res = "Lemma\n"
-        res2 = ""
-        first = True
-        if self.conds != None:
-            for v in self.conds.data:
-                if first:
-                    res2 += str(v)
-                else:
-                    res2 += ", " + str(v)
-        res += "  %s%s\n" % (self.lemma, (" for "+ res2) if self.conds!=None else "")
-        return res
-
-    def export(self):
-        res = {
-            "type": "Lemma",
-            "eq": str(self.lemma),
-            "latex_eq": latex.convert_expr(self.lemma)
-        }
-        if self.conds is not None and self.conds.data:
-            res["conds"] = self.conds.export()
-        return res
-
-
 class Goal(StateItem):
     """Goal to be proved."""
     def __init__(self, parent, goal: Expr, conds: Optional[Conditions] = None):
@@ -635,10 +604,6 @@ class CompFile:
             raise NotImplementedError
         return self.content[-1]
 
-    def add_lemma(self, lemma: Lemma):
-        """Add a assumption"""
-        self.content.append(lemma)
-
     def add_item(self, item: StateItem):
         """Add item of arbitrary type"""
         self.content.append(item)
@@ -811,11 +776,6 @@ def parse_item(parent, item) -> StateItem:
         res = Goal(parent, goal, conds=conds)
         if 'proof' in item:
             res.proof = parse_item(res, item['proof'])
-        return res
-    elif item['type'] == 'Lemma':
-        eq = parser.parse_expr(item['eq'])
-        conds = parse_conds(item)
-        res = Lemma(eq, conds=conds)
         return res
     elif item['type'] == 'CalculationProof':
         goal = parser.parse_expr(item['goal'])
