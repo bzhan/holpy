@@ -420,7 +420,7 @@ class IntegralTest(unittest.TestCase):
 
     def testWallis(self):
         # Reference:
-        # Inside interesting integrals, Section 4.2
+        # Irresistable Integrals, Section 2.3
 
         ctx = context.Context()
         ctx.load_book('base')
@@ -584,7 +584,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof.begin
         calc.perform_rule(rules.DerivEquation('a'))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.MulEquation(parser.parse_expr("1 / (-2 * a)")))
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-2)")))
 
         # Derivate again:
         goal3 = file.add_goal("(INT x:[0,oo]. 1 / (x^2 + a^2)^3) = 3*pi / (16 * a^5)", conds=["a > 0"])
@@ -592,7 +592,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof.begin
         calc.perform_rule(rules.DerivEquation('a'))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.MulEquation(parser.parse_expr("1 / (-4 * a)")))
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-3)")))
 
         self.checkAndOutput(file, "leibniz01")
 
@@ -761,7 +761,7 @@ class IntegralTest(unittest.TestCase):
         Eq6 = file.add_goal("I(t) = sqrt(pi/2) * exp(-t^2/2)")
         Eq6_proof = Eq6.proof_by_rewrite_goal(begin=Eq5)
         calc = Eq6_proof.begin
-        calc.perform_rule(rules.ExpEquation())
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("I(t)")))
         calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1'))
         calc.perform_rule(rules.FullSimplify())
 
@@ -1207,14 +1207,12 @@ class IntegralTest(unittest.TestCase):
                 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)")
         proof_of_goal02 = goal02.proof_by_rewrite_goal(begin = goal01)
         calc = proof_of_goal02.begin
-
         calc.perform_rule(rules.DerivEquation('x'))
         calc.perform_rule(rules.FullSimplify())
         old_expr = parser.parse_expr("(-x + 1) ^ (-1) - (x + 1) ^ (-1)")
         new_expr = parser.parse_expr("2 * (x / (1-x^2))")
         calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
-        e = parser.parse_expr('1/2')
-        calc.perform_rule(rules.MulEquation(e = e))
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("x / (1-x^2)")))
 
         goal03 = file.add_goal("(INT x:[0, pi/2]. cos(x)/sin(x) * log(1/cos(x))) = pi^2/24")
         proof_of_goal03 = goal03.proof_by_calculation()

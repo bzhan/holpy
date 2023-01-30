@@ -2294,29 +2294,6 @@ class IntegralSimplify(Rule):
         }
 
 
-class ExpEquation(Rule):
-    """Apply exponential to both sides of an equation."""
-    def __init__(self):
-        self.name = "ExpEquation"
-
-    def __str__(self):
-        return "apply exponential to equation"
-
-    def eval(self, e: Expr, ctx=None):
-        r = FullSimplify()
-        a = Fun('exp', e.lhs)
-        b = Fun('exp', e.rhs)
-        # a = r.eval(a)
-        # b = r.eval(b)
-        return Op('=', a, b)
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-
 class RewriteLog(Rule):
     """Rewriting rules for logarithms.
     
@@ -2557,26 +2534,6 @@ class DerivSumExchange(Rule):
             return e
 
 
-class MulEquation(Rule):
-    """Multiply both sides of equality by an expression."""
-    def __init__(self, e: Expr):
-        self.name = "MulEquation"
-        self.e = e
-
-    def __str__(self):
-        return "multiply an expression on both sides"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self),
-            "expr": str(self.e)
-        }
-
-    def eval(self, e: Expr, ctx=None) -> Expr:
-        return Op('=', e.lhs * self.e, e.rhs * self.e).normalize()
-
-
 class RewriteMulPower(Rule):
     """Merge expression into a power expression.
 
@@ -2624,7 +2581,13 @@ class SolveEquation(Rule):
 
         # Try something simple
         if e.rhs.is_plus() and e.rhs.args[1] == self.be_solved_expr:
-            return Op("=", self.be_solved_expr, e.lhs - e.rhs.args[0])
+            return Op("=", self.be_solved_expr, (e.lhs - e.rhs.args[0]).normalize())
+
+        if e.lhs.is_times() and e.lhs.args[1] == self.be_solved_expr:
+            return Op("=", self.be_solved_expr, (e.rhs / e.lhs.args[0]).normalize())
+
+        if e.lhs.is_fun() and e.lhs.func_name == 'log' and e.lhs.args[0] == self.be_solved_expr:
+            return Op("=", self.be_solved_expr, expr.exp(e.rhs))
 
         all_vars = e.get_vars()
         var_name = ""

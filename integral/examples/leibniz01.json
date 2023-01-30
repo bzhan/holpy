@@ -140,9 +140,10 @@
                             "latex_res": "\\int_{0}^{\\infty} (a ^ {2} + x ^ {2}) ^ {-2} \\,dx = \\frac{1}{4} \\pi a ^ {-3}",
                             "res": "(INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-2)) = 1/4 * pi * a ^ (-3)",
                             "rule": {
-                                "expr": "1 / (-2 * a)",
-                                "name": "MulEquation",
-                                "str": "multiply an expression on both sides"
+                                "latex_str": "solve equation for \\(\\int_{0}^{\\infty} (a ^ {2} + x ^ {2}) ^ {-2} \\,dx\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-2)",
+                                "str": "solve equation for INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-2)"
                             },
                             "type": "CalculationStep"
                         }
@@ -200,9 +201,10 @@
                             "latex_res": "\\int_{0}^{\\infty} (a ^ {2} + x ^ {2}) ^ {-3} \\,dx = \\frac{3}{16} \\pi a ^ {-5}",
                             "res": "(INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-3)) = 3/16 * pi * a ^ (-5)",
                             "rule": {
-                                "expr": "1 / (-4 * a)",
-                                "name": "MulEquation",
-                                "str": "multiply an expression on both sides"
+                                "latex_str": "solve equation for \\(\\int_{0}^{\\infty} (a ^ {2} + x ^ {2}) ^ {-3} \\,dx\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-3)",
+                                "str": "solve equation for INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-3)"
                             },
                             "type": "CalculationStep"
                         }

@@ -122,12 +122,13 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1) ^ {k} (-x) ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}",
-                            "res": "x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, (-1) ^ k * (-x) ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)",
+                            "latex_res": "\\frac{x}{1 - x ^ {2}} = \\frac{1}{2} (\\sum_{k=0}^{\\infty}{(-1) ^ {k} (-x) ^ {k}} - \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}})",
+                            "res": "x / (1 - x ^ 2) = 1/2 * (SUM(k, 0, oo, (-1) ^ k * (-x) ^ k) - SUM(k, 0, oo, x ^ k * (-1) ^ k))",
                             "rule": {
-                                "expr": "1/2",
-                                "name": "MulEquation",
-                                "str": "multiply an expression on both sides"
+                                "latex_str": "solve equation for \\(\\frac{x}{1 - x ^ {2}}\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "x / (1 - x ^ 2)",
+                                "str": "solve equation for x / (1 - x ^ 2)"
                             },
                             "type": "CalculationStep"
                         }

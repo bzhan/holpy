@@ -136,11 +136,6 @@
             "level": 2
         },
         {
-            "type": "problem",
-            "expr": "(INT x:[0,oo]. 1/(x^2+b)^(m+1)) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))",
-            "path": "wallis"
-        },
-        {
             "type": "header",
             "name": "5. Using Power Series to Evaluate Integrals",
             "level": 1

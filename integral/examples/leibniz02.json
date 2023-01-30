@@ -603,8 +603,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx = \\frac{\\sqrt{2} \\sqrt{\\pi}}{2}",
-                            "res": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) = sqrt(2) * sqrt(pi) / 2",
+                            "latex_res": "\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx = \\frac{1}{2} \\sqrt{2} \\sqrt{\\pi}",
+                            "res": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) = 1/2 * sqrt(2) * sqrt(pi)",
                             "rule": {
                                 "latex_str": "solve equation for \\(\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx\\)",
                                 "name": "SolveEquation",

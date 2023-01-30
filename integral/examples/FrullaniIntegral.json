@@ -256,8 +256,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = I(a,a) - \\frac{1}{2} \\pi \\log{a}",
-                            "res": "SKOLEM_FUNC(C(a)) = I(a,a) - 1/2 * pi * log(a)",
+                            "latex_res": "C(a) = -\\frac{1}{2} \\pi \\log{a} + I(a,a)",
+                            "res": "SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a) + I(a,a)",
                             "rule": {
                                 "latex_str": "solve equation for \\(C(a)\\)",
                                 "name": "SolveEquation",
@@ -267,8 +267,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = (\\int_{0}^{\\infty} 0 \\,dx) - \\frac{1}{2} \\pi \\log{a}",
-                            "res": "SKOLEM_FUNC(C(a)) = (INT x:[0,oo]. 0) - 1/2 * pi * log(a)",
+                            "latex_res": "C(a) = -\\frac{1}{2} \\pi \\log{a} + (\\int_{0}^{\\infty} 0 \\,dx)",
+                            "res": "SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a) + (INT x:[0,oo]. 0)",
                             "rule": {
                                 "func_name": "I",
                                 "loc": "subterms",

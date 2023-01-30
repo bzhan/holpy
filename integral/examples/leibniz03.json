@@ -383,17 +383,19 @@
                     "start": "log(I(t)) = -(t ^ 2) / 2 + log(sqrt(pi / 2))",
                     "steps": [
                         {
-                            "latex_res": "e^{\\log{(I{(t)})}} = e^{-t ^ {2}/2 + \\log{(\\sqrt{\\pi/2})}}",
-                            "res": "exp(log(I(t))) = exp(-(t ^ 2) / 2 + log(sqrt(pi / 2)))",
+                            "latex_res": "I{(t)} = e^{-t ^ {2}/2 + \\log{(\\sqrt{\\pi/2})}}",
+                            "res": "I(t) = exp(-(t ^ 2) / 2 + log(sqrt(pi / 2)))",
                             "rule": {
-                                "name": "ExpEquation",
-                                "str": "apply exponential to equation"
+                                "latex_str": "solve equation for \\(I{(t)}\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "I(t)",
+                                "str": "solve equation for I(t)"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "e^{\\log{(I{(t)})}} = e^{-t ^ {2}/2}\\cdot e^{\\log{(\\sqrt{\\pi/2})}}",
-                            "res": "exp(log(I(t))) = exp(-(t ^ 2) / 2) * exp(log(sqrt(pi / 2)))",
+                            "latex_res": "I{(t)} = e^{-t ^ {2}/2}\\cdot e^{\\log{(\\sqrt{\\pi/2})}}",
+                            "res": "I(t) = exp(-(t ^ 2) / 2) * exp(log(sqrt(pi / 2)))",
                             "rule": {
                                 "loc": "1",
                                 "name": "RewriteExp",

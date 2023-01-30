@@ -773,11 +773,6 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'DerivEquation':
         var = item['var']
         return rules.DerivEquation(var)
-    elif item['name'] == 'MulEquation':
-        e = parser.parse_expr(item['expr'])
-        return rules.MulEquation(e)
-    elif item['name'] == 'ExpEquation':
-        return rules.ExpEquation()
     elif item['name'] == 'LimFunExchange':
         return rules.LimFunExchange()
     elif item['name'] == 'LimIntExchange':
