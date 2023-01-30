@@ -577,7 +577,7 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
         else:
             return Limit(expr.Fun('atan', l.e))
     elif e.is_fun() and e.func_name == 'log':
-        l = limit_of_expr(e.args[0], var_name, conds = conds)
+        l = limit_of_expr(e.args[0], var_name, conds=conds)
         if l.e is None or l.e == NEG_INF or is_negative(l.e, conds=conds) or \
             l.e.is_const() and l.e.val==0 and l.side == FROM_BELOW:
             return Limit(None)
@@ -611,6 +611,20 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
                 return Limit(expr.Fun('sqrt', l.e), asymp=Exp(1/2 *l.asymp.order), side=l.side)
             else:
                 raise AssertionError("Unknown asymptote!")
+    elif e.is_fun() and len(e.args) == 1:
+        l = limit_of_expr(e.args[0], var_name, conds)
+        if l.e is None or l.e.is_inf():
+            return Limit(None)
+        else:
+            return Limit(expr.Fun(e.func_name, l.e))
+    elif e.is_integral():
+        body = limit_of_expr(e.body, var_name, conds)
+        lower = limit_of_expr(e.lower, var_name, conds)
+        upper = limit_of_expr(e.upper, var_name, conds)
+        if body.e is None or lower.e is None or upper.e is None or body.e.is_inf():
+            return Limit(None)
+        else:
+            return Limit(expr.Integral(e.var, lower.e, upper.e, body.e))
     else:
         # TODO: add support for other functions
         return Limit(None)

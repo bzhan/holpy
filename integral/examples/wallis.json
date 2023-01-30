@@ -149,8 +149,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\sqrt{b} (\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} (b u ^ {2} + b) ^ {-1} \\,du)",
-                                    "res": "sqrt(b) * (LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. (b * u ^ 2 + b) ^ (-1))",
+                                    "latex_res": "\\sqrt{b} (\\int_{0}^{\\infty} (b u ^ {2} + b) ^ {-1} \\,du)",
+                                    "res": "sqrt(b) * (INT u:[0,oo]. (b * u ^ 2 + b) ^ (-1))",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"
@@ -158,8 +158,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\sqrt{b} (\\lim\\limits_{t\\to \\infty} \\int_{0}^{b ^ {-1/2} t} b ^ {-1} (1 + u ^ {2}) ^ {-1} \\,du)",
-                                    "res": "sqrt(b) * (LIM {t -> oo}. INT u:[0,b ^ (-1/2) * t]. b ^ (-1) * (1 + u ^ 2) ^ (-1))",
+                                    "latex_res": "\\sqrt{b} (\\int_{0}^{\\infty} b ^ {-1} (1 + u ^ {2}) ^ {-1} \\,du)",
+                                    "res": "sqrt(b) * (INT u:[0,oo]. b ^ (-1) * (1 + u ^ 2) ^ (-1))",
                                     "rule": {
                                         "latex_str": "rewriting \\((b u ^ {2} + b) ^ {-1}\\) to \\(b ^ {-1} (1 + u ^ {2}) ^ {-1}\\)",
                                         "name": "Equation",

@@ -618,7 +618,6 @@ class IntegralTest(unittest.TestCase):
         calc = Eq1_proof.rhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("g")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.RewriteLimit(), '1'))
         calc.perform_rule(rules.OnLocation(rules.ElimAbs(), '1'))
 
         Eq2 = file.add_goal("(D t. g(t) + 2 * INT y:[0, 1].exp(-(1+y^2)*t^2/2)/(1+y^2)) = 0")
@@ -669,12 +668,6 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_Eq7.lhs_calc
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
         calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(Eq6.goal)))
-        calc.perform_rule(rules.OnLocation(rules.LimFunExchange(), '1'))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.LimIntExchange(), '1.0.0.1'))
-        old_expr = parser.parse_expr("1/2 * t ^ 2 * (-(y ^ 2) - 1)")
-        new_expr = parser.parse_expr("-1/2 * t^2 * (y^2+1)")
-        calc.perform_rule(rules.Equation(old_expr=old_expr,new_expr=new_expr))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_Eq7.rhs_calc
         calc.perform_rule(rules.FullSimplify())

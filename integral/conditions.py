@@ -1,5 +1,7 @@
 """Conditions"""
 
+from typing import Optional
+
 from integral import expr
 from integral.expr import Expr
 from integral import latex
@@ -31,8 +33,11 @@ class Conditions:
         return res
 
 
-def is_positive(e: Expr, conds: Conditions) -> bool:
+def is_positive(e: Expr, conds: Optional[Conditions]) -> bool:
     """Return whether conditions imply e is positive."""
+    if conds is None:
+        return False
+
     if e.is_const():
         return e.val > 0
 
@@ -68,7 +73,10 @@ def is_positive(e: Expr, conds: Conditions) -> bool:
 
     return False
 
-def is_not_negative(e: Expr, conds: Conditions) -> bool:
+def is_not_negative(e: Expr, conds: Optional[Conditions]) -> bool:
+    if conds is None:
+        return False
+
     if e.is_const():
         return True if e.val >= 0 else False
     elif e.is_plus():
@@ -85,8 +93,11 @@ def is_not_negative(e: Expr, conds: Conditions) -> bool:
         # TODO: many cases are missing
         return False
 
-def is_negative(e: Expr, conds: Conditions) -> bool:
+def is_negative(e: Expr, conds: Optional[Conditions]) -> bool:
     """Return whether conditions imply e is negative."""
+    if conds is None:
+        return False
+
     if is_not_negative(e, conds):
         return False
     if e.is_const():

@@ -82,21 +82,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\left| \\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx \\right|)",
-                            "res": "2 * (LIM {t -> oo}. abs(INT x:[0,t]. exp(-1/2 * x ^ 2)))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "2 \\left| \\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx \\right|",
                             "res": "2 * abs(INT x:[0,oo]. exp(-1/2 * x ^ 2))",
                             "rule": {
-                                "loc": "1",
-                                "name": "RewriteLimit",
-                                "str": "rewrite limit at 1"
+                                "name": "FullSimplify",
+                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         },
@@ -468,47 +458,6 @@
                                 "loc": "subterms",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi on subterms"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 \\sqrt{\\lim\\limits_{t\\to \\infty} (\\,-2 (\\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + \\frac{1}{2} \\pi\\,)}",
-                            "res": "2 * sqrt(LIM {t -> oo}. -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi)",
-                            "rule": {
-                                "loc": "1",
-                                "name": "LimFunExchange",
-                                "str": "exchange limit and function at 1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 \\sqrt{-2 (\\lim\\limits_{t\\to \\infty} \\int_{0}^{1} e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1} \\,dy) + \\frac{1}{2} \\pi}",
-                            "res": "2 * sqrt(-2 * (LIM {t -> oo}. INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)} (y ^ {2} + 1) ^ {-1}\\,) \\,dy) + \\frac{1}{2} \\pi}",
-                            "res": "2 * sqrt(-2 * (INT y:[0,1]. LIM {t -> oo}. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi)",
-                            "rule": {
-                                "loc": "1.0.0.1",
-                                "name": "LimIntExchange",
-                                "str": "exchange limit and integral at 1.0.0.1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "2 \\sqrt{-2 (\\int_{0}^{1} \\lim\\limits_{t\\to \\infty} (\\,e^{-1/2\\cdot t ^ {2} (y ^ {2} + 1)} (y ^ {2} + 1) ^ {-1}\\,) \\,dy) + \\frac{1}{2} \\pi}",
-                            "res": "2 * sqrt(-2 * (INT y:[0,1]. LIM {t -> oo}. exp(-1/2 * t ^ 2 * (y ^ 2 + 1)) * (y ^ 2 + 1) ^ (-1)) + 1/2 * pi)",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\frac{1}{2} t ^ {2} (-y ^ {2} - 1)\\) to \\(-\\frac{1}{2} t ^ {2} (y ^ {2} + 1)\\)",
-                                "name": "Equation",
-                                "new_expr": "-1/2 * t ^ 2 * (y ^ 2 + 1)",
-                                "old_expr": "1/2 * t ^ 2 * (-(y ^ 2) - 1)",
-                                "str": "rewriting 1/2 * t ^ 2 * (-(y ^ 2) - 1) to -1/2 * t ^ 2 * (y ^ 2 + 1)"
                             },
                             "type": "CalculationStep"
                         },

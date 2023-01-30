@@ -41,8 +41,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a (\\lim\\limits_{t\\to \\infty} \\int_{0}^{a ^ {-1} t} (a ^ {2} u ^ {2} + a ^ {2}) ^ {-1} \\,du)",
-                            "res": "a * (LIM {t -> oo}. INT u:[0,a ^ (-1) * t]. (a ^ 2 * u ^ 2 + a ^ 2) ^ (-1))",
+                            "latex_res": "a (\\int_{0}^{\\infty} (a ^ {2} u ^ {2} + a ^ {2}) ^ {-1} \\,du)",
+                            "res": "a * (INT u:[0,oo]. (a ^ 2 * u ^ 2 + a ^ 2) ^ (-1))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -50,8 +50,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a (\\lim\\limits_{t\\to \\infty} \\int_{0}^{a ^ {-1} t} \\frac{(u ^ {2} + 1) ^ {-1}}{a ^ {2}} \\,du)",
-                            "res": "a * (LIM {t -> oo}. INT u:[0,a ^ (-1) * t]. (u ^ 2 + 1) ^ (-1) / a ^ 2)",
+                            "latex_res": "a (\\int_{0}^{\\infty} \\frac{(u ^ {2} + 1) ^ {-1}}{a ^ {2}} \\,du)",
+                            "res": "a * (INT u:[0,oo]. (u ^ 2 + 1) ^ (-1) / a ^ 2)",
                             "rule": {
                                 "latex_str": "rewriting \\((a ^ {2} u ^ {2} + a ^ {2}) ^ {-1}\\) to \\(\\frac{(u ^ {2} + 1) ^ {-1}}{a ^ {2}}\\)",
                                 "name": "Equation",
