@@ -191,6 +191,26 @@
             "path": "BernoulliIntegral"
         },
         {
+            "type": "problem",
+            "expr": "(INT x:[0,1]. x^x) = SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-k - 1))",
+            "path": "BernoulliIntegral"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,1]. x^(-x)) = SUM(k, 0, oo, (k + 1) ^ (-k - 1))",
+            "path": "BernoulliIntegral"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,1]. x^(x^2)) = SUM(k, 0, oo, (-1) ^ k * (2 * k + 1) ^ (-k - 1))",
+            "path": "BernoulliIntegral"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,1]. x^(sqrt(x))) = SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (k+1))",
+            "path": "BernoulliIntegral"
+        },
+        {
             "type": "header",
             "name": "6.2 Ahmed's Integral",
             "level": 2

@@ -16,7 +16,7 @@ basic.load_theory('transcendentals')
 
 class ExprTest(unittest.TestCase):
     def testPrintExpr(self):
-        x, y, z = Var("x"), Var("y"), Var("z")
+        x, y, z, k = Var("x"), Var("y"), Var("z"), Var("k")
         test_data = [
             (x, "x"),
             (Const(1), "1"),
@@ -42,7 +42,10 @@ class ExprTest(unittest.TestCase):
             (x - (x - y), "x - (x - y)"),
             (x - (x + y), "x - (x + y)"),
             (x / (x / y), "x / (x / y)"),
-            (x / (x * y), "x / (x * y)"), 
+            (x / (x * y), "x / (x * y)"),
+            (Const(-1) ^ k, "(-1) ^ k"),
+            ((-Const(1)) ^ k, "(-1) ^ k"),
+            ((-Const(-1)) ^ k, "(-(-1)) ^ k"),
             (sin(x), "sin(x)"),
             (cos(x), "cos(x)"),
             (log(x), "log(x)"),

@@ -90,7 +90,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} (k!)^{-1} (\\frac{(-1)^{k} k!}{(a k + 1) ^ {k + 1}})}",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} (k!)^{-1} (\\frac{(-1) ^ {k} k!}{(a k + 1) ^ {k + 1}})}",
                             "res": "SUM(k, 0, oo, c ^ k * factorial(k) ^ (-1) * ((-1) ^ k * factorial(k) / (a * k + 1) ^ (k + 1)))",
                             "rule": {
                                 "loc": "0.1",
@@ -100,7 +100,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} (-1)^{k} (a k + 1) ^ {-k - 1}}",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} (-1) ^ {k} (a k + 1) ^ {-k - 1}}",
                             "res": "SUM(k, 0, oo, c ^ k * (-1) ^ k * (a * k + 1) ^ (-k - 1))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -112,7 +112,7 @@
                             "latex_res": "\\sum_{k=0}^{\\infty}{(-c) ^ {k} (a k + 1) ^ {-k - 1}}",
                             "res": "SUM(k, 0, oo, (-c) ^ k * (a * k + 1) ^ (-k - 1))",
                             "rule": {
-                                "latex_str": "rewriting \\(c ^ {k} (-1)^{k}\\) to \\((-c) ^ {k}\\)",
+                                "latex_str": "rewriting \\(c ^ {k} (-1) ^ {k}\\) to \\((-c) ^ {k}\\)",
                                 "name": "Equation",
                                 "new_expr": "(-c) ^ k",
                                 "old_expr": "c ^ k * (-1) ^ k",
@@ -137,6 +137,246 @@
                             "type": "CalculationStep"
                         }
                     ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. x ^ x) = SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-k - 1))",
+            "latex_goal": "\\int_{0}^{1} x ^ {x} \\,dx = \\sum_{k=0}^{\\infty}{(-1) ^ {k} (k + 1) ^ {-k - 1}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. x ^ x) = SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-k - 1))",
+                "latex_goal": "\\int_{0}^{1} x ^ {x} \\,dx = \\sum_{k=0}^{\\infty}{(-1) ^ {k} (k + 1) ^ {-k - 1}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} x ^ {x} \\,dx",
+                    "start": "INT x:[0,1]. x ^ x",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {1 x ^ {1}} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (1 * x ^ 1)",
+                            "rule": {
+                                "latex_str": "rewriting \\(x ^ {x}\\) to \\(x ^ {1 x ^ {1}}\\)",
+                                "name": "Equation",
+                                "new_expr": "x ^ (1 * x ^ 1)",
+                                "old_expr": "x ^ x",
+                                "str": "rewriting x ^ x to x ^ (1 * x ^ 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k}}{(k\\cdot 1 + 1) ^ {k + 1}}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k / (k * 1 + 1) ^ (k + 1))",
+                            "rule": {
+                                "eq": "(INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{(-c) ^ {k}}{(k a + 1) ^ {k + 1}}}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (k + 1) ^ {-k - 1}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-k - 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (k + 1) ^ {-k - 1}}",
+                    "start": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-k - 1))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. x ^ -x) = SUM(k, 0, oo, (k + 1) ^ (-k - 1))",
+            "latex_goal": "\\int_{0}^{1} x ^ {-x} \\,dx = \\sum_{k=0}^{\\infty}{(k + 1) ^ {-k - 1}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. x ^ -x) = SUM(k, 0, oo, (k + 1) ^ (-k - 1))",
+                "latex_goal": "\\int_{0}^{1} x ^ {-x} \\,dx = \\sum_{k=0}^{\\infty}{(k + 1) ^ {-k - 1}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} x ^ {-x} \\,dx",
+                    "start": "INT x:[0,1]. x ^ -x",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {-1 x ^ {1}} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (-1 * x ^ 1)",
+                            "rule": {
+                                "latex_str": "rewriting \\(x ^ {-x}\\) to \\(x ^ {-1 x ^ {1}}\\)",
+                                "name": "Equation",
+                                "new_expr": "x ^ (-1 * x ^ 1)",
+                                "old_expr": "x ^ -x",
+                                "str": "rewriting x ^ -x to x ^ (-1 * x ^ 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\frac{(--1) ^ {k}}{(k\\cdot 1 + 1) ^ {k + 1}}}",
+                            "res": "SUM(k, 0, oo, (-(-1)) ^ k / (k * 1 + 1) ^ (k + 1))",
+                            "rule": {
+                                "eq": "(INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{(-c) ^ {k}}{(k a + 1) ^ {k + 1}}}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(k + 1) ^ {-k - 1}}",
+                            "res": "SUM(k, 0, oo, (k + 1) ^ (-k - 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\sum_{k=0}^{\\infty}{(k + 1) ^ {-k - 1}}",
+                    "start": "SUM(k, 0, oo, (k + 1) ^ (-k - 1))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. x ^ (x ^ 2)) = SUM(k, 0, oo, (-1) ^ k * (2 * k + 1) ^ (-k - 1))",
+            "latex_goal": "\\int_{0}^{1} x ^ {x ^ {2}} \\,dx = \\sum_{k=0}^{\\infty}{(-1) ^ {k} (2 k + 1) ^ {-k - 1}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. x ^ (x ^ 2)) = SUM(k, 0, oo, (-1) ^ k * (2 * k + 1) ^ (-k - 1))",
+                "latex_goal": "\\int_{0}^{1} x ^ {x ^ {2}} \\,dx = \\sum_{k=0}^{\\infty}{(-1) ^ {k} (2 k + 1) ^ {-k - 1}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} x ^ {x ^ {2}} \\,dx",
+                    "start": "INT x:[0,1]. x ^ (x ^ 2)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {1 x ^ {2}} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (1 * x ^ 2)",
+                            "rule": {
+                                "latex_str": "rewriting \\(x ^ {x ^ {2}}\\) to \\(x ^ {1 x ^ {2}}\\)",
+                                "name": "Equation",
+                                "new_expr": "x ^ (1 * x ^ 2)",
+                                "old_expr": "x ^ (x ^ 2)",
+                                "str": "rewriting x ^ (x ^ 2) to x ^ (1 * x ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k}}{(k\\cdot 2 + 1) ^ {k + 1}}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k / (k * 2 + 1) ^ (k + 1))",
+                            "rule": {
+                                "eq": "(INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{(-c) ^ {k}}{(k a + 1) ^ {k + 1}}}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (2 k + 1) ^ {-k - 1}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k * (2 * k + 1) ^ (-k - 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (2 k + 1) ^ {-k - 1}}",
+                    "start": "SUM(k, 0, oo, (-1) ^ k * (2 * k + 1) ^ (-k - 1))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": false,
+            "goal": "(INT x:[0,1]. x ^ sqrt(x)) = SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (k + 1))",
+            "latex_goal": "\\int_{0}^{1} x ^ {\\sqrt{x}} \\,dx = \\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\frac{2}{k + 2}) ^ {k + 1}}",
+            "proof": {
+                "finished": false,
+                "goal": "(INT x:[0,1]. x ^ sqrt(x)) = SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (k + 1))",
+                "latex_goal": "\\int_{0}^{1} x ^ {\\sqrt{x}} \\,dx = \\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\frac{2}{k + 2}) ^ {k + 1}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} x ^ {\\sqrt{x}} \\,dx",
+                    "start": "INT x:[0,1]. x ^ sqrt(x)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {1 \\sqrt{x}} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (1 * x ^ (1/2))",
+                            "rule": {
+                                "latex_str": "rewriting \\(x ^ {\\sqrt{x}}\\) to \\(x ^ {1 \\sqrt{x}}\\)",
+                                "name": "Equation",
+                                "new_expr": "x ^ (1 * x ^ (1/2))",
+                                "old_expr": "x ^ sqrt(x)",
+                                "str": "rewriting x ^ sqrt(x) to x ^ (1 * x ^ (1/2))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k}}{(k\\cdot (\\frac{1}{2}) + 1) ^ {k + 1}}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k / (k * (1/2) + 1) ^ (k + 1))",
+                            "rule": {
+                                "eq": "(INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{(-c) ^ {k}}{(k a + 1) ^ {k + 1}}}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\frac{1}{2} k + 1) ^ {-k - 1}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k * (1/2 * k + 1) ^ (-k - 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} ((\\frac{2}{k + 2}) ^ {-1}) ^ {-k - 1}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (-1) ^ (-k - 1))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{2} k + 1\\) to \\((\\frac{2}{k + 2}) ^ {-1}\\)",
+                                "name": "Equation",
+                                "new_expr": "(2 / (k + 2)) ^ (-1)",
+                                "old_expr": "1/2 * k + 1",
+                                "str": "rewriting 1/2 * k + 1 to (2 / (k + 2)) ^ (-1)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\frac{2}{k + 2}) ^ {k + 1}}",
+                    "start": "SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (k + 1))",
+                    "steps": [],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"

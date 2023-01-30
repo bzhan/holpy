@@ -61,8 +61,8 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                         x.func_name not in ("abs", "factorial", "sqrt"):
                     sy = convert_expr(y, mode="short")
                     return "%s^{%s}(%s)" % (x.func_name, sy, convert_expr(x.args[0]))
-                elif isinstance(x, expr.Const) and x.val<0:
-                    return "(%s)^{%s}" % (sx,sy)
+                elif isinstance(x, expr.Const) and x.val < 0:
+                    return "(%s) ^ {%s}" % (sx,sy)
                 elif isinstance(x, expr.Fun) and x.func_name == 'factorial':
                     return "(%s)^{%s}" % (sx,sy)
                 else:

@@ -13,7 +13,7 @@
                     "start": "INT x:[0,1]. log(1 + x) / x",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1} \\frac{\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {n + 1}}{n + 1}}}{x} \\,dx",
+                            "latex_res": "\\int_{0}^{1} \\frac{\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n} x ^ {n + 1}}{n + 1}}}{x} \\,dx",
                             "res": "INT x:[0,1]. SUM(n, 0, oo, (-1) ^ n * x ^ (n + 1) / (n + 1)) / x",
                             "rule": {
                                 "index_var": "n",
@@ -24,10 +24,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1} \\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {n + 1}}{n + 1} (\\frac{1}{x})} \\,dx",
+                            "latex_res": "\\int_{0}^{1} \\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n} x ^ {n + 1}}{n + 1} (\\frac{1}{x})} \\,dx",
                             "res": "INT x:[0,1]. SUM(n, 0, oo, (-1) ^ n * x ^ (n + 1) / (n + 1) * (1 / x))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {n + 1}}{n + 1}}}{x}\\) to \\(\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {n + 1}}{n + 1} (\\frac{1}{x})}\\)",
+                                "latex_str": "rewriting \\(\\frac{\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n} x ^ {n + 1}}{n + 1}}}{x}\\) to \\(\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n} x ^ {n + 1}}{n + 1} (\\frac{1}{x})}\\)",
                                 "name": "Equation",
                                 "new_expr": "SUM(n, 0, oo, (-1) ^ n * x ^ (n + 1) / (n + 1) * (1 / x))",
                                 "old_expr": "SUM(n, 0, oo, (-1) ^ n * x ^ (n + 1) / (n + 1)) / x",
@@ -36,7 +36,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{n=0}^{\\infty}{\\int_{0}^{1} \\frac{(-1)^{n} x ^ {n + 1}}{n + 1} (\\frac{1}{x}) \\,dx}",
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\int_{0}^{1} \\frac{(-1) ^ {n} x ^ {n + 1}}{n + 1} (\\frac{1}{x}) \\,dx}",
                             "res": "SUM(n, 0, oo, INT x:[0,1]. (-1) ^ n * x ^ (n + 1) / (n + 1) * (1 / x))",
                             "rule": {
                                 "name": "IntSumExchange",
@@ -45,7 +45,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1)^{n} (n + 1) ^ {-2}}",
+                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1) ^ {n} (n + 1) ^ {-2}}",
                             "res": "SUM(n, 0, oo, (-1) ^ n * (n + 1) ^ (-2))",
                             "rule": {
                                 "name": "FullSimplify",

@@ -417,7 +417,7 @@
         {
             "finished": true,
             "goal": "(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
-            "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1)^{n} n!}{(m + 1) ^ {n + 1}}",
+            "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}}",
             "proof": {
                 "base_case": {
                     "finished": true,
@@ -459,16 +459,16 @@
                     "conds": [
                         {
                             "cond": "(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
-                            "latex_cond": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1)^{n} n!}{(m + 1) ^ {n + 1}}"
+                            "latex_cond": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}}"
                         }
                     ],
                     "finished": true,
                     "goal": "(INT x:[0,1]. x ^ m * log(x) ^ (n + 1)) = (-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * factorial(n + 1)",
-                    "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n + 1}(x) \\,dx = (-1)^{n + 1} (m + 1) ^ {-n - 2} (n + 1)!",
+                    "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n + 1}(x) \\,dx = (-1) ^ {n + 1} (m + 1) ^ {-n - 2} (n + 1)!",
                     "proof": {
                         "finished": true,
                         "goal": "(INT x:[0,1]. x ^ m * log(x) ^ (n + 1)) = (-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * factorial(n + 1)",
-                        "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n + 1}(x) \\,dx = (-1)^{n + 1} (m + 1) ^ {-n - 2} (n + 1)!",
+                        "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n + 1}(x) \\,dx = (-1) ^ {n + 1} (m + 1) ^ {-n - 2} (n + 1)!",
                         "lhs_calc": {
                             "latex_start": "\\int_{0}^{1} x ^ {m} \\log^{n + 1}(x) \\,dx",
                             "start": "INT x:[0,1]. x ^ m * log(x) ^ (n + 1)",
@@ -495,11 +495,11 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "-(m + 1) ^ {-1} (n + 1) (\\frac{(-1)^{n} n!}{(m + 1) ^ {n + 1}})",
+                                    "latex_res": "-(m + 1) ^ {-1} (n + 1) (\\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}})",
                                     "res": "-((m + 1) ^ (-1) * (n + 1) * ((-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)))",
                                     "rule": {
                                         "eq": "(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
-                                        "latex_str": "apply equation \\(\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1)^{n} n!}{(m + 1) ^ {n + 1}}\\) at 0.1",
+                                        "latex_str": "apply equation \\(\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}}\\) at 0.1",
                                         "loc": "0.1",
                                         "name": "ApplyEquation",
                                         "str": "apply equation: (INT x:[0,1]. x ^ m * log(x) ^ n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1) at 0.1"
@@ -507,7 +507,7 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "-(-1)^{n} n! (m + 1) ^ {-n - 2} (n + 1)",
+                                    "latex_res": "-(-1) ^ {n} n! (m + 1) ^ {-n - 2} (n + 1)",
                                     "res": "-((-1) ^ n * factorial(n) * (m + 1) ^ (-n - 2) * (n + 1))",
                                     "rule": {
                                         "name": "FullSimplify",
@@ -516,10 +516,10 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "(-1)^{n + 1} (m + 1) ^ {-n - 2} ((n + 1) n!)",
+                                    "latex_res": "(-1) ^ {n + 1} (m + 1) ^ {-n - 2} ((n + 1) n!)",
                                     "res": "(-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * ((n + 1) * factorial(n))",
                                     "rule": {
-                                        "latex_str": "rewriting to \\((-1)^{n + 1} (m + 1) ^ {-n - 2} ((n + 1) n!)\\)",
+                                        "latex_str": "rewriting to \\((-1) ^ {n + 1} (m + 1) ^ {-n - 2} ((n + 1) n!)\\)",
                                         "name": "Equation",
                                         "new_expr": "(-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * ((n + 1) * factorial(n))",
                                         "str": "rewriting to (-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * ((n + 1) * factorial(n))"
@@ -527,7 +527,7 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "(-1)^{n + 1} (m + 1) ^ {-n - 2} (n + 1)!",
+                                    "latex_res": "(-1) ^ {n + 1} (m + 1) ^ {-n - 2} (n + 1)!",
                                     "res": "(-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * factorial(n + 1)",
                                     "rule": {
                                         "loc": "1",
@@ -540,7 +540,7 @@
                             "type": "Calculation"
                         },
                         "rhs_calc": {
-                            "latex_start": "(-1)^{n + 1} (m + 1) ^ {-n - 2} (n + 1)!",
+                            "latex_start": "(-1) ^ {n + 1} (m + 1) ^ {-n - 2} (n + 1)!",
                             "start": "(-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * factorial(n + 1)",
                             "steps": [],
                             "type": "Calculation"
@@ -550,7 +550,7 @@
                     "type": "Goal"
                 },
                 "induct_var": "n",
-                "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1)^{n} n!}{(m + 1) ^ {n + 1}}",
+                "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}}",
                 "type": "InductionProof"
             },
             "type": "Goal"

@@ -11,7 +11,6 @@ from integral.inequality import Interval
 
 grammar = r"""
     ?atom: CNAME -> var_expr
-        | "-0" -> neg_zero_expr
         | INT -> int_expr
         | DECIMAL -> decimal_expr
         | "D" CNAME "." expr -> deriv_expr
@@ -76,9 +75,6 @@ class ExprTransformer(Transformer):
     def int_expr(self, n):
         return expr.Const(int(n))
 
-    def neg_zero_expr(self):
-        return expr.Op("-", expr.Const(0))
-
     def decimal_expr(self, n):
         return expr.Const(Decimal(n))
         
@@ -119,7 +115,7 @@ class ExprTransformer(Transformer):
         return expr.Op(">=", a, b)
     
     def uminus_expr(self, a):
-        if a.ty == expr.CONST:
+        if a.is_const() and a.val > 0:
             return expr.Const(-a.val)
         else:
             return expr.Op("-", a)

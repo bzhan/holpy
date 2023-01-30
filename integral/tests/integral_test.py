@@ -1261,9 +1261,9 @@ class IntegralTest(unittest.TestCase):
         ctx.load_book('base')
         file = compstate.CompFile(ctx, "Bernoulli's Integral")
 
-        goal02 = file.add_goal("(INT x:[0,1]. x^(c*x^a)) = SUM(k,0,oo,(-c)^k / (k*a+1)^(k+1))")
-        proof_of_goal02 = goal02.proof_by_calculation()
-        calc = proof_of_goal02.lhs_calc
+        goal = file.add_goal("(INT x:[0,1]. x^(c*x^a)) = SUM(k,0,oo,(-c)^k / (k*a+1)^(k+1))")
+        proof_of_goal = goal.proof_by_calculation()
+        calc = proof_of_goal.lhs_calc
         old_expr = parser.parse_expr("x^(c*x^a)")
         new_expr = parser.parse_expr("exp(log(x^(c*x^a)))")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
@@ -1287,10 +1287,49 @@ class IntegralTest(unittest.TestCase):
         old_expr = parser.parse_expr("c ^ k * (-1) ^ k")
         new_expr = parser.parse_expr("(-c)^k")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
-        calc = proof_of_goal02.rhs_calc
+        calc = proof_of_goal.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        self.checkAndOutput(file, "BernoulliIntegral")
+        goal1 = file.add_goal("(INT x:[0,1]. x^x) = SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-k - 1))")
+        proof_of_goal1 = goal1.proof_by_calculation()
+        calc = proof_of_goal1.lhs_calc
+        old_expr = parser.parse_expr("x^x")
+        new_expr = parser.parse_expr("x^(1*x^1)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.ApplyEquation(goal.goal))
+        calc.perform_rule(rules.FullSimplify())
+
+        goal2 = file.add_goal("(INT x:[0,1]. x^(-x)) = SUM(k, 0, oo, (k + 1) ^ (-k - 1))")
+        proof_of_goal2 = goal2.proof_by_calculation()
+        calc = proof_of_goal2.lhs_calc
+        old_expr = parser.parse_expr("x^(-x)")
+        new_expr = parser.parse_expr("x^(-1*x^1)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.ApplyEquation(goal.goal))
+        calc.perform_rule(rules.FullSimplify())
+
+        goal3 = file.add_goal("(INT x:[0,1]. x^(x^2)) = SUM(k, 0, oo, (-1) ^ k * (2 * k + 1) ^ (-k - 1))")
+        proof_of_goal3 = goal3.proof_by_calculation()
+        calc = proof_of_goal3.lhs_calc
+        old_expr = parser.parse_expr("x^(x^2)")
+        new_expr = parser.parse_expr("x^(1*x^2)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.ApplyEquation(goal.goal))
+        calc.perform_rule(rules.FullSimplify())
+
+        goal4 = file.add_goal("(INT x:[0,1]. x^(sqrt(x))) = SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (k+1))")
+        proof_of_goal4 = goal4.proof_by_calculation()
+        calc = proof_of_goal4.lhs_calc
+        old_expr = parser.parse_expr("x^(sqrt(x))")
+        new_expr = parser.parse_expr("x^(1*x^(1/2))")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.ApplyEquation(goal.goal))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("(1/2 * k + 1)"),
+                                         new_expr=parser.parse_expr("(2/(k+2)) ^ (-1)")))
+
+        # TODO: finish simplification
+        self.checkAndOutput(file, "BernoulliIntegral", omit_finish=True)
 
     def testAhmedIntegral(self):
         # Reference:

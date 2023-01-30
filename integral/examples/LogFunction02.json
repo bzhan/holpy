@@ -9,17 +9,17 @@
             ],
             "finished": true,
             "goal": "-log(1 - x) - log(1 + x) = -SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
-            "latex_goal": "-\\log{(1 - x)} - \\log{(1 + x)} = -\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",
+            "latex_goal": "-\\log{(1 - x)} - \\log{(1 + x)} = -\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} x ^ {k + 1}}{k + 1}}",
             "proof": {
                 "finished": true,
                 "goal": "-log(1 - x) - log(1 + x) = -SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
-                "latex_goal": "-\\log{(1 - x)} - \\log{(1 + x)} = -\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",
+                "latex_goal": "-\\log{(1 - x)} - \\log{(1 + x)} = -\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} x ^ {k + 1}}{k + 1}}",
                 "lhs_calc": {
                     "latex_start": "-\\log{(1 - x)} - \\log{(1 + x)}",
                     "start": "-log(1 - x) - log(1 + x)",
                     "steps": [
                         {
-                            "latex_res": "-\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} (-x) ^ {k + 1}}{k + 1}} - \\log{(1 + x)}",
+                            "latex_res": "-\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} (-x) ^ {k + 1}}{k + 1}} - \\log{(1 + x)}",
                             "res": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - log(1 + x)",
                             "rule": {
                                 "index_var": "k",
@@ -30,7 +30,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",
+                            "latex_res": "-\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} x ^ {k + 1}}{k + 1}}",
                             "res": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
                             "rule": {
                                 "index_var": "k",
@@ -41,7 +41,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\sum_{k=0}^{\\infty}{(-1)^{k} (-x) ^ {k + 1} (k + 1) ^ {-1}} - \\sum_{k=0}^{\\infty}{x ^ {k + 1} (-1)^{k} (k + 1) ^ {-1}}",
+                            "latex_res": "-\\sum_{k=0}^{\\infty}{(-1) ^ {k} (-x) ^ {k + 1} (k + 1) ^ {-1}} - \\sum_{k=0}^{\\infty}{x ^ {k + 1} (-1) ^ {k} (k + 1) ^ {-1}}",
                             "res": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) * (k + 1) ^ (-1)) - SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -53,11 +53,11 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "-\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",
+                    "latex_start": "-\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} x ^ {k + 1}}{k + 1}}",
                     "start": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
                     "steps": [
                         {
-                            "latex_res": "-\\sum_{k=0}^{\\infty}{(-1)^{k} (-x) ^ {k + 1} (k + 1) ^ {-1}} - \\sum_{k=0}^{\\infty}{x ^ {k + 1} (-1)^{k} (k + 1) ^ {-1}}",
+                            "latex_res": "-\\sum_{k=0}^{\\infty}{(-1) ^ {k} (-x) ^ {k + 1} (k + 1) ^ {-1}} - \\sum_{k=0}^{\\infty}{x ^ {k + 1} (-1) ^ {k} (k + 1) ^ {-1}}",
                             "res": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) * (k + 1) ^ (-1)) - SUM(k, 0, oo, x ^ (k + 1) * (-1) ^ k * (k + 1) ^ (-1))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -75,11 +75,11 @@
         {
             "finished": false,
             "goal": "x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)",
-            "latex_goal": "x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1)^{k}}",
+            "latex_goal": "x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}",
             "proof": {
                 "finished": false,
                 "goal": "x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)",
-                "latex_goal": "x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1)^{k}}",
+                "latex_goal": "x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}",
                 "start": {
                     "conds": [
                         {
@@ -87,11 +87,11 @@
                             "latex_cond": "\\left| x \\right| < 1"
                         }
                     ],
-                    "latex_start": "-\\log{(1 - x)} - \\log{(1 + x)} = -\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",
+                    "latex_start": "-\\log{(1 - x)} - \\log{(1 + x)} = -\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} x ^ {k + 1}}{k + 1}}",
                     "start": "-log(1 - x) - log(1 + x) = -SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
                     "steps": [
                         {
-                            "latex_res": "\\frac{d}{dx} (-\\log{(1 - x)} - \\log{(1 + x)}) = \\frac{d}{dx} (-\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}})",
+                            "latex_res": "\\frac{d}{dx} (-\\log{(1 - x)} - \\log{(1 + x)}) = \\frac{d}{dx} (-\\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} (-x) ^ {k + 1}}{k + 1}} - \\sum_{k=0}^{\\infty}{\\frac{(-1) ^ {k} x ^ {k + 1}}{k + 1}})",
                             "res": "(D x. -log(1 - x) - log(1 + x)) = (D x. -SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1)))",
                             "rule": {
                                 "name": "DerivEquation",
@@ -101,7 +101,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-x + 1) ^ {-1} - (x + 1) ^ {-1} = \\sum_{k=0}^{\\infty}{(-1)^{k} (-x) ^ {k}} - \\sum_{k=0}^{\\infty}{x ^ {k} (-1)^{k}}",
+                            "latex_res": "(-x + 1) ^ {-1} - (x + 1) ^ {-1} = \\sum_{k=0}^{\\infty}{(-1) ^ {k} (-x) ^ {k}} - \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}",
                             "res": "(-x + 1) ^ (-1) - (x + 1) ^ (-1) = SUM(k, 0, oo, (-1) ^ k * (-x) ^ k) - SUM(k, 0, oo, x ^ k * (-1) ^ k)",
                             "rule": {
                                 "name": "FullSimplify",
@@ -110,7 +110,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\frac{x}{1 - x ^ {2}}) = \\sum_{k=0}^{\\infty}{(-1)^{k} (-x) ^ {k}} - \\sum_{k=0}^{\\infty}{x ^ {k} (-1)^{k}}",
+                            "latex_res": "2 (\\frac{x}{1 - x ^ {2}}) = \\sum_{k=0}^{\\infty}{(-1) ^ {k} (-x) ^ {k}} - \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}",
                             "res": "2 * (x / (1 - x ^ 2)) = SUM(k, 0, oo, (-1) ^ k * (-x) ^ k) - SUM(k, 0, oo, x ^ k * (-1) ^ k)",
                             "rule": {
                                 "latex_str": "rewriting \\((-x + 1) ^ {-1} - (x + 1) ^ {-1}\\) to \\(2 (\\frac{x}{1 - x ^ {2}})\\)",
@@ -122,7 +122,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1)^{k} (-x) ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1)^{k}}",
+                            "latex_res": "x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1) ^ {k} (-x) ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}",
                             "res": "x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, (-1) ^ k * (-x) ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)",
                             "rule": {
                                 "expr": "1/2",
@@ -218,11 +218,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-(\\int_{0}^{1} \\log{(x)} (\\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1)^{k}}) \\,dx)",
+                            "latex_res": "-(\\int_{0}^{1} \\log{(x)} (\\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}) \\,dx)",
                             "res": "-(INT x:[0,1]. log(x) * (1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)))",
                             "rule": {
                                 "eq": "x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)",
-                                "latex_str": "apply equation \\(x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1)^{k}}\\) on subterms",
+                                "latex_str": "apply equation \\(x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}\\) on subterms",
                                 "loc": "subterms",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k) on subterms"
@@ -230,7 +230,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-(\\int_{0}^{1} -\\frac{1}{2} \\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k} (-1)^{k}} + \\frac{1}{2} \\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k}} \\,dx)",
+                            "latex_res": "-(\\int_{0}^{1} -\\frac{1}{2} \\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}} + \\frac{1}{2} \\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k}} \\,dx)",
                             "res": "-(INT x:[0,1]. -1/2 * log(x) * SUM(k, 0, oo, x ^ k * (-1) ^ k) + 1/2 * log(x) * SUM(k, 0, oo, x ^ k))",
                             "rule": {
                                 "loc": "subterms",
@@ -240,7 +240,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k} (-1)^{k}} \\,dx) - \\frac{1}{2} (\\int_{0}^{1} \\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k}} \\,dx)",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}} \\,dx) - \\frac{1}{2} (\\int_{0}^{1} \\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k}} \\,dx)",
                             "res": "1/2 * (INT x:[0,1]. log(x) * SUM(k, 0, oo, x ^ k * (-1) ^ k)) - 1/2 * (INT x:[0,1]. log(x) * SUM(k, 0, oo, x ^ k))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -249,7 +249,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k} (-1)^{k}} \\,dx) - \\frac{1}{2} (\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\log{(x)} x ^ {k}} \\,dx)",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}} \\,dx) - \\frac{1}{2} (\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\log{(x)} x ^ {k}} \\,dx)",
                             "res": "1/2 * (INT x:[0,1]. log(x) * SUM(k, 0, oo, x ^ k * (-1) ^ k)) - 1/2 * (INT x:[0,1]. SUM(k, 0, oo, log(x) * x ^ k))",
                             "rule": {
                                 "latex_str": "rewriting \\(\\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k}}\\) to \\(\\sum_{k=0}^{\\infty}{\\log{(x)} x ^ {k}}\\)",
@@ -261,10 +261,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\log{(x)} x ^ {k} (-1)^{k}} \\,dx) - \\frac{1}{2} (\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\log{(x)} x ^ {k}} \\,dx)",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\log{(x)} x ^ {k} (-1) ^ {k}} \\,dx) - \\frac{1}{2} (\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\log{(x)} x ^ {k}} \\,dx)",
                             "res": "1/2 * (INT x:[0,1]. SUM(k, 0, oo, log(x) * x ^ k * (-1) ^ k)) - 1/2 * (INT x:[0,1]. SUM(k, 0, oo, log(x) * x ^ k))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k} (-1)^{k}}\\) to \\(\\sum_{k=0}^{\\infty}{\\log{(x)} x ^ {k} (-1)^{k}}\\)",
+                                "latex_str": "rewriting \\(\\log{(x)} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}\\) to \\(\\sum_{k=0}^{\\infty}{\\log{(x)} x ^ {k} (-1) ^ {k}}\\)",
                                 "name": "Equation",
                                 "new_expr": "SUM(k, 0, oo, log(x) * x ^ k * (-1) ^ k)",
                                 "old_expr": "log(x) * SUM(k, 0, oo, x ^ k * (-1) ^ k)",
@@ -273,7 +273,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\log{(x)} x ^ {k} (-1)^{k} \\,dx} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\log{(x)} x ^ {k} \\,dx}",
+                            "latex_res": "\\frac{1}{2} \\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\log{(x)} x ^ {k} (-1) ^ {k} \\,dx} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\log{(x)} x ^ {k} \\,dx}",
                             "res": "1/2 * SUM(k, 0, oo, INT x:[0,1]. log(x) * x ^ k * (-1) ^ k) - 1/2 * SUM(k, 0, oo, INT x:[0,1]. log(x) * x ^ k)",
                             "rule": {
                                 "loc": "subterms",
@@ -283,7 +283,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1)^{k} (\\int_{0}^{1} x ^ {k} \\log{(x)} \\,dx)} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{\\int_{0}^{1} x ^ {k} \\log{(x)} \\,dx}",
+                            "latex_res": "\\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\int_{0}^{1} x ^ {k} \\log{(x)} \\,dx)} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{\\int_{0}^{1} x ^ {k} \\log{(x)} \\,dx}",
                             "res": "1/2 * SUM(k, 0, oo, (-1) ^ k * (INT x:[0,1]. x ^ k * log(x))) - 1/2 * SUM(k, 0, oo, INT x:[0,1]. x ^ k * log(x))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -292,7 +292,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1)^{k} (\\int_{0}^{1} x ^ {k} \\log{(x)} \\,dx)} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{\\left. x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} \\right\\vert_{x=0}^{1}}",
+                            "latex_res": "\\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\int_{0}^{1} x ^ {k} \\log{(x)} \\,dx)} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{\\left. x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} \\right\\vert_{x=0}^{1}}",
                             "res": "1/2 * SUM(k, 0, oo, (-1) ^ k * (INT x:[0,1]. x ^ k * log(x))) - 1/2 * SUM(k, 0, oo, [x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2)]_x=0,1)",
                             "rule": {
                                 "loc": "1.1.0",
@@ -302,7 +302,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1)^{k} (\\int_{0}^{1} x ^ {k} \\log{(x)} \\,dx)} + \\frac{1}{2} \\sum_{k=0}^{\\infty}{(k + 1) ^ {-2}}",
+                            "latex_res": "\\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\int_{0}^{1} x ^ {k} \\log{(x)} \\,dx)} + \\frac{1}{2} \\sum_{k=0}^{\\infty}{(k + 1) ^ {-2}}",
                             "res": "1/2 * SUM(k, 0, oo, (-1) ^ k * (INT x:[0,1]. x ^ k * log(x))) + 1/2 * SUM(k, 0, oo, (k + 1) ^ (-2))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -311,7 +311,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1)^{k} (\\left. x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} \\right\\vert_{x=0}^{1})} + \\frac{1}{2} \\sum_{k=0}^{\\infty}{(k + 1) ^ {-2}}",
+                            "latex_res": "\\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\left. x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} \\right\\vert_{x=0}^{1})} + \\frac{1}{2} \\sum_{k=0}^{\\infty}{(k + 1) ^ {-2}}",
                             "res": "1/2 * SUM(k, 0, oo, (-1) ^ k * ([x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2)]_x=0,1)) + 1/2 * SUM(k, 0, oo, (k + 1) ^ (-2))",
                             "rule": {
                                 "loc": "0.1.0.1",
@@ -321,7 +321,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1)^{k} (k + 1) ^ {-2}} + \\frac{1}{2} \\sum_{k=0}^{\\infty}{(k + 1) ^ {-2}}",
+                            "latex_res": "-\\frac{1}{2} \\sum_{k=0}^{\\infty}{(-1) ^ {k} (k + 1) ^ {-2}} + \\frac{1}{2} \\sum_{k=0}^{\\infty}{(k + 1) ^ {-2}}",
                             "res": "-1/2 * SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) + 1/2 * SUM(k, 0, oo, (k + 1) ^ (-2))",
                             "rule": {
                                 "name": "FullSimplify",

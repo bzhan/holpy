@@ -2032,8 +2032,6 @@ class Op(Expr):
         if len(self.args) == 1:
             a, = self.args
             s = str(a)
-            if a.ty == CONST and a.val > 0:
-                return "(%s%s)" % (self.op, s)
             if a.priority() < self.priority():
                 s = "(%s)" % s
             return "%s%s" % (self.op, s)
@@ -2045,7 +2043,7 @@ class Op(Expr):
             if b.priority() <= op_priority[self.op]:
                 s2 = "(%s)" % s2
             if a.priority() > op_priority[self.op]:
-                if a.ty == OP and a.is_uminus() and self.op == '^':
+                if a.is_uminus() and self.op == '^':
                     s1 = "(%s)" % s1
             return "%s %s %s" % (s1, self.op, s2)
         else:
