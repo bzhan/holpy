@@ -44,6 +44,9 @@ class Context:
         # List of definite integral identities
         self.definite_integrals: List[Identity] = list()
 
+        # List of series expansions
+        self.series_expansions: List[Identity] = list()
+
         # List of assumptions
         self.conds: Conditions = Conditions()
 
@@ -58,6 +61,9 @@ class Context:
         res += "Definite integrals\n"
         for identity in self.definite_integrals:
             res += str(identity) + "\n"
+        res += "Series expansions\n"
+        for identity in self.series_expansions:
+            res += str(identity) + "\n"
         res += "Conditions\n"
         for cond in self.conds.data:
             res += str(cond) + "\n"
@@ -71,6 +77,11 @@ class Context:
     def get_definite_integrals(self) -> List[Identity]:
         res = self.parent.get_definite_integrals() if self.parent is not None else []
         res.extend(self.definite_integrals)
+        return res
+
+    def get_series_expansions(self) -> List[Identity]:
+        res = self.parent.get_series_expansions() if self.parent is not None else []
+        res.extend(self.series_expansions)
         return res
 
     def get_conds(self) -> Conditions:
@@ -101,6 +112,14 @@ class Context:
         symb_rhs = expr_to_pattern(eq.rhs)
         self.definite_integrals.append(Identity(symb_lhs, symb_rhs))
 
+    def add_series_expansion(self, eq: Expr):
+        if not (eq.is_equals() and not eq.lhs.is_summation() and eq.rhs.is_summation()):
+            raise TypeError
+        
+        symb_lhs = expr_to_pattern(eq.lhs)
+        symb_rhs = expr_to_pattern(eq.rhs)
+        self.series_expansions.append(Identity(symb_lhs, symb_rhs))
+
     def add_condition(self, cond: Expr):
         self.conds.add_condition(cond)
 
@@ -130,5 +149,7 @@ class Context:
                     self.add_indefinite_integral(e)
                 if e.is_equals() and e.lhs.is_integral():
                     self.add_definite_integral(e)
+                if e.is_equals() and not e.lhs.is_summation() and e.rhs.is_summation():
+                    self.add_series_expansion(e)
 
         return

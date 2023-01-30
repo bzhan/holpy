@@ -24,8 +24,8 @@
                             "rule": {
                                 "index_var": "n",
                                 "loc": "0.0",
-                                "name": "ExpandPowerSeries",
-                                "str": "expand power series at 0.0"
+                                "name": "SeriesExpansionIdentity",
+                                "str": "apply series expansion at 0.0"
                             },
                             "type": "CalculationStep"
                         },

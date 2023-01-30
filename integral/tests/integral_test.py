@@ -1048,6 +1048,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 5.1, example #1
 
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, 'CatalanConstant01')
 
         # Define Catalan's constant
@@ -1059,7 +1060,7 @@ class IntegralTest(unittest.TestCase):
         goal = file.add_goal("(INT x:[0, 1]. atan(x) / x) = G")
         proof_of_goal = goal.proof_by_calculation()
         calc = proof_of_goal.lhs_calc
-        calc.perform_rule(rules.OnLocation(rules.ExpandSeries(), '0.0'))
+        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(), '0.0'))
         old_expr = parser.parse_expr("x ^ (2 * n + 1)")
         new_expr = parser.parse_expr("x^ (2*n) * x")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
@@ -1077,6 +1078,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 5.1, example #2
 
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, 'CatalanConstant02')
 
         # Define Catalan's constant
@@ -1146,7 +1148,7 @@ class IntegralTest(unittest.TestCase):
         old_expr = parser.parse_expr("log(x)/(x^2+1)")
         new_expr = parser.parse_expr("log(x) * (x^-2) * (1 + (1/x^2))^-1")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
-        calc.perform_rule(rules.OnLocation(rules.ExpandSeries(), '0.1'))
+        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(), '0.1'))
         old_expr = parser.parse_expr("log(x) * x ^ (-2) * SUM(n, 0, oo, (-1) ^ n * (1 / x ^ 2) ^ n)")
         new_expr = parser.parse_expr("SUM(n, 0, oo, (-1) ^ n * ((1 / x ^ 2) ^ n) * log(x) * x ^ -2)")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
@@ -1168,33 +1170,22 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 5.2, example #1
 
         ctx = context.Context()
+        ctx.load_book("base")
         file = compstate.CompFile(ctx, "LogFunction01")
-
-        # Series expansion for log(1+x)
-        # TODO: add derivation
-        conds_of_goal1 = compstate.Conditions()
-        e = parser.parse_expr("abs(x) < 1")
-        conds_of_goal1.add_condition(e)
-        e = parser.parse_expr("log(1+x) = SUM(k,0,oo,(-1)^k * (x^(k+1))/(k+1))")
-        goal1 = compstate.Lemma(lemma=e, conds=conds_of_goal1)
-        file.add_lemma(goal1)
 
         # Series sum for alternating reciprocal of squares
         # TODO: add derivation
-        e = parser.parse_expr("SUM(k,0,oo,(-1)^k * (k+1)^(-2))  = (pi^2) / 12")
+        e = parser.parse_expr("SUM(n,0,oo,(-1)^n * (n+1)^(-2))  = (pi^2) / 12")
         goal2 = compstate.Lemma(lemma=e)
         file.add_lemma(goal2)
 
         # Main result
-        goal = file.add_goal("(INT x:[0,1]. log(x+1) / x) = (pi^2) / 12")
+        goal = file.add_goal("(INT x:[0,1]. log(1 + x) / x) = (pi^2) / 12")
         proof_of_goal01 = goal.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
-
-        # TODO: condition check
-        # the domain of x is (0, 1), so the condition abs(x) < 1 is satisfied
-        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=goal1.lemma)))
-        old_expr = parser.parse_expr("SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1)) / x")
-        new_expr = parser.parse_expr("SUM(k,0,oo,(-1) ^ k * x ^ (k + 1) / (k + 1) * (1/x))")
+        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(), "0.0"))
+        old_expr = parser.parse_expr("SUM(n,0,oo,(-1) ^ n * x ^ (n + 1) / (n + 1)) / x")
+        new_expr = parser.parse_expr("SUM(n,0,oo,(-1) ^ n * x ^ (n + 1) / (n + 1) * (1/x))")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         calc.perform_rule(rules.IntSumExchange())
         calc.perform_rule(rules.FullSimplify())
@@ -1211,14 +1202,8 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 5.2, example #2
 
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, 'LogFunction02')
-
-        conds_of_lemma01 = compstate.Conditions()
-        e = parser.parse_expr("abs(x) < 1")
-        conds_of_lemma01.add_condition(e)
-        e = parser.parse_expr("log(1+x) = SUM(k,0,oo,(-1)^k * (x^(k+1))/(k+1))")
-        lemma01 = compstate.Lemma(lemma=e, conds=conds_of_lemma01)
-        file.add_lemma(lemma01)
 
         e = parser.parse_expr("SUM(k,0,oo,(k+1)^(-2))  = (pi^2) / 6")
         lemma02 = compstate.Lemma(lemma=e, conds=None)
@@ -1244,7 +1229,8 @@ class IntegralTest(unittest.TestCase):
                 -SUM(k,0,oo,(-1)^k*(-x)^(k+1) / (k+1))-SUM(k,0,oo,(-1)^k*x^(k+1)/(k+1))", conds=["abs(x) < 1"])
         proof_of_goal01 = goal01.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
-        calc.perform_rule(rules.OnSubterm(rules.ExpandSeries(index_var='k')))
+        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(index_var='k'), "0.0"))
+        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(index_var='k'), "1"))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal01.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -1302,6 +1288,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 6.1
 
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, "Bernoulli's Integral")
 
         e = parser.parse_expr("f(m, n) = INT x:[0, 1]. x^m * log(x) ^ n")
@@ -1323,7 +1310,7 @@ class IntegralTest(unittest.TestCase):
         old_expr = parser.parse_expr("x^(c*x^a)")
         new_expr = parser.parse_expr("exp(log(x^(c*x^a)))")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
-        calc.perform_rule(rules.OnSubterm(rules.ExpandSeries(index_var='k')))
+        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(index_var='k'), "0"))
         calc.perform_rule(rules.IntSumExchange())
 
         old_expr = parser.parse_expr("log(x ^ (c * x ^ a))")

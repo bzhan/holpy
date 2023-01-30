@@ -312,6 +312,37 @@ class DefiniteIntegralIdentity(Rule):
         return e
 
 
+class SeriesExpansionIdentity(Rule):
+    """Apply series expansion in the current theory."""
+    def __init__(self, index_var: str = 'n'):
+        self.name = "SeriesExpansionIdentity"
+        self.index_var = index_var
+
+    def __str__(self):
+        return "apply series expansion"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self),
+            "index_var": self.index_var
+        }
+
+    def eval(self, e: Expr, ctx=None) -> Expr:
+        for identity in ctx.get_series_expansions():
+            inst = expr.match(e, identity.lhs)
+            if inst is None:
+                continue
+
+            res = identity.rhs.inst_pat(inst)
+            assert res.is_summation()
+            res = res.alpha_convert(self.index_var)
+            return res
+
+        # No matching identity found
+        return e
+
+
 class IndefiniteIntegralIdentity(Rule):
     """Apply indefinite integral identity in current theory."""
     def __init__(self):
@@ -2336,53 +2367,6 @@ class LimitEquation(Rule):
             "lim": str(self.lim),
             "latex_str": "apply limit \\(%s \\to %s\\) to equation" %
                 (self.var, latex.convert_expr(self.lim))
-        }
-
-
-class ExpandSeries(Rule):
-    """Power series expansion.
-
-    Currently include rules for exp(x), sin(x), atan(x), 1/(1+a),
-    log(1+a) and log(1-a).
-
-    """
-    def __init__(self, index_var: str = 'n'):
-        self.name = "ExpandPowerSeries"
-        self.index_var = index_var
-
-    def __str__(self):
-        return "expand power series"
-
-    def eval(self, e: Expr, ctx=None):
-        a = Symbol('a', [VAR, CONST, OP, FUN])
-        idx = Var(self.index_var)
-        rules = [
-            (Fun('exp', a), None, Summation(self.index_var, Const(0), POS_INF, (a ^ idx) / Fun('factorial', idx))),
-            (Fun('sin', a), None, Summation(self.index_var, Const(0), POS_INF,
-                                            (Const(-1) ^ idx) * (a ^ (2 * idx + 1)) / Fun('factorial', 2 * idx + 1))),
-            (Fun('atan', a), None,
-             Summation(self.index_var, Const(0), POS_INF, (Const(-1) ^ idx) * (a ^ (2 * idx + 1)) / (2 * idx + 1))),
-            ((1 + a) ^ -1, None, Summation(self.index_var, Const(0), POS_INF, (Const(-1) ^ idx) * (a ^ idx))),
-            (log(Const(1) + a), None,
-             Summation(self.index_var, Const(0), POS_INF, (Const(-1) ^ idx) * (a ^ (idx + 1)) / (idx + 1))),
-            (log(Const(1) - a), None,
-             Summation(self.index_var, Const(0), POS_INF, (Const(-1) ^ idx) * ((-a) ^ (idx + 1)) / (idx + 1))),
-        ]
-        for pat, cond, pat_res in rules:
-            mapping = expr.match(e, pat)
-            if mapping is not None and (cond is None or cond(mapping)):
-                if isinstance(pat_res, expr.Expr):
-                    res = pat_res.inst_pat(mapping)
-                else:
-                    res = pat_res(mapping)
-                return res
-        return e
-
-    def export(self):
-        return {
-            "name": self.name,
-            "index_var": self.index_var,
-            "str": str(self)
         }
 
 

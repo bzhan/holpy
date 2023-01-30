@@ -68,7 +68,7 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 else:
                     # Ordinary cases
                     sy = convert_expr(y, mode="short")
-                    if x.priority() <= e.priority():
+                    if x.priority() <= e.priority() or x.is_uminus():
                         sx = "(%s)" % sx
                     sy = "{%s}" % sy
                     return "%s %s %s" % (sx, e.op, sy)

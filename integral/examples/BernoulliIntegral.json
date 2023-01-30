@@ -49,11 +49,11 @@
         {
             "finished": true,
             "goal": "(INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
-            "latex_goal": "\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{-c ^ {k}}{(k a + 1) ^ {k + 1}}}",
+            "latex_goal": "\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{(-c) ^ {k}}{(k a + 1) ^ {k + 1}}}",
             "proof": {
                 "finished": true,
                 "goal": "(INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
-                "latex_goal": "\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{-c ^ {k}}{(k a + 1) ^ {k + 1}}}",
+                "latex_goal": "\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{(-c) ^ {k}}{(k a + 1) ^ {k + 1}}}",
                 "lhs_calc": {
                     "latex_start": "\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx",
                     "start": "INT x:[0,1]. x ^ (c * x ^ a)",
@@ -75,9 +75,9 @@
                             "res": "INT x:[0,1]. SUM(k, 0, oo, log(x ^ (c * x ^ a)) ^ k / factorial(k))",
                             "rule": {
                                 "index_var": "k",
-                                "loc": "subterms",
-                                "name": "ExpandPowerSeries",
-                                "str": "expand power series on subterms"
+                                "loc": "0",
+                                "name": "SeriesExpansionIdentity",
+                                "str": "apply series expansion at 0"
                             },
                             "type": "CalculationStep"
                         },
@@ -168,10 +168,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{-c ^ {k} (a k + 1) ^ {-k - 1}}",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(-c) ^ {k} (a k + 1) ^ {-k - 1}}",
                             "res": "SUM(k, 0, oo, (-c) ^ k * (a * k + 1) ^ (-k - 1))",
                             "rule": {
-                                "latex_str": "rewriting \\(c ^ {k} (-1)^{k}\\) to \\(-c ^ {k}\\)",
+                                "latex_str": "rewriting \\(c ^ {k} (-1)^{k}\\) to \\((-c) ^ {k}\\)",
                                 "name": "Equation",
                                 "new_expr": "(-c) ^ k",
                                 "old_expr": "c ^ k * (-1) ^ k",
@@ -183,11 +183,11 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\sum_{k=0}^{\\infty}{\\frac{-c ^ {k}}{(k a + 1) ^ {k + 1}}}",
+                    "latex_start": "\\sum_{k=0}^{\\infty}{\\frac{(-c) ^ {k}}{(k a + 1) ^ {k + 1}}}",
                     "start": "SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
                     "steps": [
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{-c ^ {k} (a k + 1) ^ {-k - 1}}",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(-c) ^ {k} (a k + 1) ^ {-k - 1}}",
                             "res": "SUM(k, 0, oo, (-c) ^ k * (a * k + 1) ^ (-k - 1))",
                             "rule": {
                                 "name": "FullSimplify",

@@ -45,6 +45,58 @@
             "expr": "(INT x. csc(x)^2) = -cot(x) + C"
         },
         {
+            "type": "header",
+            "name": "Common series expansion",
+            "level": 1
+        },
+        {
+            "type": "axiom",
+            "expr": "exp(x) = SUM(n, 0, oo, x ^ n / factorial(n))"
+        },
+        {
+            "type": "axiom",
+            "expr": "sin(x) = SUM(n, 0, oo, (-1)^n * x^(2*n+1) / factorial(2*n+1))"
+        },
+        {
+            "type": "axiom",
+            "expr": "cos(x) = SUM(n, 0, oo, (-1)^n * x^(2*n) / factorial(2*n))"
+        },
+        {
+            "type": "axiom",
+            "expr": "atan(x) = SUM(n, 0, oo, (-1)^n * x^(2*n+1) / (2*n+1))",
+            "conds": [
+                "abs(x) <= 1"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "(1 + x) ^ -1 = SUM(n, 0, oo, (-1)^n * x ^ n)",
+            "conds": [
+                "abs(x) < 1"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "log(1 + x) = SUM(n, 0, oo, (-1)^n * x ^ (n+1) / (n + 1))",
+            "conds": [
+                "x > -1",
+                "x <= 1"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "log(1 - x) = SUM(n, 0, oo, (-1)^n * (-x)^(n+1) / (n + 1))",
+            "conds": [
+                "x >= -1",
+                "x < 1"
+            ]
+        },
+        {
+            "type": "header",
+            "name": "Common derived integrals",
+            "level": 1
+        },
+        {
             "type": "problem",
             "expr": "(INT x. 1 / (x + a)) = log(abs(x + a)) + C",
             "path": "standard"

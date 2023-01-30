@@ -1,15 +1,13 @@
 """Unit test for rules."""
 
 import unittest
-import json
 from fractions import Fraction
 
 from integral import parser
 from integral.expr import Const
 from integral.parser import parse_expr
 from integral import rules
-from integral import compstate
-from integral import conditions
+from integral.context import Context
 
 
 class RulesTest(unittest.TestCase):
@@ -496,9 +494,12 @@ class RulesTest(unittest.TestCase):
             ('sin(x)', 'SUM(n, 0, oo, (-1) ^ n * x ^ (2 * n + 1) / factorial(2 * n + 1))'),
             ('atan(x)', 'SUM(n, 0, oo, (-1) ^ n * x ^ (2 * n + 1) / (2 * n + 1))')
         ]
+
+        ctx = Context()
+        ctx.load_book('base')
         for a, b in test_data:
             e = parser.parse_expr(a)
-            res = rules.ExpandSeries().eval(e)
+            res = rules.SeriesExpansionIdentity().eval(e, ctx=ctx)
             self.assertEqual(str(res), b)
 
     def testRewriteMulPower(self):

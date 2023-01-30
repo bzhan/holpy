@@ -741,9 +741,6 @@ def parse_rule(item) -> Rule:
         return rules.LimitEquation(var, lim)
     elif item['name'] == 'CommonIndefiniteIntegral':
         return rules.CommonIndefiniteIntegral(const_name = 'C')
-    elif item['name'] == 'ExpandPowerSeries':
-        index_var = item['index_var']
-        return rules.ExpandSeries(index_var=index_var)
     elif item['name'] == 'IntSumExchange':
         return rules.IntSumExchange()
     elif item['name'] == 'ApplyLemma':
@@ -775,6 +772,9 @@ def parse_rule(item) -> Rule:
         return rules.IndefiniteIntegralIdentity()
     elif item['name'] == 'DefiniteIntegralIdentity':
         return rules.DefiniteIntegralIdentity()
+    elif item['name'] == 'SeriesExpansionIdentity':
+        index_var = item['index_var']
+        return rules.SeriesExpansionIdentity(index_var=index_var)
     elif item['name'] == 'ReplaceSubstitution':
         return rules.ReplaceSubstitution()
     else:

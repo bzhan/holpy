@@ -1,59 +1,48 @@
 {
     "content": [
         {
-            "conds": [
-                {
-                    "cond": "abs(x) < 1",
-                    "latex_cond": "\\left| x \\right| < 1"
-                }
-            ],
-            "eq": "log(1 + x) = SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
-            "latex_eq": "\\log{(1 + x)} = \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}",
-            "type": "Lemma"
-        },
-        {
-            "eq": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) = pi ^ 2 / 12",
-            "latex_eq": "\\sum_{k=0}^{\\infty}{(-1)^{k} (k + 1) ^ {-2}} = \\frac{\\pi ^ {2}}{12}",
+            "eq": "SUM(n, 0, oo, (-1) ^ n * (n + 1) ^ (-2)) = pi ^ 2 / 12",
+            "latex_eq": "\\sum_{n=0}^{\\infty}{(-1)^{n} (n + 1) ^ {-2}} = \\frac{\\pi ^ {2}}{12}",
             "type": "Lemma"
         },
         {
             "finished": true,
-            "goal": "(INT x:[0,1]. log(x + 1) / x) = pi ^ 2 / 12",
-            "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x} \\,dx = \\frac{\\pi ^ {2}}{12}",
+            "goal": "(INT x:[0,1]. log(1 + x) / x) = pi ^ 2 / 12",
+            "latex_goal": "\\int_{0}^{1} \\frac{\\log{(1 + x)}}{x} \\,dx = \\frac{\\pi ^ {2}}{12}",
             "proof": {
                 "finished": true,
-                "goal": "(INT x:[0,1]. log(x + 1) / x) = pi ^ 2 / 12",
-                "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x} \\,dx = \\frac{\\pi ^ {2}}{12}",
+                "goal": "(INT x:[0,1]. log(1 + x) / x) = pi ^ 2 / 12",
+                "latex_goal": "\\int_{0}^{1} \\frac{\\log{(1 + x)}}{x} \\,dx = \\frac{\\pi ^ {2}}{12}",
                 "lhs_calc": {
-                    "latex_start": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x} \\,dx",
-                    "start": "INT x:[0,1]. log(x + 1) / x",
+                    "latex_start": "\\int_{0}^{1} \\frac{\\log{(1 + x)}}{x} \\,dx",
+                    "start": "INT x:[0,1]. log(1 + x) / x",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1} \\frac{\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}}{x} \\,dx",
-                            "res": "INT x:[0,1]. SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1)) / x",
+                            "latex_res": "\\int_{0}^{1} \\frac{\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {n + 1}}{n + 1}}}{x} \\,dx",
+                            "res": "INT x:[0,1]. SUM(n, 0, oo, (-1) ^ n * x ^ (n + 1) / (n + 1)) / x",
                             "rule": {
-                                "lemma": "log(1 + x) = SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
-                                "loc": "subterms",
-                                "name": "ApplyLemma",
-                                "str": "apply lemma on subterms"
+                                "index_var": "n",
+                                "loc": "0.0",
+                                "name": "SeriesExpansionIdentity",
+                                "str": "apply series expansion at 0.0"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1} \\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1} (\\frac{1}{x})} \\,dx",
-                            "res": "INT x:[0,1]. SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1) * (1 / x))",
+                            "latex_res": "\\int_{0}^{1} \\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {n + 1}}{n + 1} (\\frac{1}{x})} \\,dx",
+                            "res": "INT x:[0,1]. SUM(n, 0, oo, (-1) ^ n * x ^ (n + 1) / (n + 1) * (1 / x))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1}}}{x}\\) to \\(\\sum_{k=0}^{\\infty}{\\frac{(-1)^{k} x ^ {k + 1}}{k + 1} (\\frac{1}{x})}\\)",
+                                "latex_str": "rewriting \\(\\frac{\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {n + 1}}{n + 1}}}{x}\\) to \\(\\sum_{n=0}^{\\infty}{\\frac{(-1)^{n} x ^ {n + 1}}{n + 1} (\\frac{1}{x})}\\)",
                                 "name": "Equation",
-                                "new_expr": "SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1) * (1 / x))",
-                                "old_expr": "SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1)) / x",
-                                "str": "rewriting SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1)) / x to SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1) * (1 / x))"
+                                "new_expr": "SUM(n, 0, oo, (-1) ^ n * x ^ (n + 1) / (n + 1) * (1 / x))",
+                                "old_expr": "SUM(n, 0, oo, (-1) ^ n * x ^ (n + 1) / (n + 1)) / x",
+                                "str": "rewriting SUM(n, 0, oo, (-1) ^ n * x ^ (n + 1) / (n + 1)) / x to SUM(n, 0, oo, (-1) ^ n * x ^ (n + 1) / (n + 1) * (1 / x))"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(-1)^{k} x ^ {k + 1}}{k + 1} (\\frac{1}{x}) \\,dx}",
-                            "res": "SUM(k, 0, oo, INT x:[0,1]. (-1) ^ k * x ^ (k + 1) / (k + 1) * (1 / x))",
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\int_{0}^{1} \\frac{(-1)^{n} x ^ {n + 1}}{n + 1} (\\frac{1}{x}) \\,dx}",
+                            "res": "SUM(n, 0, oo, INT x:[0,1]. (-1) ^ n * x ^ (n + 1) / (n + 1) * (1 / x))",
                             "rule": {
                                 "name": "IntSumExchange",
                                 "str": "exchange integral and sum"
@@ -61,8 +50,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{(-1)^{k} (k + 1) ^ {-2}}",
-                            "res": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2))",
+                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1)^{n} (n + 1) ^ {-2}}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n * (n + 1) ^ (-2))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -73,7 +62,7 @@
                             "latex_res": "\\frac{\\pi ^ {2}}{12}",
                             "res": "pi ^ 2 / 12",
                             "rule": {
-                                "lemma": "SUM(k, 0, oo, (-1) ^ k * (k + 1) ^ (-2)) = pi ^ 2 / 12",
+                                "lemma": "SUM(n, 0, oo, (-1) ^ n * (n + 1) ^ (-2)) = pi ^ 2 / 12",
                                 "name": "ApplyLemma",
                                 "str": "apply lemma"
                             },
