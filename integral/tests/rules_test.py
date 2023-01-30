@@ -368,28 +368,6 @@ class RulesTest(unittest.TestCase):
             e2 = parse_expr(s2)
             self.assertEqual(e1, e2)
 
-    def testLimSep(self):
-        test_data = [
-            ("LIM {x -> inf}. 3*x + 4*sin(x)", "(LIM {x -> oo}. (3) * (x)) + (LIM {x -> oo}. (4) * (sin(x)))"),
-            ("LIM {x -> 3 +}. x / (x-3)", "(LIM {x -> 3 +}. x) / (LIM {x -> 3 +}. x - 3)"),
-            ("LIM {x -> oo}. x", "LIM {x -> oo}.x"),
-            ("LIM {x -> oo}. (-x) - x", "(LIM {x -> oo}. (-x)) - (LIM {x -> oo}. x)"),
-            ("LIM {x -> -oo}. (1/x) + (2/x)", "(LIM {x -> -oo}. (1) / (x)) + (LIM {x -> -oo}. (2) / (x))"),
-            ("LIM {x -> -oo}. x / (x+sin(x))", "(LIM {x -> -oo}. x) / (LIM {x -> -oo}. (x) + (sin(x)))"),
-            ("LIM {x -> -oo}. (x^2) * x", "(LIM {x -> -oo}. (x) ^ (2)) * (LIM {x -> -oo}. x)"),
-            ("LIM {x -> 3 -}. x / sin(x+2)", "(LIM {x -> 3 -}. x) / (LIM {x -> 3 -}. sin((x) + (2)))"),
-            ("LIM {x -> 4 +}. cos(x) + x", "(LIM {x -> 4 +}. cos(x)) + (LIM {x -> 4 +}. x)"),
-            ("LIM {x -> 5}. x / tan(x)", "(LIM {x -> 5 }. x) / (LIM {x -> 5 }. tan(x))"),
-            ("LIM {x -> -oo}. log(x) * x", "(LIM {x -> -oo}. log(x)) * (LIM {x -> -oo}. x)"),
-        ]
-
-        for s1, s2 in test_data:
-            e1, e2 = rules.LimSep().eval(parse_expr(s1)),parse_expr(s2)
-            self.assertEqual(str(e1), str(e2))
-
-    def testLHopital2(self):
-        pass
-
     def testDerivativeSimplify(self):
         test_data = [
             ("D x. x", '1'),

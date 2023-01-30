@@ -753,8 +753,6 @@ def parse_rule(item) -> Rule:
         return rules.ApplyInductHyp(induct_hyp)
     elif item['name'] == 'RewriteLog':
         return rules.RewriteLog()
-    elif item['name'] == 'RewriteLimit':
-        return rules.RewriteLimit()
     elif item['name'] == 'DerivativeSimplify':
         return rules.DerivativeSimplify()
     elif item['name'] == 'RewriteExp':

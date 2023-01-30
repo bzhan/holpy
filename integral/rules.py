@@ -1747,36 +1747,6 @@ class LHopital(Rule):
                                            rule.eval(Deriv(e.var, denominator))), e.drt)
 
 
-class LimSep(Rule):
-    """Perform the following rewrites:
-
-        Lim (exp1 + exp2) -> (Lim exp1) + (Lim exp2)
-        Lim (exp1 - exp2) -> (Lim exp1) - (Lim exp2)
-        Lim (exp1 * exp2) -> (Lim exp1) * (Lim exp2)
-        Lim (exp1 / exp2) -> (Lim exp1) / (Lim exp2)
-
-    """
-
-    def __init__(self):
-        self.name = "LimSep"
-
-    def __str__(self):
-        return "separate limits"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx=None) -> Expr:
-        if not (isinstance(e, expr.Limit) and isinstance(e.body, expr.Op) and \
-                e.body.op in ('+', '-', '*', '/') and len(e.body.args) == 2):
-            return e
-        return expr.Op(e.body.op, expr.Limit(e.var, e.lim, e.body.args[0], e.drt),
-                       expr.Limit(e.var, e.lim, e.body.args[1], e.drt))
-
-
 def check_item(item, target=None, *, debug=False):
     """Check application of rules in the item."""
     problem = parser.parse_expr(item['problem'])
@@ -2346,29 +2316,6 @@ class VarSubsOfEquation(Rule):
             return e
 
 
-class RewriteLimit(Rule):
-    """LIM {x->a}. f(x) = f(a)
-    
-    Note the term a may be infinity. This can be used to convert
-    limit to improper integral.
-
-    """
-    def __init__(self):
-        self.name = "RewriteLimit"
-
-    def __str__(self):
-        return "rewrite limit"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx=None) -> Expr:
-        return e.body.replace(Var(e.var), e.lim)
-
-
 class MergeSummation(Rule):
     "SUM(u,0,oo, body1) + SUM(k,0,oo,body2) = SUM(u, 0, oo, body1+body2)"
     def __init__(self):
@@ -2440,27 +2387,6 @@ class DerivEquation(Rule):
         if not e.is_equals():
             return e
         return Op('=', Deriv(self.var, e.lhs), Deriv(self.var, e.rhs))
-
-
-class DerivSumExchange(Rule):
-    """Exchange derivative and summation."""
-    def __init__(self):
-        self.name = "DerivSumExchange"
-
-    def __str__(self):
-        return "exchange derivative and summation"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx=None) -> Expr:
-        if e.is_deriv() and e.body.is_summation():
-            return Summation(e.body.index_var, e.body.lower, e.body.upper, Deriv(e.var, e.body.body))
-        else:
-            return e
 
 
 class RewriteMulPower(Rule):

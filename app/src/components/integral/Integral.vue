@@ -38,7 +38,6 @@
           <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('RewriteFactorial')">Factorial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteBinom">Binomial coefficients</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="rewriteLimit">Rewrite limit</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteExp">Rewrite exp</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="integrateBothSide0">Integrate both side</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -206,14 +205,6 @@
         <span class="math-text"> for</span><br/>
         <ExprQuery v-model="expr_query1"/><br/>
         <button v-on:click="doBackwardSubstitution">OK</button>
-      </div>
-      <div v-if="r_query_mode === 'rewrite limit'">
-        <span class="math-text">Rewrite limit on: </span>
-        <MathEquation v-bind:data="'\\(' + sep_limit[limit_id].latex_expr + '\\)'"/><br/>
-        <span class="math-text">Location: {{sep_limit[limit_id].loc}}</span><br/>
-        <button v-bind:disabled='limit_id == 0' v-on:click="int_id--">prev</button>
-        <button v-bind:disabled='limit_id == sep_limit.length-1' v-on:click='limit_id++'>next</button><br/>
-        <button v-on:click="doRewriteLimit">OK</button>
       </div>
       <div v-if="r_query_mode === 'elim abs'">
         <span class="math-text">Eliminate absolute value on: </span>
@@ -731,40 +722,6 @@ export default {
           var_name: this.subst_var,
           var_subst: this.expr_query1,
           loc: this.sep_int[this.int_id].loc
-        },
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-        this.r_query_mode = undefined
-      }
-    },
-
-    rewriteLimit: async function(){
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-limit", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.sep_limit = response.data.limits
-        this.limit_id = 0
-        if (response.data.limits.length == 1){
-          this.doRewriteLimit()
-        } else {
-          this.r_query_mode = 'rewrite limit'
-        }
-      }
-    },
-
-    doRewriteLimit: async function(){
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: 'RewriteLimit',
-          loc: this.sep_limit[this.limit_id].loc
         },
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
