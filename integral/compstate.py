@@ -73,9 +73,12 @@ class StateItem:
 
 class FuncDef(StateItem):
     """Introduce a new function definition."""
-    def __init__(self, eq: Expr, conds: Optional[Conditions] = None):
+    def __init__(self, parent, eq: Expr, conds: Optional[Conditions] = None):
         if not eq.is_equals():
             raise AssertionError("FuncDef: input should be an equation")
+
+        self.parent = parent
+        self.ctx = parent.ctx
 
         self.eq = eq
         if self.eq.lhs.is_fun():
@@ -566,9 +569,30 @@ class CompFile:
             res += str(st)
         return res
 
-    def add_definition(self, funcdef: FuncDef):
-        """Add a function definition."""
-        self.content.append(funcdef)
+    def add_definition(self, funcdef: Union[str, Expr, FuncDef], *, conds: List[Union[str, Expr]] = None) -> FuncDef:
+        """Add a function definition.
+        
+        funcdef: statement of the definition.
+        conds: list of conditions for the definition. This is ignored if input
+               is already of type FuncDef.
+        
+        """
+        if conds is not None:
+            for i in range(len(conds)):
+                if isinstance(conds[i], str):
+                    conds[i] = parser.parse_expr(conds[i])
+        else:
+            conds = []
+
+        if isinstance(funcdef, FuncDef):
+            self.content.append(funcdef)
+        elif isinstance(funcdef, str):
+            self.content.append(FuncDef(self, parser.parse_expr(funcdef), Conditions(conds)))
+        elif isinstance(funcdef, Expr):
+            self.content.append(FuncDef(self, funcdef, Conditions(conds)))
+        else:
+            raise NotImplementedError
+        return self.content[-1]
 
     def add_calculation(self, calc: Union[str, Expr, Calculation]) -> Calculation:
         """Add a calculation."""
@@ -584,9 +608,11 @@ class CompFile:
 
     def add_goal(self, goal: Union[str, Expr, Goal], *, conds: List[Union[str, Expr]] = None) -> Goal:
         """Add a goal.
-        
+
+        goal: statement of the goal.
         conds: list of conditions for the goal. This is ignored if input goal
                is already of type Goal.
+
         """
         if conds is not None:
             for i in range(len(conds)):
@@ -769,7 +795,7 @@ def parse_item(parent, item) -> StateItem:
     if item['type'] == 'FuncDef':
         conds = parse_conds(item)
         eq = parser.parse_expr(item['eq'])
-        return FuncDef(eq, conds=conds)
+        return FuncDef(parent, eq, conds=conds)
     elif item['type'] == 'Goal':
         goal = parser.parse_expr(item['goal'])
         conds = parse_conds(item)

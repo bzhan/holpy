@@ -419,16 +419,14 @@ class IntegralTest(unittest.TestCase):
         self.checkAndOutput(file, "LHopital")
 
     def testWallis(self):
+        # Reference:
+        # Inside interesting integrals, Section 4.2
+
         ctx = context.Context()
         file = compstate.CompFile(ctx, 'Wallis')
 
-        # Condition b > 0
-        conds = conditions.Conditions()
-        conds.add_condition(parser.parse_expr("b > 0"))
-
         # Make definition
-        Idef = compstate.FuncDef(parser.parse_expr("I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))"), conds=conds)
-        file.add_definition(Idef)
+        Idef = file.add_definition("I(m,b) = (INT x:[0,oo]. 1/(x^2+b)^(m+1))", conds=["b > 0"])
 
         # Prove the following equality
         Eq1 = file.add_goal("(D b. I(m,b)) = -(m+1) * I(m+1, b)", conds=["b > 0"])
@@ -480,13 +478,8 @@ class IntegralTest(unittest.TestCase):
         ctx = context.Context()
         file = compstate.CompFile(ctx, "GammaFunction")
 
-        # Condition n > 0
-        conds = conditions.Conditions()
-        conds.add_condition(parser.parse_expr("n > 0"))
-
         # Definition of Gamma function
-        gamma_def = compstate.FuncDef(parser.parse_expr("Gamma(n) = (INT x:[0,oo]. exp(-x) * x^(n-1))"), conds=conds)
-        file.add_definition(gamma_def)
+        gamma_def = file.add_definition("Gamma(n) = (INT x:[0,oo]. exp(-x) * x^(n-1))", conds=["n > 0"])
 
         # Recursive equation for gamma function
         goal1 = file.add_goal("Gamma(n+1) = n * Gamma(n)", conds=["n > 0"])
@@ -614,9 +607,7 @@ class IntegralTest(unittest.TestCase):
         # Overall goal: (INT x:[-oo,oo]. exp(-(x^2)/2)) = sqrt(2*pi)
 
         # Make definition
-        e = parser.parse_expr("g(t) = (INT x:[0,t].exp(-(x^2)/2))^2")
-        Idef = compstate.FuncDef(e)
-        file.add_definition(Idef)
+        Idef = file.add_definition("g(t) = (INT x:[0,t].exp(-(x^2)/2))^2")
 
         Eq1 = file.add_goal("(INT x:[-oo,oo]. exp(-x^2/2)) = 2 * LIM {t->oo}. sqrt(g(t))")
         Eq1_proof = Eq1.proof_by_calculation()
@@ -713,9 +704,7 @@ class IntegralTest(unittest.TestCase):
         file = compstate.CompFile(ctx, 'leibniz03')
 
         # Make definition
-        e = parser.parse_expr("I(t) = INT x:[0,oo]. cos(t*x)*exp(-(x^2)/2)")
-        Idef = compstate.FuncDef(e)
-        file.add_definition(Idef)
+        Idef = file.add_definition("I(t) = INT x:[0,oo]. cos(t*x)*exp(-(x^2)/2)")
 
         Eq0 = file.add_goal("I(0) = sqrt(pi/2)")
         Eq0_proof = Eq0.proof_by_calculation()
@@ -788,20 +777,16 @@ class IntegralTest(unittest.TestCase):
         file = compstate.CompFile(ctx, "EulerLogSine")
 
         # Define I(a)
-        e = parser.parse_expr('I(a) = INT x:[0,pi/2]. log(a * sin(x))')
-        Idef1 = compstate.FuncDef(e)
-        file.add_definition(Idef1)
+        Idef = file.add_definition("I(a) = INT x:[0,pi/2]. log(a * sin(x))")
 
         # Define J(a)
-        e = parser.parse_expr('J(a) = INT x:[0,pi/2]. log(a * sin(2*x))')
-        Idef2 = compstate.FuncDef(e)
-        file.add_definition(Idef2)
+        Jdef = file.add_definition("J(a) = INT x:[0,pi/2]. log(a * sin(2*x))")
 
         # Prove J(a) = I(a)
         goal1 = file.add_goal("J(a) = I(a)")
         proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition(Idef2.eq))
+        calc.perform_rule(rules.ExpandDefinition(Jdef.eq))
         calc.perform_rule(rules.Substitution("t", parser.parse_expr("2*x")))
         calc.perform_rule(rules.SplitRegion(parser.parse_expr('pi/2')))
         calc.perform_rule(rules.OnLocation(rules.Substitution('x', parser.parse_expr('pi - t')), '1'))
@@ -810,13 +795,13 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
-        calc.perform_rule(rules.ExpandDefinition(Idef1.eq))
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
 
         # Prove J(a) = pi/2 * log(2/a) + 2 * I(a)
         goal2 = file.add_goal("J(a) = pi/2 * log(2/a) + 2 * I(a)")
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition(Idef2.eq))
+        calc.perform_rule(rules.ExpandDefinition(Jdef.eq))
         calc.perform_rule(rules.RewriteTrigonometric("TR11", parser.parse_expr("sin(2*x)")))
         calc.perform_rule(rules.Equation(new_expr = parser.parse_expr("(2/a) * (a*sin(x)) * (a*cos(x))"),\
                                          old_expr = parser.parse_expr("a * (2 * sin(x) * cos(x))")))
@@ -829,7 +814,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
-        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef1.eq)))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition(Idef.eq)))
         calc.perform_rule(rules.FullSimplify())
 
         # Finally show I(a) = pi/2 * log(a/2)
@@ -855,12 +840,10 @@ class IntegralTest(unittest.TestCase):
         file = compstate.CompFile(ctx, "DirichletIntegral")
 
         # Define g(y)
-        e = parser.parse_expr('g(y, a) = INT x:[0,oo]. exp(-x * y) * sin(a * x) / x')
-        conds = conditions.Conditions()
-        conds.add_condition(parser.parse_expr("y >= 0"))
-        gdef = compstate.FuncDef(e, conds=conds)
-        file.add_definition(gdef)
+        gdef = file.add_definition("g(y, a) = INT x:[0,oo]. exp(-x * y) * sin(a * x) / x", conds=["y >= 0"])
 
+        # Evaluate lemma
+        # TODO: move to standard
         goal1 = file.add_goal("(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)", conds=["y > 0"])
         proof = goal1.proof_by_calculation()
         calc = proof.lhs_calc
@@ -966,11 +949,7 @@ class IntegralTest(unittest.TestCase):
         file = compstate.CompFile(ctx, "Flipside03")
 
         # introduce definition
-        e = parser.parse_expr("I(a) = INT x:[0, 1]. (x ^ a - 1) / log(x)")
-        conds = compstate.Conditions()
-        conds.add_condition(parser.parse_expr("a>=0"))
-        Idef = compstate.FuncDef(e, conds)
-        file.add_definition(Idef)
+        Idef = file.add_definition("I(a) = INT x:[0, 1]. (x ^ a - 1) / log(x)", conds=["a >= 0"])
 
         # verify the following equation: D a. I(a) = 1/(a+1)
         goal1 = file.add_goal("(D a. I(a)) = 1/(a+1)", conds=["a >= 0"])
@@ -1022,14 +1001,7 @@ class IntegralTest(unittest.TestCase):
         file = compstate.CompFile(ctx, "Frullani Integral")
 
         # Define I(a, b)
-        e = parser.parse_expr("I(a, b) = INT x:[0,oo]. (atan(a*x) - atan(b*x))/x")
-        conds_of_Idef = compstate.Conditions()
-        e2 = parser.parse_expr("a > 0")
-        conds_of_Idef.add_condition(e2)
-        e2 = parser.parse_expr("b > 0")
-        conds_of_Idef.add_condition(e2)
-        Idef = compstate.FuncDef(e, conds_of_Idef)
-        file.add_definition(Idef)
+        Idef = file.add_definition("I(a, b) = INT x:[0,oo]. (atan(a*x) - atan(b*x))/x", conds=["a > 0", "b > 0"])
 
         # Evalute D a. I(a, b) for a > 0
         goal2 = file.add_goal("(D a. I(a,b)) = pi / (2*a)", conds=["a > 0"])
@@ -1086,9 +1058,7 @@ class IntegralTest(unittest.TestCase):
         file = compstate.CompFile(ctx, 'CatalanConstant01')
 
         # Define Catalan's constant
-        e = parser.parse_expr('G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)')
-        Gdef = compstate.FuncDef(e)
-        file.add_definition(Gdef)
+        Gdef = file.add_definition("G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)")
 
         # Evaluate integral of atan(x) / x
         goal = file.add_goal("(INT x:[0, 1]. atan(x) / x) = G")
@@ -1116,17 +1086,10 @@ class IntegralTest(unittest.TestCase):
         file = compstate.CompFile(ctx, 'CatalanConstant02')
 
         # Define Catalan's constant
-        e = parser.parse_expr('G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)')
-        Gdef = compstate.FuncDef(e)
-        file.add_definition(Gdef)
+        Gdef = file.add_definition("G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)")
 
         # Define I(k)
-        e = parser.parse_expr("I(k) = INT x:[1,oo]. log(x) / (x^k)")
-        conds_of_Idef = compstate.Conditions()
-        e2 = parser.parse_expr("k > 1")
-        conds_of_Idef.add_condition(e2)
-        Idef = compstate.FuncDef(e, conds=conds_of_Idef)
-        file.add_definition(Idef)
+        Idef = file.add_definition("I(k) = INT x:[1,oo]. log(x) / (x^k)", conds=["k > 1"])
 
         # Evaluate I(k)
         goal1 = file.add_goal("I(k) = 1/(k-1)^2", conds=["k > 1"])
@@ -1337,15 +1300,8 @@ class IntegralTest(unittest.TestCase):
         ctx.load_book('base')
         file = compstate.CompFile(ctx, "Ahmed Integral")
 
-        conds_of_Idef = compstate.Conditions()
-        e = parser.parse_expr("u>0")
-        conds_of_Idef.add_condition(e)
-
-        s = "I(u) = (INT x:[0,1]. atan(u * sqrt(2+x*x)) / ((1+x*x)*sqrt(2+x*x)))"
-        e = parser.parse_expr(s)
-
-        Idef = compstate.FuncDef(eq=e, conds=conds_of_Idef)
-        file.add_definition(Idef)
+        # Define I
+        Idef = file.add_definition("I(u) = (INT x:[0,1]. atan(u * sqrt(2+x*x)) / ((1+x*x)*sqrt(2+x*x)))", conds=["u > 0"])
 
         goal001 = file.add_goal("I(1) = INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))")
         proof = goal001.proof_by_calculation()
