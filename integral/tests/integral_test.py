@@ -589,10 +589,8 @@ class IntegralTest(unittest.TestCase):
         Eq1_proof = Eq1.proof_by_calculation()
         calc = Eq1_proof.lhs_calc
         calc.perform_rule(rules.SplitRegion(expr.Const(0)))
-        e = parser.parse_expr('-x')
-        calc.perform_rule(rules.OnLocation(rules.Substitution('y', e), '0'))
-        e = parser.parse_expr('y')
-        calc.perform_rule(rules.OnLocation(rules.Substitution('x', e), '0'))
+        calc.perform_rule(rules.OnLocation(rules.Substitution('y', parser.parse_expr("-x")), '0'))
+        calc.perform_rule(rules.OnLocation(rules.Substitution('x', parser.parse_expr("y")), '0'))
         calc.perform_rule(rules.FullSimplify())
         calc = Eq1_proof.rhs_calc
         calc.perform_rule(rules.OnLocation(rules.ExpandDefinition(Idef.eq), '1.0.0'))
@@ -643,7 +641,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq5.goal), '0'))
         calc.perform_rule(rules.FullSimplify())
 
-        Eq7 = file.add_goal("(INT x:[-oo,oo]. exp(-x^2/2)) = sqrt(2*pi)", conds=["y^2 + 1 > 0"])
+        Eq7 = file.add_goal("(INT x:[-oo,oo]. exp(-x^2/2)) = sqrt(2*pi)")
         proof_of_Eq7 = Eq7.proof_by_calculation()
         calc = proof_of_Eq7.lhs_calc
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
@@ -658,6 +656,15 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_Eq7.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
+        Eq8 = file.add_goal("(INT x:[0,oo]. exp(-x^2/2)) = sqrt(pi/2)")
+        proof_of_Eq8 = Eq8.proof_by_rewrite_goal(begin=Eq7)
+        calc = proof_of_Eq8.begin
+        calc.perform_rule(rules.OnLocation(rules.SplitRegion(expr.Const(0)), "0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution('y', parser.parse_expr("-x")), '0.0'))
+        calc.perform_rule(rules.OnLocation(rules.Substitution('x', parser.parse_expr("y")), '0.0'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.SolveEquation(parser.parse_expr("INT x:[0,oo]. exp(-1/2 * x ^ 2)")))
+
         self.checkAndOutput(file, "leibniz02")
 
     def testLeibniz03(self):
@@ -668,16 +675,23 @@ class IntegralTest(unittest.TestCase):
 
         # Initial state
         ctx = context.Context()
-        file = compstate.CompFile(ctx, 'Leibniz03')
+        ctx.load_book('base')
+        ctx.load_book('interesting', upto='leibniz03')
+        file = compstate.CompFile(ctx, 'leibniz03')
 
         # Make definition
-        e = parser.parse_expr("I(t) = INT x:[0, oo]. cos(t*x)*exp(-(x^2)/2)")
+        e = parser.parse_expr("I(t) = INT x:[0,oo]. cos(t*x)*exp(-(x^2)/2)")
         Idef = compstate.FuncDef(e)
         file.add_definition(Idef)
 
-        e = parser.parse_expr('I(0) = sqrt(pi/2)')
-        lemma1 = compstate.Lemma(e)
-        file.add_lemma(lemma1)
+        Eq0 = file.add_goal("I(0) = sqrt(pi/2)")
+        Eq0_proof = Eq0.proof_by_calculation()
+        calc = Eq0_proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("-1/2 * x ^ 2"),
+                                         new_expr=parser.parse_expr("-(x ^ 2) / 2")))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
 
         # Prove the following equality
         Eq1 = file.add_goal("(D t. I(t)) = -t*I(t)")
@@ -714,7 +728,7 @@ class IntegralTest(unittest.TestCase):
         calc = Eq4_proof.begin
         calc.perform_rule(rules.LimitEquation('t', expr.Const(0)))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma=lemma1.lemma, conds=None), '0.0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=Eq0.goal), '0.0'))
 
         Eq5 = file.add_goal("log(I(t)) = -t ^ 2 / 2 + log(sqrt(pi / 2))")
         Eq5_proof = Eq5.proof_by_calculation()

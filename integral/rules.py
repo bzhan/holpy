@@ -285,8 +285,35 @@ class CommonIndefiniteIntegral(Rule):
             "str": str(self)
         }
 
+
+class DefiniteIntegralIdentity(Rule):
+    """Apply definite integral identity in current theory."""
+    def __init__(self):
+        self.name = "DefiniteIntegralIdentity"
+
+    def __str__(self):
+        return "apply definite integral"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, ctx=None) -> Expr:
+        for identity in ctx.get_definite_integrals():
+            inst = expr.match(e, identity.lhs)
+            if inst is None:
+                continue
+
+            return identity.rhs.inst_pat(inst)
+
+        # No matching identity found
+        return e
+
+
 class IndefiniteIntegralIdentity(Rule):
-    """Apply identity in current theory"""
+    """Apply indefinite integral identity in current theory."""
     def __init__(self):
         self.name = "IndefiniteIntegralIdentity"
 

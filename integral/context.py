@@ -10,7 +10,7 @@ from integral.conditions import Conditions
 
 dirname = os.path.dirname(__file__)
 
-class IndefiniteIntegralIdentity:
+class Identity:
     def __init__(self, lhs: Expr, rhs: Expr, *, conds: Optional[Conditions] = None, simp_level: int = 1):
         self.lhs = lhs
         self.rhs = rhs
@@ -39,7 +39,10 @@ class Context:
         self.parent = parent
 
         # List of indefinite integral identities
-        self.indefinite_integrals: List[IndefiniteIntegralIdentity] = list()
+        self.indefinite_integrals: List[Identity] = list()
+
+        # List of definite integral identities
+        self.definite_integrals: List[Identity] = list()
 
         # List of assumptions
         self.conds: Conditions = Conditions()
@@ -50,18 +53,26 @@ class Context:
     def __str__(self):
         res = ""
         res += "Indefinite integrals\n"
-        for indef in self.indefinite_integrals:
-            res += str(indef) + "\n"
+        for identity in self.indefinite_integrals:
+            res += str(identity) + "\n"
+        res += "Definite integrals\n"
+        for identity in self.definite_integrals:
+            res += str(identity) + "\n"
         res += "Conditions\n"
         for cond in self.conds.data:
             res += str(cond) + "\n"
         return res
     
-    def get_indefinite_integrals(self) -> List[IndefiniteIntegralIdentity]:
+    def get_indefinite_integrals(self) -> List[Identity]:
         res = self.parent.get_indefinite_integrals() if self.parent is not None else []
         res.extend(self.indefinite_integrals)
         return res
     
+    def get_definite_integrals(self) -> List[Identity]:
+        res = self.parent.get_definite_integrals() if self.parent is not None else []
+        res.extend(self.definite_integrals)
+        return res
+
     def get_conds(self) -> Conditions:
         res = self.parent.get_conds() if self.parent is not None else Conditions()
         for cond in self.conds.data:
@@ -80,7 +91,15 @@ class Context:
         
         symb_lhs = expr_to_pattern(eq.lhs)
         symb_rhs = expr_to_pattern(eq.rhs)
-        self.indefinite_integrals.append(IndefiniteIntegralIdentity(symb_lhs, symb_rhs))
+        self.indefinite_integrals.append(Identity(symb_lhs, symb_rhs))
+
+    def add_definite_integral(self, eq: Expr):
+        if not (eq.is_equals() and eq.lhs.is_integral()):
+            raise TypeError
+        
+        symb_lhs = expr_to_pattern(eq.lhs)
+        symb_rhs = expr_to_pattern(eq.rhs)
+        self.definite_integrals.append(Identity(symb_lhs, symb_rhs))
 
     def add_condition(self, cond: Expr):
         self.conds.add_condition(cond)
@@ -109,3 +128,7 @@ class Context:
                 e = parser.parse_expr(item['expr'])
                 if e.is_equals() and e.lhs.is_indefinite_integral():
                     self.add_indefinite_integral(e)
+                if e.is_equals() and e.lhs.is_integral():
+                    self.add_definite_integral(e)
+
+        return

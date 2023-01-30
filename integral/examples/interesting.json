@@ -72,6 +72,11 @@
         },
         {
             "type": "problem",
+            "expr": "(INT x:[0,oo]. exp(-(x^2)/2)) = sqrt(pi/2)",
+            "path": "leibniz02"
+        },
+        {
+            "type": "problem",
             "expr": "(INT x:[0, oo]. cos(tx)*exp(-(x^2)/2)) = sqrt(pi/2)*exp(-(t^2)/2)",
             "path": "leibniz03"
         },

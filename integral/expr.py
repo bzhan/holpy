@@ -1460,32 +1460,34 @@ class Expr:
 
     def inst_pat(self, mapping: Dict) -> Expr:
         """Instantiate by replacing symbols in term with mapping."""
-        if self.ty in (VAR, CONST, INF):
+        if self.is_var() or self.is_const() or self.is_inf():
             return self
-        elif self.ty == SYMBOL:
-            # assert self.name in mapping, "inst_pat: %s not found" % self.name
+        elif self.is_symbol():
             if self.name in mapping:
                 return mapping[self.name]
             else:
                 return self
-        elif self.ty == OP:
+        elif self.is_op():
             return Op(self.op, *(arg.inst_pat(mapping) for arg in self.args))
-        elif self.ty == FUN:
+        elif self.is_fun():
             return Fun(self.func_name, *(arg.inst_pat(mapping) for arg in self.args))
-        elif self.ty == SKOLEMFUNC:
+        elif self.is_skolem_func():
             return SkolemFunc(self.name, tuple(arg.inst_pat(mapping) for arg in self.dependent_vars))
-        elif self.ty == INTEGRAL:
+        elif self.is_integral():
             return Integral(self.var, self.lower.inst_pat(mapping), self.upper.inst_pat(mapping),
                             self.body.inst_pat(mapping))
-        elif self.ty == EVAL_AT:
+        elif self.is_evalat():
             return EvalAt(self.var, self.lower.inst_pat(mapping), self.upper.inst_pat(mapping),
                           self.body.inst_pat(mapping))
-        elif self.ty == DERIV:
+        elif self.is_deriv():
             return Deriv(self.var, self.body.inst_pat(mapping))
-        elif self.ty == SUMMATION:
+        elif self.is_summation():
             return Summation(self.index_var, self.lower.inst_pat(mapping), self.upper.inst_pat(mapping), \
                              self.body.inst_pat(mapping))
+        elif self.is_limit():
+            return Limit(self.var, self.lim.inst_pat(mapping), self.body.inst_pat(mapping), self.drt)
         else:
+            print(type(self))
             raise NotImplementedError
 
     def has_var(self, var):
@@ -1605,13 +1607,15 @@ def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
             res = rec(exp.body, pattern.body, bd_vars)
             del bd_vars[pattern.var]
             return res
-        elif isinstance(exp, Integral):
+        elif exp.is_integral():
             bd_vars[pattern.var] = exp.var
             res1 = rec(exp.upper, pattern.upper, bd_vars)
             res2 = rec(exp.lower, pattern.lower, bd_vars)
             res3 = rec(exp.body, pattern.body, bd_vars)
             del bd_vars[pattern.var]
             return res1 and res2 and res3
+        elif exp.is_inf():
+            return exp.t == pattern.t
         else:
             # Currently not implemented
             return False

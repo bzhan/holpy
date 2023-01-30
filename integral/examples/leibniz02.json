@@ -437,12 +437,6 @@
             "type": "Goal"
         },
         {
-            "conds": [
-                {
-                    "cond": "y ^ 2 + 1 > 0",
-                    "latex_cond": "y ^ {2} + 1 > 0"
-                }
-            ],
             "finished": true,
             "goal": "(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)",
             "latex_goal": "\\int_{-\\infty}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{2 \\pi}",
@@ -547,6 +541,82 @@
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,oo]. exp(-(x ^ 2) / 2)) = sqrt(pi / 2)",
+            "latex_goal": "\\int_{0}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{\\frac{\\pi}{2}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,oo]. exp(-(x ^ 2) / 2)) = sqrt(pi / 2)",
+                "latex_goal": "\\int_{0}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{\\frac{\\pi}{2}}",
+                "start": {
+                    "latex_start": "\\int_{-\\infty}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{2 \\pi}",
+                    "start": "(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)",
+                    "steps": [
+                        {
+                            "latex_res": "(\\int_{-\\infty}^{0} e^{-x ^ {2}/2} \\,dx) + (\\int_{0}^{\\infty} e^{-x ^ {2}/2} \\,dx) = \\sqrt{2 \\pi}",
+                            "res": "(INT x:[-oo,0]. exp(-(x ^ 2) / 2)) + (INT x:[0,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)",
+                            "rule": {
+                                "c": "0",
+                                "loc": "0",
+                                "name": "SplitRegion",
+                                "str": "split region at 0 at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\int_{0}^{\\infty} e^{-1/2\\cdot y ^ {2}} \\,dy) + (\\int_{0}^{\\infty} e^{-x ^ {2}/2} \\,dx) = \\sqrt{2 \\pi}",
+                            "res": "(INT y:[0,oo]. exp(-1/2 * y ^ 2)) + (INT x:[0,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)",
+                            "rule": {
+                                "latex_str": "substitute \\(y\\) for \\(-x\\) at 0.0",
+                                "loc": "0.0",
+                                "name": "Substitution",
+                                "str": "substitute y for -x at 0.0",
+                                "var_name": "y",
+                                "var_subst": "-x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx) + (\\int_{0}^{\\infty} e^{-x ^ {2}/2} \\,dx) = \\sqrt{2 \\pi}",
+                            "res": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) + (INT x:[0,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)",
+                            "rule": {
+                                "latex_str": "substitute \\(x\\) for \\(y\\) at 0.0",
+                                "loc": "0.0",
+                                "name": "Substitution",
+                                "str": "substitute x for y at 0.0",
+                                "var_name": "x",
+                                "var_subst": "y"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx) = \\sqrt{2} \\sqrt{\\pi}",
+                            "res": "2 * (INT x:[0,oo]. exp(-1/2 * x ^ 2)) = sqrt(2) * sqrt(pi)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx = \\frac{\\sqrt{2} \\sqrt{\\pi}}{2}",
+                            "res": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) = sqrt(2) * sqrt(pi) / 2",
+                            "rule": {
+                                "latex_str": "solve equation for \\(\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "INT x:[0,oo]. exp(-1/2 * x ^ 2)",
+                                "str": "solve equation for INT x:[0,oo]. exp(-1/2 * x ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
             },
             "type": "Goal"
         }

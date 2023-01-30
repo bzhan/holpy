@@ -773,6 +773,8 @@ def parse_rule(item) -> Rule:
         return rules.VarSubsOfEquation(var, var_subs=var_subs)
     elif item['name'] == 'IndefiniteIntegralIdentity':
         return rules.IndefiniteIntegralIdentity()
+    elif item['name'] == 'DefiniteIntegralIdentity':
+        return rules.DefiniteIntegralIdentity()
     elif item['name'] == 'ReplaceSubstitution':
         return rules.ReplaceSubstitution()
     else:

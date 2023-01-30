@@ -7,9 +7,69 @@
             "type": "FuncDef"
         },
         {
-            "eq": "I(0) = sqrt(pi / 2)",
-            "latex_eq": "I{(0)} = \\sqrt{\\frac{\\pi}{2}}",
-            "type": "Lemma"
+            "finished": true,
+            "goal": "I(0) = sqrt(pi / 2)",
+            "latex_goal": "I{(0)} = \\sqrt{\\frac{\\pi}{2}}",
+            "proof": {
+                "finished": true,
+                "goal": "I(0) = sqrt(pi / 2)",
+                "latex_goal": "I{(0)} = \\sqrt{\\frac{\\pi}{2}}",
+                "lhs_calc": {
+                    "latex_start": "I{(0)}",
+                    "start": "I(0)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\cos{(0)} e^{-1/2\\cdot x ^ {2}} \\,dx",
+                            "res": "INT x:[0,oo]. cos(0) * exp(-1/2 * x ^ 2)",
+                            "rule": {
+                                "func_def": "I(t) = (INT x:[0,oo]. cos(t * x) * exp(-(x ^ 2) / 2))",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx",
+                            "res": "INT x:[0,oo]. exp(-1/2 * x ^ 2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} e^{-x ^ {2}/2} \\,dx",
+                            "res": "INT x:[0,oo]. exp(-(x ^ 2) / 2)",
+                            "rule": {
+                                "latex_str": "rewriting \\(-\\frac{1}{2} x ^ {2}\\) to \\(\\frac{-x ^ {2}}{2}\\)",
+                                "name": "Equation",
+                                "new_expr": "-(x ^ 2) / 2",
+                                "old_expr": "-1/2 * x ^ 2",
+                                "str": "rewriting -1/2 * x ^ 2 to -(x ^ 2) / 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sqrt{\\frac{\\pi}{2}}",
+                            "res": "sqrt(pi / 2)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\sqrt{\\frac{\\pi}{2}}",
+                    "start": "sqrt(pi / 2)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
         },
         {
             "finished": true,
@@ -251,10 +311,11 @@
                             "latex_res": "\\log{(\\sqrt{\\frac{\\pi}{2}})} = C",
                             "res": "log(sqrt(pi / 2)) = SKOLEM_CONST(C)",
                             "rule": {
-                                "lemma": "I(0) = sqrt(pi / 2)",
+                                "eq": "I(0) = sqrt(pi / 2)",
+                                "latex_str": "apply equation \\(I{(0)} = \\sqrt{\\frac{\\pi}{2}}\\) at 0.0",
                                 "loc": "0.0",
-                                "name": "ApplyLemma",
-                                "str": "apply lemma at 0.0"
+                                "name": "ApplyEquation",
+                                "str": "apply equation: I(0) = sqrt(pi / 2) at 0.0"
                             },
                             "type": "CalculationStep"
                         }
@@ -380,5 +441,5 @@
             "type": "Goal"
         }
     ],
-    "name": "Leibniz03"
+    "name": "leibniz03"
 }
