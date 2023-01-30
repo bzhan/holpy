@@ -494,22 +494,26 @@ class Expr:
         if self.ty != other.ty:
             return self.ty <= other.ty
 
-        if self.ty == VAR:
+        if self.is_var():
             return self.name <= other.name
-        elif self.ty == CONST:
+        elif self.is_const():
             return self.val <= other.val
-        elif self.ty == OP:
+        elif self.is_op():
             return (self.op, self.args) <= (other.op, other.args)
-        elif self.ty == FUN:
+        elif self.is_fun():
             return (self.func_name, self.args) <= (other.func_name, other.args)
-        elif self.ty == DERIV:
+        elif self.is_deriv():
             return (self.body, self.var) <= (other.body, other.var)
-        elif self.ty == INTEGRAL or self.ty == EVAL_AT:
+        elif self.is_integral() or self.is_evalat():
             return (self.body, self.lower, self.upper, self.var) <= \
                    (other.body, other.lower, other.upper, other.var)
-        elif self.ty == SYMBOL:
+        elif self.is_symbol():
             return sum(self.ty) <= sum(other.ty)
+        elif self.is_summation():
+            return (self.body, self.lower, self.upper, self.index_var) <= \
+                   (other.body, other.lower, other.upper, other.index_var)
         else:
+            print(type(self))
             raise NotImplementedError
 
     def __lt__(self, other):
@@ -549,7 +553,7 @@ class Expr:
     def __lt__(self, other):
         return self <= other and self != other
 
-    def get_subexpr(self, loc):
+    def get_subexpr(self, loc) -> Expr:
         """Given an expression, return the subexpression at location."""
         if not isinstance(loc, Location):
             loc = Location(loc)
@@ -579,7 +583,7 @@ class Expr:
         else:
             raise NotImplementedError
 
-    def replace_expr(self, loc, new_expr):
+    def replace_expr(self, loc, new_expr: Expr) -> Expr:
         """Replace self's subexpr at location."""
         if not isinstance(loc, Location):
             loc = Location(loc)
@@ -631,7 +635,7 @@ class Expr:
         else:
             raise NotImplementedError
 
-    def get_location(self):
+    def get_location(self) -> Location:
         """Returns the location at which the 'selected' field is True."""
         location = []
 
@@ -1234,7 +1238,7 @@ class Expr:
         else:
             return False
 
-    def separate_integral(self):
+    def separate_integral(self) -> List[Tuple[Expr, Location]]:
         """Collect the list of all integrals appearing in self."""
         result = []
 
@@ -1243,7 +1247,7 @@ class Expr:
                 p.selected = True
                 loc = self.get_location()
                 del p.selected
-                result.append([p, loc])
+                result.append((p, loc))
             elif p.ty == OP:
                 for arg in p.args:
                     collect(arg, result)

@@ -151,6 +151,11 @@
                 "a != 0"
             ],
             "path": "standard"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
+            "path": "standard"
         }
     ],
     "name": "Base theory"

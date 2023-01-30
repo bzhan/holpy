@@ -120,12 +120,15 @@ class Linearity(Rule):
         elif e.is_indefinite_integral():
             if e.body.is_times():
                 factors = decompose_expr_factor(e.body)
-                if not factors[0].contains_var(e.var):
-                    return factors[0] * rec(expr.IndefiniteIntegral(
-                        e.var, functools.reduce(lambda x, y: x * y, factors[2:], factors[1]),
-                        e.skolem_args))
-                else:
-                    return e
+                b, c = Const(1), Const(1)
+                for f in factors:
+                    if not f.contains_var(e.var):
+                        c = c * f
+                    else:
+                        b = b * f
+                c = c.normalize()
+                b = b.normalize()
+                return c * IndefiniteIntegral(e.var, b, e.skolem_args)
             elif e.body.is_uminus():
                 return -IndefiniteIntegral(e.var, e.body.args[0], e.skolem_args)
             elif e.body.is_divides():
@@ -284,6 +287,20 @@ class DefiniteIntegralIdentity(Rule):
         }
 
     def eval(self, e: Expr, ctx=None) -> Expr:
+        if not e.is_integral():
+            return e
+
+        # First, look for indefinite integrals identities
+        for identity in ctx.get_indefinite_integrals():
+            inst = expr.match(IndefiniteIntegral(e.var, e.body, skolem_args=tuple()), identity.lhs)
+            if inst is None:
+                continue
+
+            inst[identity.lhs.var] = Var(e.var)
+            pat_rhs = identity.rhs.args[0]  # remove Skolem constant C
+            return EvalAt(e.var, e.lower, e.upper, pat_rhs.inst_pat(inst))
+
+        # Look for definite integral identities
         for identity in ctx.get_definite_integrals():
             inst = expr.match(e, identity.lhs)
             if inst is None:
@@ -383,27 +400,23 @@ class IndefiniteIntegralIdentity(Rule):
             # No matching identity found
             return e
 
-        def rec(e: Expr):
-            if e.is_indefinite_integral():
-                new_e = apply(e)
-                if new_e == e:
-                    return e, None
-                else:
-                    return new_e, expr.SkolemFunc("C", tuple(Var(arg) for arg in e.skolem_args))
-            elif e.is_times():
-                res, skolem = rec(e.args[1])
-                return e.args[0] * res, skolem
-            elif e.is_uminus():
-                res, skolem = rec(e.args[0])
-                return -res, skolem
-            else:
-                return e, None
-            
-        res, skolem = rec(e)
-        if skolem is not None:
-            return res + skolem
+        integrals = e.separate_integral()
+        skolem_args = set()
+        for sub_e, loc in integrals:
+            new_e = apply(sub_e)
+            if new_e != sub_e:
+                e = e.replace_expr(loc, new_e)
+                skolem_args = skolem_args.union(set(sub_e.skolem_args))
+        
+        if e.is_plus() and e.args[1].is_skolem_func():
+            # If already has Skolem variable at right
+            skolem_args = skolem_args.union(set(arg.name for arg in e.args[1].dependent_vars))
+            e = e.args[0] + expr.SkolemFunc(e.args[1].name, tuple(Var(arg) for arg in skolem_args))
         else:
-            return res
+            # If no Skolem variable at right
+            e = e + expr.SkolemFunc("C", tuple(Var(arg) for arg in skolem_args))
+
+        return e
 
 
 class ReplaceSubstitution(Rule):
@@ -1372,7 +1385,7 @@ class IntegrationByParts(Rule):
         }
 
     def eval(self, e: Expr, ctx=None) -> Expr:
-        if not e.is_integral():
+        if not (e.is_integral() or e.is_indefinite_integral()):
             sep_ints = e.separate_integral()
             if len(sep_ints) == 0:
                 return e
@@ -1383,13 +1396,16 @@ class IntegrationByParts(Rule):
         du = expr.deriv(e.var, self.u)
         dv = expr.deriv(e.var, self.v)
         udv = (self.u * dv).normalize()
-        # d atan(x/sqrt(2+x^2)) -> 1/((1+x^2)*sqrt(2+x^2))
         se = expr.sympy_style(udv).simplify()
         udv = expr.holpy_style(se).normalize()
 
         if udv == e.body:
-            return expr.EvalAt(e.var, e.lower, e.upper, (self.u * self.v).normalize()) - \
-                   expr.Integral(e.var, e.lower, e.upper, (self.v * du).normalize())
+            if e.is_integral():
+                return expr.EvalAt(e.var, e.lower, e.upper, (self.u * self.v).normalize()) - \
+                       expr.Integral(e.var, e.lower, e.upper, (self.v * du).normalize())
+            elif e.is_indefinite_integral():
+                return (self.u * self.v).normalize() - \
+                       expr.IndefiniteIntegral(e.var, (self.v * du).normalize(), e.skolem_args)
         else:
             print("%s != %s" % (str(udv), str(e.body)))
             raise NotImplementedError("%s != %s" % (str(udv), str(e.body)))

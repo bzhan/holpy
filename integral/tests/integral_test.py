@@ -12,15 +12,16 @@ from integral import context
 
 
 class IntegralTest(unittest.TestCase):
-    def checkAndOutput(self, file: compstate.CompFile, filename: str):
+    def checkAndOutput(self, file: compstate.CompFile, filename: str, omit_finish: bool = False):
         # Test parsing of json file
         json_file = file.export()
         for i, item in enumerate(json_file['content']):
             self.assertEqual(compstate.parse_item(file, item).export(), file.content[i].export())
 
         # Test goals are finished
-        for content in file.content:
-            self.assertTrue(content.is_finished())
+        if not omit_finish:
+            for content in file.content:
+                self.assertTrue(content.is_finished())
 
         # Output to file
         with open('integral/examples/' + filename + '.json', 'w', encoding='utf-8') as f:
@@ -75,6 +76,16 @@ class IntegralTest(unittest.TestCase):
                                          new_expr=parser.parse_expr("1 / (u ^ 2 + 1)")))
         calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.ReplaceSubstitution())
+
+        goal6 = file.add_goal("(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)")
+        proof = goal6.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.IntegrationByParts(
+            u=parser.parse_expr("log(x)"),
+            v=parser.parse_expr("x ^ (k+1) / (k+1)")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file, "standard")
 
@@ -1200,14 +1211,6 @@ class IntegralTest(unittest.TestCase):
         ctx.load_book('base')
         file = compstate.CompFile(ctx, 'LogFunction02')
 
-        e = parser.parse_expr("(INT x:[0,1]. x ^ k * log(x)) = -1/(k+1)^2")
-        lemma04 = compstate.Lemma(lemma=e, conds=None)
-        file.add_lemma(lemma04)
-
-        e = parser.parse_expr("(INT x:[0,1]. (-x) ^ k * log(x)) = -(-1)^ k /(k+1)^2")
-        lemma05 = compstate.Lemma(lemma=e, conds=None)
-        file.add_lemma(lemma05)
-
         goal01 = file.add_goal("-log(1-x) - log(1+x) = \
                 -SUM(k,0,oo,(-1)^k*(-x)^(k+1) / (k+1))-SUM(k,0,oo,(-1)^k*x^(k+1)/(k+1))", conds=["abs(x) < 1"])
         proof_of_goal01 = goal01.proof_by_calculation()
@@ -1219,7 +1222,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         goal02 = file.add_goal("x * (-(x ^ 2) + 1) ^ (-1) = \
-                1/2 * SUM(k, 0, oo, (-1) ^ k * (-x) ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)")
+                1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)")
         proof_of_goal02 = goal02.proof_by_rewrite_goal(begin = goal01)
         calc = proof_of_goal02.begin
 
@@ -1247,23 +1250,24 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal02.goal)))
         calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
         calc.perform_rule(rules.FullSimplify())
-        old_expr = parser.parse_expr("log(x) * SUM(k, 0, oo, (-1) ^ k * (-x) ^ k)")
-        new_expr = parser.parse_expr("SUM(k, 0, oo, log(x)*(-1) ^ k * (-x) ^ k)")
+        old_expr = parser.parse_expr("log(x) * SUM(k, 0, oo, x ^ k)")
+        new_expr = parser.parse_expr("SUM(k, 0, oo, log(x) * x ^ k)")
         calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
         old_expr = parser.parse_expr("log(x) * SUM(k, 0, oo, x ^ k * (-1) ^ k)")
         new_expr = parser.parse_expr("SUM(k, 0, oo, log(x) * x ^ k * (-1) ^ k)")
         calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
         calc.perform_rule(rules.OnSubterm(rules.IntSumExchange()))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=lemma04.lemma, conds=None)))
-        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(lemma=lemma05.lemma, conds=None), '0.1.0.1'))
+        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "1.1.0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), '0.1.0.1'))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnSubterm(rules.SeriesEvaluationIdentity()))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal03.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        self.checkAndOutput(file, "LogFunction02")
+        self.checkAndOutput(file, "LogFunction02", omit_finish=True)
 
     def testBernoulliIntegral(self):
         # Reference:

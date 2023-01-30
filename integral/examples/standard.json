@@ -349,6 +349,70 @@
                 "type": "CalculationProof"
             },
             "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
+            "latex_goal": "\\int x ^ {k} \\log{(x)} \\,dx = x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
+                "latex_goal": "\\int x ^ {k} \\log{(x)} \\,dx = x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
+                "lhs_calc": {
+                    "latex_start": "\\int x ^ {k} \\log{(x)} \\,dx",
+                    "start": "INT x. x ^ k * log(x)",
+                    "steps": [
+                        {
+                            "latex_res": "x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - (\\int x ^ {k} (k + 1) ^ {-1} \\,dx)",
+                            "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - (INT x. x ^ k * (k + 1) ^ (-1))",
+                            "rule": {
+                                "latex_str": "integrate by parts \\(u \\to \\log{(x)}, v \\to \\frac{x ^ {k + 1}}{k + 1}\\)",
+                                "name": "IntegrationByParts",
+                                "str": "integrate by parts u -> log(x), v -> x ^ (k + 1) / (k + 1)",
+                                "u": "log(x)",
+                                "v": "x ^ (k + 1) / (k + 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - (k + 1) ^ {-1} (\\int x ^ {k} \\,dx)",
+                            "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - (k + 1) ^ (-1) * (INT x. x ^ k)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - (k + 1) ^ {-1} (\\frac{x ^ {k + 1}}{k + 1}) + C",
+                            "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - (k + 1) ^ (-1) * (x ^ (k + 1) / (k + 1)) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
+                            "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
+                    "start": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
         }
     ],
     "name": "standard"
