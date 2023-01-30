@@ -458,17 +458,6 @@ class RulesTest(unittest.TestCase):
             e = rules.FullSimplify().eval(e)
             self.assertEqual(str(e), res)
 
-    def testLimFunExchange(self):
-        test_data = [
-            ("LIM {x->3}. f(x,log(x))", "f(LIM {x -> 3 }. x,LIM {x -> 3 }. log(x))"),
-            ("LIM {x->oo}. sqrt(x-sqrt(x))", "sqrt(LIM {x -> oo}. x - sqrt(x))"),
-        ]
-
-        for s, res in test_data:
-            s = parser.parse_expr(s)
-            e = rules.LimFunExchange().eval(s)
-            self.assertEqual(str(e), res)
-
     def testRootFractionReWrite(self):
         test_data = [
             ("(x+3) / sqrt(9*x*x - 5 * x)", "((x + 3) ^ 2 / (9 * x * x - 5 * x) ^ 1) ^ (1/2)"),

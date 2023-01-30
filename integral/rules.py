@@ -1965,52 +1965,6 @@ class ExpandDefinition(Rule):
         return e
 
 
-class LimFunExchange(Rule):
-    """Compound function limit rule
-
-        lim {x->a}. f(g(x)) = f(lim {x->a}. g(x))
-
-    This rule handles rewriting in both directions, and also the cases
-    where f is arithmetic operation.
-
-    More care need to be taken if f may not be a continuous function.
-
-    """
-    def __init__(self):
-        self.name = "LimFunExchange"
-
-    def __str__(self):
-        return "exchange limit and function"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx=None) -> Expr:
-        if e.is_limit():
-            # Limit is outside
-            if e.body.is_fun():
-                # Function application case
-                func_name, args = e.body.func_name, e.body.args
-                return expr.Fun(func_name, *[Limit(e.var, e.lim, arg) for arg in args])
-            if e.body.is_uminus():
-                # Unary minus case
-                return -(Limit(e.var, e.lim, e.body.args[0]))
-            if e.body.is_power() and e.body.args[1].is_constant():
-                # Power case, where exponent is a constant
-                return Limit(e.var, e.lim, e.body.args[0]) ^ e.body.args[1]
-        else:
-            # Function application is outside
-            if e.is_uminus() and e.args[0].is_limit():
-                # Unary minus case
-                return Limit(e.args[0].var, e.args[0].lim, -e.args[0].body)
-
-        # Default do nothing
-        return e
-
-
 class RootFractionReWrite(Rule):
     """Rewrite nth root fraction
 
@@ -2134,31 +2088,6 @@ class RewriteExp(Rule):
             # exp(a - b) -> exp(a) * exp(-b)
             a1, a2 = b.args
             return Fun('exp', a1) * Fun('exp', -a2)
-        else:
-            raise NotImplementedError
-
-
-class LimIntExchange(Rule):
-    """Exchange limit and integral.
-    
-        LIM INT f(x) = LIM INT f(x)
-    
-    """
-    def __init__(self):
-        self.name = "LimIntExchange"
-
-    def __str__(self):
-        return "exchange limit and integral"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx=None) -> Expr:
-        if e.is_limit() and e.body.is_integral():
-            return Integral(e.body.var, e.body.lower, e.body.upper, Limit(e.var, e.lim, e.body.body))
         else:
             raise NotImplementedError
 

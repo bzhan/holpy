@@ -773,10 +773,6 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'DerivEquation':
         var = item['var']
         return rules.DerivEquation(var)
-    elif item['name'] == 'LimFunExchange':
-        return rules.LimFunExchange()
-    elif item['name'] == 'LimIntExchange':
-        return rules.LimIntExchange()
     elif item['name'] == 'RewriteMulPower':
         merged_idx = item['merged_idx']
         return rules.RewriteMulPower(merged_idx)
