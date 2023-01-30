@@ -28,7 +28,7 @@
                             "latex_res": "\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(\\sqrt{x ^ {2} + 2})} \\,dx",
                             "res": "INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))",
                             "rule": {
-                                "func_def": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x * x)) / ((1 + x * x) * sqrt(2 + x * x)))",
+                                "func_name": "I",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
                             },
@@ -78,7 +78,7 @@
                             "latex_res": "\\lim\\limits_{u\\to \\infty} \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(u \\sqrt{x ^ {2} + 2})} \\,dx",
                             "res": "LIM {u -> oo}. INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
                             "rule": {
-                                "func_def": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x * x)) / ((1 + x * x) * sqrt(2 + x * x)))",
+                                "func_name": "I",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"
@@ -132,7 +132,7 @@
                             "latex_res": "\\lim\\limits_{u\\to \\infty} \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(u \\sqrt{x ^ {2} + 2})} \\,dx",
                             "res": "LIM {u -> oo}. INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
                             "rule": {
-                                "func_def": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x * x)) / ((1 + x * x) * sqrt(2 + x * x)))",
+                                "func_name": "I",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"
@@ -224,7 +224,7 @@
                             "latex_res": "\\frac{d}{du} \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\arctan{(u \\sqrt{x ^ {2} + 2})} \\,dx",
                             "res": "D u. INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
                             "rule": {
-                                "func_def": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x * x)) / ((1 + x * x) * sqrt(2 + x * x)))",
+                                "func_name": "I",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"

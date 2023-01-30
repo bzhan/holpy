@@ -74,10 +74,10 @@
                             "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\sqrt{(\\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx) ^ {2}})",
                             "res": "2 * (LIM {t -> oo}. sqrt((INT x:[0,t]. exp(-1/2 * x ^ 2)) ^ 2))",
                             "rule": {
-                                "func_def": "g(t) = (INT x:[0,t]. exp(-(x ^ 2) / 2)) ^ 2",
-                                "loc": "1.0.0",
+                                "func_name": "g",
+                                "loc": "subterms",
                                 "name": "ExpandDefinition",
-                                "str": "expand definition at 1.0.0"
+                                "str": "expand definition on subterms"
                             },
                             "type": "CalculationStep"
                         },
@@ -133,10 +133,10 @@
                             "latex_res": "\\frac{d}{dt} ((\\int_{0}^{t} e^{-1/2\\cdot x ^ {2}} \\,dx) ^ {2} + 2 (\\int_{0}^{1} \\frac{e^{-(1 + y ^ {2}) t ^ {2}/2}}{1 + y ^ {2}} \\,dy))",
                             "res": "D t. (INT x:[0,t]. exp(-1/2 * x ^ 2)) ^ 2 + 2 * (INT y:[0,1]. exp(-(1 + y ^ 2) * t ^ 2 / 2) / (1 + y ^ 2))",
                             "rule": {
-                                "func_def": "g(t) = (INT x:[0,t]. exp(-(x ^ 2) / 2)) ^ 2",
-                                "loc": "0.0",
+                                "func_name": "g",
+                                "loc": "subterms",
                                 "name": "ExpandDefinition",
-                                "str": "expand definition at 0.0"
+                                "str": "expand definition on subterms"
                             },
                             "type": "CalculationStep"
                         },
@@ -290,7 +290,7 @@
                             "latex_res": "0 ^ {2}",
                             "res": "0 ^ 2",
                             "rule": {
-                                "func_def": "g(t) = (INT x:[0,t]. exp(-(x ^ 2) / 2)) ^ 2",
+                                "func_name": "g",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
                             },

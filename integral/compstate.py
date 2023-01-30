@@ -54,6 +54,10 @@ class StateItem:
         """Obtain the JSON representation of the item."""
         raise NotImplementedError
 
+    def export_book(self):
+        """Obtain the JSON representation of the item in the book file."""
+        raise NotImplementedError
+
     def get_by_label(self, label: Label) -> "StateItem":
         """Return the object at the given label."""
         raise NotImplementedError
@@ -73,12 +77,12 @@ class StateItem:
 
 class FuncDef(StateItem):
     """Introduce a new function definition."""
-    def __init__(self, parent, eq: Expr, conds: Optional[Conditions] = None):
+    def __init__(self, parent: "CompFile", ctx: Context, eq: Expr, conds: Optional[Conditions] = None):
         if not eq.is_equals():
             raise AssertionError("FuncDef: input should be an equation")
 
         self.parent = parent
-        self.ctx = parent.ctx
+        self.ctx = ctx
 
         self.eq = eq
         if self.eq.lhs.is_fun():
@@ -117,6 +121,16 @@ class FuncDef(StateItem):
             res["conds"] = self.conds.export()
         return res
 
+    def export_book(self):
+        res = {
+            "type": "definition",
+            "expr": str(self.eq),
+            "path": self.parent.name
+        }
+        if self.conds.data:
+            res["conds"] = [str(cond) for cond in self.conds.data]
+        return res
+
     def get_by_label(self, label: Label):
         if not label.empty():
             raise AssertionError("get_by_label: invalid label")
@@ -128,7 +142,7 @@ class FuncDef(StateItem):
 
 class Goal(StateItem):
     """Goal to be proved."""
-    def __init__(self, parent, goal: Expr, conds: Optional[Conditions] = None):
+    def __init__(self, parent, ctx: Context, goal: Expr, conds: Optional[Conditions] = None):
         self.parent = parent
         self.goal = goal
         if conds is None:
@@ -136,7 +150,7 @@ class Goal(StateItem):
         self.conds = conds
         self.proof = None
 
-        self.ctx = Context(parent.ctx)
+        self.ctx = Context(ctx)
         self.ctx.extend_condition(self.conds)
 
     def __str__(self):
@@ -169,6 +183,16 @@ class Goal(StateItem):
             res['proof'] = self.proof.export()
         if self.conds.data:
             res['conds'] = self.conds.export()
+        return res
+
+    def export_book(self):
+        res = {
+            "type": "problem",
+            "expr": str(self.goal),
+            "path": self.parent.name
+        }
+        if self.conds.data:
+            res["conds"] = [str(cond) for cond in self.conds.data]
         return res
 
     def proof_by_rewrite_goal(self, *, begin: "Goal"):
@@ -392,13 +416,13 @@ class InductionProof(StateItem):
 
         # Base case: n = 0
         eq0 = goal.subst(induct_var, self.start).normalize()
-        self.base_case = Goal(self, eq0)
+        self.base_case = Goal(self, self.ctx, eq0)
 
         # Inductive case:
         eqI = goal.subst(induct_var, Var(induct_var) + 1).normalize()
         induct_conds = Conditions()
         induct_conds.add_condition(self.goal)
-        self.induct_case = Goal(self, eqI, conds=induct_conds)
+        self.induct_case = Goal(self, self.ctx, eqI, conds=induct_conds)
 
     def __str__(self):
         if self.is_finished():
@@ -458,12 +482,12 @@ class CaseProof(StateItem):
         # Case 1:
         conds1 = Conditions()
         conds1.add_condition(split_cond)
-        self.case_1 = Goal(self, goal, conds=conds1)
+        self.case_1 = Goal(self, self.ctx, goal, conds=conds1)
 
         # Case 2:
         conds2 = Conditions()
         conds2.add_condition(expr.neg_expr(split_cond))
-        self.case_2 = Goal(self, goal, conds=conds2)
+        self.case_2 = Goal(self, self.ctx, goal, conds=conds2)
 
     def __str__(self):
         if self.is_finished():
@@ -569,7 +593,19 @@ class CompFile:
             res += str(st)
         return res
 
-    def add_definition(self, funcdef: Union[str, Expr, FuncDef], *, conds: List[Union[str, Expr]] = None) -> FuncDef:
+    def get_context(self, index: int = -1) -> Context:
+        """Obtain the context up to the particular index.
+        
+        If index = -1, return the context after processing all the content.
+        
+        """
+        ctx = Context(self.ctx)
+        for item in self.content:
+            if isinstance(item, FuncDef) or isinstance(item, Goal):
+                ctx.extend_by_item(item.export_book())
+        return ctx
+
+    def add_definition(self, funcdef: Union[str, Expr], *, conds: List[Union[str, Expr]] = None) -> FuncDef:
         """Add a function definition.
         
         funcdef: statement of the definition.
@@ -584,12 +620,11 @@ class CompFile:
         else:
             conds = []
 
-        if isinstance(funcdef, FuncDef):
-            self.content.append(funcdef)
-        elif isinstance(funcdef, str):
-            self.content.append(FuncDef(self, parser.parse_expr(funcdef), Conditions(conds)))
+        ctx = self.get_context()
+        if isinstance(funcdef, str):
+            self.content.append(FuncDef(self, ctx, parser.parse_expr(funcdef), Conditions(conds)))
         elif isinstance(funcdef, Expr):
-            self.content.append(FuncDef(self, funcdef, Conditions(conds)))
+            self.content.append(FuncDef(self, ctx, funcdef, Conditions(conds)))
         else:
             raise NotImplementedError
         return self.content[-1]
@@ -606,7 +641,7 @@ class CompFile:
             raise NotImplementedError
         return self.content[-1]
 
-    def add_goal(self, goal: Union[str, Expr, Goal], *, conds: List[Union[str, Expr]] = None) -> Goal:
+    def add_goal(self, goal: Union[str, Expr], *, conds: List[Union[str, Expr]] = None) -> Goal:
         """Add a goal.
 
         goal: statement of the goal.
@@ -620,12 +655,12 @@ class CompFile:
                     conds[i] = parser.parse_expr(conds[i])
         else:
             conds = []
-        if isinstance(goal, Goal):
-            self.content.append(goal)
-        elif isinstance(goal, str):
-            self.content.append(Goal(self, parser.parse_expr(goal), Conditions(conds)))
+
+        ctx = self.get_context()
+        if isinstance(goal, str):
+            self.content.append(Goal(self, ctx, parser.parse_expr(goal), Conditions(conds)))
         elif isinstance(goal, Expr):
-            self.content.append(Goal(self, goal, Conditions(conds)))
+            self.content.append(Goal(self, ctx, goal, Conditions(conds)))
         else:
             raise NotImplementedError
         return self.content[-1]
@@ -655,8 +690,8 @@ def parse_rule(item) -> Rule:
             else:
                 return rules.OnLocation(parse_rule(item), loc)
     elif item['name'] == 'ExpandDefinition':
-        func_def = parser.parse_expr(item['func_def'])
-        return rules.ExpandDefinition(func_def)
+        func_name = item['func_name']
+        return rules.ExpandDefinition(func_name=func_name)
     elif item['name'] == 'DerivIntExchange':
         return rules.DerivIntExchange()
     elif item['name'] == 'FullSimplify':
@@ -795,11 +830,13 @@ def parse_item(parent, item) -> StateItem:
     if item['type'] == 'FuncDef':
         conds = parse_conds(item)
         eq = parser.parse_expr(item['eq'])
-        return FuncDef(parent, eq, conds=conds)
+        ctx = parent.get_context() if isinstance(parent, CompFile) else parent.ctx
+        return FuncDef(parent, ctx, eq, conds=conds)
     elif item['type'] == 'Goal':
         goal = parser.parse_expr(item['goal'])
         conds = parse_conds(item)
-        res = Goal(parent, goal, conds=conds)
+        ctx = parent.get_context() if isinstance(parent, CompFile) else parent.ctx
+        res = Goal(parent, ctx, goal, conds=conds)
         if 'proof' in item:
             res.proof = parse_item(res, item['proof'])
         return res
@@ -833,7 +870,7 @@ def parse_item(parent, item) -> StateItem:
         goal = parser.parse_expr(item['goal'])
         begin_goal = parser.parse_expr(item['start']['start'])
         begin_conds = parse_conds(item['start'])
-        res = RewriteGoalProof(parent, goal=goal, begin=Goal(parent, begin_goal, begin_conds))
+        res = RewriteGoalProof(parent, goal=goal, begin=Goal(parent, parent.ctx, begin_goal, begin_conds))
         for i, step in enumerate(item['start']['steps']):
             res.begin.add_step(parse_step(res.begin, step, i))
         return res

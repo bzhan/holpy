@@ -79,10 +79,9 @@
                             "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(2 n + 1) ^ {2}}}",
                             "res": "SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
                             "rule": {
-                                "eq": "G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
-                                "latex_str": "apply equation \\(G = \\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(2 n + 1) ^ {2}}}\\)",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)"
+                                "func_name": "G",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
                             },
                             "type": "CalculationStep"
                         },

@@ -31,6 +31,8 @@ class Context:
     
     Information kept in context include the following:
     
+    - List of function definitions
+
     - List of existing identities (for indefinite integrals, definite integrals,
       trigonometric identities, etc).
       
@@ -42,6 +44,9 @@ class Context:
     def __init__(self, parent: Optional["Context"] = None):
         # Parent context
         self.parent = parent
+
+        # List of definitions
+        self.definitions: List[Identity] = list()
 
         # List of indefinite integral identities
         self.indefinite_integrals: List[Identity] = list()
@@ -66,26 +71,34 @@ class Context:
 
     def __str__(self):
         res = ""
+        res += "Definitions\n"
+        for identity in self.get_definitions():
+            res += str(identity) + "\n"
         res += "Indefinite integrals\n"
-        for identity in self.indefinite_integrals:
+        for identity in self.get_indefinite_integrals():
             res += str(identity) + "\n"
         res += "Definite integrals\n"
-        for identity in self.definite_integrals:
+        for identity in self.get_definite_integrals():
             res += str(identity) + "\n"
         res += "Series expansions\n"
-        for identity in self.series_expansions:
+        for identity in self.get_series_expansions():
             res += str(identity) + "\n"
         res += "Series evaluations\n"
-        for identity in self.series_evaluations:
+        for identity in self.get_series_evaluations():
             res += str(identity) + "\n"
         res += "Other identities\n"
-        for identity in self.other_identities:
+        for identity in self.get_other_identities():
             res += str(identity) + "\n"
         res += "Conditions\n"
-        for cond in self.conds.data:
+        for cond in self.get_conds().data:
             res += str(cond) + "\n"
         return res
     
+    def get_definitions(self) -> List[Identity]:
+        res = self.parent.get_definitions() if self.parent is not None else []
+        res.extend(self.definitions)
+        return res
+
     def get_indefinite_integrals(self) -> List[Identity]:
         res = self.parent.get_indefinite_integrals() if self.parent is not None else []
         res.extend(self.indefinite_integrals)
@@ -122,6 +135,14 @@ class Context:
         for var, expr in self.substs.items():
             res[var] = expr
         return res
+
+    def add_definition(self, eq: Expr):
+        if not eq.is_equals():
+            raise TypeError
+
+        symb_lhs = expr_to_pattern(eq.lhs)
+        symb_rhs = expr_to_pattern(eq.rhs)
+        self.definitions.append(Identity(symb_lhs, symb_rhs))
 
     def add_indefinite_integral(self, eq: Expr):
         if not (eq.is_equals() and eq.lhs.is_indefinite_integral()):
@@ -177,6 +198,23 @@ class Context:
         for var, expr in substs.items():
             self.substs[var] = expr
 
+    def extend_by_item(self, item):
+        if item['type'] == 'axiom' or item['type'] == 'problem':
+            e = parser.parse_expr(item['expr'])
+            if e.is_equals() and e.lhs.is_indefinite_integral():
+                self.add_indefinite_integral(e)
+            elif e.is_equals() and e.lhs.is_integral():
+                self.add_definite_integral(e)
+            elif e.is_equals() and not e.lhs.is_summation() and e.rhs.is_summation():
+                self.add_series_expansion(e)
+            elif e.is_equals() and e.lhs.is_summation() and not e.rhs.is_summation():
+                self.add_series_evaluation(e)
+            elif e.is_equals() and 'category' in item:
+                self.add_other_identities(e, item['category'])
+        if item['type'] == 'definition':
+            e = parser.parse_expr(item['expr'])
+            self.add_definition(e)
+
     def load_book(self, content, upto: Optional[str] = None):
         if isinstance(content, str):
             filename = os.path.join(dirname, "../integral/examples/" + content + '.json')
@@ -186,17 +224,6 @@ class Context:
         for item in content:
             if upto is not None and "path" in item and item['path'] == upto:
                 break
-            if item['type'] == 'axiom' or item['type'] == 'problem':
-                e = parser.parse_expr(item['expr'])
-                if e.is_equals() and e.lhs.is_indefinite_integral():
-                    self.add_indefinite_integral(e)
-                elif e.is_equals() and e.lhs.is_integral():
-                    self.add_definite_integral(e)
-                elif e.is_equals() and not e.lhs.is_summation() and e.rhs.is_summation():
-                    self.add_series_expansion(e)
-                elif e.is_equals() and e.lhs.is_summation() and not e.rhs.is_summation():
-                    self.add_series_evaluation(e)
-                elif e.is_equals() and 'category' in item:
-                    self.add_other_identities(e, item['category'])
+            self.extend_by_item(item)
 
         return

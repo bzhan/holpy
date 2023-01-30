@@ -512,6 +512,8 @@ class Expr:
         elif self.is_summation():
             return (self.body, self.lower, self.upper, self.index_var) <= \
                    (other.body, other.lower, other.upper, other.index_var)
+        elif self.is_skolem_func():
+            return (self.name, self.dependent_vars) <= (other.name, other.dependent_vars)
         else:
             print(type(self))
             raise NotImplementedError
@@ -1601,6 +1603,13 @@ def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
                 return False
             for i in range(len(exp.args)):
                 if not rec(exp.args[i], pattern.args[i], bd_vars):
+                    return False
+            return True
+        elif exp.is_skolem_func():
+            if exp.name != pattern.name or len(exp.dependent_vars) != len(pattern.dependent_vars):
+                return False
+            for i in range(len(exp.dependent_vars)):
+                if not rec(exp.dependent_vars[i], pattern.dependent_vars[i], bd_vars):
                     return False
             return True
         elif exp.is_indefinite_integral():

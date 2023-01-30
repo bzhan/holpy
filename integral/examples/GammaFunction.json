@@ -34,7 +34,7 @@
                             "latex_res": "\\int_{0}^{\\infty} x ^ {n} e^{-x} \\,dx",
                             "res": "INT x:[0,oo]. x ^ n * exp(-x)",
                             "rule": {
-                                "func_def": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+                                "func_name": "Gamma",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
                             },
@@ -82,7 +82,7 @@
                             "latex_res": "n (\\int_{0}^{\\infty} x ^ {n - 1} e^{-x} \\,dx)",
                             "res": "n * (INT x:[0,oo]. x ^ (n - 1) * exp(-x))",
                             "rule": {
-                                "func_def": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+                                "func_name": "Gamma",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"
@@ -127,7 +127,7 @@
                                     "latex_res": "\\int_{0}^{\\infty} e^{-x} \\,dx",
                                     "res": "INT x:[0,oo]. exp(-x)",
                                     "rule": {
-                                        "func_def": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+                                        "func_name": "Gamma",
                                         "name": "ExpandDefinition",
                                         "str": "expand definition"
                                     },

@@ -38,7 +38,7 @@
                             "latex_res": "\\frac{d}{da} \\int_{0}^{\\infty} x ^ {-1} (\\arctan{(a x)} - \\arctan{(b x)}) \\,dx",
                             "res": "D a. INT x:[0,oo]. x ^ (-1) * (atan(a * x) - atan(b * x))",
                             "rule": {
-                                "func_def": "I(a,b) = (INT x:[0,oo]. (atan(a * x) - atan(b * x)) / x)",
+                                "func_name": "I",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"
@@ -270,10 +270,10 @@
                             "latex_res": "C(a) = (\\int_{0}^{\\infty} 0 \\,dx) - \\frac{1}{2} \\pi \\log{(a)}",
                             "res": "SKOLEM_FUNC(C(a)) = (INT x:[0,oo]. 0) - 1/2 * pi * log(a)",
                             "rule": {
-                                "func_def": "I(a,b) = (INT x:[0,oo]. (atan(a * x) - atan(b * x)) / x)",
-                                "loc": "1.0",
+                                "func_name": "I",
+                                "loc": "subterms",
                                 "name": "ExpandDefinition",
-                                "str": "expand definition at 1.0"
+                                "str": "expand definition on subterms"
                             },
                             "type": "CalculationStep"
                         },
@@ -330,10 +330,11 @@
                             "latex_res": "\\frac{1}{2} \\pi \\log{(a)} + -\\frac{1}{2} \\pi \\log{(b)}",
                             "res": "1/2 * pi * log(a) + -1/2 * pi * log(b)",
                             "rule": {
-                                "func_def": "SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a)",
-                                "loc": "subterms",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition on subterms"
+                                "eq": "SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a)",
+                                "latex_str": "apply equation \\(C(a) = -\\frac{1}{2} \\pi \\log{(a)}\\) at 1",
+                                "loc": "1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a) at 1"
                             },
                             "type": "CalculationStep"
                         },

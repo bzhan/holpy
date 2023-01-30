@@ -34,7 +34,7 @@
                             "latex_res": "\\frac{d}{db} \\int_{0}^{\\infty} (x ^ {2} + b) ^ {-m - 1} \\,dx",
                             "res": "D b. INT x:[0,oo]. (x ^ 2 + b) ^ (-m - 1)",
                             "rule": {
-                                "func_def": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
+                                "func_name": "I",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"
@@ -70,7 +70,7 @@
                             "latex_res": "-(m + 1) (\\int_{0}^{\\infty} (x ^ {2} + b) ^ {-m - 2} \\,dx)",
                             "res": "-(m + 1) * (INT x:[0,oo]. (x ^ 2 + b) ^ (-m - 2))",
                             "rule": {
-                                "func_def": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
+                                "func_name": "I",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"
@@ -120,7 +120,7 @@
                                     "latex_res": "\\int_{0}^{\\infty} (x ^ {2} + b) ^ {-1} \\,dx",
                                     "res": "INT x:[0,oo]. (x ^ 2 + b) ^ (-1)",
                                     "rule": {
-                                        "func_def": "I(m,b) = (INT x:[0,oo]. 1 / (x ^ 2 + b) ^ (m + 1))",
+                                        "func_name": "I",
                                         "name": "ExpandDefinition",
                                         "str": "expand definition"
                                     },

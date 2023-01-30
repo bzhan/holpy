@@ -22,7 +22,7 @@
                             "latex_res": "\\int_{0}^{\\infty} \\cos{(0)} e^{-1/2\\cdot x ^ {2}} \\,dx",
                             "res": "INT x:[0,oo]. cos(0) * exp(-1/2 * x ^ 2)",
                             "rule": {
-                                "func_def": "I(t) = (INT x:[0,oo]. cos(t * x) * exp(-(x ^ 2) / 2))",
+                                "func_name": "I",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
                             },
@@ -87,10 +87,10 @@
                             "latex_res": "\\frac{d}{dt} \\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx",
                             "res": "D t. INT x:[0,oo]. exp(-1/2 * x ^ 2) * cos(t * x)",
                             "rule": {
-                                "func_def": "I(t) = (INT x:[0,oo]. cos(t * x) * exp(-(x ^ 2) / 2))",
-                                "loc": "0",
+                                "func_name": "I",
+                                "loc": "subterms",
                                 "name": "ExpandDefinition",
-                                "str": "expand definition at 0"
+                                "str": "expand definition on subterms"
                             },
                             "type": "CalculationStep"
                         },
@@ -147,10 +147,10 @@
                             "latex_res": "-t (\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx)",
                             "res": "-t * (INT x:[0,oo]. exp(-1/2 * x ^ 2) * cos(t * x))",
                             "rule": {
-                                "func_def": "I(t) = (INT x:[0,oo]. cos(t * x) * exp(-(x ^ 2) / 2))",
-                                "loc": "1",
+                                "func_name": "I",
+                                "loc": "subterms",
                                 "name": "ExpandDefinition",
-                                "str": "expand definition at 1"
+                                "str": "expand definition on subterms"
                             },
                             "type": "CalculationStep"
                         },

@@ -28,7 +28,7 @@
                             "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(2 x)})} \\,dx",
                             "res": "INT x:[0,1/2 * pi]. log(a * sin(2 * x))",
                             "rule": {
-                                "func_def": "J(a) = (INT x:[0,pi / 2]. log(a * sin(2 * x)))",
+                                "func_name": "J",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
                             },
@@ -111,7 +111,7 @@
                             "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(x)})} \\,dx",
                             "res": "INT x:[0,1/2 * pi]. log(a * sin(x))",
                             "rule": {
-                                "func_def": "I(a) = (INT x:[0,pi / 2]. log(a * sin(x)))",
+                                "func_name": "I",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
                             },
@@ -140,7 +140,7 @@
                             "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(2 x)})} \\,dx",
                             "res": "INT x:[0,1/2 * pi]. log(a * sin(2 * x))",
                             "rule": {
-                                "func_def": "J(a) = (INT x:[0,pi / 2]. log(a * sin(2 * x)))",
+                                "func_name": "J",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
                             },
@@ -243,7 +243,7 @@
                             "latex_res": "\\frac{\\pi}{2} \\log{(\\frac{2}{a})} + 2 (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(x)})} \\,dx)",
                             "res": "pi / 2 * log(2 / a) + 2 * (INT x:[0,1/2 * pi]. log(a * sin(x)))",
                             "rule": {
-                                "func_def": "I(a) = (INT x:[0,pi / 2]. log(a * sin(x)))",
+                                "func_name": "I",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"

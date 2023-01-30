@@ -983,12 +983,7 @@ class ApplyLemma(Rule):
                 flag = True
         if not flag:
             return e
-        if e.is_fun() and self.lemma.lhs.is_fun() and \
-                e.func_name == self.lemma.lhs.func_name and \
-                all(isinstance(arg, Var) for arg in self.lemma.lhs.args):
-            rule = ExpandDefinition(self.lemma)
-        else:
-            rule = ApplyEquation(self.lemma)
+        rule = ApplyEquation(self.lemma)
         return rule.eval(e, ctx)
 
 
@@ -1940,9 +1935,10 @@ class DerivIntExchange(Rule):
 class ExpandDefinition(Rule):
     """Expand a definition"""
 
-    def __init__(self, func_def: Expr):
+    def __init__(self, func_name: str):
         self.name = "ExpandDefinition"
-        self.func_def: Expr = func_def
+        assert isinstance(func_name, str)
+        self.func_name: str = func_name
 
     def __str__(self):
         return "expand definition"
@@ -1950,25 +1946,23 @@ class ExpandDefinition(Rule):
     def export(self):
         return {
             "name": self.name,
-            "func_def": str(self.func_def),
+            "func_name": self.func_name,
             "str": str(self)
         }
 
     def eval(self, e: Expr, ctx=None) -> Expr:
-        if e.is_fun() and self.func_def.lhs.is_fun() and \
-                e.func_name == self.func_def.lhs.func_name:
-            body = self.func_def.rhs
-            for arg, val in zip(self.func_def.lhs.args, e.args):
-                body = body.replace(arg, val)
-            return body.normalize()
-        elif e.is_skolem_func() and self.func_def.lhs.is_skolem_func() and \
-                e.name == self.func_def.lhs.name:
-            body = self.func_def.rhs
-            for arg, val in zip(self.func_def.lhs.dependent_vars, e.dependent_vars):
-                body = body.replace(arg, val)
-            return body.normalize()
-        else:
-            return e
+        if e.is_fun() and e.func_name == self.func_name:
+            for identity in ctx.get_definitions():
+                if identity.lhs.is_fun() and identity.lhs.func_name == self.func_name:
+                    inst = expr.match(e, identity.lhs)
+                    return identity.rhs.inst_pat(inst).normalize()
+        if e.is_var() and e.name == self.func_name:
+            for identity in ctx.get_definitions():
+                if identity.lhs.is_symbol() and identity.lhs.name == self.func_name:
+                    return identity.rhs
+
+        # Not found
+        return e
 
 
 class LimFunExchange(Rule):

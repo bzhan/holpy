@@ -128,7 +128,7 @@
                             "latex_res": "\\frac{d}{dy} \\int_{0}^{\\infty} x ^ {-1} e^{-x y} \\sin{(a x)} \\,dx",
                             "res": "D y. INT x:[0,oo]. x ^ (-1) * exp(-(x * y)) * sin(a * x)",
                             "rule": {
-                                "func_def": "g(y,a) = (INT x:[0,oo]. exp(-x * y) * sin(a * x) / x)",
+                                "func_name": "g",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"
@@ -306,7 +306,7 @@
                             "latex_res": "\\lim\\limits_{y\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-x y} \\sin{(a x)} \\,dx",
                             "res": "LIM {y -> oo}. INT x:[0,oo]. x ^ (-1) * exp(-(x * y)) * sin(a * x)",
                             "rule": {
-                                "func_def": "g(y,a) = (INT x:[0,oo]. exp(-x * y) * sin(a * x) / x)",
+                                "func_name": "g",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"
@@ -518,7 +518,7 @@
                             "latex_res": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(a x)} \\,dx",
                             "res": "INT x:[0,oo]. x ^ (-1) * sin(a * x)",
                             "rule": {
-                                "func_def": "g(y,a) = (INT x:[0,oo]. exp(-x * y) * sin(a * x) / x)",
+                                "func_name": "g",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
                             },

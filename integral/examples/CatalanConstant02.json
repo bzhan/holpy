@@ -40,7 +40,7 @@
                             "latex_res": "\\int_{1}^{\\infty} x ^ {-k} \\log{(x)} \\,dx",
                             "res": "INT x:[1,oo]. x ^ -k * log(x)",
                             "rule": {
-                                "func_def": "I(k) = (INT x:[1,oo]. log(x) / x ^ k)",
+                                "func_name": "I",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
                             },
@@ -157,12 +157,22 @@
                     "start": "I(2 * n + 2)",
                     "steps": [
                         {
+                            "latex_res": "\\frac{1}{(2 n + 2 - 1) ^ {2}}",
+                            "res": "1 / (2 * n + 2 - 1) ^ 2",
+                            "rule": {
+                                "eq": "I(k) = 1 / (k - 1) ^ 2",
+                                "latex_str": "apply equation \\(I{(k)} = \\frac{1}{(k - 1) ^ {2}}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: I(k) = 1 / (k - 1) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "(2 n + 1) ^ {-2}",
                             "res": "(2 * n + 1) ^ (-2)",
                             "rule": {
-                                "func_def": "I(k) = 1 / (k - 1) ^ 2",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition"
+                                "name": "FullSimplify",
+                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         }
@@ -205,7 +215,7 @@
                             "latex_res": "\\int_{1}^{\\infty} x ^ {-2 n - 2} \\log{(x)} \\,dx",
                             "res": "INT x:[1,oo]. x ^ (-2 * n - 2) * log(x)",
                             "rule": {
-                                "func_def": "I(k) = (INT x:[1,oo]. log(x) / x ^ k)",
+                                "func_name": "I",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition"
                             },
@@ -409,10 +419,9 @@
                             "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(2 n + 1) ^ {2}}}",
                             "res": "SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
                             "rule": {
-                                "eq": "G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
-                                "latex_str": "apply equation \\(G = \\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(2 n + 1) ^ {2}}}\\)",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)"
+                                "func_name": "G",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
                             },
                             "type": "CalculationStep"
                         },
