@@ -3,11 +3,11 @@
         {
             "finished": true,
             "goal": "(INT x. 1 / (x + a)) = log(abs(x + a)) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int \\frac{1}{x + a} \\,dx = \\log{(\\left| x + a \\right|)} + C()",
+            "latex_goal": "\\int \\frac{1}{x + a} \\,dx = \\log{(\\left| x + a \\right|)} + C",
             "proof": {
                 "finished": true,
                 "goal": "(INT x. 1 / (x + a)) = log(abs(x + a)) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int \\frac{1}{x + a} \\,dx = \\log{(\\left| x + a \\right|)} + C()",
+                "latex_goal": "\\int \\frac{1}{x + a} \\,dx = \\log{(\\left| x + a \\right|)} + C",
                 "lhs_calc": {
                     "latex_start": "\\int \\frac{1}{x + a} \\,dx",
                     "start": "INT x. 1 / (x + a)",
@@ -25,7 +25,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\log{(\\left| u \\right|)} + C()",
+                            "latex_res": "\\log{(\\left| u \\right|)} + C",
                             "res": "log(abs(u)) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
@@ -34,7 +34,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\log{(\\left| x + a \\right|)} + C()",
+                            "latex_res": "\\log{(\\left| x + a \\right|)} + C",
                             "res": "log(abs(x + a)) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "ReplaceSubstitution",
@@ -46,7 +46,7 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\log{(\\left| x + a \\right|)} + C()",
+                    "latex_start": "\\log{(\\left| x + a \\right|)} + C",
                     "start": "log(abs(x + a)) + SKOLEM_CONST(C)",
                     "steps": [],
                     "type": "Calculation"
@@ -58,11 +58,11 @@
         {
             "finished": true,
             "goal": "(INT x. exp(a * x)) = a ^ (-1) * exp(a * x) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int e^{a x} \\,dx = a ^ {-1} e^{a x} + C()",
+            "latex_goal": "\\int e^{a x} \\,dx = a ^ {-1} e^{a x} + C",
             "proof": {
                 "finished": true,
                 "goal": "(INT x. exp(a * x)) = a ^ (-1) * exp(a * x) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int e^{a x} \\,dx = a ^ {-1} e^{a x} + C()",
+                "latex_goal": "\\int e^{a x} \\,dx = a ^ {-1} e^{a x} + C",
                 "lhs_calc": {
                     "latex_start": "\\int e^{a x} \\,dx",
                     "start": "INT x. exp(a * x)",
@@ -89,7 +89,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} e^{u} + C()",
+                            "latex_res": "a ^ {-1} e^{u} + C",
                             "res": "a ^ (-1) * exp(u) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
@@ -98,7 +98,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} e^{a x} + C()",
+                            "latex_res": "a ^ {-1} e^{a x} + C",
                             "res": "a ^ (-1) * exp(a * x) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "ReplaceSubstitution",
@@ -110,7 +110,7 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "a ^ {-1} e^{a x} + C()",
+                    "latex_start": "a ^ {-1} e^{a x} + C",
                     "start": "a ^ (-1) * exp(a * x) + SKOLEM_CONST(C)",
                     "steps": [],
                     "type": "Calculation"
@@ -122,11 +122,11 @@
         {
             "finished": true,
             "goal": "(INT x. sin(a * x)) = -(a ^ (-1) * cos(a * x)) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int \\sin{(a x)} \\,dx = -a ^ {-1} \\cos{(a x)} + C()",
+            "latex_goal": "\\int \\sin{(a x)} \\,dx = -a ^ {-1} \\cos{(a x)} + C",
             "proof": {
                 "finished": true,
                 "goal": "(INT x. sin(a * x)) = -(a ^ (-1) * cos(a * x)) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int \\sin{(a x)} \\,dx = -a ^ {-1} \\cos{(a x)} + C()",
+                "latex_goal": "\\int \\sin{(a x)} \\,dx = -a ^ {-1} \\cos{(a x)} + C",
                 "lhs_calc": {
                     "latex_start": "\\int \\sin{(a x)} \\,dx",
                     "start": "INT x. sin(a * x)",
@@ -153,7 +153,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} -\\cos{(u)} + C()",
+                            "latex_res": "a ^ {-1} -\\cos{(u)} + C",
                             "res": "a ^ (-1) * -cos(u) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
@@ -162,7 +162,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} -\\cos{(a x)} + C()",
+                            "latex_res": "a ^ {-1} -\\cos{(a x)} + C",
                             "res": "a ^ (-1) * -cos(a * x) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "ReplaceSubstitution",
@@ -171,7 +171,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-a ^ {-1} \\cos{(a x)} + C()",
+                            "latex_res": "-a ^ {-1} \\cos{(a x)} + C",
                             "res": "-(a ^ (-1) * cos(a * x)) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
@@ -183,7 +183,7 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "-a ^ {-1} \\cos{(a x)} + C()",
+                    "latex_start": "-a ^ {-1} \\cos{(a x)} + C",
                     "start": "-(a ^ (-1) * cos(a * x)) + SKOLEM_CONST(C)",
                     "steps": [],
                     "type": "Calculation"
@@ -195,11 +195,11 @@
         {
             "finished": true,
             "goal": "(INT x. cos(a * x)) = a ^ (-1) * sin(a * x) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int \\cos{(a x)} \\,dx = a ^ {-1} \\sin{(a x)} + C()",
+            "latex_goal": "\\int \\cos{(a x)} \\,dx = a ^ {-1} \\sin{(a x)} + C",
             "proof": {
                 "finished": true,
                 "goal": "(INT x. cos(a * x)) = a ^ (-1) * sin(a * x) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int \\cos{(a x)} \\,dx = a ^ {-1} \\sin{(a x)} + C()",
+                "latex_goal": "\\int \\cos{(a x)} \\,dx = a ^ {-1} \\sin{(a x)} + C",
                 "lhs_calc": {
                     "latex_start": "\\int \\cos{(a x)} \\,dx",
                     "start": "INT x. cos(a * x)",
@@ -226,7 +226,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} \\sin{(u)} + C()",
+                            "latex_res": "a ^ {-1} \\sin{(u)} + C",
                             "res": "a ^ (-1) * sin(u) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
@@ -235,7 +235,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} \\sin{(a x)} + C()",
+                            "latex_res": "a ^ {-1} \\sin{(a x)} + C",
                             "res": "a ^ (-1) * sin(a * x) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "ReplaceSubstitution",
@@ -247,7 +247,7 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "a ^ {-1} \\sin{(a x)} + C()",
+                    "latex_start": "a ^ {-1} \\sin{(a x)} + C",
                     "start": "a ^ (-1) * sin(a * x) + SKOLEM_CONST(C)",
                     "steps": [],
                     "type": "Calculation"
@@ -265,11 +265,11 @@
             ],
             "finished": true,
             "goal": "(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int \\frac{1}{a ^ {2} + x ^ {2}} \\,dx = a ^ {-1} \\arctan{(\\frac{x}{a})} + C()",
+            "latex_goal": "\\int \\frac{1}{a ^ {2} + x ^ {2}} \\,dx = a ^ {-1} \\arctan{(\\frac{x}{a})} + C",
             "proof": {
                 "finished": true,
                 "goal": "(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int \\frac{1}{a ^ {2} + x ^ {2}} \\,dx = a ^ {-1} \\arctan{(\\frac{x}{a})} + C()",
+                "latex_goal": "\\int \\frac{1}{a ^ {2} + x ^ {2}} \\,dx = a ^ {-1} \\arctan{(\\frac{x}{a})} + C",
                 "lhs_calc": {
                     "latex_start": "\\int \\frac{1}{a ^ {2} + x ^ {2}} \\,dx",
                     "start": "INT x. 1 / (a ^ 2 + x ^ 2)",
@@ -320,7 +320,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} \\arctan{(u)} + C()",
+                            "latex_res": "a ^ {-1} \\arctan{(u)} + C",
                             "res": "a ^ (-1) * atan(u) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
@@ -329,7 +329,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} \\arctan{(\\frac{x}{a})} + C()",
+                            "latex_res": "a ^ {-1} \\arctan{(\\frac{x}{a})} + C",
                             "res": "a ^ (-1) * atan(x / a) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "ReplaceSubstitution",
@@ -341,7 +341,7 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "a ^ {-1} \\arctan{(\\frac{x}{a})} + C()",
+                    "latex_start": "a ^ {-1} \\arctan{(\\frac{x}{a})} + C",
                     "start": "a ^ (-1) * atan(x / a) + SKOLEM_CONST(C)",
                     "steps": [],
                     "type": "Calculation"

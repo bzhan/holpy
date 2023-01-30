@@ -7,9 +7,9 @@ from integral.expr import EVAL_AT, OP, CONST, FUN, Const, Op
 
 
 def convert_expr(e: expr.Expr, mode: str = "large") -> str:
-    if e.ty == expr.VAR:
+    if e.is_var():
         return e.name
-    elif e.ty == expr.CONST:
+    elif e.is_const():
         if isinstance(e.val, (int, Decimal)):
             if e.val == Decimal("inf"):
                 return "\\infty"
@@ -29,12 +29,12 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 return "%d/%d" % (e.val.numerator, e.val.denominator)
         else:
             raise NotImplementedError
-    elif e.ty == expr.INF:
+    elif e.is_inf():
         if e == expr.POS_INF:
             return "\\infty"
         else:
             return "-\\infty"
-    elif e.ty == expr.OP:
+    elif e.is_op():
         if len(e.args) == 1:
             a, = e.args
             sa = convert_expr(a, mode)
@@ -98,62 +98,6 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                     return "%s\\cdot %s" % (sx, sy)
                 else:
                     return "%s %s" % (sx, sy)
-                # if not x.is_constant() and not y.is_constant() and not (y.ty == OP and y.op == "^" and y.args[1].ty == CONST and y.args[1].val < 0) or x == expr.Fun("pi") or y == expr.Fun("pi"):
-                #     if x.ty == expr.OP and (x.op not in ("^", "*")) and not len(x.args) == 1:
-                #         sx = "(" + sx + ")"
-                #     if y.ty == expr.OP and y.op != "^":
-                #         sy = "(" + sy + ")"
-                #     return "%s %s" % (sx, sy)
-                # elif x.is_constant() and y.is_constant() and y.ty != CONST and not (y.ty == OP and y.op in ("+", "-") or y.ty == CONST and isinstance(y.val, Fraction)):
-                #     if x == Const(-1):
-                #         return "-%s" % sy
-                #     if x.ty == expr.OP and x.op != "^" and len(x.args) != 1:
-                #         sx = "(" + sx + ")"
-                #     if y.ty == expr.OP and not (len(y.args) == 2 and y.op == "^" or y.args[1].ty == CONST and y.args[1].val == Fraction(1/2)):
-                #         sy = "(" + sy + ")"
-                #     if x.ty == expr.CONST and isinstance(x.val, Fraction) and mode == "short":
-                #         sx = "(" + sx + ")"
-                #     return "%s %s" % (sx, sy)
-                # elif x.ty == expr.CONST:
-                #     if x.val == -1:
-                #         if y.ty == OP:
-                #             return "-(%s)" % sy
-                #         else:
-                #             return "-%s" % sy
-                #     elif x.val == 1 and not y.ty == OP:
-                #         if y.ty == OP:
-                #             return "(%s)" % sy
-                #         else:
-                #             return "%s" % sy
-                #     elif isinstance(x.val, Fraction) and x.val.numerator == 1 and y.ty not in (expr.INTEGRAL, expr.OP, expr.EVAL_AT):
-                #         return "\\frac{%s}{%s}" % (sy, convert_expr(expr.Const(x.val.denominator)))
-                #     elif y.ty in (expr.VAR, expr.FUN):
-                #         if isinstance(x.val, Fraction):
-                #             return "(%s) %s" % (sx, sy)
-                #         else:
-                #             return "%s %s" % (sx, sy)
-                #     elif not y.is_constant():
-                #         if y.ty == OP and y.op != '^':
-                #             return "%s (%s)" % (sx, sy)
-                #         elif y.ty == EVAL_AT:
-                #             return "%s \\times (%s)" % (sx, sy)
-                #         return "%s %s" % (sx, sy)
-                #     elif y.ty != CONST and y.is_constant() and not (y.ty == OP and y.op in ('+', '-')):
-                #         return "%s %s"%(sx, sy)
-                #     elif y.ty == OP and y.op == "^" and not y.args[0].is_constant():
-                #         return "%s %s" % (sx, sy)
-                #     else:
-                #         if x.priority() < expr.op_priority[e.op]:
-                #             sx = "(%s)" % sx
-                #         if y.priority() < expr.op_priority[e.op]:
-                #             sy = "(%s)" % sy
-                #         return "%s %s %s" % (sx, e.op, sy)
-                # else:
-                #     if x.priority() < expr.op_priority[e.op]:
-                #         sx = "(%s)" % sx
-                #     if y.priority() < expr.op_priority[e.op]:
-                #         sy = "(%s)" % sy
-                #     return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "/":
                 if mode == 'large':
                     return "\\frac{%s}{%s}" % (sx, sy)
@@ -175,7 +119,7 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 raise NotImplementedError
         else:
             raise NotImplementedError
-    elif e.ty == expr.FUN:
+    elif e.is_fun():
         if len(e.args) == 0:
             return "\\%s" % e.func_name
         elif len(e.args) == 1:
@@ -217,38 +161,38 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 return "%s(%s,%s)" % (e.func_name, sx, sy)
         else:
             raise NotImplementedError
-    elif e.ty == expr.INTEGRAL:
+    elif e.is_integral():
         lower = convert_expr(e.lower, mode='short')
         upper = convert_expr(e.upper, mode='short')
         body = convert_expr(e.body, mode)
         return "\\int_{%s}^{%s} %s \\,d%s" % (lower, upper, body, e.var)
-    elif e.ty == expr.EVAL_AT:
+    elif e.is_evalat():
         lower = convert_expr(e.lower, mode='short')
         upper = convert_expr(e.upper, mode='short')
         body = convert_expr(e.body, mode)
         return "\\left. %s \\right\\vert_{%s=%s}^{%s}" % (body, e.var, lower, upper)
-    elif e.ty == expr.LIMIT:
+    elif e.is_limit():
         lim = convert_expr(e.lim, mode="short")
         body = convert_expr(e.body, mode)
         if e.body.ty == expr.OP and len(e.body.args) > 1:
             return "\\lim\\limits_{%s\\to %s} (\,%s\,)" % (e.var, lim, body)
         else:
             return "\\lim\\limits_{%s\\to %s} %s" % (e.var, lim, body)
-    elif e.ty == expr.DERIV:
+    elif e.is_deriv():
         if e.body.ty == expr.OP and e.body.op in ('+', '-'):
             return "\\frac{d}{d%s} (%s)" % (e.var, convert_expr(e.body, mode))
         else:
             return "\\frac{d}{d%s} %s" % (e.var, convert_expr(e.body, mode))
-    elif e.ty == expr.INDEFINITEINTEGRAL:
+    elif e.is_indefinite_integral():
         body = convert_expr(e.body, mode)
         return "\\int %s \\,d%s" % (body, e.var)
-    elif e.ty == expr.SKOLEMFUNC:
-        if e.dependent_vars == set():
+    elif e.is_skolem_func():
+        if not e.dependent_vars:
             return e.name
         else:
             return e.name+'('+', '.join([str(arg) for arg in list(e.dependent_vars)])+')'
         return "%s" % str(e)
-    elif e.ty == expr.SUMMATION:
+    elif e.is_summation():
         lower = convert_expr(e.lower, mode)
         upper = convert_expr(e.upper, mode)
         body = convert_expr(e.body, mode)
