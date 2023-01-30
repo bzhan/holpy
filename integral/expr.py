@@ -29,8 +29,6 @@ op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75, "=": 50, "<": 50, ">": 50, "<=": 50, ">=": 50, "!=": 50
 }
 
-trig_identity = []
-
 
 def is_square(r):
     return math.sqrt(r) * math.sqrt(r) == r

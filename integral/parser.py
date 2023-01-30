@@ -165,12 +165,6 @@ class ExprTransformer(Transformer):
     def eval_at_expr(self, body, var, lower, upper):
         return expr.EvalAt(var, lower, upper, body)
     
-    def trig_expr(self, e):
-        e.selected = True
-        expr.trig_identity = list()
-        expr.trig_identity.append(e)
-        return e
-
     def interval_expr(self, l, e1, comma, e2, r):
         return Interval(e1, e2, left_open=(l == '('), right_open=(r == ')'))
 

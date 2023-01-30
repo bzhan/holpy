@@ -58,15 +58,6 @@ class ParserTest(unittest.TestCase):
         for s, e, in test_data:
             self.assertEqual(parse_expr(s), e)
 
-    def testParseTerm3(self):
-        test_data = [
-            ("$sin(x)^2$*sin(x)", Op("*", Op("^",Fun("sin",Var("x")),Const(2)), Fun("sin",Var("x"))), Op("^",Fun("sin",Var("x")),Const(2))),
-            ("x + $x + y$", Op("+", Var("x"), Op("+", Var("x"), Var("y"))), Op('+', Var('x'), Var('y'))),
-        ]
-        for s, e, e2 in test_data:
-            self.assertEqual(parse_expr(s), e)
-            self.assertTrue(e2 in expr.trig_identity, expr.trig_identity)
-
 
 if __name__ == "__main__":
     unittest.main()

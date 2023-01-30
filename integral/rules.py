@@ -7,7 +7,7 @@ import sympy
 import functools
 
 from integral import poly, expr, conditions
-from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, trig_identity, \
+from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, \
     sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, \
     DERIV, decompose_expr_factor, Deriv, Inf, INF, Limit, NEG_INF, POS_INF, IndefiniteIntegral, INDEFINITEINTEGRAL, \
     SYMBOL, log, Summation, SUMMATION
