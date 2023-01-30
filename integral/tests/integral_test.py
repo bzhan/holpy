@@ -87,6 +87,27 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.IndefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
 
+        goal7 = file.add_goal("(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1)^n * factorial(n) / (m+1) ^ (n+1)")
+        proof = goal7.proof_by_induction("n")
+        proof_base = proof.base_case.proof_by_calculation()
+        proof_induct = proof.induct_case.proof_by_calculation()
+
+        # Base case
+        calc = proof_base.lhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        calc = proof_induct.lhs_calc
+        calc.perform_rule(rules.IntegrationByParts(
+            u=parser.parse_expr("log(x) ^ (n + 1)"),
+            v=parser.parse_expr("x ^ (m+1) / (m+1)")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(
+            parser.parse_expr("(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1)^n * factorial(n) / (m+1) ^ (n+1)")), "0.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation(
+            new_expr=parser.parse_expr("(-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * ((n + 1) * factorial(n))")))
+        calc.perform_rule(rules.OnLocation(rules.RewriteFactorial(), "1"))
+
         self.checkAndOutput(file, "standard")
 
     def testTongji(self):
@@ -1277,19 +1298,6 @@ class IntegralTest(unittest.TestCase):
         ctx.load_book('base')
         file = compstate.CompFile(ctx, "Bernoulli's Integral")
 
-        e = parser.parse_expr("f(m, n) = INT x:[0, 1]. x^m * log(x) ^ n")
-        Idef = compstate.FuncDef(e)
-        file.add_definition(Idef)
-
-        e = parser.parse_expr("f(m, n) = (-1)^n * factorial(n) / (m+1) ^ (n+1)")
-        lemma = compstate.Lemma(lemma=e, conds=None)
-        file.add_lemma(lemma)
-
-        goal01 = file.add_goal("f(a*k, k) = INT x:[0, 1]. x^(a*k) * log(x)^k")
-        proof_of_goal01 = goal01.proof_by_calculation()
-        calc = proof_of_goal01.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition(Idef.eq))
-
         goal02 = file.add_goal("(INT x:[0,1]. x^(c*x^a)) = SUM(k,0,oo,(-c)^k / (k*a+1)^(k+1))")
         proof_of_goal02 = goal02.proof_by_calculation()
         calc = proof_of_goal02.lhs_calc
@@ -1311,8 +1319,7 @@ class IntegralTest(unittest.TestCase):
         new_expr = parser.parse_expr("(c^k * x ^ a^k)")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal01.goal)))
-        calc.perform_rule(rules.OnSubterm(rules.ApplyLemma(lemma=lemma.lemma, conds=None)))
+        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "0.1"))
         calc.perform_rule(rules.FullSimplify())
         old_expr = parser.parse_expr("c ^ k * (-1) ^ k")
         new_expr = parser.parse_expr("(-c)^k")

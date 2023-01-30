@@ -1,52 +1,6 @@
 {
     "content": [
         {
-            "eq": "f(m,n) = (INT x:[0,1]. x ^ m * log(x) ^ n)",
-            "latex_eq": "f(m,n) = \\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx",
-            "latex_lhs": "f(m,n)",
-            "type": "FuncDef"
-        },
-        {
-            "eq": "f(m,n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
-            "latex_eq": "f(m,n) = \\frac{(-1)^{n} n!}{(m + 1) ^ {n + 1}}",
-            "type": "Lemma"
-        },
-        {
-            "finished": true,
-            "goal": "f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k)",
-            "latex_goal": "f(a k,k) = \\int_{0}^{1} x ^ {a k} \\log^{k}(x) \\,dx",
-            "proof": {
-                "finished": true,
-                "goal": "f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k)",
-                "latex_goal": "f(a k,k) = \\int_{0}^{1} x ^ {a k} \\log^{k}(x) \\,dx",
-                "lhs_calc": {
-                    "latex_start": "f(a k,k)",
-                    "start": "f(a * k,k)",
-                    "steps": [
-                        {
-                            "latex_res": "\\int_{0}^{1} x ^ {a k} \\log^{k}(x) \\,dx",
-                            "res": "INT x:[0,1]. x ^ (a * k) * log(x) ^ k",
-                            "rule": {
-                                "func_def": "f(m,n) = (INT x:[0,1]. x ^ m * log(x) ^ n)",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "rhs_calc": {
-                    "latex_start": "\\int_{0}^{1} x ^ {a k} \\log^{k}(x) \\,dx",
-                    "start": "INT x:[0,1]. x ^ (a * k) * log(x) ^ k",
-                    "steps": [],
-                    "type": "Calculation"
-                },
-                "type": "CalculationProof"
-            },
-            "type": "Goal"
-        },
-        {
             "finished": true,
             "goal": "(INT x:[0,1]. x ^ (c * x ^ a)) = SUM(k, 0, oo, (-c) ^ k / (k * a + 1) ^ (k + 1))",
             "latex_goal": "\\int_{0}^{1} x ^ {c x ^ {a}} \\,dx = \\sum_{k=0}^{\\infty}{\\frac{(-c) ^ {k}}{(k a + 1) ^ {k + 1}}}",
@@ -136,25 +90,12 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} (k!)^{-1} f(a k,k)}",
-                            "res": "SUM(k, 0, oo, c ^ k * factorial(k) ^ (-1) * f(a * k,k))",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} (k!)^{-1} (\\frac{(-1)^{k} k!}{(a k + 1) ^ {k + 1}})}",
+                            "res": "SUM(k, 0, oo, c ^ k * factorial(k) ^ (-1) * ((-1) ^ k * factorial(k) / (a * k + 1) ^ (k + 1)))",
                             "rule": {
-                                "eq": "f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k)",
-                                "latex_str": "apply equation \\(f(a k,k) = \\int_{0}^{1} x ^ {a k} \\log^{k}(x) \\,dx\\) on subterms",
-                                "loc": "subterms",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: f(a * k,k) = (INT x:[0,1]. x ^ (a * k) * log(x) ^ k) on subterms"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{c ^ {k} (k!)^{-1} ((-1)^{k} k! (a k + 1) ^ {-k - 1})}",
-                            "res": "SUM(k, 0, oo, c ^ k * factorial(k) ^ (-1) * ((-1) ^ k * factorial(k) * (a * k + 1) ^ (-k - 1)))",
-                            "rule": {
-                                "lemma": "f(m,n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
-                                "loc": "subterms",
-                                "name": "ApplyLemma",
-                                "str": "apply lemma on subterms"
+                                "loc": "0.1",
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral at 0.1"
                             },
                             "type": "CalculationStep"
                         },
