@@ -8,7 +8,7 @@
                 }
             ],
             "eq": "I(a) = (INT x:[0,1]. (x ^ a - 1) / log(x))",
-            "latex_eq": "I{(a)} = \\int_{0}^{1} \\frac{x ^ {a} - 1}{\\log{(x)}} \\,dx",
+            "latex_eq": "I{(a)} = \\int_{0}^{1} \\frac{x ^ {a} - 1}{\\log{x}} \\,dx",
             "latex_lhs": "I{(a)}",
             "type": "FuncDef"
         },

@@ -1,7 +1,7 @@
 {
     "content": [
         {
-            "latex_start": "\\int_{0}^{\\pi/2} \\frac{\\sqrt{\\sin{(x)}}}{\\sqrt{\\sin{(x)}} + \\sqrt{\\cos{(x)}}} \\,dx",
+            "latex_start": "\\int_{0}^{\\pi/2} \\frac{\\sqrt{\\sin{x}}}{\\sqrt{\\sin{x}} + \\sqrt{\\cos{x}}} \\,dx",
             "start": "INT x:[0,pi / 2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))",
             "steps": [
                 {
@@ -17,7 +17,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\cos{(y)}} (\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}) ^ {-1} \\,dy",
+                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\cos{y}} (\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}) ^ {-1} \\,dy",
                     "res": "INT y:[0,1/2 * pi]. sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1)",
                     "rule": {
                         "name": "FullSimplify",
@@ -26,10 +26,10 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} 1 - \\frac{\\sqrt{\\sin{(y)}}}{\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}} \\,dy",
+                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} 1 - \\frac{\\sqrt{\\sin{y}}}{\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}} \\,dy",
                     "res": "INT y:[0,1/2 * pi]. 1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))",
                     "rule": {
-                        "latex_str": "rewriting \\(\\sqrt{\\cos{(y)}} (\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}) ^ {-1}\\) to \\(1 - \\frac{\\sqrt{\\sin{(y)}}}{\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}}\\)",
+                        "latex_str": "rewriting \\(\\sqrt{\\cos{y}} (\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}) ^ {-1}\\) to \\(1 - \\frac{\\sqrt{\\sin{y}}}{\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}}\\)",
                         "name": "Equation",
                         "new_expr": "1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))",
                         "old_expr": "sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1)",
@@ -38,7 +38,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\sin{(y)}} (\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}) ^ {-1} \\,dy) + \\frac{1}{2} \\pi",
+                    "latex_res": "-(\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\sin{y}} (\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}) ^ {-1} \\,dy) + \\frac{1}{2} \\pi",
                     "res": "-(INT y:[0,1/2 * pi]. sqrt(sin(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1)) + 1/2 * pi",
                     "rule": {
                         "name": "FullSimplify",

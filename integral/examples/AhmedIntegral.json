@@ -7,8 +7,8 @@
                     "latex_cond": "u > 0"
                 }
             ],
-            "eq": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x * x)) / ((1 + x * x) * sqrt(2 + x * x)))",
-            "latex_eq": "I{(u)} = \\int_{0}^{1} \\frac{\\arctan{(u \\sqrt{2 + x x})}}{(1 + x x) \\sqrt{2 + x x}} \\,dx",
+            "eq": "I(u) = (INT x:[0,1]. atan(u * sqrt(2 + x ^ 2)) / ((1 + x ^ 2) * sqrt(2 + x ^ 2)))",
+            "latex_eq": "I{(u)} = \\int_{0}^{1} \\frac{\\arctan{(u \\sqrt{2 + x ^ {2}})}}{(1 + x ^ {2}) \\sqrt{2 + x ^ {2}}} \\,dx",
             "latex_lhs": "I{(u)}",
             "type": "FuncDef"
         },
@@ -161,12 +161,12 @@
                             "latex_res": "\\frac{1}{2} \\pi ((\\left. \\arctan{(x (x ^ {2} + 2) ^ {-1/2})} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} 0 \\,dx))",
                             "res": "1/2 * pi * (([atan(x * (x ^ 2 + 2) ^ (-1/2))]_x=0,1) - (INT x:[0,1]. 0))",
                             "rule": {
-                                "latex_str": "integrate by parts \\(u \\to 1, v \\to \\arctan{(\\frac{x}{\\sqrt{2 + x x}})}\\) at 1",
+                                "latex_str": "integrate by parts \\(u \\to 1, v \\to \\arctan{(\\frac{x}{\\sqrt{2 + x ^ {2}}})}\\) at 1",
                                 "loc": "1",
                                 "name": "IntegrationByParts",
-                                "str": "integrate by parts u -> 1, v -> atan(x / sqrt(2 + x * x)) at 1",
+                                "str": "integrate by parts u -> 1, v -> atan(x / sqrt(2 + x ^ 2)) at 1",
                                 "u": "1",
-                                "v": "atan(x / sqrt(2 + x * x))"
+                                "v": "atan(x / sqrt(2 + x ^ 2))"
                             },
                             "type": "CalculationStep"
                         },

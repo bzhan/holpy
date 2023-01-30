@@ -17,7 +17,7 @@ class LatexTest(unittest.TestCase):
             ("[3 * x]_x=1,2", "\\left. 3 x \\right\\vert_{x=1}^{2}"),
             ("INT x:[2,3]. 2 * x + x ^ 2", "\int_{2}^{3} 2 x + x ^ {2} \,dx"),
             ("(3 * x + 1) ^ -2", "(3 x + 1) ^ {-2}"),
-            ("INT x:[0,pi / 4]. sin(x)", "\int_{0}^{\pi/4} \sin{(x)} \,dx"),
+            ("INT x:[0,pi / 4]. sin(x)", "\int_{0}^{\pi/4} \sin{x} \,dx"),
             ("x^(1/2)","\sqrt{x}"),
             ("x * (1 + x)", "x (1 + x)"),
             ("INT x:[4,9]. x^(1/2) * (1 + x^(1/2))","\int_{4}^{9} \sqrt{x} (1 + \sqrt{x}) \,dx"),

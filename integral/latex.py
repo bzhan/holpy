@@ -136,18 +136,25 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
             elif e.func_name == "abs":
                 return "\\left| %s \\right|" % sx
             elif e.func_name == "atan":
-                return "\\arctan{(%s)}" % sx
+                if not x.is_var():
+                    sx = "(" + sx + ")"
+                return "\\arctan{%s}" % sx
             elif e.func_name == "asin":
-                return "\\arcsin{(%s)}" % sx
+                if not x.is_var():
+                    sx = "(" + sx + ")"
+                return "\\arcsin{%s}" % sx
             elif e.func_name == "acos":
-                return "\\arccos{(%s)}" % sx
+                if not x.is_var():
+                    sx = "(" + sx + ")"
+                return "\\arccos{%s}" % sx
             elif e.func_name in ('log', 'sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
-                return "\\%s{(%s)}" % (e.func_name, sx)
+                if not x.is_var():
+                    sx = "(" + sx + ")"
+                return "\\%s{%s}" % (e.func_name, sx)
             elif e.func_name == 'factorial':
-                if x.is_var():
-                    return "%s!" % sx
-                else:
-                    return "(%s)!" % sx
+                if not x.is_var():
+                    sx = "(" + sx + ")"
+                return "%s!" % sx
             elif e.func_name == 'Gamma':
                 return "\\Gamma{(%s)}" % sx
             else:

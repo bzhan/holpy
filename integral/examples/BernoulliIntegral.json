@@ -45,10 +45,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(c x ^ {a} \\log{(x)}) ^ {k}}{k!} \\,dx}",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(c x ^ {a} \\log{x}) ^ {k}}{k!} \\,dx}",
                             "res": "SUM(k, 0, oo, INT x:[0,1]. (c * x ^ a * log(x)) ^ k / factorial(k))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\log{(x ^ {c x ^ {a}})}\\) to \\(c x ^ {a} \\log{(x)}\\)",
+                                "latex_str": "rewriting \\(\\log{(x ^ {c x ^ {a}})}\\) to \\(c x ^ {a} \\log{x}\\)",
                                 "name": "Equation",
                                 "new_expr": "c * x ^ a * log(x)",
                                 "old_expr": "log(x ^ (c * x ^ a))",
@@ -60,7 +60,7 @@
                             "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(c x ^ {a}) ^ {k} \\log^{k}(x)}{k!} \\,dx}",
                             "res": "SUM(k, 0, oo, INT x:[0,1]. (c * x ^ a) ^ k * log(x) ^ k / factorial(k))",
                             "rule": {
-                                "latex_str": "rewriting \\((c x ^ {a} \\log{(x)}) ^ {k}\\) to \\((c x ^ {a}) ^ {k} \\log^{k}(x)\\)",
+                                "latex_str": "rewriting \\((c x ^ {a} \\log{x}) ^ {k}\\) to \\((c x ^ {a}) ^ {k} \\log^{k}(x)\\)",
                                 "name": "Equation",
                                 "new_expr": "(c * x ^ a) ^ k * log(x) ^ k",
                                 "old_expr": "(c * x ^ a * log(x)) ^ k",

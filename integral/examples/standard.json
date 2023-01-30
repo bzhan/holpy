@@ -132,7 +132,7 @@
                     "start": "INT x. sin(a * x)",
                     "steps": [
                         {
-                            "latex_res": "\\int a ^ {-1} \\sin{(u)} \\,du",
+                            "latex_res": "\\int a ^ {-1} \\sin{u} \\,du",
                             "res": "INT u. a ^ (-1) * sin(u)",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(a x\\)",
@@ -144,7 +144,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} (\\int \\sin{(u)} \\,du)",
+                            "latex_res": "a ^ {-1} (\\int \\sin{u} \\,du)",
                             "res": "a ^ (-1) * (INT u. sin(u))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -153,7 +153,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} -\\cos{(u)} + C",
+                            "latex_res": "a ^ {-1} -\\cos{u} + C",
                             "res": "a ^ (-1) * -cos(u) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
@@ -205,7 +205,7 @@
                     "start": "INT x. cos(a * x)",
                     "steps": [
                         {
-                            "latex_res": "\\int a ^ {-1} \\cos{(u)} \\,du",
+                            "latex_res": "\\int a ^ {-1} \\cos{u} \\,du",
                             "res": "INT u. a ^ (-1) * cos(u)",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(a x\\)",
@@ -217,7 +217,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} (\\int \\cos{(u)} \\,du)",
+                            "latex_res": "a ^ {-1} (\\int \\cos{u} \\,du)",
                             "res": "a ^ (-1) * (INT u. cos(u))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -226,7 +226,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} \\sin{(u)} + C",
+                            "latex_res": "a ^ {-1} \\sin{u} + C",
                             "res": "a ^ (-1) * sin(u) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
@@ -320,7 +320,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} \\arctan{(u)} + C",
+                            "latex_res": "a ^ {-1} \\arctan{u} + C",
                             "res": "a ^ (-1) * atan(u) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
@@ -353,20 +353,20 @@
         {
             "finished": true,
             "goal": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int x ^ {k} \\log{(x)} \\,dx = x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
+            "latex_goal": "\\int x ^ {k} \\log{x} \\,dx = x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
             "proof": {
                 "finished": true,
                 "goal": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int x ^ {k} \\log{(x)} \\,dx = x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
+                "latex_goal": "\\int x ^ {k} \\log{x} \\,dx = x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
                 "lhs_calc": {
-                    "latex_start": "\\int x ^ {k} \\log{(x)} \\,dx",
+                    "latex_start": "\\int x ^ {k} \\log{x} \\,dx",
                     "start": "INT x. x ^ k * log(x)",
                     "steps": [
                         {
-                            "latex_res": "x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - (\\int x ^ {k} (k + 1) ^ {-1} \\,dx)",
+                            "latex_res": "x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - (\\int x ^ {k} (k + 1) ^ {-1} \\,dx)",
                             "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - (INT x. x ^ k * (k + 1) ^ (-1))",
                             "rule": {
-                                "latex_str": "integrate by parts \\(u \\to \\log{(x)}, v \\to \\frac{x ^ {k + 1}}{k + 1}\\)",
+                                "latex_str": "integrate by parts \\(u \\to \\log{x}, v \\to \\frac{x ^ {k + 1}}{k + 1}\\)",
                                 "name": "IntegrationByParts",
                                 "str": "integrate by parts u -> log(x), v -> x ^ (k + 1) / (k + 1)",
                                 "u": "log(x)",
@@ -375,7 +375,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - (k + 1) ^ {-1} (\\int x ^ {k} \\,dx)",
+                            "latex_res": "x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - (k + 1) ^ {-1} (\\int x ^ {k} \\,dx)",
                             "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - (k + 1) ^ (-1) * (INT x. x ^ k)",
                             "rule": {
                                 "name": "FullSimplify",
@@ -384,7 +384,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - (k + 1) ^ {-1} (\\frac{x ^ {k + 1}}{k + 1}) + C",
+                            "latex_res": "x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - (k + 1) ^ {-1} (\\frac{x ^ {k + 1}}{k + 1}) + C",
                             "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - (k + 1) ^ (-1) * (x ^ (k + 1) / (k + 1)) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
@@ -393,7 +393,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
+                            "latex_res": "x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
                             "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
@@ -405,7 +405,7 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "x ^ {k + 1} \\log{(x)} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
+                    "latex_start": "x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
                     "start": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
                     "steps": [],
                     "type": "Calculation"

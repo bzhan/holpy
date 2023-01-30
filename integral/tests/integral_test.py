@@ -1338,7 +1338,7 @@ class IntegralTest(unittest.TestCase):
         file = compstate.CompFile(ctx, "Ahmed Integral")
 
         # Define I
-        file.add_definition("I(u) = (INT x:[0,1]. atan(u * sqrt(2+x*x)) / ((1+x*x)*sqrt(2+x*x)))", conds=["u > 0"])
+        file.add_definition("I(u) = (INT x:[0,1]. atan(u * sqrt(2+x^2)) / ((1+x^2)*sqrt(2+x^2)))", conds=["u > 0"])
 
         goal001 = file.add_goal("I(1) = INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))")
         proof = goal001.proof_by_calculation()
@@ -1361,7 +1361,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.LimIntExchange())
         calc.perform_rule(rules.FullSimplify())
         u = expr.Const(1)
-        v = parser.parse_expr("atan(x/sqrt(2+x*x))")
+        v = parser.parse_expr("atan(x/sqrt(2+x^2))")
         calc.perform_rule(rules.OnLocation(rules.IntegrationByParts(u=u, v=v), "1"))
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc

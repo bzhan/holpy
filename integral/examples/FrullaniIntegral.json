@@ -139,11 +139,11 @@
             ],
             "finished": true,
             "goal": "I(a,b) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(b))",
-            "latex_goal": "I(a,b) = \\frac{1}{2} \\pi \\log{(a)} + C(b)",
+            "latex_goal": "I(a,b) = \\frac{1}{2} \\pi \\log{a} + C(b)",
             "proof": {
                 "finished": true,
                 "goal": "I(a,b) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(b))",
-                "latex_goal": "I(a,b) = \\frac{1}{2} \\pi \\log{(a)} + C(b)",
+                "latex_goal": "I(a,b) = \\frac{1}{2} \\pi \\log{a} + C(b)",
                 "start": {
                     "conds": [
                         {
@@ -194,7 +194,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I(a,b) = \\frac{1}{2} \\pi \\log{(a)} + C(b)",
+                            "latex_res": "I(a,b) = \\frac{1}{2} \\pi \\log{a} + C(b)",
                             "res": "I(a,b) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(b))",
                             "rule": {
                                 "loc": "subterms",
@@ -204,7 +204,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I(a,b) = \\frac{1}{2} \\pi \\log{(a)} + C(b)",
+                            "latex_res": "I(a,b) = \\frac{1}{2} \\pi \\log{a} + C(b)",
                             "res": "I(a,b) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(b))",
                             "rule": {
                                 "name": "FullSimplify",
@@ -228,11 +228,11 @@
             ],
             "finished": true,
             "goal": "SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a)",
-            "latex_goal": "C(a) = -\\frac{1}{2} \\pi \\log{(a)}",
+            "latex_goal": "C(a) = -\\frac{1}{2} \\pi \\log{a}",
             "proof": {
                 "finished": true,
                 "goal": "SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a)",
-                "latex_goal": "C(a) = -\\frac{1}{2} \\pi \\log{(a)}",
+                "latex_goal": "C(a) = -\\frac{1}{2} \\pi \\log{a}",
                 "start": {
                     "conds": [
                         {
@@ -240,11 +240,11 @@
                             "latex_cond": "a > 0"
                         }
                     ],
-                    "latex_start": "I(a,b) = \\frac{1}{2} \\pi \\log{(a)} + C(b)",
+                    "latex_start": "I(a,b) = \\frac{1}{2} \\pi \\log{a} + C(b)",
                     "start": "I(a,b) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(b))",
                     "steps": [
                         {
-                            "latex_res": "I(a,a) = \\frac{1}{2} \\pi \\log{(a)} + C(a)",
+                            "latex_res": "I(a,a) = \\frac{1}{2} \\pi \\log{a} + C(a)",
                             "res": "I(a,a) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(a))",
                             "rule": {
                                 "latex_str": "substitute \\(b\\) for \\(a\\) in equation",
@@ -256,7 +256,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = I(a,a) - \\frac{1}{2} \\pi \\log{(a)}",
+                            "latex_res": "C(a) = I(a,a) - \\frac{1}{2} \\pi \\log{a}",
                             "res": "SKOLEM_FUNC(C(a)) = I(a,a) - 1/2 * pi * log(a)",
                             "rule": {
                                 "latex_str": "solve equation for \\(C(a)\\)",
@@ -267,7 +267,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = (\\int_{0}^{\\infty} 0 \\,dx) - \\frac{1}{2} \\pi \\log{(a)}",
+                            "latex_res": "C(a) = (\\int_{0}^{\\infty} 0 \\,dx) - \\frac{1}{2} \\pi \\log{a}",
                             "res": "SKOLEM_FUNC(C(a)) = (INT x:[0,oo]. 0) - 1/2 * pi * log(a)",
                             "rule": {
                                 "func_name": "I",
@@ -278,7 +278,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = -\\frac{1}{2} \\pi \\log{(a)}",
+                            "latex_res": "C(a) = -\\frac{1}{2} \\pi \\log{a}",
                             "res": "SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a)",
                             "rule": {
                                 "name": "FullSimplify",
@@ -306,32 +306,32 @@
             ],
             "finished": true,
             "goal": "I(a,b) = 1/2 * pi * log(a) - 1/2 * pi * log(b)",
-            "latex_goal": "I(a,b) = \\frac{1}{2} \\pi \\log{(a)} - \\frac{1}{2} \\pi \\log{(b)}",
+            "latex_goal": "I(a,b) = \\frac{1}{2} \\pi \\log{a} - \\frac{1}{2} \\pi \\log{b}",
             "proof": {
                 "finished": true,
                 "goal": "I(a,b) = 1/2 * pi * log(a) - 1/2 * pi * log(b)",
-                "latex_goal": "I(a,b) = \\frac{1}{2} \\pi \\log{(a)} - \\frac{1}{2} \\pi \\log{(b)}",
+                "latex_goal": "I(a,b) = \\frac{1}{2} \\pi \\log{a} - \\frac{1}{2} \\pi \\log{b}",
                 "lhs_calc": {
                     "latex_start": "I(a,b)",
                     "start": "I(a,b)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{1}{2} \\pi \\log{(a)} + C(b)",
+                            "latex_res": "\\frac{1}{2} \\pi \\log{a} + C(b)",
                             "res": "1/2 * pi * log(a) + SKOLEM_FUNC(C(b))",
                             "rule": {
                                 "eq": "I(a,b) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(b))",
-                                "latex_str": "apply equation \\(I(a,b) = \\frac{1}{2} \\pi \\log{(a)} + C(b)\\)",
+                                "latex_str": "apply equation \\(I(a,b) = \\frac{1}{2} \\pi \\log{a} + C(b)\\)",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: I(a,b) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(b))"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi \\log{(a)} + -\\frac{1}{2} \\pi \\log{(b)}",
+                            "latex_res": "\\frac{1}{2} \\pi \\log{a} + -\\frac{1}{2} \\pi \\log{b}",
                             "res": "1/2 * pi * log(a) + -1/2 * pi * log(b)",
                             "rule": {
                                 "eq": "SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a)",
-                                "latex_str": "apply equation \\(C(a) = -\\frac{1}{2} \\pi \\log{(a)}\\) at 1",
+                                "latex_str": "apply equation \\(C(a) = -\\frac{1}{2} \\pi \\log{a}\\) at 1",
                                 "loc": "1",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a) at 1"
@@ -339,10 +339,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi \\log{(a)} - \\frac{1}{2} \\pi \\log{(b)}",
+                            "latex_res": "\\frac{1}{2} \\pi \\log{a} - \\frac{1}{2} \\pi \\log{b}",
                             "res": "1/2 * pi * log(a) - 1/2 * pi * log(b)",
                             "rule": {
-                                "latex_str": "rewriting to \\(\\frac{1}{2} \\pi \\log{(a)} - \\frac{1}{2} \\pi \\log{(b)}\\)",
+                                "latex_str": "rewriting to \\(\\frac{1}{2} \\pi \\log{a} - \\frac{1}{2} \\pi \\log{b}\\)",
                                 "name": "Equation",
                                 "new_expr": "1/2 * pi * log(a) - 1/2 * pi * log(b)",
                                 "str": "rewriting to 1/2 * pi * log(a) - 1/2 * pi * log(b)"
@@ -353,7 +353,7 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\frac{1}{2} \\pi \\log{(a)} - \\frac{1}{2} \\pi \\log{(b)}",
+                    "latex_start": "\\frac{1}{2} \\pi \\log{a} - \\frac{1}{2} \\pi \\log{b}",
                     "start": "1/2 * pi * log(a) - 1/2 * pi * log(b)",
                     "steps": [],
                     "type": "Calculation"

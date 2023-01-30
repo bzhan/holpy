@@ -51,11 +51,11 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\lim\\limits_{x\\to 0} (\\,\\frac{\\sin{(x)}}{x}\\,)",
+            "latex_start": "\\lim\\limits_{x\\to 0} (\\,\\frac{\\sin{x}}{x}\\,)",
             "start": "LIM {x -> 0 }. sin(x) / x",
             "steps": [
                 {
-                    "latex_res": "\\lim\\limits_{x\\to 0} (\\,\\frac{\\cos{(x)}}{1}\\,)",
+                    "latex_res": "\\lim\\limits_{x\\to 0} (\\,\\frac{\\cos{x}}{1}\\,)",
                     "res": "LIM {x -> 0 }. cos(x) / 1",
                     "rule": {
                         "name": "LHopital",
@@ -126,11 +126,11 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\lim\\limits_{x\\to 0} (\\,\\frac{x \\tan{(x)}}{\\sin{(3 x)}}\\,)",
+            "latex_start": "\\lim\\limits_{x\\to 0} (\\,\\frac{x \\tan{x}}{\\sin{(3 x)}}\\,)",
             "start": "LIM {x -> 0 }. x * tan(x) / sin(3 * x)",
             "steps": [
                 {
-                    "latex_res": "\\lim\\limits_{x\\to 0} (\\,\\frac{x \\sec^{2}(x) + \\tan{(x)}}{3 \\cos{(3 x)}}\\,)",
+                    "latex_res": "\\lim\\limits_{x\\to 0} (\\,\\frac{x \\sec^{2}(x) + \\tan{x}}{3 \\cos{(3 x)}}\\,)",
                     "res": "LIM {x -> 0 }. (x * sec(x) ^ 2 + tan(x)) / (3 * cos(3 * x))",
                     "rule": {
                         "name": "LHopital",

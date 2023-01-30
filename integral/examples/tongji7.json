@@ -101,7 +101,7 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{0}^{\\pi/4} \\sin{(x)} \\,dx",
+            "latex_start": "\\int_{0}^{\\pi/4} \\sin{x} \\,dx",
             "start": "INT x:[0,pi / 4]. sin(x)",
             "steps": [
                 {
@@ -153,7 +153,7 @@
             "start": "INT x:[pi / 3,pi]. sin(2 * x + pi / 3)",
             "steps": [
                 {
-                    "latex_res": "\\int_{\\pi}^{7/3\\cdot \\pi} \\frac{1}{2} \\sin{(u)} \\,du",
+                    "latex_res": "\\int_{\\pi}^{7/3\\cdot \\pi} \\frac{1}{2} \\sin{u} \\,du",
                     "res": "INT u:[pi,7/3 * pi]. 1/2 * sin(u)",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(2 x + \\frac{\\pi}{3}\\)",
@@ -273,14 +273,14 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{0}^{\\pi/2} \\sin{(x)} \\cos^{3}(x) \\,dx",
+            "latex_start": "\\int_{0}^{\\pi/2} \\sin{x} \\cos^{3}(x) \\,dx",
             "start": "INT x:[0,pi / 2]. sin(x) * cos(x) ^ 3",
             "steps": [
                 {
                     "latex_res": "\\int_{0}^{1} u ^ {3} \\,du",
                     "res": "INT u:[0,1]. u ^ 3",
                     "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(\\cos{(x)}\\)",
+                        "latex_str": "substitute \\(u\\) for \\(\\cos{x}\\)",
                         "name": "Substitution",
                         "str": "substitute u for cos(x)",
                         "var_name": "u",
@@ -314,10 +314,10 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{0}^{\\pi} \\sin{(x)} \\sin^{2}(x) \\,dx) + \\pi",
+                    "latex_res": "-(\\int_{0}^{\\pi} \\sin{x} \\sin^{2}(x) \\,dx) + \\pi",
                     "res": "-(INT x:[0,pi]. sin(x) * sin(x) ^ 2) + pi",
                     "rule": {
-                        "latex_str": "rewriting \\(\\sin^{3}(x)\\) to \\(\\sin{(x)} \\sin^{2}(x)\\)",
+                        "latex_str": "rewriting \\(\\sin^{3}(x)\\) to \\(\\sin{x} \\sin^{2}(x)\\)",
                         "name": "Equation",
                         "new_expr": "sin(x) * sin(x) ^ 2",
                         "old_expr": "sin(x) ^ 3",
@@ -326,7 +326,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{0}^{\\pi} \\sin{(x)} (1 - \\cos^{2}(x)) \\,dx) + \\pi",
+                    "latex_res": "-(\\int_{0}^{\\pi} \\sin{x} (1 - \\cos^{2}(x)) \\,dx) + \\pi",
                     "res": "-(INT x:[0,pi]. sin(x) * (1 - cos(x) ^ 2)) + pi",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(\\sin^{2}(x)\\)",
@@ -341,7 +341,7 @@
                     "latex_res": "-(\\int_{-1}^{1} -u ^ {2} + 1 \\,du) + \\pi",
                     "res": "-(INT u:[-1,1]. -(u ^ 2) + 1) + pi",
                     "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(\\cos{(x)}\\)",
+                        "latex_str": "substitute \\(u\\) for \\(\\cos{x}\\)",
                         "name": "Substitution",
                         "str": "substitute u for cos(x)",
                         "var_name": "u",
@@ -387,7 +387,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{2} (\\int_{1/3\\cdot \\pi}^{\\pi} \\frac{1}{2} \\cos{(u)} \\,du) + \\frac{1}{6} \\pi",
+                    "latex_res": "\\frac{1}{2} (\\int_{1/3\\cdot \\pi}^{\\pi} \\frac{1}{2} \\cos{u} \\,du) + \\frac{1}{6} \\pi",
                     "res": "1/2 * (INT u:[1/3 * pi,pi]. 1/2 * cos(u)) + 1/6 * pi",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(2 x\\)",
@@ -415,10 +415,10 @@
             "start": "INT x:[0,1]. (1 - x ^ 2) ^ (1/2)",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{1 - \\sin^{2}(u)} \\cos{(u)} \\,du",
+                    "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{1 - \\sin^{2}(u)} \\cos{u} \\,du",
                     "res": "INT u:[0,pi / 2]. (1 - sin(u) ^ 2) ^ (1/2) * cos(u)",
                     "rule": {
-                        "latex_str": "inverse substitution for \\(\\sin{(u)}\\)",
+                        "latex_str": "inverse substitution for \\(\\sin{u}\\)",
                         "name": "SubstitutionInverse",
                         "str": "inverse substitution for sin(u)",
                         "var_name": "u",
@@ -427,7 +427,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{\\cos^{2}(u)} \\cos{(u)} \\,du",
+                    "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{\\cos^{2}(u)} \\cos{u} \\,du",
                     "res": "INT u:[0,pi / 2]. cos(u) ^ 2 ^ (1/2) * cos(u)",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(1 - \\sin^{2}(u)\\)",
@@ -439,7 +439,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\cos{(u)} \\left| \\cos{(u)} \\right| \\,du",
+                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\cos{u} \\left| \\cos{u} \\right| \\,du",
                     "res": "INT u:[0,1/2 * pi]. cos(u) * abs(cos(u))",
                     "rule": {
                         "name": "FullSimplify",
@@ -448,7 +448,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{\\pi/2} \\cos{(u)} \\cos{(u)} \\,du",
+                    "latex_res": "\\int_{0}^{\\pi/2} \\cos{u} \\cos{u} \\,du",
                     "res": "INT u:[0,pi / 2]. cos(u) * cos(u)",
                     "rule": {
                         "name": "ElimAbs",
@@ -478,7 +478,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{\\pi} \\frac{1}{4} \\cos{(v)} + \\frac{1}{4} \\,dv",
+                    "latex_res": "\\int_{0}^{\\pi} \\frac{1}{4} \\cos{v} + \\frac{1}{4} \\,dv",
                     "res": "INT v:[0,pi]. 1/4 * cos(v) + 1/4",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(2 u\\)",
@@ -506,10 +506,10 @@
             "start": "INT x:[0,sqrt(2)]. sqrt(2 - x ^ 2)",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{2 - (\\sqrt{2} \\sin{(u)}) ^ {2}} (\\sqrt{2} \\cos{(u)}) \\,du",
+                    "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{2 - (\\sqrt{2} \\sin{u}) ^ {2}} (\\sqrt{2} \\cos{u}) \\,du",
                     "res": "INT u:[0,pi / 2]. sqrt(2 - (sqrt(2) * sin(u)) ^ 2) * (sqrt(2) * cos(u))",
                     "rule": {
-                        "latex_str": "inverse substitution for \\(\\sqrt{2} \\sin{(u)}\\)",
+                        "latex_str": "inverse substitution for \\(\\sqrt{2} \\sin{u}\\)",
                         "name": "SubstitutionInverse",
                         "str": "inverse substitution for sqrt(2) * sin(u)",
                         "var_name": "u",
@@ -518,7 +518,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\sqrt{2} (\\int_{0}^{1/2\\cdot \\pi} \\cos{(u)} \\sqrt{-2 \\sin^{2}(u) + 2} \\,du)",
+                    "latex_res": "\\sqrt{2} (\\int_{0}^{1/2\\cdot \\pi} \\cos{u} \\sqrt{-2 \\sin^{2}(u) + 2} \\,du)",
                     "res": "sqrt(2) * (INT u:[0,1/2 * pi]. cos(u) * sqrt(-2 * sin(u) ^ 2 + 2))",
                     "rule": {
                         "name": "FullSimplify",
@@ -527,7 +527,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\sqrt{2} (\\int_{0}^{1/2\\cdot \\pi} \\cos{(u)} \\sqrt{2 \\cos^{2}(u)} \\,du)",
+                    "latex_res": "\\sqrt{2} (\\int_{0}^{1/2\\cdot \\pi} \\cos{u} \\sqrt{2 \\cos^{2}(u)} \\,du)",
                     "res": "sqrt(2) * (INT u:[0,1/2 * pi]. cos(u) * sqrt(2 * cos(u) ^ 2))",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(-2 \\sin^{2}(u) + 2\\)",
@@ -539,7 +539,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 (\\int_{0}^{1/2\\cdot \\pi} \\cos{(u)} \\left| \\cos{(u)} \\right| \\,du)",
+                    "latex_res": "2 (\\int_{0}^{1/2\\cdot \\pi} \\cos{u} \\left| \\cos{u} \\right| \\,du)",
                     "res": "2 * (INT u:[0,1/2 * pi]. cos(u) * abs(cos(u)))",
                     "rule": {
                         "name": "FullSimplify",
@@ -548,7 +548,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 (\\int_{0}^{\\pi/2} \\cos{(u)} \\cos{(u)} \\,du)",
+                    "latex_res": "2 (\\int_{0}^{\\pi/2} \\cos{u} \\cos{u} \\,du)",
                     "res": "2 * (INT u:[0,pi / 2]. cos(u) * cos(u))",
                     "rule": {
                         "name": "ElimAbs",
@@ -578,7 +578,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 (\\int_{0}^{\\pi} \\frac{1}{4} \\cos{(v)} + \\frac{1}{4} \\,dv)",
+                    "latex_res": "2 (\\int_{0}^{\\pi} \\frac{1}{4} \\cos{v} + \\frac{1}{4} \\,dv)",
                     "res": "2 * (INT v:[0,pi]. 1/4 * cos(v) + 1/4)",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(2 u\\)",
@@ -606,10 +606,10 @@
             "start": "INT y:[-sqrt(2),sqrt(2)]. sqrt(8 - 2 * y ^ 2)",
             "steps": [
                 {
-                    "latex_res": "\\int_{-\\pi/4}^{\\pi/4} \\sqrt{8 - 2 (2 \\sin{(u)}) ^ {2}} (2 \\cos{(u)}) \\,du",
+                    "latex_res": "\\int_{-\\pi/4}^{\\pi/4} \\sqrt{8 - 2 (2 \\sin{u}) ^ {2}} (2 \\cos{u}) \\,du",
                     "res": "INT u:[-pi / 4,pi / 4]. sqrt(8 - 2 * (2 * sin(u)) ^ 2) * (2 * cos(u))",
                     "rule": {
-                        "latex_str": "inverse substitution for \\(2 \\sin{(u)}\\)",
+                        "latex_str": "inverse substitution for \\(2 \\sin{u}\\)",
                         "name": "SubstitutionInverse",
                         "str": "inverse substitution for 2 * sin(u)",
                         "var_name": "u",
@@ -618,7 +618,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "4 (\\int_{0}^{1/4\\cdot \\pi} \\cos{(u)} \\sqrt{-8 \\sin^{2}(u) + 8} \\,du)",
+                    "latex_res": "4 (\\int_{0}^{1/4\\cdot \\pi} \\cos{u} \\sqrt{-8 \\sin^{2}(u) + 8} \\,du)",
                     "res": "4 * (INT u:[0,1/4 * pi]. cos(u) * sqrt(-8 * sin(u) ^ 2 + 8))",
                     "rule": {
                         "name": "FullSimplify",
@@ -627,7 +627,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "4 (\\int_{0}^{1/4\\cdot \\pi} \\cos{(u)} \\sqrt{8 \\cos^{2}(u)} \\,du)",
+                    "latex_res": "4 (\\int_{0}^{1/4\\cdot \\pi} \\cos{u} \\sqrt{8 \\cos^{2}(u)} \\,du)",
                     "res": "4 * (INT u:[0,1/4 * pi]. cos(u) * sqrt(8 * cos(u) ^ 2))",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(-8 \\sin^{2}(u) + 8\\)",
@@ -639,7 +639,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{1/4\\cdot \\pi} \\cos{(u)} \\left| \\cos{(u)} \\right| \\,du)",
+                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{1/4\\cdot \\pi} \\cos{u} \\left| \\cos{u} \\right| \\,du)",
                     "res": "8 * sqrt(2) * (INT u:[0,1/4 * pi]. cos(u) * abs(cos(u)))",
                     "rule": {
                         "name": "FullSimplify",
@@ -648,7 +648,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{\\pi/4} \\cos{(u)} \\cos{(u)} \\,du)",
+                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{\\pi/4} \\cos{u} \\cos{u} \\,du)",
                     "res": "8 * sqrt(2) * (INT u:[0,pi / 4]. cos(u) * cos(u))",
                     "rule": {
                         "name": "ElimAbs",
@@ -678,7 +678,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{1/2\\cdot \\pi} \\frac{1}{4} \\cos{(v)} + \\frac{1}{4} \\,dv)",
+                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{1/2\\cdot \\pi} \\frac{1}{4} \\cos{v} + \\frac{1}{4} \\,dv)",
                     "res": "8 * sqrt(2) * (INT v:[0,1/2 * pi]. 1/4 * cos(v) + 1/4)",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(2 u\\)",
@@ -706,10 +706,10 @@
             "start": "INT x:[1 / sqrt(2),1]. sqrt(1 - x ^ 2) / x ^ 2",
             "steps": [
                 {
-                    "latex_res": "\\int_{\\pi/4}^{\\pi/2} \\frac{\\sqrt{1 - \\sin^{2}(u)}}{\\sin^{2}(u)} \\cos{(u)} \\,du",
+                    "latex_res": "\\int_{\\pi/4}^{\\pi/2} \\frac{\\sqrt{1 - \\sin^{2}(u)}}{\\sin^{2}(u)} \\cos{u} \\,du",
                     "res": "INT u:[pi / 4,pi / 2]. sqrt(1 - sin(u) ^ 2) / sin(u) ^ 2 * cos(u)",
                     "rule": {
-                        "latex_str": "inverse substitution for \\(\\sin{(u)}\\)",
+                        "latex_str": "inverse substitution for \\(\\sin{u}\\)",
                         "name": "SubstitutionInverse",
                         "str": "inverse substitution for sin(u)",
                         "var_name": "u",
@@ -718,7 +718,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{(u)} \\sin^{-2}(u) \\sqrt{-\\sin^{2}(u) + 1} \\,du",
+                    "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{u} \\sin^{-2}(u) \\sqrt{-\\sin^{2}(u) + 1} \\,du",
                     "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ (-2) * sqrt(-(sin(u) ^ 2) + 1)",
                     "rule": {
                         "name": "FullSimplify",
@@ -727,7 +727,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{(u)} \\sin^{-2}(u) \\sqrt{\\cos^{2}(u)} \\,du",
+                    "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{u} \\sin^{-2}(u) \\sqrt{\\cos^{2}(u)} \\,du",
                     "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ (-2) * sqrt(cos(u) ^ 2)",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(-\\sin^{2}(u) + 1\\)",
@@ -739,7 +739,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{(u)} \\sin^{-2}(u) \\left| \\cos{(u)} \\right| \\,du",
+                    "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{u} \\sin^{-2}(u) \\left| \\cos{u} \\right| \\,du",
                     "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ (-2) * abs(cos(u))",
                     "rule": {
                         "name": "FullSimplify",
@@ -748,7 +748,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{\\pi/4}^{\\pi/2} \\cos{(u)} \\sin^{-2}(u) \\cos{(u)} \\,du",
+                    "latex_res": "\\int_{\\pi/4}^{\\pi/2} \\cos{u} \\sin^{-2}(u) \\cos{u} \\,du",
                     "res": "INT u:[pi / 4,pi / 2]. cos(u) * sin(u) ^ (-2) * cos(u)",
                     "rule": {
                         "name": "ElimAbs",
@@ -983,14 +983,14 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{1}^{e^{2}} \\frac{1}{x \\sqrt{1 + \\log{(x)}}} \\,dx",
+            "latex_start": "\\int_{1}^{e^{2}} \\frac{1}{x \\sqrt{1 + \\log{x}}} \\,dx",
             "start": "INT x:[1,exp(2)]. 1 / (x * sqrt(1 + log(x)))",
             "steps": [
                 {
                     "latex_res": "\\int_{1}^{3} u ^ {-1/2} \\,du",
                     "res": "INT u:[1,3]. u ^ (-1/2)",
                     "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(1 + \\log{(x)}\\)",
+                        "latex_str": "substitute \\(u\\) for \\(1 + \\log{x}\\)",
                         "name": "Substitution",
                         "str": "substitute u for 1 + log(x)",
                         "var_name": "u",
@@ -1149,7 +1149,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-\\pi}^{\\pi} \\frac{1}{8} \\cos^{2}(u) + \\frac{1}{4} \\cos{(u)} + \\frac{1}{8} \\,du",
+                    "latex_res": "\\int_{-\\pi}^{\\pi} \\frac{1}{8} \\cos^{2}(u) + \\frac{1}{4} \\cos{u} + \\frac{1}{8} \\,du",
                     "res": "INT u:[-pi,pi]. 1/8 * cos(u) ^ 2 + 1/4 * cos(u) + 1/8",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(2 x\\)",
@@ -1182,7 +1182,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{4} (\\int_{0}^{2 \\pi} \\frac{1}{4} \\cos{(v)} + \\frac{1}{4} \\,dv) + \\frac{1}{4} \\pi",
+                    "latex_res": "\\frac{1}{4} (\\int_{0}^{2 \\pi} \\frac{1}{4} \\cos{v} + \\frac{1}{4} \\,dv) + \\frac{1}{4} \\pi",
                     "res": "1/4 * (INT v:[0,2 * pi]. 1/4 * cos(v) + 1/4) + 1/4 * pi",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(2 u\\)",
@@ -1206,14 +1206,14 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} - \\cos^{3}(x)} \\,dx",
+            "latex_start": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{x} - \\cos^{3}(x)} \\,dx",
             "start": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) - cos(x) ^ 3)",
             "steps": [
                 {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} (1 - \\cos^{2}(x))} \\,dx",
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{x} (1 - \\cos^{2}(x))} \\,dx",
                     "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * (1 - cos(x) ^ 2))",
                     "rule": {
-                        "latex_str": "rewriting \\(\\cos{(x)} - \\cos^{3}(x)\\) to \\(\\cos{(x)} (1 - \\cos^{2}(x))\\)",
+                        "latex_str": "rewriting \\(\\cos{x} - \\cos^{3}(x)\\) to \\(\\cos{x} (1 - \\cos^{2}(x))\\)",
                         "name": "Equation",
                         "new_expr": "cos(x) * (1 - cos(x) ^ 2)",
                         "old_expr": "cos(x) - cos(x) ^ 3",
@@ -1222,7 +1222,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} \\sin^{2}(x)} \\,dx",
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{x} \\sin^{2}(x)} \\,dx",
                     "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * sin(x) ^ 2)",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(1 - \\cos^{2}(x)\\)",
@@ -1234,7 +1234,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 (\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\cos{(x)}} \\left| \\sin{(x)} \\right| \\,dx)",
+                    "latex_res": "2 (\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\cos{x}} \\left| \\sin{x} \\right| \\,dx)",
                     "res": "2 * (INT x:[0,1/2 * pi]. sqrt(cos(x)) * abs(sin(x)))",
                     "rule": {
                         "name": "FullSimplify",
@@ -1243,7 +1243,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 (\\int_{0}^{\\pi/2} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,dx)",
+                    "latex_res": "2 (\\int_{0}^{\\pi/2} \\sqrt{\\cos{x}} \\sin{x} \\,dx)",
                     "res": "2 * (INT x:[0,pi / 2]. sqrt(cos(x)) * sin(x))",
                     "rule": {
                         "name": "ElimAbs",
@@ -1255,7 +1255,7 @@
                     "latex_res": "2 (\\int_{0}^{1} \\sqrt{u} \\,du)",
                     "res": "2 * (INT u:[0,1]. sqrt(u))",
                     "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(\\cos{(x)}\\)",
+                        "latex_str": "substitute \\(u\\) for \\(\\cos{x}\\)",
                         "name": "Substitution",
                         "str": "substitute u for cos(x)",
                         "var_name": "u",
@@ -1304,7 +1304,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\sqrt{2} (\\int_{0}^{\\pi} \\left| \\cos{(x)} \\right| \\,dx)",
+                    "latex_res": "\\sqrt{2} (\\int_{0}^{\\pi} \\left| \\cos{x} \\right| \\,dx)",
                     "res": "sqrt(2) * (INT x:[0,pi]. abs(cos(x)))",
                     "rule": {
                         "name": "FullSimplify",
@@ -1313,7 +1313,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\sqrt{2} ((\\int_{0}^{\\pi/2} \\cos{(x)} \\,dx) + (\\int_{\\pi/2}^{\\pi} -\\cos{(x)} \\,dx))",
+                    "latex_res": "\\sqrt{2} ((\\int_{0}^{\\pi/2} \\cos{x} \\,dx) + (\\int_{\\pi/2}^{\\pi} -\\cos{x} \\,dx))",
                     "res": "sqrt(2) * ((INT x:[0,pi / 2]. cos(x)) + (INT x:[pi / 2,pi]. -cos(x)))",
                     "rule": {
                         "name": "ElimAbs",
@@ -1383,14 +1383,14 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{1}^{e} x \\log{(x)} \\,dx",
+            "latex_start": "\\int_{1}^{e} x \\log{x} \\,dx",
             "start": "INT x:[1,exp(1)]. x * log(x)",
             "steps": [
                 {
-                    "latex_res": "(\\left. \\frac{1}{2} x ^ {2} \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} \\frac{1}{2} x \\,dx)",
+                    "latex_res": "(\\left. \\frac{1}{2} x ^ {2} \\log{x} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} \\frac{1}{2} x \\,dx)",
                     "res": "([1/2 * x ^ 2 * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1/2 * x)",
                     "rule": {
-                        "latex_str": "integrate by parts \\(u \\to \\frac{\\log{(x)}}{2}, v \\to x ^ {2}\\)",
+                        "latex_str": "integrate by parts \\(u \\to \\frac{\\log{x}}{2}, v \\to x ^ {2}\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> log(x) / 2, v -> x ^ 2",
                         "u": "log(x) / 2",
@@ -1427,10 +1427,10 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\left. -x \\cot{(x)} \\right\\vert_{x=\\pi/4}^{\\pi/3}) - (\\int_{\\pi/4}^{\\pi/3} -\\cot{(x)} \\,dx)",
+                    "latex_res": "(\\left. -x \\cot{x} \\right\\vert_{x=\\pi/4}^{\\pi/3}) - (\\int_{\\pi/4}^{\\pi/3} -\\cot{x} \\,dx)",
                     "res": "([-(x * cot(x))]_x=pi / 4,pi / 3) - (INT x:[pi / 4,pi / 3]. -cot(x))",
                     "rule": {
-                        "latex_str": "integrate by parts \\(u \\to x, v \\to -\\cot{(x)}\\)",
+                        "latex_str": "integrate by parts \\(u \\to x, v \\to -\\cot{x}\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> x, v -> -cot(x)",
                         "u": "x",
@@ -1439,7 +1439,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi + \\frac{1}{4} \\pi + (\\int_{1/4\\cdot \\pi}^{1/3\\cdot \\pi} \\cot{(x)} \\,dx)",
+                    "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi + \\frac{1}{4} \\pi + (\\int_{1/4\\cdot \\pi}^{1/3\\cdot \\pi} \\cot{x} \\,dx)",
                     "res": "-1/9 * sqrt(3) * pi + 1/4 * pi + (INT x:[1/4 * pi,1/3 * pi]. cot(x))",
                     "rule": {
                         "name": "FullSimplify",
@@ -1448,10 +1448,10 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi + \\frac{1}{4} \\pi + (\\int_{1/4\\cdot \\pi}^{1/3\\cdot \\pi} \\frac{\\cos{(x)}}{\\sin{(x)}} \\,dx)",
+                    "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi + \\frac{1}{4} \\pi + (\\int_{1/4\\cdot \\pi}^{1/3\\cdot \\pi} \\frac{\\cos{x}}{\\sin{x}} \\,dx)",
                     "res": "-1/9 * sqrt(3) * pi + 1/4 * pi + (INT x:[1/4 * pi,1/3 * pi]. cos(x) / sin(x))",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\cot{(x)}\\)",
+                        "latex_str": "rewrite trigonometric on \\(\\cot{x}\\)",
                         "name": "RewriteTrigonometric",
                         "rewrite_term": "cot(x)",
                         "rule_name": "TR2",
@@ -1463,7 +1463,7 @@
                     "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi + \\frac{1}{4} \\pi + (\\int_{1/2\\cdot \\sqrt{2}}^{1/2\\cdot \\sqrt{3}} u ^ {-1} \\,du)",
                     "res": "-1/9 * sqrt(3) * pi + 1/4 * pi + (INT u:[1/2 * sqrt(2),1/2 * sqrt(3)]. u ^ (-1))",
                     "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(\\sin{(x)}\\)",
+                        "latex_str": "substitute \\(u\\) for \\(\\sin{x}\\)",
                         "name": "Substitution",
                         "str": "substitute u for sin(x)",
                         "var_name": "u",
@@ -1484,14 +1484,14 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{1}^{4} x ^ {-1/2} \\log{(x)} \\,dx",
+            "latex_start": "\\int_{1}^{4} x ^ {-1/2} \\log{x} \\,dx",
             "start": "INT x:[1,4]. x ^ (-1/2) * log(x)",
             "steps": [
                 {
-                    "latex_res": "(\\left. 2 \\sqrt{x} \\log{(x)} \\right\\vert_{x=1}^{4}) - (\\int_{1}^{4} 2 x ^ {-1/2} \\,dx)",
+                    "latex_res": "(\\left. 2 \\sqrt{x} \\log{x} \\right\\vert_{x=1}^{4}) - (\\int_{1}^{4} 2 x ^ {-1/2} \\,dx)",
                     "res": "([2 * sqrt(x) * log(x)]_x=1,4) - (INT x:[1,4]. 2 * x ^ (-1/2))",
                     "rule": {
-                        "latex_str": "integrate by parts \\(u \\to 2 \\log{(x)}, v \\to \\sqrt{x}\\)",
+                        "latex_str": "integrate by parts \\(u \\to 2 \\log{x}, v \\to \\sqrt{x}\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> 2 * log(x), v -> sqrt(x)",
                         "u": "2 * log(x)",
@@ -1512,14 +1512,14 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{0}^{1} x \\arctan{(x)} \\,dx",
+            "latex_start": "\\int_{0}^{1} x \\arctan{x} \\,dx",
             "start": "INT x:[0,1]. x * atan(x)",
             "steps": [
                 {
-                    "latex_res": "(\\left. \\frac{1}{2} x ^ {2} \\arctan{(x)} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{1}{2} x ^ {2} (x ^ {2} + 1) ^ {-1} \\,dx)",
+                    "latex_res": "(\\left. \\frac{1}{2} x ^ {2} \\arctan{x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{1}{2} x ^ {2} (x ^ {2} + 1) ^ {-1} \\,dx)",
                     "res": "([1/2 * x ^ 2 * atan(x)]_x=0,1) - (INT x:[0,1]. 1/2 * x ^ 2 * (x ^ 2 + 1) ^ (-1))",
                     "rule": {
-                        "latex_str": "integrate by parts \\(u \\to \\frac{\\arctan{(x)}}{2}, v \\to x ^ {2}\\)",
+                        "latex_str": "integrate by parts \\(u \\to \\frac{\\arctan{x}}{2}, v \\to x ^ {2}\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> atan(x) / 2, v -> x ^ 2",
                         "u": "atan(x) / 2",
@@ -1558,14 +1558,14 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{0}^{\\pi/2} \\cos{(x)} e^{2 x} \\,dx",
+            "latex_start": "\\int_{0}^{\\pi/2} \\cos{x} e^{2 x} \\,dx",
             "start": "INT x:[0,pi / 2]. cos(x) * exp(2 * x)",
             "steps": [
                 {
-                    "latex_res": "(\\left. e^{2 x} \\sin{(x)} \\right\\vert_{x=0}^{\\pi/2}) - (\\int_{0}^{\\pi/2} 2 e^{2 x} \\sin{(x)} \\,dx)",
+                    "latex_res": "(\\left. e^{2 x} \\sin{x} \\right\\vert_{x=0}^{\\pi/2}) - (\\int_{0}^{\\pi/2} 2 e^{2 x} \\sin{x} \\,dx)",
                     "res": "([exp(2 * x) * sin(x)]_x=0,pi / 2) - (INT x:[0,pi / 2]. 2 * exp(2 * x) * sin(x))",
                     "rule": {
-                        "latex_str": "integrate by parts \\(u \\to e^{2 x}, v \\to \\sin{(x)}\\)",
+                        "latex_str": "integrate by parts \\(u \\to e^{2 x}, v \\to \\sin{x}\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> exp(2 * x), v -> sin(x)",
                         "u": "exp(2 * x)",
@@ -1574,7 +1574,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-2 (\\int_{0}^{1/2\\cdot \\pi} e^{2 x} \\sin{(x)} \\,dx) + e^{\\pi}",
+                    "latex_res": "-2 (\\int_{0}^{1/2\\cdot \\pi} e^{2 x} \\sin{x} \\,dx) + e^{\\pi}",
                     "res": "-2 * (INT x:[0,1/2 * pi]. exp(2 * x) * sin(x)) + exp(pi)",
                     "rule": {
                         "name": "FullSimplify",
@@ -1583,10 +1583,10 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-2 ((\\left. -\\cos{(x)} e^{2 x} \\right\\vert_{x=0}^{1/2\\cdot \\pi}) - (\\int_{0}^{1/2\\cdot \\pi} -2 \\cos{(x)} e^{2 x} \\,dx)) + e^{\\pi}",
+                    "latex_res": "-2 ((\\left. -\\cos{x} e^{2 x} \\right\\vert_{x=0}^{1/2\\cdot \\pi}) - (\\int_{0}^{1/2\\cdot \\pi} -2 \\cos{x} e^{2 x} \\,dx)) + e^{\\pi}",
                     "res": "-2 * (([-(cos(x) * exp(2 * x))]_x=0,1/2 * pi) - (INT x:[0,1/2 * pi]. -2 * cos(x) * exp(2 * x))) + exp(pi)",
                     "rule": {
-                        "latex_str": "integrate by parts \\(u \\to e^{2 x}, v \\to -\\cos{(x)}\\)",
+                        "latex_str": "integrate by parts \\(u \\to e^{2 x}, v \\to -\\cos{x}\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> exp(2 * x), v -> -cos(x)",
                         "u": "exp(2 * x)",
@@ -1595,7 +1595,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-4 (\\int_{0}^{1/2\\cdot \\pi} \\cos{(x)} e^{2 x} \\,dx) + (e^{\\pi} - 2)",
+                    "latex_res": "-4 (\\int_{0}^{1/2\\cdot \\pi} \\cos{x} e^{2 x} \\,dx) + (e^{\\pi} - 2)",
                     "res": "-4 * (INT x:[0,1/2 * pi]. cos(x) * exp(2 * x)) + (exp(pi) - 2)",
                     "rule": {
                         "name": "FullSimplify",
@@ -1617,7 +1617,7 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{0}^{\\pi} (x \\sin{(x)}) ^ {2} \\,dx",
+            "latex_start": "\\int_{0}^{\\pi} (x \\sin{x}) ^ {2} \\,dx",
             "start": "INT x:[0,pi]. (x * sin(x)) ^ 2",
             "steps": [
                 {
@@ -1702,7 +1702,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{6} \\pi ^ {3} - \\frac{1}{4} \\pi + \\frac{1}{4} (\\int_{0}^{2 \\pi} \\frac{1}{2} \\cos{(u)} \\,du)",
+                    "latex_res": "\\frac{1}{6} \\pi ^ {3} - \\frac{1}{4} \\pi + \\frac{1}{4} (\\int_{0}^{2 \\pi} \\frac{1}{2} \\cos{u} \\,du)",
                     "res": "1/6 * pi ^ 3 - 1/4 * pi + 1/4 * (INT u:[0,2 * pi]. 1/2 * cos(u))",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(2 x\\)",
@@ -1726,14 +1726,14 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{1}^{e} \\sin{(\\log{(x)})} \\,dx",
+            "latex_start": "\\int_{1}^{e} \\sin{(\\log{x})} \\,dx",
             "start": "INT x:[1,exp(1)]. sin(log(x))",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{1} e^{u} \\sin{(u)} \\,du",
+                    "latex_res": "\\int_{0}^{1} e^{u} \\sin{u} \\,du",
                     "res": "INT u:[0,1]. exp(u) * sin(u)",
                     "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(\\log{(x)}\\)",
+                        "latex_str": "substitute \\(u\\) for \\(\\log{x}\\)",
                         "name": "Substitution",
                         "str": "substitute u for log(x)",
                         "var_name": "u",
@@ -1742,10 +1742,10 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\left. -\\cos{(u)} e^{u} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} -\\cos{(u)} e^{u} \\,du)",
+                    "latex_res": "(\\left. -\\cos{u} e^{u} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} -\\cos{u} e^{u} \\,du)",
                     "res": "([-(cos(u) * exp(u))]_u=0,1) - (INT u:[0,1]. -(cos(u) * exp(u)))",
                     "rule": {
-                        "latex_str": "integrate by parts \\(u \\to -e^{u}, v \\to \\cos{(u)}\\)",
+                        "latex_str": "integrate by parts \\(u \\to -e^{u}, v \\to \\cos{u}\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> -exp(u), v -> cos(u)",
                         "u": "-exp(u)",
@@ -1754,7 +1754,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\cos{(1)} e + 1 + (\\int_{0}^{1} \\cos{(u)} e^{u} \\,du)",
+                    "latex_res": "-\\cos{(1)} e + 1 + (\\int_{0}^{1} \\cos{u} e^{u} \\,du)",
                     "res": "-(cos(1) * exp(1)) + 1 + (INT u:[0,1]. cos(u) * exp(u))",
                     "rule": {
                         "name": "FullSimplify",
@@ -1763,10 +1763,10 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\cos{(1)} e + 1 + ((\\left. e^{u} \\sin{(u)} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} e^{u} \\sin{(u)} \\,du))",
+                    "latex_res": "-\\cos{(1)} e + 1 + ((\\left. e^{u} \\sin{u} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} e^{u} \\sin{u} \\,du))",
                     "res": "-(cos(1) * exp(1)) + 1 + (([exp(u) * sin(u)]_u=0,1) - (INT u:[0,1]. exp(u) * sin(u)))",
                     "rule": {
-                        "latex_str": "integrate by parts \\(u \\to e^{u}, v \\to \\sin{(u)}\\)",
+                        "latex_str": "integrate by parts \\(u \\to e^{u}, v \\to \\sin{u}\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> exp(u), v -> sin(u)",
                         "u": "exp(u)",
@@ -1775,7 +1775,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\cos{(1)} e + e \\sin{(1)} + 1 - (\\int_{0}^{1} e^{u} \\sin{(u)} \\,du)",
+                    "latex_res": "-\\cos{(1)} e + e \\sin{(1)} + 1 - (\\int_{0}^{1} e^{u} \\sin{u} \\,du)",
                     "res": "-(cos(1) * exp(1)) + exp(1) * sin(1) + 1 - (INT u:[0,1]. exp(u) * sin(u))",
                     "rule": {
                         "name": "FullSimplify",
@@ -1797,11 +1797,11 @@
             "type": "Calculation"
         },
         {
-            "latex_start": "\\int_{1/e}^{e} \\left| \\log{(x)} \\right| \\,dx",
+            "latex_start": "\\int_{1/e}^{e} \\left| \\log{x} \\right| \\,dx",
             "start": "INT x:[1 / exp(1),exp(1)]. abs(log(x))",
             "steps": [
                 {
-                    "latex_res": "(\\int_{1}^{e} \\log{(x)} \\,dx) + (\\int_{e^{-1}}^{1} -\\log{(x)} \\,dx)",
+                    "latex_res": "(\\int_{1}^{e} \\log{x} \\,dx) + (\\int_{e^{-1}}^{1} -\\log{x} \\,dx)",
                     "res": "(INT x:[1,exp(1)]. log(x)) + (INT x:[exp(-1),1]. -log(x))",
                     "rule": {
                         "name": "ElimAbs",
@@ -1810,10 +1810,10 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,dx) + (\\int_{e^{-1}}^{1} -\\log{(x)} \\,dx)",
+                    "latex_res": "(\\left. x \\log{x} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,dx) + (\\int_{e^{-1}}^{1} -\\log{x} \\,dx)",
                     "res": "([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1) + (INT x:[exp(-1),1]. -log(x))",
                     "rule": {
-                        "latex_str": "integrate by parts \\(u \\to \\log{(x)}, v \\to x\\)",
+                        "latex_str": "integrate by parts \\(u \\to \\log{x}, v \\to x\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> log(x), v -> x",
                         "u": "log(x)",
@@ -1822,7 +1822,7 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{e^{-1}}^{1} \\log{(x)} \\,dx) + 1",
+                    "latex_res": "-(\\int_{e^{-1}}^{1} \\log{x} \\,dx) + 1",
                     "res": "-(INT x:[exp(-1),1]. log(x)) + 1",
                     "rule": {
                         "name": "FullSimplify",
@@ -1831,10 +1831,10 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-((\\left. x \\log{(x)} \\right\\vert_{x=e^{-1}}^{1}) - (\\int_{e^{-1}}^{1} 1 \\,dx)) + 1",
+                    "latex_res": "-((\\left. x \\log{x} \\right\\vert_{x=e^{-1}}^{1}) - (\\int_{e^{-1}}^{1} 1 \\,dx)) + 1",
                     "res": "-(([x * log(x)]_x=exp(-1),1) - (INT x:[exp(-1),1]. 1)) + 1",
                     "rule": {
-                        "latex_str": "integrate by parts \\(u \\to \\log{(x)}, v \\to x\\)",
+                        "latex_str": "integrate by parts \\(u \\to \\log{x}, v \\to x\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> log(x), v -> x",
                         "u": "log(x)",

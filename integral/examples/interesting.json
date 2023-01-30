@@ -217,7 +217,7 @@
         },
         {
             "type": "problem",
-            "expr": "(INT x:[0,1]. atan(sqrt(2+x*x)) / ((1+x*x)*sqrt(2+x*x))) = 5*pi^2/96",
+            "expr": "(INT x:[0,1]. atan(sqrt(2+x^2)) / ((1+x^2)*sqrt(2+x^2))) = 5*pi^2/96",
             "path": "AhmedIntegral"
         }
     ],
