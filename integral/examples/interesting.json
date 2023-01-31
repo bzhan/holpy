@@ -121,6 +121,11 @@
             "level": 2
         },
         {
+            "type": "definition",
+            "expr": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
+            "path": "GammaFunction"
+        },
+        {
             "type": "problem",
             "expr": "Gamma(n+1) = factorial(n)",
             "path": "GammaFunction"
@@ -144,6 +149,11 @@
             "type": "header",
             "name": "5.1 Catalan's Constant",
             "level": 2
+        },
+        {
+            "type": "definition",
+            "expr": "G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
+            "path": "CatalanConstant01"
         },
         {
             "type": "problem",

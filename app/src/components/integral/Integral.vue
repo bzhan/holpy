@@ -123,6 +123,11 @@
             {{item.name}}
           </div>
         </div>
+        <div v-if="item.type == 'definition'">
+          <MathEquation v-bind:data="'\\(' + item.latex_str + '\\)'" class="indented-text"
+            v-on:click.native="openFile(item.path)"
+            style="cursor:pointer"/>
+        </div>
         <div v-if="item.type == 'problem'">
           <MathEquation v-bind:data="'\\(' + item.latex_str + '\\)'" class="indented-text"
             v-on:click.native="openFile(item.path)"

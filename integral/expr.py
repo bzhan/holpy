@@ -242,13 +242,13 @@ class Expr:
         else:
             raise NotImplementedError
 
-    def is_var(self) -> bool:
+    def is_var(self) -> TypeGuard["Var"]:
         return self.ty == VAR
 
     def is_diff(self) -> bool:
         return self.ty == DIFFERENTIAL
 
-    def is_const(self) -> bool:
+    def is_const(self) -> TypeGuard["Const"]:
         return self.ty == CONST
 
     def is_op(self) -> TypeGuard["Op"]:
@@ -467,7 +467,7 @@ class Expr:
         else:
             raise NotImplementedError
         
-    def is_summation(self):
+    def is_summation(self) -> TypeGuard["Summation"]:
         return self.ty == SUMMATION
 
     @property

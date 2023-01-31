@@ -1066,10 +1066,8 @@ class IntegralTest(unittest.TestCase):
 
         ctx = context.Context()
         ctx.load_book('base')
+        ctx.load_book('interesting', upto='CatalanConstant02')
         file = compstate.CompFile(ctx, 'CatalanConstant02')
-
-        # Define Catalan's constant
-        file.add_definition("G = SUM(n, 0, oo, (-1)^n / (2*n+1)^2)")
 
         # Define I(k)
         file.add_definition("I(k) = INT x:[1,oo]. log(x) / (x^k)", conds=["k > 1"])

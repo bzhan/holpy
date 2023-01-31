@@ -106,6 +106,15 @@
         },
         {
             "type": "header",
+            "name": "Hyperbolic functions",
+            "level": 1
+        },
+        {
+            "type": "definition",
+            "expr": "cosh(x) = (exp(x) + exp(-x)) / 2"
+        },
+        {
+            "type": "header",
             "name": "Trigonometric identities",
             "level": 1
         },

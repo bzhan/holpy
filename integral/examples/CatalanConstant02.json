@@ -1,12 +1,6 @@
 {
     "content": [
         {
-            "eq": "G = SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
-            "latex_eq": "G = \\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(2 n + 1) ^ {2}}}",
-            "latex_lhs": "G",
-            "type": "FuncDef"
-        },
-        {
             "conds": [
                 {
                     "cond": "k > 1",
