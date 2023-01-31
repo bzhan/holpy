@@ -8,18 +8,16 @@ import functools
 
 from integral import poly, expr, conditions
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, \
-    sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, LIMIT, sin, cos, FUN, EVAL_AT, \
-    DERIV, decompose_expr_factor, Deriv, Inf, INF, Limit, NEG_INF, POS_INF, IndefiniteIntegral, INDEFINITEINTEGRAL, \
-    SYMBOL, log, Summation, SUMMATION
+    sympy_style, holpy_style, OP, CONST, VAR, sin, cos, FUN, decompose_expr_factor, \
+    Deriv, Inf, Limit, NEG_INF, POS_INF, IndefiniteIntegral, log, Summation
 from integral import parser
 from sympy import Interval, expand_multinomial, apart
-from sympy.solvers import solvers, solveset
+from sympy.solvers import solveset
 from fractions import Fraction
 from integral.solve import solve_equation, solve_for_term
 from integral.conditions import Conditions, is_positive
 from integral import latex
 from integral import limits
-from integral import context
 from integral.context import Context
 
 
@@ -519,29 +517,29 @@ class OnSubterm(Rule):
 
     def eval(self, e: Expr, ctx=None) -> Expr:
         rule = self.rule
-        if e.ty in (expr.VAR, expr.CONST, expr.INF, expr.SKOLEMFUNC):
+        if e.is_var() or e.is_const() or e.is_inf() or e.is_skolem_func():
             return rule.eval(e, ctx)
-        elif e.ty == expr.OP:
+        elif e.is_op():
             args = [self.eval(arg, ctx) for arg in e.args]
             return rule.eval(expr.Op(e.op, *args), ctx)
-        elif e.ty == expr.FUN:
+        elif e.is_fun():
             args = [self.eval(arg, ctx) for arg in e.args]
             return rule.eval(expr.Fun(e.func_name, *args), ctx)
-        elif e.ty == expr.DERIV:
+        elif e.is_deriv():
             return rule.eval(expr.Deriv(e.var, self.eval(e.body, ctx)), ctx)
-        elif e.ty == expr.INTEGRAL:
+        elif e.is_integral():
             return rule.eval(expr.Integral(
                 e.var, self.eval(e.lower, ctx), self.eval(e.upper, ctx),
                 self.eval(e.body, ctx)), ctx)
-        elif e.ty == expr.EVAL_AT:
+        elif e.is_evalat():
             return rule.eval(expr.EvalAt(
                 e.var, self.eval(e.lower, ctx), self.eval(e.upper, ctx),
                 self.eval(e.body, ctx)), ctx)
-        elif e.ty == expr.LIMIT:
+        elif e.is_limit():
             return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, ctx)), ctx)
-        elif e.ty == expr.INDEFINITEINTEGRAL:
+        elif e.is_indefinite_integral():
             return rule.eval(expr.IndefiniteIntegral(e.var, self.eval(e.body), e.skolem_args), ctx)
-        elif e.ty == SUMMATION:
+        elif e.is_summation():
             return rule.eval(
                 expr.Summation(e.index_var, self.eval(e.lower, ctx), self.eval(e.upper, ctx),
                                self.eval(e.body, ctx)), ctx)
@@ -576,9 +574,9 @@ class OnLocation(Rule):
         def rec(cur_e, loc):
             if loc.is_empty():
                 return self.rule.eval(cur_e, ctx)
-            elif cur_e.ty == VAR or cur_e.ty == CONST:
+            elif cur_e.is_var() or cur_e.is_const():
                 raise AssertionError("OnLocation: invalid location")
-            elif cur_e.ty == OP:
+            elif cur_e.is_op():
                 assert loc.head < len(cur_e.args), "OnLocation: invalid location"
                 if len(cur_e.args) == 1:
                     return Op(cur_e.op, rec(cur_e.args[0], loc.rest))
@@ -591,12 +589,12 @@ class OnLocation(Rule):
                         raise AssertionError("OnLocation: invalid location")
                 else:
                     raise NotImplementedError
-            elif cur_e.ty == FUN:
+            elif cur_e.is_fun():
                 assert loc.head < len(cur_e.args), "OnLocation: invalid location"
                 new_args = list(cur_e.args)
                 new_args[loc.head] = rec(cur_e.args[loc.head], loc.rest)
                 return Fun(cur_e.func_name, *tuple(new_args))
-            elif cur_e.ty == INTEGRAL:
+            elif cur_e.is_integral():
                 if loc.head == 0:
                     return Integral(cur_e.var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest))
                 elif loc.head == 1:
@@ -605,7 +603,7 @@ class OnLocation(Rule):
                     return Integral(cur_e.var, cur_e.lower, rec(cur_e.upper, loc.rest), cur_e.body)
                 else:
                     raise AssertionError("OnLocation: invalid location")
-            elif cur_e.ty == EVAL_AT:
+            elif cur_e.is_evalat():
                 if loc.head == 0:
                     return EvalAt(cur_e.var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest))
                 elif loc.head == 1:
@@ -614,21 +612,20 @@ class OnLocation(Rule):
                     return EvalAt(cur_e.var, cur_e.lower, rec(cur_e.upper, loc.rest), cur_e.body)
                 else:
                     raise AssertionError("OnLocation: invalid location")
-            elif cur_e.ty == DERIV:
+            elif cur_e.is_deriv():
                 assert loc.head == 0, "OnLocation: invalid location"
                 return Deriv(cur_e.var, rec(cur_e.body, loc.rest))
-            elif cur_e.ty == LIMIT:
+            elif cur_e.is_limit():
                 if loc.head == 0:
                     return Limit(cur_e.var, cur_e.lim, rec(cur_e.body, loc.rest), drt=cur_e.drt)
                 elif loc.head == 1:
                     return Limit(cur_e.var, rec(cur_e.lim, loc.rest), cur_e.body, drt=cur_e.drt)
                 else:
                     raise AssertionError("OnLocation: invalid location")
-
-            elif cur_e.ty == INDEFINITEINTEGRAL:
+            elif cur_e.is_indefinite_integral():
                 assert loc.head == 0, "OnLocation: invalid location"
                 return IndefiniteIntegral(cur_e.var, rec(cur_e.body, loc.rest), cur_e.skolem_args)
-            elif cur_e.ty == SUMMATION:
+            elif cur_e.is_summation():
                 if loc.head == 0:
                     return Summation(cur_e.index_var, cur_e.lower, cur_e.upper, rec(cur_e.body, loc.rest))
                 elif loc.head == 1:
@@ -637,7 +634,6 @@ class OnLocation(Rule):
                     return Summation(cur_e.index_var, cur_e.lower, rec(cur_e.upper, loc.rest), cur_e.body)
                 else:
                     raise AssertionError("OnLocation: invalid location")
-
             else:
                 raise NotImplementedError
 
@@ -1073,7 +1069,7 @@ class Substitution(Rule):
         var_subst = self.var_subst
 
         dfx = expr.deriv(e.var, var_subst)
-        body = holpy_style(sympy_style(e.body / dfx))
+        body = (e.body / dfx).normalize()
         body_subst = body.replace_trig(var_subst, var_name)
         if body_subst == body:
             body_subst = body.replace_trig(var_subst, var_name)
@@ -1084,6 +1080,7 @@ class Substitution(Rule):
             # Substitution is unable to clear x, need to solve for x
             gu = solve_equation(var_subst, var_name, e.var)
             if gu is None:
+                print('Solve %s = %s for %s' % (var_subst, var_name, e.var))
                 raise AssertionError("Substitution: unable to solve equation")
 
             gu = gu.normalize()
@@ -1567,11 +1564,8 @@ class SplitRegion(Rule):
             else:
                 return OnLocation(self, sep_ints[0][1]).eval(e)
 
-        if expr.sympy_style(e.upper) <= expr.sympy_style(self.c) or \
-                expr.sympy_style(e.lower) >= expr.sympy_style(self.c):
-            raise AssertionError("Split region")
-
-        return expr.Integral(e.var, e.lower, self.c, e.body) + expr.Integral(e.var, self.c, e.upper, e.body)
+        return expr.Integral(e.var, e.lower, self.c, e.body) + \
+               expr.Integral(e.var, self.c, e.upper, e.body)
 
 
 class IntegrateByEquation(Rule):
@@ -2344,7 +2338,7 @@ class SummationSimplify(Rule):
         }
 
     def eval(self, e: Expr, ctx=None) -> Expr:
-        if e.ty != SUMMATION:
+        if not e.is_summation():
             return e
         e = e.replace((Const(-1))^(Const(2)*Var(e.index_var)), Const(1))
         return e

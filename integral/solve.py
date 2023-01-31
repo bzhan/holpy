@@ -71,6 +71,8 @@ def solve_equation(f: Expr, a: Expr, x: str) -> Optional[Expr]:
             return solve_equation(f.args[0], expr.arccos(a), x)
         elif f.func_name == "tan":
             return solve_equation(f.args[0], expr.arctan(a), x)
+        elif f.func_name == "sqrt":
+            return solve_equation(f.args[0], a ^ 2, x)
 
     # Try linearity
     extract_res = extract_linear(f, x)
@@ -79,7 +81,6 @@ def solve_equation(f: Expr, a: Expr, x: str) -> Optional[Expr]:
         b, c = extract_res
         if b.normalize() != Const(0):
             return ((a - c) / b).normalize()
-
 
 def extract_linear(e: Expr, x: str) -> Optional[Tuple[Expr, Expr]]:
     """Attempt to write e in the form a * x + b.

@@ -211,8 +211,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi \\log{(2 a ^ {-1})} + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
-                            "res": "1/2 * pi * log(2 * a ^ (-1)) + (INT x:[0,1/2 * pi]. log(a * sin(x))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "latex_res": "\\frac{1}{2} \\pi \\log{(2 a ^ {-1})} + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\cos{(\\frac{1}{2} \\pi - x)})} \\,dx) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
+                            "res": "1/2 * pi * log(2 * a ^ (-1)) + (INT x:[0,1/2 * pi]. log(a * cos(1/2 * pi - x))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
                             "rule": {
                                 "latex_str": "substitute \\(x\\) for \\(t\\) at 0.1",
                                 "loc": "0.1",

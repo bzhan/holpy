@@ -1115,19 +1115,10 @@ class Expr:
         elif self.ty == FUN and self.func_name == "sqrt":
             return Op("^", self.args[0], Const(Fraction(1, 2))).to_poly()
 
-        elif self.ty == FUN and self.func_name == "pi":
-            return poly.singleton(self)
-
         elif self.ty == FUN and self.func_name == "abs":
             if self.args[0].normalize().ty == CONST:
                 return poly.constant(Const(abs(self.args[0].normalize().val)).to_const_poly())
             return poly.singleton(Fun("abs", self.args[0].normalize()))
-
-        elif self.ty == FUN and self.func_name == "binom":
-            return poly.singleton(Fun("binom", self.args[0].normalize(), self.args[1].normalize()))
-
-        elif self.ty == FUN and self.func_name == "factorial":
-            return poly.singleton(Fun("factorial", self.args[0].normalize()))
 
         elif self.ty == FUN:
             args_norm = [arg.normalize() for arg in self.args]
