@@ -1080,43 +1080,28 @@ class Substitution(Rule):
         if e.var not in body_subst.get_vars():
             # Substitution is able to clear all x in original integrand
             self.f = body_subst
-            if e.is_integral():
-                lower = var_subst.subst(e.var, e.lower).normalize()
-                upper = var_subst.subst(e.var, e.upper).normalize()
-                try:
-                    if sympy_style(lower) <= sympy_style(upper):
-                        return Integral(self.var_name, lower, upper, body_subst).normalize()
-                    else:
-                        return Integral(self.var_name, upper, lower, Op("-", body_subst)).normalize()
-                except:
-                    return Integral(self.var_name, lower, upper, body_subst).normalize()
-            elif e.is_indefinite_integral():
-                return IndefiniteIntegral(self.var_name, body_subst, e.skolem_args).normalize()
-            else:
-                raise TypeError
         else:
             # Substitution is unable to clear x, need to solve for x
-            gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
-            if gu == []:  # sympy can't solve the equation
-                return e
-            gu = gu[-1] if isinstance(gu, list) else gu
-            gu = expr.holpy_style(gu)
+            gu = solve_equation(var_subst, var_name, e.var)
+            if gu is None:
+                raise AssertionError("Substitution: unable to solve equation")
+
+            gu = gu.normalize()
             c = e.body.replace_trig(parser.parse_expr(e.var), gu)
-            new_problem_body = (c * expr.deriv(str(var_name), gu))
+            new_problem_body = c * expr.deriv(str(var_name), gu)
             self.f = new_problem_body
 
-            if e.is_integral():
-                lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
-                upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
-                try:
-                    if sympy_style(lower) < sympy_style(upper):
-                        return Integral(self.var_name, lower, upper, new_problem_body).normalize()
-                    else:
-                        return Integral(self.var_name, upper, lower, Op("-", new_problem_body)).normalize()
-                except TypeError as e:
-                    return Integral(self.var_name, lower, upper, new_problem_body).normalize()
-            elif e.is_indefinite_integral():
-                return IndefiniteIntegral(self.var_name, new_problem_body, e.skolem_args).normalize()
+        if e.is_integral():
+            lower = var_subst.subst(e.var, e.lower).normalize()
+            upper = var_subst.subst(e.var, e.upper).normalize()
+            if lower.is_evaluable() and upper.is_evaluable() and expr.eval_expr(lower) > expr.eval_expr(upper):
+                return Integral(self.var_name, upper, lower, Op("-", self.f)).normalize()
+            else:
+                return Integral(self.var_name, lower, upper, self.f).normalize()
+        elif e.is_indefinite_integral():
+            return IndefiniteIntegral(self.var_name, self.f, e.skolem_args).normalize()
+        else:
+            raise TypeError
 
 
 class SubstitutionInverse(Rule):
@@ -1162,13 +1147,15 @@ class SubstitutionInverse(Rule):
         new_e_body = new_e_body * subst_deriv
 
         # Solve the equations lower = f(u) and upper = f(u) for u.
-        lower = solve_equation(self.var_subst, e.lower, self.var_name).normalize()
-        upper = solve_equation(self.var_subst, e.upper, self.var_name).normalize()
+        lower = solve_equation(self.var_subst, e.lower, self.var_name)
+        upper = solve_equation(self.var_subst, e.upper, self.var_name)
 
         if lower is None or upper is None:
             raise AssertionError("SubstitutionInverse: cannot solve")
 
-        if lower.is_constant() and upper.is_constant() and expr.eval_expr(lower) > expr.eval_expr(upper):
+        lower = lower.normalize()
+        upper = upper.normalize()
+        if lower.is_evaluable() and upper.is_evaluable() and expr.eval_expr(lower) > expr.eval_expr(upper):
             return -expr.Integral(self.var_name, upper, lower, new_e_body)
         else:
             return expr.Integral(self.var_name, lower, upper, new_e_body)

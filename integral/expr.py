@@ -720,17 +720,20 @@ class Expr:
             raise NotImplementedError
 
     def is_constant(self):
-        """Determine whether expr is a number."""
-        if self.ty == CONST:
+        """Determine whether expr is a number.
+        
+        Note Inf is not considered to be constants.
+        
+        """
+        if self.is_const():
             return True
-        elif self.ty == VAR:
-            return False
-        elif self.ty == FUN:
-            return all(arg.is_constant() for arg in self.args)
-        elif self.ty == OP:
+        elif self.is_fun() or self.is_op():
             return all(arg.is_constant() for arg in self.args)
         else:
             return False
+        
+    def is_evaluable(self):
+        return self.is_constant() or self.is_inf()
 
     def get_vars(self) -> Set[str]:
         """Obtain the set of variables in self."""
@@ -2681,8 +2684,11 @@ def eval_hol_expr(t: term.Term):
 
 
 def eval_expr(e: Expr):
-    t = expr_to_holpy(e)
-    return eval_hol_expr(t)
+    if e.is_inf():
+        return e.t
+    else:
+        t = expr_to_holpy(e)
+        return eval_hol_expr(t)
 
 
 def neg_expr(ex: Expr):
