@@ -648,8 +648,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(1)} = \\frac{5 \\pi ^ {2}}{96}",
-                            "res": "I(1) = 5 * pi ^ 2 / 96",
+                            "latex_res": "I{(1)} = \\frac{5}{96} \\pi ^ {2}",
+                            "res": "I(1) = 5/96 * pi ^ 2",
                             "rule": {
                                 "latex_str": "solve equation for \\(I{(1)}\\)",
                                 "name": "SolveEquation",

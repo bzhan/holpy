@@ -756,6 +756,7 @@ class IntegralTest(unittest.TestCase):
         calc = Eq6_proof.begin
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("I(t)")))
         calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1'))
+        calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1.0'))
         calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file, "leibniz03")

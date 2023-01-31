@@ -789,6 +789,7 @@ class Expr:
 
     def contains_var(self, x: str) -> bool:
         """Whether self contains variable x."""
+        assert isinstance(x, str)
         return x in self.get_vars()
 
     def replace(self, e: Expr, repl_e: Expr) -> Expr:

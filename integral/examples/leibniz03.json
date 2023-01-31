@@ -383,8 +383,8 @@
                     "start": "log(I(t)) = -(t ^ 2) / 2 + log(sqrt(pi / 2))",
                     "steps": [
                         {
-                            "latex_res": "I{(t)} = e^{-t ^ {2}/2 + \\log{(\\sqrt{\\pi/2})}}",
-                            "res": "I(t) = exp(-(t ^ 2) / 2 + log(sqrt(pi / 2)))",
+                            "latex_res": "I{(t)} = e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)} - 1/2\\cdot t ^ {2}}",
+                            "res": "I(t) = exp(-1/2 * log(2) + 1/2 * log(pi) - 1/2 * t ^ 2)",
                             "rule": {
                                 "latex_str": "solve equation for \\(I{(t)}\\)",
                                 "name": "SolveEquation",
@@ -394,12 +394,22 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(t)} = e^{-t ^ {2}/2}\\cdot e^{\\log{(\\sqrt{\\pi/2})}}",
-                            "res": "I(t) = exp(-(t ^ 2) / 2) * exp(log(sqrt(pi / 2)))",
+                            "latex_res": "I{(t)} = e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)}} e^{-1/2\\cdot t ^ {2}}",
+                            "res": "I(t) = exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-(1/2 * t ^ 2))",
                             "rule": {
                                 "loc": "1",
                                 "name": "RewriteExp",
                                 "str": "rewrite exp expression at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I{(t)} = e^{-1/2\\cdot \\log{(2)}} e^{1/2\\cdot \\log{(\\pi)}} e^{-1/2\\cdot t ^ {2}}",
+                            "res": "I(t) = exp(-1/2 * log(2)) * exp(1/2 * log(pi)) * exp(-(1/2 * t ^ 2))",
+                            "rule": {
+                                "loc": "1.0",
+                                "name": "RewriteExp",
+                                "str": "rewrite exp expression at 1.0"
                             },
                             "type": "CalculationStep"
                         },

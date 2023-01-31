@@ -15,7 +15,7 @@ from integral import parser
 from sympy import Interval, expand_multinomial, apart
 from sympy.solvers import solvers, solveset
 from fractions import Fraction
-from integral.solve import solve_equation
+from integral.solve import solve_equation, solve_for_term
 from integral.conditions import Conditions, is_positive
 from integral import latex
 from integral import limits
@@ -1162,15 +1162,18 @@ class SubstitutionInverse(Rule):
         new_e_body = new_e_body * subst_deriv
 
         # Solve the equations lower = f(u) and upper = f(u) for u.
-        try:
-            lower = solve_equation(self.var_subst, e.lower, self.var_name).normalize()
-        except NotImplementedError:
+        lower = solve_equation(self.var_subst, e.lower, self.var_name)
+        if lower is None:
             lower = solvers.solve(expr.sympy_style(self.var_subst - e.lower))[0]
+        else:
+            lower = lower.normalize()
 
-        try:
-            upper = solve_equation(self.var_subst, e.upper, self.var_name).normalize()
-        except NotImplementedError:
+        upper = solve_equation(self.var_subst, e.upper, self.var_name)
+        if upper is None:
             upper = solvers.solve(expr.sympy_style(self.var_subst - e.upper))[0]
+        else:
+            upper = upper.normalize()
+
         if lower > upper:
             return -expr.Integral(self.var_name, expr.holpy_style(upper), expr.holpy_style(lower), new_e_body)
 
@@ -2434,34 +2437,10 @@ class SolveEquation(Rule):
     def eval(self, e: Expr, ctx=None):
         assert e.is_equals()
 
-        # Try something simple
-        if e.rhs == self.be_solved_expr:
-            return Op("=", self.be_solved_expr, e.lhs)
-
-        if e.rhs.is_plus() and e.rhs.args[1] == self.be_solved_expr:
-            return Op("=", self.be_solved_expr, (e.lhs - e.rhs.args[0]).normalize())
-
-        if e.lhs.is_times() and e.lhs.args[1] == self.be_solved_expr:
-            return Op("=", self.be_solved_expr, (e.rhs / e.lhs.args[0]).normalize())
-
-        if e.lhs.is_fun() and e.lhs.func_name == 'log' and e.lhs.args[0] == self.be_solved_expr:
-            return Op("=", self.be_solved_expr, expr.exp(e.rhs))
-
-        all_vars = e.get_vars()
-        var_name = ""
-        if len(all_vars) == 0:
-            var_name = "x"
-        else:
-            for v in all_vars:
-                var_name = var_name + v
-        var = Var(var_name)
-        e = e.replace(self.be_solved_expr, var)
-        e = e.lhs - e.rhs
-        res = sympy.solvers.solve(sympy_style(e), sympy_style(var))
-        if len(res) == 0:
-            raise AssertionError("can't solve")
-        else:
-            return Op('=', self.be_solved_expr, holpy_style(res[0]))
+        res = solve_for_term(e, self.be_solved_expr)
+        if not res:
+            raise AssertionError("SolveEquation: cannot solve")
+        return Op("=", self.be_solved_expr, res.normalize())
 
     def __str__(self):
         return "solve equation for %s" % str(self.be_solved_expr)

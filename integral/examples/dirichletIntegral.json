@@ -397,8 +397,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = \\frac{\\pi}{2}",
-                            "res": "SKOLEM_FUNC(C(a)) = pi / 2",
+                            "latex_res": "C(a) = \\frac{1}{2} \\pi",
+                            "res": "SKOLEM_FUNC(C(a)) = 1/2 * pi",
                             "rule": {
                                 "latex_str": "solve equation for \\(C(a)\\)",
                                 "name": "SolveEquation",
@@ -476,8 +476,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = \\frac{-\\pi}{2}",
-                            "res": "SKOLEM_FUNC(C(a)) = -pi / 2",
+                            "latex_res": "C(a) = -\\frac{1}{2} \\pi",
+                            "res": "SKOLEM_FUNC(C(a)) = -1/2 * pi",
                             "rule": {
                                 "latex_str": "solve equation for \\(C(a)\\)",
                                 "name": "SolveEquation",
