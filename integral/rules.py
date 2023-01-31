@@ -1162,22 +1162,16 @@ class SubstitutionInverse(Rule):
         new_e_body = new_e_body * subst_deriv
 
         # Solve the equations lower = f(u) and upper = f(u) for u.
-        lower = solve_equation(self.var_subst, e.lower, self.var_name)
-        if lower is None:
-            lower = solvers.solve(expr.sympy_style(self.var_subst - e.lower))[0]
+        lower = solve_equation(self.var_subst, e.lower, self.var_name).normalize()
+        upper = solve_equation(self.var_subst, e.upper, self.var_name).normalize()
+
+        if lower is None or upper is None:
+            raise AssertionError("SubstitutionInverse: cannot solve")
+
+        if lower.is_constant() and upper.is_constant() and expr.eval_expr(lower) > expr.eval_expr(upper):
+            return -expr.Integral(self.var_name, upper, lower, new_e_body)
         else:
-            lower = lower.normalize()
-
-        upper = solve_equation(self.var_subst, e.upper, self.var_name)
-        if upper is None:
-            upper = solvers.solve(expr.sympy_style(self.var_subst - e.upper))[0]
-        else:
-            upper = upper.normalize()
-
-        if lower > upper:
-            return -expr.Integral(self.var_name, expr.holpy_style(upper), expr.holpy_style(lower), new_e_body)
-
-        return expr.Integral(self.var_name, expr.holpy_style(lower), expr.holpy_style(upper), new_e_body)
+            return expr.Integral(self.var_name, lower, upper, new_e_body)
 
 
 class ExpandPolynomial(Rule):

@@ -2251,58 +2251,44 @@ NEG_INF = Inf(Decimal('-inf'))
 POS_INF = Inf(Decimal('inf'))
 ZERO = Const(0)
 
-
 def inf():
     return Inf(Decimal("inf"))
-
 
 def neg_inf():
     return Inf(Decimal("-inf"))
 
-
 def sin(e):
     return Fun("sin", e)
-
-
-def sec(e):
-    return Fun("sec", e)
-
 
 def cos(e):
     return Fun("cos", e)
 
-
-def csc(e):
-    return Fun("csc", e)
-
-
 def tan(e):
     return Fun("tan", e)
-
 
 def cot(e):
     return Fun("cot", e)
 
+def sec(e):
+    return Fun("sec", e)
+
+def csc(e):
+    return Fun("csc", e)
 
 def log(e):
     return Fun("log", e)
 
-
 def exp(e):
     return Fun("exp", e)
-
 
 def arcsin(e):
     return Fun("asin", e)
 
-
-def arctan(e):
-    return Fun("atan", e)
-
-
 def arccos(e):
     return Fun("acos", e)
 
+def arctan(e):
+    return Fun("atan", e)
 
 def sqrt(e):
     return Fun("sqrt", e)

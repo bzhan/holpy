@@ -14,6 +14,9 @@ def solve_equation(f: Expr, a: Expr, x: str) -> Optional[Expr]:
 
     Next, several other heuristics are tried, such as using linearity.
 
+    Note: for trigonometric or other special functions, may only produce
+    one of the solutions.
+
     """
     if f.is_var():
         if f.name == x:
@@ -62,7 +65,13 @@ def solve_equation(f: Expr, a: Expr, x: str) -> Optional[Expr]:
             return solve_equation(f.args[0], expr.exp(a), x)
         elif f.func_name == "exp":
             return solve_equation(f.args[0], expr.log(a), x)
-    
+        elif f.func_name == "sin":
+            return solve_equation(f.args[0], expr.arcsin(a), x)
+        elif f.func_name == "cos":
+            return solve_equation(f.args[0], expr.arccos(a), x)
+        elif f.func_name == "tan":
+            return solve_equation(f.args[0], expr.arctan(a), x)
+
     # Try linearity
     extract_res = extract_linear(f, x)
     if extract_res:

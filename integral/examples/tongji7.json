@@ -415,8 +415,8 @@
             "start": "INT x:[0,1]. (1 - x ^ 2) ^ (1/2)",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{1 - \\sin^{2}(u)} \\cos{u} \\,du",
-                    "res": "INT u:[0,pi / 2]. (1 - sin(u) ^ 2) ^ (1/2) * cos(u)",
+                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\sqrt{1 - \\sin^{2}(u)} \\cos{u} \\,du",
+                    "res": "INT u:[0,1/2 * pi]. (1 - sin(u) ^ 2) ^ (1/2) * cos(u)",
                     "rule": {
                         "latex_str": "inverse substitution for \\(\\sin{u}\\)",
                         "name": "SubstitutionInverse",
@@ -427,8 +427,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{\\cos^{2}(u)} \\cos{u} \\,du",
-                    "res": "INT u:[0,pi / 2]. cos(u) ^ 2 ^ (1/2) * cos(u)",
+                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\cos^{2}(u)} \\cos{u} \\,du",
+                    "res": "INT u:[0,1/2 * pi]. cos(u) ^ 2 ^ (1/2) * cos(u)",
                     "rule": {
                         "latex_str": "rewrite trigonometric on \\(1 - \\sin^{2}(u)\\)",
                         "name": "RewriteTrigonometric",
@@ -506,8 +506,8 @@
             "start": "INT x:[0,sqrt(2)]. sqrt(2 - x ^ 2)",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{\\pi/2} \\sqrt{2 - (\\sqrt{2} \\sin{u}) ^ {2}} (\\sqrt{2} \\cos{u}) \\,du",
-                    "res": "INT u:[0,pi / 2]. sqrt(2 - (sqrt(2) * sin(u)) ^ 2) * (sqrt(2) * cos(u))",
+                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\sqrt{2 - (\\sqrt{2} \\sin{u}) ^ {2}} (\\sqrt{2} \\cos{u}) \\,du",
+                    "res": "INT u:[0,1/2 * pi]. sqrt(2 - (sqrt(2) * sin(u)) ^ 2) * (sqrt(2) * cos(u))",
                     "rule": {
                         "latex_str": "inverse substitution for \\(\\sqrt{2} \\sin{u}\\)",
                         "name": "SubstitutionInverse",
@@ -606,8 +606,8 @@
             "start": "INT y:[-sqrt(2),sqrt(2)]. sqrt(8 - 2 * y ^ 2)",
             "steps": [
                 {
-                    "latex_res": "\\int_{-\\pi/4}^{\\pi/4} \\sqrt{8 - 2 (2 \\sin{u}) ^ {2}} (2 \\cos{u}) \\,du",
-                    "res": "INT u:[-pi / 4,pi / 4]. sqrt(8 - 2 * (2 * sin(u)) ^ 2) * (2 * cos(u))",
+                    "latex_res": "\\int_{-1/4\\cdot \\pi}^{1/4\\cdot \\pi} \\sqrt{8 - 2 (2 \\sin{u}) ^ {2}} (2 \\cos{u}) \\,du",
+                    "res": "INT u:[-1/4 * pi,1/4 * pi]. sqrt(8 - 2 * (2 * sin(u)) ^ 2) * (2 * cos(u))",
                     "rule": {
                         "latex_str": "inverse substitution for \\(2 \\sin{u}\\)",
                         "name": "SubstitutionInverse",
@@ -706,8 +706,8 @@
             "start": "INT x:[1 / sqrt(2),1]. sqrt(1 - x ^ 2) / x ^ 2",
             "steps": [
                 {
-                    "latex_res": "\\int_{\\pi/4}^{\\pi/2} \\frac{\\sqrt{1 - \\sin^{2}(u)}}{\\sin^{2}(u)} \\cos{u} \\,du",
-                    "res": "INT u:[pi / 4,pi / 2]. sqrt(1 - sin(u) ^ 2) / sin(u) ^ 2 * cos(u)",
+                    "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\frac{\\sqrt{1 - \\sin^{2}(u)}}{\\sin^{2}(u)} \\cos{u} \\,du",
+                    "res": "INT u:[1/4 * pi,1/2 * pi]. sqrt(1 - sin(u) ^ 2) / sin(u) ^ 2 * cos(u)",
                     "rule": {
                         "latex_str": "inverse substitution for \\(\\sin{u}\\)",
                         "name": "SubstitutionInverse",
