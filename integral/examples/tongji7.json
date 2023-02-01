@@ -439,24 +439,6 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\cos{u} \\left| \\cos{u} \\right| \\,du",
-                    "res": "INT u:[0,1/2 * pi]. cos(u) * abs(cos(u))",
-                    "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\int_{0}^{\\pi/2} \\cos{u} \\cos{u} \\,du",
-                    "res": "INT u:[0,pi / 2]. cos(u) * cos(u)",
-                    "rule": {
-                        "name": "ElimAbs",
-                        "str": "eliminate absolute values"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
                     "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\cos^{2}(u) \\,du",
                     "res": "INT u:[0,1/2 * pi]. cos(u) ^ 2",
                     "rule": {
@@ -535,24 +517,6 @@
                         "rewrite_term": "-2 * sin(u) ^ 2 + 2",
                         "rule_name": "TR5",
                         "str": "rewrite trigonometric on -2 * sin(u) ^ 2 + 2"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "2 (\\int_{0}^{1/2\\cdot \\pi} \\cos{u} \\left| \\cos{u} \\right| \\,du)",
-                    "res": "2 * (INT u:[0,1/2 * pi]. cos(u) * abs(cos(u)))",
-                    "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "2 (\\int_{0}^{\\pi/2} \\cos{u} \\cos{u} \\,du)",
-                    "res": "2 * (INT u:[0,pi / 2]. cos(u) * cos(u))",
-                    "rule": {
-                        "name": "ElimAbs",
-                        "str": "eliminate absolute values"
                     },
                     "type": "CalculationStep"
                 },
@@ -639,24 +603,6 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{1/4\\cdot \\pi} \\cos{u} \\left| \\cos{u} \\right| \\,du)",
-                    "res": "8 * sqrt(2) * (INT u:[0,1/4 * pi]. cos(u) * abs(cos(u)))",
-                    "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "8 \\sqrt{2} (\\int_{0}^{\\pi/4} \\cos{u} \\cos{u} \\,du)",
-                    "res": "8 * sqrt(2) * (INT u:[0,pi / 4]. cos(u) * cos(u))",
-                    "rule": {
-                        "name": "ElimAbs",
-                        "str": "eliminate absolute values"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
                     "latex_res": "8 \\sqrt{2} (\\int_{0}^{1/4\\cdot \\pi} \\cos^{2}(u) \\,du)",
                     "res": "8 * sqrt(2) * (INT u:[0,1/4 * pi]. cos(u) ^ 2)",
                     "rule": {
@@ -735,24 +681,6 @@
                         "rewrite_term": "-(sin(u) ^ 2) + 1",
                         "rule_name": "TR5",
                         "str": "rewrite trigonometric on -(sin(u) ^ 2) + 1"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{u} \\sin^{-2}(u) \\left| \\cos{u} \\right| \\,du",
-                    "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ (-2) * abs(cos(u))",
-                    "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\int_{\\pi/4}^{\\pi/2} \\cos{u} \\sin^{-2}(u) \\cos{u} \\,du",
-                    "res": "INT u:[pi / 4,pi / 2]. cos(u) * sin(u) ^ (-2) * cos(u)",
-                    "rule": {
-                        "name": "ElimAbs",
-                        "str": "eliminate absolute values"
                     },
                     "type": "CalculationStep"
                 },
@@ -910,8 +838,8 @@
             "start": "INT x:[3/4,1]. 1 / (sqrt(1 - x) - 1)",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{1/2} 2 u (u - 1) ^ {-1} \\,du",
-                    "res": "INT u:[0,1/2]. 2 * u * (u - 1) ^ (-1)",
+                    "latex_res": "\\int_{0}^{1/2} 2 u (\\left| u \\right| - 1) ^ {-1} \\,du",
+                    "res": "INT u:[0,1/2]. 2 * u * (abs(u) - 1) ^ (-1)",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(\\sqrt{1 - x}\\)",
                         "name": "Substitution",
@@ -922,8 +850,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-1}^{-1/2} v ^ {-1} (2 v + 2) \\,dv",
-                    "res": "INT v:[-1,-1/2]. v ^ (-1) * (2 * v + 2)",
+                    "latex_res": "\\int_{-1}^{-1/2} (2 v + 2) (\\left| v + 1 \\right| - 1) ^ {-1} \\,dv",
+                    "res": "INT v:[-1,-1/2]. (2 * v + 2) * (abs(v + 1) - 1) ^ (-1)",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(u - 1\\)",
                         "name": "Substitution",
@@ -934,8 +862,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-1}^{-1/2} 2 v ^ {-1} + 2 \\,dv",
-                    "res": "INT v:[-1,-1/2]. 2 * v ^ (-1) + 2",
+                    "latex_res": "\\int_{-1}^{-1/2} 2 v (\\left| v + 1 \\right| - 1) ^ {-1} + 2 (\\left| v + 1 \\right| - 1) ^ {-1} \\,dv",
+                    "res": "INT v:[-1,-1/2]. 2 * v * (abs(v + 1) - 1) ^ (-1) + 2 * (abs(v + 1) - 1) ^ (-1)",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -959,14 +887,26 @@
             "start": "INT t:[0,1]. t * exp(-(t ^ 2) / 2)",
             "steps": [
                 {
-                    "latex_res": "\\int_{-1/2}^{0} e^{u} \\,du",
-                    "res": "INT u:[-1/2,0]. exp(u)",
+                    "latex_res": "\\int_{0}^{1/2} e^{-u} \\,du",
+                    "res": "INT u:[0,1/2]. exp(-u)",
                     "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(\\frac{-t ^ {2}}{2}\\)",
+                        "latex_str": "substitute \\(u\\) for \\(\\frac{t ^ {2}}{2}\\)",
                         "name": "Substitution",
-                        "str": "substitute u for -(t ^ 2) / 2",
+                        "str": "substitute u for t ^ 2 / 2",
                         "var_name": "u",
-                        "var_subst": "-(t ^ 2) / 2"
+                        "var_subst": "t ^ 2 / 2"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\int_{-1/2}^{0} e^{v} \\,dv",
+                    "res": "INT v:[-1/2,0]. exp(v)",
+                    "rule": {
+                        "latex_str": "substitute \\(v\\) for \\(-u\\)",
+                        "name": "Substitution",
+                        "str": "substitute v for -u",
+                        "var_name": "v",
+                        "var_subst": "-u"
                     },
                     "type": "CalculationStep"
                 },
@@ -1234,20 +1174,11 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 (\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\cos{x}} \\left| \\sin{x} \\right| \\,dx)",
-                    "res": "2 * (INT x:[0,1/2 * pi]. sqrt(cos(x)) * abs(sin(x)))",
+                    "latex_res": "2 (\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\cos{x}} \\sin{x} \\,dx)",
+                    "res": "2 * (INT x:[0,1/2 * pi]. sqrt(cos(x)) * sin(x))",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "2 (\\int_{0}^{\\pi/2} \\sqrt{\\cos{x}} \\sin{x} \\,dx)",
-                    "res": "2 * (INT x:[0,pi / 2]. sqrt(cos(x)) * sin(x))",
-                    "rule": {
-                        "name": "ElimAbs",
-                        "str": "eliminate absolute values"
                     },
                     "type": "CalculationStep"
                 },
@@ -1313,11 +1244,12 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\sqrt{2} ((\\int_{0}^{\\pi/2} \\cos{x} \\,dx) + (\\int_{\\pi/2}^{\\pi} -\\cos{x} \\,dx))",
-                    "res": "sqrt(2) * ((INT x:[0,pi / 2]. cos(x)) + (INT x:[pi / 2,pi]. -cos(x)))",
+                    "latex_res": "\\sqrt{2} ((\\int_{0}^{\\pi/2} \\left| \\cos{x} \\right| \\,dx) + (\\int_{\\pi/2}^{\\pi} \\left| \\cos{x} \\right| \\,dx))",
+                    "res": "sqrt(2) * ((INT x:[0,pi / 2]. abs(cos(x))) + (INT x:[pi / 2,pi]. abs(cos(x))))",
                     "rule": {
-                        "name": "ElimAbs",
-                        "str": "eliminate absolute values"
+                        "c": "pi / 2",
+                        "name": "SplitRegion",
+                        "str": "split region at pi / 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -1801,17 +1733,27 @@
             "start": "INT x:[1 / exp(1),exp(1)]. abs(log(x))",
             "steps": [
                 {
-                    "latex_res": "(\\int_{1}^{e} \\log{x} \\,dx) + (\\int_{e^{-1}}^{1} -\\log{x} \\,dx)",
-                    "res": "(INT x:[1,exp(1)]. log(x)) + (INT x:[exp(-1),1]. -log(x))",
+                    "latex_res": "(\\int_{1/e}^{1} \\left| \\log{x} \\right| \\,dx) + (\\int_{1}^{e} \\left| \\log{x} \\right| \\,dx)",
+                    "res": "(INT x:[1 / exp(1),1]. abs(log(x))) + (INT x:[1,exp(1)]. abs(log(x)))",
                     "rule": {
-                        "name": "ElimAbs",
-                        "str": "eliminate absolute values"
+                        "c": "1",
+                        "name": "SplitRegion",
+                        "str": "split region at 1"
                     },
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\left. x \\log{x} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,dx) + (\\int_{e^{-1}}^{1} -\\log{x} \\,dx)",
-                    "res": "([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1) + (INT x:[exp(-1),1]. -log(x))",
+                    "latex_res": "(\\int_{1}^{e} \\log{x} \\,dx) - (\\int_{e^{-1}}^{1} \\log{x} \\,dx)",
+                    "res": "(INT x:[1,exp(1)]. log(x)) - (INT x:[exp(-1),1]. log(x))",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "(\\left. x \\log{x} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,dx) - (\\int_{e^{-1}}^{1} \\log{x} \\,dx)",
+                    "res": "([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1) - (INT x:[exp(-1),1]. log(x))",
                     "rule": {
                         "latex_str": "integrate by parts \\(u \\to \\log{x}, v \\to x\\)",
                         "name": "IntegrationByParts",
