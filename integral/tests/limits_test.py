@@ -159,8 +159,9 @@ class LimitsTest(unittest.TestCase):
              Limit(0, asymp=PolyLog(3), side=FROM_BELOW)),
         ]
 
+        conds = Conditions()
         for a, b, res in test_data:
-            self.assertEqual(limits.limit_mult(a, b), res)
+            self.assertEqual(limits.limit_mult(a, b, conds), res)
 
     def testLimitInverse(self):
         test_data = [
@@ -178,8 +179,9 @@ class LimitsTest(unittest.TestCase):
              Limit(Fraction(1, 2), asymp=PolyLog(1), side=FROM_ABOVE)),
         ]
 
+        conds = Conditions()
         for a, res in test_data:
-            self.assertEqual(limits.limit_inverse(a), res)
+            self.assertEqual(limits.limit_inverse(a, conds), res)
 
     def testLimitPower(self):
         test_data = [
@@ -206,8 +208,9 @@ class LimitsTest(unittest.TestCase):
              Limit(0, asymp=PolyLog(2), side=TWO_SIDED)),
         ]
 
+        conds = Conditions()
         for a, b, res in test_data:
-            self.assertEqual(limits.limit_power(a, b), res)
+            self.assertEqual(limits.limit_power(a, b, conds), res)
 
     def testLimitOfExpr(self):
         test_data = [
@@ -228,9 +231,10 @@ class LimitsTest(unittest.TestCase):
             ("abs(INT t:[1,x]. 1 / (t ^ 2))", "abs(INT t:[1,oo]. t ^ (-2))"),
         ]
 
+        conds = Conditions()
         for a, res in test_data:
             a = parser.parse_expr(a)
-            l = limits.limit_of_expr(a, "x")
+            l = limits.limit_of_expr(a, "x", conds)
             if res is None:
                 self.assertIsNone(l.e)
             else:
@@ -269,10 +273,11 @@ class LimitsTest(unittest.TestCase):
             ("n * ((x + 1) / x)", "n * LIM {x -> oo}. x ^ -1 * (x + 1)"),
         ]
 
+        conds = Conditions()
         for a, res in test_data:
             a = parser.parse_expr(a)
             res = parser.parse_expr(res)
-            self.assertEqual(limits.reduce_inf_limit(a, "x"), res)
+            self.assertEqual(limits.reduce_inf_limit(a, "x", conds), res)
 
 
 if __name__ == "__main__":

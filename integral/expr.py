@@ -220,6 +220,10 @@ class Expr:
         return Op("^", self, other)
 
     def __neg__(self):
+        if self == POS_INF:
+            return NEG_INF
+        elif self == NEG_INF:
+            return POS_INF
         return Op("-", self)
 
     def size(self):
@@ -1154,17 +1158,6 @@ class Expr:
     def normalize(self):
         if self.is_equals():
             return Eq(self.lhs.normalize(), self.rhs.normalize())
-        elif self.is_limit():
-            if self.lim == POS_INF:
-                from integral import limits
-                res = limits.limit_of_expr(self.body, self.var)
-                if res.e != None:
-                    return res.e
-            elif self.lim == NEG_INF:
-                from integral import limits
-                res = limits.limit_of_expr(self.body.subst(self.var, -Var(self.var)), self.var)
-                if res.e != None:
-                    return res.e
         return from_poly(self.to_poly())
 
     def replace_trig(self, trig_old: Expr, trig_new: Expr):

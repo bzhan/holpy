@@ -17,7 +17,7 @@ from data import set as hol_set
 from logic import auto
 from integral import expr
 from integral.expr import eval_hol_expr
-from integral.interval import Interval, get_bounds
+from integral.interval import Interval
 
 
 LESS, EQUAL, GREATER = range(3)
@@ -108,43 +108,6 @@ def convert_interval(t):
         return Interval(expr.holpy_to_expr(t.arg1), expr.holpy_to_expr(t.arg), False, False)
     elif t.is_comb('real_open_interval', 2):
         return Interval(expr.holpy_to_expr(t.arg1), expr.holpy_to_expr(t.arg), True, True)
-    else:
-        raise NotImplementedError
-
-def solve_with_interval(goal, cond):
-    """Solving a goal with variable in a certain interval."""
-    if not (hol_set.is_mem(cond) and cond.arg1.is_var() and 
-            (cond.arg.is_comb("real_closed_interval", 2) or
-             cond.arg.is_comb("real_open_interval", 2))):
-        return False
-
-    var = cond.arg1.name
-    interval = convert_interval(cond.arg)
-    if goal.is_greater_eq():
-        lhs, rhs = expr.holpy_to_expr(goal.arg1), expr.holpy_to_expr(goal.arg)
-        lhs_interval = get_bounds(lhs, {var: interval})
-        rhs_interval = get_bounds(rhs, {var: interval})
-        return lhs_interval.greater_eq(rhs_interval)
-    elif goal.is_greater():
-        lhs, rhs = expr.holpy_to_expr(goal.arg1), expr.holpy_to_expr(goal.arg)
-        lhs_interval = get_bounds(lhs, {var: interval})
-        rhs_interval = get_bounds(rhs, {var: interval})
-        return lhs_interval.greater(rhs_interval)
-    elif goal.is_less_eq():
-        lhs, rhs = expr.holpy_to_expr(goal.arg1), expr.holpy_to_expr(goal.arg)
-        lhs_interval = get_bounds(lhs, {var: interval})
-        rhs_interval = get_bounds(rhs, {var: interval})
-        return lhs_interval.less_eq(rhs_interval)
-    elif goal.is_less():
-        lhs, rhs = expr.holpy_to_expr(goal.arg1), expr.holpy_to_expr(goal.arg)
-        lhs_interval = get_bounds(lhs, {var: interval})
-        rhs_interval = get_bounds(rhs, {var: interval})
-        return lhs_interval.less(rhs_interval)
-    elif goal.is_not() and goal.arg.is_equals():
-        lhs, rhs = expr.holpy_to_expr(goal.arg.arg1), expr.holpy_to_expr(goal.arg.arg)
-        lhs_interval = get_bounds(lhs, {var: interval})
-        rhs_interval = get_bounds(rhs, {var: interval})
-        return lhs_interval.not_eq(rhs_interval)
     else:
         raise NotImplementedError
 

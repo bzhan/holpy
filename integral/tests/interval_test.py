@@ -2,8 +2,9 @@
 
 import unittest
 
+from integral.expr import Var
 from integral.parser import parse_interval, parse_expr
-from integral.interval import Interval, get_bounds
+from integral.interval import Interval, get_bounds_for_expr
 
 
 class IntervalTest(unittest.TestCase):
@@ -22,6 +23,8 @@ class IntervalTest(unittest.TestCase):
             ("x - 4", "(0, 1)", "(-4, -3)"),
             ("(x + 1) * (x + 2)", "(0, 1)", "(2, 6)"),
             ("(x + 1) * (x + 2)", "(0, 1]", "(2, 6]"),
+            ("x ^ 2", "(-oo, oo)", "[0, oo)"),
+            ("1 / x ^ 2", "(-oo, oo)", "(0, oo)"),
 
             # Square root
             ("sqrt(x)", "(1, 4)", "(1, 2)"),
@@ -31,8 +34,8 @@ class IntervalTest(unittest.TestCase):
 
         for s, i1, i2 in test_data:
             s = parse_expr(s)
-            var_range = {'x': parse_interval(i1)}
-            self.assertEqual(str(get_bounds(s, var_range)), i2)
+            var_range = {Var('x'): parse_interval(i1)}
+            self.assertEqual(str(get_bounds_for_expr(s, var_range)), i2)
 
 
 if __name__ == "__main__":

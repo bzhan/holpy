@@ -1,10 +1,13 @@
 """Conditions"""
 
-from typing import Optional
+from typing import Optional, Dict
 
 from integral import expr
 from integral.expr import Expr
 from integral import latex
+from integral import interval
+from integral.interval import Interval
+
 
 class Conditions:
     """A condition is represented by a list of boolean expressions."""
@@ -32,95 +35,43 @@ class Conditions:
             })
         return res
 
+    def get_bounds(self) -> Dict[Expr, Interval]:
+        """Convert conditions into a dictionary from variables to intervals."""
+        bounds: Dict[Expr, Interval] = dict()
+        for cond in self.data:
+            res = Interval.from_condition(cond)
+            if res:
+                x, interval = res
+                if x in bounds:
+                    bounds[x] = bounds[x].intersection(interval)
+                else:
+                    bounds[x] = interval
+        return bounds
 
-def is_positive(e: Expr, conds: Optional[Conditions]) -> bool:
-    """Return whether conditions imply e is positive."""
-    if conds is None:
-        return False
+    def get_bounds_for_expr(self, e: Expr) -> Optional[Interval]:
+        bounds = self.get_bounds()
+        return interval.get_bounds_for_expr(e, bounds)
 
-    if e.is_const():
-        return e.val > 0
+    def is_positive(self, e: Expr) -> bool:
+        """Return whether conditions imply e is positive."""
+        interval = self.get_bounds_for_expr(e)
+        if interval is None:
+            return False
+        else:
+            return interval.contained_in(Interval.open(expr.Const(0), expr.POS_INF))
+    
+    def is_not_negative(self, e: Expr) -> bool:
+        """Return whether conditions imply e is not negative."""
+        interval = self.get_bounds_for_expr(e)
+        if interval is None:
+            return False
+        else:
+            return interval.contained_in(Interval.ropen(expr.Const(0), expr.POS_INF))
 
-    if e.is_fun() and e.func_name == 'sqrt':
-        if is_positive(e.args[0], conds):
-            return True
-    if e.is_fun() and e.func_name == 'exp':
-        return True
-    if e.is_power():
-        if is_positive(e.args[0], conds):
-            return True
-    if e.is_plus():
-        if is_positive(e.args[0], conds) and e.args[1].is_power() and e.args[1].args[1].val % 2 == 0:
-            return True
-        if is_not_negative(e.args[0], conds) and is_positive(e.args[1], conds):
-            return True
-    if e.is_integral():
-        l, h = e.lower, e.upper
-        if is_positive(e.body, conds) and l.is_const() and h.is_inf() or \
-                l.is_const() and h.is_const() and l < h:
-            return True
-    for cond in conds.data:
-        if cond.is_greater() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val >= 0:
-            return True
-        if cond.is_greater_eq() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val > 0:
-            return True
-        if e.is_plus():
-            if cond.is_greater_eq() and cond.args[0] == e.args[0] and cond.args[1].is_const() and \
-                e.args[1].is_const() and cond.args[1].val + e.args[1].val > 0:
-                return True
-
-    return False
-
-def is_not_negative(e: Expr, conds: Optional[Conditions]) -> bool:
-    if conds is None:
-        return False
-
-    if e.is_const():
-        return True if e.val >= 0 else False
-    elif e.is_plus():
-        if all(is_not_negative(arg, conds) for arg in e.args):
-            return True
-    elif e.is_times():
-        # a * a >= 0
-        if e.args[0] == e.args[1]:
-            return True
-    elif e.is_power():
-        if e.args[1] == expr.Const(2):
-            return True
-    else:
-        # TODO: many cases are missing
-        return False
-
-def is_negative(e: Expr, conds: Optional[Conditions]) -> bool:
-    """Return whether conditions imply e is negative."""
-    if conds is None:
-        return False
-
-    if is_not_negative(e, conds):
-        return False
-    if e.is_const():
-        return e.val < 0
-
-    if e.is_uminus() and is_positive(e.args[0], conds):
-        # e = -x
-        return True
-    if e.is_divides() and is_positive(e.args[0], conds) and is_negative(e.args[1], conds):
-        # e = a / b
-        return True
-    if e.is_power() and is_negative(e.args[0], conds) and e.args[1] == expr.Const(-1):
-        # e = b ^ -1
-        return True
-    if e.is_minus() and e.args[1].is_const() and e.args[1].val > 0:
-        # -y^2 - 1
-        if e.args[0].is_uminus():
-            a = e.args[0].args[0]
-            if a.ty == expr.OP and a.op == '^' and a.args[1].is_const and a.args[1].val % 2 == 0:
-                return True
-    for cond in conds.data:
-        if cond.is_less() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val <= 0:
-            return True
-        if cond.is_less_eq() and cond.args[0] == e and cond.args[1].is_const() and cond.args[1].val < 0:
-            return True
-        if cond.is_greater() and (cond.args[1] - cond.args[0]).normalize() == e.normalize():
-            return True
-    return False
+    def is_negative(self, e: Expr) -> bool:
+        """Return whether conditions imply e is negative."""
+        interval = self.get_bounds_for_expr(e)
+        if interval is None:
+            return False
+        else:
+            return interval.contained_in(Interval.open(expr.NEG_INF, expr.Const(0)))

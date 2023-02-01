@@ -4,7 +4,6 @@ import unittest
 
 from integral import parser
 from integral.conditions import Conditions
-from integral import conditions
 
 
 class ConditionsTest(unittest.TestCase):
@@ -38,7 +37,7 @@ class ConditionsTest(unittest.TestCase):
             conds = Conditions()
             for s in conds_str:
                 conds.add_condition(parser.parse_expr(s))
-            self.assertEqual(conditions.is_positive(e, conds), res)
+            self.assertEqual(conds.is_positive(e), res, msg="Failed with %s" % e)
 
 
 if __name__ == "__main__":

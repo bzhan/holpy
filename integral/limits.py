@@ -5,7 +5,7 @@ from typing import Optional, Union
 
 from integral import conditions
 from integral import expr
-from integral.conditions import Conditions, is_negative, is_positive
+from integral.conditions import Conditions
 from integral.expr import NEG_INF, POS_INF, Const, Expr
 
 
@@ -335,7 +335,7 @@ def limit_uminus(a: Limit) -> Limit:
         else:
             raise NotImplementedError
 
-def limit_mult(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit:
+def limit_mult(a: Limit, b: Limit, conds: Conditions) -> Limit:
     """Multiplication between two limits."""
     if conds is None:
         conds = Conditions()
@@ -351,9 +351,9 @@ def limit_mult(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit:
     elif a.e == NEG_INF and b.e == NEG_INF:
         return Limit(POS_INF, asymp=asymp_mult(a.asymp, b.asymp))
     elif a.e == POS_INF:
-        if conditions.is_positive(b.e, conds):
+        if conds.is_positive(b.e):
             return Limit(POS_INF, asymp=a.asymp)
-        elif conditions.is_negative(b.e, conds):
+        elif conds.is_negative(b.e):
             return Limit(NEG_INF, asymp=a.asymp)
         elif b.e == Const(0):
             if b.side == AT_CONST:
@@ -396,7 +396,7 @@ def limit_mult(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit:
         else:
             raise NotImplementedError
 
-def limit_inverse(a: Limit, conds: Optional[Conditions] = None) -> Limit:
+def limit_inverse(a: Limit, conds: Conditions) -> Limit:
     """Inverse of a limit"""
     if a.e is None:
         return Limit(None)
@@ -426,11 +426,11 @@ def limit_inverse(a: Limit, conds: Optional[Conditions] = None) -> Limit:
         else:
             raise NotImplementedError
 
-def limit_div(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit:
+def limit_div(a: Limit, b: Limit, conds: Conditions) -> Limit:
     """Compute the quotient of two limits."""
-    return limit_mult(a, limit_inverse(b, conds=conds), conds=conds)
+    return limit_mult(a, limit_inverse(b, conds), conds)
 
-def limit_power(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit:
+def limit_power(a: Limit, b: Limit, conds: Conditions) -> Limit:
     """Compute a limit raised to another limit.
     
     TODO: many cases are still missing.
@@ -447,10 +447,10 @@ def limit_power(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit
             return Limit(POS_INF)
         elif b.e == NEG_INF:
             return Limit(None)
-        elif is_positive(b.e, conds):
+        elif conds.is_positive(b.e):
             # Raise to a constant positive power
             return Limit(POS_INF, asymp=asymp_power(a.asymp, b.e))
-        elif is_negative(b.e, conds):
+        elif conds.is_negative(b.e):
             # Raise to a constant negative power
             neg_e = (-(b.e)).normalize()
             return Limit(Const(0), asymp=asymp_power(a.asymp, neg_e), side=FROM_ABOVE)
@@ -471,7 +471,7 @@ def limit_power(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit
                 return Limit(Const(0), asymp=asymp_power(a.asymp, -(b.e)), side=FROM_BELOW)
         else:
             return Limit(None)
-    elif is_positive(a.e, conds):
+    elif conds.is_positive(a.e):
         # Base is positive
         if b.e == POS_INF:
             return Limit(POS_INF, asymp=exp_asymp(b.asymp))
@@ -480,7 +480,7 @@ def limit_power(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit
         else:
             # TODO: try to figure out asymp and side in more cases
             return Limit((a.e ^ b.e).normalize())
-    elif is_negative(a.e, conds):
+    elif conds.is_negative(a.e):
         # Base is negative
         if b.e.is_const() and b.e.val > 0 and b.side == AT_CONST:
             return Limit((a.e ^ b.e).normalize())
@@ -492,9 +492,9 @@ def limit_power(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit
         elif a.side == FROM_ABOVE:
             if b.e == POS_INF or b.e == NEG_INF:
                 return Limit(None)
-            elif is_positive(b.e, conds):
+            elif conds.is_positive(b.e):
                 return Limit(Const(0), asymp=asymp_power(a.asymp, b.e), side=FROM_ABOVE)
-            elif is_negative(b.e, conds):
+            elif conds.is_negative(b.e):
                 return Limit(POS_INF, asymp=asymp_power(a.asymp, -(b.e)))
             else:
                 return Limit(None)
@@ -525,7 +525,7 @@ def limit_power(a: Limit, b: Limit, conds: Optional[Conditions] = None) -> Limit
     else:
         return Limit(None)
 
-def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) -> Limit:
+def limit_of_expr(e: Expr, var_name: str, conds: Conditions) -> Limit:
     """Compute the limit of an expression as variable goes to infinity."""
     if e.is_const() or e.is_inf():
         return Limit(e)
@@ -537,37 +537,37 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
         else:
             return Limit(e, side=AT_CONST)
     elif e.is_plus():
-        l1 = limit_of_expr(e.args[0], var_name, conds=conds)
-        l2 = limit_of_expr(e.args[1], var_name, conds=conds)
+        l1 = limit_of_expr(e.args[0], var_name, conds)
+        l2 = limit_of_expr(e.args[1], var_name, conds)
         return limit_add(l1, l2)
     elif e.is_uminus():
-        l = limit_of_expr(e.args[0], var_name, conds=conds)
+        l = limit_of_expr(e.args[0], var_name, conds)
         return limit_uminus(l)
     elif e.is_minus():
-        l1 = limit_of_expr(e.args[0], var_name, conds=conds)
-        l2 = limit_of_expr(e.args[1], var_name, conds=conds)
+        l1 = limit_of_expr(e.args[0], var_name, conds)
+        l2 = limit_of_expr(e.args[1], var_name, conds)
         return limit_add(l1, limit_uminus(l2))
     elif e.is_times():
-        l1 = limit_of_expr(e.args[0], var_name, conds=conds)
-        l2 = limit_of_expr(e.args[1], var_name, conds=conds)
-        return limit_mult(l1, l2, conds=conds)
+        l1 = limit_of_expr(e.args[0], var_name, conds)
+        l2 = limit_of_expr(e.args[1], var_name, conds)
+        return limit_mult(l1, l2, conds)
     elif e.is_divides():
-        l1 = limit_of_expr(e.args[0], var_name, conds=conds)
-        l2 = limit_of_expr(e.args[1], var_name, conds=conds)
-        return limit_div(l1, l2, conds=conds)
+        l1 = limit_of_expr(e.args[0], var_name, conds)
+        l2 = limit_of_expr(e.args[1], var_name, conds)
+        return limit_div(l1, l2, conds)
     elif e.is_power():
         if e.args[1] == Const(-1):
-            l1 = limit_of_expr(e.args[0], var_name, conds=conds)
-            return limit_inverse(l1, conds=conds)
+            l1 = limit_of_expr(e.args[0], var_name, conds)
+            return limit_inverse(l1, conds)
         else:
-            l1 = limit_of_expr(e.args[0], var_name, conds=conds)
-            l2 = limit_of_expr(e.args[1], var_name, conds=conds)
-            return limit_power(l1, l2, conds=conds)
+            l1 = limit_of_expr(e.args[0], var_name, conds)
+            l2 = limit_of_expr(e.args[1], var_name, conds)
+            return limit_power(l1, l2, conds)
     elif e.is_fun() and e.func_name == 'exp':
-        l = limit_of_expr(e.args[0], var_name, conds=conds)
-        return limit_power(Limit(expr.E, side=AT_CONST), l)
+        l = limit_of_expr(e.args[0], var_name, conds)
+        return limit_power(Limit(expr.E, side=AT_CONST), l, conds)
     elif e.is_fun() and e.func_name == 'atan':
-        l = limit_of_expr(e.args[0], var_name, conds=conds)
+        l = limit_of_expr(e.args[0], var_name, conds)
         if l.e is None:
             return Limit(None)
         elif l.e == POS_INF:
@@ -577,8 +577,8 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
         else:
             return Limit(expr.Fun('atan', l.e))
     elif e.is_fun() and e.func_name == 'log':
-        l = limit_of_expr(e.args[0], var_name, conds=conds)
-        if l.e is None or l.e == NEG_INF or is_negative(l.e, conds=conds) or \
+        l = limit_of_expr(e.args[0], var_name, conds)
+        if l.e is None or l.e == NEG_INF or conds.is_negative(l.e) or \
             l.e.is_const() and l.e.val==0 and l.side == FROM_BELOW:
             return Limit(None)
         elif l.e.is_const() and l.e.val==0 and l.side == FROM_ABOVE:
@@ -600,7 +600,7 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
         if l.e == None:
             return Limit(None)
         # if l.e < 0 raise error
-        elif conditions.is_negative(e=l.e, conds=conds):
+        elif conds.is_negative(l.e):
             raise AssertionError("sqrt: arg is negtive")
         else:
             if isinstance(l.asymp, Unknown):
@@ -631,30 +631,30 @@ def limit_of_expr(e: Expr, var_name: str, conds: Optional[Conditions] = None) ->
         # TODO: add support for other functions
         return Limit(None)
 
-def reduce_inf_limit(e: Expr, var_name: str, conds: Optional[Conditions] = None) -> Expr:
+def reduce_inf_limit(e: Expr, var_name: str, conds: Conditions) -> Expr:
     """Reduce limits of expression as much as possible."""
-    l = limit_of_expr(e, var_name, conds=conds)
+    l = limit_of_expr(e, var_name, conds)
     if l.e is not None:
         return l.e
     elif e.is_plus():
-        l1 = reduce_inf_limit(e.args[0], var_name, conds=conds)
-        l2 = reduce_inf_limit(e.args[1], var_name, conds=conds)
+        l1 = reduce_inf_limit(e.args[0], var_name, conds)
+        l2 = reduce_inf_limit(e.args[1], var_name, conds)
         if l1 not in (POS_INF, NEG_INF) and l2 not in (POS_INF, NEG_INF):
             return (l1 + l2).normalize()
         else:
             return expr.Limit(var_name, POS_INF, e)
     elif e.is_minus():
-        l1 = reduce_inf_limit(e.args[0], var_name, conds=conds)
-        l2 = reduce_inf_limit(e.args[1], var_name, conds=conds)
+        l1 = reduce_inf_limit(e.args[0], var_name, conds)
+        l2 = reduce_inf_limit(e.args[1], var_name, conds)
         if l1 not in (POS_INF, NEG_INF) and l2 not in (POS_INF, NEG_INF):
             return (l1 - l2).normalize()
         else:
             return expr.Limit(var_name, POS_INF, e)
     elif e.is_times():
         if not e.args[0].contains_var(var_name):
-            return (e.args[0] * reduce_inf_limit(e.args[1], var_name, conds=conds)).normalize()
+            return (e.args[0] * reduce_inf_limit(e.args[1], var_name, conds)).normalize()
         elif not e.args[1].contains_var(var_name):
-            return (e.args[1] * reduce_inf_limit(e.args[0], var_name, conds=conds)).normalize()
+            return (e.args[1] * reduce_inf_limit(e.args[0], var_name, conds)).normalize()
         else:
             return expr.Limit(var_name, POS_INF, e)
     else:

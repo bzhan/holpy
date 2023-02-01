@@ -15,7 +15,7 @@ from sympy import Interval, expand_multinomial, apart
 from sympy.solvers import solveset
 from fractions import Fraction
 from integral.solve import solve_equation, solve_for_term
-from integral.conditions import Conditions, is_positive
+from integral.conditions import Conditions
 from integral import latex
 from integral import limits
 from integral.context import Context
@@ -714,7 +714,7 @@ class SimplifyPower(Rule):
             # (-a - b) ^ n = (-1) ^ n * (a + b) ^ n
             nega, negb = e.args[0].args
             return (Const(-1) ^ e.args[1]) * ((nega.args[0] + negb) ^ e.args[1])
-        elif e.args[0].is_const() and e.args[0].val == 0 and conditions.is_positive(e.args[1], ctx.get_conds()):
+        elif e.args[0].is_const() and e.args[0].val == 0 and ctx.get_conds().is_positive(e.args[1]):
             # 0 ^ n = 0
             return Const(0)
         elif e.args[0].is_const() and e.args[0].val == 1:
@@ -1524,7 +1524,7 @@ class ElimAbs(Rule):
             return e
 
         elif e.ty == expr.FUN and e.func_name == 'abs':
-            if ctx is not None and is_positive(e.args[0], ctx.get_conds()):
+            if ctx is not None and ctx.get_conds().is_positive(e.args[0]):
                 return e.args[0]
             else:
                 return e
@@ -2100,7 +2100,7 @@ class SimplifyInfinity(Rule):
         }
 
     def eval(self, e: Expr, ctx=None) -> Expr:
-        if e.ty == OP and e.op == '^' and e.args[0].is_pos_inf() and is_positive(e.args[1], ctx.get_conds()):
+        if e.ty == OP and e.op == '^' and e.args[0].is_pos_inf() and ctx.get_conds().is_positive(e.args[1]):
             return Inf(Decimal('inf'))
         else:
             return e
