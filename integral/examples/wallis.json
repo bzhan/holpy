@@ -194,12 +194,6 @@
                 "finished": true,
                 "goal": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
                 "induct_case": {
-                    "conds": [
-                        {
-                            "cond": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
-                            "latex_cond": "I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})"
-                        }
-                    ],
                     "finished": true,
                     "goal": "I(m + 1,b) = pi * b ^ (-1/2 * (2 * m + 3)) * 2 ^ (-2 * m - 3) * binom(2 * m + 2,m + 1)",
                     "latex_goal": "I(m + 1,b) = \\pi b ^ {-1/2\\cdot (2 m + 3)} 2 ^ {-2 m - 3} \\binom{2 m + 2}{m + 1}",
@@ -226,11 +220,9 @@
                                     "latex_res": "\\frac{1}{-(m + 1)} (\\frac{d}{db} \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}}))",
                                     "res": "1 / -(m + 1) * (D b. pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2)))",
                                     "rule": {
-                                        "eq": "I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))",
-                                        "latex_str": "apply equation \\(I(m,b) = \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})\\) on subterms",
                                         "loc": "subterms",
-                                        "name": "ApplyEquation",
-                                        "str": "apply equation: I(m,b) = pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2)) on subterms"
+                                        "name": "ApplyInductHyp",
+                                        "str": "apply induction hypothesis on subterms"
                                     },
                                     "type": "CalculationStep"
                                 },

@@ -926,9 +926,8 @@ class ApplyEquation(Rule):
 class ApplyInductHyp(Rule):
     """Apply induction hypothesis."""
 
-    def __init__(self, induct_hyp: Expr):
+    def __init__(self):
         self.name = "ApplyInductHyp"
-        self.induct_hyp = induct_hyp
 
     def __str__(self):
         return "apply induction hypothesis"
@@ -936,18 +935,16 @@ class ApplyInductHyp(Rule):
     def export(self):
         return {
             "name": self.name,
-            "str": str(self),
-            "induct_hyp": str(self.induct_hyp)
+            "str": str(self)
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
-        if not self.induct_hyp.is_equals():
-            return e
+        for eq in ctx.get_induct_hyps():
+            if e == eq.lhs:
+                return eq.rhs
 
-        if e == self.induct_hyp.lhs:
-            return self.induct_hyp.rhs
-        else:
-            return e
+        # Not found
+        return e
 
 
 class Substitution(Rule):

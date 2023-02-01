@@ -101,8 +101,7 @@ class IntegralTest(unittest.TestCase):
             u=parser.parse_expr("log(x) ^ (n + 1)"),
             v=parser.parse_expr("x ^ (m+1) / (m+1)")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(
-            parser.parse_expr("(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1)^n * factorial(n) / (m+1) ^ (n+1)")), "0.1"))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyInductHyp()))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation(
             new_expr=parser.parse_expr("(-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * ((n + 1) * factorial(n))")))
@@ -469,8 +468,7 @@ class IntegralTest(unittest.TestCase):
         # Induction case, LHS
         calc = proof_induct.lhs_calc
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(
-            parser.parse_expr("I(m,b) = pi / 2^(2*m+1) * binom(2*m, m) * (1/(b^((2*m+1)/2)))"))))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyInductHyp()))
         calc.perform_rule(rules.FullSimplify())
 
         # Induction step, RHS
@@ -519,7 +517,7 @@ class IntegralTest(unittest.TestCase):
 
         calc = proof_induct.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal1.goal, subMap={"n": parser.parse_expr("n + 1")}))
-        calc.perform_rule(rules.OnSubterm(rules.ApplyInductHyp(goal2.goal)))
+        calc.perform_rule(rules.OnSubterm(rules.ApplyInductHyp()))
         calc.perform_rule(rules.ApplyIdentity(parser.parse_expr("factorial(n + 1)")))
 
         # Application

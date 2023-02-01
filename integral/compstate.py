@@ -420,9 +420,9 @@ class InductionProof(StateItem):
 
         # Inductive case:
         eqI = goal.subst(induct_var, Var(induct_var) + 1).normalize()
-        induct_conds = Conditions()
-        induct_conds.add_condition(self.goal)
-        self.induct_case = Goal(self, self.ctx, eqI, conds=induct_conds)
+        ctx = Context(self.ctx)
+        ctx.add_induct_hyp(self.goal)
+        self.induct_case = Goal(self, ctx, eqI)
 
     def __str__(self):
         if self.is_finished():
@@ -743,8 +743,7 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'LHopital':
         return rules.LHopital()
     elif item['name'] == 'ApplyInductHyp':
-        induct_hyp = parser.parse_expr(item['induct_hyp'])
-        return rules.ApplyInductHyp(induct_hyp)
+        return rules.ApplyInductHyp()
     elif item['name'] == 'DerivativeSimplify':
         return rules.DerivativeSimplify()
     elif item['name'] == 'IntegrateBothSide':

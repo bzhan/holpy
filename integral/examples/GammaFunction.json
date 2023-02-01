@@ -160,12 +160,6 @@
                 "finished": true,
                 "goal": "Gamma(n + 1) = factorial(n)",
                 "induct_case": {
-                    "conds": [
-                        {
-                            "cond": "Gamma(n + 1) = factorial(n)",
-                            "latex_cond": "\\Gamma{(n + 1)} = n!"
-                        }
-                    ],
                     "finished": true,
                     "goal": "Gamma(n + 2) = factorial(n + 1)",
                     "latex_goal": "\\Gamma{(n + 2)} = (n + 1)!",
@@ -199,7 +193,6 @@
                                     "latex_res": "(n + 1) n!",
                                     "res": "(n + 1) * factorial(n)",
                                     "rule": {
-                                        "induct_hyp": "Gamma(n + 1) = factorial(n)",
                                         "loc": "subterms",
                                         "name": "ApplyInductHyp",
                                         "str": "apply induction hypothesis on subterms"
