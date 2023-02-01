@@ -530,9 +530,11 @@
                                     "latex_res": "(-1) ^ {n + 1} (m + 1) ^ {-n - 2} (n + 1)!",
                                     "res": "(-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * factorial(n + 1)",
                                     "rule": {
+                                        "latex_str": "rewrite to \\((n + 1)!\\) using identity at 1",
                                         "loc": "1",
-                                        "name": "RewriteFactorial",
-                                        "str": "rewrite factorial at 1"
+                                        "name": "ApplyIdentity",
+                                        "str": "rewrite to factorial(n + 1) using identity at 1",
+                                        "target": "factorial(n + 1)"
                                     },
                                     "type": "CalculationStep"
                                 }

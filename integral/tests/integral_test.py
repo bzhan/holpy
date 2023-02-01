@@ -106,7 +106,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation(
             new_expr=parser.parse_expr("(-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * ((n + 1) * factorial(n))")))
-        calc.perform_rule(rules.OnLocation(rules.RewriteFactorial(), "1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("factorial(n + 1)")), "1"))
 
         self.checkAndOutput(file, "standard")
 
@@ -460,7 +460,8 @@ class IntegralTest(unittest.TestCase):
 
         # Induction step, RHS
         calc = proof_induct.rhs_calc
-        calc.perform_rule(rules.OnSubterm(rules.RewriteBinom()))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(
+            parser.parse_expr("2 * binom(2*m, m) * ((2*m+1) / (m+1))")), "1"))
         calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file, "wallis")
@@ -470,6 +471,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 4.1
 
         ctx = context.Context()
+        ctx.load_book("base")
         file = compstate.CompFile(ctx, "GammaFunction")
 
         # Definition of Gamma function
@@ -503,7 +505,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof_induct.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal1.goal, subMap={"n": parser.parse_expr("n + 1")}))
         calc.perform_rule(rules.OnSubterm(rules.ApplyInductHyp(goal2.goal)))
-        calc.perform_rule(rules.RewriteFactorial())
+        calc.perform_rule(rules.ApplyIdentity(parser.parse_expr("factorial(n + 1)")))
 
         # Application
         calc = file.add_calculation("INT x:[0,oo]. exp(-x^3)")

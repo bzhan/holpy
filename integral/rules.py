@@ -2,17 +2,16 @@
 
 import fractions
 from decimal import Decimal
-from typing import Optional, Union, Dict
+from typing import Optional, Dict
 import sympy
 import functools
 
-from integral import poly, expr, conditions
+from integral import expr
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, \
-    sympy_style, holpy_style, OP, CONST, VAR, sin, cos, FUN, decompose_expr_factor, \
+    OP, CONST, VAR, sin, cos, FUN, decompose_expr_factor, \
     Deriv, Inf, Limit, NEG_INF, POS_INF, IndefiniteIntegral, log, Summation
 from integral import parser
-from sympy import Interval, expand_multinomial, apart
-from sympy.solvers import solveset
+from sympy import expand_multinomial, apart
 from fractions import Fraction
 from integral.solve import solve_equation, solve_for_term
 from integral.conditions import Conditions
@@ -262,7 +261,6 @@ class ApplyIdentity(Rule):
             inst = expr.match(e, identity.lhs)
             if inst is None:
                 continue
-
             expected_rhs = identity.rhs.inst_pat(inst)
             if expected_rhs.normalize() == self.target.normalize():
                 return self.target
@@ -1309,44 +1307,12 @@ class Equation(Rule):
         return self.new_expr
 
 
-class RewriteBinom(Rule):
-    """Rewrite binomial coefficients."""
-
-    def __init__(self, old_expr: Expr = None, new_expr: Expr = None):
-        self.name = "RewriteBinom"
-        self.old_expr = old_expr
-        self.new_expr = new_expr
-
-    def __str__(self):
-        return "rewriting binomial coefficients"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if not (e.is_fun() and e.func_name == "binom"):
-            return e
-
-        m, n = e.args
-        if n.is_plus() and n.args[1] == Const(1) and m.is_plus() and m.args[1] == Const(2) and \
-                m.args[0] == 2 * n.args[0]:
-            # Case binom(2*k+2, k+1) = binom(2*k, k) * 2 * (2*k+1) / (k+1)
-            k = n.args[0]
-            return 2 * expr.binom(2 * k, k) * ((2 * k + 1) / (k + 1))
-        else:
-            return e
-
-
 class IntegrationByParts(Rule):
     """Apply integration by parts.
 
     The arguments u and v should satisfy u * dv equals the integrand.
 
     """
-
     def __init__(self, u: Expr, v: Expr):
         self.name = "IntegrationByParts"
         assert isinstance(u, Expr) and isinstance(v, Expr)
@@ -1957,49 +1923,6 @@ class RewriteExp(Rule):
             return Fun('exp', a1) * Fun('exp', -a2)
         else:
             raise NotImplementedError
-
-
-class RewriteFactorial(Rule):
-    """Rewrite terms involving a factorial.
-
-    Current rules include:
-    
-    1. (m+1) * m! = (m+1)!
-    2. m * (m-1)! = m!
-
-    """
-    def __init__(self):
-        self.name = "RewriteFactorial"
-
-    def __str__(self):
-        return "rewrite factorial"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if e.is_times() and e.args[1].ty == FUN and e.args[1].func_name == 'factorial':
-            if e.args[0].is_plus():
-                # (m + 1) * m! = (m + 1)!
-                m0, m1, c = e.args[1].args[0], e.args[0].args[0], e.args[0].args[1]
-                if m0.is_var() and m0 == m1 and c == Const(1):
-                    return Fun('factorial', e.args[0])
-                else:
-                    return e
-            elif e.args[0].is_var():
-                # m * (m - 1)! = m!
-                m0, m1 = e.args[0], e.args[1].args[0]
-                if (m0 - m1).normalize() == Const(1):
-                    return Fun('factorial', m0)
-                else:
-                    return e
-            else:
-                return e
-        else:
-            return e
 
 
 class SimplifyInfinity(Rule):

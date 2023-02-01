@@ -740,10 +740,6 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'IntegrateByEquation':
         lhs = parser.parse_expr(item['lhs'])
         return rules.IntegrateByEquation(lhs)
-    elif item['name'] == 'RewriteBinom':
-        return rules.RewriteBinom()
-    elif item['name'] == 'RewriteFactorial':
-        return rules.RewriteFactorial()
     elif item['name'] == 'LHopital':
         return rules.LHopital()
     elif item['name'] == 'ApplyInductHyp':

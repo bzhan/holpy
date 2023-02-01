@@ -130,6 +130,26 @@
         },
         {
             "type": "header",
+            "name": "Factorial and binomial coefficient",
+            "level": 1
+        },
+        {
+            "type": "axiom",
+            "expr": "(m + 1) * factorial(m) = factorial(m + 1)",
+            "category": "factorial"
+        },
+        {
+            "type": "axiom",
+            "expr": "m * factorial(m - 1) = factorial(m)",
+            "category": "factorial"
+        },
+        {
+            "type": "axiom",
+            "expr": "binom(2*k+2, k+1) = 2 * binom(2*k, k) * ((2*k+1) / (k+1))",
+            "category": "binomial"
+        },
+        {
+            "type": "header",
             "name": "Derived integrals",
             "level": 1
         },
