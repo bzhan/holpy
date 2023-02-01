@@ -20,100 +20,6 @@
                 }
             ],
             "finished": true,
-            "goal": "(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)",
-            "latex_goal": "\\int_{0}^{\\infty} e^{-x y} \\sin{(a x)} \\,dx = \\frac{a}{a ^ {2} + y ^ {2}}",
-            "proof": {
-                "finished": true,
-                "goal": "(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)",
-                "latex_goal": "\\int_{0}^{\\infty} e^{-x y} \\sin{(a x)} \\,dx = \\frac{a}{a ^ {2} + y ^ {2}}",
-                "lhs_calc": {
-                    "latex_start": "\\int_{0}^{\\infty} e^{-x y} \\sin{(a x)} \\,dx",
-                    "start": "INT x:[0,oo]. exp(-(x * y)) * sin(a * x)",
-                    "steps": [
-                        {
-                            "latex_res": "(\\left. -a ^ {-1} e^{-x y} \\cos{(a x)} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} a ^ {-1} y e^{-x y} \\cos{(a x)} \\,dx)",
-                            "res": "([-(a ^ (-1) * exp(-(x * y)) * cos(a * x))]_x=0,oo) - (INT x:[0,oo]. a ^ (-1) * y * exp(-(x * y)) * cos(a * x))",
-                            "rule": {
-                                "latex_str": "integrate by parts \\(u \\to e^{-x y}, v \\to \\frac{-\\cos{(a x)}}{a}\\)",
-                                "name": "IntegrationByParts",
-                                "str": "integrate by parts u -> exp(-(x * y)), v -> -cos(a * x) / a",
-                                "u": "exp(-(x * y))",
-                                "v": "-cos(a * x) / a"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-a ^ {-1} y (\\int_{0}^{\\infty} e^{-x y} \\cos{(a x)} \\,dx) + a ^ {-1}",
-                            "res": "-(a ^ (-1) * y * (INT x:[0,oo]. exp(-(x * y)) * cos(a * x))) + a ^ (-1)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-a ^ {-1} y ((\\left. a ^ {-1} e^{-x y} \\sin{(a x)} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} -a ^ {-1} y e^{-x y} \\sin{(a x)} \\,dx)) + a ^ {-1}",
-                            "res": "-(a ^ (-1) * y * (([a ^ (-1) * exp(-(x * y)) * sin(a * x)]_x=0,oo) - (INT x:[0,oo]. -(a ^ (-1) * y * exp(-(x * y)) * sin(a * x))))) + a ^ (-1)",
-                            "rule": {
-                                "latex_str": "integrate by parts \\(u \\to e^{-x y}, v \\to \\frac{\\sin{(a x)}}{a}\\)",
-                                "name": "IntegrationByParts",
-                                "str": "integrate by parts u -> exp(-(x * y)), v -> sin(a * x) / a",
-                                "u": "exp(-(x * y))",
-                                "v": "sin(a * x) / a"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-a ^ {-2} y ^ {2} (\\int_{0}^{\\infty} e^{-x y} \\sin{(a x)} \\,dx) + a ^ {-1}",
-                            "res": "-(a ^ (-2) * y ^ 2 * (INT x:[0,oo]. exp(-(x * y)) * sin(a * x))) + a ^ (-1)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "a ^ {-1} (a ^ {-2} y ^ {2} + 1) ^ {-1}",
-                            "res": "a ^ (-1) * (a ^ (-2) * y ^ 2 + 1) ^ (-1)",
-                            "rule": {
-                                "lhs": "INT x:[0,oo]. exp(-(x * y)) * sin(a * x)",
-                                "name": "IntegrateByEquation",
-                                "str": "integrate by equation"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{a}{a ^ {2} + y ^ {2}}",
-                            "res": "a / (a ^ 2 + y ^ 2)",
-                            "rule": {
-                                "latex_str": "rewriting to \\(\\frac{a}{a ^ {2} + y ^ {2}}\\)",
-                                "name": "Equation",
-                                "new_expr": "a / (a ^ 2 + y ^ 2)",
-                                "str": "rewriting to a / (a ^ 2 + y ^ 2)"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "rhs_calc": {
-                    "latex_start": "\\frac{a}{a ^ {2} + y ^ {2}}",
-                    "start": "a / (a ^ 2 + y ^ 2)",
-                    "steps": [],
-                    "type": "Calculation"
-                },
-                "type": "CalculationProof"
-            },
-            "type": "Goal"
-        },
-        {
-            "conds": [
-                {
-                    "cond": "y > 0",
-                    "latex_cond": "y > 0"
-                }
-            ],
-            "finished": true,
             "goal": "(D y. g(y,a)) = -a / (a ^ 2 + y ^ 2)",
             "latex_goal": "\\frac{d}{dy} g(y,a) = \\frac{-a}{a ^ {2} + y ^ {2}}",
             "proof": {
@@ -157,10 +63,9 @@
                             "latex_res": "-\\frac{a}{a ^ {2} + y ^ {2}}",
                             "res": "-(a / (a ^ 2 + y ^ 2))",
                             "rule": {
-                                "lemma": "(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)",
                                 "loc": "0",
-                                "name": "ApplyLemma",
-                                "str": "apply lemma at 0"
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral at 0"
                             },
                             "type": "CalculationStep"
                         },

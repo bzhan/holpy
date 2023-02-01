@@ -108,6 +108,16 @@ class IntegralTest(unittest.TestCase):
             new_expr=parser.parse_expr("(-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * ((n + 1) * factorial(n))")))
         calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("factorial(n + 1)")), "1"))
 
+        goal8 = file.add_goal("(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)", conds=["y > 0"])
+        proof = goal8.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("exp(-(x * y))"), parser.parse_expr("-cos(a * x) / a")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("exp(-(x * y))"), parser.parse_expr("sin(a * x) / a")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,oo]. exp(-(x * y)) * sin(a * x)")))
+        calc.perform_rule(rules.Equation(new_expr=parser.parse_expr("a / (a ^ 2 + y ^ 2)")))
+
         self.checkAndOutput(file, "standard")
 
     def testTongji(self):
@@ -828,18 +838,6 @@ class IntegralTest(unittest.TestCase):
         # Define g(y)
         file.add_definition("g(y, a) = INT x:[0,oo]. exp(-x * y) * sin(a * x) / x", conds=["y >= 0"])
 
-        # Evaluate lemma
-        # TODO: move to standard
-        goal1 = file.add_goal("(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)", conds=["y > 0"])
-        proof = goal1.proof_by_calculation()
-        calc = proof.lhs_calc
-        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("exp(-(x * y))"), parser.parse_expr("-cos(a * x) / a")))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("exp(-(x * y))"), parser.parse_expr("sin(a * x) / a")))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,oo]. exp(-(x * y)) * sin(a * x)")))
-        calc.perform_rule(rules.Equation(new_expr=parser.parse_expr("a / (a ^ 2 + y ^ 2)")))
-
         # Differentiate g(y)
         goal2 = file.add_goal("(D y. g(y, a)) = - a / (a ^ 2 + y ^ 2)", conds=["y > 0"])
         proof = goal2.proof_by_calculation()
@@ -847,7 +845,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("g")))
         calc.perform_rule(rules.DerivIntExchange())
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyLemma(goal1.goal, goal1.conds), '0'))
+        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), '0'))
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc

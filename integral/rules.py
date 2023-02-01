@@ -924,50 +924,6 @@ class ApplyEquation(Rule):
             return ApplyEquation(new_eq).eval(e, ctx)
 
 
-class ApplyLemma(Rule):
-    """Apply lemma"""
-
-    def __init__(self, lemma: Expr, conds: Conditions = None):
-        assert isinstance(lemma, Expr)
-        self.name = "ApplyLemma"
-        self.lemma = lemma
-        self.conds = conds
-
-    def __str__(self):
-        return "apply lemma"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self),
-            "lemma": str(self.lemma)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        # if assumption holds
-        # then apply assumption
-        flag = False if ctx != None else True
-        # conditions check
-        if not flag:
-            if self.conds != None:
-                items = self.conds.data
-                for v in ctx.get_conds().data:
-                    if v in items:
-                        flag = True
-                        break
-                    if v.op == '>':
-                        e1, e2 = Op('>=', *v.args), Op('!=', *v.args)
-                        if e1 in items and e2 in items:
-                            flag = True
-                            break
-            else:
-                flag = True
-        if not flag:
-            return e
-        rule = ApplyEquation(self.lemma)
-        return rule.eval(e, ctx)
-
-
 class ApplyInductHyp(Rule):
     """Apply induction hypothesis."""
 

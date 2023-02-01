@@ -215,6 +215,14 @@
             "type": "problem",
             "expr": "(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1)^n * factorial(n) / (m+1) ^ (n+1)",
             "path": "standard"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)",
+            "conds": [
+                "y > 0"
+            ],
+            "path": "standard"
         }
     ],
     "name": "Base theory"
