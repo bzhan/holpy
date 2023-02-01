@@ -29,7 +29,7 @@ class Rule:
 
     """
 
-    def eval(self, e: Expr, ctx: Optional[Context] = None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         """Evaluation of the rule on the given expression. Returns
         a new expression.
 
@@ -63,7 +63,7 @@ class Simplify(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         res = e.normalize()
         return res
 
@@ -89,78 +89,80 @@ class Linearity(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
-        rec = Linearity().eval
-        if e.is_integral():
-            if e.body.is_plus():
-                return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) + \
-                       rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
-            elif e.body.is_uminus():
-                return -rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0]))
-            elif e.body.is_minus():
-                return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) - \
-                       rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
-            elif e.body.is_times():
-                factors = decompose_expr_factor(e.body)
-                b, c = Const(1), Const(1)
-                for f in factors:
-                    if not f.contains_var(e.var):
-                        c = c * f
-                    else:
-                        b = b * f
-                c = c.normalize()
-                b = b.normalize()
-                return c * Integral(e.var, e.lower, e.upper, b)
-            elif e.body.is_constant() and e.body != Const(1):
-                return e.body * expr.Integral(e.var, e.lower, e.upper, Const(1))
-            else:
-                return e
-        elif e.is_indefinite_integral():
-            if e.body.is_times():
-                factors = decompose_expr_factor(e.body)
-                b, c = Const(1), Const(1)
-                for f in factors:
-                    if not f.contains_var(e.var):
-                        c = c * f
-                    else:
-                        b = b * f
-                c = c.normalize()
-                b = b.normalize()
-                return c * IndefiniteIntegral(e.var, b, e.skolem_args)
-            elif e.body.is_uminus():
-                return -IndefiniteIntegral(e.var, e.body.args[0], e.skolem_args)
-            elif e.body.is_divides():
-                return e
-            else:
-                return e
-        elif e.is_limit():
-            if e.body.is_uminus():
-                return -Limit(e.var, e.lim, e.body.args[0])
-            elif e.body.is_times():
-                factors = decompose_expr_factor(e.body)
-                if not factors[0].contains_var(e.var):
-                    return factors[0] * rec(expr.Limit(e.var, e.lim, \
-                                                       functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
+    def eval(self, e: Expr, ctx: Context) -> Expr:
+        def rec(e):
+            if e.is_integral():
+                if e.body.is_plus():
+                    return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) + \
+                        rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
+                elif e.body.is_uminus():
+                    return -rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0]))
+                elif e.body.is_minus():
+                    return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) - \
+                        rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
+                elif e.body.is_times():
+                    factors = decompose_expr_factor(e.body)
+                    b, c = Const(1), Const(1)
+                    for f in factors:
+                        if not f.contains_var(e.var):
+                            c = c * f
+                        else:
+                            b = b * f
+                    c = c.normalize()
+                    b = b.normalize()
+                    return c * Integral(e.var, e.lower, e.upper, b)
+                elif e.body.is_constant() and e.body != Const(1):
+                    return e.body * expr.Integral(e.var, e.lower, e.upper, Const(1))
                 else:
                     return e
+            elif e.is_indefinite_integral():
+                if e.body.is_times():
+                    factors = decompose_expr_factor(e.body)
+                    b, c = Const(1), Const(1)
+                    for f in factors:
+                        if not f.contains_var(e.var):
+                            c = c * f
+                        else:
+                            b = b * f
+                    c = c.normalize()
+                    b = b.normalize()
+                    return c * IndefiniteIntegral(e.var, b, e.skolem_args)
+                elif e.body.is_uminus():
+                    return -IndefiniteIntegral(e.var, e.body.args[0], e.skolem_args)
+                elif e.body.is_divides():
+                    return e
+                else:
+                    return e
+            elif e.is_limit():
+                if e.body.is_uminus():
+                    return -Limit(e.var, e.lim, e.body.args[0])
+                elif e.body.is_times():
+                    factors = decompose_expr_factor(e.body)
+                    if not factors[0].contains_var(e.var):
+                        return factors[0] * rec(expr.Limit(
+                            e.var, e.lim,
+                            functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
+                    else:
+                        return e
+                else:
+                    return e
+            elif e.is_summation():
+                v, l, u, body = e.index_var, e.lower, e.upper, e.body
+                if e.body.is_minus():
+                    return Summation(v, l, u, body.args[0]) - Summation(v, l,u,body.args[1])
+                factors = decompose_expr_factor(e.body)
+                b, c = Const(1), Const(1)
+                for f in factors:
+                    if not f.contains_var(e.index_var):
+                        c = c * f
+                    else:
+                        b = b * f
+                c = c.normalize()
+                b = b.normalize()
+                return (c * Summation(e.index_var, e.lower, e.upper, b)).normalize()
             else:
                 return e
-        elif e.is_summation():
-            v, l, u, body = e.index_var, e.lower, e.upper, e.body
-            if e.body.is_minus():
-                return Summation(v, l, u, body.args[0]) - Summation(v, l,u,body.args[1])
-            factors = decompose_expr_factor(e.body)
-            b, c = Const(1), Const(1)
-            for f in factors:
-                if not f.contains_var(e.index_var):
-                    c = c * f
-                else:
-                    b = b * f
-            c = c.normalize()
-            b = b.normalize()
-            return (c * Summation(e.index_var, e.lower, e.upper, b)).normalize()
-        else:
-            return e
+        return rec(e)
 
 
 class CommonIntegral(Rule):
@@ -192,7 +194,7 @@ class CommonIntegral(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.ty != expr.INTEGRAL:
             return e
         if isinstance(e.body, Deriv) and e.body.var == e.var:
@@ -255,7 +257,7 @@ class ApplyIdentity(Rule):
             "latex_str": "rewrite to \\(%s\\) using identity" % latex.convert_expr(self.target)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         for identity in ctx.get_other_identities():
             inst = expr.match(e, identity.lhs)
             if inst is None:
@@ -284,7 +286,7 @@ class DefiniteIntegralIdentity(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not e.is_integral():
             return e
 
@@ -326,7 +328,7 @@ class SeriesExpansionIdentity(Rule):
             "index_var": self.index_var
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         for identity in ctx.get_series_expansions():
             inst = expr.match(e, identity.lhs)
             if inst is None:
@@ -355,7 +357,7 @@ class SeriesEvaluationIdentity(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         for identity in ctx.get_series_evaluations():
             inst = expr.match(e, identity.lhs)
             if inst is None:
@@ -381,7 +383,7 @@ class IndefiniteIntegralIdentity(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         """Apply indefinite integral identity to expression."""
 
         def apply(e: Expr):
@@ -431,7 +433,7 @@ class ReplaceSubstitution(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         for var, expr in ctx.get_substs().items():
             e = e.subst(var, expr)
         return e
@@ -452,7 +454,7 @@ class DerivativeSimplify(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not isinstance(e, Deriv):
             return e
         return expr.deriv(e.var, e.body)
@@ -473,7 +475,7 @@ class TrigSimplify(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         u = Symbol('u', [VAR, CONST, OP, FUN])
         rules = [
             (sin(Const(Fraction(1 / 2)) * expr.pi - u), cos(u)),
@@ -515,7 +517,7 @@ class OnSubterm(Rule):
     def get_substs(self):
         return self.rule.get_substs()
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         rule = self.rule
         if e.is_var() or e.is_const() or e.is_inf() or e.is_skolem_func():
             return rule.eval(e, ctx)
@@ -528,9 +530,14 @@ class OnSubterm(Rule):
         elif e.is_deriv():
             return rule.eval(expr.Deriv(e.var, self.eval(e.body, ctx)), ctx)
         elif e.is_integral():
-            return rule.eval(expr.Integral(
-                e.var, self.eval(e.lower, ctx), self.eval(e.upper, ctx),
-                self.eval(e.body, ctx)), ctx)
+            # When evaluating the body, add interval constraint to context
+            ctx2 = Context(ctx)
+            ctx2.add_condition(expr.Op(">", Var(e.var), e.lower))
+            ctx2.add_condition(expr.Op("<", Var(e.var), e.upper))
+            lower = self.eval(e.lower, ctx)
+            upper = self.eval(e.upper, ctx)
+            body = self.eval(e.body, ctx2)
+            return rule.eval(expr.Integral(e.var, lower, upper, body), ctx)
         elif e.is_evalat():
             return rule.eval(expr.EvalAt(
                 e.var, self.eval(e.lower, ctx), self.eval(e.upper, ctx),
@@ -538,7 +545,7 @@ class OnSubterm(Rule):
         elif e.is_limit():
             return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, ctx)), ctx)
         elif e.is_indefinite_integral():
-            return rule.eval(expr.IndefiniteIntegral(e.var, self.eval(e.body), e.skolem_args), ctx)
+            return rule.eval(expr.IndefiniteIntegral(e.var, self.eval(e.body, ctx), e.skolem_args), ctx)
         elif e.is_summation():
             return rule.eval(
                 expr.Summation(e.index_var, self.eval(e.lower, ctx), self.eval(e.upper, ctx),
@@ -570,7 +577,7 @@ class OnLocation(Rule):
     def get_substs(self):
         return self.rule.get_substs()
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         def rec(cur_e, loc):
             if loc.is_empty():
                 return self.rule.eval(cur_e, ctx)
@@ -653,7 +660,7 @@ class CompositePower(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_times() and e.args[1].is_power() and e.args[0] == e.args[1].args[0]:
             return e.args[0] ^ (e.args[1].args[1] + 1)
         else:
@@ -688,7 +695,7 @@ class SimplifyPower(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not e.is_power() and not (e.is_fun() and e.func_name == 'exp'):
             return e
         if e.is_fun() and e.func_name == 'exp':
@@ -738,7 +745,7 @@ class ReduceInfLimit(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_limit() and e.lim == POS_INF:
             return limits.reduce_inf_limit(e.body, e.var, conds=ctx.get_conds())
         else:
@@ -760,7 +767,7 @@ class ReduceTrivLimit(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not e.is_limit():
             return e
         if e.var not in e.body.get_vars():
@@ -804,7 +811,7 @@ class FullSimplify(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         counter = 0
         current = e
         while True:
@@ -818,6 +825,7 @@ class FullSimplify(Rule):
             s = OnSubterm(DerivativeSimplify()).eval(s, ctx)
             s = OnSubterm(SimplifyPower()).eval(s, ctx)
             s = OnSubterm(SimplifyInfinity()).eval(s, ctx)
+            s = OnSubterm(SimplifyAbs()).eval(s, ctx)
             s = OnSubterm(IntegralSimplify()).eval(s, ctx)
             s = OnSubterm(ReduceInfLimit()).eval(s, ctx)
             s = OnSubterm(ReduceTrivLimit()).eval(s, ctx)
@@ -885,7 +893,7 @@ class ApplyEquation(Rule):
                 })
         return res
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if self.subMap == None:
             # With no instantiation
             pat = expr.expr_to_pattern(self.eq)
@@ -936,7 +944,7 @@ class ApplyEquation(Rule):
             new_eq = self.eq
             for var, e2 in self.subMap.items():
                 new_eq = new_eq.subst(var, e2)
-            return ApplyEquation(new_eq).eval(e)
+            return ApplyEquation(new_eq).eval(e, ctx)
 
 
 class ApplyLemma(Rule):
@@ -958,7 +966,7 @@ class ApplyLemma(Rule):
             "lemma": str(self.lemma)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         # if assumption holds
         # then apply assumption
         flag = False if ctx != None else True
@@ -1000,7 +1008,7 @@ class ApplyInductHyp(Rule):
             "induct_hyp": str(self.induct_hyp)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not self.induct_hyp.is_equals():
             return e
 
@@ -1045,7 +1053,7 @@ class Substitution(Rule):
     def get_substs(self):
         return {self.var_name: self.var_subst}
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         """
         Parameters:
         e: Expr, the integral on which to perform substitution.
@@ -1060,7 +1068,7 @@ class Substitution(Rule):
             if len(sep_ints) == 0:
                 return e
             else:
-                return OnLocation(self, sep_ints[0][1]).eval(e)
+                return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
 
         # Variable to be substituted in the integral
         var_name = parser.parse_expr(self.var_name)
@@ -1124,13 +1132,13 @@ class SubstitutionInverse(Rule):
             "latex_str": "inverse substitution for \\(%s\\)" % latex.convert_expr(self.var_subst)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not e.is_integral():
             sep_ints = e.separate_integral()
             if len(sep_ints) == 0:
                 return e
             else:
-                return OnLocation(self, sep_ints[0][1]).eval(e)
+                return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
 
         # dx = f'(u) * du
         subst_deriv = expr.deriv(self.var_name, self.var_subst)
@@ -1171,20 +1179,20 @@ class ExpandPolynomial(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_power() and e.args[1].is_const() and e.args[1].val > 1 and \
                 int(e.args[1].val) == e.args[1].val:
             n = int(e.args[1].val)
-            base = self.eval(e.args[0]).to_poly()
+            base = self.eval(e.args[0], ctx).to_poly()
             res = base
             for i in range(n - 1):
                 res = res * base
             return expr.from_poly(res)
         elif e.is_times():
-            s1, s2 = self.eval(e.args[0]), self.eval(e.args[1])
+            s1, s2 = self.eval(e.args[0], ctx), self.eval(e.args[1], ctx)
             return expr.from_poly(s1.to_poly() * s2.to_poly())
         elif e.is_integral():
-            return expr.Integral(e.var, e.lower, e.upper, self.eval(e.body))
+            return expr.Integral(e.var, e.lower, e.upper, self.eval(e.body, ctx))
         else:
             return e
 
@@ -1204,7 +1212,7 @@ class UnfoldPower(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.ty == expr.INTEGRAL:
             return Integral(e.var, e.lower, e.upper, e.body.expand())
         else:
@@ -1243,7 +1251,7 @@ class Equation(Rule):
             res['old_expr'] = str(self.old_expr)
         return res
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         # Rewrite on a subterm
         # if self.old_expr is not None and self.old_expr != e:
         # find_res = e.find_subexpr(self.old_expr)
@@ -1257,10 +1265,10 @@ class Equation(Rule):
             if len(find_res) == 0:
                 raise AssertionError("Equation: old expression not found")
             loc = find_res[0]
-            return OnLocation(self, loc).eval(e)
+            return OnLocation(self, loc).eval(e, ctx)
         if old_expr == e:
             r = FullSimplify()
-            if r.eval(e) == r.eval(self.new_expr):
+            if r.eval(e, ctx) == r.eval(self.new_expr, ctx):
                 return self.new_expr
             a = Symbol('a', [VAR, CONST, OP, FUN])
             b = Symbol('b', [VAR, CONST, OP, FUN])
@@ -1275,7 +1283,7 @@ class Equation(Rule):
                 if len(pos) >= 1:
                     mapped_expr, loc, mapping = pos[0]
                     if mapped_expr == e:
-                        if r.eval(pat_res.inst_pat(mapping)) == r.eval(self.new_expr):
+                        if r.eval(pat_res.inst_pat(mapping), ctx) == r.eval(self.new_expr, ctx):
                             return self.new_expr
             def rec(se):
                 return rec(se.expand()) if (se.expand() != se) else se
@@ -1318,7 +1326,7 @@ class RewriteBinom(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not (e.is_fun() and e.func_name == "binom"):
             return e
 
@@ -1358,13 +1366,13 @@ class IntegrationByParts(Rule):
                          (latex.convert_expr(self.u), latex.convert_expr(self.v))
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not (e.is_integral() or e.is_indefinite_integral()):
             sep_ints = e.separate_integral()
             if len(sep_ints) == 0:
                 return e
             else:
-                return OnLocation(self, sep_ints[0][1]).eval(e)
+                return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
 
         e.body = e.body.normalize()
         du = expr.deriv(e.var, self.u)
@@ -1401,13 +1409,13 @@ class PolynomialDivision(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not e.is_integral():
             sep_ints = e.separate_integral()
             if len(sep_ints) == 0:
                 return e
             else:
-                return OnLocation(self, sep_ints[0][1]).eval(e)
+                return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
 
         result = apart(expr.sympy_style(e.body))
         new_expr = expr.holpy_style(result)
@@ -1440,14 +1448,14 @@ class RewriteTrigonometric(Rule):
                                latex.convert_expr(self.rewrite_term)
         return res
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         # Rewrite on a subterm
         if self.rewrite_term is not None and self.rewrite_term != e:
             find_res = e.find_subexpr(self.rewrite_term)
             if len(find_res) == 0:
                 raise AssertionError("RewriteTrigonometric: rewrite term not found")
             loc = find_res[0]
-            return OnLocation(self, loc).eval(e)
+            return OnLocation(self, loc).eval(e, ctx)
 
         # Select one of Fu's rules
         rule_fun, _ = expr.trigFun[self.rule_name]
@@ -1500,7 +1508,7 @@ class ElimAbs(Rule):
             zero_point += zeros
         return holpy_style(zero_point[0])
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_integral():
             abs_expr = e.body.get_abs()
             if len(abs_expr) == 0:
@@ -1534,7 +1542,7 @@ class ElimAbs(Rule):
             if len(sep_ints) == 0:
                 return e
             else:
-                return OnLocation(self, sep_ints[0][1]).eval(e)
+                return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
 
 
 class SplitRegion(Rule):
@@ -1554,13 +1562,13 @@ class SplitRegion(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not e.is_integral():
             sep_ints = e.separate_integral()
             if len(sep_ints) == 0:
                 return e
             else:
-                return OnLocation(self, sep_ints[0][1]).eval(e)
+                return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
 
         return expr.Integral(e.var, e.lower, self.c, e.body) + \
                expr.Integral(e.var, self.c, e.upper, e.body)
@@ -1594,7 +1602,7 @@ class IntegrateByEquation(Rule):
                 return True
         return False
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         """Eliminate the lhs's integral in rhs by solving equation."""
         norm_e = e.normalize()
         rhs_var = None
@@ -1652,7 +1660,7 @@ class ElimInfInterval(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         def gen_lim_expr(new_var, lim, lower, upper, drt=None):
             return expr.Limit(new_var, lim, expr.Integral(e.var, lower, upper, e.body), drt)
 
@@ -1661,7 +1669,7 @@ class ElimInfInterval(Rule):
             if len(sep_ints) == 0:
                 return e
             else:
-                return OnLocation(self, sep_ints[0][1]).eval(e)
+                return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
 
         inf = Inf(Decimal('inf'))
         neg_inf = Inf(Decimal('-inf'))
@@ -1709,7 +1717,7 @@ class LHopital(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not isinstance(e, expr.Limit):
             return e
 
@@ -1719,8 +1727,8 @@ class LHopital(Rule):
         #     return e
         numerator, denominator = e.body.args
         rule = DerivativeSimplify()
-        return expr.Limit(e.var, e.lim, Op('/', rule.eval(Deriv(e.var, numerator)),
-                                           rule.eval(Deriv(e.var, denominator))), e.drt)
+        return expr.Limit(e.var, e.lim, Op('/', rule.eval(Deriv(e.var, numerator), ctx),
+                                           rule.eval(Deriv(e.var, denominator), ctx)), e.drt)
 
 
 def check_item(item, target=None, *, debug=False):
@@ -1732,6 +1740,7 @@ def check_item(item, target=None, *, debug=False):
 
     current = problem
     prev_steps = []
+    ctx = Context()
 
     for step in item['calc']:
         reason = step['reason']
@@ -1742,9 +1751,9 @@ def check_item(item, target=None, *, debug=False):
 
         elif reason == 'Simplification':
             if "location" in step:
-                result = OnLocation(FullSimplify(), step["location"]).eval(current)
+                result = OnLocation(FullSimplify(), step["location"]).eval(current, ctx)
             else:
-                result = FullSimplify().eval(current)
+                result = FullSimplify().eval(current, ctx)
 
         elif reason == 'Substitution':
             var_name = step['params']['var_name']
@@ -1752,9 +1761,9 @@ def check_item(item, target=None, *, debug=False):
             g = parser.parse_expr(step['params']['g'])
             rule = Substitution(var_name, g)
             if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current)
+                result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
-                result = rule.eval(current)
+                result = rule.eval(current, ctx)
             rule.f = parser.parse_expr(str(rule.f))  # trick to eliminate difference in printing
             if rule.f != f:
                 print("Expected f: %s" % f)
@@ -1766,16 +1775,16 @@ def check_item(item, target=None, *, debug=False):
             v = parser.parse_expr(step['params']['parts_v'])
             rule = IntegrationByParts(u, v)
             if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current)
+                result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
-                result = rule.eval(current)
+                result = rule.eval(current, ctx)
 
         elif reason == 'Rewrite fraction':
             rule = PolynomialDivision()
             if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current)
+                result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
-                result = rule.eval(current)
+                result = rule.eval(current, ctx)
 
         elif reason == 'Rewrite':
             rhs = parser.parse_expr(step['params']['rhs'])
@@ -1784,52 +1793,52 @@ def check_item(item, target=None, *, debug=False):
             else:
                 rule = Equation(rhs)
             if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current)
+                result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
-                result = rule.eval(current)
+                result = rule.eval(current, ctx)
 
         elif reason == 'Rewrite trigonometric':
             rule = RewriteTrigonometric(step['params']['rule'])
             if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current)
+                result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
-                result = rule.eval(current)
+                result = rule.eval(current, ctx)
 
         elif reason == 'Substitution inverse':
             var_name = step['params']['var_name']
             g = parser.parse_expr(step['params']['g'])
             rule = SubstitutionInverse(var_name, g)
             if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current)
+                result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
-                result = rule.eval(current)
+                result = rule.eval(current, ctx)
 
         elif reason == 'Elim abs':
             rule = ElimAbs()
             if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current)
+                result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
-                result = rule.eval(current)
+                result = rule.eval(current, ctx)
 
         elif reason == 'Split region':
             c = parser.parse_expr(step['params']['c'])
             rule = SplitRegion(c)
             if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current)
+                result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
-                result = rule.eval(current)
+                result = rule.eval(current, ctx)
 
         elif reason == 'Unfold power':
             rule = UnfoldPower()
             if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current)
+                result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
-                result = rule.eval(current)
+                result = rule.eval(current, ctx)
 
         elif reason == 'Solve equation':
             prev_id = int(step['params']['prev_id'])
             rule = IntegrateByEquation(prev_steps[prev_id])
-            result = rule.eval(current)
+            result = rule.eval(current, ctx)
 
         else:
             print("Reason: %s" % reason)
@@ -1866,7 +1875,7 @@ class DerivIntExchange(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_deriv() and e.body.is_integral():
             v1, v2 = e.var, e.body.var
             return Integral(v2, e.body.lower, e.body.upper, Deriv(v1, e.body.body))
@@ -1896,7 +1905,7 @@ class ExpandDefinition(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_fun() and e.func_name == self.func_name:
             for identity in ctx.get_definitions():
                 if identity.lhs.is_fun() and identity.lhs.func_name == self.func_name:
@@ -1930,7 +1939,7 @@ class RootFractionReWrite(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.ty != OP and e.op != '/':
             return e
 
@@ -1991,7 +2000,7 @@ class ExtractFromRoot(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not isinstance(e, Expr):
             raise AssertionError("ExtractFromRoot: wrong form for e.")
         if e.ty == FUN and e.func_name == 'sqrt':
@@ -2022,7 +2031,7 @@ class RewriteExp(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.ty != FUN and e.func_name != 'exp':
             return e
         b = e.args[0]
@@ -2059,7 +2068,7 @@ class RewriteFactorial(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_times() and e.args[1].ty == FUN and e.args[1].func_name == 'factorial':
             if e.args[0].is_plus():
                 # (m + 1) * m! = (m + 1)!
@@ -2099,9 +2108,34 @@ class SimplifyInfinity(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.ty == OP and e.op == '^' and e.args[0].is_pos_inf() and ctx.get_conds().is_positive(e.args[1]):
             return Inf(Decimal('inf'))
+        else:
+            return e
+
+
+class SimplifyAbs(Rule):
+    def __init__(self):
+        self.name = "SimplifyAbs"
+
+    def __str__(self):
+        return "SimplifyAbs"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, ctx: Context) -> Expr:
+        if e.is_fun() and e.func_name == "abs":
+            if ctx.get_conds().is_not_negative(e.args[0]):
+                return e.args[0]
+            elif ctx.get_conds().is_not_positive(e.args[0]):
+                return -e.args[0]
+            else:
+                return e
         else:
             return e
 
@@ -2116,7 +2150,7 @@ class IntegralEquation(Rule):
     def __init__(self):
         self.name = "IntegrateBothSide"
 
-    def eval(self, e: Expr, ctx=None):
+    def eval(self, e: Expr, ctx: Context):
         assert e.is_equals() and e.lhs.is_deriv()
 
         # Variable to differentiate, this will also be the variable
@@ -2184,7 +2218,7 @@ class RewriteLog(Rule):
     def __str__(self):
         return "rewrite logarithm"
 
-    def eval(self, e: Expr, ctx=None):
+    def eval(self, e: Expr, ctx: Context):
         # pattern match first : log(a*b) then rewrite as log(a) + log(b)
         a = Symbol('a', [VAR, CONST, OP, FUN])
         b = Symbol('b', [VAR, CONST, OP, FUN])
@@ -2199,7 +2233,7 @@ class RewriteLog(Rule):
                 if mapped_expr == e:
                     return pat_res.inst_pat(mapping)
                 else:
-                    return OnLocation(self, loc).eval(e);
+                    return OnLocation(self, loc).eval(e, ctx)
 
         return e
 
@@ -2224,7 +2258,7 @@ class LimitEquation(Rule):
     def __str__(self):
         return "apply limit %s -> %s to equation" % (self.var, self.lim)
 
-    def eval(self, e: Expr, ctx=None):
+    def eval(self, e: Expr, ctx: Context):
         v, lim = self.var, self.lim
         lim1 = Limit(v, lim, e.lhs)
         lim2 = Limit(v, lim, e.rhs)
@@ -2250,7 +2284,7 @@ class IntSumExchange(Rule):
     def __str__(self):
         return "exchange integral and sum"
 
-    def eval(self, e: Expr, ctx=None):
+    def eval(self, e: Expr, ctx: Context):
         if e.is_integral() and e.body.is_summation():
             s = e.body
             return Summation(s.index_var, s.lower, s.upper, Integral(e.var, e.lower, e.upper, e.body.body))
@@ -2285,7 +2319,7 @@ class VarSubsOfEquation(Rule):
             "latex_str": "substitute \\(%s\\) for \\(%s\\) in equation" % (self.var, latex.convert_expr(self.var_subs))
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_equals():
             return e.subst(self.var, self.var_subs)
         else:
@@ -2306,7 +2340,7 @@ class MergeSummation(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not(e.ty == OP and e.op in ('+', '-') and all([isinstance(arg, Summation) for arg in e.args])):
             return e
         a, b = e.args
@@ -2335,7 +2369,7 @@ class SummationSimplify(Rule):
             "str": str(self)
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not e.is_summation():
             return e
         e = e.replace((Const(-1))^(Const(2)*Var(e.index_var)), Const(1))
@@ -2359,7 +2393,7 @@ class DerivEquation(Rule):
             "var": self.var
         }
 
-    def eval(self, e: Expr, ctx=None) -> Expr:
+    def eval(self, e: Expr, ctx: Context) -> Expr:
         if not e.is_equals():
             return e
         return Op('=', Deriv(self.var, e.lhs), Deriv(self.var, e.rhs))
@@ -2380,7 +2414,7 @@ class RewriteMulPower(Rule):
     def __str__(self):
         return "rewrite expression multiplied a power expression"
 
-    def eval(self, e: Expr, ctx=None):
+    def eval(self, e: Expr, ctx: Context):
         if not isinstance(e, Op) or not e.op == '*':
             return e
         idx = self.be_merged_idx
@@ -2389,7 +2423,7 @@ class RewriteMulPower(Rule):
         if e.args[1 - idx].is_fun() and e.args[1 - idx].func_name == 'sqrt':
             res = Fun('sqrt', r.eval(((e.args[idx] ^ 2) * e.args[1 - idx].args[0]).normalize()))
         elif e.args[1 - idx].is_power():
-            res = Op('^', r.eval(((e.args[idx] ^ (1 / e.args[1 - idx].args[1])) * e.args[1 - idx].args[0]).normalize()),
+            res = Op('^', r.eval(((e.args[idx] ^ (1 / e.args[1 - idx].args[1])) * e.args[1 - idx].args[0]).normalize(), ctx),
                      e.args[1 - idx].args[1])
         return res
 
@@ -2407,7 +2441,7 @@ class SolveEquation(Rule):
         self.be_solved_expr = be_solved_expr
         self.name = "SolveEquation"
 
-    def eval(self, e: Expr, ctx=None):
+    def eval(self, e: Expr, ctx: Context):
         assert e.is_equals()
 
         res = solve_for_term(e, self.be_solved_expr)

@@ -618,7 +618,6 @@ class IntegralTest(unittest.TestCase):
         calc = Eq1_proof.rhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("g")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ElimAbs(), '1'))
 
         Eq2 = file.add_goal("(D t. g(t) + 2 * INT y:[0, 1].exp(-(1+y^2)*t^2/2)/(1+y^2)) = 0")
         Eq2_proof = Eq2.proof_by_calculation()
@@ -956,7 +955,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_goal3.begin
         calc.perform_rule(rules.IntegralEquation())
         calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
-        calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
+        calc.perform_rule(rules.FullSimplify())
 
         goal4 = file.add_goal("SKOLEM_CONST(C) = 0")
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
@@ -1010,7 +1009,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.FullSimplify(), '1'))
         calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
         calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), '1'))
-        calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
         calc.perform_rule(rules.FullSimplify())
 
         # Obtain value of Skolem function
@@ -1364,7 +1362,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr("y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))")
         calc.perform_rule(rules.SubstitutionInverse(var_name='y', var_subst=e))
-        calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
         old_expr = parser.parse_expr("(u ^ (-2) * (2 * u ^ 2 + 1) + (y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))) ^ 2) ^ (-1)")
         new_expr = parser.parse_expr("(u^(-2) * (2*u^2+1))^(-1) * (1+y^2)^(-1)")
         calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
@@ -1396,7 +1393,6 @@ class IntegralTest(unittest.TestCase):
         new_expr = parser.parse_expr("(1+x^2)^2*(2+x^2)")
         calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnSubterm(rules.ElimAbs()))
         old_expr = parser.parse_expr("(x ^ 2 + 2) ^ (-1/2)")
         new_expr = parser.parse_expr("sqrt(x^2+2) ^ (-1)")
         calc.perform_rule(rules.OnLocation(rules.Equation(new_expr=new_expr, old_expr=old_expr), '0.0.0.1.0'))

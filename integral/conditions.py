@@ -75,3 +75,11 @@ class Conditions:
             return False
         else:
             return interval.contained_in(Interval.open(expr.NEG_INF, expr.Const(0)))
+
+    def is_not_positive(self, e: Expr) -> bool:
+        """Return whether conditions imply e is not positive."""
+        interval = self.get_bounds_for_expr(e)
+        if interval is None:
+            return False
+        else:
+            return interval.contained_in(Interval.lopen(expr.NEG_INF, expr.Const(0)))

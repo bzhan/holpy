@@ -197,16 +197,6 @@
                             "latex_res": "I(a,b) = \\frac{1}{2} \\pi \\log{a} + C(b)",
                             "res": "I(a,b) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(b))",
                             "rule": {
-                                "loc": "subterms",
-                                "name": "ElimAbs",
-                                "str": "eliminate absolute values on subterms"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "I(a,b) = \\frac{1}{2} \\pi \\log{a} + C(b)",
-                            "res": "I(a,b) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(b))",
-                            "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
                             },

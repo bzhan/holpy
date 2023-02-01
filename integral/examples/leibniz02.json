@@ -82,21 +82,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 \\left| \\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx \\right|",
-                            "res": "2 * abs(INT x:[0,oo]. exp(-1/2 * x ^ 2))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "2 (\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx)",
                             "res": "2 * (INT x:[0,oo]. exp(-1/2 * x ^ 2))",
                             "rule": {
-                                "loc": "1",
-                                "name": "ElimAbs",
-                                "str": "eliminate absolute values at 1"
+                                "name": "FullSimplify",
+                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         }

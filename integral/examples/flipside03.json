@@ -129,9 +129,8 @@
                             "latex_res": "I{(a)} = \\log{(a + 1)} + C",
                             "res": "I(a) = log(a + 1) + SKOLEM_CONST(C)",
                             "rule": {
-                                "loc": "subterms",
-                                "name": "ElimAbs",
-                                "str": "eliminate absolute values on subterms"
+                                "name": "FullSimplify",
+                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         }

@@ -25,6 +25,7 @@ class IntervalTest(unittest.TestCase):
             ("(x + 1) * (x + 2)", "(0, 1]", "(2, 6]"),
             ("x ^ 2", "(-oo, oo)", "[0, oo)"),
             ("1 / x ^ 2", "(-oo, oo)", "(0, oo)"),
+            ("x + 1", "(-1, -1/2)", "(0, 1/2)"),
 
             # Square root
             ("sqrt(x)", "(1, 4)", "(1, 2)"),

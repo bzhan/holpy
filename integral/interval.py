@@ -217,17 +217,17 @@ class Interval:
 
     def intersection(self, other: "Interval") -> "Interval":
         """Return the intersection of two intervals."""
-        if eval_expr(self.start) < eval_expr(other.start):
+        if eval_expr(self.start) > eval_expr(other.start):
             start = self.start
             left_open = self.left_open
-        elif eval_expr(self.start) > eval_expr(other.start):
+        elif eval_expr(self.start) < eval_expr(other.start):
             start = other.start
             left_open = other.left_open
         else:
             start = self.start
             left_open = self.left_open or other.left_open
         
-        if eval_expr(self.end) > eval_expr(other.end):
+        if eval_expr(self.end) < eval_expr(other.end):
             end = self.end
             right_open = self.right_open
         elif eval_expr(self.end) > eval_expr(other.end):
