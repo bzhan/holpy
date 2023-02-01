@@ -1070,9 +1070,7 @@ class Substitution(Rule):
 
         dfx = expr.deriv(e.var, var_subst)
         body = (e.body / dfx).normalize()
-        body_subst = body.replace_trig(var_subst, var_name)
-        if body_subst == body:
-            body_subst = body.replace_trig(var_subst, var_name)
+        body_subst = body.replace(var_subst, var_name)
         if e.var not in body_subst.get_vars():
             # Substitution is able to clear all x in original integrand
             self.f = body_subst
@@ -1084,7 +1082,7 @@ class Substitution(Rule):
                 raise AssertionError("Substitution: unable to solve equation")
 
             gu = gu.normalize()
-            c = e.body.replace_trig(parser.parse_expr(e.var), gu)
+            c = e.body.replace(parser.parse_expr(e.var), gu)
             new_problem_body = c * expr.deriv(str(var_name), gu)
             self.f = new_problem_body
 

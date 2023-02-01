@@ -60,6 +60,11 @@ def solve_equation(f: Expr, a: Expr, x: str) -> Optional[Expr]:
         if not v.contains_var(x):
             # u / v = a  ==>  u = v * a
             return solve_equation(u, v * a, x)
+    if f.is_power():
+        u, v = f.args
+        if not v.contains_var(x):
+            # u ^ v = a  ==>  u = a ^ (1/v)
+            return solve_equation(u, a ^ (1/v), x)
     if f.is_fun():
         if f.func_name == "log":
             return solve_equation(f.args[0], expr.exp(a), x)

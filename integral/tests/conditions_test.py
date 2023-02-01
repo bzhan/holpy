@@ -10,18 +10,35 @@ from integral import conditions
 class ConditionsTest(unittest.TestCase):
     def testIsPositive(self):
         test_data = [
-            ("a", "a > 0"),
-            ("a ^ (1/2)", "a > 0"),
-            ("a ^ (-1/2)", "a > 0"),
-            ("m + 1", "m >= 0"),
+            # Constant
+            ("1", [], True),
+
+            # Variable
+            ("a", ["a > 0"], True),
+
+            # Function
+            ("exp(a)", [], True),
+            ("sqrt(a)", ["a > 0"], True),
+            ("sqrt(a)", ["a >= 0"], False),
+
+            # Power
+            ("a ^ (1/2)", ["a > 0"], True),
+            ("a ^ (-1/2)", ["a > 0"], True),
+
+            # Plus
+            ("m + 1", ["m >= 0"], True),
+            ("1 + x ^ 2", [], True),
+
+            # Integrals
+            ("INT x:[1,oo]. 1 / x ^ 2", [], True),
         ]
 
-        for a, b in test_data:
+        for a, conds_str, res in test_data:
             e = parser.parse_expr(a)
-            cond = parser.parse_expr(b)
             conds = Conditions()
-            conds.add_condition(cond)
-            self.assertTrue(conditions.is_positive(e, conds))
+            for s in conds_str:
+                conds.add_condition(parser.parse_expr(s))
+            self.assertEqual(conditions.is_positive(e, conds), res)
 
 
 if __name__ == "__main__":

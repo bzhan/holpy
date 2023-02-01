@@ -46,8 +46,6 @@ def is_positive(e: Expr, conds: Optional[Conditions]) -> bool:
             return True
     if e.is_fun() and e.func_name == 'exp':
         return True
-    if e == expr.E:
-        return True
     if e.is_power():
         if is_positive(e.args[0], conds):
             return True
