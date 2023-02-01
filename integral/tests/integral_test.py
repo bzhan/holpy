@@ -294,10 +294,15 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "3/8 * pi")
 
+        # Need to check substitution is monotonic
         calc = file.add_calculation("INT x:[-pi/2, pi/2]. sqrt(cos(x) - cos(x)^3)")
         calc.perform_rule(rules.Equation(parser.parse_expr("cos(x) * (1 - cos(x)^2)"),
                                          old_expr=parser.parse_expr("cos(x) - cos(x)^3")))
         calc.perform_rule(rules.RewriteTrigonometric("TR6", rewrite_term=parser.parse_expr("1 - cos(x)^2")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.SplitRegion(parser.parse_expr("0")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Substitution("u", parser.parse_expr("cos(x)")))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("cos(x)")))
         calc.perform_rule(rules.FullSimplify())
@@ -1299,9 +1304,13 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("(1/2 * k + 1)"),
                                          new_expr=parser.parse_expr("(2/(k+2)) ^ (-1)")))
+        calc.perform_rule(rules.OnSubterm(rules.SimplifyPower()))
+        calc.perform_rule(rules.FullSimplify())
 
-        # TODO: finish simplification
-        self.checkAndOutput(file, "BernoulliIntegral", omit_finish=True)
+        calc = proof_of_goal4.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        self.checkAndOutput(file, "BernoulliIntegral")
 
     def testAhmedIntegral(self):
         # Reference:

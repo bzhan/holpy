@@ -194,19 +194,6 @@ class RulesTest(unittest.TestCase):
         res = rules.SubstitutionInverse('x', parse_expr('pi-x')).eval(e)
         self.assertEqual(str(res), "-(INT x:[0,pi / 2]. 1/2 * log(a * sin(pi - x)) * -1)")
 
-    def testUnfoldPower(self):
-        test_data = [
-            ("INT x:[1, 2].(x + y) ^ 3", "INT x:[1,2]. 3 * x * y ^ 2 + 3 * x ^ 2 * y + x ^ 3 + y ^ 3"),
-            ("INT x:[1, 2].(x + y) ^ (1/2)", "INT x:[1,2]. (x + y) ^ (1/2)"),
-            ("INT x:[1, 2].(1 + cos(2*x)) ^ 2", "INT x:[1,2]. cos(2 * x) ^ 2 + 2 * cos(2 * x) + 1")
-        ]
-
-        for s, res in test_data:
-            s = parse_expr(s)
-            rule = rules.UnfoldPower()
-            self.assertEqual(str(rule.eval(s)), res)
-
-
     def testEquation(self):
         test_data = [
             ("sin(x) ^ 3", "sin(x)^2 * sin(x)","sin(x) ^ 2 * sin(x)"),
@@ -371,14 +358,6 @@ class RulesTest(unittest.TestCase):
     #         b = parser.parse_expr(b)
     #         e = rules.ExtractFromRoot(b, c).eval(a)
     #         self.assertEqual(str(e), d)
-
-    def testIntegralSimplify(self):
-        s = 'INT x:[-pi/4,pi/4].cos(x)*abs(cos(x))'
-        res = '2 * (INT x:[0,pi / 4]. cos(x) * abs(cos(x)))'
-        e = parser.parse_expr(s)
-        r = rules.IntegralSimplify()
-        e = r.eval(e)
-        self.assertEqual(str(e), res)
 
     def testComputeLimit1(self):
         s = 'LIM {t -> oo}. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1'

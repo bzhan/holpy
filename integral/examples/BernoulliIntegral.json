@@ -315,11 +315,11 @@
             "type": "Goal"
         },
         {
-            "finished": false,
+            "finished": true,
             "goal": "(INT x:[0,1]. x ^ sqrt(x)) = SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (k + 1))",
             "latex_goal": "\\int_{0}^{1} x ^ {\\sqrt{x}} \\,dx = \\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\frac{2}{k + 2}) ^ {k + 1}}",
             "proof": {
-                "finished": false,
+                "finished": true,
                 "goal": "(INT x:[0,1]. x ^ sqrt(x)) = SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (k + 1))",
                 "latex_goal": "\\int_{0}^{1} x ^ {\\sqrt{x}} \\,dx = \\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\frac{2}{k + 2}) ^ {k + 1}}",
                 "lhs_calc": {
@@ -369,6 +369,25 @@
                                 "str": "rewriting 1/2 * k + 1 to (2 / (k + 2)) ^ (-1)"
                             },
                             "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\frac{2}{k + 2}) ^ {-1 (-k - 1)}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (-1 * (-k - 1)))",
+                            "rule": {
+                                "loc": "subterms",
+                                "name": "SimplifyPower",
+                                "str": "simplify powers on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (2 (k + 2) ^ {-1}) ^ {k + 1}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k * (2 * (k + 2) ^ (-1)) ^ (k + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
                         }
                     ],
                     "type": "Calculation"
@@ -376,7 +395,17 @@
                 "rhs_calc": {
                     "latex_start": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (\\frac{2}{k + 2}) ^ {k + 1}}",
                     "start": "SUM(k, 0, oo, (-1) ^ k * (2 / (k + 2)) ^ (k + 1))",
-                    "steps": [],
+                    "steps": [
+                        {
+                            "latex_res": "\\sum_{k=0}^{\\infty}{(-1) ^ {k} (2 (k + 2) ^ {-1}) ^ {k + 1}}",
+                            "res": "SUM(k, 0, oo, (-1) ^ k * (2 * (k + 2) ^ (-1)) ^ (k + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"

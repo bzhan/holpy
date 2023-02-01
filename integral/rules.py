@@ -803,7 +803,6 @@ class FullSimplify(Rule):
             s = OnSubterm(DerivativeSimplify()).eval(s, ctx)
             s = OnSubterm(SimplifyPower()).eval(s, ctx)
             s = OnSubterm(SimplifyAbs()).eval(s, ctx)
-            s = OnSubterm(IntegralSimplify()).eval(s, ctx)
             s = OnSubterm(ReduceInfLimit()).eval(s, ctx)
             s = OnSubterm(ReduceTrivLimit()).eval(s, ctx)
             s = OnSubterm(TrigSimplify()).eval(s, ctx)
@@ -1136,28 +1135,6 @@ class ExpandPolynomial(Rule):
             return e
 
 
-class UnfoldPower(Rule):
-    """Unfold power"""
-
-    def __init__(self):
-        self.name = "UnfoldPower"
-
-    def __str__(self):
-        return "unfold powers"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if e.ty == expr.INTEGRAL:
-            return Integral(e.var, e.lower, e.upper, e.body.expand())
-        else:
-            return e.expand()
-
-
 class Equation(Rule):
     """Apply substitution for equal expressions"""
 
@@ -1191,13 +1168,7 @@ class Equation(Rule):
         return res
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
-        # Rewrite on a subterm
-        # if self.old_expr is not None and self.old_expr != e:
-        # find_res = e.find_subexpr(self.old_expr)
-        # if len(find_res) == 0:
-        #     raise AssertionError("Equation: old expression not found")
-        # loc = find_res[0]
-        # return OnLocation(self, loc).eval(e)
+        # If old_expr is given, try to find it within e
         old_expr = self.old_expr
         if old_expr is not None and old_expr != e:
             find_res = e.find_subexpr(old_expr)
@@ -1205,6 +1176,7 @@ class Equation(Rule):
                 raise AssertionError("Equation: old expression not found")
             loc = find_res[0]
             return OnLocation(self, loc).eval(e, ctx)
+
         if old_expr == e:
             r = FullSimplify()
             if r.eval(e, ctx) == r.eval(self.new_expr, ctx):
@@ -1884,36 +1856,6 @@ class IntegralEquation(Rule):
         return {
             "name": self.name,
             "str": str(self),
-        }
-
-
-class IntegralSimplify(Rule):
-    """Simplify integral for even and odd functions.
-
-    Current rules are:
-
-    1. INT x:[-a,a]. even_function(x) = 2 * INT x:[0,a]. even_function(x)
-
-    """
-    def __init__(self):
-        self.name = "IntegralSimplify"
-
-    def eval(self, e: expr.Integral, ctx=None):
-        if not isinstance(e, expr.Integral):
-            return e
-        if (e.lower * -1).normalize() == (e.upper).normalize() and e.body.is_even_function(e.var):
-            # Interval is [-a, a], body is even function
-            return 2 * Integral(e.var, Const(0), e.upper, e.body)
-        else:
-            return e
-
-    def __str__(self):
-        return "simplify even and odd integrals"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
         }
 
 
