@@ -272,25 +272,6 @@ class RulesTest(unittest.TestCase):
             e1 = parse_expr(s1)
             self.assertEqual(str(rule.eval(e1)), s2)
 
-    def testElimAbs(self):
-        test_data = [
-            ("INT x:[-pi/2, pi/2]. sqrt(cos(x))*abs(sin(x))",
-             "(INT x:[-1/2 * pi,0]. -(sqrt(cos(x)) * sin(x))) + (INT x:[0,1/2 * pi]. sqrt(cos(x)) * sin(x))"),
-            ("INT x:[0, pi]. sqrt(2) * abs(cos(x))",
-             "(INT x:[1/2 * pi,pi]. -sqrt(2) * cos(x)) + (INT x:[0,1/2 * pi]. sqrt(2) * cos(x))"),
-            ("INT u:[1,3]. u * abs(u) ^ -1",
-             "INT u:[1,3]. 1"),
-            ("INT u:[1,4]. 2 * u / (1 + abs(u))",
-             "INT u:[1,4]. 2 * u * (u + 1) ^ (-1)"),
-            ("INT x:[1/exp(1), 1]. abs(log(x))", "INT x:[exp(-1),1]. -log(x)"),
-            ("INT x:[1,exp(1)]. abs(log(x))", "INT x:[1,exp(1)]. log(x)")
-        ]
-
-        for s, res in test_data:
-            s = parse_expr(s)
-            e = rules.ElimAbs().eval(s).normalize()
-            self.assertEqual(str(e), res)
-
     def testApplyEquation(self):
         test_data = [("U = (INT x:[0, h/a]. (f(a*x) - f(0)) / x)", "U", "INT x:[0,h / a]. (f(a * x) - f(0)) / x"),
                      ("f(a,b) = a + b + 3", "f(a,2)", "a + 2 + 3"),
@@ -298,18 +279,6 @@ class RulesTest(unittest.TestCase):
         for eq, e, res in test_data:
             r = rules.ApplyEquation(parser.parse_expr(eq))
             self.assertEqual(res, str(r.eval(parser.parse_expr(e))))
-
-    def testElimAbs2(self):
-        test_data = [
-            ("INT u:[-2, 3]. 2 * u / (abs(u) + abs(u + 1))",
-             "(INT u:[0,3]. 2 * u * (2 * u + 1) ^ (-1)) + (INT u:[-2,-1]. 2 * u * (-2 * u - 1) ^ (-1)) + (INT u:[-1,0]. 2 * u)")
-        ]
-
-        for s, res in test_data:
-            e = parse_expr(s)
-            e = rules.ElimAbs().eval(e).normalize()
-            e = rules.OnSubterm(rules.ElimAbs()).eval(e).normalize()
-            self.assertEqual(str(e), res)
 
     def testIntegrateByEquation(self):
         test_data = [

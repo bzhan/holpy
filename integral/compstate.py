@@ -734,8 +734,6 @@ def parse_rule(item) -> Rule:
         if 'rewrite_term' in item:
             rewrite_term = parser.parse_expr(item['rewrite_term'])
         return rules.RewriteTrigonometric(rule_name, rewrite_term)
-    elif item['name'] == 'ElimAbs':
-        return rules.ElimAbs()
     elif item['name'] == 'SplitRegion':
         c = parser.parse_expr(item['c'])
         return rules.SplitRegion(c)

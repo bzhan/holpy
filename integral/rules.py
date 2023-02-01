@@ -1464,87 +1464,6 @@ class RewriteTrigonometric(Rule):
         return result
 
 
-class ElimAbs(Rule):
-    """Eliminate abstract value."""
-
-    def __init__(self):
-        self.name = "ElimAbs"
-
-    def __str__(self):
-        return "eliminate absolute values"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def check_zero_point(self, e: Expr):
-        integrals = e.separate_integral()
-        # print("e.sep:",integrals)
-        if not integrals:
-            return False
-        abs_info = []
-        for i, j in integrals:
-            abs_expr = i.get_abs()
-            abs_info += [(a, i) for a in abs_expr]
-        zero_point = []
-        for a, i in abs_info:
-            arg = a.args[0]
-            zeros = solveset(expr.sympy_style(arg), expr.sympy_style(i.var),
-                             Interval(sympy_style(i.lower), sympy_style(i.upper), left_open=True, right_open=True))
-            zero_point += zeros
-        return len(zero_point) > 0
-
-    def get_zero_point(self, e):
-
-        abs_expr = e.body.get_abs()
-        zero_point = []
-
-        for a in abs_expr:
-            arg = a.args[0]
-            zeros = solveset(expr.sympy_style(arg), expr.sympy_style(e.var),
-                             Interval(sympy_style(e.lower), sympy_style(e.upper), left_open=True, right_open=True))
-            zero_point += zeros
-        return holpy_style(zero_point[0])
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if e.is_integral():
-            abs_expr = e.body.get_abs()
-            if len(abs_expr) == 0:
-                return e
-
-            # Only consider the first absolute value
-            abs_expr = abs_expr[0]
-
-            # g: value in abs > 0, s: value in abs < 0
-            g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper)
-            new_integral = []
-            for l, h in g:
-                new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, abs_expr.args[0])))
-            for l, h in s:
-                new_integral.append(
-                    expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
-            return sum(new_integral[1:], new_integral[0])
-        
-        elif e.is_indefinite_integral():
-            # No need to do anything
-            return e
-
-        elif e.ty == expr.FUN and e.func_name == 'abs':
-            if ctx is not None and ctx.get_conds().is_positive(e.args[0]):
-                return e.args[0]
-            else:
-                return e
-
-        else:
-            sep_ints = e.separate_integral()
-            if len(sep_ints) == 0:
-                return e
-            else:
-                return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
-
-
 class SplitRegion(Rule):
     """Split integral into two parts at a point."""
 
@@ -1808,13 +1727,6 @@ def check_item(item, target=None, *, debug=False):
             var_name = step['params']['var_name']
             g = parser.parse_expr(step['params']['g'])
             rule = SubstitutionInverse(var_name, g)
-            if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current, ctx)
-            else:
-                result = rule.eval(current, ctx)
-
-        elif reason == 'Elim abs':
-            rule = ElimAbs()
             if 'location' in step:
                 result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
