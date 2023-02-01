@@ -626,7 +626,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr('-1/2 * t ^ 2 * y ^ 2+1/2 * t ^ 2 *  (- 1) ')
         calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.1.0.0.0'))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1.1.0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("exp(-1/2 * t ^ 2 * y ^ 2) * exp(-1/2 * t ^ 2)")), '1.1.0'))
         calc.perform_rule(rules.FullSimplify())
 
         Eq3 = file.add_goal("2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_CONST(C)")
@@ -749,8 +749,8 @@ class IntegralTest(unittest.TestCase):
         Eq6_proof = Eq6.proof_by_rewrite_goal(begin=Eq5)
         calc = Eq6_proof.begin
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("I(t)")))
-        calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1'))
-        calc.perform_rule(rules.OnLocation(rules.RewriteExp(), '1.0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-1/2 * t ^ 2)")), '1'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("exp(-1/2 * log(2)) * exp(1/2 * log(pi))")), '1.0'))
         calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file, "leibniz03")
@@ -759,6 +759,7 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 2.4
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, "EulerLogSine")
 
         # Define I(a)
@@ -790,8 +791,8 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.RewriteTrigonometric("TR11", parser.parse_expr("sin(2*x)")))
         calc.perform_rule(rules.Equation(new_expr = parser.parse_expr("(2/a) * (a*sin(x)) * (a*cos(x))"),\
                                          old_expr = parser.parse_expr("a * (2 * sin(x) * cos(x))")))
-        calc.perform_rule(rules.RewriteLog())
-        calc.perform_rule(rules.RewriteLog())
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("log(2/a * (a*sin(x))) + log(a*cos(x))")), "0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("log(2/a) + log(a*sin(x))")), "0.0"))
         calc.perform_rule(rules.FullSimplify())
 
         calc.perform_rule(rules.OnLocation(rules.Substitution('t', parser.parse_expr("pi/2 - x")), '0.1'))
@@ -809,10 +810,10 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(goal1.goal))
         calc.perform_rule(rules.ApplyEquation(goal2.goal))
         calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("I(a)")))
-        calc.perform_rule(rules.RewriteLog())
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("log(2) + log(a^(-1))")), "1"))
         calc.perform_rule(rules.ExpandPolynomial())
         calc = proof.rhs_calc
-        calc.perform_rule(rules.RewriteLog())
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("log(a) - log(2)")), "1"))
         calc.perform_rule(rules.ExpandPolynomial())
 
         self.checkAndOutput(file, "euler_log_sin")

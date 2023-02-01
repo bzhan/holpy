@@ -645,26 +645,6 @@ class OnLocation(Rule):
         return rec(e, self.loc)
 
 
-class CompositePower(Rule):
-    def __init__(self):
-        self.name = "CompositePower"
-
-    def __str__(self):
-        return "CompositePower"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if e.is_times() and e.args[1].is_power() and e.args[0] == e.args[1].args[0]:
-            return e.args[0] ^ (e.args[1].args[1] + 1)
-        else:
-            raise NotImplementedError
-
-
 class SimplifyPower(Rule):
     """Apply the following simplifications on powers:
 
@@ -1888,43 +1868,6 @@ class ExtractFromRoot(Rule):
             raise NotImplementedError
 
 
-class RewriteExp(Rule):
-    """Rewrite exponential term.
-
-    Current rules include:
-
-    * exp(a + b) -> exp(a) * exp(b)
-    * exp(a - b) -> exp(a) * exp(-b)
-
-    """
-    def __init__(self):
-        self.name = "RewriteExp"
-
-    def __str__(self):
-        return "rewrite exp expression"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if e.ty != FUN and e.func_name != 'exp':
-            return e
-        b = e.args[0]
-        if b.ty == OP and b.op == '+':
-            # exp(a + b) -> exp(a) * exp(b)
-            a1, a2 = b.args
-            return Fun('exp', a1) * Fun('exp', a2)
-        elif b.ty == OP and b.is_minus():
-            # exp(a - b) -> exp(a) * exp(-b)
-            a1, a2 = b.args
-            return Fun('exp', a1) * Fun('exp', -a2)
-        else:
-            raise NotImplementedError
-
-
 class SimplifyInfinity(Rule):
     '''
     1. oo^3 = oo
@@ -2030,47 +1973,6 @@ class IntegralSimplify(Rule):
 
     def __str__(self):
         return "simplify even and odd integrals"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-
-class RewriteLog(Rule):
-    """Rewriting rules for logarithms.
-    
-    Current rules are:
-    
-    1. log(a * b) = log(a) + log(b)
-    2. log(a / b) = log(a) - log(b)
-
-    """
-    def __init__(self):
-        self.name = "RewriteLog"
-
-    def __str__(self):
-        return "rewrite logarithm"
-
-    def eval(self, e: Expr, ctx: Context):
-        # pattern match first : log(a*b) then rewrite as log(a) + log(b)
-        a = Symbol('a', [VAR, CONST, OP, FUN])
-        b = Symbol('b', [VAR, CONST, OP, FUN])
-        rules = [
-            (log(a * b), log(a) + log(b)),
-            (log(a / b), log(a) - log(b))
-        ]
-        for pat, pat_res in rules:
-            pos = expr.find_pattern(e, pat)
-            if len(pos) >= 1:
-                mapped_expr, loc, mapping = pos[0]
-                if mapped_expr == e:
-                    return pat_res.inst_pat(mapping)
-                else:
-                    return OnLocation(self, loc).eval(e, ctx)
-
-        return e
 
     def export(self):
         return {

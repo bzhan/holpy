@@ -115,6 +115,31 @@
         },
         {
             "type": "header",
+            "name": "Exp-log identities",
+            "level": 1
+        },
+        {
+            "type": "axiom",
+            "expr": "exp(a + b) = exp(a) * exp(b)",
+            "category": "exp-log"
+        },
+        {
+            "type": "axiom",
+            "expr": "exp(a - b) = exp(a) * exp(-b)",
+            "category": "exp-log"
+        },
+        {
+            "type": "axiom",
+            "expr": "log(a * b) = log(a) + log(b)",
+            "category": "exp-log"
+        },
+        {
+            "type": "axiom",
+            "expr": "log(a / b) = log(a) - log(b)",
+            "category": "exp-log"
+        },
+        {
+            "type": "header",
             "name": "Trigonometric identities",
             "level": 1
         },

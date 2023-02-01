@@ -745,12 +745,8 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'ApplyInductHyp':
         induct_hyp = parser.parse_expr(item['induct_hyp'])
         return rules.ApplyInductHyp(induct_hyp)
-    elif item['name'] == 'RewriteLog':
-        return rules.RewriteLog()
     elif item['name'] == 'DerivativeSimplify':
         return rules.DerivativeSimplify()
-    elif item['name'] == 'RewriteExp':
-        return rules.RewriteExp()
     elif item['name'] == 'IntegrateBothSide':
         return rules.IntegralEquation()
     elif item['name'] == 'LimitEquation':

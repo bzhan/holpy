@@ -177,11 +177,13 @@
                         },
                         {
                             "latex_res": "2 t e^{-1/2\\cdot t ^ {2}} (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} \\,dy) + -2 t (\\int_{0}^{1} e^{-1/2\\cdot t ^ {2} y ^ {2}} e^{-1/2\\cdot t ^ {2}} \\,dy)",
-                            "res": "2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2)) + -2 * t * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2) * exp(-(1/2 * t ^ 2)))",
+                            "res": "2 * t * exp(-1/2 * t ^ 2) * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2)) + -2 * t * (INT y:[0,1]. exp(-1/2 * t ^ 2 * y ^ 2) * exp(-1/2 * t ^ 2))",
                             "rule": {
+                                "latex_str": "rewrite to \\(e^{-1/2\\cdot t ^ {2} y ^ {2}} e^{-1/2\\cdot t ^ {2}}\\) using identity at 1.1.0",
                                 "loc": "1.1.0",
-                                "name": "RewriteExp",
-                                "str": "rewrite exp expression at 1.1.0"
+                                "name": "ApplyIdentity",
+                                "str": "rewrite to exp(-1/2 * t ^ 2 * y ^ 2) * exp(-1/2 * t ^ 2) using identity at 1.1.0",
+                                "target": "exp(-1/2 * t ^ 2 * y ^ 2) * exp(-1/2 * t ^ 2)"
                             },
                             "type": "CalculationStep"
                         },
