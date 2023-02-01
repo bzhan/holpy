@@ -326,7 +326,8 @@ class ExprTest(unittest.TestCase):
             e = parse_expr(e)
             repl_e = parse_expr(repl_e)
             res = parse_expr(res)
-            self.assertEqual(s.replace_trig(e, repl_e), res)
+            self.assertEqual(s.replace(e, repl_e), res)
+
     def testDecomposeMul(self):
         test_data = [('-(b * exp(-(b * t)) * sin(t) * (b ^ 2 + 1) ^ -1)',
                       ('b', 'exp(-(b * t))','sin(t)','(b ^ 2 + 1) ^ (-1)','-1')),

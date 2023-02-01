@@ -4,7 +4,7 @@ from typing import Optional, List, Dict
 import os
 import json
 
-from integral.expr import Var, Expr, expr_to_pattern, match
+from integral.expr import Expr, expr_to_pattern
 from integral import parser
 from integral.conditions import Conditions
 

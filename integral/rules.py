@@ -1127,7 +1127,7 @@ class SubstitutionInverse(Rule):
         subst_deriv = expr.deriv(self.var_name, self.var_subst)
 
         # Replace x with f(u)
-        new_e_body = e.body.replace_trig(Var(e.var), self.var_subst)
+        new_e_body = e.body.replace(Var(e.var), self.var_subst)
 
         # g(x) = g(x(u)) * f'(u)
         new_e_body = new_e_body * subst_deriv

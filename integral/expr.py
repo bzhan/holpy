@@ -1160,49 +1160,6 @@ class Expr:
             return Eq(self.lhs.normalize(), self.rhs.normalize())
         return from_poly(self.to_poly())
 
-    def replace_trig(self, trig_old: Expr, trig_new: Expr):
-        """Replace trigonometric expression with its equivalent form in e.
-
-        Compared to regular substitution, it makes special consideration of
-        powers in trig_old. For example, if original expression is sin(x)^4,
-        trig_old is sin(x)^2 and trig_new is 1-cos(x)^2, then the returned
-        result is (1-cos(x)^2)^2.
-
-        """
-        assert isinstance(trig_old, Expr) and isinstance(trig_new, Expr)
-        if self == trig_old:
-            return trig_new
-
-        if self.ty == OP:
-            if len(self.args) == 1:
-                new_arg = self.args[0].replace_trig(trig_old, trig_new)
-                return Op(self.op, new_arg)
-            elif len(self.args) == 2:
-                if self.op == "^" and trig_old.ty == OP and trig_old.op == "^" \
-                        and self.args[0] == trig_old.args[0]:
-                    # The main additional case
-                    return Op(self.op, trig_new, (self.args[1] / trig_old.args[1]).normalize())
-                else:
-                    new_arg1 = self.args[0].replace_trig(trig_old, trig_new)
-                    new_arg2 = self.args[1].replace_trig(trig_old, trig_new)
-                    return Op(self.op, new_arg1, new_arg2)
-            else:
-                raise NotImplementedError
-        elif self.ty == FUN:
-            if len(self.args) > 0:
-                new_args = [arg.replace_trig(trig_old, trig_new) for arg in self.args]
-                return Fun(self.func_name, *new_args)
-            else:
-                return self
-        elif self.ty == INTEGRAL:
-            body = self.body.replace_trig(trig_old, trig_new)
-            return Integral(self.var, self.lower, self.upper, body)
-        elif self.ty == LIMIT:
-            body = self.body.replace_trig(trig_old, trig_new)
-            return Limit(self.var, self.lim, body)
-        else:
-            return self
-
     def has_func(self, func_name: str) -> bool:
         # determine whether expression has function called func_name
 
@@ -1446,7 +1403,7 @@ class Expr:
                 pw = base
                 for i in range(exp - 1):
                     pw = pw * base
-                expand_expr = expand_expr.replace_trig(s, from_poly(pw))
+                expand_expr = expand_expr.replace(s, from_poly(pw))
 
         return expand_expr
 
@@ -1511,7 +1468,7 @@ def sympy_style(s):
 
 def holpy_style(s):
     """Transform sympy object to expr."""
-    return parser.parse_expr(str(s).replace("**", "^")).replace_trig(Var("E"), Fun("exp", Const(1)))
+    return parser.parse_expr(str(s).replace("**", "^")).replace(Var("E"), Fun("exp", Const(1)))
 
 
 def factor_polynomial(e):
@@ -2139,27 +2096,6 @@ class Limit(Expr):
                 return False
         else:
             raise NotImplementedError
-
-    def lim_to_inf(self):
-        """
-        Convert the limit to oo, e.g. LIM {x -> 0+}. 1/x will be
-        converted to LIM {x -> oo}. x.
-
-        """
-        lim = self.lim.normalize()
-        v = Var(self.var)
-        if lim == inf():
-            bd = self.body
-        elif lim == neg_inf():
-            bd = self.body.replace_trig(v, -self.var)
-        elif self.drt == "+":
-            bd = self.body.replace_trig(v, self.lim + 1 / v)
-        elif self.drt == "-":
-            bd = self.body.replace_trig(v, self.lim - 1 / v)
-        else:
-            raise NotImplementedError("dir must be + or -.")
-
-        return Limit(self.var, inf, bd.normalize())
 
 
 class Inf(Expr):
