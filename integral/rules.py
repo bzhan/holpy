@@ -802,7 +802,6 @@ class FullSimplify(Rule):
             s = Simplify().eval(s, ctx)
             s = OnSubterm(DerivativeSimplify()).eval(s, ctx)
             s = OnSubterm(SimplifyPower()).eval(s, ctx)
-            s = OnSubterm(SimplifyInfinity()).eval(s, ctx)
             s = OnSubterm(SimplifyAbs()).eval(s, ctx)
             s = OnSubterm(IntegralSimplify()).eval(s, ctx)
             s = OnSubterm(ReduceInfLimit()).eval(s, ctx)
@@ -1073,8 +1072,14 @@ class Substitution(Rule):
             self.f = new_problem_body
 
         if e.is_integral():
-            lower = var_subst.subst(e.var, e.lower).normalize()
-            upper = var_subst.subst(e.var, e.upper).normalize()
+            if e.lower == expr.NEG_INF:
+                lower = limits.reduce_inf_limit(var_subst.subst(e.var, -Var(e.var)), e.var, ctx.get_conds())
+            else:
+                lower = var_subst.subst(e.var, e.lower).normalize()
+            if e.upper == expr.POS_INF:
+                upper = limits.reduce_inf_limit(var_subst, e.var, ctx.get_conds())
+            else:
+                upper = var_subst.subst(e.var, e.upper).normalize()
             if lower.is_evaluable() and upper.is_evaluable() and expr.eval_expr(lower) > expr.eval_expr(upper):
                 return Integral(self.var_name, upper, lower, Op("-", self.f)).normalize()
             else:
@@ -1866,31 +1871,6 @@ class ExtractFromRoot(Rule):
                 return -self.u * expr.Fun('sqrt', e.args[0] / (self.u ^ 2))
         else:
             raise NotImplementedError
-
-
-class SimplifyInfinity(Rule):
-    '''
-    1. oo^3 = oo
-
-    '''
-
-    def __init__(self):
-        self.name = "SimplifyInfinity"
-
-    def __str__(self):
-        return "SimplifyInfinity"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if e.ty == OP and e.op == '^' and e.args[0].is_pos_inf() and ctx.get_conds().is_positive(e.args[1]):
-            return Inf(Decimal('inf'))
-        else:
-            return e
 
 
 class SimplifyAbs(Rule):

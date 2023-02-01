@@ -632,7 +632,12 @@ def limit_of_expr(e: Expr, var_name: str, conds: Conditions) -> Limit:
         return Limit(None)
 
 def reduce_inf_limit(e: Expr, var_name: str, conds: Conditions) -> Expr:
-    """Reduce limits of expression as much as possible."""
+    """Reduce limits of expression as much as possible.
+    
+    Given variable x and expression e, attempt to simplify
+    the expression LIM {x->oo}. e.
+
+    """
     l = limit_of_expr(e, var_name, conds)
     if l.e is not None:
         return l.e
