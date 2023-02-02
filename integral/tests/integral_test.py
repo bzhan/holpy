@@ -1392,10 +1392,10 @@ class IntegralTest(unittest.TestCase):
 
         calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse(var_name='x', var_subst=e), '0.0'))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnSubterm(rules.RewriteMulPower(0)))
-        old_expr = parser.parse_expr("5 * x ^ 2 + 4 * x ^ 4 + x ^ 6 + 2")
-        new_expr = parser.parse_expr("(1+x^2)^2*(2+x^2)")
-        calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
+        calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("x ^ (-3) * (x ^ (-2) + 1) ^ (-1) * (2 * x ^ (-2) + 1) ^ (-1/2)"),
+                                         new_expr=parser.parse_expr("((1+x^2)^2*(2+x^2)) ^ (-1/2)")))
+        calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("x ^ (-1) * (2 * x ^ (-2) + 1) ^ (-1/2)"),
+                                         new_expr=parser.parse_expr("(x ^ 2 + 2) ^ (-1/2)")))
         calc.perform_rule(rules.FullSimplify())
         old_expr = parser.parse_expr("(x ^ 2 + 2) ^ (-1/2)")
         new_expr = parser.parse_expr("sqrt(x^2+2) ^ (-1)")

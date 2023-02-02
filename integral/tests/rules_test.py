@@ -349,16 +349,6 @@ class RulesTest(unittest.TestCase):
     #     t = 'LIM {x -> -oo}. (x+3) / sqrt(9*x*x - 5 * x)'
     #     res = "-1/3"
 
-    # def testExtractFromRoot(self):
-    #     test_data = [
-    #         ('sqrt(9*x*x - 5 * x)', '3*x', -1, "-(3 * x) * sqrt((9 * x * x - 5 * x) / (3 * x) ^ 2)")
-    #     ]
-    #     for a, b, c, d in test_data:
-    #         a = parser.parse_expr(a)
-    #         b = parser.parse_expr(b)
-    #         e = rules.ExtractFromRoot(b, c).eval(a)
-    #         self.assertEqual(str(e), d)
-
     def testComputeLimit1(self):
         s = 'LIM {t -> oo}. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1'
         e = parser.parse_expr(s)
@@ -384,17 +374,6 @@ class RulesTest(unittest.TestCase):
             e = rules.FullSimplify().eval(e)
             self.assertEqual(str(e), res)
 
-    def testRootFractionReWrite(self):
-        test_data = [
-            ("(x+3) / sqrt(9*x*x - 5 * x)", "((x + 3) ^ 2 / (9 * x * x - 5 * x) ^ 1) ^ (1/2)"),
-            ("x^(1/2) / y^(1/6)", "(x ^ 3 / y ^ 1) ^ (1/6)")
-        ]
-
-        for s, s2 in test_data:
-            s = parser.parse_expr(s)
-            e = rules.RootFractionReWrite().eval(s)
-            self.assertEqual(str(e), s2)
-
     def testFullSimplify2(self):
         test_data = [
             ("INT x:[0,oo]. D b. (x ^ 2 + b) ^ (-m - 1)", "INT x:[0,oo]. D b. (x ^ 2 + b) ^ (-m - 1)"),
@@ -418,18 +397,6 @@ class RulesTest(unittest.TestCase):
             e = parser.parse_expr(a)
             res = rules.SeriesExpansionIdentity().eval(e, ctx=ctx)
             self.assertEqual(str(res), b)
-
-    def testRewriteMulPower(self):
-        test_data = [
-            ('a * sqrt(b+3)', 0, 'sqrt(a ^ 2 * b + 3 * a ^ 2)'),
-            ('x^(-1)*(2*x^(-2)+1)^(-1/2)', 0, '(x ^ 2 + 2) ^ (-1/2)'),
-            ('x^(-3)*(x^(-2)+1)^(-1)', 0, '(x ^ 3 + x) ^ (-1)'),
-            ('(x^3+x)^(-1)*(2*x^(-2)+1)^(-1/2)', 0, '(5 * x ^ 2 + 4 * x ^ 4 + x ^ 6 + 2) ^ (-1/2)')
-        ]
-        for a, b, c in test_data:
-            e = parser.parse_expr(a)
-            res = rules.RewriteMulPower(b).eval(e)
-            self.assertEqual(str(res), c)
 
     def testExpandPolynomial(self):
         test_data = [

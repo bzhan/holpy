@@ -758,9 +758,6 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'DerivEquation':
         var = item['var']
         return rules.DerivEquation(var)
-    elif item['name'] == 'RewriteMulPower':
-        merged_idx = item['merged_idx']
-        return rules.RewriteMulPower(merged_idx)
     elif item['name'] == 'SolveEquation':
         solve_for = parser.parse_expr(item['solve_for'])
         return rules.SolveEquation(solve_for)
