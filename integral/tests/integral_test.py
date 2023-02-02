@@ -1330,25 +1330,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ExpandDefinition("I"))
         calc.perform_rule(rules.FullSimplify())
 
-        goal002 = file.add_goal("(LIM {u->oo}. I(u)) = \
-                1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))", conds=["u > 0"])
-        proof = goal002.proof_by_calculation()
-        calc = proof.lhs_calc
-        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
-        calc.perform_rule(rules.FullSimplify())
-
-        goal01 = file.add_goal("(LIM {u->oo}. I(u)) = pi^2 / 12")
-        proof = goal01.proof_by_calculation()
-        calc = proof.lhs_calc
-        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
-        calc.perform_rule(rules.FullSimplify())
-        u = expr.Const(1)
-        v = parser.parse_expr("atan(x/sqrt(2+x^2))")
-        calc.perform_rule(rules.OnLocation(rules.IntegrationByParts(u=u, v=v), "1"))
-        calc.perform_rule(rules.FullSimplify())
-        calc = proof.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
-
         goal02 = file.add_goal("(D u. I(u)) = \
                 (1+u^2)^(-1) * (pi/4 - u * sqrt(1+2*u^2)^(-1)*atan(u/sqrt(1+2*u^2)))", conds=["u > 0"])
         proof = goal02.proof_by_calculation()
@@ -1377,7 +1358,11 @@ class IntegralTest(unittest.TestCase):
         proof = goal03.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal01.goal), "0"))
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition("I"), "0.0"))
+        calc.perform_rule(rules.FullSimplify())
+        u = expr.Const(1)
+        v = parser.parse_expr("atan(x/sqrt(2+x^2))")
+        calc.perform_rule(rules.IntegrationByParts(u=u, v=v))
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -1404,9 +1389,9 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal001.goal), "0.0"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal002.goal), "0.1.1"))
-        calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal01.goal), "1"))
+        u = expr.Const(1)
+        v = parser.parse_expr("atan(x/sqrt(2+x^2))")
+        calc.perform_rule(rules.IntegrationByParts(u=u, v=v))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal04.rhs_calc
         calc.perform_rule(rules.FullSimplify())

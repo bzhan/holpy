@@ -64,134 +64,6 @@
                 }
             ],
             "finished": true,
-            "goal": "(LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
-            "latex_goal": "\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
-            "proof": {
-                "finished": true,
-                "goal": "(LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
-                "latex_goal": "\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
-                "lhs_calc": {
-                    "latex_start": "\\lim\\limits_{u\\to \\infty} I{(u)}",
-                    "start": "LIM {u -> oo}. I(u)",
-                    "steps": [
-                        {
-                            "latex_res": "\\lim\\limits_{u\\to \\infty} \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(u \\sqrt{x ^ {2} + 2})} \\,dx",
-                            "res": "LIM {u -> oo}. INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
-                            "rule": {
-                                "func_name": "I",
-                                "loc": "subterms",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition on subterms"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
-                            "res": "1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "rhs_calc": {
-                    "latex_start": "\\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
-                    "start": "1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
-                    "steps": [],
-                    "type": "Calculation"
-                },
-                "type": "CalculationProof"
-            },
-            "type": "Goal"
-        },
-        {
-            "finished": true,
-            "goal": "(LIM {u -> oo}. I(u)) = pi ^ 2 / 12",
-            "latex_goal": "\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}",
-            "proof": {
-                "finished": true,
-                "goal": "(LIM {u -> oo}. I(u)) = pi ^ 2 / 12",
-                "latex_goal": "\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}",
-                "lhs_calc": {
-                    "latex_start": "\\lim\\limits_{u\\to \\infty} I{(u)}",
-                    "start": "LIM {u -> oo}. I(u)",
-                    "steps": [
-                        {
-                            "latex_res": "\\lim\\limits_{u\\to \\infty} \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(u \\sqrt{x ^ {2} + 2})} \\,dx",
-                            "res": "LIM {u -> oo}. INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))",
-                            "rule": {
-                                "func_name": "I",
-                                "loc": "subterms",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition on subterms"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)",
-                            "res": "1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{2} \\pi ((\\left. \\tan^{-1}{(x (x ^ {2} + 2) ^ {-1/2})} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} 0 \\,dx))",
-                            "res": "1/2 * pi * (([atan(x * (x ^ 2 + 2) ^ (-1/2))]_x=0,1) - (INT x:[0,1]. 0))",
-                            "rule": {
-                                "latex_str": "integrate by parts \\(u \\to 1, v \\to \\tan^{-1}{(\\frac{x}{\\sqrt{2 + x ^ {2}}})}\\) at 1",
-                                "loc": "1",
-                                "name": "IntegrationByParts",
-                                "str": "integrate by parts u -> 1, v -> atan(x / sqrt(2 + x ^ 2)) at 1",
-                                "u": "1",
-                                "v": "atan(x / sqrt(2 + x ^ 2))"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{12} \\pi ^ {2}",
-                            "res": "1/12 * pi ^ 2",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "rhs_calc": {
-                    "latex_start": "\\frac{\\pi ^ {2}}{12}",
-                    "start": "pi ^ 2 / 12",
-                    "steps": [
-                        {
-                            "latex_res": "\\frac{1}{12} \\pi ^ {2}",
-                            "res": "1/12 * pi ^ 2",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "type": "CalculationProof"
-            },
-            "type": "Goal"
-        },
-        {
-            "conds": [
-                {
-                    "cond": "u > 0",
-                    "latex_cond": "u > 0"
-                }
-            ],
-            "finished": true,
             "goal": "(D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
             "latex_goal": "\\frac{d}{du} I{(u)} = (1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})",
             "proof": {
@@ -351,14 +223,34 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{\\pi ^ {2}}{12} - I{(1)}",
-                            "res": "pi ^ 2 / 12 - I(1)",
+                            "latex_res": "(\\lim\\limits_{u\\to \\infty} \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(u \\sqrt{x ^ {2} + 2})} \\,dx) - I{(1)}",
+                            "res": "(LIM {u -> oo}. INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(u * sqrt(x ^ 2 + 2))) - I(1)",
                             "rule": {
-                                "eq": "(LIM {u -> oo}. I(u)) = pi ^ 2 / 12",
-                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}\\) at 0",
-                                "loc": "0",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (LIM {u -> oo}. I(u)) = pi ^ 2 / 12 at 0"
+                                "func_name": "I",
+                                "loc": "0.0",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition at 0.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx) - I{(1)}",
+                            "res": "1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2)) - I(1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} \\pi ((\\left. \\tan^{-1}{(x (x ^ {2} + 2) ^ {-1/2})} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} 0 \\,dx)) - I{(1)}",
+                            "res": "1/2 * pi * (([atan(x * (x ^ 2 + 2) ^ (-1/2))]_x=0,1) - (INT x:[0,1]. 0)) - I(1)",
+                            "rule": {
+                                "latex_str": "integrate by parts \\(u \\to 1, v \\to \\tan^{-1}{(\\frac{x}{\\sqrt{2 + x ^ {2}}})}\\)",
+                                "name": "IntegrationByParts",
+                                "str": "integrate by parts u -> 1, v -> atan(x / sqrt(2 + x ^ 2))",
+                                "u": "1",
+                                "v": "atan(x / sqrt(2 + x ^ 2))"
                             },
                             "type": "CalculationStep"
                         },
@@ -549,35 +441,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(1)} + -\\frac{1}{2} \\pi (\\frac{\\lim\\limits_{u\\to \\infty} I{(u)}}{\\frac{1}{2} \\pi}) + \\frac{1}{16} \\pi ^ {2}",
-                            "res": "I(1) + -1/2 * pi * ((LIM {u -> oo}. I(u)) / (1/2 * pi)) + 1/16 * pi ^ 2",
+                            "latex_res": "I{(1)} + -\\frac{1}{2} \\pi ((\\left. \\tan^{-1}{(x (x ^ {2} + 2) ^ {-1/2})} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} 0 \\,dx)) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "I(1) + -1/2 * pi * (([atan(x * (x ^ 2 + 2) ^ (-1/2))]_x=0,1) - (INT x:[0,1]. 0)) + 1/16 * pi ^ 2",
                             "rule": {
-                                "eq": "(LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
-                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)\\) at 0.1.1",
-                                "loc": "0.1.1",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2)) at 0.1.1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{16} \\pi ^ {2} + I{(1)} - (\\lim\\limits_{u\\to \\infty} I{(u)})",
-                            "res": "1/16 * pi ^ 2 + I(1) - (LIM {u -> oo}. I(u))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{16} \\pi ^ {2} + I{(1)} - \\frac{\\pi ^ {2}}{12}",
-                            "res": "1/16 * pi ^ 2 + I(1) - pi ^ 2 / 12",
-                            "rule": {
-                                "eq": "(LIM {u -> oo}. I(u)) = pi ^ 2 / 12",
-                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}\\) at 1",
-                                "loc": "1",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (LIM {u -> oo}. I(u)) = pi ^ 2 / 12 at 1"
+                                "latex_str": "integrate by parts \\(u \\to 1, v \\to \\tan^{-1}{(\\frac{x}{\\sqrt{2 + x ^ {2}}})}\\)",
+                                "name": "IntegrationByParts",
+                                "str": "integrate by parts u -> 1, v -> atan(x / sqrt(2 + x ^ 2))",
+                                "u": "1",
+                                "v": "atan(x / sqrt(2 + x ^ 2))"
                             },
                             "type": "CalculationStep"
                         },
