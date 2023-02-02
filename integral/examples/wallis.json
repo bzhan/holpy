@@ -206,8 +206,8 @@
                             "start": "I(m + 1,b)",
                             "steps": [
                                 {
-                                    "latex_res": "\\frac{1}{-(m + 1)} (\\frac{d}{db} I(m,b))",
-                                    "res": "1 / -(m + 1) * (D b. I(m,b))",
+                                    "latex_res": "\\frac{\\frac{d}{db} I(m,b)}{-(m + 1)}",
+                                    "res": "(D b. I(m,b)) / -(m + 1)",
                                     "rule": {
                                         "eq": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
                                         "latex_str": "apply equation \\(\\frac{d}{db} I(m,b) = -(m + 1) I(m + 1,b)\\)",
@@ -217,8 +217,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\frac{1}{-(m + 1)} (\\frac{d}{db} \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}}))",
-                                    "res": "1 / -(m + 1) * (D b. pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2)))",
+                                    "latex_res": "\\frac{\\frac{d}{db} \\frac{\\pi}{2 ^ {2 m + 1}} \\binom{2 m}{m} (\\frac{1}{b ^ {(2 m + 1)/2}})}{-(m + 1)}",
+                                    "res": "(D b. pi / 2 ^ (2 * m + 1) * binom(2 * m,m) * (1 / b ^ ((2 * m + 1) / 2))) / -(m + 1)",
                                     "rule": {
                                         "loc": "subterms",
                                         "name": "ApplyInductHyp",

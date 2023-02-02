@@ -806,22 +806,24 @@ class Expr:
             return repl_e
         elif self.ty in (VAR, CONST, INF):
             return self
-        elif self.ty == OP:
+        elif self.is_op():
             return Op(self.op, *[arg.replace(e, repl_e) for arg in self.args])
-        elif self.ty == FUN:
+        elif self.is_fun():
             return Fun(self.func_name, *[arg.replace(e, repl_e) for arg in self.args])
-        elif self.ty == DERIV:
+        elif self.is_deriv():
             return Deriv(self.var, self.body.replace(e, repl_e))
-        elif self.ty == INTEGRAL:
+        elif self.is_integral():
             return Integral(self.var, self.lower.replace(e, repl_e), self.upper.replace(e, repl_e),
                             self.body.replace(e, repl_e))
-        elif self.ty == EVAL_AT:
+        elif self.is_evalat():
             return EvalAt(self.var, self.lower.replace(e, repl_e), self.upper.replace(e, repl_e),
                           self.body.replace(e, repl_e))
-        elif self.ty == SKOLEMFUNC:
+        elif self.is_skolem_func():
             return SkolemFunc(self.name, tuple(var.replace(e, repl_e) for var in self.dependent_vars))
-        elif self.ty == SUMMATION:
+        elif self.is_summation():
             return Summation(self.index_var, self.lower, self.upper, self.body.replace(e, repl_e))
+        elif self.is_limit():
+            return Limit(self.var, self.lim.replace(e, repl_e), self.body.replace(e, repl_e), self.drt)
         else:
             print(self)
             raise NotImplementedError
@@ -1991,6 +1993,8 @@ class Op(Expr):
             return "%s%s" % (self.op, s)
         elif len(self.args) == 2:
             a, b = self.args
+            if self.op == '/' and a.is_const() and b.is_const() and isinstance(a.val, int) and isinstance(b.val, int):
+                return "%s/%s" % (a.val, b.val)
             s1, s2 = str(a), str(b)
             if a.priority() < op_priority[self.op]:
                 s1 = "(%s)" % s1

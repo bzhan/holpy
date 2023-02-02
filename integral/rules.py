@@ -817,110 +817,58 @@ class FullSimplify(Rule):
 
 
 class ApplyEquation(Rule):
-    """Apply the given equation for rewriting.
-
-    subMap is an optional map from variable name (str) to expressions.
-
-    """
-
-    def __init__(self, eq: Expr, subMap: dict = None):
+    """Apply the given equation for rewriting."""
+    def __init__(self, eq: Expr):
         self.name = "ApplyEquation"
         self.eq = eq
-        self.subMap = subMap
 
     def __str__(self):
-        s = ""
-        if self.subMap:
-            first = True
-            for a, b in self.subMap.items():
-                if first:
-                    first = False
-                    s = s + " where %s -> %s" % (a, b)
-                else:
-                    s = s + ', %s -> %s' % (a, b)
-        return "apply equation: " + str(self.eq) + s
+        return "apply equation: " + str(self.eq)
 
     def latex_str(self):
-        s = ""
-        if self.subMap:
-            first = True
-            for a, b in self.subMap.items():
-                if first:
-                    first = False
-                    s = s + " where \\(%s \\to %s\\)" % (a, latex.convert_expr(b))
-                else:
-                    s = s + ', \\(%s \\to %s\\)' % (a, latex.convert_expr(b))
-        return "apply equation \\(%s\\)" % latex.convert_expr(self.eq) + s
+        return "apply equation \\(%s\\)" % latex.convert_expr(self.eq)
 
     def export(self):
-        res = {
+        return {
             "name": self.name,
             "eq": str(self.eq),
             "str": str(self),
             "latex_str": self.latex_str()
         }
-        if self.subMap:
-            res['subMap'] = []
-            for var, e in self.subMap.items():
-                res['subMap'].append({
-                    "var": var,
-                    "expr": str(e),
-                    "latex_expr": latex.convert_expr(e)
-                })
-        return res
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
-        if self.subMap == None:
-            # With no instantiation
-            pat = expr.expr_to_pattern(self.eq)
-            inst_lhs = expr.match(e, pat.lhs)
-            inst_rhs = expr.match(e, pat.rhs)
-            if inst_lhs is not None:
-                tmp = pat.rhs.inst_pat(inst_lhs)
-                if not tmp.has_symbol():
-                    return tmp
-                else:
-                    tmp_inst_rhs = expr.match(self.eq.rhs, pat.rhs)
-                    return tmp.inst_pat(tmp_inst_rhs)
-            elif inst_rhs is not None:
-                tmp = pat.lhs.inst_pat(inst_rhs)
-                if not tmp.has_symbol():
-                    return tmp
-                else:
-                    tmp_inst_lhs = expr.match(self.eq.lhs, pat.lhs)
-                    return tmp.inst_pat(tmp_inst_lhs)
-            elif self.eq.lhs.normalize() == e.normalize():
-                return self.eq.rhs
-            elif self.eq.rhs.normalize() == e.normalize():
-                return self.eq.lhs
-            elif self.eq.rhs.is_times() and self.eq.rhs.args[1].normalize() == e.normalize():
-                # e' = f * e
-                return 1 / self.eq.rhs.args[0] * self.eq.lhs
-            elif self.eq.rhs.is_minus() and self.eq.rhs.args[1].normalize() == e.normalize():
-                # c = a - e -> e = a - c
-                return self.eq.rhs.args[0] - self.eq.lhs
-            elif self.eq.rhs.is_plus() and self.eq.rhs.args[1] == e:
-                # e' = f + e
-                return self.eq.lhs - self.eq.rhs.args[0]
-            elif self.eq.rhs.is_plus() and self.eq.rhs.args[0] == e:
-                # e' = e + f
-                return self.eq.lhs - self.eq.rhs.args[1]
-            elif self.eq.lhs.is_plus() and self.eq.lhs.args[0].normalize() == e.normalize():
-                return self.eq.rhs - self.eq.lhs.args[1]
-            elif self.eq.lhs.is_plus() and self.eq.lhs.args[1].normalize() == e.normalize():
-                return self.eq.rhs - self.eq.lhs.args[0]
-            elif self.eq.rhs.is_minus() and self.eq.rhs.args[0] == e.normalize():
-                return self.eq.lhs + self.eq.rhs.args[1]
-            elif self.eq.rhs.normalize() == e.normalize():
-                return self.eq.lhs
+        found = False
+        for identity in ctx.get_lemmas():
+            if self.eq == Op("=", identity.lhs, identity.rhs):
+                found = True
+        assert found, "ApplyEquation: lemma %s not found" % self.eq
+
+        # First try to match the current term with left or right side.
+        pat = expr.expr_to_pattern(self.eq)
+        inst_lhs = expr.match(e, pat.lhs)
+        inst_rhs = expr.match(e, pat.rhs)
+        if inst_lhs is not None:
+            tmp = pat.rhs.inst_pat(inst_lhs)
+            if not tmp.has_symbol():
+                return tmp
             else:
-                return e
+                tmp_inst_rhs = expr.match(self.eq.rhs, pat.rhs)
+                return tmp.inst_pat(tmp_inst_rhs)
+
+        if inst_rhs is not None:
+            tmp = pat.lhs.inst_pat(inst_rhs)
+            if not tmp.has_symbol():
+                return tmp
+            else:
+                tmp_inst_lhs = expr.match(self.eq.lhs, pat.lhs)
+                return tmp.inst_pat(tmp_inst_lhs)
+
+        # Finally, try to solve for e in the equation.
+        res = solve_for_term(self.eq, e)
+        if res is not None:
+            return res
         else:
-            # With provided instantiation
-            new_eq = self.eq
-            for var, e2 in self.subMap.items():
-                new_eq = new_eq.subst(var, e2)
-            return ApplyEquation(new_eq).eval(e, ctx)
+            return e
 
 
 class ApplyInductHyp(Rule):

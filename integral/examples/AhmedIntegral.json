@@ -355,10 +355,10 @@
                             "res": "pi ^ 2 / 12 - I(1)",
                             "rule": {
                                 "eq": "(LIM {u -> oo}. I(u)) = pi ^ 2 / 12",
-                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}\\) on subterms",
-                                "loc": "subterms",
+                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}\\) at 0",
+                                "loc": "0",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: (LIM {u -> oo}. I(u)) = pi ^ 2 / 12 on subterms"
+                                "str": "apply equation: (LIM {u -> oo}. I(u)) = pi ^ 2 / 12 at 0"
                             },
                             "type": "CalculationStep"
                         },
@@ -411,10 +411,10 @@
                             "res": "INT u:[1,oo]. (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
                             "rule": {
                                 "eq": "(D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
-                                "latex_str": "apply equation \\(\\frac{d}{du} I{(u)} = (1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})\\) on subterms",
-                                "loc": "subterms",
+                                "latex_str": "apply equation \\(\\frac{d}{du} I{(u)} = (1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})\\) at 0",
+                                "loc": "0",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: (D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2))) on subterms"
+                                "str": "apply equation: (D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2))) at 0"
                             },
                             "type": "CalculationStep"
                         },
@@ -540,34 +540,43 @@
                             "res": "I(1) + -1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2)) + 1/16 * pi ^ 2",
                             "rule": {
                                 "eq": "I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2)))",
-                                "latex_str": "apply equation \\(I{(1)} = \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(\\sqrt{x ^ {2} + 2})} \\,dx\\) on subterms",
-                                "loc": "subterms",
+                                "latex_str": "apply equation \\(I{(1)} = \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(\\sqrt{x ^ {2} + 2})} \\,dx\\) at 0.0",
+                                "loc": "0.0",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))) on subterms"
+                                "str": "apply equation: I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))) at 0.0"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(1)} + -\\frac{1}{2} \\pi (\\frac{1}{\\frac{1}{2} \\pi} (\\lim\\limits_{u\\to \\infty} I{(u)})) + \\frac{1}{16} \\pi ^ {2}",
-                            "res": "I(1) + -1/2 * pi * (1 / (1/2 * pi) * (LIM {u -> oo}. I(u))) + 1/16 * pi ^ 2",
+                            "latex_res": "I{(1)} + -\\frac{1}{2} \\pi (\\frac{\\lim\\limits_{u\\to \\infty} I{(u)}}{\\frac{1}{2} \\pi}) + \\frac{1}{16} \\pi ^ {2}",
+                            "res": "I(1) + -1/2 * pi * ((LIM {u -> oo}. I(u)) / (1/2 * pi)) + 1/16 * pi ^ 2",
                             "rule": {
                                 "eq": "(LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2))",
-                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)\\) on subterms",
-                                "loc": "subterms",
+                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{1}{2} \\pi (\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\,dx)\\) at 0.1.1",
+                                "loc": "0.1.1",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: (LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2)) on subterms"
+                                "str": "apply equation: (LIM {u -> oo}. I(u)) = 1/2 * pi * (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2)) at 0.1.1"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(1)} + -\\frac{1}{2} \\pi (\\frac{1}{\\frac{1}{2} \\pi} (\\frac{\\pi ^ {2}}{12})) + \\frac{1}{16} \\pi ^ {2}",
-                            "res": "I(1) + -1/2 * pi * (1 / (1/2 * pi) * (pi ^ 2 / 12)) + 1/16 * pi ^ 2",
+                            "latex_res": "\\frac{1}{16} \\pi ^ {2} + I{(1)} - (\\lim\\limits_{u\\to \\infty} I{(u)})",
+                            "res": "1/16 * pi ^ 2 + I(1) - (LIM {u -> oo}. I(u))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{16} \\pi ^ {2} + I{(1)} - \\frac{\\pi ^ {2}}{12}",
+                            "res": "1/16 * pi ^ 2 + I(1) - pi ^ 2 / 12",
                             "rule": {
                                 "eq": "(LIM {u -> oo}. I(u)) = pi ^ 2 / 12",
-                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}\\) on subterms",
-                                "loc": "subterms",
+                                "latex_str": "apply equation \\(\\lim\\limits_{u\\to \\infty} I{(u)} = \\frac{\\pi ^ {2}}{12}\\) at 1",
+                                "loc": "1",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: (LIM {u -> oo}. I(u)) = pi ^ 2 / 12 on subterms"
+                                "str": "apply equation: (LIM {u -> oo}. I(u)) = pi ^ 2 / 12 at 1"
                             },
                             "type": "CalculationStep"
                         },

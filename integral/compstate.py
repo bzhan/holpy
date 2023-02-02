@@ -263,7 +263,8 @@ class Calculation(StateItem):
         is carried out.
 
     """
-    def __init__(self, parent, start: Expr, *, connection_symbol = '=', conds: Optional[Conditions] = None):
+    def __init__(self, parent, ctx: Context, start: Expr, *,
+                 connection_symbol = '=', conds: Optional[Conditions] = None):
         self.parent = parent
         self.start = start
         self.steps: List[CalculationStep] = []
@@ -272,9 +273,9 @@ class Calculation(StateItem):
         self.conds = conds
         self.connection_symbol = connection_symbol
         if conds is None:
-            self.ctx = parent.ctx
+            self.ctx = ctx
         else:
-            self.ctx = Context(parent.ctx)
+            self.ctx = Context(ctx)
             self.ctx.extend_condition(self.conds)
 
     def __str__(self):
@@ -347,8 +348,8 @@ class CalculationProof(StateItem):
         self.goal = goal
         self.ctx = parent.ctx
 
-        self.lhs_calc = Calculation(self, self.goal.lhs)
-        self.rhs_calc = Calculation(self, self.goal.rhs)
+        self.lhs_calc = Calculation(self, self.ctx, self.goal.lhs)
+        self.rhs_calc = Calculation(self, self.ctx, self.goal.rhs)
 
     def __str__(self):
         if self.is_finished():
@@ -538,7 +539,7 @@ class RewriteGoalProof(StateItem):
         self.parent = parent
         self.goal = goal
         self.ctx = parent.ctx
-        self.begin = Calculation(parent, begin.goal, conds=begin.conds, connection_symbol = '==>')
+        self.begin = Calculation(parent, self.ctx, begin.goal, conds=begin.conds, connection_symbol = '==>')
 
     def is_finished(self):
         f1 = self.begin.last_expr.lhs.normalize() == self.goal.lhs.normalize()
@@ -594,15 +595,18 @@ class CompFile:
         return res
 
     def get_context(self, index: int = -1) -> Context:
-        """Obtain the context up to the particular index.
+        """Obtain the context up to the particular index (exclusive).
         
         If index = -1, return the context after processing all the content.
         
         """
         ctx = Context(self.ctx)
-        for item in self.content:
-            if isinstance(item, FuncDef) or isinstance(item, Goal):
-                ctx.extend_by_item(item.export_book())
+        for item in (self.content if index == -1 else self.content[:index]):
+            if isinstance(item, FuncDef):
+                ctx.add_definition(item.eq)
+                ctx.add_lemma(item.eq)
+            elif isinstance(item, Goal):
+                ctx.add_lemma(item.goal)
         return ctx
 
     def add_definition(self, funcdef: Union[str, Expr], *, conds: List[Union[str, Expr]] = None) -> FuncDef:
@@ -629,14 +633,13 @@ class CompFile:
             raise NotImplementedError
         return self.content[-1]
 
-    def add_calculation(self, calc: Union[str, Expr, Calculation]) -> Calculation:
+    def add_calculation(self, calc: Union[str, Expr]) -> Calculation:
         """Add a calculation."""
+        ctx = self.get_context()
         if isinstance(calc, str):
-            self.content.append(Calculation(self, parser.parse_expr(calc)))
+            self.content.append(Calculation(self, ctx, parser.parse_expr(calc)))
         elif isinstance(calc, Expr):
-            self.content.append(Calculation(self, calc))
-        elif isinstance(calc, Calculation):
-            self.content.append(calc)
+            self.content.append(Calculation(self, ctx, calc))
         else:
             raise NotImplementedError
         return self.content[-1]
@@ -719,11 +722,7 @@ def parse_rule(item) -> Rule:
         return rules.Equation(new_expr, old_expr=old_expr)
     elif item['name'] == 'ApplyEquation':
         eq = parser.parse_expr(item['eq'])
-        subMap = dict()
-        if 'subMap' in item:
-            for inst in item['subMap']:
-                subMap[inst['var']] = parser.parse_expr(inst['expr'])
-        return rules.ApplyEquation(eq, subMap)
+        return rules.ApplyEquation(eq)
     elif item['name'] == 'ExpandPolynomial':
         return rules.ExpandPolynomial()
     elif item['name'] == 'PolynomialDivision':
@@ -825,7 +824,8 @@ def parse_item(parent, item) -> StateItem:
         return res
     elif item['type'] == 'Calculation':
         start = parser.parse_expr(item['start'])
-        res = Calculation(parent, start)
+        ctx = parent.get_context() if isinstance(parent, CompFile) else parent.ctx
+        res = Calculation(parent, ctx, start)
         for i, step in enumerate(item['steps']):
             res.add_step(parse_step(res, step, i))
         return res

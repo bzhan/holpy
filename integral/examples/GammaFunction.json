@@ -172,20 +172,25 @@
                             "start": "Gamma(n + 2)",
                             "steps": [
                                 {
+                                    "latex_res": "\\Gamma{(n + 1 + 1)}",
+                                    "res": "Gamma(n + 1 + 1)",
+                                    "rule": {
+                                        "latex_str": "rewriting \\(n + 2\\) to \\(n + 1 + 1\\)",
+                                        "name": "Equation",
+                                        "new_expr": "n + 1 + 1",
+                                        "old_expr": "n + 2",
+                                        "str": "rewriting n + 2 to n + 1 + 1"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
                                     "latex_res": "(n + 1) \\Gamma{(n + 1)}",
                                     "res": "(n + 1) * Gamma(n + 1)",
                                     "rule": {
                                         "eq": "Gamma(n + 1) = n * Gamma(n)",
-                                        "latex_str": "apply equation \\(\\Gamma{(n + 1)} = n \\Gamma{(n)}\\) where \\(n \\to n + 1\\)",
+                                        "latex_str": "apply equation \\(\\Gamma{(n + 1)} = n \\Gamma{(n)}\\)",
                                         "name": "ApplyEquation",
-                                        "str": "apply equation: Gamma(n + 1) = n * Gamma(n) where n -> n + 1",
-                                        "subMap": [
-                                            {
-                                                "expr": "n + 1",
-                                                "latex_expr": "n + 1",
-                                                "var": "n"
-                                            }
-                                        ]
+                                        "str": "apply equation: Gamma(n + 1) = n * Gamma(n)"
                                     },
                                     "type": "CalculationStep"
                                 },
@@ -255,21 +260,26 @@
                     "type": "CalculationStep"
                 },
                 {
+                    "latex_res": "\\frac{1}{3} (\\int_{0}^{\\infty} e^{-y} y ^ {1/3 - 1} \\,dy)",
+                    "res": "1/3 * (INT y:[0,oo]. exp(-y) * y ^ (1/3 - 1))",
+                    "rule": {
+                        "latex_str": "rewriting \\(y ^ {-2/3} e^{-y}\\) to \\(e^{-y} y ^ {1/3 - 1}\\)",
+                        "name": "Equation",
+                        "new_expr": "exp(-y) * y ^ (1/3 - 1)",
+                        "old_expr": "y ^ (-2/3) * exp(-y)",
+                        "str": "rewriting y ^ (-2/3) * exp(-y) to exp(-y) * y ^ (1/3 - 1)"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "\\frac{1}{3} \\Gamma{(\\frac{1}{3})}",
                     "res": "1/3 * Gamma(1/3)",
                     "rule": {
                         "eq": "Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1))",
-                        "latex_str": "apply equation \\(\\Gamma{(n)} = \\int_{0}^{\\infty} e^{-x} x ^ {n - 1} \\,dx\\) where \\(n \\to \\frac{1}{3}\\) on subterms",
-                        "loc": "subterms",
+                        "latex_str": "apply equation \\(\\Gamma{(n)} = \\int_{0}^{\\infty} e^{-x} x ^ {n - 1} \\,dx\\) at 1",
+                        "loc": "1",
                         "name": "ApplyEquation",
-                        "str": "apply equation: Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1)) where n -> 1/3 on subterms",
-                        "subMap": [
-                            {
-                                "expr": "1/3",
-                                "latex_expr": "\\frac{1}{3}",
-                                "var": "n"
-                            }
-                        ]
+                        "str": "apply equation: Gamma(n) = (INT x:[0,oo]. exp(-x) * x ^ (n - 1)) at 1"
                     },
                     "type": "CalculationStep"
                 },

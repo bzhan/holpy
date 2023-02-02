@@ -63,6 +63,9 @@ class Context:
         # List of other identities (trigonometric, etc)
         self.other_identities: List[Identity] = list()
 
+        # Lemmas
+        self.lemmas: List[Identity] = list()
+
         # Inductive hypothesis
         self.induct_hyps: List[Identity] = list()
 
@@ -91,6 +94,9 @@ class Context:
             res += str(identity) + "\n"
         res += "Other identities\n"
         for identity in self.get_other_identities():
+            res += str(identity) + "\n"
+        res += "Lemmas\n"
+        for identity in self.get_lemmas():
             res += str(identity) + "\n"
         res += "Inductive hypothesis\n"
         for identity in self.get_induct_hyps():
@@ -128,6 +134,11 @@ class Context:
     def get_other_identities(self) -> List[Identity]:
         res = self.parent.get_other_identities() if self.parent is not None else []
         res.extend(self.other_identities)
+        return res
+
+    def get_lemmas(self) -> List[Identity]:
+        res = self.parent.get_lemmas() if self.parent is not None else []
+        res.extend(self.lemmas)
         return res
 
     def get_induct_hyps(self) -> List[Identity]:
@@ -194,6 +205,13 @@ class Context:
         symb_lhs = expr_to_pattern(eq.lhs)
         symb_rhs = expr_to_pattern(eq.rhs)
         self.other_identities.append(Identity(symb_lhs, symb_rhs, category=category))
+
+    def add_lemma(self, eq: Expr):
+        if not eq.is_equals():
+            raise TypeError
+
+        # Note: no conversion to symbols for lemmas within a file.        
+        self.lemmas.append(Identity(eq.lhs, eq.rhs))
 
     def add_induct_hyp(self, eq: Expr):
         if not eq.is_equals():

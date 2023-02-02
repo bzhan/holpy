@@ -516,7 +516,8 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof_induct.lhs_calc
-        calc.perform_rule(rules.ApplyEquation(goal1.goal, subMap={"n": parser.parse_expr("n + 1")}))
+        calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("n + 2"), new_expr=parser.parse_expr("(n + 1) + 1")))
+        calc.perform_rule(rules.ApplyEquation(goal1.goal))
         calc.perform_rule(rules.OnSubterm(rules.ApplyInductHyp()))
         calc.perform_rule(rules.ApplyIdentity(parser.parse_expr("factorial(n + 1)")))
 
@@ -524,7 +525,9 @@ class IntegralTest(unittest.TestCase):
         calc = file.add_calculation("INT x:[0,oo]. exp(-x^3)")
         calc.perform_rule(rules.Substitution('y', parser.parse_expr('x^3')))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(gamma_def.eq, subMap={"n": parser.parse_expr('1/3')})))
+        calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("y ^ (-2/3) * exp(-y)"),
+                                         new_expr=parser.parse_expr("exp(-y) * y ^ (1/3 - 1)")))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(gamma_def.eq), "1"))
         calc.perform_rule(rules.ApplyEquation(goal1.goal))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "Gamma(4/3)")
@@ -674,7 +677,7 @@ class IntegralTest(unittest.TestCase):
         proof_of_Eq7 = Eq7.proof_by_calculation()
         calc = proof_of_Eq7.lhs_calc
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(Eq6.goal)))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq6.goal), "1.0.0"))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_Eq7.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -1206,7 +1209,7 @@ class IntegralTest(unittest.TestCase):
         old_expr = parser.parse_expr("x * log(x) * (-(x ^ 2) + 1) ^ (-1)")
         new_expr = parser.parse_expr("log(x) * (x * (-(x ^ 2) + 1) ^ (-1))")
         calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal02.goal)))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal02.goal), "0.0.1"))
         calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
         calc.perform_rule(rules.FullSimplify())
         old_expr = parser.parse_expr("log(x) * SUM(k, 0, oo, x ^ k)")
@@ -1374,7 +1377,7 @@ class IntegralTest(unittest.TestCase):
         proof = goal03.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(eq=goal01.goal)))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal01.goal), "0"))
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -1382,7 +1385,7 @@ class IntegralTest(unittest.TestCase):
         goal04 = file.add_goal("(INT u:[1,oo]. D u. I(u)) = - (pi^2 / 48) + I(1)")
         proof_of_goal04 = goal04.proof_by_calculation()
         calc = proof_of_goal04.lhs_calc
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal02.goal)))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal02.goal), "0"))
         calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(),'0'))
         calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr("1/x")
@@ -1400,9 +1403,10 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(target=parser.parse_expr("pi/2 - atan(sqrt(x^2 + 2))")), "0.0.0.1"))
         calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(eq = goal001.goal)))
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(eq = goal002.goal)))
-        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(eq = goal01.goal)))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal001.goal), "0.0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal002.goal), "0.1.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal01.goal), "1"))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal04.rhs_calc
         calc.perform_rule(rules.FullSimplify())

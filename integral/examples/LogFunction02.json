@@ -223,10 +223,10 @@
                             "res": "-(INT x:[0,1]. log(x) * (1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)))",
                             "rule": {
                                 "eq": "x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)",
-                                "latex_str": "apply equation \\(x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}\\) on subterms",
-                                "loc": "subterms",
+                                "latex_str": "apply equation \\(x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}\\) at 0.0.1",
+                                "loc": "0.0.1",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k) on subterms"
+                                "str": "apply equation: x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k) at 0.0.1"
                             },
                             "type": "CalculationStep"
                         },
