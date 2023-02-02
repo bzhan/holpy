@@ -295,6 +295,8 @@ def limit_add(a: Limit, b: Limit) -> Limit:
             return Limit(res_e, asymp=b.asymp, side=b.side)
         elif b.side == AT_CONST:
             return Limit(res_e, asymp=a.asymp, side=a.side)
+        elif a.side == FROM_ABOVE and b.side == AT_CONST:
+            return Limit(res_e, asymp=a.asymp, side=FROM_ABOVE)
         elif a.side == FROM_ABOVE and b.side == FROM_ABOVE:
             return Limit(res_e, asymp=asymp_add_inv(a.asymp, b.asymp), side=FROM_ABOVE)
         elif a.side == FROM_ABOVE and b.side == FROM_BELOW:
@@ -441,6 +443,8 @@ def limit_power(a: Limit, b: Limit, conds: Conditions) -> Limit:
 
     if a.e is None or b.e is None:
         return Limit(None)
+    elif a.side == AT_CONST and b.side == AT_CONST:
+        return Limit(expr.Op("^", a.e, b.e).normalize(), side=AT_CONST)
     elif a.e == POS_INF:
         if b.e == POS_INF:
             # TODO: try to figure out asymp in more cases
@@ -527,7 +531,9 @@ def limit_power(a: Limit, b: Limit, conds: Conditions) -> Limit:
 
 def limit_of_expr(e: Expr, var_name: str, conds: Conditions) -> Limit:
     """Compute the limit of an expression as variable goes to infinity."""
-    if e.is_const() or e.is_inf():
+    if e.is_const():
+        return Limit(e, side=AT_CONST)
+    elif e.is_inf():
         return Limit(e)
     elif e.is_fun() and len(e.args) == 0:
         return Limit(e)
