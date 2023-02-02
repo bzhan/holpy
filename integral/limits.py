@@ -602,6 +602,8 @@ def limit_of_expr(e: Expr, var_name: str, conds: Conditions) -> Limit:
         # if l.e < 0 raise error
         elif conds.is_negative(l.e):
             raise AssertionError("sqrt: arg is negtive")
+        elif l.e == POS_INF:
+            return Limit(POS_INF, asymp=PolyLog(*[1/2 * a if not isinstance(a, Expr) else a / Const(2) for a in l.asymp.order]), side=TWO_SIDED)
         else:
             if isinstance(l.asymp, Unknown):
                 return Limit(expr.Fun('sqrt', l.e), asymp=Unknown(), side=l.side)

@@ -1366,6 +1366,29 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file, "AhmedIntegral")
 
+    def testEasy01(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.1.a
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "easy01")
+
+        file.add_definition("I(a) = (INT x:[1, oo]. 1 / ((x+a)*sqrt(x-1)))")
+        goal = file.add_goal("I(a) = pi / sqrt(a+1)")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition("I"))
+        calc.perform_rule(rules.Substitution(var_name='t', var_subst=parser.parse_expr("sqrt(x-1)")))
+        ctx.add_condition(parser.parse_expr("t>=0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Substitution(var_name='x', var_subst=parser.parse_expr("t / sqrt(a + 1)")))
+        old_expr = parser.parse_expr("(x ^ 2 * (a + 1) + a + 1) ^ (-1)")
+        new_expr = parser.parse_expr("(a+1)^(-1) * (x^2 + 1)^(-1)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file, "easy01")
 
 if __name__ == "__main__":
     unittest.main()
