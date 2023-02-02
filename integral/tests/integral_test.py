@@ -1067,14 +1067,10 @@ class IntegralTest(unittest.TestCase):
         ctx.load_book('interesting', upto='CatalanConstant02')
         file = compstate.CompFile(ctx, 'CatalanConstant02')
 
-        # Define I(k)
-        file.add_definition("I(k) = INT x:[1,oo]. log(x) / (x^k)", conds=["k > 1"])
-
         # Evaluate I(k)
-        goal1 = file.add_goal("I(k) = 1/(k-1)^2", conds=["k > 1"])
+        goal1 = file.add_goal("(INT x:[1,oo]. log(x) / (x^k)) = 1/(k-1)^2", conds=["k > 1"])
         proof_of_goal1 = goal1.proof_by_calculation()
         calc = proof_of_goal1.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition("I"))
         u = parser.parse_expr("log(x)")
         v = parser.parse_expr("(x^(1-k)) / (1-k)")
         calc.perform_rule(rules.ElimInfInterval())
@@ -1091,32 +1087,13 @@ class IntegralTest(unittest.TestCase):
         new_expr=parser.parse_expr("(-k+1)^-2")
         calc.perform_rule(rules.Equation(old_expr=old_expr,new_expr=new_expr))
 
-        # Special case of I(2*n+2)
-        goal2 = file.add_goal("I(2 * n + 2) = 1/(2*n+1)^2")
-        proof_of_goal2 = goal2.proof_by_calculation()
-        calc = proof_of_goal2.lhs_calc
-        calc.perform_rule(rules.ApplyEquation(goal1.goal))
-        calc.perform_rule(rules.FullSimplify())
-        calc = proof_of_goal2.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
-
-        # Definition of I(2*n+2)
-        goal3 = file.add_goal("I(2*n+2) = INT x:[1,oo]. log(x) / (x^(2*n+2))")
-        proof_of_goal3 = goal3.proof_by_calculation()
-        calc = proof_of_goal3.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition("I"))
-        calc = proof_of_goal3.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
-
         # Combine previous two results
-        # TODO: can simplify these three parts
         goal4 = file.add_goal("(INT x:[1,oo]. log(x) / x^(2*n+2)) = 1/(2*n+1)^2")
         proof_of_goal4 = goal4.proof_by_calculation()
         calc = proof_of_goal4.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal1.goal))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal4.rhs_calc
-        calc.perform_rule(rules.ApplyEquation(goal2.goal))
-        calc.perform_rule(rules.ApplyEquation(goal3.goal))
         calc.perform_rule(rules.FullSimplify())
 
         goal5 = file.add_goal("(INT x:[1,oo]. log(x) / (x^2+1)) = G")
