@@ -258,50 +258,6 @@
         },
         {
             "finished": true,
-            "goal": "g(0) = 0",
-            "latex_goal": "g{(0)} = 0",
-            "proof": {
-                "finished": true,
-                "goal": "g(0) = 0",
-                "latex_goal": "g{(0)} = 0",
-                "lhs_calc": {
-                    "latex_start": "g{(0)}",
-                    "start": "g(0)",
-                    "steps": [
-                        {
-                            "latex_res": "0 ^ {2}",
-                            "res": "0 ^ 2",
-                            "rule": {
-                                "func_name": "g",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "0",
-                            "res": "0",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "rhs_calc": {
-                    "latex_start": "0",
-                    "start": "0",
-                    "steps": [],
-                    "type": "Calculation"
-                },
-                "type": "CalculationProof"
-            },
-            "type": "Goal"
-        },
-        {
-            "finished": true,
             "goal": "pi / 2 = SKOLEM_CONST(C)",
             "latex_goal": "\\frac{\\pi}{2} = C",
             "proof": {
@@ -334,14 +290,13 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 + \\frac{1}{2} \\pi = C",
-                            "res": "0 + 1/2 * pi = SKOLEM_CONST(C)",
+                            "latex_res": "0 ^ {2} + \\frac{1}{2} \\pi = C",
+                            "res": "0 ^ 2 + 1/2 * pi = SKOLEM_CONST(C)",
                             "rule": {
-                                "eq": "g(0) = 0",
-                                "latex_str": "apply equation \\(g{(0)} = 0\\) at 0.0",
-                                "loc": "0.0",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: g(0) = 0 at 0.0"
+                                "func_name": "g",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
                             },
                             "type": "CalculationStep"
                         },

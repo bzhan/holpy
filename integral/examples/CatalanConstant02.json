@@ -118,61 +118,6 @@
         },
         {
             "finished": true,
-            "goal": "(INT x:[1,oo]. log(x) / x ^ (2 * n + 2)) = 1 / (2 * n + 1) ^ 2",
-            "latex_goal": "\\int_{1}^{\\infty} \\frac{\\log{x}}{x ^ {2 n + 2}} \\,dx = \\frac{1}{(2 n + 1) ^ {2}}",
-            "proof": {
-                "finished": true,
-                "goal": "(INT x:[1,oo]. log(x) / x ^ (2 * n + 2)) = 1 / (2 * n + 1) ^ 2",
-                "latex_goal": "\\int_{1}^{\\infty} \\frac{\\log{x}}{x ^ {2 n + 2}} \\,dx = \\frac{1}{(2 n + 1) ^ {2}}",
-                "lhs_calc": {
-                    "latex_start": "\\int_{1}^{\\infty} \\frac{\\log{x}}{x ^ {2 n + 2}} \\,dx",
-                    "start": "INT x:[1,oo]. log(x) / x ^ (2 * n + 2)",
-                    "steps": [
-                        {
-                            "latex_res": "\\frac{1}{(2 n + 2 - 1) ^ {2}}",
-                            "res": "1 / (2 * n + 2 - 1) ^ 2",
-                            "rule": {
-                                "eq": "(INT x:[1,oo]. log(x) / x ^ k) = 1 / (k - 1) ^ 2",
-                                "latex_str": "apply equation \\(\\int_{1}^{\\infty} \\frac{\\log{x}}{x ^ {k}} \\,dx = \\frac{1}{(k - 1) ^ {2}}\\)",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[1,oo]. log(x) / x ^ k) = 1 / (k - 1) ^ 2"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "(2 n + 1) ^ {-2}",
-                            "res": "(2 * n + 1) ^ (-2)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "rhs_calc": {
-                    "latex_start": "\\frac{1}{(2 n + 1) ^ {2}}",
-                    "start": "1 / (2 * n + 1) ^ 2",
-                    "steps": [
-                        {
-                            "latex_res": "(2 n + 1) ^ {-2}",
-                            "res": "(2 * n + 1) ^ (-2)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
-                    "type": "Calculation"
-                },
-                "type": "CalculationProof"
-            },
-            "type": "Goal"
-        },
-        {
-            "finished": true,
             "goal": "(INT x:[1,oo]. log(x) / (x ^ 2 + 1)) = G",
             "latex_goal": "\\int_{1}^{\\infty} \\frac{\\log{x}}{x ^ {2} + 1} \\,dx = G",
             "proof": {
@@ -249,14 +194,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1) ^ {n} (\\frac{1}{(2 n + 1) ^ {2}})}",
-                            "res": "SUM(n, 0, oo, (-1) ^ n * (1 / (2 * n + 1) ^ 2))",
+                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1) ^ {n} (\\frac{1}{(2 n + 2 - 1) ^ {2}})}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n * (1 / (2 * n + 2 - 1) ^ 2))",
                             "rule": {
-                                "eq": "(INT x:[1,oo]. log(x) / x ^ (2 * n + 2)) = 1 / (2 * n + 1) ^ 2",
-                                "latex_str": "apply equation \\(\\int_{1}^{\\infty} \\frac{\\log{x}}{x ^ {2 n + 2}} \\,dx = \\frac{1}{(2 n + 1) ^ {2}}\\) at 0.1",
+                                "eq": "(INT x:[1,oo]. log(x) / x ^ k) = 1 / (k - 1) ^ 2",
+                                "latex_str": "apply equation \\(\\int_{1}^{\\infty} \\frac{\\log{x}}{x ^ {k}} \\,dx = \\frac{1}{(k - 1) ^ {2}}\\) at 0.1",
                                 "loc": "0.1",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[1,oo]. log(x) / x ^ (2 * n + 2)) = 1 / (2 * n + 1) ^ 2 at 0.1"
+                                "str": "apply equation: (INT x:[1,oo]. log(x) / x ^ k) = 1 / (k - 1) ^ 2 at 0.1"
                             },
                             "type": "CalculationStep"
                         },

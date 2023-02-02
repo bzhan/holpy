@@ -652,18 +652,12 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), '1'))
         calc.perform_rule(rules.FullSimplify())
 
-        Eq4 = file.add_goal("g(0) = 0")
-        proof_of_Eq4 = Eq4.proof_by_calculation()
-        calc = proof_of_Eq4.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition("g"))
-        calc.perform_rule(rules.FullSimplify())
-
         Eq5 = file.add_goal("pi/2 = SKOLEM_CONST(C)")
         proof_of_Eq5 = Eq5.proof_by_rewrite_goal(begin = Eq3)
         calc = proof_of_Eq5.begin
         calc.perform_rule(rules.LimitEquation('t', expr.Const(0)))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq4.goal), "0.0"))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("g")))
         calc.perform_rule(rules.FullSimplify())
 
         Eq6 = file.add_goal("g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + 1/2 * pi")
@@ -1087,15 +1081,6 @@ class IntegralTest(unittest.TestCase):
         new_expr=parser.parse_expr("(-k+1)^-2")
         calc.perform_rule(rules.Equation(old_expr=old_expr,new_expr=new_expr))
 
-        # Combine previous two results
-        goal4 = file.add_goal("(INT x:[1,oo]. log(x) / x^(2*n+2)) = 1/(2*n+1)^2")
-        proof_of_goal4 = goal4.proof_by_calculation()
-        calc = proof_of_goal4.lhs_calc
-        calc.perform_rule(rules.ApplyEquation(goal1.goal))
-        calc.perform_rule(rules.FullSimplify())
-        calc = proof_of_goal4.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
-
         goal5 = file.add_goal("(INT x:[1,oo]. log(x) / (x^2+1)) = G")
         proof_of_goal5 = goal5.proof_by_calculation()
         calc = proof_of_goal5.lhs_calc
@@ -1111,7 +1096,7 @@ class IntegralTest(unittest.TestCase):
         old_expr = parser.parse_expr("x ^ (-2 * n - 2) * log(x)")
         new_expr = parser.parse_expr("log(x) / x^(2*n+2)")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), '0.1'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal1.goal), "0.1"))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal5.rhs_calc
         calc.perform_rule(rules.ExpandDefinition("G"))
