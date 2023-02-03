@@ -2,22 +2,20 @@
 
 from decimal import Decimal
 from fractions import Fraction
-from typing import Tuple, Optional, Dict
-import sympy
-from sympy import expand_multinomial, apart
+from typing import Optional, Dict
+from sympy import apart
 import functools
 import math
 
 from integral import expr
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, \
     OP, CONST, VAR, sin, cos, FUN, decompose_expr_factor, \
-    Deriv, Inf, Limit, NEG_INF, POS_INF, IndefiniteIntegral, log, Summation
+    Deriv, Inf, Limit, NEG_INF, POS_INF, IndefiniteIntegral, Summation
 from integral import parser
 from integral.solve import solve_equation, solve_for_term
 from integral import latex
 from integral import limits
-from integral.poly import Polynomial
-from integral import poly
+from integral import normalize
 from integral.context import Context
 
 
@@ -1078,158 +1076,6 @@ class ExpandPolynomial(Rule):
             return e
 
 
-class NormalPower:
-    """A more general normal form for polynomials.
-    
-    NormalPower(p, q, m) represents the expression (p/q)^(1/m), where
-    p and q are polynomials, and m is an integer >= 1.
-    
-    """
-    def __init__(self, num: Polynomial, denom: Polynomial, root: int):
-        self.num = num
-        self.denom = denom
-        self.root = root
-
-    def __str__(self):
-        return "(%s, %s, %s)" % (self.num, self.denom, self.root)
-
-    def to_expr(self) -> Expr:
-        denom = expr.from_poly(self.denom).normalize()
-        if denom == Const(1):
-            inner = expr.from_poly(self.num).normalize()
-        else:
-            inner = expr.from_poly(self.num).normalize() / denom
-        if self.root == Const(1):
-            return inner
-        else:
-            return inner ** Const(Fraction(1, self.root))
-
-def add_normal_power(n1: NormalPower, n2: NormalPower) -> NormalPower:
-    """Add two normal forms.
-    
-    If both sides do not have roots, take common denominators.
-    Not much is done otherwise.
-
-    """
-    if n1.root == 1 and n2.root == 1:
-        num = n1.num * n2.denom + n1.denom * n2.num
-        denom = n1.denom * n2.denom
-        return NormalPower(num, denom, 1)
-    elif n1.root == 1 and n2.root > 1:
-        # p/q + y^(1/n) = (p + q * y^(1/n)) / q
-        num = n1.num + n1.denom * poly.singleton(n2.to_expr())
-        denom = n1.denom
-        return NormalPower(num, denom, 1)
-    elif n1.root > 1 and n2.root == 1:
-        return add_normal_power(n2, n1)
-    else:
-        return NormalPower(poly.singleton(n1.to_expr()) + poly.singleton(n2.to_expr()),
-                           poly.constant(poly.const_fraction(1)), 1)
-
-def uminus_normal_power(n: NormalPower) -> NormalPower:
-    """Negation of a normal form.
-    
-    If argument has roots, not much is done.
-
-    """
-    if n.root == 1:
-        return NormalPower(-n.num, n.denom, 1)
-    else:
-        return NormalPower(-poly.singleton(n.to_expr()), n.denom, 1)
-
-def minus_normal_power(n1: NormalPower, n2: NormalPower) -> NormalPower:
-    return add_normal_power(n1, uminus_normal_power(n2))
-
-def unfold_power(p: Polynomial, n: int) -> Polynomial:
-    """Unfold power of a polynomial."""
-    assert n >= 0
-    if n == 0:
-        return poly.constant(poly.const_fraction(1))
-
-    res = p
-    for i in range(n-1):
-        res = p * res
-    return res
-
-def mult_normal_power(n1: NormalPower, n2: NormalPower) -> NormalPower:
-    """Multiply two normal forms.
-    
-    If the two sides are (p/q)^(1/m) and (r/s)^(1/n), take the
-    lcm of m and n to be k, then the product is
-    
-      (p^(k/m) * r^(k/n) / q^(k/m) * s^(k/n)) ^ (1/k)
-
-    """
-    root = math.lcm(n1.root, n2.root)
-    p1 = root // n1.root
-    p2 = root // n2.root
-    num = unfold_power(n1.num, p1) * unfold_power(n2.num, p2)
-    denom = unfold_power(n1.denom, p1) * unfold_power(n2.denom, p2)
-    return NormalPower(num, denom, root)
-
-def inverse_normal_power(n: NormalPower) -> NormalPower:
-    """Inverse of normal form.
-    
-    The inverse of (p/q)^(1/m) is (q/p)^(1/m).
-
-    """
-    return NormalPower(n.denom, n.num, n.root)
-
-def divide_normal_power(n1: NormalPower, n2: NormalPower) -> NormalPower:
-    return mult_normal_power(n1, inverse_normal_power(n2))
-
-def equal_normal_power(n1: NormalPower, n2: NormalPower) -> bool:
-    e1 = expr.from_poly(n1.num * n2.denom).normalize()
-    e2 = expr.from_poly(n1.denom * n2.num).normalize()
-    return n1.root == n2.root and e1 == e2
-
-def normalize_power(e: Expr) -> NormalPower:
-    def rec(e: Expr) -> NormalPower:
-        if e.is_plus():
-            return add_normal_power(rec(e.args[0]), rec(e.args[1]))
-        elif e.is_uminus():
-            return uminus_normal_power(rec(e.args[0]))
-        elif e.is_minus():
-            return minus_normal_power(rec(e.args[0]), rec(e.args[1]))
-        elif e.is_times():
-            return mult_normal_power(rec(e.args[0]), rec(e.args[1]))
-        elif e.is_divides():
-            return divide_normal_power(rec(e.args[0]), rec(e.args[1]))
-        elif e.is_power():
-            base = rec(e.args[0])
-            if e.args[1].is_const():
-                val = e.args[1].val
-                if val == 1:
-                    return rec(e.args[0])
-                elif val == -1:
-                    return inverse_normal_power(rec(e.args[0]))
-                elif isinstance(val, int):
-                    if val >= 0:
-                        return NormalPower(unfold_power(base.num, val),
-                                           unfold_power(base.denom, val),
-                                           base.root)
-                    else:
-                        return NormalPower(unfold_power(base.denom, -val),
-                                           unfold_power(base.num, -val),
-                                           base.root)
-                elif isinstance(val, Fraction):
-                    if val >= 0:
-                        return NormalPower(unfold_power(base.num, val.numerator),
-                                           unfold_power(base.denom, val.numerator),
-                                           base.root * val.denominator)
-                    else:
-                        return NormalPower(unfold_power(base.denom, -val.numerator),
-                                           unfold_power(base.num, -val.numerator),
-                                           base.root * val.denominator)
-        elif e.is_fun():
-            if e.func_name == 'sqrt':
-                return rec(e.args[0] ** Const(Fraction(1,2)))
-
-        # Un-handled cases
-        return NormalPower(poly.singleton(e), poly.constant(poly.const_fraction(1)), 1)
-
-    return rec(e)
-
 class Equation(Rule):
     """Apply substitution for equal expressions"""
 
@@ -1275,9 +1121,10 @@ class Equation(Rule):
         if r.eval(e, ctx) == r.eval(self.new_expr, ctx):
             return self.new_expr
 
-        n1 = normalize_power(e)
-        n2 = normalize_power(self.new_expr)
-        if equal_normal_power(n1, n2):
+        if normalize.eq_quotient(e, self.new_expr):
+            return self.new_expr
+
+        if normalize.eq_power(e, self.new_expr):
             return self.new_expr
 
         raise AssertionError("Equation: rewriting %s to %s failed" % (e, self.new_expr))
@@ -1320,10 +1167,18 @@ class IntegrationByParts(Rule):
         du = expr.deriv(e.var, self.u)
         dv = expr.deriv(e.var, self.v)
         udv = (self.u * dv).normalize()
-        se = expr.sympy_style(udv).simplify()
-        udv = expr.holpy_style(se).normalize()
 
+        equal = False
         if udv == e.body:
+            equal = True
+
+        if not equal and normalize.eq_quotient(udv, e.body):
+                equal = True
+
+        if not equal and normalize.eq_power(udv, e.body):
+                equal = True
+
+        if equal:
             if e.is_integral():
                 return expr.EvalAt(e.var, e.lower, e.upper, (self.u * self.v).normalize()) - \
                        expr.Integral(e.var, e.lower, e.upper, (self.v * du).normalize())
