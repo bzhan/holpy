@@ -48,11 +48,11 @@
                             "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(c x ^ {a} \\log{x}) ^ {k}}{k!} \\,dx}",
                             "res": "SUM(k, 0, oo, INT x:[0,1]. (c * x ^ a * log(x)) ^ k / factorial(k))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\log{(x ^ {c x ^ {a}})}\\) to \\(c x ^ {a} \\log{x}\\)",
-                                "name": "Equation",
-                                "new_expr": "c * x ^ a * log(x)",
-                                "old_expr": "log(x ^ (c * x ^ a))",
-                                "str": "rewriting log(x ^ (c * x ^ a)) to c * x ^ a * log(x)"
+                                "latex_str": "rewrite to \\(c x ^ {a} \\log{x}\\) using identity at 0.0.0.0",
+                                "loc": "0.0.0.0",
+                                "name": "ApplyIdentity",
+                                "str": "rewrite to c * x ^ a * log(x) using identity at 0.0.0.0",
+                                "target": "c * x ^ a * log(x)"
                             },
                             "type": "CalculationStep"
                         },
@@ -60,11 +60,11 @@
                             "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{(c x ^ {a}) ^ {k} \\log^{k}(x)}{k!} \\,dx}",
                             "res": "SUM(k, 0, oo, INT x:[0,1]. (c * x ^ a) ^ k * log(x) ^ k / factorial(k))",
                             "rule": {
-                                "latex_str": "rewriting \\((c x ^ {a} \\log{x}) ^ {k}\\) to \\((c x ^ {a}) ^ {k} \\log^{k}(x)\\)",
-                                "name": "Equation",
-                                "new_expr": "(c * x ^ a) ^ k * log(x) ^ k",
-                                "old_expr": "(c * x ^ a * log(x)) ^ k",
-                                "str": "rewriting (c * x ^ a * log(x)) ^ k to (c * x ^ a) ^ k * log(x) ^ k"
+                                "latex_str": "rewrite to \\((c x ^ {a}) ^ {k} \\log^{k}(x)\\) using identity at 0.0.0",
+                                "loc": "0.0.0",
+                                "name": "ApplyIdentity",
+                                "str": "rewrite to (c * x ^ a) ^ k * log(x) ^ k using identity at 0.0.0",
+                                "target": "(c * x ^ a) ^ k * log(x) ^ k"
                             },
                             "type": "CalculationStep"
                         },
@@ -72,11 +72,11 @@
                             "latex_res": "\\sum_{k=0}^{\\infty}{\\int_{0}^{1} \\frac{c ^ {k} (x ^ {a}) ^ {k} \\log^{k}(x)}{k!} \\,dx}",
                             "res": "SUM(k, 0, oo, INT x:[0,1]. c ^ k * x ^ a ^ k * log(x) ^ k / factorial(k))",
                             "rule": {
-                                "latex_str": "rewriting \\((c x ^ {a}) ^ {k}\\) to \\(c ^ {k} (x ^ {a}) ^ {k}\\)",
-                                "name": "Equation",
-                                "new_expr": "c ^ k * x ^ a ^ k",
-                                "old_expr": "(c * x ^ a) ^ k",
-                                "str": "rewriting (c * x ^ a) ^ k to c ^ k * x ^ a ^ k"
+                                "latex_str": "rewrite to \\(c ^ {k} (x ^ {a}) ^ {k}\\) using identity at 0.0.0.0",
+                                "loc": "0.0.0.0",
+                                "name": "ApplyIdentity",
+                                "str": "rewrite to c ^ k * x ^ a ^ k using identity at 0.0.0.0",
+                                "target": "c ^ k * x ^ a ^ k"
                             },
                             "type": "CalculationStep"
                         },
@@ -112,11 +112,11 @@
                             "latex_res": "\\sum_{k=0}^{\\infty}{(-c) ^ {k} (a k + 1) ^ {-k - 1}}",
                             "res": "SUM(k, 0, oo, (-c) ^ k * (a * k + 1) ^ (-k - 1))",
                             "rule": {
-                                "latex_str": "rewriting \\(c ^ {k} (-1) ^ {k}\\) to \\((-c) ^ {k}\\)",
-                                "name": "Equation",
-                                "new_expr": "(-c) ^ k",
-                                "old_expr": "c ^ k * (-1) ^ k",
-                                "str": "rewriting c ^ k * (-1) ^ k to (-c) ^ k"
+                                "latex_str": "rewrite to \\((-c) ^ {k}\\) using identity at 0.0",
+                                "loc": "0.0",
+                                "name": "ApplyIdentity",
+                                "str": "rewrite to (-c) ^ k using identity at 0.0",
+                                "target": "(-c) ^ k"
                             },
                             "type": "CalculationStep"
                         }

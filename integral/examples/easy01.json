@@ -1,0 +1,110 @@
+{
+    "content": [
+        {
+            "eq": "I(a) = (INT x:[1,oo]. 1 / ((x + a) * sqrt(x - 1)))",
+            "latex_eq": "I{(a)} = \\int_{1}^{\\infty} \\frac{1}{(x + a) \\sqrt{x - 1}} \\,dx",
+            "latex_lhs": "I{(a)}",
+            "type": "FuncDef"
+        },
+        {
+            "finished": true,
+            "goal": "I(a) = pi / sqrt(a + 1)",
+            "latex_goal": "I{(a)} = \\frac{\\pi}{\\sqrt{a + 1}}",
+            "proof": {
+                "finished": true,
+                "goal": "I(a) = pi / sqrt(a + 1)",
+                "latex_goal": "I{(a)} = \\frac{\\pi}{\\sqrt{a + 1}}",
+                "lhs_calc": {
+                    "latex_start": "I{(a)}",
+                    "start": "I(a)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{1}^{\\infty} (a + x) ^ {-1} (x - 1) ^ {-1/2} \\,dx",
+                            "res": "INT x:[1,oo]. (a + x) ^ (-1) * (x - 1) ^ (-1/2)",
+                            "rule": {
+                                "func_name": "I",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} 2 t \\left| t \\right| ^ {-1} (t ^ {2} + a + 1) ^ {-1} \\,dt",
+                            "res": "INT t:[0,oo]. 2 * t * abs(t) ^ (-1) * (t ^ 2 + a + 1) ^ (-1)",
+                            "rule": {
+                                "latex_str": "substitute \\(t\\) for \\(\\sqrt{x - 1}\\)",
+                                "name": "Substitution",
+                                "str": "substitute t for sqrt(x - 1)",
+                                "var_name": "t",
+                                "var_subst": "sqrt(x - 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\int_{0}^{\\infty} (t ^ {2} + a + 1) ^ {-1} \\,dt)",
+                            "res": "2 * (INT t:[0,oo]. (t ^ 2 + a + 1) ^ (-1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\int_{0}^{\\infty} \\sqrt{a + 1} (x ^ {2} (a + 1) + a + 1) ^ {-1} \\,dx)",
+                            "res": "2 * (INT x:[0,oo]. sqrt(a + 1) * (x ^ 2 * (a + 1) + a + 1) ^ (-1))",
+                            "rule": {
+                                "latex_str": "substitute \\(x\\) for \\(\\frac{t}{\\sqrt{a + 1}}\\)",
+                                "name": "Substitution",
+                                "str": "substitute x for t / sqrt(a + 1)",
+                                "var_name": "x",
+                                "var_subst": "t / sqrt(a + 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\int_{0}^{\\infty} \\sqrt{a + 1} ((a + 1) ^ {-1} (x ^ {2} + 1) ^ {-1}) \\,dx)",
+                            "res": "2 * (INT x:[0,oo]. sqrt(a + 1) * ((a + 1) ^ (-1) * (x ^ 2 + 1) ^ (-1)))",
+                            "rule": {
+                                "latex_str": "rewriting \\((x ^ {2} (a + 1) + a + 1) ^ {-1}\\) to \\((a + 1) ^ {-1} (x ^ {2} + 1) ^ {-1}\\)",
+                                "name": "Equation",
+                                "new_expr": "(a + 1) ^ (-1) * (x ^ 2 + 1) ^ (-1)",
+                                "old_expr": "(x ^ 2 * (a + 1) + a + 1) ^ (-1)",
+                                "str": "rewriting (x ^ 2 * (a + 1) + a + 1) ^ (-1) to (a + 1) ^ (-1) * (x ^ 2 + 1) ^ (-1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\pi (a + 1) ^ {-1/2}",
+                            "res": "pi * (a + 1) ^ (-1/2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi}{\\sqrt{a + 1}}",
+                    "start": "pi / sqrt(a + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\pi (a + 1) ^ {-1/2}",
+                            "res": "pi * (a + 1) ^ (-1/2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "easy01"
+}

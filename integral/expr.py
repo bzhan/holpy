@@ -666,19 +666,19 @@ class Expr:
         """Returns the location of a subexpression."""
         locations = []
 
-        def find(e, loc: Location):
+        def find(e: Expr, loc: Location):
             if e == subexpr:
                 locations.append(Location(loc))
-            elif e.ty == OP or e.ty == FUN:
+            elif e.is_op() or e.is_fun():
                 for i, arg in enumerate(e.args):
                     find(arg, loc.append(i))
-            elif e.ty == INTEGRAL or e.ty == EVAL_AT:
+            elif e.is_integral() or e.is_evalat():
                 find(e.lower, loc.append(1))
                 find(e.upper, loc.append(2))
                 find(e.body, loc.append(0))
-            elif e.ty == DERIV or e.ty == LIMIT or e.ty == INDEFINITEINTEGRAL:
+            elif e.is_deriv() or e.is_limit() or e.is_indefinite_integral():
                 find(e.body, loc.append(0))
-            elif e.ty == SUMMATION:
+            elif e.is_summation():
                 find(e.body, loc.append(0))
                 find(e.lower, loc.append(1))
                 find(e.upper, loc.append(2))

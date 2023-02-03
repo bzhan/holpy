@@ -115,6 +115,21 @@
         },
         {
             "type": "header",
+            "name": "Power identities",
+            "level": 1
+        },
+        {
+            "type": "axiom",
+            "expr": "(a * b) ^ k = a ^ k * b ^ k",
+            "category": "power"
+        },
+        {
+            "type": "axiom",
+            "expr": "a ^ k * b ^ k = (a * b) ^ k",
+            "category": "power"
+        },
+        {
+            "type": "header",
             "name": "Exp-log identities",
             "level": 1
         },
@@ -136,6 +151,11 @@
         {
             "type": "axiom",
             "expr": "log(a / b) = log(a) - log(b)",
+            "category": "exp-log"
+        },
+        {
+            "type": "axiom",
+            "expr": "log(x ^ a) = a * log(x)",
             "category": "exp-log"
         },
         {

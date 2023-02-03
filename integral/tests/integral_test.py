@@ -1157,6 +1157,7 @@ class IntegralTest(unittest.TestCase):
         new_expr = parser.parse_expr("2 * (x / (1-x^2))")
         calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("x / (1-x^2)")))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("x^k")), "1.1.0.0"))
 
         goal03 = file.add_goal("(INT x:[0, pi/2]. cos(x)/sin(x) * log(1/cos(x))) = pi^2/24")
         proof_of_goal03 = goal03.proof_by_calculation()
@@ -1191,7 +1192,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_goal03.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        self.checkAndOutput(file, "LogFunction02", omit_finish=True)
+        self.checkAndOutput(file, "LogFunction02")
 
     def testBernoulliIntegral(self):
         # Reference:
@@ -1209,24 +1210,13 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(index_var='k'), "0"))
         calc.perform_rule(rules.IntSumExchange())
-
-        old_expr = parser.parse_expr("log(x ^ (c * x ^ a))")
-        new_expr = parser.parse_expr("(c*x^a) * log(x)")
-        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
-
-        old_expr = parser.parse_expr("(c * x ^ a * log(x)) ^ k")
-        new_expr = parser.parse_expr("(c * x ^ a) ^ k * log(x) ^ k")
-        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
-
-        old_expr = parser.parse_expr("(c * x ^ a)^k")
-        new_expr = parser.parse_expr("(c^k * x ^ a^k)")
-        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("(c*x^a) * log(x)")), "0.0.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("(c*x^a)^k * log(x)^k")), "0.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("c^k * x^a^k")), "0.0.0.0"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "0.1"))
         calc.perform_rule(rules.FullSimplify())
-        old_expr = parser.parse_expr("c ^ k * (-1) ^ k")
-        new_expr = parser.parse_expr("(-c)^k")
-        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("(-c)^k")), "0.0"))
         calc = proof_of_goal.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
@@ -1309,7 +1299,10 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr("y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))")
         calc.perform_rule(rules.SubstitutionInverse(var_name='y', var_subst=e))
-        old_expr = parser.parse_expr("(u ^ (-2) * (2 * u ^ 2 + 1) + (y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))) ^ 2) ^ (-1)")
+        old_expr = parser.parse_expr("(y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))) ^ 2")
+        new_expr = parser.parse_expr("y ^ 2 * u ^ (-2) * (2 * u ^ 2 + 1)")
+        calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
+        old_expr = parser.parse_expr("(u ^ (-2) * (2 * u ^ 2 + 1) + y ^ 2 * u ^ (-2) * (2 * u ^ 2 + 1)) ^ (-1)")
         new_expr = parser.parse_expr("(u^(-2) * (2*u^2+1))^(-1) * (1+y^2)^(-1)")
         calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
         calc.perform_rule(rules.FullSimplify())

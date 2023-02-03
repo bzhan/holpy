@@ -260,13 +260,10 @@ class ApplyIdentity(Rule):
     def eval(self, e: Expr, ctx: Context) -> Expr:
         for identity in ctx.get_other_identities():
             inst = expr.match(e, identity.lhs)
-            if inst is None:
-                continue
-            expected_rhs = identity.rhs.inst_pat(inst)
-            if expected_rhs.normalize() == self.target.normalize():
-                return self.target
-            else:
-                continue
+            if inst is not None:
+                expected_rhs = identity.rhs.inst_pat(inst)
+                if expected_rhs.normalize() == self.target.normalize():
+                    return self.target
         
         raise AssertionError("ApplyIdentity: no matching identity for %s" % e)
 
@@ -1082,6 +1079,12 @@ class ExpandPolynomial(Rule):
 
 
 class NormalPower:
+    """A more general normal form for polynomials.
+    
+    NormalPower(p, q, m) represents the expression (p/q)^(1/m), where
+    p and q are polynomials, and m is an integer >= 1.
+    
+    """
     def __init__(self, num: Polynomial, denom: Polynomial, root: int):
         self.num = num
         self.denom = denom
@@ -1091,16 +1094,23 @@ class NormalPower:
         return "(%s, %s, %s)" % (self.num, self.denom, self.root)
 
     def to_expr(self) -> Expr:
-        if self.denom == Const(1):
+        denom = expr.from_poly(self.denom).normalize()
+        if denom == Const(1):
             inner = expr.from_poly(self.num).normalize()
         else:
-            inner = expr.from_poly(self.num).normalize() / expr.from_poly(self.denom).normalize()
+            inner = expr.from_poly(self.num).normalize() / denom
         if self.root == Const(1):
             return inner
         else:
             return inner ** Const(Fraction(1, self.root))
 
 def add_normal_power(n1: NormalPower, n2: NormalPower) -> NormalPower:
+    """Add two normal forms.
+    
+    If both sides do not have roots, take common denominators.
+    Not much is done otherwise.
+
+    """
     if n1.root == 1 and n2.root == 1:
         num = n1.num * n2.denom + n1.denom * n2.num
         denom = n1.denom * n2.denom
@@ -1116,7 +1126,22 @@ def add_normal_power(n1: NormalPower, n2: NormalPower) -> NormalPower:
         return NormalPower(poly.singleton(n1.to_expr()) + poly.singleton(n2.to_expr()),
                            poly.constant(poly.const_fraction(1)), 1)
 
+def uminus_normal_power(n: NormalPower) -> NormalPower:
+    """Negation of a normal form.
+    
+    If argument has roots, not much is done.
+
+    """
+    if n.root == 1:
+        return NormalPower(-n.num, n.denom, 1)
+    else:
+        return NormalPower(-poly.singleton(n.to_expr()), n.denom, 1)
+
+def minus_normal_power(n1: NormalPower, n2: NormalPower) -> NormalPower:
+    return add_normal_power(n1, uminus_normal_power(n2))
+
 def unfold_power(p: Polynomial, n: int) -> Polynomial:
+    """Unfold power of a polynomial."""
     assert n >= 0
     if n == 0:
         return poly.constant(poly.const_fraction(1))
@@ -1127,12 +1152,31 @@ def unfold_power(p: Polynomial, n: int) -> Polynomial:
     return res
 
 def mult_normal_power(n1: NormalPower, n2: NormalPower) -> NormalPower:
+    """Multiply two normal forms.
+    
+    If the two sides are (p/q)^(1/m) and (r/s)^(1/n), take the
+    lcm of m and n to be k, then the product is
+    
+      (p^(k/m) * r^(k/n) / q^(k/m) * s^(k/n)) ^ (1/k)
+
+    """
     root = math.lcm(n1.root, n2.root)
     p1 = root // n1.root
     p2 = root // n2.root
     num = unfold_power(n1.num, p1) * unfold_power(n2.num, p2)
     denom = unfold_power(n1.denom, p1) * unfold_power(n2.denom, p2)
     return NormalPower(num, denom, root)
+
+def inverse_normal_power(n: NormalPower) -> NormalPower:
+    """Inverse of normal form.
+    
+    The inverse of (p/q)^(1/m) is (q/p)^(1/m).
+
+    """
+    return NormalPower(n.denom, n.num, n.root)
+
+def divide_normal_power(n1: NormalPower, n2: NormalPower) -> NormalPower:
+    return mult_normal_power(n1, inverse_normal_power(n2))
 
 def equal_normal_power(n1: NormalPower, n2: NormalPower) -> bool:
     e1 = expr.from_poly(n1.num * n2.denom).normalize()
@@ -1143,13 +1187,23 @@ def normalize_power(e: Expr) -> NormalPower:
     def rec(e: Expr) -> NormalPower:
         if e.is_plus():
             return add_normal_power(rec(e.args[0]), rec(e.args[1]))
+        elif e.is_uminus():
+            return uminus_normal_power(rec(e.args[0]))
+        elif e.is_minus():
+            return minus_normal_power(rec(e.args[0]), rec(e.args[1]))
         elif e.is_times():
             return mult_normal_power(rec(e.args[0]), rec(e.args[1]))
+        elif e.is_divides():
+            return divide_normal_power(rec(e.args[0]), rec(e.args[1]))
         elif e.is_power():
             base = rec(e.args[0])
             if e.args[1].is_const():
                 val = e.args[1].val
-                if isinstance(val, int):
+                if val == 1:
+                    return rec(e.args[0])
+                elif val == -1:
+                    return inverse_normal_power(rec(e.args[0]))
+                elif isinstance(val, int):
                     if val >= 0:
                         return NormalPower(unfold_power(base.num, val),
                                            unfold_power(base.denom, val),
@@ -1167,12 +1221,12 @@ def normalize_power(e: Expr) -> NormalPower:
                         return NormalPower(unfold_power(base.denom, -val.numerator),
                                            unfold_power(base.num, -val.numerator),
                                            base.root * val.denominator)
-                else:
-                    raise NotImplementedError
-            else:
-                raise NotImplementedError
-        else:
-            return NormalPower(poly.singleton(e), poly.constant(poly.const_fraction(1)), 1)
+        elif e.is_fun():
+            if e.func_name == 'sqrt':
+                return rec(e.args[0] ** Const(Fraction(1,2)))
+
+        # Un-handled cases
+        return NormalPower(poly.singleton(e), poly.constant(poly.const_fraction(1)), 1)
 
     return rec(e)
 
@@ -1209,53 +1263,24 @@ class Equation(Rule):
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
         # If old_expr is given, try to find it within e
-        old_expr = self.old_expr
-        if old_expr is not None and old_expr != e:
-            find_res = e.find_subexpr(old_expr)
+        if self.old_expr is not None and self.old_expr != e:
+            find_res = e.find_subexpr(self.old_expr)
             if len(find_res) == 0:
                 raise AssertionError("Equation: old expression not found")
             loc = find_res[0]
             return OnLocation(self, loc).eval(e, ctx)
 
-        if old_expr == e:
-            r = FullSimplify()
-            if r.eval(e, ctx) == r.eval(self.new_expr, ctx):
-                return self.new_expr
+        # Now e is the old expression
+        r = FullSimplify()
+        if r.eval(e, ctx) == r.eval(self.new_expr, ctx):
+            return self.new_expr
 
-            a = Symbol('a', [VAR, CONST, OP, FUN])
-            b = Symbol('b', [VAR, CONST, OP, FUN])
-            c = Symbol('c', [VAR, CONST, OP, FUN])
-            rules = [
-                (log(a ^ b), b * log(a)),
-                ((a * b) ^ c, (a ^ c) * (b ^ c)),
-                ((a ^ c) * (b ^ c), (a * b) ^ c),
-            ]
-            for pat, pat_res in rules:
-                pos = expr.find_pattern(e, pat)
-                if len(pos) >= 1:
-                    mapped_expr, loc, mapping = pos[0]
-                    if mapped_expr == e:
-                        if r.eval(pat_res.inst_pat(mapping), ctx) == r.eval(self.new_expr, ctx):
-                            return self.new_expr
-            def rec(se):
-                return rec(se.expand()) if (se.expand() != se) else se
+        n1 = normalize_power(e)
+        n2 = normalize_power(self.new_expr)
+        if equal_normal_power(n1, n2):
+            return self.new_expr
 
-            if expand_multinomial(rec(rec(expr.sympy_style(self.new_expr)).simplify())) == \
-               expand_multinomial(rec(rec(expr.sympy_style(self.old_expr)).simplify())):
-                return self.new_expr
-
-            n1 = normalize_power(e)
-            n2 = normalize_power(self.new_expr)
-            if equal_normal_power(n1, n2):
-                return self.new_expr
-
-        # Currently rewrite using SymPy.
-        # TODO: change to own implementation.
-        if expand_multinomial(expr.sympy_style(self.new_expr.normalize()).simplify()) != \
-                expand_multinomial(expr.sympy_style(e.normalize()).simplify()):
-            raise AssertionError("Rewriting by equation failed")
-
-        return self.new_expr
+        raise AssertionError("Equation: rewriting %s to %s failed" % (e, self.new_expr))
 
 
 class IntegrationByParts(Rule):

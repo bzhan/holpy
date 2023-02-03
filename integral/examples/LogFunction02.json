@@ -73,11 +73,11 @@
             "type": "Goal"
         },
         {
-            "finished": false,
+            "finished": true,
             "goal": "x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)",
             "latex_goal": "x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}",
             "proof": {
-                "finished": false,
+                "finished": true,
                 "goal": "x * (-(x ^ 2) + 1) ^ (-1) = 1/2 * SUM(k, 0, oo, x ^ k) - 1/2 * SUM(k, 0, oo, x ^ k * (-1) ^ k)",
                 "latex_goal": "x (-x ^ {2} + 1) ^ {-1} = \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k}} - \\frac{1}{2} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}}",
                 "start": {
@@ -129,6 +129,18 @@
                                 "name": "SolveEquation",
                                 "solve_for": "x / (1 - x ^ 2)",
                                 "str": "solve equation for x / (1 - x ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{x}{1 - x ^ {2}} = \\frac{1}{2} (\\sum_{k=0}^{\\infty}{x ^ {k}} - \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}})",
+                            "res": "x / (1 - x ^ 2) = 1/2 * (SUM(k, 0, oo, x ^ k) - SUM(k, 0, oo, x ^ k * (-1) ^ k))",
+                            "rule": {
+                                "latex_str": "rewrite to \\(x ^ {k}\\) using identity at 1.1.0.0",
+                                "loc": "1.1.0.0",
+                                "name": "ApplyIdentity",
+                                "str": "rewrite to x ^ k using identity at 1.1.0.0",
+                                "target": "x ^ k"
                             },
                             "type": "CalculationStep"
                         }
