@@ -24,7 +24,7 @@ class IntegralTest(unittest.TestCase):
                 self.assertTrue(content.is_finished())
 
         # Output to file
-        with open('integral/examples/' + filename + '.json', 'w', encoding='utf-8') as f:
+        with open('../examples/' + filename + '.json', 'w', encoding='utf-8') as f:
             json.dump(file.export(), f, indent=4, ensure_ascii=False, sort_keys=True)
 
     def testStandard(self):
