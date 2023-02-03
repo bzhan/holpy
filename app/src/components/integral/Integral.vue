@@ -24,7 +24,6 @@
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ElimInfInterval')">Improper integral to limit</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('DerivIntExchange')">Exchange deriv and integral</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="elimAbs">Eliminate absolute value</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='splitRegion'>Splitting an Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -37,8 +36,6 @@
           <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewrite equation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('RewriteFactorial')">Factorial</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="rewriteBinom">Binomial coefficients</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="rewriteExp">Rewrite exp</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="integrateBothSide0">Integrate both side</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -852,104 +849,6 @@ export default {
       if (response.data.status == 'ok') {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
-      }
-    },
-
-    rewriteBinom: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-binom", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.sep_binom = response.data.binoms
-        this.binom_id = 0
-        this.r_query_mode = 'rewrite binom'
-      }
-    },
-    
-    doRewriteBinom: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: 'RewriteBinom',
-          loc: this.sep_binom[this.binom_id].loc
-        },
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-        this.r_query_mode = undefined
-      }
-    },
-
-    elimAbs: async function(){
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-abs", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.sep_abs = response.data.abs_exprs
-        this.abs_id = 0
-        if (response.data.abs_exprs.length == 1){
-          this.doElimAbs()
-        } else {
-          this.r_query_mode = 'elim abs'
-        }
-      }
-    },
-
-    doElimAbs: async function(){
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: 'ElimAbs',
-          loc: this.sep_abs[this.abs_id].loc
-        },
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-        this.r_query_mode = undefined
-      }
-    },
-
-    rewriteExp: async function(){
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-exp", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.sep_exp = response.data.exps
-        this.exp_id = 0
-        if (response.data.exps.length == 1){
-          this.doRewriteExp()
-        } else {
-          this.r_query_mode = 'rewrite exp'
-        }
-      }
-    },
-
-    doRewriteExp: async function(){
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: 'RewriteExp',
-          loc: this.sep_exp[this.exp_id].loc
-        },
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-        this.r_query_mode = undefined
       }
     },
 

@@ -138,34 +138,6 @@ def query_integral():
         "integrals": res
     })
 
-@app.route("/api/query-binom", methods=['POST'])
-def query_binom():
-    data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
-    label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
-    if isinstance(subitem, compstate.CalculationStep):
-        binoms = subitem.res.separate_binom()
-    elif isinstance(subitem, compstate.Calculation):
-        binoms = subitem.start.separate_binom()
-    else:
-        return jsonify({
-            "status": "error",
-            "msg": "Selected item is not part of a calculation."
-        })
-
-    res = []
-    for e, loc in binoms:
-        res.append({
-            "expr": str(e),
-            "latex_expr": integral.latex.convert_expr(e),
-            "loc": str(loc)
-        })
-    return jsonify({
-        "status": "ok",
-        "binoms": res
-    })
-
 @app.route("/api/query-trig-identity", methods=['POST'])
 def query_trig_identity():
     data = json.loads(request.get_data().decode('UTF-8'))
@@ -460,101 +432,6 @@ def query_last_expr():
         "status": "ok",
     })
 
-
-@app.route("/api/query-limit", methods=['POST'])
-def query_limit():
-    fail = jsonify({
-            "status": "error",
-            "msg": "Selected item is not part of a calculation."
-        })
-    data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
-    label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
-    if isinstance(subitem, compstate.CalculationStep):
-        limits = subitem.res.separate_limit()
-    elif isinstance(subitem, compstate.Calculation):
-        limits = subitem.start.separate_limit()
-    else:
-        return fail
-    if limits == []:
-        return fail
-    res = []
-    for e, loc in limits:
-        res.append({
-            "expr": str(e),
-            "var_name": e.var,
-            "lim": e.lim,
-            "body": str(e.body),
-            "latex_expr": integral.latex.convert_expr(e),
-            "latex_body": integral.latex.convert_expr(e.body),
-            "loc": str(loc)
-        })
-    return jsonify({
-        "status": "ok",
-        "limits": res
-    })
-
-@app.route("/api/query-abs", methods=['POST'])
-def query_abs():
-    fail = jsonify({
-            "status": "error",
-            "msg": "Selected item is not part of a calculation."
-        })
-    data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
-    label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
-    if isinstance(subitem, compstate.CalculationStep):
-        abs_exprs = subitem.res.separate_abs()
-    elif isinstance(subitem, compstate.Calculation):
-        abs_exprs = subitem.start.separate_abs()
-    else:
-        return fail
-    if abs_exprs == []:
-        return fail
-    res = []
-    for e, loc in abs_exprs:
-        res.append({
-            "expr": str(e),
-            "latex_expr": integral.latex.convert_expr(e),
-            "loc": str(loc)
-        })
-    return jsonify({
-        "status": "ok",
-        "abs_exprs": res
-    })
-
-
-@app.route("/api/query-exp", methods=['POST'])
-def query_exp():
-    fail = jsonify({
-            "status": "error",
-            "msg": "Selected item is not part of a calculation."
-        })
-    data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
-    label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
-    if isinstance(subitem, compstate.CalculationStep):
-        exps = subitem.res.separate_exp()
-    elif isinstance(subitem, compstate.Calculation):
-        exps = subitem.start.separate_exp()
-    else:
-        return fail
-    if exps == []:
-        return fail
-    res = []
-    for e, loc in exps:
-        res.append({
-            "expr": str(e),
-            "latex_expr": integral.latex.convert_expr(e),
-            "loc": str(loc)
-        })
-    return jsonify({
-        "status": "ok",
-        "exps": res
-    })
 
 @app.route("/api/query-integrate-both-side", methods=['POST'])
 def query_integrate_both_side():

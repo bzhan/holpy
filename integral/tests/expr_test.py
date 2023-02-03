@@ -342,18 +342,6 @@ class ExprTest(unittest.TestCase):
             for i,j in zip(muls, b):
                 self.assertEqual(str(i),j)
 
-    def testDecomposeAdd(self):
-        test_data = [
-            ('a-b+c', ('a','-b','c')),
-            ('3*b+c*d-3', ('3 * b','c * d','(-3)')),
-            ('-(b * exp(-(b * t)) * sin(t) * (b ^ 2 + 1) ^ -1) - cos(t) * exp(-(b * t)) * (b ^ 2 + 1) ^ -1 + (b ^ 2 + 1) ^ -1',())]
-
-        for a, b in test_data:
-            a = parse_expr(a)
-            adds = expr.decompose_expr_add(a)
-            for i, j in zip(adds, b):
-                self.assertEqual(str(i), j)
-
     def testDeriv(self):
         test_data = [
             ("1", "0"),
@@ -410,18 +398,6 @@ class ExprTest(unittest.TestCase):
         for s, s2 in test_data:
             s = parse_expr(s)
             self.assertEqual(s.is_constant(), s2)
-
-    def testGetAbs(self):
-        test_data = [
-            ("2 * u / (1 + abs(u))", ["abs(u)"]),
-            ("t * (4 + abs(t)) ^ -1 * abs(t ^ -1)", ["abs(t)", "abs(t ^ -1)"])
-        ]
-
-        for s, s1 in test_data:
-            s = parse_expr(s)
-            for i in range(len(s1)):
-                s1[i] = parse_expr(s1[i])
-            self.assertEqual(s.get_abs(), s1)
 
     def testPriority(self):
         x = parse_expr("x")

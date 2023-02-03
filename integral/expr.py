@@ -1208,79 +1208,6 @@ class Expr:
         collect(self, result)
         return result
 
-    def separate_binom(self):
-        """Collect the list of all binomial coeffcients appearing in self."""
-        result = []
-
-        def collect(p, result):
-            if p.ty == FUN and p.func_name == 'binom':
-                p.selected = True
-                loc = self.get_location()
-                del p.selected
-                result.append([p, loc])
-            elif p.ty in (OP, FUN):
-                for arg in p.args:
-                    collect(arg, result)
-
-        collect(self, result)
-        return result
-
-    def separate_limit(self):
-        """Collect the list of all limits appearing in self."""
-        result = []
-
-        def collect(p, result):
-            if p.ty == LIMIT:
-                p.selected = True
-                loc = self.get_location()
-                result.append([p, loc])
-            elif p.ty == OP:
-                for arg in p.args:
-                    collect(arg, result)
-
-        collect(self, result)
-        return result
-
-    def separate_abs(self):
-        """Collect the list of all integral of abs expressions and abs expressions appearing in self."""
-        result = []
-
-        def collect(p, result):
-            if p.ty == INTEGRAL and p.body.ty == FUN and p.body.func_name == 'abs':
-                p.selected = True
-                loc = self.get_location()
-                result.append([p, loc])
-            elif p.ty == FUN and p.func_name == 'abs':
-                p.selected = True
-                loc = self.get_location()
-                result.append([p, loc])
-            elif p.ty == OP:
-                for arg in p.args:
-                    collect(arg, result)
-
-        collect(self, result)
-        return result
-
-    def separate_exp(self):
-        """Collect the list of all exponential expressions appearing in self."""
-        result = []
-
-        def collect(p, result):
-            if p.ty == FUN and p.func_name == 'exp':
-                p.selected = True
-                loc = self.get_location()
-                result.append([p, loc])
-            elif p.ty == OP:
-                for arg in p.args:
-                    collect(arg, result)
-            elif p.ty == INTEGRAL:
-                collect(p.lower, result)
-                collect(p.upper, result)
-                collect(p.body, result)
-
-        collect(self, result)
-        return result
-
     @property
     def depth(self):
         """Return the depth of expression as an estimate of problem difficulty."""
@@ -1298,52 +1225,6 @@ class Expr:
                 raise TypeError
 
         return d(self)
-
-    def ranges(self, var, lower, upper):
-        """Find list of intervals where the expression is greater/less than zero."""
-        e = sympy_style(self)
-        var = sympy_style(var)
-        lower = sympy_style(lower)
-        upper = sympy_style(upper)
-        greater_zero = solveset(re(e) > 0, var, Interval(lower, upper, left_open=True, right_open=True))
-        smaller_zero = Interval(lower, upper, left_open=True, right_open=True) - greater_zero
-
-        # Convert results SymPy's solveset into holpy style.
-        def to_holpy(l):
-            if isinstance(l, sympy.Union):
-                return [(holpy_style(x.start), holpy_style(x.end)) for x in l.args]
-            elif isinstance(l, Interval):
-                return [(holpy_style(l.start), holpy_style(l.end))]
-            elif l == EmptySet:
-                return []
-            else:
-                raise NotImplementedError
-
-        g, s = to_holpy(greater_zero), to_holpy(smaller_zero)
-
-        # Because sympy use e represent exp, so need to convert it to exp(1).
-        def e_exp(e):
-            return Fun("exp", Const(1)) if e == Var("E") else e
-
-        g = [(e_exp(i), e_exp(j)) for i, j in g]
-        s = [(e_exp(i), e_exp(j)) for i, j in s]
-        return g, s
-
-    def get_abs(self):
-        """Collect all absolute value in expression."""
-        abs_value = []
-
-        def abs_collect(expr):
-            if expr.ty == FUN and expr.func_name == "abs":
-                abs_value.append(expr)
-            elif expr.ty in (OP, FUN):
-                for arg in expr.args:
-                    abs_collect(arg)
-            elif expr.ty in (INTEGRAL, EVAL_AT, DERIV):
-                abs_collect(expr.body)
-
-        abs_collect(self)
-        return abs_value
 
     def is_spec_function(self, fun_name):
         """Return true iff e is formed by rational options of fun_name."""
@@ -1490,25 +1371,6 @@ def is_polynomial(e):
         return False
 
 
-def trig_transform(trig: Expr, var: str, rule_list=None):
-    """Compute all possible trig function equal to trig"""
-    poss = set()
-    poss_expr = set()
-    if trig.ty == CONST:
-        poss.add((trig * ((sin(Var(var)) ^ Const(2)) + (cos(Var(var)) ^ Const(2))), "TR0"))
-        return poss
-    i = sympy_parser.parse_expr(str(trig).replace("^", "**"))
-    for rule_name, (f, rule) in trigFun.items():
-        if rule_list is not None and f not in rule_list:
-            continue
-        j = f(sympy_parser.parse_expr(str(trig).replace("^", "**")))
-        if i != j and j not in poss_expr:
-            poss.add((holpy_style(j), f.__name__))
-            poss_expr.add(j)
-    poss.add((holpy_style(i), "Unchanged"))
-    return poss
-
-
 def match(exp: Expr, pattern: Expr) -> Optional[Dict]:
     """Match expr with given pattern.
 
@@ -1632,37 +1494,10 @@ def collect_spec_expr(expr, symb):
     return c
 
 
-def decompose_expr_add(e: Expr) -> List[Expr]:
-    """Decompose expression into a sum of expressions.
-
-    Recognize +, - (unary and binary).
-
-    Example:
-        a + b - c -> [a, b, -c]
-
-    """
-    def f(e):
-        tmp = []
-        if e.is_plus():
-            tmp.extend(f(e.args[0]))
-            tmp.extend(f(e.args[1]))
-        elif e.is_uminus():
-            tmp.extend([-item for item in f(e.args[0])])
-        elif e.is_minus():
-            tmp.extend(f(e.args[0]))
-            tmp.extend([-item for item in f(e.args[1])])
-        else:
-            tmp.extend([e])
-        return copy.copy(tmp)
-
-    return f(e)
-
-
 def decompose_expr_factor(e):
     """Get production factors from expr.
 
     """
-    factors = []
     if e.ty == OP and e.op == "/":
         e = e.args[0] * Op("^", e.args[1], Const(-1))
 
@@ -1679,7 +1514,6 @@ def decompose_expr_factor(e):
         return copy.copy(tmp)
 
     return f(e)
-    # return factors
 
 
 def from_const_mono(m: ConstantMonomial) -> Expr:

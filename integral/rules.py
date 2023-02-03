@@ -5,7 +5,6 @@ from fractions import Fraction
 from typing import Optional, Dict
 from sympy import apart
 import functools
-import math
 
 from integral import expr
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, \
