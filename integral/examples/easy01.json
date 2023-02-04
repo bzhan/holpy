@@ -1,26 +1,20 @@
 {
     "content": [
         {
-            "eq": "I(a) = (INT x:[1,oo]. 1 / ((x + a) * sqrt(x - 1)))",
-            "latex_eq": "I{(a)} = \\int_{1}^{\\infty} \\frac{1}{(x + a) \\sqrt{x - 1}} \\,dx",
-            "latex_lhs": "I{(a)}",
-            "type": "FuncDef"
-        },
-        {
             "finished": true,
-            "goal": "I(a) = pi / sqrt(a + 1)",
-            "latex_goal": "I{(a)} = \\frac{\\pi}{\\sqrt{a + 1}}",
+            "goal": "(INT x:[1,oo]. 1 / ((x + a) * sqrt(x - 1))) = pi / sqrt(a + 1)",
+            "latex_goal": "\\int_{1}^{\\infty} \\frac{1}{(x + a) \\sqrt{x - 1}} \\,dx = \\frac{\\pi}{\\sqrt{a + 1}}",
             "proof": {
                 "finished": true,
-                "goal": "I(a) = pi / sqrt(a + 1)",
-                "latex_goal": "I{(a)} = \\frac{\\pi}{\\sqrt{a + 1}}",
+                "goal": "(INT x:[1,oo]. 1 / ((x + a) * sqrt(x - 1))) = pi / sqrt(a + 1)",
+                "latex_goal": "\\int_{1}^{\\infty} \\frac{1}{(x + a) \\sqrt{x - 1}} \\,dx = \\frac{\\pi}{\\sqrt{a + 1}}",
                 "lhs_calc": {
-                    "latex_start": "I{(a)}",
-                    "start": "I(a)",
+                    "latex_start": "\\int_{1}^{\\infty} \\frac{1}{(x + a) \\sqrt{x - 1}} \\,dx",
+                    "start": "INT x:[1,oo]. 1 / ((x + a) * sqrt(x - 1))",
                     "steps": [
                         {
-                            "latex_res": "\\int_{1}^{\\infty} (a + x) ^ {-1} (x - 1) ^ {-1/2} \\,dx",
-                            "res": "INT x:[1,oo]. (a + x) ^ (-1) * (x - 1) ^ (-1/2)",
+                            "latex_res": "\\int_{1}^{\\infty} \\frac{1}{(x + a) \\sqrt{x - 1}} \\,dx",
+                            "res": "INT x:[1,oo]. 1 / ((x + a) * sqrt(x - 1))",
                             "rule": {
                                 "func_name": "I",
                                 "name": "ExpandDefinition",
