@@ -11,6 +11,16 @@
             "level": 2
         },
         {
+            "type": "problem",
+            "expr": "(INT x:[1,oo]. 1 / ((x+a)*sqrt(x-1))) = pi / sqrt(a+1)",
+            "path": "easy01"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, oo]. log(1 + a^2 / x^2)) = pi*a",
+            "path": "easy02"
+        },
+        {
             "type": "header",
             "name": "2.2 A New Trick",
             "level": 2
@@ -29,6 +39,11 @@
             "type": "header",
             "name": "2.3 Two Old Tricks, Plus a New One",
             "level": 2
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. 1 / (x^4 + 2*x^2*cosh(2*a) + 1)) = pi / (4 * cosh(a))",
+            "path": "partialFraction"
         },
         {
             "type": "header",

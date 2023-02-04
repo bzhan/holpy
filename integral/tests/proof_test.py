@@ -17,6 +17,7 @@ from logic.tests.logic_test import test_macro
 from logic.tests.conv_test import test_conv
 from prover import sympywrapper
 import integral
+from integral import convert
 
 
 class ProofTest(unittest.TestCase):
@@ -339,7 +340,7 @@ class ProofTest(unittest.TestCase):
         for s, res in test_data:
             s = integral.parser.parse_expr(s)
             res = parser.parse_term(res)
-            self.assertEqual(proof.expr_to_holpy(s), res)
+            self.assertEqual(convert.expr_to_holpy(s), res)
 
 
 if __name__ == "__main__":

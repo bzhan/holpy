@@ -69,7 +69,7 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 else:
                     # Ordinary cases
                     sy = convert_expr(y, mode="short")
-                    if x.priority() <= e.priority() or x.is_uminus():
+                    if x.priority() <= e.priority() or x.is_uminus() or x.is_fun() and x.func_name == 'exp':
                         sx = "(%s)" % sx
                     sy = "{%s}" % sy
                     return "%s %s %s" % (sx, e.op, sy)
@@ -148,7 +148,7 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 if not x.is_var():
                     sx = "(" + sx + ")"
                 return "\\cos^{-1}{%s}" % sx
-            elif e.func_name in ('log', 'sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
+            elif e.func_name in ('log', 'sin', 'cos', 'tan', 'cot', 'csc', 'sec', 'cosh'):
                 if not x.is_var():
                     sx = "(" + sx + ")"
                 return "\\%s{%s}" % (e.func_name, sx)

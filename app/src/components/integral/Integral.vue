@@ -29,9 +29,7 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Rewrite" left>
           <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="trigIdentity">Trig identities</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ExpandPolynomial')">Expand polynomial</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyRule('PolynomialDivision')">Polynomial division</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyTheorem">Apply theorem</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewrite equation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>
@@ -216,19 +214,6 @@
         <button v-bind:disabled='abs_id == sep_abs.length-1' v-on:click='abs_id++'>next</button><br/>
         <button v-on:click="doElimAbs">OK</button>
       </div>
-      <div v-if="r_query_mode === 'trig identity'">
-        <div class="math-text">Select subexpression:</div>
-        <input
-             class="item-text" ref="select_expr1"
-             v-bind:value="lastExpr"
-             style="width:500px" disabled="disabled"
-             @select="selectExpr"><br/>
-        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/>
-        <div v-for="(item, index) in trig_rewrites" :key="index"
-             v-on:click="doTrigIdentity(index)">
-          <MathEquation v-bind:data="'\\(=' + item.latex_new_e + '\\)'" style="cursor:pointer"/>
-        </div>
-      </div>
       <div v-if="r_query_mode === 'rewrite equation'">
         <div class="math-text">Select subexpression:</div>
         <input
@@ -359,7 +344,6 @@ export default {
       // Selected latex expression
       selected_expr: undefined,
       latex_selected_expr: undefined,
-      trig_rewrites: undefined,
 
       // List of theorems
       theorems: undefined,
@@ -615,10 +599,6 @@ export default {
       }
     },
 
-    trigIdentity: function() {
-      this.r_query_mode = 'trig identity'
-    },
-
     selectExpr: async function() {
       const start = this.$refs.select_expr1.selectionStart
       const end = this.$refs.select_expr1.selectionEnd
@@ -632,24 +612,6 @@ export default {
         this.trig_rewrites = response.data.results
       } else {
         this.trig_rewrites = undefined
-      }
-    },
-
-    doTrigIdentity: async function(index) {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: "RewriteTrigonometric",
-          rule_name: this.trig_rewrites[index].rule_name,
-          rewrite_term: this.selected_expr
-        }
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-        this.r_query_mode = undefined
       }
     },
 

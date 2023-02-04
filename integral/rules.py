@@ -2,8 +2,7 @@
 
 from decimal import Decimal
 from fractions import Fraction
-from typing import Optional, Dict
-from sympy import apart
+from typing import Optional, Dict, Union
 import functools
 
 from integral import expr
@@ -232,6 +231,35 @@ class CommonIntegral(Rule):
         return e
 
 
+class FunctionTable(Rule):
+    """Apply information from function table."""
+    def __init__(self):
+        self.name = "FunctionTable"
+
+    def __str__(self):
+        return "apply function table"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self),
+        }
+
+    def eval(self, e: Expr, ctx: Context) -> Expr:
+        if not e.is_fun() or len(e.args) != 1:
+            return e
+        
+        func_table = ctx.get_function_tables()
+        if not e.func_name in func_table:
+            return e
+        if not e.args[0].is_constant():
+            return e
+        if e.args[0] in func_table[e.func_name]:
+            return func_table[e.func_name][e.args[0]]
+        else:
+            return e
+
+
 class ApplyIdentity(Rule):
     """Apply identities (trigonometric, etc) to the current term.
     
@@ -239,22 +267,39 @@ class ApplyIdentity(Rule):
     be multiple options.
 
     """
-    def __init__(self, target: Expr):
+    def __init__(self, source: Union[str, Expr], target: Union[str, Expr]):
         self.name = "ApplyIdentity"
+        if isinstance(source, str):
+            source = parser.parse_expr(source)
+        if isinstance(target, str):
+            target = parser.parse_expr(target)
+        self.source = source
         self.target = target
 
     def __str__(self):
-        return "rewrite to %s using identity" % self.target
+        return "rewrite %s to %s using identity" % (self.source, self.target)
 
     def export(self):
         return {
             "name": self.name,
             "str": str(self),
+            "source": str(self.source),
             "target": str(self.target),
-            "latex_str": "rewrite to \\(%s\\) using identity" % latex.convert_expr(self.target)
+            "latex_str": "rewrite \\(%s\\) to \\(%s\\) using identity" % (
+                latex.convert_expr(self.source), latex.convert_expr(self.target))
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
+        # Find source within e
+        if self.source != e:
+            find_res = e.find_subexpr(self.source)
+            if len(find_res) == 0:
+                raise AssertionError("ApplyIdentity: source expression not found")
+            loc = find_res[0]
+            return OnLocation(self, loc).eval(e, ctx)
+
+        assert self.source == e
+
         for identity in ctx.get_other_identities():
             inst = expr.match(e, identity.lhs)
             if inst is not None:
@@ -703,36 +748,14 @@ class SimplifyPower(Rule):
             return e
 
 
-class ReduceInfLimit(Rule):
-    """Reduce limit to infinity using asymptotic growth compuations."""
+class ReduceLimit(Rule):
+    """Reduce limit expressions."""
 
     def __init__(self):
-        self.name = "ReduceInfLimit"
+        self.name = "ReduceLimit"
 
     def __str__(self):
-        return "reduce infinite limits"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if e.is_limit() and e.lim == POS_INF:
-            return limits.reduce_inf_limit(e.body, e.var, conds=ctx.get_conds())
-        else:
-            return e
-
-
-class ReduceTrivLimit(Rule):
-    """Reduce limits that do not involve zeros or infinities."""
-
-    def __init__(self):
-        self.name = "ReduceTrivLimit"
-
-    def __str__(self):
-        return "reduce trivial limits"
+        return "reduce limits"
 
     def export(self):
         return {
@@ -745,20 +768,14 @@ class ReduceTrivLimit(Rule):
             return e
         if e.var not in e.body.get_vars():
             return e.body
-        if e.lim in (POS_INF, NEG_INF):
-            return e
 
-        try:
-            if e.is_indeterminate_form():
-                return e
-            # inteternimate form
-            # 1. 0 * INF
-            # 2. INF / INF or 0 / 0
-            # if body is not indeterminate form
-            body = e.body.subst(e.var, e.lim)
-            return body.normalize()
-        except ZeroDivisionError:
-            return e
+        if e.lim == POS_INF:
+            return limits.reduce_inf_limit(e.body, e.var, conds=ctx.get_conds())
+        elif e.lim == NEG_INF:
+            raise NotImplementedError
+        else:
+            return limits.reduce_finite_limit(e)
+
 
 class FullSimplify(Rule):
     """Perform simplification by applying the following rules repeatedly:
@@ -768,7 +785,7 @@ class FullSimplify(Rule):
     - Linearity
     - DerivativeSimplify
     - SimplifyPower
-    - ReduceInfLimit
+    - ReduceLimit
 
     """
 
@@ -795,11 +812,11 @@ class FullSimplify(Rule):
                         s = s.subst(str(b.args[0]), b.args[1])
             s = OnSubterm(CommonIntegral()).eval(s, ctx)
             s = Simplify().eval(s, ctx)
+            s = OnSubterm(FunctionTable()).eval(s, ctx)
             s = OnSubterm(DerivativeSimplify()).eval(s, ctx)
             s = OnSubterm(SimplifyPower()).eval(s, ctx)
             s = OnSubterm(SimplifyAbs()).eval(s, ctx)
-            s = OnSubterm(ReduceInfLimit()).eval(s, ctx)
-            s = OnSubterm(ReduceTrivLimit()).eval(s, ctx)
+            s = OnSubterm(ReduceLimit()).eval(s, ctx)
             s = OnSubterm(TrigSimplify()).eval(s, ctx)
             s = OnSubterm(SummationSimplify()).eval(s, ctx)
             if s == current:
@@ -970,11 +987,11 @@ class Substitution(Rule):
             if e.lower == expr.NEG_INF:
                 lower = limits.reduce_inf_limit(var_subst.subst(e.var, -Var(e.var)), e.var, ctx.get_conds())
             else:
-                lower = var_subst.subst(e.var, e.lower).normalize()
+                lower = full_normalize(var_subst.subst(e.var, e.lower), ctx)
             if e.upper == expr.POS_INF:
                 upper = limits.reduce_inf_limit(var_subst, e.var, ctx.get_conds())
             else:
-                upper = var_subst.subst(e.var, e.upper).normalize()
+                upper = full_normalize(var_subst.subst(e.var, e.upper), ctx)
             if lower.is_evaluable() and upper.is_evaluable() and expr.eval_expr(lower) > expr.eval_expr(upper):
                 return Integral(self.var_name, upper, lower, Op("-", self.f)).normalize()
             else:
@@ -984,6 +1001,11 @@ class Substitution(Rule):
         else:
             raise TypeError
 
+def full_normalize(e: Expr, ctx: Context) -> Expr:
+    for i in range(5):
+        e = e.normalize()
+        e = FunctionTable().eval(e, ctx)
+    return e
 
 class SubstitutionInverse(Rule):
     """Apply substitution x = f(u).
@@ -1034,8 +1056,8 @@ class SubstitutionInverse(Rule):
         if lower is None or upper is None:
             raise AssertionError("SubstitutionInverse: cannot solve")
 
-        lower = lower.normalize()
-        upper = upper.normalize()
+        lower = full_normalize(lower, ctx)
+        upper = full_normalize(upper, ctx)
         if lower.is_evaluable() and upper.is_evaluable() and expr.eval_expr(lower) > expr.eval_expr(upper):
             return -expr.Integral(self.var_name, upper, lower, new_e_body)
         else:
@@ -1078,11 +1100,14 @@ class ExpandPolynomial(Rule):
 class Equation(Rule):
     """Apply substitution for equal expressions"""
 
-    def __init__(self, new_expr: Expr, old_expr: Optional[Expr] = None):
+    def __init__(self, old_expr: Optional[Union[str, Expr]], new_expr: Union[str, Expr]):
         self.name = "Equation"
-        assert isinstance(new_expr, Expr)
-        self.new_expr = new_expr
+        if isinstance(old_expr, str):
+            old_expr = parser.parse_expr(old_expr)
+        if isinstance(new_expr, str):
+            new_expr = parser.parse_expr(new_expr)
         self.old_expr = old_expr
+        self.new_expr = new_expr
 
     def __str__(self):
         if self.old_expr is None:
@@ -1187,77 +1212,6 @@ class IntegrationByParts(Rule):
         else:
             print("%s != %s" % (str(udv), str(e.body)))
             raise NotImplementedError("%s != %s" % (str(udv), str(e.body)))
-
-
-class PolynomialDivision(Rule):
-    """Simplify the representation of polynomial divided by polynomial.
-    """
-
-    def __init__(self):
-        self.name = "PolynomialDivision"
-
-    def __str__(self):
-        return "polynomial division"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if not e.is_integral():
-            sep_ints = e.separate_integral()
-            if len(sep_ints) == 0:
-                return e
-            else:
-                return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
-
-        result = apart(expr.sympy_style(e.body))
-        new_expr = expr.holpy_style(result)
-        return expr.Integral(e.var, e.lower, e.upper, new_expr)
-
-
-class RewriteTrigonometric(Rule):
-    """Rewrite using one of Fu's rules."""
-
-    def __init__(self, rule_name: str, rewrite_term: Optional[Expr] = None):
-        self.name = "RewriteTrigonometric"
-        self.rule_name = rule_name
-        self.rewrite_term = rewrite_term
-
-    def __str__(self):
-        if self.rewrite_term is None:
-            return "rewrite trigonometric"
-        else:
-            return "rewrite trigonometric on %s" % self.rewrite_term
-
-    def export(self):
-        res = {
-            "name": self.name,
-            "rule_name": self.rule_name,
-            "str": str(self)
-        }
-        if self.rewrite_term is not None:
-            res['rewrite_term'] = str(self.rewrite_term)
-            res['latex_str'] = "rewrite trigonometric on \\(%s\\)" % \
-                               latex.convert_expr(self.rewrite_term)
-        return res
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        # Rewrite on a subterm
-        if self.rewrite_term is not None and self.rewrite_term != e:
-            find_res = e.find_subexpr(self.rewrite_term)
-            if len(find_res) == 0:
-                raise AssertionError("RewriteTrigonometric: rewrite term not found")
-            loc = find_res[0]
-            return OnLocation(self, loc).eval(e, ctx)
-
-        # Select one of Fu's rules
-        rule_fun, _ = expr.trigFun[self.rule_name]
-        sympy_result = rule_fun(expr.sympy_style(e))
-        result = expr.holpy_style(sympy_result)
-        return result
 
 
 class SplitRegion(Rule):
@@ -1494,26 +1448,12 @@ def check_item(item, target=None, *, debug=False):
             else:
                 result = rule.eval(current, ctx)
 
-        elif reason == 'Rewrite fraction':
-            rule = PolynomialDivision()
-            if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current, ctx)
-            else:
-                result = rule.eval(current, ctx)
-
         elif reason == 'Rewrite':
             rhs = parser.parse_expr(step['params']['rhs'])
             if 'denom' in step['params']:
                 rule = Equation(rhs, parser.parse_expr(step['params']['denom']))
             else:
                 rule = Equation(rhs)
-            if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current, ctx)
-            else:
-                result = rule.eval(current, ctx)
-
-        elif reason == 'Rewrite trigonometric':
-            rule = RewriteTrigonometric(step['params']['rule'])
             if 'location' in step:
                 result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
@@ -1621,6 +1561,39 @@ class ExpandDefinition(Rule):
         return e
 
 
+class FoldDefinition(Rule):
+    """Fold a definition"""
+
+    def __init__(self, func_name: str):
+        self.name = "FoldDefinition"
+        assert isinstance(func_name, str)
+        self.func_name: str = func_name
+
+    def __str__(self):
+        return "fold definition"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "func_name": self.func_name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, ctx: Context) -> Expr:
+        for identity in ctx.get_definitions():
+            if identity.lhs.is_fun() and identity.lhs.func_name == self.func_name:
+                inst = expr.match(e, identity.rhs)
+                if inst:
+                    return identity.lhs.inst_pat(inst).normalize()
+
+            if identity.lhs.is_symbol() and identity.lhs.name == self.func_name:
+                if e == identity.rhs:
+                    return identity.lhs
+
+        # Not found
+        return e
+
+    
 class SimplifyAbs(Rule):
     def __init__(self):
         self.name = "SimplifyAbs"

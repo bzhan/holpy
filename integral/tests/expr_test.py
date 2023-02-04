@@ -270,14 +270,6 @@ class ExprTest(unittest.TestCase):
             t = parse_expr(s)
             self.assertEqual(str(t.normalize()), res)
 
-    def testIsINF(self):
-        test_data = [('1*(0^-1)', True), ('tan(pi/2)', True),
-                     ('tan(3*pi/2)', True), ('tan(pi)', False),
-                     ('tan(2*pi)',False),('tan(2)',False)]
-        for s, res in test_data:
-            e = parse_expr(s).normalize()
-            self.assertEqual(e.is_INF(), res, e)
-
     def testGetSubExpr(self):
         test_data = [
             ("x + y", "0", "x"),

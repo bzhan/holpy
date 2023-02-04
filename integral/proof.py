@@ -20,7 +20,8 @@ from data import nat
 from data import real
 from data.real import pi
 from data.integral import netT
-from integral.expr import Expr, Location, expr_to_holpy, evalat, real_derivative, real_integral
+from integral.expr import Location
+from integral.convert import expr_to_holpy, evalat, real_derivative, real_integral
 from integral.parser import parse_expr
 from syntax.settings import settings
 settings.unicode = True

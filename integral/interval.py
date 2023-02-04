@@ -5,6 +5,9 @@ from typing import Dict, Tuple, Optional
 from integral import expr
 from integral.expr import Expr, eval_expr
 
+# Tolerance for floating-point rounding errors
+tol = 1e-16
+
 class Interval:
     """Specifies an interval. Each side can be either open or closed."""
     def __init__(self, start: Expr, end: Expr, left_open: bool, right_open: bool):
@@ -203,14 +206,14 @@ class Interval:
 
     def contained_in(self, other: "Interval") -> bool:
         """Whether self is contained in other."""
-        if eval_expr(self.start) < eval_expr(other.start):
+        if eval_expr(self.start) < eval_expr(other.start) - tol:
             return False
-        if eval_expr(self.start) == eval_expr(other.start) and \
+        if abs(eval_expr(self.start) - eval_expr(other.start)) < tol and \
             (not self.left_open) and other.left_open:
             return False
-        if eval_expr(self.end) > eval_expr(other.end):
+        if eval_expr(self.end) > eval_expr(other.end) + tol:
             return False
-        if eval_expr(self.end) == eval_expr(other.end) and \
+        if abs(eval_expr(self.end) - eval_expr(other.end)) < tol and \
             (not self.right_open) and other.right_open:
             return False
         return True
@@ -277,8 +280,7 @@ class Interval:
     def sin(self) -> "Interval":
         """Sin function of an interval."""
         if self.contained_in(Interval.closed(-(expr.pi / 2), expr.pi / 2)):
-            return Interval(expr.Fun('sin', self.start).normalize_constant(),
-                            expr.Fun('sin', self.end).normalize_constant(),
+            return Interval(expr.Fun('sin', self.start), expr.Fun('sin', self.end),
                             self.left_open, self.right_open)
         elif self.contained_in(Interval.closed(expr.Const(0), expr.pi)):
             return Interval.closed(expr.Const(0), expr.Const(1))
@@ -288,8 +290,7 @@ class Interval:
     def cos(self) -> "Interval":
         """Cos function of an interval."""
         if self.contained_in(Interval.closed(expr.Const(0), expr.pi)):
-            return Interval(expr.Fun('cos', self.end).normalize_constant(),
-                            expr.Fun('cos', self.start).normalize_constant(),
+            return Interval(expr.Fun('cos', self.end), expr.Fun('cos', self.start),
                             self.right_open, self.left_open)
         elif self.contained_in(Interval.closed(-(expr.pi / 2), expr.pi / 2)):
             return Interval.closed(expr.Const(0), expr.Const(1))

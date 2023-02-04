@@ -29,6 +29,7 @@ class LatexTest(unittest.TestCase):
             ("(3 + x) ^ (3/2)", "(3 + x) ^ {3/2}"),
             ("sin(x) ^ (-1)", "\sin{x} ^ {-1}"),
             ("asin(x)", "\sin^{-1}{x}"),
+            ("exp(x)^2", "(e^{x}) ^ {2}"),
         ]
 
         for e, res in test_data:

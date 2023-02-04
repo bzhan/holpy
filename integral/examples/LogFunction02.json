@@ -136,10 +136,10 @@
                             "latex_res": "\\frac{x}{1 - x ^ {2}} = \\frac{1}{2} (\\sum_{k=0}^{\\infty}{x ^ {k}} - \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}})",
                             "res": "x / (1 - x ^ 2) = 1/2 * (SUM(k, 0, oo, x ^ k) - SUM(k, 0, oo, x ^ k * (-1) ^ k))",
                             "rule": {
-                                "latex_str": "rewrite to \\(x ^ {k}\\) using identity at 1.1.0.0",
-                                "loc": "1.1.0.0",
+                                "latex_str": "rewrite \\((-1) ^ {k} (-x) ^ {k}\\) to \\(x ^ {k}\\) using identity",
                                 "name": "ApplyIdentity",
-                                "str": "rewrite to x ^ k using identity at 1.1.0.0",
+                                "source": "(-1) ^ k * (-x) ^ k",
+                                "str": "rewrite (-1) ^ k * (-x) ^ k to x ^ k using identity",
                                 "target": "x ^ k"
                             },
                             "type": "CalculationStep"
@@ -188,10 +188,10 @@
                             "latex_res": "-(\\int_{0}^{1} t \\log{t} \\sqrt{1 - t ^ {2}} ^ {-1} (-t ^ {2} + 1) ^ {-1/2} \\,dt)",
                             "res": "-(INT t:[0,1]. t * log(t) * sqrt(1 - t ^ 2) ^ (-1) * (-(t ^ 2) + 1) ^ (-1/2))",
                             "rule": {
-                                "latex_str": "rewrite to \\(\\sqrt{1 - t ^ {2}}\\) using identity at 0.0.0.1.0",
-                                "loc": "0.0.0.1.0",
+                                "latex_str": "rewrite \\(\\sin{(\\cos^{-1}{t})}\\) to \\(\\sqrt{1 - t ^ {2}}\\) using identity",
                                 "name": "ApplyIdentity",
-                                "str": "rewrite to sqrt(1 - t ^ 2) using identity at 0.0.0.1.0",
+                                "source": "sin(acos(t))",
+                                "str": "rewrite sin(acos(t)) to sqrt(1 - t ^ 2) using identity",
                                 "target": "sqrt(1 - t ^ 2)"
                             },
                             "type": "CalculationStep"

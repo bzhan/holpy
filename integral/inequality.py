@@ -3,7 +3,6 @@
 import math
 
 from kernel.type import RealType
-from kernel import term
 from kernel.term import Term, Var, Lambda, Inst, Nat, Real, Eq
 from kernel.thm import Thm
 from kernel.proofterm import ProofTerm, TacticException
@@ -16,8 +15,8 @@ from data import real
 from data import set as hol_set
 from logic import auto
 from integral import expr
-from integral.expr import eval_hol_expr
 from integral.interval import Interval
+from integral.convert import expr_to_holpy, holpy_to_expr
 
 
 LESS, EQUAL, GREATER = range(3)
@@ -28,7 +27,7 @@ def interval_to_holpy(i: Interval):
     Currently only support open and closed intervals.
 
     """
-    e1, e2 = expr.expr_to_holpy(i.start), expr.expr_to_holpy(i.end)
+    e1, e2 = expr_to_holpy(i.start), expr_to_holpy(i.end)
     if i.left_open and i.right_open:
         return real.open_interval(e1, e2)
     elif not i.left_open and not i.right_open:
@@ -39,6 +38,20 @@ def interval_to_holpy(i: Interval):
         return real.ropen_interval(e1, e2)
     else:
         raise NotImplementedError
+
+def eval_hol_expr(t: Term):
+    """Evaluate an HOL term of type real.
+
+    First try the exact evaluation with real_eval. If that fails, fall back
+    to approximate evaluation with real_approx_eval.
+
+    """
+    try:
+        res = real.real_eval(t)
+    except ConvException:
+        res = real.real_approx_eval(t)
+
+    return res
 
 def eval_inequality_expr(t):
     """Evaluate inequality."""
@@ -63,8 +76,8 @@ def expr_compare(expr1, expr2):
     assert isinstance(expr1, expr.Expr) and isinstance(expr2, expr.Expr), \
         "expr_compare: wrong type of arguments."
 
-    t1 = expr.expr_to_holpy(expr1)
-    t2 = expr.expr_to_holpy(expr2)
+    t1 = expr_to_holpy(expr1)
+    t2 = expr_to_holpy(expr2)
     try:
         e1 = real.real_eval(t1)
         e2 = real.real_eval(t2)
@@ -105,9 +118,9 @@ def expr_max(*exprs):
 def convert_interval(t):
     """Convert HOL term to an interval."""
     if t.is_comb('real_closed_interval', 2):
-        return Interval(expr.holpy_to_expr(t.arg1), expr.holpy_to_expr(t.arg), False, False)
+        return Interval(holpy_to_expr(t.arg1), holpy_to_expr(t.arg), False, False)
     elif t.is_comb('real_open_interval', 2):
-        return Interval(expr.holpy_to_expr(t.arg1), expr.holpy_to_expr(t.arg), True, True)
+        return Interval(holpy_to_expr(t.arg1), holpy_to_expr(t.arg), True, True)
     else:
         raise NotImplementedError
 
@@ -656,6 +669,21 @@ def get_bounds_proof(t, var_range):
         print("Cannot deal with", t)
         raise NotImplementedError
 
+from integral import parser
+import sympy
+from sympy.parsing import sympy_parser
+
+def sympy_style(s):
+    """Transform expr to sympy object."""
+    return sympy_parser.parse_expr(str(s).replace("^", "**"))
+
+def holpy_style(s):
+    """Transform sympy object to expr."""
+    return parser.parse_expr(str(s).replace("**", "^"))
+
+def factor_polynomial(e):
+    """Factorize a polynomial expr."""
+    return holpy_style(sympy.factor(sympy_style(e)))
 
 @register_macro('interval_inequality')
 class IntervalInequalityMacro(Macro):
@@ -672,8 +700,8 @@ class IntervalInequalityMacro(Macro):
         var_range = {var_name: pts[0]}
 
         if goal.is_not() and goal.arg.is_equals():
-            if expr.is_polynomial(expr.holpy_to_expr(goal.arg.arg1)):
-                factored = expr.expr_to_holpy(expr.factor_polynomial(expr.holpy_to_expr(goal.arg.arg1)))
+            if expr.is_polynomial(holpy_to_expr(goal.arg.arg1)):
+                factored = expr_to_holpy(factor_polynomial(holpy_to_expr(goal.arg.arg1)))
                 if factored.is_times() and factored != goal.arg.arg1:
                     eq_pt = auto.auto_solve(Eq(factored, goal.arg.arg1))
                     pt1 = get_bounds_proof(factored, var_range).on_prop(arg1_conv(rewr_conv(eq_pt)))

@@ -1,26 +1,16 @@
 """Expressions."""
 
 import copy
-import functools, operator
+import functools
+import operator
+from decimal import Decimal
+from collections.abc import Iterable
 from typing import Dict, List, Optional, Set, TypeGuard, Tuple
-from sympy import solveset, re, Interval, Eq, EmptySet
 from sympy.simplify.fu import *
-from sympy.parsing import sympy_parser
 from sympy.ntheory.factor_ import factorint
 
-from kernel.type import RealType
-from kernel import term
-from kernel.term import TFun
-from logic.conv import ConvException
-from data import real
-from data import set as hol_set
-from integral import parser
 from integral import poly
 from integral.poly import *
-
-evalat = term.Const('evalat', TFun(TFun(RealType, RealType), RealType, RealType, RealType))
-real_derivative = term.Const('real_derivative', TFun(TFun(RealType, RealType), RealType, RealType))
-real_integral = term.Const('real_integral', TFun(hol_set.setT(RealType), TFun(RealType, RealType), RealType))
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, SYMBOL, LIMIT, INF, INDEFINITEINTEGRAL, DIFFERENTIAL, \
 SKOLEMFUNC, SUMMATION = range(14)
@@ -32,106 +22,6 @@ op_priority = {
 
 def is_square(r):
     return math.sqrt(r) * math.sqrt(r) == r
-
-
-sin_table = {
-    "0": "0",
-    "1/6 * pi": "1/2",
-    "1/4 * pi": "1/2 * sqrt(2)",
-    "1/3 * pi": "1/2 * sqrt(3)",
-    "1/2 * pi": "1",
-    "2/3 * pi": "1/2 * sqrt(3)",
-    "3/4 * pi": "1/2 * sqrt(2)",
-    "5/6 * pi": "1/2",
-    "pi": "0"
-}
-
-cos_table = {
-    "0": "1",
-    "1/6 * pi": "1/2 * sqrt(3)",
-    "1/4 * pi": "1/2 * sqrt(2)",
-    "1/3 * pi": "1/2",
-    "1/2 * pi": "0",
-    "2/3 * pi": "-1/2",
-    "3/4 * pi": "-1/2 * sqrt(2)",
-    "5/6 * pi": "-1/2 * sqrt(3)",
-    "pi": "-1"
-}
-
-tan_table = {
-    "0": "0",
-    "1/6 * pi": "1/3 * sqrt(3)",
-    "1/4 * pi": "1",
-    "1/3 * pi": "sqrt(3)",
-    "2/3 * pi": "-sqrt(3)",
-    "3/4 * pi": "-1",
-    "5/6 * pi": "-1/3 * sqrt(3)",
-    "pi": "0"
-}
-
-cot_table = {
-    "1/6 * pi": "sqrt(3)",
-    "1/4 * pi": "1",
-    "1/3 * pi": "1/3 * sqrt(3)",
-    "1/2 * pi": "0",
-    "2/3 * pi": "-1/3 * sqrt(3)",
-    "3/4 * pi": "-1",
-    "5/6 * pi": "-sqrt(3)",
-}
-
-csc_table = {
-    "1/6 * pi": "2",
-    "1/4 * pi": "sqrt(2)",
-    "1/3 * pi": "2/3 * sqrt(3)",
-    "1/2 * pi": "1",
-    "2/3 * pi": "2/3 * sqrt(3)",
-    "3/4 * pi": "sqrt(2)",
-    "5/6 * pi": "2",
-}
-
-sec_table = {
-    "0": "1",
-    "1/6 * pi": "2/3 * sqrt(3)",
-    "1/4 * pi": "sqrt(2)",
-    "1/3 * pi": "2",
-    "2/3 * pi": "-2",
-    "3/4 * pi": "-sqrt(2)",
-    "5/6 * pi": "-2/3 * sqrt(3)",
-    "pi": "-1"
-}
-
-asin_table = {
-    "-1": "-1/2 * pi",
-    "-1/2 * sqrt(3)": "-1/3 * pi",
-    "-1/2 * sqrt(2)": "-1/4 * pi",
-    "-1/2": "-1/6 * pi",
-    "0": "0",
-    "1/2": "1/6 * pi",
-    "1/2 * sqrt(2)": "1/4 * pi",
-    "1/2 * sqrt(3)": "1/3 * pi",
-    "1": "1/2 * pi",
-}
-
-atan_table = {
-    "-sqrt(3)": "-1/3 * pi",
-    "-1": "-1/4 * pi",
-    "-1/3 * sqrt(3)": "-1/6 * pi",
-    "0": "0",
-    "1/3 * sqrt(3)": "1/6 * pi",
-    "1": "1/4 * pi",
-    "sqrt(3)": "1/3 * pi",
-}
-
-acsc_table = {
-    "-2": "-1/6 * pi",
-    "-sqrt(2)": "-1/4 * pi",
-    "-2/3 * sqrt(3)": "-1/3 * pi",
-    "-1": "-1/2 * pi",
-    "1": "1/2 * pi",
-    "2/3 * sqrt(3)": "1/3 * pi",
-    "sqrt(2)": "1/4 * pi",
-    "2": "1/6 * pi",
-}
 
 
 class Location:
@@ -271,26 +161,7 @@ class Expr:
         return self.ty == SYMBOL
 
     def is_zero(self) -> bool:
-        tmp = self.normalize()
-        return tmp.is_const() and tmp.val == 0
-
-    def is_INF(self) -> bool:
-        if self.is_power():
-            a, b = self.args
-            if a.is_const() and b.is_const():
-                return a.val == 0 and b.val < 0
-        elif self.is_divides():
-            a, b = self.args
-            if a.is_const() and b.is_const():
-                return a.val != 0 and b.val == 0
-        elif self.is_fun():
-            if self.func_name == 'tan':
-                a = (self.args[0] / Fun('pi')).normalize()
-                # the coef of pi
-                coef = (a * 2).normalize()
-                if coef.is_const() and coef.val % 2 == 1:
-                    return True
-        return False
+        return self.is_const() and self.val == 0
 
     def is_integral(self) -> bool:
         return self.ty == INTEGRAL
@@ -866,31 +737,22 @@ class Expr:
                     norm_a = Const(x.val - (n + 1)) * pi if n > 0 else Const(x.val - (n - 1)) * pi
             elif norm_a == -pi:
                 norm_a = pi
-            table = trig_table()[self.func_name]
+
             norm_a = norm_a.normalize_constant()
-            if norm_a in table:
-                return table[norm_a].to_const_poly()
-            elif match(norm_a, c * pi) and norm_a.args[0].val < 0:
+            if match(norm_a, c * pi) and norm_a.args[0].val < 0:
                 neg_norm_a = Const(-norm_a.args[0].val) * pi
-                if neg_norm_a in table:
-                    if self.func_name in ('sin', 'tan', 'cot', 'csc'):
-                        val = -table[neg_norm_a]
-                    else:
-                        val = table[neg_norm_a]
-                    return val.to_const_poly()
+                if self.func_name in ('sin', 'tan', 'cot', 'csc'):
+                    val = -Fun(self.func_name, neg_norm_a)
                 else:
-                    return poly.const_singleton(self)
+                    val = Fun(self.func_name, neg_norm_a)
+                return val.to_const_poly()
             else:
                 return poly.const_singleton(Fun(self.func_name, norm_a))
 
         elif self.ty == FUN and self.func_name in ('asin', 'acos', 'atan', 'acot', 'acsc', 'asec'):
             a = self.args[0].to_const_poly()
             norm_a = from_const_poly(a)
-            table = inverse_trig_table()[self.func_name]
-            if norm_a in table:
-                return table[norm_a].to_const_poly()
-            else:
-                return poly.const_singleton(self)
+            return poly.const_singleton(Fun(self.func_name, norm_a))
 
         elif self.ty == FUN and self.func_name == 'abs':
             a = self.args[0].to_const_poly()
@@ -933,9 +795,6 @@ class Expr:
         else:
             print("to_const_poly:", self)
             raise NotImplementedError
-
-    def norm(self):
-        return self.normalize()
 
     def normalize_constant(self):
         return from_const_poly(self.to_const_poly())
@@ -1251,21 +1110,6 @@ class Expr:
                                              self.upper.has_var(var) or self.lower.has_var(var))
         else:
             raise NotImplementedError
-
-
-def sympy_style(s):
-    """Transform expr to sympy object."""
-    return sympy_parser.parse_expr(str(s).replace("^", "**"))
-
-
-def holpy_style(s):
-    """Transform sympy object to expr."""
-    return parser.parse_expr(str(s).replace("**", "^")).replace(Var("E"), Fun("exp", Const(1)))
-
-
-def factor_polynomial(e):
-    """Factorize a polynomial expr."""
-    return holpy_style(sympy.factor(sympy_style(e)))
 
 
 def is_polynomial(e):
@@ -1814,35 +1658,15 @@ class Limit(Expr):
         if self.lim == inf() or self.lim == neg_inf():
             return "LIM {%s -> %s}. %s" % (self.var, self.lim, self.body)
         else:
-            return "LIM {%s -> %s %s}. %s" % (self.var, self.lim, self.drt if self.drt != None else "", self.body)
+            return "LIM {%s -> %s %s}. %s" % (
+                self.var, self.lim, self.drt if self.drt != None else "", self.body)
 
     def __repr__(self):
         if self.lim == inf() or self.lim == neg_inf():
             return "Limit(%s, %s, %s)" % (self.var, self.lim, self.body)
         else:
-            return "Limit(%s, %s%s, %s)" % (self.var, self.lim, "" if self.drt == None else self.drt \
-                                                , self.body)
-
-    def is_indeterminate_form(self):
-        # determine wether e is a indeterminate form
-        var, body, lim, drt = self.var, self.body.normalize(), self.lim, self.drt
-        if self.drt == None:
-            if body.is_constant():
-                return False
-            elif body.is_times():
-                l = [a.subst(var, lim).normalize() for a in body.args]
-                # 0 * INF or INF * 0
-                if l[0].is_zero() and l[1].is_INF() or l[1].is_zero() and l[0].is_INF():
-                    return True
-            elif body.is_fun():
-                if body.func_name in ('sin', 'cos'):
-                    a0 = body.args[0]
-                    if a0.subst(var, lim).is_const():
-                        return False
-            else:
-                return False
-        else:
-            raise NotImplementedError
+            return "Limit(%s, %s%s, %s)" % (
+                self.var, self.lim, "" if self.drt == None else self.drt, self.body)
 
 
 class Inf(Expr):
@@ -2144,218 +1968,56 @@ class Summation(Expr):
         return Summation(new_var, self.lower, self.upper, self.body.subst(self.index_var, Var(new_var)))
 
 
-trigFun = {
-    "TR0": (TR0, "1 to sin^2 + cos^2"),
-    "TR1": (TR1, "sec-csc to cos-sin"),
-    "TR2": (TR2, "tan-cot to sin-cos ratio"),
-    "TR2i": (TR2i, "sin-cos ratio to tan"),
-    "TR3": (TR3, "angle canonicalization"),
-    "TR4": (TR4, "functions at special angles"),
-    "TR5": (TR5, "powers of sin to powers of cos"),
-    "TR6": (TR6, "powers of cos to powers of sin"),
-    "TR7": (TR7, "reduce cos power (increase angle)"),
-    "TR8": (TR8, "expand products of sin-cos to sums"),
-    "TR9": (TR9, "contract sums of sin-cos to products"),
-    "TR10": (TR10, "separate sin-cos arguments"),
-    "TR10i": (TR10i, "collect sin-cos arguments"),
-    "TR11": (TR11, "reduce double angles"),
-    "TR12": (TR12, "separate tan arguments"),
-    "TR12i": (TR12i, "collect tan arguments"),
-    "TR13": (TR13, "expand product of tan-cot"),
-    "TR14": (TR14, "factored powers of sin or cos to cos or sin power"),
-    "TR15": (TR15, "negative powers of sin to cot power"),
-    "TR16": (TR16, "negative powers of cos to tan power"),
-    "TR22": (TR22, "tan-cot powers to negative powers of sec-csc functions"),
-    "TR111": (TR111, "negative sin-cos-tan powers to csc-sec-cot"),
-}
-
-trig_table_cache = None
-
-
-def trig_table():
-    """Trigonometric value table on 0,pi/6,pi/4,pi/3,pi/2,(2/3)*pi,(3/4)*pi,(5/6)*pi,pi."""
-    global trig_table_cache
-    if trig_table_cache is None:
-        trig_table_cache = {
-            "sin": {parser.parse_expr(key): parser.parse_expr(value) for key, value in sin_table.items()},
-            "cos": {parser.parse_expr(key): parser.parse_expr(value) for key, value in cos_table.items()},
-            "tan": {parser.parse_expr(key): parser.parse_expr(value) for key, value in tan_table.items()},
-            "cot": {parser.parse_expr(key): parser.parse_expr(value) for key, value in cot_table.items()},
-            "csc": {parser.parse_expr(key): parser.parse_expr(value) for key, value in csc_table.items()},
-            "sec": {parser.parse_expr(key): parser.parse_expr(value) for key, value in sec_table.items()},
-        }
-    return trig_table_cache
-
-
-inverse_trig_table_cache = None
-
-
-def inverse_trig_table():
-    """Inverse trigonometric value table."""
-    global inverse_trig_table_cache
-    if inverse_trig_table_cache is None:
-        inverse_trig_table_cache = {
-            "asin": {parser.parse_expr(key): parser.parse_expr(value) for key, value in asin_table.items()},
-            "acos": {parser.parse_expr(value): parser.parse_expr(key) for key, value in cos_table.items()},
-            "atan": {parser.parse_expr(key): parser.parse_expr(value) for key, value in atan_table.items()},
-            "acot": {parser.parse_expr(value): parser.parse_expr(key) for key, value in cot_table.items()},
-            "acsc": {parser.parse_expr(key): parser.parse_expr(value) for key, value in acsc_table.items()},
-            "asec": {parser.parse_expr(value): parser.parse_expr(key) for key, value in sec_table.items()},
-        }
-    return inverse_trig_table_cache
-
-
-def expr_to_holpy(expr: Expr) -> term.Term:
-    """Convert an expression to holpy term."""
-    assert isinstance(expr, Expr), "expr_to_holpy"
-    if expr.is_var():
-        return term.Var(expr.name, RealType)
-    elif expr.is_const():
-        return term.Real(expr.val)
-    elif expr.is_op():
-        if expr.op == '-' and len(expr.args) == 1:
-            return -(expr_to_holpy(expr.args[0]))
-
-        if len(expr.args) != 2:
-            raise NotImplementedError
-
-        a, b = [expr_to_holpy(arg) for arg in expr.args]
-        if expr.op == '+':
-            return a + b
-        elif expr.op == '-':
-            return a - b
-        elif expr.op == '*':
-            return a * b
-        elif expr.op == '/':
-            return a / b
-        elif expr.op == '^':
-            if expr.args[1].is_const() and isinstance(expr.args[1].val, int) and expr.args[1].val >= 0:
-                return a ** term.Nat(expr.args[1].val)
-            else:
-                return a ** b
-        else:
-            raise NotImplementedError
-    elif expr.is_fun():
-        if expr.func_name == 'pi':
-            return real.pi
-
-        if len(expr.args) != 1:
-            raise NotImplementedError
-
-        a = expr_to_holpy(expr.args[0])
-        if expr.func_name == 'sin':
-            return real.sin(a)
-        elif expr.func_name == 'cos':
-            return real.cos(a)
-        elif expr.func_name == 'tan':
-            return real.tan(a)
-        elif expr.func_name == 'cot':
-            return real.cot(a)
-        elif expr.func_name == 'sec':
-            return real.sec(a)
-        elif expr.func_name == 'csc':
-            return real.csc(a)
-        elif expr.func_name == 'log':
-            return real.log(a)
-        elif expr.func_name == 'exp':
-            return real.exp(a)
-        elif expr.func_name == 'abs':
-            return real.hol_abs(a)
-        elif expr.func_name == 'sqrt':
-            return real.sqrt(a)
-        elif expr.func_name == 'atan':
-            return real.atn(a)
-        else:
-            raise NotImplementedError
-    elif expr.is_deriv():
-        raise NotImplementedError
-    elif expr.is_integral():
-        a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
-        var = term.Var(expr.var, RealType)
-        f = term.Lambda(var, expr_to_holpy(expr.body))
-        return real_integral(real.closed_interval(a, b), f)
-    elif expr.is_evalat():
-        a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
-        var = term.Var(expr.var, RealType)
-        f = term.Lambda(var, expr_to_holpy(expr.body))
-        return evalat(f, a, b)
-    else:
-        print("expr_to_holpy: unknown expression %s" % expr)
-        raise NotImplementedError
-
-
-def holpy_to_expr(t: term.Term) -> Expr:
-    """Convert a HOL term to expression."""
-    assert isinstance(t, term.Term), "holpy_to_expr"
-    if t.is_var():
-        if t.T == RealType:
-            return Var(t.name)
-        else:
-            raise NotImplementedError
-    elif t == real.pi:
-        return pi
-    elif t.is_number():
-        val = t.dest_number()
-        return Const(val)
-    elif t.is_plus():
-        return holpy_to_expr(t.arg1) + holpy_to_expr(t.arg)
-    elif t.is_minus():
-        return holpy_to_expr(t.arg1) - holpy_to_expr(t.arg)
-    elif t.is_uminus():
-        return -holpy_to_expr(t.arg)
-    elif t.is_times():
-        return holpy_to_expr(t.arg1) * holpy_to_expr(t.arg)
-    elif t.is_divides():
-        return holpy_to_expr(t.arg1) / holpy_to_expr(t.arg)
-    elif t.is_nat_power() and t.arg.is_number():
-        return holpy_to_expr(t.arg1) ** t.arg.dest_number()
-    elif t.is_real_power():
-        return holpy_to_expr(t.arg1) ** holpy_to_expr(t.arg)
-    elif t.is_comb('sqrt', 1):
-        return sqrt(holpy_to_expr(t.arg))
-    elif t.is_comb('abs', 1):
-        return Fun('abs', holpy_to_expr(t.arg))
-    elif t.is_comb('exp', 1):
-        return exp(holpy_to_expr(t.arg))
-    elif t.is_comb('log', 1):
-        return log(holpy_to_expr(t.arg))
-    elif t.is_comb('sin', 1):
-        return sin(holpy_to_expr(t.arg))
-    elif t.is_comb('cos', 1):
-        return cos(holpy_to_expr(t.arg))
-    elif t.is_comb('tan', 1):
-        return tan(holpy_to_expr(t.arg))
-    elif t.is_comb('cot', 1):
-        return cot(holpy_to_expr(t.arg))
-    elif t.is_comb('sec', 1):
-        return sec(holpy_to_expr(t.arg))
-    elif t.is_comb('csc', 1):
-        return csc(holpy_to_expr(t.arg))
-    else:
-        raise NotImplementedError
-
-
-def eval_hol_expr(t: term.Term):
-    """Evaluate an HOL term of type real.
-
-    First try the exact evaluation with real_eval. If that fails, fall back
-    to approximate evaluation with real_approx_eval.
-
-    """
-    try:
-        res = real.real_eval(t)
-    except ConvException:
-        res = real.real_approx_eval(t)
-
-    return res
-
-
 def eval_expr(e: Expr):
     if e.is_inf():
-        return e.t
-    else:
-        t = expr_to_holpy(e)
-        return eval_hol_expr(t)
+        if e == expr.POS_INF:
+            return float('inf')
+        else:
+            return float('-inf')
+    elif e.is_const():
+        return e.val
+    elif e.is_plus():
+        return eval_expr(e.args[0]) + eval_expr(e.args[1])
+    elif e.is_uminus():
+        return -eval_expr(e.args[0])
+    elif e.is_minus():
+        return eval_expr(e.args[0]) - eval_expr(e.args[1])
+    elif e.is_times():
+        return eval_expr(e.args[0]) * eval_expr(e.args[1])
+    elif e.is_divides():
+        return eval_expr(e.args[0]) / eval_expr(e.args[1])
+    elif e.is_power():
+        return eval_expr(e.args[0]) ** eval_expr(e.args[1])
+    elif e.is_fun():
+        if e.func_name == 'sqrt':
+            return math.sqrt(eval_expr(e.args[0]))
+        elif e.func_name == 'exp':
+            return math.exp(eval_expr(e.args[0]))
+        elif e.func_name == 'abs':
+            return abs(eval_expr(e.args[0]))
+        elif e.func_name == 'pi':
+            return math.pi
+        elif e.func_name == 'sin':
+            return math.sin(eval_expr(e.args[0]))
+        elif e.func_name == 'cos':
+            return math.cos(eval_expr(e.args[0]))
+        elif e.func_name == 'tan':
+            return math.tan(eval_expr(e.args[0]))
+        elif e.func_name == 'cot':
+            return 1.0 / math.tan(eval_expr(e.args[0]))
+        elif e.func_name == 'sec':
+            return 1.0 / math.cos(eval_expr(e.args[0]))
+        elif e.func_name == 'csc':
+            return 1.0 / math.sin(eval_expr(e.args[0]))
+        elif e.func_name == 'asin':
+            return math.asin(eval_expr(e.args[0]))
+        elif e.func_name == 'acos':
+            return math.acos(eval_expr(e.args[0]))
+        elif e.func_name == 'atan':
+            return math.atan(eval_expr(e.args[0]))
+
+    print(e)
+    raise NotImplementedError
 
 
 def neg_expr(ex: Expr):
@@ -2363,12 +2025,3 @@ def neg_expr(ex: Expr):
         return Op('!=', *ex.args)
     else:
         raise NotImplementedError
-
-
-def add(items) -> Expr:
-    if len(items) == 1:
-        return items[0]
-    res = items[0]
-    for item in items[1:]:
-        res = res + item
-    return res

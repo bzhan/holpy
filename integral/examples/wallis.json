@@ -246,10 +246,10 @@
                                     "latex_res": "\\pi b ^ {-1/2\\cdot (2 m + 3)} 2 ^ {-2 m - 3} (2 \\binom{2 m}{m} (\\frac{2 m + 1}{m + 1}))",
                                     "res": "pi * b ^ (-1/2 * (2 * m + 3)) * 2 ^ (-2 * m - 3) * (2 * binom(2 * m,m) * ((2 * m + 1) / (m + 1)))",
                                     "rule": {
-                                        "latex_str": "rewrite to \\(2 \\binom{2 m}{m} (\\frac{2 m + 1}{m + 1})\\) using identity at 1",
-                                        "loc": "1",
+                                        "latex_str": "rewrite \\(\\binom{2 m + 2}{m + 1}\\) to \\(2 \\binom{2 m}{m} (\\frac{2 m + 1}{m + 1})\\) using identity",
                                         "name": "ApplyIdentity",
-                                        "str": "rewrite to 2 * binom(2 * m,m) * ((2 * m + 1) / (m + 1)) using identity at 1",
+                                        "source": "binom(2 * m + 2,m + 1)",
+                                        "str": "rewrite binom(2 * m + 2,m + 1) to 2 * binom(2 * m,m) * ((2 * m + 1) / (m + 1)) using identity",
                                         "target": "2 * binom(2 * m,m) * ((2 * m + 1) / (m + 1))"
                                     },
                                     "type": "CalculationStep"

@@ -6,7 +6,7 @@ from fractions import Fraction
 
 from integral import expr
 from integral.expr import Expr
-from integral.inequality import Interval
+from integral.interval import Interval
 
 
 grammar = r"""

@@ -695,6 +695,9 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'ExpandDefinition':
         func_name = item['func_name']
         return rules.ExpandDefinition(func_name=func_name)
+    elif item['name'] == 'FoldDefinition':
+        func_name = item['func_name']
+        return rules.FoldDefinition(func_name=func_name)
     elif item['name'] == 'DerivIntExchange':
         return rules.DerivIntExchange()
     elif item['name'] == 'FullSimplify':
@@ -719,20 +722,12 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'Equation':
         new_expr = parser.parse_expr(item['new_expr'])
         old_expr = parser.parse_expr(item['old_expr']) if ('old_expr' in item) else None
-        return rules.Equation(new_expr, old_expr=old_expr)
+        return rules.Equation(old_expr, new_expr)
     elif item['name'] == 'ApplyEquation':
         eq = parser.parse_expr(item['eq'])
         return rules.ApplyEquation(eq)
     elif item['name'] == 'ExpandPolynomial':
         return rules.ExpandPolynomial()
-    elif item['name'] == 'PolynomialDivision':
-        return rules.PolynomialDivision()
-    elif item['name'] == 'RewriteTrigonometric':
-        rule_name = item['rule_name']
-        rewrite_term = None
-        if 'rewrite_term' in item:
-            rewrite_term = parser.parse_expr(item['rewrite_term'])
-        return rules.RewriteTrigonometric(rule_name, rewrite_term)
     elif item['name'] == 'SplitRegion':
         c = parser.parse_expr(item['c'])
         return rules.SplitRegion(c)
@@ -766,8 +761,9 @@ def parse_rule(item) -> Rule:
         var_subs = parser.parse_expr(item['var_subs'])
         return rules.VarSubsOfEquation(var, var_subs=var_subs)
     elif item['name'] == 'ApplyIdentity':
+        source = parser.parse_expr(item['source'])
         target = parser.parse_expr(item['target'])
-        return rules.ApplyIdentity(target)
+        return rules.ApplyIdentity(source, target)
     elif item['name'] == 'IndefiniteIntegralIdentity':
         return rules.IndefiniteIntegralIdentity()
     elif item['name'] == 'DefiniteIntegralIdentity':
