@@ -231,6 +231,35 @@ class CommonIntegral(Rule):
         return e
 
 
+class FunctionTable(Rule):
+    """Apply information from function table."""
+    def __init__(self):
+        self.name = "FunctionTable"
+
+    def __str__(self):
+        return "apply function table"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "str": str(self),
+        }
+
+    def eval(self, e: Expr, ctx: Context) -> Expr:
+        if not e.is_fun() or len(e.args) != 1:
+            return e
+        
+        func_table = ctx.get_function_tables()
+        if not e.func_name in func_table:
+            return e
+        if not e.args[0].is_constant():
+            return e
+        if e.args[0] in func_table[e.func_name]:
+            return func_table[e.func_name][e.args[0]]
+        else:
+            return e
+
+
 class ApplyIdentity(Rule):
     """Apply identities (trigonometric, etc) to the current term.
     
@@ -811,6 +840,7 @@ class FullSimplify(Rule):
                         s = s.subst(str(b.args[0]), b.args[1])
             s = OnSubterm(CommonIntegral()).eval(s, ctx)
             s = Simplify().eval(s, ctx)
+            s = OnSubterm(FunctionTable()).eval(s, ctx)
             s = OnSubterm(DerivativeSimplify()).eval(s, ctx)
             s = OnSubterm(SimplifyPower()).eval(s, ctx)
             s = OnSubterm(SimplifyAbs()).eval(s, ctx)
@@ -1052,6 +1082,8 @@ class SubstitutionInverse(Rule):
 
         lower = lower.normalize()
         upper = upper.normalize()
+        lower = FunctionTable().eval(lower, ctx)
+        upper = FunctionTable().eval(upper, ctx)
         if lower.is_evaluable() and upper.is_evaluable() and expr.eval_expr(lower) > expr.eval_expr(upper):
             return -expr.Integral(self.var_name, upper, lower, new_e_body)
         else:

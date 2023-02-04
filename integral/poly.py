@@ -1,8 +1,6 @@
 """Polynomials."""
 
 from fractions import Fraction
-from decimal import Decimal
-from collections.abc import Iterable
 from typing import Union
 import sympy
 import math

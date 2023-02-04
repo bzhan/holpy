@@ -63,6 +63,9 @@ class Context:
         # List of other identities (trigonometric, etc)
         self.other_identities: List[Identity] = list()
 
+        # List of tables of function values
+        self.function_tables: Dict[str, Dict[Expr, Expr]] = dict()
+
         # Lemmas
         self.lemmas: List[Identity] = list()
 
@@ -95,6 +98,9 @@ class Context:
         res += "Other identities\n"
         for identity in self.get_other_identities():
             res += str(identity) + "\n"
+        res += "Function tables\n"
+        for funcname in self.get_function_tabless():
+            res += "  table for %s\n" % funcname
         res += "Lemmas\n"
         for identity in self.get_lemmas():
             res += str(identity) + "\n"
@@ -134,6 +140,11 @@ class Context:
     def get_other_identities(self) -> List[Identity]:
         res = self.parent.get_other_identities() if self.parent is not None else []
         res.extend(self.other_identities)
+        return res
+    
+    def get_function_tables(self) -> Dict[str, Dict[Expr, Expr]]:
+        res = self.parent.get_function_tables() if self.parent is not None else dict()
+        res.update(self.function_tables)
         return res
 
     def get_lemmas(self) -> List[Identity]:
@@ -208,6 +219,13 @@ class Context:
         if attributes is not None and 'bidirectional' in attributes:
             self.other_identities.append(Identity(symb_rhs, symb_lhs, category=category))
 
+    def add_function_table(self, funcname: str, table: Dict[str, str]):
+        self.function_tables[funcname] = dict()
+        for input, output in table.items():
+            input = parser.parse_expr(input)
+            output = parser.parse_expr(output)
+            self.function_tables[funcname][input] = output
+
     def add_lemma(self, eq: Expr):
         if not eq.is_equals():
             raise TypeError
@@ -252,6 +270,8 @@ class Context:
         if item['type'] == 'definition':
             e = parser.parse_expr(item['expr'])
             self.add_definition(e)
+        if item['type'] == 'table':
+            self.add_function_table(item['name'], item['table'])
 
     def load_book(self, content, upto: Optional[str] = None):
         if isinstance(content, str):

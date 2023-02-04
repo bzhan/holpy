@@ -549,6 +549,7 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 2.2, example 2
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, "Trick2a")
 
         calc = file.add_calculation("INT x:[0,pi]. x * sin(x) / (1 + cos(x)^2)")
@@ -566,6 +567,7 @@ class IntegralTest(unittest.TestCase):
         # Reference
         # Inside interesting integrals, Section 3.1, example 1
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, "Leibniz01")
 
         # Basic result: integral of 1 / (x^2 + a^2)

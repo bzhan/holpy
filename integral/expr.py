@@ -1,7 +1,10 @@
 """Expressions."""
 
 import copy
-import functools, operator
+import functools
+import operator
+from decimal import Decimal
+from collections.abc import Iterable
 from typing import Dict, List, Optional, Set, TypeGuard, Tuple
 from sympy.simplify.fu import *
 from sympy.ntheory.factor_ import factorint
@@ -86,39 +89,6 @@ sec_table = {
     "3/4 * pi": "-sqrt(2)",
     "5/6 * pi": "-2/3 * sqrt(3)",
     "pi": "-1"
-}
-
-asin_table = {
-    "-1": "-1/2 * pi",
-    "-1/2 * sqrt(3)": "-1/3 * pi",
-    "-1/2 * sqrt(2)": "-1/4 * pi",
-    "-1/2": "-1/6 * pi",
-    "0": "0",
-    "1/2": "1/6 * pi",
-    "1/2 * sqrt(2)": "1/4 * pi",
-    "1/2 * sqrt(3)": "1/3 * pi",
-    "1": "1/2 * pi",
-}
-
-atan_table = {
-    "-sqrt(3)": "-1/3 * pi",
-    "-1": "-1/4 * pi",
-    "-1/3 * sqrt(3)": "-1/6 * pi",
-    "0": "0",
-    "1/3 * sqrt(3)": "1/6 * pi",
-    "1": "1/4 * pi",
-    "sqrt(3)": "1/3 * pi",
-}
-
-acsc_table = {
-    "-2": "-1/6 * pi",
-    "-sqrt(2)": "-1/4 * pi",
-    "-2/3 * sqrt(3)": "-1/3 * pi",
-    "-1": "-1/2 * pi",
-    "1": "1/2 * pi",
-    "2/3 * sqrt(3)": "1/3 * pi",
-    "sqrt(2)": "1/4 * pi",
-    "2": "1/6 * pi",
 }
 
 
@@ -874,11 +844,7 @@ class Expr:
         elif self.ty == FUN and self.func_name in ('asin', 'acos', 'atan', 'acot', 'acsc', 'asec'):
             a = self.args[0].to_const_poly()
             norm_a = from_const_poly(a)
-            table = inverse_trig_table()[self.func_name]
-            if norm_a in table:
-                return table[norm_a].to_const_poly()
-            else:
-                return poly.const_singleton(self)
+            return poly.const_singleton(Fun(self.func_name, norm_a))
 
         elif self.ty == FUN and self.func_name == 'abs':
             a = self.args[0].to_const_poly()
@@ -921,9 +887,6 @@ class Expr:
         else:
             print("to_const_poly:", self)
             raise NotImplementedError
-
-    def norm(self):
-        return self.normalize()
 
     def normalize_constant(self):
         return from_const_poly(self.to_const_poly())
@@ -2135,24 +2098,6 @@ def trig_table():
     return trig_table_cache
 
 
-inverse_trig_table_cache = None
-
-
-def inverse_trig_table():
-    """Inverse trigonometric value table."""
-    global inverse_trig_table_cache
-    if inverse_trig_table_cache is None:
-        inverse_trig_table_cache = {
-            "asin": {parser.parse_expr(key): parser.parse_expr(value) for key, value in asin_table.items()},
-            "acos": {parser.parse_expr(value): parser.parse_expr(key) for key, value in cos_table.items()},
-            "atan": {parser.parse_expr(key): parser.parse_expr(value) for key, value in atan_table.items()},
-            "acot": {parser.parse_expr(value): parser.parse_expr(key) for key, value in cot_table.items()},
-            "acsc": {parser.parse_expr(key): parser.parse_expr(value) for key, value in acsc_table.items()},
-            "asec": {parser.parse_expr(value): parser.parse_expr(key) for key, value in sec_table.items()},
-        }
-    return inverse_trig_table_cache
-
-
 def eval_expr(e: Expr):
     if e.is_inf():
         return e.t
@@ -2179,9 +2124,27 @@ def eval_expr(e: Expr):
             return abs(eval_expr(e.args[0]))
         elif e.func_name == 'pi':
             return math.pi
-    else:
-        print(e)
-        raise NotImplementedError
+        elif e.func_name == 'sin':
+            return math.sin(eval_expr(e.args[0]))
+        elif e.func_name == 'cos':
+            return math.cos(eval_expr(e.args[0]))
+        elif e.func_name == 'tan':
+            return math.tan(eval_expr(e.args[0]))
+        elif e.func_name == 'cot':
+            return 1.0 / math.tan(eval_expr(e.args[0]))
+        elif e.func_name == 'sec':
+            return 1.0 / math.cos(eval_expr(e.args[0]))
+        elif e.func_name == 'csc':
+            return 1.0 / math.sin(eval_expr(e.args[0]))
+        elif e.func_name == 'asin':
+            return math.asin(eval_expr(e.args[0]))
+        elif e.func_name == 'acos':
+            return math.acos(eval_expr(e.args[0]))
+        elif e.func_name == 'atan':
+            return math.atan(eval_expr(e.args[0]))
+
+    print(e)
+    raise NotImplementedError
 
 
 def neg_expr(ex: Expr):
