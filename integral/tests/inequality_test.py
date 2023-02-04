@@ -10,7 +10,7 @@ from data import set as hol_set
 from data import nat
 from integral.parser import parse_expr, parse_interval
 from integral import inequality
-from integral.expr import expr_to_holpy
+from integral.convert import expr_to_holpy
 from integral.inequality import get_bounds_proof, interval_to_holpy, IntervalInequalityMacro
 from syntax import parser
 

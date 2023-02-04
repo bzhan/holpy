@@ -3,7 +3,6 @@
 from decimal import Decimal
 from fractions import Fraction
 from typing import Optional, Dict, Union
-from sympy import apart
 import functools
 
 from integral import expr
