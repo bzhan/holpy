@@ -589,6 +589,8 @@ def limit_of_expr(e: Expr, var_name: str, conds: Conditions) -> Limit:
             return Limit(None)
         elif l.e.is_const() and l.e.val==0 and l.side == FROM_ABOVE:
             return Limit(NEG_INF, asymp = PolyLog(0, *l.asymp.order), side=FROM_ABOVE)
+        elif l.e.is_const() and l.e.val == 1:
+            return Limit(Const(0), asymp = l.asymp, side = l.side)
         elif l.e == POS_INF:
             return Limit(POS_INF, asymp=PolyLog(0, *l.asymp.order), side=FROM_BELOW)
         else:
