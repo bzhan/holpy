@@ -1209,35 +1209,6 @@ class IntegrationByParts(Rule):
             raise NotImplementedError("%s != %s" % (str(udv), str(e.body)))
 
 
-class PolynomialDivision(Rule):
-    """Simplify the representation of polynomial divided by polynomial.
-    """
-
-    def __init__(self):
-        self.name = "PolynomialDivision"
-
-    def __str__(self):
-        return "polynomial division"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if not e.is_integral():
-            sep_ints = e.separate_integral()
-            if len(sep_ints) == 0:
-                return e
-            else:
-                return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
-
-        result = apart(expr.sympy_style(e.body), expr.sympy_style(e.var))
-        new_expr = expr.holpy_style(result)
-        return expr.Integral(e.var, e.lower, e.upper, new_expr)
-
-
 class SplitRegion(Rule):
     """Split integral into two parts at a point."""
 
@@ -1467,13 +1438,6 @@ def check_item(item, target=None, *, debug=False):
             u = parser.parse_expr(step['params']['parts_u'])
             v = parser.parse_expr(step['params']['parts_v'])
             rule = IntegrationByParts(u, v)
-            if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current, ctx)
-            else:
-                result = rule.eval(current, ctx)
-
-        elif reason == 'Rewrite fraction':
-            rule = PolynomialDivision()
             if 'location' in step:
                 result = OnLocation(rule, step['location']).eval(current, ctx)
             else:

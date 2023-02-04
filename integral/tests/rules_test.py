@@ -238,27 +238,6 @@ class RulesTest(unittest.TestCase):
         e = rules.Simplify().eval(e)
         self.assertEqual(str(e.normalize()), "2 * exp(-1) + exp(2)")
 
-    # def testLinearity(self):
-    #     test_data = [("INT a:[1,2]. pi / a", "")]
-    #     for a, b in test_data:
-    #         a = parser.parse_expr(a)
-    #         a = rules.Linearity().eval(a)
-    #         a = rules.Simplify().eval(a)
-    #         self.assertEqual(str(a), b)
-
-    def testPolynomialDivision(self):
-        test_data = [
-            ("INT x:[4,exp(1) + 3]. (x^3 - 12 * x^2 - 42) / (x - 3)",
-             "INT x:[4,exp(1) + 3]. x ^ 2 - 9 * x - 27 - 123 / (x - 3)"),
-            ("INT x:[-1,0]. (3*x^4 + 3*x^2 + 1) / (x^2 + 1)",
-             "INT x:[-1,0]. 3 * x ^ 2 + 1 / (x ^ 2 + 1)")
-        ]
-
-        rule = rules.PolynomialDivision()
-        for s1, s2 in test_data:
-            e1 = parse_expr(s1)
-            self.assertEqual(str(rule.eval(e1)), s2)
-
     def testApplyEquation(self):
         test_data = [("U = (INT x:[0, h/a]. (f(a*x) - f(0)) / x)", "U", "INT x:[0,h / a]. (f(a * x) - f(0)) / x"),
                      ("f(a,b) = a + b + 3", "f(a,2)", "a + 2 + 3"),

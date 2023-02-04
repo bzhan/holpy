@@ -30,7 +30,6 @@
         <b-nav-item-dropdown text="Rewrite" left>
           <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ExpandPolynomial')">Expand polynomial</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyRule('PolynomialDivision')">Polynomial division</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyTheorem">Apply theorem</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewrite equation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>

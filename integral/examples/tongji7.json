@@ -209,8 +209,11 @@
                     "latex_res": "\\int_{-1}^{0} 3 x ^ {2} + \\frac{1}{x ^ {2} + 1} \\,dx",
                     "res": "INT x:[-1,0]. 3 * x ^ 2 + 1 / (x ^ 2 + 1)",
                     "rule": {
-                        "name": "PolynomialDivision",
-                        "str": "polynomial division"
+                        "latex_str": "rewriting to \\(3 x ^ {2} + \\frac{1}{x ^ {2} + 1}\\) at 0",
+                        "loc": "0",
+                        "name": "Equation",
+                        "new_expr": "3 * x ^ 2 + 1 / (x ^ 2 + 1)",
+                        "str": "rewriting to 3 * x ^ 2 + 1 / (x ^ 2 + 1) at 0"
                     },
                     "type": "CalculationStep"
                 },
@@ -234,8 +237,11 @@
                     "latex_res": "\\int_{4}^{e + 3} x ^ {2} - 9 x - 27 - \\frac{123}{x - 3} \\,dx",
                     "res": "INT x:[4,exp(1) + 3]. x ^ 2 - 9 * x - 27 - 123 / (x - 3)",
                     "rule": {
-                        "name": "PolynomialDivision",
-                        "str": "polynomial division"
+                        "latex_str": "rewriting to \\(x ^ {2} - 9 x - 27 - \\frac{123}{x - 3}\\) at 0",
+                        "loc": "0",
+                        "name": "Equation",
+                        "new_expr": "x ^ 2 - 9 * x - 27 - 123 / (x - 3)",
+                        "str": "rewriting to x ^ 2 - 9 * x - 27 - 123 / (x - 3) at 0"
                     },
                     "type": "CalculationStep"
                 },
@@ -1509,8 +1515,11 @@
                     "latex_res": "-\\frac{1}{2} (\\int_{0}^{1} 1 - \\frac{1}{x ^ {2} + 1} \\,dx) + \\frac{1}{8} \\pi",
                     "res": "-1/2 * (INT x:[0,1]. 1 - 1 / (x ^ 2 + 1)) + 1/8 * pi",
                     "rule": {
-                        "name": "PolynomialDivision",
-                        "str": "polynomial division"
+                        "latex_str": "rewriting \\(x ^ {2} (x ^ {2} + 1) ^ {-1}\\) to \\(1 - \\frac{1}{x ^ {2} + 1}\\)",
+                        "name": "Equation",
+                        "new_expr": "1 - 1 / (x ^ 2 + 1)",
+                        "old_expr": "x ^ 2 * (x ^ 2 + 1) ^ (-1)",
+                        "str": "rewriting x ^ 2 * (x ^ 2 + 1) ^ (-1) to 1 - 1 / (x ^ 2 + 1)"
                     },
                     "type": "CalculationStep"
                 },

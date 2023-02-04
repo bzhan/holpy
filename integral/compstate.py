@@ -728,8 +728,6 @@ def parse_rule(item) -> Rule:
         return rules.ApplyEquation(eq)
     elif item['name'] == 'ExpandPolynomial':
         return rules.ExpandPolynomial()
-    elif item['name'] == 'PolynomialDivision':
-        return rules.PolynomialDivision()
     elif item['name'] == 'SplitRegion':
         c = parser.parse_expr(item['c'])
         return rules.SplitRegion(c)

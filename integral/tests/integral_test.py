@@ -163,12 +163,12 @@ class IntegralTest(unittest.TestCase):
         self.assertEqual(str(calc.last_expr), "-81/11 * 2 ^ (2/3) + 945/44 * 3 ^ (2/3)")
 
         calc = file.add_calculation("INT x:[-1, 0]. (3 * x ^ 4 + 3 * x ^ 2 + 1) / (x ^ 2 + 1)")
-        calc.perform_rule(rules.PolynomialDivision())
+        calc.perform_rule(rules.OnLocation(rules.Equation(None, "3*x^2 + 1/(x^2+1)"), "0"))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "1/4 * pi + 1")
 
         calc = file.add_calculation("INT x:[4, exp(1) + 3]. (x ^ 3 - 12 * x ^ 2 - 42) / (x - 3)")
-        calc.perform_rule(rules.PolynomialDivision())
+        calc.perform_rule(rules.OnLocation(rules.Equation(None, "x^2 - 9*x - 27 - 123 / (x - 3)"), "0"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("x - 3")))
         calc.perform_rule(rules.FullSimplify())
@@ -339,7 +339,7 @@ class IntegralTest(unittest.TestCase):
         calc = file.add_calculation("INT x:[0, 1]. x * atan(x)")
         calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("atan(x)/2"), parser.parse_expr("x^2")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.PolynomialDivision())
+        calc.perform_rule(rules.Equation("x^2 * (x^2 + 1) ^ -1", "1 - 1 / (x^2 + 1)"))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "1/4 * pi - 1/2")
 
