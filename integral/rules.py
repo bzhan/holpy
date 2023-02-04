@@ -1016,11 +1016,11 @@ class Substitution(Rule):
             if e.lower == expr.NEG_INF:
                 lower = limits.reduce_inf_limit(var_subst.subst(e.var, -Var(e.var)), e.var, ctx.get_conds())
             else:
-                lower = var_subst.subst(e.var, e.lower).normalize()
+                lower = full_normalize(var_subst.subst(e.var, e.lower), ctx)
             if e.upper == expr.POS_INF:
                 upper = limits.reduce_inf_limit(var_subst, e.var, ctx.get_conds())
             else:
-                upper = var_subst.subst(e.var, e.upper).normalize()
+                upper = full_normalize(var_subst.subst(e.var, e.upper), ctx)
             if lower.is_evaluable() and upper.is_evaluable() and expr.eval_expr(lower) > expr.eval_expr(upper):
                 return Integral(self.var_name, upper, lower, Op("-", self.f)).normalize()
             else:
@@ -1030,6 +1030,11 @@ class Substitution(Rule):
         else:
             raise TypeError
 
+def full_normalize(e: Expr, ctx: Context) -> Expr:
+    for i in range(5):
+        e = e.normalize()
+        e = FunctionTable().eval(e, ctx)
+    return e
 
 class SubstitutionInverse(Rule):
     """Apply substitution x = f(u).
@@ -1080,10 +1085,8 @@ class SubstitutionInverse(Rule):
         if lower is None or upper is None:
             raise AssertionError("SubstitutionInverse: cannot solve")
 
-        lower = lower.normalize()
-        upper = upper.normalize()
-        lower = FunctionTable().eval(lower, ctx)
-        upper = FunctionTable().eval(upper, ctx)
+        lower = full_normalize(lower, ctx)
+        upper = full_normalize(upper, ctx)
         if lower.is_evaluable() and upper.is_evaluable() and expr.eval_expr(lower) > expr.eval_expr(upper):
             return -expr.Integral(self.var_name, upper, lower, new_e_body)
         else:

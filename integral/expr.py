@@ -9,7 +9,6 @@ from typing import Dict, List, Optional, Set, TypeGuard, Tuple
 from sympy.simplify.fu import *
 from sympy.ntheory.factor_ import factorint
 
-from integral import parser
 from integral import poly
 from integral.poly import *
 
@@ -23,73 +22,6 @@ op_priority = {
 
 def is_square(r):
     return math.sqrt(r) * math.sqrt(r) == r
-
-
-sin_table = {
-    "0": "0",
-    "1/6 * pi": "1/2",
-    "1/4 * pi": "1/2 * sqrt(2)",
-    "1/3 * pi": "1/2 * sqrt(3)",
-    "1/2 * pi": "1",
-    "2/3 * pi": "1/2 * sqrt(3)",
-    "3/4 * pi": "1/2 * sqrt(2)",
-    "5/6 * pi": "1/2",
-    "pi": "0"
-}
-
-cos_table = {
-    "0": "1",
-    "1/6 * pi": "1/2 * sqrt(3)",
-    "1/4 * pi": "1/2 * sqrt(2)",
-    "1/3 * pi": "1/2",
-    "1/2 * pi": "0",
-    "2/3 * pi": "-1/2",
-    "3/4 * pi": "-1/2 * sqrt(2)",
-    "5/6 * pi": "-1/2 * sqrt(3)",
-    "pi": "-1"
-}
-
-tan_table = {
-    "0": "0",
-    "1/6 * pi": "1/3 * sqrt(3)",
-    "1/4 * pi": "1",
-    "1/3 * pi": "sqrt(3)",
-    "2/3 * pi": "-sqrt(3)",
-    "3/4 * pi": "-1",
-    "5/6 * pi": "-1/3 * sqrt(3)",
-    "pi": "0"
-}
-
-cot_table = {
-    "1/6 * pi": "sqrt(3)",
-    "1/4 * pi": "1",
-    "1/3 * pi": "1/3 * sqrt(3)",
-    "1/2 * pi": "0",
-    "2/3 * pi": "-1/3 * sqrt(3)",
-    "3/4 * pi": "-1",
-    "5/6 * pi": "-sqrt(3)",
-}
-
-csc_table = {
-    "1/6 * pi": "2",
-    "1/4 * pi": "sqrt(2)",
-    "1/3 * pi": "2/3 * sqrt(3)",
-    "1/2 * pi": "1",
-    "2/3 * pi": "2/3 * sqrt(3)",
-    "3/4 * pi": "sqrt(2)",
-    "5/6 * pi": "2",
-}
-
-sec_table = {
-    "0": "1",
-    "1/6 * pi": "2/3 * sqrt(3)",
-    "1/4 * pi": "sqrt(2)",
-    "1/3 * pi": "2",
-    "2/3 * pi": "-2",
-    "3/4 * pi": "-sqrt(2)",
-    "5/6 * pi": "-2/3 * sqrt(3)",
-    "pi": "-1"
-}
 
 
 class Location:
@@ -824,20 +756,15 @@ class Expr:
                     norm_a = Const(x.val - (n + 1)) * pi if n > 0 else Const(x.val - (n - 1)) * pi
             elif norm_a == -pi:
                 norm_a = pi
-            table = trig_table()[self.func_name]
+
             norm_a = norm_a.normalize_constant()
-            if norm_a in table:
-                return table[norm_a].to_const_poly()
-            elif match(norm_a, c * pi) and norm_a.args[0].val < 0:
+            if match(norm_a, c * pi) and norm_a.args[0].val < 0:
                 neg_norm_a = Const(-norm_a.args[0].val) * pi
-                if neg_norm_a in table:
-                    if self.func_name in ('sin', 'tan', 'cot', 'csc'):
-                        val = -table[neg_norm_a]
-                    else:
-                        val = table[neg_norm_a]
-                    return val.to_const_poly()
+                if self.func_name in ('sin', 'tan', 'cot', 'csc'):
+                    val = -Fun(self.func_name, neg_norm_a)
                 else:
-                    return poly.const_singleton(self)
+                    val = Fun(self.func_name, neg_norm_a)
+                return val.to_const_poly()
             else:
                 return poly.const_singleton(Fun(self.func_name, norm_a))
 
@@ -2078,24 +2005,6 @@ class Summation(Expr):
         """Rename the bound variable of a summation."""
         assert isinstance(new_var, str), "alpha_convert"
         return Summation(new_var, self.lower, self.upper, self.body.subst(self.index_var, Var(new_var)))
-
-
-trig_table_cache = None
-
-
-def trig_table():
-    """Trigonometric value table on 0,pi/6,pi/4,pi/3,pi/2,(2/3)*pi,(3/4)*pi,(5/6)*pi,pi."""
-    global trig_table_cache
-    if trig_table_cache is None:
-        trig_table_cache = {
-            "sin": {parser.parse_expr(key): parser.parse_expr(value) for key, value in sin_table.items()},
-            "cos": {parser.parse_expr(key): parser.parse_expr(value) for key, value in cos_table.items()},
-            "tan": {parser.parse_expr(key): parser.parse_expr(value) for key, value in tan_table.items()},
-            "cot": {parser.parse_expr(key): parser.parse_expr(value) for key, value in cot_table.items()},
-            "csc": {parser.parse_expr(key): parser.parse_expr(value) for key, value in csc_table.items()},
-            "sec": {parser.parse_expr(key): parser.parse_expr(value) for key, value in sec_table.items()},
-        }
-    return trig_table_cache
 
 
 def eval_expr(e: Expr):

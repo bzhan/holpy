@@ -276,9 +276,13 @@ class Interval:
 
     def sin(self) -> "Interval":
         """Sin function of an interval."""
+        from integral import rules
+        from integral import context
+        ctx = context.Context()
+        ctx.load_book('base')
         if self.contained_in(Interval.closed(-(expr.pi / 2), expr.pi / 2)):
-            return Interval(expr.Fun('sin', self.start).normalize_constant(),
-                            expr.Fun('sin', self.end).normalize_constant(),
+            return Interval(rules.full_normalize(expr.Fun('sin', self.start), ctx),
+                            rules.full_normalize(expr.Fun('sin', self.end), ctx),
                             self.left_open, self.right_open)
         elif self.contained_in(Interval.closed(expr.Const(0), expr.pi)):
             return Interval.closed(expr.Const(0), expr.Const(1))
@@ -287,9 +291,13 @@ class Interval:
 
     def cos(self) -> "Interval":
         """Cos function of an interval."""
+        from integral import rules
+        from integral import context
+        ctx = context.Context()
+        ctx.load_book('base')
         if self.contained_in(Interval.closed(expr.Const(0), expr.pi)):
-            return Interval(expr.Fun('cos', self.end).normalize_constant(),
-                            expr.Fun('cos', self.start).normalize_constant(),
+            return Interval(rules.full_normalize(expr.Fun('cos', self.end), ctx),
+                            rules.full_normalize(expr.Fun('cos', self.start), ctx),
                             self.right_open, self.left_open)
         elif self.contained_in(Interval.closed(-(expr.pi / 2), expr.pi / 2)):
             return Interval.closed(expr.Const(0), expr.Const(1))

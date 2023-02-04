@@ -387,6 +387,7 @@ class IntegralTest(unittest.TestCase):
 
     def testLHopital(self):
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, "LHopital")
 
         calc = file.add_calculation("LIM {x -> 1}. (x^2 - 1) / (x^2 + 3*x - 4)")
