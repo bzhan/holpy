@@ -766,8 +766,9 @@ def parse_rule(item) -> Rule:
         var_subs = parser.parse_expr(item['var_subs'])
         return rules.VarSubsOfEquation(var, var_subs=var_subs)
     elif item['name'] == 'ApplyIdentity':
+        source = parser.parse_expr(item['source'])
         target = parser.parse_expr(item['target'])
-        return rules.ApplyIdentity(target)
+        return rules.ApplyIdentity(source, target)
     elif item['name'] == 'IndefiniteIntegralIdentity':
         return rules.IndefiniteIntegralIdentity()
     elif item['name'] == 'DefiniteIntegralIdentity':

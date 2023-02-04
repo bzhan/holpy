@@ -2,7 +2,7 @@
 
 from decimal import Decimal
 from fractions import Fraction
-from typing import Optional, Dict
+from typing import Optional, Dict, Union
 from sympy import apart
 import functools
 
@@ -239,22 +239,39 @@ class ApplyIdentity(Rule):
     be multiple options.
 
     """
-    def __init__(self, target: Expr):
+    def __init__(self, source: Union[str, Expr], target: Union[str, Expr]):
         self.name = "ApplyIdentity"
+        if isinstance(source, str):
+            source = parser.parse_expr(source)
+        if isinstance(target, str):
+            target = parser.parse_expr(target)
+        self.source = source
         self.target = target
 
     def __str__(self):
-        return "rewrite to %s using identity" % self.target
+        return "rewrite %s to %s using identity" % (self.source, self.target)
 
     def export(self):
         return {
             "name": self.name,
             "str": str(self),
+            "source": str(self.source),
             "target": str(self.target),
-            "latex_str": "rewrite to \\(%s\\) using identity" % latex.convert_expr(self.target)
+            "latex_str": "rewrite \\(%s\\) to \\(%s\\) using identity" % (
+                latex.convert_expr(self.source), latex.convert_expr(self.target))
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
+        # Find source within e
+        if self.source != e:
+            find_res = e.find_subexpr(self.source)
+            if len(find_res) == 0:
+                raise AssertionError("ApplyIdentity: source expression not found")
+            loc = find_res[0]
+            return OnLocation(self, loc).eval(e, ctx)
+
+        assert self.source == e
+
         for identity in ctx.get_other_identities():
             inst = expr.match(e, identity.lhs)
             if inst is not None:

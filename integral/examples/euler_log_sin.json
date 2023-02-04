@@ -174,10 +174,10 @@
                             "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(\\frac{2}{a} (a \\sin{x}))} + \\log{(a \\cos{x})} \\,dx",
                             "res": "INT x:[0,1/2 * pi]. log(2 / a * (a * sin(x))) + log(a * cos(x))",
                             "rule": {
-                                "latex_str": "rewrite to \\(\\log{(\\frac{2}{a} (a \\sin{x}))} + \\log{(a \\cos{x})}\\) using identity at 0",
-                                "loc": "0",
+                                "latex_str": "rewrite \\(\\log{(\\frac{2}{a} (a \\sin{x}) (a \\cos{x}))}\\) to \\(\\log{(\\frac{2}{a} (a \\sin{x}))} + \\log{(a \\cos{x})}\\) using identity",
                                 "name": "ApplyIdentity",
-                                "str": "rewrite to log(2 / a * (a * sin(x))) + log(a * cos(x)) using identity at 0",
+                                "source": "log(2 / a * (a * sin(x)) * (a * cos(x)))",
+                                "str": "rewrite log(2 / a * (a * sin(x)) * (a * cos(x))) to log(2 / a * (a * sin(x))) + log(a * cos(x)) using identity",
                                 "target": "log(2 / a * (a * sin(x))) + log(a * cos(x))"
                             },
                             "type": "CalculationStep"
@@ -186,10 +186,10 @@
                             "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(\\frac{2}{a})} + \\log{(a \\sin{x})} + \\log{(a \\cos{x})} \\,dx",
                             "res": "INT x:[0,1/2 * pi]. log(2 / a) + log(a * sin(x)) + log(a * cos(x))",
                             "rule": {
-                                "latex_str": "rewrite to \\(\\log{(\\frac{2}{a})} + \\log{(a \\sin{x})}\\) using identity at 0.0",
-                                "loc": "0.0",
+                                "latex_str": "rewrite \\(\\log{(\\frac{2}{a} (a \\sin{x}))}\\) to \\(\\log{(\\frac{2}{a})} + \\log{(a \\sin{x})}\\) using identity",
                                 "name": "ApplyIdentity",
-                                "str": "rewrite to log(2 / a) + log(a * sin(x)) using identity at 0.0",
+                                "source": "log(2 / a * (a * sin(x)))",
+                                "str": "rewrite log(2 / a * (a * sin(x))) to log(2 / a) + log(a * sin(x)) using identity",
                                 "target": "log(2 / a) + log(a * sin(x))"
                             },
                             "type": "CalculationStep"
@@ -320,10 +320,10 @@
                             "latex_res": "-\\frac{1}{2} \\pi (\\log{(2)} + \\log{(a ^ {-1})})",
                             "res": "-1/2 * pi * (log(2) + log(a ^ (-1)))",
                             "rule": {
-                                "latex_str": "rewrite to \\(\\log{(2)} + \\log{(a ^ {-1})}\\) using identity at 1",
-                                "loc": "1",
+                                "latex_str": "rewrite \\(\\log{(2 a ^ {-1})}\\) to \\(\\log{(2)} + \\log{(a ^ {-1})}\\) using identity",
                                 "name": "ApplyIdentity",
-                                "str": "rewrite to log(2) + log(a ^ (-1)) using identity at 1",
+                                "source": "log(2 * a ^ (-1))",
+                                "str": "rewrite log(2 * a ^ (-1)) to log(2) + log(a ^ (-1)) using identity",
                                 "target": "log(2) + log(a ^ (-1))"
                             },
                             "type": "CalculationStep"
@@ -348,10 +348,10 @@
                             "latex_res": "\\frac{\\pi}{2} (\\log{a} - \\log{(2)})",
                             "res": "pi / 2 * (log(a) - log(2))",
                             "rule": {
-                                "latex_str": "rewrite to \\(\\log{a} - \\log{(2)}\\) using identity at 1",
-                                "loc": "1",
+                                "latex_str": "rewrite \\(\\log{(\\frac{a}{2})}\\) to \\(\\log{a} - \\log{(2)}\\) using identity",
                                 "name": "ApplyIdentity",
-                                "str": "rewrite to log(a) - log(2) using identity at 1",
+                                "source": "log(a / 2)",
+                                "str": "rewrite log(a / 2) to log(a) - log(2) using identity",
                                 "target": "log(a) - log(2)"
                             },
                             "type": "CalculationStep"

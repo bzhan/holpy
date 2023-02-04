@@ -397,10 +397,10 @@
                             "latex_res": "I{(t)} = e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)}} e^{-1/2\\cdot t ^ {2}}",
                             "res": "I(t) = exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-1/2 * t ^ 2)",
                             "rule": {
-                                "latex_str": "rewrite to \\(e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)}} e^{-1/2\\cdot t ^ {2}}\\) using identity at 1",
-                                "loc": "1",
+                                "latex_str": "rewrite \\(e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)} - 1/2\\cdot t ^ {2}}\\) to \\(e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)}} e^{-1/2\\cdot t ^ {2}}\\) using identity",
                                 "name": "ApplyIdentity",
-                                "str": "rewrite to exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-1/2 * t ^ 2) using identity at 1",
+                                "source": "exp(-1/2 * log(2) + 1/2 * log(pi) - 1/2 * t ^ 2)",
+                                "str": "rewrite exp(-1/2 * log(2) + 1/2 * log(pi) - 1/2 * t ^ 2) to exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-1/2 * t ^ 2) using identity",
                                 "target": "exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-1/2 * t ^ 2)"
                             },
                             "type": "CalculationStep"
@@ -409,10 +409,10 @@
                             "latex_res": "I{(t)} = e^{-1/2\\cdot \\log{(2)}} e^{1/2\\cdot \\log{(\\pi)}} e^{-1/2\\cdot t ^ {2}}",
                             "res": "I(t) = exp(-1/2 * log(2)) * exp(1/2 * log(pi)) * exp(-1/2 * t ^ 2)",
                             "rule": {
-                                "latex_str": "rewrite to \\(e^{-1/2\\cdot \\log{(2)}} e^{1/2\\cdot \\log{(\\pi)}}\\) using identity at 1.0",
-                                "loc": "1.0",
+                                "latex_str": "rewrite \\(e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)}}\\) to \\(e^{-1/2\\cdot \\log{(2)}} e^{1/2\\cdot \\log{(\\pi)}}\\) using identity",
                                 "name": "ApplyIdentity",
-                                "str": "rewrite to exp(-1/2 * log(2)) * exp(1/2 * log(pi)) using identity at 1.0",
+                                "source": "exp(-1/2 * log(2) + 1/2 * log(pi))",
+                                "str": "rewrite exp(-1/2 * log(2) + 1/2 * log(pi)) to exp(-1/2 * log(2)) * exp(1/2 * log(pi)) using identity",
                                 "target": "exp(-1/2 * log(2)) * exp(1/2 * log(pi))"
                             },
                             "type": "CalculationStep"

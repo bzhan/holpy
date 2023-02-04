@@ -105,7 +105,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation(
             new_expr=parser.parse_expr("(-1) ^ (n + 1) * (m + 1) ^ (-n - 2) * ((n + 1) * factorial(n))")))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("factorial(n + 1)")), "1"))
+        calc.perform_rule(rules.ApplyIdentity("(n + 1) * factorial(n)", "factorial(n + 1)"))
 
         goal8 = file.add_goal("(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)", conds=["y > 0"])
         proof = goal8.proof_by_calculation()
@@ -473,8 +473,7 @@ class IntegralTest(unittest.TestCase):
 
         # Induction step, RHS
         calc = proof_induct.rhs_calc
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(
-            parser.parse_expr("2 * binom(2*m, m) * ((2*m+1) / (m+1))")), "1"))
+        calc.perform_rule(rules.ApplyIdentity("binom(2*m+2, m+1)", "2 * binom(2*m, m) * ((2*m+1) / (m+1))"))
         calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file, "wallis")
@@ -519,7 +518,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation(old_expr=parser.parse_expr("n + 2"), new_expr=parser.parse_expr("(n + 1) + 1")))
         calc.perform_rule(rules.ApplyEquation(goal1.goal))
         calc.perform_rule(rules.OnSubterm(rules.ApplyInductHyp()))
-        calc.perform_rule(rules.ApplyIdentity(parser.parse_expr("factorial(n + 1)")))
+        calc.perform_rule(rules.ApplyIdentity("(n + 1) * factorial(n)", "factorial(n + 1)"))
 
         # Application
         calc = file.add_calculation("INT x:[0,oo]. exp(-x^3)")
@@ -642,7 +641,9 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr('-1/2 * t ^ 2 * y ^ 2+1/2 * t ^ 2 *  (- 1) ')
         calc.perform_rule(rules.OnLocation(rules.Equation(e), '0.1.0.0.0'))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("exp(-1/2 * t ^ 2 * y ^ 2) * exp(-1/2 * t ^ 2)")), '1.1.0'))
+        calc.perform_rule(rules.ApplyIdentity(
+            "exp(-1/2 * t ^ 2 * y ^ 2 - 1/2 * t ^ 2)",
+            "exp(-1/2 * t ^ 2 * y ^ 2) * exp(-1/2 * t ^ 2)"))
         calc.perform_rule(rules.FullSimplify())
 
         Eq3 = file.add_goal("2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) * (y ^ 2 + 1) ^ -1) + g(t) = SKOLEM_CONST(C)")
@@ -759,8 +760,12 @@ class IntegralTest(unittest.TestCase):
         Eq6_proof = Eq6.proof_by_rewrite_goal(begin=Eq5)
         calc = Eq6_proof.begin
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("I(t)")))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-1/2 * t ^ 2)")), '1'))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("exp(-1/2 * log(2)) * exp(1/2 * log(pi))")), '1.0'))
+        calc.perform_rule(rules.ApplyIdentity(
+            "exp(-1/2 * log(2) + 1/2 * log(pi) - 1/2 * t ^ 2)",
+            "exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-1/2 * t ^ 2)"))
+        calc.perform_rule(rules.ApplyIdentity(
+            "exp(-1/2 * log(2) + 1/2 * log(pi))",
+            "exp(-1/2 * log(2)) * exp(1/2 * log(pi))"))
         calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file, "leibniz03")
@@ -801,8 +806,12 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.RewriteTrigonometric("TR11", parser.parse_expr("sin(2*x)")))
         calc.perform_rule(rules.Equation(new_expr = parser.parse_expr("(2/a) * (a*sin(x)) * (a*cos(x))"),\
                                          old_expr = parser.parse_expr("a * (2 * sin(x) * cos(x))")))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("log(2/a * (a*sin(x))) + log(a*cos(x))")), "0"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("log(2/a) + log(a*sin(x))")), "0.0"))
+        calc.perform_rule(rules.ApplyIdentity(
+            "log(2/a * (a*sin(x)) * (a*cos(x)))",
+            "log(2/a * (a*sin(x))) + log(a*cos(x))"))
+        calc.perform_rule(rules.ApplyIdentity(
+            "log(2/a * (a*sin(x)))",
+            "log(2/a) + log(a*sin(x))"))
         calc.perform_rule(rules.FullSimplify())
 
         calc.perform_rule(rules.OnLocation(rules.Substitution('t', parser.parse_expr("pi/2 - x")), '0.1'))
@@ -820,10 +829,10 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(goal1.goal))
         calc.perform_rule(rules.ApplyEquation(goal2.goal))
         calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("I(a)")))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("log(2) + log(a^(-1))")), "1"))
+        calc.perform_rule(rules.ApplyIdentity("log(2 * a^(-1))", "log(2) + log(a^(-1))"))
         calc.perform_rule(rules.ExpandPolynomial())
         calc = proof.rhs_calc
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("log(a) - log(2)")), "1"))
+        calc.perform_rule(rules.ApplyIdentity("log(a / 2)", "log(a) - log(2)"))
         calc.perform_rule(rules.ExpandPolynomial())
 
         self.checkAndOutput(file, "euler_log_sin")
@@ -1157,7 +1166,7 @@ class IntegralTest(unittest.TestCase):
         new_expr = parser.parse_expr("2 * (x / (1-x^2))")
         calc.perform_rule(rules.Equation(new_expr=new_expr, old_expr=old_expr))
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("x / (1-x^2)")))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("x^k")), "1.1.0.0"))
+        calc.perform_rule(rules.ApplyIdentity("(-1) ^ k * (-x) ^ k", "x ^ k"))
 
         goal03 = file.add_goal("(INT x:[0, pi/2]. cos(x)/sin(x) * log(1/cos(x))) = pi^2/24")
         proof_of_goal03 = goal03.proof_by_calculation()
@@ -1165,7 +1174,7 @@ class IntegralTest(unittest.TestCase):
         e = parser.parse_expr("cos(x)")
         calc.perform_rule(rules.Substitution(var_name='t', var_subst=e))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(target=parser.parse_expr("sqrt(1 - t^2)")), "0.0.0.1.0"))
+        calc.perform_rule(rules.ApplyIdentity("sin(acos(t))", "sqrt(1 - t^2)"))
         calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr("t")
         calc.perform_rule(rules.OnLocation(rules.Substitution(var_name='x', var_subst=e), '0'))
@@ -1210,13 +1219,13 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(index_var='k'), "0"))
         calc.perform_rule(rules.IntSumExchange())
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("(c*x^a) * log(x)")), "0.0.0.0"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("(c*x^a)^k * log(x)^k")), "0.0.0"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("c^k * x^a^k")), "0.0.0.0"))
+        calc.perform_rule(rules.ApplyIdentity("log(x^(c*x^a))", "(c*x^a) * log(x)"))
+        calc.perform_rule(rules.ApplyIdentity("(c*x^a * log(x))^k", "(c*x^a)^k * log(x)^k"))
+        calc.perform_rule(rules.ApplyIdentity("(c*x^a)^k", "c^k * x^a^k"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "0.1"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(parser.parse_expr("(-c)^k")), "0.0"))
+        calc.perform_rule(rules.ApplyIdentity("c^k * (-1)^k", "(-c)^k"))
         calc = proof_of_goal.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
@@ -1340,7 +1349,7 @@ class IntegralTest(unittest.TestCase):
         old_expr = parser.parse_expr("(x ^ 2 + 2) ^ (-1/2)")
         new_expr = parser.parse_expr("sqrt(x^2+2) ^ (-1)")
         calc.perform_rule(rules.OnLocation(rules.Equation(new_expr=new_expr, old_expr=old_expr), '0.0.0.1.0'))
-        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity(target=parser.parse_expr("pi/2 - atan(sqrt(x^2 + 2))")), "0.0.0.1"))
+        calc.perform_rule(rules.ApplyIdentity("atan((sqrt(x^2 + 2))^(-1))", "pi/2 - atan(sqrt(x^2 + 2))"))
         calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal001.goal), "0.0"))

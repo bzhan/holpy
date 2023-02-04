@@ -413,10 +413,10 @@
                             "latex_res": "-(\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} (\\frac{\\pi}{2} - \\tan^{-1}{(\\sqrt{x ^ {2} + 2})}) \\,dx) + \\frac{1}{16} \\pi ^ {2}",
                             "res": "-(INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * (pi / 2 - atan(sqrt(x ^ 2 + 2)))) + 1/16 * pi ^ 2",
                             "rule": {
-                                "latex_str": "rewrite to \\(\\frac{\\pi}{2} - \\tan^{-1}{(\\sqrt{x ^ {2} + 2})}\\) using identity at 0.0.0.1",
-                                "loc": "0.0.0.1",
+                                "latex_str": "rewrite \\(\\tan^{-1}{(\\sqrt{x ^ {2} + 2} ^ {-1})}\\) to \\(\\frac{\\pi}{2} - \\tan^{-1}{(\\sqrt{x ^ {2} + 2})}\\) using identity",
                                 "name": "ApplyIdentity",
-                                "str": "rewrite to pi / 2 - atan(sqrt(x ^ 2 + 2)) using identity at 0.0.0.1",
+                                "source": "atan(sqrt(x ^ 2 + 2) ^ (-1))",
+                                "str": "rewrite atan(sqrt(x ^ 2 + 2) ^ (-1)) to pi / 2 - atan(sqrt(x ^ 2 + 2)) using identity",
                                 "target": "pi / 2 - atan(sqrt(x ^ 2 + 2))"
                             },
                             "type": "CalculationStep"
