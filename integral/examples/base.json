@@ -121,12 +121,10 @@
         {
             "type": "axiom",
             "expr": "(a * b) ^ k = a ^ k * b ^ k",
-            "category": "power"
-        },
-        {
-            "type": "axiom",
-            "expr": "a ^ k * b ^ k = (a * b) ^ k",
-            "category": "power"
+            "category": "power",
+            "attributes": [
+                "bidirectional"
+            ]
         },
         {
             "type": "header",
@@ -162,6 +160,55 @@
             "type": "header",
             "name": "Trigonometric identities",
             "level": 1
+        },
+        {
+            "type": "axiom",
+            "expr": "cot(x) = cos(x) / sin(x)",
+            "category": "trigonometric"
+        },
+        {
+            "type": "axiom",
+            "expr": "sin(x)^n = csc(x)^(-n)",
+            "conds": [
+                "n != 0"
+            ],
+            "category": "trigonometric"
+        },
+        {
+            "type": "axiom",
+            "expr": "sin(x)^2 = 1 - cos(x)^2",
+            "category": "trigonometric",
+            "attributes": [
+                "bidirectional"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "cos(x)^2 = 1 - sin(x)^2",
+            "category": "trigonometric",
+            "attributes": [
+                "bidirectional"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "cos(x)^2 = (1 + cos(2*x)) / 2",
+            "category": "trigonometric"
+        },
+        {
+            "type": "axiom",
+            "expr": "sin(x)^2 = (1 - cos(2*x)) / 2",
+            "category": "trigonometric"
+        },
+        {
+            "type": "axiom",
+            "expr": "cos(2*x) = 2 * cos(x)^2 - 1",
+            "category": "trigonometric"
+        },
+        {
+            "type": "axiom",
+            "expr": "sin(2*x) = 2 * sin(x) * cos(x)",
+            "category": "trigonometric"
         },
         {
             "type": "axiom",

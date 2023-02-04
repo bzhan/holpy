@@ -198,13 +198,15 @@ class Context:
         symb_rhs = expr_to_pattern(eq.rhs)
         self.series_evaluations.append(Identity(symb_lhs, symb_rhs))
 
-    def add_other_identities(self, eq: Expr, category: str):
+    def add_other_identities(self, eq: Expr, category: str, attributes: Optional[List[str]] = None):
         if not eq.is_equals():
             raise TypeError
         
         symb_lhs = expr_to_pattern(eq.lhs)
         symb_rhs = expr_to_pattern(eq.rhs)
         self.other_identities.append(Identity(symb_lhs, symb_rhs, category=category))
+        if attributes is not None and 'bidirectional' in attributes:
+            self.other_identities.append(Identity(symb_rhs, symb_lhs, category=category))
 
     def add_lemma(self, eq: Expr):
         if not eq.is_equals():
@@ -246,7 +248,7 @@ class Context:
             elif e.is_equals() and e.lhs.is_summation() and not e.rhs.is_summation():
                 self.add_series_evaluation(e)
             elif e.is_equals() and 'category' in item:
-                self.add_other_identities(e, item['category'])
+                self.add_other_identities(e, item['category'], item.get('attributes'))
         if item['type'] == 'definition':
             e = parser.parse_expr(item['expr'])
             self.add_definition(e)

@@ -121,6 +121,7 @@ class IntegralTest(unittest.TestCase):
 
     def testTongji(self):
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, "Tongji")
 
         calc = file.add_calculation("INT x:[2,3]. 2 * x + x ^ 2")
@@ -185,13 +186,13 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation(parser.parse_expr("sin(x) * sin(x)^2"),
                                          old_expr=parser.parse_expr("sin(x)^3")))
-        calc.perform_rule(rules.RewriteTrigonometric("TR5", rewrite_term=parser.parse_expr("sin(x)^2")))
+        calc.perform_rule(rules.ApplyIdentity("sin(x)^2", "1 - cos(x)^2"))
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("cos(x)")))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "pi - 4/3")
 
         calc = file.add_calculation("INT x:[pi/6, pi/2]. cos(x) ^ 2")
-        calc.perform_rule(rules.RewriteTrigonometric("TR7", rewrite_term=parser.parse_expr("cos(x)^2")))
+        calc.perform_rule(rules.ApplyIdentity("cos(x)^2", "(1 + cos(2*x)) / 2"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("2 * x")))
         calc.perform_rule(rules.FullSimplify())
@@ -199,9 +200,9 @@ class IntegralTest(unittest.TestCase):
 
         calc = file.add_calculation("INT x:[0, 1]. (1 - x^2) ^ (1/2)")
         calc.perform_rule(rules.SubstitutionInverse("u", parser.parse_expr("sin(u)")))
-        calc.perform_rule(rules.RewriteTrigonometric("TR5", rewrite_term=parser.parse_expr("1-sin(u)^2")))
+        calc.perform_rule(rules.ApplyIdentity("1-sin(u)^2", "cos(u)^2"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.RewriteTrigonometric("TR7", rewrite_term=parser.parse_expr("cos(u)^2")))
+        calc.perform_rule(rules.ApplyIdentity("cos(u)^2", "(1 + cos(2*u)) / 2"))
         calc.perform_rule(rules.Substitution("v", parser.parse_expr("2 * u")))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "1/4 * pi")
@@ -209,9 +210,9 @@ class IntegralTest(unittest.TestCase):
         calc = file.add_calculation("INT x:[0, sqrt(2)]. sqrt(2 - x^2)")
         calc.perform_rule(rules.SubstitutionInverse("u", parser.parse_expr("sqrt(2) * sin(u)")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.RewriteTrigonometric("TR5", rewrite_term=parser.parse_expr("-2*sin(u)^2+2")))
+        calc.perform_rule(rules.ApplyIdentity("sin(u)^2", "1 - cos(u)^2"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.RewriteTrigonometric("TR7", rewrite_term=parser.parse_expr("cos(u)^2")))
+        calc.perform_rule(rules.ApplyIdentity("cos(u)^2", "(1 + cos(2*u)) / 2"))
         calc.perform_rule(rules.Substitution("v", parser.parse_expr("2 * u")))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "1/2 * pi")
@@ -219,9 +220,9 @@ class IntegralTest(unittest.TestCase):
         calc = file.add_calculation("INT y:[-sqrt(2), sqrt(2)]. sqrt(8 - 2*y^2)")
         calc.perform_rule(rules.SubstitutionInverse("u", parser.parse_expr("2 * sin(u)")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.RewriteTrigonometric("TR5", rewrite_term=parser.parse_expr("-8*sin(u)^2+8")))
+        calc.perform_rule(rules.ApplyIdentity("sin(u)^2", "1 - cos(u)^2"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.RewriteTrigonometric("TR7", rewrite_term=parser.parse_expr("cos(u)^2")))
+        calc.perform_rule(rules.ApplyIdentity("cos(u)^2", "(1 + cos(2*u)) / 2"))
         calc.perform_rule(rules.Substitution("v", parser.parse_expr("2 * u")))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "sqrt(2) * pi + 2 * sqrt(2)")
@@ -229,12 +230,12 @@ class IntegralTest(unittest.TestCase):
         calc = file.add_calculation("INT x:[1/sqrt(2), 1]. sqrt(1 - x^2) / x ^ 2")
         calc.perform_rule(rules.SubstitutionInverse("u", parser.parse_expr("sin(u)")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.RewriteTrigonometric("TR5", parser.parse_expr("-sin(u)^2+1")))
+        calc.perform_rule(rules.ApplyIdentity("sin(u)^2", "1 - cos(u)^2"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.RewriteTrigonometric("TR6", parser.parse_expr("cos(u)^2")))
+        calc.perform_rule(rules.ApplyIdentity("cos(u)^2", "1 - sin(u)^2"))
         calc.perform_rule(rules.ExpandPolynomial())
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.RewriteTrigonometric("TR111", parser.parse_expr("sin(u)^(-2)")))
+        calc.perform_rule(rules.ApplyIdentity("sin(u)^(-2)", "csc(u)^2"))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "-1/4 * pi + 1")
 
@@ -284,11 +285,12 @@ class IntegralTest(unittest.TestCase):
 
         calc = file.add_calculation("INT x:[-pi/2,pi/2]. cos(x)^4")
         calc.perform_rule(rules.Equation(parser.parse_expr("(cos(x)^2)^2"), old_expr=parser.parse_expr("cos(x)^4")))
-        calc.perform_rule(rules.RewriteTrigonometric("TR7", rewrite_term=parser.parse_expr("cos(x)^2")))
+        calc.perform_rule(rules.ApplyIdentity("cos(x)^2", "(1 + cos(2*x)) / 2"))
         calc.perform_rule(rules.ExpandPolynomial())
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("2 * x")))
+        calc.perform_rule(rules.ExpandPolynomial())
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.RewriteTrigonometric("TR7", rewrite_term=parser.parse_expr("cos(u)^2")))
+        calc.perform_rule(rules.ApplyIdentity("cos(u)^2", "(1 + cos(2*u)) / 2"))
         calc.perform_rule(rules.Substitution("v", parser.parse_expr("2 * u")))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "3/8 * pi")
@@ -297,7 +299,7 @@ class IntegralTest(unittest.TestCase):
         calc = file.add_calculation("INT x:[-pi/2, pi/2]. sqrt(cos(x) - cos(x)^3)")
         calc.perform_rule(rules.Equation(parser.parse_expr("cos(x) * (1 - cos(x)^2)"),
                                          old_expr=parser.parse_expr("cos(x) - cos(x)^3")))
-        calc.perform_rule(rules.RewriteTrigonometric("TR6", rewrite_term=parser.parse_expr("1 - cos(x)^2")))
+        calc.perform_rule(rules.ApplyIdentity("1 - cos(x)^2", "sin(x) ^ 2"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.SplitRegion(parser.parse_expr("0")))
         calc.perform_rule(rules.FullSimplify())
@@ -308,8 +310,7 @@ class IntegralTest(unittest.TestCase):
         self.assertEqual(str(calc.last_expr), "4/3")
 
         calc = file.add_calculation("INT x:[0, pi]. sqrt(1 + cos(2*x))")
-        calc.perform_rule(rules.RewriteTrigonometric("TR11", parser.parse_expr("cos(2*x)")))
-        calc.perform_rule(rules.RewriteTrigonometric("TR5", parser.parse_expr("-(sin(x) ^ 2)")))
+        calc.perform_rule(rules.ApplyIdentity("cos(2*x)", "2 * cos(x)^2 - 1"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.SplitRegion(parser.parse_expr("pi / 2")))
         calc.perform_rule(rules.FullSimplify())
@@ -328,10 +329,10 @@ class IntegralTest(unittest.TestCase):
         self.assertEqual(str(calc.last_expr), "1/4 * exp(2) + 1/4")
 
         calc = file.add_calculation("INT x:[pi/4, pi/3]. x / sin(x)^2")
-        calc.perform_rule(rules.RewriteTrigonometric("TR111", rewrite_term=parser.parse_expr("x / sin(x)^2")))
+        calc.perform_rule(rules.ApplyIdentity("sin(x)^2", "csc(x)^(-2)"))
         calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("x"), parser.parse_expr("-cot(x)")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.RewriteTrigonometric("TR2", rewrite_term=parser.parse_expr("cot(x)")))
+        calc.perform_rule(rules.ApplyIdentity("cot(x)", "cos(x) / sin(x)"))
         calc.perform_rule(rules.Substitution("u", parser.parse_expr("sin(x)")))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "-1/9 * sqrt(3) * pi - 1/2 * log(2) + 1/2 * log(3) + 1/4 * pi")
@@ -358,8 +359,9 @@ class IntegralTest(unittest.TestCase):
 
         calc = file.add_calculation("INT x:[0,pi]. (x * sin(x))^2")
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.RewriteTrigonometric("TR8", rewrite_term=parser.parse_expr("sin(x)^2")))
+        calc.perform_rule(rules.ApplyIdentity("sin(x)^2", "(1 - cos(2*x)) / 2"))
         calc.perform_rule(rules.ExpandPolynomial())
+        calc.perform_rule(rules.ExpandPolynomial())  # TODO: remove repetition
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("x^2/2"), parser.parse_expr("sin(2*x)")))
         calc.perform_rule(rules.FullSimplify())
@@ -803,7 +805,7 @@ class IntegralTest(unittest.TestCase):
         proof = goal2.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("J"))
-        calc.perform_rule(rules.RewriteTrigonometric("TR11", parser.parse_expr("sin(2*x)")))
+        calc.perform_rule(rules.ApplyIdentity("sin(2*x)", "2 * sin(x) * cos(x)"))
         calc.perform_rule(rules.Equation(new_expr = parser.parse_expr("(2/a) * (a*sin(x)) * (a*cos(x))"),\
                                          old_expr = parser.parse_expr("a * (2 * sin(x) * cos(x))")))
         calc.perform_rule(rules.ApplyIdentity(

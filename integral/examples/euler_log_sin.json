@@ -150,11 +150,11 @@
                             "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(a (2 \\sin{x} \\cos{x}))} \\,dx",
                             "res": "INT x:[0,1/2 * pi]. log(a * (2 * sin(x) * cos(x)))",
                             "rule": {
-                                "latex_str": "rewrite trigonometric on \\(\\sin{(2 x)}\\)",
-                                "name": "RewriteTrigonometric",
-                                "rewrite_term": "sin(2 * x)",
-                                "rule_name": "TR11",
-                                "str": "rewrite trigonometric on sin(2 * x)"
+                                "latex_str": "rewrite \\(\\sin{(2 x)}\\) to \\(2 \\sin{x} \\cos{x}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "sin(2 * x)",
+                                "str": "rewrite sin(2 * x) to 2 * sin(x) * cos(x) using identity",
+                                "target": "2 * sin(x) * cos(x)"
                             },
                             "type": "CalculationStep"
                         },

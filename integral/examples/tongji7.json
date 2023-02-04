@@ -329,11 +329,11 @@
                     "latex_res": "-(\\int_{0}^{\\pi} \\sin{x} (1 - \\cos^{2}(x)) \\,dx) + \\pi",
                     "res": "-(INT x:[0,pi]. sin(x) * (1 - cos(x) ^ 2)) + pi",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\sin^{2}(x)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "sin(x) ^ 2",
-                        "rule_name": "TR5",
-                        "str": "rewrite trigonometric on sin(x) ^ 2"
+                        "latex_str": "rewrite \\(\\sin^{2}(x)\\) to \\(1 - \\cos^{2}(x)\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "sin(x) ^ 2",
+                        "str": "rewrite sin(x) ^ 2 to 1 - cos(x) ^ 2 using identity",
+                        "target": "1 - cos(x) ^ 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -366,14 +366,14 @@
             "start": "INT x:[pi / 6,pi / 2]. cos(x) ^ 2",
             "steps": [
                 {
-                    "latex_res": "\\int_{\\pi/6}^{\\pi/2} \\frac{\\cos{(2 x)}}{2} + \\frac{1}{2} \\,dx",
-                    "res": "INT x:[pi / 6,pi / 2]. cos(2 * x) / 2 + 1/2",
+                    "latex_res": "\\int_{\\pi/6}^{\\pi/2} \\frac{1 + \\cos{(2 x)}}{2} \\,dx",
+                    "res": "INT x:[pi / 6,pi / 2]. (1 + cos(2 * x)) / 2",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\cos^{2}(x)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "cos(x) ^ 2",
-                        "rule_name": "TR7",
-                        "str": "rewrite trigonometric on cos(x) ^ 2"
+                        "latex_str": "rewrite \\(\\cos^{2}(x)\\) to \\(\\frac{1 + \\cos{(2 x)}}{2}\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "cos(x) ^ 2",
+                        "str": "rewrite cos(x) ^ 2 to (1 + cos(2 * x)) / 2 using identity",
+                        "target": "(1 + cos(2 * x)) / 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -430,11 +430,11 @@
                     "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\cos^{2}(u)} \\cos{u} \\,du",
                     "res": "INT u:[0,1/2 * pi]. cos(u) ^ 2 ^ (1/2) * cos(u)",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(1 - \\sin^{2}(u)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "1 - sin(u) ^ 2",
-                        "rule_name": "TR5",
-                        "str": "rewrite trigonometric on 1 - sin(u) ^ 2"
+                        "latex_str": "rewrite \\(1 - \\sin^{2}(u)\\) to \\(\\cos^{2}(u)\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "1 - sin(u) ^ 2",
+                        "str": "rewrite 1 - sin(u) ^ 2 to cos(u) ^ 2 using identity",
+                        "target": "cos(u) ^ 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -448,14 +448,14 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,du",
-                    "res": "INT u:[0,1/2 * pi]. cos(2 * u) / 2 + 1/2",
+                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\frac{1 + \\cos{(2 u)}}{2} \\,du",
+                    "res": "INT u:[0,1/2 * pi]. (1 + cos(2 * u)) / 2",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\cos^{2}(u)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "cos(u) ^ 2",
-                        "rule_name": "TR7",
-                        "str": "rewrite trigonometric on cos(u) ^ 2"
+                        "latex_str": "rewrite \\(\\cos^{2}(u)\\) to \\(\\frac{1 + \\cos{(2 u)}}{2}\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "cos(u) ^ 2",
+                        "str": "rewrite cos(u) ^ 2 to (1 + cos(2 * u)) / 2 using identity",
+                        "target": "(1 + cos(2 * u)) / 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -509,14 +509,14 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\sqrt{2} (\\int_{0}^{1/2\\cdot \\pi} \\cos{u} \\sqrt{2 \\cos^{2}(u)} \\,du)",
-                    "res": "sqrt(2) * (INT u:[0,1/2 * pi]. cos(u) * sqrt(2 * cos(u) ^ 2))",
+                    "latex_res": "\\sqrt{2} (\\int_{0}^{1/2\\cdot \\pi} \\cos{u} \\sqrt{-2 (1 - \\cos^{2}(u)) + 2} \\,du)",
+                    "res": "sqrt(2) * (INT u:[0,1/2 * pi]. cos(u) * sqrt(-2 * (1 - cos(u) ^ 2) + 2))",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(-2 \\sin^{2}(u) + 2\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "-2 * sin(u) ^ 2 + 2",
-                        "rule_name": "TR5",
-                        "str": "rewrite trigonometric on -2 * sin(u) ^ 2 + 2"
+                        "latex_str": "rewrite \\(\\sin^{2}(u)\\) to \\(1 - \\cos^{2}(u)\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "sin(u) ^ 2",
+                        "str": "rewrite sin(u) ^ 2 to 1 - cos(u) ^ 2 using identity",
+                        "target": "1 - cos(u) ^ 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -530,14 +530,14 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 (\\int_{0}^{1/2\\cdot \\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,du)",
-                    "res": "2 * (INT u:[0,1/2 * pi]. cos(2 * u) / 2 + 1/2)",
+                    "latex_res": "2 (\\int_{0}^{1/2\\cdot \\pi} \\frac{1 + \\cos{(2 u)}}{2} \\,du)",
+                    "res": "2 * (INT u:[0,1/2 * pi]. (1 + cos(2 * u)) / 2)",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\cos^{2}(u)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "cos(u) ^ 2",
-                        "rule_name": "TR7",
-                        "str": "rewrite trigonometric on cos(u) ^ 2"
+                        "latex_str": "rewrite \\(\\cos^{2}(u)\\) to \\(\\frac{1 + \\cos{(2 u)}}{2}\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "cos(u) ^ 2",
+                        "str": "rewrite cos(u) ^ 2 to (1 + cos(2 * u)) / 2 using identity",
+                        "target": "(1 + cos(2 * u)) / 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -591,14 +591,14 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 (\\int_{-1/4\\cdot \\pi}^{1/4\\cdot \\pi} \\cos{u} \\sqrt{8 \\cos^{2}(u)} \\,du)",
-                    "res": "2 * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) * sqrt(8 * cos(u) ^ 2))",
+                    "latex_res": "2 (\\int_{-1/4\\cdot \\pi}^{1/4\\cdot \\pi} \\cos{u} \\sqrt{-8 (1 - \\cos^{2}(u)) + 8} \\,du)",
+                    "res": "2 * (INT u:[-1/4 * pi,1/4 * pi]. cos(u) * sqrt(-8 * (1 - cos(u) ^ 2) + 8))",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(-8 \\sin^{2}(u) + 8\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "-8 * sin(u) ^ 2 + 8",
-                        "rule_name": "TR5",
-                        "str": "rewrite trigonometric on -8 * sin(u) ^ 2 + 8"
+                        "latex_str": "rewrite \\(\\sin^{2}(u)\\) to \\(1 - \\cos^{2}(u)\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "sin(u) ^ 2",
+                        "str": "rewrite sin(u) ^ 2 to 1 - cos(u) ^ 2 using identity",
+                        "target": "1 - cos(u) ^ 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -612,14 +612,14 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "4 \\sqrt{2} (\\int_{-1/4\\cdot \\pi}^{1/4\\cdot \\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,du)",
-                    "res": "4 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. cos(2 * u) / 2 + 1/2)",
+                    "latex_res": "4 \\sqrt{2} (\\int_{-1/4\\cdot \\pi}^{1/4\\cdot \\pi} \\frac{1 + \\cos{(2 u)}}{2} \\,du)",
+                    "res": "4 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. (1 + cos(2 * u)) / 2)",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\cos^{2}(u)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "cos(u) ^ 2",
-                        "rule_name": "TR7",
-                        "str": "rewrite trigonometric on cos(u) ^ 2"
+                        "latex_str": "rewrite \\(\\cos^{2}(u)\\) to \\(\\frac{1 + \\cos{(2 u)}}{2}\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "cos(u) ^ 2",
+                        "str": "rewrite cos(u) ^ 2 to (1 + cos(2 * u)) / 2 using identity",
+                        "target": "(1 + cos(2 * u)) / 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -673,14 +673,14 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{u} \\sin^{-2}(u) \\sqrt{\\cos^{2}(u)} \\,du",
-                    "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ (-2) * sqrt(cos(u) ^ 2)",
+                    "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{u} \\sin^{-2}(u) \\sqrt{-(1 - \\cos^{2}(u)) + 1} \\,du",
+                    "res": "INT u:[1/4 * pi,1/2 * pi]. cos(u) * sin(u) ^ (-2) * sqrt(-(1 - cos(u) ^ 2) + 1)",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(-\\sin^{2}(u) + 1\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "-(sin(u) ^ 2) + 1",
-                        "rule_name": "TR5",
-                        "str": "rewrite trigonometric on -(sin(u) ^ 2) + 1"
+                        "latex_str": "rewrite \\(\\sin^{2}(u)\\) to \\(1 - \\cos^{2}(u)\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "sin(u) ^ 2",
+                        "str": "rewrite sin(u) ^ 2 to 1 - cos(u) ^ 2 using identity",
+                        "target": "1 - cos(u) ^ 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -697,11 +697,11 @@
                     "latex_res": "\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} (1 - \\sin^{2}(u)) \\sin^{-2}(u) \\,du",
                     "res": "INT u:[1/4 * pi,1/2 * pi]. (1 - sin(u) ^ 2) * sin(u) ^ (-2)",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\cos^{2}(u)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "cos(u) ^ 2",
-                        "rule_name": "TR6",
-                        "str": "rewrite trigonometric on cos(u) ^ 2"
+                        "latex_str": "rewrite \\(\\cos^{2}(u)\\) to \\(1 - \\sin^{2}(u)\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "cos(u) ^ 2",
+                        "str": "rewrite cos(u) ^ 2 to 1 - sin(u) ^ 2 using identity",
+                        "target": "1 - sin(u) ^ 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -727,11 +727,11 @@
                     "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\csc^{2}(u) \\,du) - \\frac{1}{4} \\pi",
                     "res": "(INT u:[1/4 * pi,1/2 * pi]. csc(u) ^ 2) - 1/4 * pi",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\sin^{-2}(u)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "sin(u) ^ (-2)",
-                        "rule_name": "TR111",
-                        "str": "rewrite trigonometric on sin(u) ^ (-2)"
+                        "latex_str": "rewrite \\(\\sin^{-2}(u)\\) to \\(\\csc^{2}(u)\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "sin(u) ^ (-2)",
+                        "str": "rewrite sin(u) ^ (-2) to csc(u) ^ 2 using identity",
+                        "target": "csc(u) ^ 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -1068,20 +1068,20 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} (\\frac{\\cos{(2 x)}}{2} + \\frac{1}{2}) ^ {2} \\,dx",
-                    "res": "INT x:[-pi / 2,pi / 2]. (cos(2 * x) / 2 + 1/2) ^ 2",
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} (\\frac{1 + \\cos{(2 x)}}{2}) ^ {2} \\,dx",
+                    "res": "INT x:[-pi / 2,pi / 2]. ((1 + cos(2 * x)) / 2) ^ 2",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\cos^{2}(x)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "cos(x) ^ 2",
-                        "rule_name": "TR7",
-                        "str": "rewrite trigonometric on cos(x) ^ 2"
+                        "latex_str": "rewrite \\(\\cos^{2}(x)\\) to \\(\\frac{1 + \\cos{(2 x)}}{2}\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "cos(x) ^ 2",
+                        "str": "rewrite cos(x) ^ 2 to (1 + cos(2 * x)) / 2 using identity",
+                        "target": "(1 + cos(2 * x)) / 2"
                     },
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\frac{1}{4} \\cos^{2}(2 x) + \\frac{1}{2} \\cos{(2 x)} + \\frac{1}{4} \\,dx",
-                    "res": "INT x:[-pi / 2,pi / 2]. 1/4 * cos(2 * x) ^ 2 + 1/2 * cos(2 * x) + 1/4",
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\frac{1}{4} (\\cos{(2 x)} + 1) ^ {2} \\,dx",
+                    "res": "INT x:[-pi / 2,pi / 2]. 1/4 * (cos(2 * x) + 1) ^ 2",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -1089,14 +1089,23 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-\\pi}^{\\pi} \\frac{1}{8} \\cos^{2}(u) + \\frac{1}{4} \\cos{u} + \\frac{1}{8} \\,du",
-                    "res": "INT u:[-pi,pi]. 1/8 * cos(u) ^ 2 + 1/4 * cos(u) + 1/8",
+                    "latex_res": "\\int_{-\\pi}^{\\pi} \\frac{1}{8} (\\cos{u} + 1) ^ {2} \\,du",
+                    "res": "INT u:[-pi,pi]. 1/8 * (cos(u) + 1) ^ 2",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(2 x\\)",
                         "name": "Substitution",
                         "str": "substitute u for 2 * x",
                         "var_name": "u",
                         "var_subst": "2 * x"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\int_{-\\pi}^{\\pi} \\frac{1}{8} \\cos^{2}(u) + \\frac{1}{4} \\cos{u} + \\frac{1}{8} \\,du",
+                    "res": "INT u:[-pi,pi]. 1/8 * cos(u) ^ 2 + 1/4 * cos(u) + 1/8",
+                    "rule": {
+                        "name": "ExpandPolynomial",
+                        "str": "expand polynomial"
                     },
                     "type": "CalculationStep"
                 },
@@ -1110,14 +1119,14 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{8} (\\int_{-\\pi}^{\\pi} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,du) + \\frac{1}{4} \\pi",
-                    "res": "1/8 * (INT u:[-pi,pi]. cos(2 * u) / 2 + 1/2) + 1/4 * pi",
+                    "latex_res": "\\frac{1}{8} (\\int_{-\\pi}^{\\pi} \\frac{1 + \\cos{(2 u)}}{2} \\,du) + \\frac{1}{4} \\pi",
+                    "res": "1/8 * (INT u:[-pi,pi]. (1 + cos(2 * u)) / 2) + 1/4 * pi",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\cos^{2}(u)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "cos(u) ^ 2",
-                        "rule_name": "TR7",
-                        "str": "rewrite trigonometric on cos(u) ^ 2"
+                        "latex_str": "rewrite \\(\\cos^{2}(u)\\) to \\(\\frac{1 + \\cos{(2 u)}}{2}\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "cos(u) ^ 2",
+                        "str": "rewrite cos(u) ^ 2 to (1 + cos(2 * u)) / 2 using identity",
+                        "target": "(1 + cos(2 * u)) / 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -1165,11 +1174,11 @@
                     "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{x} \\sin^{2}(x)} \\,dx",
                     "res": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * sin(x) ^ 2)",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(1 - \\cos^{2}(x)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "1 - cos(x) ^ 2",
-                        "rule_name": "TR6",
-                        "str": "rewrite trigonometric on 1 - cos(x) ^ 2"
+                        "latex_str": "rewrite \\(1 - \\cos^{2}(x)\\) to \\(\\sin^{2}(x)\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "1 - cos(x) ^ 2",
+                        "str": "rewrite 1 - cos(x) ^ 2 to sin(x) ^ 2 using identity",
+                        "target": "sin(x) ^ 2"
                     },
                     "type": "CalculationStep"
                 },
@@ -1251,26 +1260,14 @@
             "start": "INT x:[0,pi]. sqrt(1 + cos(2 * x))",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{\\pi} \\sqrt{1 + (-\\sin^{2}(x) + \\cos^{2}(x))} \\,dx",
-                    "res": "INT x:[0,pi]. sqrt(1 + (-(sin(x) ^ 2) + cos(x) ^ 2))",
+                    "latex_res": "\\int_{0}^{\\pi} \\sqrt{1 + (2 \\cos^{2}(x) - 1)} \\,dx",
+                    "res": "INT x:[0,pi]. sqrt(1 + (2 * cos(x) ^ 2 - 1))",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\cos{(2 x)}\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "cos(2 * x)",
-                        "rule_name": "TR11",
-                        "str": "rewrite trigonometric on cos(2 * x)"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\int_{0}^{\\pi} \\sqrt{1 + (\\cos^{2}(x) - 1 + \\cos^{2}(x))} \\,dx",
-                    "res": "INT x:[0,pi]. sqrt(1 + (cos(x) ^ 2 - 1 + cos(x) ^ 2))",
-                    "rule": {
-                        "latex_str": "rewrite trigonometric on \\(-\\sin^{2}(x)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "-(sin(x) ^ 2)",
-                        "rule_name": "TR5",
-                        "str": "rewrite trigonometric on -(sin(x) ^ 2)"
+                        "latex_str": "rewrite \\(\\cos{(2 x)}\\) to \\(2 \\cos^{2}(x) - 1\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "cos(2 * x)",
+                        "str": "rewrite cos(2 * x) to 2 * cos(x) ^ 2 - 1 using identity",
+                        "target": "2 * cos(x) ^ 2 - 1"
                     },
                     "type": "CalculationStep"
                 },
@@ -1390,11 +1387,11 @@
                     "latex_res": "\\int_{\\pi/4}^{\\pi/3} x \\csc^{2}(x) \\,dx",
                     "res": "INT x:[pi / 4,pi / 3]. x * csc(x) ^ 2",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\frac{x}{\\sin^{2}(x)}\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "x / sin(x) ^ 2",
-                        "rule_name": "TR111",
-                        "str": "rewrite trigonometric on x / sin(x) ^ 2"
+                        "latex_str": "rewrite \\(\\sin^{2}(x)\\) to \\(\\csc^{-2}(x)\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "sin(x) ^ 2",
+                        "str": "rewrite sin(x) ^ 2 to csc(x) ^ (-2) using identity",
+                        "target": "csc(x) ^ (-2)"
                     },
                     "type": "CalculationStep"
                 },
@@ -1423,11 +1420,11 @@
                     "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi + \\frac{1}{4} \\pi + (\\int_{1/4\\cdot \\pi}^{1/3\\cdot \\pi} \\frac{\\cos{x}}{\\sin{x}} \\,dx)",
                     "res": "-1/9 * sqrt(3) * pi + 1/4 * pi + (INT x:[1/4 * pi,1/3 * pi]. cos(x) / sin(x))",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\cot{x}\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "cot(x)",
-                        "rule_name": "TR2",
-                        "str": "rewrite trigonometric on cot(x)"
+                        "latex_str": "rewrite \\(\\cot{x}\\) to \\(\\frac{\\cos{x}}{\\sin{x}}\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "cot(x)",
+                        "str": "rewrite cot(x) to cos(x) / sin(x) using identity",
+                        "target": "cos(x) / sin(x)"
                     },
                     "type": "CalculationStep"
                 },
@@ -1602,14 +1599,23 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{\\pi} x ^ {2} (\\frac{1}{2} - \\frac{\\cos{(2 x)}}{2}) \\,dx",
-                    "res": "INT x:[0,pi]. x ^ 2 * (1/2 - cos(2 * x) / 2)",
+                    "latex_res": "\\int_{0}^{\\pi} x ^ {2} (\\frac{1 - \\cos{(2 x)}}{2}) \\,dx",
+                    "res": "INT x:[0,pi]. x ^ 2 * ((1 - cos(2 * x)) / 2)",
                     "rule": {
-                        "latex_str": "rewrite trigonometric on \\(\\sin^{2}(x)\\)",
-                        "name": "RewriteTrigonometric",
-                        "rewrite_term": "sin(x) ^ 2",
-                        "rule_name": "TR8",
-                        "str": "rewrite trigonometric on sin(x) ^ 2"
+                        "latex_str": "rewrite \\(\\sin^{2}(x)\\) to \\(\\frac{1 - \\cos{(2 x)}}{2}\\) using identity",
+                        "name": "ApplyIdentity",
+                        "source": "sin(x) ^ 2",
+                        "str": "rewrite sin(x) ^ 2 to (1 - cos(2 * x)) / 2 using identity",
+                        "target": "(1 - cos(2 * x)) / 2"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\int_{0}^{\\pi} \\frac{1}{2} x ^ {2} (-\\cos{(2 x)} + 1) \\,dx",
+                    "res": "INT x:[0,pi]. 1/2 * x ^ 2 * (-cos(2 * x) + 1)",
+                    "rule": {
+                        "name": "ExpandPolynomial",
+                        "str": "expand polynomial"
                     },
                     "type": "CalculationStep"
                 },
