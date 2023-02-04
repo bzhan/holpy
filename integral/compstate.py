@@ -727,12 +727,6 @@ def parse_rule(item) -> Rule:
         return rules.ExpandPolynomial()
     elif item['name'] == 'PolynomialDivision':
         return rules.PolynomialDivision()
-    elif item['name'] == 'RewriteTrigonometric':
-        rule_name = item['rule_name']
-        rewrite_term = None
-        if 'rewrite_term' in item:
-            rewrite_term = parser.parse_expr(item['rewrite_term'])
-        return rules.RewriteTrigonometric(rule_name, rewrite_term)
     elif item['name'] == 'SplitRegion':
         c = parser.parse_expr(item['c'])
         return rules.SplitRegion(c)

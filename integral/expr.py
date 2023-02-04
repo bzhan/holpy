@@ -2144,31 +2144,6 @@ class Summation(Expr):
         return Summation(new_var, self.lower, self.upper, self.body.subst(self.index_var, Var(new_var)))
 
 
-trigFun = {
-    "TR0": (TR0, "1 to sin^2 + cos^2"),
-    "TR1": (TR1, "sec-csc to cos-sin"),
-    "TR2": (TR2, "tan-cot to sin-cos ratio"),
-    "TR2i": (TR2i, "sin-cos ratio to tan"),
-    "TR3": (TR3, "angle canonicalization"),
-    "TR4": (TR4, "functions at special angles"),
-    "TR5": (TR5, "powers of sin to powers of cos"),
-    "TR6": (TR6, "powers of cos to powers of sin"),
-    "TR7": (TR7, "reduce cos power (increase angle)"),
-    "TR8": (TR8, "expand products of sin-cos to sums"),
-    "TR9": (TR9, "contract sums of sin-cos to products"),
-    "TR10": (TR10, "separate sin-cos arguments"),
-    "TR10i": (TR10i, "collect sin-cos arguments"),
-    "TR11": (TR11, "reduce double angles"),
-    "TR12": (TR12, "separate tan arguments"),
-    "TR12i": (TR12i, "collect tan arguments"),
-    "TR13": (TR13, "expand product of tan-cot"),
-    "TR14": (TR14, "factored powers of sin or cos to cos or sin power"),
-    "TR15": (TR15, "negative powers of sin to cot power"),
-    "TR16": (TR16, "negative powers of cos to tan power"),
-    "TR22": (TR22, "tan-cot powers to negative powers of sec-csc functions"),
-    "TR111": (TR111, "negative sin-cos-tan powers to csc-sec-cot"),
-}
-
 trig_table_cache = None
 
 

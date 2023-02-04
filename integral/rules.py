@@ -1235,48 +1235,6 @@ class PolynomialDivision(Rule):
         return expr.Integral(e.var, e.lower, e.upper, new_expr)
 
 
-class RewriteTrigonometric(Rule):
-    """Rewrite using one of Fu's rules."""
-
-    def __init__(self, rule_name: str, rewrite_term: Optional[Expr] = None):
-        self.name = "RewriteTrigonometric"
-        self.rule_name = rule_name
-        self.rewrite_term = rewrite_term
-
-    def __str__(self):
-        if self.rewrite_term is None:
-            return "rewrite trigonometric"
-        else:
-            return "rewrite trigonometric on %s" % self.rewrite_term
-
-    def export(self):
-        res = {
-            "name": self.name,
-            "rule_name": self.rule_name,
-            "str": str(self)
-        }
-        if self.rewrite_term is not None:
-            res['rewrite_term'] = str(self.rewrite_term)
-            res['latex_str'] = "rewrite trigonometric on \\(%s\\)" % \
-                               latex.convert_expr(self.rewrite_term)
-        return res
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        # Rewrite on a subterm
-        if self.rewrite_term is not None and self.rewrite_term != e:
-            find_res = e.find_subexpr(self.rewrite_term)
-            if len(find_res) == 0:
-                raise AssertionError("RewriteTrigonometric: rewrite term not found")
-            loc = find_res[0]
-            return OnLocation(self, loc).eval(e, ctx)
-
-        # Select one of Fu's rules
-        rule_fun, _ = expr.trigFun[self.rule_name]
-        sympy_result = rule_fun(expr.sympy_style(e))
-        result = expr.holpy_style(sympy_result)
-        return result
-
-
 class SplitRegion(Rule):
     """Split integral into two parts at a point."""
 
@@ -1524,13 +1482,6 @@ def check_item(item, target=None, *, debug=False):
                 rule = Equation(rhs, parser.parse_expr(step['params']['denom']))
             else:
                 rule = Equation(rhs)
-            if 'location' in step:
-                result = OnLocation(rule, step['location']).eval(current, ctx)
-            else:
-                result = rule.eval(current, ctx)
-
-        elif reason == 'Rewrite trigonometric':
-            rule = RewriteTrigonometric(step['params']['rule'])
             if 'location' in step:
                 result = OnLocation(rule, step['location']).eval(current, ctx)
             else:
