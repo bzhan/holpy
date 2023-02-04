@@ -695,6 +695,9 @@ def parse_rule(item) -> Rule:
     elif item['name'] == 'ExpandDefinition':
         func_name = item['func_name']
         return rules.ExpandDefinition(func_name=func_name)
+    elif item['name'] == 'FoldDefinition':
+        func_name = item['func_name']
+        return rules.FoldDefinition(func_name=func_name)
     elif item['name'] == 'DerivIntExchange':
         return rules.DerivIntExchange()
     elif item['name'] == 'FullSimplify':

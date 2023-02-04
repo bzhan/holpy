@@ -1592,6 +1592,39 @@ class ExpandDefinition(Rule):
         return e
 
 
+class FoldDefinition(Rule):
+    """Fold a definition"""
+
+    def __init__(self, func_name: str):
+        self.name = "FoldDefinition"
+        assert isinstance(func_name, str)
+        self.func_name: str = func_name
+
+    def __str__(self):
+        return "fold definition"
+
+    def export(self):
+        return {
+            "name": self.name,
+            "func_name": self.func_name,
+            "str": str(self)
+        }
+
+    def eval(self, e: Expr, ctx: Context) -> Expr:
+        for identity in ctx.get_definitions():
+            if identity.lhs.is_fun() and identity.lhs.func_name == self.func_name:
+                inst = expr.match(e, identity.rhs)
+                if inst:
+                    return identity.lhs.inst_pat(inst).normalize()
+
+            if identity.lhs.is_symbol() and identity.lhs.name == self.func_name:
+                if e == identity.rhs:
+                    return identity.lhs
+
+        # Not found
+        return e
+
+    
 class SimplifyAbs(Rule):
     def __init__(self):
         self.name = "SimplifyAbs"

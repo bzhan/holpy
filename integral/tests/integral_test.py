@@ -614,7 +614,19 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation(
             "x ^ 4 + 2 * x ^ 2 * (1/2 * (exp(-2 * a) + exp(2 * a))) + 1",
             "(x ^ 2 + exp(2 * a)) * (x ^ 2 + exp(-2 * a))"))
-        self.checkAndOutput(file, "partialFraction", omit_finish=True)
+        calc.perform_rule(rules.Equation(
+            "1 / ((x ^ 2 + exp(2 * a)) * (x ^ 2 + exp(-2 * a)))",
+            "1 / (exp(2*a) - exp(-2*a)) * (1 / (x^2 + exp(-2*a)) - 1 / (x^2 + exp(2*a)))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("(exp(-2 * a) + x ^ 2) ^ (-1)", "1 / (exp(-a) ^ 2 + x ^ 2)"))
+        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "1.0"))
+        calc.perform_rule(rules.Equation("(exp(2 * a) + x ^ 2) ^ (-1)", "1 / (exp(a) ^ 2 + x ^ 2)"))
+        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "1.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation(None, "pi / (4 * ((exp(a) + exp(-a)) / 2))"))
+        calc.perform_rule(rules.OnSubterm(rules.FoldDefinition("cosh")))
+
+        self.checkAndOutput(file, "partialFraction")
         
 
     def testLeibniz02(self):
