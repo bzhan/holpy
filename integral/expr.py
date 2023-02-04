@@ -161,8 +161,7 @@ class Expr:
         return self.ty == SYMBOL
 
     def is_zero(self) -> bool:
-        tmp = self.normalize()
-        return tmp.is_const() and tmp.val == 0
+        return self.is_const() and self.val == 0
 
     def is_INF(self) -> bool:
         if self.is_power():
@@ -2009,7 +2008,10 @@ class Summation(Expr):
 
 def eval_expr(e: Expr):
     if e.is_inf():
-        return e.t
+        if e == expr.POS_INF:
+            return float('inf')
+        else:
+            return float('-inf')
     elif e.is_const():
         return e.val
     elif e.is_plus():
