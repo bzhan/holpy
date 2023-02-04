@@ -1,0 +1,62 @@
+{
+    "content": [
+        {
+            "finished": false,
+            "goal": "(INT x:[0,oo]. 1 / (x ^ 4 + 2 * x ^ 2 * cosh(2 * a) + 1)) = pi / (4 * cosh(a))",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{1}{x ^ {4} + 2 x ^ {2} \\cosh{(2 a)} + 1} \\,dx = \\frac{\\pi}{4 \\cosh{a}}",
+            "proof": {
+                "finished": false,
+                "goal": "(INT x:[0,oo]. 1 / (x ^ 4 + 2 * x ^ 2 * cosh(2 * a) + 1)) = pi / (4 * cosh(a))",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{1}{x ^ {4} + 2 x ^ {2} \\cosh{(2 a)} + 1} \\,dx = \\frac{\\pi}{4 \\cosh{a}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{1}{x ^ {4} + 2 x ^ {2} \\cosh{(2 a)} + 1} \\,dx",
+                    "start": "INT x:[0,oo]. 1 / (x ^ 4 + 2 * x ^ 2 * cosh(2 * a) + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{x ^ {4} + 2 x ^ {2} (\\frac{1}{2} (e^{-2 a} + e^{2 a})) + 1} \\,dx",
+                            "res": "INT x:[0,oo]. 1 / (x ^ 4 + 2 * x ^ 2 * (1/2 * (exp(-2 * a) + exp(2 * a))) + 1)",
+                            "rule": {
+                                "func_name": "cosh",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(x ^ {2} + e^{2 a}) (x ^ {2} + e^{-2 a})} \\,dx",
+                            "res": "INT x:[0,oo]. 1 / ((x ^ 2 + exp(2 * a)) * (x ^ 2 + exp(-2 * a)))",
+                            "rule": {
+                                "latex_str": "rewriting \\(x ^ {4} + 2 x ^ {2} (\\frac{1}{2} (e^{-2 a} + e^{2 a})) + 1\\) to \\((x ^ {2} + e^{2 a}) (x ^ {2} + e^{-2 a})\\)",
+                                "name": "Equation",
+                                "new_expr": "(x ^ 2 + exp(2 * a)) * (x ^ 2 + exp(-2 * a))",
+                                "old_expr": "x ^ 4 + 2 * x ^ 2 * (1/2 * (exp(-2 * a) + exp(2 * a))) + 1",
+                                "str": "rewriting x ^ 4 + 2 * x ^ 2 * (1/2 * (exp(-2 * a) + exp(2 * a))) + 1 to (x ^ 2 + exp(2 * a)) * (x ^ 2 + exp(-2 * a))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{e^{4 a}}{(x ^ {2} e^{2 a} + 1) (e^{a} - 1) (e^{a} + 1) (e^{2 a} + 1)} - \\frac{e^{2 a}}{(x ^ {2} + e^{2 a}) (e^{a} - 1) (e^{a} + 1) (e^{2 a} + 1)} \\,dx",
+                            "res": "INT x:[0,oo]. exp(4 * a) / ((x ^ 2 * exp(2 * a) + 1) * (exp(a) - 1) * (exp(a) + 1) * (exp(2 * a) + 1)) - exp(2 * a) / ((x ^ 2 + exp(2 * a)) * (exp(a) - 1) * (exp(a) + 1) * (exp(2 * a) + 1))",
+                            "rule": {
+                                "name": "PolynomialDivision",
+                                "str": "polynomial division"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi}{4 \\cosh{a}}",
+                    "start": "pi / (4 * cosh(a))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "partialFraction"
+}

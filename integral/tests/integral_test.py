@@ -608,6 +608,25 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file, "leibniz01")
 
+    def testPartialFraction(self):
+        # Reference
+        # Inside interesting integrals, Section 2.3, example 2
+        ctx = context.Context()
+        ctx.load_book('base')
+        file = compstate.CompFile(ctx, 'partialFraction')
+
+        goal = file.add_goal("(INT x:[0,oo]. 1 / (x^4 + 2*x^2*cosh(2*a) + 1)) = pi / (4 * cosh(a))")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("cosh")))
+        calc.perform_rule(rules.Equation(
+            old_expr=parser.parse_expr("x ^ 4 + 2 * x ^ 2 * (1/2 * (exp(-2 * a) + exp(2 * a))) + 1"),
+            new_expr=parser.parse_expr("(x ^ 2 + exp(2 * a)) * (x ^ 2 + exp(-2 * a))")))
+        calc.perform_rule(rules.PolynomialDivision())
+
+        self.checkAndOutput(file, "partialFraction", omit_finish=True)
+        
+
     def testLeibniz02(self):
         # Reference
         # Inside interesting integrals, Section 3.1, example 2

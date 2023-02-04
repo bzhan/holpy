@@ -148,7 +148,7 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 if not x.is_var():
                     sx = "(" + sx + ")"
                 return "\\cos^{-1}{%s}" % sx
-            elif e.func_name in ('log', 'sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
+            elif e.func_name in ('log', 'sin', 'cos', 'tan', 'cot', 'csc', 'sec', 'cosh'):
                 if not x.is_var():
                     sx = "(" + sx + ")"
                 return "\\%s{%s}" % (e.func_name, sx)

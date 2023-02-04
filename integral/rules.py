@@ -1230,7 +1230,7 @@ class PolynomialDivision(Rule):
             else:
                 return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
 
-        result = apart(expr.sympy_style(e.body))
+        result = apart(expr.sympy_style(e.body), expr.sympy_style(e.var))
         new_expr = expr.holpy_style(result)
         return expr.Integral(e.var, e.lower, e.upper, new_expr)
 
