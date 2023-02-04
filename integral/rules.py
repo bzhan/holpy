@@ -1095,11 +1095,14 @@ class ExpandPolynomial(Rule):
 class Equation(Rule):
     """Apply substitution for equal expressions"""
 
-    def __init__(self, new_expr: Expr, old_expr: Optional[Expr] = None):
+    def __init__(self, old_expr: Optional[Union[str, Expr]], new_expr: Union[str, Expr]):
         self.name = "Equation"
-        assert isinstance(new_expr, Expr)
-        self.new_expr = new_expr
+        if isinstance(old_expr, str):
+            old_expr = parser.parse_expr(old_expr)
+        if isinstance(new_expr, str):
+            new_expr = parser.parse_expr(new_expr)
         self.old_expr = old_expr
+        self.new_expr = new_expr
 
     def __str__(self):
         if self.old_expr is None:
