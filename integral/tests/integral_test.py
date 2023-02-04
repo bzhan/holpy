@@ -1390,5 +1390,29 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file, "easy01")
 
+    def testEasy02(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.1.b
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "easy02")
+
+        file.add_definition("I(a) = (INT x:[0, oo]. log(1 + a^2 / x^2))")
+        goal = file.add_goal("I(a) = pi*a")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition("I"))
+        u = parser.parse_expr("log(1+a^2/x^2)")
+        v = parser.parse_expr("x")
+        calc.perform_rule(rules.IntegrationByParts(u = u, v = v))
+        calc.perform_rule(rules.FullSimplify())
+        old_expr = parser.parse_expr("x ^ (-2) * (a ^ 2 * x ^ (-2) + 1) ^ (-1)")
+        new_expr = parser.parse_expr("(a^2 + x^2)^(-1)")
+        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+        e = parser.parse_expr("(INT x. (c^2+x^2)^(-1)) = 1/c * atan(x/c) + SKOLEM_CONST(C)")
+        ctx.add_indefinite_integral(e)
+        calc.perform_rule(rules.OnSubterm(rules.DefiniteIntegralIdentity()))
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file, "easy02")
 if __name__ == "__main__":
     unittest.main()
