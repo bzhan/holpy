@@ -748,36 +748,14 @@ class SimplifyPower(Rule):
             return e
 
 
-class ReduceInfLimit(Rule):
-    """Reduce limit to infinity using asymptotic growth compuations."""
+class ReduceLimit(Rule):
+    """Reduce limit expressions."""
 
     def __init__(self):
-        self.name = "ReduceInfLimit"
+        self.name = "ReduceLimit"
 
     def __str__(self):
-        return "reduce infinite limits"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if e.is_limit() and e.lim == POS_INF:
-            return limits.reduce_inf_limit(e.body, e.var, conds=ctx.get_conds())
-        else:
-            return e
-
-
-class ReduceTrivLimit(Rule):
-    """Reduce limits that do not involve zeros or infinities."""
-
-    def __init__(self):
-        self.name = "ReduceTrivLimit"
-
-    def __str__(self):
-        return "reduce trivial limits"
+        return "reduce limits"
 
     def export(self):
         return {
@@ -790,20 +768,14 @@ class ReduceTrivLimit(Rule):
             return e
         if e.var not in e.body.get_vars():
             return e.body
-        if e.lim in (POS_INF, NEG_INF):
-            return e
 
-        try:
-            if e.is_indeterminate_form():
-                return e
-            # inteternimate form
-            # 1. 0 * INF
-            # 2. INF / INF or 0 / 0
-            # if body is not indeterminate form
-            body = e.body.subst(e.var, e.lim)
-            return body.normalize()
-        except ZeroDivisionError:
-            return e
+        if e.lim == POS_INF:
+            return limits.reduce_inf_limit(e.body, e.var, conds=ctx.get_conds())
+        elif e.lim == NEG_INF:
+            raise NotImplementedError
+        else:
+            return limits.reduce_finite_limit(e)
+
 
 class FullSimplify(Rule):
     """Perform simplification by applying the following rules repeatedly:
@@ -813,7 +785,7 @@ class FullSimplify(Rule):
     - Linearity
     - DerivativeSimplify
     - SimplifyPower
-    - ReduceInfLimit
+    - ReduceLimit
 
     """
 
@@ -844,8 +816,7 @@ class FullSimplify(Rule):
             s = OnSubterm(DerivativeSimplify()).eval(s, ctx)
             s = OnSubterm(SimplifyPower()).eval(s, ctx)
             s = OnSubterm(SimplifyAbs()).eval(s, ctx)
-            s = OnSubterm(ReduceInfLimit()).eval(s, ctx)
-            s = OnSubterm(ReduceTrivLimit()).eval(s, ctx)
+            s = OnSubterm(ReduceLimit()).eval(s, ctx)
             s = OnSubterm(TrigSimplify()).eval(s, ctx)
             s = OnSubterm(SummationSimplify()).eval(s, ctx)
             if s == current:

@@ -674,3 +674,53 @@ def reduce_inf_limit(e: Expr, var_name: str, conds: Conditions) -> Expr:
             return expr.Limit(var_name, POS_INF, e)
     else:
         return expr.Limit(var_name, POS_INF, e)
+
+
+def is_INF(e: Expr) -> bool:
+    """Determine whether e approaches infinity."""
+    if e.is_power():
+        a, b = e.args
+        if a.is_const() and b.is_const():
+            return a.val == 0 and b.val < 0
+    elif e.is_divides():
+        a, b = e.args
+        if a.is_const() and b.is_const():
+            return a.val != 0 and b.val == 0
+    elif e.is_fun():
+        if e.func_name == 'tan':
+            a = (e.args[0] / expr.Fun('pi')).normalize()
+            # the coefficient of pi
+            coef = (a * 2).normalize()
+            if coef.is_const() and coef.val % 2 == 1:
+                return True
+    return False
+
+def is_indeterminate_form(e: Expr) -> bool:
+    """Determine whether e is a indeterminate form."""
+    var, body, lim, drt = e.var, e.body.normalize(), e.lim, e.drt
+    if e.drt == None:
+        if body.is_constant():
+            return False
+        elif body.is_times():
+            l = [a.subst(var, lim).normalize() for a in body.args]
+            # 0 * INF or INF * 0
+            if l[0].is_zero() and is_INF(l[1]) or l[1].is_zero() and is_INF(l[0]):
+                return True
+        elif body.is_fun():
+            if body.func_name in ('sin', 'cos'):
+                a0 = body.args[0]
+                if a0.subst(var, lim).is_const():
+                    return False
+        else:
+            return False
+    else:
+        raise NotImplementedError
+
+def reduce_finite_limit(e: Expr) -> Expr:
+    try:
+        if is_indeterminate_form(e):
+            return e
+        body = e.body.subst(e.var, e.lim)
+        return body.normalize()
+    except ZeroDivisionError:
+        return e

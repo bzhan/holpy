@@ -163,24 +163,6 @@ class Expr:
     def is_zero(self) -> bool:
         return self.is_const() and self.val == 0
 
-    def is_INF(self) -> bool:
-        if self.is_power():
-            a, b = self.args
-            if a.is_const() and b.is_const():
-                return a.val == 0 and b.val < 0
-        elif self.is_divides():
-            a, b = self.args
-            if a.is_const() and b.is_const():
-                return a.val != 0 and b.val == 0
-        elif self.is_fun():
-            if self.func_name == 'tan':
-                a = (self.args[0] / Fun('pi')).normalize()
-                # the coef of pi
-                coef = (a * 2).normalize()
-                if coef.is_const() and coef.val % 2 == 1:
-                    return True
-        return False
-
     def is_integral(self) -> bool:
         return self.ty == INTEGRAL
 
@@ -1676,35 +1658,15 @@ class Limit(Expr):
         if self.lim == inf() or self.lim == neg_inf():
             return "LIM {%s -> %s}. %s" % (self.var, self.lim, self.body)
         else:
-            return "LIM {%s -> %s %s}. %s" % (self.var, self.lim, self.drt if self.drt != None else "", self.body)
+            return "LIM {%s -> %s %s}. %s" % (
+                self.var, self.lim, self.drt if self.drt != None else "", self.body)
 
     def __repr__(self):
         if self.lim == inf() or self.lim == neg_inf():
             return "Limit(%s, %s, %s)" % (self.var, self.lim, self.body)
         else:
-            return "Limit(%s, %s%s, %s)" % (self.var, self.lim, "" if self.drt == None else self.drt \
-                                                , self.body)
-
-    def is_indeterminate_form(self):
-        # determine wether e is a indeterminate form
-        var, body, lim, drt = self.var, self.body.normalize(), self.lim, self.drt
-        if self.drt == None:
-            if body.is_constant():
-                return False
-            elif body.is_times():
-                l = [a.subst(var, lim).normalize() for a in body.args]
-                # 0 * INF or INF * 0
-                if l[0].is_zero() and l[1].is_INF() or l[1].is_zero() and l[0].is_INF():
-                    return True
-            elif body.is_fun():
-                if body.func_name in ('sin', 'cos'):
-                    a0 = body.args[0]
-                    if a0.subst(var, lim).is_const():
-                        return False
-            else:
-                return False
-        else:
-            raise NotImplementedError
+            return "Limit(%s, %s%s, %s)" % (
+                self.var, self.lim, "" if self.drt == None else self.drt, self.body)
 
 
 class Inf(Expr):
