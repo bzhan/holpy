@@ -57,10 +57,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\int_{0}^{\\infty} \\frac{1}{e^{-a} ^ {2} + x ^ {2}} \\,dx) - (\\int_{0}^{\\infty} (e^{2 a} + x ^ {2}) ^ {-1} \\,dx))",
+                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\int_{0}^{\\infty} \\frac{1}{(e^{-a}) ^ {2} + x ^ {2}} \\,dx) - (\\int_{0}^{\\infty} (e^{2 a} + x ^ {2}) ^ {-1} \\,dx))",
                             "res": "(-exp(-2 * a) + exp(2 * a)) ^ (-1) * ((INT x:[0,oo]. 1 / (exp(-a) ^ 2 + x ^ 2)) - (INT x:[0,oo]. (exp(2 * a) + x ^ 2) ^ (-1)))",
                             "rule": {
-                                "latex_str": "rewriting \\((e^{-2 a} + x ^ {2}) ^ {-1}\\) to \\(\\frac{1}{e^{-a} ^ {2} + x ^ {2}}\\)",
+                                "latex_str": "rewriting \\((e^{-2 a} + x ^ {2}) ^ {-1}\\) to \\(\\frac{1}{(e^{-a}) ^ {2} + x ^ {2}}\\)",
                                 "name": "Equation",
                                 "new_expr": "1 / (exp(-a) ^ 2 + x ^ 2)",
                                 "old_expr": "(exp(-2 * a) + x ^ 2) ^ (-1)",
@@ -69,7 +69,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\left. e^{-a} ^ {-1} \\tan^{-1}{(\\frac{x}{e^{-a}})} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} (e^{2 a} + x ^ {2}) ^ {-1} \\,dx))",
+                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\left. (e^{-a}) ^ {-1} \\tan^{-1}{(\\frac{x}{e^{-a}})} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} (e^{2 a} + x ^ {2}) ^ {-1} \\,dx))",
                             "res": "(-exp(-2 * a) + exp(2 * a)) ^ (-1) * (([exp(-a) ^ (-1) * atan(x / exp(-a))]_x=0,oo) - (INT x:[0,oo]. (exp(2 * a) + x ^ 2) ^ (-1)))",
                             "rule": {
                                 "loc": "1.0",
@@ -79,10 +79,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\left. e^{-a} ^ {-1} \\tan^{-1}{(\\frac{x}{e^{-a}})} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} \\frac{1}{e^{a} ^ {2} + x ^ {2}} \\,dx))",
+                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\left. (e^{-a}) ^ {-1} \\tan^{-1}{(\\frac{x}{e^{-a}})} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} \\frac{1}{(e^{a}) ^ {2} + x ^ {2}} \\,dx))",
                             "res": "(-exp(-2 * a) + exp(2 * a)) ^ (-1) * (([exp(-a) ^ (-1) * atan(x / exp(-a))]_x=0,oo) - (INT x:[0,oo]. 1 / (exp(a) ^ 2 + x ^ 2)))",
                             "rule": {
-                                "latex_str": "rewriting \\((e^{2 a} + x ^ {2}) ^ {-1}\\) to \\(\\frac{1}{e^{a} ^ {2} + x ^ {2}}\\)",
+                                "latex_str": "rewriting \\((e^{2 a} + x ^ {2}) ^ {-1}\\) to \\(\\frac{1}{(e^{a}) ^ {2} + x ^ {2}}\\)",
                                 "name": "Equation",
                                 "new_expr": "1 / (exp(a) ^ 2 + x ^ 2)",
                                 "old_expr": "(exp(2 * a) + x ^ 2) ^ (-1)",
@@ -91,7 +91,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\left. e^{-a} ^ {-1} \\tan^{-1}{(\\frac{x}{e^{-a}})} \\right\\vert_{x=0}^{\\infty}) - (\\left. e^{a} ^ {-1} \\tan^{-1}{(\\frac{x}{e^{a}})} \\right\\vert_{x=0}^{\\infty}))",
+                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\left. (e^{-a}) ^ {-1} \\tan^{-1}{(\\frac{x}{e^{-a}})} \\right\\vert_{x=0}^{\\infty}) - (\\left. (e^{a}) ^ {-1} \\tan^{-1}{(\\frac{x}{e^{a}})} \\right\\vert_{x=0}^{\\infty}))",
                             "res": "(-exp(-2 * a) + exp(2 * a)) ^ (-1) * (([exp(-a) ^ (-1) * atan(x / exp(-a))]_x=0,oo) - ([exp(a) ^ (-1) * atan(x / exp(a))]_x=0,oo))",
                             "rule": {
                                 "loc": "1.1",
