@@ -724,50 +724,23 @@ def to_const_poly(e: expr.Expr) -> ConstantPolynomial:
         else:
             return const_singleton(expr.Fun(e.func_name, norm_a))
 
-    elif e.is_fun() and e.func_name in ('asin', 'acos', 'atan', 'acot', 'acsc', 'asec'):
-        a = to_const_poly(e.args[0])
-        norm_a = from_const_poly(a)
-        return const_singleton(expr.Fun(e.func_name, norm_a))
-
-    elif e.is_fun() and e.func_name == 'abs':
-        a = to_const_poly(e.args[0])
-        if a.is_fraction():
-            return const_fraction(abs(a.get_fraction()))
-        elif e.args[0].is_constant():
-            if expr.eval_expr(e.args[0]) >= 0:
-                return a
-            else:
-                return -a
-        else:
-            return const_singleton(e)
-
     elif e.is_fun() and e.func_name == "binom":
-        a = to_const_poly(e.args[0])
-        norm_a = from_const_poly(a)
-        b = to_const_poly(e.args[1])
-        norm_b = from_const_poly(b)
+        norm_a = normalize_constant(e.args[0])
+        norm_b = normalize_constant(e.args[1])
         if norm_a.is_const() and norm_b.is_const():
             return to_const_poly(expr.Const(math.comb(norm_a.val, norm_b.val)))
         else:
             return const_singleton(expr.binom(norm_a, norm_b))
 
     elif e.is_fun() and e.func_name == 'factorial':
-        a = to_const_poly(e.args[0])
-        norm_a = from_const_poly(a)
-
-        def rec(n):
-            if n == 0 or n == 1:
-                return 1
-            else:
-                return n * rec(n - 1)
-
+        norm_a = normalize_constant(e.args[0])
         if norm_a.is_const() and int(norm_a.val) == float(norm_a.val):
-            return to_const_poly(expr.Const(rec(norm_a.val)))
+            return to_const_poly(expr.Const(math.factorial(norm_a.val)))
         else:
             return const_singleton(expr.factorial(norm_a))
 
     elif e.is_fun():
-        args_norm = [normalize(arg) for arg in e.args]
+        args_norm = [normalize_constant(arg) for arg in e.args]
         return const_singleton(expr.Fun(e.func_name, *args_norm))
 
     else:
@@ -867,19 +840,11 @@ def to_poly(e: expr.Expr) -> Polynomial:
     elif e.is_fun() and e.func_name == "sqrt":
         return to_poly(expr.Op("^", e.args[0], expr.Const(Fraction(1, 2))))
 
-    elif e.is_fun() and e.func_name == "abs":
-        if normalize(e.args[0]).is_const():
-            return constant(to_const_poly(expr.Const(abs(normalize(e.args[0]).val))))
-        return singleton(expr.Fun("abs", normalize(e.args[0])))
-
     elif e.is_fun():
         args_norm = [normalize(arg) for arg in e.args]
         return singleton(expr.Fun(e.func_name, *args_norm))
 
     elif e.is_evalat():
-        # upper = self.body.subst(self.var, self.upper)
-        # lower = self.body.subst(self.var, self.lower)
-        # TODO: improper integral
         upper = e.body.subst(e.var, e.upper) if not e.upper.is_inf() else expr.Limit(e.var, e.upper, e.body)
         lower = e.body.subst(e.var, e.lower) if not e.lower.is_inf() else expr.Limit(e.var, e.lower, e.body)
         return to_poly(normalize(upper) - normalize(lower))
