@@ -675,6 +675,8 @@ def reduce_inf_limit(e: Expr, var_name: str, conds: Conditions) -> Expr:
     else:
         return expr.Limit(var_name, POS_INF, e)
 
+def reduce_neg_inf_limit(e: Expr, var_name: str, conds: Conditions) -> Expr:
+    return reduce_inf_limit(e.subst(var_name, -expr.Var(var_name)), var_name, conds)
 
 def is_INF(e: Expr) -> bool:
     """Determine whether e approaches infinity."""

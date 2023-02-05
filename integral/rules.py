@@ -888,7 +888,7 @@ class ReduceLimit(Rule):
         if e.lim == POS_INF:
             return limits.reduce_inf_limit(e.body, e.var, conds=ctx.get_conds())
         elif e.lim == NEG_INF:
-            raise NotImplementedError
+            raise limits.reduce_neg_inf_limit(e.body, e.var, conds=ctx.get_conds())
         else:
             return limits.reduce_finite_limit(e)
 
@@ -1100,7 +1100,7 @@ class Substitution(Rule):
 
         if e.is_integral():
             if e.lower == expr.NEG_INF:
-                lower = limits.reduce_inf_limit(var_subst.subst(e.var, -Var(e.var)), e.var, ctx.get_conds())
+                lower = limits.reduce_neg_inf_limit(var_subst, e.var, ctx.get_conds())
             else:
                 lower = full_normalize(var_subst.subst(e.var, e.lower), ctx)
             if e.upper == expr.POS_INF:
