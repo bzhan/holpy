@@ -13,7 +13,7 @@ from integral import parser
 from integral.solve import solve_equation, solve_for_term
 from integral import latex
 from integral import limits
-from integral import normalize as norm
+from integral import norm
 from integral.context import Context
 from integral.poly import from_poly, to_poly, normalize
 

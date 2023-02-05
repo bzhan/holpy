@@ -2,8 +2,8 @@ import unittest
 
 from integral import expr
 from integral.parser import parse_expr
-from integral import normalize
-from integral.normalize import eq_power, eq_quotient, quotient_normalize, power_normalize
+from integral import norm
+from integral.norm import eq_power, eq_quotient, quotient_normalize, power_normalize
 
 class NormalizeTest(unittest.TestCase):
     def testQuotientNormalize(self):
@@ -19,7 +19,7 @@ class NormalizeTest(unittest.TestCase):
         for t in test_data:
             t = parse_expr(t)
             print(t)
-            print(normalize.normalize_quotient(t))
+            print(norm.normalize_quotient(t))
 
     def testNormalize(self):
         test_data = [
