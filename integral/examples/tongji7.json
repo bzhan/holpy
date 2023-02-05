@@ -1086,8 +1086,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\frac{1}{4} (\\cos{(2 x)} + 1) ^ {2} \\,dx",
-                    "res": "INT x:[-pi / 2,pi / 2]. 1/4 * (cos(2 * x) + 1) ^ 2",
+                    "latex_res": "\\int_{-\\pi/2}^{\\pi/2} \\frac{1}{4} \\cos^{2}(2 x) + \\frac{1}{2} \\cos{(2 x)} + \\frac{1}{4} \\,dx",
+                    "res": "INT x:[-pi / 2,pi / 2]. 1/4 * cos(2 * x) ^ 2 + 1/2 * cos(2 * x) + 1/4",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -1095,8 +1095,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-\\pi}^{\\pi} \\frac{1}{8} (\\cos{u} + 1) ^ {2} \\,du",
-                    "res": "INT u:[-pi,pi]. 1/8 * (cos(u) + 1) ^ 2",
+                    "latex_res": "\\int_{-\\pi}^{\\pi} \\frac{1}{8} \\cos^{2}(u) + \\frac{1}{4} \\cos{u} + \\frac{1}{8} \\,du",
+                    "res": "INT u:[-pi,pi]. 1/8 * cos(u) ^ 2 + 1/4 * cos(u) + 1/8",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(2 x\\)",
                         "name": "Substitution",
@@ -1616,15 +1616,6 @@
                         "source": "sin(x) ^ 2",
                         "str": "rewrite sin(x) ^ 2 to (1 - cos(2 * x)) / 2 using identity",
                         "target": "(1 - cos(2 * x)) / 2"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\int_{0}^{\\pi} \\frac{1}{2} x ^ {2} (-\\cos{(2 x)} + 1) \\,dx",
-                    "res": "INT x:[0,pi]. 1/2 * x ^ 2 * (-cos(2 * x) + 1)",
-                    "rule": {
-                        "name": "ExpandPolynomial",
-                        "str": "expand polynomial"
                     },
                     "type": "CalculationStep"
                 },

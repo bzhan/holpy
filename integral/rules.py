@@ -1213,6 +1213,9 @@ class ExpandPolynomial(Rule):
         elif e.is_times():
             s1, s2 = self.eval(e.args[0], ctx), self.eval(e.args[1], ctx)
             return from_poly(to_poly(s1) * to_poly(s2))
+        elif e.is_divides():
+            s1, s2 = self.eval(e.args[0], ctx), self.eval(e.args[1], ctx)
+            return from_poly(to_poly(s1) / to_poly(s2))
         elif e.is_integral():
             return expr.Integral(e.var, e.lower, e.upper, self.eval(e.body, ctx))
         else:

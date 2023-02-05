@@ -355,7 +355,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.ApplyIdentity("sin(x)^2", "(1 - cos(2*x)) / 2"))
         calc.perform_rule(rules.ExpandPolynomial())
-        calc.perform_rule(rules.ExpandPolynomial())  # TODO: remove repetition
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("x^2/2"), parser.parse_expr("sin(2*x)")))
         calc.perform_rule(rules.FullSimplify())
