@@ -2,6 +2,8 @@
 
 from fractions import Fraction
 from typing import Union
+import functools
+import operator
 import sympy
 import math
 
@@ -456,39 +458,6 @@ class Monomial:
     def get_fraction(self) -> Union[int, Fraction]:
         return self.coeff.get_fraction()
 
-    def to_frac(self) -> "FracPoly":
-        """Convert the monomial to a fraction of Polynomials.
-        
-        This is done by collecting factors with positive power into the numerator
-        and factors with negative power into the denominator.
-        
-        """
-        pos_facs, neg_facs = [], []
-        for i, j in self.factors:
-            if isinstance(j, Polynomial):
-                if len(j.monomials) == 1:
-                    coeff = j.monomials[0].coeff.get_fraction()
-                    if coeff > 0:
-                        pos_facs.append((i, j))
-                    elif coeff < 0:
-                        neg_facs.append((i, -j))
-                    else:
-                        raise ValueError
-                else:
-                    pos_facs.append((i, j))
-            elif isinstance(j, int) or isinstance(j, Fraction):
-                if j > 0:
-                    pos_facs.append((i, j))
-                elif j < 0:
-                    neg_facs.append((i, -j))
-                else:
-                    raise ValueError
-            else:
-                raise TypeError
-        nm = Polynomial([Monomial(self.coeff, pos_facs)])
-        denom = Polynomial([Monomial(1, neg_facs)])
-        return FracPoly(nm, denom)
-
 
 class Polynomial:
     """Represents a polynomial."""
@@ -591,11 +560,6 @@ class Polynomial:
         else:
             raise AssertionError
 
-    def to_frac(self) -> "FracPoly":
-        """Convert self to a fraction."""
-        frac_monos = [m.to_frac() for m in self.monomials]
-        return sum(frac_monos[1:], frac_monos[0])
-
     def is_one(self) -> bool:
         return len(self.monomials) == 1 and self.monomials[0].is_one()
 
@@ -609,28 +573,455 @@ def constant(c: ConstantPolynomial) -> Polynomial:
     assert isinstance(c, ConstantPolynomial), "Unexpected constant: %s, type: %s" % (str(c), type(c))
     return Polynomial([Monomial(c, tuple())])
 
-class FracPoly:
-    """A fraction in which both of numerator and denominator are polynomials.
+"""
+Conversion from expressions to polynomials.
+"""
+
+def is_square(r):
+    return math.sqrt(r) * math.sqrt(r) == r
+
+def to_const_poly(e: expr.Expr) -> ConstantPolynomial:
+    """Normalize a constant expression.
+
+    Assume e.is_constant() = True in this function.
+
     """
-    def __init__(self, numerator, denom):
-        assert isinstance(numerator, Polynomial) and isinstance(denom, Polynomial)
-        self.nm = numerator
-        self.denom = denom
+    if e.is_var():
+        raise ValueError
 
-    def __str__(self):
-        return "%s / %s" % (self.nm, self.denom)
+    elif e.is_const():
+        return const_fraction(e.val)
 
-    def __repr__(self):
-        return "FracPoly(%s)" % str(self)
+    elif e.is_inf():
+        raise ValueError
 
-    def __hash__(self):
-        return hash(("FracPoly", self.nm, self.denom))
+    elif e.is_plus():
+        return to_const_poly(e.args[0]) + to_const_poly(e.args[1])
 
-    def __add__(self, other):
-        if self.denom == other.denom:
-            return FracPoly(self.nm + other.nm, self.denom)
-        comm_denoms = set(self.denom.monomials) | set(other.denom.monomials)
-        left = set(other.denom.monomials) - set(self.denom.monomials)
-        right = set(self.denom.monomials) - set(other.denom.monomials)
-        return FracPoly(self.nm * Polynomial(list(left)) +
-                        other.nm * Polynomial(list(right)), Polynomial(list(comm_denoms)))
+    elif e.is_uminus():
+        return -to_const_poly(e.args[0])
+
+    elif e.is_minus():
+        return to_const_poly(e.args[0]) - to_const_poly(e.args[1])
+
+    elif e.is_times():
+        return to_const_poly(e.args[0]) * to_const_poly(e.args[1])
+
+    elif e.is_divides():
+        a, b = to_const_poly(e.args[0]), to_const_poly(e.args[1])
+        if b.is_fraction() and b.get_fraction() == 0:
+            raise ZeroDivisionError("Zero denominator")
+        if b.is_monomial():
+            return a / b
+        else:
+            return a / const_singleton(from_const_poly(b))
+
+    elif e.is_power():
+        a, b = to_const_poly(e.args[0]), to_const_poly(e.args[1])
+        if a.is_zero() and b.is_fraction() and b.get_fraction() > 0:
+            return const_fraction(0)
+        elif a.is_monomial() and b.is_fraction():
+            return a ** b.get_fraction()
+        elif b.is_fraction():
+            rb = b.get_fraction()
+            if rb > 0 and int(rb) == rb and rb <= 3:
+                res = const_fraction(1)
+                for i in range(int(rb)):
+                    res *= a
+                return res
+            else:
+                return const_singleton(from_const_poly(a) ** from_const_poly(b))
+        else:
+            return const_singleton(from_const_poly(a) ** from_const_poly(b))
+
+    elif e.is_fun() and e.func_name == 'sqrt':
+        a = to_const_poly(e.args[0])
+        if a.is_fraction() and is_square(a.get_fraction()):
+            return const_fraction(Fraction(math.sqrt(a.get_fraction())))
+        elif a.is_monomial():
+            return a ** Fraction(1 / 2)
+        else:
+            return const_singleton(expr.sqrt(from_const_poly(a)))
+
+    elif e.is_fun() and e.func_name == 'pi':
+        return const_singleton(expr.pi)
+
+    elif e.is_fun() and e.func_name == 'exp':
+        a = to_const_poly(e.args[0])
+        if a.is_fraction() and a.get_fraction() == 0:
+            return const_fraction(1)
+        elif a.is_fraction():
+            return ConstantPolynomial([ConstantMonomial(1, [(expr.E, a.get_fraction())])])
+        elif e.args[0].is_fun() and e.args[0].func_name == "log":
+            return to_const_poly(e.args[0].args[0])
+        else:
+            return const_singleton(expr.exp(from_const_poly(a)))
+
+    elif e.is_fun() and e.func_name == 'log':
+        a = to_const_poly(e.args[0])
+        if a.is_fraction() and a.get_fraction() == 1:
+            return const_fraction(0)
+        elif a.is_monomial():
+            mono = a.get_monomial()
+            log_factors = []
+            for n, e in mono.factors:
+                if isinstance(n, (int, Fraction)):
+                    log_factors.append(const_fraction(e) * const_singleton(expr.log(expr.Const(n))))
+                elif isinstance(n, expr.Expr) and n == expr.E:
+                    log_factors.append(const_fraction(e))
+                elif isinstance(n, expr.Expr) and n.is_fun() and n.func_name == "exp":
+                    body = n.args[0]
+                    log_factors.append(const_singleton(body))
+                else:
+                    log_factors.append(const_fraction(e) * const_singleton(expr.log(n)))
+            if mono.coeff == 1:
+                return sum(log_factors[1:], log_factors[0])
+            else:
+                if isinstance(mono.coeff, int):
+                    int_factors = sympy.factorint(mono.coeff)
+                elif isinstance(mono.coeff, Fraction):
+                    int_factors = sympy.factorint(mono.coeff.numerator)
+                    denom_factors = sympy.factorint(mono.coeff.denominator)
+                    for b, e in denom_factors.items():
+                        if b not in int_factors:
+                            int_factors[b] = 0
+                        int_factors[b] -= e
+                else:
+                    raise NotImplementedError
+                log_ints = []
+                for b, e in int_factors.items():
+                    log_ints.append(ConstantPolynomial([ConstantMonomial(e, [(expr.log(expr.Const(b)), 1)])]))
+                return sum(log_factors + log_ints[1:], log_ints[0])
+        else:
+            return const_singleton(expr.log(from_const_poly(a)))
+
+    elif e.is_fun() and e.func_name in ('sin', 'cos', 'tan', 'cot', 'csc', 'sec'):
+        a = to_const_poly(e.args[0])
+        norm_a = from_const_poly(a)
+
+        c = expr.Symbol('c', [expr.CONST])
+        if expr.match(norm_a, c * expr.pi):
+            x = norm_a.args[0]
+            n = int(x.val)
+            if n % 2 == 0:
+                norm_a = expr.Const(x.val - n) * expr.pi
+            else:
+                if n > 0:
+                    norm_a = expr.Const(x.val - (n + 1)) * expr.pi
+                else:
+                    norm_a = expr.Const(x.val - (n - 1)) * expr.pi
+        elif norm_a == -expr.pi:
+            norm_a = expr.pi
+
+        norm_a = normalize_constant(norm_a)
+        if expr.match(norm_a, c * expr.pi) and norm_a.args[0].val < 0:
+            neg_norm_a = expr.Const(-norm_a.args[0].val) * expr.pi
+            if e.func_name in ('sin', 'tan', 'cot', 'csc'):
+                val = -expr.Fun(e.func_name, neg_norm_a)
+            else:
+                val = expr.Fun(e.func_name, neg_norm_a)
+            return to_const_poly(val)
+        else:
+            return const_singleton(expr.Fun(e.func_name, norm_a))
+
+    elif e.is_fun() and e.func_name in ('asin', 'acos', 'atan', 'acot', 'acsc', 'asec'):
+        a = to_const_poly(e.args[0])
+        norm_a = from_const_poly(a)
+        return const_singleton(expr.Fun(e.func_name, norm_a))
+
+    elif e.is_fun() and e.func_name == 'abs':
+        a = to_const_poly(e.args[0])
+        if a.is_fraction():
+            return const_fraction(abs(a.get_fraction()))
+        elif e.args[0].is_constant():
+            if expr.eval_expr(e.args[0]) >= 0:
+                return a
+            else:
+                return -a
+        else:
+            return const_singleton(e)
+
+    elif e.is_fun() and e.func_name == "binom":
+        a = to_const_poly(e.args[0])
+        norm_a = from_const_poly(a)
+        b = to_const_poly(e.args[1])
+        norm_b = from_const_poly(b)
+        if norm_a.is_const() and norm_b.is_const():
+            return to_const_poly(expr.Const(math.comb(norm_a.val, norm_b.val)))
+        else:
+            return const_singleton(expr.binom(norm_a, norm_b))
+
+    elif e.is_fun() and e.func_name == 'factorial':
+        a = to_const_poly(e.args[0])
+        norm_a = from_const_poly(a)
+
+        def rec(n):
+            if n == 0 or n == 1:
+                return 1
+            else:
+                return n * rec(n - 1)
+
+        if norm_a.is_const() and int(norm_a.val) == float(norm_a.val):
+            return to_const_poly(expr.Const(rec(norm_a.val)))
+        else:
+            return const_singleton(expr.factorial(norm_a))
+
+    elif e.is_fun():
+        args_norm = [normalize(arg) for arg in e.args]
+        return const_singleton(expr.Fun(e.func_name, *args_norm))
+
+    else:
+        print("to_const_poly:", e)
+        raise NotImplementedError
+
+def normalize_constant(e):
+    return from_const_poly(to_const_poly(e))
+
+def to_poly(e: expr.Expr) -> Polynomial:
+    """Convert expression to polynomial."""
+    if e.is_var():
+        return singleton(e)
+
+    elif e.is_constant():
+        # Consists of CONST, OP and FUN only.
+        return constant(to_const_poly(e))
+
+    elif e.is_plus():
+        return to_poly(e.args[0]) + to_poly(e.args[1])
+
+    elif e.is_uminus():
+        return -to_poly(e.args[0])
+
+    elif e.is_minus():
+        return to_poly(e.args[0]) - to_poly(e.args[1])
+
+    elif e.is_times():
+        a, b = to_poly(e.args[0]), to_poly(e.args[1])
+        if a.is_monomial() and b.is_monomial():
+            return a * b
+        elif a.is_fraction() or b.is_fraction():
+            return a * b
+        elif a.is_monomial():
+            return a * singleton(from_poly(b))
+        elif b.is_monomial():
+            return b * singleton(from_poly(a))
+        else:
+            return singleton(from_poly(a)) * singleton(from_poly(b))
+
+    elif e.is_divides():
+        a, b = to_poly(e.args[0]), to_poly(e.args[1])
+        if a.is_fraction() and a.get_fraction() == 0:
+            return constant(const_fraction(0))
+        elif b.is_fraction() and b.get_fraction() == 1:
+            return a
+        elif a.is_monomial() and b.is_monomial():
+            return a / b
+        elif a.is_monomial():
+            return a / singleton(from_poly(b))
+        elif b.is_monomial():
+            return singleton(from_poly(a)) / b
+        else:
+            return singleton(from_poly(a)) / singleton(from_poly(b))
+
+    elif e.is_power():
+        a, b = to_poly(e.args[0]), to_poly(e.args[1])
+        if a.is_monomial() and b.is_fraction():
+            return a ** b.get_fraction()
+        elif b.is_fraction():
+            return Polynomial([Monomial(const_fraction(1), [(from_poly(a), b.get_fraction())])])
+        else:
+            return Polynomial([Monomial(const_fraction(1), [(from_poly(a), b)])])
+
+    elif e.is_fun() and e.func_name == "exp":
+        a = e.args[0]
+        if a.is_fun() and a.func_name == "log":
+            return to_poly(a.args[0])
+        else:
+            return Polynomial([Monomial(const_fraction(1), [(expr.E, to_poly(a))])])
+
+    elif e.is_fun() and e.func_name in ("sin", "cos", "tan", "cot", "csc", "sec"):
+        a = e.args[0]
+        if a.is_fun() and a.func_name == "a" + e.func_name:
+            # sin(asin(x)) = x
+            return to_poly(a.args[0])
+        else:
+            return singleton(expr.Fun(e.func_name, normalize(a)))
+
+    elif e.is_fun() and e.func_name in ("asin", "acos", "atan", "acot", "acsc", "asec"):
+        a, = e.args
+        if e.func_name in ("atan", "acot") and a.is_fun() and a.func_name == e.func_name[1:]:
+            # atan(tan(x)) = x
+            return to_poly(a.args[0])
+        else:
+            return singleton(expr.Fun(e.func_name, normalize(a)))
+
+    elif e.is_fun() and e.func_name == "log":
+        a, = e.args
+        if a.is_fun() and a.func_name == "exp":
+            return to_poly(a.args[0])
+        elif a.is_op() and a.op == "^" and a.args[1].is_constant():
+            return Polynomial([Monomial(to_const_poly(a.args[1]), [(expr.log(normalize(a.args[0])), 1)])])
+        else:
+            return singleton(expr.log(normalize(a)))
+
+    elif e.is_fun() and e.func_name == "sqrt":
+        return to_poly(expr.Op("^", e.args[0], expr.Const(Fraction(1, 2))))
+
+    elif e.is_fun() and e.func_name == "abs":
+        if normalize(e.args[0]).is_const():
+            return constant(to_const_poly(expr.Const(abs(normalize(e.args[0]).val))))
+        return singleton(expr.Fun("abs", normalize(e.args[0])))
+
+    elif e.is_fun():
+        args_norm = [normalize(arg) for arg in e.args]
+        return singleton(expr.Fun(e.func_name, *args_norm))
+
+    elif e.is_evalat():
+        # upper = self.body.subst(self.var, self.upper)
+        # lower = self.body.subst(self.var, self.lower)
+        # TODO: improper integral
+        upper = e.body.subst(e.var, e.upper) if not e.upper.is_inf() else expr.Limit(e.var, e.upper, e.body)
+        lower = e.body.subst(e.var, e.lower) if not e.lower.is_inf() else expr.Limit(e.var, e.lower, e.body)
+        return to_poly(normalize(upper) - normalize(lower))
+
+    elif e.is_integral():
+        if e.lower == e.upper:
+            return constant(to_const_poly(expr.Const(0)))
+        body = normalize(e.body)
+        return singleton(expr.Integral(e.var, normalize(e.lower), normalize(e.upper), body))
+
+    elif e.is_limit():
+        return singleton(expr.Limit(e.var, normalize(e.lim), normalize(e.body)))
+
+    elif e.is_inf():
+        if e == expr.POS_INF:
+            return singleton(e)
+        else:
+            return -singleton(expr.POS_INF)
+    elif e.is_indefinite_integral():
+        return singleton(expr.IndefiniteIntegral(e.var, normalize(e.body), e.skolem_args))
+    else:
+        return singleton(e)
+
+def normalize(e: expr.Expr) -> expr.Expr:
+    if e.is_equals():
+        return expr.Eq(normalize(e.lhs), normalize(e.rhs))
+    return from_poly(to_poly(e))
+
+"""
+Conversion from polynomials to terms.
+"""
+
+def from_const_mono(m: ConstantMonomial) -> expr.Expr:
+    """Convert a ConstantMonomial to an expression."""
+    factors = []
+    for base, power in m.factors:
+        if isinstance(base, expr.Expr) and base == expr.E:
+            factors.append(expr.exp(expr.Const(power)))
+        else:
+            if isinstance(base, int):
+                base = expr.Const(base)
+            if not isinstance(base, expr.Expr):
+                raise ValueError
+            if power == 1:
+                factors.append(base)
+            elif power == Fraction(1 / 2):
+                factors.append(expr.sqrt(base))
+            else:
+                factors.append(base ** expr.Const(power))
+
+    if len(factors) == 0:
+        return expr.Const(m.coeff)
+    elif m.coeff == 1:
+        return functools.reduce(operator.mul, factors[1:], factors[0])
+    elif m.coeff == -1:
+        return - functools.reduce(operator.mul, factors[1:], factors[0])
+    else:
+        return functools.reduce(operator.mul, factors, expr.Const(m.coeff))
+
+
+def rsize(e: expr.Expr) -> int:
+    if e.is_const():
+        return 0
+    elif e.is_uminus():
+        return rsize(e.args[0])
+    elif e.is_times() and e.args[0].is_const():
+        return rsize(e.args[1])
+    else:
+        return e.size()
+
+
+def from_const_poly(p: ConstantPolynomial) -> expr.Expr:
+    """Convert a ConstantPolynomial to an expression."""
+    if len(p.monomials) == 0:
+        return expr.Const(0)
+    else:
+        monos = [from_const_mono(m) for m in p.monomials]
+        monos = sorted(monos, key=lambda p: rsize(p), reverse=True)
+        res = monos[0]
+        for mono in monos[1:]:
+            if mono.is_uminus():
+                res = res - mono.args[0]
+            elif mono.is_times() and mono.args[0].is_uminus():
+                res = res - mono.args[0].args[0] * mono.args[1]
+            elif mono.is_times() and mono.args[0].is_const() and mono.args[0].val < 0:
+                res = res - expr.Const(-mono.args[0].val) * mono.args[1]
+            elif mono.is_const() and mono.val < 0:
+                res = res - expr.Const(-mono.val)
+            else:
+                res = res + mono
+        return res
+
+
+def from_mono(m: Monomial) -> expr.Expr:
+    """Convert a monomial to an expression."""
+    factors = []
+    for base, power in m.factors:
+        if isinstance(base, expr.Expr) and base == expr.E:
+            if isinstance(power, Polynomial):
+                factors.append(expr.exp(from_poly(power)))
+            else:
+                factors.append(expr.exp(expr.Const(power)))
+        else:
+            if power == 1:
+                factors.append(base)
+            elif power == Fraction(1 / 2):
+                factors.append(expr.sqrt(base))
+            elif isinstance(power, (int, Fraction)):
+                factors.append(base ** expr.Const(power))
+            elif isinstance(power, Polynomial):
+                factors.append(base ** from_poly(power))
+            else:
+                raise TypeError("from_mono: unexpected type %s for power" % type(power))
+
+    if len(factors) == 0:
+        return from_const_poly(m.coeff)
+    elif m.coeff.is_one():
+        return functools.reduce(operator.mul, factors[1:], factors[0])
+    elif m.coeff.is_minus_one():
+        return - functools.reduce(operator.mul, factors[1:], factors[0])
+    else:
+        return functools.reduce(operator.mul, factors, from_const_poly(m.coeff))
+
+
+def from_poly(p: Polynomial) -> expr.Expr:
+    """Convert a polynomial to an expression."""
+
+    if len(p.monomials) == 0:
+        return expr.Const(0)
+    else:
+        monos = [from_mono(m) for m in p.monomials]
+        monos = sorted(monos, key=lambda p: rsize(p), reverse=True)
+        res = monos[0]
+        for mono in monos[1:]:
+            if mono.is_uminus():
+                res = res - mono.args[0]
+            elif mono.is_times() and mono.args[0].is_uminus():
+                res = res - mono.args[0].args[0] * mono.args[1]
+            elif mono.is_times() and mono.args[0].is_const() and mono.args[0].val < 0:
+                res = res - expr.Const(-mono.args[0].val) * mono.args[1]
+            elif mono.is_const() and mono.val < 0:
+                res = res - expr.Const(-mono.val)
+            else:
+                res = res + mono
+        return res

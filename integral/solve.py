@@ -4,6 +4,7 @@ from typing import Optional, Tuple
 
 from integral import expr
 from integral.expr import Expr, POS_INF, NEG_INF, Const, Var
+from integral.poly import normalize
 
 
 def solve_equation(f: Expr, a: Expr, x: str) -> Optional[Expr]:
@@ -84,8 +85,8 @@ def solve_equation(f: Expr, a: Expr, x: str) -> Optional[Expr]:
     if extract_res:
         # b * x + c = a  ==>  x = (a - c) / b
         b, c = extract_res
-        if b.normalize() != Const(0):
-            return ((a - c) / b).normalize()
+        if normalize(b) != Const(0):
+            return normalize((a - c) / b)
 
 def extract_linear(e: Expr, x: str) -> Optional[Tuple[Expr, Expr]]:
     """Attempt to write e in the form a * x + b.

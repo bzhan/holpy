@@ -4,6 +4,8 @@ from typing import Dict, Tuple, Optional
 
 from integral import expr
 from integral.expr import Expr, eval_expr
+from integral.poly import normalize_constant
+
 
 # Tolerance for floating-point rounding errors
 tol = 1e-16
@@ -85,11 +87,11 @@ class Interval:
         if self.start == expr.NEG_INF or other.start == expr.NEG_INF:
             start = expr.NEG_INF
         else:
-            start = (self.start + other.start).normalize_constant()
+            start = normalize_constant(self.start + other.start)
         if self.end == expr.POS_INF or other.end == expr.POS_INF:
             end = expr.POS_INF
         else:
-            end = (self.end + other.end).normalize_constant()
+            end = normalize_constant(self.end + other.end)
         return Interval(start, end, self.left_open or other.left_open,
                         self.right_open or other.right_open)
 
@@ -114,7 +116,7 @@ class Interval:
                 return expr.POS_INF
             if b == expr.POS_INF or b == expr.NEG_INF:
                 return lim_mul(b, a)
-            return (a * b).normalize_constant()
+            return normalize_constant(a * b)
 
         bounds = [
             (lim_mul(self.start, other.start), self.left_open or other.left_open),
@@ -136,7 +138,7 @@ class Interval:
             start = expr.NEG_INF
             left_open = True
         else:
-            start = (1 / self.end).normalize_constant()
+            start = normalize_constant(1 / self.end)
             left_open = self.right_open
         if self.start == expr.NEG_INF:
             end = expr.Const(0)
@@ -145,7 +147,7 @@ class Interval:
             end = expr.POS_INF
             right_open = True
         else:
-            end = (1 / self.start).normalize_constant()
+            end = normalize_constant(1 / self.start)
             right_open = self.left_open
         return Interval(start, end, left_open, right_open)
 
@@ -246,11 +248,11 @@ class Interval:
         if eval_expr(self.start) <= 0:
             start = expr.Const(0)
         else:
-            start = expr.Fun('sqrt', self.start).normalize_constant()
+            start = normalize_constant(expr.Fun('sqrt', self.start))
         if self.end == expr.POS_INF:
             end = expr.POS_INF
         else:
-            end = expr.Fun('sqrt', self.end).normalize_constant()
+            end = normalize_constant(expr.Fun('sqrt', self.end))
         return Interval(start, end, self.left_open, self.right_open)
 
     def exp(self) -> "Interval":
@@ -258,11 +260,11 @@ class Interval:
         if self.start == expr.NEG_INF:
             start = expr.Const(0)
         else:
-            start = expr.Fun('exp', self.start).normalize_constant()
+            start = normalize_constant(expr.Fun('exp', self.start))
         if self.end == expr.POS_INF:
             end = expr.POS_INF
         else:
-            end = expr.Fun('exp', self.end).normalize_constant()
+            end = normalize_constant(expr.Fun('exp', self.end))
         return Interval(start, end, self.left_open, self.right_open)
 
     def log(self) -> "Interval":
@@ -270,11 +272,11 @@ class Interval:
         if eval_expr(self.start) <= 0:
             start = expr.NEG_INF
         else:
-            start = expr.Fun('log', self.start).normalize_constant()
+            start = normalize_constant(expr.Fun('log', self.start))
         if self.end == expr.POS_INF:
             end = expr.POS_INF
         else:
-            end = expr.Fun('log', self.end).normalize_constant()
+            end = normalize_constant(expr.Fun('log', self.end))
         return Interval(start, end, self.left_open, self.right_open)
 
     def sin(self) -> "Interval":

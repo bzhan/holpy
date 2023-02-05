@@ -1,6 +1,5 @@
 """State of computation"""
 
-import copy
 from typing import List, Optional, Union
 
 from integral.expr import Expr, Var, Const
@@ -10,6 +9,7 @@ from integral.conditions import Conditions
 from integral.context import Context
 from integral import latex
 from integral import parser
+from integral.poly import normalize
 
 
 class Label:
@@ -416,11 +416,11 @@ class InductionProof(StateItem):
             raise NotImplementedError
 
         # Base case: n = 0
-        eq0 = goal.subst(induct_var, self.start).normalize()
+        eq0 = normalize(goal.subst(induct_var, self.start))
         self.base_case = Goal(self, self.ctx, eq0)
 
         # Inductive case:
-        eqI = goal.subst(induct_var, Var(induct_var) + 1).normalize()
+        eqI = normalize(goal.subst(induct_var, Var(induct_var) + 1))
         ctx = Context(self.ctx)
         ctx.add_induct_hyp(self.goal)
         self.induct_case = Goal(self, ctx, eqI)
@@ -542,8 +542,8 @@ class RewriteGoalProof(StateItem):
         self.begin = Calculation(parent, self.ctx, begin.goal, conds=begin.conds, connection_symbol = '==>')
 
     def is_finished(self):
-        f1 = self.begin.last_expr.lhs.normalize() == self.goal.lhs.normalize()
-        f2 = self.begin.last_expr.rhs.normalize() == self.goal.rhs.normalize()
+        f1 = normalize(self.begin.last_expr.lhs) == normalize(self.goal.lhs)
+        f2 = normalize(self.begin.last_expr.rhs) == normalize(self.goal.rhs)
         return f1 and f2
 
     def export(self):

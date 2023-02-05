@@ -13,6 +13,7 @@ import multiprocessing.pool
 import json
 from sympy.solvers import solveset
 from sympy import Interval
+from integral.poly import from_poly, to_poly
 
 a = Symbol('a', [CONST])
 b = Symbol('b', [CONST])
@@ -836,7 +837,7 @@ class HeuristicExpandPower(HeuristicRule):
 
         expand_expr = e
         for s, l, _ in subexpr:
-            base = s.args[0].to_poly()
+            base = to_poly(s.args[0])
             exp = s.args[1].val
             if isinstance(exp, int) and exp > 1 and exp <= 3:
                 pw = base

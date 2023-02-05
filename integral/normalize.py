@@ -7,7 +7,7 @@ from fractions import Fraction
 from integral import expr
 from integral.expr import Expr, Const
 from integral import poly
-from integral.poly import Polynomial
+from integral.poly import Polynomial, from_poly, to_poly, normalize
 
 
 def unfold_power(p: Polynomial, n: int) -> Polynomial:
@@ -23,18 +23,18 @@ def unfold_power(p: Polynomial, n: int) -> Polynomial:
 
 class NormalQuotient:
     def __init__(self, num: Polynomial, denom: Polynomial):
-        self.num = expr.from_poly(num).to_poly()
-        self.denom = expr.from_poly(denom).to_poly()
+        self.num = to_poly(from_poly(num))
+        self.denom = to_poly(from_poly(denom))
     
     def __str__(self):
-        return "(%s, %s)" % (expr.from_poly(self.num).normalize(), expr.from_poly(self.denom).normalize())
+        return "(%s, %s)" % (normalize(from_poly(self.num)), normalize(from_poly(self.denom)))
 
     def to_expr(self) -> Expr:
-        denom = expr.from_poly(self.denom).normalize()
+        denom = normalize(from_poly(self.denom))
         if denom == Const(1):
-            return expr.from_poly(self.num).normalize()
+            return normalize(from_poly(self.num))
         else:
-            return expr.from_poly(self.num).normalize() / denom
+            return normalize(from_poly(self.num)) / denom
 
 def add_normal_quotient(n1: NormalQuotient, n2: NormalQuotient) -> NormalQuotient:
     num = n1.num * n2.denom + n1.denom * n2.num
@@ -70,17 +70,17 @@ def exp_normal_quotient(base: NormalQuotient, val: int):
                                   unfold_power(base.num, -val))
     elif isinstance(val, Fraction):
         if val >= 0:
-            return NormalQuotient(poly.singleton(expr.from_poly(base.num).normalize() ** val),
-                                  poly.singleton(expr.from_poly(base.denom).normalize() ** val))
+            return NormalQuotient(poly.singleton(normalize(from_poly(base.num)) ** val),
+                                  poly.singleton(normalize(from_poly(base.denom)) ** val))
         else:
-            return NormalQuotient(poly.singleton(expr.from_poly(base.denom).normalize() ** -val),
-                                  poly.singleton(expr.from_poly(base.num).normalize() ** -val))
+            return NormalQuotient(poly.singleton(normalize(from_poly(base.denom)) ** -val),
+                                  poly.singleton(normalize(from_poly(base.num)) ** -val))
     else:
         raise TypeError
 
 def equal_normal_quotient(n1: NormalQuotient, n2: NormalQuotient) -> bool:
-    e1 = expr.from_poly(n1.num * n2.denom).normalize()
-    e2 = expr.from_poly(n1.denom * n2.num).normalize()
+    e1 = normalize(from_poly(n1.num * n2.denom))
+    e2 = normalize(from_poly(n1.denom * n2.num))
     return e1 == e2
 
 def normalize_quotient(e: Expr) -> NormalQuotient:
@@ -132,11 +132,11 @@ class NormalPower:
         return "(%s, %s, %s)" % (self.num, self.denom, self.root)
 
     def to_expr(self) -> Expr:
-        denom = expr.from_poly(self.denom).normalize()
+        denom = normalize(from_poly(self.denom))
         if denom == Const(1):
-            inner = expr.from_poly(self.num).normalize()
+            inner = normalize(from_poly(self.num))
         else:
-            inner = expr.from_poly(self.num).normalize() / denom
+            inner = normalize(from_poly(self.num)) / denom
         if self.root == Const(1):
             return inner
         else:
@@ -232,8 +232,8 @@ def exp_normal_power(base: NormalPower, val: Union[int, Fraction]) -> NormalPowe
         raise TypeError
 
 def equal_normal_power(n1: NormalPower, n2: NormalPower) -> bool:
-    e1 = expr.from_poly(n1.num * n2.denom).normalize()
-    e2 = expr.from_poly(n1.denom * n2.num).normalize()
+    e1 = normalize(from_poly(n1.num * n2.denom))
+    e2 = normalize(from_poly(n1.denom * n2.num))
     return n1.root == n2.root and e1 == e2
 
 def normalize_power(e: Expr) -> NormalPower:
@@ -261,7 +261,7 @@ def normalize_power(e: Expr) -> NormalPower:
     return rec(e)
 
 def power_normalize(t: Expr) -> Expr:
-    return normalize_power(t).to_expr().normalize()
+    return normalize(normalize_power(t).to_expr())
 
 def eq_power(t1: Expr, t2: Expr) -> bool:
     n1 = normalize_power(t1)
