@@ -448,7 +448,10 @@ class DefiniteIntegralIdentity(Rule):
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
-        if not e.is_integral():
+        if not (e.is_integral() or e.is_indefinite_integral()):
+            sep_ints = e.separate_integral()
+            for _, loc in sep_ints:
+                e = OnLocation(self, loc).eval(e, ctx)
             return e
 
         # First, look for indefinite integrals identities

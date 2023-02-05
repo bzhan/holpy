@@ -32,10 +32,9 @@
                             "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. x ^ {-k + 1} \\log{x} (-k + 1) ^ {-1} \\right\\vert_{x=1}^{t}) - (\\int_{1}^{t} x ^ {-k} (-k + 1) ^ {-1} \\,dx)\\,)",
                             "res": "LIM {t -> oo}. ([x ^ (-k + 1) * log(x) * (-k + 1) ^ (-1)]_x=1,t) - (INT x:[1,t]. x ^ -k * (-k + 1) ^ (-1))",
                             "rule": {
-                                "latex_str": "integrate by parts \\(u \\to \\log{x}, v \\to \\frac{x ^ {1 - k}}{1 - k}\\) at 0",
-                                "loc": "0",
+                                "latex_str": "integrate by parts \\(u \\to \\log{x}, v \\to \\frac{x ^ {1 - k}}{1 - k}\\)",
                                 "name": "IntegrationByParts",
-                                "str": "integrate by parts u -> log(x), v -> x ^ (1 - k) / (1 - k) at 0",
+                                "str": "integrate by parts u -> log(x), v -> x ^ (1 - k) / (1 - k)",
                                 "u": "log(x)",
                                 "v": "x ^ (1 - k) / (1 - k)"
                             },

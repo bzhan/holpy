@@ -63,9 +63,8 @@
                             "latex_res": "-\\frac{a}{a ^ {2} + y ^ {2}}",
                             "res": "-(a / (a ^ 2 + y ^ 2))",
                             "rule": {
-                                "loc": "0",
                                 "name": "DefiniteIntegralIdentity",
-                                "str": "apply definite integral at 0"
+                                "str": "apply definite integral"
                             },
                             "type": "CalculationStep"
                         },

@@ -89,10 +89,9 @@
                             "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{a t} a ^ {-1} (u ^ {2} + 1) ^ {-1} \\,du",
                             "res": "LIM {t -> oo}. INT u:[0,a * t]. a ^ (-1) * (u ^ 2 + 1) ^ (-1)",
                             "rule": {
-                                "latex_str": "substitute \\(u\\) for \\(a x\\) at 0",
-                                "loc": "0",
+                                "latex_str": "substitute \\(u\\) for \\(a x\\)",
                                 "name": "Substitution",
-                                "str": "substitute u for a * x at 0",
+                                "str": "substitute u for a * x",
                                 "var_name": "u",
                                 "var_subst": "a * x"
                             },

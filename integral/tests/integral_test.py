@@ -622,9 +622,8 @@ class IntegralTest(unittest.TestCase):
             "1 / (exp(2*a) - exp(-2*a)) * (1 / (x^2 + exp(-2*a)) - 1 / (x^2 + exp(2*a)))"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("(exp(-2 * a) + x ^ 2) ^ (-1)", "1 / (exp(-a) ^ 2 + x ^ 2)"))
-        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "1.0"))
         calc.perform_rule(rules.Equation("(exp(2 * a) + x ^ 2) ^ (-1)", "1 / (exp(a) ^ 2 + x ^ 2)"))
-        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "1.1"))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation(None, "pi / (4 * ((exp(a) + exp(-a)) / 2))"))
         calc.perform_rule(rules.OnSubterm(rules.FoldDefinition("cosh")))
@@ -648,8 +647,8 @@ class IntegralTest(unittest.TestCase):
         Eq1_proof = Eq1.proof_by_calculation()
         calc = Eq1_proof.lhs_calc
         calc.perform_rule(rules.SplitRegion(expr.Const(0)))
-        calc.perform_rule(rules.OnLocation(rules.Substitution('y', parser.parse_expr("-x")), '0'))
-        calc.perform_rule(rules.OnLocation(rules.Substitution('x', parser.parse_expr("y")), '0'))
+        calc.perform_rule(rules.Substitution('y', parser.parse_expr("-x")))
+        calc.perform_rule(rules.Substitution('x', parser.parse_expr("y")))
         calc.perform_rule(rules.FullSimplify())
         calc = Eq1_proof.rhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("g")))
@@ -705,7 +704,6 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_Eq8.begin
         calc.perform_rule(rules.OnLocation(rules.SplitRegion(expr.Const(0)), "0"))
         calc.perform_rule(rules.OnLocation(rules.Substitution('y', parser.parse_expr("-x")), '0.0'))
-        calc.perform_rule(rules.OnLocation(rules.Substitution('x', parser.parse_expr("y")), '0.0'))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("INT x:[0,oo]. exp(-1/2 * x ^ 2)")))
 
@@ -836,8 +834,8 @@ class IntegralTest(unittest.TestCase):
             "log(2/a) + log(a*sin(x))"))
         calc.perform_rule(rules.FullSimplify())
 
-        calc.perform_rule(rules.OnLocation(rules.Substitution('t', parser.parse_expr("pi/2 - x")), '0.1'))
-        calc.perform_rule(rules.OnLocation(rules.Substitution('x', parser.parse_expr("t")), '0.1'))
+        calc.perform_rule(rules.Substitution('t', parser.parse_expr("pi/2 - x")))
+        calc.perform_rule(rules.Substitution('x', parser.parse_expr("t")))
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
@@ -876,7 +874,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("g")))
         calc.perform_rule(rules.DerivIntExchange())
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), '0'))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
 
         calc = proof.rhs_calc
@@ -1018,7 +1016,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.ElimInfInterval())
         calc.perform_rule(rules.Equation("a^2 * x^2", "(a*x) ^ 2"))
-        calc.perform_rule(rules.OnLocation(rules.Substitution('u' , parser.parse_expr("a*x")) ,'0'))
+        calc.perform_rule(rules.Substitution('u' , parser.parse_expr("a*x")))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal2.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -1094,7 +1092,7 @@ class IntegralTest(unittest.TestCase):
         u = parser.parse_expr("log(x)")
         v = parser.parse_expr("(x^(1-k)) / (1-k)")
         calc.perform_rule(rules.ElimInfInterval())
-        calc.perform_rule(rules.OnLocation(rules.IntegrationByParts(u=u,v=v), '0'))
+        calc.perform_rule(rules.IntegrationByParts(u=u,v=v))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("t ^ (-k + 1) * log(t)", "log(t) / t^(k-1)"))
         calc.perform_rule(rules.OnLocation(rules.LHopital(), '0.1'))
@@ -1184,7 +1182,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyIdentity("sin(acos(t))", "sqrt(1 - t^2)"))
         calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr("t")
-        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name='x', var_subst=e), '0'))
+        calc.perform_rule(rules.Substitution(var_name='x', var_subst=e))
         calc.perform_rule(rules.Equation("x * log(x) * (-(x ^ 2) + 1) ^ (-1)",
                                          "log(x) * (x * (-(x ^ 2) + 1) ^ (-1))"))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal02.goal), "0.0.1"))
@@ -1332,7 +1330,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr("1/x")
 
-        calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse(var_name='x', var_subst=e), '0.0'))
+        calc.perform_rule(rules.SubstitutionInverse(var_name='x', var_subst=e))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("x ^ (-3) * (x ^ (-2) + 1) ^ (-1) * (2 * x ^ (-2) + 1) ^ (-1/2)",
                                          "((1+x^2)^2*(2+x^2)) ^ (-1/2)"))

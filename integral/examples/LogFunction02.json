@@ -209,10 +209,9 @@
                             "latex_res": "-(\\int_{0}^{1} x \\log{x} (-x ^ {2} + 1) ^ {-1} \\,dx)",
                             "res": "-(INT x:[0,1]. x * log(x) * (-(x ^ 2) + 1) ^ (-1))",
                             "rule": {
-                                "latex_str": "substitute \\(x\\) for \\(t\\) at 0",
-                                "loc": "0",
+                                "latex_str": "substitute \\(x\\) for \\(t\\)",
                                 "name": "Substitution",
-                                "str": "substitute x for t at 0",
+                                "str": "substitute x for t",
                                 "var_name": "x",
                                 "var_subst": "t"
                             },

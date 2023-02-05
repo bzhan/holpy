@@ -207,10 +207,9 @@
                             "latex_res": "\\frac{1}{2} \\pi \\log{(2 a ^ {-1})} + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\cos{(\\frac{1}{2} \\pi - t)})} \\,dt) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
                             "res": "1/2 * pi * log(2 * a ^ (-1)) + (INT t:[0,1/2 * pi]. log(a * cos(1/2 * pi - t))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
                             "rule": {
-                                "latex_str": "substitute \\(t\\) for \\(\\frac{\\pi}{2} - x\\) at 0.1",
-                                "loc": "0.1",
+                                "latex_str": "substitute \\(t\\) for \\(\\frac{\\pi}{2} - x\\)",
                                 "name": "Substitution",
-                                "str": "substitute t for pi / 2 - x at 0.1",
+                                "str": "substitute t for pi / 2 - x",
                                 "var_name": "t",
                                 "var_subst": "pi / 2 - x"
                             },
@@ -220,10 +219,9 @@
                             "latex_res": "\\frac{1}{2} \\pi \\log{(2 a ^ {-1})} + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\cos{(\\frac{1}{2} \\pi - x)})} \\,dx) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
                             "res": "1/2 * pi * log(2 * a ^ (-1)) + (INT x:[0,1/2 * pi]. log(a * cos(1/2 * pi - x))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
                             "rule": {
-                                "latex_str": "substitute \\(x\\) for \\(t\\) at 0.1",
-                                "loc": "0.1",
+                                "latex_str": "substitute \\(x\\) for \\(t\\)",
                                 "name": "Substitution",
-                                "str": "substitute x for t at 0.1",
+                                "str": "substitute x for t",
                                 "var_name": "x",
                                 "var_subst": "t"
                             },

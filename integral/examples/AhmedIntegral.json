@@ -345,10 +345,9 @@
                             "latex_res": "--(\\int_{0}^{1} \\frac{1}{x} ((\\frac{1}{x}) ^ {2} + 1) ^ {-1} (2 (\\frac{1}{x}) ^ {2} + 1) ^ {-1/2} \\tan^{-1}{(\\frac{1}{x} (2 (\\frac{1}{x}) ^ {2} + 1) ^ {-1/2})} -x ^ {-2} \\,dx) + \\frac{1}{16} \\pi ^ {2}",
                             "res": "--(INT x:[0,1]. 1 / x * ((1 / x) ^ 2 + 1) ^ (-1) * (2 * (1 / x) ^ 2 + 1) ^ (-1/2) * atan(1 / x * (2 * (1 / x) ^ 2 + 1) ^ (-1/2)) * -(x ^ (-2))) + 1/16 * pi ^ 2",
                             "rule": {
-                                "latex_str": "inverse substitution for \\(\\frac{1}{x}\\) at 0.0",
-                                "loc": "0.0",
+                                "latex_str": "inverse substitution for \\(\\frac{1}{x}\\)",
                                 "name": "SubstitutionInverse",
-                                "str": "inverse substitution for 1 / x at 0.0",
+                                "str": "inverse substitution for 1 / x",
                                 "var_name": "x",
                                 "var_subst": "1 / x"
                             },
