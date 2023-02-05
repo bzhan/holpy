@@ -1196,8 +1196,14 @@ class SubstitutionInverse(Rule):
         new_e_body = new_e_body * subst_deriv
 
         # Solve the equations lower = f(u) and upper = f(u) for u.
-        lower = solve_equation(self.var_subst, e.lower, self.var_name)
-        upper = solve_equation(self.var_subst, e.upper, self.var_name)
+        # Solve the equations lower = f(u) and upper = f(u) for u.
+        x = Var("_" + self.var_name)
+        a = e.lower
+        lower = solve_equation(self.var_subst, x, self.var_name)
+        lower = limits.reduce_inf_limit(lower.subst(x.name, (1 / x) + a), x.name, ctx.get_conds())
+        a = e.upper
+        upper = solve_equation(self.var_subst, x, self.var_name)
+        upper = limits.reduce_inf_limit(upper.subst(x.name, a - (1 / x)), x.name, ctx.get_conds())
 
         if lower is None or upper is None:
             raise AssertionError("SubstitutionInverse: cannot solve")
@@ -1302,6 +1308,9 @@ class Equation(Rule):
             return self.new_expr
 
         if norm.eq_power(e, self.new_expr):
+            return self.new_expr
+
+        if norm.eq_log(e, self.new_expr):
             return self.new_expr
 
         raise AssertionError("Equation: rewriting %s to %s failed" % (e, self.new_expr))

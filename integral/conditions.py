@@ -50,7 +50,8 @@ class Conditions:
 
     def get_bounds_for_expr(self, e: Expr) -> Optional[Interval]:
         bounds = self.get_bounds()
-        return interval.get_bounds_for_expr(e, bounds)
+        res = interval.get_bounds_for_expr(e, bounds)
+        return res
     
     def check_condition(self, cond: Expr) -> bool:
         res = Interval.from_condition(cond)
