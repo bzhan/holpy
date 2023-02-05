@@ -42,8 +42,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1} \\sum_{n=0}^{\\infty}{x ^ {2 n} (-1) ^ {n} (2 n + 1) ^ {-1}} \\,dx",
-                            "res": "INT x:[0,1]. SUM(n, 0, oo, x ^ (2 * n) * (-1) ^ n * (2 * n + 1) ^ (-1))",
+                            "latex_res": "\\int_{0}^{1} \\sum_{n=0}^{\\infty}{\\frac{x ^ {2 n} (-1) ^ {n}}{2 n + 1}} \\,dx",
+                            "res": "INT x:[0,1]. SUM(n, 0, oo, x ^ (2 * n) * (-1) ^ n / (2 * n + 1))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -51,8 +51,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{n=0}^{\\infty}{\\int_{0}^{1} x ^ {2 n} (-1) ^ {n} (2 n + 1) ^ {-1} \\,dx}",
-                            "res": "SUM(n, 0, oo, INT x:[0,1]. x ^ (2 * n) * (-1) ^ n * (2 * n + 1) ^ (-1))",
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\int_{0}^{1} \\frac{x ^ {2 n} (-1) ^ {n}}{2 n + 1} \\,dx}",
+                            "res": "SUM(n, 0, oo, INT x:[0,1]. x ^ (2 * n) * (-1) ^ n / (2 * n + 1))",
                             "rule": {
                                 "name": "IntSumExchange",
                                 "str": "exchange integral and sum"
@@ -60,8 +60,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1) ^ {n} (2 n + 1) ^ {-2}}",
-                            "res": "SUM(n, 0, oo, (-1) ^ n * (2 * n + 1) ^ (-2))",
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(2 n + 1) ^ {2}}}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -86,8 +86,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1) ^ {n} (2 n + 1) ^ {-2}}",
-                            "res": "SUM(n, 0, oo, (-1) ^ n * (2 * n + 1) ^ (-2))",
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(2 n + 1) ^ {2}}}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"

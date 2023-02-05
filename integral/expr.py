@@ -418,18 +418,18 @@ class Expr:
         """Returns the location at which the 'selected' field is True."""
         location = []
 
-        def get(exp, loc=''):
+        def get(exp: Expr, loc=''):
             if hasattr(exp, 'selected') and exp.selected == True:
                 location.append(loc[1:])
                 exp.selected = False  # Once it is found, restore it.
-            elif exp.ty == OP or exp.ty == FUN:
+            elif exp.is_op() or exp.is_fun():
                 for i in range(len(exp.args)):
                     get(exp.args[i], loc + "." + str(i))
-            elif exp.ty == INTEGRAL or exp.ty == EVAL_AT:
+            elif exp.is_integral() or exp.is_evalat():
                 get(exp.lower, loc + ".1")
                 get(exp.upper, loc + ".2")
                 get(exp.body, loc + ".0")
-            elif exp.ty == DERIV or exp.ty == LIMIT:
+            elif exp.is_deriv() or exp.is_summation() or exp.is_limit():
                 get(exp.body, loc + ".0")
 
         get(self)
@@ -636,12 +636,14 @@ class Expr:
                 loc = self.get_location()
                 del p.selected
                 result.append((p, loc))
-            elif p.ty == OP:
+            elif p.is_op():
                 for arg in p.args:
                     collect(arg, result)
-            elif p.ty == LIMIT:
+            elif p.is_limit():
                 collect(p.body, result)
-            elif p.ty == DERIV:
+            elif p.is_deriv():
+                collect(p.body, result)
+            elif p.is_summation():
                 collect(p.body, result)
 
         collect(self, result)
@@ -900,26 +902,24 @@ def collect_spec_expr(expr, symb):
 
 
 def decompose_expr_factor(e):
-    """Get production factors from expr.
-
-    """
-    if e.ty == OP and e.op == "/":
-        e = e.args[0] * Op("^", e.args[1], Const(-1))
-
-    def f(e):
-        tmp = []
-        if e.ty == OP and e.op == '*':
-            tmp.extend(f(e.args[0]))
-            tmp.extend(f(e.args[1]))
+    """Get production factors from expr."""
+    num_factors, denom_factors = [], []
+    def rec(e: Expr, sign):
+        if e.is_times():
+            rec(e.args[0], sign)
+            rec(e.args[1], sign)
         elif e.is_uminus():
-            tmp.extend(f(e.args[0]))
-            tmp.append(Const(-1))
+            num_factors.append(Const(-1))
+            rec(e.args[0], sign)
+        elif e.is_divides():
+            rec(e.args[0], sign)
+            rec(e.args[1], -1 * sign)
+        elif sign == 1:
+            num_factors.append(e)
         else:
-            tmp.extend([e])
-        return copy.copy(tmp)
-
-    return f(e)
-
+            denom_factors.append(e)
+    rec(e, 1)
+    return num_factors, denom_factors
 
 class Var(Expr):
     """Variable."""

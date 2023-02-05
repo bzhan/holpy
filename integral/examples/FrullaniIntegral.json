@@ -35,8 +35,8 @@
                     "start": "D a. I(a,b)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{d}{da} \\int_{0}^{\\infty} x ^ {-1} (\\tan^{-1}{(a x)} - \\tan^{-1}{(b x)}) \\,dx",
-                            "res": "D a. INT x:[0,oo]. x ^ (-1) * (atan(a * x) - atan(b * x))",
+                            "latex_res": "\\frac{d}{da} \\int_{0}^{\\infty} \\frac{\\tan^{-1}{(a x)} - \\tan^{-1}{(b x)}}{x} \\,dx",
+                            "res": "D a. INT x:[0,oo]. (atan(a * x) - atan(b * x)) / x",
                             "rule": {
                                 "func_name": "I",
                                 "loc": "subterms",
@@ -46,8 +46,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{da} x ^ {-1} (\\tan^{-1}{(a x)} - \\tan^{-1}{(b x)}) \\,dx",
-                            "res": "INT x:[0,oo]. D a. x ^ (-1) * (atan(a * x) - atan(b * x))",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{da} \\frac{\\tan^{-1}{(a x)} - \\tan^{-1}{(b x)}}{x} \\,dx",
+                            "res": "INT x:[0,oo]. D a. (atan(a * x) - atan(b * x)) / x",
                             "rule": {
                                 "name": "DerivIntExchange",
                                 "str": "exchange derivative and integral"
@@ -55,8 +55,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} (a ^ {2} x ^ {2} + 1) ^ {-1} \\,dx",
-                            "res": "INT x:[0,oo]. (a ^ 2 * x ^ 2 + 1) ^ (-1)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{a ^ {2} x ^ {2} + 1} \\,dx",
+                            "res": "INT x:[0,oo]. 1 / (a ^ 2 * x ^ 2 + 1)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -64,18 +64,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} (a ^ {2} x ^ {2} + 1) ^ {-1} \\,dx",
-                            "res": "LIM {t -> oo}. INT x:[0,t]. (a ^ 2 * x ^ 2 + 1) ^ (-1)",
-                            "rule": {
-                                "a": "0",
-                                "name": "ElimInfInterval",
-                                "str": "eliminate improper integral"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} ((a x) ^ {2} + 1) ^ {-1} \\,dx",
-                            "res": "LIM {t -> oo}. INT x:[0,t]. ((a * x) ^ 2 + 1) ^ (-1)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(a x) ^ {2} + 1} \\,dx",
+                            "res": "INT x:[0,oo]. 1 / ((a * x) ^ 2 + 1)",
                             "rule": {
                                 "latex_str": "rewriting \\(a ^ {2} x ^ {2}\\) to \\((a x) ^ {2}\\)",
                                 "name": "Equation",
@@ -86,8 +76,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{a t} a ^ {-1} (u ^ {2} + 1) ^ {-1} \\,du",
-                            "res": "LIM {t -> oo}. INT u:[0,a * t]. a ^ (-1) * (u ^ 2 + 1) ^ (-1)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{a (u ^ {2} + 1)} \\,du",
+                            "res": "INT u:[0,oo]. 1 / (a * (u ^ 2 + 1))",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(a x\\)",
                                 "name": "Substitution",
@@ -98,8 +88,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi a ^ {-1}",
-                            "res": "1/2 * pi * a ^ (-1)",
+                            "latex_res": "\\frac{1}{2} \\pi (\\frac{1}{a})",
+                            "res": "1/2 * pi * (1 / a)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -114,8 +104,8 @@
                     "start": "pi / (2 * a)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{1}{2} \\pi a ^ {-1}",
-                            "res": "1/2 * pi * a ^ (-1)",
+                            "latex_res": "\\frac{1}{2} \\pi (\\frac{1}{a})",
+                            "res": "1/2 * pi * (1 / a)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -163,8 +153,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I(a,b) = \\frac{1}{2} \\pi (\\int a ^ {-1} \\,da)",
-                            "res": "I(a,b) = 1/2 * pi * (INT a [b]. a ^ (-1))",
+                            "latex_res": "I(a,b) = \\frac{1}{2} \\pi (\\int \\frac{1}{a} \\,da)",
+                            "res": "I(a,b) = 1/2 * pi * (INT a [b]. 1 / a)",
                             "rule": {
                                 "loc": "1",
                                 "name": "FullSimplify",

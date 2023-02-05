@@ -13,8 +13,8 @@
                     "start": "INT x. 1 / (x + a)",
                     "steps": [
                         {
-                            "latex_res": "\\int u ^ {-1} \\,du",
-                            "res": "INT u. u ^ (-1)",
+                            "latex_res": "\\int \\frac{1}{u} \\,du",
+                            "res": "INT u. 1 / u",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(x + a\\)",
                                 "name": "Substitution",
@@ -57,19 +57,19 @@
         },
         {
             "finished": true,
-            "goal": "(INT x. exp(a * x)) = a ^ (-1) * exp(a * x) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int e^{a x} \\,dx = a ^ {-1} e^{a x} + C",
+            "goal": "(INT x. exp(a * x)) = exp(a * x) / a + SKOLEM_CONST(C)",
+            "latex_goal": "\\int e^{a x} \\,dx = \\frac{e^{a x}}{a} + C",
             "proof": {
                 "finished": true,
-                "goal": "(INT x. exp(a * x)) = a ^ (-1) * exp(a * x) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int e^{a x} \\,dx = a ^ {-1} e^{a x} + C",
+                "goal": "(INT x. exp(a * x)) = exp(a * x) / a + SKOLEM_CONST(C)",
+                "latex_goal": "\\int e^{a x} \\,dx = \\frac{e^{a x}}{a} + C",
                 "lhs_calc": {
                     "latex_start": "\\int e^{a x} \\,dx",
                     "start": "INT x. exp(a * x)",
                     "steps": [
                         {
-                            "latex_res": "\\int a ^ {-1} e^{u} \\,du",
-                            "res": "INT u. a ^ (-1) * exp(u)",
+                            "latex_res": "\\int \\frac{e^{u}}{a} \\,du",
+                            "res": "INT u. exp(u) / a",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(a x\\)",
                                 "name": "Substitution",
@@ -80,8 +80,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} (\\int e^{u} \\,du)",
-                            "res": "a ^ (-1) * (INT u. exp(u))",
+                            "latex_res": "\\frac{\\int e^{u} \\,du}{a}",
+                            "res": "(INT u. exp(u)) / a",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -89,8 +89,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} e^{u} + C",
-                            "res": "a ^ (-1) * exp(u) + SKOLEM_CONST(C)",
+                            "latex_res": "\\frac{e^{u}}{a} + C",
+                            "res": "exp(u) / a + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
                                 "str": "apply indefinite integral"
@@ -98,8 +98,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} e^{a x} + C",
-                            "res": "a ^ (-1) * exp(a * x) + SKOLEM_CONST(C)",
+                            "latex_res": "\\frac{e^{a x}}{a} + C",
+                            "res": "exp(a * x) / a + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "ReplaceSubstitution",
                                 "str": "replace substitution"
@@ -110,8 +110,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "a ^ {-1} e^{a x} + C",
-                    "start": "a ^ (-1) * exp(a * x) + SKOLEM_CONST(C)",
+                    "latex_start": "\\frac{e^{a x}}{a} + C",
+                    "start": "exp(a * x) / a + SKOLEM_CONST(C)",
                     "steps": [],
                     "type": "Calculation"
                 },
@@ -121,19 +121,19 @@
         },
         {
             "finished": true,
-            "goal": "(INT x. sin(a * x)) = -(a ^ (-1) * cos(a * x)) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int \\sin{(a x)} \\,dx = -a ^ {-1} \\cos{(a x)} + C",
+            "goal": "(INT x. sin(a * x)) = -(cos(a * x) / a) + SKOLEM_CONST(C)",
+            "latex_goal": "\\int \\sin{(a x)} \\,dx = -\\frac{\\cos{(a x)}}{a} + C",
             "proof": {
                 "finished": true,
-                "goal": "(INT x. sin(a * x)) = -(a ^ (-1) * cos(a * x)) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int \\sin{(a x)} \\,dx = -a ^ {-1} \\cos{(a x)} + C",
+                "goal": "(INT x. sin(a * x)) = -(cos(a * x) / a) + SKOLEM_CONST(C)",
+                "latex_goal": "\\int \\sin{(a x)} \\,dx = -\\frac{\\cos{(a x)}}{a} + C",
                 "lhs_calc": {
                     "latex_start": "\\int \\sin{(a x)} \\,dx",
                     "start": "INT x. sin(a * x)",
                     "steps": [
                         {
-                            "latex_res": "\\int a ^ {-1} \\sin{u} \\,du",
-                            "res": "INT u. a ^ (-1) * sin(u)",
+                            "latex_res": "\\int \\frac{\\sin{u}}{a} \\,du",
+                            "res": "INT u. sin(u) / a",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(a x\\)",
                                 "name": "Substitution",
@@ -144,8 +144,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} (\\int \\sin{u} \\,du)",
-                            "res": "a ^ (-1) * (INT u. sin(u))",
+                            "latex_res": "\\frac{\\int \\sin{u} \\,du}{a}",
+                            "res": "(INT u. sin(u)) / a",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -153,8 +153,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} -\\cos{u} + C",
-                            "res": "a ^ (-1) * -cos(u) + SKOLEM_CONST(C)",
+                            "latex_res": "\\frac{-\\cos{u}}{a} + C",
+                            "res": "-cos(u) / a + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
                                 "str": "apply indefinite integral"
@@ -162,8 +162,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} -\\cos{(a x)} + C",
-                            "res": "a ^ (-1) * -cos(a * x) + SKOLEM_CONST(C)",
+                            "latex_res": "\\frac{-\\cos{(a x)}}{a} + C",
+                            "res": "-cos(a * x) / a + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "ReplaceSubstitution",
                                 "str": "replace substitution"
@@ -171,8 +171,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-a ^ {-1} \\cos{(a x)} + C",
-                            "res": "-(a ^ (-1) * cos(a * x)) + SKOLEM_CONST(C)",
+                            "latex_res": "-\\frac{\\cos{(a x)}}{a} + C",
+                            "res": "-(cos(a * x) / a) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -183,8 +183,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "-a ^ {-1} \\cos{(a x)} + C",
-                    "start": "-(a ^ (-1) * cos(a * x)) + SKOLEM_CONST(C)",
+                    "latex_start": "-\\frac{\\cos{(a x)}}{a} + C",
+                    "start": "-(cos(a * x) / a) + SKOLEM_CONST(C)",
                     "steps": [],
                     "type": "Calculation"
                 },
@@ -194,19 +194,19 @@
         },
         {
             "finished": true,
-            "goal": "(INT x. cos(a * x)) = a ^ (-1) * sin(a * x) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int \\cos{(a x)} \\,dx = a ^ {-1} \\sin{(a x)} + C",
+            "goal": "(INT x. cos(a * x)) = sin(a * x) / a + SKOLEM_CONST(C)",
+            "latex_goal": "\\int \\cos{(a x)} \\,dx = \\frac{\\sin{(a x)}}{a} + C",
             "proof": {
                 "finished": true,
-                "goal": "(INT x. cos(a * x)) = a ^ (-1) * sin(a * x) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int \\cos{(a x)} \\,dx = a ^ {-1} \\sin{(a x)} + C",
+                "goal": "(INT x. cos(a * x)) = sin(a * x) / a + SKOLEM_CONST(C)",
+                "latex_goal": "\\int \\cos{(a x)} \\,dx = \\frac{\\sin{(a x)}}{a} + C",
                 "lhs_calc": {
                     "latex_start": "\\int \\cos{(a x)} \\,dx",
                     "start": "INT x. cos(a * x)",
                     "steps": [
                         {
-                            "latex_res": "\\int a ^ {-1} \\cos{u} \\,du",
-                            "res": "INT u. a ^ (-1) * cos(u)",
+                            "latex_res": "\\int \\frac{\\cos{u}}{a} \\,du",
+                            "res": "INT u. cos(u) / a",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(a x\\)",
                                 "name": "Substitution",
@@ -217,8 +217,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} (\\int \\cos{u} \\,du)",
-                            "res": "a ^ (-1) * (INT u. cos(u))",
+                            "latex_res": "\\frac{\\int \\cos{u} \\,du}{a}",
+                            "res": "(INT u. cos(u)) / a",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -226,8 +226,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} \\sin{u} + C",
-                            "res": "a ^ (-1) * sin(u) + SKOLEM_CONST(C)",
+                            "latex_res": "\\frac{\\sin{u}}{a} + C",
+                            "res": "sin(u) / a + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
                                 "str": "apply indefinite integral"
@@ -235,8 +235,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} \\sin{(a x)} + C",
-                            "res": "a ^ (-1) * sin(a * x) + SKOLEM_CONST(C)",
+                            "latex_res": "\\frac{\\sin{(a x)}}{a} + C",
+                            "res": "sin(a * x) / a + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "ReplaceSubstitution",
                                 "str": "replace substitution"
@@ -247,8 +247,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "a ^ {-1} \\sin{(a x)} + C",
-                    "start": "a ^ (-1) * sin(a * x) + SKOLEM_CONST(C)",
+                    "latex_start": "\\frac{\\sin{(a x)}}{a} + C",
+                    "start": "sin(a * x) / a + SKOLEM_CONST(C)",
                     "steps": [],
                     "type": "Calculation"
                 },
@@ -264,19 +264,19 @@
                 }
             ],
             "finished": true,
-            "goal": "(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int \\frac{1}{a ^ {2} + x ^ {2}} \\,dx = a ^ {-1} \\tan^{-1}{(\\frac{x}{a})} + C",
+            "goal": "(INT x. 1 / (a ^ 2 + x ^ 2)) = 1 / a * atan(x / a) + SKOLEM_CONST(C)",
+            "latex_goal": "\\int \\frac{1}{a ^ {2} + x ^ {2}} \\,dx = \\frac{1}{a} \\tan^{-1}{(\\frac{x}{a})} + C",
             "proof": {
                 "finished": true,
-                "goal": "(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int \\frac{1}{a ^ {2} + x ^ {2}} \\,dx = a ^ {-1} \\tan^{-1}{(\\frac{x}{a})} + C",
+                "goal": "(INT x. 1 / (a ^ 2 + x ^ 2)) = 1 / a * atan(x / a) + SKOLEM_CONST(C)",
+                "latex_goal": "\\int \\frac{1}{a ^ {2} + x ^ {2}} \\,dx = \\frac{1}{a} \\tan^{-1}{(\\frac{x}{a})} + C",
                 "lhs_calc": {
                     "latex_start": "\\int \\frac{1}{a ^ {2} + x ^ {2}} \\,dx",
                     "start": "INT x. 1 / (a ^ 2 + x ^ 2)",
                     "steps": [
                         {
-                            "latex_res": "\\int a (a ^ {2} u ^ {2} + a ^ {2}) ^ {-1} \\,du",
-                            "res": "INT u. a * (a ^ 2 * u ^ 2 + a ^ 2) ^ (-1)",
+                            "latex_res": "\\int \\frac{a}{a ^ {2} u ^ {2} + a ^ {2}} \\,du",
+                            "res": "INT u. a / (a ^ 2 * u ^ 2 + a ^ 2)",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(\\frac{x}{a}\\)",
                                 "name": "Substitution",
@@ -287,20 +287,20 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int a (a ^ {-2} (u ^ {2} + 1) ^ {-1}) \\,du",
-                            "res": "INT u. a * (a ^ (-2) * (u ^ 2 + 1) ^ (-1))",
+                            "latex_res": "\\int \\frac{a}{a ^ {2} (u ^ {2} + 1)} \\,du",
+                            "res": "INT u. a / (a ^ 2 * (u ^ 2 + 1))",
                             "rule": {
-                                "latex_str": "rewriting \\((a ^ {2} u ^ {2} + a ^ {2}) ^ {-1}\\) to \\(a ^ {-2} (u ^ {2} + 1) ^ {-1}\\)",
+                                "latex_str": "rewriting \\(\\frac{a}{a ^ {2} u ^ {2} + a ^ {2}}\\) to \\(\\frac{a}{a ^ {2} (u ^ {2} + 1)}\\)",
                                 "name": "Equation",
-                                "new_expr": "a ^ (-2) * (u ^ 2 + 1) ^ (-1)",
-                                "old_expr": "(a ^ 2 * u ^ 2 + a ^ 2) ^ (-1)",
-                                "str": "rewriting (a ^ 2 * u ^ 2 + a ^ 2) ^ (-1) to a ^ (-2) * (u ^ 2 + 1) ^ (-1)"
+                                "new_expr": "a / (a ^ 2 * (u ^ 2 + 1))",
+                                "old_expr": "a / (a ^ 2 * u ^ 2 + a ^ 2)",
+                                "str": "rewriting a / (a ^ 2 * u ^ 2 + a ^ 2) to a / (a ^ 2 * (u ^ 2 + 1))"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} (\\int (u ^ {2} + 1) ^ {-1} \\,du)",
-                            "res": "a ^ (-1) * (INT u. (u ^ 2 + 1) ^ (-1))",
+                            "latex_res": "\\frac{\\int \\frac{1}{u ^ {2} + 1} \\,du}{a}",
+                            "res": "(INT u. 1 / (u ^ 2 + 1)) / a",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -308,20 +308,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} (\\int \\frac{1}{u ^ {2} + 1} \\,du)",
-                            "res": "a ^ (-1) * (INT u. 1 / (u ^ 2 + 1))",
-                            "rule": {
-                                "latex_str": "rewriting \\((u ^ {2} + 1) ^ {-1}\\) to \\(\\frac{1}{u ^ {2} + 1}\\)",
-                                "name": "Equation",
-                                "new_expr": "1 / (u ^ 2 + 1)",
-                                "old_expr": "(u ^ 2 + 1) ^ (-1)",
-                                "str": "rewriting (u ^ 2 + 1) ^ (-1) to 1 / (u ^ 2 + 1)"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "a ^ {-1} \\tan^{-1}{u} + C",
-                            "res": "a ^ (-1) * atan(u) + SKOLEM_CONST(C)",
+                            "latex_res": "\\frac{\\tan^{-1}{u}}{a} + C",
+                            "res": "atan(u) / a + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
                                 "str": "apply indefinite integral"
@@ -329,8 +317,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} \\tan^{-1}{(\\frac{x}{a})} + C",
-                            "res": "a ^ (-1) * atan(x / a) + SKOLEM_CONST(C)",
+                            "latex_res": "\\frac{\\tan^{-1}{(\\frac{x}{a})}}{a} + C",
+                            "res": "atan(x / a) / a + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "ReplaceSubstitution",
                                 "str": "replace substitution"
@@ -341,9 +329,19 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "a ^ {-1} \\tan^{-1}{(\\frac{x}{a})} + C",
-                    "start": "a ^ (-1) * atan(x / a) + SKOLEM_CONST(C)",
-                    "steps": [],
+                    "latex_start": "\\frac{1}{a} \\tan^{-1}{(\\frac{x}{a})} + C",
+                    "start": "1 / a * atan(x / a) + SKOLEM_CONST(C)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{\\tan^{-1}{(\\frac{x}{a})}}{a} + C",
+                            "res": "atan(x / a) / a + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"
@@ -352,19 +350,19 @@
         },
         {
             "finished": true,
-            "goal": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
-            "latex_goal": "\\int x ^ {k} \\log{x} \\,dx = x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
+            "goal": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) / (k + 1) - x ^ (k + 1) / (k + 1) ^ 2 + SKOLEM_CONST(C)",
+            "latex_goal": "\\int x ^ {k} \\log{x} \\,dx = \\frac{x ^ {k + 1} \\log{x}}{k + 1} - \\frac{x ^ {k + 1}}{(k + 1) ^ {2}} + C",
             "proof": {
                 "finished": true,
-                "goal": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
-                "latex_goal": "\\int x ^ {k} \\log{x} \\,dx = x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
+                "goal": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) / (k + 1) - x ^ (k + 1) / (k + 1) ^ 2 + SKOLEM_CONST(C)",
+                "latex_goal": "\\int x ^ {k} \\log{x} \\,dx = \\frac{x ^ {k + 1} \\log{x}}{k + 1} - \\frac{x ^ {k + 1}}{(k + 1) ^ {2}} + C",
                 "lhs_calc": {
                     "latex_start": "\\int x ^ {k} \\log{x} \\,dx",
                     "start": "INT x. x ^ k * log(x)",
                     "steps": [
                         {
-                            "latex_res": "x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - (\\int x ^ {k} (k + 1) ^ {-1} \\,dx)",
-                            "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - (INT x. x ^ k * (k + 1) ^ (-1))",
+                            "latex_res": "\\frac{x ^ {k + 1} \\log{x}}{k + 1} - (\\int \\frac{x ^ {k}}{k + 1} \\,dx)",
+                            "res": "x ^ (k + 1) * log(x) / (k + 1) - (INT x. x ^ k / (k + 1))",
                             "rule": {
                                 "latex_str": "integrate by parts \\(u \\to \\log{x}, v \\to \\frac{x ^ {k + 1}}{k + 1}\\)",
                                 "name": "IntegrationByParts",
@@ -375,8 +373,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - (k + 1) ^ {-1} (\\int x ^ {k} \\,dx)",
-                            "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - (k + 1) ^ (-1) * (INT x. x ^ k)",
+                            "latex_res": "\\frac{x ^ {k + 1} \\log{x}}{k + 1} - \\frac{\\int x ^ {k} \\,dx}{k + 1}",
+                            "res": "x ^ (k + 1) * log(x) / (k + 1) - (INT x. x ^ k) / (k + 1)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -384,8 +382,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - (k + 1) ^ {-1} (\\frac{x ^ {k + 1}}{k + 1}) + C",
-                            "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - (k + 1) ^ (-1) * (x ^ (k + 1) / (k + 1)) + SKOLEM_CONST(C)",
+                            "latex_res": "\\frac{x ^ {k + 1} \\log{x}}{k + 1} - \\frac{\\frac{x ^ {k + 1}}{k + 1}}{k + 1} + C",
+                            "res": "x ^ (k + 1) * log(x) / (k + 1) - x ^ (k + 1) / (k + 1) / (k + 1) + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "IndefiniteIntegralIdentity",
                                 "str": "apply indefinite integral"
@@ -393,8 +391,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
-                            "res": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
+                            "latex_res": "\\frac{x ^ {k + 1} \\log{x}}{k + 1} - \\frac{x ^ {k + 1}}{(k + 1) ^ {2}} + C",
+                            "res": "x ^ (k + 1) * log(x) / (k + 1) - x ^ (k + 1) / (k + 1) ^ 2 + SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -405,8 +403,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "x ^ {k + 1} \\log{x} (k + 1) ^ {-1} - x ^ {k + 1} (k + 1) ^ {-2} + C",
-                    "start": "x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
+                    "latex_start": "\\frac{x ^ {k + 1} \\log{x}}{k + 1} - \\frac{x ^ {k + 1}}{(k + 1) ^ {2}} + C",
+                    "start": "x ^ (k + 1) * log(x) / (k + 1) - x ^ (k + 1) / (k + 1) ^ 2 + SKOLEM_CONST(C)",
                     "steps": [],
                     "type": "Calculation"
                 },
@@ -421,19 +419,19 @@
             "proof": {
                 "base_case": {
                     "finished": true,
-                    "goal": "(INT x:[0,1]. x ^ m) = (m + 1) ^ (-1)",
-                    "latex_goal": "\\int_{0}^{1} x ^ {m} \\,dx = (m + 1) ^ {-1}",
+                    "goal": "(INT x:[0,1]. x ^ m) = 1 / (m + 1)",
+                    "latex_goal": "\\int_{0}^{1} x ^ {m} \\,dx = \\frac{1}{m + 1}",
                     "proof": {
                         "finished": true,
-                        "goal": "(INT x:[0,1]. x ^ m) = (m + 1) ^ (-1)",
-                        "latex_goal": "\\int_{0}^{1} x ^ {m} \\,dx = (m + 1) ^ {-1}",
+                        "goal": "(INT x:[0,1]. x ^ m) = 1 / (m + 1)",
+                        "latex_goal": "\\int_{0}^{1} x ^ {m} \\,dx = \\frac{1}{m + 1}",
                         "lhs_calc": {
                             "latex_start": "\\int_{0}^{1} x ^ {m} \\,dx",
                             "start": "INT x:[0,1]. x ^ m",
                             "steps": [
                                 {
-                                    "latex_res": "(m + 1) ^ {-1}",
-                                    "res": "(m + 1) ^ (-1)",
+                                    "latex_res": "\\frac{1}{m + 1}",
+                                    "res": "1 / (m + 1)",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"
@@ -444,8 +442,8 @@
                             "type": "Calculation"
                         },
                         "rhs_calc": {
-                            "latex_start": "(m + 1) ^ {-1}",
-                            "start": "(m + 1) ^ (-1)",
+                            "latex_start": "\\frac{1}{m + 1}",
+                            "start": "1 / (m + 1)",
                             "steps": [],
                             "type": "Calculation"
                         },
@@ -468,8 +466,8 @@
                             "start": "INT x:[0,1]. x ^ m * log(x) ^ (n + 1)",
                             "steps": [
                                 {
-                                    "latex_res": "(\\left. x ^ {m + 1} \\log^{n + 1}(x) (m + 1) ^ {-1} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} x ^ {m} \\log^{n}(x) (m + 1) ^ {-1} (n + 1) \\,dx)",
-                                    "res": "([x ^ (m + 1) * log(x) ^ (n + 1) * (m + 1) ^ (-1)]_x=0,1) - (INT x:[0,1]. x ^ m * log(x) ^ n * (m + 1) ^ (-1) * (n + 1))",
+                                    "latex_res": "(\\left. \\frac{x ^ {m + 1} \\log^{n + 1}(x)}{m + 1} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{x ^ {m} \\log^{n}(x) (n + 1)}{m + 1} \\,dx)",
+                                    "res": "([x ^ (m + 1) * log(x) ^ (n + 1) / (m + 1)]_x=0,1) - (INT x:[0,1]. x ^ m * log(x) ^ n * (n + 1) / (m + 1))",
                                     "rule": {
                                         "latex_str": "integrate by parts \\(u \\to \\log^{n + 1}(x), v \\to \\frac{x ^ {m + 1}}{m + 1}\\)",
                                         "name": "IntegrationByParts",
@@ -480,8 +478,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "-(m + 1) ^ {-1} (n + 1) (\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx)",
-                                    "res": "-((m + 1) ^ (-1) * (n + 1) * (INT x:[0,1]. x ^ m * log(x) ^ n))",
+                                    "latex_res": "-\\frac{(n + 1) (\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx)}{m + 1}",
+                                    "res": "-((n + 1) * (INT x:[0,1]. x ^ m * log(x) ^ n) / (m + 1))",
                                     "rule": {
                                         "name": "FullSimplify",
                                         "str": "full simplify"
@@ -489,8 +487,8 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "-(m + 1) ^ {-1} (n + 1) (\\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}})",
-                                    "res": "-((m + 1) ^ (-1) * (n + 1) * ((-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)))",
+                                    "latex_res": "-\\frac{(n + 1) (\\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}})}{m + 1}",
+                                    "res": "-((n + 1) * ((-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)) / (m + 1))",
                                     "rule": {
                                         "loc": "subterms",
                                         "name": "ApplyInductHyp",
@@ -568,8 +566,8 @@
                     "start": "INT x:[0,oo]. exp(-(x * y)) * sin(a * x)",
                     "steps": [
                         {
-                            "latex_res": "(\\left. -a ^ {-1} e^{-x y} \\cos{(a x)} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} a ^ {-1} y e^{-x y} \\cos{(a x)} \\,dx)",
-                            "res": "([-(a ^ (-1) * exp(-(x * y)) * cos(a * x))]_x=0,oo) - (INT x:[0,oo]. a ^ (-1) * y * exp(-(x * y)) * cos(a * x))",
+                            "latex_res": "(\\left. -\\frac{e^{-x y} \\cos{(a x)}}{a} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} \\frac{y e^{-x y} \\cos{(a x)}}{a} \\,dx)",
+                            "res": "([-(exp(-(x * y)) * cos(a * x) / a)]_x=0,oo) - (INT x:[0,oo]. y * exp(-(x * y)) * cos(a * x) / a)",
                             "rule": {
                                 "latex_str": "integrate by parts \\(u \\to e^{-x y}, v \\to \\frac{-\\cos{(a x)}}{a}\\)",
                                 "name": "IntegrationByParts",
@@ -580,8 +578,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-a ^ {-1} y (\\int_{0}^{\\infty} e^{-x y} \\cos{(a x)} \\,dx) + a ^ {-1}",
-                            "res": "-(a ^ (-1) * y * (INT x:[0,oo]. exp(-(x * y)) * cos(a * x))) + a ^ (-1)",
+                            "latex_res": "-\\frac{y (\\int_{0}^{\\infty} e^{-x y} \\cos{(a x)} \\,dx)}{a} + \\frac{1}{a}",
+                            "res": "-(y * (INT x:[0,oo]. exp(-(x * y)) * cos(a * x)) / a) + 1 / a",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -589,8 +587,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-a ^ {-1} y ((\\left. a ^ {-1} e^{-x y} \\sin{(a x)} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} -a ^ {-1} y e^{-x y} \\sin{(a x)} \\,dx)) + a ^ {-1}",
-                            "res": "-(a ^ (-1) * y * (([a ^ (-1) * exp(-(x * y)) * sin(a * x)]_x=0,oo) - (INT x:[0,oo]. -(a ^ (-1) * y * exp(-(x * y)) * sin(a * x))))) + a ^ (-1)",
+                            "latex_res": "-\\frac{y ((\\left. \\frac{e^{-x y} \\sin{(a x)}}{a} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} -\\frac{y e^{-x y} \\sin{(a x)}}{a} \\,dx))}{a} + \\frac{1}{a}",
+                            "res": "-(y * (([exp(-(x * y)) * sin(a * x) / a]_x=0,oo) - (INT x:[0,oo]. -(y * exp(-(x * y)) * sin(a * x) / a))) / a) + 1 / a",
                             "rule": {
                                 "latex_str": "integrate by parts \\(u \\to e^{-x y}, v \\to \\frac{\\sin{(a x)}}{a}\\)",
                                 "name": "IntegrationByParts",
@@ -601,8 +599,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-a ^ {-2} y ^ {2} (\\int_{0}^{\\infty} e^{-x y} \\sin{(a x)} \\,dx) + a ^ {-1}",
-                            "res": "-(a ^ (-2) * y ^ 2 * (INT x:[0,oo]. exp(-(x * y)) * sin(a * x))) + a ^ (-1)",
+                            "latex_res": "-\\frac{y ^ {2} (\\int_{0}^{\\infty} e^{-x y} \\sin{(a x)} \\,dx)}{a ^ {2}} + \\frac{1}{a}",
+                            "res": "-(y ^ 2 * (INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) / a ^ 2) + 1 / a",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -610,8 +608,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a ^ {-1} (a ^ {-2} y ^ {2} + 1) ^ {-1}",
-                            "res": "a ^ (-1) * (a ^ (-2) * y ^ 2 + 1) ^ (-1)",
+                            "latex_res": "\\frac{1}{a (\\frac{y ^ {2}}{a ^ {2}} + 1)}",
+                            "res": "1 / (a * (y ^ 2 / a ^ 2 + 1))",
                             "rule": {
                                 "lhs": "INT x:[0,oo]. exp(-(x * y)) * sin(a * x)",
                                 "name": "IntegrateByEquation",

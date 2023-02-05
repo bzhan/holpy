@@ -31,8 +31,8 @@
                     "start": "D a. I(a)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{d}{da} \\int_{0}^{1} \\log^{-1}(x) (x ^ {a} - 1) \\,dx",
-                            "res": "D a. INT x:[0,1]. log(x) ^ (-1) * (x ^ a - 1)",
+                            "latex_res": "\\frac{d}{da} \\int_{0}^{1} \\frac{x ^ {a} - 1}{\\log{x}} \\,dx",
+                            "res": "D a. INT x:[0,1]. (x ^ a - 1) / log(x)",
                             "rule": {
                                 "func_name": "I",
                                 "loc": "subterms",
@@ -42,8 +42,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1} \\frac{d}{da} \\log^{-1}(x) (x ^ {a} - 1) \\,dx",
-                            "res": "INT x:[0,1]. D a. log(x) ^ (-1) * (x ^ a - 1)",
+                            "latex_res": "\\int_{0}^{1} \\frac{d}{da} \\frac{x ^ {a} - 1}{\\log{x}} \\,dx",
+                            "res": "INT x:[0,1]. D a. (x ^ a - 1) / log(x)",
                             "rule": {
                                 "name": "DerivIntExchange",
                                 "str": "exchange derivative and integral"
@@ -51,8 +51,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(a + 1) ^ {-1}",
-                            "res": "(a + 1) ^ (-1)",
+                            "latex_res": "\\frac{1}{a + 1}",
+                            "res": "1 / (a + 1)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -67,8 +67,8 @@
                     "start": "1 / (a + 1)",
                     "steps": [
                         {
-                            "latex_res": "(a + 1) ^ {-1}",
-                            "res": "(a + 1) ^ (-1)",
+                            "latex_res": "\\frac{1}{a + 1}",
+                            "res": "1 / (a + 1)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"

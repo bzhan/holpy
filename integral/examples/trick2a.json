@@ -5,8 +5,8 @@
             "start": "INT x:[0,pi / 2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\sin{(\\frac{1}{2} \\pi - y)}} (\\sqrt{\\cos{(\\frac{1}{2} \\pi - y)}} + \\sqrt{\\sin{(\\frac{1}{2} \\pi - y)}}) ^ {-1} \\,dy",
-                    "res": "INT y:[0,1/2 * pi]. sqrt(sin(1/2 * pi - y)) * (sqrt(cos(1/2 * pi - y)) + sqrt(sin(1/2 * pi - y))) ^ (-1)",
+                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sqrt{\\sin{(\\frac{1}{2} \\pi - y)}}}{\\sqrt{\\cos{(\\frac{1}{2} \\pi - y)}} + \\sqrt{\\sin{(\\frac{1}{2} \\pi - y)}}} \\,dy",
+                    "res": "INT y:[0,1/2 * pi]. sqrt(sin(1/2 * pi - y)) / (sqrt(cos(1/2 * pi - y)) + sqrt(sin(1/2 * pi - y)))",
                     "rule": {
                         "latex_str": "substitute \\(y\\) for \\(\\frac{\\pi}{2} - x\\)",
                         "name": "Substitution",
@@ -17,8 +17,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\cos{y}} (\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}) ^ {-1} \\,dy",
-                    "res": "INT y:[0,1/2 * pi]. sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1)",
+                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sqrt{\\cos{y}}}{\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}} \\,dy",
+                    "res": "INT y:[0,1/2 * pi]. sqrt(cos(y)) / (sqrt(cos(y)) + sqrt(sin(y)))",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -29,17 +29,17 @@
                     "latex_res": "\\int_{0}^{1/2\\cdot \\pi} 1 - \\frac{\\sqrt{\\sin{y}}}{\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}} \\,dy",
                     "res": "INT y:[0,1/2 * pi]. 1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))",
                     "rule": {
-                        "latex_str": "rewriting \\(\\sqrt{\\cos{y}} (\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}) ^ {-1}\\) to \\(1 - \\frac{\\sqrt{\\sin{y}}}{\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}}\\)",
+                        "latex_str": "rewriting \\(\\frac{\\sqrt{\\cos{y}}}{\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}}\\) to \\(1 - \\frac{\\sqrt{\\sin{y}}}{\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}}\\)",
                         "name": "Equation",
                         "new_expr": "1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))",
-                        "old_expr": "sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1)",
-                        "str": "rewriting sqrt(cos(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1) to 1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))"
+                        "old_expr": "sqrt(cos(y)) / (sqrt(cos(y)) + sqrt(sin(y)))",
+                        "str": "rewriting sqrt(cos(y)) / (sqrt(cos(y)) + sqrt(sin(y))) to 1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))"
                     },
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{0}^{1/2\\cdot \\pi} \\sqrt{\\sin{y}} (\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}) ^ {-1} \\,dy) + \\frac{1}{2} \\pi",
-                    "res": "-(INT y:[0,1/2 * pi]. sqrt(sin(y)) * (sqrt(cos(y)) + sqrt(sin(y))) ^ (-1)) + 1/2 * pi",
+                    "latex_res": "-(\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sqrt{\\sin{y}}}{\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}} \\,dy) + \\frac{1}{2} \\pi",
+                    "res": "-(INT y:[0,1/2 * pi]. sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))) + 1/2 * pi",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -50,7 +50,7 @@
                     "latex_res": "\\frac{1}{4} \\pi",
                     "res": "1/4 * pi",
                     "rule": {
-                        "lhs": "INT x:[0,1/2 * pi]. sqrt(sin(x)) * (sqrt(cos(x)) + sqrt(sin(x))) ^ (-1)",
+                        "lhs": "INT x:[0,1/2 * pi]. sqrt(sin(x)) / (sqrt(cos(x)) + sqrt(sin(x)))",
                         "name": "IntegrateByEquation",
                         "str": "integrate by equation"
                     },

@@ -521,7 +521,9 @@ class Polynomial:
     def __truediv__(self, other):
         # Assume the denominator is a monomial
         if isinstance(other, Polynomial):
-            if len(other.monomials) == 1:
+            if len(other.monomials) == 0:
+                raise ZeroDivisionError
+            elif len(other.monomials) == 1:
                 return Polynomial([m / other.monomials[0] for m in self.monomials])
             else:
                 raise ValueError
@@ -843,8 +845,10 @@ def to_poly(e: expr.Expr) -> Polynomial:
         a, = e.args
         if a.is_fun() and a.func_name == "exp":
             return to_poly(a.args[0])
-        elif a.is_op() and a.op == "^" and a.args[1].is_constant():
+        elif a.is_power() and a.args[1].is_constant():
             return Polynomial([Monomial(to_const_poly(a.args[1]), [(expr.log(normalize(a.args[0])), 1)])])
+        elif a.is_divides() and a.args[0] == expr.Const(1):
+            return to_poly(expr.Fun("log", a.args[1] ** expr.Const(-1)))
         else:
             return singleton(expr.log(normalize(a)))
 
@@ -951,34 +955,56 @@ def from_const_poly(p: ConstantPolynomial) -> expr.Expr:
 
 def from_mono(m: Monomial) -> expr.Expr:
     """Convert a monomial to an expression."""
-    factors = []
+    num_factors = []
+    denom_factors = []
     for base, power in m.factors:
+        if isinstance(power, Polynomial) and power.is_fraction():
+            power = power.get_fraction()
         if isinstance(base, expr.Expr) and base == expr.E:
             if isinstance(power, Polynomial):
-                factors.append(expr.exp(from_poly(power)))
+                num_factors.append(expr.exp(from_poly(power)))
             else:
-                factors.append(expr.exp(expr.Const(power)))
+                num_factors.append(expr.exp(expr.Const(power)))
         else:
             if power == 1:
-                factors.append(base)
+                num_factors.append(base)
             elif power == Fraction(1 / 2):
-                factors.append(expr.sqrt(base))
-            elif isinstance(power, (int, Fraction)):
-                factors.append(base ** expr.Const(power))
+                num_factors.append(expr.sqrt(base))
+            elif power == -1:
+                denom_factors.append(base)
+            elif power == Fraction(-1 / 2):
+                denom_factors.append(expr.sqrt(base))
+            elif isinstance(power, (int, Fraction)) and power > 0:
+                num_factors.append(base ** expr.Const(power))
+            elif isinstance(power, (int, Fraction)) and power < 0:
+                denom_factors.append(base ** expr.Const(-power))
             elif isinstance(power, Polynomial):
-                factors.append(base ** from_poly(power))
+                num_factors.append(base ** from_poly(power))
             else:
                 raise TypeError("from_mono: unexpected type %s for power" % type(power))
 
-    if len(factors) == 0:
-        return from_const_poly(m.coeff)
-    elif m.coeff.is_one():
-        return functools.reduce(operator.mul, factors[1:], factors[0])
-    elif m.coeff.is_minus_one():
-        return - functools.reduce(operator.mul, factors[1:], factors[0])
-    else:
-        return functools.reduce(operator.mul, factors, from_const_poly(m.coeff))
+    def prod(factors):
+        if len(factors) == 0:
+            return expr.Const(1)
+        else:
+            return functools.reduce(operator.mul, factors[1:], factors[0])
 
+    if len(num_factors) == 0 and len(denom_factors) == 0:
+        return from_const_poly(m.coeff)
+    elif len(denom_factors) == 0:
+        if m.coeff.is_one():
+            return prod(num_factors)
+        elif m.coeff.is_minus_one():
+            return -prod(num_factors)
+        else:
+            return prod([from_const_poly(m.coeff)] + num_factors)
+    else:
+        if m.coeff.is_one():
+            return prod(num_factors) / prod(denom_factors)
+        elif m.coeff.is_minus_one():
+            return -(prod(num_factors) / prod(denom_factors))
+        else:
+            return from_const_poly(m.coeff) * (prod(num_factors) / prod(denom_factors))
 
 def from_poly(p: Polynomial) -> expr.Expr:
     """Convert a polynomial to an expression."""

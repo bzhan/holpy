@@ -48,8 +48,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\int_{0}^{\\infty} (e^{-2 a} + x ^ {2}) ^ {-1} \\,dx) - (\\int_{0}^{\\infty} (e^{2 a} + x ^ {2}) ^ {-1} \\,dx))",
-                            "res": "(-exp(-2 * a) + exp(2 * a)) ^ (-1) * ((INT x:[0,oo]. (exp(-2 * a) + x ^ 2) ^ (-1)) - (INT x:[0,oo]. (exp(2 * a) + x ^ 2) ^ (-1)))",
+                            "latex_res": "\\frac{(\\int_{0}^{\\infty} \\frac{1}{e^{-2 a} + x ^ {2}} \\,dx) - (\\int_{0}^{\\infty} \\frac{1}{e^{2 a} + x ^ {2}} \\,dx)}{-e^{-2 a} + e^{2 a}}",
+                            "res": "((INT x:[0,oo]. 1 / (exp(-2 * a) + x ^ 2)) - (INT x:[0,oo]. 1 / (exp(2 * a) + x ^ 2))) / (-exp(-2 * a) + exp(2 * a))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -57,32 +57,32 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\int_{0}^{\\infty} \\frac{1}{(e^{-a}) ^ {2} + x ^ {2}} \\,dx) - (\\int_{0}^{\\infty} (e^{2 a} + x ^ {2}) ^ {-1} \\,dx))",
-                            "res": "(-exp(-2 * a) + exp(2 * a)) ^ (-1) * ((INT x:[0,oo]. 1 / (exp(-a) ^ 2 + x ^ 2)) - (INT x:[0,oo]. (exp(2 * a) + x ^ 2) ^ (-1)))",
+                            "latex_res": "\\frac{(\\int_{0}^{\\infty} \\frac{1}{(e^{-a}) ^ {2} + x ^ {2}} \\,dx) - (\\int_{0}^{\\infty} \\frac{1}{e^{2 a} + x ^ {2}} \\,dx)}{-e^{-2 a} + e^{2 a}}",
+                            "res": "((INT x:[0,oo]. 1 / (exp(-a) ^ 2 + x ^ 2)) - (INT x:[0,oo]. 1 / (exp(2 * a) + x ^ 2))) / (-exp(-2 * a) + exp(2 * a))",
                             "rule": {
-                                "latex_str": "rewriting \\((e^{-2 a} + x ^ {2}) ^ {-1}\\) to \\(\\frac{1}{(e^{-a}) ^ {2} + x ^ {2}}\\)",
+                                "latex_str": "rewriting \\(e^{-2 a}\\) to \\((e^{-a}) ^ {2}\\)",
                                 "name": "Equation",
-                                "new_expr": "1 / (exp(-a) ^ 2 + x ^ 2)",
-                                "old_expr": "(exp(-2 * a) + x ^ 2) ^ (-1)",
-                                "str": "rewriting (exp(-2 * a) + x ^ 2) ^ (-1) to 1 / (exp(-a) ^ 2 + x ^ 2)"
+                                "new_expr": "exp(-a) ^ 2",
+                                "old_expr": "exp(-2 * a)",
+                                "str": "rewriting exp(-2 * a) to exp(-a) ^ 2"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\int_{0}^{\\infty} \\frac{1}{(e^{-a}) ^ {2} + x ^ {2}} \\,dx) - (\\int_{0}^{\\infty} \\frac{1}{(e^{a}) ^ {2} + x ^ {2}} \\,dx))",
-                            "res": "(-exp(-2 * a) + exp(2 * a)) ^ (-1) * ((INT x:[0,oo]. 1 / (exp(-a) ^ 2 + x ^ 2)) - (INT x:[0,oo]. 1 / (exp(a) ^ 2 + x ^ 2)))",
+                            "latex_res": "\\frac{(\\int_{0}^{\\infty} \\frac{1}{(e^{-a}) ^ {2} + x ^ {2}} \\,dx) - (\\int_{0}^{\\infty} \\frac{1}{(e^{a}) ^ {2} + x ^ {2}} \\,dx)}{-e^{-2 a} + e^{2 a}}",
+                            "res": "((INT x:[0,oo]. 1 / (exp(-a) ^ 2 + x ^ 2)) - (INT x:[0,oo]. 1 / (exp(a) ^ 2 + x ^ 2))) / (-exp(-2 * a) + exp(2 * a))",
                             "rule": {
-                                "latex_str": "rewriting \\((e^{2 a} + x ^ {2}) ^ {-1}\\) to \\(\\frac{1}{(e^{a}) ^ {2} + x ^ {2}}\\)",
+                                "latex_str": "rewriting \\(e^{2 a}\\) to \\((e^{a}) ^ {2}\\)",
                                 "name": "Equation",
-                                "new_expr": "1 / (exp(a) ^ 2 + x ^ 2)",
-                                "old_expr": "(exp(2 * a) + x ^ 2) ^ (-1)",
-                                "str": "rewriting (exp(2 * a) + x ^ 2) ^ (-1) to 1 / (exp(a) ^ 2 + x ^ 2)"
+                                "new_expr": "exp(a) ^ 2",
+                                "old_expr": "exp(2 * a)",
+                                "str": "rewriting exp(2 * a) to exp(a) ^ 2"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} ((\\left. (e^{-a}) ^ {-1} \\tan^{-1}{(\\frac{x}{e^{-a}})} \\right\\vert_{x=0}^{\\infty}) - (\\left. (e^{a}) ^ {-1} \\tan^{-1}{(\\frac{x}{e^{a}})} \\right\\vert_{x=0}^{\\infty}))",
-                            "res": "(-exp(-2 * a) + exp(2 * a)) ^ (-1) * (([exp(-a) ^ (-1) * atan(x / exp(-a))]_x=0,oo) - ([exp(a) ^ (-1) * atan(x / exp(a))]_x=0,oo))",
+                            "latex_res": "\\frac{(\\left. (e^{-a}) ^ {-1} \\tan^{-1}{(\\frac{x}{e^{-a}})} \\right\\vert_{x=0}^{\\infty}) - (\\left. (e^{a}) ^ {-1} \\tan^{-1}{(\\frac{x}{e^{a}})} \\right\\vert_{x=0}^{\\infty})}{-e^{-2 a} + e^{2 a}}",
+                            "res": "(([exp(-a) ^ (-1) * atan(x / exp(-a))]_x=0,oo) - ([exp(a) ^ (-1) * atan(x / exp(a))]_x=0,oo)) / (-exp(-2 * a) + exp(2 * a))",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -90,8 +90,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-e^{-2 a} + e^{2 a}) ^ {-1} (-\\frac{1}{2} \\pi e^{-a} + \\frac{1}{2} \\pi e^{a})",
-                            "res": "(-exp(-2 * a) + exp(2 * a)) ^ (-1) * (-1/2 * pi * exp(-a) + 1/2 * pi * exp(a))",
+                            "latex_res": "\\frac{-\\frac{1}{2} \\pi e^{-a} + \\frac{1}{2} \\pi e^{a}}{-e^{-2 a} + e^{2 a}}",
+                            "res": "(-1/2 * pi * exp(-a) + 1/2 * pi * exp(a)) / (-exp(-2 * a) + exp(2 * a))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"

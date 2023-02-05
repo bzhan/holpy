@@ -240,8 +240,8 @@
             "start": "INT x:[0,oo]. exp(-(x ^ 3))",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{\\infty} \\frac{1}{3} y ^ {-2/3} e^{-y} \\,dy",
-                    "res": "INT y:[0,oo]. 1/3 * y ^ (-2/3) * exp(-y)",
+                    "latex_res": "\\int_{0}^{\\infty} \\frac{1}{3} (\\frac{e^{-y}}{y ^ {2/3}}) \\,dy",
+                    "res": "INT y:[0,oo]. 1/3 * (exp(-y) / y ^ (2/3))",
                     "rule": {
                         "latex_str": "substitute \\(y\\) for \\(x ^ {3}\\)",
                         "name": "Substitution",
@@ -252,8 +252,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{3} (\\int_{0}^{\\infty} y ^ {-2/3} e^{-y} \\,dy)",
-                    "res": "1/3 * (INT y:[0,oo]. y ^ (-2/3) * exp(-y))",
+                    "latex_res": "\\frac{1}{3} (\\int_{0}^{\\infty} \\frac{e^{-y}}{y ^ {2/3}} \\,dy)",
+                    "res": "1/3 * (INT y:[0,oo]. exp(-y) / y ^ (2/3))",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -264,11 +264,11 @@
                     "latex_res": "\\frac{1}{3} (\\int_{0}^{\\infty} e^{-y} y ^ {1/3 - 1} \\,dy)",
                     "res": "1/3 * (INT y:[0,oo]. exp(-y) * y ^ (1/3 - 1))",
                     "rule": {
-                        "latex_str": "rewriting \\(y ^ {-2/3} e^{-y}\\) to \\(e^{-y} y ^ {1/3 - 1}\\)",
+                        "latex_str": "rewriting \\(\\frac{e^{-y}}{y ^ {2/3}}\\) to \\(e^{-y} y ^ {1/3 - 1}\\)",
                         "name": "Equation",
                         "new_expr": "exp(-y) * y ^ (1/3 - 1)",
-                        "old_expr": "y ^ (-2/3) * exp(-y)",
-                        "str": "rewriting y ^ (-2/3) * exp(-y) to exp(-y) * y ^ (1/3 - 1)"
+                        "old_expr": "exp(-y) / y ^ (2/3)",
+                        "str": "rewriting exp(-y) / y ^ (2/3) to exp(-y) * y ^ (1/3 - 1)"
                     },
                     "type": "CalculationStep"
                 },

@@ -8,19 +8,19 @@
         },
         {
             "finished": true,
-            "goal": "(INT x:[0,1]. x ^ (-1) * (-exp(-x) + 1)) - (INT x:[1,oo]. x ^ (-1) * exp(-x)) = G",
-            "latex_goal": "(\\int_{0}^{1} x ^ {-1} (-e^{-x} + 1) \\,dx) - (\\int_{1}^{\\infty} x ^ {-1} e^{-x} \\,dx) = G",
+            "goal": "(INT x:[0,1]. (-exp(-x) + 1) / x) - (INT x:[1,oo]. exp(-x) / x) = G",
+            "latex_goal": "(\\int_{0}^{1} \\frac{-e^{-x} + 1}{x} \\,dx) - (\\int_{1}^{\\infty} \\frac{e^{-x}}{x} \\,dx) = G",
             "proof": {
                 "finished": true,
-                "goal": "(INT x:[0,1]. x ^ (-1) * (-exp(-x) + 1)) - (INT x:[1,oo]. x ^ (-1) * exp(-x)) = G",
-                "latex_goal": "(\\int_{0}^{1} x ^ {-1} (-e^{-x} + 1) \\,dx) - (\\int_{1}^{\\infty} x ^ {-1} e^{-x} \\,dx) = G",
+                "goal": "(INT x:[0,1]. (-exp(-x) + 1) / x) - (INT x:[1,oo]. exp(-x) / x) = G",
+                "latex_goal": "(\\int_{0}^{1} \\frac{-e^{-x} + 1}{x} \\,dx) - (\\int_{1}^{\\infty} \\frac{e^{-x}}{x} \\,dx) = G",
                 "lhs_calc": {
-                    "latex_start": "(\\int_{0}^{1} x ^ {-1} (-e^{-x} + 1) \\,dx) - (\\int_{1}^{\\infty} x ^ {-1} e^{-x} \\,dx)",
-                    "start": "(INT x:[0,1]. x ^ (-1) * (-exp(-x) + 1)) - (INT x:[1,oo]. x ^ (-1) * exp(-x))",
+                    "latex_start": "(\\int_{0}^{1} \\frac{-e^{-x} + 1}{x} \\,dx) - (\\int_{1}^{\\infty} \\frac{e^{-x}}{x} \\,dx)",
+                    "start": "(INT x:[0,1]. (-exp(-x) + 1) / x) - (INT x:[1,oo]. exp(-x) / x)",
                     "steps": [
                         {
-                            "latex_res": "(\\int_{0}^{1} x ^ {-1} (-e^{-x} + 1) \\,dx) - ((\\left. e^{-x} \\log{x} \\right\\vert_{x=1}^{\\infty}) - (\\int_{1}^{\\infty} -e^{-x} \\log{x} \\,dx))",
-                            "res": "(INT x:[0,1]. x ^ (-1) * (-exp(-x) + 1)) - (([exp(-x) * log(x)]_x=1,oo) - (INT x:[1,oo]. -(exp(-x) * log(x))))",
+                            "latex_res": "(\\int_{0}^{1} \\frac{-e^{-x} + 1}{x} \\,dx) - ((\\left. e^{-x} \\log{x} \\right\\vert_{x=1}^{\\infty}) - (\\int_{1}^{\\infty} -e^{-x} \\log{x} \\,dx))",
+                            "res": "(INT x:[0,1]. (-exp(-x) + 1) / x) - (([exp(-x) * log(x)]_x=1,oo) - (INT x:[1,oo]. -(exp(-x) * log(x))))",
                             "rule": {
                                 "latex_str": "integrate by parts \\(u \\to e^{-x}, v \\to \\log{x}\\) at 1",
                                 "loc": "1",

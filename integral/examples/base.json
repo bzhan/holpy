@@ -11,7 +11,7 @@
         },
         {
             "type": "axiom",
-            "expr": "(INT x. x ^ (-1)) = log(abs(x)) + C"
+            "expr": "(INT x. 1 / x) = log(abs(x)) + C"
         },
         {
             "type": "axiom",
@@ -98,11 +98,11 @@
         },
         {
             "type": "axiom",
-            "expr": "SUM(n, 0, oo, (n+1)^(-2)) = (pi^2) / 6"
+            "expr": "SUM(n, 0, oo, 1 / (n+1)^2) = (pi^2) / 6"
         },
         {
             "type": "axiom",
-            "expr": "SUM(n, 0, oo, (-1)^n * (n+1)^(-2)) = (pi^2) / 12"
+            "expr": "SUM(n, 0, oo, (-1)^n / (n+1)^2) = (pi^2) / 12"
         },
         {
             "type": "header",
@@ -398,7 +398,15 @@
         },
         {
             "type": "axiom",
-            "expr": "sin(x)^n = csc(x)^(-n)",
+            "expr": "1 / sin(x) ^ n = csc(x) ^ n",
+            "conds": [
+                "n != 0"
+            ],
+            "category": "trigonometric"
+        },
+        {
+            "type": "axiom",
+            "expr": "sin(x) ^ n = csc(x) ^ (-n)",
             "conds": [
                 "n != 0"
             ],
@@ -505,7 +513,7 @@
         },
         {
             "type": "problem",
-            "expr": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) * (k + 1) ^ (-1) - x ^ (k + 1) * (k + 1) ^ (-2) + SKOLEM_CONST(C)",
+            "expr": "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) / (k + 1) - x ^ (k + 1) / (k + 1) ^ 2 + SKOLEM_CONST(C)",
             "path": "standard"
         },
         {

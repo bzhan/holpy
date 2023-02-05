@@ -5,8 +5,8 @@
             "start": "INT x:[0,pi]. x * sin(x) / (1 + cos(x) ^ 2)",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{\\pi} (\\pi - y) \\sin{(\\pi - y)} (\\cos^{2}(\\pi - y) + 1) ^ {-1} \\,dy",
-                    "res": "INT y:[0,pi]. (pi - y) * sin(pi - y) * (cos(pi - y) ^ 2 + 1) ^ (-1)",
+                    "latex_res": "\\int_{0}^{\\pi} \\frac{(\\pi - y) \\sin{(\\pi - y)}}{\\cos^{2}(\\pi - y) + 1} \\,dy",
+                    "res": "INT y:[0,pi]. (pi - y) * sin(pi - y) / (cos(pi - y) ^ 2 + 1)",
                     "rule": {
                         "latex_str": "substitute \\(y\\) for \\(\\pi - x\\)",
                         "name": "Substitution",
@@ -17,8 +17,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{\\pi} -y \\sin{(\\pi - y)} (\\cos^{2}(\\pi - y) + 1) ^ {-1} + \\pi \\sin{(\\pi - y)} (\\cos^{2}(\\pi - y) + 1) ^ {-1} \\,dy",
-                    "res": "INT y:[0,pi]. -(y * sin(pi - y) * (cos(pi - y) ^ 2 + 1) ^ (-1)) + pi * sin(pi - y) * (cos(pi - y) ^ 2 + 1) ^ (-1)",
+                    "latex_res": "\\int_{0}^{\\pi} -\\frac{y \\sin{(\\pi - y)}}{\\cos^{2}(\\pi - y) + 1} + \\pi (\\frac{\\sin{(\\pi - y)}}{\\cos^{2}(\\pi - y) + 1}) \\,dy",
+                    "res": "INT y:[0,pi]. -(y * sin(pi - y) / (cos(pi - y) ^ 2 + 1)) + pi * (sin(pi - y) / (cos(pi - y) ^ 2 + 1))",
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
@@ -26,8 +26,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\pi (\\int_{0}^{\\pi} \\sin{y} (\\cos^{2}(y) + 1) ^ {-1} \\,dy) - (\\int_{0}^{\\pi} y \\sin{y} (\\cos^{2}(y) + 1) ^ {-1} \\,dy)",
-                    "res": "pi * (INT y:[0,pi]. sin(y) * (cos(y) ^ 2 + 1) ^ (-1)) - (INT y:[0,pi]. y * sin(y) * (cos(y) ^ 2 + 1) ^ (-1))",
+                    "latex_res": "\\pi (\\int_{0}^{\\pi} \\frac{\\sin{y}}{\\cos^{2}(y) + 1} \\,dy) - (\\int_{0}^{\\pi} \\frac{y \\sin{y}}{\\cos^{2}(y) + 1} \\,dy)",
+                    "res": "pi * (INT y:[0,pi]. sin(y) / (cos(y) ^ 2 + 1)) - (INT y:[0,pi]. y * sin(y) / (cos(y) ^ 2 + 1))",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -35,18 +35,18 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{2} \\pi (\\int_{0}^{\\pi} \\sin{y} (\\cos^{2}(y) + 1) ^ {-1} \\,dy)",
-                    "res": "1/2 * pi * (INT y:[0,pi]. sin(y) * (cos(y) ^ 2 + 1) ^ (-1))",
+                    "latex_res": "\\frac{1}{2} \\pi (\\int_{0}^{\\pi} \\frac{\\sin{y}}{\\cos^{2}(y) + 1} \\,dy)",
+                    "res": "1/2 * pi * (INT y:[0,pi]. sin(y) / (cos(y) ^ 2 + 1))",
                     "rule": {
-                        "lhs": "INT x:[0,pi]. x * sin(x) * (cos(x) ^ 2 + 1) ^ (-1)",
+                        "lhs": "INT x:[0,pi]. x * sin(x) / (cos(x) ^ 2 + 1)",
                         "name": "IntegrateByEquation",
                         "str": "integrate by equation"
                     },
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{2} \\pi (\\int_{-1}^{1} (u ^ {2} + 1) ^ {-1} \\,du)",
-                    "res": "1/2 * pi * (INT u:[-1,1]. (u ^ 2 + 1) ^ (-1))",
+                    "latex_res": "\\frac{1}{2} \\pi (\\int_{-1}^{1} \\frac{1}{u ^ {2} + 1} \\,du)",
+                    "res": "1/2 * pi * (INT u:[-1,1]. 1 / (u ^ 2 + 1))",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(\\cos{y}\\)",
                         "name": "Substitution",

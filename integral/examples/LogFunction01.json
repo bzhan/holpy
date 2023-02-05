@@ -45,8 +45,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1) ^ {n} (n + 1) ^ {-2}}",
-                            "res": "SUM(n, 0, oo, (-1) ^ n * (n + 1) ^ (-2))",
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(n + 1) ^ {2}}}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n / (n + 1) ^ 2)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"

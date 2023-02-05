@@ -29,8 +29,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{a ^ {-1} t} \\frac{1}{(a u) ^ {2} + a ^ {2}} a \\,du",
-                            "res": "LIM {t -> oo}. INT u:[0,a ^ (-1) * t]. 1 / ((a * u) ^ 2 + a ^ 2) * a",
+                            "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t/a} \\frac{1}{(a u) ^ {2} + a ^ {2}} a \\,du",
+                            "res": "LIM {t -> oo}. INT u:[0,t / a]. 1 / ((a * u) ^ 2 + a ^ 2) * a",
                             "rule": {
                                 "latex_str": "inverse substitution for \\(a u\\)",
                                 "name": "SubstitutionInverse",
@@ -41,8 +41,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a (\\int_{0}^{\\infty} (a ^ {2} u ^ {2} + a ^ {2}) ^ {-1} \\,du)",
-                            "res": "a * (INT u:[0,oo]. (a ^ 2 * u ^ 2 + a ^ 2) ^ (-1))",
+                            "latex_res": "a (\\int_{0}^{\\infty} \\frac{1}{a ^ {2} u ^ {2} + a ^ {2}} \\,du)",
+                            "res": "a * (INT u:[0,oo]. 1 / (a ^ 2 * u ^ 2 + a ^ 2))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -50,20 +50,20 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "a (\\int_{0}^{\\infty} \\frac{(u ^ {2} + 1) ^ {-1}}{a ^ {2}} \\,du)",
-                            "res": "a * (INT u:[0,oo]. (u ^ 2 + 1) ^ (-1) / a ^ 2)",
+                            "latex_res": "a (\\int_{0}^{\\infty} \\frac{1}{a ^ {2} (u ^ {2} + 1)} \\,du)",
+                            "res": "a * (INT u:[0,oo]. 1 / (a ^ 2 * (u ^ 2 + 1)))",
                             "rule": {
-                                "latex_str": "rewriting \\((a ^ {2} u ^ {2} + a ^ {2}) ^ {-1}\\) to \\(\\frac{(u ^ {2} + 1) ^ {-1}}{a ^ {2}}\\)",
+                                "latex_str": "rewriting \\(\\frac{1}{a ^ {2} u ^ {2} + a ^ {2}}\\) to \\(\\frac{1}{a ^ {2} (u ^ {2} + 1)}\\)",
                                 "name": "Equation",
-                                "new_expr": "(u ^ 2 + 1) ^ (-1) / a ^ 2",
-                                "old_expr": "(a ^ 2 * u ^ 2 + a ^ 2) ^ (-1)",
-                                "str": "rewriting (a ^ 2 * u ^ 2 + a ^ 2) ^ (-1) to (u ^ 2 + 1) ^ (-1) / a ^ 2"
+                                "new_expr": "1 / (a ^ 2 * (u ^ 2 + 1))",
+                                "old_expr": "1 / (a ^ 2 * u ^ 2 + a ^ 2)",
+                                "str": "rewriting 1 / (a ^ 2 * u ^ 2 + a ^ 2) to 1 / (a ^ 2 * (u ^ 2 + 1))"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi a ^ {-1}",
-                            "res": "1/2 * pi * a ^ (-1)",
+                            "latex_res": "\\frac{1}{2} \\pi (\\frac{1}{a})",
+                            "res": "1/2 * pi * (1 / a)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -78,8 +78,8 @@
                     "start": "pi / (2 * a)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{1}{2} \\pi a ^ {-1}",
-                            "res": "1/2 * pi * a ^ (-1)",
+                            "latex_res": "\\frac{1}{2} \\pi (\\frac{1}{a})",
+                            "res": "1/2 * pi * (1 / a)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -128,8 +128,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-2 a (\\int_{0}^{\\infty} (a ^ {2} + x ^ {2}) ^ {-2} \\,dx) = -\\frac{1}{2} \\pi a ^ {-2}",
-                            "res": "-2 * a * (INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-2)) = -1/2 * pi * a ^ (-2)",
+                            "latex_res": "-2 a (\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {2}} \\,dx) = -\\frac{1}{2} \\pi (\\frac{1}{a ^ {2}})",
+                            "res": "-2 * a * (INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 2) = -1/2 * pi * (1 / a ^ 2)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -137,13 +137,13 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} (a ^ {2} + x ^ {2}) ^ {-2} \\,dx = \\frac{1}{4} \\pi a ^ {-3}",
-                            "res": "(INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-2)) = 1/4 * pi * a ^ (-3)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{1}{4} \\pi (\\frac{1}{a ^ {3}})",
+                            "res": "(INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 2) = 1/4 * pi * (1 / a ^ 3)",
                             "rule": {
-                                "latex_str": "solve equation for \\(\\int_{0}^{\\infty} (a ^ {2} + x ^ {2}) ^ {-2} \\,dx\\)",
+                                "latex_str": "solve equation for \\(\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {2}} \\,dx\\)",
                                 "name": "SolveEquation",
-                                "solve_for": "INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-2)",
-                                "str": "solve equation for INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-2)"
+                                "solve_for": "INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 2",
+                                "str": "solve equation for INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 2"
                             },
                             "type": "CalculationStep"
                         }
@@ -189,8 +189,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-4 a (\\int_{0}^{\\infty} (a ^ {2} + x ^ {2}) ^ {-3} \\,dx) = -\\frac{3}{4} \\pi a ^ {-4}",
-                            "res": "-4 * a * (INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-3)) = -3/4 * pi * a ^ (-4)",
+                            "latex_res": "-4 a (\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {3}} \\,dx) = -\\frac{3}{4} \\pi (\\frac{1}{a ^ {4}})",
+                            "res": "-4 * a * (INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 3) = -3/4 * pi * (1 / a ^ 4)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -198,13 +198,13 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} (a ^ {2} + x ^ {2}) ^ {-3} \\,dx = \\frac{3}{16} \\pi a ^ {-5}",
-                            "res": "(INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-3)) = 3/16 * pi * a ^ (-5)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {3}} \\,dx = \\frac{3}{16} \\pi (\\frac{1}{a ^ {5}})",
+                            "res": "(INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 3) = 3/16 * pi * (1 / a ^ 5)",
                             "rule": {
-                                "latex_str": "solve equation for \\(\\int_{0}^{\\infty} (a ^ {2} + x ^ {2}) ^ {-3} \\,dx\\)",
+                                "latex_str": "solve equation for \\(\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {3}} \\,dx\\)",
                                 "name": "SolveEquation",
-                                "solve_for": "INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-3)",
-                                "str": "solve equation for INT x:[0,oo]. (a ^ 2 + x ^ 2) ^ (-3)"
+                                "solve_for": "INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 3",
+                                "str": "solve equation for INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 3"
                             },
                             "type": "CalculationStep"
                         }

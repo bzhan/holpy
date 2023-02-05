@@ -15,6 +15,7 @@ from integral import latex
 from integral import limits
 from integral import norm
 from integral.context import Context
+from integral import poly
 from integral.poly import from_poly, to_poly, normalize
 
 
@@ -209,24 +210,29 @@ class Linearity(Rule):
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
-        def rec(e):
+        def rec(e: Expr):
             if e.is_integral():
                 if e.body.is_plus():
                     return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) + \
-                        rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
+                           rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
                 elif e.body.is_uminus():
                     return -rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0]))
                 elif e.body.is_minus():
                     return rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[0])) - \
-                        rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
-                elif e.body.is_times():
-                    factors = decompose_expr_factor(e.body)
+                           rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
+                elif e.body.is_times() or e.body.is_divides():
+                    num_factors, denom_factors = decompose_expr_factor(e.body)
                     b, c = Const(1), Const(1)
-                    for f in factors:
+                    for f in num_factors:
                         if not f.contains_var(e.var):
                             c = c * f
                         else:
                             b = b * f
+                    for f in denom_factors:
+                        if not f.contains_var(e.var):
+                            c = c / f
+                        else:
+                            b = b / f
                     c = normalize(c)
                     b = normalize(b)
                     return c * Integral(e.var, e.lower, e.upper, b)
@@ -235,16 +241,19 @@ class Linearity(Rule):
                 else:
                     return e
             elif e.is_indefinite_integral():
-                if e.body.is_times():
-                    factors = decompose_expr_factor(e.body)
+                if e.body.is_times() or e.body.is_divides():
+                    num_factors, denom_factors = decompose_expr_factor(e.body)
                     b, c = Const(1), Const(1)
-                    for f in factors:
+                    for f in num_factors:
                         if not f.contains_var(e.var):
                             c = c * f
                         else:
                             b = b * f
-                    c = normalize(c)
-                    b = normalize(b)
+                    for f in denom_factors:
+                        if not f.contains_var(e.var):
+                            c = c / f
+                        else:
+                            b = b / f
                     return c * IndefiniteIntegral(e.var, b, e.skolem_args)
                 elif e.body.is_uminus():
                     return -IndefiniteIntegral(e.var, e.body.args[0], e.skolem_args)
@@ -255,30 +264,44 @@ class Linearity(Rule):
             elif e.is_limit():
                 if e.body.is_uminus():
                     return -Limit(e.var, e.lim, e.body.args[0])
-                elif e.body.is_times():
-                    factors = decompose_expr_factor(e.body)
-                    if not factors[0].contains_var(e.var):
-                        return factors[0] * rec(expr.Limit(
-                            e.var, e.lim,
-                            functools.reduce(lambda x, y: x * y, factors[2:], factors[1])))
-                    else:
-                        return e
+                elif e.body.is_times() or e.body.is_divides():
+                    num_factors, denom_factors = decompose_expr_factor(e.body)
+                    b, c = Const(1), Const(1)
+                    for f in num_factors:
+                        if not f.contains_var(e.var):
+                            c = c * f
+                        else:
+                            b = b * f
+                    for f in denom_factors:
+                        if not f.contains_var(e.var):
+                            c = c / f
+                        else:
+                            b = b / f
+                    return c * Limit(e.var, e.lim, b)
                 else:
                     return e
             elif e.is_summation():
                 v, l, u, body = e.index_var, e.lower, e.upper, e.body
                 if e.body.is_minus():
                     return Summation(v, l, u, body.args[0]) - Summation(v, l,u,body.args[1])
-                factors = decompose_expr_factor(e.body)
-                b, c = Const(1), Const(1)
-                for f in factors:
-                    if not f.contains_var(e.index_var):
-                        c = c * f
-                    else:
-                        b = b * f
-                c = normalize(c)
-                b = normalize(b)
-                return normalize(c * Summation(e.index_var, e.lower, e.upper, b))
+                elif e.body.is_times() or e.body.is_divides():
+                    num_factors, denom_factors = decompose_expr_factor(e.body)
+                    b, c = Const(1), Const(1)
+                    for f in num_factors:
+                        if not f.contains_var(e.index_var):
+                            c = c * f
+                        else:
+                            b = b * f
+                    for f in denom_factors:
+                        if not f.contains_var(e.index_var):
+                            c = c / f
+                        else:
+                            b = b / f
+                    c = normalize(c)
+                    b = normalize(b)
+                    return normalize(c * Summation(e.index_var, e.lower, e.upper, b))
+                else:
+                    return e
             else:
                 return e
         return rec(e)
@@ -314,8 +337,9 @@ class CommonIntegral(Rule):
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
-        if e.ty != expr.INTEGRAL:
+        if not e.is_integral():
             return e
+
         if isinstance(e.body, Deriv) and e.body.var == e.var:
             return EvalAt(e.var, e.lower, e.upper, e.body.body)
         if e.var not in e.body.get_vars() and e.body != Const(1):
@@ -329,15 +353,16 @@ class CommonIntegral(Rule):
             (x, None, (x ^ 2) / 2),
             (x ^ c, lambda m: isinstance(m[c.name], Const) and m[c.name].val != -1 or isinstance(m[c.name], Var)
                               or isinstance(m[c.name], Op) and not m[c.name].has_var(x),
-             lambda m: (x ^ (normalize(m[c.name] + 1))) / normalize(m[c.name] + 1)),
-            (Const(1) / x ^ c, lambda m: isinstance(m[c.name], Const) and m[c.name].val != 1, (-c) / (x ^ (c + 1))),
+             lambda m: (x ^ (m[c.name] + 1)) / (m[c.name] + 1)),
+            (Const(1) / (x ^ c), lambda m: isinstance(m[c.name], Const) and m[c.name].val != 1, 1 / (-(c - 1) * (x ^ (c - 1)))),
             (expr.sqrt(x), None, Fraction(2, 3) * (x ^ Fraction(3, 2))),
+            (1 / expr.sqrt(x), None, 2 * (x ^ Fraction(1, 2))),
             (sin(x), None, -cos(x)),
             (cos(x), None, sin(x)),
             (expr.exp(x), None, expr.exp(x)),
             (Const(1) / x, None, expr.log(expr.Fun('abs', x))),
             (x ^ Const(-1), None, expr.log(expr.Fun('abs', x))),
-            (((x ^ Const(2)) + 1) ^ Const(-1), None, expr.arctan(x)),
+            (1 / ((x ^ Const(2)) + 1), None, expr.arctan(x)),
             (expr.sec(x) ^ Const(2), None, expr.tan(x)),
             (expr.csc(x) ^ Const(2), None, -expr.cot(x)),
         ]
@@ -850,6 +875,9 @@ class SimplifyPower(Rule):
         elif e.args[0].is_power():
             # x ^ a ^ b => x ^ (a * b)
             return e.args[0].args[0] ^ (e.args[0].args[1] * e.args[1])
+        elif e.args[0].is_divides() and e.args[0].args[0] == Const(1) and e.args[0].args[1].is_power():
+            # (1 / x ^ a) ^ b => x ^ (-a * b)
+            return e.args[0].args[1].args[0] ^ (-e.args[0].args[1].args[1] * e.args[1])
         elif e.args[1].is_plus() and e.args[0].is_const() and e.args[1].args[1].is_const():
             # c1 ^ (a + c2) => c1 ^ c2 * c1 ^ a
             return (e.args[0] ^ e.args[1].args[1]) * (e.args[0] ^ e.args[1].args[0])
@@ -1211,7 +1239,11 @@ class ExpandPolynomial(Rule):
             return from_poly(to_poly(s1) * to_poly(s2))
         elif e.is_divides():
             s1, s2 = self.eval(e.args[0], ctx), self.eval(e.args[1], ctx)
-            return from_poly(to_poly(s1) / to_poly(s2))
+            p1, p2 = to_poly(s1), to_poly(s2)
+            if p2.is_monomial():
+                return from_poly(p1 / p2)
+            else:
+                return from_poly(p1 / poly.singleton(from_poly(p2)))
         elif e.is_integral():
             return expr.Integral(e.var, e.lower, e.upper, self.eval(e.body, ctx))
         else:
@@ -1318,10 +1350,10 @@ class IntegrationByParts(Rule):
             equal = True
 
         if not equal and norm.eq_quotient(udv, e.body):
-                equal = True
+            equal = True
 
         if not equal and norm.eq_power(udv, e.body):
-                equal = True
+            equal = True
 
         if equal:
             if e.is_integral():
@@ -1331,8 +1363,7 @@ class IntegrationByParts(Rule):
                 return normalize(self.u * self.v) - \
                        expr.IndefiniteIntegral(e.var, normalize(self.v * du), e.skolem_args)
         else:
-            print("%s != %s" % (str(udv), str(e.body)))
-            raise NotImplementedError("%s != %s" % (str(udv), str(e.body)))
+            raise AssertionError("Integration by parts: %s != %s" % (str(udv), str(e.body)))
 
 
 class SplitRegion(Rule):
@@ -1412,6 +1443,8 @@ class IntegrateByEquation(Rule):
                 return -get_coeff(t.args[0])
             elif t.is_times():
                 return t.args[0] * get_coeff(t.args[1])
+            elif t.is_divides():
+                return get_coeff(t.args[0]) / t.args[1]
             else:
                 return Const(0)
 

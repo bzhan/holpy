@@ -29,8 +29,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. x ^ {-k + 1} \\log{x} (-k + 1) ^ {-1} \\right\\vert_{x=1}^{t}) - (\\int_{1}^{t} x ^ {-k} (-k + 1) ^ {-1} \\,dx)\\,)",
-                            "res": "LIM {t -> oo}. ([x ^ (-k + 1) * log(x) * (-k + 1) ^ (-1)]_x=1,t) - (INT x:[1,t]. x ^ -k * (-k + 1) ^ (-1))",
+                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. \\frac{x ^ {-k + 1} \\log{x}}{-k + 1} \\right\\vert_{x=1}^{t}) - (\\int_{1}^{t} \\frac{x ^ {-k}}{-k + 1} \\,dx)\\,)",
+                            "res": "LIM {t -> oo}. ([x ^ (-k + 1) * log(x) / (-k + 1)]_x=1,t) - (INT x:[1,t]. x ^ -k / (-k + 1))",
                             "rule": {
                                 "latex_str": "integrate by parts \\(u \\to \\log{x}, v \\to \\frac{x ^ {1 - k}}{1 - k}\\)",
                                 "name": "IntegrationByParts",
@@ -41,8 +41,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-k + 1) ^ {-1} (\\lim\\limits_{t\\to \\infty} (\\,t ^ {-k + 1} \\log{t}\\,)) + (-k + 1) ^ {-2}",
-                            "res": "(-k + 1) ^ (-1) * (LIM {t -> oo}. t ^ (-k + 1) * log(t)) + (-k + 1) ^ (-2)",
+                            "latex_res": "\\frac{\\lim\\limits_{t\\to \\infty} (\\,t ^ {-k + 1} \\log{t}\\,)}{-k + 1} + \\frac{1}{(-k + 1) ^ {2}}",
+                            "res": "(LIM {t -> oo}. t ^ (-k + 1) * log(t)) / (-k + 1) + 1 / (-k + 1) ^ 2",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -50,8 +50,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-k + 1) ^ {-1} (\\lim\\limits_{t\\to \\infty} (\\,\\frac{\\log{t}}{t ^ {k - 1}}\\,)) + (-k + 1) ^ {-2}",
-                            "res": "(-k + 1) ^ (-1) * (LIM {t -> oo}. log(t) / t ^ (k - 1)) + (-k + 1) ^ (-2)",
+                            "latex_res": "\\frac{\\lim\\limits_{t\\to \\infty} (\\,\\frac{\\log{t}}{t ^ {k - 1}}\\,)}{-k + 1} + \\frac{1}{(-k + 1) ^ {2}}",
+                            "res": "(LIM {t -> oo}. log(t) / t ^ (k - 1)) / (-k + 1) + 1 / (-k + 1) ^ 2",
                             "rule": {
                                 "latex_str": "rewriting \\(t ^ {-k + 1} \\log{t}\\) to \\(\\frac{\\log{t}}{t ^ {k - 1}}\\)",
                                 "name": "Equation",
@@ -62,18 +62,18 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-k + 1) ^ {-1} (\\lim\\limits_{t\\to \\infty} (\\,\\frac{t ^ {-1}}{t ^ {k - 2} (k - 1)}\\,)) + (-k + 1) ^ {-2}",
-                            "res": "(-k + 1) ^ (-1) * (LIM {t -> oo}. t ^ (-1) / (t ^ (k - 2) * (k - 1))) + (-k + 1) ^ (-2)",
+                            "latex_res": "\\frac{\\lim\\limits_{t\\to \\infty} (\\,\\frac{\\frac{1}{t}}{t ^ {k - 2} (k - 1)}\\,)}{-k + 1} + \\frac{1}{(-k + 1) ^ {2}}",
+                            "res": "(LIM {t -> oo}. 1 / t / (t ^ (k - 2) * (k - 1))) / (-k + 1) + 1 / (-k + 1) ^ 2",
                             "rule": {
-                                "loc": "0.1",
+                                "loc": "0.0",
                                 "name": "LHopital",
-                                "str": "l'Hopital's rule at 0.1"
+                                "str": "l'Hopital's rule at 0.0"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-k + 1) ^ {-2}",
-                            "res": "(-k + 1) ^ (-2)",
+                            "latex_res": "\\frac{1}{(-k + 1) ^ {2}}",
+                            "res": "1 / (-k + 1) ^ 2",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -88,8 +88,8 @@
                     "start": "1 / (k - 1) ^ 2",
                     "steps": [
                         {
-                            "latex_res": "(k - 1) ^ {-2}",
-                            "res": "(k - 1) ^ (-2)",
+                            "latex_res": "\\frac{1}{(k - 1) ^ {2}}",
+                            "res": "1 / (k - 1) ^ 2",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -97,14 +97,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(-k + 1) ^ {-2}",
-                            "res": "(-k + 1) ^ (-2)",
+                            "latex_res": "\\frac{1}{(-k + 1) ^ {2}}",
+                            "res": "1 / (-k + 1) ^ 2",
                             "rule": {
-                                "latex_str": "rewriting \\((k - 1) ^ {-2}\\) to \\((-k + 1) ^ {-2}\\)",
+                                "latex_str": "rewriting \\(\\frac{1}{(k - 1) ^ {2}}\\) to \\(\\frac{1}{(-k + 1) ^ {2}}\\)",
                                 "name": "Equation",
-                                "new_expr": "(-k + 1) ^ (-2)",
-                                "old_expr": "(k - 1) ^ (-2)",
-                                "str": "rewriting (k - 1) ^ (-2) to (-k + 1) ^ (-2)"
+                                "new_expr": "1 / (-k + 1) ^ 2",
+                                "old_expr": "1 / (k - 1) ^ 2",
+                                "str": "rewriting 1 / (k - 1) ^ 2 to 1 / (-k + 1) ^ 2"
                             },
                             "type": "CalculationStep"
                         }
@@ -205,8 +205,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1) ^ {n} (2 n + 1) ^ {-2}}",
-                            "res": "SUM(n, 0, oo, (-1) ^ n * (2 * n + 1) ^ (-2))",
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(2 n + 1) ^ {2}}}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -231,8 +231,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{n=0}^{\\infty}{(-1) ^ {n} (2 n + 1) ^ {-2}}",
-                            "res": "SUM(n, 0, oo, (-1) ^ n * (2 * n + 1) ^ (-2))",
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(2 n + 1) ^ {2}}}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"

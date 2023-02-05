@@ -31,8 +31,8 @@
                     "start": "D y. g(y,a)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{d}{dy} \\int_{0}^{\\infty} x ^ {-1} e^{-x y} \\sin{(a x)} \\,dx",
-                            "res": "D y. INT x:[0,oo]. x ^ (-1) * exp(-(x * y)) * sin(a * x)",
+                            "latex_res": "\\frac{d}{dy} \\int_{0}^{\\infty} \\frac{e^{-x y} \\sin{(a x)}}{x} \\,dx",
+                            "res": "D y. INT x:[0,oo]. exp(-(x * y)) * sin(a * x) / x",
                             "rule": {
                                 "func_name": "g",
                                 "loc": "subterms",
@@ -42,8 +42,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{dy} x ^ {-1} e^{-x y} \\sin{(a x)} \\,dx",
-                            "res": "INT x:[0,oo]. D y. x ^ (-1) * exp(-(x * y)) * sin(a * x)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{dy} \\frac{e^{-x y} \\sin{(a x)}}{x} \\,dx",
+                            "res": "INT x:[0,oo]. D y. exp(-(x * y)) * sin(a * x) / x",
                             "rule": {
                                 "name": "DerivIntExchange",
                                 "str": "exchange derivative and integral"
@@ -69,8 +69,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-a (a ^ {2} + y ^ {2}) ^ {-1}",
-                            "res": "-(a * (a ^ 2 + y ^ 2) ^ (-1))",
+                            "latex_res": "-\\frac{a}{a ^ {2} + y ^ {2}}",
+                            "res": "-(a / (a ^ 2 + y ^ 2))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -85,8 +85,8 @@
                     "start": "-a / (a ^ 2 + y ^ 2)",
                     "steps": [
                         {
-                            "latex_res": "-a (a ^ {2} + y ^ {2}) ^ {-1}",
-                            "res": "-(a * (a ^ 2 + y ^ 2) ^ (-1))",
+                            "latex_res": "-\\frac{a}{a ^ {2} + y ^ {2}}",
+                            "res": "-(a / (a ^ 2 + y ^ 2))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -138,23 +138,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "g(y,a) = -a (\\int (a ^ {2} + y ^ {2}) ^ {-1} \\,dy)",
-                            "res": "g(y,a) = -(a * (INT y [a]. (a ^ 2 + y ^ 2) ^ (-1)))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "g(y,a) = -a (\\int \\frac{1}{a ^ {2} + y ^ {2}} \\,dy)",
                             "res": "g(y,a) = -(a * (INT y [a]. 1 / (a ^ 2 + y ^ 2)))",
                             "rule": {
-                                "latex_str": "rewriting \\((a ^ {2} + y ^ {2}) ^ {-1}\\) to \\(\\frac{1}{a ^ {2} + y ^ {2}}\\)",
-                                "name": "Equation",
-                                "new_expr": "1 / (a ^ 2 + y ^ 2)",
-                                "old_expr": "(a ^ 2 + y ^ 2) ^ (-1)",
-                                "str": "rewriting (a ^ 2 + y ^ 2) ^ (-1) to 1 / (a ^ 2 + y ^ 2)"
+                                "name": "FullSimplify",
+                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         },
@@ -169,8 +157,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "g(y,a) = -\\tan^{-1}{(a ^ {-1} y)} + C(a)",
-                            "res": "g(y,a) = -atan(a ^ (-1) * y) + SKOLEM_FUNC(C(a))",
+                            "latex_res": "g(y,a) = -\\tan^{-1}{(\\frac{y}{a})} + C(a)",
+                            "res": "g(y,a) = -atan(y / a) + SKOLEM_FUNC(C(a))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -207,8 +195,8 @@
                     "start": "LIM {y -> oo}. g(y,a)",
                     "steps": [
                         {
-                            "latex_res": "\\lim\\limits_{y\\to \\infty} \\int_{0}^{\\infty} x ^ {-1} e^{-x y} \\sin{(a x)} \\,dx",
-                            "res": "LIM {y -> oo}. INT x:[0,oo]. x ^ (-1) * exp(-(x * y)) * sin(a * x)",
+                            "latex_res": "\\lim\\limits_{y\\to \\infty} \\int_{0}^{\\infty} \\frac{e^{-x y} \\sin{(a x)}}{x} \\,dx",
+                            "res": "LIM {y -> oo}. INT x:[0,oo]. exp(-(x * y)) * sin(a * x) / x",
                             "rule": {
                                 "func_name": "g",
                                 "loc": "subterms",
@@ -410,8 +398,8 @@
                     "start": "g(0,a)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(a x)} \\,dx",
-                            "res": "INT x:[0,oo]. x ^ (-1) * sin(a * x)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx",
+                            "res": "INT x:[0,oo]. sin(a * x) / x",
                             "rule": {
                                 "func_name": "g",
                                 "name": "ExpandDefinition",
@@ -427,8 +415,8 @@
                     "start": "INT x:[0,oo]. sin(a * x) / x",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\infty} x ^ {-1} \\sin{(a x)} \\,dx",
-                            "res": "INT x:[0,oo]. x ^ (-1) * sin(a * x)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx",
+                            "res": "INT x:[0,oo]. sin(a * x) / x",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"

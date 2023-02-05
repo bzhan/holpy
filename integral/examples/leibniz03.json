@@ -171,8 +171,8 @@
                     "start": "D t. log(I(t)) + t ^ 2 / 2",
                     "steps": [
                         {
-                            "latex_res": "I{(t)} ^ {-1} (\\frac{d}{dt} I{(t)}) + t",
-                            "res": "I(t) ^ (-1) * (D t. I(t)) + t",
+                            "latex_res": "\\frac{\\frac{d}{dt} I{(t)}}{I{(t)}} + t",
+                            "res": "(D t. I(t)) / I(t) + t",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -180,14 +180,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(t)} ^ {-1} (-t I{(t)}) + t",
-                            "res": "I(t) ^ (-1) * (-t * I(t)) + t",
+                            "latex_res": "\\frac{-t I{(t)}}{I{(t)}} + t",
+                            "res": "-t * I(t) / I(t) + t",
                             "rule": {
                                 "eq": "(D t. I(t)) = -t * I(t)",
-                                "latex_str": "apply equation \\(\\frac{d}{dt} I{(t)} = -t I{(t)}\\) at 0.1",
-                                "loc": "0.1",
+                                "latex_str": "apply equation \\(\\frac{d}{dt} I{(t)} = -t I{(t)}\\) at 0.0",
+                                "loc": "0.0",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: (D t. I(t)) = -t * I(t) at 0.1"
+                                "str": "apply equation: (D t. I(t)) = -t * I(t) at 0.0"
                             },
                             "type": "CalculationStep"
                         },
