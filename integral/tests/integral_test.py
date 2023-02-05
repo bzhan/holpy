@@ -532,6 +532,7 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 2.2, example 1
         ctx = context.Context()
+        ctx.load_book('base')
         file = compstate.CompFile(ctx, "Trick2a")
 
         calc = file.add_calculation("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")

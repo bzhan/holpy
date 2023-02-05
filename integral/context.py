@@ -63,6 +63,9 @@ class Context:
         # List of other identities (trigonometric, etc)
         self.other_identities: List[Identity] = list()
 
+        # List of simplification rules
+        self.simp_identities: List[Identity] = list()
+
         # List of tables of function values
         self.function_tables: Dict[str, Dict[Expr, Expr]] = dict()
 
@@ -98,8 +101,11 @@ class Context:
         res += "Other identities\n"
         for identity in self.get_other_identities():
             res += str(identity) + "\n"
+        res += "Simplification rules\n"
+        for identity in self.get_simp_identities():
+            res += str(identity) + "\n"
         res += "Function tables\n"
-        for funcname in self.get_function_tabless():
+        for funcname in self.get_function_tables():
             res += "  table for %s\n" % funcname
         res += "Lemmas\n"
         for identity in self.get_lemmas():
@@ -142,6 +148,11 @@ class Context:
         res.extend(self.other_identities)
         return res
     
+    def get_simp_identities(self) -> List[Identity]:
+        res = self.parent.get_simp_identities() if self.parent is not None else []
+        res.extend(self.simp_identities)
+        return res
+
     def get_function_tables(self) -> Dict[str, Dict[Expr, Expr]]:
         res = self.parent.get_function_tables() if self.parent is not None else dict()
         res.update(self.function_tables)
@@ -219,6 +230,14 @@ class Context:
         if attributes is not None and 'bidirectional' in attributes:
             self.other_identities.append(Identity(symb_rhs, symb_lhs, category=category))
 
+    def add_simp_identity(self, eq: Expr):
+        if not eq.is_equals():
+            raise TypeError
+        
+        symb_lhs = expr_to_pattern(eq.lhs)
+        symb_rhs = expr_to_pattern(eq.rhs)
+        self.simp_identities.append(Identity(symb_lhs, symb_rhs))
+
     def add_function_table(self, funcname: str, table: Dict[str, str]):
         self.function_tables[funcname] = dict()
         for input, output in table.items():
@@ -267,6 +286,9 @@ class Context:
                 self.add_series_evaluation(e)
             elif e.is_equals() and 'category' in item:
                 self.add_other_identities(e, item['category'], item.get('attributes'))
+        if 'attributes' in item and 'simplify' in item['attributes']:
+            e = parser.parse_expr(item['expr'])
+            self.add_simp_identity(e)
         if item['type'] == 'definition':
             e = parser.parse_expr(item['expr'])
             self.add_definition(e)

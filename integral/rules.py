@@ -621,15 +621,14 @@ class DerivativeSimplify(Rule):
         return deriv(e.var, e.body)
 
 
-class TrigSimplify(Rule):
-    """Simplifications in trigonometry."""
-
+class SimplifyIdentity(Rule):
+    """Simplification using identity."""
     def __init__(self):
-        self.name = "TrigSimplify"
+        self.name = "SimplifyIdentity"
 
     def __str__(self):
-        return "trigonometric simplification"
-
+        return "simplify identity"
+    
     def export(self):
         return {
             "name": self.name,
@@ -637,18 +636,11 @@ class TrigSimplify(Rule):
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
-        u = Symbol('u', [VAR, CONST, OP, FUN])
-        rules = [
-            (sin(Const(Fraction(1 / 2)) * expr.pi - u), cos(u)),
-            (cos(Const(Fraction(1 / 2)) * expr.pi - u), sin(u)),
-            (sin(expr.pi - u), sin(u)),
-            (cos(expr.pi - u), -cos(u)),
-        ]
+        for identity in ctx.get_simp_identities():
+            inst = expr.match(e, identity.lhs)
+            if inst is not None:
+                return identity.rhs.inst_pat(inst)
 
-        for pat, pat_res in rules:
-            mapping = expr.match(e, pat)
-            if mapping is not None:
-                e = pat_res.inst_pat(mapping)
         return e
 
 
@@ -940,8 +932,8 @@ class FullSimplify(Rule):
             s = OnSubterm(SimplifyPower()).eval(s, ctx)
             s = OnSubterm(SimplifyAbs()).eval(s, ctx)
             s = OnSubterm(ReduceLimit()).eval(s, ctx)
-            s = OnSubterm(TrigSimplify()).eval(s, ctx)
             s = OnSubterm(SummationSimplify()).eval(s, ctx)
+            s = OnSubterm(SimplifyIdentity()).eval(s, ctx)
             if s == current:
                 break
             current = s

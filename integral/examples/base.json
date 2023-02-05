@@ -331,6 +331,38 @@
         },
         {
             "type": "axiom",
+            "expr": "sin(1/2 * pi - u) = cos(u)",
+            "category": "trigonometric",
+            "attributes": [
+                "simplify"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "cos(1/2 * pi - u) = sin(u)",
+            "category": "trigonometric",
+            "attributes": [
+                "simplify"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "cos(pi - u) = -cos(u)",
+            "category": "trigonometric",
+            "attributes": [
+                "simplify"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "sin(pi - u) = sin(u)",
+            "category": "trigonometric",
+            "attributes": [
+                "simplify"
+            ]
+        },
+        {
+            "type": "axiom",
             "expr": "cot(x) = cos(x) / sin(x)",
             "category": "trigonometric"
         },
