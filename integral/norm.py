@@ -5,7 +5,7 @@ from typing import Union
 from fractions import Fraction
 
 from integral.expr import Expr, Const
-from integral import poly
+from integral import poly, expr
 from integral.poly import Polynomial, from_poly, to_poly
 
 
@@ -266,3 +266,43 @@ def eq_power(t1: Expr, t2: Expr) -> bool:
     n1 = normalize_power(t1)
     n2 = normalize_power(t2)
     return equal_normal_power(n1, n2)
+
+
+class NormalLog:
+    def __init__(self, e: Polynomial):
+        self.e = to_poly(from_poly(e))
+
+    def __str__(self):
+        return "(%s)" % from_poly(self.e)
+
+    def to_expr(self) -> Expr:
+        return from_poly(self.e)
+
+def minus_normal_log(a: NormalLog, b: NormalLog):
+    return NormalLog(a.e / b.e)
+
+def add_normal_log(a: NormalLog, b: NormalLog):
+    return NormalLog(a.e * b.e)
+
+def normalize_log(e: Expr):
+    def rec(e: Expr) -> NormalLog:
+        if e.is_minus():
+            return minus_normal_log(rec(e.args[0]), rec(e.args[1]))
+        elif e.is_plus():
+            return add_normal_log(rec(e.args[0]), rec(e.args[1]))
+        elif e.is_fun() and e.func_name == 'log':
+            return NormalLog(poly.singleton(e.args[0]))
+        return NormalLog(poly.singleton(expr.Fun("exp",e)))
+
+    return rec(e)
+
+def equal_normal_log(t1: NormalLog, t2: NormalLog):
+    e1 = from_poly(t1.e)
+    e2 = from_poly(t2.e)
+    return e1 == e2
+
+def eq_log(t1: Expr, t2: Expr) -> bool:
+    n1 = normalize_log(t1)
+    n2 = normalize_log(t2)
+    return equal_normal_log(n1, n2)
+

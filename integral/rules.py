@@ -1275,6 +1275,9 @@ class Equation(Rule):
         if norm.eq_power(e, self.new_expr):
             return self.new_expr
 
+        if norm.eq_log(e, self.new_expr):
+            return self.new_expr
+
         raise AssertionError("Equation: rewriting %s to %s failed" % (e, self.new_expr))
 
 

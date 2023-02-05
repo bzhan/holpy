@@ -318,17 +318,29 @@ def get_bounds_for_expr(e: Expr, bounds: Dict[Expr, Interval]) -> Interval:
 
         if e.is_op():
             if e.is_plus():
-                return rec(e.args[0]) + rec(e.args[1])
+                a = rec(e.args[0])
+                b = rec(e.args[1])
+                return a + b
             elif e.is_uminus():
-                return -rec(e.args[0])
+                a = rec(e.args[0])
+                return -a
             elif e.is_minus():
-                return rec(e.args[0]) - rec(e.args[1])
+                a = rec(e.args[0])
+                b = rec(e.args[1])
+                return a - b
             elif e.is_times():
-                return rec(e.args[0]) * rec(e.args[1])
+                a = rec(e.args[0])
+                b = rec(e.args[1])
+                res = a * b
+                return res
             elif e.is_divides():
-                return rec(e.args[0]) / rec(e.args[1])
+                a = rec(e.args[0])
+                b = rec(e.args[1])
+                return a / b
             elif e.is_power():
-                return rec(e.args[0]) ** rec(e.args[1])
+                a = rec(e.args[0])
+                b = rec(e.args[1])
+                return a ** b
 
         elif e.is_fun():
             if e.func_name == 'sqrt':
@@ -350,4 +362,5 @@ def get_bounds_for_expr(e: Expr, bounds: Dict[Expr, Interval]) -> Interval:
         # No information
         return Interval.open(expr.NEG_INF, expr.POS_INF)
 
-    return rec(e)
+    res = rec(e)
+    return res
