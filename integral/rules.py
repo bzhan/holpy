@@ -821,9 +821,7 @@ class SimplifyPower(Rule):
         (-a) ^ n = (-1) ^ n * a ^ n
         (-a + -b) ^ n = (-1) ^ n * (a + b) ^ n
 
-    4. 0 ^ m = 0 where m is a positive number
     """
-
     def __init__(self):
         self.name = "SimplifyPower"
 
@@ -862,11 +860,6 @@ class SimplifyPower(Rule):
             # (-a - b) ^ n = (-1) ^ n * (a + b) ^ n
             nega, negb = e.args[0].args
             return (Const(-1) ^ e.args[1]) * ((nega.args[0] + negb) ^ e.args[1])
-        elif e.args[0].is_const() and e.args[0].val == 0 and ctx.get_conds().is_positive(e.args[1]):
-            # 0 ^ n = 0
-            return Const(0)
-        elif e.args[0].is_const() and e.args[0].val == 1:
-            return Const(1)
         else:
             return e
 

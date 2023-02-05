@@ -290,8 +290,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 ^ {2} + \\frac{1}{2} \\pi = C",
-                            "res": "0 ^ 2 + 1/2 * pi = SKOLEM_CONST(C)",
+                            "latex_res": "0 + \\frac{1}{2} \\pi = C",
+                            "res": "0 + 1/2 * pi = SKOLEM_CONST(C)",
                             "rule": {
                                 "func_name": "g",
                                 "loc": "subterms",

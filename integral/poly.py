@@ -366,6 +366,10 @@ class Monomial:
                 power = constant(const_fraction(power))
             assert isinstance(power, Polynomial), "Unexpected power: %s" % str(power)
             self.factors.append((base, power))
+            assert isinstance(base, expr.Expr)
+            if base.is_const() and power.is_fraction():
+                # Should go into coefficient
+                assert False, "Monomial: factors contain constants"
         self.factors = tuple((i, j) for i, j in collect_pairs(self.factors))
 
     def __hash__(self):
@@ -566,7 +570,10 @@ class Polynomial:
 
 def singleton(s: expr.Expr) -> Polynomial:
     """Polynomial for 1*s^1."""
-    return Polynomial([Monomial(const_fraction(1), [(s, 1)])])
+    if s.is_const():
+        return Polynomial([Monomial(const_fraction(s.val), [])])
+    else:
+        return Polynomial([Monomial(const_fraction(1), [(s, 1)])])
 
 def constant(c: ConstantPolynomial) -> Polynomial:
     """Polynomial for c (numerical constant)."""
@@ -798,7 +805,11 @@ def to_poly(e: expr.Expr) -> Polynomial:
 
     elif e.is_power():
         a, b = to_poly(e.args[0]), to_poly(e.args[1])
-        if a.is_monomial() and b.is_fraction():
+        if a.is_fraction() and a.get_fraction() == 0:
+            return singleton(expr.Const(0))
+        elif a.is_fraction() and a.get_fraction() == 1:
+            return singleton(expr.Const(1))
+        elif a.is_monomial() and b.is_fraction():
             return a ** b.get_fraction()
         elif b.is_fraction():
             return Polynomial([Monomial(const_fraction(1), [(from_poly(a), b.get_fraction())])])
