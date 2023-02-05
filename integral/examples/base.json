@@ -106,8 +106,38 @@
         },
         {
             "type": "header",
-            "name": "Hyperbolic functions",
+            "name": "Common identities",
             "level": 1
+        },
+        {
+            "type": "header",
+            "name": "Absolute value",
+            "level": 2
+        },
+        {
+            "type": "axiom",
+            "expr": "abs(x) = x",
+            "conds": [
+                "x >= 0"
+            ],
+            "attributes": [
+                "simplify"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "abs(x) = -x",
+            "conds": [
+                "x <= 0"
+            ],
+            "attributes": [
+                "simplify"
+            ]
+        },
+        {
+            "type": "header",
+            "name": "Hyperbolic functions",
+            "level": 2
         },
         {
             "type": "definition",
@@ -116,7 +146,7 @@
         {
             "type": "header",
             "name": "Power identities",
-            "level": 1
+            "level": 2
         },
         {
             "type": "axiom",
@@ -129,7 +159,7 @@
         {
             "type": "header",
             "name": "Exp-log identities",
-            "level": 1
+            "level": 2
         },
         {
             "type": "axiom",
@@ -159,7 +189,7 @@
         {
             "type": "header",
             "name": "Trigonometric identities",
-            "level": 1
+            "level": 2
         },
         {
             "type": "table",
@@ -423,7 +453,7 @@
         {
             "type": "header",
             "name": "Factorial and binomial coefficient",
-            "level": 1
+            "level": 2
         },
         {
             "type": "axiom",

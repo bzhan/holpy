@@ -639,7 +639,15 @@ class SimplifyIdentity(Rule):
         for identity in ctx.get_simp_identities():
             inst = expr.match(e, identity.lhs)
             if inst is not None:
-                return identity.rhs.inst_pat(inst)
+                # Check conditions
+                satisfied = True
+                for cond in identity.conds.data:
+                    cond = expr.expr_to_pattern(cond)
+                    cond = cond.inst_pat(inst)
+                    if not ctx.get_conds().check_condition(cond):
+                        satisfied = False
+                if satisfied:
+                    return identity.rhs.inst_pat(inst)
 
         return e
 
@@ -930,7 +938,6 @@ class FullSimplify(Rule):
             s = OnSubterm(FunctionTable()).eval(s, ctx)
             s = OnSubterm(DerivativeSimplify()).eval(s, ctx)
             s = OnSubterm(SimplifyPower()).eval(s, ctx)
-            s = OnSubterm(SimplifyAbs()).eval(s, ctx)
             s = OnSubterm(ReduceLimit()).eval(s, ctx)
             s = OnSubterm(SummationSimplify()).eval(s, ctx)
             s = OnSubterm(SimplifyIdentity()).eval(s, ctx)
@@ -1707,31 +1714,6 @@ class FoldDefinition(Rule):
 
         # Not found
         return e
-
-    
-class SimplifyAbs(Rule):
-    def __init__(self):
-        self.name = "SimplifyAbs"
-
-    def __str__(self):
-        return "SimplifyAbs"
-
-    def export(self):
-        return {
-            "name": self.name,
-            "str": str(self)
-        }
-
-    def eval(self, e: Expr, ctx: Context) -> Expr:
-        if e.is_fun() and e.func_name == "abs":
-            if ctx.get_conds().is_not_negative(e.args[0]):
-                return e.args[0]
-            elif ctx.get_conds().is_not_positive(e.args[0]):
-                return -e.args[0]
-            else:
-                return e
-        else:
-            return e
 
 
 class IntegralEquation(Rule):

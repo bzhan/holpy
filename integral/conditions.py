@@ -51,6 +51,14 @@ class Conditions:
     def get_bounds_for_expr(self, e: Expr) -> Optional[Interval]:
         bounds = self.get_bounds()
         return interval.get_bounds_for_expr(e, bounds)
+    
+    def check_condition(self, cond: Expr) -> bool:
+        res = Interval.from_condition(cond)
+        if res:
+            e, interval = res
+            interval2 = self.get_bounds_for_expr(e)
+            return interval2.contained_in(interval)
+        return False
 
     def is_positive(self, e: Expr) -> bool:
         """Return whether conditions imply e is positive."""

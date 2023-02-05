@@ -30,6 +30,7 @@ class ConditionsTest(unittest.TestCase):
 
             # Integrals
             ("INT x:[1,oo]. 1 / x ^ 2", [], True),
+            ("INT x:[0,oo]. exp(-1/2 * x ^ 2)", [], True),
         ]
 
         for a, conds_str, res in test_data:

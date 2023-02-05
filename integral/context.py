@@ -230,13 +230,13 @@ class Context:
         if attributes is not None and 'bidirectional' in attributes:
             self.other_identities.append(Identity(symb_rhs, symb_lhs, category=category))
 
-    def add_simp_identity(self, eq: Expr):
+    def add_simp_identity(self, eq: Expr, conds: Conditions):
         if not eq.is_equals():
             raise TypeError
         
         symb_lhs = expr_to_pattern(eq.lhs)
         symb_rhs = expr_to_pattern(eq.rhs)
-        self.simp_identities.append(Identity(symb_lhs, symb_rhs))
+        self.simp_identities.append(Identity(symb_lhs, symb_rhs, conds=conds))
 
     def add_function_table(self, funcname: str, table: Dict[str, str]):
         self.function_tables[funcname] = dict()
@@ -288,7 +288,11 @@ class Context:
                 self.add_other_identities(e, item['category'], item.get('attributes'))
         if 'attributes' in item and 'simplify' in item['attributes']:
             e = parser.parse_expr(item['expr'])
-            self.add_simp_identity(e)
+            conds = Conditions()
+            if 'conds' in item:
+                for cond in item['conds']:
+                    conds.add_condition(parser.parse_expr(cond))
+            self.add_simp_identity(e, conds)
         if item['type'] == 'definition':
             e = parser.parse_expr(item['expr'])
             self.add_definition(e)

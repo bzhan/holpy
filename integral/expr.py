@@ -863,7 +863,7 @@ def expr_to_pattern(e: Expr) -> Expr:
     """Convert an expression to pattern."""
     vars = e.get_vars()
     for var in vars:
-        e = e.subst(var, Symbol(var, [VAR, CONST, OP, FUN]))
+        e = e.subst(var, Symbol(var, [VAR, CONST, OP, FUN, INTEGRAL]))
     return e
 
 
