@@ -1382,6 +1382,36 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file, "easy01")
 
+    def testEulerConstant01(self):
+        # Reference:
+        # Inside interesting integrals, Section 5.4.1 & 5.4.3
+        # Notice that the proof below is different from the book's.
+
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "EulerConstant01")
+
+        # Define Euler's Constant
+        file.add_definition("G = - (INT x:[0, oo]. exp(-x) * log(x)) ")
+
+        # Prove these two integrals equal
+        goal = file.add_goal("(INT x:[0, 1]. (1 - exp(-x)) / x) - (INT x:[1, oo]. exp(-x) / x) = G")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        u = parser.parse_expr("exp(-x)")
+        v = parser.parse_expr("log(x)")
+        calc.perform_rule(rules.OnLocation(rules.IntegrationByParts(u=u, v=v), "1"))
+        u = parser.parse_expr("1 - exp(-x)")
+        v = parser.parse_expr("log(x)")
+        calc.perform_rule(rules.OnLocation(rules.IntegrationByParts(u=u, v=v), "0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.ExpandDefinition("G"))
+        calc.perform_rule(rules.SplitRegion(parser.parse_expr("1")))
+        calc.perform_rule(rules.FullSimplify())
+
+        self.checkAndOutput(file, "EulerConstant01")
+
     def testEasy02(self):
         # Reference:
         # Inside interesting integrals, Section 2.1.b

@@ -1,0 +1,101 @@
+{
+    "content": [
+        {
+            "eq": "G = -(INT x:[0,oo]. exp(-x) * log(x))",
+            "latex_eq": "G = -(\\int_{0}^{\\infty} e^{-x} \\log{x} \\,dx)",
+            "latex_lhs": "G",
+            "type": "FuncDef"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. x ^ (-1) * (-exp(-x) + 1)) - (INT x:[1,oo]. x ^ (-1) * exp(-x)) = G",
+            "latex_goal": "(\\int_{0}^{1} x ^ {-1} (-e^{-x} + 1) \\,dx) - (\\int_{1}^{\\infty} x ^ {-1} e^{-x} \\,dx) = G",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. x ^ (-1) * (-exp(-x) + 1)) - (INT x:[1,oo]. x ^ (-1) * exp(-x)) = G",
+                "latex_goal": "(\\int_{0}^{1} x ^ {-1} (-e^{-x} + 1) \\,dx) - (\\int_{1}^{\\infty} x ^ {-1} e^{-x} \\,dx) = G",
+                "lhs_calc": {
+                    "latex_start": "(\\int_{0}^{1} x ^ {-1} (-e^{-x} + 1) \\,dx) - (\\int_{1}^{\\infty} x ^ {-1} e^{-x} \\,dx)",
+                    "start": "(INT x:[0,1]. x ^ (-1) * (-exp(-x) + 1)) - (INT x:[1,oo]. x ^ (-1) * exp(-x))",
+                    "steps": [
+                        {
+                            "latex_res": "(\\int_{0}^{1} x ^ {-1} (-e^{-x} + 1) \\,dx) - ((\\left. e^{-x} \\log{x} \\right\\vert_{x=1}^{\\infty}) - (\\int_{1}^{\\infty} -e^{-x} \\log{x} \\,dx))",
+                            "res": "(INT x:[0,1]. x ^ (-1) * (-exp(-x) + 1)) - (([exp(-x) * log(x)]_x=1,oo) - (INT x:[1,oo]. -(exp(-x) * log(x))))",
+                            "rule": {
+                                "latex_str": "integrate by parts \\(u \\to e^{-x}, v \\to \\log{x}\\) at 1",
+                                "loc": "1",
+                                "name": "IntegrationByParts",
+                                "str": "integrate by parts u -> exp(-x), v -> log(x) at 1",
+                                "u": "exp(-x)",
+                                "v": "log(x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\left. \\log{x} (-e^{-x} + 1) \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} e^{-x} \\log{x} \\,dx) - ((\\left. e^{-x} \\log{x} \\right\\vert_{x=1}^{\\infty}) - (\\int_{1}^{\\infty} -e^{-x} \\log{x} \\,dx))",
+                            "res": "([log(x) * (-exp(-x) + 1)]_x=0,1) - (INT x:[0,1]. exp(-x) * log(x)) - (([exp(-x) * log(x)]_x=1,oo) - (INT x:[1,oo]. -(exp(-x) * log(x))))",
+                            "rule": {
+                                "latex_str": "integrate by parts \\(u \\to 1 - e^{-x}, v \\to \\log{x}\\) at 0",
+                                "loc": "0",
+                                "name": "IntegrationByParts",
+                                "str": "integrate by parts u -> 1 - exp(-x), v -> log(x) at 0",
+                                "u": "1 - exp(-x)",
+                                "v": "log(x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1} e^{-x} \\log{x} \\,dx) - (\\int_{1}^{\\infty} e^{-x} \\log{x} \\,dx)",
+                            "res": "-(INT x:[0,1]. exp(-x) * log(x)) - (INT x:[1,oo]. exp(-x) * log(x))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "G",
+                    "start": "G",
+                    "steps": [
+                        {
+                            "latex_res": "-(\\int_{0}^{\\infty} e^{-x} \\log{x} \\,dx)",
+                            "res": "-(INT x:[0,oo]. exp(-x) * log(x))",
+                            "rule": {
+                                "func_name": "G",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-((\\int_{0}^{1} e^{-x} \\log{x} \\,dx) + (\\int_{1}^{\\infty} e^{-x} \\log{x} \\,dx))",
+                            "res": "-((INT x:[0,1]. exp(-x) * log(x)) + (INT x:[1,oo]. exp(-x) * log(x)))",
+                            "rule": {
+                                "c": "1",
+                                "name": "SplitRegion",
+                                "str": "split region at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1} e^{-x} \\log{x} \\,dx) - (\\int_{1}^{\\infty} e^{-x} \\log{x} \\,dx)",
+                            "res": "-(INT x:[0,1]. exp(-x) * log(x)) - (INT x:[1,oo]. exp(-x) * log(x))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "EulerConstant01"
+}
