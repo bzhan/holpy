@@ -148,6 +148,18 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                 if not x.is_var():
                     sx = "(" + sx + ")"
                 return "\\cos^{-1}{%s}" % sx
+            elif e.func_name == "acot":
+                if not x.is_var():
+                    sx = "(" + sx + ")"
+                return "\\cot^{-1}{%s}" % sx
+            elif e.func_name == "acsc":
+                if not x.is_var():
+                    sx = "(" + sx + ")"
+                return "\\csc^{-1}{%s}" % sx
+            elif e.func_name == "asec":
+                if not x.is_var():
+                    sx = "(" + sx + ")"
+                return "\\sec^{-1}{%s}" % sx
             elif e.func_name in ('log', 'sin', 'cos', 'tan', 'cot', 'csc', 'sec', 'cosh'):
                 if not x.is_var():
                     sx = "(" + sx + ")"

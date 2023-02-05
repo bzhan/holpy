@@ -8,11 +8,8 @@ from flask.json import jsonify
 import pathlib
 import os
 import integral
-from logic import basic
 from integral import compstate
 from app.app import app
-
-basic.load_theory('interval_arith')
 
 dirname = os.path.dirname(__file__)
 
@@ -26,17 +23,33 @@ def integral_load_book_content():
         f_data = json.load(f)
 
     # For each expression, load its latex form
+    print('here')
     for item in f_data['content']:
+        # Expressions in item
         if 'expr' in item:
             e = integral.parser.parse_expr(item['expr'])
             latex_str = integral.latex.convert_expr(e)
             item['latex_str'] = latex_str
+        # Conditions in item
         if 'conds' in item:
             latex_conds = []
             for cond_str in item['conds']:
                 cond = integral.parser.parse_expr(cond_str)
                 latex_conds.append(integral.latex.convert_expr(cond))
             item['latex_conds'] = latex_conds
+        # Table elements
+        if item['type'] == 'table':
+            new_table = list()
+            funcexpr = integral.expr.Fun(item['name'], integral.expr.Var('x'))
+            item['funcexpr'] = integral.latex.convert_expr(funcexpr)
+            for x, y in item['table'].items():
+                x = integral.parser.parse_expr(x)
+                y = integral.parser.parse_expr(y)
+                new_table.append({
+                    'x': integral.latex.convert_expr(x),
+                    'y': integral.latex.convert_expr(y)
+                })
+            item['latex_table'] = new_table
 
     return jsonify(f_data)
 

@@ -138,6 +138,28 @@
             </span>
           </span>
         </div>
+        <div v-if="item.type == 'table'" style="margin: 5px">
+          <table style="border-collapse: collapse">
+            <tr>
+              <td style="border-style: solid; padding: 3px">
+                <MathEquation v-bind:data="'\\(' + '{x}' + '\\)'"/>
+              </td>
+              <td v-for="(entry, index) in item.latex_table" :key="index"
+                  style="border-style: solid; padding: 3px">
+                <MathEquation v-bind:data="'\\(' + entry.x + '\\)'"/>
+              </td>
+            </tr>
+            <tr>
+              <td style="border-style: solid; padding: 3px">
+                <MathEquation v-bind:data="'\\(' + item.funcexpr + '\\)'"/>
+              </td>
+              <td v-for="(entry, index) in item.latex_table" :key="index"
+                  style="border-style: solid; padding: 3px">
+                <MathEquation v-bind:data="'\\(' + entry.y + '\\)'"/>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
     <div id="dialog">
