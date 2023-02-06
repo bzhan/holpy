@@ -38,6 +38,16 @@ class IntervalTest(unittest.TestCase):
             var_range = {Var('x'): parse_interval(i1)}
             self.assertEqual(str(get_bounds_for_expr(s, var_range)), i2)
 
+    def testIntervalPower(self):
+        test_data = [(["0","oo",True,True],["2","2",False,False],"(0, oo)")]
+        for a,b,res in test_data:
+            a[0] = parse_expr(a[0])
+            a[1] = parse_expr(a[1])
+            b[0] = parse_expr(b[0])
+            b[1] = parse_expr(b[1])
+            ia = Interval(*a)
+            ib = Interval(*b)
+            print(ia ** ib)
 
 if __name__ == "__main__":
     unittest.main()

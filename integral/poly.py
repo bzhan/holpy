@@ -860,8 +860,43 @@ def to_poly(e: expr.Expr) -> Polynomial:
         return singleton(expr.Fun(e.func_name, *args_norm))
 
     elif e.is_evalat():
-        upper = e.body.subst(e.var, e.upper) if not e.upper.is_inf() else expr.Limit(e.var, e.upper, e.body)
-        lower = e.body.subst(e.var, e.lower) if not e.lower.is_inf() else expr.Limit(e.var, e.lower, e.body)
+        from integral.limits import is_indeterminate_form, FROM_BELOW, FROM_ABOVE
+        # upper = e.body.subst(e.var, e.upper) if not e.upper.is_inf() else expr.Limit(e.var, e.upper, e.body)
+        if e.upper==expr.POS_INF:
+            upper = expr.Limit(e.var, expr.POS_INF, e.body)
+        elif e.upper==expr.NEG_INF:
+            x = expr.Var(e.var)
+            upper = expr.Limit(e.var, expr.POS_INF, e.body.subst(e.var, -x))
+        else:
+            # if is_indeterminate_form(expr.Limit(e.var, e.upper, e.body)):
+            #     x = expr.Var(e.var)
+            #     a = e.upper
+            #     upper = expr.Limit(e.var, expr.POS_INF, e.body.subst(e.var, a - 1/x))
+            # else:
+            try:
+                upper = normalize(e.body.subst(e.var, e.upper))
+            except:
+                x = expr.Var(e.var)
+                a = e.upper
+                upper = expr.Limit(e.var, expr.POS_INF, e.body.subst(e.var, a - 1 / x))
+        # lower = e.body.subst(e.var, e.lower) if not e.lower.is_inf() else expr.Limit(e.var, e.lower, e.body)
+        if e.lower==expr.POS_INF:
+            lower = expr.Limit(e.var, expr.POS_INF, e.body)
+        elif e.lower==expr.NEG_INF:
+            x = expr.Var(e.var)
+            lower = expr.Limit(e.var, expr.POS_INF, e.body.subst(e.var, -x))
+        else:
+            # if is_indeterminate_form(expr.Limit(e.var, e.lower, e.body)):
+            #     x = expr.Var(e.var)
+            #     a = e.lower
+            #     lower = expr.Limit(e.var, expr.POS_INF, e.body.subst(e.var, a + 1/x))
+            # else:
+            try:
+                lower = normalize(e.body.subst(e.var, e.lower))
+            except:
+                x = expr.Var(e.var)
+                a = e.lower
+                lower = expr.Limit(e.var, expr.POS_INF, e.body.subst(e.var, a + 1 / x))
         return to_poly(normalize(upper) - normalize(lower))
 
     elif e.is_integral():
@@ -880,6 +915,8 @@ def to_poly(e: expr.Expr) -> Polynomial:
             return -singleton(expr.POS_INF)
     elif e.is_indefinite_integral():
         return singleton(expr.IndefiniteIntegral(e.var, normalize(e.body), e.skolem_args))
+    elif e.is_summation():
+        return singleton(expr.Summation(e.index_var, normalize(e.lower), normalize(e.upper), normalize(e.body)))
     else:
         return singleton(e)
 

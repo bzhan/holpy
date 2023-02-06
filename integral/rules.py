@@ -284,6 +284,8 @@ class Linearity(Rule):
                 v, l, u, body = e.index_var, e.lower, e.upper, e.body
                 if e.body.is_minus():
                     return Summation(v, l, u, body.args[0]) - Summation(v, l,u,body.args[1])
+                elif e.body.is_uminus():
+                    return -Summation(v, l, u, body.args[0])
                 elif e.body.is_times() or e.body.is_divides():
                     num_factors, denom_factors = decompose_expr_factor(e.body)
                     b, c = Const(1), Const(1)
