@@ -255,6 +255,7 @@ class LimitsTest(unittest.TestCase):
             ("atan(b ^ (-1/2) * x)", "pi/2", "b > 0"),
             ("exp(-(x * y)) * cos(a * x)", "0", "y > 0"),
             ("x / (a ^ 2 * x ^ 2 + 1)", "0", "a>0"),
+            ("exp(a*x)", "oo", "a>0"),
         ]
 
         for a, res, cond in test_data:

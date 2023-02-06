@@ -916,6 +916,9 @@ def to_poly(e: expr.Expr) -> Polynomial:
     elif e.is_indefinite_integral():
         return singleton(expr.IndefiniteIntegral(e.var, normalize(e.body), e.skolem_args))
     elif e.is_summation():
+        l, u = normalize(e.lower),normalize(e.upper)
+        if l == u:
+            return to_poly(e.body.subst(e.index_var, l))
         return singleton(expr.Summation(e.index_var, normalize(e.lower), normalize(e.upper), normalize(e.body)))
     else:
         return singleton(e)
