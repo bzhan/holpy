@@ -1280,7 +1280,8 @@ class IntegralTest(unittest.TestCase):
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("I"))
         calc.perform_rule(rules.FullSimplify())
-
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
         goal02 = file.add_goal("(D u. I(u)) = \
                 (1+u^2)^(-1) * (pi/4 - u * sqrt(1+2*u^2)^(-1)*atan(u/sqrt(1+2*u^2)))", conds=["u > 0"])
         proof = goal02.proof_by_calculation()
@@ -1298,13 +1299,15 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         e = parser.parse_expr("y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))")
 
-        calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse(var_name='y', var_subst=e), "1.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.SubstitutionInverse(var_name='y', var_subst=e), "0.0.0"))
+        calc.perform_rule(rules.FullSimplify())
+
         calc.perform_rule(rules.Equation(
-            "(y * sqrt(u ^ (-2) * (2 * u ^ 2 + 1))) ^ 2",
-            "y ^ 2 * (2 * u ^ 2 + 1) / u ^ 2"))
+            "(y ^ 2 * (2 * u ^ 2 + 1) / u ^ 2 + (2 * u ^ 2 + 1) / u ^ 2)",
+            "(y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2)"))
         calc.perform_rule(rules.Equation(
-            "1 / ((2 * u ^ 2 + 1) / u ^ 2 + y ^ 2 * (2 * u ^ 2 + 1) / u ^ 2)",
-            "(u^(-2) * (2*u^2+1))^(-1) * (1+y^2)^(-1)"))
+            "1 / ((y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2))",
+            "(1 / (y ^ 2 + 1)) * ((2 * u ^ 2 + 1) / u ^ 2)^(-1)"))
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -1341,6 +1344,8 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyIdentity("atan((sqrt(x^2 + 2))^(-1))", "pi/2 - atan(sqrt(x^2 + 2))"))
         calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
         calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("atan(sqrt(x ^ 2 + 2)) / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2))",\
+                                         "(x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))"))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal001.goal), "0.0"))
         u = expr.Const(1)
         v = parser.parse_expr("atan(x/sqrt(2+x^2))")

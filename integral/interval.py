@@ -111,10 +111,15 @@ class Interval:
                 return expr.NEG_INF
             if a == expr.NEG_INF and eval_expr(b) > 0:
                 return expr.NEG_INF
+            if a == expr.POS_INF and b == expr.POS_INF:
+                return expr.POS_INF
+            if a == expr.POS_INF and eval_expr(b) == 0:
+                return expr.POS_INF * expr.Const(0)
             if a == expr.NEG_INF and eval_expr(b) < 0:
                 return expr.POS_INF
             if b == expr.POS_INF or b == expr.NEG_INF:
                 return lim_mul(b, a)
+
             return normalize_constant(a * b)
 
         bounds = [
@@ -123,7 +128,9 @@ class Interval:
             (lim_mul(self.end, other.start), self.right_open or other.left_open),
             (lim_mul(self.end, other.end), self.right_open or other.right_open)
         ]
-
+        for item in bounds:
+            if item[0] == expr.POS_INF * expr.Const(0):
+                bounds.remove(item)
         start, left_open = min(bounds, key=lambda p: (eval_expr(p[0]), p[1]))
         end, right_open = max(bounds, key=lambda p: (eval_expr(p[0]), p[1]))
         return Interval(start, end, left_open, right_open)
