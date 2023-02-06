@@ -1200,7 +1200,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal03.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-
+        # print(file)
         self.checkAndOutput(file, "LogFunction02")
 
     def testBernoulliIntegral(self):
@@ -1415,7 +1415,7 @@ class IntegralTest(unittest.TestCase):
         ctx.load_book("base")
         file = compstate.CompFile(ctx, "easy02")
 
-        goal = file.add_goal("(INT x:[0, oo]. log(1 + a^2 / x^2)) = pi*a")
+        goal = file.add_goal("(INT x:[0, oo]. log(1 + a^2 / x^2)) = pi*a", conds=["a>0"])
         proof = goal.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("I"))
@@ -1423,9 +1423,11 @@ class IntegralTest(unittest.TestCase):
         v = parser.parse_expr("x")
         calc.perform_rule(rules.IntegrationByParts(u = u, v = v))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Equation("x ^ (-2) * (a ^ 2 * x ^ (-2) + 1) ^ (-1)", "1 / (a^2 + x^2)"))
+        calc.perform_rule(rules.Equation("x ^ 2 * (a ^ 2 / x ^ 2 + 1)", "(a^2 + x^2)"))
+
         calc.perform_rule(rules.OnSubterm(rules.DefiniteIntegralIdentity()))
         calc.perform_rule(rules.FullSimplify())
+
         self.checkAndOutput(file, "easy02")
 
     def testEasy03(self):
@@ -1444,28 +1446,27 @@ class IntegralTest(unittest.TestCase):
         new_expr = parser.parse_expr("-log(t)")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         # assoc rewrite because Equation Rule can't find (b ^ 2 + (1 / t) ^ 2) ^ (-1) * -(t ^ (-2))
-        old_expr = parser.parse_expr("-log(t) * (b ^ 2 + (1 / t) ^ 2) ^ (-1) * -(t ^ (-2))")
-        new_expr = parser.parse_expr("-log(t) * ((b ^ 2 + (1 / t) ^ 2) ^ (-1) * -(t ^ (-2)))")
+        old_expr = parser.parse_expr("-log(t) / (b ^ 2 + (1 / t) ^ 2) * -(1 / t ^ 2)")
+        new_expr = parser.parse_expr("log(t) / (1 + b^2*t^2)")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
-        old_expr = parser.parse_expr("(b ^ 2 + (1 / t) ^ 2) ^ (-1) * -(t ^ (-2))")
-        new_expr = parser.parse_expr("-1 / (1 + b^2 * t^2)")
-        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+
         ctx.add_condition(parser.parse_expr("b>0"))
         calc.perform_rule(rules.SubstitutionInverse(var_name='s', var_subst=parser.parse_expr("s/b")))
         calc.perform_rule(rules.FullSimplify())
-        old_expr = parser.parse_expr("b ^ (-1) * s")
-        new_expr = parser.parse_expr("s/b")
-        calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+
         old_expr = parser.parse_expr("log(s/b)")
         new_expr = parser.parse_expr("log(s) - log(b)")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
-        old_expr = parser.parse_expr("(s ^ 2 + 1) ^ (-1) * (log(s) - log(b))")
-        new_expr = parser.parse_expr("log(s) /(s ^ 2 + 1) - log(b)/(s ^ 2 + 1)")
+
+        old_expr = parser.parse_expr("(log(s) - log(b)) / (s ^ 2 + 1)")
+        new_expr = parser.parse_expr("(log(s) /(s ^ 2 + 1) - log(b)/(s ^ 2 + 1))")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
+
         calc.perform_rule(rules.FullSimplify())
-        eq = parser.parse_expr("(INT s:[0,oo]. log(s) * (s ^ 2 + 1) ^ (-1)) = 0")
+
+        eq = parser.parse_expr("(INT s:[0,oo]. log(s) / (s ^ 2 + 1)) = 0")
         ctx.add_lemma(eq)
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq), "0.1.0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq), "0.0.0"))
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())

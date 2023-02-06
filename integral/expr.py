@@ -291,6 +291,8 @@ class Expr:
                    (other.body, other.lower, other.upper, other.index_var)
         elif self.is_skolem_func():
             return (self.name, self.dependent_vars) <= (other.name, other.dependent_vars)
+        elif self.is_limit():
+            return (self.var, self.lim, self.body, self.drt) <= (other.var, other.lim, other.body, other.drt)
         else:
             print(type(self))
             raise NotImplementedError

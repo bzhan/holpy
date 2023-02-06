@@ -3,9 +3,8 @@
 from typing import Dict, Tuple, Optional
 
 from integral import expr
-from integral.expr import Expr, eval_expr
-from integral.poly import normalize_constant
-
+from integral.expr import eval_expr, Expr
+from integral.poly import normalize_constant, normalize
 
 # Tolerance for floating-point rounding errors
 tol = 1e-16
@@ -163,8 +162,11 @@ class Interval:
                 return Interval.point(expr.Const(1))
             elif eval_expr(other.start) == 2:
                 # Simple case
+                if eval_expr(self.start) >= 0:
+                    return Interval(normalize(self.start**expr.Const(2)), normalize(self.end**expr.Const(2))\
+                        if not self.end.is_inf() else expr.POS_INF, self.left_open, self.right_open)
                 return Interval.ropen(expr.Const(0), expr.POS_INF)
-            elif eval_expr(other.start) > 0:    
+            elif eval_expr(other.start) > 0:
                 # TODO: distinguish by parity of denominator        
                 if self.start == expr.NEG_INF:
                     start = expr.NEG_INF
@@ -303,7 +305,7 @@ class Interval:
 def get_bounds_for_expr(e: Expr, bounds: Dict[Expr, Interval]) -> Interval:
     """Obtain the range of expression e as a variable.
 
-    e - expr.Expr, an expression.
+    e - Expr, an expression.
     bounds - dict(Expr, Interval): mapping from expressions to intervals.
 
     Returns bounds on the values of e. If None, no bound can be obtained.
