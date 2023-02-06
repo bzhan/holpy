@@ -39,7 +39,7 @@ class IntervalTest(unittest.TestCase):
             self.assertEqual(str(get_bounds_for_expr(s, var_range)), i2)
 
     def testIntervalPower(self):
-        test_data = [(["0","oo",True,True],["2","2",False,False],"(0, inf)")]
+        test_data = [(["0","oo",True,True],["2","2",False,False],"(0, oo)")]
         for a,b,res in test_data:
             a[0] = parse_expr(a[0])
             a[1] = parse_expr(a[1])

@@ -1147,7 +1147,7 @@ class IntegralTest(unittest.TestCase):
 
     def testLogFunction02(self):
         # Reference:
-        # Inside interesting integrals, Section 5.2, example #2
+        # Inside interesting integrals, Section 5.2, example #2 (5.2.4)
 
         ctx = context.Context()
         ctx.load_book('base')
@@ -1172,6 +1172,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("1 / (-x + 1) - 1 / (x + 1)", "2 * (x / (1-x^2))"))
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("x / (1-x^2)")))
         calc.perform_rule(rules.ApplyIdentity("(-1) ^ k * (-x) ^ k", "x ^ k"))
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "1"))
 
         goal03 = file.add_goal("(INT x:[0, pi/2]. cos(x)/sin(x) * log(1/cos(x))) = pi^2/24")
         proof_of_goal03 = goal03.proof_by_calculation()
