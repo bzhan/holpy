@@ -734,7 +734,12 @@ class OnSubterm(Rule):
                 e.var, self.eval(e.lower, ctx), self.eval(e.upper, ctx),
                 self.eval(e.body, ctx)), ctx)
         elif e.is_limit():
-            return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, ctx)), ctx)
+            if e.lim == POS_INF:
+                ctx2 = Context(ctx)
+                ctx2.add_condition(expr.Op(">", Var(e.var), Const(0)))
+                return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, ctx2)), ctx)
+            else:
+                return rule.eval(expr.Limit(e.var, e.lim, self.eval(e.body, ctx)), ctx)
         elif e.is_indefinite_integral():
             return rule.eval(expr.IndefiniteIntegral(e.var, self.eval(e.body, ctx), e.skolem_args), ctx)
         elif e.is_summation():
