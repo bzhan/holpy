@@ -568,6 +568,16 @@ def limit_of_expr(e: Expr, var_name: str, conds: Conditions) -> Limit:
         else:
             l1 = limit_of_expr(e.args[0], var_name, conds)
             l2 = limit_of_expr(e.args[1], var_name, conds)
+            if l1.e.is_const() and expr.eval_expr(l1.e) == 1 and l2.e == POS_INF:
+                x = limit_of_expr(e.args[1] * expr.Fun('log', e.args[0]), var_name, conds)
+                if x.e == None:
+                    return Limit(None)
+                elif x.e == POS_INF:
+                    return Limit(POS_INF, asymp=Exp(x.asymp), side=FROM_BELOW)
+                elif x.e == NEG_INF:
+                    return Limit(Const(0), asymp=Exp(x.asymp), side=FROM_ABOVE)
+                else:
+                    return Limit(expr.Fun("exp", x.e), asymp = Exp(x.asymp), side = x.side)
             return limit_power(l1, l2, conds)
     elif e.is_fun() and e.func_name == 'exp':
         l = limit_of_expr(e.args[0], var_name, conds)
@@ -726,3 +736,4 @@ def reduce_finite_limit(e: Expr) -> Expr:
         return normalize(body)
     except ZeroDivisionError:
         return e
+

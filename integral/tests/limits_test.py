@@ -227,8 +227,9 @@ class LimitsTest(unittest.TestCase):
             ("-1/2 * x ^ 2 * (y ^ 2 + 1)", "-oo"),
             ("exp(-1 / 2 * x ^ 2) * sin(t * x)", '0'),
             ("atan(x * sqrt(u ^ 2 + 2))", 'pi / 2'),
-            ("INT t:[1,x]. 1 / (t ^ 2)", "INT t:[1,oo]. t ^ (-2)"),
-            ("abs(INT t:[1,x]. 1 / (t ^ 2))", "abs(INT t:[1,oo]. t ^ (-2))"),
+            ("INT t:[1,x]. 1 / (t ^ 2)", "INT t:[1,oo]. 1/t^2"),
+            ("abs(INT t:[1,x]. 1 / (t ^ 2))", "abs(INT t:[1,oo]. 1/t^2)"),
+            ("(-(u/x) + 1)^x", None),
         ]
 
         conds = Conditions()
