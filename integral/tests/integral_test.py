@@ -1414,6 +1414,33 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file, "EulerConstant01")
 
+    def testChapter3Practice01(self):
+        # Reference:
+        # Inside interesting integrals, Section 3.10, C3.1
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "Chapter3Practice01")
+
+        file.add_definition("I(a, b) = (INT x:[0, oo]. log(1 + a ^ 2 * x ^ 2) / (b ^ 2 + x ^ 2))",
+                             conds=["a > 0", "b > 0"])
+        goal = file.add_goal("(D a. I(a,b)) = pi / (1 + a * b)", conds=["a > 0", "b > 0"])
+        proof_of_goal = goal.proof_by_calculation()
+        calc = proof_of_goal.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
+        calc.perform_rule(rules.DerivIntExchange())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("x ^ 2 / ((b ^ 2 + x ^ 2) * (a ^ 2 * x ^ 2 + 1))",
+                                         "1 / (1 - a ^ 2 * b ^ 2) * (1 / (1 + a ^ 2 * x ^ 2) - b ^ 2 / (b ^ 2 + x ^ 2))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.Substitution("t", parser.parse_expr("a * x")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.Equation("2 * (a * (1/2 * pi * (1 / a) + -1/2 * pi * b) / (-(a ^ 2 * b ^ 2) + 1))",
+                                         "pi / (1 + a * b)"))
+        self.checkAndOutput(file, "Chapter3Practice01")
+
+
     def testEasy02(self):
         # Reference:
         # Inside interesting integrals, Section 2.1.b

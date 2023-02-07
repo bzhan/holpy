@@ -1,0 +1,157 @@
+{
+    "content": [
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
+                }
+            ],
+            "eq": "I(a,b) = (INT x:[0,oo]. log(1 + a ^ 2 * x ^ 2) / (b ^ 2 + x ^ 2))",
+            "latex_eq": "I(a,b) = \\int_{0}^{\\infty} \\frac{\\log{(1 + a ^ {2} x ^ {2})}}{b ^ {2} + x ^ {2}} \\,dx",
+            "latex_lhs": "I(a,b)",
+            "type": "FuncDef"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(D a. I(a,b)) = pi / (1 + a * b)",
+            "latex_goal": "\\frac{d}{da} I(a,b) = \\frac{\\pi}{1 + a b}",
+            "proof": {
+                "finished": true,
+                "goal": "(D a. I(a,b)) = pi / (1 + a * b)",
+                "latex_goal": "\\frac{d}{da} I(a,b) = \\frac{\\pi}{1 + a b}",
+                "lhs_calc": {
+                    "latex_start": "\\frac{d}{da} I(a,b)",
+                    "start": "D a. I(a,b)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{d}{da} \\int_{0}^{\\infty} \\frac{\\log{(a ^ {2} x ^ {2} + 1)}}{b ^ {2} + x ^ {2}} \\,dx",
+                            "res": "D a. INT x:[0,oo]. log(a ^ 2 * x ^ 2 + 1) / (b ^ 2 + x ^ 2)",
+                            "rule": {
+                                "func_name": "I",
+                                "loc": "subterms",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{da} \\frac{\\log{(a ^ {2} x ^ {2} + 1)}}{b ^ {2} + x ^ {2}} \\,dx",
+                            "res": "INT x:[0,oo]. D a. log(a ^ 2 * x ^ 2 + 1) / (b ^ 2 + x ^ 2)",
+                            "rule": {
+                                "name": "DerivIntExchange",
+                                "str": "exchange derivative and integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 a (\\int_{0}^{\\infty} \\frac{x ^ {2}}{(b ^ {2} + x ^ {2}) (a ^ {2} x ^ {2} + 1)} \\,dx)",
+                            "res": "2 * a * (INT x:[0,oo]. x ^ 2 / ((b ^ 2 + x ^ 2) * (a ^ 2 * x ^ 2 + 1)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 a (\\int_{0}^{\\infty} \\frac{1}{1 - a ^ {2} b ^ {2}} (\\frac{1}{1 + a ^ {2} x ^ {2}} - \\frac{b ^ {2}}{b ^ {2} + x ^ {2}}) \\,dx)",
+                            "res": "2 * a * (INT x:[0,oo]. 1 / (1 - a ^ 2 * b ^ 2) * (1 / (1 + a ^ 2 * x ^ 2) - b ^ 2 / (b ^ 2 + x ^ 2)))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{x ^ {2}}{(b ^ {2} + x ^ {2}) (a ^ {2} x ^ {2} + 1)}\\) to \\(\\frac{1}{1 - a ^ {2} b ^ {2}} (\\frac{1}{1 + a ^ {2} x ^ {2}} - \\frac{b ^ {2}}{b ^ {2} + x ^ {2}})\\)",
+                                "name": "Equation",
+                                "new_expr": "1 / (1 - a ^ 2 * b ^ 2) * (1 / (1 + a ^ 2 * x ^ 2) - b ^ 2 / (b ^ 2 + x ^ 2))",
+                                "old_expr": "x ^ 2 / ((b ^ 2 + x ^ 2) * (a ^ 2 * x ^ 2 + 1))",
+                                "str": "rewriting x ^ 2 / ((b ^ 2 + x ^ 2) * (a ^ 2 * x ^ 2 + 1)) to 1 / (1 - a ^ 2 * b ^ 2) * (1 / (1 + a ^ 2 * x ^ 2) - b ^ 2 / (b ^ 2 + x ^ 2))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{a (-b ^ {2} (\\int_{0}^{\\infty} \\frac{1}{b ^ {2} + x ^ {2}} \\,dx) + (\\int_{0}^{\\infty} \\frac{1}{a ^ {2} x ^ {2} + 1} \\,dx))}{-a ^ {2} b ^ {2} + 1})",
+                            "res": "2 * (a * (-(b ^ 2 * (INT x:[0,oo]. 1 / (b ^ 2 + x ^ 2))) + (INT x:[0,oo]. 1 / (a ^ 2 * x ^ 2 + 1))) / (-(a ^ 2 * b ^ 2) + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{a (-b ^ {2} (\\left. b ^ {-1} \\tan^{-1}{(\\frac{x}{b})} \\right\\vert_{x=0}^{\\infty}) + (\\int_{0}^{\\infty} \\frac{1}{a ^ {2} x ^ {2} + 1} \\,dx))}{-a ^ {2} b ^ {2} + 1})",
+                            "res": "2 * (a * (-(b ^ 2 * ([b ^ (-1) * atan(x / b)]_x=0,oo)) + (INT x:[0,oo]. 1 / (a ^ 2 * x ^ 2 + 1))) / (-(a ^ 2 * b ^ 2) + 1))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{a (-b ^ {2} (\\left. b ^ {-1} \\tan^{-1}{(\\frac{x}{b})} \\right\\vert_{x=0}^{\\infty}) + (\\int_{0}^{\\infty} \\frac{1}{a (t ^ {2} + 1)} \\,dt))}{-a ^ {2} b ^ {2} + 1})",
+                            "res": "2 * (a * (-(b ^ 2 * ([b ^ (-1) * atan(x / b)]_x=0,oo)) + (INT t:[0,oo]. 1 / (a * (t ^ 2 + 1)))) / (-(a ^ 2 * b ^ 2) + 1))",
+                            "rule": {
+                                "latex_str": "substitute \\(t\\) for \\(a x\\)",
+                                "name": "Substitution",
+                                "str": "substitute t for a * x",
+                                "var_name": "t",
+                                "var_subst": "a * x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{a (\\frac{1}{2} \\pi (\\frac{1}{a}) + -\\frac{1}{2} \\pi b)}{-a ^ {2} b ^ {2} + 1})",
+                            "res": "2 * (a * (1/2 * pi * (1 / a) + -1/2 * pi * b) / (-(a ^ 2 * b ^ 2) + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{a (\\frac{1}{2} \\pi (\\frac{1}{a}) + -\\frac{1}{2} \\pi b)}{-a ^ {2} b ^ {2} + 1})",
+                            "res": "2 * (a * (1/2 * pi * (1 / a) + -1/2 * pi * b) / (-(a ^ 2 * b ^ 2) + 1))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\pi}{1 + a b}",
+                            "res": "pi / (1 + a * b)",
+                            "rule": {
+                                "latex_str": "rewriting \\(2 (\\frac{a (\\frac{1}{2} \\pi (\\frac{1}{a}) + -\\frac{1}{2} \\pi b)}{-a ^ {2} b ^ {2} + 1})\\) to \\(\\frac{\\pi}{1 + a b}\\)",
+                                "name": "Equation",
+                                "new_expr": "pi / (1 + a * b)",
+                                "old_expr": "2 * (a * (1/2 * pi * (1 / a) + -1/2 * pi * b) / (-(a ^ 2 * b ^ 2) + 1))",
+                                "str": "rewriting 2 * (a * (1/2 * pi * (1 / a) + -1/2 * pi * b) / (-(a ^ 2 * b ^ 2) + 1)) to pi / (1 + a * b)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi}{1 + a b}",
+                    "start": "pi / (1 + a * b)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "Chapter3Practice01"
+}
