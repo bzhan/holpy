@@ -1499,5 +1499,23 @@ class IntegralTest(unittest.TestCase):
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file, "easy04")
+
+    def testEasy06(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.1.f
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "easy06")
+        goal01 = file.add_goal("(INT x:[-oo, oo]. 1/cosh(x)) = pi")
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("cosh")))
+        calc.perform_rule(rules.Substitution("t", parser.parse_expr("exp(x)")))
+        calc.perform_rule(rules.Equation("-log(t)", "log(1/t)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation(" 1 / (t * (1/2 * (1 / t) + 1/2 * t))", "2 / (1+t^2)"))
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file, "easy06")
+
 if __name__ == "__main__":
     unittest.main()

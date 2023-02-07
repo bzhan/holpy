@@ -278,16 +278,18 @@ class NormalLog:
     def to_expr(self) -> Expr:
         return from_poly(self.e)
 
-def minus_normal_log(a: NormalLog, b: NormalLog):
+def minus_normal_log(a: NormalLog, b: NormalLog) -> NormalLog:
     return NormalLog(a.e / b.e)
 
-def add_normal_log(a: NormalLog, b: NormalLog):
+def add_normal_log(a: NormalLog, b: NormalLog) -> NormalLog:
     return NormalLog(a.e * b.e)
 
 def normalize_log(e: Expr):
     def rec(e: Expr) -> NormalLog:
         if e.is_minus():
             return minus_normal_log(rec(e.args[0]), rec(e.args[1]))
+        elif e.is_uminus():
+            return NormalLog(rec(e.args[0]) ^ Const(-1))
         elif e.is_plus():
             return add_normal_log(rec(e.args[0]), rec(e.args[1]))
         elif e.is_fun() and e.func_name == 'log':
