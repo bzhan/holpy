@@ -627,6 +627,45 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file, "trick2c")
 
+    def testTrick2d(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.2, example 4
+        ctx = context.Context()
+        ctx.load_book('base')
+        file = compstate.CompFile(ctx, "Trick2d")
+        goal01 = file.add_goal("(INT x:[0,1]. log(x+1) / (x^2 + 1)) = (INT x:[0,1/4 * pi]. log(tan(x) + 1))")
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.SubstitutionInverse("u", "tan(u)"))
+        calc.perform_rule(rules.ApplyIdentity("sec(u) ^ 2" , "tan(u)^2 + 1"))
+        calc.perform_rule(rules.FullSimplify())
+
+        goal02 = file.add_goal("(INT x:[0,1]. log(x+1) / (x^2 + 1)) "\
+                                +"= (pi / 4 * log(2) - (INT x:[0,1]. log(x+1) / (x^2 + 1)))")
+        proof = goal02.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal01.goal))
+        calc.perform_rule(rules.SubstitutionInverse("x", "pi/4 - x"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ApplyIdentity("tan(1/4 * pi - x)",\
+                                              "(tan(1/4*pi) - tan(x)) / (1 + tan(1/4*pi) * tan(x))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("(-tan(x) + 1) / (tan(x) + 1) + 1",\
+                                         "2 / (1+tan(x))"))
+        calc.perform_rule(rules.ApplyIdentity("log(2 / (1 + tan(x)))", \
+                                              "log(2) - log(1 + tan(x))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal01.goal), "0.0"))
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        goal03 = file.add_goal("(INT x:[0,1]. log(x+1) / (x^2 + 1)) = pi / 8 * log(2)")
+        proof = goal03.proof_by_rewrite_goal(begin=goal02)
+        calc = proof.begin
+        calc.perform_rule(rules.SolveEquation("(INT x:[0,1]. log(x+1) / (x^2 + 1))"))
+
+        self.checkAndOutput(file, "trick2d")
+
+
     def testLeibniz01(self):
         # Reference
         # Inside interesting integrals, Section 3.1, example 1
@@ -755,6 +794,7 @@ class IntegralTest(unittest.TestCase):
         Eq7 = file.add_goal("(INT x:[-oo,oo]. exp(-x^2/2)) = sqrt(2*pi)")
         proof_of_Eq7 = Eq7.proof_by_calculation()
         calc = proof_of_Eq7.lhs_calc
+
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq6.goal), "1.0.0"))
         calc.perform_rule(rules.FullSimplify())

@@ -1170,9 +1170,11 @@ class SubstitutionInverse(Rule):
 
     """
 
-    def __init__(self, var_name: str, var_subst: Expr):
+    def __init__(self, var_name: str, var_subst: Union[Expr,str]):
         self.name = "SubstitutionInverse"
         self.var_name = var_name
+        if isinstance(var_subst, str):
+            var_subst = parser.parse_expr(var_subst)
         self.var_subst = var_subst
 
     def __str__(self):
@@ -1956,7 +1958,9 @@ class DerivEquation(Rule):
 
 class SolveEquation(Rule):
     """Solve equation for the given expression."""
-    def __init__(self, be_solved_expr: Expr):
+    def __init__(self, be_solved_expr: Union[Expr, str]):
+        if isinstance(be_solved_expr, str):
+            be_solved_expr = parser.parse_expr(be_solved_expr)
         self.be_solved_expr = be_solved_expr
         self.name = "SolveEquation"
 
