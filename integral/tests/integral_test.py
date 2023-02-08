@@ -554,7 +554,7 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 2.2, example 2
         ctx = context.Context()
         ctx.load_book('base')
-        file = compstate.CompFile(ctx, "Trick2a")
+        file = compstate.CompFile(ctx, "Trick2b")
 
         calc = file.add_calculation("INT x:[0,pi]. x * sin(x) / (1 + cos(x)^2)")
         calc.perform_rule(rules.Substitution("y", parser.parse_expr("pi - x")))
@@ -566,6 +566,66 @@ class IntegralTest(unittest.TestCase):
         self.assertEqual(str(calc.last_expr), "1/4 * pi ^ 2")
 
         self.checkAndOutput(file, "trick2b")
+    def testTrick2c(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.2, example 3
+        ctx = context.Context()
+        ctx.load_book('base')
+        file = compstate.CompFile(ctx, "Trick2c")
+        goal01 = file.add_goal("(INT x:[0, pi/2]. sin(x) ^ 2 / (sin(x) + cos(x))) " + \
+                            "= (INT x:[0, pi/2]. cos(x) ^ 2 / (sin(x) + cos(x)))")
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Substitution(var_name='y', \
+                          var_subst=parser.parse_expr("pi/2 - x")))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        goal02 = file.add_goal("(INT x:[0, pi/2]. sin(x) ^ 2 / (sin(x) + cos(x))) " + \
+                               "= (1/2 * INT x:[0, pi/2]. 1 / (sin(x) + cos(x)))")
+        proof = goal02.proof_by_calculation()
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(parser.parse_expr("(sin(x) ^ 2 + cos(x) ^ 2) = 1")), '1.0.0'))
+        calc.perform_rule(rules.Equation("(sin(x) ^ 2 + cos(x) ^ 2) / (cos(x) + sin(x))",\
+                                         "sin(x) ^ 2 / (cos(x) + sin(x)) + cos(x) ^ 2 / (cos(x) + sin(x)) "))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.Equation("1/2 * pi", "pi / 2"),'0'))
+        calc.perform_rule(rules.OnLocation(rules.Equation("cos(x) + sin(x)", "sin(x) + cos(x)"),'0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal01.goal), "0.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        goal03 = file.add_goal("(INT x:[0, pi/2]. sin(x) ^ 2 / (sin(x) + cos(x))) = " + \
+                               "sqrt(2) / 4 * log(3 + 2*sqrt(2))")
+        proof = goal03.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal02.goal))
+        calc.perform_rule(rules.Substitution('z', 'tan(x/2)'))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("(-(z ^ 2) + 1) / (z ^ 2 + 1) + 2 * (z / (z ^ 2 + 1))", \
+                                         "(2 - (z-1)^2) / (z^2 + 1)"))
+        calc.perform_rule(rules.Equation("1 / ((z ^ 2 + 1) * ((2 - (z - 1) ^ 2) / (z ^ 2 + 1)))",
+                                         "1 / (2 - (z - 1) ^ 2)"))
+        calc.perform_rule(rules.Equation("2 - (z - 1) ^ 2",
+                                         "(sqrt(2) + (z-1))*(sqrt(2) - (z-1))"))
+        calc.perform_rule(rules.Equation("1 / ((sqrt(2) + (z - 1)) * (sqrt(2) - (z - 1)))",
+                                         "sqrt(2) / 4 * (1/(sqrt(2) + (z - 1)) + 1/(sqrt(2) - (z - 1)))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.Substitution("u", "sqrt(2) - 1 + z"), "1.0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution("u", "sqrt(2) + 1 - z"), "1.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("1/4 * sqrt(2) * log(sqrt(2) + 1) + -1/4 * sqrt(2) * log(sqrt(2) - 1)", \
+                                         "1/4 * sqrt(2) * (log(sqrt(2) + 1) - log(sqrt(2) - 1))"))
+        # print(ctx)
+        calc.perform_rule(rules.ApplyIdentity("log(sqrt(2) + 1) - log(sqrt(2) - 1)", "log((sqrt(2) + 1) / (sqrt(2) - 1))"))
+        calc.perform_rule(rules.Equation("(sqrt(2) + 1) / (sqrt(2) - 1)", \
+                                         "3 + 2*sqrt(2)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file, "trick2c")
 
     def testLeibniz01(self):
         # Reference
@@ -1460,7 +1520,6 @@ class IntegralTest(unittest.TestCase):
 
         calc.perform_rule(rules.OnSubterm(rules.DefiniteIntegralIdentity()))
         calc.perform_rule(rules.FullSimplify())
-
         self.checkAndOutput(file, "easy02")
 
     def testEasy03(self):

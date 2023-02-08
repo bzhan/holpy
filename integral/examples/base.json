@@ -179,7 +179,10 @@
         {
             "type": "axiom",
             "expr": "log(a / b) = log(a) - log(b)",
-            "category": "exp-log"
+            "category": "exp-log",
+            "attributes": [
+                "bidirectional"
+            ]
         },
         {
             "type": "axiom",
@@ -385,6 +388,30 @@
         },
         {
             "type": "axiom",
+            "expr": "cos(2 * atan(z)) = (1 - z^2) / (1 + z^2)",
+            "category": "trigonometric",
+            "conds": [
+                "z>0",
+                "z<1"
+            ],
+            "attributes": [
+                "simplify"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "sin(2 * atan(z)) = (2 * z) / (1 + z^2)",
+            "conds": [
+                "z>0",
+                "z<1"
+            ],
+            "category": "trigonometric",
+            "attributes": [
+                "simplify"
+            ]
+        },
+        {
+            "type": "axiom",
             "expr": "sin(pi - u) = sin(u)",
             "category": "trigonometric",
             "attributes": [
@@ -528,6 +555,10 @@
                 "y > 0"
             ],
             "path": "standard"
+        },
+        {
+            "type": "lemma",
+            "expr": "(sin(x)^2 + cos(x)^2) = 1"
         }
     ],
     "name": "Base theory"
