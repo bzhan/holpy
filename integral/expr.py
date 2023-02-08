@@ -562,9 +562,11 @@ class Expr:
         elif isinstance(self, IndefiniteIntegral):
             return self.body.has_symbol()
         elif isinstance(self, Union[Op, Fun]):
-            return any([arg.has_symbol for arg in self.args])
+            return any([arg.has_symbol() for arg in self.args])
         elif isinstance(self, Summation):
             return self.body.has_symbol()
+        elif isinstance(self, Limit):
+            return self.body.has_symbol() or self.lim.has_symbol()
         else:
             print(self)
             raise NotImplementedError

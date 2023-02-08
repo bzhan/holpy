@@ -380,6 +380,19 @@
         },
         {
             "type": "axiom",
+            "expr": "sec(x)^2 = tan(x)^2 + 1",
+            "category": "trigonometric",
+            "attributes": [
+                "bidirection"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "tan(a-b) = (tan(a) - tan(b)) / (1 + tan(a) *tan(b))",
+            "category": "trigonometric"
+        },
+        {
+            "type": "axiom",
             "expr": "cos(pi - u) = -cos(u)",
             "category": "trigonometric",
             "attributes": [

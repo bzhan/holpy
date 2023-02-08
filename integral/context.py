@@ -1,6 +1,6 @@
 """Context of integral calculations"""
 
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Union
 import os
 import json
 
@@ -245,7 +245,9 @@ class Context:
             output = parser.parse_expr(output)
             self.function_tables[funcname][input] = output
 
-    def add_lemma(self, eq: Expr):
+    def add_lemma(self, eq: Union[Expr, str]):
+        if isinstance(eq, str):
+            eq = parser.parse_expr(eq)
         if not eq.is_equals():
             raise TypeError
 
@@ -259,7 +261,9 @@ class Context:
         # Note: no conversion to symbols for inductive hypothesis        
         self.induct_hyps.append(Identity(eq.lhs, eq.rhs))
 
-    def add_condition(self, cond: Expr):
+    def add_condition(self, cond: Union[Expr, str]):
+        if isinstance(cond, str):
+            cond = parser.parse_expr(cond)
         self.conds.add_condition(cond)
 
     def extend_condition(self, conds: Conditions):
