@@ -1072,7 +1072,9 @@ class Substitution(Rule):
 
     """
 
-    def __init__(self, var_name: str, var_subst: Expr):
+    def __init__(self, var_name: str, var_subst: Union[Expr,str]):
+        if isinstance(var_subst, str):
+            var_subst = parser.parse_expr(var_subst)
         assert isinstance(var_name, str) and isinstance(var_subst, Expr)
         self.name = "Substitution"
         self.var_name = var_name
