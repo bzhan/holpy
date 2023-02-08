@@ -983,8 +983,10 @@ class FullSimplify(Rule):
 
 class ApplyEquation(Rule):
     """Apply the given equation for rewriting."""
-    def __init__(self, eq: Expr):
+    def __init__(self, eq: Union[Expr,str]):
         self.name = "ApplyEquation"
+        if isinstance(eq, str):
+            eq = parser.parse_expr(eq)
         self.eq = eq
 
     def __str__(self):

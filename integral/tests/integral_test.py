@@ -665,7 +665,51 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file, "trick2d")
 
-
+    def testTrick2e(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.2, example 5
+        ctx = context.Context()
+        ctx.load_book('base')
+        ctx.add_condition("a>0")
+        ctx.add_lemma("(INT x:[0,1]. log(x+1) / (x^2+1)) = pi / 8 * log(2)")
+        file = compstate.CompFile(ctx, "Trick2e")
+        goal01 = file.add_goal("(INT x:[0,1]. log(x+1) / (x^2+1)) = (a * INT t:[0,a]. log(t+a) / (t^2 + a^2)) - pi / 4 * log(a)")
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.SubstitutionInverse("t", "t/a"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("log(t / a + 1) / (t ^ 2 / a ^ 2 + 1)", \
+                                         "log(t / a + 1) * a^2 / (t ^ 2  + a ^ 2)"))
+        calc.perform_rule(rules.Equation("t / a + 1", \
+                                         "(t+a) / a"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("log((a + t) / a)", "log(a+t) - log(a)"), "1.0.0"))
+        calc.perform_rule(rules.Equation("(log(a + t) - log(a)) / (a ^ 2 + t ^ 2)", \
+                                         "log(a + t) / (a ^ 2 + t ^ 2) - log(a) / (a ^ 2 + t ^ 2)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ExpandPolynomial())
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        goal02 = file.add_goal(" ((a * INT t:[0,a]. log(t+a) / (t^2 + a^2)) - pi / 4 * log(a)) = " + \
+                               "pi / 8 * log(2)")
+        proof = goal02.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal01.goal))
+        calc.perform_rule(rules.ApplyEquation("(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 8 * log(2)"))
+        goal03 = file.add_goal("(INT t:[0,a]. log(t+a) / (t^2 + a^2)) = pi /(8*a) * log(2*a^2)")
+        proof = goal03.proof_by_rewrite_goal(begin = goal02)
+        calc = proof.begin
+        calc.perform_rule(rules.SolveEquation("INT t:[0,a]. log(t+a) / (t^2 + a^2)"))
+        calc.perform_rule(rules.Equation("1/4 * pi * log(a)", "1/8 * pi * (2 * log(a))"))
+        calc.perform_rule(rules.Equation("2 * log(a)", "log(a^2)"))
+        calc.perform_rule(rules.Equation("1/8 * pi * log(2) + 1/8 * pi * log(a ^ 2)", "1/8 * pi * (log(2) + log(a^2))"))
+        calc.perform_rule(rules.Equation("(log(2) + log(a ^ 2))", "log(2 * a^2)"))
+        calc.perform_rule(rules.Equation("1/8 * pi * log(2 * a ^ 2) / a", "pi / (8 * a) * log(2 * a ^ 2)"))
+        # print(file)
+        self.checkAndOutput(file, "trick2e")
     def testLeibniz01(self):
         # Reference
         # Inside interesting integrals, Section 3.1, example 1
