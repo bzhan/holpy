@@ -262,6 +262,11 @@ class Limit:
 def limit_add(a: Limit, b: Limit) -> Limit:
     """Addition between two limits."""
     if a.e is None or b.e is None:
+        if a.is_bounded:
+            if b.e == NEG_INF:
+                return Limit(NEG_INF,asymp=b.asymp)
+            elif b.e == POS_INF:
+                return Limit(POS_INF,asymp=b.asymp)
         return Limit(None)
     elif a.e == POS_INF and b.e == POS_INF:
         return Limit(POS_INF, asymp=asymp_add(a.asymp, b.asymp))
@@ -610,7 +615,11 @@ def limit_of_expr(e: Expr, var_name: str, conds: Conditions) -> Limit:
         res.is_bounded = True
         return res
     elif e.is_fun() and e.func_name == 'cos':
-        res = Limit(None)
+        l = limit_of_expr(e.args[0],var_name, conds)
+        if l.e == None:
+            res = Limit(None)
+        else:
+            res = Limit(expr.Fun("cos", l.e), side=AT_CONST)
         res.is_bounded = True
         return res
     elif e.is_fun() and e.func_name == 'sqrt':

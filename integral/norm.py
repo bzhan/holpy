@@ -308,3 +308,48 @@ def eq_log(t1: Expr, t2: Expr) -> bool:
     n2 = normalize_log(t2)
     return equal_normal_log(n1, n2)
 
+class NormalDefiniteIntegral:
+    def __init__(self, var:str, lower: Polynomial, upper: Polynomial, body: Polynomial):
+        self.var = var
+        self.lower = to_poly(from_poly(lower))
+        self.upper = to_poly(from_poly(upper))
+        self.body = to_poly(from_poly(body))
+
+    def __str__(self):
+        return "INT(%s, %s, %s, %s)" % (self.var, from_poly(self.lower),from_poly(self.upper),from_poly(self.body))
+
+    def to_expr(self) -> Expr:
+        return from_poly(self.e)
+
+
+def equal_normal_definite_integral(t1: NormalDefiniteIntegral, t2: NormalDefiniteIntegral):
+    e1 = from_poly(t1.body),from_poly(t1.lower), from_poly(t1.upper)
+    e2 = from_poly(t2.body),from_poly(t2.lower), from_poly(t2.upper)
+    return e1 == e2
+
+def add_normal_definite_integral(t1: NormalDefiniteIntegral, t2: NormalDefiniteIntegral):
+    tmp = from_poly(t2.body)
+    tmp = to_poly(tmp.subst(t2.var, expr.Var(t1.var)))
+    return NormalDefiniteIntegral(t1.var, t1.lower, t1.upper, t1.body + tmp)
+
+def minus_normal_definite_integral(t1: NormalDefiniteIntegral, t2: NormalDefiniteIntegral):
+    tmp = from_poly(t2.e)
+    tmp = to_poly(tmp.subst(t2.var, expr.Var(t1.var)))
+    return NormalDefiniteIntegral(t1.var, t1.lower, t1.upper, t1.body - tmp)
+
+def normalize_definite_integral(e: Expr):
+    def rec(e: Expr) -> NormalDefiniteIntegral:
+        if e.is_plus():
+            return add_normal_definite_integral(rec(e.args[0]), rec(e.args[1]))
+        elif e.is_minus():
+            return minus_normal_definite_integral(rec(e.args[0]), rec(e.args[1]))
+        elif e.is_integral():
+            return NormalDefiniteIntegral(e.var, to_poly(e.lower), to_poly(e.upper), to_poly(e.body))
+        return NormalDefiniteIntegral("_x", to_poly(Const(0)), to_poly(Const(1)), to_poly(e))
+    return rec(e)
+
+def eq_definite_integral(t1: Expr, t2: Expr) -> bool:
+    n1 = normalize_definite_integral(t1)
+    n2 = normalize_definite_integral(t2)
+    return equal_normal_definite_integral(n1, n2)
+
