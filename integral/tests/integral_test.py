@@ -1585,6 +1585,74 @@ class IntegralTest(unittest.TestCase):
         self.checkAndOutput(file, "Chapter3Practice01")
 
 
+    def testChapter3Practice02(self):
+        # Reference:
+        # Inside interesting integrals, Section 3.10, C3.5
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "Chapter3Practice02")
+
+        # Reference:
+        # Inside interesting integrals, Section 3.2
+        # These lemmas have been proved in testDirichletIntegral.
+        # TODO:
+        #  1. Check the conditions when applying lemmas.
+        #  2. add_lemma() could include conds.
+        #  3. Lemmas could be shown in the front-end.
+        lemma01 = parser.parse_expr("(INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi")
+        ctx.add_lemma(lemma01)
+        ctx.add_condition(parser.parse_expr("a > 0"))
+        lemma02 = parser.parse_expr("(INT x:[0,oo]. sin(a2 * x) / x) = -1/2 * pi")
+        ctx.add_lemma(lemma02)
+        ctx.add_condition(parser.parse_expr("a < 0"))
+        lemma03 = parser.parse_expr("(INT x:[0,oo]. sin(a3 * x) / x) = 0")
+        ctx.add_lemma(lemma03)
+        ctx.add_condition(parser.parse_expr("a = 0"))
+
+        file.add_definition("I(a, b) = (INT x:[0, oo]. cos(a * x) * sin(b * x) / x)", conds=["a > 0", "b > 0"])
+        goal01 = file.add_goal("I(a, b) = 1/2 * (INT x:[0, oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0, oo]. sin((b - a) * x) / x)")
+        proof_of_goal01 = goal01.proof_by_calculation()
+        calc = proof_of_goal01.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition("I"))
+        calc.perform_rule(rules.ApplyIdentity("cos(a * x) * sin(b * x)", "1/2 * (sin(b * x + a * x) - sin(a * x - b * x))"))
+        calc.perform_rule(rules.Equation("1/2 * (sin(b * x + a * x) - sin(a * x - b * x)) / x",
+                                         "1/2 * sin(b * x + a * x) / x - 1/2 * sin(a * x - b * x) / x"))
+        calc.perform_rule(rules.Equation("b * x + a * x", "(b + a) * x"))
+        calc.perform_rule(rules.Equation("a * x - b * x", "-((b - a) * x)"))
+        calc.perform_rule(rules.ApplyIdentity("sin(-((b - a) * x))", "-sin((b - a) * x)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal01.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        # Case a > b
+        goal02 = file.add_goal("I(a, b) = 1/2 * pi", conds=["b - a > 0"])
+        proof_of_goal02 = goal02.proof_by_calculation()
+        calc = proof_of_goal02.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal01.goal))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(lemma01), "0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(lemma01), "1.1"))
+        calc.perform_rule(rules.FullSimplify())
+
+        # Case a > b
+        goal03 = file.add_goal("I(a, b) = 0", conds=["b - a < 0"])
+        proof_of_goal03 = goal03.proof_by_calculation()
+        calc = proof_of_goal03.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal01.goal))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(lemma01), "0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(lemma02), "1.1"))
+        calc.perform_rule(rules.FullSimplify())
+
+        # Case a = b
+        goal04 = file.add_goal("I(a, b) = 1/4 * pi", conds=["b - a = 0"])
+        proof_of_goal04 = goal04.proof_by_calculation()
+        calc = proof_of_goal04.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal01.goal))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(lemma01), "0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(lemma03), "1.1"))
+        calc.perform_rule(rules.FullSimplify())
+
+        self.checkAndOutput(file, "Chapter3Practice02")
+
     def testEasy02(self):
         # Reference:
         # Inside interesting integrals, Section 2.1.b
