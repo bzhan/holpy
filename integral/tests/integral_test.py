@@ -12,6 +12,7 @@ from integral import context
 
 
 class IntegralTest(unittest.TestCase):
+    maxDiff = None
     def checkAndOutput(self, file: compstate.CompFile, filename: str, omit_finish: bool = False):
         # Test parsing of json file
         json_file = file.export()
@@ -76,7 +77,8 @@ class IntegralTest(unittest.TestCase):
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        goal6 = file.add_goal("(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) / (k + 1) - x ^ (k + 1) / (k + 1) ^ 2 + SKOLEM_CONST(C)")
+        goal6 = file.add_goal(
+            "(INT x. x ^ k * log(x)) = x ^ (k + 1) * log(x) / (k + 1) - x ^ (k + 1) / (k + 1) ^ 2 + SKOLEM_CONST(C)")
         proof = goal6.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.IntegrationByParts(
@@ -108,9 +110,11 @@ class IntegralTest(unittest.TestCase):
         goal8 = file.add_goal("(INT x:[0,oo]. exp(-(x * y)) * sin(a * x)) = a / (a ^ 2 + y ^ 2)", conds=["y > 0"])
         proof = goal8.proof_by_calculation()
         calc = proof.lhs_calc
-        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("exp(-(x * y))"), parser.parse_expr("-cos(a * x) / a")))
+        calc.perform_rule(
+            rules.IntegrationByParts(parser.parse_expr("exp(-(x * y))"), parser.parse_expr("-cos(a * x) / a")))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.IntegrationByParts(parser.parse_expr("exp(-(x * y))"), parser.parse_expr("sin(a * x) / a")))
+        calc.perform_rule(
+            rules.IntegrationByParts(parser.parse_expr("exp(-(x * y))"), parser.parse_expr("sin(a * x) / a")))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,oo]. exp(-(x * y)) * sin(a * x)")))
         calc.perform_rule(rules.Equation(None, "a / (a ^ 2 + y ^ 2)"))
@@ -467,7 +471,8 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(Eq1.goal))
         calc.perform_rule(rules.OnSubterm(rules.ApplyInductHyp()))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Equation(None, "1/4 * pi * (b ^ (-m - 3/2) * 2 ^ (-2 * m) * (2 * m + 1) * binom(2 * m,m) / (m + 1))"))
+        calc.perform_rule(
+            rules.Equation(None, "1/4 * pi * (b ^ (-m - 3/2) * 2 ^ (-2 * m) * (2 * m + 1) * binom(2 * m,m) / (m + 1))"))
 
         # Induction step, RHS
         calc = proof_induct.rhs_calc
@@ -544,7 +549,8 @@ class IntegralTest(unittest.TestCase):
             "sqrt(cos(y)) / (sqrt(cos(y)) + sqrt(sin(y)))",
             "1 - sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")))
+        calc.perform_rule(rules.IntegrateByEquation(
+            parser.parse_expr("INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))")))
         self.assertEqual(str(calc.last_expr), "1/4 * pi")
 
         self.checkAndOutput(file, "trick2a")
@@ -566,6 +572,7 @@ class IntegralTest(unittest.TestCase):
         self.assertEqual(str(calc.last_expr), "1/4 * pi ^ 2")
 
         self.checkAndOutput(file, "trick2b")
+
     def testTrick2c(self):
         # Reference:
         # Inside interesting integrals, Section 2.2, example 3
@@ -775,6 +782,96 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.FoldDefinition("cosh")))
 
         self.checkAndOutput(file, "partialFraction")
+
+    def testPartialFraction03(self):
+        # Reference
+        # Inside interesting integrals, Section 2.3, example 3
+        ctx = context.Context()
+        ctx.load_book('base')
+        file = compstate.CompFile(ctx, 'partialFraction03')
+        file.add_definition("I(a) = (INT x:[0,oo]. 1 / (x^4 + 2*x^2*cos(2*a) + 1))")
+        goal01 = file.add_goal("I(a) = (INT x:[0,oo]. x^2 / (x^4 + 2*x^2*cos(2*a) + 1))")
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition("I"))
+        calc.perform_rule(rules.SubstitutionInverse("y", "1/y"))
+        calc.perform_rule(rules.Equation("1 / (2 * (1 / y) ^ 2 * cos(2 * a) + (1 / y) ^ 4 + 1)", \
+                                         "y^4 / (y^4 + 2*y^2*cos(2*a) + 1)"))
+        calc.perform_rule(rules.Equation("y ^ 4 / (y ^ 4 + 2 * y ^ 2 * cos(2 * a) + 1) * -(1 / y ^ 2)", \
+                                         "-y^2 / (y^4 + 2*y^2*cos(2*a) + 1)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        goal02 = file.add_goal("2*I(a) = (INT x:[0,oo]. (1+x^2) / (x^4 + 2*x^2*cos(2*a) + 1))")
+        proof = goal02.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("2*I(a)", "I(a) + I(a)"))
+        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition("I"), "0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal01.goal), "1"))
+        calc.perform_rule(rules.Equation("(INT x:[0,oo]. 1 / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1)) + (INT x:[0,oo]. x ^ 2 / (x ^ 4 + 2 * x ^ 2 * cos(2 * a) + 1))", \
+                                         "(INT x:[0,oo]. 1 / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1) + x ^ 2 / (x ^ 4 + 2 * x ^ 2 * cos(2 * a) + 1))"))
+        calc.perform_rule(
+            rules.Equation("1 / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1) + x ^ 2 / (x ^ 4 + 2 * x ^ 2 * cos(2 * a) + 1)",
+                           "(1+x^2) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        goal03 = file.add_goal("I(a) = (1/4 * (INT x:[-oo,oo]. 1 / (cos(a) ^ 2 + x ^ 2)))")
+        proof = goal03.proof_by_rewrite_goal(begin=goal02)
+        calc = proof.begin
+        calc.perform_rule(rules.SolveEquation("I(a)"))
+        ctx.add_lemma("(INT x:[0,oo]. (x ^ 2 + 1) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1)) = " +\
+                      "(1/2 * INT x:[-oo,oo]. (x ^ 2 + 1) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1))")
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("(INT x:[0,oo]. (x ^ 2 + 1) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1))= " +\
+                                                               "(1/2 * INT x:[-oo,oo]. (x ^ 2 + 1) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 +1)) "), \
+                                                               "1.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ApplyIdentity("cos(2*a)", "1-2*sin(a)"))
+        # calc.perform_rule(rules.OnLocation(rules.OnSubterm(rules.ExpandPolynomial()), "1.1.0.1"))
+        calc.perform_rule(rules.Equation("2 * x ^ 2 * (1 - 2 * sin(a))", "-4 * x ^ 2 * sin(a) + 2 * x ^ 2"))
+        # print(file)
+        ctx.add_lemma("(-4 * x ^ 2 * sin(a) + 2 * x ^ 2 + x ^ 4 + 1) = "
+                      "(x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1)")
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("-4 * x ^ 2 * sin(a) + 2 * x ^ 2 + x ^ 4 + 1=(x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1)"), "1.1.0.1"))
+        ctx.add_lemma("(INT x:[-oo,oo]. (-2*x*sin(a)) / ((x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1))) = 0")
+        calc.perform_rule(rules.Equation("1/4 * (INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 "
+                                         "+ 2 * x * sin(a) + 1)))",
+                                         "1/4 * (INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 "
+                                         "+ 2 * x * sin(a) + 1))) + 1/4 * 0"))
+        calc.perform_rule(rules.OnLocation(
+            rules.ApplyEquation("(INT x:[-oo,oo]. (-2*x*sin(a)) / ((x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1))) = 0"),
+            "1.1.1"))
+        calc.perform_rule(rules.Equation("1/4 * (INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))) + 1/4 * (INT x:[-oo,oo]. -2 * x * sin(a) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)))",
+                                         "1/4 * ((INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))) + (INT x:[-oo,oo]. -2 * x * sin(a) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))))"))
+        calc.perform_rule(rules.Equation("(INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))) + (INT x:[-oo,oo]. -2 * x * sin(a) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)))",
+                                         "(INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)) - 2 * x * sin(a) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)))"))
+        calc.perform_rule(rules.Equation("(x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)) - 2 * x * sin(a) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))",
+                                         "(x^2+1-2*x*sin(a)) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))"))
+        calc.perform_rule(rules.FullSimplify())
+        ctx.add_lemma("1 = cos(a)^2 +sin(a)^2")
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("1 = cos(a)^2 +sin(a)^2"), "1.1.0.1.1"))
+        calc.perform_rule(rules.Equation("(2 * x * sin(a) + x ^ 2 + (cos(a) ^ 2 + sin(a) ^ 2))",
+                                         "(x+sin(a))^2 + cos(a) ^ 2"))
+        calc.perform_rule(rules.Substitution("u", "x+sin(a)"))
+        calc.perform_rule(rules.FullSimplify())
+        goal04 = file.add_goal("I(a) = pi/ 4 /cos(a)", conds=["cos(a)>0"])
+        proof = goal04.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal03.goal))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        goal05 = file.add_goal("I(a) = -pi/ 4 /cos(a)", conds=["cos(a)<0"])
+        proof = goal05.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal03.goal))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file, "partialFraction03")
 
     def testLeibniz02(self):
         # Reference
