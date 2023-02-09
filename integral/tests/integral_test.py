@@ -1688,10 +1688,11 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
 
-        goal03 =file.add_goal("(INT x:[pi/2, 0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2)) = pi")
-        proof_of_goal03 = goal03.proof_by_rewrite_goal(begin=goal02)
-        calc = proof_of_goal03.begin
-
+        goal03 =file.add_goal("(INT x:[-1, 1]. ((1 + x) / (1 - x)) ^ (1/2)) = pi")
+        proof_of_goal03 = goal03.proof_by_calculation()
+        calc = proof_of_goal03.lhs_calc
+        calc.perform_rule(rules.ApplyEquation(goal01.goal))
+        calc.perform_rule(rules.ApplyEquation(goal02.goal))
         self.checkAndOutput(file, "Chapter3Practice03")
 
     def testEasy02(self):
