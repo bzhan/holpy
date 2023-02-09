@@ -1,0 +1,248 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "(INT x:[-1,1]. ((1 + x) / (1 - x)) ^ (1/2)) = (INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2))",
+            "latex_goal": "\\int_{-1}^{1} \\sqrt{\\frac{1 + x}{1 - x}} \\,dx = \\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + \\cos{(2 x)}}{1 - \\cos{(2 x)}}} \\,dx",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[-1,1]. ((1 + x) / (1 - x)) ^ (1/2)) = (INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2))",
+                "latex_goal": "\\int_{-1}^{1} \\sqrt{\\frac{1 + x}{1 - x}} \\,dx = \\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + \\cos{(2 x)}}{1 - \\cos{(2 x)}}} \\,dx",
+                "lhs_calc": {
+                    "latex_start": "\\int_{-1}^{1} \\sqrt{\\frac{1 + x}{1 - x}} \\,dx",
+                    "start": "INT x:[-1,1]. ((1 + x) / (1 - x)) ^ (1/2)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{-1}^{1} \\frac{\\sqrt{x + 1}}{\\sqrt{-x + 1}} \\,dx",
+                            "res": "INT x:[-1,1]. sqrt(x + 1) / sqrt(-x + 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + \\cos{(2 x)}}{1 - \\cos{(2 x)}}} \\,dx",
+                    "start": "INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{-1}^{1} \\frac{\\sqrt{u + 1}}{\\sqrt{-u + 1}} \\,du",
+                            "res": "INT u:[-1,1]. sqrt(u + 1) / sqrt(-u + 1)",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(\\cos{(2 x)}\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for cos(2 * x)",
+                                "var_name": "u",
+                                "var_subst": "cos(2 * x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{-1}^{1} \\frac{\\sqrt{u + 1}}{\\sqrt{-u + 1}} \\,du",
+                            "res": "INT u:[-1,1]. sqrt(u + 1) / sqrt(-u + 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2)) = pi",
+            "latex_goal": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + \\cos{(2 x)}}{1 - \\cos{(2 x)}}} \\,dx = \\pi",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2)) = pi",
+                "latex_goal": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + \\cos{(2 x)}}{1 - \\cos{(2 x)}}} \\,dx = \\pi",
+                "lhs_calc": {
+                    "latex_start": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + \\cos{(2 x)}}{1 - \\cos{(2 x)}}} \\,dx",
+                    "start": "INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + (2 \\cos^{2}(x) - 1)}{1 - \\cos{(2 x)}}} \\,dx",
+                            "res": "INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + (2 * cos(x) ^ 2 - 1)) / (1 - cos(2 * x))) ^ (1/2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\cos{(2 x)}\\) to \\(2 \\cos^{2}(x) - 1\\) using identity at 0.1.0.0.1",
+                                "loc": "0.1.0.0.1",
+                                "name": "ApplyIdentity",
+                                "source": "cos(2 * x)",
+                                "str": "rewrite cos(2 * x) to 2 * cos(x) ^ 2 - 1 using identity at 0.1.0.0.1",
+                                "target": "2 * cos(x) ^ 2 - 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + (2 \\cos^{2}(x) - 1)}{1 - \\cos{(x + x)}}} \\,dx",
+                            "res": "INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + (2 * cos(x) ^ 2 - 1)) / (1 - cos(x + x))) ^ (1/2)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\cos{(2 x)}\\) to \\(\\cos{(x + x)}\\) at 0.1.0.1.1",
+                                "loc": "0.1.0.1.1",
+                                "name": "Equation",
+                                "new_expr": "cos(x + x)",
+                                "old_expr": "cos(2 * x)",
+                                "str": "rewriting cos(2 * x) to cos(x + x) at 0.1.0.1.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + (2 \\cos^{2}(x) - 1)}{1 - (\\cos^{2}(x) - \\sin^{2}(x))}} \\,dx",
+                            "res": "INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + (2 * cos(x) ^ 2 - 1)) / (1 - (cos(x) ^ 2 - sin(x) ^ 2))) ^ (1/2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\cos{(x + x)}\\) to \\(\\cos^{2}(x) - \\sin^{2}(x)\\) using identity at 0.1.0.1.1",
+                                "loc": "0.1.0.1.1",
+                                "name": "ApplyIdentity",
+                                "source": "cos(x + x)",
+                                "str": "rewrite cos(x + x) to cos(x) ^ 2 - sin(x) ^ 2 using identity at 0.1.0.1.1",
+                                "target": "cos(x) ^ 2 - sin(x) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + (2 \\cos^{2}(x) - 1)}{1 - (1 - \\sin^{2}(x) - \\sin^{2}(x))}} \\,dx",
+                            "res": "INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + (2 * cos(x) ^ 2 - 1)) / (1 - (1 - sin(x) ^ 2 - sin(x) ^ 2))) ^ (1/2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\cos^{2}(x)\\) to \\(1 - \\sin^{2}(x)\\) using identity at 0.1.0.1.1.0",
+                                "loc": "0.1.0.1.1.0",
+                                "name": "ApplyIdentity",
+                                "source": "cos(x) ^ 2",
+                                "str": "rewrite cos(x) ^ 2 to 1 - sin(x) ^ 2 using identity at 0.1.0.1.1.0",
+                                "target": "1 - sin(x) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{2 \\cos^{2}(x)}{1 - (1 - \\sin^{2}(x) - \\sin^{2}(x))}} \\,dx",
+                            "res": "INT x:[pi / 2,0]. -2 * sin(2 * x) * (2 * cos(x) ^ 2 / (1 - (1 - sin(x) ^ 2 - sin(x) ^ 2))) ^ (1/2)",
+                            "rule": {
+                                "loc": "0.1.0.0",
+                                "name": "FullSimplify",
+                                "str": "full simplify at 0.1.0.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{2 \\cos^{2}(x)}{2 \\sin^{2}(x)}} \\,dx",
+                            "res": "INT x:[pi / 2,0]. -2 * sin(2 * x) * (2 * cos(x) ^ 2 / (2 * sin(x) ^ 2)) ^ (1/2)",
+                            "rule": {
+                                "loc": "0.1.0.1",
+                                "name": "FullSimplify",
+                                "str": "full simplify at 0.1.0.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{\\pi/2}^{0} -2 (2 \\sin{x} \\cos{x}) \\sqrt{\\frac{2 \\cos^{2}(x)}{2 \\sin^{2}(x)}} \\,dx",
+                            "res": "INT x:[pi / 2,0]. -2 * (2 * sin(x) * cos(x)) * (2 * cos(x) ^ 2 / (2 * sin(x) ^ 2)) ^ (1/2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\sin{(2 x)}\\) to \\(2 \\sin{x} \\cos{x}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "sin(2 * x)",
+                                "str": "rewrite sin(2 * x) to 2 * sin(x) * cos(x) using identity",
+                                "target": "2 * sin(x) * cos(x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-4 (\\int_{1/2\\cdot \\pi}^{0} \\cos^{2}(x) \\,dx)",
+                            "res": "-4 * (INT x:[1/2 * pi,0]. cos(x) ^ 2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-4 (\\int_{1/2\\cdot \\pi}^{0} \\frac{1 + \\cos{(2 x)}}{2} \\,dx)",
+                            "res": "-4 * (INT x:[1/2 * pi,0]. (1 + cos(2 * x)) / 2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\cos^{2}(x)\\) to \\(\\frac{1 + \\cos{(2 x)}}{2}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "cos(x) ^ 2",
+                                "str": "rewrite cos(x) ^ 2 to (1 + cos(2 * x)) / 2 using identity",
+                                "target": "(1 + cos(2 * x)) / 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-4 (\\int_{1/2\\cdot \\pi}^{0} \\frac{1}{2} + \\frac{\\cos{(2 x)}}{2} \\,dx)",
+                            "res": "-4 * (INT x:[1/2 * pi,0]. 1/2 + cos(2 * x) / 2)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1 + \\cos{(2 x)}}{2}\\) to \\(\\frac{1}{2} + \\frac{\\cos{(2 x)}}{2}\\)",
+                                "name": "Equation",
+                                "new_expr": "1/2 + cos(2 * x) / 2",
+                                "old_expr": "(1 + cos(2 * x)) / 2",
+                                "str": "rewriting (1 + cos(2 * x)) / 2 to 1/2 + cos(2 * x) / 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-2 (\\int_{1/2\\cdot \\pi}^{0} \\cos{(2 x)} \\,dx) + \\pi",
+                            "res": "-2 * (INT x:[1/2 * pi,0]. cos(2 * x)) + pi",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-2 (\\left. 2 ^ {-1} \\sin{(2 x)} \\right\\vert_{x=1/2\\cdot \\pi}^{0}) + \\pi",
+                            "res": "-2 * ([2 ^ (-1) * sin(2 * x)]_x=1/2 * pi,0) + pi",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\pi",
+                            "res": "pi",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\pi",
+                    "start": "pi",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2)) = pi",
+            "latex_goal": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + \\cos{(2 x)}}{1 - \\cos{(2 x)}}} \\,dx = \\pi",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2)) = pi",
+                "latex_goal": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + \\cos{(2 x)}}{1 - \\cos{(2 x)}}} \\,dx = \\pi",
+                "start": {
+                    "latex_start": "\\int_{\\pi/2}^{0} -2 \\sin{(2 x)} \\sqrt{\\frac{1 + \\cos{(2 x)}}{1 - \\cos{(2 x)}}} \\,dx = \\pi",
+                    "start": "(INT x:[pi / 2,0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2)) = pi",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "Chapter3Practice03"
+}

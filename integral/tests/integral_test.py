@@ -1653,6 +1653,47 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file, "Chapter3Practice02")
 
+
+    def testChapter3Practice03(self):
+        # Reference:
+        # Inside interesting integrals, Section 3.10, C3.6
+
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "Chapter3Practice03")
+
+        goal01 = file.add_goal("(INT x:[-1, 1]. ((1 + x) / (1 - x)) ^ (1/2))"
+                               " = (INT x:[pi/2, 0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2))")
+        proof_of_goal01 = goal01.proof_by_calculation()
+        calc = proof_of_goal01.lhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal01.rhs_calc
+        calc.perform_rule(rules.Substitution(var_name="u", var_subst="cos(2 * x)"))
+        calc.perform_rule(rules.FullSimplify())
+
+        goal02 = file.add_goal("(INT x:[pi/2, 0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2)) = pi")
+        proof_of_goal02 = goal02.proof_by_calculation()
+        calc = proof_of_goal02.lhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("cos(2 * x)", "2 * cos(x) ^ 2 - 1"), "0.1.0.0.1"))
+        calc.perform_rule(rules.OnLocation(rules.Equation("cos(2 * x)", "cos(x + x)"), "0.1.0.1.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("cos(x + x)", "cos(x) ^ 2 - sin(x) ^ 2"), "0.1.0.1.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("cos(x) ^ 2", "1 - sin(x) ^ 2"), "0.1.0.1.1.0"))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0.1.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.FullSimplify(), "0.1.0.1"))
+        calc.perform_rule(rules.ApplyIdentity("sin(2 * x)", "2 * sin(x) * cos(x)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ApplyIdentity("cos(x) ^ 2", "(1 + cos(2 * x)) / 2"))
+        calc.perform_rule(rules.Equation("(1 + cos(2 * x)) / 2", "1/2 + cos(2 * x) / 2"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+
+        goal03 =file.add_goal("(INT x:[pi/2, 0]. -2 * sin(2 * x) * ((1 + cos(2 * x)) / (1 - cos(2 * x))) ^ (1/2)) = pi")
+        proof_of_goal03 = goal03.proof_by_rewrite_goal(begin=goal02)
+        calc = proof_of_goal03.begin
+
+        self.checkAndOutput(file, "Chapter3Practice03")
+
     def testEasy02(self):
         # Reference:
         # Inside interesting integrals, Section 2.1.b
