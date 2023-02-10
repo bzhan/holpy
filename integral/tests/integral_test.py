@@ -1809,7 +1809,7 @@ class IntegralTest(unittest.TestCase):
         ctx.add_lemma(lemma)
         ctx.add_condition(parser.parse_expr("a > 0"))
 
-        goal01 = file.add_goal("I(a, b) = exp(b ^ 2 / (4 * a)) * sqrt(pi / a)")
+        goal01 = file.add_goal("I(a, b) = exp(b ^ 2 / (4 * a)) * sqrt(pi / a)", conds=["a > 0"])
         proof_of_goal01 = goal01.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("I"))
