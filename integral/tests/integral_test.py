@@ -1792,6 +1792,67 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(goal02.goal))
         self.checkAndOutput(file, "Chapter3Practice03")
 
+
+    def testChapter3Practice04(self):
+        # Reference:
+        # Inside interesting integrals, Section 3.10, C3.8
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "Chapter3Practice04")
+
+        file.add_definition("I(a, b) = (INT x:[-oo, oo]. exp(-a * x ^ 2 + b * x))", conds=["a > 0"])
+
+        # Reference:
+        # Inside interesting integrals, Section 3.7.1
+        # A similar theorem has been proved in testLeibniz02.
+        lemma = parser.parse_expr("(INT x:[-oo,oo]. exp(-(a * x ^ 2))) = sqrt(pi / a)")
+        ctx.add_lemma(lemma)
+        ctx.add_condition(parser.parse_expr("a > 0"))
+
+        goal01 = file.add_goal("I(a, b) = exp(b ^ 2 / (4 * a)) * sqrt(pi / a)")
+        proof_of_goal01 = goal01.proof_by_calculation()
+        calc = proof_of_goal01.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition("I"))
+        calc.perform_rule(rules.Equation("-(a * x ^ 2) + b * x",
+                                         "b ^ 2 / (4 * a) - a * (x - b / (2 * a)) ^ 2"))
+        calc.perform_rule(rules.ApplyIdentity("exp(b ^ 2 / (4 * a) - a * (x - b / (2 * a)) ^ 2)",
+                                              "exp(b ^ 2 / (4 * a)) * exp(-a * (x - b / (2 * a)) ^ 2)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Substitution(var_name="y", var_subst="x - b / (2 * a)"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(lemma), "1"))
+        calc.perform_rule(rules.Equation("1/4 * (b ^ 2 / a)", "b ^ 2 / (4 * a)"))
+
+        goal02 = file.add_goal("(D a. I(a, b)) = -(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)", conds=["a > 0"])
+        proof_of_goal02 = goal02.proof_by_calculation()
+        calc = proof_of_goal02.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal01.goal)))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.Equation("exp(1/4 * (b ^ 2 / a))", "exp(b ^ 2 / (4 * a))"), "0"))
+        calc.perform_rule(rules.OnLocation(rules.Equation("exp(1/4 * (b ^ 2 / a))", "exp(b ^ 2 / (4 * a))"), "1"))
+        calc.perform_rule(rules.Equation("(b ^ 2 * exp(b ^ 2 / (4 * a)) / a ^ (5/2))",
+                                         "(1 / a) ^ (1/2) * exp(b ^ 2 / (4 * a)) * b ^ 2 / (a ^ 2)"))
+        calc.perform_rule(rules.Equation("(1 / a) ^ (1/2)", "sqrt(1 / a)"))
+        calc.perform_rule(rules.Equation("-1/4 * sqrt(pi) * (sqrt(1 / a) * exp(b ^ 2 / (4 * a)) * b ^ 2 / a ^ 2)",
+                                         "-b ^ 2 / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"))
+        calc.perform_rule(rules.Equation("(exp(b ^ 2 / (4 * a)) / a ^ (3/2))",
+                                         "(1 / a) ^ (1/2) * exp(b ^ 2 / (4 * a)) / a"))
+        calc.perform_rule(rules.Equation("(1 / a) ^ (1/2)", "sqrt(1 / a)"))
+        calc.perform_rule(rules.Equation("-1/2 * sqrt(pi) * (sqrt(1 / a) * exp(b ^ 2 / (4 * a)) / a)",
+                                         "-1/(2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"))
+        calc.perform_rule(rules.Equation("-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + -1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                                         "-((b ^ 2) / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"))
+
+        goal03 = file.add_goal("(D b. I(a, b)) = (b / (2 * a)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) ")
+        proof_of_goal03 = goal03.proof_by_calculation()
+        calc = proof_of_goal03.lhs_calc
+        calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal01.goal)))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("exp(1/4 * (b ^ 2 / a))", "exp(b ^ 2 / (4 * a))"))
+        calc.perform_rule(rules.Equation("1/2 * sqrt(pi) * (b * exp(b ^ 2 / (4 * a)) / a ^ (3/2))",
+                                         "(b / (2 * a)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"))
+        self.checkAndOutput(file, "Chapter3Practice04")
+
+
     def testEasy02(self):
         # Reference:
         # Inside interesting integrals, Section 2.1.b
