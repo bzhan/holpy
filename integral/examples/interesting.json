@@ -91,6 +91,21 @@
             "path": "euler_log_sin"
         },
         {
+            "type": "problem",
+            "expr": "(INT x:[0, pi/2]. log(sin(x) / x)) = pi/2 * (1-log(pi))",
+            "path": "euler_log_sin02"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. log(x) / (x^2-b*x+1)) = 0",
+            "path": "euler_log_sin05"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,1]. (1-x) / (1+x+x^2)) = 1/6 * sqrt(3) * pi - 1/2 * log(3)",
+            "path": "euler_log_sin06"
+        },
+        {
             "type": "header",
             "name": "3. Feynman's Favorite Trick",
             "level": 1

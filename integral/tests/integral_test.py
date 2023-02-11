@@ -1294,6 +1294,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.Substitution("t", "u^2+1"), "0.0"))
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file, "euler_log_sin06")
+
     def testDirichletIntegral(self):
         # Reference:
         # Inside interesting integrals, Section 3.2

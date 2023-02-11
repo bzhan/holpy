@@ -1,0 +1,179 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "(INT x:[0,oo]. log(x ^ a + 1) / (x ^ 2 - b * x + 1)) = (INT x:[0,oo]. log(x ^ a + 1) / (x ^ 2 - b * x + 1)) - a * (INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1))",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\log{(x ^ {a} + 1)}}{x ^ {2} - b x + 1} \\,dx = (\\int_{0}^{\\infty} \\frac{\\log{(x ^ {a} + 1)}}{x ^ {2} - b x + 1} \\,dx) - a (\\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} - b x + 1} \\,dx)",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,oo]. log(x ^ a + 1) / (x ^ 2 - b * x + 1)) = (INT x:[0,oo]. log(x ^ a + 1) / (x ^ 2 - b * x + 1)) - a * (INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1))",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\log{(x ^ {a} + 1)}}{x ^ {2} - b x + 1} \\,dx = (\\int_{0}^{\\infty} \\frac{\\log{(x ^ {a} + 1)}}{x ^ {2} - b x + 1} \\,dx) - a (\\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} - b x + 1} \\,dx)",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\log{(x ^ {a} + 1)}}{x ^ {2} - b x + 1} \\,dx",
+                    "start": "INT x:[0,oo]. log(x ^ a + 1) / (x ^ 2 - b * x + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "-(\\int_{0}^{\\infty} \\frac{\\log{((\\frac{1}{u}) ^ {a} + 1)}}{(\\frac{1}{u}) ^ {2} - b (\\frac{1}{u}) + 1} -\\frac{1}{u ^ {2}} \\,du)",
+                            "res": "-(INT u:[0,oo]. log((1 / u) ^ a + 1) / ((1 / u) ^ 2 - b * (1 / u) + 1) * -(1 / u ^ 2))",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(\\frac{1}{u}\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for 1 / u",
+                                "var_name": "u",
+                                "var_subst": "1 / u"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\log{((\\frac{1}{u}) ^ {a} + 1)}}{u ^ {2} (\\frac{1}{u ^ {2}} - \\frac{b}{u} + 1)} \\,du",
+                            "res": "INT u:[0,oo]. log((1 / u) ^ a + 1) / (u ^ 2 * (1 / u ^ 2 - b / u + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\log{((\\frac{1}{u}) ^ {a} + 1)}}{-b u + u ^ {2} + 1} \\,du",
+                            "res": "INT u:[0,oo]. log((1 / u) ^ a + 1) / (-(b * u) + u ^ 2 + 1)",
+                            "rule": {
+                                "loc": "0.1",
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial at 0.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\log{(\\frac{1 ^ {a}}{u ^ {a}} + 1)}}{-b u + u ^ {2} + 1} \\,du",
+                            "res": "INT u:[0,oo]. log(1 ^ a / u ^ a + 1) / (-(b * u) + u ^ 2 + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\((\\frac{1}{u}) ^ {a}\\) to \\(\\frac{1 ^ {a}}{u ^ {a}}\\) using identity at 0.0.0",
+                                "loc": "0.0.0",
+                                "name": "ApplyIdentity",
+                                "source": "(1 / u) ^ a",
+                                "str": "rewrite (1 / u) ^ a to 1 ^ a / u ^ a using identity at 0.0.0",
+                                "target": "1 ^ a / u ^ a"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\log{(\\frac{1 + u ^ {a}}{u ^ {a}})}}{-b u + u ^ {2} + 1} \\,du",
+                            "res": "INT u:[0,oo]. log((1 + u ^ a) / u ^ a) / (-(b * u) + u ^ 2 + 1)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1 ^ {a}}{u ^ {a}} + 1\\) to \\(\\frac{1 + u ^ {a}}{u ^ {a}}\\)",
+                                "name": "Equation",
+                                "new_expr": "(1 + u ^ a) / u ^ a",
+                                "old_expr": "1 ^ a / u ^ a + 1",
+                                "str": "rewriting 1 ^ a / u ^ a + 1 to (1 + u ^ a) / u ^ a"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\log{(1 + u ^ {a})} - \\log{(u ^ {a})}}{-b u + u ^ {2} + 1} \\,du",
+                            "res": "INT u:[0,oo]. (log(1 + u ^ a) - log(u ^ a)) / (-(b * u) + u ^ 2 + 1)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\log{(\\frac{1 + u ^ {a}}{u ^ {a}})}\\) to \\(\\log{(1 + u ^ {a})} - \\log{(u ^ {a})}\\)",
+                                "name": "Equation",
+                                "new_expr": "log(1 + u ^ a) - log(u ^ a)",
+                                "old_expr": "log((1 + u ^ a) / u ^ a)",
+                                "str": "rewriting log((1 + u ^ a) / u ^ a) to log(1 + u ^ a) - log(u ^ a)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\log{(u ^ {a} + 1)}}{-b u + u ^ {2} + 1} - \\frac{\\log{(u ^ {a})}}{-b u + u ^ {2} + 1} \\,du",
+                            "res": "INT u:[0,oo]. log(u ^ a + 1) / (-(b * u) + u ^ 2 + 1) - log(u ^ a) / (-(b * u) + u ^ 2 + 1)",
+                            "rule": {
+                                "loc": "0",
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\int_{0}^{\\infty} \\frac{\\log{(u ^ {a} + 1)}}{-b u + u ^ {2} + 1} \\,du) - (\\int_{0}^{\\infty} \\frac{\\log{(u ^ {a})}}{-b u + u ^ {2} + 1} \\,du)",
+                            "res": "(INT u:[0,oo]. log(u ^ a + 1) / (-(b * u) + u ^ 2 + 1)) - (INT u:[0,oo]. log(u ^ a) / (-(b * u) + u ^ 2 + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\int_{0}^{\\infty} \\frac{\\log{(u ^ {a} + 1)}}{-b u + u ^ {2} + 1} \\,du) - (\\int_{0}^{\\infty} \\frac{a \\log{u}}{-b u + u ^ {2} + 1} \\,du)",
+                            "res": "(INT u:[0,oo]. log(u ^ a + 1) / (-(b * u) + u ^ 2 + 1)) - (INT u:[0,oo]. a * log(u) / (-(b * u) + u ^ 2 + 1))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\log{(u ^ {a})}\\) to \\(a \\log{u}\\) using identity at 1.0.0",
+                                "loc": "1.0.0",
+                                "name": "ApplyIdentity",
+                                "source": "log(u ^ a)",
+                                "str": "rewrite log(u ^ a) to a * log(u) using identity at 1.0.0",
+                                "target": "a * log(u)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\int_{0}^{\\infty} \\frac{\\log{(u ^ {a} + 1)}}{-b u + u ^ {2} + 1} \\,du) - a (\\int_{0}^{\\infty} \\frac{\\log{u}}{-b u + u ^ {2} + 1} \\,du)",
+                            "res": "(INT u:[0,oo]. log(u ^ a + 1) / (-(b * u) + u ^ 2 + 1)) - a * (INT u:[0,oo]. log(u) / (-(b * u) + u ^ 2 + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "(\\int_{0}^{\\infty} \\frac{\\log{(x ^ {a} + 1)}}{x ^ {2} - b x + 1} \\,dx) - a (\\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} - b x + 1} \\,dx)",
+                    "start": "(INT x:[0,oo]. log(x ^ a + 1) / (x ^ 2 - b * x + 1)) - a * (INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1))",
+                    "steps": [
+                        {
+                            "latex_res": "(\\int_{0}^{\\infty} \\frac{\\log{(x ^ {a} + 1)}}{-b x + x ^ {2} + 1} \\,dx) - a (\\int_{0}^{\\infty} \\frac{\\log{x}}{-b x + x ^ {2} + 1} \\,dx)",
+                            "res": "(INT x:[0,oo]. log(x ^ a + 1) / (-(b * x) + x ^ 2 + 1)) - a * (INT x:[0,oo]. log(x) / (-(b * x) + x ^ 2 + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1)) = 0",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} - b x + 1} \\,dx = 0",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1)) = 0",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} - b x + 1} \\,dx = 0",
+                "start": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\log{(x ^ {a} + 1)}}{x ^ {2} - b x + 1} \\,dx = (\\int_{0}^{\\infty} \\frac{\\log{(x ^ {a} + 1)}}{x ^ {2} - b x + 1} \\,dx) - a (\\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} - b x + 1} \\,dx)",
+                    "start": "(INT x:[0,oo]. log(x ^ a + 1) / (x ^ 2 - b * x + 1)) = (INT x:[0,oo]. log(x ^ a + 1) / (x ^ 2 - b * x + 1)) - a * (INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1))",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} - b x + 1} \\,dx = 0",
+                            "res": "(INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1)) = 0",
+                            "rule": {
+                                "latex_str": "solve equation for \\(\\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} - b x + 1} \\,dx\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1)",
+                                "str": "solve equation for INT x:[0,oo]. log(x) / (x ^ 2 - b * x + 1)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "EulerLogSine05"
+}

@@ -1,0 +1,134 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. (1 - x) / (1 + x + x ^ 2)) = 1/6 * sqrt(3) * pi - 1/2 * log(3)",
+            "latex_goal": "\\int_{0}^{1} \\frac{1 - x}{1 + x + x ^ {2}} \\,dx = \\frac{1}{6} \\sqrt{3} \\pi - \\frac{1}{2} \\log{(3)}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. (1 - x) / (1 + x + x ^ 2)) = 1/6 * sqrt(3) * pi - 1/2 * log(3)",
+                "latex_goal": "\\int_{0}^{1} \\frac{1 - x}{1 + x + x ^ {2}} \\,dx = \\frac{1}{6} \\sqrt{3} \\pi - \\frac{1}{2} \\log{(3)}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\frac{1 - x}{1 + x + x ^ {2}} \\,dx",
+                    "start": "INT x:[0,1]. (1 - x) / (1 + x + x ^ 2)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} \\frac{1 - x}{(x + \\frac{1}{2}) ^ {2} + \\frac{3}{4}} \\,dx",
+                            "res": "INT x:[0,1]. (1 - x) / ((x + 1/2) ^ 2 + 3/4)",
+                            "rule": {
+                                "latex_str": "rewriting \\(1 + x + x ^ {2}\\) to \\((x + \\frac{1}{2}) ^ {2} + \\frac{3}{4}\\)",
+                                "name": "Equation",
+                                "new_expr": "(x + 1/2) ^ 2 + 3/4",
+                                "old_expr": "1 + x + x ^ 2",
+                                "str": "rewriting 1 + x + x ^ 2 to (x + 1/2) ^ 2 + 3/4"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{1/3\\cdot \\sqrt{3}}^{\\sqrt{3}} \\frac{1}{2} \\sqrt{3} (\\frac{-\\frac{1}{2} \\sqrt{3} u + \\frac{3}{2}}{\\frac{3}{4} u ^ {2} + \\frac{3}{4}}) \\,du",
+                            "res": "INT u:[1/3 * sqrt(3),sqrt(3)]. 1/2 * sqrt(3) * ((-1/2 * sqrt(3) * u + 3/2) / (3/4 * u ^ 2 + 3/4))",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(\\frac{2 (x + \\frac{1}{2})}{\\sqrt{3}}\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for 2 * (x + 1/2) / sqrt(3)",
+                                "var_name": "u",
+                                "var_subst": "2 * (x + 1/2) / sqrt(3)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{1/3\\cdot \\sqrt{3}}^{\\sqrt{3}} \\frac{1}{2} \\sqrt{3} (\\frac{-\\frac{1}{2} \\sqrt{3} u + \\frac{3}{2}}{\\frac{3}{4} (u ^ {2} + 1)}) \\,du",
+                            "res": "INT u:[1/3 * sqrt(3),sqrt(3)]. 1/2 * sqrt(3) * ((-1/2 * sqrt(3) * u + 3/2) / (3/4 * (u ^ 2 + 1)))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{3}{4} u ^ {2} + \\frac{3}{4}\\) to \\(\\frac{3}{4} (u ^ {2} + 1)\\)",
+                                "name": "Equation",
+                                "new_expr": "3/4 * (u ^ 2 + 1)",
+                                "old_expr": "3/4 * u ^ 2 + 3/4",
+                                "str": "rewriting 3/4 * u ^ 2 + 3/4 to 3/4 * (u ^ 2 + 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{2}{3} \\sqrt{3} (\\int_{1/3\\cdot \\sqrt{3}}^{\\sqrt{3}} \\frac{-\\frac{1}{2} \\sqrt{3} u + \\frac{3}{2}}{u ^ {2} + 1} \\,du)",
+                            "res": "2/3 * sqrt(3) * (INT u:[1/3 * sqrt(3),sqrt(3)]. (-1/2 * sqrt(3) * u + 3/2) / (u ^ 2 + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{2}{3} \\sqrt{3} (\\int_{1/3\\cdot \\sqrt{3}}^{\\sqrt{3}} -\\frac{1}{2} \\sqrt{3} (\\frac{u}{u ^ {2} + 1}) + \\frac{3}{2} (\\frac{1}{u ^ {2} + 1}) \\,du)",
+                            "res": "2/3 * sqrt(3) * (INT u:[1/3 * sqrt(3),sqrt(3)]. -1/2 * sqrt(3) * (u / (u ^ 2 + 1)) + 3/2 * (1 / (u ^ 2 + 1)))",
+                            "rule": {
+                                "loc": "1.0",
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial at 1.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{2}{3} \\sqrt{3} (-\\frac{1}{2} \\sqrt{3} (\\int_{1/3\\cdot \\sqrt{3}}^{\\sqrt{3}} \\frac{u}{u ^ {2} + 1} \\,du) + \\frac{1}{4} \\pi)",
+                            "res": "2/3 * sqrt(3) * (-1/2 * sqrt(3) * (INT u:[1/3 * sqrt(3),sqrt(3)]. u / (u ^ 2 + 1)) + 1/4 * pi)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{1/3\\cdot \\sqrt{3}}^{\\sqrt{3}} \\frac{u}{u ^ {2} + 1} \\,du) + \\frac{1}{6} \\sqrt{3} \\pi",
+                            "res": "-(INT u:[1/3 * sqrt(3),sqrt(3)]. u / (u ^ 2 + 1)) + 1/6 * sqrt(3) * pi",
+                            "rule": {
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{1/3\\cdot \\sqrt{3}}^{\\sqrt{3}} \\frac{u}{u ^ {2} + 1} \\,du) + \\frac{1}{6} \\sqrt{3} \\pi",
+                            "res": "-(INT u:[1/3 * sqrt(3),sqrt(3)]. u / (u ^ 2 + 1)) + 1/6 * sqrt(3) * pi",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{4/3}^{4} \\frac{1}{2} (\\frac{1}{t}) \\,dt) + \\frac{1}{6} \\sqrt{3} \\pi",
+                            "res": "-(INT t:[4/3,4]. 1/2 * (1 / t)) + 1/6 * sqrt(3) * pi",
+                            "rule": {
+                                "latex_str": "substitute \\(t\\) for \\(u ^ {2} + 1\\) at 0.0",
+                                "loc": "0.0",
+                                "name": "Substitution",
+                                "str": "substitute t for u ^ 2 + 1 at 0.0",
+                                "var_name": "t",
+                                "var_subst": "u ^ 2 + 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{6} \\sqrt{3} \\pi - \\frac{1}{2} \\log{(3)}",
+                            "res": "1/6 * sqrt(3) * pi - 1/2 * log(3)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{1}{6} \\sqrt{3} \\pi - \\frac{1}{2} \\log{(3)}",
+                    "start": "1/6 * sqrt(3) * pi - 1/2 * log(3)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "EulerLogSine06"
+}
