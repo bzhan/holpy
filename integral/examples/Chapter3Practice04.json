@@ -13,6 +13,12 @@
             "type": "FuncDef"
         },
         {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
             "finished": true,
             "goal": "I(a,b) = exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
             "latex_goal": "I(a,b) = e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
@@ -124,12 +130,12 @@
                 }
             ],
             "finished": true,
-            "goal": "(D a. I(a,b)) = -(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-            "latex_goal": "\\frac{d}{da} I(a,b) = \\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+            "goal": "(D a. I(a,b)) = -(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+            "latex_goal": "\\frac{d}{da} I(a,b) = -\\frac{b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
             "proof": {
                 "finished": true,
-                "goal": "(D a. I(a,b)) = -(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                "latex_goal": "\\frac{d}{da} I(a,b) = \\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                "goal": "(D a. I(a,b)) = -(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                "latex_goal": "\\frac{d}{da} I(a,b) = -\\frac{b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
                 "lhs_calc": {
                     "latex_start": "\\frac{d}{da} I(a,b)",
                     "start": "D a. I(a,b)",
@@ -254,14 +260,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
-                            "res": "-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                            "latex_res": "-\\frac{b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                            "res": "-(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} + \\frac{-1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\) to \\(\\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\)",
+                                "latex_str": "rewriting \\(\\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} + \\frac{-1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\) to \\(-\\frac{b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\)",
                                 "name": "Equation",
-                                "new_expr": "-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                                "new_expr": "-(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
                                 "old_expr": "-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + -1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                                "str": "rewriting -(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + -1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) to -(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"
+                                "str": "rewriting -(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + -1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) to -(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"
                             },
                             "type": "CalculationStep"
                         }
@@ -269,8 +275,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
-                    "start": "-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                    "latex_start": "-\\frac{b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
+                    "start": "-(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
                     "steps": [],
                     "type": "Calculation"
                 },
@@ -279,6 +285,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
             "finished": true,
             "goal": "(D b. I(a,b)) = b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
             "latex_goal": "\\frac{d}{db} I(a,b) = \\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",

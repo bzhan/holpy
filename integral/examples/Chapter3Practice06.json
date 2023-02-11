@@ -1,0 +1,178 @@
+{
+    "content": [
+        {
+            "conds": [
+                {
+                    "cond": "a != 0",
+                    "latex_cond": "a \\neq 0"
+                },
+                {
+                    "cond": "b != 0",
+                    "latex_cond": "b \\neq 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(INT x:[0,1]. 1 / (a * x + b * (1 - x)) ^ 2) = 1 / (a * b)",
+            "latex_goal": "\\int_{0}^{1} \\frac{1}{(a x + b (1 - x)) ^ {2}} \\,dx = \\frac{1}{a b}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. 1 / (a * x + b * (1 - x)) ^ 2) = 1 / (a * b)",
+                "latex_goal": "\\int_{0}^{1} \\frac{1}{(a x + b (1 - x)) ^ {2}} \\,dx = \\frac{1}{a b}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\frac{1}{(a x + b (1 - x)) ^ {2}} \\,dx",
+                    "start": "INT x:[0,1]. 1 / (a * x + b * (1 - x)) ^ 2",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{b}^{a} \\frac{1}{(a - b) (b (-\\frac{-b + u}{a - b} + 1) + \\frac{a (-b + u)}{a - b}) ^ {2}} \\,du",
+                            "res": "INT u:[b,a]. 1 / ((a - b) * (b * (-((-b + u) / (a - b)) + 1) + a * (-b + u) / (a - b)) ^ 2)",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\((a - b) x + b\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for (a - b) * x + b",
+                                "var_name": "u",
+                                "var_subst": "(a - b) * x + b"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{b}^{a} \\frac{1}{u ^ {2} (a - b)} \\,du",
+                            "res": "INT u:[b,a]. 1 / (u ^ 2 * (a - b))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{(a - b) (b (-\\frac{-b + u}{a - b} + 1) + \\frac{a (-b + u)}{a - b}) ^ {2}}\\) to \\(\\frac{1}{u ^ {2} (a - b)}\\)",
+                                "name": "Equation",
+                                "new_expr": "1 / (u ^ 2 * (a - b))",
+                                "old_expr": "1 / ((a - b) * (b * (-((-b + u) / (a - b)) + 1) + a * (-b + u) / (a - b)) ^ 2)",
+                                "str": "rewriting 1 / ((a - b) * (b * (-((-b + u) / (a - b)) + 1) + a * (-b + u) / (a - b)) ^ 2) to 1 / (u ^ 2 * (a - b))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{-\\frac{1}{a} + \\frac{1}{b}}{a - b}",
+                            "res": "(-(1 / a) + 1 / b) / (a - b)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{a b}",
+                            "res": "1 / (a * b)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{-\\frac{1}{a} + \\frac{1}{b}}{a - b}\\) to \\(\\frac{1}{a b}\\)",
+                                "name": "Equation",
+                                "new_expr": "1 / (a * b)",
+                                "old_expr": "(-(1 / a) + 1 / b) / (a - b)",
+                                "str": "rewriting (-(1 / a) + 1 / b) / (a - b) to 1 / (a * b)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{1}{a b}",
+                    "start": "1 / (a * b)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3) = 1 / (2 * a ^ 2 * b)",
+            "latex_goal": "\\int_{0}^{1} \\frac{x}{(a x + b (1 - x)) ^ {3}} \\,dx = \\frac{1}{2 a ^ {2} b}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3) = 1 / (2 * a ^ 2 * b)",
+                "latex_goal": "\\int_{0}^{1} \\frac{x}{(a x + b (1 - x)) ^ {3}} \\,dx = \\frac{1}{2 a ^ {2} b}",
+                "start": {
+                    "conds": [
+                        {
+                            "cond": "a != 0",
+                            "latex_cond": "a \\neq 0"
+                        },
+                        {
+                            "cond": "b != 0",
+                            "latex_cond": "b \\neq 0"
+                        }
+                    ],
+                    "latex_start": "\\int_{0}^{1} \\frac{1}{(a x + b (1 - x)) ^ {2}} \\,dx = \\frac{1}{a b}",
+                    "start": "(INT x:[0,1]. 1 / (a * x + b * (1 - x)) ^ 2) = 1 / (a * b)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{d}{da} \\int_{0}^{1} \\frac{1}{(a x + b (1 - x)) ^ {2}} \\,dx = \\frac{d}{da} \\frac{1}{a b}",
+                            "res": "(D a. INT x:[0,1]. 1 / (a * x + b * (1 - x)) ^ 2) = (D a. 1 / (a * b))",
+                            "rule": {
+                                "name": "DerivEquation",
+                                "str": "derivate both sides",
+                                "var": "a"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} \\frac{d}{da} \\frac{1}{(a x + b (1 - x)) ^ {2}} \\,dx = \\frac{d}{da} \\frac{1}{a b}",
+                            "res": "(INT x:[0,1]. D a. 1 / (a * x + b * (1 - x)) ^ 2) = (D a. 1 / (a * b))",
+                            "rule": {
+                                "loc": "0",
+                                "name": "DerivIntExchange",
+                                "str": "exchange derivative and integral at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-2 (\\int_{0}^{1} \\frac{x}{(b (-x + 1) + a x) ^ {3}} \\,dx) = -\\frac{1}{a ^ {2} b}",
+                            "res": "-2 * (INT x:[0,1]. x / (b * (-x + 1) + a * x) ^ 3) = -(1 / (a ^ 2 * b))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-2 (\\int_{0}^{1} \\frac{x}{(a x + b (1 - x)) ^ {3}} \\,dx) = -\\frac{1}{a ^ {2} b}",
+                            "res": "-2 * (INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3) = -(1 / (a ^ 2 * b))",
+                            "rule": {
+                                "latex_str": "rewriting \\((b (-x + 1) + a x) ^ {3}\\) to \\((a x + b (1 - x)) ^ {3}\\)",
+                                "name": "Equation",
+                                "new_expr": "(a * x + b * (1 - x)) ^ 3",
+                                "old_expr": "(b * (-x + 1) + a * x) ^ 3",
+                                "str": "rewriting (b * (-x + 1) + a * x) ^ 3 to (a * x + b * (1 - x)) ^ 3"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} \\frac{x}{(a x + b (1 - x)) ^ {3}} \\,dx = \\frac{1}{2} (\\frac{1}{a ^ {2} b})",
+                            "res": "(INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3) = 1/2 * (1 / (a ^ 2 * b))",
+                            "rule": {
+                                "latex_str": "solve equation for \\(\\int_{0}^{1} \\frac{x}{(a x + b (1 - x)) ^ {3}} \\,dx\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3",
+                                "str": "solve equation for INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} \\frac{x}{(a x + b (1 - x)) ^ {3}} \\,dx = \\frac{1}{2 a ^ {2} b}",
+                            "res": "(INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3) = 1 / (2 * a ^ 2 * b)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{2} (\\frac{1}{a ^ {2} b})\\) to \\(\\frac{1}{2 a ^ {2} b}\\)",
+                                "name": "Equation",
+                                "new_expr": "1 / (2 * a ^ 2 * b)",
+                                "old_expr": "1/2 * (1 / (a ^ 2 * b))",
+                                "str": "rewriting 1/2 * (1 / (a ^ 2 * b)) to 1 / (2 * a ^ 2 * b)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "Chapter3Practice06"
+}
