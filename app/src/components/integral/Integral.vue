@@ -2,11 +2,8 @@
   <div>
     <!-- Menu -->
     <b-navbar type="light" variant="info">
-      <b-navbar-brand href="#" v-on:click='load_file_list'>Integral</b-navbar-brand>
+      <b-navbar-brand href="#" v-on:click='loadBookList'>Integral</b-navbar-brand>
       <b-navbar-nav>
-        <b-nav-item-dropdown text="File" left>
-          <b-dropdown-item href="#" v-on:click='load_file_list'>Open file</b-dropdown-item>
-        </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Proof" left>
           <b-dropdown-item href="#" v-on:click="clearItem">Clear</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('FullSimplify')">Simplify</b-dropdown-item>
@@ -41,8 +38,8 @@
     <!-- Content of the file -->
     <div id="content">
       <div v-if="content_state === false" align=left>
-        <div v-for="name in file_list" v-bind:key=name style="margin:5px 10px">
-          <a href="#" v-on:click="openFile(name)">{{name}}</a>
+        <div v-for="name in book_list" v-bind:key=name style="margin:5px 10px">
+          <a href="#" v-on:click="openBook(name)">{{name}}</a>
         </div>
       </div>
       <div v-if="content_state === true">
@@ -331,9 +328,11 @@ export default {
     return {
       filename: 'tongji7',       // Currently opened file
 
+      book_list: [],             // List of integral books
+      book_name: undefined,      // Currently open book
+
       book_content: {},          // Content of the currently opened book
       content: [],               // List of problems
-      file_list: [],             // List of integral list
       content_state: undefined,  // Display items in content or json files in file list
       cur_id: undefined,         // ID of the selected item
       cur_items: [],             // Current items in state
@@ -410,12 +409,27 @@ export default {
   },
 
   methods: {
+    loadBookList: async function (){
+      const response = await axios.post('http://127.0.0.1:5000/api/integral-load-book-list')
+      this.book_list = response.data.book_list
+      this.book_name = undefined
+      this.content_state = false
+      this.content = []
+      this.cur_id = undefined
+      this.cur_items = undefined
+    },
+
     loadBookContent: async function () {
       const data = {
-        bookname: 'base'
+        bookname: this.book_name
       }
       const response = await axios.post('http://127.0.0.1:5000/api/integral-load-book-content', JSON.stringify(data))
       this.book_content = response.data
+    },
+
+    openBook: async function (book_name) {
+      this.book_name = book_name
+      this.loadBookContent()
     },
 
     query_last_expr: async function(){
@@ -431,15 +445,6 @@ export default {
         }
     },
 		
-    load_file_list: async function (){
-      const response = await axios.post('http://127.0.0.1:5000/api/integral-load-file-list')
-      this.file_list = response.data.file_list
-      this.content_state = false
-      this.content = []
-      this.cur_id = undefined
-      this.cur_items = undefined
-    },
-
     openFile: async function (file_name) {
       const data = {
         filename: file_name
@@ -910,7 +915,8 @@ export default {
   },
 
   created: function () {
-    this.load_file_list()
+    this.loadBookList()
+    this.book_name = 'interesting'
     this.loadBookContent()
   }
 }
