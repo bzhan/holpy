@@ -270,7 +270,7 @@ def eq_power(t1: Expr, t2: Expr) -> bool:
 
 class NormalLog:
     def __init__(self, e: Polynomial):
-        self.e = to_poly(from_poly(e))
+        self.e = e
 
     def __str__(self):
         return "(%s)" % from_poly(self.e)
