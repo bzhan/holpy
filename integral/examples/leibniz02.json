@@ -500,6 +500,101 @@
                 "type": "RewriteGoalProof"
             },
             "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(INT x:[-oo,oo]. exp(-(a * x ^ 2))) = sqrt(pi / a)",
+            "latex_goal": "\\int_{-\\infty}^{\\infty} e^{-a x ^ {2}} \\,dx = \\sqrt{\\frac{\\pi}{a}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[-oo,oo]. exp(-(a * x ^ 2))) = sqrt(pi / a)",
+                "latex_goal": "\\int_{-\\infty}^{\\infty} e^{-a x ^ {2}} \\,dx = \\sqrt{\\frac{\\pi}{a}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{-\\infty}^{\\infty} e^{-a x ^ {2}} \\,dx",
+                    "start": "INT x:[-oo,oo]. exp(-(a * x ^ 2))",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{-\\infty}^{\\infty} \\frac{1}{2} \\sqrt{2} (\\frac{e^{-1/2\\cdot u ^ {2}}}{\\sqrt{a}}) \\,du",
+                            "res": "INT u:[-oo,oo]. 1/2 * sqrt(2) * (exp(-1/2 * u ^ 2) / sqrt(a))",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(\\sqrt{2 a} x\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for sqrt(2 * a) * x",
+                                "var_name": "u",
+                                "var_subst": "sqrt(2 * a) * x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} \\sqrt{2} (\\frac{\\int_{-\\infty}^{\\infty} e^{-1/2\\cdot u ^ {2}} \\,du}{\\sqrt{a}})",
+                            "res": "1/2 * sqrt(2) * ((INT u:[-oo,oo]. exp(-1/2 * u ^ 2)) / sqrt(a))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} \\sqrt{2} (\\frac{\\int_{-\\infty}^{\\infty} e^{-u ^ {2}/2} \\,du}{\\sqrt{a}})",
+                            "res": "1/2 * sqrt(2) * ((INT u:[-oo,oo]. exp(-(u ^ 2) / 2)) / sqrt(a))",
+                            "rule": {
+                                "latex_str": "rewriting \\(-\\frac{1}{2} u ^ {2}\\) to \\(\\frac{-u ^ {2}}{2}\\)",
+                                "name": "Equation",
+                                "new_expr": "-(u ^ 2) / 2",
+                                "old_expr": "-1/2 * u ^ 2",
+                                "str": "rewriting -1/2 * u ^ 2 to -(u ^ 2) / 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} \\sqrt{2} (\\frac{\\sqrt{2 \\pi}}{\\sqrt{a}})",
+                            "res": "1/2 * sqrt(2) * (sqrt(2 * pi) / sqrt(a))",
+                            "rule": {
+                                "eq": "(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)",
+                                "latex_str": "apply equation \\(\\int_{-\\infty}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{2 \\pi}\\) at 1.0",
+                                "loc": "1.0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi) at 1.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sqrt{\\pi} (\\frac{1}{\\sqrt{a}})",
+                            "res": "sqrt(pi) * (1 / sqrt(a))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\sqrt{\\frac{\\pi}{a}}",
+                    "start": "sqrt(pi / a)",
+                    "steps": [
+                        {
+                            "latex_res": "\\sqrt{\\pi} (\\frac{1}{\\sqrt{a}})",
+                            "res": "sqrt(pi) * (1 / sqrt(a))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
         }
     ],
     "name": "leibniz02"

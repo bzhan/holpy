@@ -89,11 +89,8 @@
                             "latex_res": "e^{1/4\\cdot (b ^ {2}/a)} \\sqrt{\\frac{\\pi}{a}}",
                             "res": "exp(1/4 * (b ^ 2 / a)) * sqrt(pi / a)",
                             "rule": {
-                                "eq": "(INT x:[-oo,oo]. exp(-(a * x ^ 2))) = sqrt(pi / a)",
-                                "latex_str": "apply equation \\(\\int_{-\\infty}^{\\infty} e^{-a x ^ {2}} \\,dx = \\sqrt{\\frac{\\pi}{a}}\\) at 1",
-                                "loc": "1",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[-oo,oo]. exp(-(a * x ^ 2))) = sqrt(pi / a) at 1"
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
                             },
                             "type": "CalculationStep"
                         },
