@@ -547,7 +547,6 @@ class IntegralTest(unittest.TestCase):
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("I"))
         calc.perform_rule(rules.Substitution(var_name='t', var_subst=parser.parse_expr("sqrt(x-1)")))
-        ctx.add_condition(parser.parse_expr("t>=0"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Substitution(var_name='x', var_subst=parser.parse_expr("t / sqrt(a + 1)")))
         calc.perform_rule(rules.Equation("x ^ 2 * (a + 1) + a + 1",
@@ -585,21 +584,18 @@ class IntegralTest(unittest.TestCase):
         ctx.load_book("base")
         file = compstate.CompFile(ctx, "easy03")
 
-        file.add_definition("I(b) = (INT x:[0, oo]. log(x) / (x^2+b^2))")
-        goal = file.add_goal("I(b) = pi * log(b) / (2*b)")
+        goal = file.add_goal("(INT x:[0, oo]. log(x) / (x^2+b^2)) = pi * log(b) / (2*b)", conds=["b > 0"])
         proof = goal.proof_by_calculation()
         calc = proof.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition("I"))
         calc.perform_rule(rules.SubstitutionInverse(var_name="t", var_subst=parser.parse_expr("1/t")))
         old_expr = parser.parse_expr("log(1 / t)")
         new_expr = parser.parse_expr("-log(t)")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         # assoc rewrite because Equation Rule can't find (b ^ 2 + (1 / t) ^ 2) ^ (-1) * -(t ^ (-2))
-        old_expr = parser.parse_expr("-log(t) / (b ^ 2 + (1 / t) ^ 2) * -(1 / t ^ 2)")
+        old_expr = parser.parse_expr("-log(t) / ((1 / t) ^ 2 + b ^ 2) * -(1 / t ^ 2)")
         new_expr = parser.parse_expr("log(t) / (1 + b^2*t^2)")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
 
-        ctx.add_condition(parser.parse_expr("b>0"))
         calc.perform_rule(rules.SubstitutionInverse(var_name='s', var_subst=parser.parse_expr("s/b")))
         calc.perform_rule(rules.FullSimplify())
 
@@ -627,12 +623,10 @@ class IntegralTest(unittest.TestCase):
         ctx = context.Context()
         ctx.load_book("base")
         file = compstate.CompFile(ctx, "easy04")
-        file.add_definition("I(a) = (INT x:[0, oo]. 1/(1 + exp(a*x)))")
-        ctx.add_condition(parser.parse_expr("a>0"))
-        goal = file.add_goal("I(a) = (log(2)/a)")
+
+        goal = file.add_goal("(INT x:[0, oo]. 1/(1 + exp(a*x))) = (log(2)/a)", conds=["a > 0"])
         proof = goal.proof_by_calculation()
         calc = proof.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition("I"))
         calc.perform_rule(rules.Substitution(var_name="u", var_subst=parser.parse_expr("exp(a*x)")))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("1 / (u * (u + 1))", "1/u - 1/(u+1)"))
@@ -803,11 +797,12 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 2.2, example 5
         ctx = context.Context()
         ctx.load_book('base')
-        ctx.add_condition("a > 0")
 
         ctx.add_lemma("(INT x:[0,1]. log(x+1) / (x^2+1)) = pi / 8 * log(2)")
         file = compstate.CompFile(ctx, "Trick2e")
-        goal01 = file.add_goal("(INT x:[0,1]. log(x+1) / (x^2+1)) = (a * INT t:[0,a]. log(t+a) / (t^2 + a^2)) - pi / 4 * log(a)")
+
+        goal01 = file.add_goal("(INT x:[0,1]. log(x+1) / (x^2+1)) = (a * INT t:[0,a]. log(t+a) / (t^2 + a^2)) - pi / 4 * log(a)",
+                               conds=["a > 0"])
         proof = goal01.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.SubstitutionInverse("t", "t/a"))
@@ -827,14 +822,16 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        goal02 = file.add_goal(" ((a * INT t:[0,a]. log(t+a) / (t^2 + a^2)) - pi / 4 * log(a)) = " + \
-                               "pi / 8 * log(2)")
+
+        goal02 = file.add_goal("((a * INT t:[0,a]. log(t+a) / (t^2 + a^2)) - pi / 4 * log(a)) = pi / 8 * log(2)",
+                               conds=["a > 0"])
         proof = goal02.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal01.goal))
         calc.perform_rule(rules.ApplyEquation("(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 8 * log(2)"))
 
-        goal03 = file.add_goal("(INT t:[0,a]. log(t+a) / (t^2 + a^2)) = pi /(8*a) * log(2*a^2)")
+        goal03 = file.add_goal("(INT t:[0,a]. log(t+a) / (t^2 + a^2)) = pi /(8*a) * log(2*a^2)",
+                               conds=["a > 0"])
         proof = goal03.proof_by_rewrite_goal(begin = goal02)
         calc = proof.begin
         calc.perform_rule(rules.SolveEquation("INT t:[0,a]. log(t+a) / (t^2 + a^2)"))
@@ -843,7 +840,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("1/8 * pi * log(2) + 1/8 * pi * log(a ^ 2)", "1/8 * pi * (log(2) + log(a^2))"))
         calc.perform_rule(rules.Equation("(log(2) + log(a ^ 2))", "log(2 * a^2)"))
         calc.perform_rule(rules.Equation("1/8 * pi * log(2 * a ^ 2) / a", "pi / (8 * a) * log(2 * a ^ 2)"))
-        # print(file)
+
         self.checkAndOutput(file, "trick2e")
 
     def testPartialFraction(self):

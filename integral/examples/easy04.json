@@ -1,33 +1,23 @@
 {
     "content": [
         {
-            "eq": "I(a) = (INT x:[0,oo]. 1 / (1 + exp(a * x)))",
-            "latex_eq": "I{(a)} = \\int_{0}^{\\infty} \\frac{1}{1 + e^{a x}} \\,dx",
-            "latex_lhs": "I{(a)}",
-            "type": "FuncDef"
-        },
-        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
             "finished": true,
-            "goal": "I(a) = log(2) / a",
-            "latex_goal": "I{(a)} = \\frac{\\log{(2)}}{a}",
+            "goal": "(INT x:[0,oo]. 1 / (1 + exp(a * x))) = log(2) / a",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{1}{1 + e^{a x}} \\,dx = \\frac{\\log{(2)}}{a}",
             "proof": {
                 "finished": true,
-                "goal": "I(a) = log(2) / a",
-                "latex_goal": "I{(a)} = \\frac{\\log{(2)}}{a}",
+                "goal": "(INT x:[0,oo]. 1 / (1 + exp(a * x))) = log(2) / a",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{1}{1 + e^{a x}} \\,dx = \\frac{\\log{(2)}}{a}",
                 "lhs_calc": {
-                    "latex_start": "I{(a)}",
-                    "start": "I(a)",
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{1}{1 + e^{a x}} \\,dx",
+                    "start": "INT x:[0,oo]. 1 / (1 + exp(a * x))",
                     "steps": [
-                        {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{e^{a x} + 1} \\,dx",
-                            "res": "INT x:[0,oo]. 1 / (exp(a * x) + 1)",
-                            "rule": {
-                                "func_name": "I",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition"
-                            },
-                            "type": "CalculationStep"
-                        },
                         {
                             "latex_res": "\\int_{1}^{\\infty} \\frac{1}{a u (e^{\\log{u}} + 1)} \\,du",
                             "res": "INT u:[1,oo]. 1 / (a * u * (exp(log(u)) + 1))",

@@ -1,6 +1,12 @@
 {
     "content": [
         {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
             "finished": true,
             "goal": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a)",
             "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a}",
@@ -160,6 +166,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
             "finished": true,
             "goal": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a) = pi / 8 * log(2)",
             "latex_goal": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a} = \\frac{\\pi}{8} \\log{(2)}",
@@ -207,6 +219,12 @@
             "type": "Goal"
         },
         {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
             "finished": true,
             "goal": "(INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) = pi / (8 * a) * log(2 * a ^ 2)",
             "latex_goal": "\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt = \\frac{\\pi}{8 a} \\log{(2 a ^ {2})}",
@@ -215,6 +233,12 @@
                 "goal": "(INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) = pi / (8 * a) * log(2 * a ^ 2)",
                 "latex_goal": "\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt = \\frac{\\pi}{8 a} \\log{(2 a ^ {2})}",
                 "start": {
+                    "conds": [
+                        {
+                            "cond": "a > 0",
+                            "latex_cond": "a > 0"
+                        }
+                    ],
                     "latex_start": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a} = \\frac{\\pi}{8} \\log{(2)}",
                     "start": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a) = pi / 8 * log(2)",
                     "steps": [
