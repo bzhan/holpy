@@ -1855,7 +1855,7 @@ class IntegralTest(unittest.TestCase):
 
     def testChapter3Practice05(self):
         # Reference:
-        # Inside interesting integrals, Section 3.10, C3.
+        # Inside interesting integrals, Section 3.10, C3.9
         ctx = context.Context()
         ctx.load_book("base")
         file = compstate.CompFile(ctx, "Chapter3Practice05")
@@ -1887,7 +1887,37 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.SolveEquation("(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2))"))
         calc.perform_rule(rules.Equation("-1/8 * ((2 * pi * a ^ 2 * m * exp(-(a * m)) + -4 * pi * a * (-exp(-(a * m)) + 1)) / a ^ 5)",
                                          "(pi / (2 * a ^ 4)) * (1 - ((2 + m * a) / 2) * exp(- a * m))"))
+
         self.checkAndOutput(file, "Chapter3Practice05")
+
+
+    def testChapter3Practice06(self):
+        # Reference:
+        # Inside interesting integrals, Section 3.10, C3.10
+
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "Chapter3Practice06")
+
+        goal01 = file.add_goal("(INT x:[0, 1]. 1 / (a * x + b * (1 - x)) ^ 2) = 1 / (a * b)", conds=["a != 0", "b != 0"])
+        proof_of_goal01 = goal01.proof_by_calculation()
+        calc = proof_of_goal01.lhs_calc
+        calc.perform_rule(rules.Substitution(var_name="u", var_subst="(a - b) * x + b"))
+        calc.perform_rule(rules.Equation("1 / ((a - b) * (b * (-((-b + u) / (a - b)) + 1) + a * (-b + u) / (a - b)) ^ 2)",
+                                         "1 / (u ^ 2 * (a - b))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("(-(1 / a) + 1 / b) / (a - b)", "1 / (a * b)"))
+
+        goal02 = file.add_goal("(INT x:[0, 1]. x / (a * x + b * (1 - x)) ^ 3) = 1 / (2 * a ^ 2 * b)")
+        proof_of_goal02 = goal02.proof_by_rewrite_goal(begin=goal01)
+        calc = proof_of_goal02.begin
+        calc.perform_rule(rules.DerivEquation("a"))
+        calc.perform_rule(rules.OnLocation(rules.DerivIntExchange(), "0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("(b * (-x + 1) + a * x) ^ 3", "(a * x + b * (1 - x)) ^ 3"))
+        calc.perform_rule(rules.SolveEquation("(INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3)"))
+        calc.perform_rule(rules.Equation("1/2 * (1 / (a ^ 2 * b))", "1 / (2 * a ^ 2 * b)"))
+        self.checkAndOutput(file, "Chapter3Practice06")
 
     def testEasy02(self):
         # Reference:
