@@ -1908,7 +1908,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("(-(1 / a) + 1 / b) / (a - b)", "1 / (a * b)"))
 
-        goal02 = file.add_goal("(INT x:[0, 1]. x / (a * x + b * (1 - x)) ^ 3) = 1 / (2 * a ^ 2 * b)")
+        goal02 = file.add_goal("(INT x:[0, 1]. x / (a * x + b * (1 - x)) ^ 3) = 1 / (2 * a ^ 2 * b)", conds=["a != 0", "b != 0"])
         proof_of_goal02 = goal02.proof_by_rewrite_goal(begin=goal01)
         calc = proof_of_goal02.begin
         calc.perform_rule(rules.DerivEquation("a"))
