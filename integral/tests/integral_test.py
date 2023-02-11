@@ -594,6 +594,7 @@ class IntegralTest(unittest.TestCase):
         proof = goal02.proof_by_calculation()
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
+        ctx.add_lemma("(sin(x) ^ 2 + cos(x) ^ 2) = 1")
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(parser.parse_expr("(sin(x) ^ 2 + cos(x) ^ 2) = 1")), '1.0.0'))
         calc.perform_rule(rules.Equation("(sin(x) ^ 2 + cos(x) ^ 2) / (cos(x) + sin(x))",\
                                          "sin(x) ^ 2 / (cos(x) + sin(x)) + cos(x) ^ 2 / (cos(x) + sin(x)) "))
@@ -1098,6 +1099,75 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file, "euler_log_sin")
 
+    def testEulerLogSineIntegral02(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.4 (2.4.2)
+        ctx = context.Context()
+        ctx.load_book('base')
+        file = compstate.CompFile(ctx, "EulerLogSine02")
+        goal = file.add_goal("(INT x:[0, pi/2]. log(sin(x) / x)) = pi/2 * (1-log(pi))")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("log(sin(x) / x)", "log(sin(x)) - log(x)"), "0"))
+        # calc.perform_rule(rules.Equation("log(sin(x) / x)", "log(sin(x)) - log(x)"))
+        calc.perform_rule(rules.FullSimplify())
+        ctx.add_lemma("(INT x:[0,1/2 * pi]. log(sin(x))) = -pi/2 * log(2)")
+        calc.perform_rule(
+            rules.OnLocation(rules.ApplyEquation("(INT x:[0,1/2 * pi]. log(sin(x))) = -pi/2 * log(2)"), "0"))
+        calc.perform_rule(rules.OnLocation(rules.IntegrationByParts("log(x)", "x"), "1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.ExpandPolynomial())
+        self.checkAndOutput(file, "euler_log_sin02")
+
+    def testEulerLogSineIntegral05(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.4 (2.4.5)
+        ctx = context.Context()
+        ctx.load_book('base')
+        file = compstate.CompFile(ctx, "EulerLogSine05")
+        goal01 = file.add_goal("(INT x:[0, oo]. log(x^a+1) / (x^2 - b*x + 1)) = \
+        (INT x:[0, oo]. log(x^a+1) / (x^2 - b*x + 1)) - a * INT x:[0,oo]. log(x) / (x^2-b*x+1)")
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.SubstitutionInverse("u", "1/u"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("(1/u)^a", "1^a / u^a"), "0.0.0"))
+        calc.perform_rule(rules.Equation("1 ^ a / u ^ a + 1", "(1+u^a) / u^a"))
+        calc.perform_rule(rules.Equation("log((1 + u ^ a) / u ^ a)", "log(1+u^a) - log(u^a)"))
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("log(u^a)", "a*log(u)"), "1.0.0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        goal02 = file.add_goal("(INT x:[0,oo]. log(x) / (x^2-b*x+1)) = 0")
+        proof = goal02.proof_by_rewrite_goal(begin=goal01)
+        calc = proof.begin
+        calc.perform_rule(rules.SolveEquation("INT x:[0,oo]. log(x) / (x^2-b*x+1)"))
+        self.checkAndOutput(file, "euler_log_sin05")
+
+    def testEulerLogSineIntegral06(self):
+        # Reference:
+        # Inside interesting integrals, Section 2.4 (2.4.6)
+        ctx = context.Context()
+        ctx.load_book('base')
+        file = compstate.CompFile(ctx, "EulerLogSine06")
+        goal = file.add_goal("(INT x:[0,1]. (1-x) / (1+x+x^2)) = 1/6 * sqrt(3) * pi - 1/2 * log(3)")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("(1+x+x^2)", "(x+1/2)^2 + 3/4"))
+        calc.perform_rule(rules.Substitution("u", "2*(x+1/2)/sqrt(3)"))
+        calc.perform_rule(rules.Equation("(3/4 * u ^ 2 + 3/4)", "3/4*(u^2+1)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "1.0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ExpandPolynomial())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.Substitution("t", "u^2+1"), "0.0"))
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file, "euler_log_sin06")
     def testDirichletIntegral(self):
         # Reference:
         # Inside interesting integrals, Section 3.2
