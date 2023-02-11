@@ -1,20 +1,26 @@
 {
     "content": [
         {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                }
+            ],
             "finished": true,
-            "goal": "(INT x:[0,oo]. log(a ^ 2 * x ^ (-2) + 1)) = pi * a",
-            "latex_goal": "\\int_{0}^{\\infty} \\log{(a ^ {2} x ^ {-2} + 1)} \\,dx = \\pi a",
+            "goal": "(INT x:[0,oo]. log(a ^ 2 / x ^ 2 + 1)) = pi * a",
+            "latex_goal": "\\int_{0}^{\\infty} \\log{(\\frac{a ^ {2}}{x ^ {2}} + 1)} \\,dx = \\pi a",
             "proof": {
                 "finished": true,
-                "goal": "(INT x:[0,oo]. log(a ^ 2 * x ^ (-2) + 1)) = pi * a",
-                "latex_goal": "\\int_{0}^{\\infty} \\log{(a ^ {2} x ^ {-2} + 1)} \\,dx = \\pi a",
+                "goal": "(INT x:[0,oo]. log(a ^ 2 / x ^ 2 + 1)) = pi * a",
+                "latex_goal": "\\int_{0}^{\\infty} \\log{(\\frac{a ^ {2}}{x ^ {2}} + 1)} \\,dx = \\pi a",
                 "lhs_calc": {
-                    "latex_start": "\\int_{0}^{\\infty} \\log{(a ^ {2} x ^ {-2} + 1)} \\,dx",
-                    "start": "INT x:[0,oo]. log(a ^ 2 * x ^ (-2) + 1)",
+                    "latex_start": "\\int_{0}^{\\infty} \\log{(\\frac{a ^ {2}}{x ^ {2}} + 1)} \\,dx",
+                    "start": "INT x:[0,oo]. log(a ^ 2 / x ^ 2 + 1)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\log{(a ^ {2} x ^ {-2} + 1)} \\,dx",
-                            "res": "INT x:[0,oo]. log(a ^ 2 * x ^ (-2) + 1)",
+                            "latex_res": "\\int_{0}^{\\infty} \\log{(\\frac{a ^ {2}}{x ^ {2}} + 1)} \\,dx",
+                            "res": "INT x:[0,oo]. log(a ^ 2 / x ^ 2 + 1)",
                             "rule": {
                                 "func_name": "I",
                                 "name": "ExpandDefinition",
@@ -23,8 +29,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(\\left. x \\log{(a ^ {2} x ^ {-2} + 1)} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} -2 a ^ {2} x ^ {-2} (a ^ {2} x ^ {-2} + 1) ^ {-1} \\,dx)",
-                            "res": "([x * log(a ^ 2 * x ^ (-2) + 1)]_x=0,oo) - (INT x:[0,oo]. -2 * a ^ 2 * x ^ (-2) * (a ^ 2 * x ^ (-2) + 1) ^ (-1))",
+                            "latex_res": "(\\left. x \\log{(\\frac{a ^ {2}}{x ^ {2}} + 1)} \\right\\vert_{x=0}^{\\infty}) - (\\int_{0}^{\\infty} -2 (\\frac{a ^ {2}}{x ^ {2} (\\frac{a ^ {2}}{x ^ {2}} + 1)}) \\,dx)",
+                            "res": "([x * log(a ^ 2 / x ^ 2 + 1)]_x=0,oo) - (INT x:[0,oo]. -2 * (a ^ 2 / (x ^ 2 * (a ^ 2 / x ^ 2 + 1))))",
                             "rule": {
                                 "latex_str": "integrate by parts \\(u \\to \\log{(1 + \\frac{a ^ {2}}{x ^ {2}})}, v \\to x\\)",
                                 "name": "IntegrationByParts",
@@ -35,8 +41,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 a ^ {2} (\\int_{0}^{\\infty} x ^ {-2} (a ^ {2} x ^ {-2} + 1) ^ {-1} \\,dx)",
-                            "res": "2 * a ^ 2 * (INT x:[0,oo]. x ^ (-2) * (a ^ 2 * x ^ (-2) + 1) ^ (-1))",
+                            "latex_res": "2 a ^ {2} (\\int_{0}^{\\infty} \\frac{1}{x ^ {2} (\\frac{a ^ {2}}{x ^ {2}} + 1)} \\,dx)",
+                            "res": "2 * a ^ 2 * (INT x:[0,oo]. 1 / (x ^ 2 * (a ^ 2 / x ^ 2 + 1)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -47,11 +53,11 @@
                             "latex_res": "2 a ^ {2} (\\int_{0}^{\\infty} \\frac{1}{a ^ {2} + x ^ {2}} \\,dx)",
                             "res": "2 * a ^ 2 * (INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2))",
                             "rule": {
-                                "latex_str": "rewriting \\(x ^ {-2} (a ^ {2} x ^ {-2} + 1) ^ {-1}\\) to \\(\\frac{1}{a ^ {2} + x ^ {2}}\\)",
+                                "latex_str": "rewriting \\(x ^ {2} (\\frac{a ^ {2}}{x ^ {2}} + 1)\\) to \\(a ^ {2} + x ^ {2}\\)",
                                 "name": "Equation",
-                                "new_expr": "1 / (a ^ 2 + x ^ 2)",
-                                "old_expr": "x ^ (-2) * (a ^ 2 * x ^ (-2) + 1) ^ (-1)",
-                                "str": "rewriting x ^ (-2) * (a ^ 2 * x ^ (-2) + 1) ^ (-1) to 1 / (a ^ 2 + x ^ 2)"
+                                "new_expr": "a ^ 2 + x ^ 2",
+                                "old_expr": "x ^ 2 * (a ^ 2 / x ^ 2 + 1)",
+                                "str": "rewriting x ^ 2 * (a ^ 2 / x ^ 2 + 1) to a ^ 2 + x ^ 2"
                             },
                             "type": "CalculationStep"
                         },

@@ -827,13 +827,11 @@ class IntegralTest(unittest.TestCase):
                                                                "(1/2 * INT x:[-oo,oo]. (x ^ 2 + 1) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 +1)) "), \
                                                                "1.1"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.ApplyIdentity("cos(2*a)", "1-2*sin(a)"))
-        # calc.perform_rule(rules.OnLocation(rules.OnSubterm(rules.ExpandPolynomial()), "1.1.0.1"))
-        calc.perform_rule(rules.Equation("2 * x ^ 2 * (1 - 2 * sin(a))", "-4 * x ^ 2 * sin(a) + 2 * x ^ 2"))
+        calc.perform_rule(rules.ApplyIdentity("cos(2*a)", "1-2*sin(a)^2"))
+        calc.perform_rule(rules.Equation("2 * x ^ 2 * (1 - 2 * sin(a) ^ 2)", "-4 * x ^ 2 * sin(a) ^ 2 + 2 * x ^ 2"))
         # print(file)
-        ctx.add_lemma("(-4 * x ^ 2 * sin(a) + 2 * x ^ 2 + x ^ 4 + 1) = "
-                      "(x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1)")
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("-4 * x ^ 2 * sin(a) + 2 * x ^ 2 + x ^ 4 + 1=(x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1)"), "1.1.0.1"))
+        calc.perform_rule(rules.Equation("(-4 * x ^ 2 * sin(a) ^ 2 + 2 * x ^ 2 + x ^ 4 + 1)",
+                                         "(x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1)"))
         ctx.add_lemma("(INT x:[-oo,oo]. (-2*x*sin(a)) / ((x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1))) = 0")
         calc.perform_rule(rules.Equation("1/4 * (INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 "
                                          "+ 2 * x * sin(a) + 1)))",

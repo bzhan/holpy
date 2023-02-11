@@ -1,0 +1,301 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a)",
+            "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a)",
+                "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx",
+                    "start": "INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{a} \\frac{\\log{(\\frac{t}{a} + 1)}}{(\\frac{t}{a}) ^ {2} + 1} (\\frac{1}{a}) \\,dt",
+                            "res": "INT t:[0,a]. log(t / a + 1) / ((t / a) ^ 2 + 1) * (1 / a)",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(\\frac{t}{a}\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for t / a",
+                                "var_name": "t",
+                                "var_subst": "t / a"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\int_{0}^{a} \\frac{\\log{(\\frac{t}{a} + 1)}}{\\frac{t ^ {2}}{a ^ {2}} + 1} \\,dt}{a}",
+                            "res": "(INT t:[0,a]. log(t / a + 1) / (t ^ 2 / a ^ 2 + 1)) / a",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\int_{0}^{a} \\frac{\\log{(\\frac{t}{a} + 1)} a ^ {2}}{t ^ {2} + a ^ {2}} \\,dt}{a}",
+                            "res": "(INT t:[0,a]. log(t / a + 1) * a ^ 2 / (t ^ 2 + a ^ 2)) / a",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{\\log{(\\frac{t}{a} + 1)}}{\\frac{t ^ {2}}{a ^ {2}} + 1}\\) to \\(\\frac{\\log{(\\frac{t}{a} + 1)} a ^ {2}}{t ^ {2} + a ^ {2}}\\)",
+                                "name": "Equation",
+                                "new_expr": "log(t / a + 1) * a ^ 2 / (t ^ 2 + a ^ 2)",
+                                "old_expr": "log(t / a + 1) / (t ^ 2 / a ^ 2 + 1)",
+                                "str": "rewriting log(t / a + 1) / (t ^ 2 / a ^ 2 + 1) to log(t / a + 1) * a ^ 2 / (t ^ 2 + a ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\int_{0}^{a} \\frac{\\log{(\\frac{t + a}{a})} a ^ {2}}{t ^ {2} + a ^ {2}} \\,dt}{a}",
+                            "res": "(INT t:[0,a]. log((t + a) / a) * a ^ 2 / (t ^ 2 + a ^ 2)) / a",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{t}{a} + 1\\) to \\(\\frac{t + a}{a}\\)",
+                                "name": "Equation",
+                                "new_expr": "(t + a) / a",
+                                "old_expr": "t / a + 1",
+                                "str": "rewriting t / a + 1 to (t + a) / a"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a (\\int_{0}^{a} \\frac{\\log{(\\frac{a + t}{a})}}{a ^ {2} + t ^ {2}} \\,dt)",
+                            "res": "a * (INT t:[0,a]. log((a + t) / a) / (a ^ 2 + t ^ 2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a (\\int_{0}^{a} \\frac{\\log{(a + t)} - \\log{a}}{a ^ {2} + t ^ {2}} \\,dt)",
+                            "res": "a * (INT t:[0,a]. (log(a + t) - log(a)) / (a ^ 2 + t ^ 2))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\log{(\\frac{a + t}{a})}\\) to \\(\\log{(a + t)} - \\log{a}\\) using identity at 1.0.0",
+                                "loc": "1.0.0",
+                                "name": "ApplyIdentity",
+                                "source": "log((a + t) / a)",
+                                "str": "rewrite log((a + t) / a) to log(a + t) - log(a) using identity at 1.0.0",
+                                "target": "log(a + t) - log(a)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a (\\int_{0}^{a} \\frac{\\log{(a + t)}}{a ^ {2} + t ^ {2}} - \\frac{\\log{a}}{a ^ {2} + t ^ {2}} \\,dt)",
+                            "res": "a * (INT t:[0,a]. log(a + t) / (a ^ 2 + t ^ 2) - log(a) / (a ^ 2 + t ^ 2))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{\\log{(a + t)} - \\log{a}}{a ^ {2} + t ^ {2}}\\) to \\(\\frac{\\log{(a + t)}}{a ^ {2} + t ^ {2}} - \\frac{\\log{a}}{a ^ {2} + t ^ {2}}\\)",
+                                "name": "Equation",
+                                "new_expr": "log(a + t) / (a ^ 2 + t ^ 2) - log(a) / (a ^ 2 + t ^ 2)",
+                                "old_expr": "(log(a + t) - log(a)) / (a ^ 2 + t ^ 2)",
+                                "str": "rewriting (log(a + t) - log(a)) / (a ^ 2 + t ^ 2) to log(a + t) / (a ^ 2 + t ^ 2) - log(a) / (a ^ 2 + t ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a (-\\log{a} (\\int_{0}^{a} \\frac{1}{a ^ {2} + t ^ {2}} \\,dt) + (\\int_{0}^{a} \\frac{\\log{(a + t)}}{a ^ {2} + t ^ {2}} \\,dt))",
+                            "res": "a * (-(log(a) * (INT t:[0,a]. 1 / (a ^ 2 + t ^ 2))) + (INT t:[0,a]. log(a + t) / (a ^ 2 + t ^ 2)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a (-\\log{a} (\\left. a ^ {-1} \\tan^{-1}{(\\frac{t}{a})} \\right\\vert_{t=0}^{a}) + (\\int_{0}^{a} \\frac{\\log{(a + t)}}{a ^ {2} + t ^ {2}} \\,dt))",
+                            "res": "a * (-(log(a) * ([a ^ (-1) * atan(t / a)]_t=0,a)) + (INT t:[0,a]. log(a + t) / (a ^ 2 + t ^ 2)))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a ((\\int_{0}^{a} \\frac{\\log{(a + t)}}{a ^ {2} + t ^ {2}} \\,dt) + -\\frac{1}{4} \\pi (\\frac{\\log{a}}{a}))",
+                            "res": "a * ((INT t:[0,a]. log(a + t) / (a ^ 2 + t ^ 2)) + -1/4 * pi * (log(a) / a))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a (\\int_{0}^{a} \\frac{\\log{(a + t)}}{a ^ {2} + t ^ {2}} \\,dt) + -\\frac{1}{4} \\pi \\log{a}",
+                            "res": "a * (INT t:[0,a]. log(a + t) / (a ^ 2 + t ^ 2)) + -1/4 * pi * log(a)",
+                            "rule": {
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "a (\\int_{0}^{a} \\frac{\\log{(a + t)}}{a ^ {2} + t ^ {2}} \\,dt) + -\\frac{1}{4} \\pi \\log{a}",
+                            "res": "a * (INT t:[0,a]. log(a + t) / (a ^ 2 + t ^ 2)) + -1/4 * pi * log(a)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a}",
+                    "start": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a)",
+                    "steps": [
+                        {
+                            "latex_res": "a (\\int_{0}^{a} \\frac{\\log{(a + t)}}{a ^ {2} + t ^ {2}} \\,dt) + -\\frac{1}{4} \\pi \\log{a}",
+                            "res": "a * (INT t:[0,a]. log(a + t) / (a ^ 2 + t ^ 2)) + -1/4 * pi * log(a)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a) = pi / 8 * log(2)",
+            "latex_goal": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a} = \\frac{\\pi}{8} \\log{(2)}",
+            "proof": {
+                "finished": true,
+                "goal": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a) = pi / 8 * log(2)",
+                "latex_goal": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a} = \\frac{\\pi}{8} \\log{(2)}",
+                "lhs_calc": {
+                    "latex_start": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a}",
+                    "start": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx",
+                            "res": "INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)",
+                            "rule": {
+                                "eq": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a)",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\pi}{8} \\log{(2)}",
+                            "res": "pi / 8 * log(2)",
+                            "rule": {
+                                "eq": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 8 * log(2)",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\frac{\\pi}{8} \\log{(2)}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 8 * log(2)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi}{8} \\log{(2)}",
+                    "start": "pi / 8 * log(2)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) = pi / (8 * a) * log(2 * a ^ 2)",
+            "latex_goal": "\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt = \\frac{\\pi}{8 a} \\log{(2 a ^ {2})}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) = pi / (8 * a) * log(2 * a ^ 2)",
+                "latex_goal": "\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt = \\frac{\\pi}{8 a} \\log{(2 a ^ {2})}",
+                "start": {
+                    "latex_start": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a} = \\frac{\\pi}{8} \\log{(2)}",
+                    "start": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a) = pi / 8 * log(2)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt = \\frac{\\frac{1}{8} \\pi \\log{(2)} + \\frac{1}{4} \\pi \\log{a}}{a}",
+                            "res": "(INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) = (1/8 * pi * log(2) + 1/4 * pi * log(a)) / a",
+                            "rule": {
+                                "latex_str": "solve equation for \\(\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)",
+                                "str": "solve equation for INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt = \\frac{\\frac{1}{8} \\pi \\log{(2)} + \\frac{1}{8} \\pi (2 \\log{a})}{a}",
+                            "res": "(INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) = (1/8 * pi * log(2) + 1/8 * pi * (2 * log(a))) / a",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{4} \\pi \\log{a}\\) to \\(\\frac{1}{8} \\pi (2 \\log{a})\\)",
+                                "name": "Equation",
+                                "new_expr": "1/8 * pi * (2 * log(a))",
+                                "old_expr": "1/4 * pi * log(a)",
+                                "str": "rewriting 1/4 * pi * log(a) to 1/8 * pi * (2 * log(a))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt = \\frac{\\frac{1}{8} \\pi \\log{(2)} + \\frac{1}{8} \\pi \\log{(a ^ {2})}}{a}",
+                            "res": "(INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) = (1/8 * pi * log(2) + 1/8 * pi * log(a ^ 2)) / a",
+                            "rule": {
+                                "latex_str": "rewriting \\(2 \\log{a}\\) to \\(\\log{(a ^ {2})}\\)",
+                                "name": "Equation",
+                                "new_expr": "log(a ^ 2)",
+                                "old_expr": "2 * log(a)",
+                                "str": "rewriting 2 * log(a) to log(a ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt = \\frac{\\frac{1}{8} \\pi (\\log{(2)} + \\log{(a ^ {2})})}{a}",
+                            "res": "(INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) = 1/8 * pi * (log(2) + log(a ^ 2)) / a",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{8} \\pi \\log{(2)} + \\frac{1}{8} \\pi \\log{(a ^ {2})}\\) to \\(\\frac{1}{8} \\pi (\\log{(2)} + \\log{(a ^ {2})})\\)",
+                                "name": "Equation",
+                                "new_expr": "1/8 * pi * (log(2) + log(a ^ 2))",
+                                "old_expr": "1/8 * pi * log(2) + 1/8 * pi * log(a ^ 2)",
+                                "str": "rewriting 1/8 * pi * log(2) + 1/8 * pi * log(a ^ 2) to 1/8 * pi * (log(2) + log(a ^ 2))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt = \\frac{\\frac{1}{8} \\pi \\log{(2 a ^ {2})}}{a}",
+                            "res": "(INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) = 1/8 * pi * log(2 * a ^ 2) / a",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\log{(2)} + \\log{(a ^ {2})}\\) to \\(\\log{(2 a ^ {2})}\\)",
+                                "name": "Equation",
+                                "new_expr": "log(2 * a ^ 2)",
+                                "old_expr": "log(2) + log(a ^ 2)",
+                                "str": "rewriting log(2) + log(a ^ 2) to log(2 * a ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt = \\frac{\\pi}{8 a} \\log{(2 a ^ {2})}",
+                            "res": "(INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) = pi / (8 * a) * log(2 * a ^ 2)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{\\frac{1}{8} \\pi \\log{(2 a ^ {2})}}{a}\\) to \\(\\frac{\\pi}{8 a} \\log{(2 a ^ {2})}\\)",
+                                "name": "Equation",
+                                "new_expr": "pi / (8 * a) * log(2 * a ^ 2)",
+                                "old_expr": "1/8 * pi * log(2 * a ^ 2) / a",
+                                "str": "rewriting 1/8 * pi * log(2 * a ^ 2) / a to pi / (8 * a) * log(2 * a ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "Trick2e"
+}

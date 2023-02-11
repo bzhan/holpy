@@ -398,7 +398,7 @@
         },
         {
             "type": "axiom",
-            "expr": "tan(a-b) = (tan(a) - tan(b)) / (1 + tan(a) *tan(b))",
+            "expr": "tan(a - b) = (tan(a) - tan(b)) / (1 + tan(a) * tan(b))",
             "category": "trigonometric"
         },
         {
@@ -491,6 +491,11 @@
         {
             "type": "axiom",
             "expr": "cos(2*x) = 2 * cos(x)^2 - 1",
+            "category": "trigonometric"
+        },
+        {
+            "type": "axiom",
+            "expr": "cos(2*x) = 1 - 2 * sin(x) ^ 2",
             "category": "trigonometric"
         },
         {

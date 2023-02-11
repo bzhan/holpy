@@ -1,0 +1,226 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = (INT x:[0,1/4 * pi]. log(tan(x) + 1))",
+            "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\int_{0}^{1/4\\cdot \\pi} \\log{(\\tan{x} + 1)} \\,dx",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = (INT x:[0,1/4 * pi]. log(tan(x) + 1))",
+                "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\int_{0}^{1/4\\cdot \\pi} \\log{(\\tan{x} + 1)} \\,dx",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx",
+                    "start": "INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1/4\\cdot \\pi} \\frac{\\log{(\\tan{u} + 1)}}{\\tan^{2}(u) + 1} \\sec^{2}(u) \\,du",
+                            "res": "INT u:[0,1/4 * pi]. log(tan(u) + 1) / (tan(u) ^ 2 + 1) * sec(u) ^ 2",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(\\tan{u}\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for tan(u)",
+                                "var_name": "u",
+                                "var_subst": "tan(u)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1/4\\cdot \\pi} \\frac{\\log{(\\tan{u} + 1)}}{\\tan^{2}(u) + 1} (\\tan^{2}(u) + 1) \\,du",
+                            "res": "INT u:[0,1/4 * pi]. log(tan(u) + 1) / (tan(u) ^ 2 + 1) * (tan(u) ^ 2 + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\sec^{2}(u)\\) to \\(\\tan^{2}(u) + 1\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "sec(u) ^ 2",
+                                "str": "rewrite sec(u) ^ 2 to tan(u) ^ 2 + 1 using identity",
+                                "target": "tan(u) ^ 2 + 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1/4\\cdot \\pi} \\log{(\\tan{u} + 1)} \\,du",
+                            "res": "INT u:[0,1/4 * pi]. log(tan(u) + 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{0}^{1/4\\cdot \\pi} \\log{(\\tan{x} + 1)} \\,dx",
+                    "start": "INT x:[0,1/4 * pi]. log(tan(x) + 1)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 4 * log(2) - (INT x:[0,1]. log(x + 1) / (x ^ 2 + 1))",
+            "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\frac{\\pi}{4} \\log{(2)} - (\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx)",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 4 * log(2) - (INT x:[0,1]. log(x + 1) / (x ^ 2 + 1))",
+                "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\frac{\\pi}{4} \\log{(2)} - (\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx)",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx",
+                    "start": "INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1/4\\cdot \\pi} \\log{(\\tan{x} + 1)} \\,dx",
+                            "res": "INT x:[0,1/4 * pi]. log(tan(x) + 1)",
+                            "rule": {
+                                "eq": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = (INT x:[0,1/4 * pi]. log(tan(x) + 1))",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\int_{0}^{1/4\\cdot \\pi} \\log{(\\tan{x} + 1)} \\,dx\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = (INT x:[0,1/4 * pi]. log(tan(x) + 1))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1/4\\cdot \\pi} \\log{(\\tan{(\\frac{\\pi}{4} - x)} + 1)}\\cdot -1 \\,dx)",
+                            "res": "-(INT x:[0,1/4 * pi]. log(tan(pi / 4 - x) + 1) * -1)",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(\\frac{\\pi}{4} - x\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for pi / 4 - x",
+                                "var_name": "x",
+                                "var_subst": "pi / 4 - x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1/4\\cdot \\pi} \\log{(\\tan{(\\frac{1}{4} \\pi - x)} + 1)} \\,dx",
+                            "res": "INT x:[0,1/4 * pi]. log(tan(1/4 * pi - x) + 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1/4\\cdot \\pi} \\log{(\\frac{\\tan{(\\frac{1}{4} \\pi)} - \\tan{x}}{1 + \\tan{(\\frac{1}{4} \\pi)} \\tan{x}} + 1)} \\,dx",
+                            "res": "INT x:[0,1/4 * pi]. log((tan(1/4 * pi) - tan(x)) / (1 + tan(1/4 * pi) * tan(x)) + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\tan{(\\frac{1}{4} \\pi - x)}\\) to \\(\\frac{\\tan{(\\frac{1}{4} \\pi)} - \\tan{x}}{1 + \\tan{(\\frac{1}{4} \\pi)} \\tan{x}}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "tan(1/4 * pi - x)",
+                                "str": "rewrite tan(1/4 * pi - x) to (tan(1/4 * pi) - tan(x)) / (1 + tan(1/4 * pi) * tan(x)) using identity",
+                                "target": "(tan(1/4 * pi) - tan(x)) / (1 + tan(1/4 * pi) * tan(x))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1/4\\cdot \\pi} \\log{(\\frac{-\\tan{x} + 1}{\\tan{x} + 1} + 1)} \\,dx",
+                            "res": "INT x:[0,1/4 * pi]. log((-tan(x) + 1) / (tan(x) + 1) + 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1/4\\cdot \\pi} \\log{(\\frac{2}{1 + \\tan{x}})} \\,dx",
+                            "res": "INT x:[0,1/4 * pi]. log(2 / (1 + tan(x)))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{-\\tan{x} + 1}{\\tan{x} + 1} + 1\\) to \\(\\frac{2}{1 + \\tan{x}}\\)",
+                                "name": "Equation",
+                                "new_expr": "2 / (1 + tan(x))",
+                                "old_expr": "(-tan(x) + 1) / (tan(x) + 1) + 1",
+                                "str": "rewriting (-tan(x) + 1) / (tan(x) + 1) + 1 to 2 / (1 + tan(x))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1/4\\cdot \\pi} \\log{(2)} - \\log{(1 + \\tan{x})} \\,dx",
+                            "res": "INT x:[0,1/4 * pi]. log(2) - log(1 + tan(x))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\log{(\\frac{2}{1 + \\tan{x}})}\\) to \\(\\log{(2)} - \\log{(1 + \\tan{x})}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "log(2 / (1 + tan(x)))",
+                                "str": "rewrite log(2 / (1 + tan(x))) to log(2) - log(1 + tan(x)) using identity",
+                                "target": "log(2) - log(1 + tan(x))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1/4\\cdot \\pi} \\log{(\\tan{x} + 1)} \\,dx) + \\frac{1}{4} \\pi \\log{(2)}",
+                            "res": "-(INT x:[0,1/4 * pi]. log(tan(x) + 1)) + 1/4 * pi * log(2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx) + \\frac{1}{4} \\pi \\log{(2)}",
+                            "res": "-(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) + 1/4 * pi * log(2)",
+                            "rule": {
+                                "eq": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = (INT x:[0,1/4 * pi]. log(tan(x) + 1))",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\int_{0}^{1/4\\cdot \\pi} \\log{(\\tan{x} + 1)} \\,dx\\) at 0.0",
+                                "loc": "0.0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = (INT x:[0,1/4 * pi]. log(tan(x) + 1)) at 0.0"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi}{4} \\log{(2)} - (\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx)",
+                    "start": "pi / 4 * log(2) - (INT x:[0,1]. log(x + 1) / (x ^ 2 + 1))",
+                    "steps": [
+                        {
+                            "latex_res": "-(\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx) + \\frac{1}{4} \\pi \\log{(2)}",
+                            "res": "-(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) + 1/4 * pi * log(2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 8 * log(2)",
+            "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\frac{\\pi}{8} \\log{(2)}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 8 * log(2)",
+                "latex_goal": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\frac{\\pi}{8} \\log{(2)}",
+                "start": {
+                    "latex_start": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\frac{\\pi}{4} \\log{(2)} - (\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx)",
+                    "start": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 4 * log(2) - (INT x:[0,1]. log(x + 1) / (x ^ 2 + 1))",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\frac{1}{8} \\pi \\log{(2)}",
+                            "res": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = 1/8 * pi * log(2)",
+                            "rule": {
+                                "latex_str": "solve equation for \\(\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)",
+                                "str": "solve equation for INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "Trick2d"
+}

@@ -1,0 +1,167 @@
+{
+    "content": [
+        {
+            "eq": "I(b) = (INT x:[0,oo]. log(x) / (x ^ 2 + b ^ 2))",
+            "latex_eq": "I{(b)} = \\int_{0}^{\\infty} \\frac{\\log{x}}{x ^ {2} + b ^ {2}} \\,dx",
+            "latex_lhs": "I{(b)}",
+            "type": "FuncDef"
+        },
+        {
+            "finished": true,
+            "goal": "I(b) = pi * log(b) / (2 * b)",
+            "latex_goal": "I{(b)} = \\frac{\\pi \\log{b}}{2 b}",
+            "proof": {
+                "finished": true,
+                "goal": "I(b) = pi * log(b) / (2 * b)",
+                "latex_goal": "I{(b)} = \\frac{\\pi \\log{b}}{2 b}",
+                "lhs_calc": {
+                    "latex_start": "I{(b)}",
+                    "start": "I(b)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\log{x}}{b ^ {2} + x ^ {2}} \\,dx",
+                            "res": "INT x:[0,oo]. log(x) / (b ^ 2 + x ^ 2)",
+                            "rule": {
+                                "func_name": "I",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{\\infty} \\frac{\\log{(\\frac{1}{t})}}{b ^ {2} + (\\frac{1}{t}) ^ {2}} -\\frac{1}{t ^ {2}} \\,dt)",
+                            "res": "-(INT t:[0,oo]. log(1 / t) / (b ^ 2 + (1 / t) ^ 2) * -(1 / t ^ 2))",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(\\frac{1}{t}\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for 1 / t",
+                                "var_name": "t",
+                                "var_subst": "1 / t"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{\\infty} \\frac{-\\log{t}}{b ^ {2} + (\\frac{1}{t}) ^ {2}} -\\frac{1}{t ^ {2}} \\,dt)",
+                            "res": "-(INT t:[0,oo]. -log(t) / (b ^ 2 + (1 / t) ^ 2) * -(1 / t ^ 2))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\log{(\\frac{1}{t})}\\) to \\(-\\log{t}\\)",
+                                "name": "Equation",
+                                "new_expr": "-log(t)",
+                                "old_expr": "log(1 / t)",
+                                "str": "rewriting log(1 / t) to -log(t)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{\\infty} \\frac{\\log{t}}{1 + b ^ {2} t ^ {2}} \\,dt)",
+                            "res": "-(INT t:[0,oo]. log(t) / (1 + b ^ 2 * t ^ 2))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{-\\log{t}}{b ^ {2} + (\\frac{1}{t}) ^ {2}} -\\frac{1}{t ^ {2}}\\) to \\(\\frac{\\log{t}}{1 + b ^ {2} t ^ {2}}\\)",
+                                "name": "Equation",
+                                "new_expr": "log(t) / (1 + b ^ 2 * t ^ 2)",
+                                "old_expr": "-log(t) / (b ^ 2 + (1 / t) ^ 2) * -(1 / t ^ 2)",
+                                "str": "rewriting -log(t) / (b ^ 2 + (1 / t) ^ 2) * -(1 / t ^ 2) to log(t) / (1 + b ^ 2 * t ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-(\\int_{0}^{\\infty} \\frac{\\log{(\\frac{s}{b})}}{1 + b ^ {2} (\\frac{s}{b}) ^ {2}} (\\frac{1}{b}) \\,ds)",
+                            "res": "-(INT s:[0,oo]. log(s / b) / (1 + b ^ 2 * (s / b) ^ 2) * (1 / b))",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(\\frac{s}{b}\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for s / b",
+                                "var_name": "s",
+                                "var_subst": "s / b"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{\\int_{0}^{\\infty} \\frac{\\log{(\\frac{s}{b})}}{s ^ {2} + 1} \\,ds}{b}",
+                            "res": "-((INT s:[0,oo]. log(s / b) / (s ^ 2 + 1)) / b)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{\\int_{0}^{\\infty} \\frac{\\log{s} - \\log{b}}{s ^ {2} + 1} \\,ds}{b}",
+                            "res": "-((INT s:[0,oo]. (log(s) - log(b)) / (s ^ 2 + 1)) / b)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\log{(\\frac{s}{b})}\\) to \\(\\log{s} - \\log{b}\\)",
+                                "name": "Equation",
+                                "new_expr": "log(s) - log(b)",
+                                "old_expr": "log(s / b)",
+                                "str": "rewriting log(s / b) to log(s) - log(b)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{\\int_{0}^{\\infty} \\frac{\\log{s}}{s ^ {2} + 1} - \\frac{\\log{b}}{s ^ {2} + 1} \\,ds}{b}",
+                            "res": "-((INT s:[0,oo]. log(s) / (s ^ 2 + 1) - log(b) / (s ^ 2 + 1)) / b)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{\\log{s} - \\log{b}}{s ^ {2} + 1}\\) to \\(\\frac{\\log{s}}{s ^ {2} + 1} - \\frac{\\log{b}}{s ^ {2} + 1}\\)",
+                                "name": "Equation",
+                                "new_expr": "log(s) / (s ^ 2 + 1) - log(b) / (s ^ 2 + 1)",
+                                "old_expr": "(log(s) - log(b)) / (s ^ 2 + 1)",
+                                "str": "rewriting (log(s) - log(b)) / (s ^ 2 + 1) to log(s) / (s ^ 2 + 1) - log(b) / (s ^ 2 + 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{(\\int_{0}^{\\infty} \\frac{\\log{s}}{s ^ {2} + 1} \\,ds) + -\\frac{1}{2} \\pi \\log{b}}{b}",
+                            "res": "-(((INT s:[0,oo]. log(s) / (s ^ 2 + 1)) + -1/2 * pi * log(b)) / b)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{0 + -\\frac{1}{2} \\pi \\log{b}}{b}",
+                            "res": "-((0 + -1/2 * pi * log(b)) / b)",
+                            "rule": {
+                                "eq": "(INT s:[0,oo]. log(s) / (s ^ 2 + 1)) = 0",
+                                "latex_str": "apply equation \\(\\int_{0}^{\\infty} \\frac{\\log{s}}{s ^ {2} + 1} \\,ds = 0\\) at 0.0.0",
+                                "loc": "0.0.0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT s:[0,oo]. log(s) / (s ^ 2 + 1)) = 0 at 0.0.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} \\pi (\\frac{\\log{b}}{b})",
+                            "res": "1/2 * pi * (log(b) / b)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi \\log{b}}{2 b}",
+                    "start": "pi * log(b) / (2 * b)",
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{1}{2} \\pi (\\frac{\\log{b}}{b})",
+                            "res": "1/2 * pi * (log(b) / b)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "easy03"
+}
