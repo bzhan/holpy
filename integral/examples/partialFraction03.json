@@ -256,26 +256,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(a)} = \\frac{1}{4} (\\int_{-\\infty}^{\\infty} \\frac{x ^ {2} + 1}{-4 x ^ {2} \\sin^{2}(a) + 2 x ^ {2} + x ^ {4} + 1} \\,dx)",
-                            "res": "I(a) = 1/4 * (INT x:[-oo,oo]. (x ^ 2 + 1) / (-4 * x ^ 2 * sin(a) ^ 2 + 2 * x ^ 2 + x ^ 4 + 1))",
-                            "rule": {
-                                "latex_str": "rewriting \\(2 x ^ {2} (1 - 2 \\sin^{2}(a))\\) to \\(-4 x ^ {2} \\sin^{2}(a) + 2 x ^ {2}\\)",
-                                "name": "Equation",
-                                "new_expr": "-4 * x ^ 2 * sin(a) ^ 2 + 2 * x ^ 2",
-                                "old_expr": "2 * x ^ 2 * (1 - 2 * sin(a) ^ 2)",
-                                "str": "rewriting 2 * x ^ 2 * (1 - 2 * sin(a) ^ 2) to -4 * x ^ 2 * sin(a) ^ 2 + 2 * x ^ 2"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "I{(a)} = \\frac{1}{4} (\\int_{-\\infty}^{\\infty} \\frac{x ^ {2} + 1}{(x ^ {2} - 2 x \\sin{a} + 1) (x ^ {2} + 2 x \\sin{a} + 1)} \\,dx)",
                             "res": "I(a) = 1/4 * (INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)))",
                             "rule": {
-                                "latex_str": "rewriting \\(-4 x ^ {2} \\sin^{2}(a) + 2 x ^ {2} + x ^ {4} + 1\\) to \\((x ^ {2} - 2 x \\sin{a} + 1) (x ^ {2} + 2 x \\sin{a} + 1)\\)",
+                                "latex_str": "rewriting \\(2 x ^ {2} (1 - 2 \\sin^{2}(a)) + x ^ {4} + 1\\) to \\((x ^ {2} - 2 x \\sin{a} + 1) (x ^ {2} + 2 x \\sin{a} + 1)\\)",
                                 "name": "Equation",
                                 "new_expr": "(x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)",
-                                "old_expr": "-4 * x ^ 2 * sin(a) ^ 2 + 2 * x ^ 2 + x ^ 4 + 1",
-                                "str": "rewriting -4 * x ^ 2 * sin(a) ^ 2 + 2 * x ^ 2 + x ^ 4 + 1 to (x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)"
+                                "old_expr": "2 * x ^ 2 * (1 - 2 * sin(a) ^ 2) + x ^ 4 + 1",
+                                "str": "rewriting 2 * x ^ 2 * (1 - 2 * sin(a) ^ 2) + x ^ 4 + 1 to (x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)"
                             },
                             "type": "CalculationStep"
                         },
