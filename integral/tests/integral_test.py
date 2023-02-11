@@ -2021,21 +2021,10 @@ class IntegralTest(unittest.TestCase):
         ctx.load_book("base")
         file = compstate.CompFile(ctx, "Chapter3Practice05")
 
-        file.add_definition("I(a, m) = (INT x:[0, oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2)))", conds=["a > 0", "m > 0"])
-
-        # Reference:
-        # Inside interesting integrals, Section 8.10, C8.2
-        # Contour integration is needed.
-        lemma = parser.parse_expr("(INT x:[0, oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = (pi * (1 - exp(-a * m))) / (2 * a ^ 2)")
-        ctx.add_lemma(lemma)
-        ctx.add_condition("a > 0")
-        ctx.add_condition("m > 0")
-
-        goal01 = file.add_goal("I(a, m) = (pi * (1 - exp(-a * m))) / (2 * a ^ 2)", conds=["a > 0", "m > 0"])
+        goal01 = file.add_goal("(INT x:[0, oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = (pi * (1 - exp(-a * m))) / (2 * a ^ 2)", conds=["a > 0", "m > 0"])
         proof_of_goal01 = goal01.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
-        calc.perform_rule(rules.ExpandDefinition("I"))
-        calc.perform_rule(rules.ApplyEquation(lemma))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
 
         goal02 = file.add_goal("(INT x:[0, oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)) = (pi / (2 * a ^ 4)) * (1 - ((2 + m * a) / 2) * exp(- a * m))",
                                conds=["a > 0", "m > 0"])

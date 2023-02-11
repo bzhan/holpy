@@ -11,51 +11,23 @@
                     "latex_cond": "m > 0"
                 }
             ],
-            "eq": "I(a,m) = (INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2)))",
-            "latex_eq": "I(a,m) = \\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx",
-            "latex_lhs": "I(a,m)",
-            "type": "FuncDef"
-        },
-        {
-            "conds": [
-                {
-                    "cond": "a > 0",
-                    "latex_cond": "a > 0"
-                },
-                {
-                    "cond": "m > 0",
-                    "latex_cond": "m > 0"
-                }
-            ],
             "finished": true,
-            "goal": "I(a,m) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
-            "latex_goal": "I(a,m) = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
+            "goal": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
             "proof": {
                 "finished": true,
-                "goal": "I(a,m) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
-                "latex_goal": "I(a,m) = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
+                "goal": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
                 "lhs_calc": {
-                    "latex_start": "I(a,m)",
-                    "start": "I(a,m)",
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx",
+                    "start": "INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))",
                     "steps": [
-                        {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx",
-                            "res": "INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))",
-                            "rule": {
-                                "func_name": "I",
-                                "name": "ExpandDefinition",
-                                "str": "expand definition"
-                            },
-                            "type": "CalculationStep"
-                        },
                         {
                             "latex_res": "\\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
                             "res": "pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
                             "rule": {
-                                "eq": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
-                                "latex_str": "apply equation \\(\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}\\)",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)"
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
                             },
                             "type": "CalculationStep"
                         }
@@ -101,8 +73,8 @@
                             "latex_cond": "m > 0"
                         }
                     ],
-                    "latex_start": "I(a,m) = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
-                    "start": "I(a,m) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
+                    "start": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
                     "steps": [
                         {
                             "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",

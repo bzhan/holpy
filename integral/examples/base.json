@@ -651,6 +651,20 @@
                 "y > 0"
             ],
             "path": "standard"
+        },
+        {
+            "type": "header",
+            "name": "Results from contour integration",
+            "level": 1
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x:[0, oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = (pi * (1 - exp(-a * m))) / (2 * a ^ 2)",
+            "conds": [
+                "a > 0",
+                "m > 0"
+            ],
+            "reference": "Inside interesting Integrals, Section 8.10, C8.2"
         }
     ],
     "name": "Base theory"
