@@ -1340,6 +1340,10 @@ class IntegrationByParts(Rule):
     """
     def __init__(self, u: Expr, v: Expr):
         self.name = "IntegrationByParts"
+        if isinstance(u, str):
+            u = parser.parse_expr(u)
+        if isinstance(v, str):
+            v = parser.parse_expr(v)
         assert isinstance(u, Expr) and isinstance(v, Expr)
         self.u = u
         self.v = v

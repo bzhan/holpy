@@ -156,6 +156,14 @@
                 "bidirectional"
             ]
         },
+         {
+            "type": "axiom",
+            "expr": "(a / b) ^ k = a ^ k / b ^ k",
+            "category": "power",
+            "attributes": [
+                "bidirectional"
+            ]
+        },
         {
             "type": "header",
             "name": "Exp-log identities",
@@ -643,10 +651,6 @@
                 "y > 0"
             ],
             "path": "standard"
-        },
-        {
-            "type": "lemma",
-            "expr": "(sin(x)^2 + cos(x)^2) = 1"
         }
     ],
     "name": "Base theory"
