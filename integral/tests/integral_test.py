@@ -2072,6 +2072,16 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("1/2 * (1 / (a ^ 2 * b))", "1 / (2 * a ^ 2 * b)"))
         self.checkAndOutput(file, "Chapter3Practice06")
 
-
+    def testCharpter1Practice01(self):
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "charpter1_practice01")
+        goal = file.add_goal("(INT x:[0,8]. 1/(x-2)) = log(3)")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Substitution("u", "x-2"))
+        calc.perform_rule(rules.SplitRegion("0", is_cpv=True, new_var="c"))
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file, "charpter1_practice01")
 if __name__ == "__main__":
     unittest.main()
