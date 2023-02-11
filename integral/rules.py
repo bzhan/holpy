@@ -494,10 +494,16 @@ class DefiniteIntegralIdentity(Rule):
         # Look for definite integral identities
         for identity in ctx.get_definite_integrals():
             inst = expr.match(e, identity.lhs)
-            if inst is None:
-                continue
-
-            return identity.rhs.inst_pat(inst)
+            if inst is not None:
+                # Check conditions
+                satisfied = True
+                for cond in identity.conds.data:
+                    cond = expr.expr_to_pattern(cond)
+                    cond = cond.inst_pat(inst)
+                    if not ctx.get_conds().check_condition(cond):
+                        satisfied = False
+                if satisfied:
+                    return identity.rhs.inst_pat(inst)
 
         # No matching identity found
         return e
@@ -983,7 +989,7 @@ class FullSimplify(Rule):
 
 class ApplyEquation(Rule):
     """Apply the given equation for rewriting."""
-    def __init__(self, eq: Union[Expr,str]):
+    def __init__(self, eq: Union[Expr, str]):
         self.name = "ApplyEquation"
         if isinstance(eq, str):
             eq = parser.parse_expr(eq)

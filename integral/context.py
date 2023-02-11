@@ -196,13 +196,13 @@ class Context:
         symb_rhs = expr_to_pattern(eq.rhs)
         self.indefinite_integrals.append(Identity(symb_lhs, symb_rhs))
 
-    def add_definite_integral(self, eq: Expr):
+    def add_definite_integral(self, eq: Expr, conds: Conditions):
         if not (eq.is_equals() and eq.lhs.is_integral()):
             raise TypeError
         
         symb_lhs = expr_to_pattern(eq.lhs)
         symb_rhs = expr_to_pattern(eq.rhs)
-        self.definite_integrals.append(Identity(symb_lhs, symb_rhs))
+        self.definite_integrals.append(Identity(symb_lhs, symb_rhs, conds=conds))
 
     def add_series_expansion(self, eq: Expr):
         if not (eq.is_equals() and not eq.lhs.is_summation() and eq.rhs.is_summation()):
@@ -283,7 +283,11 @@ class Context:
             if e.is_equals() and e.lhs.is_indefinite_integral():
                 self.add_indefinite_integral(e)
             elif e.is_equals() and e.lhs.is_integral():
-                self.add_definite_integral(e)
+                conds = Conditions()
+                if 'conds' in item:
+                    for cond in item['conds']:
+                        conds.add_condition(parser.parse_expr(cond))
+                self.add_definite_integral(e, conds)
             elif e.is_equals() and not e.lhs.is_summation() and e.rhs.is_summation():
                 self.add_series_expansion(e)
             elif e.is_equals() and e.lhs.is_summation() and not e.rhs.is_summation():

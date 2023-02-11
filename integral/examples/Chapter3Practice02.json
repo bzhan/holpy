@@ -17,6 +17,16 @@
             "type": "FuncDef"
         },
         {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
+                }
+            ],
             "finished": true,
             "goal": "I(a,b) = 1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
             "latex_goal": "I(a,b) = \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b + a) x)}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)",
@@ -99,8 +109,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(b x)}}{x} \\,dx",
-                            "res": "INT x:[0,oo]. sin(b * x) / x",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{(x (-a + b))}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{(x (a + b))}}{x} \\,dx)",
+                            "res": "1/2 * (INT x:[0,oo]. sin(x * (-a + b)) / x) + 1/2 * (INT x:[0,oo]. sin(x * (a + b)) / x)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -115,8 +125,8 @@
                     "start": "1/2 * (INT x:[0,oo]. sin((b + a) * x) / x) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(b x)}}{x} \\,dx",
-                            "res": "INT x:[0,oo]. sin(b * x) / x",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{(x (-a + b))}}{x} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{(x (a + b))}}{x} \\,dx)",
+                            "res": "1/2 * (INT x:[0,oo]. sin(x * (-a + b)) / x) + 1/2 * (INT x:[0,oo]. sin(x * (a + b)) / x)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -135,6 +145,14 @@
                 {
                     "cond": "b - a > 0",
                     "latex_cond": "b - a > 0"
+                },
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
                 }
             ],
             "finished": true,
@@ -160,26 +178,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\frac{1}{2} \\pi) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)",
-                            "res": "1/2 * (1/2 * pi) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
-                            "rule": {
-                                "eq": "(INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi",
-                                "latex_str": "apply equation \\(\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = \\frac{1}{2} \\pi\\) at 0.1",
-                                "loc": "0.1",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi at 0.1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "\\frac{1}{2} (\\frac{1}{2} \\pi) + \\frac{1}{2} (\\frac{1}{2} \\pi)",
                             "res": "1/2 * (1/2 * pi) + 1/2 * (1/2 * pi)",
                             "rule": {
-                                "eq": "(INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi",
-                                "latex_str": "apply equation \\(\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = \\frac{1}{2} \\pi\\) at 1.1",
-                                "loc": "1.1",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi at 1.1"
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
                             },
                             "type": "CalculationStep"
                         },
@@ -210,6 +213,14 @@
                 {
                     "cond": "b - a < 0",
                     "latex_cond": "b - a < 0"
+                },
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
                 }
             ],
             "finished": true,
@@ -235,26 +246,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\frac{1}{2} \\pi) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)",
-                            "res": "1/2 * (1/2 * pi) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
-                            "rule": {
-                                "eq": "(INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi",
-                                "latex_str": "apply equation \\(\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = \\frac{1}{2} \\pi\\) at 0.1",
-                                "loc": "0.1",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi at 0.1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "\\frac{1}{2} (\\frac{1}{2} \\pi) + \\frac{1}{2} (-\\frac{1}{2} \\pi)",
                             "res": "1/2 * (1/2 * pi) + 1/2 * (-1/2 * pi)",
                             "rule": {
-                                "eq": "(INT x:[0,oo]. sin(a2 * x) / x) = -1/2 * pi",
-                                "latex_str": "apply equation \\(\\int_{0}^{\\infty} \\frac{\\sin{(a2 x)}}{x} \\,dx = -\\frac{1}{2} \\pi\\) at 1.1",
-                                "loc": "1.1",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[0,oo]. sin(a2 * x) / x) = -1/2 * pi at 1.1"
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
                             },
                             "type": "CalculationStep"
                         },
@@ -285,6 +281,14 @@
                 {
                     "cond": "b - a = 0",
                     "latex_cond": "b - a = 0"
+                },
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
                 }
             ],
             "finished": true,
@@ -310,26 +314,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\frac{1}{2} \\pi) + \\frac{1}{2} (\\int_{0}^{\\infty} \\frac{\\sin{((b - a) x)}}{x} \\,dx)",
-                            "res": "1/2 * (1/2 * pi) + 1/2 * (INT x:[0,oo]. sin((b - a) * x) / x)",
-                            "rule": {
-                                "eq": "(INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi",
-                                "latex_str": "apply equation \\(\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = \\frac{1}{2} \\pi\\) at 0.1",
-                                "loc": "0.1",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi at 0.1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "\\frac{1}{2} (\\frac{1}{2} \\pi) + \\frac{1}{2}\\cdot 0",
                             "res": "1/2 * (1/2 * pi) + 1/2 * 0",
                             "rule": {
-                                "eq": "(INT x:[0,oo]. sin(a3 * x) / x) = 0",
-                                "latex_str": "apply equation \\(\\int_{0}^{\\infty} \\frac{\\sin{(a3 x)}}{x} \\,dx = 0\\) at 1.1",
-                                "loc": "1.1",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[0,oo]. sin(a3 * x) / x) = 0 at 1.1"
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
                             },
                             "type": "CalculationStep"
                         },

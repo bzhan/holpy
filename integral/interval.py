@@ -67,6 +67,10 @@ class Interval:
         if cond.is_less_eq() and cond.args[0].is_constant():
             # const <= x  ==>  x in [const, oo)
             return cond.args[1], Interval.ropen(cond.args[0], expr.POS_INF)
+        if cond.is_equals() and cond.args[1].is_constant():
+            return cond.args[0], Interval.point(cond.args[1])
+        if cond.is_equals() and cond.args[0].is_constant():
+            return cond.args[1], Interval.point(cond.args[0])
         if cond.is_greater():
             return Interval.from_condition(expr.Op("<", cond.args[1], cond.args[0]))
         if cond.is_greater_eq():

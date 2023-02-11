@@ -152,8 +152,25 @@
         },
         {
             "type": "problem",
-            "expr": "(INT x:[0,oo]. x ^ -1 * sin(x)) = 1/2 * pi",
+            "expr": "(INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi",
+            "conds": [
+                "a > 0"
+            ],
             "path": "dirichletIntegral"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. sin(a * x) / x) = 0",
+            "conds": [
+                "a = 0"
+            ]
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. sin(a * x) / x) = -1/2 * pi",
+            "conds": [
+                "a < 0"
+            ]
         },
         {
             "type": "header",
