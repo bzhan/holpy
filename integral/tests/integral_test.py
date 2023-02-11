@@ -2072,16 +2072,34 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("1/2 * (1 / (a ^ 2 * b))", "1 / (2 * a ^ 2 * b)"))
         self.checkAndOutput(file, "Chapter3Practice06")
 
-    def testCharpter1Practice01(self):
+    def testCharpter1Practice0101(self):
+        # Reference:
+        # Inside interesting integrals, C1.1
         ctx = context.Context()
         ctx.load_book("base")
-        file = compstate.CompFile(ctx, "charpter1_practice01")
+        file = compstate.CompFile(ctx, "charpter1_practice01_01")
         goal = file.add_goal("(INT x:[0,8]. 1/(x-2)) = log(3)")
         proof = goal.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("u", "x-2"))
         calc.perform_rule(rules.SplitRegion("0", is_cpv=True, new_var="c"))
         calc.perform_rule(rules.FullSimplify())
-        self.checkAndOutput(file, "charpter1_practice01")
+        self.checkAndOutput(file, "charpter1_practice01_01")
+
+    def testCharpter1Practice0102(self):
+        # Reference:
+        # Inside interesting integrals, C1.1
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "charpter1_practice01_02")
+        goal = file.add_goal("(INT x:[0,3]. 1/(x-1)^(2/3)) = 3 * (1+2^(1/3))")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Substitution("u", "x-1"))
+        calc.perform_rule(rules.SplitRegion("0", is_cpv=True, new_var="c"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.ExpandPolynomial())
+        self.checkAndOutput(file, "charpter1_practice01_02")
 if __name__ == "__main__":
     unittest.main()
