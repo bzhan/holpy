@@ -35,20 +35,41 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{-\\pi}{2} \\log{(2)} - (\\int_{0}^{1/2\\cdot \\pi} \\log{x} \\,dx)",
-                            "res": "-pi / 2 * log(2) - (INT x:[0,1/2 * pi]. log(x))",
+                            "latex_res": "(\\int_{0}^{1/2\\cdot \\pi} \\log{(1 \\sin{x})} \\,dx) - (\\int_{0}^{1/2\\cdot \\pi} \\log{x} \\,dx)",
+                            "res": "(INT x:[0,1/2 * pi]. log(1 * sin(x))) - (INT x:[0,1/2 * pi]. log(x))",
                             "rule": {
-                                "eq": "(INT x:[0,1/2 * pi]. log(sin(x))) = -pi / 2 * log(2)",
-                                "latex_str": "apply equation \\(\\int_{0}^{1/2\\cdot \\pi} \\log{(\\sin{x})} \\,dx = \\frac{-\\pi}{2} \\log{(2)}\\) at 0",
-                                "loc": "0",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[0,1/2 * pi]. log(sin(x))) = -pi / 2 * log(2) at 0"
+                                "latex_str": "rewriting \\(\\log{(\\sin{x})}\\) to \\(\\log{(1 \\sin{x})}\\)",
+                                "name": "Equation",
+                                "new_expr": "log(1 * sin(x))",
+                                "old_expr": "log(sin(x))",
+                                "str": "rewriting log(sin(x)) to log(1 * sin(x))"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{-\\pi}{2} \\log{(2)} - ((\\left. x \\log{x} \\right\\vert_{x=0}^{1/2\\cdot \\pi}) - (\\int_{0}^{1/2\\cdot \\pi} 1 \\,dx))",
-                            "res": "-pi / 2 * log(2) - (([x * log(x)]_x=0,1/2 * pi) - (INT x:[0,1/2 * pi]. 1))",
+                            "latex_res": "(\\int_{0}^{\\pi/2} \\log{(1 \\sin{x})} \\,dx) - (\\int_{0}^{1/2\\cdot \\pi} \\log{x} \\,dx)",
+                            "res": "(INT x:[0,pi / 2]. log(1 * sin(x))) - (INT x:[0,1/2 * pi]. log(x))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{2} \\pi\\) to \\(\\frac{\\pi}{2}\\)",
+                                "name": "Equation",
+                                "new_expr": "pi / 2",
+                                "old_expr": "1/2 * pi",
+                                "str": "rewriting 1/2 * pi to pi / 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\pi}{2} \\log{(\\frac{1}{2})} - (\\int_{0}^{1/2\\cdot \\pi} \\log{x} \\,dx)",
+                            "res": "pi / 2 * log(1/2) - (INT x:[0,1/2 * pi]. log(x))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\pi}{2} \\log{(\\frac{1}{2})} - ((\\left. x \\log{x} \\right\\vert_{x=0}^{1/2\\cdot \\pi}) - (\\int_{0}^{1/2\\cdot \\pi} 1 \\,dx))",
+                            "res": "pi / 2 * log(1/2) - (([x * log(x)]_x=0,1/2 * pi) - (INT x:[0,1/2 * pi]. 1))",
                             "rule": {
                                 "latex_str": "integrate by parts \\(u \\to \\log{x}, v \\to x\\) at 1",
                                 "loc": "1",

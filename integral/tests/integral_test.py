@@ -1240,20 +1240,23 @@ class IntegralTest(unittest.TestCase):
         # Inside interesting integrals, Section 2.4 (2.4.2)
         ctx = context.Context()
         ctx.load_book('base')
+        ctx.load_book('interesting', 'euler_log_sin02')
+
         file = compstate.CompFile(ctx, "EulerLogSine02")
         goal = file.add_goal("(INT x:[0, pi/2]. log(sin(x) / x)) = pi/2 * (1-log(pi))")
         proof = goal.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("log(sin(x) / x)", "log(sin(x)) - log(x)"), "0"))
-        # calc.perform_rule(rules.Equation("log(sin(x) / x)", "log(sin(x)) - log(x)"))
         calc.perform_rule(rules.FullSimplify())
-        ctx.add_lemma("(INT x:[0,1/2 * pi]. log(sin(x))) = -pi/2 * log(2)")
-        calc.perform_rule(
-            rules.OnLocation(rules.ApplyEquation("(INT x:[0,1/2 * pi]. log(sin(x))) = -pi/2 * log(2)"), "0"))
+        calc.perform_rule(rules.Equation("log(sin(x))", "log(1*sin(x))"))
+        calc.perform_rule(rules.Equation("1/2*pi", "pi/2"))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.OnLocation(rules.IntegrationByParts("log(x)", "x"), "1"))
         calc.perform_rule(rules.FullSimplify())
+
         calc = proof.rhs_calc
         calc.perform_rule(rules.ExpandPolynomial())
+
         self.checkAndOutput(file, "euler_log_sin02")
 
     def testEulerLogSineIntegral05(self):
