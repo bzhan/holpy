@@ -86,8 +86,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "e^{1/4\\cdot (b ^ {2}/a)} \\sqrt{\\frac{\\pi}{a}}",
-                            "res": "exp(1/4 * (b ^ 2 / a)) * sqrt(pi / a)",
+                            "latex_res": "e^{1/4\\cdot (b ^ {2}/a)} (\\sqrt{\\pi} (\\frac{1}{\\sqrt{a}}))",
+                            "res": "exp(1/4 * (b ^ 2 / a)) * (sqrt(pi) * (1 / sqrt(a)))",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -95,14 +95,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
-                            "res": "exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                            "latex_res": "\\sqrt{\\pi} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{\\sqrt{a}})",
+                            "res": "sqrt(pi) * (exp(1/4 * (b ^ 2 / a)) / sqrt(a))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{1}{4} (\\frac{b ^ {2}}{a})\\) to \\(\\frac{b ^ {2}}{4 a}\\)",
-                                "name": "Equation",
-                                "new_expr": "b ^ 2 / (4 * a)",
-                                "old_expr": "1/4 * (b ^ 2 / a)",
-                                "str": "rewriting 1/4 * (b ^ 2 / a) to b ^ 2 / (4 * a)"
+                                "name": "FullSimplify",
+                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         }
@@ -112,7 +109,17 @@
                 "rhs_calc": {
                     "latex_start": "e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
                     "start": "exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                    "steps": [],
+                    "steps": [
+                        {
+                            "latex_res": "\\sqrt{\\pi} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{\\sqrt{a}})",
+                            "res": "sqrt(pi) * (exp(1/4 * (b ^ 2 / a)) / sqrt(a))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"
@@ -150,121 +157,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{1}{4} \\sqrt{\\pi} (\\frac{b ^ {2} e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {5/2}}) + -\\frac{1}{2} \\sqrt{\\pi} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
-                            "res": "-1/4 * sqrt(pi) * (b ^ 2 * exp(1/4 * (b ^ 2 / a)) / a ^ (5/2)) + -1/2 * sqrt(pi) * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "latex_res": "-\\frac{\\sqrt{\\pi}}{4} (\\frac{b ^ {2} e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {5/2}}) - \\frac{\\sqrt{\\pi}}{2} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "-(sqrt(pi) / 4) * (b ^ 2 * exp(1/4 * (b ^ 2 / a)) / a ^ (5/2)) - sqrt(pi) / 2 * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-\\frac{1}{4} \\sqrt{\\pi} (\\frac{b ^ {2} e^{b ^ {2}/(4 a)}}{a ^ {5/2}}) + -\\frac{1}{2} \\sqrt{\\pi} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
-                            "res": "-1/4 * sqrt(pi) * (b ^ 2 * exp(b ^ 2 / (4 * a)) / a ^ (5/2)) + -1/2 * sqrt(pi) * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
-                            "rule": {
-                                "latex_str": "rewriting \\(e^{1/4\\cdot (b ^ {2}/a)}\\) to \\(e^{b ^ {2}/(4 a)}\\) at 0",
-                                "loc": "0",
-                                "name": "Equation",
-                                "new_expr": "exp(b ^ 2 / (4 * a))",
-                                "old_expr": "exp(1/4 * (b ^ 2 / a))",
-                                "str": "rewriting exp(1/4 * (b ^ 2 / a)) to exp(b ^ 2 / (4 * a)) at 0"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-\\frac{1}{4} \\sqrt{\\pi} (\\frac{b ^ {2} e^{b ^ {2}/(4 a)}}{a ^ {5/2}}) + -\\frac{1}{2} \\sqrt{\\pi} (\\frac{e^{b ^ {2}/(4 a)}}{a ^ {3/2}})",
-                            "res": "-1/4 * sqrt(pi) * (b ^ 2 * exp(b ^ 2 / (4 * a)) / a ^ (5/2)) + -1/2 * sqrt(pi) * (exp(b ^ 2 / (4 * a)) / a ^ (3/2))",
-                            "rule": {
-                                "latex_str": "rewriting \\(e^{1/4\\cdot (b ^ {2}/a)}\\) to \\(e^{b ^ {2}/(4 a)}\\) at 1",
-                                "loc": "1",
-                                "name": "Equation",
-                                "new_expr": "exp(b ^ 2 / (4 * a))",
-                                "old_expr": "exp(1/4 * (b ^ 2 / a))",
-                                "str": "rewriting exp(1/4 * (b ^ 2 / a)) to exp(b ^ 2 / (4 * a)) at 1"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-\\frac{1}{4} \\sqrt{\\pi} (\\frac{\\sqrt{\\frac{1}{a}} e^{b ^ {2}/(4 a)} b ^ {2}}{a ^ {2}}) + -\\frac{1}{2} \\sqrt{\\pi} (\\frac{e^{b ^ {2}/(4 a)}}{a ^ {3/2}})",
-                            "res": "-1/4 * sqrt(pi) * ((1 / a) ^ (1/2) * exp(b ^ 2 / (4 * a)) * b ^ 2 / a ^ 2) + -1/2 * sqrt(pi) * (exp(b ^ 2 / (4 * a)) / a ^ (3/2))",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\frac{b ^ {2} e^{b ^ {2}/(4 a)}}{a ^ {5/2}}\\) to \\(\\frac{\\sqrt{\\frac{1}{a}} e^{b ^ {2}/(4 a)} b ^ {2}}{a ^ {2}}\\)",
-                                "name": "Equation",
-                                "new_expr": "(1 / a) ^ (1/2) * exp(b ^ 2 / (4 * a)) * b ^ 2 / a ^ 2",
-                                "old_expr": "b ^ 2 * exp(b ^ 2 / (4 * a)) / a ^ (5/2)",
-                                "str": "rewriting b ^ 2 * exp(b ^ 2 / (4 * a)) / a ^ (5/2) to (1 / a) ^ (1/2) * exp(b ^ 2 / (4 * a)) * b ^ 2 / a ^ 2"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-\\frac{1}{4} \\sqrt{\\pi} (\\frac{\\sqrt{\\frac{1}{a}} e^{b ^ {2}/(4 a)} b ^ {2}}{a ^ {2}}) + -\\frac{1}{2} \\sqrt{\\pi} (\\frac{e^{b ^ {2}/(4 a)}}{a ^ {3/2}})",
-                            "res": "-1/4 * sqrt(pi) * (sqrt(1 / a) * exp(b ^ 2 / (4 * a)) * b ^ 2 / a ^ 2) + -1/2 * sqrt(pi) * (exp(b ^ 2 / (4 * a)) / a ^ (3/2))",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\sqrt{\\frac{1}{a}}\\) to \\(\\sqrt{\\frac{1}{a}}\\)",
-                                "name": "Equation",
-                                "new_expr": "sqrt(1 / a)",
-                                "old_expr": "(1 / a) ^ (1/2)",
-                                "str": "rewriting (1 / a) ^ (1/2) to sqrt(1 / a)"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} + -\\frac{1}{2} \\sqrt{\\pi} (\\frac{e^{b ^ {2}/(4 a)}}{a ^ {3/2}})",
-                            "res": "-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + -1/2 * sqrt(pi) * (exp(b ^ 2 / (4 * a)) / a ^ (3/2))",
-                            "rule": {
-                                "latex_str": "rewriting \\(-\\frac{1}{4} \\sqrt{\\pi} (\\frac{\\sqrt{\\frac{1}{a}} e^{b ^ {2}/(4 a)} b ^ {2}}{a ^ {2}})\\) to \\(\\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\)",
-                                "name": "Equation",
-                                "new_expr": "-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                                "old_expr": "-1/4 * sqrt(pi) * (sqrt(1 / a) * exp(b ^ 2 / (4 * a)) * b ^ 2 / a ^ 2)",
-                                "str": "rewriting -1/4 * sqrt(pi) * (sqrt(1 / a) * exp(b ^ 2 / (4 * a)) * b ^ 2 / a ^ 2) to -(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} + -\\frac{1}{2} \\sqrt{\\pi} (\\frac{\\sqrt{\\frac{1}{a}} e^{b ^ {2}/(4 a)}}{a})",
-                            "res": "-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + -1/2 * sqrt(pi) * ((1 / a) ^ (1/2) * exp(b ^ 2 / (4 * a)) / a)",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\frac{e^{b ^ {2}/(4 a)}}{a ^ {3/2}}\\) to \\(\\frac{\\sqrt{\\frac{1}{a}} e^{b ^ {2}/(4 a)}}{a}\\)",
-                                "name": "Equation",
-                                "new_expr": "(1 / a) ^ (1/2) * exp(b ^ 2 / (4 * a)) / a",
-                                "old_expr": "exp(b ^ 2 / (4 * a)) / a ^ (3/2)",
-                                "str": "rewriting exp(b ^ 2 / (4 * a)) / a ^ (3/2) to (1 / a) ^ (1/2) * exp(b ^ 2 / (4 * a)) / a"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} + -\\frac{1}{2} \\sqrt{\\pi} (\\frac{\\sqrt{\\frac{1}{a}} e^{b ^ {2}/(4 a)}}{a})",
-                            "res": "-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + -1/2 * sqrt(pi) * (sqrt(1 / a) * exp(b ^ 2 / (4 * a)) / a)",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\sqrt{\\frac{1}{a}}\\) to \\(\\sqrt{\\frac{1}{a}}\\)",
-                                "name": "Equation",
-                                "new_expr": "sqrt(1 / a)",
-                                "old_expr": "(1 / a) ^ (1/2)",
-                                "str": "rewriting (1 / a) ^ (1/2) to sqrt(1 / a)"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} + \\frac{-1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
-                            "res": "-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + -1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                            "rule": {
-                                "latex_str": "rewriting \\(-\\frac{1}{2} \\sqrt{\\pi} (\\frac{\\sqrt{\\frac{1}{a}} e^{b ^ {2}/(4 a)}}{a})\\) to \\(\\frac{-1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\)",
-                                "name": "Equation",
-                                "new_expr": "-1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                                "old_expr": "-1/2 * sqrt(pi) * (sqrt(1 / a) * exp(b ^ 2 / (4 * a)) / a)",
-                                "str": "rewriting -1/2 * sqrt(pi) * (sqrt(1 / a) * exp(b ^ 2 / (4 * a)) / a) to -1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-\\frac{b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
-                            "res": "-(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\frac{-b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} + \\frac{-1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\) to \\(-\\frac{b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\)",
-                                "name": "Equation",
-                                "new_expr": "-(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                                "old_expr": "-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + -1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                                "str": "rewriting -(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + -1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) to -(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"
                             },
                             "type": "CalculationStep"
                         }
@@ -274,7 +171,17 @@
                 "rhs_calc": {
                     "latex_start": "-\\frac{b ^ {2}}{4 a ^ {2}} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}} - \\frac{1}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
                     "start": "-(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                    "steps": [],
+                    "steps": [
+                        {
+                            "latex_res": "-\\frac{\\sqrt{\\pi}}{4} (\\frac{b ^ {2} e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {5/2}}) - \\frac{\\sqrt{\\pi}}{2} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "-(sqrt(pi) / 4) * (b ^ 2 * exp(1/4 * (b ^ 2 / a)) / a ^ (5/2)) - sqrt(pi) / 2 * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"
@@ -312,35 +219,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\sqrt{\\pi} (\\frac{b e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
-                            "res": "1/2 * sqrt(pi) * (b * exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "latex_res": "\\frac{\\sqrt{\\pi}}{2} (\\frac{b e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "sqrt(pi) / 2 * (b * exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{2} \\sqrt{\\pi} (\\frac{b e^{b ^ {2}/(4 a)}}{a ^ {3/2}})",
-                            "res": "1/2 * sqrt(pi) * (b * exp(b ^ 2 / (4 * a)) / a ^ (3/2))",
-                            "rule": {
-                                "latex_str": "rewriting \\(e^{1/4\\cdot (b ^ {2}/a)}\\) to \\(e^{b ^ {2}/(4 a)}\\)",
-                                "name": "Equation",
-                                "new_expr": "exp(b ^ 2 / (4 * a))",
-                                "old_expr": "exp(1/4 * (b ^ 2 / a))",
-                                "str": "rewriting exp(1/4 * (b ^ 2 / a)) to exp(b ^ 2 / (4 * a))"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
-                            "res": "b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\frac{1}{2} \\sqrt{\\pi} (\\frac{b e^{b ^ {2}/(4 a)}}{a ^ {3/2}})\\) to \\(\\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}\\)",
-                                "name": "Equation",
-                                "new_expr": "b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                                "old_expr": "1/2 * sqrt(pi) * (b * exp(b ^ 2 / (4 * a)) / a ^ (3/2))",
-                                "str": "rewriting 1/2 * sqrt(pi) * (b * exp(b ^ 2 / (4 * a)) / a ^ (3/2)) to b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"
                             },
                             "type": "CalculationStep"
                         }
@@ -350,7 +233,17 @@
                 "rhs_calc": {
                     "latex_start": "\\frac{b}{2 a} e^{b ^ {2}/(4 a)} \\sqrt{\\frac{\\pi}{a}}",
                     "start": "b / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                    "steps": [],
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{\\sqrt{\\pi}}{2} (\\frac{b e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "sqrt(pi) / 2 * (b * exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"
@@ -393,8 +286,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{-\\infty}^{\\infty} x e^{-a x ^ {2} + b x} \\,dx = \\frac{1}{2} \\sqrt{\\pi} (\\frac{b e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
-                            "res": "(INT x:[-oo,oo]. x * exp(-(a * x ^ 2) + b * x)) = 1/2 * sqrt(pi) * (b * exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "latex_res": "\\int_{-\\infty}^{\\infty} x e^{-a x ^ {2} + b x} \\,dx = \\frac{\\sqrt{\\pi}}{2} (\\frac{b e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "(INT x:[-oo,oo]. x * exp(-(a * x ^ 2) + b * x)) = sqrt(pi) / 2 * (b * exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -444,8 +337,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-(\\int_{-\\infty}^{\\infty} x ^ {2} e^{-a x ^ {2} + b x} \\,dx) = -\\frac{1}{4} \\sqrt{\\pi} (\\frac{b ^ {2} e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {5/2}}) + -\\frac{1}{2} \\sqrt{\\pi} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
-                            "res": "-(INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = -1/4 * sqrt(pi) * (b ^ 2 * exp(1/4 * (b ^ 2 / a)) / a ^ (5/2)) + -1/2 * sqrt(pi) * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "latex_res": "-(\\int_{-\\infty}^{\\infty} x ^ {2} e^{-a x ^ {2} + b x} \\,dx) = -\\frac{\\sqrt{\\pi}}{4} (\\frac{b ^ {2} e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {5/2}}) - \\frac{\\sqrt{\\pi}}{2} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "-(INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = -(sqrt(pi) / 4) * (b ^ 2 * exp(1/4 * (b ^ 2 / a)) / a ^ (5/2)) - sqrt(pi) / 2 * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -453,8 +346,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{-\\infty}^{\\infty} x ^ {2} e^{-a x ^ {2} + b x} \\,dx = \\frac{1}{4} \\sqrt{\\pi} (\\frac{b ^ {2} e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {5/2}}) + \\frac{1}{2} \\sqrt{\\pi} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
-                            "res": "(INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = 1/4 * sqrt(pi) * (b ^ 2 * exp(1/4 * (b ^ 2 / a)) / a ^ (5/2)) + 1/2 * sqrt(pi) * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
+                            "latex_res": "\\int_{-\\infty}^{\\infty} x ^ {2} e^{-a x ^ {2} + b x} \\,dx = \\frac{\\sqrt{\\pi}}{4} (\\frac{b ^ {2} e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {5/2}}) + \\frac{\\sqrt{\\pi}}{2} (\\frac{e^{1/4\\cdot (b ^ {2}/a)}}{a ^ {3/2}})",
+                            "res": "(INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = sqrt(pi) / 4 * (b ^ 2 * exp(1/4 * (b ^ 2 / a)) / a ^ (5/2)) + sqrt(pi) / 2 * (exp(1/4 * (b ^ 2 / a)) / a ^ (3/2))",
                             "rule": {
                                 "latex_str": "solve equation for \\(\\int_{-\\infty}^{\\infty} x ^ {2} e^{-a x ^ {2} + b x} \\,dx\\)",
                                 "name": "SolveEquation",

@@ -2128,36 +2128,25 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Substitution(var_name="y", var_subst="x - b / (2 * a)"))
         calc.perform_rule(rules.DefiniteIntegralIdentity())
-        calc.perform_rule(rules.Equation("1/4 * (b ^ 2 / a)", "b ^ 2 / (4 * a)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof_of_goal01.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
 
         goal02 = file.add_goal("(D a. I(a, b)) = -(b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)", conds=["a > 0"])
         proof_of_goal02 = goal02.proof_by_calculation()
         calc = proof_of_goal02.lhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal01.goal)))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.Equation("exp(1/4 * (b ^ 2 / a))", "exp(b ^ 2 / (4 * a))"), "0"))
-        calc.perform_rule(rules.OnLocation(rules.Equation("exp(1/4 * (b ^ 2 / a))", "exp(b ^ 2 / (4 * a))"), "1"))
-        calc.perform_rule(rules.Equation("(b ^ 2 * exp(b ^ 2 / (4 * a)) / a ^ (5/2))",
-                                         "(1 / a) ^ (1/2) * exp(b ^ 2 / (4 * a)) * b ^ 2 / (a ^ 2)"))
-        calc.perform_rule(rules.Equation("(1 / a) ^ (1/2)", "sqrt(1 / a)"))
-        calc.perform_rule(rules.Equation("-1/4 * sqrt(pi) * (sqrt(1 / a) * exp(b ^ 2 / (4 * a)) * b ^ 2 / a ^ 2)",
-                                         "-b ^ 2 / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"))
-        calc.perform_rule(rules.Equation("(exp(b ^ 2 / (4 * a)) / a ^ (3/2))",
-                                         "(1 / a) ^ (1/2) * exp(b ^ 2 / (4 * a)) / a"))
-        calc.perform_rule(rules.Equation("(1 / a) ^ (1/2)", "sqrt(1 / a)"))
-        calc.perform_rule(rules.Equation("-1/2 * sqrt(pi) * (sqrt(1 / a) * exp(b ^ 2 / (4 * a)) / a)",
-                                         "-1/(2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"))
-        calc.perform_rule(rules.Equation("-(b ^ 2) / (4 * a ^ 2) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + -1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
-                                         "-((b ^ 2) / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) - 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"))
+        calc = proof_of_goal02.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
 
         goal03 = file.add_goal("(D b. I(a, b)) = (b / (2 * a)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)", conds=["a > 0"])
         proof_of_goal03 = goal03.proof_by_calculation()
         calc = proof_of_goal03.lhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ApplyEquation(goal01.goal)))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Equation("exp(1/4 * (b ^ 2 / a))", "exp(b ^ 2 / (4 * a))"))
-        calc.perform_rule(rules.Equation("1/2 * sqrt(pi) * (b * exp(b ^ 2 / (4 * a)) / a ^ (3/2))",
-                                         "(b / (2 * a)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"))
+        calc = proof_of_goal03.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
 
         goal04 = file.add_goal("(INT x:[-oo, oo]. x * exp(-(a * x ^ 2) + b * x)) = (b / (2 * a)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
                                conds=["a > 0"])
