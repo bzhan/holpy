@@ -195,6 +195,15 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "(\\left. \\log{(\\frac{2}{a})} x \\right\\vert_{x=0}^{1/2\\cdot \\pi}) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\cos{x})} \\,dx)",
+                            "res": "([log(2 / a) * x]_x=0,1/2 * pi) + (INT x:[0,1/2 * pi]. log(a * sin(x))) + (INT x:[0,1/2 * pi]. log(a * cos(x)))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "\\frac{1}{2} \\pi \\log{(2 (\\frac{1}{a}))} + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\cos{x})} \\,dx) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
                             "res": "1/2 * pi * log(2 * (1 / a)) + (INT x:[0,1/2 * pi]. log(a * cos(x))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
                             "rule": {

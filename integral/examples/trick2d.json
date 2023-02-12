@@ -148,6 +148,15 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "\\log{(2)} (\\left. 1 x \\right\\vert_{x=0}^{1/4\\cdot \\pi}) - (\\int_{0}^{1/4\\cdot \\pi} \\log{(1 + \\tan{x})} \\,dx)",
+                            "res": "log(2) * ([1 * x]_x=0,1/4 * pi) - (INT x:[0,1/4 * pi]. log(1 + tan(x)))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "-(\\int_{0}^{1/4\\cdot \\pi} \\log{(\\tan{x} + 1)} \\,dx) + \\frac{1}{4} \\pi \\log{(2)}",
                             "res": "-(INT x:[0,1/4 * pi]. log(tan(x) + 1)) + 1/4 * pi * log(2)",
                             "rule": {

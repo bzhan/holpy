@@ -41,6 +41,15 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "\\lim\\limits_{t\\to \\infty} (\\,(\\left. \\frac{x ^ {-k + 1} \\log{x}}{-k + 1} \\right\\vert_{x=1}^{t}) - \\frac{1}{-k + 1} (\\left. \\frac{x ^ {-k + 1}}{-k + 1} \\right\\vert_{x=1}^{t})\\,)",
+                            "res": "LIM {t -> oo}. ([x ^ (-k + 1) * log(x) / (-k + 1)]_x=1,t) - 1 / (-k + 1) * ([x ^ (-k + 1) / (-k + 1)]_x=1,t)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "\\frac{\\lim\\limits_{t\\to \\infty} (\\,t ^ {-k + 1} \\log{t}\\,)}{-k + 1} + \\frac{1}{(-k + 1) ^ {2}}",
                             "res": "(LIM {t -> oo}. t ^ (-k + 1) * log(t)) / (-k + 1) + 1 / (-k + 1) ^ 2",
                             "rule": {

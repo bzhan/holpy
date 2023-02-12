@@ -158,14 +158,23 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\sqrt{b} (\\int_{0}^{\\infty} \\frac{1}{b} (\\frac{1}{1 + u ^ {2}}) \\,du)",
-                                    "res": "sqrt(b) * (INT u:[0,oo]. 1 / b * (1 / (1 + u ^ 2)))",
+                                    "latex_res": "\\sqrt{b} (\\int_{0}^{\\infty} \\frac{1}{b} (\\frac{1}{1 ^ {2} + u ^ {2}}) \\,du)",
+                                    "res": "sqrt(b) * (INT u:[0,oo]. 1 / b * (1 / (1 ^ 2 + u ^ 2)))",
                                     "rule": {
-                                        "latex_str": "rewriting \\(\\frac{1}{b u ^ {2} + b}\\) to \\(\\frac{1}{b} (\\frac{1}{1 + u ^ {2}})\\)",
+                                        "latex_str": "rewriting \\(\\frac{1}{b u ^ {2} + b}\\) to \\(\\frac{1}{b} (\\frac{1}{1 ^ {2} + u ^ {2}})\\)",
                                         "name": "Equation",
-                                        "new_expr": "1 / b * (1 / (1 + u ^ 2))",
+                                        "new_expr": "1 / b * (1 / (1 ^ 2 + u ^ 2))",
                                         "old_expr": "1 / (b * u ^ 2 + b)",
-                                        "str": "rewriting 1 / (b * u ^ 2 + b) to 1 / b * (1 / (1 + u ^ 2))"
+                                        "str": "rewriting 1 / (b * u ^ 2 + b) to 1 / b * (1 / (1 ^ 2 + u ^ 2))"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
+                                    "latex_res": "\\sqrt{b} (\\frac{1\\cdot 1}{b} (\\left. 1 ^ {-1} \\tan^{-1}{(\\frac{u}{1})} \\right\\vert_{u=0}^{\\infty}))",
+                                    "res": "sqrt(b) * (1 * 1 / b * ([1 ^ (-1) * atan(u / 1)]_u=0,oo))",
+                                    "rule": {
+                                        "name": "DefiniteIntegralIdentity",
+                                        "str": "apply definite integral"
                                     },
                                     "type": "CalculationStep"
                                 },

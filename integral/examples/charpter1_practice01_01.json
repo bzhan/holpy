@@ -35,6 +35,15 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "\\lim\\limits_{c\\to \\infty} (\\,(\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=-2}^{0 - 1/c}) + (\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=0 + 1/c}^{6})\\,)",
+                            "res": "LIM {c -> oo}. ([log(abs(u))]_u=-2,0 - 1 / c) + ([log(abs(u))]_u=0 + 1 / c,6)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "\\log{(3)}",
                             "res": "log(3)",
                             "rule": {

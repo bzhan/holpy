@@ -81,6 +81,15 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "\\frac{\\pi}{2} \\log{(\\frac{1}{2})} - ((\\left. x \\log{x} \\right\\vert_{x=0}^{1/2\\cdot \\pi}) - (\\left. 1 x \\right\\vert_{x=0}^{1/2\\cdot \\pi}))",
+                            "res": "pi / 2 * log(1/2) - (([x * log(x)]_x=0,1/2 * pi) - ([1 * x]_x=0,1/2 * pi))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "-\\frac{1}{2} \\pi \\log{(\\pi)} + \\frac{1}{2} \\pi",
                             "res": "-1/2 * pi * log(pi) + 1/2 * pi",
                             "rule": {

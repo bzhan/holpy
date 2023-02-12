@@ -62,6 +62,24 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "\\frac{\\int_{0}^{\\infty} \\frac{1}{u ^ {2} + 1} \\,du}{a}",
+                            "res": "(INT u:[0,oo]. 1 / (u ^ 2 + 1)) / a",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\left. \\tan^{-1}{u} \\right\\vert_{u=0}^{\\infty}}{a}",
+                            "res": "([atan(u)]_u=0,oo) / a",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "\\frac{1}{2} \\pi (\\frac{1}{a})",
                             "res": "1/2 * pi * (1 / a)",
                             "rule": {

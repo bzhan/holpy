@@ -88,6 +88,15 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "\\frac{1}{a} (\\left. \\tan^{-1}{u} \\right\\vert_{u=0}^{\\infty})",
+                            "res": "1 / a * ([atan(u)]_u=0,oo)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "\\frac{1}{2} \\pi (\\frac{1}{a})",
                             "res": "1/2 * pi * (1 / a)",
                             "rule": {

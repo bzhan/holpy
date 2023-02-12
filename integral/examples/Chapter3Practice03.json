@@ -186,8 +186,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-2 (\\int_{1/2\\cdot \\pi}^{0} \\cos{(2 x)} \\,dx) + \\pi",
-                            "res": "-2 * (INT x:[1/2 * pi,0]. cos(2 * x)) + pi",
+                            "latex_res": "-2 (\\int_{1/2\\cdot \\pi}^{0} \\cos{(2 x)} \\,dx) - 2 (\\int_{1/2\\cdot \\pi}^{0} 1 \\,dx)",
+                            "res": "-2 * (INT x:[1/2 * pi,0]. cos(2 * x)) - 2 * (INT x:[1/2 * pi,0]. 1)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -195,8 +195,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-2 (\\left. 2 ^ {-1} \\sin{(2 x)} \\right\\vert_{x=1/2\\cdot \\pi}^{0}) + \\pi",
-                            "res": "-2 * ([2 ^ (-1) * sin(2 * x)]_x=1/2 * pi,0) + pi",
+                            "latex_res": "-2 (\\left. 2 ^ {-1} \\sin{(2 x)} \\right\\vert_{x=1/2\\cdot \\pi}^{0}) - 2 (\\left. 1 x \\right\\vert_{x=1/2\\cdot \\pi}^{0})",
+                            "res": "-2 * ([2 ^ (-1) * sin(2 * x)]_x=1/2 * pi,0) - 2 * ([1 * x]_x=1/2 * pi,0)",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"

@@ -51,6 +51,24 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "\\int_{0}^{1} x ^ {a} \\,dx",
+                            "res": "INT x:[0,1]. x ^ a",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\left. \\frac{x ^ {a + 1}}{a + 1} \\right\\vert_{x=0}^{1}",
+                            "res": "[x ^ (a + 1) / (a + 1)]_x=0,1",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "\\frac{1}{a + 1}",
                             "res": "1 / (a + 1)",
                             "rule": {

@@ -69,6 +69,24 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "2 (\\int_{0}^{\\infty} \\frac{1}{t ^ {2} + 1} \\,dt)",
+                            "res": "2 * (INT t:[0,oo]. 1 / (t ^ 2 + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\left. \\tan^{-1}{t} \\right\\vert_{t=0}^{\\infty})",
+                            "res": "2 * ([atan(t)]_t=0,oo)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "\\pi",
                             "res": "pi",
                             "rule": {

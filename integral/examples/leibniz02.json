@@ -279,8 +279,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "g{(0)} + \\frac{1}{2} \\pi = C",
-                            "res": "g(0) + 1/2 * pi = SKOLEM_CONST(C)",
+                            "latex_res": "2 (\\int_{0}^{1} \\frac{1}{y ^ {2} + 1} \\,dy) + g{(0)} = C",
+                            "res": "2 * (INT y:[0,1]. 1 / (y ^ 2 + 1)) + g(0) = SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -288,13 +288,22 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 + \\frac{1}{2} \\pi = C",
-                            "res": "0 + 1/2 * pi = SKOLEM_CONST(C)",
+                            "latex_res": "2 (\\int_{0}^{1} \\frac{1}{y ^ {2} + 1} \\,dy) + 0 = C",
+                            "res": "2 * (INT y:[0,1]. 1 / (y ^ 2 + 1)) + 0 = SKOLEM_CONST(C)",
                             "rule": {
                                 "func_name": "g",
                                 "loc": "subterms",
                                 "name": "ExpandDefinition",
                                 "str": "expand definition on subterms"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\left. \\tan^{-1}{y} \\right\\vert_{y=0}^{1}) + 0 = C",
+                            "res": "2 * ([atan(y)]_y=0,1) + 0 = SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
                             },
                             "type": "CalculationStep"
                         },
