@@ -109,8 +109,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{(\\int_{0}^{\\infty} \\frac{\\log{s}}{s ^ {2} + 1} \\,ds) + -\\frac{1}{2} \\pi \\log{b}}{b}",
-                            "res": "-(((INT s:[0,oo]. log(s) / (s ^ 2 + 1)) + -1/2 * pi * log(b)) / b)",
+                            "latex_res": "-\\frac{(\\int_{0}^{\\infty} \\frac{\\log{s}}{s ^ {2} + 1} \\,ds) - \\frac{\\pi}{2} \\log{b}}{b}",
+                            "res": "-(((INT s:[0,oo]. log(s) / (s ^ 2 + 1)) - pi / 2 * log(b)) / b)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -118,8 +118,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{0 + -\\frac{1}{2} \\pi \\log{b}}{b}",
-                            "res": "-((0 + -1/2 * pi * log(b)) / b)",
+                            "latex_res": "-\\frac{0 - \\frac{\\pi}{2} \\log{b}}{b}",
+                            "res": "-((0 - pi / 2 * log(b)) / b)",
                             "rule": {
                                 "eq": "(INT s:[0,oo]. log(s) / (s ^ 2 + 1)) = 0",
                                 "latex_str": "apply equation \\(\\int_{0}^{\\infty} \\frac{\\log{s}}{s ^ {2} + 1} \\,ds = 0\\) at 0.0.0",
@@ -130,8 +130,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi (\\frac{\\log{b}}{b})",
-                            "res": "1/2 * pi * (log(b) / b)",
+                            "latex_res": "\\frac{\\pi}{2} (\\frac{\\log{b}}{b})",
+                            "res": "pi / 2 * (log(b) / b)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -146,8 +146,8 @@
                     "start": "pi * log(b) / (2 * b)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{1}{2} \\pi (\\frac{\\log{b}}{b})",
-                            "res": "1/2 * pi * (log(b) / b)",
+                            "latex_res": "\\frac{\\pi}{2} (\\frac{\\log{b}}{b})",
+                            "res": "pi / 2 * (log(b) / b)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"

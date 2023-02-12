@@ -709,6 +709,7 @@ def to_const_poly(e: expr.Expr) -> ConstantPolynomial:
         norm_a = from_const_poly(a)
 
         c = expr.Symbol('c', [expr.CONST])
+        d = expr.Symbol('d', [expr.CONST])
         if expr.match(norm_a, c * expr.pi):
             x = norm_a.args[0]
             n = int(x.val)
@@ -719,6 +720,18 @@ def to_const_poly(e: expr.Expr) -> ConstantPolynomial:
                     norm_a = expr.Const(x.val - (n + 1)) * expr.pi
                 else:
                     norm_a = expr.Const(x.val - (n - 1)) * expr.pi
+        elif expr.match(norm_a, c * expr.pi / d):
+            x = norm_a.args[0].args[0]
+            y = norm_a.args[1]
+            val = Fraction(x.val, y.val)
+            n = int(val)
+            if n % 2 == 0:
+                norm_a = expr.Const(val - n) * expr.pi
+            else:
+                if n > 0:
+                    norm_a = expr.Const(val - (n + 1)) * expr.pi
+                else:
+                    norm_a = expr.Const(val - (n - 1)) * expr.pi
         elif norm_a == -expr.pi:
             norm_a = expr.pi
 
@@ -860,37 +873,25 @@ def to_poly(e: expr.Expr) -> Polynomial:
         return singleton(expr.Fun(e.func_name, *args_norm))
 
     elif e.is_evalat():
-        from integral.limits import is_indeterminate_form, FROM_BELOW, FROM_ABOVE
-        # upper = e.body.subst(e.var, e.upper) if not e.upper.is_inf() else expr.Limit(e.var, e.upper, e.body)
-        if e.upper==expr.POS_INF:
+        if e.upper == expr.POS_INF:
             upper = expr.Limit(e.var, expr.POS_INF, e.body)
-        elif e.upper==expr.NEG_INF:
+        elif e.upper == expr.NEG_INF:
             x = expr.Var(e.var)
             upper = expr.Limit(e.var, expr.POS_INF, e.body.subst(e.var, -x))
         else:
-            # if is_indeterminate_form(expr.Limit(e.var, e.upper, e.body)):
-            #     x = expr.Var(e.var)
-            #     a = e.upper
-            #     upper = expr.Limit(e.var, expr.POS_INF, e.body.subst(e.var, a - 1/x))
-            # else:
             try:
                 upper = normalize(e.body.subst(e.var, e.upper))
             except:
                 x = expr.Var(e.var)
                 a = e.upper
                 upper = expr.Limit(e.var, expr.POS_INF, e.body.subst(e.var, a - 1 / x))
-        # lower = e.body.subst(e.var, e.lower) if not e.lower.is_inf() else expr.Limit(e.var, e.lower, e.body)
-        if e.lower==expr.POS_INF:
+
+        if e.lower == expr.POS_INF:
             lower = expr.Limit(e.var, expr.POS_INF, e.body)
-        elif e.lower==expr.NEG_INF:
+        elif e.lower == expr.NEG_INF:
             x = expr.Var(e.var)
             lower = expr.Limit(e.var, expr.POS_INF, e.body.subst(e.var, -x))
         else:
-            # if is_indeterminate_form(expr.Limit(e.var, e.lower, e.body)):
-            #     x = expr.Var(e.var)
-            #     a = e.lower
-            #     lower = expr.Limit(e.var, expr.POS_INF, e.body.subst(e.var, a + 1/x))
-            # else:
             try:
                 lower = normalize(e.body.subst(e.var, e.lower))
             except:
@@ -934,31 +935,71 @@ Conversion from polynomials to terms.
 
 def from_const_mono(m: ConstantMonomial) -> expr.Expr:
     """Convert a ConstantMonomial to an expression."""
-    factors = []
+    if len(m.factors) == 0:
+        return expr.Const(m.coeff)
+
+    num_factors = []
+    denom_factors = []
+    sign = False
+    if int(m.coeff) == m.coeff:
+        if m.coeff >= 0:
+            if m.coeff != 1:
+                num_factors.append(expr.Const(m.coeff))
+        else:
+            sign = True
+            if m.coeff != -1:
+                num_factors.append(expr.Const(-m.coeff))
+    else:
+        assert isinstance(m.coeff, Fraction)
+        if m.coeff >= 0:
+            if m.coeff.numerator != 1:
+                num_factors.append(expr.Const(m.coeff.numerator))
+            denom_factors.append(expr.Const(m.coeff.denominator))
+        else:
+            sign = True
+            if m.coeff.numerator != -1:
+                num_factors.append(expr.Const(-m.coeff.numerator))
+            denom_factors.append(expr.Const(m.coeff.denominator))
+
     for base, power in m.factors:
         if isinstance(base, expr.Expr) and base == expr.E:
-            factors.append(expr.exp(expr.Const(power)))
+            num_factors.append(expr.exp(expr.Const(power)))
         else:
             if isinstance(base, int):
                 base = expr.Const(base)
             if not isinstance(base, expr.Expr):
                 raise ValueError
             if power == 1:
-                factors.append(base)
+                num_factors.append(base)
             elif power == Fraction(1 / 2):
-                factors.append(expr.sqrt(base))
+                num_factors.append(expr.sqrt(base))
+            elif power == -1:
+                denom_factors.append(base)
+            elif power == Fraction(-1 / 2):
+                denom_factors.append(expr.sqrt(base))
+            elif power > 0:
+                num_factors.append(base ** expr.Const(power))
+            elif power < 0:
+                denom_factors.append(base ** expr.Const(-power))
             else:
-                factors.append(base ** expr.Const(power))
+                raise TypeError
 
-    if len(factors) == 0:
-        return expr.Const(m.coeff)
-    elif m.coeff == 1:
-        return functools.reduce(operator.mul, factors[1:], factors[0])
-    elif m.coeff == -1:
-        return - functools.reduce(operator.mul, factors[1:], factors[0])
+    def prod(factors):
+        if len(factors) == 0:
+            return expr.Const(1)
+        else:
+            return functools.reduce(operator.mul, factors[1:], factors[0])
+
+    if len(denom_factors) == 0:
+        if not sign:
+            return prod(num_factors)
+        else:
+            return -prod(num_factors)
     else:
-        return functools.reduce(operator.mul, factors, expr.Const(m.coeff))
-
+        if not sign:
+            return prod(num_factors) / prod(denom_factors)
+        else:
+            return -(prod(num_factors) / prod(denom_factors))
 
 def rsize(e: expr.Expr) -> int:
     if e.is_const():

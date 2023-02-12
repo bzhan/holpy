@@ -81,8 +81,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{12} \\pi ^ {2}",
-                            "res": "1/12 * pi ^ 2",
+                            "latex_res": "\\frac{\\pi ^ {2}}{12}",
+                            "res": "pi ^ 2 / 12",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -97,8 +97,8 @@
                     "start": "pi ^ 2 / 12",
                     "steps": [
                         {
-                            "latex_res": "\\frac{1}{12} \\pi ^ {2}",
-                            "res": "1/12 * pi ^ 2",
+                            "latex_res": "\\frac{\\pi ^ {2}}{12}",
+                            "res": "pi ^ 2 / 12",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"

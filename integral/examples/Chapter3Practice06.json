@@ -47,8 +47,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{a - b} (\\left. \\frac{1}{-(2 - 1) u ^ {2 - 1}} \\right\\vert_{u=b}^{a})",
-                            "res": "1 / (a - b) * ([1 / (-(2 - 1) * u ^ (2 - 1))]_u=b,a)",
+                            "latex_res": "\\frac{1}{a - b} (\\left. -\\frac{1}{u} \\right\\vert_{u=b}^{a})",
+                            "res": "1 / (a - b) * ([-(1 / u)]_u=b,a)",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"

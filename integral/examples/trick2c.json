@@ -13,8 +13,8 @@
                     "start": "INT x:[0,pi / 2]. sin(x) ^ 2 / (sin(x) + cos(x))",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sin^{2}(\\frac{1}{2} \\pi - y)}{\\cos{(\\frac{1}{2} \\pi - y)} + \\sin{(\\frac{1}{2} \\pi - y)}} \\,dy",
-                            "res": "INT y:[0,1/2 * pi]. sin(1/2 * pi - y) ^ 2 / (cos(1/2 * pi - y) + sin(1/2 * pi - y))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(\\frac{\\pi}{2} - y)}{\\cos{(\\frac{\\pi}{2} - y)} + \\sin{(\\frac{\\pi}{2} - y)}} \\,dy",
+                            "res": "INT y:[0,pi / 2]. sin(pi / 2 - y) ^ 2 / (cos(pi / 2 - y) + sin(pi / 2 - y))",
                             "rule": {
                                 "latex_str": "substitute \\(y\\) for \\(\\frac{\\pi}{2} - x\\)",
                                 "name": "Substitution",
@@ -25,8 +25,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\frac{\\cos^{2}(y)}{\\cos{y} + \\sin{y}} \\,dy",
-                            "res": "INT y:[0,1/2 * pi]. cos(y) ^ 2 / (cos(y) + sin(y))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{\\cos^{2}(y)}{\\cos{y} + \\sin{y}} \\,dy",
+                            "res": "INT y:[0,pi / 2]. cos(y) ^ 2 / (cos(y) + sin(y))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -41,8 +41,8 @@
                     "start": "INT x:[0,pi / 2]. cos(x) ^ 2 / (sin(x) + cos(x))",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\frac{\\cos^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx",
-                            "res": "INT x:[0,1/2 * pi]. cos(x) ^ 2 / (cos(x) + sin(x))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{\\cos^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx",
+                            "res": "INT x:[0,pi / 2]. cos(x) ^ 2 / (cos(x) + sin(x))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -69,8 +69,8 @@
                     "start": "INT x:[0,pi / 2]. sin(x) ^ 2 / (sin(x) + cos(x))",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx",
-                            "res": "INT x:[0,1/2 * pi]. sin(x) ^ 2 / (cos(x) + sin(x))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx",
+                            "res": "INT x:[0,pi / 2]. sin(x) ^ 2 / (cos(x) + sin(x))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -85,8 +85,8 @@
                     "start": "1/2 * (INT x:[0,pi / 2]. 1 / (sin(x) + cos(x)))",
                     "steps": [
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\frac{1}{\\cos{x} + \\sin{x}} \\,dx)",
-                            "res": "1/2 * (INT x:[0,1/2 * pi]. 1 / (cos(x) + sin(x)))",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{1}{\\cos{x} + \\sin{x}} \\,dx)",
+                            "res": "1/2 * (INT x:[0,pi / 2]. 1 / (cos(x) + sin(x)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -94,8 +94,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sin^{2}(x) + \\cos^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
-                            "res": "1/2 * (INT x:[0,1/2 * pi]. (sin(x) ^ 2 + cos(x) ^ 2) / (cos(x) + sin(x)))",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x) + \\cos^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
+                            "res": "1/2 * (INT x:[0,pi / 2]. (sin(x) ^ 2 + cos(x) ^ 2) / (cos(x) + sin(x)))",
                             "rule": {
                                 "eq": "sin(x) ^ 2 + cos(x) ^ 2 = 1",
                                 "latex_str": "apply equation \\(\\sin^{2}(x) + \\cos^{2}(x) = 1\\) at 1.0.0",
@@ -106,8 +106,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} + \\frac{\\cos^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
-                            "res": "1/2 * (INT x:[0,1/2 * pi]. sin(x) ^ 2 / (cos(x) + sin(x)) + cos(x) ^ 2 / (cos(x) + sin(x)))",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} + \\frac{\\cos^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
+                            "res": "1/2 * (INT x:[0,pi / 2]. sin(x) ^ 2 / (cos(x) + sin(x)) + cos(x) ^ 2 / (cos(x) + sin(x)))",
                             "rule": {
                                 "latex_str": "rewriting \\(\\frac{\\sin^{2}(x) + \\cos^{2}(x)}{\\cos{x} + \\sin{x}}\\) to \\(\\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} + \\frac{\\cos^{2}(x)}{\\cos{x} + \\sin{x}}\\)",
                                 "name": "Equation",
@@ -118,8 +118,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\frac{\\cos^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx) + \\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
-                            "res": "1/2 * (INT x:[0,1/2 * pi]. cos(x) ^ 2 / (cos(x) + sin(x))) + 1/2 * (INT x:[0,1/2 * pi]. sin(x) ^ 2 / (cos(x) + sin(x)))",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\cos^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
+                            "res": "1/2 * (INT x:[0,pi / 2]. cos(x) ^ 2 / (cos(x) + sin(x))) + 1/2 * (INT x:[0,pi / 2]. sin(x) ^ 2 / (cos(x) + sin(x)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -127,21 +127,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\cos^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx) + \\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
-                            "res": "1/2 * (INT x:[0,pi / 2]. cos(x) ^ 2 / (cos(x) + sin(x))) + 1/2 * (INT x:[0,1/2 * pi]. sin(x) ^ 2 / (cos(x) + sin(x)))",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\frac{1}{2} \\pi\\) to \\(\\frac{\\pi}{2}\\) at 0",
-                                "loc": "0",
-                                "name": "Equation",
-                                "new_expr": "pi / 2",
-                                "old_expr": "1/2 * pi",
-                                "str": "rewriting 1/2 * pi to pi / 2 at 0"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\cos^{2}(x)}{\\sin{x} + \\cos{x}} \\,dx) + \\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
-                            "res": "1/2 * (INT x:[0,pi / 2]. cos(x) ^ 2 / (sin(x) + cos(x))) + 1/2 * (INT x:[0,1/2 * pi]. sin(x) ^ 2 / (cos(x) + sin(x)))",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\cos^{2}(x)}{\\sin{x} + \\cos{x}} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
+                            "res": "1/2 * (INT x:[0,pi / 2]. cos(x) ^ 2 / (sin(x) + cos(x))) + 1/2 * (INT x:[0,pi / 2]. sin(x) ^ 2 / (cos(x) + sin(x)))",
                             "rule": {
                                 "latex_str": "rewriting \\(\\cos{x} + \\sin{x}\\) to \\(\\sin{x} + \\cos{x}\\) at 0",
                                 "loc": "0",
@@ -153,8 +140,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x)}{\\sin{x} + \\cos{x}} \\,dx) + \\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
-                            "res": "1/2 * (INT x:[0,pi / 2]. sin(x) ^ 2 / (sin(x) + cos(x))) + 1/2 * (INT x:[0,1/2 * pi]. sin(x) ^ 2 / (cos(x) + sin(x)))",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x)}{\\sin{x} + \\cos{x}} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
+                            "res": "1/2 * (INT x:[0,pi / 2]. sin(x) ^ 2 / (sin(x) + cos(x))) + 1/2 * (INT x:[0,pi / 2]. sin(x) ^ 2 / (cos(x) + sin(x)))",
                             "rule": {
                                 "eq": "(INT x:[0,pi / 2]. sin(x) ^ 2 / (sin(x) + cos(x))) = (INT x:[0,pi / 2]. cos(x) ^ 2 / (sin(x) + cos(x)))",
                                 "latex_str": "apply equation \\(\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x)}{\\sin{x} + \\cos{x}} \\,dx = \\int_{0}^{\\pi/2} \\frac{\\cos^{2}(x)}{\\sin{x} + \\cos{x}} \\,dx\\) at 0.1",
@@ -165,8 +152,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx",
-                            "res": "INT x:[0,1/2 * pi]. sin(x) ^ 2 / (cos(x) + sin(x))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx",
+                            "res": "INT x:[0,pi / 2]. sin(x) ^ 2 / (cos(x) + sin(x))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -273,8 +260,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{4} \\sqrt{2} ((\\int_{0}^{1} \\frac{1}{\\sqrt{2} - 1 + z} \\,dz) + (\\int_{0}^{1} \\frac{1}{\\sqrt{2} + 1 - z} \\,dz))",
-                            "res": "1/4 * sqrt(2) * ((INT z:[0,1]. 1 / (sqrt(2) - 1 + z)) + (INT z:[0,1]. 1 / (sqrt(2) + 1 - z)))",
+                            "latex_res": "\\frac{\\sqrt{2}}{4} ((\\int_{0}^{1} \\frac{1}{\\sqrt{2} - 1 + z} \\,dz) + (\\int_{0}^{1} \\frac{1}{\\sqrt{2} + 1 - z} \\,dz))",
+                            "res": "sqrt(2) / 4 * ((INT z:[0,1]. 1 / (sqrt(2) - 1 + z)) + (INT z:[0,1]. 1 / (sqrt(2) + 1 - z)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -282,8 +269,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{4} \\sqrt{2} ((\\int_{\\sqrt{2} - 1}^{\\sqrt{2}} \\frac{1}{u} \\,du) + (\\int_{0}^{1} \\frac{1}{\\sqrt{2} + 1 - z} \\,dz))",
-                            "res": "1/4 * sqrt(2) * ((INT u:[sqrt(2) - 1,sqrt(2)]. 1 / u) + (INT z:[0,1]. 1 / (sqrt(2) + 1 - z)))",
+                            "latex_res": "\\frac{\\sqrt{2}}{4} ((\\int_{\\sqrt{2} - 1}^{\\sqrt{2}} \\frac{1}{u} \\,du) + (\\int_{0}^{1} \\frac{1}{\\sqrt{2} + 1 - z} \\,dz))",
+                            "res": "sqrt(2) / 4 * ((INT u:[sqrt(2) - 1,sqrt(2)]. 1 / u) + (INT z:[0,1]. 1 / (sqrt(2) + 1 - z)))",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(\\sqrt{2} - 1 + z\\) at 1.0",
                                 "loc": "1.0",
@@ -295,8 +282,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{4} \\sqrt{2} ((\\int_{\\sqrt{2} - 1}^{\\sqrt{2}} \\frac{1}{u} \\,du) + (\\int_{\\sqrt{2}}^{\\sqrt{2} + 1} \\frac{1}{u} \\,du))",
-                            "res": "1/4 * sqrt(2) * ((INT u:[sqrt(2) - 1,sqrt(2)]. 1 / u) + (INT u:[sqrt(2),sqrt(2) + 1]. 1 / u))",
+                            "latex_res": "\\frac{\\sqrt{2}}{4} ((\\int_{\\sqrt{2} - 1}^{\\sqrt{2}} \\frac{1}{u} \\,du) + (\\int_{\\sqrt{2}}^{\\sqrt{2} + 1} \\frac{1}{u} \\,du))",
+                            "res": "sqrt(2) / 4 * ((INT u:[sqrt(2) - 1,sqrt(2)]. 1 / u) + (INT u:[sqrt(2),sqrt(2) + 1]. 1 / u))",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(\\sqrt{2} + 1 - z\\) at 1.1",
                                 "loc": "1.1",
@@ -308,8 +295,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{4} \\sqrt{2} ((\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=\\sqrt{2} - 1}^{\\sqrt{2}}) + (\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=\\sqrt{2}}^{\\sqrt{2} + 1}))",
-                            "res": "1/4 * sqrt(2) * (([log(abs(u))]_u=sqrt(2) - 1,sqrt(2)) + ([log(abs(u))]_u=sqrt(2),sqrt(2) + 1))",
+                            "latex_res": "\\frac{\\sqrt{2}}{4} ((\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=\\sqrt{2} - 1}^{\\sqrt{2}}) + (\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=\\sqrt{2}}^{\\sqrt{2} + 1}))",
+                            "res": "sqrt(2) / 4 * (([log(abs(u))]_u=sqrt(2) - 1,sqrt(2)) + ([log(abs(u))]_u=sqrt(2),sqrt(2) + 1))",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -317,8 +304,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{4} \\sqrt{2} \\log{(\\sqrt{2} + 1)} + -\\frac{1}{4} \\sqrt{2} \\log{(\\sqrt{2} - 1)}",
-                            "res": "1/4 * sqrt(2) * log(sqrt(2) + 1) + -1/4 * sqrt(2) * log(sqrt(2) - 1)",
+                            "latex_res": "\\frac{\\sqrt{2} \\log{(\\sqrt{2} + 1)}}{4} - \\frac{\\sqrt{2} \\log{(\\sqrt{2} - 1)}}{4}",
+                            "res": "sqrt(2) * log(sqrt(2) + 1) / 4 - sqrt(2) * log(sqrt(2) - 1) / 4",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -329,11 +316,11 @@
                             "latex_res": "\\frac{1}{4} \\sqrt{2} (\\log{(\\sqrt{2} + 1)} - \\log{(\\sqrt{2} - 1)})",
                             "res": "1/4 * sqrt(2) * (log(sqrt(2) + 1) - log(sqrt(2) - 1))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{1}{4} \\sqrt{2} \\log{(\\sqrt{2} + 1)} + -\\frac{1}{4} \\sqrt{2} \\log{(\\sqrt{2} - 1)}\\) to \\(\\frac{1}{4} \\sqrt{2} (\\log{(\\sqrt{2} + 1)} - \\log{(\\sqrt{2} - 1)})\\)",
+                                "latex_str": "rewriting \\(\\frac{\\sqrt{2} \\log{(\\sqrt{2} + 1)}}{4} - \\frac{\\sqrt{2} \\log{(\\sqrt{2} - 1)}}{4}\\) to \\(\\frac{1}{4} \\sqrt{2} (\\log{(\\sqrt{2} + 1)} - \\log{(\\sqrt{2} - 1)})\\)",
                                 "name": "Equation",
                                 "new_expr": "1/4 * sqrt(2) * (log(sqrt(2) + 1) - log(sqrt(2) - 1))",
-                                "old_expr": "1/4 * sqrt(2) * log(sqrt(2) + 1) + -1/4 * sqrt(2) * log(sqrt(2) - 1)",
-                                "str": "rewriting 1/4 * sqrt(2) * log(sqrt(2) + 1) + -1/4 * sqrt(2) * log(sqrt(2) - 1) to 1/4 * sqrt(2) * (log(sqrt(2) + 1) - log(sqrt(2) - 1))"
+                                "old_expr": "sqrt(2) * log(sqrt(2) + 1) / 4 - sqrt(2) * log(sqrt(2) - 1) / 4",
+                                "str": "rewriting sqrt(2) * log(sqrt(2) + 1) / 4 - sqrt(2) * log(sqrt(2) - 1) / 4 to 1/4 * sqrt(2) * (log(sqrt(2) + 1) - log(sqrt(2) - 1))"
                             },
                             "type": "CalculationStep"
                         },
@@ -362,8 +349,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{4} \\sqrt{2} \\log{(2 \\sqrt{2} + 3)}",
-                            "res": "1/4 * sqrt(2) * log(2 * sqrt(2) + 3)",
+                            "latex_res": "\\frac{\\sqrt{2} \\log{(2 \\sqrt{2} + 3)}}{4}",
+                            "res": "sqrt(2) * log(2 * sqrt(2) + 3) / 4",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -378,8 +365,8 @@
                     "start": "sqrt(2) / 4 * log(3 + 2 * sqrt(2))",
                     "steps": [
                         {
-                            "latex_res": "\\frac{1}{4} \\sqrt{2} \\log{(2 \\sqrt{2} + 3)}",
-                            "res": "1/4 * sqrt(2) * log(2 * sqrt(2) + 3)",
+                            "latex_res": "\\frac{\\sqrt{2} \\log{(2 \\sqrt{2} + 3)}}{4}",
+                            "res": "sqrt(2) * log(2 * sqrt(2) + 3) / 4",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"

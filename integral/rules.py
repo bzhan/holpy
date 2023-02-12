@@ -471,7 +471,7 @@ class DefiniteIntegralIdentity(Rule):
             inst[identity.lhs.var] = Var(e.var)
             assert identity.rhs.is_plus() and identity.rhs.args[1].is_skolem_func()
             pat_rhs = identity.rhs.args[0]  # remove Skolem constant C
-            return EvalAt(e.var, e.lower, e.upper, pat_rhs.inst_pat(inst))
+            return EvalAt(e.var, e.lower, e.upper, normalize(pat_rhs.inst_pat(inst)))
 
         # Look for definite integral identities
         for identity in ctx.get_definite_integrals():
@@ -485,7 +485,7 @@ class DefiniteIntegralIdentity(Rule):
                     if not ctx.get_conds().check_condition(cond):
                         satisfied = False
                 if satisfied:
-                    return identity.rhs.inst_pat(inst)
+                    return normalize(identity.rhs.inst_pat(inst))
 
         # No matching identity found
         return e

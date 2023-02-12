@@ -89,8 +89,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\frac{a (-b ^ {2} (\\left. b ^ {-1} \\tan^{-1}{(\\frac{x}{b})} \\right\\vert_{x=0}^{\\infty}) + (\\int_{0}^{\\infty} \\frac{1}{a ^ {2} x ^ {2} + 1} \\,dx))}{-a ^ {2} b ^ {2} + 1})",
-                            "res": "2 * (a * (-(b ^ 2 * ([b ^ (-1) * atan(x / b)]_x=0,oo)) + (INT x:[0,oo]. 1 / (a ^ 2 * x ^ 2 + 1))) / (-(a ^ 2 * b ^ 2) + 1))",
+                            "latex_res": "2 (\\frac{a (-b ^ {2} (\\left. \\frac{\\tan^{-1}{(\\frac{x}{b})}}{b} \\right\\vert_{x=0}^{\\infty}) + (\\int_{0}^{\\infty} \\frac{1}{a ^ {2} x ^ {2} + 1} \\,dx))}{-a ^ {2} b ^ {2} + 1})",
+                            "res": "2 * (a * (-(b ^ 2 * ([atan(x / b) / b]_x=0,oo)) + (INT x:[0,oo]. 1 / (a ^ 2 * x ^ 2 + 1))) / (-(a ^ 2 * b ^ 2) + 1))",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -98,8 +98,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\frac{a (-b ^ {2} (\\left. b ^ {-1} \\tan^{-1}{(\\frac{x}{b})} \\right\\vert_{x=0}^{\\infty}) + (\\int_{0}^{\\infty} \\frac{1}{a (t ^ {2} + 1)} \\,dt))}{-a ^ {2} b ^ {2} + 1})",
-                            "res": "2 * (a * (-(b ^ 2 * ([b ^ (-1) * atan(x / b)]_x=0,oo)) + (INT t:[0,oo]. 1 / (a * (t ^ 2 + 1)))) / (-(a ^ 2 * b ^ 2) + 1))",
+                            "latex_res": "2 (\\frac{a (-b ^ {2} (\\left. \\frac{\\tan^{-1}{(\\frac{x}{b})}}{b} \\right\\vert_{x=0}^{\\infty}) + (\\int_{0}^{\\infty} \\frac{1}{a (t ^ {2} + 1)} \\,dt))}{-a ^ {2} b ^ {2} + 1})",
+                            "res": "2 * (a * (-(b ^ 2 * ([atan(x / b) / b]_x=0,oo)) + (INT t:[0,oo]. 1 / (a * (t ^ 2 + 1)))) / (-(a ^ 2 * b ^ 2) + 1))",
                             "rule": {
                                 "latex_str": "substitute \\(t\\) for \\(a x\\)",
                                 "name": "Substitution",
@@ -110,8 +110,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\frac{a (-b ^ {2} (\\left. b ^ {-1} \\tan^{-1}{(\\frac{x}{b})} \\right\\vert_{x=0}^{\\infty}) + \\frac{1}{a} (\\left. \\tan^{-1}{t} \\right\\vert_{t=0}^{\\infty}))}{-a ^ {2} b ^ {2} + 1})",
-                            "res": "2 * (a * (-(b ^ 2 * ([b ^ (-1) * atan(x / b)]_x=0,oo)) + 1 / a * ([atan(t)]_t=0,oo)) / (-(a ^ 2 * b ^ 2) + 1))",
+                            "latex_res": "2 (\\frac{a (-b ^ {2} (\\left. \\frac{\\tan^{-1}{(\\frac{x}{b})}}{b} \\right\\vert_{x=0}^{\\infty}) + \\frac{1}{a} (\\left. \\tan^{-1}{t} \\right\\vert_{t=0}^{\\infty}))}{-a ^ {2} b ^ {2} + 1})",
+                            "res": "2 * (a * (-(b ^ 2 * ([atan(x / b) / b]_x=0,oo)) + 1 / a * ([atan(t)]_t=0,oo)) / (-(a ^ 2 * b ^ 2) + 1))",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -119,8 +119,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\frac{a (\\frac{1}{2} \\pi (\\frac{1}{a}) + -\\frac{1}{2} \\pi b)}{-a ^ {2} b ^ {2} + 1})",
-                            "res": "2 * (a * (1/2 * pi * (1 / a) + -1/2 * pi * b) / (-(a ^ 2 * b ^ 2) + 1))",
+                            "latex_res": "2 (\\frac{a (\\frac{\\pi}{2} (\\frac{1}{a}) - \\frac{\\pi}{2} b)}{-a ^ {2} b ^ {2} + 1})",
+                            "res": "2 * (a * (pi / 2 * (1 / a) - pi / 2 * b) / (-(a ^ 2 * b ^ 2) + 1))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -131,11 +131,10 @@
                             "latex_res": "\\frac{\\pi}{1 + a b}",
                             "res": "pi / (1 + a * b)",
                             "rule": {
-                                "latex_str": "rewriting \\(2 (\\frac{a (\\frac{1}{2} \\pi (\\frac{1}{a}) + -\\frac{1}{2} \\pi b)}{-a ^ {2} b ^ {2} + 1})\\) to \\(\\frac{\\pi}{1 + a b}\\)",
+                                "latex_str": "rewriting to \\(\\frac{\\pi}{1 + a b}\\)",
                                 "name": "Equation",
                                 "new_expr": "pi / (1 + a * b)",
-                                "old_expr": "2 * (a * (1/2 * pi * (1 / a) + -1/2 * pi * b) / (-(a ^ 2 * b ^ 2) + 1))",
-                                "str": "rewriting 2 * (a * (1/2 * pi * (1 / a) + -1/2 * pi * b) / (-(a ^ 2 * b ^ 2) + 1)) to pi / (1 + a * b)"
+                                "str": "rewriting to pi / (1 + a * b)"
                             },
                             "type": "CalculationStep"
                         }

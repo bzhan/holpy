@@ -62,8 +62,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 a ^ {2} (\\left. a ^ {-1} \\tan^{-1}{(\\frac{x}{a})} \\right\\vert_{x=0}^{\\infty})",
-                            "res": "2 * a ^ 2 * ([a ^ (-1) * atan(x / a)]_x=0,oo)",
+                            "latex_res": "2 a ^ {2} (\\left. \\frac{\\tan^{-1}{(\\frac{x}{a})}}{a} \\right\\vert_{x=0}^{\\infty})",
+                            "res": "2 * a ^ 2 * ([atan(x / a) / a]_x=0,oo)",
                             "rule": {
                                 "loc": "subterms",
                                 "name": "DefiniteIntegralIdentity",

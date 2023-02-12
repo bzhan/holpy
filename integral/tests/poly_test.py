@@ -4,8 +4,9 @@ import unittest
 
 from integral import expr
 from integral.expr import Var, Const, pi, E
-from integral.poly import reduce_power, extract_frac, ConstantMonomial, Monomial
+from integral.poly import reduce_power, extract_frac, ConstantMonomial, Monomial, normalize_constant
 from fractions import Fraction
+from integral.parser import parse_expr
 
 
 class PolynomialTest(unittest.TestCase):
@@ -71,7 +72,6 @@ class PolynomialTest(unittest.TestCase):
             self.assertEqual(str(mono), res)
 
     def testMultConstantMonomial(self):
-
         test_data = [
             (1, [(2, "1/2")], 1, [(2, "3/2")], "4"),
             (2, [(2, "1/2")], 3, [(3, "3/2")], "18 * 2^(1/2) * 3^(1/2)"),
@@ -84,6 +84,18 @@ class PolynomialTest(unittest.TestCase):
             mono1 = ConstantMonomial(coeff1, factors1)
             mono2 = ConstantMonomial(coeff2, factors2)
             self.assertEqual(str(mono1 * mono2), res)
+
+    def testNormalizeConstant(self):
+        test_data = [
+            ("1/2 * pi", "pi / 2"),
+            ("-1/2 * pi", "-(pi / 2)"),
+            ("exp(2)", "exp(2)"),
+            ("-1/2", "-1/2"),
+        ]
+
+        for e, res in test_data:
+            e = parse_expr(e)
+            self.assertEqual(str(normalize_constant(e)), res)
 
 
 if __name__ == "__main__":

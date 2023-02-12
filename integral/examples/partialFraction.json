@@ -81,8 +81,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{(\\left. (e^{-a}) ^ {-1} \\tan^{-1}{(\\frac{x}{e^{-a}})} \\right\\vert_{x=0}^{\\infty}) - (\\left. (e^{a}) ^ {-1} \\tan^{-1}{(\\frac{x}{e^{a}})} \\right\\vert_{x=0}^{\\infty})}{-e^{-2 a} + e^{2 a}}",
-                            "res": "(([exp(-a) ^ (-1) * atan(x / exp(-a))]_x=0,oo) - ([exp(a) ^ (-1) * atan(x / exp(a))]_x=0,oo)) / (-exp(-2 * a) + exp(2 * a))",
+                            "latex_res": "\\frac{(\\left. e^{a} \\tan^{-1}{(x e^{a})} \\right\\vert_{x=0}^{\\infty}) - (\\left. e^{-a} \\tan^{-1}{(x e^{-a})} \\right\\vert_{x=0}^{\\infty})}{-e^{-2 a} + e^{2 a}}",
+                            "res": "(([exp(a) * atan(x * exp(a))]_x=0,oo) - ([exp(-a) * atan(x * exp(-a))]_x=0,oo)) / (-exp(-2 * a) + exp(2 * a))",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -90,8 +90,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{-\\frac{1}{2} \\pi e^{-a} + \\frac{1}{2} \\pi e^{a}}{-e^{-2 a} + e^{2 a}}",
-                            "res": "(-1/2 * pi * exp(-a) + 1/2 * pi * exp(a)) / (-exp(-2 * a) + exp(2 * a))",
+                            "latex_res": "\\frac{-\\frac{\\pi}{2} e^{-a} + \\frac{\\pi}{2} e^{a}}{-e^{-2 a} + e^{2 a}}",
+                            "res": "(-(pi / 2) * exp(-a) + pi / 2 * exp(a)) / (-exp(-2 * a) + exp(2 * a))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"

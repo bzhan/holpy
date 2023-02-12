@@ -35,8 +35,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\lim\\limits_{c\\to \\infty} (\\,(\\left. \\frac{1}{-(\\frac{2}{3} - 1) u ^ {2/3 - 1}} \\right\\vert_{u=-1}^{0 - 1/c}) + (\\left. \\frac{1}{-(\\frac{2}{3} - 1) u ^ {2/3 - 1}} \\right\\vert_{u=0 + 1/c}^{2})\\,)",
-                            "res": "LIM {c -> oo}. ([1 / (-(2/3 - 1) * u ^ (2/3 - 1))]_u=-1,0 - 1 / c) + ([1 / (-(2/3 - 1) * u ^ (2/3 - 1))]_u=0 + 1 / c,2)",
+                            "latex_res": "\\lim\\limits_{c\\to \\infty} (\\,(\\left. 3 \\sqrt[3]{u} \\right\\vert_{u=-1}^{0 - 1/c}) + (\\left. 3 \\sqrt[3]{u} \\right\\vert_{u=0 + 1/c}^{2})\\,)",
+                            "res": "LIM {c -> oo}. ([3 * u ^ (1/3)]_u=-1,0 - 1 / c) + ([3 * u ^ (1/3)]_u=0 + 1 / c,2)",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"

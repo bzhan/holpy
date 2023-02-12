@@ -156,12 +156,12 @@
                 }
             ],
             "finished": true,
-            "goal": "I(a,b) = 1/2 * pi",
-            "latex_goal": "I(a,b) = \\frac{1}{2} \\pi",
+            "goal": "I(a,b) = pi / 2",
+            "latex_goal": "I(a,b) = \\frac{\\pi}{2}",
             "proof": {
                 "finished": true,
-                "goal": "I(a,b) = 1/2 * pi",
-                "latex_goal": "I(a,b) = \\frac{1}{2} \\pi",
+                "goal": "I(a,b) = pi / 2",
+                "latex_goal": "I(a,b) = \\frac{\\pi}{2}",
                 "lhs_calc": {
                     "latex_start": "I(a,b)",
                     "start": "I(a,b)",
@@ -178,8 +178,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\frac{1}{2} \\pi) + \\frac{1}{2} (\\frac{1}{2} \\pi)",
-                            "res": "1/2 * (1/2 * pi) + 1/2 * (1/2 * pi)",
+                            "latex_res": "\\frac{1}{2} (\\frac{\\pi}{2}) + \\frac{1}{2} (\\frac{\\pi}{2})",
+                            "res": "1/2 * (pi / 2) + 1/2 * (pi / 2)",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -187,8 +187,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi",
-                            "res": "1/2 * pi",
+                            "latex_res": "\\frac{\\pi}{2}",
+                            "res": "pi / 2",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -199,8 +199,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\frac{1}{2} \\pi",
-                    "start": "1/2 * pi",
+                    "latex_start": "\\frac{\\pi}{2}",
+                    "start": "pi / 2",
                     "steps": [],
                     "type": "Calculation"
                 },
@@ -246,8 +246,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\frac{1}{2} \\pi) + \\frac{1}{2} (-\\frac{1}{2} \\pi)",
-                            "res": "1/2 * (1/2 * pi) + 1/2 * (-1/2 * pi)",
+                            "latex_res": "\\frac{1}{2} (\\frac{\\pi}{2}) + \\frac{1}{2} -\\frac{\\pi}{2}",
+                            "res": "1/2 * (pi / 2) + 1/2 * -(pi / 2)",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -292,12 +292,12 @@
                 }
             ],
             "finished": true,
-            "goal": "I(a,b) = 1/4 * pi",
-            "latex_goal": "I(a,b) = \\frac{1}{4} \\pi",
+            "goal": "I(a,b) = pi / 4",
+            "latex_goal": "I(a,b) = \\frac{\\pi}{4}",
             "proof": {
                 "finished": true,
-                "goal": "I(a,b) = 1/4 * pi",
-                "latex_goal": "I(a,b) = \\frac{1}{4} \\pi",
+                "goal": "I(a,b) = pi / 4",
+                "latex_goal": "I(a,b) = \\frac{\\pi}{4}",
                 "lhs_calc": {
                     "latex_start": "I(a,b)",
                     "start": "I(a,b)",
@@ -314,8 +314,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\frac{1}{2} \\pi) + \\frac{1}{2}\\cdot 0",
-                            "res": "1/2 * (1/2 * pi) + 1/2 * 0",
+                            "latex_res": "\\frac{1}{2} (\\frac{\\pi}{2}) + \\frac{1}{2}\\cdot 0",
+                            "res": "1/2 * (pi / 2) + 1/2 * 0",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -323,8 +323,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{4} \\pi",
-                            "res": "1/4 * pi",
+                            "latex_res": "\\frac{\\pi}{4}",
+                            "res": "pi / 4",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -335,8 +335,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\frac{1}{4} \\pi",
-                    "start": "1/4 * pi",
+                    "latex_start": "\\frac{\\pi}{4}",
+                    "start": "pi / 4",
                     "steps": [],
                     "type": "Calculation"
                 },

@@ -25,8 +25,8 @@
                     "start": "J(a)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(2 x)})} \\,dx",
-                            "res": "INT x:[0,1/2 * pi]. log(a * sin(2 * x))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\log{(a \\sin{(2 x)})} \\,dx",
+                            "res": "INT x:[0,pi / 2]. log(a * sin(2 * x))",
                             "rule": {
                                 "func_name": "J",
                                 "name": "ExpandDefinition",
@@ -57,8 +57,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(\\int_{0}^{\\pi/2} \\frac{1}{2} \\log{(a \\sin{t})} \\,dt) + (\\int_{0}^{1/2\\cdot \\pi} \\frac{1}{2} \\log{(a \\sin{(\\pi - x)})} \\,dx)",
-                            "res": "(INT t:[0,pi / 2]. 1/2 * log(a * sin(t))) + (INT x:[0,1/2 * pi]. 1/2 * log(a * sin(pi - x)))",
+                            "latex_res": "(\\int_{0}^{\\pi/2} \\frac{1}{2} \\log{(a \\sin{t})} \\,dt) + (\\int_{0}^{\\pi/2} \\frac{1}{2} \\log{(a \\sin{(\\pi - x)})} \\,dx)",
+                            "res": "(INT t:[0,pi / 2]. 1/2 * log(a * sin(t))) + (INT x:[0,pi / 2]. 1/2 * log(a * sin(pi - x)))",
                             "rule": {
                                 "latex_str": "substitute \\(x\\) for \\(\\pi - t\\) at 1",
                                 "loc": "1",
@@ -70,8 +70,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx) + \\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{t})} \\,dt)",
-                            "res": "1/2 * (INT x:[0,1/2 * pi]. log(a * sin(x))) + 1/2 * (INT t:[0,1/2 * pi]. log(a * sin(t)))",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\pi/2} \\log{(a \\sin{t})} \\,dt)",
+                            "res": "1/2 * (INT x:[0,pi / 2]. log(a * sin(x))) + 1/2 * (INT t:[0,pi / 2]. log(a * sin(t)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -79,8 +79,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx) + \\frac{1}{2} (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
-                            "res": "1/2 * (INT x:[0,1/2 * pi]. log(a * sin(x))) + 1/2 * (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx)",
+                            "res": "1/2 * (INT x:[0,pi / 2]. log(a * sin(x))) + 1/2 * (INT x:[0,pi / 2]. log(a * sin(x)))",
                             "rule": {
                                 "latex_str": "substitute \\(x\\) for \\(t\\) at 1",
                                 "loc": "1",
@@ -92,8 +92,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx",
-                            "res": "INT x:[0,1/2 * pi]. log(a * sin(x))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx",
+                            "res": "INT x:[0,pi / 2]. log(a * sin(x))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -108,8 +108,8 @@
                     "start": "I(a)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx",
-                            "res": "INT x:[0,1/2 * pi]. log(a * sin(x))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx",
+                            "res": "INT x:[0,pi / 2]. log(a * sin(x))",
                             "rule": {
                                 "func_name": "I",
                                 "name": "ExpandDefinition",
@@ -137,8 +137,8 @@
                     "start": "J(a)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{(2 x)})} \\,dx",
-                            "res": "INT x:[0,1/2 * pi]. log(a * sin(2 * x))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\log{(a \\sin{(2 x)})} \\,dx",
+                            "res": "INT x:[0,pi / 2]. log(a * sin(2 * x))",
                             "rule": {
                                 "func_name": "J",
                                 "name": "ExpandDefinition",
@@ -147,8 +147,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(a (2 \\sin{x} \\cos{x}))} \\,dx",
-                            "res": "INT x:[0,1/2 * pi]. log(a * (2 * sin(x) * cos(x)))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\log{(a (2 \\sin{x} \\cos{x}))} \\,dx",
+                            "res": "INT x:[0,pi / 2]. log(a * (2 * sin(x) * cos(x)))",
                             "rule": {
                                 "latex_str": "rewrite \\(\\sin{(2 x)}\\) to \\(2 \\sin{x} \\cos{x}\\) using identity",
                                 "name": "ApplyIdentity",
@@ -159,8 +159,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(\\frac{2}{a} (a \\sin{x}) (a \\cos{x}))} \\,dx",
-                            "res": "INT x:[0,1/2 * pi]. log(2 / a * (a * sin(x)) * (a * cos(x)))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\log{(\\frac{2}{a} (a \\sin{x}) (a \\cos{x}))} \\,dx",
+                            "res": "INT x:[0,pi / 2]. log(2 / a * (a * sin(x)) * (a * cos(x)))",
                             "rule": {
                                 "latex_str": "rewriting \\(a (2 \\sin{x} \\cos{x})\\) to \\(\\frac{2}{a} (a \\sin{x}) (a \\cos{x})\\)",
                                 "name": "Equation",
@@ -171,8 +171,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(\\frac{2}{a} (a \\sin{x}))} + \\log{(a \\cos{x})} \\,dx",
-                            "res": "INT x:[0,1/2 * pi]. log(2 / a * (a * sin(x))) + log(a * cos(x))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\log{(\\frac{2}{a} (a \\sin{x}))} + \\log{(a \\cos{x})} \\,dx",
+                            "res": "INT x:[0,pi / 2]. log(2 / a * (a * sin(x))) + log(a * cos(x))",
                             "rule": {
                                 "latex_str": "rewrite \\(\\log{(\\frac{2}{a} (a \\sin{x}) (a \\cos{x}))}\\) to \\(\\log{(\\frac{2}{a} (a \\sin{x}))} + \\log{(a \\cos{x})}\\) using identity",
                                 "name": "ApplyIdentity",
@@ -183,8 +183,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\log{(\\frac{2}{a})} + \\log{(a \\sin{x})} + \\log{(a \\cos{x})} \\,dx",
-                            "res": "INT x:[0,1/2 * pi]. log(2 / a) + log(a * sin(x)) + log(a * cos(x))",
+                            "latex_res": "\\int_{0}^{\\pi/2} \\log{(\\frac{2}{a})} + \\log{(a \\sin{x})} + \\log{(a \\cos{x})} \\,dx",
+                            "res": "INT x:[0,pi / 2]. log(2 / a) + log(a * sin(x)) + log(a * cos(x))",
                             "rule": {
                                 "latex_str": "rewrite \\(\\log{(\\frac{2}{a} (a \\sin{x}))}\\) to \\(\\log{(\\frac{2}{a})} + \\log{(a \\sin{x})}\\) using identity",
                                 "name": "ApplyIdentity",
@@ -195,8 +195,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(\\left. \\log{(\\frac{2}{a})} x \\right\\vert_{x=0}^{1/2\\cdot \\pi}) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\cos{x})} \\,dx)",
-                            "res": "([log(2 / a) * x]_x=0,1/2 * pi) + (INT x:[0,1/2 * pi]. log(a * sin(x))) + (INT x:[0,1/2 * pi]. log(a * cos(x)))",
+                            "latex_res": "(\\left. x \\log{(2 (\\frac{1}{a}))} \\right\\vert_{x=0}^{\\pi/2}) + (\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx) + (\\int_{0}^{\\pi/2} \\log{(a \\cos{x})} \\,dx)",
+                            "res": "([x * log(2 * (1 / a))]_x=0,pi / 2) + (INT x:[0,pi / 2]. log(a * sin(x))) + (INT x:[0,pi / 2]. log(a * cos(x)))",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -204,8 +204,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi \\log{(2 (\\frac{1}{a}))} + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\cos{x})} \\,dx) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
-                            "res": "1/2 * pi * log(2 * (1 / a)) + (INT x:[0,1/2 * pi]. log(a * cos(x))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "latex_res": "\\frac{\\pi}{2} \\log{(2 (\\frac{1}{a}))} + (\\int_{0}^{\\pi/2} \\log{(a \\cos{x})} \\,dx) + (\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx)",
+                            "res": "pi / 2 * log(2 * (1 / a)) + (INT x:[0,pi / 2]. log(a * cos(x))) + (INT x:[0,pi / 2]. log(a * sin(x)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -213,8 +213,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi \\log{(2 (\\frac{1}{a}))} + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\cos{(\\frac{1}{2} \\pi - t)})} \\,dt) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
-                            "res": "1/2 * pi * log(2 * (1 / a)) + (INT t:[0,1/2 * pi]. log(a * cos(1/2 * pi - t))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "latex_res": "\\frac{\\pi}{2} \\log{(2 (\\frac{1}{a}))} + (\\int_{0}^{\\pi/2} \\log{(a \\cos{(\\frac{\\pi}{2} - t)})} \\,dt) + (\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx)",
+                            "res": "pi / 2 * log(2 * (1 / a)) + (INT t:[0,pi / 2]. log(a * cos(pi / 2 - t))) + (INT x:[0,pi / 2]. log(a * sin(x)))",
                             "rule": {
                                 "latex_str": "substitute \\(t\\) for \\(\\frac{\\pi}{2} - x\\)",
                                 "name": "Substitution",
@@ -225,8 +225,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi \\log{(2 (\\frac{1}{a}))} + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\cos{(\\frac{1}{2} \\pi - x)})} \\,dx) + (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
-                            "res": "1/2 * pi * log(2 * (1 / a)) + (INT x:[0,1/2 * pi]. log(a * cos(1/2 * pi - x))) + (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "latex_res": "\\frac{\\pi}{2} \\log{(2 (\\frac{1}{a}))} + (\\int_{0}^{\\pi/2} \\log{(a \\cos{(\\frac{\\pi}{2} - x)})} \\,dx) + (\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx)",
+                            "res": "pi / 2 * log(2 * (1 / a)) + (INT x:[0,pi / 2]. log(a * cos(pi / 2 - x))) + (INT x:[0,pi / 2]. log(a * sin(x)))",
                             "rule": {
                                 "latex_str": "substitute \\(x\\) for \\(t\\)",
                                 "name": "Substitution",
@@ -237,8 +237,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi \\log{(2 (\\frac{1}{a}))} + 2 (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
-                            "res": "1/2 * pi * log(2 * (1 / a)) + 2 * (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "latex_res": "\\frac{\\pi}{2} \\log{(2 (\\frac{1}{a}))} + 2 (\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx)",
+                            "res": "pi / 2 * log(2 * (1 / a)) + 2 * (INT x:[0,pi / 2]. log(a * sin(x)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -253,8 +253,8 @@
                     "start": "pi / 2 * log(2 / a) + 2 * I(a)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{\\pi}{2} \\log{(\\frac{2}{a})} + 2 (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
-                            "res": "pi / 2 * log(2 / a) + 2 * (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "latex_res": "\\frac{\\pi}{2} \\log{(\\frac{2}{a})} + 2 (\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx)",
+                            "res": "pi / 2 * log(2 / a) + 2 * (INT x:[0,pi / 2]. log(a * sin(x)))",
                             "rule": {
                                 "func_name": "I",
                                 "loc": "subterms",
@@ -264,8 +264,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi \\log{(2 (\\frac{1}{a}))} + 2 (\\int_{0}^{1/2\\cdot \\pi} \\log{(a \\sin{x})} \\,dx)",
-                            "res": "1/2 * pi * log(2 * (1 / a)) + 2 * (INT x:[0,1/2 * pi]. log(a * sin(x)))",
+                            "latex_res": "\\frac{\\pi}{2} \\log{(2 (\\frac{1}{a}))} + 2 (\\int_{0}^{\\pi/2} \\log{(a \\sin{x})} \\,dx)",
+                            "res": "pi / 2 * log(2 * (1 / a)) + 2 * (INT x:[0,pi / 2]. log(a * sin(x)))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -314,8 +314,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{1}{2} \\pi \\log{(2 (\\frac{1}{a}))}",
-                            "res": "-1/2 * pi * log(2 * (1 / a))",
+                            "latex_res": "-\\frac{\\pi}{2} \\log{(2 (\\frac{1}{a}))}",
+                            "res": "-(pi / 2) * log(2 * (1 / a))",
                             "rule": {
                                 "lhs": "I(a)",
                                 "name": "IntegrateByEquation",
@@ -324,8 +324,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{1}{2} \\pi (\\log{(2)} + \\log{(\\frac{1}{a})})",
-                            "res": "-1/2 * pi * (log(2) + log(1 / a))",
+                            "latex_res": "-\\frac{\\pi}{2} (\\log{(2)} + \\log{(\\frac{1}{a})})",
+                            "res": "-(pi / 2) * (log(2) + log(1 / a))",
                             "rule": {
                                 "latex_str": "rewrite \\(\\log{(2 (\\frac{1}{a}))}\\) to \\(\\log{(2)} + \\log{(\\frac{1}{a})}\\) using identity",
                                 "name": "ApplyIdentity",
@@ -336,8 +336,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{1}{2} \\pi \\log{(2)} + \\frac{1}{2} \\pi \\log{a}",
-                            "res": "-1/2 * pi * log(2) + 1/2 * pi * log(a)",
+                            "latex_res": "-\\frac{\\pi \\log{(2)}}{2} + \\frac{\\pi}{2} \\log{a}",
+                            "res": "-(pi * log(2) / 2) + pi / 2 * log(a)",
                             "rule": {
                                 "name": "ExpandPolynomial",
                                 "str": "expand polynomial"
@@ -364,8 +364,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{1}{2} \\pi \\log{(2)} + \\frac{1}{2} \\pi \\log{a}",
-                            "res": "-1/2 * pi * log(2) + 1/2 * pi * log(a)",
+                            "latex_res": "-\\frac{\\pi \\log{(2)}}{2} + \\frac{\\pi}{2} \\log{a}",
+                            "res": "-(pi * log(2) / 2) + pi / 2 * log(a)",
                             "rule": {
                                 "name": "ExpandPolynomial",
                                 "str": "expand polynomial"

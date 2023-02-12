@@ -147,8 +147,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "g(y,a) = -a (a ^ {-1} \\tan^{-1}{(\\frac{y}{a})}) + C(a)",
-                            "res": "g(y,a) = -(a * (a ^ (-1) * atan(y / a))) + SKOLEM_FUNC(C(a))",
+                            "latex_res": "g(y,a) = -a (\\frac{1}{a} \\tan^{-1}{(\\frac{y}{a})}) + C(a)",
+                            "res": "g(y,a) = -(a * (1 / a * atan(y / a))) + SKOLEM_FUNC(C(a))",
                             "rule": {
                                 "loc": "1",
                                 "name": "IndefiniteIntegralIdentity",
@@ -235,12 +235,12 @@
                 }
             ],
             "finished": true,
-            "goal": "SKOLEM_FUNC(C(a)) = 1/2 * pi",
-            "latex_goal": "C(a) = \\frac{1}{2} \\pi",
+            "goal": "SKOLEM_FUNC(C(a)) = pi / 2",
+            "latex_goal": "C(a) = \\frac{\\pi}{2}",
             "proof": {
                 "finished": true,
-                "goal": "SKOLEM_FUNC(C(a)) = 1/2 * pi",
-                "latex_goal": "C(a) = \\frac{1}{2} \\pi",
+                "goal": "SKOLEM_FUNC(C(a)) = pi / 2",
+                "latex_goal": "C(a) = \\frac{\\pi}{2}",
                 "start": {
                     "conds": [
                         {
@@ -280,8 +280,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 = C(a) - \\frac{1}{2} \\pi",
-                            "res": "0 = SKOLEM_FUNC(C(a)) - 1/2 * pi",
+                            "latex_res": "0 = -\\frac{\\pi}{2} + C(a)",
+                            "res": "0 = -(pi / 2) + SKOLEM_FUNC(C(a))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -289,8 +289,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = \\frac{1}{2} \\pi",
-                            "res": "SKOLEM_FUNC(C(a)) = 1/2 * pi",
+                            "latex_res": "C(a) = \\frac{\\pi}{2}",
+                            "res": "SKOLEM_FUNC(C(a)) = pi / 2",
                             "rule": {
                                 "latex_str": "solve equation for \\(C(a)\\)",
                                 "name": "SolveEquation",
@@ -314,12 +314,12 @@
                 }
             ],
             "finished": true,
-            "goal": "SKOLEM_FUNC(C(a)) = -1/2 * pi",
-            "latex_goal": "C(a) = -\\frac{1}{2} \\pi",
+            "goal": "SKOLEM_FUNC(C(a)) = -(pi / 2)",
+            "latex_goal": "C(a) = -\\frac{\\pi}{2}",
             "proof": {
                 "finished": true,
-                "goal": "SKOLEM_FUNC(C(a)) = -1/2 * pi",
-                "latex_goal": "C(a) = -\\frac{1}{2} \\pi",
+                "goal": "SKOLEM_FUNC(C(a)) = -(pi / 2)",
+                "latex_goal": "C(a) = -\\frac{\\pi}{2}",
                 "start": {
                     "conds": [
                         {
@@ -359,8 +359,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "0 = C(a) + \\frac{1}{2} \\pi",
-                            "res": "0 = SKOLEM_FUNC(C(a)) + 1/2 * pi",
+                            "latex_res": "0 = \\frac{\\pi}{2} + C(a)",
+                            "res": "0 = pi / 2 + SKOLEM_FUNC(C(a))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -368,8 +368,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = -\\frac{1}{2} \\pi",
-                            "res": "SKOLEM_FUNC(C(a)) = -1/2 * pi",
+                            "latex_res": "C(a) = -\\frac{\\pi}{2}",
+                            "res": "SKOLEM_FUNC(C(a)) = -(pi / 2)",
                             "rule": {
                                 "latex_str": "solve equation for \\(C(a)\\)",
                                 "name": "SolveEquation",
@@ -438,12 +438,12 @@
                 }
             ],
             "finished": true,
-            "goal": "(INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi",
-            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = \\frac{1}{2} \\pi",
+            "goal": "(INT x:[0,oo]. sin(a * x) / x) = pi / 2",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = \\frac{\\pi}{2}",
             "proof": {
                 "finished": true,
-                "goal": "(INT x:[0,oo]. sin(a * x) / x) = 1/2 * pi",
-                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = \\frac{1}{2} \\pi",
+                "goal": "(INT x:[0,oo]. sin(a * x) / x) = pi / 2",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = \\frac{\\pi}{2}",
                 "lhs_calc": {
                     "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx",
                     "start": "INT x:[0,oo]. sin(a * x) / x",
@@ -471,20 +471,20 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\tan^{-1}{(\\frac{0}{a})} + \\frac{1}{2} \\pi",
-                            "res": "-atan(0 / a) + 1/2 * pi",
+                            "latex_res": "-\\tan^{-1}{(\\frac{0}{a})} + \\frac{\\pi}{2}",
+                            "res": "-atan(0 / a) + pi / 2",
                             "rule": {
-                                "eq": "SKOLEM_FUNC(C(a)) = 1/2 * pi",
-                                "latex_str": "apply equation \\(C(a) = \\frac{1}{2} \\pi\\) at 1",
+                                "eq": "SKOLEM_FUNC(C(a)) = pi / 2",
+                                "latex_str": "apply equation \\(C(a) = \\frac{\\pi}{2}\\) at 1",
                                 "loc": "1",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: SKOLEM_FUNC(C(a)) = 1/2 * pi at 1"
+                                "str": "apply equation: SKOLEM_FUNC(C(a)) = pi / 2 at 1"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi",
-                            "res": "1/2 * pi",
+                            "latex_res": "\\frac{\\pi}{2}",
+                            "res": "pi / 2",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -495,8 +495,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\frac{1}{2} \\pi",
-                    "start": "1/2 * pi",
+                    "latex_start": "\\frac{\\pi}{2}",
+                    "start": "pi / 2",
                     "steps": [],
                     "type": "Calculation"
                 },
@@ -512,12 +512,12 @@
                 }
             ],
             "finished": true,
-            "goal": "(INT x:[0,oo]. sin(a * x) / x) = -1/2 * pi",
-            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = -\\frac{1}{2} \\pi",
+            "goal": "(INT x:[0,oo]. sin(a * x) / x) = -(pi / 2)",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = -\\frac{\\pi}{2}",
             "proof": {
                 "finished": true,
-                "goal": "(INT x:[0,oo]. sin(a * x) / x) = -1/2 * pi",
-                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = -\\frac{1}{2} \\pi",
+                "goal": "(INT x:[0,oo]. sin(a * x) / x) = -(pi / 2)",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx = -\\frac{\\pi}{2}",
                 "lhs_calc": {
                     "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(a x)}}{x} \\,dx",
                     "start": "INT x:[0,oo]. sin(a * x) / x",
@@ -545,20 +545,20 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\tan^{-1}{(\\frac{0}{a})} + -\\frac{1}{2} \\pi",
-                            "res": "-atan(0 / a) + -1/2 * pi",
+                            "latex_res": "-\\tan^{-1}{(\\frac{0}{a})} + -\\frac{\\pi}{2}",
+                            "res": "-atan(0 / a) + -(pi / 2)",
                             "rule": {
-                                "eq": "SKOLEM_FUNC(C(a)) = -1/2 * pi",
-                                "latex_str": "apply equation \\(C(a) = -\\frac{1}{2} \\pi\\) at 1",
+                                "eq": "SKOLEM_FUNC(C(a)) = -(pi / 2)",
+                                "latex_str": "apply equation \\(C(a) = -\\frac{\\pi}{2}\\) at 1",
                                 "loc": "1",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: SKOLEM_FUNC(C(a)) = -1/2 * pi at 1"
+                                "str": "apply equation: SKOLEM_FUNC(C(a)) = -(pi / 2) at 1"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{1}{2} \\pi",
-                            "res": "-1/2 * pi",
+                            "latex_res": "-\\frac{\\pi}{2}",
+                            "res": "-(pi / 2)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -569,8 +569,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "-\\frac{1}{2} \\pi",
-                    "start": "-1/2 * pi",
+                    "latex_start": "-\\frac{\\pi}{2}",
+                    "start": "-(pi / 2)",
                     "steps": [],
                     "type": "Calculation"
                 },

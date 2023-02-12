@@ -80,8 +80,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi (\\frac{1}{a})",
-                            "res": "1/2 * pi * (1 / a)",
+                            "latex_res": "\\frac{\\pi}{2} (\\frac{1}{a})",
+                            "res": "pi / 2 * (1 / a)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -96,8 +96,8 @@
                     "start": "pi / (2 * a)",
                     "steps": [
                         {
-                            "latex_res": "\\frac{1}{2} \\pi (\\frac{1}{a})",
-                            "res": "1/2 * pi * (1 / a)",
+                            "latex_res": "\\frac{\\pi}{2} (\\frac{1}{a})",
+                            "res": "pi / 2 * (1 / a)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -146,8 +146,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-2 a (\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {2}} \\,dx) = -\\frac{1}{2} \\pi (\\frac{1}{a ^ {2}})",
-                            "res": "-2 * a * (INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 2) = -1/2 * pi * (1 / a ^ 2)",
+                            "latex_res": "-2 a (\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {2}} \\,dx) = -\\frac{\\pi}{2} (\\frac{1}{a ^ {2}})",
+                            "res": "-2 * a * (INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 2) = -(pi / 2) * (1 / a ^ 2)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -155,8 +155,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{1}{4} \\pi (\\frac{1}{a ^ {3}})",
-                            "res": "(INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 2) = 1/4 * pi * (1 / a ^ 3)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{\\pi}{4} (\\frac{1}{a ^ {3}})",
+                            "res": "(INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 2) = pi / 4 * (1 / a ^ 3)",
                             "rule": {
                                 "latex_str": "solve equation for \\(\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {2}} \\,dx\\)",
                                 "name": "SolveEquation",
@@ -207,8 +207,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-4 a (\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {3}} \\,dx) = -\\frac{3}{4} \\pi (\\frac{1}{a ^ {4}})",
-                            "res": "-4 * a * (INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 3) = -3/4 * pi * (1 / a ^ 4)",
+                            "latex_res": "-4 a (\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {3}} \\,dx) = -\\frac{3 \\pi}{4} (\\frac{1}{a ^ {4}})",
+                            "res": "-4 * a * (INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 3) = -(3 * pi / 4) * (1 / a ^ 4)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -216,8 +216,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {3}} \\,dx = \\frac{3}{16} \\pi (\\frac{1}{a ^ {5}})",
-                            "res": "(INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 3) = 3/16 * pi * (1 / a ^ 5)",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {3}} \\,dx = \\frac{3 \\pi}{16} (\\frac{1}{a ^ {5}})",
+                            "res": "(INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 3) = 3 * pi / 16 * (1 / a ^ 5)",
                             "rule": {
                                 "latex_str": "solve equation for \\(\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {3}} \\,dx\\)",
                                 "name": "SolveEquation",

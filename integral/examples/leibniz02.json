@@ -308,8 +308,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\pi = C",
-                            "res": "1/2 * pi = SKOLEM_CONST(C)",
+                            "latex_res": "\\frac{\\pi}{2} = C",
+                            "res": "pi / 2 = SKOLEM_CONST(C)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -325,12 +325,12 @@
         },
         {
             "finished": true,
-            "goal": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + 1/2 * pi",
-            "latex_goal": "g{(t)} = -2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{1}{2} \\pi",
+            "goal": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + pi / 2",
+            "latex_goal": "g{(t)} = -2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{\\pi}{2}",
             "proof": {
                 "finished": true,
-                "goal": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + 1/2 * pi",
-                "latex_goal": "g{(t)} = -2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{1}{2} \\pi",
+                "goal": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + pi / 2",
+                "latex_goal": "g{(t)} = -2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{\\pi}{2}",
                 "lhs_calc": {
                     "latex_start": "g{(t)}",
                     "start": "g(t)",
@@ -359,8 +359,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{1}{2} \\pi",
-                            "res": "-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + 1/2 * pi",
+                            "latex_res": "-2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{\\pi}{2}",
+                            "res": "-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + pi / 2",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -371,8 +371,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "-2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{1}{2} \\pi",
-                    "start": "-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + 1/2 * pi",
+                    "latex_start": "-2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{\\pi}{2}",
+                    "start": "-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + pi / 2",
                     "steps": [],
                     "type": "Calculation"
                 },
@@ -404,14 +404,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\sqrt{-2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{1}{2} \\pi})",
-                            "res": "2 * (LIM {t -> oo}. sqrt(-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + 1/2 * pi))",
+                            "latex_res": "2 (\\lim\\limits_{t\\to \\infty} \\sqrt{-2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{\\pi}{2}})",
+                            "res": "2 * (LIM {t -> oo}. sqrt(-2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + pi / 2))",
                             "rule": {
-                                "eq": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + 1/2 * pi",
-                                "latex_str": "apply equation \\(g{(t)} = -2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{1}{2} \\pi\\) at 1.0.0",
+                                "eq": "g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + pi / 2",
+                                "latex_str": "apply equation \\(g{(t)} = -2 (\\int_{0}^{1} \\frac{e^{1/2\\cdot t ^ {2} (-y ^ {2} - 1)}}{y ^ {2} + 1} \\,dy) + \\frac{\\pi}{2}\\) at 1.0.0",
                                 "loc": "1.0.0",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + 1/2 * pi at 1.0.0"
+                                "str": "apply equation: g(t) = -2 * (INT y:[0,1]. exp(1/2 * t ^ 2 * (-(y ^ 2) - 1)) / (y ^ 2 + 1)) + pi / 2 at 1.0.0"
                             },
                             "type": "CalculationStep"
                         },
@@ -493,8 +493,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx = \\frac{1}{2} \\sqrt{2} \\sqrt{\\pi}",
-                            "res": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) = 1/2 * sqrt(2) * sqrt(pi)",
+                            "latex_res": "\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx = \\frac{\\sqrt{2} \\sqrt{\\pi}}{2}",
+                            "res": "(INT x:[0,oo]. exp(-1/2 * x ^ 2)) = sqrt(2) * sqrt(pi) / 2",
                             "rule": {
                                 "latex_str": "solve equation for \\(\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\,dx\\)",
                                 "name": "SolveEquation",
@@ -529,8 +529,8 @@
                     "start": "INT x:[-oo,oo]. exp(-(a * x ^ 2))",
                     "steps": [
                         {
-                            "latex_res": "\\int_{-\\infty}^{\\infty} \\frac{1}{2} \\sqrt{2} (\\frac{e^{-1/2\\cdot u ^ {2}}}{\\sqrt{a}}) \\,du",
-                            "res": "INT u:[-oo,oo]. 1/2 * sqrt(2) * (exp(-1/2 * u ^ 2) / sqrt(a))",
+                            "latex_res": "\\int_{-\\infty}^{\\infty} \\frac{\\sqrt{2}}{2} (\\frac{e^{-1/2\\cdot u ^ {2}}}{\\sqrt{a}}) \\,du",
+                            "res": "INT u:[-oo,oo]. sqrt(2) / 2 * (exp(-1/2 * u ^ 2) / sqrt(a))",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(\\sqrt{2 a} x\\)",
                                 "name": "Substitution",
@@ -541,8 +541,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\sqrt{2} (\\frac{\\int_{-\\infty}^{\\infty} e^{-1/2\\cdot u ^ {2}} \\,du}{\\sqrt{a}})",
-                            "res": "1/2 * sqrt(2) * ((INT u:[-oo,oo]. exp(-1/2 * u ^ 2)) / sqrt(a))",
+                            "latex_res": "\\frac{\\sqrt{2}}{2} (\\frac{\\int_{-\\infty}^{\\infty} e^{-1/2\\cdot u ^ {2}} \\,du}{\\sqrt{a}})",
+                            "res": "sqrt(2) / 2 * ((INT u:[-oo,oo]. exp(-1/2 * u ^ 2)) / sqrt(a))",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -550,8 +550,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\sqrt{2} (\\frac{\\int_{-\\infty}^{\\infty} e^{-u ^ {2}/2} \\,du}{\\sqrt{a}})",
-                            "res": "1/2 * sqrt(2) * ((INT u:[-oo,oo]. exp(-(u ^ 2) / 2)) / sqrt(a))",
+                            "latex_res": "\\frac{\\sqrt{2}}{2} (\\frac{\\int_{-\\infty}^{\\infty} e^{-u ^ {2}/2} \\,du}{\\sqrt{a}})",
+                            "res": "sqrt(2) / 2 * ((INT u:[-oo,oo]. exp(-(u ^ 2) / 2)) / sqrt(a))",
                             "rule": {
                                 "latex_str": "rewriting \\(-\\frac{1}{2} u ^ {2}\\) to \\(\\frac{-u ^ {2}}{2}\\)",
                                 "name": "Equation",
@@ -562,8 +562,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} \\sqrt{2} (\\frac{\\sqrt{2 \\pi}}{\\sqrt{a}})",
-                            "res": "1/2 * sqrt(2) * (sqrt(2 * pi) / sqrt(a))",
+                            "latex_res": "\\frac{\\sqrt{2}}{2} (\\frac{\\sqrt{2 \\pi}}{\\sqrt{a}})",
+                            "res": "sqrt(2) / 2 * (sqrt(2 * pi) / sqrt(a))",
                             "rule": {
                                 "eq": "(INT x:[-oo,oo]. exp(-(x ^ 2) / 2)) = sqrt(2 * pi)",
                                 "latex_str": "apply equation \\(\\int_{-\\infty}^{\\infty} e^{-x ^ {2}/2} \\,dx = \\sqrt{2 \\pi}\\) at 1.0",

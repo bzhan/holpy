@@ -90,8 +90,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sum_{k=0}^{\\infty}{\\frac{c ^ {k} (\\frac{(-1) ^ {k} k!}{(a k + 1) ^ {k + 1}})}{k!}}",
-                            "res": "SUM(k, 0, oo, c ^ k * ((-1) ^ k * factorial(k) / (a * k + 1) ^ (k + 1)) / factorial(k))",
+                            "latex_res": "\\sum_{k=0}^{\\infty}{\\frac{c ^ {k} ((-1) ^ {k} k! (a k + 1) ^ {-k - 1})}{k!}}",
+                            "res": "SUM(k, 0, oo, c ^ k * ((-1) ^ k * factorial(k) * (a * k + 1) ^ (-k - 1)) / factorial(k))",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
