@@ -1322,6 +1322,8 @@ class Equation(Rule):
 
         if norm.eq_definite_integral(e, self.new_expr):
             return self.new_expr
+        if norm.simp_definite_integral(e) == normalize(self.new_expr):
+            return self.new_expr
 
         raise AssertionError("Equation: rewriting %s to %s failed" % (e, self.new_expr))
 

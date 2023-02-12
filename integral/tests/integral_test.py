@@ -2315,8 +2315,42 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal01.goal),"0.1"))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal02.goal), "1"))
         calc.perform_rule(rules.FullSimplify())
-
         self.checkAndOutput(file, "charpter2_practice01")
-        
+    def testChapter2Practice02(self):
+        # Reference:
+        # Inside interesting integrals, C2.2
+        ctx = context.Context()
+        ctx.load_book("base")
+        file = compstate.CompFile(ctx, "charpter2_practice02")
+        goal01 = file.add_goal("(INT x:[0,1]. (x - 2) / (x ^ 2 - x + 1)) = -pi/sqrt(3)")
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("(x ^ 2 - x + 1)", "(x-1/2)^2 + 3/4"))
+        calc.perform_rule(rules.Substitution("u", "x-1/2"))
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "0"))
+        calc.perform_rule(rules.FullSimplify())
+
+        calc.perform_rule(rules.Equation("INT u:[-1/2,1/2]. u / (u ^ 2 + 3/4)", "0"))
+
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Substitution("x", "2*u/sqrt(3)"))
+        calc.perform_rule(rules.Equation("3/4 * x ^ 2 + 3/4", "3/4*(x^2+1)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        goal02 = file.add_goal("(INT x:[0,1]. 1/(x^3+1)) = 1/3 *log(2) + pi / (3*sqrt(3))")
+        proof = goal02.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("1/(x^3 + 1)", "1/((x+1)*(x^2-x+1))"))
+        calc.perform_rule(rules.Equation("1/((x+1)*(x^2-x+1))", "1/3*(1/(x+1)-(x-2)/(x^2-x+1))"))
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "0"))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file, "charpter2_practice02")
 if __name__ == "__main__":
     unittest.main()
