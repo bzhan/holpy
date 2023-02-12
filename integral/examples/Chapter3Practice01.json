@@ -151,6 +151,273 @@
                 "type": "CalculationProof"
             },
             "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "I(a,b) = pi / b * log(1 + a * b) + SKOLEM_FUNC(C(b))",
+            "latex_goal": "I(a,b) = \\frac{\\pi}{b} \\log{(1 + a b)} + C(b)",
+            "proof": {
+                "finished": true,
+                "goal": "I(a,b) = pi / b * log(1 + a * b) + SKOLEM_FUNC(C(b))",
+                "latex_goal": "I(a,b) = \\frac{\\pi}{b} \\log{(1 + a b)} + C(b)",
+                "start": {
+                    "conds": [
+                        {
+                            "cond": "a > 0",
+                            "latex_cond": "a > 0"
+                        },
+                        {
+                            "cond": "b > 0",
+                            "latex_cond": "b > 0"
+                        }
+                    ],
+                    "latex_start": "\\frac{d}{da} I(a,b) = \\frac{\\pi}{1 + a b}",
+                    "start": "(D a. I(a,b)) = pi / (1 + a * b)",
+                    "steps": [
+                        {
+                            "latex_res": "I(a,b) = \\int \\frac{\\pi}{1 + a b} \\,da",
+                            "res": "I(a,b) = (INT a [b]. pi / (1 + a * b))",
+                            "rule": {
+                                "name": "IntegrateBothSide",
+                                "str": "integrate both side"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I(a,b) = \\int \\pi (\\frac{1}{b (u - 1 + 1)}) \\,du",
+                            "res": "I(a,b) = (INT u [b]. pi * (1 / (b * (u - 1 + 1))))",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(1 + a b\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for 1 + a * b",
+                                "var_name": "u",
+                                "var_subst": "1 + a * b"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I(a,b) = \\pi (\\frac{\\int \\frac{1}{u} \\,du}{b})",
+                            "res": "I(a,b) = pi * ((INT u [b]. 1 / u) / b)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I(a,b) = \\pi (\\frac{\\log{(\\left| u \\right|)}}{b}) + C(b)",
+                            "res": "I(a,b) = pi * (log(abs(u)) / b) + SKOLEM_FUNC(C(b))",
+                            "rule": {
+                                "loc": "1",
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I(a,b) = \\pi (\\frac{\\log{(\\left| 1 + a b \\right|)}}{b}) + C(b)",
+                            "res": "I(a,b) = pi * (log(abs(1 + a * b)) / b) + SKOLEM_FUNC(C(b))",
+                            "rule": {
+                                "name": "ReplaceSubstitution",
+                                "str": "replace substitution"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I(a,b) = \\pi (\\frac{\\log{(1 + a b)}}{b}) + C(b)",
+                            "res": "I(a,b) = pi * (log(1 + a * b) / b) + SKOLEM_FUNC(C(b))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\left| 1 + a b \\right|\\) to \\(1 + a b\\)",
+                                "name": "Equation",
+                                "new_expr": "1 + a * b",
+                                "old_expr": "abs(1 + a * b)",
+                                "str": "rewriting abs(1 + a * b) to 1 + a * b"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "I(0,b) = 0",
+            "latex_goal": "I(0,b) = 0",
+            "proof": {
+                "finished": true,
+                "goal": "I(0,b) = 0",
+                "latex_goal": "I(0,b) = 0",
+                "lhs_calc": {
+                    "latex_start": "I(0,b)",
+                    "start": "I(0,b)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\log{(1)}}{b ^ {2} + x ^ {2}} \\,dx",
+                            "res": "INT x:[0,oo]. log(1) / (b ^ 2 + x ^ 2)",
+                            "rule": {
+                                "func_name": "I",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "0",
+                            "res": "0",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "0",
+                    "start": "0",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "SKOLEM_FUNC(C(b)) = 0",
+            "latex_goal": "C(b) = 0",
+            "proof": {
+                "finished": true,
+                "goal": "SKOLEM_FUNC(C(b)) = 0",
+                "latex_goal": "C(b) = 0",
+                "start": {
+                    "conds": [
+                        {
+                            "cond": "a > 0",
+                            "latex_cond": "a > 0"
+                        },
+                        {
+                            "cond": "b > 0",
+                            "latex_cond": "b > 0"
+                        }
+                    ],
+                    "latex_start": "I(a,b) = \\frac{\\pi}{b} \\log{(1 + a b)} + C(b)",
+                    "start": "I(a,b) = pi / b * log(1 + a * b) + SKOLEM_FUNC(C(b))",
+                    "steps": [
+                        {
+                            "latex_res": "\\lim\\limits_{a\\to 0} I(a,b) = \\lim\\limits_{a\\to 0} (\\,\\frac{\\pi}{b} \\log{(1 + a b)} + C(b)\\,)",
+                            "res": "(LIM {a -> 0 }. I(a,b)) = (LIM {a -> 0 }. pi / b * log(1 + a * b) + SKOLEM_FUNC(C(b)))",
+                            "rule": {
+                                "latex_str": "apply limit \\(a \\to 0\\) to equation",
+                                "lim": "0",
+                                "name": "LimitEquation",
+                                "str": "apply limit a -> 0 to equation",
+                                "var": "a"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I(0,b) = C(b)",
+                            "res": "I(0,b) = SKOLEM_FUNC(C(b))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "0 = C(b)",
+                            "res": "0 = SKOLEM_FUNC(C(b))",
+                            "rule": {
+                                "eq": "I(0,b) = 0",
+                                "latex_str": "apply equation \\(I(0,b) = 0\\) at 0",
+                                "loc": "0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: I(0,b) = 0 at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "C(b) = 0",
+                            "res": "SKOLEM_FUNC(C(b)) = 0",
+                            "rule": {
+                                "latex_str": "solve equation for \\(C(b)\\)",
+                                "name": "SolveEquation",
+                                "solve_for": "SKOLEM_FUNC(C(b))",
+                                "str": "solve equation for SKOLEM_FUNC(C(b))"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "I(a,b) = pi / b * log(1 + a * b)",
+            "latex_goal": "I(a,b) = \\frac{\\pi}{b} \\log{(1 + a b)}",
+            "proof": {
+                "finished": true,
+                "goal": "I(a,b) = pi / b * log(1 + a * b)",
+                "latex_goal": "I(a,b) = \\frac{\\pi}{b} \\log{(1 + a b)}",
+                "start": {
+                    "conds": [
+                        {
+                            "cond": "a > 0",
+                            "latex_cond": "a > 0"
+                        },
+                        {
+                            "cond": "b > 0",
+                            "latex_cond": "b > 0"
+                        }
+                    ],
+                    "latex_start": "I(a,b) = \\frac{\\pi}{b} \\log{(1 + a b)} + C(b)",
+                    "start": "I(a,b) = pi / b * log(1 + a * b) + SKOLEM_FUNC(C(b))",
+                    "steps": [
+                        {
+                            "latex_res": "I(a,b) = \\frac{\\pi}{b} \\log{(1 + a b)} + 0",
+                            "res": "I(a,b) = pi / b * log(1 + a * b) + 0",
+                            "rule": {
+                                "eq": "SKOLEM_FUNC(C(b)) = 0",
+                                "latex_str": "apply equation \\(C(b) = 0\\) at 1.1",
+                                "loc": "1.1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: SKOLEM_FUNC(C(b)) = 0 at 1.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "I(a,b) = \\pi (\\frac{\\log{(a b + 1)}}{b})",
+                            "res": "I(a,b) = pi * (log(a * b + 1) / b)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
         }
     ],
     "name": "Chapter3Practice01"
