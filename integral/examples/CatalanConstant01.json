@@ -60,6 +60,15 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{2 n + 1} (\\left. \\frac{x ^ {2 n + 1}}{2 n + 1} \\right\\vert_{x=0}^{1})}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) * ([x ^ (2 * n + 1) / (2 * n + 1)]_x=0,1))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(2 n + 1) ^ {2}}}",
                             "res": "SUM(n, 0, oo, (-1) ^ n / (2 * n + 1) ^ 2)",
                             "rule": {

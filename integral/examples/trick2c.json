@@ -308,6 +308,15 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "\\frac{1}{4} \\sqrt{2} ((\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=\\sqrt{2} - 1}^{\\sqrt{2}}) + (\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=\\sqrt{2}}^{\\sqrt{2} + 1}))",
+                            "res": "1/4 * sqrt(2) * (([log(abs(u))]_u=sqrt(2) - 1,sqrt(2)) + ([log(abs(u))]_u=sqrt(2),sqrt(2) + 1))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "\\frac{1}{4} \\sqrt{2} \\log{(\\sqrt{2} + 1)} + -\\frac{1}{4} \\sqrt{2} \\log{(\\sqrt{2} - 1)}",
                             "res": "1/4 * sqrt(2) * log(sqrt(2) + 1) + -1/4 * sqrt(2) * log(sqrt(2) - 1)",
                             "rule": {

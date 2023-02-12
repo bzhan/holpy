@@ -11,6 +11,10 @@
         },
         {
             "type": "axiom",
+            "expr": "(INT x. x) = x ^ 2 / 2 + SKOLEM_CONST(C)"
+        },
+        {
+            "type": "axiom",
             "expr": "(INT x. 1 / x) = log(abs(x)) + SKOLEM_CONST(C)"
         },
         {
@@ -22,7 +26,26 @@
         },
         {
             "type": "axiom",
+            "expr": "(INT x. 1 / x ^ n) = 1 / (-(n - 1) * (x ^ (n - 1))) + SKOLEM_CONST(C)",
+            "conds": [
+                "n = 1"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. sqrt(x)) = 2/3 * x ^ (3/2) + SKOLEM_CONST(C)"
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. 1 / sqrt(x)) = 2 * x ^ (1/2) + SKOLEM_CONST(C)"
+        },
+        {
+            "type": "axiom",
             "expr": "(INT x. exp(x)) = exp(x) + SKOLEM_CONST(C)"
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x. exp(-x)) = -exp(-x) + SKOLEM_CONST(C)"
         },
         {
             "type": "axiom",
@@ -655,6 +678,11 @@
         {
             "type": "problem",
             "expr": "(INT x. a ^ x) = a ^ x / log(a) + SKOLEM_CONST(C)",
+            "path": "standard"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x. cos(x) ^ 2) = 1/4 * sin(2 * x) + 1/2 * x + SKOLEM_CONST(C)",
             "path": "standard"
         },
         {

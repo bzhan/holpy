@@ -110,11 +110,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "2 (\\frac{a (\\frac{1}{2} \\pi (\\frac{1}{a}) + -\\frac{1}{2} \\pi b)}{-a ^ {2} b ^ {2} + 1})",
-                            "res": "2 * (a * (1/2 * pi * (1 / a) + -1/2 * pi * b) / (-(a ^ 2 * b ^ 2) + 1))",
+                            "latex_res": "2 (\\frac{a (-b ^ {2} (\\left. b ^ {-1} \\tan^{-1}{(\\frac{x}{b})} \\right\\vert_{x=0}^{\\infty}) + \\frac{1}{a} (\\left. \\tan^{-1}{t} \\right\\vert_{t=0}^{\\infty}))}{-a ^ {2} b ^ {2} + 1})",
+                            "res": "2 * (a * (-(b ^ 2 * ([b ^ (-1) * atan(x / b)]_x=0,oo)) + 1 / a * ([atan(t)]_t=0,oo)) / (-(a ^ 2 * b ^ 2) + 1))",
                             "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
                             },
                             "type": "CalculationStep"
                         },
@@ -122,8 +122,8 @@
                             "latex_res": "2 (\\frac{a (\\frac{1}{2} \\pi (\\frac{1}{a}) + -\\frac{1}{2} \\pi b)}{-a ^ {2} b ^ {2} + 1})",
                             "res": "2 * (a * (1/2 * pi * (1 / a) + -1/2 * pi * b) / (-(a ^ 2 * b ^ 2) + 1))",
                             "rule": {
-                                "name": "DefiniteIntegralIdentity",
-                                "str": "apply definite integral"
+                                "name": "FullSimplify",
+                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         },

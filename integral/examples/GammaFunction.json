@@ -53,6 +53,15 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "(\\left. -x ^ {n} e^{-x} \\right\\vert_{x=0}^{\\infty}) - -n (\\int_{0}^{\\infty} x ^ {n - 1} e^{-x} \\,dx)",
+                            "res": "([-(x ^ n * exp(-x))]_x=0,oo) - -(n * (INT x:[0,oo]. x ^ (n - 1) * exp(-x)))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "n (\\int_{0}^{\\infty} x ^ {n - 1} e^{-x} \\,dx)",
                             "res": "n * (INT x:[0,oo]. x ^ (n - 1) * exp(-x))",
                             "rule": {
@@ -114,24 +123,11 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{t} e^{-x} \\,dx",
-                                    "res": "LIM {t -> oo}. INT x:[0,t]. exp(-x)",
+                                    "latex_res": "\\left. -e^{-x} \\right\\vert_{x=0}^{\\infty}",
+                                    "res": "[-exp(-x)]_x=0,oo",
                                     "rule": {
-                                        "a": "0",
-                                        "name": "ElimInfInterval",
-                                        "str": "eliminate improper integral"
-                                    },
-                                    "type": "CalculationStep"
-                                },
-                                {
-                                    "latex_res": "\\lim\\limits_{t\\to \\infty} \\int_{0}^{-t} -e^{u} \\,du",
-                                    "res": "LIM {t -> oo}. INT u:[0,-t]. -exp(u)",
-                                    "rule": {
-                                        "latex_str": "substitute \\(u\\) for \\(-x\\)",
-                                        "name": "Substitution",
-                                        "str": "substitute u for -x",
-                                        "var_name": "u",
-                                        "var_subst": "-x"
+                                        "name": "DefiniteIntegralIdentity",
+                                        "str": "apply definite integral"
                                     },
                                     "type": "CalculationStep"
                                 },

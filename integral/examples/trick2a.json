@@ -38,11 +38,11 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sqrt{\\sin{y}}}{\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}} \\,dy) + \\frac{1}{2} \\pi",
-                    "res": "-(INT y:[0,1/2 * pi]. sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y)))) + 1/2 * pi",
+                    "latex_res": "(\\left. 1 y \\right\\vert_{y=0}^{1/2\\cdot \\pi}) - (\\int_{0}^{1/2\\cdot \\pi} \\frac{\\sqrt{\\sin{y}}}{\\sqrt{\\cos{y}} + \\sqrt{\\sin{y}}} \\,dy)",
+                    "res": "([1 * y]_y=0,1/2 * pi) - (INT y:[0,1/2 * pi]. sqrt(sin(y)) / (sqrt(cos(y)) + sqrt(sin(y))))",
                     "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },

@@ -100,6 +100,15 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "-\\frac{(\\int_{0}^{\\infty} \\frac{\\log{s}}{s ^ {2} + 1} \\,ds) - \\log{b} (\\left. \\tan^{-1}{s} \\right\\vert_{s=0}^{\\infty})}{b}",
+                            "res": "-(((INT s:[0,oo]. log(s) / (s ^ 2 + 1)) - log(b) * ([atan(s)]_s=0,oo)) / b)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "-\\frac{(\\int_{0}^{\\infty} \\frac{\\log{s}}{s ^ {2} + 1} \\,ds) + -\\frac{1}{2} \\pi \\log{b}}{b}",
                             "res": "-(((INT s:[0,oo]. log(s) / (s ^ 2 + 1)) + -1/2 * pi * log(b)) / b)",
                             "rule": {

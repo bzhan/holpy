@@ -430,6 +430,15 @@
                             "start": "INT x:[0,1]. x ^ m",
                             "steps": [
                                 {
+                                    "latex_res": "\\left. \\frac{x ^ {m + 1}}{m + 1} \\right\\vert_{x=0}^{1}",
+                                    "res": "[x ^ (m + 1) / (m + 1)]_x=0,1",
+                                    "rule": {
+                                        "name": "DefiniteIntegralIdentity",
+                                        "str": "apply definite integral"
+                                    },
+                                    "type": "CalculationStep"
+                                },
+                                {
                                     "latex_res": "\\frac{1}{m + 1}",
                                     "res": "1 / (m + 1)",
                                     "rule": {
@@ -689,6 +698,61 @@
                 "rhs_calc": {
                     "latex_start": "\\frac{a ^ {x}}{\\log{a}} + C",
                     "start": "a ^ x / log(a) + SKOLEM_CONST(C)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x. cos(x) ^ 2) = 1/4 * sin(2 * x) + 1/2 * x + SKOLEM_CONST(C)",
+            "latex_goal": "\\int \\cos^{2}(x) \\,dx = \\frac{1}{4} \\sin{(2 x)} + \\frac{1}{2} x + C",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x. cos(x) ^ 2) = 1/4 * sin(2 * x) + 1/2 * x + SKOLEM_CONST(C)",
+                "latex_goal": "\\int \\cos^{2}(x) \\,dx = \\frac{1}{4} \\sin{(2 x)} + \\frac{1}{2} x + C",
+                "lhs_calc": {
+                    "latex_start": "\\int \\cos^{2}(x) \\,dx",
+                    "start": "INT x. cos(x) ^ 2",
+                    "steps": [
+                        {
+                            "latex_res": "\\int \\frac{1 + \\cos{(2 x)}}{2} \\,dx",
+                            "res": "INT x. (1 + cos(2 * x)) / 2",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\cos^{2}(x)\\) to \\(\\frac{1 + \\cos{(2 x)}}{2}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "cos(x) ^ 2",
+                                "str": "rewrite cos(x) ^ 2 to (1 + cos(2 * x)) / 2 using identity",
+                                "target": "(1 + cos(2 * x)) / 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (1 x + \\frac{\\sin{(2 x)}}{2}) + C",
+                            "res": "1/2 * (1 * x + sin(2 * x) / 2) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{4} \\sin{(2 x)} + \\frac{1}{2} x + C",
+                            "res": "1/4 * sin(2 * x) + 1/2 * x + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{1}{4} \\sin{(2 x)} + \\frac{1}{2} x + C",
+                    "start": "1/4 * sin(2 * x) + 1/2 * x + SKOLEM_CONST(C)",
                     "steps": [],
                     "type": "Calculation"
                 },

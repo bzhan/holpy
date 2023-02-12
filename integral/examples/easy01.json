@@ -68,6 +68,15 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "2 (\\frac{\\sqrt{a + 1}}{a + 1} (\\left. \\tan^{-1}{x} \\right\\vert_{x=0}^{\\infty}))",
+                            "res": "2 * (sqrt(a + 1) / (a + 1) * ([atan(x)]_x=0,oo))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "\\pi (\\frac{1}{\\sqrt{a + 1}})",
                             "res": "pi * (1 / sqrt(a + 1))",
                             "rule": {

@@ -4,6 +4,7 @@ from decimal import Decimal
 from fractions import Fraction
 from typing import Optional, Dict, Union
 import functools
+import operator
 
 from integral import expr
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Symbol, Expr, \
@@ -210,6 +211,13 @@ class Linearity(Rule):
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
+        def prod(es):
+            es = list(es)
+            if len(es) == 0:
+                return Const(1)
+            else:
+                return functools.reduce(operator.mul, es[1:], es[0])
+
         def rec(e: Expr):
             if e.is_integral():
                 if e.body.is_plus():
@@ -222,20 +230,18 @@ class Linearity(Rule):
                            rec(expr.Integral(e.var, e.lower, e.upper, e.body.args[1]))
                 elif e.body.is_times() or e.body.is_divides():
                     num_factors, denom_factors = decompose_expr_factor(e.body)
-                    b, c = Const(1), Const(1)
-                    for f in num_factors:
-                        if not f.contains_var(e.var):
-                            c = c * f
-                        else:
-                            b = b * f
-                    for f in denom_factors:
-                        if not f.contains_var(e.var):
-                            c = c / f
-                        else:
-                            b = b / f
-                    c = normalize(c)
-                    b = normalize(b)
-                    return c * Integral(e.var, e.lower, e.upper, b)
+                    b = prod(f for f in num_factors if f.contains_var(e.var))
+                    c = prod(f for f in num_factors if not f.contains_var(e.var))
+                    denom_b = prod(f for f in denom_factors if f.contains_var(e.var))
+                    denom_c = prod(f for f in denom_factors if not f.contains_var(e.var))
+                    if denom_b != Const(1):
+                        b = b / denom_b
+                    if denom_c != Const(1):
+                        c = c / denom_c
+                    if c == expr.Const(1):
+                        return Integral(e.var, e.lower, e.upper, b)
+                    else:
+                        return c * rec(Integral(e.var, e.lower, e.upper, b))
                 elif e.body.is_constant() and e.body != Const(1):
                     return e.body * expr.Integral(e.var, e.lower, e.upper, Const(1))
                 else:
@@ -251,20 +257,18 @@ class Linearity(Rule):
                            rec(expr.IndefiniteIntegral(e.var, e.body.args[1], e.skolem_args))
                 elif e.body.is_times() or e.body.is_divides():
                     num_factors, denom_factors = decompose_expr_factor(e.body)
-                    b, c = Const(1), Const(1)
-                    for f in num_factors:
-                        if not f.contains_var(e.var):
-                            c = c * f
-                        else:
-                            b = b * f
-                    for f in denom_factors:
-                        if not f.contains_var(e.var):
-                            c = c / f
-                        else:
-                            b = b / f
-                    return c * IndefiniteIntegral(e.var, b, e.skolem_args)
-                elif e.body.is_divides():
-                    return e
+                    b = prod(f for f in num_factors if f.contains_var(e.var))
+                    c = prod(f for f in num_factors if not f.contains_var(e.var))
+                    denom_b = prod(f for f in denom_factors if f.contains_var(e.var))
+                    denom_c = prod(f for f in denom_factors if not f.contains_var(e.var))
+                    if denom_b != Const(1):
+                        b = b / denom_b
+                    if denom_c != Const(1):
+                        c = c / denom_c
+                    if c == expr.Const(1):
+                        return IndefiniteIntegral(e.var, b, e.skolem_args)
+                    else:
+                        return c * rec(IndefiniteIntegral(e.var, b, e.skolem_args))
                 else:
                     return e
             elif e.is_limit():
@@ -350,41 +354,8 @@ class CommonIntegral(Rule):
 
         if isinstance(e.body, Deriv) and e.body.var == e.var:
             return EvalAt(e.var, e.lower, e.upper, e.body.body)
-        if e.var not in e.body.get_vars() and e.body != Const(1):
-            return EvalAt(e.var, e.lower, e.upper, e.body * Var(e.var))
-
-        x = Var(e.var)
-        c = Symbol('c', [CONST, VAR, OP])
-        rules = [
-            (Const(1), None, Var(e.var)),
-            (c, lambda m: isinstance(m[c.name], Const) or isinstance(m[c.name], Var) and m[c.name] != x, c * Var(e.var)),
-            (x, None, (x ^ 2) / 2),
-            (x ^ c, lambda m: isinstance(m[c.name], Const) and m[c.name].val != -1 or isinstance(m[c.name], Var)
-                              or isinstance(m[c.name], Op) and not m[c.name].has_var(x),
-             lambda m: (x ^ (m[c.name] + 1)) / (m[c.name] + 1)),
-            (Const(1) / (x ^ c), lambda m: isinstance(m[c.name], Const) and m[c.name].val != 1, 1 / (-(c - 1) * (x ^ (c - 1)))),
-            (expr.sqrt(x), None, Fraction(2, 3) * (x ^ Fraction(3, 2))),
-            (1 / expr.sqrt(x), None, 2 * (x ^ Fraction(1, 2))),
-            (sin(x), None, -cos(x)),
-            (cos(x), None, sin(x)),
-            (expr.exp(x), None, expr.exp(x)),
-            (Const(1) / x, None, expr.log(expr.Fun('abs', x))),
-            (x ^ Const(-1), None, expr.log(expr.Fun('abs', x))),
-            (1 / ((x ^ Const(2)) + 1), None, expr.arctan(x)),
-            (expr.sec(x) ^ Const(2), None, expr.tan(x)),
-            (expr.csc(x) ^ Const(2), None, -expr.cot(x)),
-        ]
-
-        for pat, cond, pat_res in rules:
-            mapping = expr.match(e.body, pat)
-            if mapping is not None and (cond is None or cond(mapping)):
-                if isinstance(pat_res, expr.Expr):
-                    integral = pat_res.inst_pat(mapping)
-                else:
-                    integral = pat_res(mapping)
-                return EvalAt(e.var, e.lower, e.upper, integral)
-
-        return e
+        else:
+            return e
 
 
 class FunctionTable(Rule):
@@ -481,6 +452,10 @@ class DefiniteIntegralIdentity(Rule):
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
+        # Apply linearity
+        if e.is_integral() or e.is_indefinite_integral():
+            e = Linearity().eval(e, ctx)
+
         if not (e.is_integral() or e.is_indefinite_integral()):
             sep_ints = e.separate_integral()
             for _, loc in sep_ints:
@@ -494,6 +469,7 @@ class DefiniteIntegralIdentity(Rule):
                 continue
 
             inst[identity.lhs.var] = Var(e.var)
+            assert identity.rhs.is_plus() and identity.rhs.args[1].is_skolem_func()
             pat_rhs = identity.rhs.args[0]  # remove Skolem constant C
             return EvalAt(e.var, e.lower, e.upper, pat_rhs.inst_pat(inst))
 
@@ -601,6 +577,10 @@ class IndefiniteIntegralIdentity(Rule):
 
             # No matching identity found
             return e
+
+        # Apply linearity
+        if e.is_integral() or e.is_indefinite_integral():
+            e = Linearity().eval(e, ctx)
 
         integrals = e.separate_integral()
         skolem_args = set()
@@ -1132,6 +1112,9 @@ class Substitution(Rule):
 
         # Expression used for substitution
         var_subst = self.var_subst
+
+        if e.var not in var_subst.get_vars():
+            raise AssertionError("Substitution: variable not found")
 
         dfx = deriv(e.var, var_subst)
         body = normalize(e.body / dfx)

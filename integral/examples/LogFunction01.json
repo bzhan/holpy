@@ -45,6 +45,24 @@
                             "type": "CalculationStep"
                         },
                         {
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n} (\\int_{0}^{1} x ^ {n} \\,dx)}{n + 1}}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n * (INT x:[0,1]. x ^ n) / (n + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n} (\\left. \\frac{x ^ {n + 1}}{n + 1} \\right\\vert_{x=0}^{1})}{n + 1}}",
+                            "res": "SUM(n, 0, oo, (-1) ^ n * ([x ^ (n + 1) / (n + 1)]_x=0,1) / (n + 1))",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
                             "latex_res": "\\sum_{n=0}^{\\infty}{\\frac{(-1) ^ {n}}{(n + 1) ^ {2}}}",
                             "res": "SUM(n, 0, oo, (-1) ^ n / (n + 1) ^ 2)",
                             "rule": {

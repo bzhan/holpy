@@ -5,6 +5,15 @@
             "start": "INT x:[2,3]. 2 * x + x ^ 2",
             "steps": [
                 {
+                    "latex_res": "2 (\\left. \\frac{x ^ {2}}{2} \\right\\vert_{x=2}^{3}) + (\\left. \\frac{x ^ {2 + 1}}{2 + 1} \\right\\vert_{x=2}^{3})",
+                    "res": "2 * ([x ^ 2 / 2]_x=2,3) + ([x ^ (2 + 1) / (2 + 1)]_x=2,3)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "\\frac{34}{3}",
                     "res": "34/3",
                     "rule": {
@@ -33,6 +42,15 @@
                     "type": "CalculationStep"
                 },
                 {
+                    "latex_res": "\\frac{1}{3}\\cdot 1 (\\left. \\frac{1}{-(2 - 1) u ^ {2 - 1}} \\right\\vert_{u=1}^{4})",
+                    "res": "1/3 * 1 * ([1 / (-(2 - 1) * u ^ (2 - 1))]_u=1,4)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "\\frac{1}{4}",
                     "res": "1/4",
                     "rule": {
@@ -49,14 +67,11 @@
             "start": "INT x:[0,1]. exp(6 * x)",
             "steps": [
                 {
-                    "latex_res": "\\int_{0}^{6} \\frac{1}{6} e^{u} \\,du",
-                    "res": "INT u:[0,6]. 1/6 * exp(u)",
+                    "latex_res": "\\left. 6 ^ {-1} e^{6 x} \\right\\vert_{x=0}^{1}",
+                    "res": "[6 ^ (-1) * exp(6 * x)]_x=0,1",
                     "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(6 x\\)",
-                        "name": "Substitution",
-                        "str": "substitute u for 6 * x",
-                        "var_name": "u",
-                        "var_subst": "6 * x"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -89,6 +104,15 @@
                     "type": "CalculationStep"
                 },
                 {
+                    "latex_res": "(\\left. x e^{x} \\right\\vert_{x=-1}^{2}) - (\\left. e^{x} \\right\\vert_{x=-1}^{2})",
+                    "res": "([x * exp(x)]_x=-1,2) - ([exp(x)]_x=-1,2)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "2 e^{-1} + e^{2}",
                     "res": "2 * exp(-1) + exp(2)",
                     "rule": {
@@ -104,6 +128,15 @@
             "latex_start": "\\int_{0}^{\\pi/4} \\sin{x} \\,dx",
             "start": "INT x:[0,pi / 4]. sin(x)",
             "steps": [
+                {
+                    "latex_res": "\\left. -\\cos{x} \\right\\vert_{x=0}^{\\pi/4}",
+                    "res": "[-cos(x)]_x=0,pi / 4",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
                 {
                     "latex_res": "-\\frac{1}{2} \\sqrt{2} + 1",
                     "res": "-1/2 * sqrt(2) + 1",
@@ -121,6 +154,15 @@
             "start": "INT x:[0,1]. 3 * x ^ 2 - x + 1",
             "steps": [
                 {
+                    "latex_res": "3 (\\left. \\frac{x ^ {2 + 1}}{2 + 1} \\right\\vert_{x=0}^{1}) - (\\left. \\frac{x ^ {2}}{2} \\right\\vert_{x=0}^{1}) + (\\left. 1 x \\right\\vert_{x=0}^{1})",
+                    "res": "3 * ([x ^ (2 + 1) / (2 + 1)]_x=0,1) - ([x ^ 2 / 2]_x=0,1) + ([1 * x]_x=0,1)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "\\frac{3}{2}",
                     "res": "3/2",
                     "rule": {
@@ -136,6 +178,15 @@
             "latex_start": "\\int_{1}^{2} x ^ {2} + \\frac{1}{x ^ {4}} \\,dx",
             "start": "INT x:[1,2]. x ^ 2 + 1 / x ^ 4",
             "steps": [
+                {
+                    "latex_res": "(\\left. \\frac{x ^ {2 + 1}}{2 + 1} \\right\\vert_{x=1}^{2}) + (\\left. \\frac{1}{-(4 - 1) x ^ {4 - 1}} \\right\\vert_{x=1}^{2})",
+                    "res": "([x ^ (2 + 1) / (2 + 1)]_x=1,2) + ([1 / (-(4 - 1) * x ^ (4 - 1))]_x=1,2)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
                 {
                     "latex_res": "\\frac{21}{8}",
                     "res": "21/8",
@@ -165,6 +216,15 @@
                     "type": "CalculationStep"
                 },
                 {
+                    "latex_res": "\\frac{1}{2} (\\left. -\\cos{u} \\right\\vert_{u=\\pi}^{7/3\\cdot \\pi})",
+                    "res": "1/2 * ([-cos(u)]_u=pi,7/3 * pi)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "-\\frac{3}{4}",
                     "res": "-3/4",
                     "rule": {
@@ -186,6 +246,15 @@
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "(\\left. \\frac{x ^ {1/3 + 1}}{\\frac{1}{3} + 1} \\right\\vert_{x=4}^{9}) + (\\left. \\frac{x ^ {5/6 + 1}}{\\frac{5}{6} + 1} \\right\\vert_{x=4}^{9})",
+                    "res": "([x ^ (1/3 + 1) / (1/3 + 1)]_x=4,9) + ([x ^ (5/6 + 1) / (5/6 + 1)]_x=4,9)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -218,6 +287,15 @@
                     "type": "CalculationStep"
                 },
                 {
+                    "latex_res": "3 (\\left. \\frac{x ^ {2 + 1}}{2 + 1} \\right\\vert_{x=-1}^{0}) + (\\left. \\tan^{-1}{x} \\right\\vert_{x=-1}^{0})",
+                    "res": "3 * ([x ^ (2 + 1) / (2 + 1)]_x=-1,0) + ([atan(x)]_x=-1,0)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "\\frac{1}{4} \\pi + 1",
                     "res": "1/4 * pi + 1",
                     "rule": {
@@ -246,6 +324,15 @@
                     "type": "CalculationStep"
                 },
                 {
+                    "latex_res": "(\\left. \\frac{x ^ {2 + 1}}{2 + 1} \\right\\vert_{x=4}^{e + 3}) - 9 (\\left. \\frac{x ^ {2}}{2} \\right\\vert_{x=4}^{e + 3}) - 27 (\\left. 1 x \\right\\vert_{x=4}^{e + 3}) - 123 (\\int_{4}^{e + 3} \\frac{1}{x - 3} \\,dx)",
+                    "res": "([x ^ (2 + 1) / (2 + 1)]_x=4,exp(1) + 3) - 9 * ([x ^ 2 / 2]_x=4,exp(1) + 3) - 27 * ([1 * x]_x=4,exp(1) + 3) - 123 * (INT x:[4,exp(1) + 3]. 1 / (x - 3))",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "-45 e - \\frac{3}{2} e^{2} + \\frac{1}{3} e^{3} + \\frac{277}{6} - 123 (\\int_{4}^{e + 3} \\frac{1}{x - 3} \\,dx)",
                     "res": "-45 * exp(1) - 3/2 * exp(2) + 1/3 * exp(3) + 277/6 - 123 * (INT x:[4,exp(1) + 3]. 1 / (x - 3))",
                     "rule": {
@@ -263,6 +350,15 @@
                         "str": "substitute u for x - 3",
                         "var_name": "u",
                         "var_subst": "x - 3"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "-45 e - \\frac{3}{2} e^{2} + \\frac{1}{3} e^{3} + \\frac{277}{6} - 123 (\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=1}^{e})",
+                    "res": "-45 * exp(1) - 3/2 * exp(2) + 1/3 * exp(3) + 277/6 - 123 * ([log(abs(u))]_u=1,exp(1))",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -295,6 +391,15 @@
                     "type": "CalculationStep"
                 },
                 {
+                    "latex_res": "\\left. \\frac{u ^ {3 + 1}}{3 + 1} \\right\\vert_{u=0}^{1}",
+                    "res": "[u ^ (3 + 1) / (3 + 1)]_u=0,1",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "\\frac{1}{4}",
                     "res": "1/4",
                     "rule": {
@@ -311,8 +416,8 @@
             "start": "INT x:[0,pi]. 1 - sin(x) ^ 3",
             "steps": [
                 {
-                    "latex_res": "-(\\int_{0}^{\\pi} \\sin^{3}(x) \\,dx) + \\pi",
-                    "res": "-(INT x:[0,pi]. sin(x) ^ 3) + pi",
+                    "latex_res": "-(\\int_{0}^{\\pi} \\sin^{3}(x) \\,dx) + (\\int_{0}^{\\pi} 1 \\,dx)",
+                    "res": "-(INT x:[0,pi]. sin(x) ^ 3) + (INT x:[0,pi]. 1)",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -320,8 +425,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{0}^{\\pi} \\sin{x} \\sin^{2}(x) \\,dx) + \\pi",
-                    "res": "-(INT x:[0,pi]. sin(x) * sin(x) ^ 2) + pi",
+                    "latex_res": "-(\\int_{0}^{\\pi} \\sin{x} \\sin^{2}(x) \\,dx) + (\\int_{0}^{\\pi} 1 \\,dx)",
+                    "res": "-(INT x:[0,pi]. sin(x) * sin(x) ^ 2) + (INT x:[0,pi]. 1)",
                     "rule": {
                         "latex_str": "rewriting \\(\\sin^{3}(x)\\) to \\(\\sin{x} \\sin^{2}(x)\\)",
                         "name": "Equation",
@@ -332,8 +437,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{0}^{\\pi} \\sin{x} (1 - \\cos^{2}(x)) \\,dx) + \\pi",
-                    "res": "-(INT x:[0,pi]. sin(x) * (1 - cos(x) ^ 2)) + pi",
+                    "latex_res": "-(\\int_{0}^{\\pi} \\sin{x} (1 - \\cos^{2}(x)) \\,dx) + (\\int_{0}^{\\pi} 1 \\,dx)",
+                    "res": "-(INT x:[0,pi]. sin(x) * (1 - cos(x) ^ 2)) + (INT x:[0,pi]. 1)",
                     "rule": {
                         "latex_str": "rewrite \\(\\sin^{2}(x)\\) to \\(1 - \\cos^{2}(x)\\) using identity",
                         "name": "ApplyIdentity",
@@ -344,14 +449,23 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{-1}^{1} -u ^ {2} + 1 \\,du) + \\pi",
-                    "res": "-(INT u:[-1,1]. -(u ^ 2) + 1) + pi",
+                    "latex_res": "-(\\int_{-1}^{1} -u ^ {2} + 1 \\,du) + (\\int_{0}^{\\pi} 1 \\,dx)",
+                    "res": "-(INT u:[-1,1]. -(u ^ 2) + 1) + (INT x:[0,pi]. 1)",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(\\cos{x}\\)",
                         "name": "Substitution",
                         "str": "substitute u for cos(x)",
                         "var_name": "u",
                         "var_subst": "cos(x)"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "-(-(\\left. \\frac{u ^ {2 + 1}}{2 + 1} \\right\\vert_{u=-1}^{1}) + (\\left. 1 u \\right\\vert_{u=-1}^{1})) + (\\left. 1 x \\right\\vert_{x=0}^{\\pi})",
+                    "res": "-(-([u ^ (2 + 1) / (2 + 1)]_u=-1,1) + ([1 * u]_u=-1,1)) + ([1 * x]_x=0,pi)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -372,35 +486,11 @@
             "start": "INT x:[pi / 6,pi / 2]. cos(x) ^ 2",
             "steps": [
                 {
-                    "latex_res": "\\int_{\\pi/6}^{\\pi/2} \\frac{1 + \\cos{(2 x)}}{2} \\,dx",
-                    "res": "INT x:[pi / 6,pi / 2]. (1 + cos(2 * x)) / 2",
+                    "latex_res": "\\left. \\frac{1}{4} \\sin{(2 x)} + \\frac{1}{2} x \\right\\vert_{x=\\pi/6}^{\\pi/2}",
+                    "res": "[1/4 * sin(2 * x) + 1/2 * x]_x=pi / 6,pi / 2",
                     "rule": {
-                        "latex_str": "rewrite \\(\\cos^{2}(x)\\) to \\(\\frac{1 + \\cos{(2 x)}}{2}\\) using identity",
-                        "name": "ApplyIdentity",
-                        "source": "cos(x) ^ 2",
-                        "str": "rewrite cos(x) ^ 2 to (1 + cos(2 * x)) / 2 using identity",
-                        "target": "(1 + cos(2 * x)) / 2"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\frac{1}{2} (\\int_{1/6\\cdot \\pi}^{1/2\\cdot \\pi} \\cos{(2 x)} \\,dx) + \\frac{1}{6} \\pi",
-                    "res": "1/2 * (INT x:[1/6 * pi,1/2 * pi]. cos(2 * x)) + 1/6 * pi",
-                    "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\frac{1}{2} (\\int_{1/3\\cdot \\pi}^{\\pi} \\frac{1}{2} \\cos{u} \\,du) + \\frac{1}{6} \\pi",
-                    "res": "1/2 * (INT u:[1/3 * pi,pi]. 1/2 * cos(u)) + 1/6 * pi",
-                    "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(2 x\\)",
-                        "name": "Substitution",
-                        "str": "substitute u for 2 * x",
-                        "var_name": "u",
-                        "var_subst": "2 * x"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -454,26 +544,11 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{0}^{1/2\\cdot \\pi} \\frac{1 + \\cos{(2 u)}}{2} \\,du",
-                    "res": "INT u:[0,1/2 * pi]. (1 + cos(2 * u)) / 2",
+                    "latex_res": "\\left. \\frac{1}{4} \\sin{(2 u)} + \\frac{1}{2} u \\right\\vert_{u=0}^{1/2\\cdot \\pi}",
+                    "res": "[1/4 * sin(2 * u) + 1/2 * u]_u=0,1/2 * pi",
                     "rule": {
-                        "latex_str": "rewrite \\(\\cos^{2}(u)\\) to \\(\\frac{1 + \\cos{(2 u)}}{2}\\) using identity",
-                        "name": "ApplyIdentity",
-                        "source": "cos(u) ^ 2",
-                        "str": "rewrite cos(u) ^ 2 to (1 + cos(2 * u)) / 2 using identity",
-                        "target": "(1 + cos(2 * u)) / 2"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\int_{0}^{\\pi} \\frac{1}{4} \\cos{v} + \\frac{1}{4} \\,dv",
-                    "res": "INT v:[0,pi]. 1/4 * cos(v) + 1/4",
-                    "rule": {
-                        "latex_str": "substitute \\(v\\) for \\(2 u\\)",
-                        "name": "Substitution",
-                        "str": "substitute v for 2 * u",
-                        "var_name": "v",
-                        "var_subst": "2 * u"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -536,26 +611,11 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "2 (\\int_{0}^{1/2\\cdot \\pi} \\frac{1 + \\cos{(2 u)}}{2} \\,du)",
-                    "res": "2 * (INT u:[0,1/2 * pi]. (1 + cos(2 * u)) / 2)",
+                    "latex_res": "2 (\\left. \\frac{1}{4} \\sin{(2 u)} + \\frac{1}{2} u \\right\\vert_{u=0}^{1/2\\cdot \\pi})",
+                    "res": "2 * ([1/4 * sin(2 * u) + 1/2 * u]_u=0,1/2 * pi)",
                     "rule": {
-                        "latex_str": "rewrite \\(\\cos^{2}(u)\\) to \\(\\frac{1 + \\cos{(2 u)}}{2}\\) using identity",
-                        "name": "ApplyIdentity",
-                        "source": "cos(u) ^ 2",
-                        "str": "rewrite cos(u) ^ 2 to (1 + cos(2 * u)) / 2 using identity",
-                        "target": "(1 + cos(2 * u)) / 2"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "2 (\\int_{0}^{\\pi} \\frac{1}{4} \\cos{v} + \\frac{1}{4} \\,dv)",
-                    "res": "2 * (INT v:[0,pi]. 1/4 * cos(v) + 1/4)",
-                    "rule": {
-                        "latex_str": "substitute \\(v\\) for \\(2 u\\)",
-                        "name": "Substitution",
-                        "str": "substitute v for 2 * u",
-                        "var_name": "v",
-                        "var_subst": "2 * u"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -618,26 +678,11 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "4 \\sqrt{2} (\\int_{-1/4\\cdot \\pi}^{1/4\\cdot \\pi} \\frac{1 + \\cos{(2 u)}}{2} \\,du)",
-                    "res": "4 * sqrt(2) * (INT u:[-1/4 * pi,1/4 * pi]. (1 + cos(2 * u)) / 2)",
+                    "latex_res": "4 \\sqrt{2} (\\left. \\frac{1}{4} \\sin{(2 u)} + \\frac{1}{2} u \\right\\vert_{u=-1/4\\cdot \\pi}^{1/4\\cdot \\pi})",
+                    "res": "4 * sqrt(2) * ([1/4 * sin(2 * u) + 1/2 * u]_u=-1/4 * pi,1/4 * pi)",
                     "rule": {
-                        "latex_str": "rewrite \\(\\cos^{2}(u)\\) to \\(\\frac{1 + \\cos{(2 u)}}{2}\\) using identity",
-                        "name": "ApplyIdentity",
-                        "source": "cos(u) ^ 2",
-                        "str": "rewrite cos(u) ^ 2 to (1 + cos(2 * u)) / 2 using identity",
-                        "target": "(1 + cos(2 * u)) / 2"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "4 \\sqrt{2} (\\int_{-1/2\\cdot \\pi}^{1/2\\cdot \\pi} \\frac{1}{4} \\cos{v} + \\frac{1}{4} \\,dv)",
-                    "res": "4 * sqrt(2) * (INT v:[-1/2 * pi,1/2 * pi]. 1/4 * cos(v) + 1/4)",
-                    "rule": {
-                        "latex_str": "substitute \\(v\\) for \\(2 u\\)",
-                        "name": "Substitution",
-                        "str": "substitute v for 2 * u",
-                        "var_name": "v",
-                        "var_subst": "2 * u"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -721,8 +766,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\frac{1}{\\sin^{2}(u)} \\,du) - \\frac{1}{4} \\pi",
-                    "res": "(INT u:[1/4 * pi,1/2 * pi]. 1 / sin(u) ^ 2) - 1/4 * pi",
+                    "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\frac{1}{\\sin^{2}(u)} \\,du) - (\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} 1 \\,du)",
+                    "res": "(INT u:[1/4 * pi,1/2 * pi]. 1 / sin(u) ^ 2) - (INT u:[1/4 * pi,1/2 * pi]. 1)",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -730,14 +775,23 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\csc^{2}(u) \\,du) - \\frac{1}{4} \\pi",
-                    "res": "(INT u:[1/4 * pi,1/2 * pi]. csc(u) ^ 2) - 1/4 * pi",
+                    "latex_res": "(\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} \\csc^{2}(u) \\,du) - (\\int_{1/4\\cdot \\pi}^{1/2\\cdot \\pi} 1 \\,du)",
+                    "res": "(INT u:[1/4 * pi,1/2 * pi]. csc(u) ^ 2) - (INT u:[1/4 * pi,1/2 * pi]. 1)",
                     "rule": {
                         "latex_str": "rewrite \\(\\frac{1}{\\sin^{2}(u)}\\) to \\(\\csc^{2}(u)\\) using identity",
                         "name": "ApplyIdentity",
                         "source": "1 / sin(u) ^ 2",
                         "str": "rewrite 1 / sin(u) ^ 2 to csc(u) ^ 2 using identity",
                         "target": "csc(u) ^ 2"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "(\\left. -\\cot{u} \\right\\vert_{u=1/4\\cdot \\pi}^{1/2\\cdot \\pi}) - (\\left. 1 u \\right\\vert_{u=1/4\\cdot \\pi}^{1/2\\cdot \\pi})",
+                    "res": "([-cot(u)]_u=1/4 * pi,1/2 * pi) - ([1 * u]_u=1/4 * pi,1/2 * pi)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -775,6 +829,15 @@
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\frac{5}{16}\\cdot 1 (\\left. 2 \\sqrt{u} \\right\\vert_{u=1}^{9}) - \\frac{1}{16} (\\left. \\frac{2}{3} u ^ {3/2} \\right\\vert_{u=1}^{9})",
+                    "res": "5/16 * 1 * ([2 * u ^ (1/2)]_u=1,9) - 1/16 * ([2/3 * u ^ (3/2)]_u=1,9)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -824,6 +887,15 @@
                     "rule": {
                         "name": "ExpandPolynomial",
                         "str": "expand polynomial"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "-2\\cdot 1 (\\left. \\log{(\\left| v \\right|)} \\right\\vert_{v=2}^{3}) + 2 (\\left. 1 v \\right\\vert_{v=2}^{3})",
+                    "res": "-2 * 1 * ([log(abs(v))]_v=2,3) + 2 * ([1 * v]_v=2,3)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -886,6 +958,15 @@
                     "type": "CalculationStep"
                 },
                 {
+                    "latex_res": "2 ((\\left. \\log{(\\left| v \\right|)} \\right\\vert_{v=-1}^{-1/2}) + (\\left. 1 v \\right\\vert_{v=-1}^{-1/2}))",
+                    "res": "2 * (([log(abs(v))]_v=-1,-1/2) + ([1 * v]_v=-1,-1/2))",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "-2 \\log{(2)} + 1",
                     "res": "-2 * log(2) + 1",
                     "rule": {
@@ -914,14 +995,11 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\int_{-1/2}^{0} e^{v} \\,dv",
-                    "res": "INT v:[-1/2,0]. exp(v)",
+                    "latex_res": "\\left. -e^{-u} \\right\\vert_{u=0}^{1/2}",
+                    "res": "[-exp(-u)]_u=0,1/2",
                     "rule": {
-                        "latex_str": "substitute \\(v\\) for \\(-u\\)",
-                        "name": "Substitution",
-                        "str": "substitute v for -u",
-                        "var_name": "v",
-                        "var_subst": "-u"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -950,6 +1028,15 @@
                         "str": "substitute u for 1 + log(x)",
                         "var_name": "u",
                         "var_subst": "1 + log(x)"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\left. 2 \\sqrt{u} \\right\\vert_{u=1}^{3}",
+                    "res": "[2 * u ^ (1/2)]_u=1,3",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -1003,8 +1090,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{-1}^{1} \\frac{u}{u ^ {2} + 1} \\,du) + \\frac{1}{2} \\pi",
-                    "res": "(INT u:[-1,1]. u / (u ^ 2 + 1)) + 1/2 * pi",
+                    "latex_res": "(\\int_{-1}^{1} \\frac{u}{u ^ {2} + 1} \\,du) + (\\int_{-1}^{1} \\frac{1}{u ^ {2} + 1} \\,du)",
+                    "res": "(INT u:[-1,1]. u / (u ^ 2 + 1)) + (INT u:[-1,1]. 1 / (u ^ 2 + 1))",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -1012,8 +1099,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{-1}^{0} \\frac{u}{u ^ {2} + 1} \\,du) + (\\int_{0}^{1} \\frac{u}{u ^ {2} + 1} \\,du) + \\frac{1}{2} \\pi",
-                    "res": "(INT u:[-1,0]. u / (u ^ 2 + 1)) + (INT u:[0,1]. u / (u ^ 2 + 1)) + 1/2 * pi",
+                    "latex_res": "(\\int_{-1}^{0} \\frac{u}{u ^ {2} + 1} \\,du) + (\\int_{0}^{1} \\frac{u}{u ^ {2} + 1} \\,du) + (\\int_{-1}^{1} \\frac{1}{u ^ {2} + 1} \\,du)",
+                    "res": "(INT u:[-1,0]. u / (u ^ 2 + 1)) + (INT u:[0,1]. u / (u ^ 2 + 1)) + (INT u:[-1,1]. 1 / (u ^ 2 + 1))",
                     "rule": {
                         "c": "0",
                         "name": "SplitRegion",
@@ -1022,8 +1109,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{1}^{2} -\\frac{1}{2} (\\frac{1}{v}) \\,dv) + (\\int_{0}^{1} \\frac{u}{u ^ {2} + 1} \\,du) + \\frac{1}{2} \\pi",
-                    "res": "(INT v:[1,2]. -1/2 * (1 / v)) + (INT u:[0,1]. u / (u ^ 2 + 1)) + 1/2 * pi",
+                    "latex_res": "(\\int_{1}^{2} -\\frac{1}{2} (\\frac{1}{v}) \\,dv) + (\\int_{0}^{1} \\frac{u}{u ^ {2} + 1} \\,du) + (\\int_{-1}^{1} \\frac{1}{u ^ {2} + 1} \\,du)",
+                    "res": "(INT v:[1,2]. -1/2 * (1 / v)) + (INT u:[0,1]. u / (u ^ 2 + 1)) + (INT u:[-1,1]. 1 / (u ^ 2 + 1))",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(u ^ {2} + 1\\)",
                         "name": "Substitution",
@@ -1034,23 +1121,32 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{0}^{1} \\frac{u}{u ^ {2} + 1} \\,du) + (-\\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\pi)",
-                    "res": "(INT u:[0,1]. u / (u ^ 2 + 1)) + (-1/2 * log(2) + 1/2 * pi)",
+                    "latex_res": "-\\frac{1}{2}\\cdot 1 (\\left. \\log{(\\left| v \\right|)} \\right\\vert_{v=1}^{2}) + (\\int_{0}^{1} \\frac{u}{u ^ {2} + 1} \\,du) + (\\left. \\tan^{-1}{u} \\right\\vert_{u=-1}^{1})",
+                    "res": "-1/2 * 1 * ([log(abs(v))]_v=1,2) + (INT u:[0,1]. u / (u ^ 2 + 1)) + ([atan(u)]_u=-1,1)",
                     "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{1}^{2} \\frac{1}{2} (\\frac{1}{v}) \\,dv) + (-\\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\pi)",
-                    "res": "(INT v:[1,2]. 1/2 * (1 / v)) + (-1/2 * log(2) + 1/2 * pi)",
+                    "latex_res": "-\\frac{1}{2}\\cdot 1 (\\left. \\log{(\\left| v \\right|)} \\right\\vert_{v=1}^{2}) + (\\int_{1}^{2} \\frac{1}{2} (\\frac{1}{v}) \\,dv) + (\\left. \\tan^{-1}{u} \\right\\vert_{u=-1}^{1})",
+                    "res": "-1/2 * 1 * ([log(abs(v))]_v=1,2) + (INT v:[1,2]. 1/2 * (1 / v)) + ([atan(u)]_u=-1,1)",
                     "rule": {
                         "latex_str": "substitute \\(v\\) for \\(u ^ {2} + 1\\)",
                         "name": "Substitution",
                         "str": "substitute v for u ^ 2 + 1",
                         "var_name": "v",
                         "var_subst": "u ^ 2 + 1"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "-\\frac{1}{2}\\cdot 1 (\\left. \\log{(\\left| v \\right|)} \\right\\vert_{v=1}^{2}) + \\frac{1}{2}\\cdot 1 (\\left. \\log{(\\left| v \\right|)} \\right\\vert_{v=1}^{2}) + (\\left. \\tan^{-1}{u} \\right\\vert_{u=-1}^{1})",
+                    "res": "-1/2 * 1 * ([log(abs(v))]_v=1,2) + 1/2 * 1 * ([log(abs(v))]_v=1,2) + ([atan(u)]_u=-1,1)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -1125,8 +1221,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{8} (\\int_{-\\pi}^{\\pi} \\cos^{2}(u) \\,du) + \\frac{1}{4} \\pi",
-                    "res": "1/8 * (INT u:[-pi,pi]. cos(u) ^ 2) + 1/4 * pi",
+                    "latex_res": "\\frac{1}{8} (\\int_{-\\pi}^{\\pi} \\cos^{2}(u) \\,du) + \\frac{1}{4} (\\int_{-\\pi}^{\\pi} \\cos{u} \\,du) + \\frac{1}{8} (\\int_{-\\pi}^{\\pi} 1 \\,du)",
+                    "res": "1/8 * (INT u:[-pi,pi]. cos(u) ^ 2) + 1/4 * (INT u:[-pi,pi]. cos(u)) + 1/8 * (INT u:[-pi,pi]. 1)",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -1134,26 +1230,11 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{8} (\\int_{-\\pi}^{\\pi} \\frac{1 + \\cos{(2 u)}}{2} \\,du) + \\frac{1}{4} \\pi",
-                    "res": "1/8 * (INT u:[-pi,pi]. (1 + cos(2 * u)) / 2) + 1/4 * pi",
+                    "latex_res": "\\frac{1}{8} (\\left. \\frac{1}{4} \\sin{(2 u)} + \\frac{1}{2} u \\right\\vert_{u=-\\pi}^{\\pi}) + \\frac{1}{4} (\\left. \\sin{u} \\right\\vert_{u=-\\pi}^{\\pi}) + \\frac{1}{8} (\\left. 1 u \\right\\vert_{u=-\\pi}^{\\pi})",
+                    "res": "1/8 * ([1/4 * sin(2 * u) + 1/2 * u]_u=-pi,pi) + 1/4 * ([sin(u)]_u=-pi,pi) + 1/8 * ([1 * u]_u=-pi,pi)",
                     "rule": {
-                        "latex_str": "rewrite \\(\\cos^{2}(u)\\) to \\(\\frac{1 + \\cos{(2 u)}}{2}\\) using identity",
-                        "name": "ApplyIdentity",
-                        "source": "cos(u) ^ 2",
-                        "str": "rewrite cos(u) ^ 2 to (1 + cos(2 * u)) / 2 using identity",
-                        "target": "(1 + cos(2 * u)) / 2"
-                    },
-                    "type": "CalculationStep"
-                },
-                {
-                    "latex_res": "\\frac{1}{8} (\\int_{-2 \\pi}^{2 \\pi} \\frac{1}{4} \\cos{v} + \\frac{1}{4} \\,dv) + \\frac{1}{4} \\pi",
-                    "res": "1/8 * (INT v:[-2 * pi,2 * pi]. 1/4 * cos(v) + 1/4) + 1/4 * pi",
-                    "rule": {
-                        "latex_str": "substitute \\(v\\) for \\(2 u\\)",
-                        "name": "Substitution",
-                        "str": "substitute v for 2 * u",
-                        "var_name": "v",
-                        "var_subst": "2 * u"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -1238,23 +1319,32 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{-1/2\\cdot \\pi}^{0} \\sqrt{\\cos{x}} \\sin{x} \\,dx) + \\frac{2}{3}",
-                    "res": "-(INT x:[-1/2 * pi,0]. sqrt(cos(x)) * sin(x)) + 2/3",
+                    "latex_res": "(\\left. \\frac{2}{3} u ^ {3/2} \\right\\vert_{u=0}^{1}) - (\\int_{-1/2\\cdot \\pi}^{0} \\sqrt{\\cos{x}} \\sin{x} \\,dx)",
+                    "res": "([2/3 * u ^ (3/2)]_u=0,1) - (INT x:[-1/2 * pi,0]. sqrt(cos(x)) * sin(x))",
                     "rule": {
-                        "name": "FullSimplify",
-                        "str": "full simplify"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{0}^{1} -\\sqrt{u} \\,du) + \\frac{2}{3}",
-                    "res": "-(INT u:[0,1]. -sqrt(u)) + 2/3",
+                    "latex_res": "(\\left. \\frac{2}{3} u ^ {3/2} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} -\\sqrt{u} \\,du)",
+                    "res": "([2/3 * u ^ (3/2)]_u=0,1) - (INT u:[0,1]. -sqrt(u))",
                     "rule": {
                         "latex_str": "substitute \\(u\\) for \\(\\cos{x}\\)",
                         "name": "Substitution",
                         "str": "substitute u for cos(x)",
                         "var_name": "u",
                         "var_subst": "cos(x)"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "(\\left. \\frac{2}{3} u ^ {3/2} \\right\\vert_{u=0}^{1}) - -(\\left. \\frac{2}{3} u ^ {3/2} \\right\\vert_{u=0}^{1})",
+                    "res": "([2/3 * u ^ (3/2)]_u=0,1) - -([2/3 * u ^ (3/2)]_u=0,1)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -1306,6 +1396,24 @@
                     "type": "CalculationStep"
                 },
                 {
+                    "latex_res": "\\sqrt{2} ((\\int_{0}^{1/2\\cdot \\pi} \\cos{x} \\,dx) - (\\int_{1/2\\cdot \\pi}^{\\pi} \\cos{x} \\,dx))",
+                    "res": "sqrt(2) * ((INT x:[0,1/2 * pi]. cos(x)) - (INT x:[1/2 * pi,pi]. cos(x)))",
+                    "rule": {
+                        "name": "FullSimplify",
+                        "str": "full simplify"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "\\sqrt{2} ((\\left. \\sin{x} \\right\\vert_{x=0}^{1/2\\cdot \\pi}) - (\\left. \\sin{x} \\right\\vert_{x=1/2\\cdot \\pi}^{\\pi}))",
+                    "res": "sqrt(2) * (([sin(x)]_x=0,1/2 * pi) - ([sin(x)]_x=1/2 * pi,pi))",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "2 \\sqrt{2}",
                     "res": "2 * sqrt(2)",
                     "rule": {
@@ -1343,14 +1451,11 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "(\\int_{-1}^{0} e^{u} \\,du) - e^{-1}",
-                    "res": "(INT u:[-1,0]. exp(u)) - exp(-1)",
+                    "latex_res": "(\\left. -e^{-x} \\right\\vert_{x=0}^{1}) - e^{-1}",
+                    "res": "([-exp(-x)]_x=0,1) - exp(-1)",
                     "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(-x\\)",
-                        "name": "Substitution",
-                        "str": "substitute u for -x",
-                        "var_name": "u",
-                        "var_subst": "-x"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -1379,6 +1484,15 @@
                         "str": "integrate by parts u -> log(x) / 2, v -> x ^ 2",
                         "u": "log(x) / 2",
                         "v": "x ^ 2"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "(\\left. \\frac{1}{2} x ^ {2} \\log{x} \\right\\vert_{x=1}^{e}) - \\frac{1}{2} (\\left. \\frac{x ^ {2}}{2} \\right\\vert_{x=1}^{e})",
+                    "res": "([1/2 * x ^ 2 * log(x)]_x=1,exp(1)) - 1/2 * ([x ^ 2 / 2]_x=1,exp(1))",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -1456,6 +1570,15 @@
                     "type": "CalculationStep"
                 },
                 {
+                    "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi + \\frac{1}{4} \\pi + (\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=1/2\\cdot \\sqrt{2}}^{1/2\\cdot \\sqrt{3}})",
+                    "res": "-1/9 * sqrt(3) * pi + 1/4 * pi + ([log(abs(u))]_u=1/2 * sqrt(2),1/2 * sqrt(3))",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
                     "latex_res": "-\\frac{1}{9} \\sqrt{3} \\pi - \\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\log{(3)} + \\frac{1}{4} \\pi",
                     "res": "-1/9 * sqrt(3) * pi - 1/2 * log(2) + 1/2 * log(3) + 1/4 * pi",
                     "rule": {
@@ -1480,6 +1603,15 @@
                         "str": "integrate by parts u -> 2 * log(x), v -> sqrt(x)",
                         "u": "2 * log(x)",
                         "v": "sqrt(x)"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "(\\left. 2 \\sqrt{x} \\log{x} \\right\\vert_{x=1}^{4}) - 2\\cdot 1 (\\left. 2 \\sqrt{x} \\right\\vert_{x=1}^{4})",
+                    "res": "([2 * sqrt(x) * log(x)]_x=1,4) - 2 * 1 * ([2 * x ^ (1/2)]_x=1,4)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -1529,6 +1661,15 @@
                         "new_expr": "1 - 1 / (x ^ 2 + 1)",
                         "old_expr": "x ^ 2 / (x ^ 2 + 1)",
                         "str": "rewriting x ^ 2 / (x ^ 2 + 1) to 1 - 1 / (x ^ 2 + 1)"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "-\\frac{1}{2} ((\\left. 1 x \\right\\vert_{x=0}^{1}) - (\\left. \\tan^{-1}{x} \\right\\vert_{x=0}^{1})) + \\frac{1}{8} \\pi",
+                    "res": "-1/2 * (([1 * x]_x=0,1) - ([atan(x)]_x=0,1)) + 1/8 * pi",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -1638,8 +1779,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{2} (\\int_{0}^{\\pi} x ^ {2} \\cos{(2 x)} \\,dx) + \\frac{1}{6} \\pi ^ {3}",
-                    "res": "-1/2 * (INT x:[0,pi]. x ^ 2 * cos(2 * x)) + 1/6 * pi ^ 3",
+                    "latex_res": "-\\frac{1}{2} (\\int_{0}^{\\pi} x ^ {2} \\cos{(2 x)} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\pi} x ^ {2} \\,dx)",
+                    "res": "-1/2 * (INT x:[0,pi]. x ^ 2 * cos(2 * x)) + 1/2 * (INT x:[0,pi]. x ^ 2)",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -1647,8 +1788,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-\\frac{1}{2} ((\\left. \\frac{1}{2} x ^ {2} \\sin{(2 x)} \\right\\vert_{x=0}^{\\pi}) - (\\int_{0}^{\\pi} x \\sin{(2 x)} \\,dx)) + \\frac{1}{6} \\pi ^ {3}",
-                    "res": "-1/2 * (([1/2 * x ^ 2 * sin(2 * x)]_x=0,pi) - (INT x:[0,pi]. x * sin(2 * x))) + 1/6 * pi ^ 3",
+                    "latex_res": "-\\frac{1}{2} ((\\left. \\frac{1}{2} x ^ {2} \\sin{(2 x)} \\right\\vert_{x=0}^{\\pi}) - (\\int_{0}^{\\pi} x \\sin{(2 x)} \\,dx)) + \\frac{1}{2} (\\int_{0}^{\\pi} x ^ {2} \\,dx)",
+                    "res": "-1/2 * (([1/2 * x ^ 2 * sin(2 * x)]_x=0,pi) - (INT x:[0,pi]. x * sin(2 * x))) + 1/2 * (INT x:[0,pi]. x ^ 2)",
                     "rule": {
                         "latex_str": "integrate by parts \\(u \\to \\frac{x ^ {2}}{2}, v \\to \\sin{(2 x)}\\)",
                         "name": "IntegrationByParts",
@@ -1659,8 +1800,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi} x \\sin{(2 x)} \\,dx) + \\frac{1}{6} \\pi ^ {3}",
-                    "res": "1/2 * (INT x:[0,pi]. x * sin(2 * x)) + 1/6 * pi ^ 3",
+                    "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi} x \\sin{(2 x)} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\pi} x ^ {2} \\,dx)",
+                    "res": "1/2 * (INT x:[0,pi]. x * sin(2 * x)) + 1/2 * (INT x:[0,pi]. x ^ 2)",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -1668,8 +1809,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{2} ((\\left. -\\frac{1}{2} x \\cos{(2 x)} \\right\\vert_{x=0}^{\\pi}) - (\\int_{0}^{\\pi} -\\frac{1}{2} \\cos{(2 x)} \\,dx)) + \\frac{1}{6} \\pi ^ {3}",
-                    "res": "1/2 * (([-1/2 * x * cos(2 * x)]_x=0,pi) - (INT x:[0,pi]. -1/2 * cos(2 * x))) + 1/6 * pi ^ 3",
+                    "latex_res": "\\frac{1}{2} ((\\left. -\\frac{1}{2} x \\cos{(2 x)} \\right\\vert_{x=0}^{\\pi}) - (\\int_{0}^{\\pi} -\\frac{1}{2} \\cos{(2 x)} \\,dx)) + \\frac{1}{2} (\\int_{0}^{\\pi} x ^ {2} \\,dx)",
+                    "res": "1/2 * (([-1/2 * x * cos(2 * x)]_x=0,pi) - (INT x:[0,pi]. -1/2 * cos(2 * x))) + 1/2 * (INT x:[0,pi]. x ^ 2)",
                     "rule": {
                         "latex_str": "integrate by parts \\(u \\to \\frac{x}{2}, v \\to -\\cos{(2 x)}\\)",
                         "name": "IntegrationByParts",
@@ -1680,8 +1821,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{6} \\pi ^ {3} - \\frac{1}{4} \\pi + \\frac{1}{4} (\\int_{0}^{\\pi} \\cos{(2 x)} \\,dx)",
-                    "res": "1/6 * pi ^ 3 - 1/4 * pi + 1/4 * (INT x:[0,pi]. cos(2 * x))",
+                    "latex_res": "\\frac{1}{4} (\\int_{0}^{\\pi} \\cos{(2 x)} \\,dx) + \\frac{1}{2} (\\int_{0}^{\\pi} x ^ {2} \\,dx) - \\frac{1}{4} \\pi",
+                    "res": "1/4 * (INT x:[0,pi]. cos(2 * x)) + 1/2 * (INT x:[0,pi]. x ^ 2) - 1/4 * pi",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -1689,14 +1830,11 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "\\frac{1}{6} \\pi ^ {3} - \\frac{1}{4} \\pi + \\frac{1}{4} (\\int_{0}^{2 \\pi} \\frac{1}{2} \\cos{u} \\,du)",
-                    "res": "1/6 * pi ^ 3 - 1/4 * pi + 1/4 * (INT u:[0,2 * pi]. 1/2 * cos(u))",
+                    "latex_res": "\\frac{1}{4} (\\left. 2 ^ {-1} \\sin{(2 x)} \\right\\vert_{x=0}^{\\pi}) + \\frac{1}{2} (\\left. \\frac{x ^ {2 + 1}}{2 + 1} \\right\\vert_{x=0}^{\\pi}) - \\frac{1}{4} \\pi",
+                    "res": "1/4 * ([2 ^ (-1) * sin(2 * x)]_x=0,pi) + 1/2 * ([x ^ (2 + 1) / (2 + 1)]_x=0,pi) - 1/4 * pi",
                     "rule": {
-                        "latex_str": "substitute \\(u\\) for \\(2 x\\)",
-                        "name": "Substitution",
-                        "str": "substitute u for 2 * x",
-                        "var_name": "u",
-                        "var_subst": "2 * x"
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },
@@ -1819,8 +1957,8 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-(\\int_{e^{-1}}^{1} \\log{x} \\,dx) + 1",
-                    "res": "-(INT x:[exp(-1),1]. log(x)) + 1",
+                    "latex_res": "-(\\int_{e^{-1}}^{1} \\log{x} \\,dx) - (\\int_{1}^{e} 1 \\,dx) + e",
+                    "res": "-(INT x:[exp(-1),1]. log(x)) - (INT x:[1,exp(1)]. 1) + exp(1)",
                     "rule": {
                         "name": "FullSimplify",
                         "str": "full simplify"
@@ -1828,14 +1966,23 @@
                     "type": "CalculationStep"
                 },
                 {
-                    "latex_res": "-((\\left. x \\log{x} \\right\\vert_{x=e^{-1}}^{1}) - (\\int_{e^{-1}}^{1} 1 \\,dx)) + 1",
-                    "res": "-(([x * log(x)]_x=exp(-1),1) - (INT x:[exp(-1),1]. 1)) + 1",
+                    "latex_res": "-((\\left. x \\log{x} \\right\\vert_{x=e^{-1}}^{1}) - (\\int_{e^{-1}}^{1} 1 \\,dx)) - (\\int_{1}^{e} 1 \\,dx) + e",
+                    "res": "-(([x * log(x)]_x=exp(-1),1) - (INT x:[exp(-1),1]. 1)) - (INT x:[1,exp(1)]. 1) + exp(1)",
                     "rule": {
                         "latex_str": "integrate by parts \\(u \\to \\log{x}, v \\to x\\)",
                         "name": "IntegrationByParts",
                         "str": "integrate by parts u -> log(x), v -> x",
                         "u": "log(x)",
                         "v": "x"
+                    },
+                    "type": "CalculationStep"
+                },
+                {
+                    "latex_res": "-((\\left. x \\log{x} \\right\\vert_{x=e^{-1}}^{1}) - (\\left. 1 x \\right\\vert_{x=e^{-1}}^{1})) - (\\left. 1 x \\right\\vert_{x=1}^{e}) + e",
+                    "res": "-(([x * log(x)]_x=exp(-1),1) - ([1 * x]_x=exp(-1),1)) - ([1 * x]_x=1,exp(1)) + exp(1)",
+                    "rule": {
+                        "name": "DefiniteIntegralIdentity",
+                        "str": "apply definite integral"
                     },
                     "type": "CalculationStep"
                 },

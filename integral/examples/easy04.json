@@ -52,8 +52,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{-(\\int_{1}^{\\infty} \\frac{1}{u + 1} \\,du) + \\infty}{a}",
-                            "res": "(-(INT u:[1,oo]. 1 / (u + 1)) + oo) / a",
+                            "latex_res": "\\frac{-(\\int_{1}^{\\infty} \\frac{1}{u + 1} \\,du) + (\\int_{1}^{\\infty} \\frac{1}{u} \\,du)}{a}",
+                            "res": "(-(INT u:[1,oo]. 1 / (u + 1)) + (INT u:[1,oo]. 1 / u)) / a",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -61,14 +61,23 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{-(\\int_{2}^{\\infty} \\frac{1}{x} \\,dx) + \\infty}{a}",
-                            "res": "(-(INT x:[2,oo]. 1 / x) + oo) / a",
+                            "latex_res": "\\frac{-(\\int_{2}^{\\infty} \\frac{1}{x} \\,dx) + (\\int_{1}^{\\infty} \\frac{1}{u} \\,du)}{a}",
+                            "res": "(-(INT x:[2,oo]. 1 / x) + (INT u:[1,oo]. 1 / u)) / a",
                             "rule": {
                                 "latex_str": "substitute \\(x\\) for \\(u + 1\\)",
                                 "name": "Substitution",
                                 "str": "substitute x for u + 1",
                                 "var_name": "x",
                                 "var_subst": "u + 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{-(\\left. \\log{(\\left| x \\right|)} \\right\\vert_{x=2}^{\\infty}) + (\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=1}^{\\infty})}{a}",
+                            "res": "(-([log(abs(x))]_x=2,oo) + ([log(abs(u))]_u=1,oo)) / a",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
                             },
                             "type": "CalculationStep"
                         },
