@@ -2285,6 +2285,47 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ExpandPolynomial())
         self.checkAndOutput(file, "charpter1_practice01_02")
 
+    def testChapter2Practice01(self):
+        # Reference:
+        # Inside interesting integrals, C2.1
+        ctx = context.Context()
+        ctx.load_book("base")
+        ctx.load_book(content="interesting", upto="euler_log_sin02")
+        file = compstate.CompFile(ctx, "charpter2_practice01")
+        goal01 = file.add_goal("(INT y:[0,1]. 1/ (sqrt(y) * sqrt(1-y))) = pi")
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.SubstitutionInverse("x", "sin(x)^2"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("sin(x)^2","1-cos(x)^2"), "0.0.1.1.0.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        goal02 = file.add_goal("(INT y:[0,1]. log(y)/ (sqrt(y) * sqrt(1-y))) = -2*pi*log(2)")
+        proof = goal02.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.SubstitutionInverse("x", "sin(x)^2"))
+        calc.perform_rule(rules.Equation("log(sin(x)^2)", "2*log(sin(x))"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("sin(x)^2", "1-cos(x)^2"), "0.0.1.1.0.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("sin(x)", "1*sin(x)"))
+        calc.perform_rule(rules.Equation("1/2 * pi", "pi/2"))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        goal03 = file.add_goal("(INT x:[0,4]. log(x)/sqrt(4*x-x^2)) = 0")
+        proof = goal03.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Substitution("y", "x/4"))
+        calc.perform_rule(rules.Equation("log(4*y)", "log(4)+log(y)"))
+        calc.perform_rule(rules.Equation("sqrt(-16 * y ^ 2 + 16 * y)","4*sqrt(-y^2+y)"))
+        calc.perform_rule(rules.Equation("sqrt(-y^2+y)","sqrt(y) * sqrt(1-y)"))
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("-y+1", "1-y"))
+        calc.perform_rule(rules.Equation("-y+1", "1-y"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal01.goal),"0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal02.goal), "1"))
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file, "charpter2_practice01")
         
 if __name__ == "__main__":
     unittest.main()
