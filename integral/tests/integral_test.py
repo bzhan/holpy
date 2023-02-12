@@ -2242,7 +2242,7 @@ class IntegralTest(unittest.TestCase):
 
     def testChapter3Practice07(self):
         # Reference:
-        # Inside interesting integrals, C3.2
+        # Inside interesting integrals, Section C3.10, C3.2
         ctx = context.Context()
         ctx.load_book("base")
         ctx.load_book("interesting", upto="testDirichletIntegral")
