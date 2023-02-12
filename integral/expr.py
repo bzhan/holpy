@@ -230,6 +230,14 @@ class Expr:
         else:
             return False
 
+    def is_odd(self, var) -> bool:
+        from integral import poly
+        tmp1 = self
+        tmp2 = self.subst(var, -Var(var))
+        if poly.normalize(tmp1 + tmp2) == Const(0):
+            return True
+        return False
+
     def all_dependencies(self):
         """Return the set of all dependent variables in Skolem terms."""
         if self.ty == SKOLEMFUNC:

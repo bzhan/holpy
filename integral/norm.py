@@ -4,7 +4,7 @@ import math
 from typing import Union
 from fractions import Fraction
 
-from integral.expr import Expr, Const
+from integral.expr import Expr, Const, Integral
 from integral import poly, expr
 from integral.poly import Polynomial, from_poly, to_poly
 
@@ -354,4 +354,11 @@ def eq_definite_integral(t1: Expr, t2: Expr) -> bool:
     n1 = normalize_definite_integral(t1)
     n2 = normalize_definite_integral(t2)
     return equal_normal_definite_integral(n1, n2)
+
+def simp_definite_integral(e: Integral) -> Expr:
+    if not e.is_integral():
+        return e
+    if e.body.is_odd(e.var) and from_poly(to_poly(e.lower)) == from_poly(to_poly(expr.Op("-", e.upper))):
+        return Const(0)
+    return e
 
