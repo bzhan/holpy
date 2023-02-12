@@ -1982,6 +1982,36 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation(None, "pi / (1 + a * b)"))
 
+        goal02 = file.add_goal("I(a, b) = (pi / b) * log(1 + a * b) + SKOLEM_FUNC(C(b))", conds=["a > 0", "b > 0"])
+        proof_of_goal02 = goal02.proof_by_rewrite_goal(begin=goal01)
+        calc = proof_of_goal02.begin
+        calc.perform_rule(rules.IntegralEquation())
+        calc.perform_rule(rules.Substitution(var_name="u", var_subst="1 + a * b"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.IndefiniteIntegralIdentity(), "1"))
+        calc.perform_rule(rules.ReplaceSubstitution())
+        calc.perform_rule(rules.Equation("abs(1 + a * b)", "(1 + a * b)"))
+
+        goal03 = file.add_goal("I(0, b) = 0")
+        proof_of_goal03 = goal03.proof_by_calculation()
+        calc = proof_of_goal03.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition("I"))
+        calc.perform_rule(rules.FullSimplify())
+
+        goal04 = file.add_goal("SKOLEM_FUNC(C(b)) = 0")
+        proof_of_goal04 = goal04.proof_by_rewrite_goal(begin=goal02)
+        calc = proof_of_goal04.begin
+        calc.perform_rule(rules.LimitEquation("a", parser.parse_expr("0")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal03.goal), "0"))
+        calc.perform_rule(rules.SolveEquation("SKOLEM_FUNC(C(b))"))
+
+        goal05 = file.add_goal("I(a, b) = (pi / b) * log(1 + a * b)")
+        proof_of_goal05 = goal05.proof_by_rewrite_goal(begin=goal02)
+        calc = proof_of_goal05.begin
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal04.goal), "1.1"))
+        calc.perform_rule(rules.FullSimplify())
+
         self.checkAndOutput(file, "Chapter3Practice01")
 
 
