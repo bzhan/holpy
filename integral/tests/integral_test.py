@@ -630,6 +630,7 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file, "GammaFunction")
 
+
     def testEasy01(self):
         # Reference:
         # Inside interesting integrals, Section 2.1.a
@@ -2239,6 +2240,44 @@ class IntegralTest(unittest.TestCase):
         self.checkAndOutput(file, "Chapter3Practice06")
 
 
+    def testChapter3Practice07(self):
+        # Reference:
+        # Inside interesting integrals, Section C3.10, C3.2
+        ctx = context.Context()
+        ctx.load_book("base")
+        ctx.load_book("interesting", upto="testDirichletIntegral")
+        file = compstate.CompFile(ctx, "Chapter3Practice07")
+
+        goal = file.add_goal("(INT x:[-oo, oo]. cos(a * x) / (b ^ 2 - x ^ 2)) = pi * (sin(a * b) / b)", conds=["a > 0", "b > 0"])
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("b ^ 2 - x ^ 2",
+                                         "(b + x) * (b - x)"))
+        calc.perform_rule(rules.Equation("cos(a * x) / ((b + x) * (b - x))",
+                                         "(1 / (2 * b)) * (cos(a * x) / (b + x) + cos(a * x) / (b - x))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="b + x"), "1.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="b - x"), "1.0.1"))
+        calc.perform_rule(rules.Equation("a * (-b + u)", "-(a * (b - u))"))
+        calc.perform_rule(rules.ApplyIdentity("cos(-(a * (b - u)))", "cos(a * (b - u))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("cos(a * (b - u))", "cos(a * b - a * u)"))
+        calc.perform_rule(rules.ApplyIdentity("cos(a * b - a * u)", "cos(a * b) * cos(a * u) + sin(a * b) * sin(a * u)"))
+        calc.perform_rule(rules.Equation("(cos(a * b) * cos(a * u) + sin(a * b) * sin(a * u)) / u",
+                                         "cos(a * b) * cos(a * u) / u + sin(a * b) * sin(a * u) / u"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("(INT u:[-oo,oo]. cos(a * u) / u)", "0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.SplitRegion("0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="u", var_subst="-u"), "0.1.0"))
+        calc.perform_rule(rules.ApplyIdentity("sin(-(a * u))", "-sin(a * u)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+
+        self.checkAndOutput(file, "Chapter3Practice07")
+
+
     def testChapter1Practice0101(self):
         # Reference:
         # Inside interesting integrals, C1.1
@@ -2253,6 +2292,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file, "charpter1_practice01_01")
+
 
     def testChapter1Practice0102(self):
         # Reference:
@@ -2270,6 +2310,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof.rhs_calc
         calc.perform_rule(rules.ExpandPolynomial())
         self.checkAndOutput(file, "charpter1_practice01_02")
+
 
     def testChapter2Practice01(self):
         # Reference:
@@ -2313,6 +2354,8 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal02.goal), "1"))
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file, "charpter2_practice01")
+
+
     def testChapter2Practice02(self):
         # Reference:
         # Inside interesting integrals, C2.2
