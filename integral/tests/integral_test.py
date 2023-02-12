@@ -1217,6 +1217,9 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("-1/2 * x ^ 2", "-(x ^ 2) / 2"))
         calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc = Eq0_proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
 
         # Prove the following equality
         Eq1 = file.add_goal("(D t. I(t)) = -t*I(t)")
@@ -1266,12 +1269,9 @@ class IntegralTest(unittest.TestCase):
         Eq6_proof = Eq6.proof_by_rewrite_goal(begin=Eq5)
         calc = Eq6_proof.begin
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("I(t)")))
-        calc.perform_rule(rules.ApplyIdentity(
+        calc.perform_rule(rules.Equation(
             "exp(-(log(2) / 2) + log(pi) / 2 - 1/2 * t ^ 2)",
-            "exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-1/2 * t ^ 2)"))
-        calc.perform_rule(rules.ApplyIdentity(
-            "exp(-1/2 * log(2) + 1/2 * log(pi))",
-            "exp(-1/2 * log(2)) * exp(1/2 * log(pi))"))
+            "2 ^ (1/2) ^ (-1) * pi ^ (1/2) / exp(1/2 * t ^ 2)"))
         calc.perform_rule(rules.FullSimplify())
 
         self.checkAndOutput(file, "leibniz03")

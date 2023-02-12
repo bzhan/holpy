@@ -271,6 +271,7 @@ def eq_power(t1: Expr, t2: Expr) -> bool:
 
 
 class NormalLog:
+    """NormalLog(e) represents an expression exp(e), where e is a polynomial."""
     def __init__(self, e: Polynomial):
         self.e = e
 
@@ -286,7 +287,7 @@ def minus_normal_log(a: NormalLog, b: NormalLog) -> NormalLog:
 def add_normal_log(a: NormalLog, b: NormalLog) -> NormalLog:
     return NormalLog(a.e * b.e)
 
-def normalize_log(e: Expr):
+def normalize_log(e: Expr) -> NormalLog:
     def rec(e: Expr) -> NormalLog:
         if e.is_minus():
             return minus_normal_log(rec(e.args[0]), rec(e.args[1]))
@@ -296,7 +297,7 @@ def normalize_log(e: Expr):
             return add_normal_log(rec(e.args[0]), rec(e.args[1]))
         elif e.is_fun() and e.func_name == 'log':
             return NormalLog(poly.singleton(e.args[0]))
-        return NormalLog(poly.singleton(expr.Fun("exp",e)))
+        return NormalLog(poly.singleton(expr.Fun("exp", e)))
 
     return rec(e)
 
@@ -309,6 +310,27 @@ def eq_log(t1: Expr, t2: Expr) -> bool:
     n1 = normalize_log(t1)
     n2 = normalize_log(t2)
     return equal_normal_log(n1, n2)
+
+def normalize_exp(t: Expr) -> Expr:
+    def rec(t):
+        if t.is_fun() and t.func_name == 'exp':
+            a = t.args[0]
+            if a.is_plus():
+                return rec(expr.exp(a.args[0])) * rec(expr.exp(a.args[1]))
+            elif a.is_minus():
+                return rec(expr.exp(a.args[0])) / rec(expr.exp(a.args[1]))
+            elif a.is_uminus():
+                return rec(expr.exp(a.args[0])) ** (-1)
+            elif a.is_divides() and a.args[0].is_fun() and a.args[0].func_name == 'log':
+                return rec(a.args[0].args[0] ** (1 / a.args[1]))
+            elif a.is_fun() and a.func_name == 'log':
+                return a.args[0]
+            else:
+                return t
+        else:
+            return t
+
+    return rec(t)
 
 class NormalDefiniteIntegral:
     def __init__(self, var:str, lower: Polynomial, upper: Polynomial, body: Polynomial):

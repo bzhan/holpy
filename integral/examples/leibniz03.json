@@ -50,11 +50,20 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\sqrt{\\frac{\\pi}{2}}",
-                            "res": "sqrt(pi / 2)",
+                            "latex_res": "\\frac{\\sqrt{2} \\sqrt{\\pi}}{2}",
+                            "res": "sqrt(2) * sqrt(pi) / 2",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\sqrt{2} \\sqrt{\\pi}}{2}",
+                            "res": "sqrt(2) * sqrt(pi) / 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
                             },
                             "type": "CalculationStep"
                         }
@@ -64,7 +73,17 @@
                 "rhs_calc": {
                     "latex_start": "\\sqrt{\\frac{\\pi}{2}}",
                     "start": "sqrt(pi / 2)",
-                    "steps": [],
+                    "steps": [
+                        {
+                            "latex_res": "\\frac{\\sqrt{2} \\sqrt{\\pi}}{2}",
+                            "res": "sqrt(2) * sqrt(pi) / 2",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"
@@ -74,11 +93,11 @@
         {
             "finished": true,
             "goal": "(D t. I(t)) = -t * I(t)",
-            "latex_goal": "\\frac{d}{dt} I{(t)} = -t I{(t)}",
+            "latex_goal": "\\frac{d}{dt} I{(t)} = (-t) I{(t)}",
             "proof": {
                 "finished": true,
                 "goal": "(D t. I(t)) = -t * I(t)",
-                "latex_goal": "\\frac{d}{dt} I{(t)} = -t I{(t)}",
+                "latex_goal": "\\frac{d}{dt} I{(t)} = (-t) I{(t)}",
                 "lhs_calc": {
                     "latex_start": "\\frac{d}{dt} I{(t)}",
                     "start": "D t. I(t)",
@@ -128,11 +147,11 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "-t I{(t)}",
+                    "latex_start": "(-t) I{(t)}",
                     "start": "-t * I(t)",
                     "steps": [
                         {
-                            "latex_res": "-t (\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx)",
+                            "latex_res": "(-t) (\\int_{0}^{\\infty} e^{-1/2\\cdot x ^ {2}} \\cos{(t x)} \\,dx)",
                             "res": "-t * (INT x:[0,oo]. exp(-1/2 * x ^ 2) * cos(t * x))",
                             "rule": {
                                 "func_name": "I",
@@ -180,11 +199,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{-t I{(t)}}{I{(t)}} + t",
+                            "latex_res": "\\frac{(-t) I{(t)}}{I{(t)}} + t",
                             "res": "-t * I(t) / I(t) + t",
                             "rule": {
                                 "eq": "(D t. I(t)) = -t * I(t)",
-                                "latex_str": "apply equation \\(\\frac{d}{dt} I{(t)} = -t I{(t)}\\) at 0.0",
+                                "latex_str": "apply equation \\(\\frac{d}{dt} I{(t)} = (-t) I{(t)}\\) at 0.0",
                                 "loc": "0.0",
                                 "name": "ApplyEquation",
                                 "str": "apply equation: (D t. I(t)) = -t * I(t) at 0.0"
@@ -339,8 +358,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\log{(\\pi)} - \\frac{1}{2} t ^ {2}",
-                            "res": "-1/2 * log(2) + 1/2 * log(pi) - 1/2 * t ^ 2",
+                            "latex_res": "-\\frac{\\log{(2)}}{2} + \\frac{\\log{(\\pi)}}{2} - \\frac{1}{2} t ^ {2}",
+                            "res": "-(log(2) / 2) + log(pi) / 2 - 1/2 * t ^ 2",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -355,8 +374,8 @@
                     "start": "-(t ^ 2) / 2 + log(sqrt(pi / 2))",
                     "steps": [
                         {
-                            "latex_res": "-\\frac{1}{2} \\log{(2)} + \\frac{1}{2} \\log{(\\pi)} - \\frac{1}{2} t ^ {2}",
-                            "res": "-1/2 * log(2) + 1/2 * log(pi) - 1/2 * t ^ 2",
+                            "latex_res": "-\\frac{\\log{(2)}}{2} + \\frac{\\log{(\\pi)}}{2} - \\frac{1}{2} t ^ {2}",
+                            "res": "-(log(2) / 2) + log(pi) / 2 - 1/2 * t ^ 2",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
@@ -383,8 +402,8 @@
                     "start": "log(I(t)) = -(t ^ 2) / 2 + log(sqrt(pi / 2))",
                     "steps": [
                         {
-                            "latex_res": "I{(t)} = e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)} - 1/2\\cdot t ^ {2}}",
-                            "res": "I(t) = exp(-1/2 * log(2) + 1/2 * log(pi) - 1/2 * t ^ 2)",
+                            "latex_res": "I{(t)} = e^{-\\log{(2)}/2 + \\log{(\\pi)}/2 - 1/2\\cdot t ^ {2}}",
+                            "res": "I(t) = exp(-(log(2) / 2) + log(pi) / 2 - 1/2 * t ^ 2)",
                             "rule": {
                                 "latex_str": "solve equation for \\(I{(t)}\\)",
                                 "name": "SolveEquation",
@@ -394,32 +413,20 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(t)} = e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)}} e^{-1/2\\cdot t ^ {2}}",
-                            "res": "I(t) = exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-1/2 * t ^ 2)",
+                            "latex_res": "I{(t)} = \\frac{(\\sqrt{2}) ^ {-1} \\sqrt{\\pi}}{e^{1/2\\cdot t ^ {2}}}",
+                            "res": "I(t) = 2 ^ (1/2) ^ (-1) * pi ^ (1/2) / exp(1/2 * t ^ 2)",
                             "rule": {
-                                "latex_str": "rewrite \\(e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)} - 1/2\\cdot t ^ {2}}\\) to \\(e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)}} e^{-1/2\\cdot t ^ {2}}\\) using identity",
-                                "name": "ApplyIdentity",
-                                "source": "exp(-1/2 * log(2) + 1/2 * log(pi) - 1/2 * t ^ 2)",
-                                "str": "rewrite exp(-1/2 * log(2) + 1/2 * log(pi) - 1/2 * t ^ 2) to exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-1/2 * t ^ 2) using identity",
-                                "target": "exp(-1/2 * log(2) + 1/2 * log(pi)) * exp(-1/2 * t ^ 2)"
+                                "latex_str": "rewriting \\(e^{-\\log{(2)}/2 + \\log{(\\pi)}/2 - 1/2\\cdot t ^ {2}}\\) to \\(\\frac{(\\sqrt{2}) ^ {-1} \\sqrt{\\pi}}{e^{1/2\\cdot t ^ {2}}}\\)",
+                                "name": "Equation",
+                                "new_expr": "2 ^ (1/2) ^ (-1) * pi ^ (1/2) / exp(1/2 * t ^ 2)",
+                                "old_expr": "exp(-(log(2) / 2) + log(pi) / 2 - 1/2 * t ^ 2)",
+                                "str": "rewriting exp(-(log(2) / 2) + log(pi) / 2 - 1/2 * t ^ 2) to 2 ^ (1/2) ^ (-1) * pi ^ (1/2) / exp(1/2 * t ^ 2)"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(t)} = e^{-1/2\\cdot \\log{(2)}} e^{1/2\\cdot \\log{(\\pi)}} e^{-1/2\\cdot t ^ {2}}",
-                            "res": "I(t) = exp(-1/2 * log(2)) * exp(1/2 * log(pi)) * exp(-1/2 * t ^ 2)",
-                            "rule": {
-                                "latex_str": "rewrite \\(e^{-1/2\\cdot \\log{(2)} + 1/2\\cdot \\log{(\\pi)}}\\) to \\(e^{-1/2\\cdot \\log{(2)}} e^{1/2\\cdot \\log{(\\pi)}}\\) using identity",
-                                "name": "ApplyIdentity",
-                                "source": "exp(-1/2 * log(2) + 1/2 * log(pi))",
-                                "str": "rewrite exp(-1/2 * log(2) + 1/2 * log(pi)) to exp(-1/2 * log(2)) * exp(1/2 * log(pi)) using identity",
-                                "target": "exp(-1/2 * log(2)) * exp(1/2 * log(pi))"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "I{(t)} = \\frac{1}{2} \\sqrt{2} \\sqrt{\\pi} e^{-1/2\\cdot t ^ {2}}",
-                            "res": "I(t) = 1/2 * sqrt(2) * sqrt(pi) * exp(-1/2 * t ^ 2)",
+                            "latex_res": "I{(t)} = \\frac{\\sqrt{2} \\sqrt{\\pi}}{2} e^{-1/2\\cdot t ^ {2}}",
+                            "res": "I(t) = sqrt(2) * sqrt(pi) / 2 * exp(-1/2 * t ^ 2)",
                             "rule": {
                                 "name": "FullSimplify",
                                 "str": "full simplify"
