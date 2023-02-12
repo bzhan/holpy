@@ -1844,16 +1844,13 @@ class IntegralTest(unittest.TestCase):
         # Define I
         file.add_definition("I(u) = (INT x:[0,1]. atan(u * sqrt(2+x^2)) / ((1+x^2)*sqrt(2+x^2)))", conds=["u > 0"])
 
-        goal001 = file.add_goal("I(1) = INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))")
+        goal001 = file.add_goal("I(1) = INT x:[0,1]. atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))")
         proof = goal001.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("I"))
-        calc.perform_rule(rules.FullSimplify())
-        calc = proof.rhs_calc
-        calc.perform_rule(rules.FullSimplify())
 
         goal02 = file.add_goal("(D u. I(u)) = \
-                (1+u^2)^(-1) * (pi/4 - u * sqrt(1+2*u^2)^(-1)*atan(u/sqrt(1+2*u^2)))", conds=["u > 0"])
+                1 / (1 + u^2) * (pi/4 - u / sqrt(1+2*u^2) * atan(u/sqrt(1+2*u^2)))", conds=["u > 0"])
         proof = goal02.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
@@ -1861,7 +1858,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation(
             "1 / ((x ^ 2 + 1) * (u ^ 2 * (x ^ 2 + 2) + 1))",
-            "(1+u^2)^(-1) * ((1+x^2)^(-1) - u^2 / (1+2*u^2+u^2*x^2))"))
+            "1 / (u ^ 2 + 1) * (1 / (1 + x ^ 2) - u ^ 2 / (1 + 2*u^2 + u^2*x^2))"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation(
             "1 / (u ^ 2 * x ^ 2 + 2 * u ^ 2 + 1)",
@@ -1873,11 +1870,8 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
 
         calc.perform_rule(rules.Equation(
-            "(y ^ 2 * (2 * u ^ 2 + 1) / u ^ 2 + (2 * u ^ 2 + 1) / u ^ 2)",
-            "(y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2)"))
-        calc.perform_rule(rules.Equation(
-            "1 / ((y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2))",
-            "(1 / (y ^ 2 + 1)) * ((2 * u ^ 2 + 1) / u ^ 2)^(-1)"))
+            "1 / (y ^ 2 * (2 * u ^ 2 + 1) / u ^ 2 + (2 * u ^ 2 + 1) / u ^ 2)",
+            "(1 / (y ^ 2 + 1)) * (u ^ 2 / (2 * u ^ 2 + 1))"))
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
@@ -1916,7 +1910,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("atan(sqrt(x ^ 2 + 2)) / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2))",\
-                                         "(x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))"))
+                                         "atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))"))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal001.goal), "0.0"))
         u = expr.Const(1)
         v = parser.parse_expr("atan(x/sqrt(2+x^2))")

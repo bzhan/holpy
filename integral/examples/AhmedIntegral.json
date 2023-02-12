@@ -14,12 +14,12 @@
         },
         {
             "finished": true,
-            "goal": "I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2)))",
-            "latex_goal": "I{(1)} = \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(\\sqrt{x ^ {2} + 2})} \\,dx",
+            "goal": "I(1) = (INT x:[0,1]. atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2)))",
+            "latex_goal": "I{(1)} = \\int_{0}^{1} \\frac{\\tan^{-1}{(\\sqrt{x ^ {2} + 2})}}{(x ^ {2} + 1) \\sqrt{x ^ {2} + 2}} \\,dx",
             "proof": {
                 "finished": true,
-                "goal": "I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2)))",
-                "latex_goal": "I{(1)} = \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(\\sqrt{x ^ {2} + 2})} \\,dx",
+                "goal": "I(1) = (INT x:[0,1]. atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2)))",
+                "latex_goal": "I{(1)} = \\int_{0}^{1} \\frac{\\tan^{-1}{(\\sqrt{x ^ {2} + 2})}}{(x ^ {2} + 1) \\sqrt{x ^ {2} + 2}} \\,dx",
                 "lhs_calc": {
                     "latex_start": "I{(1)}",
                     "start": "I(1)",
@@ -33,33 +33,14 @@
                                 "str": "expand definition"
                             },
                             "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\int_{0}^{1} \\frac{\\tan^{-1}{(\\sqrt{x ^ {2} + 2})}}{(x ^ {2} + 1) \\sqrt{x ^ {2} + 2}} \\,dx",
-                            "res": "INT x:[0,1]. atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
                         }
                     ],
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(\\sqrt{x ^ {2} + 2})} \\,dx",
-                    "start": "INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))",
-                    "steps": [
-                        {
-                            "latex_res": "\\int_{0}^{1} \\frac{\\tan^{-1}{(\\sqrt{x ^ {2} + 2})}}{(x ^ {2} + 1) \\sqrt{x ^ {2} + 2}} \\,dx",
-                            "res": "INT x:[0,1]. atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        }
-                    ],
+                    "latex_start": "\\int_{0}^{1} \\frac{\\tan^{-1}{(\\sqrt{x ^ {2} + 2})}}{(x ^ {2} + 1) \\sqrt{x ^ {2} + 2}} \\,dx",
+                    "start": "INT x:[0,1]. atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))",
+                    "steps": [],
                     "type": "Calculation"
                 },
                 "type": "CalculationProof"
@@ -74,12 +55,12 @@
                 }
             ],
             "finished": true,
-            "goal": "(D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
-            "latex_goal": "\\frac{d}{du} I{(u)} = (1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})",
+            "goal": "(D u. I(u)) = 1 / (1 + u ^ 2) * (pi / 4 - u / sqrt(1 + 2 * u ^ 2) * atan(u / sqrt(1 + 2 * u ^ 2)))",
+            "latex_goal": "\\frac{d}{du} I{(u)} = \\frac{1}{1 + u ^ {2}} (\\frac{\\pi}{4} - \\frac{u}{\\sqrt{1 + 2 u ^ {2}}} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})",
             "proof": {
                 "finished": true,
-                "goal": "(D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
-                "latex_goal": "\\frac{d}{du} I{(u)} = (1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})",
+                "goal": "(D u. I(u)) = 1 / (1 + u ^ 2) * (pi / 4 - u / sqrt(1 + 2 * u ^ 2) * atan(u / sqrt(1 + 2 * u ^ 2)))",
+                "latex_goal": "\\frac{d}{du} I{(u)} = \\frac{1}{1 + u ^ {2}} (\\frac{\\pi}{4} - \\frac{u}{\\sqrt{1 + 2 u ^ {2}}} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})",
                 "lhs_calc": {
                     "latex_start": "\\frac{d}{du} I{(u)}",
                     "start": "D u. I(u)",
@@ -114,14 +95,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{1} (1 + u ^ {2}) ^ {-1} ((1 + x ^ {2}) ^ {-1} - \\frac{u ^ {2}}{1 + 2 u ^ {2} + u ^ {2} x ^ {2}}) \\,dx",
-                            "res": "INT x:[0,1]. (1 + u ^ 2) ^ (-1) * ((1 + x ^ 2) ^ (-1) - u ^ 2 / (1 + 2 * u ^ 2 + u ^ 2 * x ^ 2))",
+                            "latex_res": "\\int_{0}^{1} \\frac{1}{u ^ {2} + 1} (\\frac{1}{1 + x ^ {2}} - \\frac{u ^ {2}}{1 + 2 u ^ {2} + u ^ {2} x ^ {2}}) \\,dx",
+                            "res": "INT x:[0,1]. 1 / (u ^ 2 + 1) * (1 / (1 + x ^ 2) - u ^ 2 / (1 + 2 * u ^ 2 + u ^ 2 * x ^ 2))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{1}{(x ^ {2} + 1) (u ^ {2} (x ^ {2} + 2) + 1)}\\) to \\((1 + u ^ {2}) ^ {-1} ((1 + x ^ {2}) ^ {-1} - \\frac{u ^ {2}}{1 + 2 u ^ {2} + u ^ {2} x ^ {2}})\\)",
+                                "latex_str": "rewriting \\(\\frac{1}{(x ^ {2} + 1) (u ^ {2} (x ^ {2} + 2) + 1)}\\) to \\(\\frac{1}{u ^ {2} + 1} (\\frac{1}{1 + x ^ {2}} - \\frac{u ^ {2}}{1 + 2 u ^ {2} + u ^ {2} x ^ {2}})\\)",
                                 "name": "Equation",
-                                "new_expr": "(1 + u ^ 2) ^ (-1) * ((1 + x ^ 2) ^ (-1) - u ^ 2 / (1 + 2 * u ^ 2 + u ^ 2 * x ^ 2))",
+                                "new_expr": "1 / (u ^ 2 + 1) * (1 / (1 + x ^ 2) - u ^ 2 / (1 + 2 * u ^ 2 + u ^ 2 * x ^ 2))",
                                 "old_expr": "1 / ((x ^ 2 + 1) * (u ^ 2 * (x ^ 2 + 2) + 1))",
-                                "str": "rewriting 1 / ((x ^ 2 + 1) * (u ^ 2 * (x ^ 2 + 2) + 1)) to (1 + u ^ 2) ^ (-1) * ((1 + x ^ 2) ^ (-1) - u ^ 2 / (1 + 2 * u ^ 2 + u ^ 2 * x ^ 2))"
+                                "str": "rewriting 1 / ((x ^ 2 + 1) * (u ^ 2 * (x ^ 2 + 2) + 1)) to 1 / (u ^ 2 + 1) * (1 / (1 + x ^ 2) - u ^ 2 / (1 + 2 * u ^ 2 + u ^ 2 * x ^ 2))"
                             },
                             "type": "CalculationStep"
                         },
@@ -178,32 +159,20 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{-\\frac{\\sqrt{2 u ^ {2} + 1} (\\int_{0}^{u/\\sqrt{2 u ^ {2} + 1}} \\frac{1}{(y ^ {2} + 1) (\\frac{2 u ^ {2} + 1}{u ^ {2}})} \\,dy)}{u} + (\\int_{0}^{1} \\frac{1}{x ^ {2} + 1} \\,dx)}{u ^ {2} + 1}",
-                            "res": "(-(sqrt(2 * u ^ 2 + 1) * (INT y:[0,u / sqrt(2 * u ^ 2 + 1)]. 1 / ((y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2))) / u) + (INT x:[0,1]. 1 / (x ^ 2 + 1))) / (u ^ 2 + 1)",
+                            "latex_res": "\\frac{-\\frac{\\sqrt{2 u ^ {2} + 1} (\\int_{0}^{u/\\sqrt{2 u ^ {2} + 1}} \\frac{1}{y ^ {2} + 1} (\\frac{u ^ {2}}{2 u ^ {2} + 1}) \\,dy)}{u} + (\\int_{0}^{1} \\frac{1}{x ^ {2} + 1} \\,dx)}{u ^ {2} + 1}",
+                            "res": "(-(sqrt(2 * u ^ 2 + 1) * (INT y:[0,u / sqrt(2 * u ^ 2 + 1)]. 1 / (y ^ 2 + 1) * (u ^ 2 / (2 * u ^ 2 + 1))) / u) + (INT x:[0,1]. 1 / (x ^ 2 + 1))) / (u ^ 2 + 1)",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{y ^ {2} (2 u ^ {2} + 1)}{u ^ {2}} + \\frac{2 u ^ {2} + 1}{u ^ {2}}\\) to \\((y ^ {2} + 1) (\\frac{2 u ^ {2} + 1}{u ^ {2}})\\)",
+                                "latex_str": "rewriting \\(\\frac{1}{\\frac{y ^ {2} (2 u ^ {2} + 1)}{u ^ {2}} + \\frac{2 u ^ {2} + 1}{u ^ {2}}}\\) to \\(\\frac{1}{y ^ {2} + 1} (\\frac{u ^ {2}}{2 u ^ {2} + 1})\\)",
                                 "name": "Equation",
-                                "new_expr": "(y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2)",
-                                "old_expr": "y ^ 2 * (2 * u ^ 2 + 1) / u ^ 2 + (2 * u ^ 2 + 1) / u ^ 2",
-                                "str": "rewriting y ^ 2 * (2 * u ^ 2 + 1) / u ^ 2 + (2 * u ^ 2 + 1) / u ^ 2 to (y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2)"
+                                "new_expr": "1 / (y ^ 2 + 1) * (u ^ 2 / (2 * u ^ 2 + 1))",
+                                "old_expr": "1 / (y ^ 2 * (2 * u ^ 2 + 1) / u ^ 2 + (2 * u ^ 2 + 1) / u ^ 2)",
+                                "str": "rewriting 1 / (y ^ 2 * (2 * u ^ 2 + 1) / u ^ 2 + (2 * u ^ 2 + 1) / u ^ 2) to 1 / (y ^ 2 + 1) * (u ^ 2 / (2 * u ^ 2 + 1))"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{-\\frac{\\sqrt{2 u ^ {2} + 1} (\\int_{0}^{u/\\sqrt{2 u ^ {2} + 1}} \\frac{1}{y ^ {2} + 1} (\\frac{2 u ^ {2} + 1}{u ^ {2}}) ^ {-1} \\,dy)}{u} + (\\int_{0}^{1} \\frac{1}{x ^ {2} + 1} \\,dx)}{u ^ {2} + 1}",
-                            "res": "(-(sqrt(2 * u ^ 2 + 1) * (INT y:[0,u / sqrt(2 * u ^ 2 + 1)]. 1 / (y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2) ^ (-1)) / u) + (INT x:[0,1]. 1 / (x ^ 2 + 1))) / (u ^ 2 + 1)",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\frac{1}{(y ^ {2} + 1) (\\frac{2 u ^ {2} + 1}{u ^ {2}})}\\) to \\(\\frac{1}{y ^ {2} + 1} (\\frac{2 u ^ {2} + 1}{u ^ {2}}) ^ {-1}\\)",
-                                "name": "Equation",
-                                "new_expr": "1 / (y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2) ^ (-1)",
-                                "old_expr": "1 / ((y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2))",
-                                "str": "rewriting 1 / ((y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2)) to 1 / (y ^ 2 + 1) * ((2 * u ^ 2 + 1) / u ^ 2) ^ (-1)"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\frac{-\\frac{\\sqrt{2 u ^ {2} + 1} (1 (\\frac{2 u ^ {2} + 1}{u ^ {2}}) ^ {-1} (\\left. \\tan^{-1}{y} \\right\\vert_{y=0}^{u/\\sqrt{2 u ^ {2} + 1}}))}{u} + (\\left. \\tan^{-1}{x} \\right\\vert_{x=0}^{1})}{u ^ {2} + 1}",
-                            "res": "(-(sqrt(2 * u ^ 2 + 1) * (1 * ((2 * u ^ 2 + 1) / u ^ 2) ^ (-1) * ([atan(y)]_y=0,u / sqrt(2 * u ^ 2 + 1))) / u) + ([atan(x)]_x=0,1)) / (u ^ 2 + 1)",
+                            "latex_res": "\\frac{-\\frac{\\sqrt{2 u ^ {2} + 1} (\\frac{1 u ^ {2}}{2 u ^ {2} + 1} (\\left. \\tan^{-1}{y} \\right\\vert_{y=0}^{u/\\sqrt{2 u ^ {2} + 1}}))}{u} + (\\left. \\tan^{-1}{x} \\right\\vert_{x=0}^{1})}{u ^ {2} + 1}",
+                            "res": "(-(sqrt(2 * u ^ 2 + 1) * (1 * u ^ 2 / (2 * u ^ 2 + 1) * ([atan(y)]_y=0,u / sqrt(2 * u ^ 2 + 1))) / u) + ([atan(x)]_x=0,1)) / (u ^ 2 + 1)",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
@@ -223,8 +192,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "(1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})",
-                    "start": "(1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
+                    "latex_start": "\\frac{1}{1 + u ^ {2}} (\\frac{\\pi}{4} - \\frac{u}{\\sqrt{1 + 2 u ^ {2}}} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})",
+                    "start": "1 / (1 + u ^ 2) * (pi / 4 - u / sqrt(1 + 2 * u ^ 2) * atan(u / sqrt(1 + 2 * u ^ 2)))",
                     "steps": [
                         {
                             "latex_res": "\\frac{-\\frac{u \\tan^{-1}{(\\frac{u}{\\sqrt{2 u ^ {2} + 1}})}}{\\sqrt{2 u ^ {2} + 1}} + \\frac{1}{4} \\pi}{u ^ {2} + 1}",
@@ -340,14 +309,14 @@
                     "start": "INT u:[1,oo]. D u. I(u)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{1}^{\\infty} (1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})}) \\,du",
-                            "res": "INT u:[1,oo]. (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
+                            "latex_res": "\\int_{1}^{\\infty} \\frac{1}{1 + u ^ {2}} (\\frac{\\pi}{4} - \\frac{u}{\\sqrt{1 + 2 u ^ {2}}} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})}) \\,du",
+                            "res": "INT u:[1,oo]. 1 / (1 + u ^ 2) * (pi / 4 - u / sqrt(1 + 2 * u ^ 2) * atan(u / sqrt(1 + 2 * u ^ 2)))",
                             "rule": {
-                                "eq": "(D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2)))",
-                                "latex_str": "apply equation \\(\\frac{d}{du} I{(u)} = (1 + u ^ {2}) ^ {-1} (\\frac{\\pi}{4} - u \\sqrt{1 + 2 u ^ {2}} ^ {-1} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})\\) at 0",
+                                "eq": "(D u. I(u)) = 1 / (1 + u ^ 2) * (pi / 4 - u / sqrt(1 + 2 * u ^ 2) * atan(u / sqrt(1 + 2 * u ^ 2)))",
+                                "latex_str": "apply equation \\(\\frac{d}{du} I{(u)} = \\frac{1}{1 + u ^ {2}} (\\frac{\\pi}{4} - \\frac{u}{\\sqrt{1 + 2 u ^ {2}}} \\tan^{-1}{(\\frac{u}{\\sqrt{1 + 2 u ^ {2}}})})\\) at 0",
                                 "loc": "0",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: (D u. I(u)) = (1 + u ^ 2) ^ (-1) * (pi / 4 - u * sqrt(1 + 2 * u ^ 2) ^ (-1) * atan(u / sqrt(1 + 2 * u ^ 2))) at 0"
+                                "str": "apply equation: (D u. I(u)) = 1 / (1 + u ^ 2) * (pi / 4 - u / sqrt(1 + 2 * u ^ 2) * atan(u / sqrt(1 + 2 * u ^ 2))) at 0"
                             },
                             "type": "CalculationStep"
                         },
@@ -468,14 +437,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "(\\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(\\sqrt{x ^ {2} + 2})} \\,dx) + -\\frac{1}{2} \\pi (\\int_{0}^{1} \\frac{1}{x ^ {2} \\sqrt{x ^ {2} + 2} + \\sqrt{x ^ {2} + 2}} \\,dx) + \\frac{1}{4} \\pi (\\int_{1}^{\\infty} \\frac{1}{u ^ {2} + 1} \\,du)",
-                            "res": "(INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))) + -1/2 * pi * (INT x:[0,1]. 1 / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2))) + 1/4 * pi * (INT u:[1,oo]. 1 / (u ^ 2 + 1))",
+                            "latex_res": "(\\int_{0}^{1} \\frac{\\tan^{-1}{(\\sqrt{x ^ {2} + 2})}}{(x ^ {2} + 1) \\sqrt{x ^ {2} + 2}} \\,dx) + -\\frac{1}{2} \\pi (\\int_{0}^{1} \\frac{1}{x ^ {2} \\sqrt{x ^ {2} + 2} + \\sqrt{x ^ {2} + 2}} \\,dx) + \\frac{1}{4} \\pi (\\int_{1}^{\\infty} \\frac{1}{u ^ {2} + 1} \\,du)",
+                            "res": "(INT x:[0,1]. atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))) + -1/2 * pi * (INT x:[0,1]. 1 / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2))) + 1/4 * pi * (INT u:[1,oo]. 1 / (u ^ 2 + 1))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{\\tan^{-1}{(\\sqrt{x ^ {2} + 2})}}{x ^ {2} \\sqrt{x ^ {2} + 2} + \\sqrt{x ^ {2} + 2}}\\) to \\((x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(\\sqrt{x ^ {2} + 2})}\\)",
+                                "latex_str": "rewriting \\(\\frac{\\tan^{-1}{(\\sqrt{x ^ {2} + 2})}}{x ^ {2} \\sqrt{x ^ {2} + 2} + \\sqrt{x ^ {2} + 2}}\\) to \\(\\frac{\\tan^{-1}{(\\sqrt{x ^ {2} + 2})}}{(x ^ {2} + 1) \\sqrt{x ^ {2} + 2}}\\)",
                                 "name": "Equation",
-                                "new_expr": "(x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))",
+                                "new_expr": "atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))",
                                 "old_expr": "atan(sqrt(x ^ 2 + 2)) / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2))",
-                                "str": "rewriting atan(sqrt(x ^ 2 + 2)) / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2)) to (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))"
+                                "str": "rewriting atan(sqrt(x ^ 2 + 2)) / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2)) to atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))"
                             },
                             "type": "CalculationStep"
                         },
@@ -483,11 +452,11 @@
                             "latex_res": "I{(1)} + -\\frac{1}{2} \\pi (\\int_{0}^{1} \\frac{1}{x ^ {2} \\sqrt{x ^ {2} + 2} + \\sqrt{x ^ {2} + 2}} \\,dx) + \\frac{1}{4} \\pi (\\int_{1}^{\\infty} \\frac{1}{u ^ {2} + 1} \\,du)",
                             "res": "I(1) + -1/2 * pi * (INT x:[0,1]. 1 / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2))) + 1/4 * pi * (INT u:[1,oo]. 1 / (u ^ 2 + 1))",
                             "rule": {
-                                "eq": "I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2)))",
-                                "latex_str": "apply equation \\(I{(1)} = \\int_{0}^{1} (x ^ {2} + 1) ^ {-1} (x ^ {2} + 2) ^ {-1/2} \\tan^{-1}{(\\sqrt{x ^ {2} + 2})} \\,dx\\) at 0.0",
+                                "eq": "I(1) = (INT x:[0,1]. atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2)))",
+                                "latex_str": "apply equation \\(I{(1)} = \\int_{0}^{1} \\frac{\\tan^{-1}{(\\sqrt{x ^ {2} + 2})}}{(x ^ {2} + 1) \\sqrt{x ^ {2} + 2}} \\,dx\\) at 0.0",
                                 "loc": "0.0",
                                 "name": "ApplyEquation",
-                                "str": "apply equation: I(1) = (INT x:[0,1]. (x ^ 2 + 1) ^ (-1) * (x ^ 2 + 2) ^ (-1/2) * atan(sqrt(x ^ 2 + 2))) at 0.0"
+                                "str": "apply equation: I(1) = (INT x:[0,1]. atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))) at 0.0"
                             },
                             "type": "CalculationStep"
                         },
