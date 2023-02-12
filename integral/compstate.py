@@ -607,6 +607,7 @@ class CompFile:
                 ctx.add_lemma(item.eq)
             elif isinstance(item, Goal):
                 ctx.add_lemma(item.goal)
+                ctx.extend_by_item(item.export_book())
         return ctx
 
     def add_definition(self, funcdef: Union[str, Expr], *, conds: List[Union[str, Expr]] = None) -> FuncDef:

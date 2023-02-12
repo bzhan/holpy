@@ -640,6 +640,61 @@
                 "type": "CalculationProof"
             },
             "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x. a ^ x) = a ^ x / log(a) + SKOLEM_CONST(C)",
+            "latex_goal": "\\int a ^ {x} \\,dx = \\frac{a ^ {x}}{\\log{a}} + C",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x. a ^ x) = a ^ x / log(a) + SKOLEM_CONST(C)",
+                "latex_goal": "\\int a ^ {x} \\,dx = \\frac{a ^ {x}}{\\log{a}} + C",
+                "lhs_calc": {
+                    "latex_start": "\\int a ^ {x} \\,dx",
+                    "start": "INT x. a ^ x",
+                    "steps": [
+                        {
+                            "latex_res": "\\int e^{\\log{a} x} \\,dx",
+                            "res": "INT x. exp(log(a) * x)",
+                            "rule": {
+                                "latex_str": "rewriting \\(a ^ {x}\\) to \\(e^{\\log{a} x}\\)",
+                                "name": "Equation",
+                                "new_expr": "exp(log(a) * x)",
+                                "old_expr": "a ^ x",
+                                "str": "rewriting a ^ x to exp(log(a) * x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{e^{\\log{a} x}}{\\log{a}} + C",
+                            "res": "exp(log(a) * x) / log(a) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{a ^ {x}}{\\log{a}} + C",
+                            "res": "a ^ x / log(a) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{a ^ {x}}{\\log{a}} + C",
+                    "start": "a ^ x / log(a) + SKOLEM_CONST(C)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
         }
     ],
     "name": "standard"

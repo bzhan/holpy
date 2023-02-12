@@ -2,6 +2,21 @@
     "content": [
         {
             "type": "header",
+            "name": "1. Introduction",
+            "level": 1
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,8]. 1/(x-2)) = log(3)",
+            "path": "charpter1_practice01_01"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,3]. 1/(x-1)^(2/3)) = 3 * (1+2^(1/3))",
+            "path": "charpter1_practice01_02"
+        },
+        {
+            "type": "header",
             "name": "2. 'Easy' integrals",
             "level": 1
         },

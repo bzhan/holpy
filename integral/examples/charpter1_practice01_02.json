@@ -1,0 +1,71 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "(INT x:[0,3]. 1 / (x - 1) ^ (2/3)) = 3 * (1 + 2 ^ (1/3))",
+            "latex_goal": "\\int_{0}^{3} \\frac{1}{(x - 1) ^ {2/3}} \\,dx = 3 (1 + \\sqrt[3]{2})",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,3]. 1 / (x - 1) ^ (2/3)) = 3 * (1 + 2 ^ (1/3))",
+                "latex_goal": "\\int_{0}^{3} \\frac{1}{(x - 1) ^ {2/3}} \\,dx = 3 (1 + \\sqrt[3]{2})",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{3} \\frac{1}{(x - 1) ^ {2/3}} \\,dx",
+                    "start": "INT x:[0,3]. 1 / (x - 1) ^ (2/3)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{-1}^{2} \\frac{1}{u ^ {2/3}} \\,du",
+                            "res": "INT u:[-1,2]. 1 / u ^ (2/3)",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(x - 1\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for x - 1",
+                                "var_name": "u",
+                                "var_subst": "x - 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\lim\\limits_{c\\to \\infty} (\\,(\\int_{-1}^{0 - 1/c} \\frac{1}{u ^ {2/3}} \\,du) + (\\int_{0 + 1/c}^{2} \\frac{1}{u ^ {2/3}} \\,du)\\,)",
+                            "res": "LIM {c -> oo}. (INT u:[-1,0 - 1 / c]. 1 / u ^ (2/3)) + (INT u:[0 + 1 / c,2]. 1 / u ^ (2/3))",
+                            "rule": {
+                                "c": "0",
+                                "name": "SplitRegion",
+                                "str": "split region at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "3 \\sqrt[3]{2} + 3",
+                            "res": "3 * 2 ^ (1/3) + 3",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "3 (1 + \\sqrt[3]{2})",
+                    "start": "3 * (1 + 2 ^ (1/3))",
+                    "steps": [
+                        {
+                            "latex_res": "3 \\sqrt[3]{2} + 3",
+                            "res": "3 * 2 ^ (1/3) + 3",
+                            "rule": {
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "charpter1_practice01_02"
+}

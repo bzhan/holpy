@@ -653,6 +653,11 @@
             "path": "standard"
         },
         {
+            "type": "problem",
+            "expr": "(INT x. a ^ x) = a ^ x / log(a) + SKOLEM_CONST(C)",
+            "path": "standard"
+        },
+        {
             "type": "header",
             "name": "Results from contour integration",
             "level": 1

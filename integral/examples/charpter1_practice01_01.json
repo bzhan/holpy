@@ -1,0 +1,61 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "(INT x:[0,8]. 1 / (x - 2)) = log(3)",
+            "latex_goal": "\\int_{0}^{8} \\frac{1}{x - 2} \\,dx = \\log{(3)}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,8]. 1 / (x - 2)) = log(3)",
+                "latex_goal": "\\int_{0}^{8} \\frac{1}{x - 2} \\,dx = \\log{(3)}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{8} \\frac{1}{x - 2} \\,dx",
+                    "start": "INT x:[0,8]. 1 / (x - 2)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{-2}^{6} \\frac{1}{u} \\,du",
+                            "res": "INT u:[-2,6]. 1 / u",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(x - 2\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for x - 2",
+                                "var_name": "u",
+                                "var_subst": "x - 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\lim\\limits_{c\\to \\infty} (\\,(\\int_{-2}^{0 - 1/c} \\frac{1}{u} \\,du) + (\\int_{0 + 1/c}^{6} \\frac{1}{u} \\,du)\\,)",
+                            "res": "LIM {c -> oo}. (INT u:[-2,0 - 1 / c]. 1 / u) + (INT u:[0 + 1 / c,6]. 1 / u)",
+                            "rule": {
+                                "c": "0",
+                                "name": "SplitRegion",
+                                "str": "split region at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\log{(3)}",
+                            "res": "log(3)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\log{(3)}",
+                    "start": "log(3)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "charpter1_practice01_01"
+}
