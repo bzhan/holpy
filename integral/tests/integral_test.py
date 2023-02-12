@@ -2045,6 +2045,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyEquation(goal05.goal))
         calc.perform_rule(rules.Equation("(-1) ^ 2 / (4 * 1 ^ 2) * exp((-1) ^ 2 / (4 * 1)) * sqrt(pi / 1) + 1 / (2 * 1) * exp((-1) ^ 2 / (4 * 1)) * sqrt(pi / 1)",
                                          "3/4 * sqrt(pi * sqrt(exp(1)))"))
+
         self.checkAndOutput(file, "Chapter3Practice04")
 
 
