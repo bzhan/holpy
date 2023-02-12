@@ -2296,8 +2296,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal01.goal),"0.1"))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal02.goal), "1"))
         calc.perform_rule(rules.FullSimplify())
-        print(file)
-        # self.checkAndOutput(file, "charpter2_practice01")
+        self.checkAndOutput(file, "charpter2_practice01")
         
 if __name__ == "__main__":
     unittest.main()
