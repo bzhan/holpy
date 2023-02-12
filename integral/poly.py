@@ -844,7 +844,10 @@ def to_poly(e: expr.Expr) -> Polynomial:
             # sin(asin(x)) = x
             return to_poly(a.args[0])
         else:
-            return singleton(expr.Fun(e.func_name, normalize(a)))
+            tmp = normalize(a)
+            if e.func_name == "cos" and tmp.is_uminus():
+                return singleton(expr.Fun(e.func_name, tmp.args[0]))
+            return singleton(expr.Fun(e.func_name, tmp))
 
     elif e.is_fun() and e.func_name in ("asin", "acos", "atan", "acot", "acsc", "asec"):
         a, = e.args
