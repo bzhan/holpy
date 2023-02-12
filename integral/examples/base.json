@@ -7,42 +7,42 @@
         },
         {
             "type": "axiom",
-            "expr": "(INT x. c) = c * x + C"
+            "expr": "(INT x. c) = c * x + SKOLEM_CONST(C)"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. 1 / x) = log(abs(x)) + C"
+            "expr": "(INT x. 1 / x) = log(abs(x)) + SKOLEM_CONST(C)"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. x ^ n) = x ^ (n + 1) / (n + 1) + C",
+            "expr": "(INT x. x ^ n) = x ^ (n + 1) / (n + 1) + SKOLEM_CONST(C)",
             "conds": [
                 "n != -1"
             ]
         },
         {
             "type": "axiom",
-            "expr": "(INT x. exp(x)) = exp(x) + C"
+            "expr": "(INT x. exp(x)) = exp(x) + SKOLEM_CONST(C)"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. sin(x)) = -cos(x) + C"
+            "expr": "(INT x. sin(x)) = -cos(x) + SKOLEM_CONST(C)"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. cos(x)) = sin(x) + C"
+            "expr": "(INT x. cos(x)) = sin(x) + SKOLEM_CONST(C)"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. 1 / (x^2 + 1)) = atan(x) + C"
+            "expr": "(INT x. 1 / (x^2 + 1)) = atan(x) + SKOLEM_CONST(C)"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. sec(x)^2) = tan(x) + C"
+            "expr": "(INT x. sec(x)^2) = tan(x) + SKOLEM_CONST(C)"
         },
         {
             "type": "axiom",
-            "expr": "(INT x. csc(x)^2) = -cot(x) + C"
+            "expr": "(INT x. csc(x)^2) = -cot(x) + SKOLEM_CONST(C)"
         },
         {
             "type": "header",
@@ -608,27 +608,27 @@
         },
         {
             "type": "problem",
-            "expr": "(INT x. 1 / (x + a)) = log(abs(x + a)) + C",
+            "expr": "(INT x. 1 / (x + a)) = log(abs(x + a)) + SKOLEM_CONST(C)",
             "path": "standard"
         },
         {
             "type": "problem",
-            "expr": "(INT x. exp(a * x)) = a ^ (-1) * exp(a * x) + C",
+            "expr": "(INT x. exp(a * x)) = a ^ (-1) * exp(a * x) + SKOLEM_CONST(C)",
             "path": "standard"
         },
         {
             "type": "problem",
-            "expr": "(INT x. sin(a * x)) = - (a ^ (-1) * cos(a * x)) + C",
+            "expr": "(INT x. sin(a * x)) = - (a ^ (-1) * cos(a * x)) + SKOLEM_CONST(C)",
             "path": "standard"
         },
         {
             "type": "problem",
-            "expr": "(INT x. cos(a * x)) = a ^ (-1) * sin(a * x) + C",
+            "expr": "(INT x. cos(a * x)) = a ^ (-1) * sin(a * x) + SKOLEM_CONST(C)",
             "path": "standard"
         },
         {
             "type": "problem",
-            "expr": "(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a) + C",
+            "expr": "(INT x. 1 / (a ^ 2 + x ^ 2)) = a ^ (-1) * atan(x / a) + SKOLEM_CONST(C)",
             "conds": [
                 "a != 0"
             ],
@@ -650,6 +650,11 @@
             "conds": [
                 "y > 0"
             ],
+            "path": "standard"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x. a ^ x) = a ^ x / log(a) + SKOLEM_CONST(C)",
             "path": "standard"
         },
         {

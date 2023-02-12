@@ -1,6 +1,8 @@
 {
     "book_list": [
         "base",
+        "tongji",
+        "UCDavis",
         "interesting"
     ]
 }

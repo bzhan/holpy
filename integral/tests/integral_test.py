@@ -119,6 +119,13 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.IntegrateByEquation(parser.parse_expr("INT x:[0,oo]. exp(-(x * y)) * sin(a * x)")))
         calc.perform_rule(rules.Equation(None, "a / (a ^ 2 + y ^ 2)"))
 
+        goal9 = file.add_goal("(INT x. a ^ x) = a ^ x / log(a) + SKOLEM_CONST(C)")
+        proof = goal9.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("a ^ x", "exp(log(a) * x)"))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+
         self.checkAndOutput(file, "standard")
 
     def testTongji(self):
@@ -426,6 +433,65 @@ class IntegralTest(unittest.TestCase):
         self.assertEqual(str(calc.last_expr), "0")
 
         self.checkAndOutput(file, "LHopital")
+
+    def testExponential(self):
+        ctx = context.Context()
+        ctx.load_book('base')
+        file = compstate.CompFile(ctx, 'Exponential')
+
+        goal = file.add_goal("(INT x:[0,1]. (3^x + 4^x) / 5^x) = (-2/5 / log(3/5) + -1/5 / log(4/5))")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("(3^x + 4^x) / 5^x", "(3^x/5^x) + (4^x/5^x)"))
+        calc.perform_rule(rules.ApplyIdentity("3^x/5^x", "(3/5)^x"))
+        calc.perform_rule(rules.ApplyIdentity("4^x/5^x", "(4/5)^x"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        goal = file.add_goal("(INT x. 30 * exp(-3*x) * (1 + 3 * exp(-x)) ^ 5) = "
+                             "(-5/36)*(1 + 3*exp(-x))^8 + (20/63)*(1 + 3*exp(-x))^7 + (-5/27)*(1+3*exp(-x))^6 + SKOLEM_CONST(C)")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Substitution("u", "1 + 3 * exp(-x)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "1.0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
+        calc.perform_rule(rules.ReplaceSubstitution())
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+
+        goal = file.add_goal("(INT x. 8*exp(x)*(3+exp(x)) / sqrt(exp(2*x) + 6*exp(x) + 1)) = "
+                             "8 * sqrt(exp(2 * x) + 6 * exp(x) + 1) + SKOLEM_CONST(C)")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("8*exp(x)*(3+exp(x))", "4*(2 * exp(2 * x) + 6 * exp(x))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Substitution("u", "exp(2*x) + 6*exp(x) + 1"))
+        calc.perform_rule(rules.Equation("1 / sqrt(u)", "u ^ (-1/2)"))
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ReplaceSubstitution())
+
+        goal = file.add_goal("(INT x. (27*exp(9*x) + exp(12*x)) ^ (1/3)) = "
+                             "1/4 * (27 + exp(3 * x)) ^ (4/3) + SKOLEM_CONST(C)")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("27*exp(9*x) + exp(12*x)", "exp(9*x) * (27 + exp(3*x))"))
+        calc.perform_rule(rules.ApplyIdentity("(exp(9*x) * (27 + exp(3*x))) ^ (1/3)",
+                                              "exp(9*x) ^ (1/3) * (27 + exp(3*x)) ^ (1/3)"))
+        calc.perform_rule(rules.Equation("exp(9*x) ^ (1/3)", "exp(3*x)"))
+        calc.perform_rule(rules.Substitution("u", "27 + exp(3*x)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.IndefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.ReplaceSubstitution())
+
+        self.checkAndOutput(file, "Exponential")
 
     def testWallis(self):
         # Reference:
@@ -2134,5 +2200,7 @@ class IntegralTest(unittest.TestCase):
         calc = proof.rhs_calc
         calc.perform_rule(rules.ExpandPolynomial())
         self.checkAndOutput(file, "charpter1_practice01_02")
+
+        
 if __name__ == "__main__":
     unittest.main()

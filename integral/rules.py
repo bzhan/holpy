@@ -241,7 +241,15 @@ class Linearity(Rule):
                 else:
                     return e
             elif e.is_indefinite_integral():
-                if e.body.is_times() or e.body.is_divides():
+                if e.body.is_plus():
+                    return rec(expr.IndefiniteIntegral(e.var, e.body.args[0], e.skolem_args)) + \
+                           rec(expr.IndefiniteIntegral(e.var, e.body.args[1], e.skolem_args))
+                elif e.body.is_uminus():
+                    return -IndefiniteIntegral(e.var, e.body.args[0], e.skolem_args)
+                elif e.body.is_minus():
+                    return rec(expr.IndefiniteIntegral(e.var, e.body.args[0], e.skolem_args)) - \
+                           rec(expr.IndefiniteIntegral(e.var, e.body.args[1], e.skolem_args))
+                elif e.body.is_times() or e.body.is_divides():
                     num_factors, denom_factors = decompose_expr_factor(e.body)
                     b, c = Const(1), Const(1)
                     for f in num_factors:
@@ -255,8 +263,6 @@ class Linearity(Rule):
                         else:
                             b = b / f
                     return c * IndefiniteIntegral(e.var, b, e.skolem_args)
-                elif e.body.is_uminus():
-                    return -IndefiniteIntegral(e.var, e.body.args[0], e.skolem_args)
                 elif e.body.is_divides():
                     return e
                 else:
@@ -590,8 +596,7 @@ class IndefiniteIntegralIdentity(Rule):
                     continue
 
                 inst['x'] = Var(e.var)
-                assert indef.rhs.is_plus() and indef.rhs.args[1].is_symbol() and \
-                    indef.rhs.args[1].name == "C"
+                assert indef.rhs.is_plus() and indef.rhs.args[1].is_skolem_func()
                 return indef.rhs.args[0].inst_pat(inst)
 
             # No matching identity found
@@ -1080,7 +1085,7 @@ class Substitution(Rule):
 
     """
 
-    def __init__(self, var_name: str, var_subst: Union[Expr,str]):
+    def __init__(self, var_name: str, var_subst: Union[Expr, str]):
         if isinstance(var_subst, str):
             var_subst = parser.parse_expr(var_subst)
         assert isinstance(var_name, str) and isinstance(var_subst, Expr)

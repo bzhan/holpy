@@ -1,0 +1,190 @@
+{
+    "content": [
+        {
+            "type": "header",
+            "name": "Definite Integrals",
+            "level": 1
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[2,3]. 2 * x + x ^ 2",
+            "path": "tongji7"
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0,1]. (3 * x + 1) ^ (-2)",
+            "path": "tongji7"
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0,1]. exp(6 * x)",
+            "path": "tongji7"
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[-1,2]. x * exp(x)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0,pi/4]. sin(x)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0,1]. 3*x^2 - x + 1",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[1,2]. x^2 + 1/x^4",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[pi/3, pi]. sin(2*x + pi/3)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[4, 9]. x ^ (1 / 3) * (x ^ (1 / 2) + 1)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[-1, 0]. (3 * x ^ 4 + 3 * x ^ 2 + 1) / (x ^ 2 + 1)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[4, exp(1) + 3]. (x ^ 3 - 12 * x ^ 2 - 42) / (x - 3)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0, pi / 2]. sin(x) * cos(x) ^ 3",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0, pi]. (1 - sin(x)^3)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[pi/6, pi/2]. cos(x) ^ 2",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0, 1]. (1 - x^2) ^ (1/2)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0, sqrt(2)]. sqrt(2 - x^2)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT y:[-sqrt(2), sqrt(2)]. sqrt(8 - 2*y^2)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[1/sqrt(2), 1]. sqrt(1 - x^2) / x ^ 2",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[-1, 1]. x / sqrt(5 - 4 * x)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[1,4]. 1 / (1 + sqrt(x))",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[3/4, 1]. 1 / (sqrt(1-x) - 1)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT t:[0, 1]. t * exp(-t ^ 2 / 2)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[1, exp(2)]. 1 / (x*sqrt(1+log(x)))",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[-2, 0]. (x + 2)/(x^2 + 2*x + 2)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[-pi/2,pi/2]. cos(x)^4",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[-pi/2, pi/2]. sqrt(cos(x) - cos(x)^3)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0, pi]. sqrt(1 + cos(2*x))",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0, 1].x * exp(-x)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[1, exp(1)]. x * log(x)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[pi/4, pi/3]. x / sin(x)^2",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[1, 4]. log(x) / sqrt(x)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0, 1]. x * atan(x)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0, pi/2]. exp(2*x)*cos(x)",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[0,pi]. (x * sin(x))^2",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[1, exp(1)]. sin(log(x))",
+            "path": "tongji7"            
+        },
+        {
+            "type": "problem",
+            "expr": "INT x:[1/exp(1), exp(1)]. abs(log(x))",
+            "path": "tongji7"            
+        }
+    ],
+    "name": "Tongji 7'th Edition"
+}

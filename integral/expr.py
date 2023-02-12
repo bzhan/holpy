@@ -279,7 +279,7 @@ class Expr:
             return (self.op, self.args) <= (other.op, other.args)
         elif self.is_fun():
             return (self.func_name, self.args) <= (other.func_name, other.args)
-        elif self.is_deriv():
+        elif self.is_deriv() or self.is_indefinite_integral():
             return (self.body, self.var) <= (other.body, other.var)
         elif self.is_integral() or self.is_evalat():
             return (self.body, self.lower, self.upper, self.var) <= \

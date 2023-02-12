@@ -1,0 +1,411 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. (3 ^ x + 4 ^ x) / 5 ^ x) = -2/5 / log(3/5) + -1/5 / log(4/5)",
+            "latex_goal": "\\int_{0}^{1} \\frac{3 ^ {x} + 4 ^ {x}}{5 ^ {x}} \\,dx = \\frac{-\\frac{2}{5}}{\\log{(\\frac{3}{5})}} + \\frac{-\\frac{1}{5}}{\\log{(\\frac{4}{5})}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. (3 ^ x + 4 ^ x) / 5 ^ x) = -2/5 / log(3/5) + -1/5 / log(4/5)",
+                "latex_goal": "\\int_{0}^{1} \\frac{3 ^ {x} + 4 ^ {x}}{5 ^ {x}} \\,dx = \\frac{-\\frac{2}{5}}{\\log{(\\frac{3}{5})}} + \\frac{-\\frac{1}{5}}{\\log{(\\frac{4}{5})}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\frac{3 ^ {x} + 4 ^ {x}}{5 ^ {x}} \\,dx",
+                    "start": "INT x:[0,1]. (3 ^ x + 4 ^ x) / 5 ^ x",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} \\frac{3 ^ {x}}{5 ^ {x}} + \\frac{4 ^ {x}}{5 ^ {x}} \\,dx",
+                            "res": "INT x:[0,1]. 3 ^ x / 5 ^ x + 4 ^ x / 5 ^ x",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{3 ^ {x} + 4 ^ {x}}{5 ^ {x}}\\) to \\(\\frac{3 ^ {x}}{5 ^ {x}} + \\frac{4 ^ {x}}{5 ^ {x}}\\)",
+                                "name": "Equation",
+                                "new_expr": "3 ^ x / 5 ^ x + 4 ^ x / 5 ^ x",
+                                "old_expr": "(3 ^ x + 4 ^ x) / 5 ^ x",
+                                "str": "rewriting (3 ^ x + 4 ^ x) / 5 ^ x to 3 ^ x / 5 ^ x + 4 ^ x / 5 ^ x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} (\\frac{3}{5}) ^ {x} + \\frac{4 ^ {x}}{5 ^ {x}} \\,dx",
+                            "res": "INT x:[0,1]. (3/5) ^ x + 4 ^ x / 5 ^ x",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\frac{3 ^ {x}}{5 ^ {x}}\\) to \\((\\frac{3}{5}) ^ {x}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "3 ^ x / 5 ^ x",
+                                "str": "rewrite 3 ^ x / 5 ^ x to (3/5) ^ x using identity",
+                                "target": "(3/5) ^ x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} (\\frac{3}{5}) ^ {x} + (\\frac{4}{5}) ^ {x} \\,dx",
+                            "res": "INT x:[0,1]. (3/5) ^ x + (4/5) ^ x",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\frac{4 ^ {x}}{5 ^ {x}}\\) to \\((\\frac{4}{5}) ^ {x}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "4 ^ x / 5 ^ x",
+                                "str": "rewrite 4 ^ x / 5 ^ x to (4/5) ^ x using identity",
+                                "target": "(4/5) ^ x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\int_{0}^{1} (\\frac{3}{5}) ^ {x} \\,dx) + (\\int_{0}^{1} (\\frac{4}{5}) ^ {x} \\,dx)",
+                            "res": "(INT x:[0,1]. (3/5) ^ x) + (INT x:[0,1]. (4/5) ^ x)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\left. \\frac{(\\frac{3}{5}) ^ {x}}{\\log{(\\frac{3}{5})}} \\right\\vert_{x=0}^{1}) + (\\left. \\frac{(\\frac{4}{5}) ^ {x}}{\\log{(\\frac{4}{5})}} \\right\\vert_{x=0}^{1})",
+                            "res": "([(3/5) ^ x / log(3/5)]_x=0,1) + ([(4/5) ^ x / log(4/5)]_x=0,1)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{1}{5} (2 \\log{(2)} - \\log{(5)}) ^ {-1} - \\frac{2}{5} (\\log{(3)} - \\log{(5)}) ^ {-1}",
+                            "res": "-1/5 * (2 * log(2) - log(5)) ^ (-1) - 2/5 * (log(3) - log(5)) ^ (-1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{-\\frac{2}{5}}{\\log{(\\frac{3}{5})}} + \\frac{-\\frac{1}{5}}{\\log{(\\frac{4}{5})}}",
+                    "start": "-2/5 / log(3/5) + -1/5 / log(4/5)",
+                    "steps": [
+                        {
+                            "latex_res": "-\\frac{1}{5} (2 \\log{(2)} - \\log{(5)}) ^ {-1} - \\frac{2}{5} (\\log{(3)} - \\log{(5)}) ^ {-1}",
+                            "res": "-1/5 * (2 * log(2) - log(5)) ^ (-1) - 2/5 * (log(3) - log(5)) ^ (-1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x. 30 * exp(-3 * x) * (1 + 3 * exp(-x)) ^ 5) = -5/36 * (1 + 3 * exp(-x)) ^ 8 + 20/63 * (1 + 3 * exp(-x)) ^ 7 + -5/27 * (1 + 3 * exp(-x)) ^ 6 + SKOLEM_CONST(C)",
+            "latex_goal": "\\int 30 e^{-3 x} (1 + 3 e^{-x}) ^ {5} \\,dx = -\\frac{5}{36} (1 + 3 e^{-x}) ^ {8} + \\frac{20}{63} (1 + 3 e^{-x}) ^ {7} + -\\frac{5}{27} (1 + 3 e^{-x}) ^ {6} + C",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x. 30 * exp(-3 * x) * (1 + 3 * exp(-x)) ^ 5) = -5/36 * (1 + 3 * exp(-x)) ^ 8 + 20/63 * (1 + 3 * exp(-x)) ^ 7 + -5/27 * (1 + 3 * exp(-x)) ^ 6 + SKOLEM_CONST(C)",
+                "latex_goal": "\\int 30 e^{-3 x} (1 + 3 e^{-x}) ^ {5} \\,dx = -\\frac{5}{36} (1 + 3 e^{-x}) ^ {8} + \\frac{20}{63} (1 + 3 e^{-x}) ^ {7} + -\\frac{5}{27} (1 + 3 e^{-x}) ^ {6} + C",
+                "lhs_calc": {
+                    "latex_start": "\\int 30 e^{-3 x} (1 + 3 e^{-x}) ^ {5} \\,dx",
+                    "start": "INT x. 30 * exp(-3 * x) * (1 + 3 * exp(-x)) ^ 5",
+                    "steps": [
+                        {
+                            "latex_res": "\\int -10 (\\frac{e^{3 \\log{(1/3\\cdot u - 1/3)}} (3 e^{\\log{(1/3\\cdot u - 1/3)}} + 1) ^ {5}}{\\frac{1}{3} u - \\frac{1}{3}}) \\,du",
+                            "res": "INT u. -10 * (exp(3 * log(1/3 * u - 1/3)) * (3 * exp(log(1/3 * u - 1/3)) + 1) ^ 5 / (1/3 * u - 1/3))",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(1 + 3 e^{-x}\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for 1 + 3 * exp(-x)",
+                                "var_name": "u",
+                                "var_subst": "1 + 3 * exp(-x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-10 (\\int u ^ {5} (\\frac{1}{3} u - \\frac{1}{3}) ^ {2} \\,du)",
+                            "res": "-10 * (INT u. u ^ 5 * (1/3 * u - 1/3) ^ 2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-10 (\\int \\frac{1}{9} u ^ {5} - \\frac{2}{9} u ^ {6} + \\frac{1}{9} u ^ {7} \\,du)",
+                            "res": "-10 * (INT u. 1/9 * u ^ 5 - 2/9 * u ^ 6 + 1/9 * u ^ 7)",
+                            "rule": {
+                                "loc": "1.0",
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial at 1.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{10}{9} (\\int u ^ {5} \\,du) + \\frac{20}{9} (\\int u ^ {6} \\,du) - \\frac{10}{9} (\\int u ^ {7} \\,du)",
+                            "res": "-10/9 * (INT u. u ^ 5) + 20/9 * (INT u. u ^ 6) - 10/9 * (INT u. u ^ 7)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{10}{9} (\\frac{u ^ {5 + 1}}{5 + 1}) + \\frac{20}{9} (\\frac{u ^ {6 + 1}}{6 + 1}) - \\frac{10}{9} (\\frac{u ^ {7 + 1}}{7 + 1}) + C",
+                            "res": "-10/9 * (u ^ (5 + 1) / (5 + 1)) + 20/9 * (u ^ (6 + 1) / (6 + 1)) - 10/9 * (u ^ (7 + 1) / (7 + 1)) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{10}{9} (\\frac{(1 + 3 e^{-x}) ^ {5 + 1}}{5 + 1}) + \\frac{20}{9} (\\frac{(1 + 3 e^{-x}) ^ {6 + 1}}{6 + 1}) - \\frac{10}{9} (\\frac{(1 + 3 e^{-x}) ^ {7 + 1}}{7 + 1}) + C",
+                            "res": "-10/9 * ((1 + 3 * exp(-x)) ^ (5 + 1) / (5 + 1)) + 20/9 * ((1 + 3 * exp(-x)) ^ (6 + 1) / (6 + 1)) - 10/9 * ((1 + 3 * exp(-x)) ^ (7 + 1) / (7 + 1)) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "ReplaceSubstitution",
+                                "str": "replace substitution"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-\\frac{5}{27} (3 e^{-x} + 1) ^ {6} + \\frac{20}{63} (3 e^{-x} + 1) ^ {7} - \\frac{5}{36} (3 e^{-x} + 1) ^ {8} + C",
+                            "res": "-5/27 * (3 * exp(-x) + 1) ^ 6 + 20/63 * (3 * exp(-x) + 1) ^ 7 - 5/36 * (3 * exp(-x) + 1) ^ 8 + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "-\\frac{5}{36} (1 + 3 e^{-x}) ^ {8} + \\frac{20}{63} (1 + 3 e^{-x}) ^ {7} + -\\frac{5}{27} (1 + 3 e^{-x}) ^ {6} + C",
+                    "start": "-5/36 * (1 + 3 * exp(-x)) ^ 8 + 20/63 * (1 + 3 * exp(-x)) ^ 7 + -5/27 * (1 + 3 * exp(-x)) ^ 6 + SKOLEM_CONST(C)",
+                    "steps": [
+                        {
+                            "latex_res": "-\\frac{5}{27} (3 e^{-x} + 1) ^ {6} + \\frac{20}{63} (3 e^{-x} + 1) ^ {7} - \\frac{5}{36} (3 e^{-x} + 1) ^ {8} + C",
+                            "res": "-5/27 * (3 * exp(-x) + 1) ^ 6 + 20/63 * (3 * exp(-x) + 1) ^ 7 - 5/36 * (3 * exp(-x) + 1) ^ 8 + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x. 8 * exp(x) * (3 + exp(x)) / sqrt(exp(2 * x) + 6 * exp(x) + 1)) = 8 * sqrt(exp(2 * x) + 6 * exp(x) + 1) + SKOLEM_CONST(C)",
+            "latex_goal": "\\int \\frac{8 e^{x} (3 + e^{x})}{\\sqrt{e^{2 x} + 6 e^{x} + 1}} \\,dx = 8 \\sqrt{e^{2 x} + 6 e^{x} + 1} + C",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x. 8 * exp(x) * (3 + exp(x)) / sqrt(exp(2 * x) + 6 * exp(x) + 1)) = 8 * sqrt(exp(2 * x) + 6 * exp(x) + 1) + SKOLEM_CONST(C)",
+                "latex_goal": "\\int \\frac{8 e^{x} (3 + e^{x})}{\\sqrt{e^{2 x} + 6 e^{x} + 1}} \\,dx = 8 \\sqrt{e^{2 x} + 6 e^{x} + 1} + C",
+                "lhs_calc": {
+                    "latex_start": "\\int \\frac{8 e^{x} (3 + e^{x})}{\\sqrt{e^{2 x} + 6 e^{x} + 1}} \\,dx",
+                    "start": "INT x. 8 * exp(x) * (3 + exp(x)) / sqrt(exp(2 * x) + 6 * exp(x) + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int \\frac{4 (2 e^{2 x} + 6 e^{x})}{\\sqrt{e^{2 x} + 6 e^{x} + 1}} \\,dx",
+                            "res": "INT x. 4 * (2 * exp(2 * x) + 6 * exp(x)) / sqrt(exp(2 * x) + 6 * exp(x) + 1)",
+                            "rule": {
+                                "latex_str": "rewriting \\(8 e^{x} (3 + e^{x})\\) to \\(4 (2 e^{2 x} + 6 e^{x})\\)",
+                                "name": "Equation",
+                                "new_expr": "4 * (2 * exp(2 * x) + 6 * exp(x))",
+                                "old_expr": "8 * exp(x) * (3 + exp(x))",
+                                "str": "rewriting 8 * exp(x) * (3 + exp(x)) to 4 * (2 * exp(2 * x) + 6 * exp(x))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "4 (\\int \\frac{2 e^{2 x} + 6 e^{x}}{\\sqrt{e^{2 x} + 6 e^{x} + 1}} \\,dx)",
+                            "res": "4 * (INT x. (2 * exp(2 * x) + 6 * exp(x)) / sqrt(exp(2 * x) + 6 * exp(x) + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "4 (\\int \\frac{1}{\\sqrt{u}} \\,du)",
+                            "res": "4 * (INT u. 1 / sqrt(u))",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(e^{2 x} + 6 e^{x} + 1\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for exp(2 * x) + 6 * exp(x) + 1",
+                                "var_name": "u",
+                                "var_subst": "exp(2 * x) + 6 * exp(x) + 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "4 (\\int u ^ {-1/2} \\,du)",
+                            "res": "4 * (INT u. u ^ (-1/2))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{\\sqrt{u}}\\) to \\(u ^ {-1/2}\\)",
+                                "name": "Equation",
+                                "new_expr": "u ^ (-1/2)",
+                                "old_expr": "1 / sqrt(u)",
+                                "str": "rewriting 1 / sqrt(u) to u ^ (-1/2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "4 (\\frac{u ^ {-1/2 + 1}}{-\\frac{1}{2} + 1}) + C",
+                            "res": "4 * (u ^ (-1/2 + 1) / (-1/2 + 1)) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "8 \\sqrt{u} + C",
+                            "res": "8 * sqrt(u) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "8 \\sqrt{e^{2 x} + 6 e^{x} + 1} + C",
+                            "res": "8 * sqrt(exp(2 * x) + 6 * exp(x) + 1) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "ReplaceSubstitution",
+                                "str": "replace substitution"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "8 \\sqrt{e^{2 x} + 6 e^{x} + 1} + C",
+                    "start": "8 * sqrt(exp(2 * x) + 6 * exp(x) + 1) + SKOLEM_CONST(C)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x. (27 * exp(9 * x) + exp(12 * x)) ^ (1/3)) = 1/4 * (27 + exp(3 * x)) ^ (4/3) + SKOLEM_CONST(C)",
+            "latex_goal": "\\int \\sqrt[3]{27 e^{9 x} + e^{12 x}} \\,dx = \\frac{1}{4} (27 + e^{3 x}) ^ {4/3} + C",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x. (27 * exp(9 * x) + exp(12 * x)) ^ (1/3)) = 1/4 * (27 + exp(3 * x)) ^ (4/3) + SKOLEM_CONST(C)",
+                "latex_goal": "\\int \\sqrt[3]{27 e^{9 x} + e^{12 x}} \\,dx = \\frac{1}{4} (27 + e^{3 x}) ^ {4/3} + C",
+                "lhs_calc": {
+                    "latex_start": "\\int \\sqrt[3]{27 e^{9 x} + e^{12 x}} \\,dx",
+                    "start": "INT x. (27 * exp(9 * x) + exp(12 * x)) ^ (1/3)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int \\sqrt[3]{e^{9 x} (27 + e^{3 x})} \\,dx",
+                            "res": "INT x. (exp(9 * x) * (27 + exp(3 * x))) ^ (1/3)",
+                            "rule": {
+                                "latex_str": "rewriting \\(27 e^{9 x} + e^{12 x}\\) to \\(e^{9 x} (27 + e^{3 x})\\)",
+                                "name": "Equation",
+                                "new_expr": "exp(9 * x) * (27 + exp(3 * x))",
+                                "old_expr": "27 * exp(9 * x) + exp(12 * x)",
+                                "str": "rewriting 27 * exp(9 * x) + exp(12 * x) to exp(9 * x) * (27 + exp(3 * x))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int \\sqrt[3]{e^{9 x}} \\sqrt[3]{27 + e^{3 x}} \\,dx",
+                            "res": "INT x. exp(9 * x) ^ (1/3) * (27 + exp(3 * x)) ^ (1/3)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\sqrt[3]{e^{9 x} (27 + e^{3 x})}\\) to \\(\\sqrt[3]{e^{9 x}} \\sqrt[3]{27 + e^{3 x}}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "(exp(9 * x) * (27 + exp(3 * x))) ^ (1/3)",
+                                "str": "rewrite (exp(9 * x) * (27 + exp(3 * x))) ^ (1/3) to exp(9 * x) ^ (1/3) * (27 + exp(3 * x)) ^ (1/3) using identity",
+                                "target": "exp(9 * x) ^ (1/3) * (27 + exp(3 * x)) ^ (1/3)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int e^{3 x} \\sqrt[3]{27 + e^{3 x}} \\,dx",
+                            "res": "INT x. exp(3 * x) * (27 + exp(3 * x)) ^ (1/3)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\sqrt[3]{e^{9 x}}\\) to \\(e^{3 x}\\)",
+                                "name": "Equation",
+                                "new_expr": "exp(3 * x)",
+                                "old_expr": "exp(9 * x) ^ (1/3)",
+                                "str": "rewriting exp(9 * x) ^ (1/3) to exp(3 * x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int \\frac{1}{3} (\\frac{e^{\\log{(u - 27)}} \\sqrt[3]{e^{\\log{(u - 27)}} + 27}}{u - 27}) \\,du",
+                            "res": "INT u. 1/3 * (exp(log(u - 27)) * (exp(log(u - 27)) + 27) ^ (1/3) / (u - 27))",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(27 + e^{3 x}\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for 27 + exp(3 * x)",
+                                "var_name": "u",
+                                "var_subst": "27 + exp(3 * x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{3} (\\int \\sqrt[3]{u} \\,du)",
+                            "res": "1/3 * (INT u. u ^ (1/3))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{3} (\\frac{u ^ {1/3 + 1}}{\\frac{1}{3} + 1}) + C",
+                            "res": "1/3 * (u ^ (1/3 + 1) / (1/3 + 1)) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "IndefiniteIntegralIdentity",
+                                "str": "apply indefinite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{4} u ^ {4/3} + C",
+                            "res": "1/4 * u ^ (4/3) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{4} (27 + e^{3 x}) ^ {4/3} + C",
+                            "res": "1/4 * (27 + exp(3 * x)) ^ (4/3) + SKOLEM_CONST(C)",
+                            "rule": {
+                                "name": "ReplaceSubstitution",
+                                "str": "replace substitution"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{1}{4} (27 + e^{3 x}) ^ {4/3} + C",
+                    "start": "1/4 * (27 + exp(3 * x)) ^ (4/3) + SKOLEM_CONST(C)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "Exponential"
+}
