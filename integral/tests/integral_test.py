@@ -1917,9 +1917,9 @@ class IntegralTest(unittest.TestCase):
         file.add_definition("I(a, b) = (INT x:[0, oo]. log(1 + a ^ 2 * x ^ 2) / (b ^ 2 + x ^ 2))",
                              conds=["a > 0", "b > 0"])
 
-        goal = file.add_goal("(D a. I(a,b)) = pi / (1 + a * b)", conds=["a > 0", "b > 0"])
-        proof_of_goal = goal.proof_by_calculation()
-        calc = proof_of_goal.lhs_calc
+        goal01 = file.add_goal("(D a. I(a,b)) = pi / (1 + a * b)", conds=["a > 0", "b > 0"])
+        proof_of_goal01 = goal01.proof_by_calculation()
+        calc = proof_of_goal01.lhs_calc
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
         calc.perform_rule(rules.DerivIntExchange())
         calc.perform_rule(rules.FullSimplify())
@@ -2080,6 +2080,38 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("exp(1/4 * (b ^ 2 / a))", "exp(b ^ 2 / (4 * a))"))
         calc.perform_rule(rules.Equation("1/2 * sqrt(pi) * (b * exp(b ^ 2 / (4 * a)) / a ^ (3/2))",
                                          "(b / (2 * a)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)"))
+
+        goal04 = file.add_goal("(INT x:[-oo, oo]. x * exp(-(a * x ^ 2) + b * x)) = (b / (2 * a)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                               conds=["a > 0"])
+        proof_of_goal04 = goal04.proof_by_rewrite_goal(begin=goal03)
+        calc = proof_of_goal04.begin
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
+        calc.perform_rule(rules.FullSimplify())
+
+        goal05 = file.add_goal("(INT x:[-oo, oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = (b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+                               conds=["a > 0"])
+        proof_of_goal05 = goal05.proof_by_rewrite_goal(begin=goal02)
+        calc = proof_of_goal05.begin
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.SolveEquation("(INT x:[-oo,oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x))"))
+
+        goal06 = file.add_goal("(INT x:[-oo, oo]. x * exp(-x ^ 2 - x)) = -(1/2) * sqrt(pi * sqrt(exp(1)))")
+        proof_of_goal06 = goal06.proof_by_calculation()
+        calc = proof_of_goal06.lhs_calc
+        calc.perform_rule(rules.Equation("x * exp(-x ^ 2 - x)", "x * exp(-(1 * x ^ 2) + (-1) * x)"))
+        calc.perform_rule(rules.ApplyEquation(goal04.goal))
+        calc.perform_rule(rules.Equation("-1 / (2 * 1) * exp((-1) ^ 2 / (4 * 1)) * sqrt(pi / 1)",
+                                         "-(1/2) * sqrt(pi * sqrt(exp(1)))"))
+
+        goal07 = file.add_goal("(INT x:[-oo, oo]. x ^ 2 * exp(-x ^ 2 - x)) = 3/4 * sqrt(pi * sqrt(exp(1)))")
+        proof_of_goal07 = goal07.proof_by_calculation()
+        calc = proof_of_goal07.lhs_calc
+        calc.perform_rule(rules.Equation("x ^ 2 * exp(-x ^ 2 - x)", "x ^ 2 * exp(-(1 * x ^ 2) + (-1) * x)"))
+        calc.perform_rule(rules.ApplyEquation(goal05.goal))
+        calc.perform_rule(rules.Equation("(-1) ^ 2 / (4 * 1 ^ 2) * exp((-1) ^ 2 / (4 * 1)) * sqrt(pi / 1) + 1 / (2 * 1) * exp((-1) ^ 2 / (4 * 1)) * sqrt(pi / 1)",
+                                         "3/4 * sqrt(pi * sqrt(exp(1)))"))
+
         self.checkAndOutput(file, "Chapter3Practice04")
 
 
@@ -2136,7 +2168,9 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("(b * (-x + 1) + a * x) ^ 3", "(a * x + b * (1 - x)) ^ 3"))
         calc.perform_rule(rules.SolveEquation("(INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3)"))
         calc.perform_rule(rules.Equation("1/2 * (1 / (a ^ 2 * b))", "1 / (2 * a ^ 2 * b)"))
+
         self.checkAndOutput(file, "Chapter3Practice06")
+
 
     def testCharpter1Practice0101(self):
         # Reference:
