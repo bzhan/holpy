@@ -1,0 +1,332 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "(INT y:[0,1]. 1 / (sqrt(y) * sqrt(1 - y))) = pi",
+            "latex_goal": "\\int_{0}^{1} \\frac{1}{\\sqrt{y} \\sqrt{1 - y}} \\,dy = \\pi",
+            "proof": {
+                "finished": true,
+                "goal": "(INT y:[0,1]. 1 / (sqrt(y) * sqrt(1 - y))) = pi",
+                "latex_goal": "\\int_{0}^{1} \\frac{1}{\\sqrt{y} \\sqrt{1 - y}} \\,dy = \\pi",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\frac{1}{\\sqrt{y} \\sqrt{1 - y}} \\,dy",
+                    "start": "INT y:[0,1]. 1 / (sqrt(y) * sqrt(1 - y))",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin^{2}(x)} \\sqrt{1 - \\sin^{2}(x)}} (2 \\cos{x} \\sin{x}) \\,dx",
+                            "res": "INT x:[0,pi / 2]. 1 / (sqrt(sin(x) ^ 2) * sqrt(1 - sin(x) ^ 2)) * (2 * cos(x) * sin(x))",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(\\sin^{2}(x)\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for sin(x) ^ 2",
+                                "var_name": "x",
+                                "var_subst": "sin(x) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{1}{\\sqrt{\\sin^{2}(x)} \\sqrt{1 - (1 - \\cos^{2}(x))}} (2 \\cos{x} \\sin{x}) \\,dx",
+                            "res": "INT x:[0,pi / 2]. 1 / (sqrt(sin(x) ^ 2) * sqrt(1 - (1 - cos(x) ^ 2))) * (2 * cos(x) * sin(x))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\sin^{2}(x)\\) to \\(1 - \\cos^{2}(x)\\) using identity at 0.0.1.1.0.1",
+                                "loc": "0.0.1.1.0.1",
+                                "name": "ApplyIdentity",
+                                "source": "sin(x) ^ 2",
+                                "str": "rewrite sin(x) ^ 2 to 1 - cos(x) ^ 2 using identity at 0.0.1.1.0.1",
+                                "target": "1 - cos(x) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\int_{0}^{\\pi/2} 1 \\,dx)",
+                            "res": "2 * (INT x:[0,pi / 2]. 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\left. x \\right\\vert_{x=0}^{\\pi/2})",
+                            "res": "2 * ([x]_x=0,pi / 2)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\pi",
+                            "res": "pi",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\pi",
+                    "start": "pi",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT y:[0,1]. log(y) / (sqrt(y) * sqrt(1 - y))) = -(2 * pi * log(2))",
+            "latex_goal": "\\int_{0}^{1} \\frac{\\log{y}}{\\sqrt{y} \\sqrt{1 - y}} \\,dy = -2 \\pi \\log{(2)}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT y:[0,1]. log(y) / (sqrt(y) * sqrt(1 - y))) = -(2 * pi * log(2))",
+                "latex_goal": "\\int_{0}^{1} \\frac{\\log{y}}{\\sqrt{y} \\sqrt{1 - y}} \\,dy = -2 \\pi \\log{(2)}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\frac{\\log{y}}{\\sqrt{y} \\sqrt{1 - y}} \\,dy",
+                    "start": "INT y:[0,1]. log(y) / (sqrt(y) * sqrt(1 - y))",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{\\log{(\\sin^{2}(x))}}{\\sqrt{\\sin^{2}(x)} \\sqrt{1 - \\sin^{2}(x)}} (2 \\cos{x} \\sin{x}) \\,dx",
+                            "res": "INT x:[0,pi / 2]. log(sin(x) ^ 2) / (sqrt(sin(x) ^ 2) * sqrt(1 - sin(x) ^ 2)) * (2 * cos(x) * sin(x))",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(\\sin^{2}(x)\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for sin(x) ^ 2",
+                                "var_name": "x",
+                                "var_subst": "sin(x) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{2 \\log{(\\sin{x})}}{\\sqrt{\\sin^{2}(x)} \\sqrt{1 - \\sin^{2}(x)}} (2 \\cos{x} \\sin{x}) \\,dx",
+                            "res": "INT x:[0,pi / 2]. 2 * log(sin(x)) / (sqrt(sin(x) ^ 2) * sqrt(1 - sin(x) ^ 2)) * (2 * cos(x) * sin(x))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\log{(\\sin^{2}(x))}\\) to \\(2 \\log{(\\sin{x})}\\)",
+                                "name": "Equation",
+                                "new_expr": "2 * log(sin(x))",
+                                "old_expr": "log(sin(x) ^ 2)",
+                                "str": "rewriting log(sin(x) ^ 2) to 2 * log(sin(x))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\pi/2} \\frac{2 \\log{(\\sin{x})}}{\\sqrt{\\sin^{2}(x)} \\sqrt{1 - (1 - \\cos^{2}(x))}} (2 \\cos{x} \\sin{x}) \\,dx",
+                            "res": "INT x:[0,pi / 2]. 2 * log(sin(x)) / (sqrt(sin(x) ^ 2) * sqrt(1 - (1 - cos(x) ^ 2))) * (2 * cos(x) * sin(x))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\sin^{2}(x)\\) to \\(1 - \\cos^{2}(x)\\) using identity at 0.0.1.1.0.1",
+                                "loc": "0.0.1.1.0.1",
+                                "name": "ApplyIdentity",
+                                "source": "sin(x) ^ 2",
+                                "str": "rewrite sin(x) ^ 2 to 1 - cos(x) ^ 2 using identity at 0.0.1.1.0.1",
+                                "target": "1 - cos(x) ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "4 (\\int_{0}^{\\pi/2} \\log{(\\sin{x})} \\,dx)",
+                            "res": "4 * (INT x:[0,pi / 2]. log(sin(x)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "4 (\\int_{0}^{\\pi/2} \\log{(1 \\sin{x})} \\,dx)",
+                            "res": "4 * (INT x:[0,pi / 2]. log(1 * sin(x)))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\sin{x}\\) to \\(1 \\sin{x}\\)",
+                                "name": "Equation",
+                                "new_expr": "1 * sin(x)",
+                                "old_expr": "sin(x)",
+                                "str": "rewriting sin(x) to 1 * sin(x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "4 -\\frac{\\pi \\log{(2)}}{2}",
+                            "res": "4 * -(pi * log(2) / 2)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "-2 \\pi \\log{(2)}",
+                            "res": "-(2 * pi * log(2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "-2 \\pi \\log{(2)}",
+                    "start": "-(2 * pi * log(2))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,4]. log(x) / sqrt(4 * x - x ^ 2)) = 0",
+            "latex_goal": "\\int_{0}^{4} \\frac{\\log{x}}{\\sqrt{4 x - x ^ {2}}} \\,dx = 0",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,4]. log(x) / sqrt(4 * x - x ^ 2)) = 0",
+                "latex_goal": "\\int_{0}^{4} \\frac{\\log{x}}{\\sqrt{4 x - x ^ {2}}} \\,dx = 0",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{4} \\frac{\\log{x}}{\\sqrt{4 x - x ^ {2}}} \\,dx",
+                    "start": "INT x:[0,4]. log(x) / sqrt(4 * x - x ^ 2)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} 4 (\\frac{\\log{(4 y)}}{\\sqrt{-16 y ^ {2} + 16 y}}) \\,dy",
+                            "res": "INT y:[0,1]. 4 * (log(4 * y) / sqrt(-16 * y ^ 2 + 16 * y))",
+                            "rule": {
+                                "latex_str": "substitute \\(y\\) for \\(\\frac{x}{4}\\)",
+                                "name": "Substitution",
+                                "str": "substitute y for x / 4",
+                                "var_name": "y",
+                                "var_subst": "x / 4"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} 4 (\\frac{\\log{(4)} + \\log{y}}{\\sqrt{-16 y ^ {2} + 16 y}}) \\,dy",
+                            "res": "INT y:[0,1]. 4 * ((log(4) + log(y)) / sqrt(-16 * y ^ 2 + 16 * y))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\log{(4 y)}\\) to \\(\\log{(4)} + \\log{y}\\)",
+                                "name": "Equation",
+                                "new_expr": "log(4) + log(y)",
+                                "old_expr": "log(4 * y)",
+                                "str": "rewriting log(4 * y) to log(4) + log(y)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} 4 (\\frac{\\log{(4)} + \\log{y}}{4 \\sqrt{-y ^ {2} + y}}) \\,dy",
+                            "res": "INT y:[0,1]. 4 * ((log(4) + log(y)) / (4 * sqrt(-(y ^ 2) + y)))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\sqrt{-16 y ^ {2} + 16 y}\\) to \\(4 \\sqrt{-y ^ {2} + y}\\)",
+                                "name": "Equation",
+                                "new_expr": "4 * sqrt(-(y ^ 2) + y)",
+                                "old_expr": "sqrt(-16 * y ^ 2 + 16 * y)",
+                                "str": "rewriting sqrt(-16 * y ^ 2 + 16 * y) to 4 * sqrt(-(y ^ 2) + y)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} 4 (\\frac{\\log{(4)} + \\log{y}}{4 (\\sqrt{y} \\sqrt{1 - y})}) \\,dy",
+                            "res": "INT y:[0,1]. 4 * ((log(4) + log(y)) / (4 * (sqrt(y) * sqrt(1 - y))))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\sqrt{-y ^ {2} + y}\\) to \\(\\sqrt{y} \\sqrt{1 - y}\\)",
+                                "name": "Equation",
+                                "new_expr": "sqrt(y) * sqrt(1 - y)",
+                                "old_expr": "sqrt(-(y ^ 2) + y)",
+                                "str": "rewriting sqrt(-(y ^ 2) + y) to sqrt(y) * sqrt(1 - y)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} 2 \\log{(2)} (\\frac{1}{\\sqrt{y} \\sqrt{-y + 1}}) + \\frac{\\log{y}}{\\sqrt{y} \\sqrt{-y + 1}} \\,dy",
+                            "res": "INT y:[0,1]. 2 * log(2) * (1 / (sqrt(y) * sqrt(-y + 1))) + log(y) / (sqrt(y) * sqrt(-y + 1))",
+                            "rule": {
+                                "loc": "0",
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 \\log{(2)} (\\int_{0}^{1} \\frac{1}{\\sqrt{y} \\sqrt{-y + 1}} \\,dy) + (\\int_{0}^{1} \\frac{\\log{y}}{\\sqrt{y} \\sqrt{-y + 1}} \\,dy)",
+                            "res": "2 * log(2) * (INT y:[0,1]. 1 / (sqrt(y) * sqrt(-y + 1))) + (INT y:[0,1]. log(y) / (sqrt(y) * sqrt(-y + 1)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 \\log{(2)} (\\int_{0}^{1} \\frac{1}{\\sqrt{y} \\sqrt{1 - y}} \\,dy) + (\\int_{0}^{1} \\frac{\\log{y}}{\\sqrt{y} \\sqrt{-y + 1}} \\,dy)",
+                            "res": "2 * log(2) * (INT y:[0,1]. 1 / (sqrt(y) * sqrt(1 - y))) + (INT y:[0,1]. log(y) / (sqrt(y) * sqrt(-y + 1)))",
+                            "rule": {
+                                "latex_str": "rewriting \\(-y + 1\\) to \\(1 - y\\)",
+                                "name": "Equation",
+                                "new_expr": "1 - y",
+                                "old_expr": "-y + 1",
+                                "str": "rewriting -y + 1 to 1 - y"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 \\log{(2)} (\\int_{0}^{1} \\frac{1}{\\sqrt{y} \\sqrt{1 - y}} \\,dy) + (\\int_{0}^{1} \\frac{\\log{y}}{\\sqrt{y} \\sqrt{1 - y}} \\,dy)",
+                            "res": "2 * log(2) * (INT y:[0,1]. 1 / (sqrt(y) * sqrt(1 - y))) + (INT y:[0,1]. log(y) / (sqrt(y) * sqrt(1 - y)))",
+                            "rule": {
+                                "latex_str": "rewriting \\(-y + 1\\) to \\(1 - y\\)",
+                                "name": "Equation",
+                                "new_expr": "1 - y",
+                                "old_expr": "-y + 1",
+                                "str": "rewriting -y + 1 to 1 - y"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 \\log{(2)} \\pi + (\\int_{0}^{1} \\frac{\\log{y}}{\\sqrt{y} \\sqrt{1 - y}} \\,dy)",
+                            "res": "2 * log(2) * pi + (INT y:[0,1]. log(y) / (sqrt(y) * sqrt(1 - y)))",
+                            "rule": {
+                                "eq": "(INT y:[0,1]. 1 / (sqrt(y) * sqrt(1 - y))) = pi",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} \\frac{1}{\\sqrt{y} \\sqrt{1 - y}} \\,dy = \\pi\\) at 0.1",
+                                "loc": "0.1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT y:[0,1]. 1 / (sqrt(y) * sqrt(1 - y))) = pi at 0.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 \\log{(2)} \\pi + -2 \\pi \\log{(2)}",
+                            "res": "2 * log(2) * pi + -(2 * pi * log(2))",
+                            "rule": {
+                                "eq": "(INT y:[0,1]. log(y) / (sqrt(y) * sqrt(1 - y))) = -(2 * pi * log(2))",
+                                "latex_str": "apply equation \\(\\int_{0}^{1} \\frac{\\log{y}}{\\sqrt{y} \\sqrt{1 - y}} \\,dy = -2 \\pi \\log{(2)}\\) at 1",
+                                "loc": "1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT y:[0,1]. log(y) / (sqrt(y) * sqrt(1 - y))) = -(2 * pi * log(2)) at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "0",
+                            "res": "0",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "0",
+                    "start": "0",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "charpter2_practice01"
+}
