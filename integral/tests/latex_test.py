@@ -28,8 +28,9 @@ class LatexTest(unittest.TestCase):
             ("abs(u) ^ -1", "\left| u \\right| ^ {-1}"),
             ("(3 + x) ^ (3/2)", "(3 + x) ^ {3/2}"),
             ("sin(x) ^ (-1)", "\sin{x} ^ {-1}"),
-            ("asin(x)", "\sin^{-1}{x}"),
+            ("asin(x)", "\\sin^{-1}{x}"),
             ("exp(x)^2", "(e^{x}) ^ {2}"),
+            ("cos(t*x)", "\\cos{(t x)}"),
         ]
 
         for e, res in test_data:

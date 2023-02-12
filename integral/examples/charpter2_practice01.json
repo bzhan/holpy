@@ -148,7 +148,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "4 -\\frac{\\pi \\log{(2)}}{2}",
+                            "latex_res": "4 (-\\frac{\\pi \\log{(2)}}{2})",
                             "res": "4 * -(pi * log(2) / 2)",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",

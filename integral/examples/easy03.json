@@ -19,7 +19,7 @@
                     "start": "INT x:[0,oo]. log(x) / (x ^ 2 + b ^ 2)",
                     "steps": [
                         {
-                            "latex_res": "-(\\int_{0}^{\\infty} \\frac{\\log{(\\frac{1}{t})}}{(\\frac{1}{t}) ^ {2} + b ^ {2}} -\\frac{1}{t ^ {2}} \\,dt)",
+                            "latex_res": "-(\\int_{0}^{\\infty} \\frac{\\log{(\\frac{1}{t})}}{(\\frac{1}{t}) ^ {2} + b ^ {2}} (-\\frac{1}{t ^ {2}}) \\,dt)",
                             "res": "-(INT t:[0,oo]. log(1 / t) / ((1 / t) ^ 2 + b ^ 2) * -(1 / t ^ 2))",
                             "rule": {
                                 "latex_str": "inverse substitution for \\(\\frac{1}{t}\\)",
@@ -31,7 +31,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-(\\int_{0}^{\\infty} \\frac{-\\log{t}}{(\\frac{1}{t}) ^ {2} + b ^ {2}} -\\frac{1}{t ^ {2}} \\,dt)",
+                            "latex_res": "-(\\int_{0}^{\\infty} \\frac{-\\log{t}}{(\\frac{1}{t}) ^ {2} + b ^ {2}} (-\\frac{1}{t ^ {2}}) \\,dt)",
                             "res": "-(INT t:[0,oo]. -log(t) / ((1 / t) ^ 2 + b ^ 2) * -(1 / t ^ 2))",
                             "rule": {
                                 "latex_str": "rewriting \\(\\log{(\\frac{1}{t})}\\) to \\(-\\log{t}\\)",
@@ -46,7 +46,7 @@
                             "latex_res": "-(\\int_{0}^{\\infty} \\frac{\\log{t}}{1 + b ^ {2} t ^ {2}} \\,dt)",
                             "res": "-(INT t:[0,oo]. log(t) / (1 + b ^ 2 * t ^ 2))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{-\\log{t}}{(\\frac{1}{t}) ^ {2} + b ^ {2}} -\\frac{1}{t ^ {2}}\\) to \\(\\frac{\\log{t}}{1 + b ^ {2} t ^ {2}}\\)",
+                                "latex_str": "rewriting \\(\\frac{-\\log{t}}{(\\frac{1}{t}) ^ {2} + b ^ {2}} (-\\frac{1}{t ^ {2}})\\) to \\(\\frac{\\log{t}}{1 + b ^ {2} t ^ {2}}\\)",
                                 "name": "Equation",
                                 "new_expr": "log(t) / (1 + b ^ 2 * t ^ 2)",
                                 "old_expr": "-log(t) / ((1 / t) ^ 2 + b ^ 2) * -(1 / t ^ 2)",

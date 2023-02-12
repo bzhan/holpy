@@ -8,7 +8,7 @@
                 }
             ],
             "eq": "g(y,a) = (INT x:[0,oo]. exp(-x * y) * sin(a * x) / x)",
-            "latex_eq": "g(y,a) = \\int_{0}^{\\infty} \\frac{e^{-x y} \\sin{(a x)}}{x} \\,dx",
+            "latex_eq": "g(y,a) = \\int_{0}^{\\infty} \\frac{e^{(-x) y} \\sin{(a x)}}{x} \\,dx",
             "latex_lhs": "g(y,a)",
             "type": "FuncDef"
         },

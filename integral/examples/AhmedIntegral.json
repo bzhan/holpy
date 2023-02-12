@@ -340,7 +340,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "--(\\int_{0}^{1} \\frac{\\frac{1}{x} \\tan^{-1}{(\\frac{\\frac{1}{x}}{\\sqrt{2 (\\frac{1}{x}) ^ {2} + 1}})}}{((\\frac{1}{x}) ^ {2} + 1) \\sqrt{2 (\\frac{1}{x}) ^ {2} + 1}} -\\frac{1}{x ^ {2}} \\,dx) + \\frac{\\pi}{4} (\\int_{1}^{\\infty} \\frac{1}{u ^ {2} + 1} \\,du)",
+                            "latex_res": "--(\\int_{0}^{1} \\frac{\\frac{1}{x} \\tan^{-1}{(\\frac{\\frac{1}{x}}{\\sqrt{2 (\\frac{1}{x}) ^ {2} + 1}})}}{((\\frac{1}{x}) ^ {2} + 1) \\sqrt{2 (\\frac{1}{x}) ^ {2} + 1}} (-\\frac{1}{x ^ {2}}) \\,dx) + \\frac{\\pi}{4} (\\int_{1}^{\\infty} \\frac{1}{u ^ {2} + 1} \\,du)",
                             "res": "--(INT x:[0,1]. 1 / x * atan(1 / x / sqrt(2 * (1 / x) ^ 2 + 1)) / (((1 / x) ^ 2 + 1) * sqrt(2 * (1 / x) ^ 2 + 1)) * -(1 / x ^ 2)) + pi / 4 * (INT u:[1,oo]. 1 / (u ^ 2 + 1))",
                             "rule": {
                                 "latex_str": "inverse substitution for \\(\\frac{1}{x}\\)",

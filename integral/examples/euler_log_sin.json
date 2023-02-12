@@ -314,7 +314,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{\\pi}{2} \\log{(2 (\\frac{1}{a}))}",
+                            "latex_res": "(-\\frac{\\pi}{2}) \\log{(2 (\\frac{1}{a}))}",
                             "res": "-(pi / 2) * log(2 * (1 / a))",
                             "rule": {
                                 "lhs": "I(a)",
@@ -324,7 +324,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{\\pi}{2} (\\log{(2)} + \\log{(\\frac{1}{a})})",
+                            "latex_res": "(-\\frac{\\pi}{2}) (\\log{(2)} + \\log{(\\frac{1}{a})})",
                             "res": "-(pi / 2) * (log(2) + log(1 / a))",
                             "rule": {
                                 "latex_str": "rewrite \\(\\log{(2 (\\frac{1}{a}))}\\) to \\(\\log{(2)} + \\log{(\\frac{1}{a})}\\) using identity",

@@ -13,11 +13,11 @@
             ],
             "finished": true,
             "goal": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
-            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
             "proof": {
                 "finished": true,
                 "goal": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
-                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
                 "lhs_calc": {
                     "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx",
                     "start": "INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))",
@@ -44,7 +44,7 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
+                    "latex_start": "\\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
                     "start": "pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
                     "steps": [
                         {
@@ -76,11 +76,11 @@
             ],
             "finished": true,
             "goal": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)) = pi / (2 * a ^ 4) * (1 - (2 + m * a) / 2 * exp(-a * m))",
-            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{-a m})",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{(-a) m})",
             "proof": {
                 "finished": true,
                 "goal": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)) = pi / (2 * a ^ 4) * (1 - (2 + m * a) / 2 * exp(-a * m))",
-                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{-a m})",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{(-a) m})",
                 "start": {
                     "conds": [
                         {
@@ -92,11 +92,11 @@
                             "latex_cond": "m > 0"
                         }
                     ],
-                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
                     "start": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
                     "steps": [
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
                             "res": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = pi * (1 - exp(-a * m)) / (2 * a ^ 2)",
                             "rule": {
                                 "func_name": "I",
@@ -107,7 +107,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{d}{da} \\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{d}{da} \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
+                            "latex_res": "\\frac{d}{da} \\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{d}{da} \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
                             "res": "(D a. INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = (D a. pi * (1 - exp(-a * m)) / (2 * a ^ 2))",
                             "rule": {
                                 "name": "DerivEquation",
@@ -117,7 +117,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{da} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{d}{da} \\frac{\\pi (1 - e^{-a m})}{2 a ^ {2}}",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{d}{da} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2})} \\,dx = \\frac{d}{da} \\frac{\\pi (1 - e^{(-a) m})}{2 a ^ {2}}",
                             "res": "(INT x:[0,oo]. D a. sin(m * x) / (x * (a ^ 2 + x ^ 2))) = (D a. pi * (1 - exp(-a * m)) / (2 * a ^ 2))",
                             "rule": {
                                 "loc": "0",
@@ -127,7 +127,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-2 a (\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx) = \\frac{1}{4} (\\frac{-4 \\pi a (-e^{-a m} + 1) + 2 \\pi a ^ {2} m e^{-a m}}{a ^ {4}})",
+                            "latex_res": "-2 a (\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx) = \\frac{1}{4} (\\frac{(-4 \\pi) a (-e^{-a m} + 1) + 2 \\pi a ^ {2} m e^{-a m}}{a ^ {4}})",
                             "res": "-2 * a * (INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)) = 1/4 * ((-(4 * pi) * a * (-exp(-(a * m)) + 1) + 2 * pi * a ^ 2 * m * exp(-(a * m))) / a ^ 4)",
                             "rule": {
                                 "name": "FullSimplify",
@@ -136,7 +136,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = -\\frac{1}{8} (\\frac{-4 \\pi a (-e^{-a m} + 1) + 2 \\pi a ^ {2} m e^{-a m}}{a ^ {5}})",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = -\\frac{1}{8} (\\frac{(-4 \\pi) a (-e^{-a m} + 1) + 2 \\pi a ^ {2} m e^{-a m}}{a ^ {5}})",
                             "res": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)) = -1/8 * ((-(4 * pi) * a * (-exp(-(a * m)) + 1) + 2 * pi * a ^ 2 * m * exp(-(a * m))) / a ^ 5)",
                             "rule": {
                                 "latex_str": "solve equation for \\(\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx\\)",
@@ -147,10 +147,10 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{-a m})",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\sin{(m x)}}{x (a ^ {2} + x ^ {2}) ^ {2}} \\,dx = \\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{(-a) m})",
                             "res": "(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2)) = pi / (2 * a ^ 4) * (1 - (2 + m * a) / 2 * exp(-a * m))",
                             "rule": {
-                                "latex_str": "rewriting to \\(\\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{-a m})\\) at 1",
+                                "latex_str": "rewriting to \\(\\frac{\\pi}{2 a ^ {4}} (1 - \\frac{2 + m a}{2} e^{(-a) m})\\) at 1",
                                 "loc": "1",
                                 "name": "Equation",
                                 "new_expr": "pi / (2 * a ^ 4) * (1 - (2 + m * a) / 2 * exp(-a * m))",

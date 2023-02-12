@@ -244,7 +244,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = -\\frac{\\pi}{2} \\log{a} + I(a,a)",
+                            "latex_res": "C(a) = (-\\frac{\\pi}{2}) \\log{a} + I(a,a)",
                             "res": "SKOLEM_FUNC(C(a)) = -(pi / 2) * log(a) + I(a,a)",
                             "rule": {
                                 "latex_str": "solve equation for \\(C(a)\\)",
@@ -255,7 +255,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = -\\frac{\\pi}{2} \\log{a} + (\\int_{0}^{\\infty} 0 \\,dx)",
+                            "latex_res": "C(a) = (-\\frac{\\pi}{2}) \\log{a} + (\\int_{0}^{\\infty} 0 \\,dx)",
                             "res": "SKOLEM_FUNC(C(a)) = -(pi / 2) * log(a) + (INT x:[0,oo]. 0)",
                             "rule": {
                                 "func_name": "I",
@@ -266,7 +266,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "C(a) = -\\frac{\\pi}{2} \\log{a}",
+                            "latex_res": "C(a) = (-\\frac{\\pi}{2}) \\log{a}",
                             "res": "SKOLEM_FUNC(C(a)) = -(pi / 2) * log(a)",
                             "rule": {
                                 "name": "FullSimplify",

@@ -13,7 +13,7 @@
                     "start": "INT x:[0,oo]. log(x ^ a + 1) / (x ^ 2 - b * x + 1)",
                     "steps": [
                         {
-                            "latex_res": "-(\\int_{0}^{\\infty} \\frac{\\log{((\\frac{1}{u}) ^ {a} + 1)}}{(\\frac{1}{u}) ^ {2} - b (\\frac{1}{u}) + 1} -\\frac{1}{u ^ {2}} \\,du)",
+                            "latex_res": "-(\\int_{0}^{\\infty} \\frac{\\log{((\\frac{1}{u}) ^ {a} + 1)}}{(\\frac{1}{u}) ^ {2} - b (\\frac{1}{u}) + 1} (-\\frac{1}{u ^ {2}}) \\,du)",
                             "res": "-(INT u:[0,oo]. log((1 / u) ^ a + 1) / ((1 / u) ^ 2 - b * (1 / u) + 1) * -(1 / u ^ 2))",
                             "rule": {
                                 "latex_str": "inverse substitution for \\(\\frac{1}{u}\\)",

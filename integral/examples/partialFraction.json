@@ -90,7 +90,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{-\\frac{\\pi}{2} e^{-a} + \\frac{\\pi}{2} e^{a}}{-e^{-2 a} + e^{2 a}}",
+                            "latex_res": "\\frac{(-\\frac{\\pi}{2}) e^{-a} + \\frac{\\pi}{2} e^{a}}{-e^{-2 a} + e^{2 a}}",
                             "res": "(-(pi / 2) * exp(-a) + pi / 2 * exp(a)) / (-exp(-2 * a) + exp(2 * a))",
                             "rule": {
                                 "name": "FullSimplify",

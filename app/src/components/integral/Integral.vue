@@ -124,6 +124,13 @@
           <MathEquation v-bind:data="'\\(' + item.latex_str + '\\)'" class="indented-text"
             v-on:click.native="openFile(item.path)"
             style="cursor:pointer"/>
+          <span v-if="'latex_conds' in item && item.latex_conds.length > 0">
+            <span class="math-text indented-text">for &nbsp;</span>
+            <span v-for="(cond, index) in item.latex_conds" :key="index">
+              <span v-if="index > 0">, &nbsp;</span>
+              <MathEquation v-bind:data="'\\(' + cond + '\\)'"/>
+            </span>
+          </span>
         </div>
         <div v-if="item.type == 'axiom'">
           <MathEquation v-bind:data="'\\(' + item.latex_str + '\\)'" class="indented-text"/>

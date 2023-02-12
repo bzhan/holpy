@@ -25,8 +25,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\lim\\limits_{c\\to \\infty} (\\,(\\int_{-2}^{0 - 1/c} \\frac{1}{u} \\,du) + (\\int_{0 + 1/c}^{6} \\frac{1}{u} \\,du)\\,)",
-                            "res": "LIM {c -> oo}. (INT u:[-2,0 - 1 / c]. 1 / u) + (INT u:[0 + 1 / c,6]. 1 / u)",
+                            "latex_res": "\\lim\\limits_{c\\to \\infty} (\\,(\\int_{-2}^{-1/c} \\frac{1}{u} \\,du) + (\\int_{1/c}^{6} \\frac{1}{u} \\,du)\\,)",
+                            "res": "LIM {c -> oo}. (INT u:[-2,-(1 / c)]. 1 / u) + (INT u:[1 / c,6]. 1 / u)",
                             "rule": {
                                 "c": "0",
                                 "name": "SplitRegion",
@@ -35,8 +35,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\lim\\limits_{c\\to \\infty} (\\,(\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=-2}^{0 - 1/c}) + (\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=0 + 1/c}^{6})\\,)",
-                            "res": "LIM {c -> oo}. ([log(abs(u))]_u=-2,0 - 1 / c) + ([log(abs(u))]_u=0 + 1 / c,6)",
+                            "latex_res": "\\lim\\limits_{c\\to \\infty} (\\,(\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=-2}^{-1/c}) + (\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=1/c}^{6})\\,)",
+                            "res": "LIM {c -> oo}. ([log(abs(u))]_u=-2,-(1 / c)) + ([log(abs(u))]_u=1 / c,6)",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"

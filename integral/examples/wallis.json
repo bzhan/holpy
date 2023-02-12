@@ -21,11 +21,11 @@
             ],
             "finished": true,
             "goal": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
-            "latex_goal": "\\frac{d}{db} I(m,b) = -(m + 1) I(m + 1,b)",
+            "latex_goal": "\\frac{d}{db} I(m,b) = (-(m + 1)) I(m + 1,b)",
             "proof": {
                 "finished": true,
                 "goal": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
-                "latex_goal": "\\frac{d}{db} I(m,b) = -(m + 1) I(m + 1,b)",
+                "latex_goal": "\\frac{d}{db} I(m,b) = (-(m + 1)) I(m + 1,b)",
                 "lhs_calc": {
                     "latex_start": "\\frac{d}{db} I(m,b)",
                     "start": "D b. I(m,b)",
@@ -63,11 +63,11 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "-(m + 1) I(m + 1,b)",
+                    "latex_start": "(-(m + 1)) I(m + 1,b)",
                     "start": "-(m + 1) * I(m + 1,b)",
                     "steps": [
                         {
-                            "latex_res": "-(m + 1) (\\int_{0}^{\\infty} (x ^ {2} + b) ^ {-m - 2} \\,dx)",
+                            "latex_res": "(-(m + 1)) (\\int_{0}^{\\infty} (x ^ {2} + b) ^ {-m - 2} \\,dx)",
                             "res": "-(m + 1) * (INT x:[0,oo]. (x ^ 2 + b) ^ (-m - 2))",
                             "rule": {
                                 "func_name": "I",
@@ -219,7 +219,7 @@
                                     "res": "(D b. I(m,b)) / -(m + 1)",
                                     "rule": {
                                         "eq": "(D b. I(m,b)) = -(m + 1) * I(m + 1,b)",
-                                        "latex_str": "apply equation \\(\\frac{d}{db} I(m,b) = -(m + 1) I(m + 1,b)\\)",
+                                        "latex_str": "apply equation \\(\\frac{d}{db} I(m,b) = (-(m + 1)) I(m + 1,b)\\)",
                                         "name": "ApplyEquation",
                                         "str": "apply equation: (D b. I(m,b)) = -(m + 1) * I(m + 1,b)"
                                     },
@@ -236,7 +236,7 @@
                                     "type": "CalculationStep"
                                 },
                                 {
-                                    "latex_res": "-\\frac{\\pi}{4} (\\frac{b ^ {-m - 3/2} 2 ^ {-2 m} (2 m + 1) \\binom{2 m}{m}}{-m - 1})",
+                                    "latex_res": "(-\\frac{\\pi}{4}) (\\frac{b ^ {-m - 3/2} 2 ^ {-2 m} (2 m + 1) \\binom{2 m}{m}}{-m - 1})",
                                     "res": "-(pi / 4) * (b ^ (-m - 3/2) * 2 ^ (-2 * m) * (2 * m + 1) * binom(2 * m,m) / (-m - 1))",
                                     "rule": {
                                         "name": "FullSimplify",

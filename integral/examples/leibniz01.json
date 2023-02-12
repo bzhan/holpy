@@ -146,7 +146,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-2 a (\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {2}} \\,dx) = -\\frac{\\pi}{2} (\\frac{1}{a ^ {2}})",
+                            "latex_res": "-2 a (\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {2}} \\,dx) = (-\\frac{\\pi}{2}) (\\frac{1}{a ^ {2}})",
                             "res": "-2 * a * (INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 2) = -(pi / 2) * (1 / a ^ 2)",
                             "rule": {
                                 "name": "FullSimplify",
@@ -207,7 +207,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-4 a (\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {3}} \\,dx) = -\\frac{3 \\pi}{4} (\\frac{1}{a ^ {4}})",
+                            "latex_res": "-4 a (\\int_{0}^{\\infty} \\frac{1}{(a ^ {2} + x ^ {2}) ^ {3}} \\,dx) = (-\\frac{3 \\pi}{4}) (\\frac{1}{a ^ {4}})",
                             "res": "-4 * a * (INT x:[0,oo]. 1 / (a ^ 2 + x ^ 2) ^ 3) = -(3 * pi / 4) * (1 / a ^ 4)",
                             "rule": {
                                 "name": "FullSimplify",

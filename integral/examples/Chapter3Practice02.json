@@ -73,7 +73,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\frac{1}{2} \\sin{((b + a) x)}}{x} - \\frac{\\frac{1}{2} -\\sin{((b - a) x)}}{x} \\,dx",
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\frac{1}{2} \\sin{((b + a) x)}}{x} - \\frac{\\frac{1}{2} (-\\sin{((b - a) x)})}{x} \\,dx",
                             "res": "INT x:[0,oo]. 1/2 * sin((b + a) * x) / x - 1/2 * -sin((b - a) * x) / x",
                             "rule": {
                                 "latex_str": "rewrite \\(\\sin{(-(b - a) x)}\\) to \\(-\\sin{((b - a) x)}\\) using identity",
@@ -222,7 +222,7 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\frac{\\pi}{2}) + \\frac{1}{2} -\\frac{\\pi}{2}",
+                            "latex_res": "\\frac{1}{2} (\\frac{\\pi}{2}) + \\frac{1}{2} (-\\frac{\\pi}{2})",
                             "res": "1/2 * (pi / 2) + 1/2 * -(pi / 2)",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",

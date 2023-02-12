@@ -987,13 +987,12 @@ class IntegralTest(unittest.TestCase):
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("I"))
         calc.perform_rule(rules.SubstitutionInverse("y", "1/y"))
-        calc.perform_rule(rules.Equation("1 / (2 * (1 / y) ^ 2 * cos(2 * a) + (1 / y) ^ 4 + 1)", \
-                                         "y^4 / (y^4 + 2*y^2*cos(2*a) + 1)"))
-        calc.perform_rule(rules.Equation("y ^ 4 / (y ^ 4 + 2 * y ^ 2 * cos(2 * a) + 1) * -(1 / y ^ 2)", \
+        calc.perform_rule(rules.Equation("1 / (2 * (1 / y) ^ 2 * cos(2 * a) + (1 / y) ^ 4 + 1) * - (1 / y ^ 2)", \
                                          "-y^2 / (y^4 + 2*y^2*cos(2*a) + 1)"))
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
+
         goal02 = file.add_goal("2*I(a) = (INT x:[0,oo]. (1+x^2) / (x^4 + 2*x^2*cos(2*a) + 1))")
         proof = goal02.proof_by_calculation()
         calc = proof.lhs_calc
@@ -1043,7 +1042,7 @@ class IntegralTest(unittest.TestCase):
                                          "(x+sin(a))^2 + cos(a) ^ 2"))
         calc.perform_rule(rules.Substitution("u", "x+sin(a)"))
         calc.perform_rule(rules.FullSimplify())
-        goal04 = file.add_goal("I(a) = pi/ 4 /cos(a)", conds=["cos(a)>0"])
+        goal04 = file.add_goal("I(a) = pi / (4 * cos(a))", conds=["cos(a)>0"])
         proof = goal04.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal03.goal))
@@ -1051,7 +1050,8 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        goal05 = file.add_goal("I(a) = -pi/ 4 /cos(a)", conds=["cos(a)<0"])
+
+        goal05 = file.add_goal("I(a) = -(pi / (4 * cos(a)))", conds=["cos(a)<0"])
         proof = goal05.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal03.goal))
@@ -2168,16 +2168,14 @@ class IntegralTest(unittest.TestCase):
         calc = proof_of_goal06.lhs_calc
         calc.perform_rule(rules.Equation("x * exp(-x ^ 2 - x)", "x * exp(-(1 * x ^ 2) + (-1) * x)"))
         calc.perform_rule(rules.ApplyEquation(goal04.goal))
-        calc.perform_rule(rules.Equation("-1 / (2 * 1) * exp((-1) ^ 2 / (4 * 1)) * sqrt(pi / 1)",
-                                         "-(1/2) * sqrt(pi * sqrt(exp(1)))"))
+        calc.perform_rule(rules.Equation(None, "-(1/2) * sqrt(pi * sqrt(exp(1)))"))
 
         goal07 = file.add_goal("(INT x:[-oo, oo]. x ^ 2 * exp(-x ^ 2 - x)) = 3/4 * sqrt(pi * sqrt(exp(1)))")
         proof_of_goal07 = goal07.proof_by_calculation()
         calc = proof_of_goal07.lhs_calc
         calc.perform_rule(rules.Equation("x ^ 2 * exp(-x ^ 2 - x)", "x ^ 2 * exp(-(1 * x ^ 2) + (-1) * x)"))
         calc.perform_rule(rules.ApplyEquation(goal05.goal))
-        calc.perform_rule(rules.Equation("(-1) ^ 2 / (4 * 1 ^ 2) * exp((-1) ^ 2 / (4 * 1)) * sqrt(pi / 1) + 1 / (2 * 1) * exp((-1) ^ 2 / (4 * 1)) * sqrt(pi / 1)",
-                                         "3/4 * sqrt(pi * sqrt(exp(1)))"))
+        calc.perform_rule(rules.Equation(None, "3/4 * sqrt(pi * sqrt(exp(1)))"))
 
         self.checkAndOutput(file, "Chapter3Practice04")
 

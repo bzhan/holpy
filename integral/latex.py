@@ -81,9 +81,9 @@ def convert_expr(e: expr.Expr, mode: str = "large") -> str:
                     sy = "(%s)" % sy
                 return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "*":
-                if x.priority() < e.priority():
+                if x.priority() < e.priority() or x.is_uminus():
                     sx = "(%s)" % sx
-                if y.priority() <= e.priority():
+                if y.priority() <= e.priority() or y.is_uminus():
                     sy = "(%s)" % sy
                 if mode == 'short' and x.is_const() and isinstance(x.val, Fraction) and \
                     x.val.denominator != 1:

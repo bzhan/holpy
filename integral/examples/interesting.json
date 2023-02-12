@@ -165,7 +165,7 @@
         },
         {
             "type": "problem",
-            "expr": "(INT x:[0, oo]. cos(tx)*exp(-(x^2)/2)) = sqrt(pi/2)*exp(-(t^2)/2)",
+            "expr": "(INT x:[0, oo]. cos(t*x)*exp(-(x^2)/2)) = sqrt(pi/2)*exp(-(t^2)/2)",
             "path": "leibniz03"
         },
         {
@@ -222,18 +222,59 @@
         },
         {
             "type": "problem",
-            "expr": "INT x:[0, oo]. log(1 + a ^ 2 * x ^ 2) / (b ^ 2 + x ^ 2)",
+            "expr": "(INT x:[0, oo]. log(1 + a ^ 2 * x ^ 2) / (b ^ 2 + x ^ 2)) = pi / b * log(1 + a*b)",
             "path": "Chapter3Practice01"
         },
         {
             "type": "problem",
-            "expr": "INT x:[0, oo]. cos(a * x) * sin(b * x) / x",
+            "expr": "(INT x:[0, oo]. cos(a * x) * sin(b * x) / x) = pi / 2",
+            "conds": [
+                "b - a > 0",
+                "a > 0",
+                "b > 0"
+            ],
+            "path": "Chapter3Practice02"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, oo]. cos(a * x) * sin(b * x) / x) = 0",
+            "conds": [
+                "b - a < 0",
+                "a > 0",
+                "b > 0"
+            ],
+            "path": "Chapter3Practice02"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, oo]. cos(a * x) * sin(b * x) / x) = pi / 4",
+            "conds": [
+                "b - a = 0",
+                "a > 0",
+                "b > 0"
+            ],
             "path": "Chapter3Practice02"
         },
         {
             "type": "problem",
             "expr": "(INT x:[-1, 1]. ((1 + x) / (1 - x)) ^ (1/2)) = pi",
             "path": "Chapter3Practice03"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[-oo, oo]. x * exp(-(a * x ^ 2) + b * x)) = (b / (2 * a)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+            "conds": [
+                "a > 0"
+            ],
+            "path": "Chapter3Practice04"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[-oo, oo]. x ^ 2 * exp(-(a * x ^ 2) + b * x)) = (b ^ 2 / (4 * a ^ 2)) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a) + 1 / (2 * a) * exp(b ^ 2 / (4 * a)) * sqrt(pi / a)",
+            "conds": [
+                "a > 0"
+            ],
+            "path": "Chapter3Practice04"
         },
         {
             "type": "problem",

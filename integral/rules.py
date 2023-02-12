@@ -1419,13 +1419,11 @@ class SplitRegion(Rule):
                 return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
         if not self.is_cpv:
             return expr.Integral(e.var, e.lower, self.c, e.body) + \
-               expr.Integral(e.var, self.c, e.upper, e.body)
+                   expr.Integral(e.var, self.c, e.upper, e.body)
         else:
             x = Var(self.new_var)
-            return Limit(self.new_var, POS_INF, Integral(e.var, e.lower, self.c - 1/x, e.body) +
-                         Integral(e.var, self.c+1/x,e.upper,e.body))
-
-
+            return Limit(self.new_var, POS_INF, Integral(e.var, e.lower, normalize(self.c - 1/x), e.body) +
+                         Integral(e.var, normalize(self.c + 1/x), e.upper, e.body))
 
 
 class IntegrateByEquation(Rule):
