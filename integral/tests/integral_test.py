@@ -2168,6 +2168,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("(b * (-x + 1) + a * x) ^ 3", "(a * x + b * (1 - x)) ^ 3"))
         calc.perform_rule(rules.SolveEquation("(INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3)"))
         calc.perform_rule(rules.Equation("1/2 * (1 / (a ^ 2 * b))", "1 / (2 * a ^ 2 * b)"))
+
         self.checkAndOutput(file, "Chapter3Practice06")
 
 
