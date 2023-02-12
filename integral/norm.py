@@ -100,6 +100,8 @@ def normalize_quotient(e: Expr) -> NormalQuotient:
         elif e.is_fun():
             if e.func_name == 'sqrt':
                 return rec(e.args[0] ** Const(Fraction(1,2)))
+            else:
+                e = expr.Fun(e.func_name, *(quotient_normalize(arg) for arg in e.args))
 
         # Un-handled cases
         return NormalQuotient(poly.singleton(e), poly.constant(poly.const_fraction(1)))
@@ -333,7 +335,7 @@ def add_normal_definite_integral(t1: NormalDefiniteIntegral, t2: NormalDefiniteI
     return NormalDefiniteIntegral(t1.var, t1.lower, t1.upper, t1.body + tmp)
 
 def minus_normal_definite_integral(t1: NormalDefiniteIntegral, t2: NormalDefiniteIntegral):
-    tmp = from_poly(t2.e)
+    tmp = from_poly(t2.body)
     tmp = to_poly(tmp.subst(t2.var, expr.Var(t1.var)))
     return NormalDefiniteIntegral(t1.var, t1.lower, t1.upper, t1.body - tmp)
 

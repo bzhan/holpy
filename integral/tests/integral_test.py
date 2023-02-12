@@ -2032,9 +2032,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ExpandDefinition("I"))
         calc.perform_rule(rules.ApplyIdentity("cos(a * x) * sin(b * x)", "1/2 * (sin(b * x + a * x) - sin(a * x - b * x))"))
         calc.perform_rule(rules.Equation("1/2 * (sin(b * x + a * x) - sin(a * x - b * x)) / x",
-                                         "1/2 * sin(b * x + a * x) / x - 1/2 * sin(a * x - b * x) / x"))
-        calc.perform_rule(rules.Equation("b * x + a * x", "(b + a) * x"))
-        calc.perform_rule(rules.Equation("a * x - b * x", "-((b - a) * x)"))
+                                         "1/2 * sin((b + a) * x) / x - 1/2 * sin(-((b - a) * x)) / x"))
         calc.perform_rule(rules.ApplyIdentity("sin(-((b - a) * x))", "-sin((b - a) * x)"))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal01.rhs_calc

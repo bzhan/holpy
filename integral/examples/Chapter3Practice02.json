@@ -61,38 +61,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\frac{1}{2} \\sin{(b x + a x)}}{x} - \\frac{\\frac{1}{2} \\sin{(a x - b x)}}{x} \\,dx",
-                            "res": "INT x:[0,oo]. 1/2 * sin(b * x + a * x) / x - 1/2 * sin(a * x - b * x) / x",
-                            "rule": {
-                                "latex_str": "rewriting \\(\\frac{\\frac{1}{2} (\\sin{(b x + a x)} - \\sin{(a x - b x)})}{x}\\) to \\(\\frac{\\frac{1}{2} \\sin{(b x + a x)}}{x} - \\frac{\\frac{1}{2} \\sin{(a x - b x)}}{x}\\)",
-                                "name": "Equation",
-                                "new_expr": "1/2 * sin(b * x + a * x) / x - 1/2 * sin(a * x - b * x) / x",
-                                "old_expr": "1/2 * (sin(b * x + a * x) - sin(a * x - b * x)) / x",
-                                "str": "rewriting 1/2 * (sin(b * x + a * x) - sin(a * x - b * x)) / x to 1/2 * sin(b * x + a * x) / x - 1/2 * sin(a * x - b * x) / x"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "\\int_{0}^{\\infty} \\frac{\\frac{1}{2} \\sin{((b + a) x)}}{x} - \\frac{\\frac{1}{2} \\sin{(a x - b x)}}{x} \\,dx",
-                            "res": "INT x:[0,oo]. 1/2 * sin((b + a) * x) / x - 1/2 * sin(a * x - b * x) / x",
-                            "rule": {
-                                "latex_str": "rewriting \\(b x + a x\\) to \\((b + a) x\\)",
-                                "name": "Equation",
-                                "new_expr": "(b + a) * x",
-                                "old_expr": "b * x + a * x",
-                                "str": "rewriting b * x + a * x to (b + a) * x"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
                             "latex_res": "\\int_{0}^{\\infty} \\frac{\\frac{1}{2} \\sin{((b + a) x)}}{x} - \\frac{\\frac{1}{2} \\sin{(-(b - a) x)}}{x} \\,dx",
                             "res": "INT x:[0,oo]. 1/2 * sin((b + a) * x) / x - 1/2 * sin(-((b - a) * x)) / x",
                             "rule": {
-                                "latex_str": "rewriting \\(a x - b x\\) to \\(-(b - a) x\\)",
+                                "latex_str": "rewriting \\(\\frac{\\frac{1}{2} (\\sin{(b x + a x)} - \\sin{(a x - b x)})}{x}\\) to \\(\\frac{\\frac{1}{2} \\sin{((b + a) x)}}{x} - \\frac{\\frac{1}{2} \\sin{(-(b - a) x)}}{x}\\)",
                                 "name": "Equation",
-                                "new_expr": "-((b - a) * x)",
-                                "old_expr": "a * x - b * x",
-                                "str": "rewriting a * x - b * x to -((b - a) * x)"
+                                "new_expr": "1/2 * sin((b + a) * x) / x - 1/2 * sin(-((b - a) * x)) / x",
+                                "old_expr": "1/2 * (sin(b * x + a * x) - sin(a * x - b * x)) / x",
+                                "str": "rewriting 1/2 * (sin(b * x + a * x) - sin(a * x - b * x)) / x to 1/2 * sin((b + a) * x) / x - 1/2 * sin(-((b - a) * x)) / x"
                             },
                             "type": "CalculationStep"
                         },
