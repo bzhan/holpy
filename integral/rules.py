@@ -596,9 +596,7 @@ class IndefiniteIntegralIdentity(Rule):
                     continue
 
                 inst['x'] = Var(e.var)
-                assert indef.rhs.is_plus()
-                assert (indef.rhs.args[1].is_symbol() and indef.rhs.args[1].name == "C") or \
-                        indef.rhs.args[1].is_skolem_func()
+                assert indef.rhs.is_plus() and indef.rhs.args[1].is_skolem_func()
                 return indef.rhs.args[0].inst_pat(inst)
 
             # No matching identity found
