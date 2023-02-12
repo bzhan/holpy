@@ -2327,9 +2327,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Substitution("u", "x-1/2"))
         calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "0"))
         calc.perform_rule(rules.FullSimplify())
-
         calc.perform_rule(rules.Equation("INT u:[-1/2,1/2]. u / (u ^ 2 + 3/4)", "0"))
-
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Substitution("x", "2*u/sqrt(3)"))
         calc.perform_rule(rules.Equation("3/4 * x ^ 2 + 3/4", "3/4*(x^2+1)"))
@@ -2350,5 +2348,6 @@ class IntegralTest(unittest.TestCase):
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file, "charpter2_practice02")
+
 if __name__ == "__main__":
     unittest.main()
