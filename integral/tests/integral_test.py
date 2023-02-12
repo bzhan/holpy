@@ -520,7 +520,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.ReplaceSubstitution())
 
-        print(file)
         self.checkAndOutput(file, "Exponential")
 
     def testWallis(self):

@@ -286,11 +286,11 @@ class ConstantPolynomial:
             raise NotImplementedError
 
     def __truediv__(self, other):
-        # Assume the denominator is a monomial
         if len(other.monomials) == 1:
+            # Denominator is a monomial
             return ConstantPolynomial([m / other.monomials[0] for m in self.monomials])
         else:
-            raise ValueError
+            return const_singleton(from_const_poly(self) / from_const_poly(other))
 
     def __pow__(self, exp):
         # Assume self is a monomial and exp is a fraction
