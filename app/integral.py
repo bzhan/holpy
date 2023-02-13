@@ -5,8 +5,8 @@
 import json
 from flask import request
 from flask.json import jsonify
-import pathlib
 import os
+
 import integral
 from integral import compstate
 from app.app import app
@@ -90,8 +90,14 @@ def integral_save_file():
 @app.route("/api/clear-item", methods=['POST'])
 def clear_item():
     data = json.loads(request.get_data().decode('UTF-8'))
-    st = compstate.parse_item(data['item'])
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     label = compstate.Label(data['selected_item'])
+    st: compstate.StateItem = file.content[cur_id]
     st.get_by_label(label).clear()
     res = {
         "status": "ok",
@@ -122,9 +128,15 @@ def query_expr():
 @app.route("/api/query-integral", methods=['POST'])
 def query_integral():
     data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
+    st: compstate.StateItem = file.content[cur_id]
+    subitem = st.get_by_label(label)
     if isinstance(subitem, compstate.CalculationStep):
         integrals = subitem.res.separate_integral()
     elif isinstance(subitem, compstate.Calculation):
@@ -303,10 +315,16 @@ def integral_solve_equation():
 @app.route("/api/perform-step", methods=["POST"])
 def integral_perform_step():
     data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     label = compstate.Label(data['selected_item'])
+    st: compstate.StateItem = file.content[cur_id]
     rule = compstate.parse_rule(data['rule'])
-    subitem = item.get_by_label(label)
+    subitem = st.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
         subitem.perform_rule(rule)
     elif isinstance(subitem, compstate.RewriteGoalProof):
@@ -318,7 +336,7 @@ def integral_perform_step():
         })
     return jsonify({
         "status": "ok",
-        "item": item.export(),
+        "item": st.export(),
         "selected_item": str(compstate.get_next_step_label(subitem, label))
     })
 
@@ -412,12 +430,18 @@ def integral_apply_theorem():
 
 @app.route("/api/query-last-expr", methods=["POST"])
 def query_last_expr():
-    # query selected expression by given label
+    # Query selected expression according to label
     data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
-    if isinstance(subitem, (compstate.CalculationStep,compstate.Calculation)):
+    st: compstate.StateItem = file.content[cur_id]
+    subitem = st.get_by_label(label)
+    if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
         res = subitem.res if isinstance(subitem, compstate.CalculationStep) else subitem.start
     elif isinstance(subitem, compstate.RewriteGoalProof):
         res = subitem.begin.start

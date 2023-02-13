@@ -254,6 +254,9 @@ class CalculationStep(StateItem):
     def clear(self):
         self.parent.clear(id=self.id)
 
+    def perform_rule(self, rule: Rule):
+        self.parent.perform_rule(rule, self.id)
+
 
 class Calculation(StateItem):
     """Calculation starting from an expression.

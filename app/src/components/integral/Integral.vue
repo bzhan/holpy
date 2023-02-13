@@ -16,6 +16,7 @@
           <b-dropdown-item href="#" v-on:click="applyRule('LHopital')">L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Integral" left>
+          <b-dropdown-item href="#" v-on:click="applyRule('DefiniteIntegralIdentity')">Integral identity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="forwardSubstitution">Forward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
@@ -406,7 +407,7 @@ export default {
 
   computed: {
     lastExpr: function() {
-      if (this.content.size() > 0 && this.cur_id !== undefined) {
+      if (this.content.length > 0 && this.cur_id !== undefined) {
         this.query_last_expr()
         return this.last_expr
       } else {
@@ -440,23 +441,26 @@ export default {
     },
 
     query_last_expr: async function(){
-        const data = {
-          item: this.content[this.cur_id],
-          selected_item: this.selected_item
-        }
-        const response = await axios.post("http://127.0.0.1:5000/api/query-last-expr", JSON.stringify(data))
-        if (response.data.status === 'ok'){
-          this.last_expr = response.data.last_expr
-        } else {
-          this.last_expr = ""
-        }
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-last-expr", JSON.stringify(data))
+      if (response.data.status === 'ok'){
+        this.last_expr = response.data.last_expr
+      } else {
+        this.last_expr = ""
+      }
     },
 		
-    openFile: async function (file_name) {
+    openFile: async function (filename) {
       const data = {
-        filename: file_name
+        filename: filename
       };
-      this.filename = file_name
+      this.filename = filename
       const response = await axios.post("http://127.0.0.1:5000/api/integral-open-file", JSON.stringify(data))
       this.content = response.data.content
       this.cur_id = undefined
@@ -491,7 +495,10 @@ export default {
     // Restart proof, delete all steps
     clearItem: async function() {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item
       }
       if (this.selected_item === undefined) {
@@ -577,7 +584,10 @@ export default {
 
     applyRule: async function(rulename) {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item,
         rule: {
           name: rulename
@@ -623,7 +633,10 @@ export default {
 
     integrateByParts: async function() {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item
       }
       const response = await axios.post("http://127.0.0.1:5000/api/query-integral", JSON.stringify(data))
@@ -651,7 +664,10 @@ export default {
 
     doIntegrateByParts: async function() {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item,
         rule: {
           name: "IntegrationByParts",
@@ -669,7 +685,10 @@ export default {
 
     forwardSubstitution: async function() {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item
       }
       const response = await axios.post("http://127.0.0.1:5000/api/query-integral", JSON.stringify(data))
@@ -681,7 +700,10 @@ export default {
 
     doForwardSubstitution: async function() {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item,
         rule: {
           name: 'Substitution',
@@ -700,7 +722,10 @@ export default {
 
     backwardSubstitution: async function() {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item,
       }
       const response = await axios.post("http://127.0.0.1:5000/api/query-integral", JSON.stringify(data))
@@ -713,7 +738,10 @@ export default {
     
     doBackwardSubstitution: async function() {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item,
         rule: {
           name: 'SubstitutionInverse',
@@ -751,7 +779,10 @@ export default {
 
     doRewriteEquation: async function() {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item,
         rule: {
           name: "Equation",

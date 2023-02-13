@@ -1205,15 +1205,13 @@ class SubstitutionInverse(Rule):
         # Solve the equations lower = f(u) and upper = f(u) for u.
         # Solve the equations lower = f(u) and upper = f(u) for u.
         x = Var("_" + self.var_name)
-        a = e.lower
         lower = solve_equation(self.var_subst, x, self.var_name)
-        lower = limits.reduce_inf_limit(lower.subst(x.name, (1 / x) + a), x.name, ctx.get_conds())
-        a = e.upper
         upper = solve_equation(self.var_subst, x, self.var_name)
-        upper = limits.reduce_inf_limit(upper.subst(x.name, a - (1 / x)), x.name, ctx.get_conds())
-
         if lower is None or upper is None:
             raise AssertionError("SubstitutionInverse: cannot solve")
+
+        lower = limits.reduce_inf_limit(lower.subst(x.name, (1 / x) + e.lower), x.name, ctx.get_conds())
+        upper = limits.reduce_inf_limit(upper.subst(x.name, e.upper - (1 / x)), x.name, ctx.get_conds())
 
         lower = full_normalize(lower, ctx)
         upper = full_normalize(upper, ctx)
