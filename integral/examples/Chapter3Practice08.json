@@ -1,0 +1,148 @@
+{
+    "content": [
+        {
+            "conds": [
+                {
+                    "cond": "a > 0",
+                    "latex_cond": "a > 0"
+                },
+                {
+                    "cond": "b > 0",
+                    "latex_cond": "b > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(INT x:[-oo,oo]. cos(a * x) / (b ^ 4 - x ^ 4)) = pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)",
+            "latex_goal": "\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {4} - x ^ {4}} \\,dx = \\frac{\\pi (e^{(-a) b} + \\sin{(a b)})}{2 b ^ {3}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[-oo,oo]. cos(a * x) / (b ^ 4 - x ^ 4)) = pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)",
+                "latex_goal": "\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {4} - x ^ {4}} \\,dx = \\frac{\\pi (e^{(-a) b} + \\sin{(a b)})}{2 b ^ {3}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {4} - x ^ {4}} \\,dx",
+                    "start": "INT x:[-oo,oo]. cos(a * x) / (b ^ 4 - x ^ 4)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{(b ^ {2} + x ^ {2}) (b ^ {2} - x ^ {2})} \\,dx",
+                            "res": "INT x:[-oo,oo]. cos(a * x) / ((b ^ 2 + x ^ 2) * (b ^ 2 - x ^ 2))",
+                            "rule": {
+                                "latex_str": "rewriting \\(b ^ {4} - x ^ {4}\\) to \\((b ^ {2} + x ^ {2}) (b ^ {2} - x ^ {2})\\)",
+                                "name": "Equation",
+                                "new_expr": "(b ^ 2 + x ^ 2) * (b ^ 2 - x ^ 2)",
+                                "old_expr": "b ^ 4 - x ^ 4",
+                                "str": "rewriting b ^ 4 - x ^ 4 to (b ^ 2 + x ^ 2) * (b ^ 2 - x ^ 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{-\\infty}^{\\infty} \\frac{1}{2 b ^ {2}} (\\frac{\\cos{(a x)}}{b ^ {2} + x ^ {2}} + \\frac{\\cos{(a x)}}{b ^ {2} - x ^ {2}}) \\,dx",
+                            "res": "INT x:[-oo,oo]. 1 / (2 * b ^ 2) * (cos(a * x) / (b ^ 2 + x ^ 2) + cos(a * x) / (b ^ 2 - x ^ 2))",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{\\cos{(a x)}}{(b ^ {2} + x ^ {2}) (b ^ {2} - x ^ {2})}\\) to \\(\\frac{1}{2 b ^ {2}} (\\frac{\\cos{(a x)}}{b ^ {2} + x ^ {2}} + \\frac{\\cos{(a x)}}{b ^ {2} - x ^ {2}})\\)",
+                                "name": "Equation",
+                                "new_expr": "1 / (2 * b ^ 2) * (cos(a * x) / (b ^ 2 + x ^ 2) + cos(a * x) / (b ^ 2 - x ^ 2))",
+                                "old_expr": "cos(a * x) / ((b ^ 2 + x ^ 2) * (b ^ 2 - x ^ 2))",
+                                "str": "rewriting cos(a * x) / ((b ^ 2 + x ^ 2) * (b ^ 2 - x ^ 2)) to 1 / (2 * b ^ 2) * (cos(a * x) / (b ^ 2 + x ^ 2) + cos(a * x) / (b ^ 2 - x ^ 2))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\frac{(\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} + x ^ {2}} \\,dx) + (\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} - x ^ {2}} \\,dx)}{b ^ {2}})",
+                            "res": "1/2 * (((INT x:[-oo,oo]. cos(a * x) / (b ^ 2 + x ^ 2)) + (INT x:[-oo,oo]. cos(a * x) / (b ^ 2 - x ^ 2))) / b ^ 2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\frac{(\\int_{-\\infty}^{0} \\frac{\\cos{(a x)}}{b ^ {2} + x ^ {2}} \\,dx) + (\\int_{0}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} + x ^ {2}} \\,dx) + (\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} - x ^ {2}} \\,dx)}{b ^ {2}})",
+                            "res": "1/2 * (((INT x:[-oo,0]. cos(a * x) / (b ^ 2 + x ^ 2)) + (INT x:[0,oo]. cos(a * x) / (b ^ 2 + x ^ 2)) + (INT x:[-oo,oo]. cos(a * x) / (b ^ 2 - x ^ 2))) / b ^ 2)",
+                            "rule": {
+                                "c": "0",
+                                "loc": "1.0.0",
+                                "name": "SplitRegion",
+                                "str": "split region at 0 at 1.0.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\frac{(\\int_{0}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} + x ^ {2}} \\,dx) + (\\int_{0}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} + x ^ {2}} \\,dx) + (\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} - x ^ {2}} \\,dx)}{b ^ {2}})",
+                            "res": "1/2 * (((INT x:[0,oo]. cos(a * x) / (b ^ 2 + x ^ 2)) + (INT x:[0,oo]. cos(a * x) / (b ^ 2 + x ^ 2)) + (INT x:[-oo,oo]. cos(a * x) / (b ^ 2 - x ^ 2))) / b ^ 2)",
+                            "rule": {
+                                "latex_str": "substitute \\(x\\) for \\(-x\\) at 1.0.0.0",
+                                "loc": "1.0.0.0",
+                                "name": "Substitution",
+                                "str": "substitute x for -x at 1.0.0.0",
+                                "var_name": "x",
+                                "var_subst": "-x"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\frac{2 (\\int_{0}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} + x ^ {2}} \\,dx) + (\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} - x ^ {2}} \\,dx)}{b ^ {2}})",
+                            "res": "1/2 * ((2 * (INT x:[0,oo]. cos(a * x) / (b ^ 2 + x ^ 2)) + (INT x:[-oo,oo]. cos(a * x) / (b ^ 2 - x ^ 2))) / b ^ 2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\frac{2 (\\int_{0}^{\\infty} \\frac{\\cos{(a x)}}{x ^ {2} + b ^ {2}} \\,dx) + (\\int_{-\\infty}^{\\infty} \\frac{\\cos{(a x)}}{b ^ {2} - x ^ {2}} \\,dx)}{b ^ {2}})",
+                            "res": "1/2 * ((2 * (INT x:[0,oo]. cos(a * x) / (x ^ 2 + b ^ 2)) + (INT x:[-oo,oo]. cos(a * x) / (b ^ 2 - x ^ 2))) / b ^ 2)",
+                            "rule": {
+                                "latex_str": "rewriting \\(b ^ {2} + x ^ {2}\\) to \\(x ^ {2} + b ^ {2}\\)",
+                                "name": "Equation",
+                                "new_expr": "x ^ 2 + b ^ 2",
+                                "old_expr": "b ^ 2 + x ^ 2",
+                                "str": "rewriting b ^ 2 + x ^ 2 to x ^ 2 + b ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\frac{2 (\\frac{\\pi}{2} (\\frac{e^{-a b}}{b})) + \\pi (\\frac{\\sin{(a b)}}{b})}{b ^ {2}})",
+                            "res": "1/2 * ((2 * (pi / 2 * (exp(-(a * b)) / b)) + pi * (sin(a * b) / b)) / b ^ 2)",
+                            "rule": {
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{1}{2} (\\frac{\\pi (\\frac{e^{-a b}}{b}) + \\pi (\\frac{\\sin{(a b)}}{b})}{b ^ {2}})",
+                            "res": "1/2 * ((pi * (exp(-(a * b)) / b) + pi * (sin(a * b) / b)) / b ^ 2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\pi (e^{(-a) b} + \\sin{(a b)})}{2 b ^ {3}}",
+                            "res": "pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\frac{1}{2} (\\frac{\\pi (\\frac{e^{-a b}}{b}) + \\pi (\\frac{\\sin{(a b)}}{b})}{b ^ {2}})\\) to \\(\\frac{\\pi (e^{(-a) b} + \\sin{(a b)})}{2 b ^ {3}}\\)",
+                                "name": "Equation",
+                                "new_expr": "pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)",
+                                "old_expr": "1/2 * ((pi * (exp(-(a * b)) / b) + pi * (sin(a * b) / b)) / b ^ 2)",
+                                "str": "rewriting 1/2 * ((pi * (exp(-(a * b)) / b) + pi * (sin(a * b) / b)) / b ^ 2) to pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\pi (e^{(-a) b} + \\sin{(a b)})}{2 b ^ {3}}",
+                    "start": "pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "Chapter3Practice08"
+}
