@@ -310,15 +310,23 @@ class Context:
             e = parser.parse_expr(item['expr'])
             self.add_lemma(e)
 
-    def load_book(self, content, upto: Optional[str] = None):
-        if isinstance(content, str):
-            filename = os.path.join(dirname, "../integral/examples/" + content + '.json')
-            with open(filename, 'r', encoding='utf-8') as f:
-                content = json.load(f)['content']
+    def load_book(self, book_name: str, *, upto: Optional[str] = None):
+        assert isinstance(book_name, str)
 
-        for item in content:
-            if upto is not None and "path" in item and item['path'] == upto:
-                break
-            self.extend_by_item(item)
+        filename = os.path.join(dirname, "../integral/examples/" + book_name + '.json')
+        with open(filename, 'r', encoding='utf-8') as f:
+            info = json.load(f)
+
+        # Load imported books
+        if 'imports' in info:
+            for book_name in info['imports']:
+                self.load_book(book_name)
+
+        # Load content
+        if 'content' in info:
+            for item in info['content']:
+                if upto is not None and "path" in item and item['path'] == upto:
+                    break
+                self.extend_by_item(item)
 
         return

@@ -8,12 +8,12 @@
         {
             "type": "problem",
             "expr": "(INT x:[0,8]. 1/(x-2)) = log(3)",
-            "path": "charpter1_practice01_01"
+            "path": "chapter1_practice01_01"
         },
         {
             "type": "problem",
             "expr": "(INT x:[0,3]. 1/(x-1)^(2/3)) = 3 * (1+2^(1/3))",
-            "path": "charpter1_practice01_02"
+            "path": "chapter1_practice01_02"
         },
         {
             "type": "header",
@@ -437,6 +437,9 @@
             "expr": "(INT x:[0,1]. atan(sqrt(2+x^2)) / ((1+x^2)*sqrt(2+x^2))) = 5*pi^2/96",
             "path": "AhmedIntegral"
         }
+    ],
+    "imports": [
+        "base"
     ],
     "name": "Inside interesting integrals"
 }

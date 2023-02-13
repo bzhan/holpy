@@ -186,5 +186,8 @@
             "path": "tongji7"            
         }
     ],
+    "imports": [
+        "base"
+    ],
     "name": "Tongji 7'th Edition"
 }

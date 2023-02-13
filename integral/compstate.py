@@ -583,8 +583,12 @@ class CompFile:
     name - name of the file.
 
     """
-    def __init__(self, ctx: Context, name: str):
-        self.ctx = ctx
+    def __init__(self, ctx: Union[Context, str], name: str):
+        if isinstance(ctx, str):
+            self.ctx = Context()
+            self.ctx.load_book(ctx, upto=name)
+        else:
+            self.ctx = ctx
         self.name: str = name
         self.content: List[StateItem] = []
 
