@@ -2278,6 +2278,34 @@ class IntegralTest(unittest.TestCase):
         self.checkAndOutput(file, "Chapter3Practice07")
 
 
+    def testChapter3Practice08(self):
+        # Reference:
+        # Inside interesting integrals, Section C3.10, C3.3
+        ctx = context.Context()
+        ctx.load_book("base")
+        ctx.load_book("interesting")
+        file = compstate.CompFile(ctx, "Chapter3Practice08")
+
+        goal = file.add_goal("(INT x:[-oo, oo]. cos(a * x) / (b ^ 4 - x ^ 4)) = pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)",
+                             conds=["a > 0", "b > 0"])
+        proof_of_goal = goal.proof_by_calculation()
+        calc = proof_of_goal.lhs_calc
+        calc.perform_rule(rules.Equation("b ^ 4 - x ^ 4", "(b ^ 2 + x ^ 2) * (b ^ 2- x ^ 2)"))
+        calc.perform_rule(rules.Equation("cos(a * x) / ((b ^ 2 + x ^ 2) * (b ^ 2 - x ^ 2))",
+                                         "(1 / (2 * b ^ 2)) * (cos(a * x) / (b ^ 2 + x ^ 2) + cos(a * x) / (b ^ 2 - x ^ 2))"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.SplitRegion("0"), "1.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="x", var_subst="-x"), " 1.0.0.0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("b ^ 2 + x ^ 2", "x ^ 2 + b ^ 2"))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("1/2 * ((pi * (exp(-(a * b)) / b) + pi * (sin(a * b) / b)) / b ^ 2)",
+                                         "pi * (exp(-a * b) + sin(a * b)) / (2 * b ^ 3)"))
+
+        self.checkAndOutput(file, "Chapter3Practice08")
+
+
     def testChapter1Practice0101(self):
         # Reference:
         # Inside interesting integrals, C1.1

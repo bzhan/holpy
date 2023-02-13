@@ -227,6 +227,15 @@
         },
         {
             "type": "problem",
+            "expr": "(INT x:[-oo, oo]. cos(a * x) / (b ^ 2 - x ^ 2)) = pi * (sin(a * b) / b)",
+            "conds": [
+                "a > 0",
+                "b > 0"
+            ],
+            "path": "Chapter3Practice07"
+        },
+        {
+            "type": "problem",
             "expr": "(INT x:[0, oo]. cos(a * x) * sin(b * x) / x) = pi / 2",
             "conds": [
                 "b - a > 0",

@@ -706,6 +706,15 @@
                 "m > 0"
             ],
             "reference": "Inside interesting Integrals, Section 8.10, C8.2"
+        },
+        {
+            "type": "axiom",
+            "expr": "(INT x:[0, oo]. cos(a * x) / (x ^ 2 + b ^ 2)) = (pi / (2 * b)) * exp(-a * b)",
+            "conds": [
+                "a > 0",
+                "b > 0"
+            ],
+            "reference": "Inside interesting Integrals, Section 3.1.7"
         }
     ],
     "name": "Base theory"
