@@ -625,7 +625,10 @@
         {
             "type": "axiom",
             "expr": "m * factorial(m - 1) = factorial(m)",
-            "category": "factorial"
+            "category": "factorial",
+                        "attributes": [
+                "bidirectional"
+            ]
         },
         {
             "type": "axiom",

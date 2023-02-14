@@ -2324,7 +2324,7 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, C4.1
         file = compstate.CompFile("interesting", "chapter4_practice01")
-        goal01 = file.add_goal("B(2, n+1) = INT u:[0,1]. u * (1-u)^n", conds=[""])
+        goal01 = file.add_goal("B(2, n+1) = INT u:[0,1]. u * (1-u)^n")
         proof = goal01.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ExpandDefinition("B"))
@@ -2342,7 +2342,11 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(n+1)","factorial(n)"), "1.0.1"))
         calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(n+3)", "factorial(n+2)"), "1.1"))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.Equation("factorial(n) / factorial(n + 2)", "1/((n+1)*(n+2))"))
+        # calc.perform_rule(rules.Equation("factorial(n + 2)", "1/((n+1)*(n+2))"))
+        # calc.perform_rule(rules.Equation("2 * (1 / ((n + 1) * (n + 2)))", "2 / ((n+1)*(n+2))"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("factorial(n+2)", "(n+2)*factorial(n+1)"),"1.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("factorial(n+1)", "(n+1)*factorial(n)"), "1.1.1"))
+        calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("2 * (1 / ((n + 1) * (n + 2)))", "2 / ((n+1)*(n+2))"))
         self.checkAndOutput(file)
 
