@@ -97,23 +97,20 @@
                             "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x) + \\cos^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
                             "res": "1/2 * (INT x:[0,pi / 2]. (sin(x) ^ 2 + cos(x) ^ 2) / (cos(x) + sin(x)))",
                             "rule": {
-                                "eq": "sin(x) ^ 2 + cos(x) ^ 2 = 1",
-                                "latex_str": "apply equation \\(\\sin^{2}(x) + \\cos^{2}(x) = 1\\) at 1.0.0",
+                                "latex_str": "rewriting to \\(\\sin^{2}(x) + \\cos^{2}(x)\\) at 1.0.0",
                                 "loc": "1.0.0",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: sin(x) ^ 2 + cos(x) ^ 2 = 1 at 1.0.0"
+                                "name": "Equation",
+                                "new_expr": "sin(x) ^ 2 + cos(x) ^ 2",
+                                "str": "rewriting to sin(x) ^ 2 + cos(x) ^ 2 at 1.0.0"
                             },
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} + \\frac{\\cos^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
-                            "res": "1/2 * (INT x:[0,pi / 2]. sin(x) ^ 2 / (cos(x) + sin(x)) + cos(x) ^ 2 / (cos(x) + sin(x)))",
+                            "latex_res": "\\frac{1}{2} (\\int_{0}^{\\pi/2} \\frac{\\cos^{2}(x)}{\\cos{x} + \\sin{x}} + \\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} \\,dx)",
+                            "res": "1/2 * (INT x:[0,pi / 2]. cos(x) ^ 2 / (cos(x) + sin(x)) + sin(x) ^ 2 / (cos(x) + sin(x)))",
                             "rule": {
-                                "latex_str": "rewriting \\(\\frac{\\sin^{2}(x) + \\cos^{2}(x)}{\\cos{x} + \\sin{x}}\\) to \\(\\frac{\\sin^{2}(x)}{\\cos{x} + \\sin{x}} + \\frac{\\cos^{2}(x)}{\\cos{x} + \\sin{x}}\\)",
-                                "name": "Equation",
-                                "new_expr": "sin(x) ^ 2 / (cos(x) + sin(x)) + cos(x) ^ 2 / (cos(x) + sin(x))",
-                                "old_expr": "(sin(x) ^ 2 + cos(x) ^ 2) / (cos(x) + sin(x))",
-                                "str": "rewriting (sin(x) ^ 2 + cos(x) ^ 2) / (cos(x) + sin(x)) to sin(x) ^ 2 / (cos(x) + sin(x)) + cos(x) ^ 2 / (cos(x) + sin(x))"
+                                "name": "ExpandPolynomial",
+                                "str": "expand polynomial"
                             },
                             "type": "CalculationStep"
                         },

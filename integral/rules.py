@@ -1313,8 +1313,16 @@ class Equation(Rule):
             return OnLocation(self, loc).eval(e, ctx)
 
         # Now e is the old expression
+        assert self.old_expr is None or self.old_expr == e
+
         r = FullSimplify()
         if r.eval(e, ctx) == r.eval(self.new_expr, ctx):
+            return self.new_expr
+
+        # Rewriting 1 to sin(x)^2 + cos(x)^2
+        x = Symbol("x", [VAR, CONST, OP, FUN])
+        p = expr.sin(x) ** 2 + expr.cos(x) ** 2
+        if e == Const(1) and expr.match(self.new_expr, p):
             return self.new_expr
 
         if norm.eq_quotient(e, self.new_expr):

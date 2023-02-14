@@ -325,14 +325,14 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(a)} = \\frac{1}{4} (\\int_{-\\infty}^{\\infty} \\frac{1}{2 x \\sin{a} + x ^ {2} + (\\cos^{2}(a) + \\sin^{2}(a))} \\,dx)",
-                            "res": "I(a) = 1/4 * (INT x:[-oo,oo]. 1 / (2 * x * sin(a) + x ^ 2 + (cos(a) ^ 2 + sin(a) ^ 2)))",
+                            "latex_res": "I{(a)} = \\frac{1}{4} (\\int_{-\\infty}^{\\infty} \\frac{1}{2 x \\sin{a} + x ^ {2} + (\\sin^{2}(a) + \\cos^{2}(a))} \\,dx)",
+                            "res": "I(a) = 1/4 * (INT x:[-oo,oo]. 1 / (2 * x * sin(a) + x ^ 2 + (sin(a) ^ 2 + cos(a) ^ 2)))",
                             "rule": {
-                                "eq": "1 = cos(a) ^ 2 + sin(a) ^ 2",
-                                "latex_str": "apply equation \\(1 = \\cos^{2}(a) + \\sin^{2}(a)\\) at 1.1.0.1.1",
+                                "latex_str": "rewriting to \\(\\sin^{2}(a) + \\cos^{2}(a)\\) at 1.1.0.1.1",
                                 "loc": "1.1.0.1.1",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: 1 = cos(a) ^ 2 + sin(a) ^ 2 at 1.1.0.1.1"
+                                "name": "Equation",
+                                "new_expr": "sin(a) ^ 2 + cos(a) ^ 2",
+                                "str": "rewriting to sin(a) ^ 2 + cos(a) ^ 2 at 1.1.0.1.1"
                             },
                             "type": "CalculationStep"
                         },
@@ -340,11 +340,11 @@
                             "latex_res": "I{(a)} = \\frac{1}{4} (\\int_{-\\infty}^{\\infty} \\frac{1}{(x + \\sin{a}) ^ {2} + \\cos^{2}(a)} \\,dx)",
                             "res": "I(a) = 1/4 * (INT x:[-oo,oo]. 1 / ((x + sin(a)) ^ 2 + cos(a) ^ 2))",
                             "rule": {
-                                "latex_str": "rewriting \\(2 x \\sin{a} + x ^ {2} + (\\cos^{2}(a) + \\sin^{2}(a))\\) to \\((x + \\sin{a}) ^ {2} + \\cos^{2}(a)\\)",
+                                "latex_str": "rewriting \\(2 x \\sin{a} + x ^ {2} + (\\sin^{2}(a) + \\cos^{2}(a))\\) to \\((x + \\sin{a}) ^ {2} + \\cos^{2}(a)\\)",
                                 "name": "Equation",
                                 "new_expr": "(x + sin(a)) ^ 2 + cos(a) ^ 2",
-                                "old_expr": "2 * x * sin(a) + x ^ 2 + (cos(a) ^ 2 + sin(a) ^ 2)",
-                                "str": "rewriting 2 * x * sin(a) + x ^ 2 + (cos(a) ^ 2 + sin(a) ^ 2) to (x + sin(a)) ^ 2 + cos(a) ^ 2"
+                                "old_expr": "2 * x * sin(a) + x ^ 2 + (sin(a) ^ 2 + cos(a) ^ 2)",
+                                "str": "rewriting 2 * x * sin(a) + x ^ 2 + (sin(a) ^ 2 + cos(a) ^ 2) to (x + sin(a)) ^ 2 + cos(a) ^ 2"
                             },
                             "type": "CalculationStep"
                         },

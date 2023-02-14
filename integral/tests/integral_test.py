@@ -607,7 +607,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Substitution('y', parser.parse_expr('x^3')))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("exp(-y) / y ^ (2/3)", "exp(-y) * y ^ (1/3 - 1)"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(gamma_def.eq), "1"))
+        calc.perform_rule(rules.OnLocation(rules.FoldDefinition("Gamma"), "1"))
         calc.perform_rule(rules.ApplyEquation(goal1.goal))
         calc.perform_rule(rules.FullSimplify())
         self.assertEqual(str(calc.last_expr), "Gamma(4/3)")
@@ -785,10 +785,8 @@ class IntegralTest(unittest.TestCase):
         proof = goal02.proof_by_calculation()
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
-        calc.ctx.add_lemma("(sin(x) ^ 2 + cos(x) ^ 2) = 1")
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(parser.parse_expr("(sin(x) ^ 2 + cos(x) ^ 2) = 1")), '1.0.0'))
-        calc.perform_rule(rules.Equation("(sin(x) ^ 2 + cos(x) ^ 2) / (cos(x) + sin(x))",\
-                                         "sin(x) ^ 2 / (cos(x) + sin(x)) + cos(x) ^ 2 / (cos(x) + sin(x)) "))
+        calc.perform_rule(rules.OnLocation(rules.Equation(None, "sin(x) ^ 2 + cos(x) ^ 2"), "1.0.0"))
+        calc.perform_rule(rules.ExpandPolynomial())
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.OnLocation(rules.Equation("cos(x) + sin(x)", "sin(x) + cos(x)"),'0'))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal01.goal), "0.1"))
@@ -995,9 +993,8 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("(x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)) - 2 * x * sin(a) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))",
                                          "(x^2+1-2*x*sin(a)) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))"))
         calc.perform_rule(rules.FullSimplify())
-        calc.ctx.add_lemma("1 = cos(a)^2 +sin(a)^2")
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("1 = cos(a)^2 +sin(a)^2"), "1.1.0.1.1"))
-        calc.perform_rule(rules.Equation("(2 * x * sin(a) + x ^ 2 + (cos(a) ^ 2 + sin(a) ^ 2))",
+        calc.perform_rule(rules.OnLocation(rules.Equation(None, "sin(a)^2 +cos(a)^2"), "1.1.0.1.1"))
+        calc.perform_rule(rules.Equation("(2 * x * sin(a) + x ^ 2 + (sin(a) ^ 2 + cos(a) ^ 2))",
                                          "(x+sin(a))^2 + cos(a) ^ 2"))
         calc.perform_rule(rules.Substitution("u", "x+sin(a)"))
         calc.perform_rule(rules.FullSimplify())
@@ -1206,7 +1203,7 @@ class IntegralTest(unittest.TestCase):
         calc = Eq4_proof.begin
         calc.perform_rule(rules.LimitEquation('t', expr.Const(0)))
         calc.perform_rule(rules.FullSimplify())
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=Eq0.goal), '0.0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(Eq0.goal), '0.0'))
 
         Eq5 = file.add_goal("log(I(t)) = -t ^ 2 / 2 + log(sqrt(pi / 2))")
         Eq5_proof = Eq5.proof_by_calculation()
@@ -1405,7 +1402,7 @@ class IntegralTest(unittest.TestCase):
         proof = goal5.proof_by_rewrite_goal(begin=goal3)
         calc = proof.begin
         calc.perform_rule(rules.LimitEquation("y", parser.parse_expr("oo")))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(parser.parse_expr("(LIM {y -> oo}. g(y, a)) = 0")), "0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), "0"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("SKOLEM_FUNC(C(a))")))
 
@@ -1414,7 +1411,7 @@ class IntegralTest(unittest.TestCase):
         proof = goal6.proof_by_rewrite_goal(begin=goal3)
         calc = proof.begin
         calc.perform_rule(rules.LimitEquation("y", parser.parse_expr("oo")))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(parser.parse_expr("(LIM {y -> oo}. g(y, a)) = 0")), "0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal4.goal), "0"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("SKOLEM_FUNC(C(a))")))
 
@@ -1826,7 +1823,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("atan(sqrt(x ^ 2 + 2)) / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2))",\
                                          "atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))"))
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal001.goal), "0.0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal001.goal), "0.0"))
         u = expr.Const(1)
         v = parser.parse_expr("atan(x/sqrt(2+x^2))")
         calc.perform_rule(rules.IntegrationByParts(u=u, v=v))
@@ -1838,7 +1835,7 @@ class IntegralTest(unittest.TestCase):
         goal05 = file.add_goal("I(1) = 5*pi^2/96")
         proof_of_goal05 = goal05.proof_by_rewrite_goal(begin=goal03)
         calc = proof_of_goal05.begin
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq=goal04.goal), '0'))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal04.goal), '0'))
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("I(1)")))
 
         self.checkAndOutput(file)
