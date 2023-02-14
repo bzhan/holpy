@@ -93,6 +93,29 @@ def normalize_quotient(e: Expr) -> NormalQuotient:
         elif e.is_times():
             return mult_normal_quotient(rec(e.args[0]), rec(e.args[1]))
         elif e.is_divides():
+            if all(isinstance(arg, expr.Fun) and arg.func_name == "factorial" for arg in e.args):
+                f1,f2 = e.args
+                n1,n2 = f1.args[0], f2.args[0]
+                if n1 == n2:
+                    return NormalQuotient(poly.constant(poly.const_fraction(1)), poly.constant(poly.const_fraction(1)))
+                try:
+                    v = expr.eval_expr(poly.normalize(n1 - n2))
+                    if v > 0:
+                        res = Const(1)
+                        for i in range(1, v+1):
+                            res *= Const(i)
+                        res_e = divide_normal_quotient(rec(res), rec(Const(1)))
+                    else:
+                        v = abs(v)
+                        res = Const(1)
+                        for i in range(1, v+1):
+                            res *= (n1 + Const(i))
+                        res_e = divide_normal_quotient(rec(Const(1)), rec(res))
+                except NotImplementedError as e:
+                    res = expr.Fun("factorial", n1 - n2)
+                    res_e = divide_normal_quotient(rec(res), rec(Const(1)))
+                finally:
+                    return res_e
             return divide_normal_quotient(rec(e.args[0]), rec(e.args[1]))
         elif e.is_power():
             if e.args[1].is_const():
