@@ -2305,7 +2305,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file)
 
-    def testChapter2Practice02(self):
+    def testChapter2Practice05(self):
         # Reference:
         # Inside interesting integrals, C2.2
         file = compstate.CompFile("interesting", "chapter2_practice05")
