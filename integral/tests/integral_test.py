@@ -614,6 +614,22 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file)
 
+    def testChapter1Section5(self):
+        # Reference:
+        # Inside interesting integrals, Section 1.5
+        file = compstate.CompFile("interesting", "chapter1section5")
+
+        goal = file.add_goal("(INT x:[0,oo]. log(x) / (x ^ 2 + 1)) = 0")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.SplitRegion("1"))
+        calc.perform_rule(rules.SubstitutionInverse("u", "1 / u"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("u ^ 2 * (1 / u ^ 2 + 1)", "u ^ 2 + 1"))
+        calc.perform_rule(rules.Substitution("x", "u"))
+        calc.perform_rule(rules.FullSimplify())
+
+        self.checkAndOutput(file)
 
     def testEasy01(self):
         # Reference:
@@ -682,11 +698,6 @@ class IntegralTest(unittest.TestCase):
         new_expr = parser.parse_expr("(log(s) /(s ^ 2 + 1) - log(b)/(s ^ 2 + 1))")
         calc.perform_rule(rules.Equation(old_expr=old_expr, new_expr=new_expr))
         calc.perform_rule(rules.DefiniteIntegralIdentity())
-        calc.perform_rule(rules.FullSimplify())
-
-        eq = parser.parse_expr("(INT s:[0,oo]. log(s) / (s ^ 2 + 1)) = 0")
-        calc.ctx.add_lemma(eq)
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(eq), "0.0.0"))
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -865,8 +876,6 @@ class IntegralTest(unittest.TestCase):
         # Reference:
         # Inside interesting integrals, Section 2.2, example 5
         file = compstate.CompFile("interesting", "Trick2e")
-        file.ctx.add_lemma("(INT x:[0,1]. log(x+1) / (x^2+1)) = pi / 8 * log(2)")
-
         goal01 = file.add_goal("(INT x:[0,1]. log(x+1) / (x^2+1)) = (a * INT t:[0,a]. log(t+a) / (t^2 + a^2)) - pi / 4 * log(a)",
                                conds=["a > 0"])
         proof = goal01.proof_by_calculation()
@@ -889,12 +898,12 @@ class IntegralTest(unittest.TestCase):
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
-        goal02 = file.add_goal("((a * INT t:[0,a]. log(t+a) / (t^2 + a^2)) - pi / 4 * log(a)) = pi / 8 * log(2)",
+        goal02 = file.add_goal("((a * INT t:[0,a]. log(t+a) / (t^2 + a^2)) - pi / 4 * log(a)) = pi * log(2) / 8",
                                conds=["a > 0"])
         proof = goal02.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.ApplyEquation(goal01.goal))
-        calc.perform_rule(rules.ApplyEquation("(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 8 * log(2)"))
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
 
         goal03 = file.add_goal("(INT t:[0,a]. log(t+a) / (t^2 + a^2)) = pi /(8*a) * log(2*a^2)",
                                conds=["a > 0"])
@@ -965,27 +974,35 @@ class IntegralTest(unittest.TestCase):
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
 
+        goal03a = file.add_goal("(INT x:[-oo,oo]. (x ^ 2 + 1) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1)) = " \
+                                "2 * (INT x:[0,oo]. (x ^ 2 + 1) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1))")
+        proof = goal03a.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.SplitRegion("0"))
+        calc.perform_rule(rules.Substitution("x", "-x"))
+        calc.perform_rule(rules.FullSimplify())
+
+        goal03b = file.add_goal("(INT x:[-oo,oo]. (-2*x*sin(a)) / ((x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1))) = 0")
+        proof = goal03b.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.SplitRegion("0"))
+        calc.perform_rule(rules.Substitution("x", "-x"))
+        calc.perform_rule(rules.FullSimplify())
+
         goal03 = file.add_goal("I(a) = (1/4 * (INT x:[-oo,oo]. 1 / (cos(a) ^ 2 + x ^ 2)))")
         proof = goal03.proof_by_rewrite_goal(begin=goal02)
         calc = proof.begin
         calc.perform_rule(rules.SolveEquation("I(a)"))
-        calc.ctx.add_lemma("(INT x:[0,oo]. (x ^ 2 + 1) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1)) = " +\
-                      "(1/2 * INT x:[-oo,oo]. (x ^ 2 + 1) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1))")
-        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("(INT x:[0,oo]. (x ^ 2 + 1) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 + 1))= " +\
-                                                               "(1/2 * INT x:[-oo,oo]. (x ^ 2 + 1) / (2 * x ^ 2 * cos(2 * a) + x ^ 4 +1)) "), \
-                                                               "1.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal03a.goal), "1.1"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.ApplyIdentity("cos(2*a)", "1-2*sin(a)^2"))
         calc.perform_rule(rules.Equation("2*x^2*(1-2*sin(a)^2) + x^4 + 1",
                                          "(x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1)"))
-        calc.ctx.add_lemma("(INT x:[-oo,oo]. (-2*x*sin(a)) / ((x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1))) = 0")
         calc.perform_rule(rules.Equation("1/4 * (INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 "
                                          "+ 2 * x * sin(a) + 1)))",
                                          "1/4 * (INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 "
                                          "+ 2 * x * sin(a) + 1))) + 1/4 * 0"))
-        calc.perform_rule(rules.OnLocation(
-            rules.ApplyEquation("(INT x:[-oo,oo]. (-2*x*sin(a)) / ((x^2-2*x*sin(a)+1)*(x^2+2*x*sin(a)+1))) = 0"),
-            "1.1.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal03b.goal), "1.1.1"))
         calc.perform_rule(rules.Equation("1/4 * (INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))) + 1/4 * (INT x:[-oo,oo]. -2 * x * sin(a) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)))",
                                          "1/4 * ((INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))) + (INT x:[-oo,oo]. -2 * x * sin(a) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))))"))
         calc.perform_rule(rules.Equation("(INT x:[-oo,oo]. (x ^ 2 + 1) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1))) + (INT x:[-oo,oo]. -2 * x * sin(a) / ((x ^ 2 - 2 * x * sin(a) + 1) * (x ^ 2 + 2 * x * sin(a) + 1)))",

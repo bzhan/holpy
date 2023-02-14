@@ -173,12 +173,12 @@
                 }
             ],
             "finished": true,
-            "goal": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a) = pi / 8 * log(2)",
-            "latex_goal": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a} = \\frac{\\pi}{8} \\log{(2)}",
+            "goal": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a) = pi * log(2) / 8",
+            "latex_goal": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a} = \\frac{\\pi \\log{(2)}}{8}",
             "proof": {
                 "finished": true,
-                "goal": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a) = pi / 8 * log(2)",
-                "latex_goal": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a} = \\frac{\\pi}{8} \\log{(2)}",
+                "goal": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a) = pi * log(2) / 8",
+                "latex_goal": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a} = \\frac{\\pi \\log{(2)}}{8}",
                 "lhs_calc": {
                     "latex_start": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a}",
                     "start": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a)",
@@ -195,13 +195,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "\\frac{\\pi}{8} \\log{(2)}",
-                            "res": "pi / 8 * log(2)",
+                            "latex_res": "\\frac{\\pi \\log{(2)}}{8}",
+                            "res": "pi * log(2) / 8",
                             "rule": {
-                                "eq": "(INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 8 * log(2)",
-                                "latex_str": "apply equation \\(\\int_{0}^{1} \\frac{\\log{(x + 1)}}{x ^ {2} + 1} \\,dx = \\frac{\\pi}{8} \\log{(2)}\\)",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT x:[0,1]. log(x + 1) / (x ^ 2 + 1)) = pi / 8 * log(2)"
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral"
                             },
                             "type": "CalculationStep"
                         }
@@ -209,8 +207,8 @@
                     "type": "Calculation"
                 },
                 "rhs_calc": {
-                    "latex_start": "\\frac{\\pi}{8} \\log{(2)}",
-                    "start": "pi / 8 * log(2)",
+                    "latex_start": "\\frac{\\pi \\log{(2)}}{8}",
+                    "start": "pi * log(2) / 8",
                     "steps": [],
                     "type": "Calculation"
                 },
@@ -239,8 +237,8 @@
                             "latex_cond": "a > 0"
                         }
                     ],
-                    "latex_start": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a} = \\frac{\\pi}{8} \\log{(2)}",
-                    "start": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a) = pi / 8 * log(2)",
+                    "latex_start": "a (\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt) - \\frac{\\pi}{4} \\log{a} = \\frac{\\pi \\log{(2)}}{8}",
+                    "start": "a * (INT t:[0,a]. log(t + a) / (t ^ 2 + a ^ 2)) - pi / 4 * log(a) = pi * log(2) / 8",
                     "steps": [
                         {
                             "latex_res": "\\int_{0}^{a} \\frac{\\log{(t + a)}}{t ^ {2} + a ^ {2}} \\,dt = \\frac{\\frac{\\pi \\log{(2)}}{8} + \\frac{\\pi}{4} \\log{a}}{a}",

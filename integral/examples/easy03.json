@@ -100,32 +100,11 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "-\\frac{(\\int_{0}^{\\infty} \\frac{\\log{s}}{s ^ {2} + 1} \\,ds) - \\log{b} (\\left. \\tan^{-1}{s} \\right\\vert_{s=0}^{\\infty})}{b}",
-                            "res": "-(((INT s:[0,oo]. log(s) / (s ^ 2 + 1)) - log(b) * ([atan(s)]_s=0,oo)) / b)",
+                            "latex_res": "-\\frac{0 - \\log{b} (\\left. \\tan^{-1}{s} \\right\\vert_{s=0}^{\\infty})}{b}",
+                            "res": "-((0 - log(b) * ([atan(s)]_s=0,oo)) / b)",
                             "rule": {
                                 "name": "DefiniteIntegralIdentity",
                                 "str": "apply definite integral"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-\\frac{(\\int_{0}^{\\infty} \\frac{\\log{s}}{s ^ {2} + 1} \\,ds) - \\frac{\\pi}{2} \\log{b}}{b}",
-                            "res": "-(((INT s:[0,oo]. log(s) / (s ^ 2 + 1)) - pi / 2 * log(b)) / b)",
-                            "rule": {
-                                "name": "FullSimplify",
-                                "str": "full simplify"
-                            },
-                            "type": "CalculationStep"
-                        },
-                        {
-                            "latex_res": "-\\frac{0 - \\frac{\\pi}{2} \\log{b}}{b}",
-                            "res": "-((0 - pi / 2 * log(b)) / b)",
-                            "rule": {
-                                "eq": "(INT s:[0,oo]. log(s) / (s ^ 2 + 1)) = 0",
-                                "latex_str": "apply equation \\(\\int_{0}^{\\infty} \\frac{\\log{s}}{s ^ {2} + 1} \\,ds = 0\\) at 0.0.0",
-                                "loc": "0.0.0",
-                                "name": "ApplyEquation",
-                                "str": "apply equation: (INT s:[0,oo]. log(s) / (s ^ 2 + 1)) = 0 at 0.0.0"
                             },
                             "type": "CalculationStep"
                         },

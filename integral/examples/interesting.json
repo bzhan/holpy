@@ -6,6 +6,21 @@
             "level": 1
         },
         {
+            "type": "header",
+            "name": "1.5 Some Examples of Tricks",
+            "level": 1
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0,oo]. log(x) / (x ^ 2 + 1)) = 0",
+            "path": "chapter1section5"
+        },
+        {
+            "type": "header",
+            "name": "1.10 Challenge Problems",
+            "level": 2
+        },
+        {
             "type": "problem",
             "expr": "(INT x:[0,8]. 1/(x-2)) = log(3)",
             "path": "chapter1_practice01_01"
