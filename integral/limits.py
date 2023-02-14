@@ -99,10 +99,12 @@ def asymp_compare(a: Asymptote, b: Asymptote) -> int:
         l = max(len(a.order), len(b.order))
         for i in range(l):
             ai, bi = a.get_order(i), b.get_order(i)
-            if ai.is_const() and bi.is_const():
-                if ai.val < bi.val:
+            if ai.is_constant() and bi.is_constant():
+                t1 = expr.eval_expr(ai)
+                t2 = expr.eval_expr(bi)
+                if t1 < t2:
                     return LESS
-                elif ai.val > bi.val:
+                elif t1 > t2:
                     return GREATER
             if ai != bi:
                 return UNKNOWN

@@ -230,7 +230,8 @@ class LimitsTest(unittest.TestCase):
             ("INT t:[1,x]. 1 / (t ^ 2)", "INT t:[1,oo]. 1/t^2"),
             ("abs(INT t:[1,x]. 1 / (t ^ 2))", "abs(INT t:[1,oo]. 1/t^2)"),
             ("(-(u/x) + 1)^x", None),
-            ("sin(a) - x", "-oo")
+            ("sin(a) - x", "-oo"),
+            ("sqrt(x) / (x + 1)", "0"),
         ]
 
         conds = Conditions()
