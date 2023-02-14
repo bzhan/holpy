@@ -715,6 +715,34 @@
                 "b > 0"
             ],
             "reference": "Inside interesting Integrals, Section 3.1.7"
+        },
+        {
+            "type": "header",
+            "name": "Gamma and Beta function",
+            "level": 1
+        },
+        {
+            "type": "definition",
+            "expr": "B(m,n) = INT x:[0,1]. x^(m-1) * (1-x)^(n-1)",
+            "conds": [
+                "m > 0",
+                "n > 0"
+            ]
+        },
+        {
+            "type": "axiom",
+            "expr": "B(m,n) = Gamma(m) * Gamma(n) / Gamma(m+n)",
+            "category": "gamma-beta"
+        },
+        {
+            "type": "axiom",
+            "expr": "Gamma(x) = x*Gamma(x)",
+            "category": "gamma-beta"
+        },
+        {
+            "type": "axiom",
+            "expr": "Gamma(n) = factorial(n-1)",
+            "category": "gamma-beta"
         }
     ],
     "name": "Base theory"
