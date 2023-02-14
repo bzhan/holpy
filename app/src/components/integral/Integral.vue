@@ -31,9 +31,9 @@
           <b-dropdown-item href="#" v-on:click="applyTheorem">Apply theorem</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewrite equation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteUsingIdentity" id="rewriteUsingIdentity">Use identity</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('ApplyInductHyp')">Apply inductive hyp</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('RewriteFactorial')">Factorial</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="integrateBothSide0">Integrate both side</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('IntegrateBothSide')">Integrate both side</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -281,19 +281,6 @@
         </div>
         <button v-on:click="doApplyTheoremInst">OK</button>
       </div>
-      <div v-if="r_query_mode === 'integrate both side0'">
-        <span class="math-text">Integrate both side on: </span>
-        <MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'"/><br/>
-        <span class="math-text">Integral variable:</span><input v-model="integral_var"><br/>
-        <button v-on:click="integrateBothSide1">OK</button>
-      </div> 
-      <div v-if="r_query_mode === 'integrate both side1'">
-        <span class="math-text">Integrate both side on: </span>
-        <MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'"/><br/>
-        <div v-if="left_skolem === true"><span class="math-text">Left skolem const name:</span><input v-model="left_skolem_name"><br/></div>
-        <div v-if="right_skolem === true"><span class="math-text">Right skolem const name:</span><input v-model="right_skolem_name"><br/></div>
-        <button v-on:click="doIntegrateBothSide">OK</button>
-      </div> 
     </div>
     <div id="select">
     </div>
@@ -325,10 +312,10 @@ export default {
 
   data: function () {
     return {
-      filename: 'tongji7',       // Currently opened file
+      filename: undefined,       // Currently opened file
 
       book_list: [],             // List of integral books
-      book_name: undefined,      // Currently open book
+      book_name: "interesting",  // Currently open book
 
       book_content: {},          // Content of the currently opened book
       content: [],               // List of problems
@@ -403,7 +390,6 @@ export default {
     loadBookList: async function (){
       const response = await axios.post('http://127.0.0.1:5000/api/integral-load-book-list')
       this.book_list = response.data.book_list
-      this.book_name = undefined
       this.content_state = false
       this.content = []
       this.cur_id = undefined
@@ -889,73 +875,6 @@ export default {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
         this.r_query_mode = undefined
-      }
-    },
-
-    applyInductiveHyp: async function() {
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-      }      
-      const response = await axios.post("http://127.0.0.1:5000/api/apply-inductive-hyp", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-      }
-    },
-
-    integrateBothSide0: async function(){
-      console.log("integrate both side0")
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-last-expr", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.latex_selected_expr = response.data.latex_expr
-        this.r_query_mode = 'integrate both side0'
-      }
-    },
-
-    integrateBothSide1: async function(){
-      console.log("integrate both side1")
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        integral_var: this.integral_var,
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-integrate-both-side", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.left_skolem = response.data.left_skolem
-        this.right_skolem = response.data.right_skolem
-        this.r_query_mode = 'integrate both side1'
-      }
-    },
-
-    doIntegrateBothSide: async function(){
-      const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        rule: {
-          name: 'IntegrateBothSide',
-          integral_var: this.integral_var,
-          left_skolem: this.left_skolem,
-          right_skolem: this.right_skolem,
-          left_skolem_name: this.left_skolem_name,
-          right_skolem_name: this.right_skolem_name,
-        },
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-        this.r_query_mode = undefined
-        this.integral_var = undefined
-        this.left_skolem = false
-        this.right_skolem = false
-        this.left_skolem_name = undefined
-        this.right_skolem_name = undefined
-
       }
     },
   },

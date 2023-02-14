@@ -358,6 +358,8 @@ def integral_perform_step():
     label = compstate.Label(data['selected_item'])
     st: compstate.StateItem = file.content[cur_id]
     rule = compstate.parse_rule(data['rule'])
+    if isinstance(rule, integral.rules.ApplyInductHyp):
+        rule = integral.rules.OnSubterm(rule)
     subitem = st.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
         subitem.perform_rule(rule)
@@ -394,33 +396,6 @@ def integral_query_theorems():
     return jsonify({
         "status": "ok",
         "theorems": eqs
-    })
-
-@app.route("/api/apply-inductive-hyp", methods=["POST"])
-def integral_apply_inductive_hyp():
-    data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
-    label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
-    
-    if not isinstance(item, compstate.Goal) or not isinstance(item.proof, compstate.InductionProof):
-        # TODO: search for induction more generally
-        return jsonify({
-            "status": "error",
-            "msg": "Not part of an induction proof"
-        })
-    if not isinstance(subitem, (compstate.Calculation, compstate.CalculationStep)):
-        return jsonify({
-            "status": "error",
-            "msg": "Selected item is not part of a calculation."
-        })
-
-    rule = integral.rules.OnSubterm(integral.rules.ApplyInductHyp(item.goal))
-    subitem.perform_rule(rule)
-    return jsonify({
-        "status": "ok",
-        "item": item.export(),
-        "selected_item": str(compstate.get_next_step_label(subitem, label))
     })
 
 @app.route("/api/integral-apply-theorem", methods=["POST"])
@@ -487,37 +462,4 @@ def query_last_expr():
         "last_expr": str(res),
         "latex_expr": integral.latex.convert_expr(res),
         "status": "ok",
-    })
-
-
-@app.route("/api/query-integrate-both-side", methods=['POST'])
-def query_integrate_both_side():
-    fail = jsonify({
-            "status": "error",
-            "msg": "Selected item is not part of a calculation."
-        })
-    data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
-    label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
-    integral_var = data['integral_var']
-    if isinstance(subitem, compstate.CalculationStep):
-        e = subitem.res
-    elif isinstance(subitem, compstate.Calculation):
-        e = subitem.start
-    elif isinstance(subitem, compstate.RewriteGoalProof):
-        e = subitem.begin.start
-    else:
-        return fail
-    if not e.is_equals():
-        return fail
-    left_skolem = right_skolem = False
-    if e.lhs.is_deriv() and e.lhs.var == integral_var:
-        left_skolem = True
-    if e.rhs.is_deriv() and e.rhs.var == integral_var:
-        right_skolem = True
-    return jsonify({
-        "status": "ok",
-        "left_skolem": left_skolem,
-        "right_skolem": right_skolem,
     })

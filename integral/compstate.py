@@ -836,6 +836,7 @@ def parse_item(parent, item) -> StateItem:
         res = InductionProof(parent, goal, induct_var)
         res.base_case = parse_item(res, item['base_case'])
         res.induct_case = parse_item(res, item['induct_case'])
+        res.induct_case.ctx.add_induct_hyp(goal)
         return res
     elif item['type'] == 'CaseProof':
         goal = parser.parse_expr(item['goal'])

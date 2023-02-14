@@ -306,9 +306,6 @@ class Context:
             self.add_definition(e)
         if item['type'] == 'table':
             self.add_function_table(item['name'], item['table'])
-        if item['type'] == 'lemma':
-            e = parser.parse_expr(item['expr'])
-            self.add_lemma(e)
 
     def load_book(self, book_name: str, *, upto: Optional[str] = None):
         assert isinstance(book_name, str)
