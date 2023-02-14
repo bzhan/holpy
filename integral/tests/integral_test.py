@@ -2305,6 +2305,19 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file)
 
-
+    def testChapter2Practice02(self):
+        # Reference:
+        # Inside interesting integrals, C2.2
+        file = compstate.CompFile("interesting", "chapter2_practice05")
+        goal = file.add_goal("(INT x:[0,oo]. log(1+x) / (x*sqrt(x))) = 2 * pi")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.IntegrationByParts("log(1+x)", "-2/sqrt(x)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Substitution("t", "sqrt(x)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.DefiniteIntegralIdentity())
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file)
 if __name__ == "__main__":
     unittest.main()
