@@ -162,8 +162,9 @@ def query_integral():
         "integrals": res
     })
 
-@app.route("/api/query-trig-identity", methods=['POST'])
-def query_trig_identity():
+@app.route("/api/query-latex-expr", methods=['POST'])
+def query_latex_expr():
+    """Find latex form of an expression."""
     data = json.loads(request.get_data().decode('UTF-8'))
     try:
         e = integral.parser.parse_expr(data['expr'])
@@ -172,6 +173,39 @@ def query_trig_identity():
             "status": "ok",
             "latex_expr": integral.latex.convert_expr(e),
             "results": results
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "fail",
+            "exception": str(e)
+        })
+
+@app.route("/api/query-identities", methods=['POST'])
+def query_identities():
+    """Find list of identity rewerites for an expression."""
+    data = json.loads(request.get_data().decode('UTF-8'))
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
+    label = compstate.Label(data['selected_item'])
+    st: compstate.StateItem = file.content[cur_id]
+    subitem = st.get_by_label(label)
+    try:
+        e = integral.parser.parse_expr(data['expr'])
+        results = integral.rules.search_identity(e, subitem.ctx)
+        json_results = []
+        for res in results:
+            json_results.append({
+                "res": str(res),
+                "latex_res": integral.latex.convert_expr(res)
+            })
+        return jsonify({
+            "status": "ok",
+            "latex_expr": integral.latex.convert_expr(e),
+            "results": json_results
         })
     except Exception as e:
         return jsonify({

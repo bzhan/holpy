@@ -2,7 +2,7 @@
 
 from decimal import Decimal
 from fractions import Fraction
-from typing import Optional, Dict, Union
+from typing import Optional, Dict, Union, List
 import functools
 import operator
 
@@ -436,6 +436,14 @@ class ApplyIdentity(Rule):
         
         raise AssertionError("ApplyIdentity: no matching identity for %s" % e)
 
+def search_identity(e: Expr, ctx: Context) -> List[Expr]:
+    res = []
+    for identity in ctx.get_other_identities():
+        inst = expr.match(e, identity.lhs)
+        if inst is not None:
+            expected_rhs = identity.rhs.inst_pat(inst)
+            res.append(normalize(expected_rhs))
+    return res
 
 class DefiniteIntegralIdentity(Rule):
     """Apply definite integral identity in current theory."""

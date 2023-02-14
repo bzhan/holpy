@@ -30,6 +30,7 @@
           <b-dropdown-item href="#" v-on:click="applyRule('ExpandPolynomial')">Expand polynomial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyTheorem">Apply theorem</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewrite equation</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="rewriteUsingIdentity" id="rewriteUsingIdentity">Use identity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyInductiveHyp">Apply inductive hyp.</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('RewriteFactorial')">Factorial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="integrateBothSide0">Integrate both side</b-dropdown-item>
@@ -217,7 +218,6 @@
         <span class="math-text"> for</span><br/>
         <ExprQuery v-model="expr_query1"/><br/>
         <button v-on:click="doForwardSubstitution">OK</button>
-
       </div>
       <div v-if="r_query_mode === 'backward substitution'">
         <span class="math-text">Backward substitution on: </span>
@@ -233,14 +233,6 @@
         <ExprQuery v-model="expr_query1"/><br/>
         <button v-on:click="doBackwardSubstitution">OK</button>
       </div>
-      <div v-if="r_query_mode === 'elim abs'">
-        <span class="math-text">Eliminate absolute value on: </span>
-        <MathEquation v-bind:data="'\\(' + sep_abs[abs_id].latex_expr + '\\)'"/><br/>
-        <span class="math-text">Location: {{sep_abs[abs_id].loc}}</span><br/>
-        <button v-bind:disabled='abs_id == 0' v-on:click="int_id--">prev</button>
-        <button v-bind:disabled='abs_id == sep_abs.length-1' v-on:click='abs_id++'>next</button><br/>
-        <button v-on:click="doElimAbs">OK</button>
-      </div>
       <div v-if="r_query_mode === 'rewrite equation'">
         <div class="math-text">Select subexpression:</div>
         <input
@@ -252,6 +244,21 @@
         <span class="math-text">Rewrite subexpression to</span><br/>
         <ExprQuery v-model="expr_query1"/>
         <button v-on:click="doRewriteEquation">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'rewrite using identity'">
+        <div class="math-text">Select subexpression:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExprIdentity"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
+        <div v-for="(item, index) in identity_rewrites" :key="index">
+          <MathEquation
+            v-on:click.native="applyIdentity(index)"
+            v-bind:data="'\\(' + item.latex_res + '\\)'"
+            style="cursor:pointer"/>
+        </div>
       </div>
       <div v-if="r_query_mode === 'split region'">
         <div class="math-text">Split region at:</div>
@@ -274,22 +281,6 @@
         </div>
         <button v-on:click="doApplyTheoremInst">OK</button>
       </div>
-      <div v-if="r_query_mode === 'rewrite binom'">
-        <span class="math-text">Rewrite binomial coffcient: </span>
-        <MathEquation v-bind:data="'\\(' + sep_binom[binom_id].latex_expr + '\\)'"/><br/>
-        <span class="math-text">Location: {{sep_binom[binom_id].loc}}</span><br/>
-        <button v-bind:disabled='binom_id == 0' v-on:click="binom_id--">prev</button>
-        <button v-bind:disabled='binom_id == sep_binom.length-1' v-on:click='binom_id++'>next</button><br/>
-        <button v-on:click="doRewriteBinom">OK</button>
-      </div>
-      <div v-if="r_query_mode === 'rewrite exp'">
-        <span class="math-text">Rewrite exp on: </span>
-        <MathEquation v-bind:data="'\\(' + sep_exp[exp_id].latex_expr + '\\)'"/><br/>
-        <span class="math-text">Location: {{sep_exp[exp_id].loc}}</span><br/>
-        <button v-bind:disabled='exp_id == 0' v-on:click="exp_id--">prev</button>
-        <button v-bind:disabled='exp_id == sep_exp.length-1' v-on:click='exp_id++'>next</button><br/>
-        <button v-on:click="doRewriteExp">OK</button>
-      </div> 
       <div v-if="r_query_mode === 'integrate both side0'">
         <span class="math-text">Integrate both side on: </span>
         <MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'"/><br/>
@@ -346,9 +337,7 @@ export default {
       cur_items: [],             // Current items in state
       r_query_mode: undefined,   // Record query mode
       sep_int: [],               // All separate integrals
-      sep_binom: [],             // All binomial coeffcients
       sep_limit: [],             // All limits
-      sep_abs: [],               // all integrals of abs function and abs expressions
       sep_exp: [],               // all exponetial expressions
 
       // Selected goal
@@ -374,6 +363,9 @@ export default {
       selected_expr: undefined,
       latex_selected_expr: undefined,
 
+      // List of identity rewrites for selected expression
+      identity_rewrites: [],
+
       // List of theorems
       theorems: undefined,
       selected_theorem_id: undefined,
@@ -385,17 +377,8 @@ export default {
       // the index of sep-integrals
       int_id: 0,
 
-      // the index of sep-binoms
-      binom_id: 0,
-
       // the index of sep-limits
       limit_id: 0,
-
-      //the index of sep-abs
-      abs_id: 0,
-
-      //the index of sep-exp
-      exp_id: 0,
 
       integral_var: undefined,
       left_skolem: false,
@@ -631,6 +614,60 @@ export default {
       }
     },
 
+    selectExpr: async function() {
+      const start = this.$refs.select_expr1.selectionStart
+      const end = this.$refs.select_expr1.selectionEnd
+      this.selected_expr = this.lastExpr.slice(start, end)   
+      const data = {
+        expr: this.selected_expr
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-latex-expr", JSON.stringify(data))
+      if (response.data.status === 'ok') {
+        this.latex_selected_expr = response.data.latex_expr
+      }
+    },
+
+    selectExprIdentity: async function() {
+      const start = this.$refs.select_expr1.selectionStart
+      const end = this.$refs.select_expr1.selectionEnd
+      this.selected_expr = this.lastExpr.slice(start, end)   
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        expr: this.selected_expr
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-identities", JSON.stringify(data))
+      console.log(response.data)
+      if (response.data.status === 'ok') {
+        this.latex_selected_expr = response.data.latex_expr
+        this.identity_rewrites = response.data.results
+      }
+    },
+
+    applyIdentity: async function(index) {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "ApplyIdentity",
+          source: this.selected_expr,
+          target: this.identity_rewrites[index].res
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
     integrateByParts: async function() {
       const data = {
         book: this.book_name,
@@ -643,22 +680,6 @@ export default {
       if (response.data.status == 'ok') {
         this.sep_int = response.data.integrals
         this.r_query_mode = 'integrate by parts'
-      }
-    },
-
-    selectExpr: async function() {
-      const start = this.$refs.select_expr1.selectionStart
-      const end = this.$refs.select_expr1.selectionEnd
-      this.selected_expr = this.lastExpr.slice(start, end)   
-      const data = {
-        expr: this.selected_expr
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/query-trig-identity", JSON.stringify(data))
-      if (response.data.status === 'ok') {
-        this.latex_selected_expr = response.data.latex_expr
-        this.trig_rewrites = response.data.results
-      } else {
-        this.trig_rewrites = undefined
       }
     },
 
@@ -775,6 +796,10 @@ export default {
 
     rewriteEquation: function() {
       this.r_query_mode = 'rewrite equation'
+    },
+
+    rewriteUsingIdentity: function() {
+      this.r_query_mode = 'rewrite using identity'
     },
 
     doRewriteEquation: async function() {
@@ -933,23 +958,6 @@ export default {
 
       }
     },
-    // doRewriteEquation: async function() {
-    //   const data = {
-    //     item: this.content[this.cur_id],
-    //     selected_item: this.selected_item,
-    //     rule: {
-    //       name: "Equation",
-    //       old_expr: this.selected_expr,
-    //       new_expr: this.expr_query1
-    //     }
-    //   }
-    //   const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
-    //   if (response.data.status == 'ok') {
-    //     this.$set(this.content, this.cur_id, response.data.item)
-    //     this.selected_item = response.data.selected_item
-    //     this.r_query_mode = undefined
-    //   }
-    // },
   },
 
   created: function () {
