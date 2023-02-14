@@ -2307,7 +2307,7 @@ class IntegralTest(unittest.TestCase):
 
     def testChapter2Practice05(self):
         # Reference:
-        # Inside interesting integrals, C2.2
+        # Inside interesting integrals, C2.5
         file = compstate.CompFile("interesting", "chapter2_practice05")
         goal = file.add_goal("(INT x:[0,oo]. log(1+x) / (x*sqrt(x))) = 2 * pi")
         proof = goal.proof_by_calculation()
@@ -2319,5 +2319,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file)
+
 if __name__ == "__main__":
     unittest.main()
