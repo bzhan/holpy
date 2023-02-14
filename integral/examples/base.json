@@ -179,6 +179,14 @@
                 "bidirectional"
             ]
         },
+        {
+            "type": "axiom",
+            "expr": "x^a * x^b = x^(a+b)",
+            "category": "power",
+            "attributes": [
+                "bidirectional"
+            ]
+        },
          {
             "type": "axiom",
             "expr": "(a / b) ^ k = a ^ k / b ^ k",
@@ -206,6 +214,14 @@
             "type": "axiom",
             "expr": "log(a * b) = log(a) + log(b)",
             "category": "exp-log"
+        },
+        {
+            "type": "axiom",
+            "expr": "exp(a) ^ b = exp(a*b)",
+            "category": "exp-log",
+            "attributes": [
+                "bidirectional"
+            ]
         },
         {
             "type": "axiom",

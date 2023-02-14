@@ -2350,5 +2350,34 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("2 * (1 / ((n + 1) * (n + 2)))", "2 / ((n+1)*(n+2))"))
         self.checkAndOutput(file)
 
+    def testChapter4Practice02(self):
+        # Reference:
+        # Inside interesting integrals, C4.2
+        file = compstate.CompFile("interesting", "chapter4_practice02")
+        goal01 = file.add_goal("Gamma(n+1) = INT t:[0,oo]. t^n * exp(-t)")
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition("Gamma"))
+        goal02 = file.add_goal("(INT x:[0,1].x^m * log(x)^n) = (-1)^n * factorial(n) / (m+1)^(n+1)", conds=["m+1>0"])
+        proof = goal02.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.SubstitutionInverse("u", "exp(-u)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("(-u) ^ n * exp(-u) * exp(-u) ^ m", "(-u) ^ n * (exp(-u) * exp(-u) ^ m)"))
+        calc.perform_rule(rules.Equation("exp(-u) * exp(-u) ^ m", "exp(-u)^1 * exp(-u)^m"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("exp(-u)^1 * exp(-u)^m","exp(-u)^(m+1)"), "0.1"))
+        calc.perform_rule(rules.Equation("-u", "-1*u"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("(-1*u)^n", "(-1)^n * u^n"), "0.0"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Substitution("t", "(m+1)*u"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("(t / (m + 1)) ^ n", "t ^ n / (m+1)^n"), "1.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("exp(-(t / (m + 1)))^(m + 1)", "exp(-(t/(m+1)) * (m+1))"), "1.0.0.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("Gamma(n+1) = INT t:[0,oo]. t ^ n * exp(-t)"), "1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(n+1)", "factorial(n)"), "1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file)
 if __name__ == "__main__":
     unittest.main()
