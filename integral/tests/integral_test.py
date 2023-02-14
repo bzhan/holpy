@@ -2320,5 +2320,31 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file)
 
+    def testChapter4Practice01(self):
+        # Reference:
+        # Inside interesting integrals, C4.1
+        file = compstate.CompFile("interesting", "chapter4_practice01")
+        goal01 = file.add_goal("B(2, n+1) = INT u:[0,1]. u * (1-u)^n", conds=[""])
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition("B"))
+        calc = proof.rhs_calc
+        calc.perform_rule(rules.FullSimplify())
+        goal02 = file.add_goal("(INT x:[0,1]. (1-sqrt(x))^n) = 2 / ((n+1)*(n+2))")
+        proof = goal02.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Substitution("u", "sqrt(x)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("-u+1","1-u"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("B(2, n+1) = INT u:[0,1]. u * (1-u)^n"),"1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("B(2,n+1)", "Gamma(2)*Gamma(n+1) / Gamma(n+3)"),"1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(2)","factorial(1)"), "1.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(n+1)","factorial(n)"), "1.0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(n+3)", "factorial(n+2)"), "1.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("factorial(n) / factorial(n + 2)", "1/((n+1)*(n+2))"))
+        calc.perform_rule(rules.Equation("2 * (1 / ((n + 1) * (n + 2)))", "2 / ((n+1)*(n+2))"))
+        self.checkAndOutput(file)
+
 if __name__ == "__main__":
     unittest.main()
