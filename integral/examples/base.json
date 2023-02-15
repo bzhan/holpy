@@ -755,7 +755,7 @@
         },
         {
             "type": "axiom",
-            "expr": "Gamma(x) = x*Gamma(x)",
+            "expr": "Gamma(n) = (n - 1) * Gamma(n - 1)",
             "category": "gamma-beta"
         },
         {

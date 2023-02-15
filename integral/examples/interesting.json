@@ -396,6 +396,36 @@
             "path": "BetaWallis"
         },
         {
+            "type": "problem",
+            "expr": "factorial(1/2) = sqrt(pi) / 2",
+            "path": "BetaWallis"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, oo]. exp(-x) * sqrt(x)) = sqrt(pi) / 2",
+            "path": "BetaWallis"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, 1]. sqrt(-log(x))) = sqrt(pi) / 2",
+            "path": "BetaWallis"
+        },
+        {
+            "type": "problem",
+            "expr": "(INT x:[0, oo]. exp(-x) / sqrt(x)) = sqrt(pi)",
+            "path": "BetaWallis"
+        },
+        {
+            "type": "problem",
+            "expr": "Gamma(1/2) = sqrt(pi)",
+            "path": "BetaWallis"
+        },
+        {
+            "type": "problem",
+            "expr": "factorial(-1/2) = sqrt(pi)",
+            "path": "BetaWallis"
+        },
+        {
             "type": "header",
             "name": "5. Using Power Series to Evaluate Integrals",
             "level": 1
