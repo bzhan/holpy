@@ -2333,7 +2333,33 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("sqrt(y) * exp(-y)", "exp(-y) * sqrt(y)"))
         calc.perform_rule(rules.ApplyEquation(goal06.goal))
 
-        goal08 = file.add_goal("(INT ")
+        goal08 = file.add_goal("(INT x:[0, oo]. exp(-x) / sqrt(x)) = (INT x:[-oo, oo]. exp(-(x^2)))")
+        proof_of_goal08 = goal08.proof_by_calculation()
+        calc = proof_of_goal08.lhs_calc
+        calc.perform_rule(rules.Substitution(var_name="x", var_subst="sqrt(x)"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.Equation("2 * (INT x:[0,oo]. exp(-(x ^ 2)))",
+                                         "(INT x:[0,oo]. exp(-(x ^ 2))) + (INT x:[0,oo]. exp(-(x ^ 2)))"))
+        calc.perform_rule(rules.OnLocation(rules.Substitution(var_name="x", var_subst="-x"), "0"))
+        calc = proof_of_goal08.rhs_calc
+        calc.perform_rule(rules.SplitRegion("0"))
+
+        goal09 = file.add_goal("(INT x:[0, oo]. exp(-x) / sqrt(x)) = sqrt(pi)")
+        proof_of_goal09 = goal09.proof_by_rewrite_goal(begin=goal08)
+        calc = proof_of_goal09.begin
+        calc.perform_rule(rules.Equation("x ^ 2", "1 * x ^ 2"))
+        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(), "1"))
+
+        goal10 = file.add_goal("Gamma(1/2) = sqrt(pi)")
+        proof_of_goal10 = goal10.proof_by_calculation()
+        calc = proof_of_goal10.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition("Gamma"))
+        calc.perform_rule(rules.ApplyEquation(goal09.goal))
+
+        goal11 = file.add_goal("factorial(-1/2) = sqrt(pi)")
+        proof_of_goal11 = goal11.proof_by_rewrite_goal(begin=goal10)
+        calc = proof_of_goal11.begin
+        calc.perform_rule(rules.ApplyIdentity("Gamma(1/2)", "factorial(-1/2)"))
         self.checkAndOutput(file)
 
 

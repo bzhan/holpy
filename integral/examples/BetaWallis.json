@@ -467,6 +467,275 @@
                 "type": "CalculationProof"
             },
             "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. sqrt(-log(x))) = sqrt(pi) / 2",
+            "latex_goal": "\\int_{0}^{1} \\sqrt{-\\log{x}} \\,dx = \\frac{\\sqrt{\\pi}}{2}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. sqrt(-log(x))) = sqrt(pi) / 2",
+                "latex_goal": "\\int_{0}^{1} \\sqrt{-\\log{x}} \\,dx = \\frac{\\sqrt{\\pi}}{2}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} \\sqrt{-\\log{x}} \\,dx",
+                    "start": "INT x:[0,1]. sqrt(-log(x))",
+                    "steps": [
+                        {
+                            "latex_res": "-(\\int_{0}^{\\infty} \\sqrt{-\\log{(e^{-y})}} (-e^{-y}) \\,dy)",
+                            "res": "-(INT y:[0,oo]. sqrt(-log(exp(-y))) * -exp(-y))",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(e^{-y}\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for exp(-y)",
+                                "var_name": "y",
+                                "var_subst": "exp(-y)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\sqrt{y} e^{-y} \\,dy",
+                            "res": "INT y:[0,oo]. sqrt(y) * exp(-y)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} e^{-y} \\sqrt{y} \\,dy",
+                            "res": "INT y:[0,oo]. exp(-y) * sqrt(y)",
+                            "rule": {
+                                "latex_str": "rewriting \\(\\sqrt{y} e^{-y}\\) to \\(e^{-y} \\sqrt{y}\\)",
+                                "name": "Equation",
+                                "new_expr": "exp(-y) * sqrt(y)",
+                                "old_expr": "sqrt(y) * exp(-y)",
+                                "str": "rewriting sqrt(y) * exp(-y) to exp(-y) * sqrt(y)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\sqrt{\\pi}}{2}",
+                            "res": "sqrt(pi) / 2",
+                            "rule": {
+                                "eq": "(INT x:[0,oo]. exp(-x) * sqrt(x)) = sqrt(pi) / 2",
+                                "latex_str": "apply equation \\(\\int_{0}^{\\infty} e^{-x} \\sqrt{x} \\,dx = \\frac{\\sqrt{\\pi}}{2}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,oo]. exp(-x) * sqrt(x)) = sqrt(pi) / 2"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{\\sqrt{\\pi}}{2}",
+                    "start": "sqrt(pi) / 2",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,oo]. exp(-x) / sqrt(x)) = (INT x:[-oo,oo]. exp(-(x ^ 2)))",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{e^{-x}}{\\sqrt{x}} \\,dx = \\int_{-\\infty}^{\\infty} e^{-x ^ {2}} \\,dx",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,oo]. exp(-x) / sqrt(x)) = (INT x:[-oo,oo]. exp(-(x ^ 2)))",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{e^{-x}}{\\sqrt{x}} \\,dx = \\int_{-\\infty}^{\\infty} e^{-x ^ {2}} \\,dx",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{e^{-x}}{\\sqrt{x}} \\,dx",
+                    "start": "INT x:[0,oo]. exp(-x) / sqrt(x)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} 2 (\\frac{x e^{-x ^ {2}}}{\\left| x \\right|}) \\,dx",
+                            "res": "INT x:[0,oo]. 2 * (x * exp(-(x ^ 2)) / abs(x))",
+                            "rule": {
+                                "latex_str": "substitute \\(x\\) for \\(\\sqrt{x}\\)",
+                                "name": "Substitution",
+                                "str": "substitute x for sqrt(x)",
+                                "var_name": "x",
+                                "var_subst": "sqrt(x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\int_{0}^{\\infty} e^{-x ^ {2}} \\,dx)",
+                            "res": "2 * (INT x:[0,oo]. exp(-(x ^ 2)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\int_{0}^{\\infty} e^{-x ^ {2}} \\,dx) + (\\int_{0}^{\\infty} e^{-x ^ {2}} \\,dx)",
+                            "res": "(INT x:[0,oo]. exp(-(x ^ 2))) + (INT x:[0,oo]. exp(-(x ^ 2)))",
+                            "rule": {
+                                "latex_str": "rewriting \\(2 (\\int_{0}^{\\infty} e^{-x ^ {2}} \\,dx)\\) to \\((\\int_{0}^{\\infty} e^{-x ^ {2}} \\,dx) + (\\int_{0}^{\\infty} e^{-x ^ {2}} \\,dx)\\)",
+                                "name": "Equation",
+                                "new_expr": "(INT x:[0,oo]. exp(-(x ^ 2))) + (INT x:[0,oo]. exp(-(x ^ 2)))",
+                                "old_expr": "2 * (INT x:[0,oo]. exp(-(x ^ 2)))",
+                                "str": "rewriting 2 * (INT x:[0,oo]. exp(-(x ^ 2))) to (INT x:[0,oo]. exp(-(x ^ 2))) + (INT x:[0,oo]. exp(-(x ^ 2)))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(\\int_{-\\infty}^{0} e^{-x ^ {2}} \\,dx) + (\\int_{0}^{\\infty} e^{-x ^ {2}} \\,dx)",
+                            "res": "(INT x:[-oo,0]. exp(-(x ^ 2))) + (INT x:[0,oo]. exp(-(x ^ 2)))",
+                            "rule": {
+                                "latex_str": "substitute \\(x\\) for \\(-x\\) at 0",
+                                "loc": "0",
+                                "name": "Substitution",
+                                "str": "substitute x for -x at 0",
+                                "var_name": "x",
+                                "var_subst": "-x"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{-\\infty}^{\\infty} e^{-x ^ {2}} \\,dx",
+                    "start": "INT x:[-oo,oo]. exp(-(x ^ 2))",
+                    "steps": [
+                        {
+                            "latex_res": "(\\int_{-\\infty}^{0} e^{-x ^ {2}} \\,dx) + (\\int_{0}^{\\infty} e^{-x ^ {2}} \\,dx)",
+                            "res": "(INT x:[-oo,0]. exp(-(x ^ 2))) + (INT x:[0,oo]. exp(-(x ^ 2)))",
+                            "rule": {
+                                "c": "0",
+                                "name": "SplitRegion",
+                                "str": "split region at 0"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,oo]. exp(-x) / sqrt(x)) = sqrt(pi)",
+            "latex_goal": "\\int_{0}^{\\infty} \\frac{e^{-x}}{\\sqrt{x}} \\,dx = \\sqrt{\\pi}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,oo]. exp(-x) / sqrt(x)) = sqrt(pi)",
+                "latex_goal": "\\int_{0}^{\\infty} \\frac{e^{-x}}{\\sqrt{x}} \\,dx = \\sqrt{\\pi}",
+                "start": {
+                    "latex_start": "\\int_{0}^{\\infty} \\frac{e^{-x}}{\\sqrt{x}} \\,dx = \\int_{-\\infty}^{\\infty} e^{-x ^ {2}} \\,dx",
+                    "start": "(INT x:[0,oo]. exp(-x) / sqrt(x)) = (INT x:[-oo,oo]. exp(-(x ^ 2)))",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{e^{-x}}{\\sqrt{x}} \\,dx = \\int_{-\\infty}^{\\infty} e^{-1 x ^ {2}} \\,dx",
+                            "res": "(INT x:[0,oo]. exp(-x) / sqrt(x)) = (INT x:[-oo,oo]. exp(-(1 * x ^ 2)))",
+                            "rule": {
+                                "latex_str": "rewriting \\(x ^ {2}\\) to \\(1 x ^ {2}\\)",
+                                "name": "Equation",
+                                "new_expr": "1 * x ^ 2",
+                                "old_expr": "x ^ 2",
+                                "str": "rewriting x ^ 2 to 1 * x ^ 2"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{e^{-x}}{\\sqrt{x}} \\,dx = \\sqrt{\\pi}",
+                            "res": "(INT x:[0,oo]. exp(-x) / sqrt(x)) = sqrt(pi)",
+                            "rule": {
+                                "loc": "1",
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral at 1"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "Gamma(1/2) = sqrt(pi)",
+            "latex_goal": "\\Gamma{(\\frac{1}{2})} = \\sqrt{\\pi}",
+            "proof": {
+                "finished": true,
+                "goal": "Gamma(1/2) = sqrt(pi)",
+                "latex_goal": "\\Gamma{(\\frac{1}{2})} = \\sqrt{\\pi}",
+                "lhs_calc": {
+                    "latex_start": "\\Gamma{(\\frac{1}{2})}",
+                    "start": "Gamma(1/2)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} \\frac{e^{-x}}{\\sqrt{x}} \\,dx",
+                            "res": "INT x:[0,oo]. exp(-x) / sqrt(x)",
+                            "rule": {
+                                "func_name": "Gamma",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\sqrt{\\pi}",
+                            "res": "sqrt(pi)",
+                            "rule": {
+                                "eq": "(INT x:[0,oo]. exp(-x) / sqrt(x)) = sqrt(pi)",
+                                "latex_str": "apply equation \\(\\int_{0}^{\\infty} \\frac{e^{-x}}{\\sqrt{x}} \\,dx = \\sqrt{\\pi}\\)",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: (INT x:[0,oo]. exp(-x) / sqrt(x)) = sqrt(pi)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\sqrt{\\pi}",
+                    "start": "sqrt(pi)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "factorial(-1/2) = sqrt(pi)",
+            "latex_goal": "(-\\frac{1}{2})! = \\sqrt{\\pi}",
+            "proof": {
+                "finished": true,
+                "goal": "factorial(-1/2) = sqrt(pi)",
+                "latex_goal": "(-\\frac{1}{2})! = \\sqrt{\\pi}",
+                "start": {
+                    "latex_start": "\\Gamma{(\\frac{1}{2})} = \\sqrt{\\pi}",
+                    "start": "Gamma(1/2) = sqrt(pi)",
+                    "steps": [
+                        {
+                            "latex_res": "(-\\frac{1}{2})! = \\sqrt{\\pi}",
+                            "res": "factorial(-1/2) = sqrt(pi)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(\\frac{1}{2})}\\) to \\((-\\frac{1}{2})!\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(1/2)",
+                                "str": "rewrite Gamma(1/2) to factorial(-1/2) using identity",
+                                "target": "factorial(-1/2)"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
         }
     ],
     "name": "BetaWallis"
