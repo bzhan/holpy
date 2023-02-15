@@ -915,6 +915,11 @@ def to_poly(e: expr.Expr) -> Polynomial:
         if e.lower == e.upper:
             return constant(to_const_poly(expr.Const(0)))
         body = normalize(e.body)
+        l, h = normalize(e.lower), normalize(e.upper)
+        if l.is_evaluable() and h.is_evaluable() :
+            ll, hh = expr.eval_expr(l), expr.eval_expr(h)
+            if ll > hh:
+                return singleton(-expr.Integral(e.var, h, l, body))
         return singleton(expr.Integral(e.var, normalize(e.lower), normalize(e.upper), body))
 
     elif e.is_limit():
