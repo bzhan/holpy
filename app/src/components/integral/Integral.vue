@@ -22,6 +22,7 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Integral" left>
           <b-dropdown-item href="#" v-on:click="applyRule('IndefiniteIntegralIdentity')">Indefinite integral identity</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('ReplaceSubstitution')">Replace substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('DefiniteIntegralIdentity')">Definite integral identity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="forwardSubstitution">Forward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>

@@ -534,6 +534,21 @@ def integral_query_vars():
         "query_vars": query_vars
     })
 
+@app.route("/api/query-expr", methods=['POST'])
+def integral_query_expr():
+    data = json.loads(request.get_data().decode('UTF-8'))
+    try:
+        e = integral.parser.parse_expr(data['expr'])
+        return jsonify({
+            "status": "ok",
+            "latex_expr": integral.latex.convert_expr(e)
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "fail",
+            "exception": str(e)
+        })
+
 @app.route("/api/query-last-expr", methods=["POST"])
 def integral_query_last_expr():
     # Query selected expression according to label

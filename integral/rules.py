@@ -320,22 +320,7 @@ class Linearity(Rule):
 
 
 class CommonIntegral(Rule):
-    """Applies common integrals:
-
-    INT c = c * x,
-    INT x ^ n = x ^ (n + 1) / (n + 1),  (where n != -1)
-    INT 1 / x ^ n = (-n) / x ^ (n + 1), (where n != 1)
-    INT sqrt(x) = 2/3 * x ^ (3/2)
-    INT sin(x) = -cos(x),
-    INT cos(x) = sin(x),
-    INT 1 / x = log(|x|)
-    INT e^x = e^x
-    INT 1 / (x^2 + 1) = arctan(x)
-    INT sec(x)^2 = tan(x)
-    INT csc(x)^2 = -cot(x)
-
-    """
-
+    """Applies common integrals"""
     def __init__(self):
         self.name = "CommonIntegral"
 

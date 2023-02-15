@@ -461,8 +461,8 @@
                             "type": "CalculationStep"
                         },
                         {
-                            "latex_res": "I{(a)} = \\frac{1}{4} (\\int_{\\lim\\limits_{x\\to \\infty} (\\,\\sin{a} - x\\,)}^{\\lim\\limits_{x\\to \\infty} (\\,\\sin{a} + x\\,)} \\frac{1}{\\cos^{2}(a) + u ^ {2}} \\,du)",
-                            "res": "I(a) = 1/4 * (INT u:[LIM {x -> oo}. sin(a) - x,LIM {x -> oo}. sin(a) + x]. 1 / (cos(a) ^ 2 + u ^ 2))",
+                            "latex_res": "I{(a)} = \\frac{1}{4} (\\int_{-\\infty}^{\\infty} \\frac{1}{\\cos^{2}(a) + u ^ {2}} \\,du)",
+                            "res": "I(a) = 1/4 * (INT u:[-oo,oo]. 1 / (cos(a) ^ 2 + u ^ 2))",
                             "rule": {
                                 "latex_str": "substitute \\(u\\) for \\(x + \\sin{a}\\)",
                                 "name": "Substitution",
