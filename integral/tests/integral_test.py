@@ -1710,7 +1710,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("x * log(x) / (-(x ^ 2) + 1)",
                                          "log(x) * (x / (-(x ^ 2) + 1))"))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal02.goal), "0.0.1"))
-        calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "0"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("log(x) * SUM(k, 0, oo, x ^ k)",
                                          "SUM(k, 0, oo, log(x) * x ^ k)"))
@@ -1855,7 +1855,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("1 / sqrt(x ^ 2 + 2)", "sqrt(x^2+2) ^ (-1)"))
         calc.perform_rule(rules.ApplyIdentity("atan((sqrt(x^2 + 2))^(-1))", "pi/2 - atan(sqrt(x^2 + 2))"))
-        calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "0.0"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("atan(sqrt(x ^ 2 + 2)) / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2))",\
                                          "atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))"))

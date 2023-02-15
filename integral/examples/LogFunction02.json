@@ -255,9 +255,9 @@
                             "latex_res": "-(\\int_{0}^{1} -\\frac{1}{2} \\log{x} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}} + \\frac{1}{2} \\log{x} \\sum_{k=0}^{\\infty}{x ^ {k}} \\,dx)",
                             "res": "-(INT x:[0,1]. -1/2 * log(x) * SUM(k, 0, oo, x ^ k * (-1) ^ k) + 1/2 * log(x) * SUM(k, 0, oo, x ^ k))",
                             "rule": {
-                                "loc": "subterms",
+                                "loc": "0",
                                 "name": "ExpandPolynomial",
-                                "str": "expand polynomial on subterms"
+                                "str": "expand polynomial at 0"
                             },
                             "type": "CalculationStep"
                         },

@@ -35,7 +35,7 @@
           <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewriting</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="foldDefinition">Fold definition</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyRule('ExpandPolynomial')">Expand polynomial</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyExpandPolynomial">Expand polynomial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteUsingIdentity" id="rewriteUsingIdentity">Apply identity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyTheorem">Apply lemma</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ApplyInductHyp')">Apply inductive hyp</b-dropdown-item>
@@ -329,8 +329,19 @@
              style="width:500px" disabled="disabled"
              @select="selectExpr"><br/>
         &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
+        <span class="math-text">Index variable</span><br/>
         <input v-model="index_var">
         <button v-on:click="doApplySeriesExpansion">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'expand polynomial'">
+        <div class="math-text">Expand polynomial on:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExpr"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
+        <button v-on:click="doApplyExpandPolynomial">OK</button>
       </div>
     </div>
     <div id="select">
@@ -1108,6 +1119,32 @@ export default {
           name: "SeriesExpansionIdentity",
           old_expr: this.selected_expr,
           index_var: this.index_var
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    // First stage of expand polynomial
+    applyExpandPolynomial: function () {
+      this.r_query_mode = 'expand polynomial'
+    },
+
+    // Second stage of expand polynomial
+    doApplyExpandPolynomial: async function () {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "ExpandPolynomial",
+          loc: this.loc
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
