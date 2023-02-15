@@ -613,8 +613,13 @@ def limit_of_expr(e: Expr, var_name: str, conds: Conditions) -> Limit:
         else:
             return Limit(expr.Fun('log', l.e))
     elif e.is_fun() and e.func_name == 'sin':
-        res = Limit(None)
-        res.is_bounded = True
+        l = limit_of_expr(e.args[0], var_name, conds)
+        if l.e == None or l.e in [POS_INF, NEG_INF]:
+            res = Limit(None)
+            res.is_bounded = True
+        else:
+            res = Limit(expr.Fun("sin", l.e), asymp=l.asymp)
+            res.is_bounded = True
         return res
     elif e.is_fun() and e.func_name == 'cos':
         l = limit_of_expr(e.args[0],var_name, conds)
@@ -632,12 +637,15 @@ def limit_of_expr(e: Expr, var_name: str, conds: Conditions) -> Limit:
         elif conds.is_negative(l.e):
             raise AssertionError("sqrt: arg is negtive")
         elif l.e == POS_INF:
-            return Limit(POS_INF, asymp=PolyLog(*[1/2 * a if not isinstance(a, Expr) else a / Const(2) for a in l.asymp.order]), side=TWO_SIDED)
+            if l.asymp != Unknown():
+                return Limit(POS_INF, asymp=PolyLog(*[1/2 * a if not isinstance(a, Expr) else a / Const(2) for a in l.asymp.order]), side=TWO_SIDED)
+            else:
+                return Limit(POS_INF, asymp=l.asymp)
         else:
             if isinstance(l.asymp, Unknown):
                 return Limit(expr.Fun('sqrt', l.e), asymp=Unknown(), side=l.side)
             elif isinstance(l.asymp, PolyLog):
-                return Limit(expr.Fun('sqrt', l.e), asymp=PolyLog(*[1/2 * a for a in l.asymp.order]), side=l.side)
+                return Limit(expr.Fun('sqrt', l.e), asymp=PolyLog(*[expr.Const(Fraction(1,2)) * a if isinstance(a, Expr) else 1/2 * a for a in l.asymp.order]), side=l.side)
             elif isinstance(l.asymp, Exp):
                 return Limit(expr.Fun('sqrt', l.e), asymp=Exp(1/2 *l.asymp.order), side=l.side)
             else:

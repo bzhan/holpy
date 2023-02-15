@@ -3,7 +3,7 @@
 import unittest
 from fractions import Fraction
 
-from integral import parser
+from integral import parser, context
 from integral.expr import Const
 from integral.parser import parse_expr
 from integral import rules
@@ -178,6 +178,13 @@ class RulesTest(unittest.TestCase):
         e = rules.Substitution("u", parse_expr("pi * sqrt(x)")).eval(e)
         self.assertEqual(e, parse_expr("INT u:[0,21 * pi]. 2 * sin(u)"))
 
+    def testSustitution11(self):
+        e = parser.parse_expr("INT x:[0,1]. sqrt(-log(x))")
+        r = rules.Substitution("y", "-log(x)")
+        ctx = context.Context()
+        res = r.eval(e, ctx)
+        self.assertEqual(res, parser.parse_expr("INT y:[0,oo]. sqrt(y) * exp(-y)"))
+        
     # Caused by there is no default simplification for fraction in rules.py, Line 291
     # def testSubstitution11(self):
     #     e = parse_expr("INT x:[0, 1]. (2 * x + 1)/(2 * x ^ 2 + 2 * x + 1)")

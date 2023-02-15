@@ -1165,11 +1165,17 @@ class Substitution(Rule):
             if e.lower == expr.NEG_INF:
                 lower = limits.reduce_neg_inf_limit(var_subst, e.var, ctx.get_conds())
             else:
-                lower = full_normalize(var_subst.subst(e.var, e.lower), ctx)
+                x = Var(e.var)
+                lower = self.var_subst
+                lower = limits.reduce_inf_limit(lower.subst(e.var, (1 / x) + e.lower), e.var, ctx.get_conds())
+                lower = full_normalize(lower, ctx)
             if e.upper == expr.POS_INF:
                 upper = limits.reduce_inf_limit(var_subst, e.var, ctx.get_conds())
             else:
-                upper = full_normalize(var_subst.subst(e.var, e.upper), ctx)
+                x = Var(e.var)
+                upper = self.var_subst
+                upper = limits.reduce_inf_limit(upper.subst(e.var, e.upper - (1 / x)), e.var, ctx.get_conds())
+                upper = full_normalize(upper, ctx)
             if lower.is_evaluable() and upper.is_evaluable() and expr.eval_expr(lower) > expr.eval_expr(upper):
                 return normalize(Integral(self.var_name, upper, lower, Op("-", self.f)))
             else:
