@@ -443,7 +443,15 @@ class Monomial:
                     sqrt_factors.append((expr.Fun('abs', n), e * exp))
                 else:
                     sqrt_factors.append((n, e * exp))
+            # return Monomial(self.coeff ** exp, sqrt_factors)
+            if self.coeff.is_fraction() and self.coeff.get_fraction() < 0 and len(sqrt_factors) > 0:
+                    tmp = sqrt_factors[0]
+                    sqrt_factors.remove(tmp)
+                    tmp = (-tmp[0], tmp[1])
+                    sqrt_factors.insert(0, tmp)
+                    return Monomial(1, sqrt_factors)
             return Monomial(self.coeff ** exp, sqrt_factors)
+
         else:
             raise ValueError
 
