@@ -777,7 +777,10 @@ def parse_rule(item) -> Rule:
         return rules.DefiniteIntegralIdentity()
     elif item['name'] == 'SeriesExpansionIdentity':
         index_var = item['index_var']
-        return rules.SeriesExpansionIdentity(index_var=index_var)
+        old_expr = None
+        if 'old_expr' in item:
+            old_expr = parser.parse_expr(item['old_expr'])
+        return rules.SeriesExpansionIdentity(old_expr=old_expr, index_var=index_var)
     elif item['name'] == 'SeriesEvaluationIdentity':
         return rules.SeriesEvaluationIdentity()
     elif item['name'] == 'ReplaceSubstitution':

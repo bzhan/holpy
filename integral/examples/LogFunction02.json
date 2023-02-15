@@ -23,9 +23,9 @@
                             "res": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - log(1 + x)",
                             "rule": {
                                 "index_var": "k",
-                                "loc": "0.0",
                                 "name": "SeriesExpansionIdentity",
-                                "str": "apply series expansion at 0.0"
+                                "old_expr": "log(1 - x)",
+                                "str": "apply series expansion"
                             },
                             "type": "CalculationStep"
                         },
@@ -34,9 +34,9 @@
                             "res": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
                             "rule": {
                                 "index_var": "k",
-                                "loc": "1",
                                 "name": "SeriesExpansionIdentity",
-                                "str": "apply series expansion at 1"
+                                "old_expr": "log(1 + x)",
+                                "str": "apply series expansion"
                             },
                             "type": "CalculationStep"
                         },

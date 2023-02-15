@@ -29,9 +29,9 @@
                             "res": "INT x:[0,1]. SUM(k, 0, oo, log(x ^ (c * x ^ a)) ^ k / factorial(k))",
                             "rule": {
                                 "index_var": "k",
-                                "loc": "0",
                                 "name": "SeriesExpansionIdentity",
-                                "str": "apply series expansion at 0"
+                                "old_expr": "exp(log(x ^ (c * x ^ a)))",
+                                "str": "apply series expansion"
                             },
                             "type": "CalculationStep"
                         },

@@ -17,9 +17,9 @@
                             "res": "INT x:[0,1]. SUM(n, 0, oo, (-1) ^ n * x ^ (n + 1) / (n + 1)) / x",
                             "rule": {
                                 "index_var": "n",
-                                "loc": "0.0",
                                 "name": "SeriesExpansionIdentity",
-                                "str": "apply series expansion at 0.0"
+                                "old_expr": "log(1 + x)",
+                                "str": "apply series expansion"
                             },
                             "type": "CalculationStep"
                         },

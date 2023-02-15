@@ -503,21 +503,38 @@ class DefiniteIntegralIdentity(Rule):
 
 class SeriesExpansionIdentity(Rule):
     """Apply series expansion in the current theory."""
-    def __init__(self, index_var: str = 'n'):
+    def __init__(self, *, old_expr: Optional[Union[str, Expr]] = None, index_var: str = 'n'):
         self.name = "SeriesExpansionIdentity"
+        if isinstance(old_expr, str):
+            old_expr = parser.parse_expr(old_expr)
+        self.old_expr = old_expr
         self.index_var = index_var
 
     def __str__(self):
         return "apply series expansion"
 
     def export(self):
-        return {
+        res = {
             "name": self.name,
             "str": str(self),
             "index_var": self.index_var
         }
+        if self.old_expr is not None:
+            res['old_expr'] = str(self.old_expr)
+        return res
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
+        # If old_expr is given, try to find it within e
+        if self.old_expr is not None and self.old_expr != e:
+            find_res = e.find_subexpr(self.old_expr)
+            if len(find_res) == 0:
+                raise AssertionError("Equation: old expression not found")
+            loc = find_res[0]
+            return OnLocation(self, loc).eval(e, ctx)
+
+        # Now e is the old expression
+        assert self.old_expr is None or self.old_expr == e
+
         for identity in ctx.get_series_expansions():
             inst = expr.match(e, identity.lhs)
             if inst is None:

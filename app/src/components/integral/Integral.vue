@@ -16,6 +16,7 @@
           <b-dropdown-item href="#" v-on:click="applyRule('LHopital')">L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Series" left>
+          <b-dropdown-item href="#" v-on:click="applySeriesExpansion">Series expansion</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('SeriesEvaluationIdentity')">Series evaluation</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Integral" left>
@@ -313,6 +314,17 @@
         <ExprQuery v-model="expr_query1"/>
         <button v-on:click="doApplyLimitBothSides">OK</button>
       </div>
+      <div v-if="r_query_mode === 'series expansion'">
+        <div class="math-text">Series expansion on:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExpr"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
+        <input v-model="index_var">
+        <button v-on:click="doApplySeriesExpansion">OK</button>
+      </div>
     </div>
     <div id="select">
     </div>
@@ -388,6 +400,9 @@ export default {
 
       // Query for limit variable
       limit_var: undefined,
+
+      // Query for index variable
+      index_var: 'n',
 
       // Selected fact
       selected_facts: {},
@@ -1055,6 +1070,33 @@ export default {
           name: "LimitEquation",
           var: this.limit_var,
           lim: this.expr_query1
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    // First stage of series expansion
+    applySeriesExpansion: function () {
+      this.r_query_mode = 'series expansion'
+    },
+
+    // Second stage of series expansion
+    doApplySeriesExpansion: async function () {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "SeriesExpansionIdentity",
+          old_expr: this.selected_expr,
+          index_var: this.index_var
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
