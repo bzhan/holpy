@@ -1,0 +1,228 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "B(2,n + 1) = (INT u:[0,1]. u * (1 - u) ^ n)",
+            "latex_goal": "B(2,n + 1) = \\int_{0}^{1} u (1 - u) ^ {n} \\,du",
+            "proof": {
+                "finished": true,
+                "goal": "B(2,n + 1) = (INT u:[0,1]. u * (1 - u) ^ n)",
+                "latex_goal": "B(2,n + 1) = \\int_{0}^{1} u (1 - u) ^ {n} \\,du",
+                "lhs_calc": {
+                    "latex_start": "B(2,n + 1)",
+                    "start": "B(2,n + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x (-x + 1) ^ {n} \\,dx",
+                            "res": "INT x:[0,1]. x * (-x + 1) ^ n",
+                            "rule": {
+                                "func_name": "B",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{0}^{1} u (1 - u) ^ {n} \\,du",
+                    "start": "INT u:[0,1]. u * (1 - u) ^ n",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} u (-u + 1) ^ {n} \\,du",
+                            "res": "INT u:[0,1]. u * (-u + 1) ^ n",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. (1 - sqrt(x)) ^ n) = 2 / ((n + 1) * (n + 2))",
+            "latex_goal": "\\int_{0}^{1} (1 - \\sqrt{x}) ^ {n} \\,dx = \\frac{2}{(n + 1) (n + 2)}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. (1 - sqrt(x)) ^ n) = 2 / ((n + 1) * (n + 2))",
+                "latex_goal": "\\int_{0}^{1} (1 - \\sqrt{x}) ^ {n} \\,dx = \\frac{2}{(n + 1) (n + 2)}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} (1 - \\sqrt{x}) ^ {n} \\,dx",
+                    "start": "INT x:[0,1]. (1 - sqrt(x)) ^ n",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} 2 u (-u + 1) ^ {n} \\,du",
+                            "res": "INT u:[0,1]. 2 * u * (-u + 1) ^ n",
+                            "rule": {
+                                "latex_str": "substitute \\(u\\) for \\(\\sqrt{x}\\)",
+                                "name": "Substitution",
+                                "str": "substitute u for sqrt(x)",
+                                "var_name": "u",
+                                "var_subst": "sqrt(x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\int_{0}^{1} u (-u + 1) ^ {n} \\,du)",
+                            "res": "2 * (INT u:[0,1]. u * (-u + 1) ^ n)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\int_{0}^{1} u (1 - u) ^ {n} \\,du)",
+                            "res": "2 * (INT u:[0,1]. u * (1 - u) ^ n)",
+                            "rule": {
+                                "latex_str": "rewriting \\(-u + 1\\) to \\(1 - u\\)",
+                                "name": "Equation",
+                                "new_expr": "1 - u",
+                                "old_expr": "-u + 1",
+                                "str": "rewriting -u + 1 to 1 - u"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 B(2,n + 1)",
+                            "res": "2 * B(2,n + 1)",
+                            "rule": {
+                                "eq": "B(2,n + 1) = (INT u:[0,1]. u * (1 - u) ^ n)",
+                                "latex_str": "apply equation \\(B(2,n + 1) = \\int_{0}^{1} u (1 - u) ^ {n} \\,du\\) at 1",
+                                "loc": "1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: B(2,n + 1) = (INT u:[0,1]. u * (1 - u) ^ n) at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{\\Gamma{(2)} \\Gamma{(n + 1)}}{\\Gamma{(n + 3)}})",
+                            "res": "2 * (Gamma(2) * Gamma(n + 1) / Gamma(n + 3))",
+                            "rule": {
+                                "latex_str": "rewrite \\(B(2,n + 1)\\) to \\(\\frac{\\Gamma{(2)} \\Gamma{(n + 1)}}{\\Gamma{(n + 3)}}\\) using identity at 1",
+                                "loc": "1",
+                                "name": "ApplyIdentity",
+                                "source": "B(2,n + 1)",
+                                "str": "rewrite B(2,n + 1) to Gamma(2) * Gamma(n + 1) / Gamma(n + 3) using identity at 1",
+                                "target": "Gamma(2) * Gamma(n + 1) / Gamma(n + 3)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{(1)! \\Gamma{(n + 1)}}{\\Gamma{(n + 3)}})",
+                            "res": "2 * (factorial(1) * Gamma(n + 1) / Gamma(n + 3))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(2)}\\) to \\((1)!\\) using identity at 1.0.0",
+                                "loc": "1.0.0",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(2)",
+                                "str": "rewrite Gamma(2) to factorial(1) using identity at 1.0.0",
+                                "target": "factorial(1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{(1)! n!}{\\Gamma{(n + 3)}})",
+                            "res": "2 * (factorial(1) * factorial(n) / Gamma(n + 3))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(n + 1)}\\) to \\(n!\\) using identity at 1.0.1",
+                                "loc": "1.0.1",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(n + 1)",
+                                "str": "rewrite Gamma(n + 1) to factorial(n) using identity at 1.0.1",
+                                "target": "factorial(n)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{(1)! n!}{(n + 2)!})",
+                            "res": "2 * (factorial(1) * factorial(n) / factorial(n + 2))",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(n + 3)}\\) to \\((n + 2)!\\) using identity at 1.1",
+                                "loc": "1.1",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(n + 3)",
+                                "str": "rewrite Gamma(n + 3) to factorial(n + 2) using identity at 1.1",
+                                "target": "factorial(n + 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{n!}{(n + 2)!})",
+                            "res": "2 * (factorial(n) / factorial(n + 2))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{n!}{(n + 2) (n + 1)!})",
+                            "res": "2 * (factorial(n) / ((n + 2) * factorial(n + 1)))",
+                            "rule": {
+                                "latex_str": "rewrite \\((n + 2)!\\) to \\((n + 2) (n + 1)!\\) using identity at 1.1",
+                                "loc": "1.1",
+                                "name": "ApplyIdentity",
+                                "source": "factorial(n + 2)",
+                                "str": "rewrite factorial(n + 2) to (n + 2) * factorial(n + 1) using identity at 1.1",
+                                "target": "(n + 2) * factorial(n + 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{n!}{(n + 2) ((n + 1) n!)})",
+                            "res": "2 * (factorial(n) / ((n + 2) * ((n + 1) * factorial(n))))",
+                            "rule": {
+                                "latex_str": "rewrite \\((n + 1)!\\) to \\((n + 1) n!\\) using identity at 1.1.1",
+                                "loc": "1.1.1",
+                                "name": "ApplyIdentity",
+                                "source": "factorial(n + 1)",
+                                "str": "rewrite factorial(n + 1) to (n + 1) * factorial(n) using identity at 1.1.1",
+                                "target": "(n + 1) * factorial(n)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "2 (\\frac{1}{(n + 1) (n + 2)})",
+                            "res": "2 * (1 / ((n + 1) * (n + 2)))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{2}{(n + 1) (n + 2)}",
+                            "res": "2 / ((n + 1) * (n + 2))",
+                            "rule": {
+                                "latex_str": "rewriting \\(2 (\\frac{1}{(n + 1) (n + 2)})\\) to \\(\\frac{2}{(n + 1) (n + 2)}\\)",
+                                "name": "Equation",
+                                "new_expr": "2 / ((n + 1) * (n + 2))",
+                                "old_expr": "2 * (1 / ((n + 1) * (n + 2)))",
+                                "str": "rewriting 2 * (1 / ((n + 1) * (n + 2))) to 2 / ((n + 1) * (n + 2))"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{2}{(n + 1) (n + 2)}",
+                    "start": "2 / ((n + 1) * (n + 2))",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "chapter4_practice01"
+}
