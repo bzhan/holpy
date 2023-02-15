@@ -210,6 +210,37 @@
                 "type": "CalculationProof"
             },
             "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+            "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+                "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
+                "start": {
+                    "latex_start": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = B(n + 1,n + 1)",
+                    "start": "(INT x:[0,1]. (x - x ^ 2) ^ n) = B(n + 1,n + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} (x - x ^ {2}) ^ {n} \\,dx = \\frac{(n!)^{2}}{(2 n + 1)!}",
+                            "res": "(INT x:[0,1]. (x - x ^ 2) ^ n) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+                            "rule": {
+                                "eq": "B(n + 1,n + 1) = factorial(n) ^ 2 / factorial(2 * n + 1)",
+                                "latex_str": "apply equation \\(B(n + 1,n + 1) = \\frac{(n!)^{2}}{(2 n + 1)!}\\) at 1",
+                                "loc": "1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: B(n + 1,n + 1) = factorial(n) ^ 2 / factorial(2 * n + 1) at 1"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "RewriteGoalProof"
+            },
+            "type": "Goal"
         }
     ],
     "name": "BetaWallis"

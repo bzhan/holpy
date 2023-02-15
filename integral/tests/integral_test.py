@@ -2277,6 +2277,12 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.ApplyIdentity("Gamma(n + 1)", "factorial(n)"))
         calc.perform_rule(rules.ApplyIdentity("Gamma(2 * n + 2)", "factorial(2 * n + 1)"))
+
+        goal04 = file.add_goal("(INT x:[0, 1]. (x - x ^ 2) ^ n) = (factorial(n) ^ 2) / (factorial(2 * n + 1))")
+        proof_of_goal04 = goal04.proof_by_rewrite_goal(begin=goal02)
+        calc = proof_of_goal04.begin
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal03.goal), "1"))
+
         self.checkAndOutput(file)
 
 
