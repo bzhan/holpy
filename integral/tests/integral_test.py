@@ -614,6 +614,25 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file)
 
+    def testBetaFunction(self):
+        # Reference:
+        # Inside interesting integrals, Section 4.2
+        file = compstate.CompFile("interesting", "BetaFunction")
+        goal = file.add_goal("(INT x:[0,1]. (x-x^2)^k)=factorial(k)^2 / factorial(2*k+1)")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("x-x^2", "x*(1-x)"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("(x*(1-x))^k", "x^k * (1-x)^k"),"0"))
+        calc.perform_rule(rules.OnLocation(rules.Equation("k", "(k+1)-1"),"0.0"))
+        calc.perform_rule(rules.OnLocation(rules.Equation("k", "(k+1)-1"),"0.1"))
+        calc.perform_rule(rules.FoldDefinition("B"))
+        calc.perform_rule(rules.ApplyIdentity("B(k+1,k+1)", "Gamma(k+1) * Gamma(k+1) / Gamma(2*k+2)"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(k+1)", "factorial(k)"), "0.0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(k+1)", "factorial(k)"), "0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(2*k+2)", "factorial(2*k+1)"), "1"))
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file)
+
     def testChapter1Section5(self):
         # Reference:
         # Inside interesting integrals, Section 1.5
@@ -2441,7 +2460,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file)
 
-    def testCharper4Practice03(self):
+    def testChapter4Practice03(self):
         # Reference:
         # Inside interesting integrals, C4.3
         file = compstate.CompFile("interesting", "chapter4_practice03")
@@ -2462,7 +2481,6 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("factorial(b+1)","(b+1)*factorial(b)"),"0.0.1"))
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file)
-
 
 if __name__ == "__main__":
     unittest.main()
