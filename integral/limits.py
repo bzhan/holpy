@@ -528,6 +528,8 @@ def limit_power(a: Limit, b: Limit, conds: Conditions) -> Limit:
                 return Limit(None)
         else:
             raise NotImplementedError
+    elif a.e.is_evaluable() and expr.eval_expr(a.e) == 0:
+        return limit_power(Limit(Const(0), asymp=a.asymp, side=a.side), b, conds)
     elif a.e.ty == expr.VAR:
         if b.e.ty == expr.CONST:
             return Limit(a.e^b.e)
