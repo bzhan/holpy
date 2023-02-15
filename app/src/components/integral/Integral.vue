@@ -15,8 +15,12 @@
         <b-nav-item-dropdown text="Limits" left>
           <b-dropdown-item href="#" v-on:click="applyRule('LHopital')">L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
+        <b-nav-item-dropdown text="Series" left>
+          <b-dropdown-item href="#" v-on:click="applyRule('SeriesEvaluationIdentity')">Series evaluation</b-dropdown-item>
+        </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Integral" left>
-          <b-dropdown-item href="#" v-on:click="applyRule('DefiniteIntegralIdentity')">Integral identity</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('IndefiniteIntegralIdentity')">Indefinite integral identity</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('DefiniteIntegralIdentity')">Definite integral identity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="forwardSubstitution">Forward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
@@ -37,6 +41,7 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Equation" left>
           <b-dropdown-item href="#" v-on:click="variableSubstitution">Variable substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyLimitBothSides">Take limit on both sides</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyDerivBothSides">Differentiate both sides</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('IntegrateBothSide')">Integrate both sides</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="solveEquation2">Solve equation</b-dropdown-item>
@@ -301,6 +306,13 @@
         &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
         <button v-on:click="doSolveEquation">Solve</button>
       </div>
+      <div v-if="r_query_mode === 'limit both sides'">
+        <span class="math-text">Take limit as variable</span><br/>
+        <input v-model="limit_var">
+        <span class="math-text">goes to</span><br/>
+        <ExprQuery v-model="expr_query1"/>
+        <button v-on:click="doApplyLimitBothSides">OK</button>
+      </div>
     </div>
     <div id="select">
     </div>
@@ -373,6 +385,9 @@ export default {
 
       // Query for variable to differentiate
       deriv_var: undefined,
+
+      // Query for limit variable
+      limit_var: undefined,
 
       // Selected fact
       selected_facts: {},
@@ -1013,6 +1028,33 @@ export default {
         rule: {
           name: "SolveEquation",
           solve_for: this.selected_expr
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    // First stage of taking limit
+    applyLimitBothSides: function () {
+      this.r_query_mode = 'limit both sides'
+    },
+
+    // Second stage of taking limit
+    doApplyLimitBothSides: async function () {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "LimitEquation",
+          var: this.limit_var,
+          lim: this.expr_query1
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
