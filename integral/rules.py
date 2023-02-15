@@ -1446,13 +1446,12 @@ class SplitRegion(Rule):
             else:
                 return OnLocation(self, sep_ints[0][1]).eval(e, ctx)
         x = Var("c")
-        is_cpv = limits.is_indeterminate_form(Limit(x.name, POS_INF, e.body.subst(e.var, self.c+1/x)))
+        is_cpv = limits.reduce_inf_limit(e.body.subst(e.var, self.c+1/x), x.name, ctx.get_conds()) in [POS_INF, NEG_INF]
         if not is_cpv:
             return expr.Integral(e.var, e.lower, self.c, e.body) + \
                    expr.Integral(e.var, self.c, e.upper, e.body)
         else:
-            x = Var(self.new_var)
-            return Limit(self.new_var, POS_INF, Integral(e.var, e.lower, normalize(self.c - 1/x), e.body) +
+            return Limit(x.name, POS_INF, Integral(e.var, e.lower, normalize(self.c - 1/x), e.body) +
                          Integral(e.var, normalize(self.c + 1/x), e.upper, e.body))
 
 
