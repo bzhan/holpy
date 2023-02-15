@@ -278,6 +278,13 @@
         <button v-on:click="doSplitRegion">OK</button>
       </div>
       <div v-if="r_query_mode === 'select theorem'">
+        <div class="math-text">Select subexpression:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExpr"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
         <div class="math-text">Select theorem to apply:</div>
         <div v-for="(item, index) in theorems" :key="index"
              v-on:click="doApplyTheorem(index)" style="cursor:pointer">
@@ -410,6 +417,7 @@ export default {
       // Selected latex expression
       selected_expr: undefined,
       latex_selected_expr: undefined,
+      selected_loc: undefined,
 
       // List of identity rewrites for selected expression
       identity_rewrites: [],
@@ -823,11 +831,13 @@ export default {
       const end = this.$refs.select_expr1.selectionEnd
       this.selected_expr = this.lastExpr.slice(start, end)   
       const data = {
-        expr: this.selected_expr
+        expr: this.lastExpr,
+        selected_expr: this.selected_expr
       }
       const response = await axios.post("http://127.0.0.1:5000/api/query-latex-expr", JSON.stringify(data))
       if (response.data.status === 'ok') {
-        this.latex_selected_expr = response.data.latex_expr
+        this.latex_selected_expr = response.data.latex_expr,
+        this.selected_loc = response.data.loc
       }
     },
 
@@ -954,6 +964,7 @@ export default {
         rule: {
           name: "ApplyEquation",
           eq: this.theorems[index].eq,
+          loc: this.selected_loc
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
