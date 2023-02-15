@@ -2075,8 +2075,8 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.ApplyIdentity("sin(-(a * u))", "-sin(a * u)"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.DefiniteIntegralIdentity())
-        print(file)
-        # self.checkAndOutput(file)
+        # print(file)
+        self.checkAndOutput(file)
 
 
     def testChapter3Practice05(self):
