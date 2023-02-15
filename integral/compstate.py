@@ -856,13 +856,6 @@ def parse_item(parent, item) -> StateItem:
         print(item['type'])
         raise NotImplementedError
 
-def parse_file(name: str, problem: str, items) -> CompFile:
-    goal = parser.parse_expr(problem)
-    file = CompFile(name)
-    for item in items:
-        file.add_item(parse_item(file, item))
-    return file
-
 def get_next_step_label(step: Union[Calculation, CalculationStep], label: Label) -> Label:
     if isinstance(step, Calculation):
         return Label(label.data + [0])

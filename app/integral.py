@@ -216,26 +216,35 @@ def query_identities():
 @app.route("/api/add-function-definition", methods=['POST'])
 def add_function_definition():
     data = json.loads(request.get_data().decode('UTF-8'))
-    file = compstate.parse_file(data['name'], data['problem'], data['items'])
+    book_name = data['book']
+    filename = data['file']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     eq = integral.parser.parse_expr(data['eq'])
-    conds = integral.conditions.Conditions(integral.parser.parse_expr(cond) for cond in data['conds'])
-    file.add_item(compstate.FuncDef(eq, conds=conds))
+    conds = list(integral.parser.parse_expr(cond) for cond in data['conds'])
+    file.add_definition(eq, conds=conds)
     return jsonify({
         "status": "ok",
-        "state": file.export(),
+        "state": file.export()['content'],
+        "selected_item": str(compstate.Label(""))
     })
 
 @app.route("/api/add-goal", methods=["POST"])
 def add_goal():
     data = json.loads(request.get_data().decode('UTF-8'))
-    file = compstate.parse_file(data['name'], data['problem'], data['items'])
+    book_name = data['book']
+    filename = data['file']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     goal = integral.parser.parse_expr(data['goal'])
-    conds = integral.conditions.Conditions(integral.parser.parse_expr(cond) for cond in data['conds'])
-    file.add_item(compstate.Goal(goal, conds=conds))
+    conds = list(integral.parser.parse_expr(cond) for cond in data['conds'])
+    file.add_goal(goal, conds=conds)
     return jsonify({
         "status": "ok",
-        "state": file.export(),
-        "selected_item": str(compstate.Label([len(file.items)-1])),
+        "state": file.export()['content'],
+        "selected_item": str(compstate.Label(""))
     })
 
 @app.route("/api/proof-by-calculation", methods=["POST"])

@@ -1,0 +1,170 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "B(a + 1,b + 2) = (INT x:[0,1]. x ^ a * (-x + 1) ^ (b + 1))",
+            "latex_goal": "B(a + 1,b + 2) = \\int_{0}^{1} x ^ {a} (-x + 1) ^ {b + 1} \\,dx",
+            "proof": {
+                "finished": true,
+                "goal": "B(a + 1,b + 2) = (INT x:[0,1]. x ^ a * (-x + 1) ^ (b + 1))",
+                "latex_goal": "B(a + 1,b + 2) = \\int_{0}^{1} x ^ {a} (-x + 1) ^ {b + 1} \\,dx",
+                "lhs_calc": {
+                    "latex_start": "B(a + 1,b + 2)",
+                    "start": "B(a + 1,b + 2)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {a} (-x + 1) ^ {b + 1} \\,dx",
+                            "res": "INT x:[0,1]. x ^ a * (-x + 1) ^ (b + 1)",
+                            "rule": {
+                                "func_name": "B",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{0}^{1} x ^ {a} (-x + 1) ^ {b + 1} \\,dx",
+                    "start": "INT x:[0,1]. x ^ a * (-x + 1) ^ (b + 1)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. x ^ a * (INT y:[0,1 - x]. y ^ b)) = factorial(a) * factorial(b) / factorial(a + b + 2)",
+            "latex_goal": "\\int_{0}^{1} x ^ {a} (\\int_{0}^{1 - x} y ^ {b} \\,dy) \\,dx = \\frac{a! b!}{(a + b + 2)!}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. x ^ a * (INT y:[0,1 - x]. y ^ b)) = factorial(a) * factorial(b) / factorial(a + b + 2)",
+                "latex_goal": "\\int_{0}^{1} x ^ {a} (\\int_{0}^{1 - x} y ^ {b} \\,dy) \\,dx = \\frac{a! b!}{(a + b + 2)!}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} x ^ {a} (\\int_{0}^{1 - x} y ^ {b} \\,dy) \\,dx",
+                    "start": "INT x:[0,1]. x ^ a * (INT y:[0,1 - x]. y ^ b)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {a} (\\left. \\frac{y ^ {b + 1}}{b + 1} \\right\\vert_{y=0}^{1 - x}) \\,dx",
+                            "res": "INT x:[0,1]. x ^ a * ([y ^ (b + 1) / (b + 1)]_y=0,1 - x)",
+                            "rule": {
+                                "loc": "0.1",
+                                "name": "DefiniteIntegralIdentity",
+                                "str": "apply definite integral at 0.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\int_{0}^{1} x ^ {a} (-x + 1) ^ {b + 1} \\,dx}{b + 1}",
+                            "res": "(INT x:[0,1]. x ^ a * (-x + 1) ^ (b + 1)) / (b + 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{B(a + 1,b + 2)}{b + 1}",
+                            "res": "B(a + 1,b + 2) / (b + 1)",
+                            "rule": {
+                                "eq": "B(a + 1,b + 2) = (INT x:[0,1]. x ^ a * (-x + 1) ^ (b + 1))",
+                                "latex_str": "apply equation \\(B(a + 1,b + 2) = \\int_{0}^{1} x ^ {a} (-x + 1) ^ {b + 1} \\,dx\\) at 0",
+                                "loc": "0",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: B(a + 1,b + 2) = (INT x:[0,1]. x ^ a * (-x + 1) ^ (b + 1)) at 0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\frac{\\Gamma{(a + 1)} \\Gamma{(b + 2)}}{\\Gamma{(a + b + 3)}}}{b + 1}",
+                            "res": "Gamma(a + 1) * Gamma(b + 2) / Gamma(a + b + 3) / (b + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\(B(a + 1,b + 2)\\) to \\(\\frac{\\Gamma{(a + 1)} \\Gamma{(b + 2)}}{\\Gamma{(a + b + 3)}}\\) using identity at 0",
+                                "loc": "0",
+                                "name": "ApplyIdentity",
+                                "source": "B(a + 1,b + 2)",
+                                "str": "rewrite B(a + 1,b + 2) to Gamma(a + 1) * Gamma(b + 2) / Gamma(a + b + 3) using identity at 0",
+                                "target": "Gamma(a + 1) * Gamma(b + 2) / Gamma(a + b + 3)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\frac{a! \\Gamma{(b + 2)}}{\\Gamma{(a + b + 3)}}}{b + 1}",
+                            "res": "factorial(a) * Gamma(b + 2) / Gamma(a + b + 3) / (b + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(a + 1)}\\) to \\(a!\\) using identity at 0.0.0",
+                                "loc": "0.0.0",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(a + 1)",
+                                "str": "rewrite Gamma(a + 1) to factorial(a) using identity at 0.0.0",
+                                "target": "factorial(a)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\frac{a! (b + 1)!}{\\Gamma{(a + b + 3)}}}{b + 1}",
+                            "res": "factorial(a) * factorial(b + 1) / Gamma(a + b + 3) / (b + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(b + 2)}\\) to \\((b + 1)!\\) using identity at 0.0.1",
+                                "loc": "0.0.1",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(b + 2)",
+                                "str": "rewrite Gamma(b + 2) to factorial(b + 1) using identity at 0.0.1",
+                                "target": "factorial(b + 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\frac{a! (b + 1)!}{(a + b + 2)!}}{b + 1}",
+                            "res": "factorial(a) * factorial(b + 1) / factorial(a + b + 2) / (b + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(a + b + 3)}\\) to \\((a + b + 2)!\\) using identity at 0.1",
+                                "loc": "0.1",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(a + b + 3)",
+                                "str": "rewrite Gamma(a + b + 3) to factorial(a + b + 2) using identity at 0.1",
+                                "target": "factorial(a + b + 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\frac{a! ((b + 1) b!)}{(a + b + 2)!}}{b + 1}",
+                            "res": "factorial(a) * ((b + 1) * factorial(b)) / factorial(a + b + 2) / (b + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\((b + 1)!\\) to \\((b + 1) b!\\) using identity at 0.0.1",
+                                "loc": "0.0.1",
+                                "name": "ApplyIdentity",
+                                "source": "factorial(b + 1)",
+                                "str": "rewrite factorial(b + 1) to (b + 1) * factorial(b) using identity at 0.0.1",
+                                "target": "(b + 1) * factorial(b)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{a! b!}{(a + b + 2)!}",
+                            "res": "factorial(a) * factorial(b) / factorial(a + b + 2)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{a! b!}{(a + b + 2)!}",
+                    "start": "factorial(a) * factorial(b) / factorial(a + b + 2)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "chapter4_practice03"
+}

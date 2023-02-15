@@ -1,0 +1,151 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "(INT x:[0,1]. (x - x ^ 2) ^ k) = factorial(k) ^ 2 / factorial(2 * k + 1)",
+            "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {k} \\,dx = \\frac{(k!)^{2}}{(2 k + 1)!}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. (x - x ^ 2) ^ k) = factorial(k) ^ 2 / factorial(2 * k + 1)",
+                "latex_goal": "\\int_{0}^{1} (x - x ^ {2}) ^ {k} \\,dx = \\frac{(k!)^{2}}{(2 k + 1)!}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} (x - x ^ {2}) ^ {k} \\,dx",
+                    "start": "INT x:[0,1]. (x - x ^ 2) ^ k",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{1} (x (1 - x)) ^ {k} \\,dx",
+                            "res": "INT x:[0,1]. (x * (1 - x)) ^ k",
+                            "rule": {
+                                "latex_str": "rewriting \\(x - x ^ {2}\\) to \\(x (1 - x)\\)",
+                                "name": "Equation",
+                                "new_expr": "x * (1 - x)",
+                                "old_expr": "x - x ^ 2",
+                                "str": "rewriting x - x ^ 2 to x * (1 - x)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {k} (1 - x) ^ {k} \\,dx",
+                            "res": "INT x:[0,1]. x ^ k * (1 - x) ^ k",
+                            "rule": {
+                                "latex_str": "rewrite \\((x (1 - x)) ^ {k}\\) to \\(x ^ {k} (1 - x) ^ {k}\\) using identity at 0",
+                                "loc": "0",
+                                "name": "ApplyIdentity",
+                                "source": "(x * (1 - x)) ^ k",
+                                "str": "rewrite (x * (1 - x)) ^ k to x ^ k * (1 - x) ^ k using identity at 0",
+                                "target": "x ^ k * (1 - x) ^ k"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {k + 1 - 1} (1 - x) ^ {k} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (k + 1 - 1) * (1 - x) ^ k",
+                            "rule": {
+                                "latex_str": "rewriting \\(k\\) to \\(k + 1 - 1\\) at 0.0",
+                                "loc": "0.0",
+                                "name": "Equation",
+                                "new_expr": "k + 1 - 1",
+                                "old_expr": "k",
+                                "str": "rewriting k to k + 1 - 1 at 0.0"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{1} x ^ {k + 1 - 1} (1 - x) ^ {k + 1 - 1} \\,dx",
+                            "res": "INT x:[0,1]. x ^ (k + 1 - 1) * (1 - x) ^ (k + 1 - 1)",
+                            "rule": {
+                                "latex_str": "rewriting \\(k\\) to \\(k + 1 - 1\\) at 0.1",
+                                "loc": "0.1",
+                                "name": "Equation",
+                                "new_expr": "k + 1 - 1",
+                                "old_expr": "k",
+                                "str": "rewriting k to k + 1 - 1 at 0.1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "B(k + 1,k + 1)",
+                            "res": "B(k + 1,k + 1)",
+                            "rule": {
+                                "func_name": "B",
+                                "name": "FoldDefinition",
+                                "str": "fold definition"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{\\Gamma{(k + 1)} \\Gamma{(k + 1)}}{\\Gamma{(2 k + 2)}}",
+                            "res": "Gamma(k + 1) * Gamma(k + 1) / Gamma(2 * k + 2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(B(k + 1,k + 1)\\) to \\(\\frac{\\Gamma{(k + 1)} \\Gamma{(k + 1)}}{\\Gamma{(2 k + 2)}}\\) using identity",
+                                "name": "ApplyIdentity",
+                                "source": "B(k + 1,k + 1)",
+                                "str": "rewrite B(k + 1,k + 1) to Gamma(k + 1) * Gamma(k + 1) / Gamma(2 * k + 2) using identity",
+                                "target": "Gamma(k + 1) * Gamma(k + 1) / Gamma(2 * k + 2)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{k! \\Gamma{(k + 1)}}{\\Gamma{(2 k + 2)}}",
+                            "res": "factorial(k) * Gamma(k + 1) / Gamma(2 * k + 2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(k + 1)}\\) to \\(k!\\) using identity at 0.0",
+                                "loc": "0.0",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(k + 1)",
+                                "str": "rewrite Gamma(k + 1) to factorial(k) using identity at 0.0",
+                                "target": "factorial(k)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{k! k!}{\\Gamma{(2 k + 2)}}",
+                            "res": "factorial(k) * factorial(k) / Gamma(2 * k + 2)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(k + 1)}\\) to \\(k!\\) using identity at 0.1",
+                                "loc": "0.1",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(k + 1)",
+                                "str": "rewrite Gamma(k + 1) to factorial(k) using identity at 0.1",
+                                "target": "factorial(k)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{k! k!}{(2 k + 1)!}",
+                            "res": "factorial(k) * factorial(k) / factorial(2 * k + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(2 k + 2)}\\) to \\((2 k + 1)!\\) using identity at 1",
+                                "loc": "1",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(2 * k + 2)",
+                                "str": "rewrite Gamma(2 * k + 2) to factorial(2 * k + 1) using identity at 1",
+                                "target": "factorial(2 * k + 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\frac{(k!)^{2}}{(2 k + 1)!}",
+                            "res": "factorial(k) ^ 2 / factorial(2 * k + 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{(k!)^{2}}{(2 k + 1)!}",
+                    "start": "factorial(k) ^ 2 / factorial(2 * k + 1)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "BetaFunction"
+}

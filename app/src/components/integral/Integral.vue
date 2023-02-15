@@ -314,18 +314,28 @@ export default {
 
   data: function () {
     return {
-      filename: undefined,       // Currently opened file
+      // Display list of books (false) or list of items in a file.
+      content_state: undefined,  
 
-      book_list: [],             // List of integral books
-      book_name: "interesting",  // Currently open book
+      // List of integral books
+      book_list: [],
+      // Currently open book
+      book_name: "interesting",
+      // Content of the currently opened book
+      book_content: {},
 
-      book_content: {},          // Content of the currently opened book
-      content: [],               // List of problems
-      content_state: undefined,  // Display items in content or json files in file list
-      cur_id: undefined,         // ID of the selected item
-      cur_items: [],             // Current items in state
-      r_query_mode: undefined,   // Record query mode
-      sep_int: [],               // All separate integrals
+      // Currently opened file
+      filename: undefined,
+      // List of problems in the file
+      content: [],
+      // ID of the selected item
+      cur_id: undefined,
+      
+      // Current query mode
+      r_query_mode: undefined,
+
+      // All separate integrals
+      sep_int: [],
 
       // Selected goal
       selected_item: undefined,
@@ -385,7 +395,6 @@ export default {
       this.content_state = false
       this.content = []
       this.cur_id = undefined
-      this.cur_items = undefined
     },
 
     loadBookContent: async function () {
@@ -425,7 +434,6 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/integral-open-file", JSON.stringify(data))
       this.content = response.data.content
       this.cur_id = undefined
-      this.cur_items = undefined
       this.content_state = true
     },
 
@@ -486,15 +494,17 @@ export default {
     // Perform add function definition
     doAddFuncDef: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
         eq: this.expr_query1,
         conds: this.cond_query
       }
       const response = await axios.post("http://127.0.0.1:5000/api/add-function-definition", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.content = response.data.state
+        this.cur_id = this.content.length - 1
+        this.selected_item = response.data.selected_item
         this.r_query_mode = undefined
         this.expr_query1 = ''
         this.cond_query = []
@@ -509,15 +519,16 @@ export default {
     // Perform add goal
     doAddGoal: async function() {
       const data = {
-        name: this.content[this.cur_id].name,
-        problem: this.content[this.cur_id].problem,
-        items: this.cur_items,
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
         goal: this.expr_query1,
         conds: this.cond_query
       }
       const response = await axios.post("http://127.0.0.1:5000/api/add-goal", JSON.stringify(data))
       if (response.data.status == 'ok') {
-        this.cur_items = response.data.state.items
+        this.content = response.data.state
+        this.cur_id = this.content.length - 1
         this.selected_item = response.data.selected_item
         this.r_query_mode = undefined
         this.expr_query1 = ''
