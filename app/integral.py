@@ -349,10 +349,17 @@ def expand_definition():
                 "selected_item": str(compstate.get_next_step_label(subitem, label))
             })
         else:
+            choices = []
+            for sube, loc in results:
+                choices.append({
+                    'subexpr': str(sube),
+                    'latex_subexpr': integral.latex.convert_expr(sube),
+                    'func_name': sube.func_name,
+                    'loc': str(loc)
+                })
             return jsonify({
                 "status": "choose",
-                "item": st.export(),
-                "selected_item": str(compstate.get_next_step_label(subitem, label))
+                "choices": choices
             })
     else:
         return jsonify({

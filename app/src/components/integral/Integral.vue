@@ -351,6 +351,13 @@
         &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
         <button v-on:click="doApplyExpandPolynomial">OK</button>
       </div>
+      <div v-if="r_query_mode === 'expand definition'">
+        <div class="math-text">Expand definition on:</div>
+        <div v-for="(item, index) in def_choices" :key="index"
+             v-on:click="doExpandDefinition(index)" style="cursor:pointer">
+          <MathEquation v-bind:data="'\\(' + item.latex_subexpr + '\\)'"/>
+        </div>
+      </div>
     </div>
     <div id="select">
     </div>
@@ -404,6 +411,9 @@ export default {
 
       // All separate integrals
       sep_int: [],
+
+      // List of choices for fold/unfold definition
+      def_choices: [],
 
       // Selected goal
       selected_item: undefined,
@@ -715,6 +725,31 @@ export default {
       if (response.data.status == 'ok') {
         this.$set(this.content, this.cur_id, response.data.item)
         this.selected_item = response.data.selected_item
+      } else if (response.data.status == 'choose') {
+        this.def_choices = response.data.choices
+        this.r_query_mode = 'expand definition'
+      }
+    },
+
+    // Second stage of expand definition
+    doExpandDefinition: async function(index) {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "ExpandDefinition",
+          func_name: this.def_choices[index].func_name,
+          loc: this.def_choices[index].loc
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
       }
     },
 
