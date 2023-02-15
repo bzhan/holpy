@@ -614,6 +614,25 @@ class IntegralTest(unittest.TestCase):
 
         self.checkAndOutput(file)
 
+    def testBetaFunction(self):
+        # Reference:
+        # Inside interesting integrals, Section 4.2
+        file = compstate.CompFile("interesting", "BetaFunction")
+        goal = file.add_goal("(INT x:[0,1]. (x-x^2)^k)=factorial(k)^2 / factorial(2*k+1)")
+        proof = goal.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.Equation("x-x^2", "x*(1-x)"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("(x*(1-x))^k", "x^k * (1-x)^k"),"0"))
+        calc.perform_rule(rules.OnLocation(rules.Equation("k", "(k+1)-1"),"0.0"))
+        calc.perform_rule(rules.OnLocation(rules.Equation("k", "(k+1)-1"),"0.1"))
+        calc.perform_rule(rules.FoldDefinition("B"))
+        calc.perform_rule(rules.ApplyIdentity("B(k+1,k+1)", "Gamma(k+1) * Gamma(k+1) / Gamma(2*k+2)"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(k+1)", "factorial(k)"), "0.0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(k+1)", "factorial(k)"), "0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(2*k+2)", "factorial(2*k+1)"), "1"))
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file)
+
     def testChapter1Section5(self):
         # Reference:
         # Inside interesting integrals, Section 1.5
@@ -2440,5 +2459,28 @@ class IntegralTest(unittest.TestCase):
         calc = proof.rhs_calc
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file)
+
+    def testChapter4Practice03(self):
+        # Reference:
+        # Inside interesting integrals, C4.3
+        file = compstate.CompFile("interesting", "chapter4_practice03")
+        goal01 = file.add_goal("B(a+1,b+2) = (INT x:[0,1]. x ^ a * (-x + 1) ^ (b + 1))")
+        proof = goal01.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.ExpandDefinition("B"))
+        goal02 = file.add_goal("(INT x:[0,1]. x^a * (INT y:[0 ,1-x]. y^b)) = factorial(a) * factorial(b) / factorial(a+b+2)")
+        proof = goal02.proof_by_calculation()
+        calc = proof.lhs_calc
+        calc.perform_rule(rules.OnLocation(rules.DefiniteIntegralIdentity(),"0.1"))
+        calc.perform_rule(rules.FullSimplify())
+        calc.perform_rule(rules.OnLocation(rules.ApplyEquation("B(a+1,b+2) = (INT x:[0,1]. x ^ a * (-x + 1) ^ (b + 1))"), "0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("B(a + 1,b + 2)","Gamma(a+1) * Gamma(b+2)/Gamma(a+b+3)"), "0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(a+1)", "factorial(a)"),"0.0.0"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(b+2)", "factorial(b+1)"), "0.0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("Gamma(a+b+3)", "factorial(a+b+2)"), "0.1"))
+        calc.perform_rule(rules.OnLocation(rules.ApplyIdentity("factorial(b+1)","(b+1)*factorial(b)"),"0.0.1"))
+        calc.perform_rule(rules.FullSimplify())
+        self.checkAndOutput(file)
+
 if __name__ == "__main__":
     unittest.main()
