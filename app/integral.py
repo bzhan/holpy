@@ -359,8 +359,15 @@ def fold_definition():
 @app.route("/api/solve-equation", methods=["POST"])
 def integral_solve_equation():
     data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     label = compstate.Label(data['selected_item'])
+    st: compstate.StateItem = file.content[cur_id]
+    subitem = st.get_by_label(label)
     facts = data['selected_facts']
     if len(facts) != 1:
         return jsonify({
@@ -369,7 +376,7 @@ def integral_solve_equation():
         })
     lhs: integral.expr.Expr
     for fact_label in facts:
-        fact = item.get_by_label(integral.compstate.Label(fact_label))
+        fact = st.get_by_label(integral.compstate.Label(fact_label))
         if isinstance(fact, compstate.CalculationStep):
             lhs = fact.res
         elif isinstance(fact, compstate.Calculation):
@@ -380,13 +387,12 @@ def integral_solve_equation():
                 "msg": "Selected fact is not part of a calculation."
             })
     
-    subitem = item.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
         rule = integral.rules.IntegrateByEquation(lhs)
         subitem.perform_rule(rule)
         return jsonify({
             "status": "ok",
-            "item": item.export(),
+            "item": st.export(),
             "selected_item": str(compstate.get_next_step_label(subitem, label))
         })
     else:
@@ -428,66 +434,55 @@ def integral_perform_step():
 @app.route("/api/query-theorems", methods=["POST"])
 def integral_query_theorems():
     data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
-    prev_items = []
-    for prev_item in data['prev_items']:
-        prev_items.append(compstate.parse_item(prev_item))
-    label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     eqs = []
-    for prev_item in prev_items:
+    for prev_item in file.content[:cur_id]:
         for eq in prev_item.get_facts():
-            if eq.is_equals():
-                eqs.append({
-                    'eq': str(eq),
-                    'latex_eq': integral.latex.convert_expr(eq)
-                })
+            eqs.append({
+                'eq': str(eq),
+                'latex_eq': integral.latex.convert_expr(eq)
+            })
     return jsonify({
         "status": "ok",
         "theorems": eqs
     })
 
-@app.route("/api/integral-apply-theorem", methods=["POST"])
-def integral_apply_theorem():
+@app.route("/api/query-vars", methods=["POST"])
+def integral_query_vars():
     data = json.loads(request.get_data().decode('UTF-8'))
-    item = compstate.parse_item(data['item'])
+    book_name = data['book']
+    filename = data['file']
+    cur_id = data['cur_id']
+    file = compstate.CompFile(book_name, filename)
+    for item in data['content']:
+        file.add_item(compstate.parse_item(file, item))
     label = compstate.Label(data['selected_item'])
-    subitem = item.get_by_label(label)
-    eq = integral.parser.parse_expr(data['theorem'])
-    rule = integral.rules.ApplyEquation(eq)
-    e: integral.expr.Expr
-    conds: integral.conditions.Conditions
-    if isinstance(subitem, compstate.Calculation):
-        e = subitem.start
-        conds = subitem.conds
-    elif isinstance(subitem, compstate.CalculationStep):
-        e = subitem.res
-        conds = subitem.parent.conds
+    st: compstate.StateItem = file.content[cur_id]
+    subitem = st.get_by_label(label)
+    if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):
+        res = subitem.res if isinstance(subitem, compstate.CalculationStep) else subitem.start
+    elif isinstance(subitem, compstate.RewriteGoalProof):
+        res = subitem.begin.start
     else:
         return jsonify({
             "status": "error",
-            "msg": "Selected item is not part of a calculation."
         })
-    
-    new_e = rule.eval(e, conds=conds)
-    if new_e == e:
-        query_vars = []
-        for var in eq.get_vars():
-            query_vars.append({"var": var, "expr": ""})
-        return jsonify({
-            "status": "query",
-            "query_vars": query_vars
-        })
-    else:
-        subitem.perform_rule(rule)
-        return jsonify({
-            "status": "ok",
-            "item": item.export(),
-            "selected_item": str(compstate.get_next_step_label(subitem, label))
-        })
+    vars = list(res.get_vars())
+    query_vars = []
+    for var in vars:
+        query_vars.append({'var': var, 'expr': ""})
+    return jsonify({
+        "status": "ok",
+        "query_vars": query_vars
+    })
 
 @app.route("/api/query-last-expr", methods=["POST"])
-def query_last_expr():
+def integral_query_last_expr():
     # Query selected expression according to label
     data = json.loads(request.get_data().decode('UTF-8'))
     book_name = data['book']

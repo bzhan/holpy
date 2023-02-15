@@ -26,15 +26,17 @@
           <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Rewrite" left>
+          <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewriting</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="foldDefinition">Fold definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ExpandPolynomial')">Expand polynomial</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyTheorem">Apply theorem</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewrite equation</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="rewriteUsingIdentity" id="rewriteUsingIdentity">Use identity</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="rewriteUsingIdentity" id="rewriteUsingIdentity">Apply identity</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyTheorem">Apply lemma</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ApplyInductHyp')">Apply inductive hyp</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyRule('RewriteFactorial')">Factorial</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyRule('IntegrateBothSide')">Integrate both side</b-dropdown-item>
+        </b-nav-item-dropdown>
+        <b-nav-item-dropdown text="Equation" left>
+          <b-dropdown-item href="#" v-on:click="variableSubstitution">Variable substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('IntegrateBothSide')">Integrate both sides</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -275,12 +277,11 @@
       </div>
       <div v-if="r_query_mode === 'query vars'">
         <div class="math-text">Enter instantiation in theorem</div>
-        <MathEquation v-bind:data="'\\(' + theorems[selected_theorem_id].latex_eq + '\\)'"/><br/>
         <div v-for="(item, index) in query_vars" :key="index">
           <MathEquation v-bind:data="'\\(' + item.var + '\\to \\)'"/>
           <ExprQuery v-model="item.expr"/>
         </div>
-        <button v-on:click="doApplyTheoremInst">OK</button>
+        <button v-on:click="doVariableSubstitution">OK</button>
       </div>
     </div>
     <div id="select">
@@ -356,23 +357,15 @@ export default {
 
       // List of theorems
       theorems: undefined,
-      selected_theorem_id: undefined,
+
+      // Query for variable instantiation
       query_vars: undefined,
 
-      // the choosed step expression
+      // Expression in the chosen step
       last_expr: undefined,
 			
       // the index of sep-integrals
       int_id: 0,
-
-      // the index of sep-limits
-      limit_id: 0,
-
-      integral_var: undefined,
-      left_skolem: false,
-      right_skolem: false,
-      left_skolem_name: undefined,
-      right_skolem_name: undefined,
     }
   },
 
@@ -783,7 +776,10 @@ export default {
 
     solveEquation: async function() {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item,
         selected_facts: this.selected_facts
       }
@@ -831,7 +827,10 @@ export default {
 
     doSplitRegion: async function() {
       const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item,
         rule: {
           name: "SplitRegion",
@@ -846,10 +845,13 @@ export default {
       }
     },
 
+    // First stage of apply theorem: select theorem to apply
     applyTheorem: async function() {
       const data = {
-        item: this.content[this.cur_id],
-        prev_items: this.content.slice(0, this.cur_id),
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item,
       }
       const response = await axios.post("http://127.0.0.1:5000/api/query-theorems", JSON.stringify(data))
@@ -859,31 +861,17 @@ export default {
       }
     },
 
+    // Second stage of apply theorem.
     doApplyTheorem: async function(index) {
-      this.selected_theorem_id = index
       const data = {
-        item: this.content[this.cur_id],
-        selected_item: this.selected_item,
-        theorem: this.theorems[index].eq
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-apply-theorem", JSON.stringify(data))
-      if (response.data.status == 'ok') {
-        this.$set(this.content, this.cur_id, response.data.item)
-        this.selected_item = response.data.selected_item
-      } else if (response.data.status == 'query') {
-        this.query_vars = response.data.query_vars
-        this.r_query_mode = 'query vars'
-      }
-    },
-
-    doApplyTheoremInst: async function() {
-      const data = {
-        item: this.content[this.cur_id],
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
         selected_item: this.selected_item,
         rule: {
           name: "ApplyEquation",
-          eq: this.theorems[this.selected_theorem_id].eq,
-          subMap: this.query_vars
+          eq: this.theorems[index].eq,
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
@@ -893,6 +881,41 @@ export default {
         this.r_query_mode = undefined
       }
     },
+
+    variableSubstitution: async function() {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/query-vars", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.query_vars = response.data.query_vars
+        this.r_query_mode = 'query vars'
+      }
+    },
+
+    doVariableSubstitution: async function() {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "VarSubsOfEquation",
+          subst: this.query_vars
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    }
   },
 
   created: function () {

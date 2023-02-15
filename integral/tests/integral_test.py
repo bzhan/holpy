@@ -569,7 +569,7 @@ class IntegralTest(unittest.TestCase):
         file = compstate.CompFile("interesting", "GammaFunction")
 
         # Definition of Gamma function
-        gamma_def = file.add_definition("Gamma(n) = (INT x:[0,oo]. exp(-x) * x^(n-1))", conds=["n > 0"])
+        file.add_definition("Gamma(n) = (INT x:[0,oo]. exp(-x) * x^(n-1))", conds=["n > 0"])
 
         # Recursive equation for gamma function
         goal1 = file.add_goal("Gamma(n+1) = n * Gamma(n)", conds=["n > 0"])
@@ -1498,7 +1498,7 @@ class IntegralTest(unittest.TestCase):
         goal4 = file.add_goal("SKOLEM_CONST(C) = 0")
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
         calc = proof_of_goal4.begin
-        calc.perform_rule(rules.VarSubsOfEquation('a', expr.Const(0)))
+        calc.perform_rule(rules.VarSubsOfEquation([{'var': 'a', 'expr': "0"}]))
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("SKOLEM_CONST(C)")))
@@ -1548,7 +1548,7 @@ class IntegralTest(unittest.TestCase):
         goal4 = file.add_goal("SKOLEM_FUNC(C(a)) = -1/2 * pi * log(a)", conds=["a > 0"])
         proof_of_goal4 = goal4.proof_by_rewrite_goal(begin=goal3)
         calc = proof_of_goal4.begin
-        calc.perform_rule(rules.VarSubsOfEquation("b", parser.parse_expr("a")))
+        calc.perform_rule(rules.VarSubsOfEquation([{'var': "b", 'expr': "a"}]))
         calc.perform_rule(rules.SolveEquation(parser.parse_expr("SKOLEM_FUNC(C(a))")))
         calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
         calc.perform_rule(rules.FullSimplify())

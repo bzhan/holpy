@@ -1921,26 +1921,40 @@ class VarSubsOfEquation(Rule):
     """Substitute variable for any expression in an equation.
     """
 
-    def __init__(self, var: str, var_subs: Expr):
+    def __init__(self, subst: Dict[str, Union[str, Expr]]):
         self.name = "VarSubsOfEquation"
-        self.var = var
-        self.var_subs = var_subs
+        for i in range(len(subst)):
+            if isinstance(subst[i]['expr'], str):
+                if subst[i]['expr'] == "":
+                    subst[i]['expr'] = None
+                else:
+                    subst[i]['expr'] = parser.parse_expr(subst[i]['expr'])
+        self.subst = subst
 
     def __str__(self):
-        return "substitute " + str(self.var) + " for " + str(self.var_subs) + " in equation"
+        str_of_substs = ', '.join(item['var'] + " for " + str(item['expr']) for item in self.subst
+                                  if item['expr'] is not None)
+        return "substitute " + str_of_substs + " in equation"
 
     def export(self):
+        latex_str_of_substs = ', '.join(item['var'] + " for " + latex.convert_expr(item['expr'])
+                                        for item in self.subst if item['expr'] is not None)
+        json_substs = list()
+        for item in self.subst:
+            json_substs.append({'var': item['var'], 'expr': str(item['expr'])})
         return {
             "name": self.name,
             "str": str(self),
-            "var": self.var,
-            "var_subs": str(self.var_subs),
-            "latex_str": "substitute \\(%s\\) for \\(%s\\) in equation" % (self.var, latex.convert_expr(self.var_subs))
+            "subst": json_substs,
+            "latex_str": "substitute %s in equation" % latex_str_of_substs
         }
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_equals():
-            return e.subst(self.var, self.var_subs)
+            for item in self.subst:
+                if item['expr'] is not None:
+                    e = e.subst(item['var'], item['expr'])
+            return e
         else:
             return e
 

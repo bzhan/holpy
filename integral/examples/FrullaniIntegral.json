@@ -235,11 +235,15 @@
                             "latex_res": "I(a,a) = \\frac{1}{2} \\pi \\log{a} + C(a)",
                             "res": "I(a,a) = 1/2 * pi * log(a) + SKOLEM_FUNC(C(a))",
                             "rule": {
-                                "latex_str": "substitute \\(b\\) for \\(a\\) in equation",
+                                "latex_str": "substitute b for a in equation",
                                 "name": "VarSubsOfEquation",
                                 "str": "substitute b for a in equation",
-                                "var": "b",
-                                "var_subs": "a"
+                                "subst": [
+                                    {
+                                        "expr": "a",
+                                        "var": "b"
+                                    }
+                                ]
                             },
                             "type": "CalculationStep"
                         },

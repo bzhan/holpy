@@ -1,0 +1,254 @@
+{
+    "content": [
+        {
+            "finished": true,
+            "goal": "Gamma(n + 1) = (INT t:[0,oo]. t ^ n * exp(-t))",
+            "latex_goal": "\\Gamma{(n + 1)} = \\int_{0}^{\\infty} t ^ {n} e^{-t} \\,dt",
+            "proof": {
+                "finished": true,
+                "goal": "Gamma(n + 1) = (INT t:[0,oo]. t ^ n * exp(-t))",
+                "latex_goal": "\\Gamma{(n + 1)} = \\int_{0}^{\\infty} t ^ {n} e^{-t} \\,dt",
+                "lhs_calc": {
+                    "latex_start": "\\Gamma{(n + 1)}",
+                    "start": "Gamma(n + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} x ^ {n} e^{-x} \\,dx",
+                            "res": "INT x:[0,oo]. x ^ n * exp(-x)",
+                            "rule": {
+                                "func_name": "Gamma",
+                                "name": "ExpandDefinition",
+                                "str": "expand definition"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\int_{0}^{\\infty} t ^ {n} e^{-t} \\,dt",
+                    "start": "INT t:[0,oo]. t ^ n * exp(-t)",
+                    "steps": [],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        },
+        {
+            "conds": [
+                {
+                    "cond": "m + 1 > 0",
+                    "latex_cond": "m + 1 > 0"
+                }
+            ],
+            "finished": true,
+            "goal": "(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
+            "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}}",
+            "proof": {
+                "finished": true,
+                "goal": "(INT x:[0,1]. x ^ m * log(x) ^ n) = (-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
+                "latex_goal": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx = \\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}}",
+                "lhs_calc": {
+                    "latex_start": "\\int_{0}^{1} x ^ {m} \\log^{n}(x) \\,dx",
+                    "start": "INT x:[0,1]. x ^ m * log(x) ^ n",
+                    "steps": [
+                        {
+                            "latex_res": "-(\\int_{0}^{\\infty} (e^{-u}) ^ {m} \\log^{n}(e^{-u}) (-e^{-u}) \\,du)",
+                            "res": "-(INT u:[0,oo]. exp(-u) ^ m * log(exp(-u)) ^ n * -exp(-u))",
+                            "rule": {
+                                "latex_str": "inverse substitution for \\(e^{-u}\\)",
+                                "name": "SubstitutionInverse",
+                                "str": "inverse substitution for exp(-u)",
+                                "var_name": "u",
+                                "var_subst": "exp(-u)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} (-u) ^ {n} e^{-u} (e^{-u}) ^ {m} \\,du",
+                            "res": "INT u:[0,oo]. (-u) ^ n * exp(-u) * exp(-u) ^ m",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} (-u) ^ {n} (e^{-u} (e^{-u}) ^ {m}) \\,du",
+                            "res": "INT u:[0,oo]. (-u) ^ n * (exp(-u) * exp(-u) ^ m)",
+                            "rule": {
+                                "latex_str": "rewriting \\((-u) ^ {n} e^{-u} (e^{-u}) ^ {m}\\) to \\((-u) ^ {n} (e^{-u} (e^{-u}) ^ {m})\\)",
+                                "name": "Equation",
+                                "new_expr": "(-u) ^ n * (exp(-u) * exp(-u) ^ m)",
+                                "old_expr": "(-u) ^ n * exp(-u) * exp(-u) ^ m",
+                                "str": "rewriting (-u) ^ n * exp(-u) * exp(-u) ^ m to (-u) ^ n * (exp(-u) * exp(-u) ^ m)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} (-u) ^ {n} ((e^{-u}) ^ {1} (e^{-u}) ^ {m}) \\,du",
+                            "res": "INT u:[0,oo]. (-u) ^ n * (exp(-u) ^ 1 * exp(-u) ^ m)",
+                            "rule": {
+                                "latex_str": "rewriting \\(e^{-u} (e^{-u}) ^ {m}\\) to \\((e^{-u}) ^ {1} (e^{-u}) ^ {m}\\)",
+                                "name": "Equation",
+                                "new_expr": "exp(-u) ^ 1 * exp(-u) ^ m",
+                                "old_expr": "exp(-u) * exp(-u) ^ m",
+                                "str": "rewriting exp(-u) * exp(-u) ^ m to exp(-u) ^ 1 * exp(-u) ^ m"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} (-u) ^ {n} (e^{-u}) ^ {m + 1} \\,du",
+                            "res": "INT u:[0,oo]. (-u) ^ n * exp(-u) ^ (m + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\((e^{-u}) ^ {1} (e^{-u}) ^ {m}\\) to \\((e^{-u}) ^ {m + 1}\\) using identity at 0.1",
+                                "loc": "0.1",
+                                "name": "ApplyIdentity",
+                                "source": "exp(-u) ^ 1 * exp(-u) ^ m",
+                                "str": "rewrite exp(-u) ^ 1 * exp(-u) ^ m to exp(-u) ^ (m + 1) using identity at 0.1",
+                                "target": "exp(-u) ^ (m + 1)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} (-1 u) ^ {n} (e^{-u}) ^ {m + 1} \\,du",
+                            "res": "INT u:[0,oo]. (-1 * u) ^ n * exp(-u) ^ (m + 1)",
+                            "rule": {
+                                "latex_str": "rewriting \\(-u\\) to \\(-1 u\\)",
+                                "name": "Equation",
+                                "new_expr": "-1 * u",
+                                "old_expr": "-u",
+                                "str": "rewriting -u to -1 * u"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "\\int_{0}^{\\infty} (-1) ^ {n} u ^ {n} (e^{-u}) ^ {m + 1} \\,du",
+                            "res": "INT u:[0,oo]. (-1) ^ n * u ^ n * exp(-u) ^ (m + 1)",
+                            "rule": {
+                                "latex_str": "rewrite \\((-1 u) ^ {n}\\) to \\((-1) ^ {n} u ^ {n}\\) using identity at 0.0",
+                                "loc": "0.0",
+                                "name": "ApplyIdentity",
+                                "source": "(-1 * u) ^ n",
+                                "str": "rewrite (-1 * u) ^ n to (-1) ^ n * u ^ n using identity at 0.0",
+                                "target": "(-1) ^ n * u ^ n"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(-1) ^ {n} (\\int_{0}^{\\infty} u ^ {n} (e^{-u}) ^ {m + 1} \\,du)",
+                            "res": "(-1) ^ n * (INT u:[0,oo]. u ^ n * exp(-u) ^ (m + 1))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(-1) ^ {n} (\\int_{0}^{\\infty} \\frac{(\\frac{t}{m + 1}) ^ {n} (e^{-t/(m + 1)}) ^ {m + 1}}{m + 1} \\,dt)",
+                            "res": "(-1) ^ n * (INT t:[0,oo]. (t / (m + 1)) ^ n * exp(-(t / (m + 1))) ^ (m + 1) / (m + 1))",
+                            "rule": {
+                                "latex_str": "substitute \\(t\\) for \\((m + 1) u\\)",
+                                "name": "Substitution",
+                                "str": "substitute t for (m + 1) * u",
+                                "var_name": "t",
+                                "var_subst": "(m + 1) * u"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(-1) ^ {n} (\\int_{0}^{\\infty} \\frac{\\frac{t ^ {n}}{(m + 1) ^ {n}} (e^{-t/(m + 1)}) ^ {m + 1}}{m + 1} \\,dt)",
+                            "res": "(-1) ^ n * (INT t:[0,oo]. t ^ n / (m + 1) ^ n * exp(-(t / (m + 1))) ^ (m + 1) / (m + 1))",
+                            "rule": {
+                                "latex_str": "rewrite \\((\\frac{t}{m + 1}) ^ {n}\\) to \\(\\frac{t ^ {n}}{(m + 1) ^ {n}}\\) using identity at 1.0.0",
+                                "loc": "1.0.0",
+                                "name": "ApplyIdentity",
+                                "source": "(t / (m + 1)) ^ n",
+                                "str": "rewrite (t / (m + 1)) ^ n to t ^ n / (m + 1) ^ n using identity at 1.0.0",
+                                "target": "t ^ n / (m + 1) ^ n"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(-1) ^ {n} (\\int_{0}^{\\infty} \\frac{\\frac{t ^ {n}}{(m + 1) ^ {n}} e^{(-t/(m + 1)) (m + 1)}}{m + 1} \\,dt)",
+                            "res": "(-1) ^ n * (INT t:[0,oo]. t ^ n / (m + 1) ^ n * exp(-(t / (m + 1)) * (m + 1)) / (m + 1))",
+                            "rule": {
+                                "latex_str": "rewrite \\((e^{-t/(m + 1)}) ^ {m + 1}\\) to \\(e^{(-t/(m + 1)) (m + 1)}\\) using identity at 1.0.0.1",
+                                "loc": "1.0.0.1",
+                                "name": "ApplyIdentity",
+                                "source": "exp(-(t / (m + 1))) ^ (m + 1)",
+                                "str": "rewrite exp(-(t / (m + 1))) ^ (m + 1) to exp(-(t / (m + 1)) * (m + 1)) using identity at 1.0.0.1",
+                                "target": "exp(-(t / (m + 1)) * (m + 1))"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(-1) ^ {n} (m + 1) ^ {-n - 1} (\\int_{0}^{\\infty} t ^ {n} e^{-t} \\,dt)",
+                            "res": "(-1) ^ n * (m + 1) ^ (-n - 1) * (INT t:[0,oo]. t ^ n * exp(-t))",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(-1) ^ {n} (m + 1) ^ {-n - 1} \\Gamma{(n + 1)}",
+                            "res": "(-1) ^ n * (m + 1) ^ (-n - 1) * Gamma(n + 1)",
+                            "rule": {
+                                "eq": "Gamma(n + 1) = (INT t:[0,oo]. t ^ n * exp(-t))",
+                                "latex_str": "apply equation \\(\\Gamma{(n + 1)} = \\int_{0}^{\\infty} t ^ {n} e^{-t} \\,dt\\) at 1",
+                                "loc": "1",
+                                "name": "ApplyEquation",
+                                "str": "apply equation: Gamma(n + 1) = (INT t:[0,oo]. t ^ n * exp(-t)) at 1"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(-1) ^ {n} (m + 1) ^ {-n - 1} n!",
+                            "res": "(-1) ^ n * (m + 1) ^ (-n - 1) * factorial(n)",
+                            "rule": {
+                                "latex_str": "rewrite \\(\\Gamma{(n + 1)}\\) to \\(n!\\) using identity at 1",
+                                "loc": "1",
+                                "name": "ApplyIdentity",
+                                "source": "Gamma(n + 1)",
+                                "str": "rewrite Gamma(n + 1) to factorial(n) using identity at 1",
+                                "target": "factorial(n)"
+                            },
+                            "type": "CalculationStep"
+                        },
+                        {
+                            "latex_res": "(-1) ^ {n} n! (m + 1) ^ {-n - 1}",
+                            "res": "(-1) ^ n * factorial(n) * (m + 1) ^ (-n - 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "rhs_calc": {
+                    "latex_start": "\\frac{(-1) ^ {n} n!}{(m + 1) ^ {n + 1}}",
+                    "start": "(-1) ^ n * factorial(n) / (m + 1) ^ (n + 1)",
+                    "steps": [
+                        {
+                            "latex_res": "(-1) ^ {n} n! (m + 1) ^ {-n - 1}",
+                            "res": "(-1) ^ n * factorial(n) * (m + 1) ^ (-n - 1)",
+                            "rule": {
+                                "name": "FullSimplify",
+                                "str": "full simplify"
+                            },
+                            "type": "CalculationStep"
+                        }
+                    ],
+                    "type": "Calculation"
+                },
+                "type": "CalculationProof"
+            },
+            "type": "Goal"
+        }
+    ],
+    "name": "chapter4_practice02"
+}
