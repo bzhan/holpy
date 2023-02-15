@@ -2313,7 +2313,7 @@ class IntegralTest(unittest.TestCase):
         proof = goal.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("u", "x-2"))
-        calc.perform_rule(rules.SplitRegion("0", is_cpv=True, new_var="c"))
+        calc.perform_rule(rules.SplitRegion("0"))
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
         self.checkAndOutput(file)
@@ -2326,7 +2326,7 @@ class IntegralTest(unittest.TestCase):
         proof = goal.proof_by_calculation()
         calc = proof.lhs_calc
         calc.perform_rule(rules.Substitution("u", "x-1"))
-        calc.perform_rule(rules.SplitRegion("0", is_cpv=True, new_var="c"))
+        calc.perform_rule(rules.SplitRegion("0"))
         calc.perform_rule(rules.DefiniteIntegralIdentity())
         calc.perform_rule(rules.FullSimplify())
         calc = proof.rhs_calc
