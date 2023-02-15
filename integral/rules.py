@@ -503,21 +503,38 @@ class DefiniteIntegralIdentity(Rule):
 
 class SeriesExpansionIdentity(Rule):
     """Apply series expansion in the current theory."""
-    def __init__(self, index_var: str = 'n'):
+    def __init__(self, *, old_expr: Optional[Union[str, Expr]] = None, index_var: str = 'n'):
         self.name = "SeriesExpansionIdentity"
+        if isinstance(old_expr, str):
+            old_expr = parser.parse_expr(old_expr)
+        self.old_expr = old_expr
         self.index_var = index_var
 
     def __str__(self):
         return "apply series expansion"
 
     def export(self):
-        return {
+        res = {
             "name": self.name,
             "str": str(self),
             "index_var": self.index_var
         }
+        if self.old_expr is not None:
+            res['old_expr'] = str(self.old_expr)
+        return res
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
+        # If old_expr is given, try to find it within e
+        if self.old_expr is not None and self.old_expr != e:
+            find_res = e.find_subexpr(self.old_expr)
+            if len(find_res) == 0:
+                raise AssertionError("Equation: old expression not found")
+            loc = find_res[0]
+            return OnLocation(self, loc).eval(e, ctx)
+
+        # Now e is the old expression
+        assert self.old_expr is None or self.old_expr == e
+
         for identity in ctx.get_series_expansions():
             inst = expr.match(e, identity.lhs)
             if inst is None:
@@ -1725,14 +1742,15 @@ class DerivIntExchange(Rule):
 
     def eval(self, e: Expr, ctx: Context) -> Expr:
         if e.is_deriv() and e.body.is_integral():
-            v1, v2 = e.var, e.body.var
-            return Integral(v2, e.body.lower, e.body.upper, Deriv(v1, e.body.body))
+            return Integral(e.body.var, e.body.lower, e.body.upper, Deriv(e.var, e.body.body))
         elif e.is_deriv() and e.body.is_indefinite_integral():
-            return IndefiniteIntegral(e.var, Deriv(e.var, e.body.body), e.skolem_args)
+            return IndefiniteIntegral(e.body.var, Deriv(e.var, e.body.body), e.skolem_args)
         elif e.is_indefinite_integral() and e.body.is_deriv():
-            return Deriv(e.var, IndefiniteIntegral(e.var, e.body.body, e.skolem_args))
+            return Deriv(e.body.var, IndefiniteIntegral(e.var, e.body.body, e.skolem_args))
+        elif e.is_integral() and e.body.is_deriv():
+            return Deriv(e.body.var, Integral(e.var, e.upper, e.lower, e.body.body))
         else:
-            raise NotImplementedError
+            return e
 
 
 class ExpandDefinition(Rule):
@@ -1764,7 +1782,7 @@ class ExpandDefinition(Rule):
                         res.append((sube, loc))
             if sube.is_var():
                 for identity in ctx.get_definitions():
-                    if identity.lhs.is_symbol() and identity.lhs.name == sube.func_name:
+                    if identity.lhs.is_symbol() and identity.lhs.name == sube.name:
                         res.append((sube, loc))
         return res
 
@@ -2034,27 +2052,27 @@ class DerivEquation(Rule):
 
 class SolveEquation(Rule):
     """Solve equation for the given expression."""
-    def __init__(self, be_solved_expr: Union[Expr, str]):
-        if isinstance(be_solved_expr, str):
-            be_solved_expr = parser.parse_expr(be_solved_expr)
-        self.be_solved_expr = be_solved_expr
+    def __init__(self, solve_for: Union[Expr, str]):
+        if isinstance(solve_for, str):
+            solve_for = parser.parse_expr(solve_for)
+        self.solve_for = solve_for
         self.name = "SolveEquation"
 
     def eval(self, e: Expr, ctx: Context):
         assert e.is_equals()
 
-        res = solve_for_term(e, self.be_solved_expr)
+        res = solve_for_term(e, self.solve_for)
         if not res:
             raise AssertionError("SolveEquation: cannot solve")
-        return Op("=", self.be_solved_expr, normalize(res))
+        return Op("=", self.solve_for, normalize(res))
 
     def __str__(self):
-        return "solve equation for %s" % str(self.be_solved_expr)
+        return "solve equation for %s" % str(self.solve_for)
 
     def export(self):
         return {
             "name": self.name,
             "str": str(self),
-            "solve_for": str(self.be_solved_expr),
-            "latex_str": "solve equation for \\(%s\\)" % latex.convert_expr(self.be_solved_expr)
+            "solve_for": str(self.solve_for),
+            "latex_str": "solve equation for \\(%s\\)" % latex.convert_expr(self.solve_for)
         }

@@ -15,13 +15,19 @@
         <b-nav-item-dropdown text="Limits" left>
           <b-dropdown-item href="#" v-on:click="applyRule('LHopital')">L'Hopital Rule</b-dropdown-item>
         </b-nav-item-dropdown>
+        <b-nav-item-dropdown text="Series" left>
+          <b-dropdown-item href="#" v-on:click="applySeriesExpansion">Series expansion</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('SeriesEvaluationIdentity')">Series evaluation</b-dropdown-item>
+        </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Integral" left>
-          <b-dropdown-item href="#" v-on:click="applyRule('DefiniteIntegralIdentity')">Integral identity</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('IndefiniteIntegralIdentity')">Indefinite integral identity</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('DefiniteIntegralIdentity')">Definite integral identity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="forwardSubstitution">Forward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="backwardSubstitution">Backward substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="integrateByParts">Integrate by parts</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ElimInfInterval')">Improper integral to limit</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('DerivIntExchange')">Exchange deriv and integral</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyRule('IntSumExchange')">Exchange sum and integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='splitRegion'>Splitting an Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="solveEquation">Solve equation</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -29,14 +35,17 @@
           <b-dropdown-item href="#" v-on:click="rewriteEquation" id="rewriteEquation">Rewriting</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="expandDefinition">Expand definition</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="foldDefinition">Fold definition</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="applyRule('ExpandPolynomial')">Expand polynomial</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyExpandPolynomial">Expand polynomial</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="rewriteUsingIdentity" id="rewriteUsingIdentity">Apply identity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyTheorem">Apply lemma</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('ApplyInductHyp')">Apply inductive hyp</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Equation" left>
           <b-dropdown-item href="#" v-on:click="variableSubstitution">Variable substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyLimitBothSides">Take limit on both sides</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="applyDerivBothSides">Differentiate both sides</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="applyRule('IntegrateBothSide')">Integrate both sides</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="solveEquation2">Solve equation</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -269,6 +278,13 @@
         <button v-on:click="doSplitRegion">OK</button>
       </div>
       <div v-if="r_query_mode === 'select theorem'">
+        <div class="math-text">Select subexpression:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExpr"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
         <div class="math-text">Select theorem to apply:</div>
         <div v-for="(item, index) in theorems" :key="index"
              v-on:click="doApplyTheorem(index)" style="cursor:pointer">
@@ -282,6 +298,50 @@
           <ExprQuery v-model="item.expr"/>
         </div>
         <button v-on:click="doVariableSubstitution">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'derivate both sides'">
+        <span class="math-text">Please specify variable</span><br/>
+        <input v-model="deriv_var">
+        <button v-on:click="doApplyDerivBothSides">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'solve equation'">
+        <div class="math-text">Select subexpression to solve for:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExpr"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
+        <button v-on:click="doSolveEquation">Solve</button>
+      </div>
+      <div v-if="r_query_mode === 'limit both sides'">
+        <span class="math-text">Take limit as variable</span><br/>
+        <input v-model="limit_var">
+        <span class="math-text">goes to</span><br/>
+        <ExprQuery v-model="expr_query1"/>
+        <button v-on:click="doApplyLimitBothSides">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'series expansion'">
+        <div class="math-text">Series expansion on:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExpr"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
+        <span class="math-text">Index variable</span><br/>
+        <input v-model="index_var">
+        <button v-on:click="doApplySeriesExpansion">OK</button>
+      </div>
+      <div v-if="r_query_mode === 'expand polynomial'">
+        <div class="math-text">Expand polynomial on:</div>
+        <input
+             class="item-text" ref="select_expr1"
+             v-bind:value="lastExpr"
+             style="width:500px" disabled="disabled"
+             @select="selectExpr"><br/>
+        &nbsp;<MathEquation v-bind:data="'\\(' + latex_selected_expr + '\\)'" class="indented-text"/><br/>
+        <button v-on:click="doApplyExpandPolynomial">OK</button>
       </div>
     </div>
     <div id="select">
@@ -330,7 +390,7 @@ export default {
       content: [],
       // ID of the selected item
       cur_id: undefined,
-      
+
       // Current query mode
       r_query_mode: undefined,
 
@@ -353,12 +413,22 @@ export default {
       // Query for induction variable
       induct_var: undefined,
 
+      // Query for variable to differentiate
+      deriv_var: undefined,
+
+      // Query for limit variable
+      limit_var: undefined,
+
+      // Query for index variable
+      index_var: 'n',
+
       // Selected fact
       selected_facts: {},
 
       // Selected latex expression
       selected_expr: undefined,
       latex_selected_expr: undefined,
+      selected_loc: undefined,
 
       // List of identity rewrites for selected expression
       identity_rewrites: [],
@@ -772,11 +842,13 @@ export default {
       const end = this.$refs.select_expr1.selectionEnd
       this.selected_expr = this.lastExpr.slice(start, end)   
       const data = {
-        expr: this.selected_expr
+        expr: this.lastExpr,
+        selected_expr: this.selected_expr
       }
       const response = await axios.post("http://127.0.0.1:5000/api/query-latex-expr", JSON.stringify(data))
       if (response.data.status === 'ok') {
-        this.latex_selected_expr = response.data.latex_expr
+        this.latex_selected_expr = response.data.latex_expr,
+        this.selected_loc = response.data.loc
       }
     },
 
@@ -903,6 +975,7 @@ export default {
         rule: {
           name: "ApplyEquation",
           eq: this.theorems[index].eq,
+          loc: this.selected_loc
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
@@ -940,6 +1013,138 @@ export default {
         rule: {
           name: "VarSubsOfEquation",
           subst: this.query_vars
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    // First stage of differentiate both sides
+    applyDerivBothSides: function() {
+      this.r_query_mode = 'derivate both sides'
+    },
+
+    // Second stage of differentiate both sides
+    doApplyDerivBothSides: async function () {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "DerivEquation",
+          var: this.deriv_var
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    // First stage of solving equation
+    solveEquation2: function () {
+      this.r_query_mode = 'solve equation'
+    },
+
+    // Second stage of solving equation
+    doSolveEquation: async function () {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "SolveEquation",
+          solve_for: this.selected_expr
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    // First stage of taking limit
+    applyLimitBothSides: function () {
+      this.r_query_mode = 'limit both sides'
+    },
+
+    // Second stage of taking limit
+    doApplyLimitBothSides: async function () {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "LimitEquation",
+          var: this.limit_var,
+          lim: this.expr_query1
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    // First stage of series expansion
+    applySeriesExpansion: function () {
+      this.r_query_mode = 'series expansion'
+    },
+
+    // Second stage of series expansion
+    doApplySeriesExpansion: async function () {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "SeriesExpansionIdentity",
+          old_expr: this.selected_expr,
+          index_var: this.index_var
+        }
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))
+      if (response.data.status == 'ok') {
+        this.$set(this.content, this.cur_id, response.data.item)
+        this.selected_item = response.data.selected_item
+        this.r_query_mode = undefined
+      }
+    },
+
+    // First stage of expand polynomial
+    applyExpandPolynomial: function () {
+      this.r_query_mode = 'expand polynomial'
+    },
+
+    // Second stage of expand polynomial
+    doApplyExpandPolynomial: async function () {
+      const data = {
+        book: this.book_name,
+        file: this.filename,
+        content: this.content,
+        cur_id: this.cur_id,
+        selected_item: this.selected_item,
+        rule: {
+          name: "ExpandPolynomial",
+          loc: this.loc
         }
       }
       const response = await axios.post("http://127.0.0.1:5000/api/perform-step", JSON.stringify(data))

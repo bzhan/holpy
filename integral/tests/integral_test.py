@@ -1594,7 +1594,7 @@ class IntegralTest(unittest.TestCase):
         goal = file.add_goal("(INT x:[0, 1]. atan(x) / x) = G")
         proof_of_goal = goal.proof_by_calculation()
         calc = proof_of_goal.lhs_calc
-        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(), '0.0'))
+        calc.perform_rule(rules.SeriesExpansionIdentity(old_expr="atan(x)"))
         calc.perform_rule(rules.Equation("x ^ (2 * n + 1)", "x^ (2*n) * x"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.IntSumExchange())
@@ -1632,7 +1632,7 @@ class IntegralTest(unittest.TestCase):
         proof_of_goal5 = goal5.proof_by_calculation()
         calc = proof_of_goal5.lhs_calc
         calc.perform_rule(rules.Equation("log(x)/(x^2+1)", "log(x) * (x^-2) * (1 + (1/x^2))^-1"))
-        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(), '0.1'))
+        calc.perform_rule(rules.SeriesExpansionIdentity(old_expr="(1+(1/x^2))^-1"))
         calc.perform_rule(rules.Equation(
             "log(x) * x ^ (-2) * SUM(n, 0, oo, (-1) ^ n * (1 / x ^ 2) ^ n)",
             "SUM(n, 0, oo, (-1) ^ n * ((1 / x ^ 2) ^ n) * log(x) * x ^ -2)"))
@@ -1656,7 +1656,7 @@ class IntegralTest(unittest.TestCase):
         goal = file.add_goal("(INT x:[0,1]. log(1 + x) / x) = (pi^2) / 12")
         proof_of_goal01 = goal.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
-        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(), "0.0"))
+        calc.perform_rule(rules.SeriesExpansionIdentity(old_expr="log(1+x)"))
         calc.perform_rule(rules.Equation(
             "SUM(n,0,oo,(-1) ^ n * x ^ (n + 1) / (n + 1)) / x",
             "SUM(n,0,oo,(-1) ^ n * x ^ (n + 1) / (n + 1) * (1/x))"))
@@ -1680,8 +1680,8 @@ class IntegralTest(unittest.TestCase):
                 -SUM(k,0,oo,(-1)^k*(-x)^(k+1) / (k+1))-SUM(k,0,oo,(-1)^k*x^(k+1)/(k+1))", conds=["abs(x) < 1"])
         proof_of_goal01 = goal01.proof_by_calculation()
         calc = proof_of_goal01.lhs_calc
-        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(index_var='k'), "0.0"))
-        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(index_var='k'), "1"))
+        calc.perform_rule(rules.SeriesExpansionIdentity(old_expr="log(1-x)", index_var='k'))
+        calc.perform_rule(rules.SeriesExpansionIdentity(old_expr="log(1+x)", index_var='k'))
         calc.perform_rule(rules.FullSimplify())
         calc = proof_of_goal01.rhs_calc
         calc.perform_rule(rules.FullSimplify())
@@ -1710,7 +1710,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.Equation("x * log(x) / (-(x ^ 2) + 1)",
                                          "log(x) * (x / (-(x ^ 2) + 1))"))
         calc.perform_rule(rules.OnLocation(rules.ApplyEquation(goal02.goal), "0.0.1"))
-        calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "0"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("log(x) * SUM(k, 0, oo, x ^ k)",
                                          "SUM(k, 0, oo, log(x) * x ^ k)"))
@@ -1736,7 +1736,7 @@ class IntegralTest(unittest.TestCase):
         proof_of_goal = goal.proof_by_calculation()
         calc = proof_of_goal.lhs_calc
         calc.perform_rule(rules.Equation("x^(c*x^a)", "exp(log(x^(c*x^a)))"))
-        calc.perform_rule(rules.OnLocation(rules.SeriesExpansionIdentity(index_var='k'), "0"))
+        calc.perform_rule(rules.SeriesExpansionIdentity(old_expr="exp(log(x^(c*x^a)))", index_var='k'))
         calc.perform_rule(rules.IntSumExchange())
         calc.perform_rule(rules.ApplyIdentity("log(x^(c*x^a))", "(c*x^a) * log(x)"))
         calc.perform_rule(rules.ApplyIdentity("(c*x^a * log(x))^k", "(c*x^a)^k * log(x)^k"))
@@ -1855,7 +1855,7 @@ class IntegralTest(unittest.TestCase):
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("1 / sqrt(x ^ 2 + 2)", "sqrt(x^2+2) ^ (-1)"))
         calc.perform_rule(rules.ApplyIdentity("atan((sqrt(x^2 + 2))^(-1))", "pi/2 - atan(sqrt(x^2 + 2))"))
-        calc.perform_rule(rules.OnSubterm(rules.ExpandPolynomial()))
+        calc.perform_rule(rules.OnLocation(rules.ExpandPolynomial(), "0.0"))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("atan(sqrt(x ^ 2 + 2)) / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2))",\
                                          "atan(sqrt(x ^ 2 + 2)) / ((x ^ 2 + 1) * sqrt(x ^ 2 + 2))"))
@@ -2230,9 +2230,9 @@ class IntegralTest(unittest.TestCase):
                                conds=["a > 0", "m > 0"])
         proof_of_goal02 = goal02.proof_by_rewrite_goal(begin=goal01)
         calc = proof_of_goal02.begin
-        calc.perform_rule(rules.OnLocation(rules.ExpandDefinition("I"), "0"))
+        calc.perform_rule(rules.OnSubterm(rules.ExpandDefinition("I")))
         calc.perform_rule(rules.DerivEquation("a"))
-        calc.perform_rule(rules.OnLocation(rules.DerivIntExchange(), "0"))
+        calc.perform_rule(rules.OnSubterm(rules.DerivIntExchange()))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.SolveEquation("(INT x:[0,oo]. sin(m * x) / (x * (a ^ 2 + x ^ 2) ^ 2))"))
         calc.perform_rule(rules.OnLocation(rules.Equation(None, "(pi / (2 * a ^ 4)) * (1 - ((2 + m * a) / 2) * exp(- a * m))"), "1"))
@@ -2258,7 +2258,7 @@ class IntegralTest(unittest.TestCase):
         proof_of_goal02 = goal02.proof_by_rewrite_goal(begin=goal01)
         calc = proof_of_goal02.begin
         calc.perform_rule(rules.DerivEquation("a"))
-        calc.perform_rule(rules.OnLocation(rules.DerivIntExchange(), "0"))
+        calc.perform_rule(rules.OnSubterm(rules.DerivIntExchange()))
         calc.perform_rule(rules.FullSimplify())
         calc.perform_rule(rules.Equation("(b * (-x + 1) + a * x) ^ 3", "(a * x + b * (1 - x)) ^ 3"))
         calc.perform_rule(rules.SolveEquation("(INT x:[0,1]. x / (a * x + b * (1 - x)) ^ 3)"))

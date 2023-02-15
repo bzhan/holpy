@@ -110,21 +110,6 @@ def clear_item():
             res['selected_item'] = str(compstate.Label([len(st.steps) - 1]))
     return jsonify(res)
 
-@app.route("/api/query-expr", methods=['POST'])
-def query_expr():
-    data = json.loads(request.get_data().decode('UTF-8'))
-    try:
-        e = integral.parser.parse_expr(data['expr'])
-        return jsonify({
-            "status": "ok",
-            "latex_expr": integral.latex.convert_expr(e)
-        })
-    except Exception as e:
-        return jsonify({
-            "status": "fail",
-            "exception": str(e)
-        })
-
 @app.route("/api/query-integral", methods=['POST'])
 def query_integral():
     data = json.loads(request.get_data().decode('UTF-8'))
@@ -168,11 +153,16 @@ def query_latex_expr():
     data = json.loads(request.get_data().decode('UTF-8'))
     try:
         e = integral.parser.parse_expr(data['expr'])
-        results = []
+        selected = integral.parser.parse_expr(data['selected_expr'])
+        locs = e.find_subexpr(selected)
+        assert len(locs) > 0
+        if len(locs) > 1:
+            print('Warning: multiple locations', flush=True)
+        loc = locs[0]
         return jsonify({
             "status": "ok",
-            "latex_expr": integral.latex.convert_expr(e),
-            "results": results
+            "latex_expr": integral.latex.convert_expr(selected),
+            "loc": str(loc)
         })
     except Exception as e:
         return jsonify({
@@ -440,7 +430,8 @@ def integral_perform_step():
     label = compstate.Label(data['selected_item'])
     st: compstate.StateItem = file.content[cur_id]
     rule = compstate.parse_rule(data['rule'])
-    if isinstance(rule, integral.rules.ApplyInductHyp):
+    if isinstance(rule, (integral.rules.ApplyInductHyp, integral.rules.DerivIntExchange,
+                         integral.rules.IntSumExchange, integral.rules.SeriesEvaluationIdentity)):
         rule = integral.rules.OnSubterm(rule)
     subitem = st.get_by_label(label)
     if isinstance(subitem, (compstate.CalculationStep, compstate.Calculation)):

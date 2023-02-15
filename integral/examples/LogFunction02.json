@@ -23,9 +23,9 @@
                             "res": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - log(1 + x)",
                             "rule": {
                                 "index_var": "k",
-                                "loc": "0.0",
                                 "name": "SeriesExpansionIdentity",
-                                "str": "apply series expansion at 0.0"
+                                "old_expr": "log(1 - x)",
+                                "str": "apply series expansion"
                             },
                             "type": "CalculationStep"
                         },
@@ -34,9 +34,9 @@
                             "res": "-SUM(k, 0, oo, (-1) ^ k * (-x) ^ (k + 1) / (k + 1)) - SUM(k, 0, oo, (-1) ^ k * x ^ (k + 1) / (k + 1))",
                             "rule": {
                                 "index_var": "k",
-                                "loc": "1",
                                 "name": "SeriesExpansionIdentity",
-                                "str": "apply series expansion at 1"
+                                "old_expr": "log(1 + x)",
+                                "str": "apply series expansion"
                             },
                             "type": "CalculationStep"
                         },
@@ -255,9 +255,9 @@
                             "latex_res": "-(\\int_{0}^{1} -\\frac{1}{2} \\log{x} \\sum_{k=0}^{\\infty}{x ^ {k} (-1) ^ {k}} + \\frac{1}{2} \\log{x} \\sum_{k=0}^{\\infty}{x ^ {k}} \\,dx)",
                             "res": "-(INT x:[0,1]. -1/2 * log(x) * SUM(k, 0, oo, x ^ k * (-1) ^ k) + 1/2 * log(x) * SUM(k, 0, oo, x ^ k))",
                             "rule": {
-                                "loc": "subterms",
+                                "loc": "0",
                                 "name": "ExpandPolynomial",
-                                "str": "expand polynomial on subterms"
+                                "str": "expand polynomial at 0"
                             },
                             "type": "CalculationStep"
                         },

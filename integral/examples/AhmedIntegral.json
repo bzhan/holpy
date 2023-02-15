@@ -421,9 +421,9 @@
                             "latex_res": "-(\\int_{0}^{1} -\\frac{\\tan^{-1}{(\\sqrt{x ^ {2} + 2})}}{x ^ {2} \\sqrt{x ^ {2} + 2} + \\sqrt{x ^ {2} + 2}} + \\frac{\\pi}{2} (\\frac{1}{x ^ {2} \\sqrt{x ^ {2} + 2} + \\sqrt{x ^ {2} + 2}}) \\,dx) + \\frac{\\pi}{4} (\\int_{1}^{\\infty} \\frac{1}{u ^ {2} + 1} \\,du)",
                             "res": "-(INT x:[0,1]. -(atan(sqrt(x ^ 2 + 2)) / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2))) + pi / 2 * (1 / (x ^ 2 * sqrt(x ^ 2 + 2) + sqrt(x ^ 2 + 2)))) + pi / 4 * (INT u:[1,oo]. 1 / (u ^ 2 + 1))",
                             "rule": {
-                                "loc": "subterms",
+                                "loc": "0.0",
                                 "name": "ExpandPolynomial",
-                                "str": "expand polynomial on subterms"
+                                "str": "expand polynomial at 0.0"
                             },
                             "type": "CalculationStep"
                         },
